@@ -7,7 +7,7 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADSQRPAK24 | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-16.md<br>audit/function-index/dos-overlay-17.md<br>audit/overlay-init-graph.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `004C` | sub_4C | LOAD24X24SET | 539 | 206 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `0267` | sub_267 | PUT24X24SYMBOL | 97 | 39 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `0267` | sub_267 | PUT24X24SYMBOL | 97 | 39 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>用 bit 7 選資源(retf 8)：02A8h:0712h、DS:9668h/DS:9664h、DS:7F56h，其餘同 DOS overlay-33:00F9h | spec/759-combatant-xy-lookup-and-bank-select-bit.md |
 | `02E8` | sub_2E8 | DISPOSEFIGURE | 116 | 48 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `038F` | sub_38F | LOADFIGURE | 1050 | 451 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `07A9` | sub_7A9 | PUTFIGURE | 285 | 114 | 0 | 1 | ✓ | 待解讀 | — | — | — |

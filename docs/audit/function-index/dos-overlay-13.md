@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md<br>spec/754-small-predicates-and-wrappers.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
-| `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>加成後夾制再乘 2(retf 4)：v := p^[1A5h]；p^[197h]=0(陣營)時 v += DS:4F9Dh^[6E4h]；DS:6F9Ah:=1；v 不在 1..60h 就設成 1(不是夾到邊界)；DS:6F96h := (v*2) and 0FFh；叫 <呼叫>(p, 12h)；DS:6F9Ah:=0；回傳 DS:6F96h | audit/embedded-strings.md<br>spec/758-morale-field-0f7h-round-trip.md |
+| `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>加成後夾制再乘 2(retf 4)：v := p^[1A5h]；p^[197h]=0(陣營)時 v += DS:4F9Dh^[6E4h]；DS:6F9Ah:=1；v 不在 1..60h 就設成 1(不是夾到邊界)；DS:6F96h := (v*2) and 0FFh；叫 <呼叫>(p, 12h)；DS:6F9Ah:=0；回傳 DS:6F96h | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md<br>spec/758-morale-field-0f7h-round-trip.md |
 | `0192` | sub_192 | — | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `031D` | sub_31D | — | 841 | 334 | 3 | 4 | ✓ | 待解讀 | — | — | — |
 | `0666` | sub_666 | — | 233 | 87 | 1 | 6 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
@@ -55,7 +55,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3B37` | sub_3B37 | — | 799 | 315 | 1 | 10 | ✓ | 待解讀 | — | — | — |
 | `3E56` | sub_3E56 | — | 480 | 159 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `403F` | sub_403F | — | 291 | 117 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `4162` | sub_4162 | — | 106 | 39 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `4162` | sub_4162 | — | 106 | 39 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>取兩個戰鬥員的 x/y 後畫(retf 4)：先 overlay-24 entry#24 @1AAAh(參數+0Dh)；再用 overlay-32 entry#15/#16 對 SS 相對記錄的 +0Ch 與 −0Ah 兩個遠指標各取 x、y；最後 overlay-24 entry#25 @1AF7h(x1, y1, x2, y2, 1, 1Eh)。entry#15/#16 = 由 overlay-32:0CAEh 換索引後取 4-byte 記錄的 +0/+1，即戰鬥員座標 — 補上 spec 750「地圖表頭 = 隊伍位置 −3」的機制依據 | spec/759-combatant-xy-lookup-and-bank-select-bit.md |
 | `41CC` | sub_41CC | — | 186 | 63 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `42FD` | sub_42FD | — | 722 | 312 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `45CF` | sub_45CF | — | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |

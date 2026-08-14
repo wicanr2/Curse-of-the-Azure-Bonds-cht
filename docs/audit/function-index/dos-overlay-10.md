@@ -16,7 +16,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `06EC` | sub_6EC | — | 477 | 186 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `08C9` | sub_8C9 | — | 196 | 89 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `098D` | sub_98D | — | 27 | 12 | 3 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte | audit/function-index/pc98-overlay-10.md<br>spec/572-resident-service-functions.md |
-| `09A8` | sub_9A8 | — | 86 | 36 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>在地圖上補兩格(retf 6，只用後兩個參數 x,y)：x < 31h 時 地圖[y*50+x+1] := 40h；y < 18h 且 x < 31h 時 地圖[(y+1)*50+x+1] := 41h。31h/18h 就是 50×25 格陣的最後索引 — 第三次獨立印證格陣尺寸。比較有號，第一個參數沒讀 | spec/758-morale-field-0f7h-round-trip.md |
+| `09A8` | sub_9A8 | — | 86 | 36 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>在地圖上補兩格(retf 6，只用後兩個參數 x,y)：x < 31h 時 地圖[y*50+x+1] := 40h；y < 18h 且 x < 31h 時 地圖[(y+1)*50+x+1] := 41h。31h/18h 就是 50×25 格陣的最後索引 — 第三次獨立印證格陣尺寸。比較有號，第一個參數沒讀 | audit/function-index/pc98-overlay-10.md<br>spec/758-morale-field-0f7h-round-trip.md |
 | `09FE` | sub_9FE | — | 268 | 115 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-10.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0B0A` | sub_B0A | — | 407 | 171 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-10.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0CA1` | sub_CA1 | — | 12 | 7 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | audit/function-index/dos-overlay-10.md |

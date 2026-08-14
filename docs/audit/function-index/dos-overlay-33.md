@@ -7,7 +7,7 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-16.md<br>audit/function-index/dos-overlay-17.md<br>audit/overlay-init-graph.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `002E` | sub_2E | — | 203 | 75 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/749-combat-teardown-and-battlefield-grid.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
-| `00F9` | sub_F9 | — | 97 | 39 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `00F9` | sub_F9 | — | 97 | 39 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>用 bit 7 選資源(retf 8)：代碼 > 7Fh 時 0297h:08F8h(遠指標@DS:4FE8h, 遠指標@DS:65D2h, a, 代碼 and 7Fh, b, c)，否則同一支但用 DS:65CEh 與未遮罩的代碼。bit 7 是分頁選擇、低 7 位是頁內索引，無號比較 | audit/embedded-strings.md<br>spec/759-combatant-xy-lookup-and-bank-select-bit.md |
 | `015A` | sub_15A | — | 98 | 40 | 0 | 1 | ✓ | 待解讀 | — | — | spec/749-combat-teardown-and-battlefield-grid.md |
 | `01D4` | sub_1D4 | — | 820 | 353 | 0 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-16.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0508` | sub_508 | — | 278 | 111 | 0 | 1 | ✓ | 待解讀 | — | — | spec/749-combat-teardown-and-battlefield-grid.md |

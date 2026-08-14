@@ -9,14 +9,14 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 602、不阻塞 133、邊界碎片 249、待解讀 402；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 607、不阻塞 133、邊界碎片 249、待解讀 397；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| START.EXE | — | 325 | 125 | 133 | 17 | 50 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
+| START.EXE | — | 325 | 127 | 133 | 17 | 48 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 2 | 2 | 0 | 0 | 0 | 78 | 24 | [明細](function-index/dos-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 2 | 0 | 0 | 2 | 1511 | 405 | [明細](function-index/dos-overlay-01.md) |
-| overlay-02 | INTERPET | 90 | 48 | 0 | 29 | 13 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
+| overlay-02 | INTERPET | 90 | 49 | 0 | 29 | 12 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 1 | 0 | 1 | 1 | 834 | 384 | [明細](function-index/dos-overlay-03.md) |
 | overlay-04 | TEMPLE | 14 | 2 | 0 | 1 | 11 | 3435 | 340 | [明細](function-index/dos-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 3 | 0 | 3 | 11 | 5057 | 555 | [明細](function-index/dos-overlay-05.md) |
@@ -27,7 +27,7 @@
 | overlay-10 | COMPREP | 38 | 8 | 0 | 14 | 16 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 4 | 2 | 0 | 1 | 1 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
 | overlay-12 | EFFPROCS | 152 | 121 | 0 | 27 | 4 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
-| overlay-13 | COMSTUFF | 58 | 3 | 0 | 16 | 39 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
+| overlay-13 | COMSTUFF | 58 | 4 | 0 | 16 | 38 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 6 | 0 | 0 | 8 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
 | overlay-15 | CAMP | 42 | 9 | 0 | 11 | 22 | 8139 | 898 | [明細](function-index/dos-overlay-15.md) |
 | overlay-16 | LOADSAVE | 28 | 4 | 0 | 8 | 16 | 16063 | 787 | [明細](function-index/dos-overlay-16.md) |
@@ -47,13 +47,13 @@
 | overlay-30 | THREED | 13 | 4 | 0 | 0 | 9 | 5205 | 84 | [明細](function-index/dos-overlay-30.md) |
 | overlay-31 | LOS | 9 | 3 | 0 | 0 | 6 | 2999 | 0 | [明細](function-index/dos-overlay-31.md) |
 | overlay-32 | TACMAP | 24 | 9 | 0 | 0 | 15 | 5064 | 0 | [明細](function-index/dos-overlay-32.md) |
-| overlay-33 | SQRPAK24 | 7 | 2 | 0 | 0 | 5 | 1515 | 57 | [明細](function-index/dos-overlay-33.md) |
+| overlay-33 | SQRPAK24 | 7 | 3 | 0 | 0 | 4 | 1515 | 57 | [明細](function-index/dos-overlay-33.md) |
 | overlay-34 | BUG | 3 | 2 | 0 | 0 | 1 | 1749 | 562 | [明細](function-index/dos-overlay-34.md) |
 | overlay-35 | SQRPAK8 | 4 | 2 | 0 | 0 | 2 | 615 | 74 | [明細](function-index/dos-overlay-35.md) |
 
 ## PC98
 
-模組 37／函式 1488：已解讀 679、不阻塞 29、邊界碎片 340、待解讀 440；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 681、不阻塞 29、邊界碎片 340、待解讀 438；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -80,7 +80,7 @@
 | overlay-19 | LIBRARY | 57 | 5 | 0 | 29 | 23 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 3 | 0 | 0 | 13 | 3555 | 225 | [明細](function-index/pc98-overlay-20.md) |
 | overlay-21 | MONEY | 30 | 11 | 0 | 8 | 11 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
-| overlay-22 | SPELLS | 138 | 60 | 0 | 27 | 51 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
+| overlay-22 | SPELLS | 138 | 61 | 0 | 27 | 50 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
 | overlay-23 | EFFECTS | 39 | 24 | 0 | 12 | 3 | 9201 | 458 | [明細](function-index/pc98-overlay-23.md) |
 | overlay-24 | GENERIC | 65 | 27 | 0 | 17 | 21 | 13567 | 376 | [明細](function-index/pc98-overlay-24.md) |
 | overlay-25 | TRAINING | 14 | 7 | 0 | 0 | 7 | 5200 | 167 | [明細](function-index/pc98-overlay-25.md) |
@@ -91,6 +91,6 @@
 | overlay-30 | THREED | 13 | 4 | 0 | 0 | 9 | 4851 | 117 | [明細](function-index/pc98-overlay-30.md) |
 | overlay-31 | LOS | 9 | 3 | 0 | 0 | 6 | 2988 | 0 | [明細](function-index/pc98-overlay-31.md) |
 | overlay-32 | TACMAP | 25 | 9 | 0 | 0 | 16 | 6784 | 0 | [明細](function-index/pc98-overlay-32.md) |
-| overlay-33 | SQRPAK24 | 7 | 2 | 0 | 0 | 5 | 2106 | 146 | [明細](function-index/pc98-overlay-33.md) |
+| overlay-33 | SQRPAK24 | 7 | 3 | 0 | 0 | 4 | 2106 | 146 | [明細](function-index/pc98-overlay-33.md) |
 | overlay-34 | BUG | 2 | 2 | 0 | 0 | 0 | 14 | 0 | [明細](function-index/pc98-overlay-34.md) |
 | overlay-35 | SQRPAK8 | 4 | 1 | 0 | 1 | 2 | 1048 | 79 | [明細](function-index/pc98-overlay-35.md) |
