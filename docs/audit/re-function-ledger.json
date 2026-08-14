@@ -24304,6 +24304,15 @@
    "level": "exact",
    "spec": "935",
    "note": "刪掉所有出現的子字串(retf 8 = (要刪的, 主字串, 結果))：兩個輸入各限長 0FFh，n := length(主) − length(要刪) + 1，for i := 1 to n 若 Copy(主, i, length(要刪)) = 要刪 就 Delete；結果限長 0FFh 寫回。用 Turbo Pascal 的 Copy/Delete/字串比較 RTL。⚠上界 n 只算一次、刪除後 i 不退回 → 緊接著形成的新出現不會被刪(從 'aabb' 刪 'ab' 只刪一次)；i 會掃過縮短後的尾端但 Copy 越界回較短字串、比對不中，不會出錯只是白跑"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 94125,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "936",
+   "note": "等一個按鍵(retf，回傳 al)：byte_2117Ch ≠ 0 走非阻塞(KeyPressed 才 ReadKey，否則回 0)，否則阻塞 ReadKey。Ctrl-S(13h) 永遠有效：byte_21DAAh ≠ 2 就把它存進 byte_21DABh、叫 sub_17150h(word_1E76Ch)、設成 2(關閉)；已是 2 就檢查 byte_21DABh 落在集合常數 byte_16F7D = [0,1] 才還原並叫 sub_17150h(word_1E76Eh)。★byte_21DAAh 的三個值 0/1/2 正好是 spec 929 的 PC speaker / Tandy 兩種裝置 + 關閉。★★ParamStr(1) = 'STING' 時另外啟用三個開發者除錯鍵：Ctrl-D 切換除錯記錄(開啟時 Assign+Rewrite 建 'debug.txt'、關閉時 Close)、Ctrl-Z 在記錄開著時走 dword_226CAh 起的隊伍鏈(next 在 +189h)對每個角色叫 sub_16F03h 把效果鏈傾印進 debug.txt、Ctrl-C 叫 sub_16EA0h。'STING' 在 START.EXE 裡出現兩次(另一處在 seg000:016Eh 的啟動碼)。收尾用 while KeyPressed do ReadKey 清空緩衝區只留最後一個鍵"
   }
  ]
 }
