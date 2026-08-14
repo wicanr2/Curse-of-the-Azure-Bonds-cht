@@ -6481,7 +6481,8 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+    "spec/785-cross-platform-pairs-third-batch.md"
    ]
   },
   {
@@ -6495,7 +6496,10 @@
    "callers": 7,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/785-cross-platform-pairs-third-batch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6508,7 +6512,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "Cure Blindness(retf，無參數)：\u003c014Dh:00A7h\u003e(@暫存, 21h, DS:6506h) 為假時顯示 CS:0263h 'is not blind.' 並用 本模組 0047h 問 Y/N；答 Y 才顯示 CS:0271h 'Cure Blindness' 並叫 本模組 00F3h(3E8h=1000)，再答 Y 就 \u003c0141h:002Fh\u003e(0, 0, 21h, DS:6506h) 移除效果 21h。與 spec 763 石化解除同一個模子(那支用 7D0h)",
+   "citations": [
+    "spec/785-cross-platform-pairs-third-batch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8752,6 +8762,7 @@
    "note": "巢狀的牆面查詢(retf 8 = (x, y, 方向) + 最低位的靜態鏈 word，本體從不讀該 word)：座標在 0..0Fh 時依兩支呼叫的結果回 1/0/3；界外時若 y 等於隊伍 y(DS:7210h)且方向是 2 或 6 回 0，否則回 1。⚠ 界外不是一律當牆。這就是 spec 765 的 0378h 用 push bp 呼叫的那支",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
     "spec/784-cross-platform-pairs-second-batch.md"
    ]
@@ -12713,6 +12724,7 @@
    "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
    "note": "隊伍血量百分比(retf，無參數)：走隊伍鏈，陣營(+197h)為 1 的成員 — +196h 非 0 才把 +1A4h(目前 HP)計入，+78h(最大 HP)一律計入；最大 \u003e 0 時 DS:75D9h := ((目前*14h) div 最大)*5，即 0..100 以 5 為級距。⚠ 最大為 0 時整個不寫，保留舊值；+196h 為 0 的成員會把百分比往下拉",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "spec/750-combat-setup.md",
     "spec/784-cross-platform-pairs-second-batch.md"
    ]
@@ -12968,7 +12980,8 @@
    "note": "神明介入(retf，無參數)：\u003c0A54h:0724h\u003e(@DS:8C80h) 以 ZF 回報，成立才做 — 顯示 CS:48C8h 'The Gods intervene!'，走隊伍鏈把 +197h(陣營)為 1 的成員 +196h 設 0、+195h(狀態)設 6，並把 byte[66A6h + 4*索引] 歸零；最後 \u003c呼叫\u003e(地圖^[2]+3, 地圖^[3]+3, 0FFh, 8) — 加回 spec 750 減掉的 3，印證戰場原點是隊伍位置退三格。⚠ DS:66A6h 既是 DS:6D35h 的項數又是 1-based 陣列的第 0 格",
    "citations": [
     "spec/772-gods-intervene-money-display-and-sound-commands.md",
-    "spec/783-cross-platform-pairs-first-batch.md"
+    "spec/783-cross-platform-pairs-first-batch.md",
+    "spec/785-cross-platform-pairs-third-batch.md"
    ]
   },
   {
@@ -21737,7 +21750,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "retf 0Ah：遠指標為 NIL 就離開；(DS:4F99h^[3FEh] \u003e 0) 或 第三個參數非 0 時走第一條 — +3FEh \u003e 0 才先叫 0297h:1626h(遠指標, 1, 0, @DS:0AA8h, @DS:0A98h)，再叫 0297h:09E4h(遠指標@DS:4FE8h, 遠指標, 0, 0, 參數6−1, 參數8−1) 與 0297h:1316h；否則只叫 0297h:1110h(遠指標, 參數6, 參數8)",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
@@ -22380,7 +22396,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "重算所有戰鬥員的螢幕座標(retf，無參數)：for i := 1 to DS:66A6h — byte[67C6h+i] := byte[66A3h+i*4] − 地圖^[2]、byte[680Eh+i] := byte[66A4h+i*4] − 地圖^[3]。可證戰鬥員記錄每筆 4 bytes、基底 DS:66A3h、1 起算(+0 世界 x、+1 世界 y、+3 是 spec 772 歸零的那個 byte，且與計數 DS:66A6h 同址)；螢幕座標在 DS:67C6h/DS:680Eh 兩個 byte 陣列。⚠ byte 相減沒有夾制",
+   "citations": [
+    "spec/785-cross-platform-pairs-third-batch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22477,6 +22499,7 @@
    "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
    "note": "讀戰場兩個平面(retf 0Ch)：座標在 0..31h × 0..18h(即 50×25)時 輸出A^ := 地圖^[y*32h+x+7]、輸出B^ := byte[6857h + y*32h + x]，否則兩者都設 0。可證 DS:6857h 起有一塊與地圖同尺寸(1250 bytes)的靜態陣列，索引式相同但沒有 7 bytes 表頭",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "spec/784-cross-platform-pairs-second-batch.md"
    ]
   },
@@ -29706,7 +29729,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "Cure Blindness(retf)：與 DOS overlay-04:0280h 53 條同形，訊息換成 CS:0273h 'は盲目ではありませんよ。' 與 CS:028Ch 'キュア・ブラインドネス'，呼叫結構完全沒改(差異 15 條全是位址與近呼叫目標)"
   },
   {
    "platform": "pc98",
@@ -29805,7 +29831,8 @@
    "note": "石化解除(retf，無參數)：DS:9594h^[196h] 不等於 7 時先顯示 CS:0AFDh 'は石になってはいませんよ' 並用本模組 0051h 問「それでもかけてもらいますか？」；答 Y 才顯示 CS:0B16h 'ストーン・トゥ・フレッシュ' 並叫 本模組 0103h(7D0h)；再答 Y 且仍是 7 就把 +196h 設 0、+197h 設 1、+1A5h(目前 HP)設 1。可證狀態欄位值 7 = 石化",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
+    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+    "spec/785-cross-platform-pairs-third-batch.md"
    ]
   },
   {
@@ -32324,6 +32351,7 @@
    "note": "巢狀的牆面查詢(retf 8)：與 DOS overlay-10:02F6h 49 條同形，隊伍 y 在 DS:0A2AAh(差異 3 條，已逐條列出)",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
     "spec/784-cross-platform-pairs-second-batch.md"
    ]
@@ -36882,12 +36910,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-19.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/527-pc98-moveparty-action-writer-boundary.md",
-    "spec/533-pc98-moveparty-helper-gate.md",
-    "spec/534-chinese-manual-moveparty-character-transfer.md"
+    "spec/533-pc98-moveparty-helper-gate.md"
    ]
   },
   {
@@ -46556,7 +46584,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "retf 0Ah：與 DOS overlay-29:000Ch 51 條同形，DS:7F05h、緩衝 DS:165Ch/166Ch、resident 呼叫改為 2A8h:0C32h/77Dh/0B7Dh/0A86h(差異 10 條，已逐條列出)",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
@@ -47213,7 +47244,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "重算所有戰鬥員的螢幕座標(retf)：與 DOS overlay-32:0079h 51 條同形，計數 DS:9740h、地圖 DS:9F2Ch、記錄 [di−68C3h]、輸出 [di−67A0h] 與 [di−6758h](差異 7 條，已逐條列出)",
+   "citations": [
+    "spec/785-cross-platform-pairs-third-batch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -47897,9 +47934,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 14,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 1,
    "CodeBytes": 3435,
    "Undefined": 340,
@@ -48272,9 +48309,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 1,
    "CodeBytes": 2102,
    "Undefined": 114,
@@ -48317,9 +48354,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -48452,9 +48489,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 23,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 10,
    "CodeBytes": 3710,
    "Undefined": 830,
@@ -48827,9 +48864,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 1,
    "CodeBytes": 1846,
    "Undefined": 114,
@@ -48872,9 +48909,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,

@@ -19966,6 +19966,60 @@
    "level": "exact",
    "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
    "note": "隊伍血量百分比(retf)：與 DOS overlay-13:2E22h 49 條同形，欄位全部 +1(+198h/+197h/+1A5h/+18Ah)，結果存 DS:0A86Bh — 即 spec 758 士氣判定讀的那個值(差異 6 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "ea": 640,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "Cure Blindness(retf，無參數)：<014Dh:00A7h>(@暫存, 21h, DS:6506h) 為假時顯示 CS:0263h 'is not blind.' 並用 本模組 0047h 問 Y/N；答 Y 才顯示 CS:0271h 'Cure Blindness' 並叫 本模組 00F3h(3E8h=1000)，再答 Y 就 <0141h:002Fh>(0, 0, 21h, DS:6506h) 移除效果 21h。與 spec 763 石化解除同一個模子(那支用 7D0h)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 675,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "Cure Blindness(retf)：與 DOS overlay-04:0280h 53 條同形，訊息換成 CS:0273h 'は盲目ではありませんよ。' 與 CS:028Ch 'キュア・ブラインドネス'，呼叫結構完全沒改(差異 15 條全是位址與近呼叫目標)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 121,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "重算所有戰鬥員的螢幕座標(retf，無參數)：for i := 1 to DS:66A6h — byte[67C6h+i] := byte[66A3h+i*4] − 地圖^[2]、byte[680Eh+i] := byte[66A4h+i*4] − 地圖^[3]。可證戰鬥員記錄每筆 4 bytes、基底 DS:66A3h、1 起算(+0 世界 x、+1 世界 y、+3 是 spec 772 歸零的那個 byte，且與計數 DS:66A6h 同址)；螢幕座標在 DS:67C6h/DS:680Eh 兩個 byte 陣列。⚠ byte 相減沒有夾制"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 121,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "重算所有戰鬥員的螢幕座標(retf)：與 DOS overlay-32:0079h 51 條同形，計數 DS:9740h、地圖 DS:9F2Ch、記錄 [di−68C3h]、輸出 [di−67A0h] 與 [di−6758h](差異 7 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-29",
+   "ea": 12,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "retf 0Ah：遠指標為 NIL 就離開；(DS:4F99h^[3FEh] > 0) 或 第三個參數非 0 時走第一條 — +3FEh > 0 才先叫 0297h:1626h(遠指標, 1, 0, @DS:0AA8h, @DS:0A98h)，再叫 0297h:09E4h(遠指標@DS:4FE8h, 遠指標, 0, 0, 參數6−1, 參數8−1) 與 0297h:1316h；否則只叫 0297h:1110h(遠指標, 參數6, 參數8)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-29",
+   "ea": 12,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
+   "note": "retf 0Ah：與 DOS overlay-29:000Ch 51 條同形，DS:7F05h、緩衝 DS:165Ch/166Ch、resident 呼叫改為 2A8h:0C32h/77Dh/0B7Dh/0A86h(差異 10 條，已逐條列出)"
   }
  ]
 }
