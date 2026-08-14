@@ -12711,7 +12711,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "837",
-   "note": "戰鬥員實際移動一格(retf 6，(方向, 角色))：新座標 = DS:66A3h/66A4h 的目前座標 + DS:2694h/269Dh 的方向位移。★花費就是 spec 837 的試算式：地形表 DS:26A2h 的 +0 欄 ×2（正向）／×3（斜向），從 +18Dh^[6] 扣，不夠就歸零。擦掉舊位置、更新 DS:66A3h/66A4h、畫新位置（圖號 3 或 1，看 +198h），全部由 DS:75E6h（spec 839 寫入的顯示旗標）決定要不要畫。移動後清 +18Dh^[0Fh] 與 ^[12h]，最後 +196h = 0 或 150Ah+4 不成立就把移動力歸零"
+   "note": "戰鬥員實際移動一格(retf 6，(方向, 角色))：新座標 = DS:66A3h/66A4h 的目前座標 + DS:2694h/269Dh 的方向位移。★花費就是 spec 837 的試算式：地形表 DS:26A2h 的 +0 欄 ×2（正向）／×3（斜向），從 +18Dh^[6] 扣，不夠就歸零。擦掉舊位置、更新 DS:66A3h/66A4h、畫新位置（圖號 3 或 1，看 +198h），全部由 DS:75E6h（spec 839 寫入的顯示旗標）決定要不要畫。移動後清 +18Dh^[0Fh] 與 ^[12h]，最後 +196h = 0 或 150Ah+4 不成立就把移動力歸零",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21356,9 +21359,14 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "825",
+   "note": "戰鬥中的角色狀態面板(retf 4)：DS:75E5h 為 0 就不畫。依序印名字、'Hitpoints'、'AC'、裝備武器（+151h 非 NIL 才畫），行號累加後存進 DS:65A1h。★不能行動時（+196h = 0）印 DS:0FE0h + 狀態 × 0Dh 的狀態名稱——那張表就是 +195h 的一手對照：0 Okay／1 Animated／2 tempgone／3 Running／4 Unconscious／5 Dying／6 Dead／7 Stoned／8 Gone",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "audit/resident-data-tables.md",
+    "spec/825-round-end-bleeding-out.md"
    ]
   },
   {
@@ -47314,7 +47322,10 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "825",
+   "note": "同 DOS overlay-24:00A34h（module_align 對齊，助憶碼序列完全相同）。差異全是位址與字串：DS:0A877h↔75E5h、狀態名稱表 DS:2096h↔0FE0h、呼叫目標",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -50906,9 +50917,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 43,
+   "Read": 44,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -51461,9 +51472,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 36,
+   "Read": 37,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
