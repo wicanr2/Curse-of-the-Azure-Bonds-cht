@@ -787,7 +787,10 @@
    "callers": 3,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1046",
+   "note": "清除矩形區域(左,上,右,下 四個 byte，retf 8，472 bytes)，呼叫端 11A00h/11CA5h/11DAAh。★ 常駐段沒有補洞匯出，annotated_dump.py 只吃 overlay；本次改用 objdump -D -b binary -m i8086，檔案位移 = ea − 10000h + MZ 標頭長度(DOS 1968)，11ECDh→267Dh 開頭 55 89 e5 對上 ⇒ 常駐段的待解讀函式從此可逐條讀。★★★ DS:4FE6h 是顯示卡種類，三條路：①=0 CGA —— 兩個交錯 bank B800h/BA00h，每列 50h(80) bytes、每字元欄 2 bytes、每字元列 4 條掃描列(320×200 4 色)；②=1 交給 far 0542:00BDh 呼叫兩次，只差第五個參數 0/1(形狀上是兩個平面或 page)；③=2 Tandy/PCjr —— 四個 bank B800h/BA00h/BC00h/BE00h，每列 0A0h(160) bytes、每字元欄 4 bytes、每字元列 2 條掃描列(320×200 16 色)。⇒ spec 1037 的 byte_4FE6=0 時印 'Sorry, not in CGA' 那個判斷就是在問『是不是 CGA』。★ 三條路的幾何一致：字元格一律 8×8 像素，且本支參數是字元座標不是像素 —— 中文全形字要 16×16 就得佔兩格寬兩格高，呼叫端的矩形會跟著放大一倍"
   },
   {
    "platform": "dos",
@@ -14400,11 +14403,11 @@
    "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr 141h:9Dh`、`call far ptr 14Dh:101h`、`call far ptr 0FDh:7Ah`、`call far ptr 175h:2Ah`、`call loc_EB2+4`、`call far ptr 196h:43h`（body 共 62 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-30.md",
-    "audit/function-index/pc98-overlay-15.md"
+    "audit/function-index/dos-overlay-30.md"
    ]
   },
   {
@@ -14710,11 +14713,11 @@
    "note": "unit 初始化段(retf，不收參數)：依序呼叫 9 個相依 unit 的 0000h — overlay-34、overlay-22、overlay-20、overlay-24、overlay-16、overlay-26、overlay-19、overlay-28、overlay-23。由原始 bytes 解出(IDA 匯出在此漏 byte)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-28.md",
-    "audit/function-index/pc98-overlay-15.md"
+    "audit/function-index/dos-overlay-28.md"
    ]
   },
   {
@@ -14735,10 +14738,10 @@
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-19.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-19.md"
    ]
   },
   {
@@ -24362,12 +24365,12 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call far ptr 196h:43h`、`call far ptr 19Ch:2Ah`、`call far ptr 179h:57h`（body 共 22 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
     "audit/function-index/pc98-overlay-15.md",
     "audit/overlay-init-graph.md",
-    "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "context/50-log-2026-08-09-13.md"
    ]
   },
   {
@@ -24386,12 +24389,12 @@
    "spec": "docs/spec/754-small-predicates-and-wrappers.md",
    "note": "三項查表(retf 4)：只用第一個宣告的參數([bp+8])，08h→00h、41h→00h、0E8h→0Fh、其他→0Fh。第二個參數整支沒讀；0E8h 分支與 default 同值(多餘的比較)",
    "citations": [
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
     "audit/function-index/pc98-overlay-15.md",
     "spec/754-small-predicates-and-wrappers.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/973-pc98-text-print-signature.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -40857,11 +40860,11 @@
    "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr 13Eh:9Dh`、`call far ptr 14Ah:101h`、`call far ptr 0FAh:7Ah`、`call far ptr 172h:2Ah`、`call far ptr 0DCh:66h`、`call far ptr 194h:43h`（body 共 62 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-30.md",
-    "audit/function-index/pc98-overlay-15.md"
+    "audit/function-index/dos-overlay-30.md"
    ]
   },
   {
@@ -41161,11 +41164,11 @@
    "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_19C8+2`、`call sub_11C7`、`call far ptr sub_1084`、`call far ptr loc_159F+2`、`call far ptr loc_E22+4`、`call sub_1697`（body 共 52 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-28.md",
-    "audit/function-index/pc98-overlay-15.md"
+    "audit/function-index/dos-overlay-28.md"
    ]
   },
   {
@@ -41186,10 +41189,10 @@
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-19.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-19.md"
    ]
   },
   {
@@ -51669,12 +51672,12 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call far ptr 194h:43h`、`call far ptr 19Ah:2Ah`、`call far ptr 176h:57h`（body 共 22 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
     "audit/function-index/pc98-overlay-15.md",
     "audit/overlay-init-graph.md",
-    "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "context/50-log-2026-08-09-13.md"
    ]
   },
   {
@@ -51694,12 +51697,12 @@
    "spec": "docs/spec/973-pc98-text-print-signature.md",
    "note": "單邊（DOS 無）：在迷宮就更新視野三參數並重畫，否則顯示 bigpic 121 世界地圖",
    "citations": [
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
     "audit/function-index/pc98-overlay-15.md",
     "spec/754-small-predicates-and-wrappers.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/973-pc98-text-print-signature.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -53244,9 +53247,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 168,
+   "Read": 169,
    "NotBlocking": 133,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
