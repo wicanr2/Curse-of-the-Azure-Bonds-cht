@@ -25996,6 +25996,24 @@
    "level": "exact",
    "spec": "1036",
    "note": "隨機物品產生器，同 DOS overlay-21:00FEDh。⚠ 先前台帳記的『133 bytes 空洞』是誤判：函式在 1945h 的 retf 6 就結束，19CAh 之後是 IDA 多圈進來的資料；真正的函式體 10FCh..1945h 完整反組譯，778 條全部讀完。與 DOS 的差異全是位址與產碼細節：物品節點欄位一律 +28h(+52h next、+56h itemptr、+57h..+59h namenum(1..3)、+5Ah plus、+5Dh identified、+5Fh 重量、+61h、+62h 價值)，以及 cmp al vs cmp ax 這類 byte/word 比較的產碼差(DOS 788 條 vs 778 條，差的十條幾乎都是 xor ah,ah)。特殊物品範本表在 DS:1372h，七筆逐 word 與 DOS DS:82Ch 相同。重量表、價值係數、卷軸的五個環區間兩平台完全一致"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 16099,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1037",
+   "note": "角色圖示(icon)編輯畫面。圖示欄位：+141h 頭/髮型索引(0..0Dh，14 種，Next/Prev 環繞)、+142h 武器索引(0..1Fh，32 種)、+143h 一個顏色(重畫前暫設 0Ch 再還原)、+144h 大小(1 小/2 大)、+145h..+14Ah 六個部位各一 byte = 兩個 4-bit 顏色(低 nibble 第一色、高 nibble 第二色)。進畫面把 +145h 起 6 bytes 整組備份(0A54:025Dh)，按 E/#0 離開時連 +141h/+142h/+144h 一起還原。部位碼 B=1 A=2 L=3 H/F=4 S=5 W=6(即 +144h+部位 正好落在 +145h..+14Ah)。選項行表在 DS:721h 筆距 29h(41)，五筆：'Parts 1st-color 2nd-color Size Exit'(35)/'Head Weapon Exit'(16)/'Weapon Body xxxx Shield Arm Leg Exit'(36)/' Keep Exit'(10)/'Next Prev Keep Exit'(19)。★★★ 'xxxx' 不是沒改完的佔位字串，是寬度固定 4 的就地替換槽：DS:721h+2*29h = DS:79Ch 就是第 3 筆，選 1st-color 時 Delete(s,13,4)+Insert('Hair',s,13)、2nd-color 時換成 'Face'(0A54:07D0h/0A54:077Ch)；第 13 字元起正好是 xxxx，這也解釋了熱鍵為何 H 與 F 兩個都收。⚠ 中文化必須在同一位元組位置保留同寬度的槽，否則 Delete/Insert 會把 Big5 雙位元組切一半；要換寬度得同時改選項行與兩個位置參數。⚠ byte_4FE6 = 0 時兩個顏色入口都只印 'Sorry, not in CGA'(17) —— CGA 模式關掉顏色編輯，DOS 專屬。顏色加減：加是 mod 16、減是 and 0Fh，兩邊都環繞。字串 'old'(3)/'new'(3)/'ready   action'(14，中間三個空白排版)/'Small'/'Large'/'Hair'/'Face'"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 17872,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1037",
+   "note": "角色圖示編輯畫面，同 DOS overlay-17:03EE3h(圖示欄位、部位碼、五個子選單狀態、備份還原邏輯相同)。★★★ 完全不用 DOS 的 DS:721h 選項行表，也沒有任何 Delete/Insert 呼叫(0A65h 的呼叫只有 Move 0262h、字串指派 062Fh/0649h、@Set@MemberOf 08E4h)：改照 spec 1030/1032 的作法逐格寫兩張表，文字進 DS:0A338h+i*7、熱鍵進 DS:0A334h+i(例如「  小  」配 DS:0A336h='S'、「  大  」配 'L') ⇒ PC-98 天生沒有 'xxxx' 就地替換的問題，中文化跟 PC-98 比較安全。⚠ 沒有 CGA 分支(PC-98 無 CGA)，因此沒有 'Sorry, not in CGA'。字串：古いアイコン(12)/ 新しいアイコン(15)/ 準備状態　　　　　行動状態(27)/  小  (6)/  大  (6)/このアイコンでいいですか？(26，DOS 沒有的確認句)"
   }
  ]
 }
