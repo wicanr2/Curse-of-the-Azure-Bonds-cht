@@ -19858,6 +19858,60 @@
    "level": "exact",
    "spec": "docs/spec/782-strength-percentile-display.md",
    "note": "力量百分位的顯示(retf 4)：135 條指令與 DOS overlay-19:09B3h 逐條同構，角色指標 DS:9594h、繪字 418h:0D17h。⚠ 唯一差別是四條常數換成全形 — CS:09AEh '０'、09B1h '００'、09B6h '（'、09B9h '）'；對齊的程式碼(欄 := 5 或 6、百分位固定第 7 欄第 7 列)一個字都沒改。中文版可照此作法"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 17,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/783-cross-platform-pairs-first-batch.md",
+   "note": "二維表查一對 byte(retf 0Ch)：第二索引為 0 就回 false；i := 第二索引*8 + 第一索引*2；輸出A^ := byte[27A2h+i]、輸出B^ := byte[27A3h+i]；輸出A^ >= 0(有號)才回 true。DS:27A2h 是每列 8 bytes、每格 2 bytes 的表(一列四格)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 17,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/783-cross-platform-pairs-first-batch.md",
+   "note": "二維表查一對 byte(retf 0Ch)：與 DOS overlay-32:0011h 41 條同形，僅表位址為 DS:49ACh/49ADh(差異 2 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 4949,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/783-cross-platform-pairs-first-batch.md",
+   "note": "暫時改地圖表頭再畫(retf 8)：地圖^[4] := 參數0、地圖^[5] := byte[66A6h + 本模組 0CAEh(x,y)*4]；DS:75E6h 非 0 時叫 本模組 09DFh(8, 參數2, 0C5Eh(x,y), 0C36h(x,y))；最後把 +4/+5 還原成 (0, 1)。可證地圖表頭 +4/+5 是繪圖期間的暫時狀態(+2/+3 是戰場原點)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 6669,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/783-cross-platform-pairs-first-batch.md",
+   "note": "暫時改地圖表頭再畫(retf 8)：與 DOS overlay-32:1355h 41 條同形，位址為 DS:9F2Ch(地圖)、DS:0A878h(旗標)、[di−68C0h](陣列)，近呼叫目標對應改變(差異 10 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 648,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/783-cross-platform-pairs-first-batch.md",
+   "note": "隊上有沒有人符合(retf 2)：走 DS:650Ah 隊伍鏈，(角色^[109h+索引] > 0) 或 ((角色^[111h+索引] > 0) 且 <呼叫>(角色)) 成立就回 true 並停止。與 spec 756 overlay-19:3656h、spec 757 overlay-09:024Dh 同一個判準；找到就停，不數人數"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 635,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/783-cross-platform-pairs-first-batch.md",
+   "note": "隊上有沒有人符合(retf 2)：與 DOS overlay-14:0288h 43 條同形，鏈頭 DS:9598h、next +18Ah、遠呼叫 15Dh:52h(差異 3 條，已逐條列出)"
   }
  ]
 }
