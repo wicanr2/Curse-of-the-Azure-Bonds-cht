@@ -22,6 +22,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0E02` | sub_E02 | — | 124 | 44 | 1 | 2 | ✓ | 已解讀 | exact | 848<br>同 DOS overlay-26:00D6Bh（module_align 對齊，助憶碼序列完全相同）。5 條差異全是 DS:0A32Ch↔7292h 與呼叫目標 | audit/function-index/dos-overlay-24.md<br>spec/848-scroll-list-widget.md |
 | `0ED3` | sub_ED3 | VERTICALLIST | 897 | 360 | 0 | 10 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-strings.md |
 | `129D` | sub_129D | YESNO | 130 | 61 | 0 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
-| `131F` | sub_131F | BUILDMENULIST | 168 | 59 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `131F` | sub_131F | BUILDMENULIST | 168 | 59 | 0 | 1 | ✓ | 已解讀 | exact | 843<br>同 DOS overlay-26:01199h（module_align 對齊，助憶碼序列完全相同）。8 條差異全是節點尺寸與位移：56h↔2Eh、+51h/+52h/+54h↔+29h/+2Ah/+2Ch、GetMem 呼叫目標 | — |
 | `13C7` | sub_13C7 | DISPOSEMENULIST | 88 | 34 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>釋放整條鏈(retf 4)：next 在 +52h、每節點 FreeMem 56h(86 bytes)，離開前有把鏈頭寫回 NIL。⚠ DOS 的對應功能 overlay-26:1241h 是 2Eh(46 bytes)、next +2Ah，而且沒有清鏈頭 — 兩平台在節點大小與收尾行為都不同 | spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `141F` | sub_141F | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/duplicate-strings.md<br>audit/embedded-strings.md |
