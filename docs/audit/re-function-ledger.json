@@ -24934,6 +24934,60 @@
    "level": "exact",
    "spec": "docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md",
    "note": "pc98 00BFEh 的 DOS 兄弟：只重畫一項的子字串；DS:7292h ↔ pc98 DS:0A32Ch 捲動起點"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-28",
+   "ea": 204,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/976-view-refresh-field-redraw-and-los-collect.md",
+   "note": "視野更新完整版（pc98 0016h 是簡化版）：補齊九組跨平台全域對應；PC-98 砍掉 DS:8B67h 那條分支"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 11703,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/976-view-refresh-field-redraw-and-los-collect.md",
+   "note": "巢狀程序：角色畫面單一欄位重畫（0..5 屬性、6 HP、7 名字），名字底色寬度用半形格數"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 6372,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/976-view-refresh-field-redraw-and-los-collect.md",
+   "note": "巢狀程序：沿視線逐格前進，把佔用者編號收集成不重複清單（清單無上限檢查）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 16787,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/977-savelist-menu-ranges-and-combat-icon.md",
+   "note": "讀 EST\\SaveList.EST 的 10 bytes（開不了用 DS:0DAEh 的 05×10 預設）；定案 0723h:01EDh 開檔器簽章"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 213,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/977-savelist-menu-ranges-and-combat-icon.md",
+   "note": "把熱鍵字串切成每項的欄位範圍：英數字為起點、下一個熱鍵前兩格為終點，最多 20 項"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 800,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/977-savelist-menu-ranges-and-combat-icon.md",
+   "note": "重畫戰場一格的戰鬥員圖示；定案 overlay-33 entry#6 的推疊順序；DS:6D35h/67C6h/680Eh 三張表"
   }
  ]
 }

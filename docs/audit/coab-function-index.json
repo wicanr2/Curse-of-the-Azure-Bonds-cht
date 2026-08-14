@@ -23294,7 +23294,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/977-savelist-menu-ranges-and-combat-icon.md",
+   "note": "把熱鍵字串切成每項的欄位範圍：英數字為起點、下一個熱鍵前兩格為終點，最多 20 項",
+   "citations": [
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23402,7 +23408,8 @@
    "note": "第一個非空白的位置(retf 6)：同樣先複製進本地緩衝，再從第 1 個字元往後跳過 20h，回傳位置。與 0A10h 合起來是 trim 的左右兩半",
    "citations": [
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -23423,7 +23430,8 @@
    "citations": [
     "audit/function-index/dos-overlay-26.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -23442,7 +23450,8 @@
    "spec": "docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md",
    "note": "pc98 00BFEh 的 DOS 兄弟：只重畫一項的子字串；DS:7292h ↔ pc98 DS:0A32Ch 捲動起點",
    "citations": [
-    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -23803,7 +23812,8 @@
    "note": "三項查表(retf 4)：只用第一個宣告的參數，0Bh→8、9→6、0DBh→6、6→1、其他→6。與 spec 754 的 overlay-28:0016h/004Fh 同族",
    "citations": [
     "project-status.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md",
+    "spec/976-view-refresh-field-redraw-and-los-collect.md"
    ]
   },
   {
@@ -23817,11 +23827,15 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/976-view-refresh-field-redraw-and-los-collect.md",
+   "note": "視野更新完整版（pc98 0016h 是簡化版）：補齊九組跨平台全域對應；PC-98 砍掉 DS:8B67h 那條分支",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
+    "spec/976-view-refresh-field-redraw-and-los-collect.md"
    ]
   },
   {
@@ -24623,7 +24637,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-32.md",
-    "spec/785-cross-platform-pairs-third-batch.md"
+    "spec/785-cross-platform-pairs-third-batch.md",
+    "spec/976-view-refresh-field-redraw-and-los-collect.md"
    ]
   },
   {
@@ -24699,10 +24714,14 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/977-savelist-menu-ranges-and-combat-icon.md",
+   "note": "重畫戰場一格的戰鬥員圖示；定案 overlay-33 entry#6 的推疊順序；DS:6D35h/67C6h/680Eh 三張表",
    "citations": [
     "audit/function-index/dos-overlay-32.md",
-    "spec/888-move-and-redraw.md"
+    "spec/888-move-and-redraw.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -24745,7 +24764,8 @@
     "audit/function-index/pc98-overlay-32.md",
     "spec/784-cross-platform-pairs-second-batch.md",
     "spec/896-probe-next-step.md",
-    "spec/902-draw-unit-on-map.md"
+    "spec/902-draw-unit-on-map.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -24766,7 +24786,8 @@
    "citations": [
     "audit/function-index/dos-overlay-32.md",
     "audit/function-index/pc98-overlay-32.md",
-    "spec/808-attacks-per-round-and-facing-redraw.md"
+    "spec/808-attacks-per-round-and-facing-redraw.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -24811,7 +24832,8 @@
     "spec/800-party-reorder-and-footprint-check.md",
     "spec/808-attacks-per-round-and-facing-redraw.md",
     "spec/888-move-and-redraw.md",
-    "spec/902-draw-unit-on-map.md"
+    "spec/902-draw-unit-on-map.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -25189,7 +25211,8 @@
     "audit/function-index/pc98-overlay-33.md",
     "audit/function-strings.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
-    "spec/880-sprite-copy-and-blit.md"
+    "spec/880-sprite-copy-and-blit.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -41577,7 +41600,8 @@
    "spec": "docs/spec/780-submap-blit-entry-init-and-weighted-score.md",
    "note": "清單項目初始化(retf 4)：記錄陣列 DS:0A648h、每筆 29h(41) bytes、索引取自 參數^[0] — 長度 byte 設 14h 並用 ' ' 填滿 20 格、叫本模組 45C9h 後 StoreString(28h)、+09h 填 87h、+0Ah 填 i+3Fh；byte[0A80Ah + i] 不等於 5 時，從 DS:6812h 起每筆 15h bytes 的表搬一段到 +0Dh(長度取自該筆第一個 byte)。⚠ 20 個空白是寫死的欄寬",
    "citations": [
-    "spec/780-submap-blit-entry-init-and-weighted-score.md"
+    "spec/780-submap-blit-entry-init-and-weighted-score.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -41591,9 +41615,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/977-savelist-menu-ranges-and-combat-icon.md",
+   "note": "讀 EST\\SaveList.EST 的 10 bytes（開不了用 DS:0DAEh 的 05×10 預設）；定案 0723h:01EDh 開檔器簽章",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md"
    ]
   },
   {
@@ -41781,6 +41809,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/pc98-overlay-16.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
@@ -42435,7 +42464,13 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/976-view-refresh-field-redraw-and-los-collect.md",
+   "note": "巢狀程序：角色畫面單一欄位重畫（0..5 屬性、6 HP、7 名字），名字底色寬度用半形格數",
+   "citations": [
+    "spec/976-view-refresh-field-redraw-and-los-collect.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -45711,7 +45746,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/976-view-refresh-field-redraw-and-los-collect.md",
+   "note": "巢狀程序：沿視線逐格前進，把佔用者編號收集成不重複清單（清單無上限檢查）",
+   "citations": [
+    "spec/976-view-refresh-field-redraw-and-los-collect.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50153,6 +50194,7 @@
    "spec": "docs/spec/973-pc98-text-print-signature.md",
    "note": "重畫清單裡的一項：列＝視窗^[1Ch]+(項次−DS:0A32Ch)，顏色由項目 +51h 在視窗 +22h/+24h 之間選",
    "citations": [
+    "audit/function-index/dos-overlay-26.md",
     "spec/973-pc98-text-print-signature.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
@@ -51264,7 +51306,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-32.md",
-    "spec/785-cross-platform-pairs-third-batch.md"
+    "spec/785-cross-platform-pairs-third-batch.md",
+    "spec/976-view-refresh-field-redraw-and-los-collect.md"
    ]
   },
   {
@@ -52367,9 +52410,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -52397,9 +52440,9 @@
    "Module": "overlay-28",
    "Unit": "DRAWWIN",
    "Functions": 6,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 446,
    "Undefined": 0,
@@ -52457,9 +52500,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -52772,9 +52815,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
@@ -52787,9 +52830,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
@@ -52862,9 +52905,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 95,
+   "Read": 96,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,

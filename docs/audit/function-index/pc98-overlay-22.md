@@ -40,7 +40,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1679` | sub_1679 | — | 11 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-4], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1854` | sub_1854 | — | 28 | 11 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+arg_6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 28 bytes，已逐條讀完） | — |
 | `1897` | sub_1897 | — | 77 | 27 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端 | audit/function-index/dos-overlay-22.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
-| `18E4` | sub_18E4 | — | 208 | 74 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `18E4` | sub_18E4 | — | 208 | 74 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/976-view-refresh-field-redraw-and-los-collect.md<br>巢狀程序：沿視線逐格前進，把佔用者編號收集成不重複清單（清單無上限檢查） | spec/976-view-refresh-field-redraw-and-los-collect.md |
 | `19B4` | sub_19B4 | — | 855 | 358 | 5 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `1D0B` | sub_1D0B | — | 386 | 146 | 3 | 7 | ✓ | 待解讀 | — | — | — |
 | `1E8D` | sub_1E8D | — | 181 | 75 | 2 | 3 | ✓ | 已解讀 | exact | 709<br>同 DOS overlay-22:01C39h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h | — |
