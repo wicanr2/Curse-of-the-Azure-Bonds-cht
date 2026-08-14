@@ -16728,7 +16728,7 @@
    "level": "exact",
    "spec": "docs/spec/699-lookup-with-save-restore-buffer.md",
    "bounds": "prologue",
-   "note": "借共用緩衝做查詢再還原:進入時 Move 備份 DS:6E97h 起 216 bytes,設 DS:6E92h^[6]:=1,用 overlay-32 entry#15/#16/#17 取出 a/b/c(DS:973Dh 那張 4 bytes 一格表的 +0/+1/+3),呼叫 <overlay-31 entry#6>(a, b, 0FFh, 0FFh, c, DS:6E92h) 讓它填那片緩衝,清旗標,然後在 3 bytes 一格的表(k 從 1 起,筆數在 DS:6E96h)裡找 far [6D35h + 該筆 +0 欄 ×4] 等於 (arg_0,arg_2) 的那筆,取它的 +1 欄 div 2 當結果,最後 Move 還原緩衝。⚠ **找不到不會有訊號**——迴圈跑到 DS:6E96h 也直接往下走,回傳最後一筆的值。⚠ div 2 是 cwd+idiv(往零取整),不能換成 sar。⚠ 執行期間那片共用緩衝內容是壞的,不能重入"
+   "note": "借共用緩衝做查詢再還原:進入時 Move 備份 DS:6E97h 起 216 bytes,設 DS:6E92h^[6]:=1,用 overlay-32 entry#15/#16/#17 取出 a/b/c(DS:973Dh 那張 4 bytes 一格表的 +0/+1/+3),呼叫 <overlay-31 entry#6>(a, b, 0FFh, 0FFh, c, DS:6E92h) 讓它填那片緩衝,清旗標,然後在 3 bytes 一格的表(k 從 1 起,筆數在 DS:6E96h)裡找 far [6D35h + 該筆 +0 欄 ×4] 等於 (arg_0,arg_2) 的那筆,取它的 +1 欄 div 2 當結果,最後 Move 還原緩衝。⚠ **找不到不會有訊號**——迴圈跑到 DS:6E96h 也直接往下走,回傳最後一筆的值。⚠ div 2 是 cwd+idiv(往零取整),不能換成 sar。⚠ 執行期間那片共用緩衝內容是壞的,不能重入 ⚠ spec 720 補上語意:回傳值是**距離**(overlay-22:5E11h 的龍息用 >= 2 判定太遠),因原始欄位除以 2,單位像是半格"
   },
   {
    "platform": "pc98",
@@ -17115,6 +17115,16 @@
    "spec": "docs/spec/719-spell-targeting-mode.md",
    "bounds": "prologue",
    "note": "法術的選目標模式(retf 8,arg_0 是帶回成敗的 var 參數,**預設 1**)。先把 DS:7435h 設成施法者 DS:6506h、DS:7434h:=1;模式碼取自 byte [37E1h + arg_6×16](DS:37DAh 表格內 +7)。模式 1 = 自己(沿用預設);模式 2 = 叫玩家選一個(<overlay-24 entry#40>(@DS:7555h, 1, 'Cast Spell on whom'(CS:10BFh,長度 18))),取消時 arg_0^:=0;模式 4 = 從 DS:650Ah 沿 +189h 走整條鏈全部塞進目標陣列(即全隊);其他值 arg_0^:=0。⚠ 模式 4 的迴圈**沒有上限**,鏈有多長就寫多長,目標陣列容量沒有任何檢查。⚠ DS:7555h 跨呼叫保留(進來不是 NIL 就不覆寫),模式 1/4 不更新它,所以模式 2 讀到的可能是很久以前留下的值"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 24081,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/720-breath-weapon.md",
+   "bounds": "prologue",
+   "note": "龍息 'Breathes Fire'(CS:5E03h)。先做一次**間接 far 呼叫** call dword ptr ds:72A0h(呼叫圖抓不到,overlay_call_graph.py 只認 9A);DS:6FA3h := arg_6^[18Dh]^[0Ah];**ROLLDICE(1,100) > 50 就直接不發動**(五成機率寫死,不查表也不受等級影響);<overlay-24 entry#33(274Ch)>(施法者, 目標) >= 2 也不發動——**這確認 274Ch 回傳的是距離**(spec 699 只讀出機械行為),龍息要相鄰才打得到。⚠ DS:6FA3h 的 NIL 檢查在用過之後,順序反了。之後設 DS:6F95h:=1、顯示訊息、<overlay-24 entry#24>(17h)、用兩組 overlay-32 entry#15/#16 的座標呼叫 entry#25,最後 r := <overlay-23 entry#8>(目標,3,0) 再 <overlay-23 entry#20>(目標, 7, 2, r)"
   }
  ]
 }
