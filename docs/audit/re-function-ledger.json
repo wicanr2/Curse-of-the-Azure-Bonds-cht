@@ -21064,6 +21064,42 @@
    "level": "exact",
    "spec": "docs/spec/816-camp-menu-and-pointer-pair-free.md",
    "note": "同 DOS，但兩處不同：開頭多一道守衛 <0A65h:08E4h>(索引, @loc_2C8) 回 0 就整支跳過；兩個欄位的相對位置相反——第一個在 DS:9670h、第二個在 DS:966Ch（DOS 是 +0 與 +4）。釋放常式是 <02A8h:10D5h>。spec 816"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 1638,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/817-opportunity-attack-and-take-menu.md",
+   "note": "機會攻擊：retf 4 = 被打的角色遠指標。n := <far 1590h>(角色, 1)；for k := 1 to n（無號）：角色^[196h] = 0 就跳過（迴圈內每輪重查，因為前面幾下可能已經打成那個狀態）；i := byte[758Eh+k]、q := 遠指標(DS:6D35h + i*4)；q^[18Dh]^[7] = 0 或 <far 150Ah+4>(q) 成立就跳過；否則 <far 1921h>(<far 192Ah+1>(角色), <far 192Dh+3>(角色), 2, 8)、q^[18Dh]^[7] := 0（用掉）、本模組 194Ah(角色, q)、本模組 19D8h(q, 角色, 0, longint 0, @暫存)——第一個參數是攻擊者，所以是 q 打 角色。戰鬥狀態 +07h ＝ 保留中的機會攻擊（spec 804 的回合開始清 0）。spec 817"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 1668,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/817-opportunity-attack-and-take-menu.md",
+   "note": "機會攻擊：retf 4 = 被打的角色遠指標。n := <far 1590h>(角色, 1)；for k := 1 to n（無號）：角色^[196h] = 0 就跳過（迴圈內每輪重查，因為前面幾下可能已經打成那個狀態）；i := byte[0A820h+k]、q := 遠指標(DS:9DCFh + i*4)；q^[18Dh]^[7] = 0 或 <far 150Ah+4>(q) 成立就跳過；否則 <far 1921h>(<far 192Ah+1>(角色), <far 192Dh+3>(角色), 2, 8)、q^[18Dh]^[7] := 0（用掉）、本模組 194Ah(角色, q)、本模組 19D8h(q, 角色, 0, longint 0, @暫存)——第一個參數是攻擊者，所以是 q 打 角色。戰鬥狀態 +07h ＝ 保留中的機會攻擊（spec 804 的回合開始清 0）。spec 817 PC-98 在動手前多兩道守衛 <far 14DBh+3>(q) 與 <far 158Bh+2>(q)。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 3302,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/817-opportunity-attack-and-take-menu.md",
+   "note": "Take 清單：retf 10h = 四個遠指標，宣告順序 (參數C, 參數8, 參數4, 參數0)。旗標 := 1；<far 01A0h:0000h>（DOS 才有）；掃 DS:6F8Ch 物品鏈（next +2Ah）對每個節點呼叫 <far 14F3h+2>(0,0,0,0,節點,longint 0)；輸出 := <far 16A8h+1>('Items: '(7，結尾空白), 'Take'(4), 0Dh, 0Ah, 0Fh, 1, 1, 26h, 16h, DS:6F8Ch, 1, @旗標, 參數0, 參數4)；參數C^ := al、參數8^ := 參數4^。spec 817"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
+   "ea": 3305,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/817-opportunity-attack-and-take-menu.md",
+   "note": "Take 清單：retf 10h = 四個遠指標，宣告順序 (參數C, 參數8, 參數4, 參數0)。旗標 := 1；掃 DS:0A026h 物品鏈（next +52h）對每個節點呼叫 <far 14F3h+2>(0,0,0,0,節點,longint 0)；輸出 := <far 16A8h+1>('アイテム'(8 bytes), '取る'(4 bytes), 0Dh, 0Ah, 0Fh, 1, 1, 26h, 16h, DS:0A026h, 1, @旗標, 參數0, 參數4)；參數C^ := al、參數8^ := 參數4^。spec 817 PC-98 另外把熱鍵與標籤分開存：mov byte ds:0A33Ah, 54h（'T'）與 Move(' 取る '(6 bytes), DS:0A362h, 6)。"
   }
  ]
 }
