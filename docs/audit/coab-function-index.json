@@ -12554,6 +12554,7 @@
    "note": "轉向要轉幾格(retf 8)：inc(p^[18Dh]^[0Fh])；目標 := 本模組 29A2h(x, y, p)；差 := (目標 − p^[18Dh]^[09h] + 8) mod 8，差 \u003e 4 時取 8 − 差(最短轉法 0..4)；p^[18Dh]^[12h] := (p^[18Dh]^[12h] + 差) mod 8。戰鬥狀態 +09h 是目前面向、+0Fh 是動作計數、+12h 是對 8 取餘的累計轉向量(不是單調成本)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-13.md",
     "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
@@ -12829,7 +12830,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "把掃描結果複製出來(retf 6)：叫掃描程序(緩衝 DS:6E92h, …, 0FFh, 7Fh, 戰鬥員 y, 戰鬥員 x)後，把筆數 DS:6E96h 存進 ss:[rec−0DAh]，再逐筆 Move(DS:6E94h + i*3 → ss:[rec−0DBh + i*3], 3)。與 spec 777 的 overlay-09:02B1h 用同一組全域。⚠ 呼叫端陣列大小沒有任何檢查",
+   "citations": [
+    "spec/787-bresenham-record-and-edge-clamp.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13207,11 +13214,15 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "地圖邊界夾制(retf，無參數)：清 DS:4F9Dh^[5AAh]；\u003c017Fh:0039h\u003e(x, y, 面向) 為真時算出新座標，⚠ 只有越界才寫回 DS:720Fh/7210h(夾到 0 或 0Fh)並把 +5AAh 設 1，留在範圍內的新座標算完就丟(實際移動由 spec 770 的 083Ch 做)。同模組兩種邊界政策並存：本支夾制、083Ch 環繞",
    "citations": [
     "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md",
+    "spec/787-bresenham-record-and-edge-clamp.md"
    ]
   },
   {
@@ -13230,7 +13241,8 @@
    "spec": "docs/spec/770-party-step-and-hug-attack.md",
    "note": "隊伍在迷宮裡前進一格(retf，無參數)：DS:720Fh(x) += byte[2694h + DS:7211h(面向)]、DS:7210h(y) += byte[269Dh + 面向]，兩軸各自無條件環繞(\u003c0 → 0Fh、\u003e0Fh → 0，有號比較)；DS:7212h := 017Fh:0034h(x, y, 面向)、FillChar(@DS:7588h, 3, 1)、DS:7213h := 017Fh:003Eh(y, x)；最後依 DS:4F9Dh^[594h] bit 0 二選一叫 0108h:002Ah。⚠ 移動一律環繞，沒有 overlay-30:07C6h 那道 DS:8B5Eh 判斷",
    "citations": [
-    "spec/770-party-step-and-hug-attack.md"
+    "spec/770-party-step-and-hug-attack.md",
+    "spec/787-bresenham-record-and-edge-clamp.md"
    ]
   },
   {
@@ -16189,6 +16201,7 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "會不會超過上限(retf 0Ah)：上限 := 本模組 001Bh(p)；p^[187h] + n \u003e 上限(無號)時回 true 並把 上限 − p^[187h] 寫進輸出參數，否則回 false 並寫 0。001Bh 被呼叫兩次、兩次都重算",
    "citations": [
+    "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
@@ -16263,6 +16276,7 @@
    "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
    "note": "拿不動的錢放進 Pool(retf 2)：本模組 0073h(@餘裕, 數量, DS:6506h) 為真時顯示 CS:01F4h 'Overloaded.  Money will be put in Pool.'(兩個空白)、只把餘裕加進 DS:6506h^[103h] 並叫 0057h，其餘 (數量−餘裕) 以 32-bit 加到 DS:6F80h；否則全部加進 +103h。可證 +0FBh 的第 4 格(即 +103h)與 DS:6F70h 的第 4 格(即 6F80h)、名稱表 DS:0F93h 的第 4 筆 Platinum 是同一套索引，DS:6F70h 就是隊伍 Pool",
    "citations": [
+    "audit/function-index/pc98-overlay-21.md",
     "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
@@ -22231,7 +22245,8 @@
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
     "audit/overlay-init-graph.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/787-bresenham-record-and-edge-clamp.md"
    ]
   },
   {
@@ -22251,7 +22266,8 @@
    "note": "Sign(x: integer): integer(retf 2)：x\u003c0→−1、x\u003e0→1、x=0→0，有號比較。與 PC-98 同位址那支 45 個 byte 完全相同",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/753-small-utility-routines.md"
+    "spec/753-small-utility-routines.md",
+    "spec/787-bresenham-record-and-edge-clamp.md"
    ]
   },
   {
@@ -22283,10 +22299,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "Bresenham 走線初始化(retf 4)：r^[0Eh]/[10h] := 起點 x/y、r^[0Ah]/[0Ch] := |dx|/|dy|、r^[12h]/[14h] := Sign(dx)/Sign(dy)(overlay-31:0007h)、r^[8] := 0、r^[16h] := 0。記錄共 17h bytes：+0/+2 起點、+4/+6 終點、+8 誤差、+0Ah/+0Ch 絕對差、+0Eh/+10h 目前、+12h/+14h 步進、+16h 結束旗標。⚠ 兩平台逐位元組相同(差異 0 條)",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/pc98-overlay-12.md",
+    "spec/787-bresenham-record-and-edge-clamp.md"
    ]
   },
   {
@@ -35853,7 +35873,8 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-24.md",
+    "spec/787-bresenham-record-and-edge-clamp.md"
    ]
   },
   {
@@ -36700,7 +36721,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出)"
   },
   {
    "platform": "pc98",
@@ -37077,7 +37101,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "地圖邊界夾制(retf)：與 DOS overlay-14:078Eh 55 條同形，座標在 DS:0A2A9h/0A2AAh/0A2ABh、dx/dy 表 489Eh/48A7h(差異 15 條，已逐條列出)",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -41143,6 +41170,7 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "會不會超過上限(retf 0Ah)：欄位是 +188h，其餘與 DOS overlay-21:0073h 相同",
    "citations": [
+    "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
@@ -47083,7 +47111,8 @@
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
     "audit/overlay-init-graph.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/787-bresenham-record-and-edge-clamp.md"
    ]
   },
   {
@@ -47104,7 +47133,8 @@
    "note": "Sign(x: integer): integer(retf 2)：x\u003c0→−1、x\u003e0→1、x=0→0，有號比較。與 DOS 同位址那支 45 個 byte 完全相同",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/753-small-utility-routines.md"
+    "spec/753-small-utility-routines.md",
+    "spec/787-bresenham-record-and-edge-clamp.md"
    ]
   },
   {
@@ -47137,10 +47167,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "Bresenham 走線初始化(retf 4)：與 DOS overlay-31:019Dh 58 條**逐位元組相同**，無任何運算元差異",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/pc98-overlay-12.md",
+    "spec/787-bresenham-record-and-edge-clamp.md"
    ]
   },
   {
@@ -48103,9 +48137,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 30,
+   "Todo": 29,
    "Fragment": 16,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -48118,9 +48152,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 3735,
    "Undefined": 308,
@@ -48373,9 +48407,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 2999,
    "Undefined": 0,
@@ -48658,9 +48692,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 32,
+   "Todo": 31,
    "Fragment": 28,
    "CodeBytes": 17459,
    "Undefined": 905,
@@ -48673,9 +48707,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 3435,
    "Undefined": 321,
@@ -48928,9 +48962,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 2988,
    "Undefined": 0,

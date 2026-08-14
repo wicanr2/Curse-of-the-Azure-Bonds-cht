@@ -33,7 +33,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1921` | sub_1921 | — | 5 | 2 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+0Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1926` | sub_1926 | — | 7 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+0Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1944` | sub_1944 | — | 6 | 3 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完） | — |
-| `194A` | sub_194A | — | 142 | 53 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/786-money-pool-overflow-and-turn-cost.md<br>轉向要轉幾格(retf 8)：inc(p^[18Dh]^[0Fh])；目標 := 本模組 29A2h(x, y, p)；差 := (目標 − p^[18Dh]^[09h] + 8) mod 8，差 > 4 時取 8 − 差(最短轉法 0..4)；p^[18Dh]^[12h] := (p^[18Dh]^[12h] + 差) mod 8。戰鬥狀態 +09h 是目前面向、+0Fh 是動作計數、+12h 是對 8 取餘的累計轉向量(不是單調成本) | audit/embedded-strings.md<br>spec/786-money-pool-overflow-and-turn-cost.md |
+| `194A` | sub_194A | — | 142 | 53 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/786-money-pool-overflow-and-turn-cost.md<br>轉向要轉幾格(retf 8)：inc(p^[18Dh]^[0Fh])；目標 := 本模組 29A2h(x, y, p)；差 := (目標 − p^[18Dh]^[09h] + 8) mod 8，差 > 4 時取 8 − 差(最短轉法 0..4)；p^[18Dh]^[12h] := (p^[18Dh]^[12h] + 差) mod 8。戰鬥狀態 +09h 是目前面向、+0Fh 是動作計數、+12h 是對 8 取餘的累計轉向量(不是單調成本) | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md<br>spec/786-money-pool-overflow-and-turn-cost.md |
 | `19D8` | sub_19D8 | — | 778 | 268 | 6 | 7 | ✓ | 待解讀 | — | — | — |
 | `1CE2` | sub_1CE2 | — | 187 | 76 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/771-extra-attacks-and-weapon-class-whitelist.md<br>由門檻算出額外攻擊(retf 0Ch，第一個遠指標是輸出累加器)：n := <呼叫>(a, b, 角色)；<呼叫>(角色) 為真時 m := (byte[5D02h + 角色^[151h]^[2Eh]*10h] − 1) div 3，否則 m := n；n−m > 0 時 n -= m 並讓 輸出^ += 2，再判一次 += 3。兩段是先後不是迴圈，最多加兩次。5D02h 是物品屬性表(DS:5CF6h，16 bytes 一筆)的 +0Ch | audit/function-index/pc98-overlay-13.md<br>spec/771-extra-attacks-and-weapon-class-whitelist.md |
 | `1D9D` | sub_1D9D | — | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B0+3`、`call loc_1953`、`call loc_19A3`、`call far ptr loc_15D0+1`、`call far ptr unk_11F7`（body 共 57 bytes，已逐條讀完） | audit/overlay-init-graph.md<br>spec/751-overlay-init-chain-dependency-graph.md |
@@ -50,7 +50,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3040` | sub_3040 | — | 432 | 177 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `31F0` | sub_31F0 | — | 361 | 132 | 2 | 10 | ✓ | 待解讀 | — | — | — |
 | `33AC` | sub_33AC | — | 1278 | 493 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `38AA` | sub_38AA | — | 161 | 60 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `38AA` | sub_38AA | — | 161 | 60 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>把掃描結果複製出來(retf 6)：叫掃描程序(緩衝 DS:6E92h, …, 0FFh, 7Fh, 戰鬥員 y, 戰鬥員 x)後，把筆數 DS:6E96h 存進 ss:[rec−0DAh]，再逐筆 Move(DS:6E94h + i*3 → ss:[rec−0DBh + i*3], 3)。與 spec 777 的 overlay-09:02B1h 用同一組全域。⚠ 呼叫端陣列大小沒有任何檢查 | spec/787-bresenham-record-and-edge-clamp.md |
 | `394B` | sub_394B | — | 428 | 142 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `3B37` | sub_3B37 | — | 799 | 315 | 1 | 10 | ✓ | 待解讀 | — | — | — |
 | `3E56` | sub_3E56 | — | 480 | 159 | 2 | 3 | ✓ | 待解讀 | — | — | — |

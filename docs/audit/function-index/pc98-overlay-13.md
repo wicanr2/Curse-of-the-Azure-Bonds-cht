@@ -10,7 +10,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0192` | sub_192 | CALCWEAPDAMAGE | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md |
 | `0358` | sub_358 | DESCRIBEWEAPONATTACK | 812 | 326 | 3 | 4 | ✓ | 待解讀 | — | — | — |
 | `0684` | sub_684 | — | 266 | 98 | 1 | 7 | ✓ | 待解讀 | — | — | — |
-| `078E` | sub_78E | REALMOVE | 523 | 193 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-24.md |
+| `078E` | sub_78E | REALMOVE | 523 | 193 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-24.md<br>spec/787-bresenham-record-and-edge-clamp.md |
 | `0999` | sub_999 | CHECKPARTINGBLOWS | 968 | 345 | 0 | 8 | ✓ | 待解讀 | — | — | — |
 | `0D81` | sub_D81 | RUNAWAY | 189 | 74 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `0E3E` | sub_E3E | FIGBLOWS | 313 | 105 | 1 | 3 | ✓ | 待解讀 | — | — | — |
@@ -64,7 +64,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2EBB` | sub_2EBB | — | 541 | 217 | 1 | 8 | ✓ | 待解讀 | — | — | — |
 | `30D8` | sub_30D8 | — | 361 | 132 | 2 | 9 | ✓ | 待解讀 | — | — | — |
 | `329F` | sub_329F | — | 1353 | 521 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `37E8` | sub_37E8 | — | 161 | 60 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `37E8` | sub_37E8 | — | 161 | 60 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出) | — |
 | `3889` | sub_3889 | — | 427 | 142 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `3A74` | sub_3A74 | VIEWDUDES | 779 | 303 | 1 | 11 | ✓ | 待解讀 | — | — | — |
 | `3D7F` | sub_3D7F | PICKTARGET | 480 | 159 | 2 | 4 | ✓ | 待解讀 | — | — | — |
