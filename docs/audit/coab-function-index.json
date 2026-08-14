@@ -9465,7 +9465,8 @@
    "note": "依隊形範本把一個戰鬥員放上戰場(retf 0Ch，6 個 byte)：範本索引式 DS:47F4h + DS:4A12h×108h + a0×42h + 列×0Bh + 欄，也就是『範本組 × 4 個區塊 × 6 列 × 11 欄』。格子非 0 才放；座標 x = a2×5 + a4×6 + 欄 + 16h、y = a2×5 + 列 + 0Ah，寫進 DS:66A3h/66A4h（該戰鬥員記錄的 +0/+1）。再叫 193Fh 檢查落點，回傳的地形碼查 DS:26A2h 不是 0FFh（可通行）才算成功，成功就把範本那一格清 0 避免重複使用",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/dos-overlay-23.md"
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-10.md"
    ]
   },
   {
@@ -9639,7 +9640,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [di+30Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完）",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-10.md"
    ]
   },
   {
@@ -14973,7 +14975,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "存檔掃描（巢狀程序，retf 2 只收靜態鏈）：以 DS:5BF0h ＋ CS 常數 ＋ 外層 frame 的樣式字串組出搜尋路徑，FindFirst(97Fh:112h)／FindNext(97Fh:150h)，迴圈條件是 DosError(DS:8C98h) = 0。每一輪把找到的檔名接在 DS:5BF0h 後面開檔，Seek 到 0 再 BlockRead 16 bytes 進 var_3C，關檔；下一輪先拿 var_3C 跟外層的目標字串比對，相符就跳出。回傳是否找到",
+   "citations": [
+    "audit/function-index/pc98-overlay-16.md"
+   ]
   },
   {
    "platform": "dos",
@@ -20943,7 +20951,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+3Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-10.md"
    ]
   },
   {
@@ -23322,7 +23331,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "畫 11×11 的自動地圖(retf 6，(中心y, 中心x, 隊伍朝向))：視窗起點 = clamp(中心 − 5, 0, 5)（16×16 地圖上的 11×11 視窗），標記偏移 = 中心 − 起點。每格叫四次 sub_6BDh(x, y, 方向 0/2/4/6) 取牆面，四個方向各加 1/2/4/8，圖磚編號 = 104h + 位元組合，畫在 (欄+2, 列+2)。最後在偏移位置畫 100h + 朝向 div 2（四個方向箭頭）",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
@@ -40148,7 +40160,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "同 DOS overlay-16:01388h（module_align 對齊，助憶碼序列完全相同）。只差三條：DS:8BF6h↔5BF0h 與兩個 CS 常數／字串函式位址",
    "citations": [
     "audit/function-index/pc98-overlay-16.md"
    ]
@@ -46372,6 +46387,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/571-trytohit-attack-resolution.md",
     "spec/577-attempttohit-and-effect-chain-walk.md"
    ]
@@ -49231,7 +49247,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "同 DOS overlay-30:00011h（同位址、助憶碼序列完全相同）。只差七條呼叫目標（sub_60Dh↔sub_6BDh、232h:2Fh↔20Bh:2Fh、2A8h:0B7Dh↔297h:1316h）",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
@@ -50602,9 +50621,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -50812,9 +50831,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 5205,
    "Undefined": 84,
@@ -51157,9 +51176,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
@@ -51367,9 +51386,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 4851,
    "Undefined": 117,

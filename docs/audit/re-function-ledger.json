@@ -22351,6 +22351,42 @@
    "level": "exact",
    "spec": "749",
    "note": "同 DOS overlay-10:0122Ch（module_align 對齊，助憶碼序列完全相同）。只差四條位址：DS:7AC8h↔4A12h、DS:78AAh↔47F4h、[di−68C3h/68C2h]↔[di+66A3h/66A4h]"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 5000,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "存檔掃描（巢狀程序，retf 2 只收靜態鏈）：以 DS:5BF0h ＋ CS 常數 ＋ 外層 frame 的樣式字串組出搜尋路徑，FindFirst(97Fh:112h)／FindNext(97Fh:150h)，迴圈條件是 DosError(DS:8C98h) = 0。每一輪把找到的檔名接在 DS:5BF0h 後面開檔，Seek 到 0 再 BlockRead 16 bytes 進 var_3C，關檔；下一輪先拿 var_3C 跟外層的目標字串比對，相符就跳出。回傳是否找到"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 6925,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "同 DOS overlay-16:01388h（module_align 對齊，助憶碼序列完全相同）。只差三條：DS:8BF6h↔5BF0h 與兩個 CS 常數／字串函式位址"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 17,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "畫 11×11 的自動地圖(retf 6，(中心y, 中心x, 隊伍朝向))：視窗起點 = clamp(中心 − 5, 0, 5)（16×16 地圖上的 11×11 視窗），標記偏移 = 中心 − 起點。每格叫四次 sub_6BDh(x, y, 方向 0/2/4/6) 取牆面，四個方向各加 1/2/4/8，圖磚編號 = 104h + 位元組合，畫在 (欄+2, 列+2)。最後在偏移位置畫 100h + 朝向 div 2（四個方向箭頭）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 17,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "同 DOS overlay-30:00011h（同位址、助憶碼序列完全相同）。只差七條呼叫目標（sub_60Dh↔sub_6BDh、232h:2Fh↔20Bh:2Fh、2A8h:0B7Dh↔297h:1316h）"
   }
  ]
 }
