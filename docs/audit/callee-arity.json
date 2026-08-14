@@ -1,0 +1,7693 @@
+{
+ "schema": "coab-callee-arity/1",
+ "functions": {
+  "dos/overlay-00/0000": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-00/0017": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-00/0051": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-01/0000": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-01/01DF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-01/0634": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-01/0774": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0052": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/00E8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0107": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/011E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/019B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0244": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/02A2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/02F0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/03CA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0466": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0801": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0841": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/092C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0972": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/09EA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0A86": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0AD6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0B3B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0BBB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0C15": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0DA4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0E13": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0E71": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/0EBD": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-02/1082": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/120E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/1271": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/13B6": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-02/1416": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/1636": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/16D2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/179A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/1A9B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/1B53": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/1F46": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2086": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/27A8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2847": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/28F3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2942": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2C8F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2CB5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2CEA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2D15": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2D5E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2DA9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2E16": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/2F02": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/3073": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/30DD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/321F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/3251": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/3284": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/32D8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/3377": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/3621": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-02/3691": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/3772": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-02/3A19": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-03/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-03/011A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-03/044A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/0047": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-04/00F3": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-04/0280": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/0324": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/043D": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-04/063E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/0892": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/097B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/0A63": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/0B12": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/0DD6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-04/101F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-05/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-05/0039": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-05/0351": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-05/053C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-05/0A7E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-05/0CE6": {
+   "words": 8,
+   "kind": "far"
+  },
+  "dos/overlay-05/0DB1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-05/0ED7": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-05/106C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-05/1370": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-05/14AC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-05/1736": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-05/18F9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-06/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-06/0050": {
+   "words": 8,
+   "kind": "far"
+  },
+  "dos/overlay-06/0355": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-06/0474": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-06/06F6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-06/096D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-07/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-07/0034": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-07/0173": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-07/01FC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-07/0380": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-07/0456": {
+   "words": 7,
+   "kind": "far"
+  },
+  "dos/overlay-07/04BD": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-07/0552": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-07/0591": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-07/06E8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-07/070D": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-07/0735": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-07/0790": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-07/07F1": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-07/0B6D": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-07/0D70": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-07/0F3A": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-07/108D": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-07/12AE": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-07/145C": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-07/16D3": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-07/17EA": {
+   "words": 9,
+   "kind": "far"
+  },
+  "dos/overlay-07/18EE": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-07/197B": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-07/1A51": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-07/1AB9": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-07/1B3F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-07/1BE0": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-07/1E16": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-07/1F45": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-07/1FF5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-07/2137": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-07/2252": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-07/23A1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-08/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-08/004D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-08/00F3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-08/01AB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-08/026B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-08/03D5": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-08/076C": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-08/0997": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-08/0B06": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-08/0EE9": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-08/0FE8": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-08/11DF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-08/1314": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-08/1365": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-09/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-09/004D": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/024D": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/02B1": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-09/03B1": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-09/04AA": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/0605": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/0735": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-09/09C7": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/0DB1": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/1201": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/1273": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/1388": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/1542": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-09/1681": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-09/1BC6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/0048": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-10/00CC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/02F6": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-10/0378": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-10/03EC": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-10/0491": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-10/050E": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-10/06EC": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-10/08C9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/098D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/09A8": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-10/09FE": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/0B0A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/0CA1": {
+   "words": 8,
+   "kind": "far"
+  },
+  "dos/overlay-10/0E49": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/0FC7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/102F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/10DD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/11FB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-10/122C": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-10/1370": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-10/1800": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/1C3E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-10/1DB1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-11/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-11/0056": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-11/06D8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-11/08DC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-12/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-12/001B": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-12/003C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0075": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/008D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/009E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/00B0": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/00E8": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/016B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0188": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/01F1": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0238": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/026F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/02A6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/02CB": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/038C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/03A0": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/03DC": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/03E5": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0443": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/044C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0479": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/04AD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/04E4": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/054A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/05B6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/06F2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0727": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0769": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/07EC": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0818": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/08CD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0982": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/09A7": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0A0E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0BAF": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0BC2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0BE9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0C61": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/0F39": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-12/0FAA": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-12/100F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/104C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/106F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/10F9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/118A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/11D7": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1200": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/124B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/127E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/12B1": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/12BA": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/12DB": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/12FD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/131D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1374": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/13CF": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1415": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1454": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-12/14F9": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-12/1569": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/157F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1595": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/15AB": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-12/15E6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1687": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/16C2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/16D8": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/16EB": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1729": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1765": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1771": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/17C8": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1809": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/192D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/196D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/19A2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/19D7": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/19EE": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1A65": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1C1C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1C4F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1C90": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1CF6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1FC4": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/1FE4": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/203C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2078": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/20FA": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/212C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/21D5": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2212": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2264": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/22A3": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/231E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2334": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-12/2392": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/23A2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/23B2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/23D8": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/23EF": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/23FF": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2418": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/243B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2454": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2499": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/24B9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/251C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/255A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/259A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/25BA": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2606": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2657": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2782": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/27FA": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/282F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2855": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/289C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/297A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/299C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2A2C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2AA8": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2AD6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2B0F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2B28": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2B3E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2C2E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2C4F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2C94": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2CD9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2D7D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2E33": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-12/2E3C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-12/356C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-13/0000": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-13/0124": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-13/0192": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-13/031D": {
+   "words": 8,
+   "kind": "far"
+  },
+  "dos/overlay-13/0666": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-13/074F": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-13/095A": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-13/0D1C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-13/0DD9": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-13/0F12": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-13/0F46": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/1144": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/1227": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-13/1433": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/14E8": {
+   "words": 9,
+   "kind": "far"
+  },
+  "dos/overlay-13/194A": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/19D8": {
+   "words": 9,
+   "kind": "far"
+  },
+  "dos/overlay-13/1CE2": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-13/1D9D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-13/1DF6": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/200F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-13/2220": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/275A": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/28C3": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/29A2": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/2BFB": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-13/2E22": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-13/2EAC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-13/2F3C": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-13/3040": {
+   "words": 8,
+   "kind": "far"
+  },
+  "dos/overlay-13/31F0": {
+   "words": 9,
+   "kind": "far"
+  },
+  "dos/overlay-13/33AC": {
+   "words": 12,
+   "kind": "far"
+  },
+  "dos/overlay-13/38AA": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-13/394B": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-13/3B37": {
+   "words": 10,
+   "kind": "far"
+  },
+  "dos/overlay-13/3E56": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-13/403F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-13/4162": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-13/41CC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-13/42FD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-13/45CF": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-13/4703": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-13/4811": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-13/48DC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-13/49B2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-14/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-14/003E": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-14/0153": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-14/0288": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-14/0302": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-14/05E8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-14/06B1": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-14/06F4": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-14/0749": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-14/078E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-14/083C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-14/090A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-14/0BAF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-14/0EBB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/0034": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-15/0188": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-15/01CB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-15/023E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/0282": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-15/0391": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-15/04CB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/05CA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/07B2": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-15/085C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/0942": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/0B9B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/0E69": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-15/1016": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/14D2": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-15/158A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/16CB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/1834": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/199C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/1B4D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/1D0A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-15/1EDA": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-15/1EFD": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-15/1FB9": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-15/206B": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-15/20C5": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-15/2255": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-15/2309": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-15/23FC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-15/25E1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-16/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-16/0020": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-16/008D": {
+   "words": 10,
+   "kind": "far"
+  },
+  "dos/overlay-16/0453": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-16/0643": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-16/09EB": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-16/0A7E": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-16/0C7E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-16/0DEA": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-16/1388": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-16/1490": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-16/1F21": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-16/228E": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-16/3254": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-16/351C": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-16/35A8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-16/3748": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-16/3D38": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-16/3EDD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-16/4405": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-17/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-17/003E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-17/01DD": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-17/0782": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-17/2515": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-17/260C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-17/2724": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-17/2868": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-17/3680": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-17/3A56": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-17/3B99": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-17/3C78": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-17/3EE3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-17/45E9": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-17/46EC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-17/47C6": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-17/4A12": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-17/4B12": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-17/4D2A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-17/56BC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-18/0000": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-18/0032": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-18/006A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-18/00BC": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-18/04DF": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-18/0780": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-18/0843": {
+   "words": 10,
+   "kind": "far"
+  },
+  "dos/overlay-18/09DB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-18/0B5F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-18/10FF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-18/15F0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-19/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-19/0083": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-19/0597": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-19/0698": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-19/09B3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/0B75": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/0EC5": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/10AB": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-19/1588": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/1B00": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-19/1EE9": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/213C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/21F3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/22A3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/248D": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-19/27D6": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/2A42": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-19/2C57": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-19/2FA9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-19/3258": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-19/32DC": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-19/33AB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/3474": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-19/35F1": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/3656": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/36D8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/37EC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-19/3963": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-20/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-20/0020": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-20/02D8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-20/0385": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-20/03B9": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-20/045E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-20/0549": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-20/05D4": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-20/0712": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-20/0862": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-20/091D": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-20/09DF": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-20/0B05": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-20/0BB6": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-20/0C9C": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-20/0E88": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-21/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-21/001B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-21/003B": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-21/0057": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-21/0073": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-21/00C7": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-21/0149": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-21/019E": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-21/021C": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-21/02AD": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-21/046B": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-21/0527": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-21/05F9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-21/064F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-21/0A03": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-21/0A8A": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-21/0B91": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-21/0CF0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-21/0F5B": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-21/0FAF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-21/0FED": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-21/198C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-21/2247": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/0020": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-22/0219": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-22/03F5": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-22/05B4": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-22/08A1": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-22/0981": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-22/09FC": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-22/0D67": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-22/0E11": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-22/0F06": {
+   "words": 7,
+   "kind": "far"
+  },
+  "dos/overlay-22/10D2": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-22/1263": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/15FB": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/163E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/168B": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-22/175B": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-22/1ABF": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-22/1C39": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-22/1CF9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/1D2A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/1D55": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/1D93": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/1DD5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/1E0F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/1E4E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/1E7C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/1EC9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/1FA0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/20E1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2180": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/21C7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2232": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2260": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/22B4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/23F2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/245B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2494": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/24CD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2580": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/262F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2682": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/26BB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/26F6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2754": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2799": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2BF9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2DB6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2F5E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2FA4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/2FD1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3076": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3093": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/30C0": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-22/317E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/352D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3599": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/36A7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/36E0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/370E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3804": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-22/391D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3947": {
+   "words": 7,
+   "kind": "far"
+  },
+  "dos/overlay-22/3A03": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-22/3C98": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3CED": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3D27": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3EE2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3F23": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3F6F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/3FF4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4043": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/407A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/40D5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4103": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/413F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4194": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4289": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4311": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/43A7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/43EA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4432": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4493": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/44D3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/45B5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4672": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/472C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4759": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4791": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4822": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/48E4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4A8F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4BEC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4DA0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4EB4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4EF7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/4F3E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/54EB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/5590": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/563B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/5669": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/5697": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/56C4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/578B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-22/57E3": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/5974": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/5AA8": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/5C86": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/5E11": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/5F2F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/6022": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/612E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-22/617B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/6209": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-22/630B": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-22/68A5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-23/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-23/0016": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-23/00C9": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-23/010E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-23/0269": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-23/03FE": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-23/0D07": {
+   "words": 7,
+   "kind": "far"
+  },
+  "dos/overlay-23/0E45": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-23/11D7": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-23/123F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-23/12EB": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-23/137F": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-23/13CA": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-23/13EE": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-23/149D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-23/1569": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-23/15A1": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-23/1603": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-23/1643": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-23/16A6": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-23/16CF": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-23/1720": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-23/1769": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-23/17B8": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-23/18D8": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-23/1FD6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-23/2307": {
+   "words": 10,
+   "kind": "far"
+  },
+  "dos/overlay-23/23FB": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-23/24ED": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-23/25B6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-24/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-24/0025": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/021D": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-24/02A7": {
+   "words": 8,
+   "kind": "far"
+  },
+  "dos/overlay-24/03C5": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/0467": {
+   "words": 8,
+   "kind": "far"
+  },
+  "dos/overlay-24/0795": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/0939": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-24/09C1": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-24/0A34": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/0BE3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/0C28": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/10CB": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-24/1107": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-24/1141": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/117A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/120A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/129A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/1345": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/13FD": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/148F": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/1583": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-24/15FF": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-24/16E6": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-24/177A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/17D6": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-24/18BE": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-24/18F3": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-24/1975": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-24/1AAA": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-24/1AF7": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-24/21DD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-24/2396": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-24/2421": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-24/2543": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/25B0": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/25D4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-24/2628": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-24/274C": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-24/2828": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/2877": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/28B3": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-24/2A6D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-24/2BAA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-24/2E05": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-24/2E6A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-24/3018": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/305B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-24/30A0": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-24/3162": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-24/32A9": {
+   "words": 15,
+   "kind": "far"
+  },
+  "dos/overlay-24/3387": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-24/342F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-25/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-25/0011": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-25/03B1": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-25/0671": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-25/07E3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-25/0AD8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-25/0D2F": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-25/0EE1": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-25/1292": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-25/12EE": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-25/134A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-25/139A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-25/13BC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-25/13E8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-26/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-26/0011": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-26/0074": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-26/00D5": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-26/01E5": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-26/03D4": {
+   "words": 11,
+   "kind": "far"
+  },
+  "dos/overlay-26/07E5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-26/07FD": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-26/088A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-26/09C4": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-26/0A10": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-26/0A56": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-26/0AF8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-26/0BF9": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-26/0CD9": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-26/0D6B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-26/0DF9": {
+   "words": null,
+   "kind": "未知"
+  },
+  "dos/overlay-26/112A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-26/1199": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-26/1241": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-26/128D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-27/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-27/0007": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-27/0032": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-27/0063": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-27/007F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-28/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-28/0016": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-28/004F": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-28/0088": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-28/00CC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-28/01B7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-29/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-29/000C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-29/0091": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-29/00B3": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-29/010B": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-29/055B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-29/05DD": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-29/06E1": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-29/0754": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-29/0813": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-29/0881": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-29/08A2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-30/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-30/0011": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-30/016B": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-30/018C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-30/0448": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-30/0556": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-30/0587": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-30/06BD": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-30/07C6": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-30/0841": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-30/104C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-30/133A": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-30/1478": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-31/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-31/0007": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-31/0035": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-31/019D": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-31/0246": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-31/03EA": {
+   "words": 10,
+   "kind": "far"
+  },
+  "dos/overlay-31/054A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-31/08E3": {
+   "words": 7,
+   "kind": "far"
+  },
+  "dos/overlay-31/0BB0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-32/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-32/0011": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-32/0079": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-32/00F4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-32/0134": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-32/0174": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-32/0320": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-32/03EB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-32/0509": {
+   "words": 6,
+   "kind": "far"
+  },
+  "dos/overlay-32/0578": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-32/0732": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-32/0763": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-32/081D": {
+   "words": 3,
+   "kind": "far"
+  },
+  "dos/overlay-32/09DF": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-32/0B3F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-32/0C36": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-32/0C5E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-32/0C86": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-32/0CAE": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-32/0D06": {
+   "words": 11,
+   "kind": "far"
+  },
+  "dos/overlay-32/0E75": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-32/115B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-32/1355": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-32/13C1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-33/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-33/002E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-33/00F9": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-33/015A": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-33/01D4": {
+   "words": 4,
+   "kind": "far"
+  },
+  "dos/overlay-33/0508": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-33/061E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-34/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-34/0240": {
+   "words": 1,
+   "kind": "far"
+  },
+  "dos/overlay-34/0907": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-35/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "dos/overlay-35/0047": {
+   "words": 2,
+   "kind": "far"
+  },
+  "dos/overlay-35/0173": {
+   "words": 5,
+   "kind": "far"
+  },
+  "dos/overlay-35/02C3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/10000": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/100FA": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10300": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10330": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10370": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/104C0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10500": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10570": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/105E0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10620": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/106F0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10760": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/107D0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10870": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/108B0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10B80": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10C90": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10D00": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10DC0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10E90": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10F30": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/10FA0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/11050": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/110D0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/11170": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/113E0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/114A0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/115D0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/11640": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/116D0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/11720": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/11760": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/117C0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/11830": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/11840": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/11890": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/11940": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/11990": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/119A0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/119E0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/11AA4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/11B2A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/11C48": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/11D64": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/11E69": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/11F6E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/12055": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/12095": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1220A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1224A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1230E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/12320": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/12360": {
+   "words": null,
+   "kind": "空"
+  },
+  "pc98/PC98-GAME.EXE/1259F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/12A80": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/12A98": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/12AAC": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/12C00": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/12CDB": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/12E3D": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/13081": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/13192": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/131FD": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/13231": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/132B6": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1340F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/13506": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/135FD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/136B2": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/139DD": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/13B55": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/13BF4": {
+   "words": 9,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/13E12": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/13E1B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/13E22": {
+   "words": 7,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/13EAC": {
+   "words": 7,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/13F71": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/14180": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/14187": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/141A0": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/14244": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/142B9": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/14342": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/14372": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/145CA": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/14E97": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/14F25": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/14FEA": {
+   "words": 9,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/152D0": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/153D9": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1546F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/154BD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/15536": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/155D0": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1562A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/15647": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/15E16": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1691B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/16922": {
+   "words": 5,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/1692D": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/16A0E": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/171A7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/171DF": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17220": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17230": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17239": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17250": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/172A0": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/172D5": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1732F": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/173A1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1741D": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17656": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/176BE": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/177BD": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/177ED": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1790D": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17960": {
+   "words": 10,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17A37": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17A54": {
+   "words": 9,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17CB5": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17CCA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17CD7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/17CDE": {
+   "words": 5,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/17CE9": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/17DCA": {
+   "words": 5,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/17DD5": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/17E30": {
+   "words": null,
+   "kind": "空"
+  },
+  "pc98/PC98-GAME.EXE/17EA7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18036": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/180F7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18113": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1812D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18194": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/181F0": {
+   "words": null,
+   "kind": "空"
+  },
+  "pc98/PC98-GAME.EXE/18204": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18229": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18233": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18392": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18407": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1853E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1856A": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/18741": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/18752": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/18883": {
+   "words": 3,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/188B1": {
+   "words": 1,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/188C8": {
+   "words": 2,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/188E3": {
+   "words": 3,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/18906": {
+   "words": 1,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/18930": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18A3D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18A44": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18A8E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18AA7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18B8F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18BA0": {
+   "words": null,
+   "kind": "空"
+  },
+  "pc98/PC98-GAME.EXE/18BB1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18BD0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/18C18": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18C3C": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18C5E": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18C72": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18C97": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18CAE": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18CC7": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18CE2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/18D20": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/18D70": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/18E59": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/18EE0": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/193D0": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/19D1F": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/19EB0": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/19EC4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1A0C6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1A197": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/1A4DA": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/PC98-GAME.EXE/1A650": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1ADDC": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1AE30": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1B3C1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1B608": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/1B756": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/1B94B": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1B996": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1BDA3": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1BDDB": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1BE19": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1BE71": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/1BEF7": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/1BFA9": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/PC98-GAME.EXE/1BFDF": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1C03B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1C10E": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1C194": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1C1E5": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1C226": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1C23B": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/PC98-GAME.EXE/1C290": {
+   "words": null,
+   "kind": "空"
+  },
+  "pc98/PC98-GAME.EXE/28360": {
+   "words": null,
+   "kind": "空"
+  },
+  "pc98/overlay-00/0000": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-00/001B": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-00/0055": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-01/0000": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-01/0321": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-01/0936": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-01/0AA2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0052": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/00E8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0107": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/011E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/01B7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/025A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/02B8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0306": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/03E0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/049C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0858": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-02/08A7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0992": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-02/09DD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0A5D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0AF9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0B49": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0BAE": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0C26": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0C81": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0E10": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0E7F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0EDD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/0F29": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/10C2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/1294": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/12F7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/143C": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-02/149C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/16BC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/1758": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/1820": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/1B28": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/1BEA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2125": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/222C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2940": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/29FB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2AA7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2ACE": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2E06": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2E2C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2E61": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2E8C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2EDA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2F5F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/2FDA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/30C6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/3237": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/327E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/3393": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/3520": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/35AF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/364B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/369F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/373E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/39A5": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-02/3A21": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-02/3CE4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-03/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-03/000C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-03/0131": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-03/03FC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/0051": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-04/0103": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-04/02A3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/035B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/048E": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-04/06A8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/093E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/0A33": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/0B31": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/0BFF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/0F42": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-04/11D7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-05/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-05/0039": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-05/0351": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-05/052F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-05/0A5C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-05/0CE9": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/overlay-05/0DCC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-05/0F0F": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-05/1072": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-05/13C7": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-05/1506": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-05/1775": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-05/19A3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-06/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-06/0037": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/overlay-06/03A0": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-06/04BE": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-06/0778": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-06/0A4F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-07/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-07/008E": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-07/0296": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-07/0317": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-07/0499": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-07/0556": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/overlay-07/05BD": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-07/064C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-07/068B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-07/07DC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-07/0801": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-07/085C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-07/08BD": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-07/0C28": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-07/0E2B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-07/0FFC": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1148": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1364": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-07/13F7": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1669": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1780": {
+   "words": 10,
+   "kind": "far"
+  },
+  "pc98/overlay-07/188A": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-07/1928": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-07/19FE": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1A66": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1AEC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1B89": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1DD1": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1F00": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-07/1FB0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-07/20C5": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-07/2235": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-07/2439": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-08/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-08/004D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-08/0143": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-08/01FB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-08/02BB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-08/0414": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-08/0795": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-08/09A5": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-08/0B20": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-08/0F17": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-08/1028": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-08/124D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-08/1375": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-08/13C6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-09/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-09/005D": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/026F": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/02D3": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-09/03D3": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-09/04CC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/0627": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/0757": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-09/09E9": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/0DD3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/1223": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/1296": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/13A5": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/155F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-09/169E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-09/1BE3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/0048": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-10/00CC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/02F6": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-10/0378": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-10/03EC": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-10/0491": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-10/050E": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-10/06E6": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-10/08BD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/0981": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/099C": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-10/09F2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/0AFE": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/0C95": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/overlay-10/0E3D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/0FBB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/1023": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/10D1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/11EF": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-10/1220": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-10/1364": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-10/17EE": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/1C28": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-10/1DAA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-11/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-11/0048": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-11/0508": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-11/0766": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-11/07CD": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/overlay-12/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-12/001B": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-12/003C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0075": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/008D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/009E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/00B0": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/00E3": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0166": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0183": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/01E6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/022D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0264": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/029B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/02C0": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0381": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0397": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/03D3": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/03DC": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/043A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0443": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0470": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/04A4": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/04E2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/054C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/05BD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/06F9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/072E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0773": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/07F6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0829": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/08DF": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0994": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/09B9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0A32": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0BC8": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0BDB": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0C0C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0C82": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0F5B": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-12/0FCC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1030": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/106D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1091": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/111B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/11AC": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/11F9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1222": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/126D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/12A0": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/12D3": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/12DC": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/12FD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/131F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/133F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1396": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/13F1": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1437": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-12/147A": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-12/151F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-12/158F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/15A5": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/15BB": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/15D1": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1621": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/16C2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/16FD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1713": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1726": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/176D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/17A9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/17B5": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/180C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/184F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1973": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/19B3": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/19E8": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1A1D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1A34": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1ABC": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1C86": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1CB9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1CFA": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/1D5E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/202C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/204C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/20AA": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/20E6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/215C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/218E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2237": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2274": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/22C6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2305": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2380": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2396": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-12/23F4": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2404": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2414": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/243A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2451": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2461": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/247A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/249D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/24B6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/24FB": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/251B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/257E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/25BC": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/25FC": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/261C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2668": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/26BD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/27F0": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2868": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/289D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/28C3": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/290C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/29F2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2A14": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2AA4": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2B20": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2B4E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2B87": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2BA0": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2BB6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2CA6": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2CC7": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2D0C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2D56": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2E15": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2ECB": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-12/2ED4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-12/3604": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0000": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0124": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0192": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0358": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0684": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-13/078E": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0999": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0D81": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0E3E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0F77": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-13/0FB1": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/11AF": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/12A8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-13/14B4": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/1569": {
+   "words": 9,
+   "kind": "far"
+  },
+  "pc98/overlay-13/19CB": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/1A59": {
+   "words": 9,
+   "kind": "far"
+  },
+  "pc98/overlay-13/1D1C": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-13/1DD7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-13/1E30": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/2049": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-13/225F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/27A1": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/2915": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/29F4": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/2A72": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-13/2C94": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-13/2D1E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-13/2DB9": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-13/2EBB": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/overlay-13/30D8": {
+   "words": 9,
+   "kind": "far"
+  },
+  "pc98/overlay-13/329F": {
+   "words": 12,
+   "kind": "far"
+  },
+  "pc98/overlay-13/37E8": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-13/3889": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-13/3A74": {
+   "words": 10,
+   "kind": "far"
+  },
+  "pc98/overlay-13/3D7F": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-13/3F71": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-13/40B8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-13/412A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-13/426B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-13/453D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-13/4671": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-13/478B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-13/4876": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-13/4938": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-14/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-14/003E": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-14/014C": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-14/027B": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-14/02F5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-14/05B4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-14/067D": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-14/06C0": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-14/0714": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-14/0759": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-14/0807": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-14/08E4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-14/0BCC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-14/0DA3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/0034": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-15/0188": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-15/01CB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-15/023E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/0282": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-15/0386": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-15/04C2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/05CC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/07B4": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-15/085E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/092D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/0B86": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/0E54": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-15/0FC7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/147B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-15/1558": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/1699": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/17F6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/19A4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/1B94": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/1D4C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-15/1F46": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-15/1F69": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-15/2020": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-15/20D2": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-15/212C": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-15/22BC": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-15/2370": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-15/2457": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-15/2638": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-16/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-16/0020": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-16/0079": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-16/0164": {
+   "words": 12,
+   "kind": "far"
+  },
+  "pc98/overlay-16/0614": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-16/07DC": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-16/08E4": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-16/0B4F": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-16/0F17": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-16/1061": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-16/1261": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-16/14C9": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-16/1B0D": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-16/1C15": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-16/26CF": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-16/2A6D": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-16/3AA8": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-16/3DFF": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-16/3E8B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-16/3FB7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-16/402A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-16/4193": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-16/424A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-16/42FE": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-16/46CE": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-16/4961": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-16/49C6": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-16/4E65": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-16/4E81": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-16/5008": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-16/5581": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/overlay-17/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-17/003E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-17/0115": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-17/02CB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-17/0AFB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-17/278C": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-17/28E1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-17/2B27": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-17/2C1C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-17/2DB7": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-17/2E9B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-17/3BBD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-17/4122": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-17/427D": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-17/4320": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-17/45D0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-17/4CBB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-17/4DB4": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-17/4E8E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-17/50DA": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-17/51DA": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-17/5420": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-17/5E57": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-18/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-18/0026": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-18/03DC": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-18/0682": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-18/0748": {
+   "words": 10,
+   "kind": "far"
+  },
+  "pc98/overlay-18/08EB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-18/0A6F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-18/0B9B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-18/1213": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-18/1756": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-18/175D": {
+   "words": 4,
+   "kind": "near"
+  },
+  "pc98/overlay-18/17AA": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/overlay-18/189D": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/overlay-18/1951": {
+   "words": 0,
+   "kind": "near"
+  },
+  "pc98/overlay-19/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-19/0098": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-19/05B1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-19/069E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-19/09BC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/0B82": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/0E8E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/1074": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-19/1578": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/1A8F": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-19/1EAE": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/2102": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/21C5": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/2275": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/246F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-19/27DC": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/2A32": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-19/2C69": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-19/2FE5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-19/32B7": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-19/333B": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-19/340A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/34E4": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-19/3658": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/36BD": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/37AB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/39CA": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-19/3BD7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0020": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-20/02D8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0385": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-20/03B9": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-20/045E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0549": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-20/05D2": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-20/073A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0898": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-20/094E": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0A11": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0B37": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0BE8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0CD0": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-20/0EBC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0000": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-21/001B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-21/003B": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0057": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0073": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-21/00C7": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0148": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-21/019D": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0218": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-21/02AB": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0485": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0541": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0613": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0669": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0A1D": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0AA6": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0B9B": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-21/0DE8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-21/1070": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-21/10C4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-21/10FC": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-21/1A3E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-21/2315": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/0020": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-22/0227": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-22/0462": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-22/0621": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-22/090E": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-22/09EE": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-22/0A69": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-22/0DCB": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-22/0E75": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-22/0F62": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/overlay-22/112C": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-22/1247": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-22/143D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/1854": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/1897": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/18E4": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-22/19B4": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-22/1D0B": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-22/1E8D": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-22/1F53": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/1F8B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/1FB6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/1FF4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/203D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2077": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/20BF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/20ED": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2147": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/222A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/235E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2404": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/244B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/24C1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/24EF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2547": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2690": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/26FC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2736": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2776": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/282D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/28DC": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-22/2933": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2969": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/29A3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2A04": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2A52": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/2EB2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3072": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3223": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3273": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/32A0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3345": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3369": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3396": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-22/345B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3804": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3879": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3983": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/39C1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/39EF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3AE5": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3BCB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3BF5": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3CB1": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3F4E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3FA8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/3FEB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/41AF": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/41F0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/423F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/42C4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4313": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/434D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/43AC": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/43DA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4416": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4477": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/456C": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-22/45F1": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4687": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/46CA": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4719": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/477A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/47BD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/48AA": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-22/496B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4A2D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4A5E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4A9A": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4B2C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4BF7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4DB9": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/4F5F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/5147": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/525B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/529E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/52E0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/5888": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/592D": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/59D8": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/5A06": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/5A34": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/5A61": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/5B2B": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/5B90": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/5D17": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/5E32": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/6019": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/61AD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/62D7": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/63D4": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/64E8": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-22/6535": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/65C9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-22/66EB": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-22/6C85": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-23/0000": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-23/0016": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-23/00C9": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-23/010E": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-23/0269": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-23/03FE": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-23/0CED": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/overlay-23/0E32": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-23/11C4": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-23/122C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-23/12D8": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-23/1368": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-23/13B3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-23/13D7": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-23/1486": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-23/1552": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-23/158A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-23/15EC": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-23/1630": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-23/1693": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-23/16BC": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-23/170D": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-23/1756": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-23/17A5": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-23/18F3": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-23/1FFD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-23/2325": {
+   "words": 10,
+   "kind": "far"
+  },
+  "pc98/overlay-23/2419": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-23/251A": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-23/25E3": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-24/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-24/0025": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/021D": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-24/02A7": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/overlay-24/03C5": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/046C": {
+   "words": 8,
+   "kind": "far"
+  },
+  "pc98/overlay-24/0917": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/0B41": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-24/0BD5": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-24/0C53": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/0E02": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/0E47": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/12E5": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1321": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-24/135B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1394": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1416": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1498": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1530": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/15D3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1659": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1739": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-24/17D1": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-24/18B8": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-24/194C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/19A8": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1A90": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1AC2": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1B2F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1C76": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-24/1CC3": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-24/240A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-24/25CD": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-24/2658": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-24/2776": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/27E3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/2807": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-24/285B": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-24/297F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-24/2A5B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/2AAE": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/2AEA": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-24/2CA4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-24/2E8C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-24/30E7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-24/314B": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-24/3334": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/3377": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-24/33BC": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-24/347E": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-24/35D8": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-24/3680": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-25/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-25/0011": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/03B1": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/0671": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-25/07E3": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/0AC4": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/0D17": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/0F30": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/139A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/13F6": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/1452": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/14A2": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/14C4": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-25/14F0": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0011": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0073": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-26/00B4": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0133": {
+   "words": 11,
+   "kind": "far"
+  },
+  "pc98/overlay-26/081E": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0858": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-26/08AE": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-26/09DE": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0A6A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0BA9": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0BFE": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0C90": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0D70": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0E02": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-26/0ED3": {
+   "words": null,
+   "kind": "未知"
+  },
+  "pc98/overlay-26/129D": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-26/131F": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-26/13C7": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-26/141F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-27/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-27/0007": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-27/0032": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-27/0063": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-27/007F": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-28/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-28/0016": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-28/00BD": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-29/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-29/000C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-29/0091": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-29/00B3": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-29/010B": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-29/045A": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-29/04E0": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-29/05F9": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-29/066C": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-29/072B": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-29/0777": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-29/07A2": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-30/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-30/0011": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-30/016B": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-30/018C": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-30/039F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-30/04AD": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-30/04DE": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-30/060D": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-30/0710": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-30/078B": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-30/0F8F": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-30/1253": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-30/1361": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-31/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-31/0007": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-31/0035": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-31/019D": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-31/0246": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-31/03EA": {
+   "words": 10,
+   "kind": "far"
+  },
+  "pc98/overlay-31/054A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-31/08D8": {
+   "words": 7,
+   "kind": "far"
+  },
+  "pc98/overlay-31/0BA5": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0011": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0079": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-32/00F4": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0111": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-32/012E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-32/02DA": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0473": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-32/06D7": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-32/07F5": {
+   "words": 6,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0864": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0A1E": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0A4F": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0B09": {
+   "words": 3,
+   "kind": "far"
+  },
+  "pc98/overlay-32/0CCB": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-32/11F4": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-32/12EB": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-32/1313": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-32/133B": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-32/1363": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-32/13BB": {
+   "words": 11,
+   "kind": "far"
+  },
+  "pc98/overlay-32/1526": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-32/1813": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-32/1A0D": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-32/1A79": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-33/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-33/004C": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-33/0267": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-33/02E8": {
+   "words": 1,
+   "kind": "far"
+  },
+  "pc98/overlay-33/038F": {
+   "words": 4,
+   "kind": "far"
+  },
+  "pc98/overlay-33/07A9": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-33/08C6": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-34/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-34/0007": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-35/0000": {
+   "words": 0,
+   "kind": "far"
+  },
+  "pc98/overlay-35/004C": {
+   "words": 2,
+   "kind": "far"
+  },
+  "pc98/overlay-35/032A": {
+   "words": 5,
+   "kind": "far"
+  },
+  "pc98/overlay-35/047A": {
+   "words": 0,
+   "kind": "far"
+  }
+ }
+}

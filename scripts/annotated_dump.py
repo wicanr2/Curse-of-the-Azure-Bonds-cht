@@ -26,6 +26,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from overlay_call_graph import modules, resolve   # noqa: E402
 
 LEDGER = os.path.join(ROOT, "docs", "audit", "re-function-ledger.json")
+ARITY = os.path.join(ROOT, "docs", "audit", "callee-arity.json")
+
+
+def arity():
+    """被呼叫者的參數個數，來源是它結尾的 `retf N`（spec 711）。
+
+    印在呼叫點旁邊是為了擋掉「數呼叫端連續幾個 push」這個錯法：推入數量會因為
+    堆疊殘留（spec 690／710）而多於或少於實際參數，而錯誤會沿著推導鏈傳染。
+    """
+    if not os.path.exists(ARITY):
+        return {}
+    return json.load(open(ARITY, encoding="utf-8"))["functions"]
 
 
 def ledger():
@@ -62,6 +74,7 @@ def main():
 
     table = modules(platform)
     known = ledger()
+    arities = arity()
     cache = {}
     for item in chosen["items"]:
         if item["ea"] >= limit:
@@ -75,8 +88,14 @@ def main():
             if hit is None:
                 line += "        ; → resident %04X:%04X" % (segment, offset)
             else:
-                line += "        ; → %s entry#%d @%04Xh" % (
-                    hit["module"], hit["entry"], hit["ea"])
+                info = arities.get("%s/%s/%04X" % (platform, hit["module"], hit["ea"]))
+                shape = ""
+                if info and info["words"] is not None:
+                    shape = "，收 %d word" % info["words"]
+                elif info:
+                    shape = "，參數個數未知（%s）" % info["kind"]
+                line += "        ; → %s entry#%d @%04Xh%s" % (
+                    hit["module"], hit["entry"], hit["ea"], shape)
                 key = (hit["module"], hit["entry"])
                 if key not in cache:
                     notes = []
