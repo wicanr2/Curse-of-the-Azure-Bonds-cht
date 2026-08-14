@@ -13252,7 +13252,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/629-spell-pack-idiom-and-uninit.md",
-   "note": "t := DS:0A521h;若 t^[196h]=1 就把 DS:0A521h 清成 nil 且不印訊息;否則 <far 014A:00A7>(t,37h,@var_4) 非 0 時,若 t^[1A5h]=0 才拉到 1(HP 為 0 才救回,活著的人不會加血),備妥「は魔法にかかった。」呼叫 <sub_F62>,最後 <far 013E:002A>(4Eh,t,0,1)"
+   "note": "t := DS:0A521h;若 t^[196h]=1 就把 DS:0A521h 清成 nil 且不印訊息;否則 <far 014A:00A7>(t,37h,@var_4) 非 0 時,若 t^[1A5h]=0 才拉到 1(HP 為 0 才救回,活著的人不會加血),備妥「は魔法にかかった。」呼叫 <sub_F62>,最後 <far 013E:002A>(4Eh,t,0,1)。⚠ 補洞重匯出(spec 761)顯示本體還有最後一步：<far loc_1434+3>(1, 0FFh, 0Ah, 0Fh, t)，先前的判讀停在前一個呼叫"
   },
   {
    "platform": "dos",
@@ -15780,15 +15780,6 @@
   },
   {
    "platform": "dos",
-   "module": "overlay-14",
-   "ea": 62,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `jmp loc_14D`（body 共 277 bytes，已逐條讀完）"
-  },
-  {
-   "platform": "dos",
    "module": "overlay-17",
    "ea": 477,
    "state": "邊界碎片",
@@ -16263,15 +16254,6 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov si, 0B382h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 27 bytes，已逐條讀完）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-14",
-   "ea": 62,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `jmp loc_146`（body 共 270 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -18687,7 +18669,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-   "note": "載入 CPIC(retf 2)：DS:4F9Dh^[67Ch] > 7(無號)就整支不做；否則 GetMem(p, 1A6h)、本模組 3254h(參數, p)、p^[126h] := 參數、本模組 35A8h(p)，組出 CS:3517h 的 'CPIC' 字串後叫 overlay-33 entry#5 @01D4h(參數, p^[143h])。⚠ 匯出漏了 21h bytes，本判讀由原始 bytes 補回"
+   "note": "載入 CPIC(retf 2)：DS:4F9Dh^[67Ch] > 7(無號)就整支不做；否則 GetMem(p, 1A6h)、本模組 3254h(參數, p)、p^[126h] := 參數、本模組 35A8h(p)，組出 CS:3517h 的 'CPIC' 字串後叫 overlay-33 entry#5 @01D4h(參數, p^[143h])。⚠ 匯出漏了 21h bytes，本判讀由原始 bytes 補回。補洞重匯出(spec 761)已確認本判讀完整"
   },
   {
    "platform": "pc98",
@@ -19183,6 +19165,24 @@
    "level": "exact",
    "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
    "note": "檔案是否存在(retf 4)：StoreString(參數, 緩衝, 50h)、InOutRes(word_23B08):=0、Assign+Reset(f,1)，成功就 Close 並回 true，否則 false，離開前再清一次 InOutRes。⚠ DOS 對應的 START.EXE:1685Fh 是用 FindFirst + DosError，兩者對唯讀/被開啟中的檔案行為不同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 62,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/761-filled-export-and-dungeon-wall-bits.md",
+   "note": "清掉一個方向的牆面位元(retf 6)：格 := DS:7206h^[300h + (row shl 4) + col]；dir=6 → and 3Fh、4 → and 0CFh、2 → and 0F3h、0 → and 0FCh。每列 16 格、每格 1 byte、四個方向各 2 bits。case 沒有 else，奇數方向碼整支不做事。⚠ 先前 spec 569 的註記(「只準備參數並執行 jmp」)是根據被截斷成 6 條指令的匯出寫的，已由補洞重匯出更正(見 spec 761)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 62,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/761-filled-export-and-dungeon-wall-bits.md",
+   "note": "清掉一個方向的牆面位元(retf 6)：地圖在 DS:0A2A0h^[300h + (row shl 4) + col]，位元遮罩與 DOS overlay-14:003Eh 相同；唯一差別是用 cmp al,6 取代 xor ah,ah + cmp ax,6。同樣更正自被截斷的舊匯出"
   }
  ]
 }

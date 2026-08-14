@@ -11914,11 +11914,11 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-24.md",
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
     "spec/751-overlay-init-chain-dependency-graph.md",
-    "spec/754-small-predicates-and-wrappers.md",
-    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -11953,7 +11953,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12647,6 +12650,7 @@
    "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
    "note": "取兩個戰鬥員的 x/y 後畫(retf 4)：先 overlay-24 entry#24 @1AAAh(參數+0Dh)；再用 overlay-32 entry#15/#16 對 SS 相對記錄的 +0Ch 與 −0Ah 兩個遠指標各取 x、y；最後 overlay-24 entry#25 @1AF7h(x1, y1, x2, y2, 1, 1Eh)。entry#15/#16 = 由 overlay-32:0CAEh 換索引後取 4-byte 記錄的 +0/+1，即戰鬥員座標 — 補上 spec 750「地圖表頭 = 隊伍位置 −3」的機制依據",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
@@ -12781,15 +12785,15 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `jmp loc_14D`（body 共 277 bytes，已逐條讀完）",
+   "spec": "docs/spec/761-filled-export-and-dungeon-wall-bits.md",
+   "note": "清掉一個方向的牆面位元(retf 6)：格 := DS:7206h^[300h + (row shl 4) + col]；dir=6 → and 3Fh、4 → and 0CFh、2 → and 0F3h、0 → and 0FCh。每列 16 格、每格 1 byte、四個方向各 2 bits。case 沒有 else，奇數方向碼整支不做事。⚠ 先前 spec 569 的註記(「只準備參數並執行 jmp」)是根據被截斷成 6 條指令的匯出寫的，已由補洞重匯出更正(見 spec 761)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-15.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md"
+    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
    ]
   },
   {
@@ -13081,6 +13085,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/pc98-overlay-15.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
@@ -13101,6 +13106,7 @@
    "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
    "note": "整隊清理(retf，無參數)：從 DS:650Ah 沿 +189h 走隊伍鏈，對每個成員叫本模組 0188h 與 01CBh",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-15.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md"
@@ -13293,6 +13299,7 @@
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
    "note": "邊界碎片：落在 1016h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
@@ -13987,10 +13994,12 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-   "note": "載入 CPIC(retf 2)：DS:4F9Dh^[67Ch] \u003e 7(無號)就整支不做；否則 GetMem(p, 1A6h)、本模組 3254h(參數, p)、p^[126h] := 參數、本模組 35A8h(p)，組出 CS:3517h 的 'CPIC' 字串後叫 overlay-33 entry#5 @01D4h(參數, p^[143h])。⚠ 匯出漏了 21h bytes，本判讀由原始 bytes 補回",
+   "note": "載入 CPIC(retf 2)：DS:4F9Dh^[67Ch] \u003e 7(無號)就整支不做；否則 GetMem(p, 1A6h)、本模組 3254h(參數, p)、p^[126h] := 參數、本模組 35A8h(p)，組出 CS:3517h 的 'CPIC' 字串後叫 overlay-33 entry#5 @01D4h(參數, p^[143h])。⚠ 匯出漏了 21h bytes，本判讀由原始 bytes 補回。補洞重匯出(spec 761)已確認本判讀完整",
    "citations": [
+    "audit/function-index/pc98-overlay-16.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md"
+    "spec/760-item-effect-flag-clear-and-file-exists.md",
+    "spec/761-filled-export-and-dungeon-wall-bits.md"
    ]
   },
   {
@@ -21671,7 +21680,8 @@
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/761-filled-export-and-dungeon-wall-bits.md"
    ]
   },
   {
@@ -35208,11 +35218,11 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-24.md",
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
     "spec/751-overlay-init-chain-dependency-graph.md",
-    "spec/754-small-predicates-and-wrappers.md",
-    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -35249,7 +35259,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35292,7 +35305,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -36331,15 +36345,15 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `jmp loc_146`（body 共 270 bytes，已逐條讀完）",
+   "spec": "docs/spec/761-filled-export-and-dungeon-wall-bits.md",
+   "note": "清掉一個方向的牆面位元(retf 6)：地圖在 DS:0A2A0h^[300h + (row shl 4) + col]，位元遮罩與 DOS overlay-14:003Eh 相同；唯一差別是用 cmp al,6 取代 xor ah,ah + cmp ax,6。同樣更正自被截斷的舊匯出",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-15.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md"
+    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
    ]
   },
   {
@@ -36653,6 +36667,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/pc98-overlay-15.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
@@ -36673,6 +36688,7 @@
    "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
    "note": "整隊清理(retf)：鏈頭 DS:9598h、next 在 +18Ah，其餘同 DOS overlay-15:023Eh",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-15.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md"
@@ -41923,7 +41939,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/629-spell-pack-idiom-and-uninit.md",
-   "note": "t := DS:0A521h;若 t^[196h]=1 就把 DS:0A521h 清成 nil 且不印訊息;否則 \u003cfar 014A:00A7\u003e(t,37h,@var_4) 非 0 時,若 t^[1A5h]=0 才拉到 1(HP 為 0 才救回,活著的人不會加血),備妥「は魔法にかかった。」呼叫 \u003csub_F62\u003e,最後 \u003cfar 013E:002A\u003e(4Eh,t,0,1)",
+   "note": "t := DS:0A521h;若 t^[196h]=1 就把 DS:0A521h 清成 nil 且不印訊息;否則 \u003cfar 014A:00A7\u003e(t,37h,@var_4) 非 0 時,若 t^[1A5h]=0 才拉到 1(HP 為 0 才救回,活著的人不會加血),備妥「は魔法にかかった。」呼叫 \u003csub_F62\u003e,最後 \u003cfar 013E:002A\u003e(4Eh,t,0,1)。⚠ 補洞重匯出(spec 761)顯示本體還有最後一步：\u003cfar loc_1434+3\u003e(1, 0FFh, 0Ah, 0Fh, t)，先前的判讀停在前一個呼叫",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
