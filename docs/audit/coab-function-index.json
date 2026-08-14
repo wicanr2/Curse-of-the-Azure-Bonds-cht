@@ -16105,9 +16105,13 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/984-drop-character-and-pc98-put8x8symbol.md",
+   "note": "DROP CHARACTER：雙重確認，死者/生者/反悔三種台詞；+196h=0 走 'You dump ... out back.'",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/984-drop-character-and-pc98-put8x8symbol.md"
    ]
   },
   {
@@ -16173,7 +16177,8 @@
    "note": "把 遠指標(DS:6506h) 那個角色移出隊伍並釋放(retf 4，(不減人數, 要釋放圖像))：分鏈頭/非鏈頭兩條路徑從 DS:650Ah 鏈上摘掉，叫 overlay-17:0003Eh(spec 849 解構子)整筆釋放，再把 DS:6506h 移到前一個/下一個、都不行就退回鏈頭(所以呼叫端拿到的選中者永遠有效)；不減人數=0 時 遠指標(DS:4F9Dh)^[67Ch] 減 1。要釋放圖像≠0 時先叫 1994h(角色^[143h])",
    "citations": [
     "audit/function-index/pc98-overlay-17.md",
-    "spec/872-remove-from-party.md"
+    "spec/872-remove-from-party.md",
+    "spec/984-drop-character-and-pc98-put8x8symbol.md"
    ]
   },
   {
@@ -22431,7 +22436,8 @@
     "audit/function-index/pc98-overlay-24.md",
     "spec/692-party-tally-and-list-search.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
-    "spec/983-same-text-primitive-both-platforms.md"
+    "spec/983-same-text-primitive-both-platforms.md",
+    "spec/984-drop-character-and-pc98-put8x8symbol.md"
    ]
   },
   {
@@ -25399,7 +25405,8 @@
    "spec": "docs/spec/781-put8x8symbol-and-wall-bit-set.md",
    "note": "Put8x8Symbol(retf 0Ah；函式名由自身錯誤訊息 CS:0150h 'Bad symbol number in Put8x8Symbol.' 定住)：編號分五段(1..2Dh/2Eh..73h/74h..0B9h/0BAh..0FFh/100h..127h)選 DS:65B6h 起的遠指標，減掉 word[2680h + 組*2] 的起始編號；第二個參數非 0 走 0297h:08F8h 直接畫，否則先 Move(p^[17h + n*p^[11h]] → DS:65CAh^[17h], p^[11h]) 再叫 0297h:1110h。可證符號資源表頭 17h bytes、+11h 是每符號位元組數。⚠ 編號為負數時「組」這個 local 未指派，會用堆疊殘值當索引",
    "citations": [
-    "spec/781-put8x8symbol-and-wall-bit-set.md"
+    "spec/781-put8x8symbol-and-wall-bit-set.md",
+    "spec/984-drop-character-and-pc98-put8x8symbol.md"
    ]
   },
   {
@@ -52058,9 +52065,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/984-drop-character-and-pc98-put8x8symbol.md",
+   "note": "Put8x8Symbol 的 PC-98 版；DS:488Ah 五個分段起始值 1/46/116/186/256 直接讀到；\u003e 7FFFh 同樣不指派「組」",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/984-drop-character-and-pc98-put8x8symbol.md"
    ]
   },
   {
@@ -52355,9 +52366,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
@@ -53180,9 +53191,9 @@
    "Module": "overlay-35",
    "Unit": "SQRPAK8",
    "Functions": 4,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 1,
    "CodeBytes": 1048,
    "Undefined": 79,
