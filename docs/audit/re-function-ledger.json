@@ -21460,6 +21460,60 @@
    "level": "exact",
    "spec": "836",
    "note": "同 DOS overlay-09:00605h。8 條差異全是位址（+18Eh、DS:0A86Ch、DS:0A02Ah），無邏輯差異；漏第一格的 off-by-one 兩平台一致"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 1845,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "837",
+   "note": "AI 試走一個候選方向(retf 0Ch)：偏移取自 DS:2B6h[模式*5+序號(1..5)]，d=(基準+偏移) mod 8；地形表 DS:26A2h 4 bytes/筆，+0=成本、0FFh 不可通行；斜向 ×3 正向 ×2；兩種障礙各有豁免效果組，擋住的寫法是把花費灌成移動力+1"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 1879,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "837",
+   "note": "同 DOS overlay-09:00735h。22 條差異全是位址（+18Eh、DS:06AAh、DS:48ACh），無邏輯差異；兩張表逐 byte 相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 3505,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "838",
+   "note": "AI 攻擊/移動主迴圈(spec 830 兩條路之一)：20 次上限；武器射程 = 物品類型表 DS:5CF6h +0Ch 減 1，無武器為 1；距離以半格計（div 2 後比射程）；+18Dh^[03h] 的 0 與 14h 都是結束哨兵；開場清 DS:47F0h..47F2h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 3539,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "838",
+   "note": "同 DOS overlay-09:00DB1h。差異全是位址（+18Eh、+152h、+197h/198h、DS:78A6h、DS:0A876h、DS:9F2Ch、DS:8D90h、物品 +56h），無邏輯差異"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 2503,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "839",
+   "note": "AI 走一步：狀態列 'Move/Attack, Move Left = ' + 移動力 div 2（PC-98 已翻）。DS:47F0h=上一步方向（8 為哨兵）、DS:47F1h=連續折返次數，1 換 AI 模式 / 2 清目標 / >=3 移動力歸零。撤退時基準方向由 DS:7211h 算、陣營 0 再加 4。士氣閘門第二個比較是死碼。回傳值不設，當程序用"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 2537,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "839",
+   "note": "同 DOS overlay-09:009C7h。差異全是位址與字串（'移動／攻撃，残り移動力＝'、DS:06AAh、DS:0A03Ch、DS:0A86Bh、DS:0A2ABh、+18Eh、+15Ah、+198h），無邏輯差異"
   }
  ]
 }

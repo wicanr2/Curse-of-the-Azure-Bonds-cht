@@ -4772,7 +4772,7 @@
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-05.md",
-    "audit/function-index/pc98-overlay-26.md"
+    "audit/function-index/pc98-overlay-09.md"
    ]
   },
   {
@@ -8262,8 +8262,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/dos-overlay-13.md",
-    "audit/function-index/pc98-overlay-09.md",
-    "audit/function-index/pc98-overlay-13.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-09.md"
    ]
   },
   {
@@ -8353,6 +8353,7 @@
    "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
    "note": "施法前的目標閘門：byte[37E7h + 法術*10h]（屬性 +0Dh）\u003c 門檻（無號）直接失敗；法術 = 3（Cure Light Wounds，硬寫死的特例）改問 \u003cfar 0C84h+1\u003e(@暫存, 參數4, 參數6)，回真即通過；否則 byte[37E8h + 法術*10h]（+0Eh）= 0 即通過。n := \u003cfar 158Eh+2\u003e(本模組 11CFh(法術), 參數4, 參數6)；n \u003c= 0 失敗；byte[37E9h + 法術*10h]（+0Fh）= 0 即通過；否則 for k := 1 to n do i := byte[758Eh+k]，本模組 02B1h(byte[66A3h+i*4], byte[66A4h+i*4], 法術)（巢狀，多推 bp）任一回真就失敗。retf 8。spec 802",
    "citations": [
+    "audit/function-index/dos-overlay-09.md",
     "spec/687-far-call-flattening-and-stack-leftover.md",
     "spec/802-countdown-clock-and-spell-target-gate.md",
     "spec/835-ai-item-use-threshold-scan.md",
@@ -8415,9 +8416,15 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "837",
+   "note": "AI 試走一個候選方向(retf 0Ch)：偏移取自 DS:2B6h[模式*5+序號(1..5)]，d=(基準+偏移) mod 8；地形表 DS:26A2h 4 bytes/筆，+0=成本、0FFh 不可通行；斜向 ×3 正向 ×2；兩種障礙各有豁免效果組，擋住的寫法是把花費灌成移動力+1",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-09.md",
+    "spec/837-ai-move-direction-table.md",
+    "spec/839-ai-move-one-step.md"
    ]
   },
   {
@@ -8431,10 +8438,15 @@
    "callers": 2,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "839",
+   "note": "AI 走一步：狀態列 'Move/Attack, Move Left = ' + 移動力 div 2（PC-98 已翻）。DS:47F0h=上一步方向（8 為哨兵）、DS:47F1h=連續折返次數，1 換 AI 模式 / 2 清目標 / \u003e=3 移動力歸零。撤退時基準方向由 DS:7211h 算、陣營 0 再加 4。士氣閘門第二個比較是死碼。回傳值不設，當程序用",
    "citations": [
     "audit/function-index/dos-overlay-09.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/838-ai-attack-move-main-loop.md",
+    "spec/839-ai-move-one-step.md"
    ]
   },
   {
@@ -8452,7 +8464,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `idiv cx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/839-ai-move-one-step.md"
    ]
   },
   {
@@ -8483,7 +8496,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr ds:47F1h, 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr ds:47F1h, 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "spec/838-ai-attack-move-main-loop.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8498,7 +8514,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 41 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 41 bytes，已逐條讀完）",
+   "citations": [
+    "spec/838-ai-attack-move-main-loop.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8517,7 +8536,9 @@
    "citations": [
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/pc98-overlay-09.md",
-    "spec/830-monster-ai-turn.md"
+    "spec/830-monster-ai-turn.md",
+    "spec/838-ai-attack-move-main-loop.md",
+    "spec/839-ai-move-one-step.md"
    ]
   },
   {
@@ -8531,11 +8552,15 @@
    "callers": 1,
    "calls": 15,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "838",
+   "note": "AI 攻擊/移動主迴圈(spec 830 兩條路之一)：20 次上限；武器射程 = 物品類型表 DS:5CF6h +0Ch 減 1，無武器為 1；距離以半格計（div 2 後比射程）；+18Dh^[03h] 的 0 與 14h 都是結束哨兵；開場清 DS:47F0h..47F2h",
    "citations": [
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/pc98-overlay-09.md",
-    "spec/830-monster-ai-turn.md"
+    "spec/830-monster-ai-turn.md",
+    "spec/838-ai-attack-move-main-loop.md"
    ]
   },
   {
@@ -8576,7 +8601,9 @@
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/pc98-overlay-09.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/830-monster-ai-turn.md"
+    "spec/830-monster-ai-turn.md",
+    "spec/838-ai-attack-move-main-loop.md",
+    "spec/839-ai-move-one-step.md"
    ]
   },
   {
@@ -8599,7 +8626,8 @@
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/pc98-overlay-09.md",
     "spec/774-packbits-rle-and-combat-hotkeys.md",
-    "spec/830-monster-ai-turn.md"
+    "spec/830-monster-ai-turn.md",
+    "spec/839-ai-move-one-step.md"
    ]
   },
   {
@@ -8636,7 +8664,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:6FA2h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:6FA2h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "spec/838-ai-attack-move-main-loop.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8652,7 +8683,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "尾呼叫：最後一條是 `jmp loc_1539`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完）"
+   "note": "尾呼叫：最後一條是 `jmp loc_1539`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完）",
+   "citations": [
+    "spec/837-ai-move-direction-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8716,7 +8750,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jle short sub_159F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jle short sub_159F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完）",
+   "citations": [
+    "spec/837-ai-move-direction-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8750,7 +8787,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ah, ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ah, ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "spec/838-ai-attack-move-main-loop.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8771,7 +8811,8 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-09.md",
     "audit/function-index/pc98-overlay-13.md",
-    "spec/830-monster-ai-turn.md"
+    "spec/830-monster-ai-turn.md",
+    "spec/838-ai-attack-move-main-loop.md"
    ]
   },
   {
@@ -8817,7 +8858,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-   "note": "邊界碎片：落在 1542h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+   "note": "邊界碎片：落在 1542h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
+   "citations": [
+    "spec/838-ai-attack-move-main-loop.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8834,7 +8878,8 @@
    "citations": [
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/pc98-overlay-09.md",
-    "spec/830-monster-ai-turn.md"
+    "spec/830-monster-ai-turn.md",
+    "spec/838-ai-attack-move-main-loop.md"
    ]
   },
   {
@@ -8885,7 +8930,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-0Eh], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-0Eh], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "spec/838-ai-attack-move-main-loop.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8903,7 +8951,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 10h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
-    "audit/function-index/pc98-overlay-13.md"
+    "audit/function-index/pc98-overlay-13.md",
+    "spec/838-ai-attack-move-main-loop.md"
    ]
   },
   {
@@ -8919,7 +8968,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-   "note": "邊界碎片：落在 1681h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+   "note": "邊界碎片：落在 1681h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
+   "citations": [
+    "spec/839-ai-move-one-step.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13578,11 +13630,11 @@
    "note": "清掉一個方向的牆面位元(retf 6)：格 := DS:7206h^[300h + (row shl 4) + col]；dir=6 → and 3Fh、4 → and 0CFh、2 → and 0F3h、0 → and 0FCh。每列 16 格、每格 1 byte、四個方向各 2 bits。case 沒有 else，奇數方向碼整支不做事。⚠ 先前 spec 569 的註記(「只準備參數並執行 jmp」)是根據被截斷成 6 條指令的匯出寫的，已由補洞重匯出更正(見 spec 761)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-09.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-19.md",
-    "audit/function-index/pc98-overlay-14.md",
-    "context/50-log-2026-08-09-13.md"
+    "audit/function-index/pc98-overlay-14.md"
    ]
   },
   {
@@ -29054,7 +29106,7 @@
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-05.md",
-    "audit/function-index/pc98-overlay-26.md"
+    "audit/function-index/pc98-overlay-09.md"
    ]
   },
   {
@@ -32923,8 +32975,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/dos-overlay-13.md",
-    "audit/function-index/pc98-overlay-09.md",
-    "audit/function-index/pc98-overlay-13.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-09.md"
    ]
   },
   {
@@ -33064,7 +33116,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "837",
+   "note": "同 DOS overlay-09:00735h。22 條差異全是位址（+18Eh、DS:06AAh、DS:48ACh），無邏輯差異；兩張表逐 byte 相同"
   },
   {
    "platform": "pc98",
@@ -33077,7 +33132,10 @@
    "callers": 2,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "839",
+   "note": "同 DOS overlay-09:009C7h。差異全是位址與字串（'移動／攻撃，残り移動力＝'、DS:06AAh、DS:0A03Ch、DS:0A86Bh、DS:0A2ABh、+18Eh、+15Ah、+198h），無邏輯差異",
    "citations": [
     "audit/function-index/pc98-overlay-09.md",
     "audit/function-strings.md"
@@ -33139,7 +33197,10 @@
    "callers": 1,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "838",
+   "note": "同 DOS overlay-09:00DB1h。差異全是位址（+18Eh、+152h、+197h/198h、DS:78A6h、DS:0A876h、DS:9F2Ch、DS:8D90h、物品 +56h），無邏輯差異",
    "citations": [
     "audit/function-index/pc98-overlay-09.md"
    ]
@@ -38306,11 +38367,11 @@
    "note": "清掉一個方向的牆面位元(retf 6)：地圖在 DS:0A2A0h^[300h + (row shl 4) + col]，位元遮罩與 DOS overlay-14:003Eh 相同；唯一差別是用 cmp al,6 取代 xor ah,ah + cmp ax,6。同樣更正自被截斷的舊匯出",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-09.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-19.md",
-    "audit/function-index/pc98-overlay-14.md",
-    "context/50-log-2026-08-09-13.md"
+    "audit/function-index/pc98-overlay-14.md"
    ]
   },
   {
@@ -49936,9 +49997,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 38,
-   "Read": 12,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 1,
    "Fragment": 22,
    "CodeBytes": 7219,
    "Undefined": 92,
@@ -50491,9 +50552,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 36,
-   "Read": 11,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 2,
    "Fragment": 20,
    "CodeBytes": 6325,
    "Undefined": 111,
