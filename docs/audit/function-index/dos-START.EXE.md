@@ -75,10 +75,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `14689` | sub_14689 | — | 116 | 42 | 2 | 2 |  | 已解讀 | exact | docs/spec/673-ega-graphics-controller-reset.md<br>釋放主記錄與附帶緩衝:size := byte(p^[8]) × word(p^[11h])(記錄自己記著「幾筆 × 每筆多大」);p^[13h] 的 far pointer 非 nil 時先 FreeMem(@p^[13h], size),再 FreeMem(主記錄, size + 17h)(前 17h bytes 是標頭,+13h..+16h 就是那個指標),最後把呼叫端指標清成 nil。兩塊用同一個 size。用的是 Turbo Pascal 的 FreeMem,不是 spec 655 那套自製配置器 | — |
 | `14B4C` | sub_14B4C | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `14B53` | sub_14B53 | — | 135 | 49 | 1 | 1 |  | 已解讀 | exact | docs/spec/675-horizontal-mirror-pair.md<br>blit 前的參數計算:arg_A shl 3(×8,一個 byte 裝 8 個像素);src^[2] 與 dst^[2] 是各自的每列位元組數,var_12 = src stride - dst stride - arg_C 即每列要跳過多少;var_10/14/12/C 最後都乘 2,所以 sub_15329 以 word 為單位前進。dst^[11h] 與 14689h 算釋放大小用的是同一個欄位。參數靠 bx/cx 與一整片區域變數傳,不是堆疊參數 | — |
-| `14BDA` | sub_14BDA | — | 148 | 52 | 1 | 1 |  | 待解讀 | — | — | — |
+| `14BDA` | sub_14BDA | — | 148 | 52 | 1 | 1 |  | 已解讀 | exact | 933<br>blit 設定層(retn 0Eh = (目的表面, 來源表面, arg_8, arg_A, arg_C))：備妥 1Ch×2 bytes 的區域與 push ss/ds 之後叫內迴圈 sub_15388h(見 spec 931，做 and/or 遮罩合成)。位移量 n = 1(每像素 ×2)：var_C/var_14/var_12 各左移 1，var_6 = var_14 shl 1，var_10 = 來源^[2] shl 1；讀表面的 +13h/+15h 當遮罩來源。⚠三支之中只有本支進來不做 cld，方向旗標依賴呼叫端 | — |
 | `14C6E` | sub_14C6E | — | 357 | 136 | 1 | 3 |  | 待解讀 | — | — | — |
-| `14DD3` | sub_14DD3 | — | 143 | 52 | 1 | 1 |  | 待解讀 | — | — | — |
-| `14E62` | sub_14E62 | — | 157 | 56 | 1 | 1 |  | 待解讀 | — | — | — |
+| `14DD3` | sub_14DD3 | — | 143 | 52 | 1 | 1 |  | 已解讀 | exact | 933<br>blit 設定層(retn 0Eh，簽章同 14BDAh)：位移量 n = 2(每像素 ×4)，var_6 = var_14 不移，叫內迴圈 sub_15329h。★不讀表面的 +13h/+15h → 這一條路沒有遮罩，是純複製。進來先 cld | — |
+| `14E62` | sub_14E62 | — | 157 | 56 | 1 | 1 |  | 已解讀 | exact | 933<br>blit 設定層(retn 0Eh，簽章同 14BDAh)：位移量 n = 2(每像素 ×4)、進來先 cld，但讀表面的 +13h/+15h 並叫有遮罩的 sub_15388h。與 14BDAh(n=1、有遮罩)、14DD3h(n=2、無遮罩)構成 2×2 組合裡的三格 | — |
 | `14EFF` | sub_14EFF | — | 379 | 144 | 1 | 3 |  | 待解讀 | — | — | — |
 | `1507A` | sub_1507A | — | 149 | 54 | 1 | 1 |  | 已解讀 | exact | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>繪圖前置(近呼叫 retn 0Eh)：由兩個點陣圖表頭算出 13 個 local(var_8 := 參數A shl 3、var_C := var_8 * 來源^[2]、var_12 := 來源^[2] − 目的^[2] − 參數B、var_E := 目的^[11h] * 參數C，其餘 shl 2)，設 BX/CX 並把三個 local 歸零後跳進 sub_15329h。兩次 sub sp,1Ch 是兩層 local 分開配置 | — |
 | `1510F` | sub_1510F | — | 162 | 57 | 1 | 1 |  | 已解讀 | exact | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>繪圖前置(近呼叫 retn 0Eh)：與 1507Ah 同一組算式，多讀 目的^[13h] 與 目的^[15h] 兩個欄位，最後跳進 sub_15388h | — |
