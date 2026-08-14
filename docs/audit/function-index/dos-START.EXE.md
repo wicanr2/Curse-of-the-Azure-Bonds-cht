@@ -112,7 +112,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16645` | sub_16645 | — | 538 | 219 | 1 | 11 |  | 待解讀 | — | — | — |
 | `1685F` | sub_1685F | — | 74 | 33 | 4 | 3 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>檔案是否存在(retf 4)：把參數字串複製進 50h bytes 緩衝，FindFirst(路徑, 0, 記錄)，回傳 (word_24E58 = 0) and (字串長度 <> 0)。word_24E58 是 DosError | — |
 | `168A9` | sub_168A9 | — | 207 | 82 | 1 | 5 |  | 待解讀 | — | — | — |
-| `16A62` | sub_16A62 | — | 194 | 83 | 1 | 3 |  | 待解讀 | — | — | — |
+| `16A62` | sub_16A62 | — | 194 | 83 | 1 | 3 |  | 已解讀 | exact | docs/spec/774-packbits-rle-and-combat-hotkeys.md<br>PackBits 式 RLE 解壓(retf 10h，四個遠指標，位置參數是指向指標的遠指標)：有號碼 n 落在 0..7Eh 時 Move(來源+1, 目的, n+1)、來源前進 n+2；落在 −127..−1 時 FillChar(目的, −n, 來源[+1])、來源前進 2；直到 來源位置 >= 長度^(無號)。⚠ 7Fh 與 80h 兩條分支都不成立，來源位置不前進 → 無限迴圈 | — |
 | `16B24` | sub_16B24 | — | 243 | 109 | 1 | 7 |  | 待解讀 | — | — | — |
 | `16C17` | sub_16C17 | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>依序 @Close 兩個 File 參數(先 arg_4 再 arg_0) | — |
 | `16C3E` | sub_16C3E | — | 559 | 235 | 2 | 17 |  | 待解讀 | — | — | — |

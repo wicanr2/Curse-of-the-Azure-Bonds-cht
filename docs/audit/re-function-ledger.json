@@ -19543,6 +19543,24 @@
    "level": "exact",
    "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
    "note": "音效命令分派(retf 2)：命令不在 CS:17130h 的集合裡就安靜丟掉；裝置代碼 unk_21DAAh 等於 2 時全部不做。00h 關兩組、01h 叫 197B4h(1)、0FFh 關兩組後叫 19355h 卸載並清 unk_21DACh、02h..0Eh 依裝置 0/1 各走一組播放程序(命令值先減 1)、0Fh 把 1388h(5000)寫進 unk_21154h 指向的 word"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 92770,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/774-packbits-rle-and-combat-hotkeys.md",
+   "note": "PackBits 式 RLE 解壓(retf 10h，四個遠指標，位置參數是指向指標的遠指標)：有號碼 n 落在 0..7Eh 時 Move(來源+1, 目的, n+1)、來源前進 n+2；落在 −127..−1 時 FillChar(目的, −n, 來源[+1])、來源前進 2；直到 來源位置 >= 長度^(無號)。⚠ 7Fh 與 80h 兩條分支都不成立，來源位置不前進 → 無限迴圈"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 4723,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/774-packbits-rle-and-combat-hotkeys.md",
+   "note": "戰鬥中的三個熱鍵(retf 4)：KeyPressed 為假就離開；ReadKey(回 0 就再讀一次擴充碼)。'2' 切換 DS:75DAh 並顯示 CS:1260h 'Magic On' / CS:1269h 'Magic Off'；空白把 +0F7h < 80h(士氣旗標未設)且 +195h <> 1 的成員 +198h 清 0，若參數角色的 +198h 也是 0 就把 +18Dh^[3] 設 14h 並回 true；'-' 走另一支。⚠ 擴充鍵的第二個位元組會直接跟 32h/20h/2Dh 比對，掃描碼相同就會誤判"
   }
  ]
 }
