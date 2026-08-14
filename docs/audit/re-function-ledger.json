@@ -22227,15 +22227,6 @@
    "note": "同 DOS overlay-16:01388h（module_align 對齊，助憶碼序列完全相同）。只差三條：DS:8BF6h↔5BF0h 與兩個 CS 常數／字串函式位址"
   },
   {
-   "platform": "dos",
-   "module": "overlay-30",
-   "ea": 17,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "781",
-   "note": "畫 11×11 的自動地圖(retf 6，(中心y, 中心x, 隊伍朝向))：視窗起點 = clamp(中心 − 5, 0, 5)（16×16 地圖上的 11×11 視窗），標記偏移 = 中心 − 起點。每格叫四次 sub_6BDh(x, y, 方向 0/2/4/6) 取牆面，四個方向各加 1/2/4/8，圖磚編號 = 104h + 位元組合，畫在 (欄+2, 列+2)。最後在偏移位置畫 100h + 朝向 div 2（四個方向箭頭）"
-  },
-  {
    "platform": "pc98",
    "module": "overlay-30",
    "ea": 17,
@@ -25456,6 +25447,33 @@
    "level": "exact",
    "spec": "docs/spec/1005-effect-dispatch-table.md",
    "note": "效果碼 78 的處理常式（overlay entry stub 的目標，起點確定）。<overlay-23 entry#23>(角色, 角色^[1A4h])(STANDUP，PC-98 讀 +1A5h) 回 0 時，<sub_3C>(角色, 4Eh, 節點^[3], 1)；回傳值只存進區域變數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）；助憶碼序列與 DOS 對側完全相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 2113,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1006-first-person-view-geometry.md",
+   "note": "第一人稱視野主程序(retf 6，宣告順序 (欄, 列, 方向))：DS:720Eh(PC-98 DS:0A2A8h) 非 0 就改叫 sub_11h 畫自動地圖。否則 sub_18Ch 畫面板，取左=(方向+6)mod 8、後=+4、右=+2，中心先移到前方兩格，for 深度 := 2 downto 0 每層左右兩趟對稱掃描(4/4/3/3、3/3、2/2 格)，畫完退一格；由遠而近的畫家演算法。每次貼圖是 sub_448h(欄, 列, 圖號, 牆位)，欄基準表 DS:0AF6h(word)、列基準表 DS:0B0Ah(byte 筆距 2)各 10 筆(PC-98 DS:16CAh／DS:16DEh，值相同)。牆位 0..9 的寬×高相加正好 156 = sub_448h 來源陣列的列距。牆位 9 是一段正面牆結束時的收邊柱。⚠ 匯出在 0AF6h..0AFDh 與 0B05h..0B2Fh 沒反組譯，已直接讀原始位元組補上(皆為程式碼)；IDA 把 mov ax,[DS:0AF6h] 的運算元誤命名成 overlay 本地的 word_AF6，是假交叉參照"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 1931,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1006-first-person-view-geometry.md",
+   "note": "第一人稱視野主程序(retf 6，宣告順序 (欄, 列, 方向))：DS:720Eh(PC-98 DS:0A2A8h) 非 0 就改叫 sub_11h 畫自動地圖。否則 sub_18Ch 畫面板，取左=(方向+6)mod 8、後=+4、右=+2，中心先移到前方兩格，for 深度 := 2 downto 0 每層左右兩趟對稱掃描(4/4/3/3、3/3、2/2 格)，畫完退一格；由遠而近的畫家演算法。每次貼圖是 sub_448h(欄, 列, 圖號, 牆位)，欄基準表 DS:0AF6h(word)、列基準表 DS:0B0Ah(byte 筆距 2)各 10 筆(PC-98 DS:16CAh／DS:16DEh，值相同)。牆位 0..9 的寬×高相加正好 156 = sub_448h 來源陣列的列距。牆位 9 是一段正面牆結束時的收邊柱。與 dos overlay-30:00841h 助憶碼序列完全相同(825 條；DOS 側匯出少 20 條是兩個未反組譯的洞)，差異只有 DS 位址"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 17,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "畫 11×11 的自動地圖(retf 6，宣告順序 (中心欄, 中心列, 隊伍朝向)——第一個參數餵給 sub_6BDh 的欄位，見 spec 1006)。視窗起點 = clamp(中心 − 5, 0, 5)（16×16 地圖上的 11×11 視窗），標記偏移 = 中心 − 起點。每格叫四次 sub_6BDh(欄, 列, 方向 0/2/4/6) 取牆面，四個方向各加 1/2/4/8，圖磚編號 = 104h + 位元組合"
   }
  ]
 }
