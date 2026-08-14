@@ -9735,7 +9735,13 @@
    "callers": 8,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "取實際生效的武器:角色^[151h] 非 NIL 時呼叫 \u003coverlay-24 entry#43\u003e(角色, @r)(spec 697 的武器選擇),**回傳 0 或帶回 NIL 都算失敗**,失敗就退回 角色^[151h] 本身;回傳 r(DX:AX)。spec 697 記過「只看回傳值拿不到節點」,這支正好示範了兩個條件都要檢查的正確用法",
+   "citations": [
+    "spec/738-effproc-effect-handlers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11105,7 +11111,8 @@
    "spec": "docs/spec/737-effproc-small-handlers.md",
    "note": "某種武器把傷害**覆寫**成 1d6+1:w := DS:6506h^[151h],w 非 NIL 且 w^[2Eh] = 55h 時 DS:6F94h := ROLLDAMAGEDICE(1,6) + 1。⚠ 是指派不是累加,把原本算好的值整個蓋掉",
    "citations": [
-    "spec/737-effproc-small-handlers.md"
+    "spec/737-effproc-small-handlers.md",
+    "spec/738-effproc-effect-handlers.md"
    ]
   },
   {
@@ -11202,7 +11209,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "換一種傷害型別再打一次:DS:6F95h := 0Ah,d := ROLLDAMAGEDICE(2,8),\u003coverlay-23 entry#20\u003e(角色^[18Dh]^[0Ah], d, 0, 0)。不動 DS:6F94h 而是直接對目標再結算一次,所以是附加傷害不是修正值。⚠ DS:6F95h 設完沒有還原(與 spec 706 那支相反)",
+   "citations": [
+    "spec/738-effproc-effect-handlers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11326,7 +11339,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "對特定目標的傷害加成:p := 角色^[18Dh]^[0Ah](目前鎖定的目標);(p^[14Bh] and 8) 非 0 時 DS:6F94h += 角色^[10Dh](**累加不是覆寫**)。與 spec 737 的 255Ah(把 DS:6F94h 覆寫成 1d6+1)對照,同一個全域一支覆寫一支累加,**執行順序決定結果**",
+   "citations": [
+    "spec/738-effproc-effect-handlers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11419,7 +11438,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "解除恐懼(把 spec 724 的 4A8Fh 做的事還原):arg_0 非 0 時,**+0F7h 正好等於 0B3h 才**清成 0 並把 +198h 設 0;+18Dh^[10h] 則無條件清 0。⚠ +0F7h 的還原有條件——spec 734 的操縱屍體會把它設成 0B2h(原值 \u003e 7Fh 時),那種情況下解除恐懼不會動到它。兩個效果對同一個 byte 的處理不對稱,順序會影響結果",
+   "citations": [
+    "spec/738-effproc-effect-handlers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17615,7 +17640,8 @@
     "audit/function-index/dos-overlay-22.md",
     "spec/716-nil-slot-hazard.md",
     "spec/724-fear-and-puteffect-signature.md",
-    "spec/729-beam-walk-and-target-collect.md"
+    "spec/729-beam-walk-and-target-collect.md",
+    "spec/738-effproc-effect-handlers.md"
    ]
   },
   {
@@ -19756,7 +19782,8 @@
    "note": "決定實際生效的武器:f := byte [5D04h + 角色^[151h]^[2Eh] shl 4](spec 691 那張表的格內 +2,是 bitfield);f and 10h → 結果 := 角色^[151h];f and 08h 時,f and 01h → 結果 := 角色^[17Dh]、f and 80h → 結果 := 角色^[181h]。回傳 (結果 \u003c\u003e NIL) 或 **f = 0Ah(整個 byte 相等,不是遮罩比較)**。⚠ 三個 if 是依序覆蓋不是互斥分支,同時成立時最後留下 +181h;武器從 var 參數帶出去,回傳值只是有沒有找到",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/697-strength-hit-table-and-weapon-select.md"
+    "spec/697-strength-hit-table-and-weapon-select.md",
+    "spec/738-effproc-effect-handlers.md"
    ]
   },
   {
@@ -19841,6 +19868,7 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
     "spec/583-ledger-denominator-repair.md"
    ]
   },
@@ -19859,7 +19887,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr dword_3C+2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 928 bytes，已逐條讀完）",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md"
    ]
   },
   {
@@ -43770,6 +43799,7 @@
    "note": "unit 初始化:far call 19Ah:2Ah 與 164h:57h",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
     "spec/583-ledger-denominator-repair.md"
    ]
   },
@@ -43786,7 +43816,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md"
    ]
   },
   {
@@ -45797,9 +45828,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 96,
+   "Read": 100,
    "NotBlocking": 0,
-   "Todo": 29,
+   "Todo": 25,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,

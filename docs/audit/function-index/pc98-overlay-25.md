@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADTRAINING | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 19Ah:2Ah 與 164h:57h | audit/embedded-strings.md<br>spec/583-ledger-denominator-repair.md |
-| `0011` | sub_11 | — | 928 | 342 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0000` | sub_0 | LOADTRAINING | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 19Ah:2Ah 與 164h:57h | audit/embedded-strings.md<br>audit/function-index/dos-overlay-12.md<br>spec/583-ledger-denominator-repair.md |
+| `0011` | sub_11 | — | 928 | 342 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-12.md |
 | `03B1` | sub_3B1 | FIGLEVELSTUFF | 704 | 247 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `0671` | sub_671 | ADJUSTCLERICALSPELLS | 370 | 121 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `07E3` | sub_7E3 | SETSAVETHROWS | 737 | 282 | 2 | 1 | ✓ | 待解讀 | — | — | — |
