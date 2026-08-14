@@ -27240,7 +27240,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "965",
+   "note": "區塊配置 + 版本比對 + 剩餘記憶體量測(far, retf 6 = (要求大小, 檔案))，由 sub_139DDh 呼叫兩次。①要求大小向上對齊到 40h(64 bytes)倍數後 div 40h 再 shl 2 換算成段數(等於 div 10h，所以配置粒度是 64 bytes)，交給 sub_18883h 配置。②用 sub_1C15Dh(BlockRead)讀 4 + 2 + 2 bytes 的標頭，inc word_280B6h 計數。③版本比對：主(word_280B2h)相同且次(word_280B4h)較小就更新次；主較小就兩個都更新。兩個是分開的 if 不是 else if，但條件互斥所以只會更新一次。★④把 word_23AECh(配置指標)與 word_23AE8h(下界)各用 sub_1A8CEh(× 10h 長整數乘法)換算成線性位址相減，得到 dword_24E75h = 剩餘可用位元組數。⚠那兩段 les di 只是編譯器對 LongInt(Seg(p)) * 16 + Ofs(p) 的直譯，不是特殊技巧"
   },
   {
    "platform": "pc98",
@@ -52404,9 +52407,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 266,
+   "Read": 267,
    "NotBlocking": 29,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
