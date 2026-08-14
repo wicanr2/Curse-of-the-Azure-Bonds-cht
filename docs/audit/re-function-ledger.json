@@ -68,15 +68,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 1126,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 3093,
    "state": "待解讀",
    "level": "",
@@ -145,15 +136,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Ch 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 10562,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Eh 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "dos",
@@ -21586,6 +21568,150 @@
    "level": "exact",
    "spec": "844",
    "note": "上鎖的門選單：DS:7588h/7589h/758Ah 三個開關 + 0288h(6)/06F4h(1Fh) 決定 Bash/Pick/Knock 是否出現，選單只剩 ' Exit' 就走 003Eh。⚠ 模式 3 選 'P' 只把 DS:7589h 關掉不開鎖（PC-98 同樣寫法）。PC-98 側 00BCCh 相似度 0.615，未讀完"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 2318,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "710",
+   "note": "同 DOS overlay-22:008A1h（entry#？，助憶碼序列完全相同、0 個差異塊）。24 條差異全是位址：DS:9594h↔6506h、DS:0A388h↔729Ch、物品節點 +56h/+5Dh/+63h↔+2Eh/+35h/+3Bh（PC-98 節點大 28h）、DS:7D92h↔4CB4h、表基底 −727Ch↔5CF6h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 927,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "780",
+   "note": "同 DOS overlay-30:00448h（助憶碼序列完全相同、0 個差異塊）。6 條差異全是位址：三張 10 bytes 平行表 DS:16ACh/16B6h/16C0h↔0AD8h/0AE2h/0AECh、DS:0A29Ch↔7202h、貼圖呼叫 232h:2Fh↔20Bh:2Fh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 32,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "728",
+   "note": "同 DOS overlay-22:00020h（同位址、助憶碼序列完全相同、0 個差異塊）。9 條差異全是位址：法術屬性表 DS:61B4h↔37DAh、角色 +15Ah/15Ch↔+159h/15Bh、DS:7F27h↔4FBAh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 3938,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "731",
+   "note": "同 DOS overlay-22:00F06h（助憶碼序列完全相同、0 個差異塊）。25 條差異全是位址：法術屬性表 DS:61B4h↔37DAh（含 +2/+3/+4/+8/+A 各欄）、DS:0A02Fh↔6F95h、DS:0A520h↔7434h、DS:9594h↔6506h、角色 +19Bh↔+19Ah"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 508,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "618",
+   "note": "同 PC-98 overlay-07:00317h（INITECL）。唯一序列差異是 PC-98 多一條 mov sp, bp（該側有區域變數、DOS 沒有），其餘 24 條全是位址：DS:8B62h/8B64h/8B52h/8B53h↔0BDF4h/0BDF6h/0BDE4h/0BDE5h、DS:75E8h↔0A87Ah、DS:4FB4h↔7F21h、DS:75F0h..75F8h↔0A882h..0A88Ah、DS:4F9Dh↔7F09h、DS:4F99h↔7F05h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 332,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "同 DOS overlay-14:00153h（牆面位元設定端）。唯一序列差異是 PC-98 少一條 xor ah, ah（DOS 把 byte 零延伸成 word 再比，PC-98 直接 cmp al），其餘全是 DS:0A2A0h↔7206h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 1549,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "778",
+   "note": "同 DOS overlay-30:006BDh（讀迷宮某方向的 4-bit 碼）。唯一序列差異是 xor ah, ah 的有無，其餘是 DS:0BDF0h↔8B5Eh、DS:0A2A0h↔7206h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 3701,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "712",
+   "note": "同 DOS overlay-22:00E11h（效果持續時間表，retf 2 只吃一個 word）。唯一序列差異是 xor ah, ah 的有無，其餘是 DS:7F27h↔4FBAh、法術屬性表 DS:61B8h/61B9h↔37DEh/37DFh、擲骰呼叫目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 4843,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "582",
+   "note": "同 PC-98 overlay-23:012D8h（MAKESAVE）。唯一序列差異是 DOS 多一條 xor ah, ah，其餘全是位址：DS:6FA8h↔0A042h、DS:6F92h↔0A02Ch、DS:6FA7h↔0A041h、角色 +186h↔+187h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 1213,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "615",
+   "note": "同 PC-98 overlay-07:005BDh（MAXRANGE）。唯一序列差異是 DOS 多一條 xor ah, ah，其餘是 DS:4F99h↔7F05h、DS:4F9Dh↔7F09h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 4396,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "719",
+   "note": "同 DOS overlay-22:010D2h（法術選目標模式）。★PC-98 多兩條：mov al,[bp+arg_6]; mov ds:0BE2Dh,al（把模式碼另存一份全域，DOS 沒有）。其餘是位址：DS:0A641h/0A643h↔7555h/7557h、DS:0A521h/0A520h↔7435h/7434h、DS:9594h↔6506h、法術屬性表 +61BBh↔37E1h，以及 xor ah,ah 的有無"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 10508,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "747",
+   "note": "同 DOS overlay-12:0289Ch（第三處麻痺凝視）。★DOS 算 2Dh(45) × 0Bh(11) = 495 當常數，PC-98 改讀全域 DS:7F16h（同一個全域也出現在 pc98 overlay-14:00807h）。其餘是位址：+18Eh↔+18Dh、DS:0A03Dh/0A03Fh↔6FA3h/6FA5h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 10562,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "609",
+   "note": "同 PC-98 overlay-02:02ACEh（ECL opcode 2Eh 範圍效果與全滅判定）。★DOS 多印一句 'press <enter>/<return> to continue'（CS:291Fh，11 條指令），PC-98 沒有。其餘是位址：DS:6506h/650Ah↔9594h/9598h、DS:4F9Dh↔7F09h、角色 +189h↔+18Ah"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 1457,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "772",
+   "note": "同 DOS overlay-19:00597h（七欄金錢顯示）。★三處真差異：(1) 名稱表 DOS DS:0F93h 每筆 0Bh、PC-98 DS:2057h 每筆 9；(2) DOS 多一段 cwd/mov cx,2/idiv cx（除 2），PC-98 沒有；(3) 畫面欄位 DOS 14h/15h、PC-98 10h/11h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 2055,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "770",
+   "note": "同 DOS overlay-14:0083Ch（隊伍前進一格）。★DOS 算 32h(50) × 0Ch(12) = 600 當常數，PC-98 改讀全域 DS:7F16h（與 pc98 overlay-12:0290Ch 同一個全域）。其餘是位址：方向位移表 DS:489Eh/48A7h↔2694h/269Dh、DS:0A2A9h/0A2AAh/0A2ABh↔720Fh/7210h/7211h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 1126,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "604",
+   "note": "同 PC-98 overlay-02:0049Ch（ECL opcode 0Bh 產生 N 個角色）。★PC-98 多印一句 '読み込み中です'（16 條指令），DOS 沒有。其餘是位址：DS:6506h↔9594h、名額上限全域 DS:47E6h↔789Ch，以及區域變數位移各差 1"
   }
  ]
 }

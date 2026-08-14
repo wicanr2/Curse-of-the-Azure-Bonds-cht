@@ -4957,9 +4957,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Bh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "604",
+   "note": "同 PC-98 overlay-02:0049Ch（ECL opcode 0Bh 產生 N 個角色）。★PC-98 多印一句 '読み込み中です'（16 條指令），DOS 沒有。其餘是位址：DS:6506h↔9594h、名額上限全域 DS:47E6h↔789Ch，以及區域變數位移各差 1",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-strings.md"
@@ -6030,9 +6031,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Eh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "609",
+   "note": "同 PC-98 overlay-02:02ACEh（ECL opcode 2Eh 範圍效果與全滅判定）。★DOS 多印一句 'press \u003center\u003e/\u003creturn\u003e to continue'（CS:291Fh，11 條指令），PC-98 沒有。其餘是位址：DS:6506h/650Ah↔9594h/9598h、DS:4F9Dh↔7F09h、角色 +189h↔+18Ah",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-strings.md"
@@ -7228,7 +7230,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "618",
+   "note": "同 PC-98 overlay-07:00317h（INITECL）。唯一序列差異是 PC-98 多一條 mov sp, bp（該側有區域變數、DOS 沒有），其餘 24 條全是位址：DS:8B62h/8B64h/8B52h/8B53h↔0BDF4h/0BDF6h/0BDE4h/0BDE5h、DS:75E8h↔0A87Ah、DS:4FB4h↔7F21h、DS:75F0h..75F8h↔0A882h..0A88Ah、DS:4F9Dh↔7F09h、DS:4F99h↔7F05h"
   },
   {
    "platform": "dos",
@@ -7274,7 +7279,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "615",
+   "note": "同 PC-98 overlay-07:005BDh（MAXRANGE）。唯一序列差異是 DOS 多一條 xor ah, ah，其餘是 DS:4F99h↔7F05h、DS:4F9Dh↔7F09h",
    "citations": [
     "spec/687-far-call-flattening-and-stack-leftover.md"
    ]
@@ -13670,6 +13678,7 @@
    "note": "牆面位元的設定端(retf 6，宣告順序 (x, y, 方向))：座標不在 0..0Fh(有號)就整支不做；否則把 DS:7206h^[300h + (y shl 4) + x] 的對應 2-bit 欄位設成 01 — 方向 6 → or 40h、4 → or 10h、2 → or 04h、0 → or 01h。與 spec 761 的 003Eh(清成 00)成對；⚠ 003Eh 沒有範圍檢查，兩半防護不對稱",
    "citations": [
     "audit/function-index/dos-overlay-14.md",
+    "audit/function-index/pc98-overlay-14.md",
     "spec/781-put8x8symbol-and-wall-bit-set.md",
     "spec/798-pool-all-money-and-wall-open-check.md"
    ]
@@ -13691,6 +13700,7 @@
    "note": "隊上有沒有人符合(retf 2)：走 DS:650Ah 隊伍鏈，(角色^[109h+索引] \u003e 0) 或 ((角色^[111h+索引] \u003e 0) 且 \u003c呼叫\u003e(角色)) 成立就回 true 並停止。與 spec 756 overlay-19:3656h、spec 757 overlay-09:024Dh 同一個判準；找到就停，不數人數",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-14.md",
     "spec/783-cross-platform-pairs-first-batch.md",
     "spec/844-locked-door-menu.md"
@@ -17691,6 +17701,7 @@
    "citations": [
     "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/710-effect-collection-and-leftover-target.md",
     "spec/715-sleep-hd-budget.md"
    ]
@@ -17763,6 +17774,7 @@
    "spec": "docs/spec/712-duration-table.md",
    "note": "效果持續時間 sub_E11h(id): retf 2,**只吃一個 word**(先前從呼叫端推成 4 個是錯的)。id=28h → 1d6×10;39h 或 3Dh → 5d4;3Bh → 1d4×10+40;3Fh → DS:4FBAh=5 時 2d10×10、否則 (1d10+10)×10(兩條上限同為 200 但下限差很多);43h → 5A0h=1440=24×60;其他 → 表[id].+5 × \u003coverlay-24 entry#36\u003e(id) + 表[id].+4。表就是 spec 705 的 DS:37DAh(16 bytes 一格),(+2,+3) 與 (+4,+5) 是兩組形狀相同的線性係數,由呼叫端決定用哪組。⚠ 1440 是一天的分鐘數且其餘多為 10 的倍數,單位幾乎確定是分鐘(只有這一條證據,標為推論;AD\u0026D 的 turn=10 分鐘也相容)",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/711-target-count-clamp-and-callee-arity.md",
     "spec/712-duration-table.md"
    ]
@@ -17784,6 +17796,7 @@
    "note": "法術結算的共同迴圈(retf 0Eh)。參數依 Pascal 順序是 (法術編號, 等級覆寫, arg_8, 傷害量, 傷害型別, 訊息 far);傷害量為 0 時 DS:6F95h 清 0、否則設成傷害型別。走目標陣列(**有 NIL 檢查**),每個目標:表[法術編號].+8 為 0 則豁免 := 0、否則 \u003coverlay-23 entry#8\u003e(p, 表.+9, 0);傷害量 \u003e 0 才 \u003coverlay-23 entry#20\u003e;表.+0Ah \u003e 0 才 \u003cPUTEFFECT\u003e(p, 表.+0Ah, sub_E11h(法術編號), lvl, arg_8, 表.+8, 豁免, 訊息)。⚠ **訊息只在 表.+0Ah \u003e 0 時才會被用到**——這解掉 spec 730 的未定項:4DA0h 尾端那句可能根本不顯示。⚠ 有一行用 表[DS:6F97h].+2 = 0FFh 的特例判斷,其餘全用 表[arg_C];已讀的呼叫點兩者永遠相等,但 remake 若改成參數傳遞就會讀到別的東西。DS:37DAh 表至此解出 9 個欄位(+0/+2/+3/+4/+5/+6/+7/+8/+9/+0Ah)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-22.md",
     "audit/string-pairs.md",
     "spec/731-spell-resolution-loop.md"
    ]
@@ -20412,7 +20425,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "582",
+   "note": "同 PC-98 overlay-23:012D8h（MAKESAVE）。唯一序列差異是 DOS 多一條 xor ah, ah，其餘全是位址：DS:6FA8h↔0A042h、DS:6F92h↔0A02Ch、DS:6FA7h↔0A041h、角色 +186h↔+187h",
    "citations": [
     "spec/582-makesave-and-losedude.md"
    ]
@@ -23109,9 +23125,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-30.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/overlay-init-graph.md",
-    "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "context/50-log-2026-08-09-13.md"
    ]
   },
   {
@@ -23129,6 +23145,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
     "spec/README.md"
@@ -23189,6 +23206,7 @@
    "spec": "docs/spec/780-submap-blit-entry-init-and-weighted-score.md",
    "note": "依形狀表分塊貼圖(retf 8)：三張各 10 bytes 的平行表 DS:0AD8h(起始欄)/0AE2h(高)/0AECh(寬)以第一個參數索引；雙層迴圈逐格取 DS:7202h^[(列−1)*9Ch + 欄]，非 0 且座標在 0..0Ah 內才叫 020Bh:002Fh(y+2, x+2, v, 1, 1)；欄在內圈遞增(資料逐列連續)。超出範圍只跳過不中斷",
    "citations": [
+    "audit/function-index/pc98-overlay-30.md",
     "spec/780-submap-blit-entry-init-and-weighted-score.md"
    ]
   },
@@ -23249,6 +23267,7 @@
    "spec": "docs/spec/778-map-four-planes-and-pc98-take-menu.md",
    "note": "讀迷宮某方向的 4-bit 碼(retf 6，宣告順序 (x, y, 方向))：先 0556h 範圍檢查、不在 0..15 且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則環繞；索引 := (y shl 4) + x；方向 0 取 DS:7206h^[索引] 的高 nibble、2 取低 nibble、4 取 +100h 的高 nibble、6 取 +100h 的低 nibble。與 spec 761/763 合起來可證地圖是四個 256-byte 平面(+000h/+100h 每格兩個 4-bit 碼、+200h 整 byte、+300h 四個 2-bit 欄位)",
    "citations": [
+    "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
@@ -29398,6 +29417,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, 67h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
@@ -31777,6 +31797,7 @@
    "note": "INITECL:清一批旗標、清空 GOSUB 堆疊(DS:A882h/A886h)與六個比較旗標(DS:A88Ah)、把 bank1^[5C2h] 設為 FFh,然後把 ECL_PC 設成 8000h(bank3 起點)並連續 READVAR(1) 五次,依序把 ADDFNC 結果存進 DS:7F17h/7F19h/7F1Bh/7F1Dh/7F1Fh——ECL script 的檔頭就是五個operand,各自編碼一個進入點位址(長度不固定,取決於各 operand 的 code)。收尾清 bank0 6A00h 起 20h 項與 bank1 800h+7F79h*2 起 9 項,最後 DS:7F11h:=0",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-07.md",
     "spec/618-ecl-script-header.md"
    ]
   },
@@ -31841,6 +31862,7 @@
    "spec": "docs/spec/615-ecl2-findguy-maxrange.md",
    "note": "MAXRANGE(dir,x,y):bank0^[1CCh]=0(非地城)時直接回 2 並把 bank1^[582h] 也設為 2;否則以 far 017C:0034 逐格檢查可通行,最多 2 格(上限寫死)。方向編碼是 0/2/4/6 間隔 2——0 與 6 動 y、2 與 4 動 x",
    "citations": [
+    "audit/function-index/dos-overlay-07.md",
     "spec/615-ecl2-findguy-maxrange.md"
    ]
   },
@@ -36859,7 +36881,10 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "747",
+   "note": "同 DOS overlay-12:0289Ch（第三處麻痺凝視）。★DOS 算 2Dh(45) × 0Bh(11) = 495 當常數，PC-98 改讀全域 DS:7F16h（同一個全域也出現在 pc98 overlay-14:00807h）。其餘是位址：+18Eh↔+18Dh、DS:0A03Dh/0A03Fh↔6FA3h/6FA5h",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -38437,7 +38462,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "同 DOS overlay-14:00153h（牆面位元設定端）。唯一序列差異是 PC-98 少一條 xor ah, ah（DOS 把 byte 零延伸成 word 再比，PC-98 直接 cmp al），其餘全是 DS:0A2A0h↔7206h",
    "citations": [
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/pc98-overlay-14.md",
@@ -38600,7 +38628,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "770",
+   "note": "同 DOS overlay-14:0083Ch（隊伍前進一格）。★DOS 算 32h(50) × 0Ch(12) = 600 當常數，PC-98 改讀全域 DS:7F16h（與 pc98 overlay-12:0290Ch 同一個全域）。其餘是位址：方向位移表 DS:489Eh/48A7h↔2694h/269Dh、DS:0A2A9h/0A2AAh/0A2ABh↔720Fh/7210h/7211h",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
@@ -38640,12 +38671,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/526-pc98-moveparty-map-writer-searchrec-correction.md",
-    "spec/527-pc98-moveparty-action-writer-boundary.md",
-    "spec/533-pc98-moveparty-helper-gate.md"
+    "spec/527-pc98-moveparty-action-writer-boundary.md"
    ]
   },
   {
@@ -41614,7 +41645,10 @@
    "callers": 4,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "772",
+   "note": "同 DOS overlay-19:00597h（七欄金錢顯示）。★三處真差異：(1) 名稱表 DOS DS:0F93h 每筆 0Bh、PC-98 DS:2057h 每筆 9；(2) DOS 多一段 cwd/mov cx,2/idiv cx（除 2），PC-98 沒有；(3) 畫面欄位 DOS 14h/15h、PC-98 10h/11h"
   },
   {
    "platform": "pc98",
@@ -43409,7 +43443,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "728",
+   "note": "同 DOS overlay-22:00020h（同位址、助憶碼序列完全相同、0 個差異塊）。9 條差異全是位址：法術屬性表 DS:61B4h↔37DAh、角色 +15Ah/15Ch↔+159h/15Bh、DS:7F27h↔4FBAh",
    "citations": [
     "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-04.md",
@@ -43481,7 +43518,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "710",
+   "note": "同 DOS overlay-22:008A1h（entry#？，助憶碼序列完全相同、0 個差異塊）。24 條差異全是位址：DS:9594h↔6506h、DS:0A388h↔729Ch、物品節點 +56h/+5Dh/+63h↔+2Eh/+35h/+3Bh（PC-98 節點大 28h）、DS:7D92h↔4CB4h、表基底 −727Ch↔5CF6h"
   },
   {
    "platform": "pc98",
@@ -43545,7 +43585,10 @@
    "callers": 10,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "712",
+   "note": "同 DOS overlay-22:00E11h（效果持續時間表，retf 2 只吃一個 word）。唯一序列差異是 xor ah, ah 的有無，其餘是 DS:7F27h↔4FBAh、法術屬性表 DS:61B8h/61B9h↔37DEh/37DFh、擲骰呼叫目標",
    "citations": [
     "audit/embedded-strings.md",
     "audit/string-pairs.md"
@@ -43562,7 +43605,10 @@
    "callers": 47,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "731",
+   "note": "同 DOS overlay-22:00F06h（助憶碼序列完全相同、0 個差異塊）。25 條差異全是位址：法術屬性表 DS:61B4h↔37DAh（含 +2/+3/+4/+8/+A 各欄）、DS:0A02Fh↔6F95h、DS:0A520h↔7434h、DS:9594h↔6506h、角色 +19Bh↔+19Ah",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
@@ -43581,7 +43627,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "719",
+   "note": "同 DOS overlay-22:010D2h（法術選目標模式）。★PC-98 多兩條：mov al,[bp+arg_6]; mov ds:0BE2Dh,al（把模式碼另存一份全域，DOS 沒有）。其餘是位址：DS:0A641h/0A643h↔7555h/7557h、DS:0A521h/0A520h↔7435h/7434h、DS:9594h↔6506h、法術屬性表 +61BBh↔37E1h，以及 xor ah,ah 的有無",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -46015,6 +46064,7 @@
    "spec": "docs/spec/582-makesave-and-losedude.md",
    "note": "MAKESAVE(modifier, save_type, char):d20 存全域 DS:A02Ch,自然 1 必敗、20 必成(在加修正之前判定);否則加 char^[187h] 與 modifier,類型存 DS:A041h,CHECKFX(0Ch) 可再改寫骰值;成功條件 char^[0DFh+save_type] \u003c= DS:A02Ch。結果存 DS:A042h。角色記錄 +0DFh 起是豁免表",
    "citations": [
+    "audit/function-index/dos-overlay-23.md",
     "spec/582-makesave-and-losedude.md"
    ]
   },
@@ -48808,9 +48858,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-30.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/overlay-init-graph.md",
-    "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "context/50-log-2026-08-09-13.md"
    ]
   },
   {
@@ -48828,6 +48878,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
     "spec/README.md"
@@ -48885,7 +48936,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "780",
+   "note": "同 DOS overlay-30:00448h（助憶碼序列完全相同、0 個差異塊）。6 條差異全是位址：三張 10 bytes 平行表 DS:16ACh/16B6h/16C0h↔0AD8h/0AE2h/0AECh、DS:0A29Ch↔7202h、貼圖呼叫 232h:2Fh↔20Bh:2Fh"
   },
   {
    "platform": "pc98",
@@ -48939,7 +48993,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "778",
+   "note": "同 DOS overlay-30:006BDh（讀迷宮某方向的 4-bit 碼）。唯一序列差異是 xor ah, ah 的有無，其餘是 DS:0BDF0h↔8B5Eh、DS:0A2A0h↔7206h",
    "citations": [
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/525-pc98-tempsearch-display-state.md"
@@ -49955,9 +50012,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 51,
+   "Read": 53,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 8,
    "Fragment": 29,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -50030,9 +50087,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 19,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 12,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
@@ -50270,9 +50327,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 40,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 12,
    "CodeBytes": 9183,
    "Undefined": 376,
@@ -50660,9 +50717,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 129,
+   "Read": 130,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 18,
    "CodeBytes": 13011,
    "Undefined": 578,
@@ -50690,9 +50747,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 9,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 3435,
    "Undefined": 321,
@@ -50765,9 +50822,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
@@ -50810,9 +50867,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 63,
+   "Read": 68,
    "NotBlocking": 0,
-   "Todo": 48,
+   "Todo": 43,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
@@ -50930,9 +50987,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 5,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 4851,
    "Undefined": 117,
