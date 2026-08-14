@@ -16943,7 +16943,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/705-duration-formula-and-save-roll.md",
-   "note": "擲骰門檻:base := 目標^[10Eh] + 目標^[116h] × <overlay-25 entry#10>(DS:6506h)(兩個欄位都 cbw);v := ss:[arg_0 − 2];v>base → 門檻 := (v−base)×5 + 50;v<base → 門檻 := 50 − (base−v)×2;相等 → 50;回傳 ROLLDICE(1,100) <= 門檻。⚠ **門檻存在一個 byte(4CB5h,base 在 4CB6h),兩個公式都會回捲且方向相反**:v−base >= 42 時 >=260 → 存成 4,幾乎必定失敗;base−v > 25 時為負 → 例如 246,幾乎必定成功。優勢或劣勢拉大到一定程度結果會翻轉。remake 要先決定重不重現,夾成 0..100 會讓極端情況與原作相反",
+   "note": "擲骰門檻:base := 目標^[10Eh] + 目標^[116h] × <overlay-25 entry#10>(DS:6506h)(兩個欄位都 cbw);v := ss:[arg_0 − 2];v>base → 門檻 := (v−base)×5 + 50;v<base → 門檻 := 50 − (base−v)×2;相等 → 50;回傳 ROLLDICE(1,100) <= 門檻。⚠ **門檻存在一個 byte(4CB5h,base 在 4CB6h),兩個公式都會回捲且方向相反**:v−base >= 42 時 >=260 → 存成 4,幾乎必定失敗;base−v > 25 時為負 → 例如 246,幾乎必定成功。優勢或劣勢拉大到一定程度結果會翻轉。remake 要先決定重不重現,夾成 0..100 會讓極端情況與原作相反 ⚠ spec 739 找到第二個同型的(overlay-12:2334h,等級 > 11 時門檻回捲成大值),兩處成因與方向相同,應當成共通模式處理",
    "bounds": "prologue"
   },
   {
@@ -17363,6 +17363,36 @@
    "level": "exact",
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "取實際生效的武器:角色^[151h] 非 NIL 時呼叫 <overlay-24 entry#43>(角色, @r)(spec 697 的武器選擇),**回傳 0 或帶回 NIL 都算失敗**,失敗就退回 角色^[151h] 本身;回傳 r(DX:AX)。spec 697 記過「只看回傳值拿不到節點」,這支正好示範了兩個條件都要檢查的正確用法",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4980,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/739-resistance-and-level-threshold.md",
+   "note": "減傷:(DS:6F95h and 1) 非 0 時,以 n := DS:6F98h 為次數,每輪 DS:6F94h -= 2 並夾在 DS:6F98h 以上;之後 DS:6F92h += 4;(DS:6F95h and 8) = 0 時呼叫 <sub_1Bh>(0)。⚠ DS:6F98h **同時是迴圈次數與傷害下限**,兩者不能拆開改。⚠ 夾限用**無號**比較,DS:6F94h 減到負數會回捲成大值而讓夾限失效,要靠 n 夠小才不會出事",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9401,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/739-resistance-and-level-threshold.md",
+   "note": "武器決定要不要減半:w := <sub_FAAh>(DS:6506h)(spec 738);t := byte [5CFDh + w^[2Eh]×16](物品屬性表格內 +7,基底 5CF6h);**t = 0 或 (t and 1) 非 0 都減半**,只有「t 非 0 且 bit 0 為 0」不減——寫成單獨判斷 (t and 1) 會漏掉 t = 0 那一半。除法是有號 idiv 往零取整",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9012,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/739-resistance-and-level-threshold.md",
+   "note": "⚠ **第二個會回捲的百分比門檻**:門檻 := (0Bh − <overlay-24 entry#36>(DS:6F97h)) × 5 + arg_0,存進一個 byte;DS:6F93h 非 0 或 (DS:6F95h and 8) 非 0 時擲 ROLLDICE(1,100),<= 門檻 就呼叫 <sub_1Bh>(0)。等級 > 11 時算式為負,存成 byte 變成很大的值(例如 12 級是 0FBh+arg_0),**高等級反而變成必定觸發**。與 spec 705 的 30C0h 同型同向,應當成本作的共通模式處理而不是兩個獨立 bug",
    "bounds": "prologue"
   }
  ]
