@@ -10835,7 +10835,8 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "與 PC-98 overlay-12:13F1h（entry#59）助憶碼序列完全相同，語意同該筆：13F1h..1434h(retf 0Ah)的完整一支:if \u003csub_3C\u003e(arg_A:arg_8, 3Eh, arg_4^[3], 3Ch) \u003c\u003e 0 且 \u003cfar 013E:008E\u003e(arg_A:arg_8, 1, 1) \u003c\u003e 0 then \u003cfar 014A:00B1\u003e(arg_A:arg_8)。先前被誤標成邊界碎片,而其中段 1414h 被誤標成已解讀——由 scripts/verify_size_truncation.py 查出 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-22.md"
    ]
   },
   {
@@ -17778,6 +17779,7 @@
    "spec": "848",
    "note": "法術選單的建構(retf 2，法術編號)：往 DS:4B41h+3 那條顯示行鏈（spec 843 的節點）尾端加一列。先數出目前有幾個屬性 0 的項目，比對上一筆法術的等級；等級變了就先插一列標題（DS:0875h + 等級×29h，'1st Level' 等，屬性寫 1），再放法術列——前綴 ' *'（法術編號 \u003e 7Fh）或兩個空白，接上 DS:27BDh 的法術名稱，屬性寫 0。最後把法術編號記進 DS:4B9Ch + 序號 供選取時反查。★確認節點屬性 1 = 標題列、0 = 可選項",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "audit/resident-data-tables.md",
     "spec/517-reverse-engineering-gap-inventory.md",
@@ -21146,7 +21148,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "838",
+   "note": "重算武器的命中與傷害(retf 4)：主手武器 = 角色^[151h]，沒有就整支不做。命中 +199h 由 +73h（攻擊表列）起算；物品類型表 DS:5CF6h 的 +0Eh 旗標決定要不要加 120Ah（bit 1）與 1345h/13FDh（bit 2）的修正。傷害 +1A2h 取自 +0Bh 欄，再加武器 +32h 的加值；+0Eh \u003e 7Fh 且 +181h 非 NIL、或 bit 0 且 +17Dh 非 NIL 時再加該槽物品的 +32h。★種族 +74h = 2 且武器類型是 24h 或 25h 時命中再 +1（形狀上是 AD\u0026D 精靈的弓／長劍加值）。最後把 +9/+0Ah 兩欄寫進角色 +19Eh/+1A0h。物品類型表新增欄位：+9、+0Ah、+0Bh 傷害骰、+0Eh 旗標",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
@@ -31193,7 +31198,7 @@
     "audit/function-index/dos-overlay-26.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-26.md"
+    "audit/function-index/pc98-overlay-22.md"
    ]
   },
   {
@@ -47066,7 +47071,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "838",
+   "note": "同 DOS overlay-24:00025h（同位址、助憶碼序列完全相同）。差異全是位址：角色 +152h/+19Ah/+1A3h↔+151h/+199h/+1A2h、物品節點 +56h/+5Ah↔+2Eh/+32h、物品類型表 [di−726Eh] 等↔[di+5D04h] 等",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
@@ -50814,9 +50822,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 42,
+   "Read": 43,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -51369,9 +51377,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 35,
+   "Read": 36,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
