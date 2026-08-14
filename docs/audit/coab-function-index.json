@@ -15211,7 +15211,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/782-strength-percentile-display.md",
+   "note": "力量百分位的顯示(retf 4)：能力值在 DS:6506h^[11h + 索引*2]，畫在 索引+7 列；值 \u003c 0Ah 時欄由 5 改 6 靠右對齊；索引 0 且值 = 12h(18) 且 +1Ch \u003e 0 時再畫 '(' + 百分位 + ')'(CS:09AFh/09B1h)，百分位 \u003c 0Ah 補 CS:09AAh 的 '0'、等於 64h(100) 直接用 CS:09ACh 的 '00' — 即 AD\u0026D 的 18/00 記法。顏色依第一個參數在 0Dh/0Ah 二選一。⚠ 欄位靠硬編碼對齊，沒有量測字串寬度",
+   "citations": [
+    "spec/782-strength-percentile-display.md"
+   ]
   },
   {
    "platform": "dos",
@@ -48044,9 +48050,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 19,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
