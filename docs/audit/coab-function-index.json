@@ -7173,8 +7173,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-06.md",
     "audit/function-index/pc98-overlay-06.md",
-    "audit/function-strings.md",
-    "spec/823-shop-price-multiplier.md"
+    "audit/function-index/pc98-overlay-19.md",
+    "audit/function-strings.md"
    ]
   },
   {
@@ -16965,9 +16965,13 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "921",
+   "note": "使用物品分派(retf 8 = (@結果, 物品遠指標))：loc_11DBh+3 把物品分兩類——卷軸走 sub_3474h 選效果、充能物品要 +3Dh \u003e 0 且 +3Eh \u003c 80h 才成立(效果 = +3Dh and 7Fh)。充能物品先播 名字+'uses an item' 與 'Item:'。卷軸有失敗判定：四個職業條件之一成立就直接成功，否則 +10Fh ≤ 9 必敗、\u003e 9 擲 1d100 ≤ 4Bh 才成功，失敗只印 'oops!' 且不消耗。★物品節點補三格：+3Ch 充能次數、+3Dh 效果編號、+3Eh bit7。⚠扣除順序是『數量 \u003e 1 只扣數量，否則扣充能』→ 一疊物品的最後一個才消耗充能。byte[37E5h + 效果×10h] 是法術屬性表(DS:37DBh stride 10h)的 +0Ah",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/921-use-item-dispatch.md"
    ]
   },
   {
@@ -17044,6 +17048,7 @@
    "spec": "920",
    "note": "丟棄錢幣選單(retf，無參數)：掃 角色(遠指標 DS:6506h)^[0FBh + i*2] 七種幣別(i = 0..6)，非零就 GetMem 2Eh 的節點(+0 string[40] 限長 28h、+29h 旗標、+2Ah next)接成鏈，文字 = 補齊空白 + 幣別名(DS:0F93h stride 0Bh) + ' ' + Str(數量)，補的個數 = 8 − 幣別名長度。★節點往回接、傳給選單的是最後建的那個 → 清單由幣別索引大到小。選完用 loc_1156h+1 輸入數量(上限 = 持有量)、loc_1160h+1 扣款，然後重掃；還有任何一格 \u003e 0 就再開一次選單，取消或丟光才離開",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-strings.md",
     "spec/920-drop-coins-menu.md"
    ]
@@ -43528,9 +43533,13 @@
    "callers": 1,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "921",
+   "note": "同 DOS overlay-19:0248Dh(相似度 0.969)。★唯一差異區塊(17 條)：失敗訊息 'うわっ！' 在畫面模式 = 5 時印在固定列 0Ah、其他模式才用 DS:9637h + 1；DOS 一律用 DS:65A1h + 1。80 欄戰鬥畫面下那個動態列會落錯位置，所以 PC-98 補了固定列分支。物品節點三格 +3Ch/+3Dh/+3Eh 對應 PC-98 的 +64h/+65h/+66h",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/921-use-item-dispatch.md"
    ]
   },
   {
@@ -51839,9 +51848,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -52394,9 +52403,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 21,
+   "Read": 22,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
