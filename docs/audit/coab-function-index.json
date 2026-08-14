@@ -6326,6 +6326,7 @@
    "note": "逐格前進的迴圈(retf 2)：DS:4FB4h := 參數、DS:47E0h := 0；while DS:47E0h = 0 且 DS:4FC7h = 0 do — DS:75FEh := DS:75FFh(前一個值往後推)、DS:75FFh := DS:4FA5h^[DS:4FB4h − 8000h]，DS:4FC1h 非 0 時再叫本模組 19EFh 與兩支 RTL，每輪結尾叫本模組 3377h。⚠ 離開條件只看兩個全域，迴圈本身不會自己結束",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/560-ecl-opcode-dispatch-table.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
     "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md"
@@ -15311,7 +15312,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/767-ac-display-sign-and-trade-overload.md",
+   "note": "交易給誰(retf 4)：以 DS:4AF8h 記住上次選的人當預設，用 CS:2120h 'Trade with Whom?' 選人；取消就離開；否則寫回 DS:4AF8h，用 overlay-19:3258h(spec 762)判超重 — 超重就顯示 CS:2131h 'Overloaded'，否則做三個呼叫(從物品端移除、加到 DS:6506h、更新對象)",
+   "citations": [
+    "spec/767-ac-display-sign-and-trade-overload.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15423,7 +15430,8 @@
    "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
    "note": "拿不拿得下(retf 8)：角色^[14Ch] \u003e 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] \u003e 0 時再乘上去(單位重量×數量)；上限 := \u003c呼叫\u003e(角色) + 5DCh(1500)；角色^[187h](累計負重) + w \u003e 上限(無號)也算超過",
    "citations": [
-    "spec/762-ega-glyph-blit-and-movement-rate.md"
+    "spec/762-ega-glyph-blit-and-movement-rate.md",
+    "spec/767-ac-display-sign-and-trade-overload.md"
    ]
   },
   {
@@ -23807,7 +23815,10 @@
    "callers": 4,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/767-ac-display-sign-and-trade-overload.md",
+   "note": "有欄位上限的繪字(retf 0Ch)：StoreString 進緩衝後，兩個座標參數任一 \u003e 27h(39)就整支不畫(沒有裁切)；叫本模組 145CAh(0, @緩衝, @暫存)就地改寫後重新 StoreString，屬性經 DS:1928h 查表換算，最後 本模組 1692Dh(@緩衝[1], 長度, 參數C, 屬性, 參數E, 參數F*2)"
   },
   {
    "platform": "pc98",
@@ -40057,7 +40068,13 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/767-ac-display-sign-and-trade-overload.md",
+   "note": "交易給誰(retf 4)：快取在 DS:7BD6h，提示 CS:20E4h '誰に渡しますか？'、拒絕訊息 CS:20F5h '持ちすぎです'，其餘同 DOS overlay-19:213Ch",
+   "citations": [
+    "spec/767-ac-display-sign-and-trade-overload.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44304,7 +44321,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/767-ac-display-sign-and-trade-overload.md",
+   "note": "畫出 AC(retf 8)：v := |p^[19Bh] − 3Ch| 轉成字串後接上 CS:0B3Ch(長度 2 的兩個半形空白)；p^[19Bh] \u003e 3Ch(無號)時再在前面補 CS:0B3Fh 的 '-'；最後 0418h:0D17h(@字串, 0, 0Ah, x, y)。確認顯示值 = 60 − 儲存值 且負值以獨立的 '-' 字元前綴。⚠ 兩個尾隨空白是常數的一部分，用來蓋掉上次較長的數字，中文化不能刪",
+   "citations": [
+    "spec/767-ac-display-sign-and-trade-overload.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -47644,9 +47667,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 22,
+   "Todo": 21,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -47899,9 +47922,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 223,
+   "Read": 224,
    "NotBlocking": 29,
-   "Todo": 56,
+   "Todo": 55,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
@@ -48199,9 +48222,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
@@ -48274,9 +48297,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 28,
+   "Read": 29,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 19,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
