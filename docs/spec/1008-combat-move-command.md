@@ -111,10 +111,10 @@ while (角色^[18Dh]^[6] > 1) and (鍵 <> 0) and (鍵 <> 0Dh) do begin
             顯示 "can't go there"                   { <overlay-24 entry#19> }
 
         else begin
-            <overlay-13 entry#6>(方向, 角色);       { 走一步 }
+            <overlay-13 entry#6>(角色, 方向);       { 走一步，spec 1010 }
             if 角色^[196h] = 0 then 結果 := <overlay-24 entry#34>(角色)
             else begin
-                if 角色^[18Dh]^[6] > 0 then <overlay-13 entry#5>(方向, 角色);
+                if 角色^[18Dh]^[6] > 0 then <overlay-13 entry#5>(角色, 方向);
                 if 角色^[196h] = 0 then 結果 := <overlay-24 entry#34>(角色);
                 <overlay-23 entry#5>(1, 角色);
                 if <overlay-24 entry#6>(角色) <> 0 then
@@ -131,8 +131,9 @@ end;
 `佔用者 × 4` 取出目標——**走進有人的格子就是攻擊**，這就是選單標題
 `'Move/Attack'` 的來由。
 
-★ `角色^[196h]` 非 0 才走後半段（第二次移動、效果結算、`entry#6` 的再檢查），
-形狀上是「還能行動」旗標（spec 576 的 `STANDUP` 也寫這一格）。
+★ `角色^[196h]` 非 0 才走後半段（第二次移動、效果結算、`entry#6` 的再檢查）。
+**`+196h` ＝ 1 就是「站著、能行動」**——`STANDUP`（`overlay-23:24EDh`）寫的正是
+`+195h := 0` 與 `+196h := 1`，見 spec 1010。
 
 ## ⚠ PC-98 多做兩件事
 
@@ -197,7 +198,8 @@ call far ptr 0A65h:262h                        ; rep movsb（spec 990）
 - 沒有宣稱 `overlay-32` 的 `entry#15`／`16`／`18`／`19`／`21` 各回什麼
   （形狀上 15／16 是取座標，19 一次回四個值）。
 - 沒有宣稱 `sub_EE9`（同模組）怎麼打。
-- 沒有宣稱 `overlay-13` 的 `entry#5`／`6`／`7` 內部行為
+- `entry#6` 已在 spec 1010 讀完（離開接觸時的機會攻擊）。
+  沒有宣稱 `overlay-13` 的 `entry#5`／`entry#7` 內部行為
   （`entry#7` 由 `'Flee:'` 的 Y 觸發，形狀上是逃跑）。
 - 沒有宣稱 `entry#19` 回的第三、第四個值（`@c`／`@d`）是什麼，本支沒有讀。
 - 沒有宣稱 PC-98 為什麼選 `0Dh` 而不是別的鍵當那十格的值。
