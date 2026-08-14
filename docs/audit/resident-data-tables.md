@@ -158,3 +158,44 @@
 | 54 | Protection From Normal Missiles | 02 | 03 | 00 | 00 | 00 | 0A | 04 | 02 | 00 | 04 | 29 | 02 | 03 | 03 | 00 | 00 |
 | 55 | Slow | 02 | 03 | 09 | 01 | 03 | 01 | 0A | 00 | 00 | 04 | 2A | 01 | 03 | 04 | 01 | 00 |
 | 56 | Restoration | 00 | 07 | 00 | 00 | 00 | 00 | 04 | 02 | 00 | 04 | 00 | 02 | 06 | 00 | 00 | 00 |
+
+## `DS:0CA2h` 幣值（5 個 longint，單位銅幣，兩平台相同）
+
+| j | 幣別 | 值 |
+|---|---|---|
+| 0 | Copper | 1 |
+| 1 | Silver | 10 |
+| 2 | Electrum | 100 |
+| 3 | Gold | 200 |
+| 4 | Platinum | 1000 |
+
+AD&D 一版的換算（1 gp ＝ 20 sp ＝ 200 cp、1 ep ＝ ½ gp、1 pp ＝ 5 gp）。
+`overlay-19:33ABh` 用它把身上的錢折成金幣（spec 812）。
+
+## `DS:0CB6h` 職業名稱（19 筆；DOS 每筆 27 bytes、PC-98 `DS:1C5Ah` 每筆 35 bytes）
+
+| # | DOS | PC-98 |
+|---|---|---|
+| 0 | `Cleric` | `僧侶` |
+| 1 | `Druid` | `ドルイド僧` |
+| 2 | `Fighter` | `戦士` |
+| 3 | `Paladin` | `聖騎士` |
+| 4 | `Ranger` | `レンジャ－` |
+| 5 | `Magic-User` | `魔法使い` |
+| 6 | `Thief` | `盗賊` |
+| 7 | `Monk` | `修道僧` |
+| 8 | `Cleric/Fighter` | `僧侶／戦士` |
+| 9 | `Cleric/Fighter/Magic-User` | `僧侶／戦士／魔法使い` |
+| 10 | `Cleric/Ranger` | `僧侶／レンジャー` |
+| 11 | `Cleric/Magic-User` | `僧侶／魔法使い` |
+| 12 | `Cleric/Thief` | `僧侶／盗賊` |
+| 13 | `Fighter/Magic-User` | `戦士／魔法使い` |
+| 14 | `Fighter/Thief` | `戦士／盗賊` |
+| 15 | `Fighter/Magic-User/Thief` | `戦士／魔法使い／盗賊` |
+| 16 | `Magic-User/Thief` | `魔法使い／盗賊` |
+| 17 | `OK buddy, who are you?` | `ほう、じゃあ一体何だというんだね？` |
+| 18 | `Monster` | `モンスター` |
+
+前 8 筆對應職業槽 0..7（spec 810／811／812）。索引 17 是職業組合對不上時的
+預設值，PC-98 有翻譯，中文版也該翻。⚠ PC-98 索引 4 的長音符用了 `81 5C`
+（`―`），索引 10 用的才是 `81 5B`（`ー`）——原版自己不一致。
