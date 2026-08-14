@@ -988,7 +988,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "934",
+   "note": "配置一個表面(retf 0Ch = (@表面, 旗標, 張數, 寬, 高))：每張位元組 = 高 × 寬 × 2，byte_211A6h ≠ 0 再加倍；GetMem(總量 + 17h) 後 FillChar 清 0，填 +0 高、+2 寬、+8 張數、+11h 每張位元組；旗標 bit 0 成立就另外 GetMem 一塊同樣大小的遮罩緩衝並把遠指標存進 +13h。★表面標頭是 17h = 23 bytes，像素資料緊接其後——spec 931 內迴圈寫 es:[di+17h] 正是跳過標頭。★+13h/+15h 是一個遠指標(遮罩緩衝)不是兩個欄位，關掉 spec 933 的推論。★byte_211A6h 是顯示模式旗標：= 0 要過 DS:256Dh 顏色轉換表(spec 932)、≠ 0 每列位元組加倍"
   },
   {
    "platform": "dos",
@@ -1272,7 +1275,10 @@
    "callers": 3,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "934",
+   "note": "格線座標的字串輸出(retf 0Ch = (字串, arg_4, arg_6, 列, 欄))：限長 0FFh 後，★列或欄 \u003e 27h(39) 就整個跳過——這一層走 40×40 的格線座標系，不是 80×25 文字座標；逐字元叫 sub_15606h(1, 字元, 1, arg_4, arg_6, 列, 欄) 並讓欄遞增。⚠邊界檢查只在進入時做一次，字串長到讓欄超過 39 時迴圈不會停"
   },
   {
    "platform": "dos",
@@ -51681,9 +51687,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 154,
+   "Read": 156,
    "NotBlocking": 133,
-   "Todo": 18,
+   "Todo": 16,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
