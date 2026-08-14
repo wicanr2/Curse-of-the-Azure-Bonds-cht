@@ -431,3 +431,115 @@ Magic-User 1（AD&D 名望等級之後的加值）。
 `1` 是 `Animated`。spec 825／834／842 已更正。spec 821 重讀過了：那一支的**程式判讀沒錯**
 （Raise Dead 確實接受 6 與 1），只是標籤寫成「這兩個狀態算死亡」不精確——
 正確的說法是「`Dead` 或 `Animated` 都能復活」，該規格已改。
+
+## `DS:37DBh` 法術屬性表（PC-98 `DS:61B5h`，每筆 `10h`，**1 起算**，共 100 筆）
+
+`碼 shl 4 + 37DBh` 取 `+0` ＝ **法術等級**（法術選單的排序鍵，spec 859）。
+表的尾端接 `DS:3E2Ah` 時鐘進位表，與 `DS:27BDh` 名稱表的 100 筆互相定界。
+`+1`..`+0Fh` 用途未定。
+
+| 碼 | 等級 | 名稱 |
+|---|---|---|
+| 1 | 1 | Bless |
+| 2 | 1 | Curse |
+| 3 | 1 | Cure Light Wounds |
+| 4 | 1 | Cause Light Wounds |
+| 5 | 1 | Detect Magic |
+| 6 | 1 | Protection From Evil |
+| 7 | 1 | Protection from Good |
+| 8 | 1 | Resist Cold |
+| 9 | 1 | Burning Hands |
+| 10 | 1 | Charm Person |
+| 11 | 1 | Detect Magic |
+| 12 | 1 | Enlarge |
+| 13 | 1 | Reduce |
+| 14 | 1 | Friends |
+| 15 | 1 | Magic Missile |
+| 16 | 1 | Protection From Evil |
+| 17 | 1 | Protection From Good |
+| 18 | 1 | Read Magic |
+| 19 | 1 | Shield |
+| 20 | 1 | Shocking Grasp |
+| 21 | 1 | Sleep |
+| 22 | 2 | Find Traps |
+| 23 | 2 | Hold Person |
+| 24 | 2 | Resist Fire |
+| 25 | 2 | Silence, 15' Radius |
+| 26 | 2 | Slow Poison |
+| 27 | 2 | Snake Charm |
+| 28 | 2 | Spiritual Hammer |
+| 29 | 2 | Detect Invisibility |
+| 30 | 2 | Invisibility |
+| 31 | 2 | Knock |
+| 32 | 2 | Mirror Image |
+| 33 | 2 | Ray of Enfeeblement |
+| 34 | 2 | Stinking Cloud |
+| 35 | 2 | Strength |
+| 36 | 7 | Animate Dead |
+| 37 | 3 | Cure Blindness |
+| 38 | 3 | Cause Blindness |
+| 39 | 3 | Cure Disease |
+| 40 | 3 | Cause Disease |
+| 41 | 3 | Dispel Magic |
+| 42 | 3 | Prayer |
+| 43 | 3 | Remove Curse |
+| 44 | 3 | Bestow Curse |
+| 45 | 3 | Blink |
+| 46 | 3 | Dispel Magic |
+| 47 | 3 | Fireball |
+| 48 | 3 | Haste |
+| 49 | 3 | Hold Person |
+| 50 | 3 | Invisibility, 10' Radius |
+| 51 | 3 | Lightning Bolt |
+| 52 | 3 | Protection From Evil, 10' Radius |
+| 53 | 3 | Protection From Good, 10' Radius |
+| 54 | 3 | Protection From Normal Missiles |
+| 55 | 3 | Slow |
+| 56 | 7 | Restoration |
+| 57 | 6 | （空） |
+| 58 | 4 | Cure Serious Wounds |
+| 59 | 6 | （空） |
+| 60 | 6 | （空） |
+| 61 | 6 | （空） |
+| 62 | 6 | （空） |
+| 63 | 6 | （空） |
+| 64 | 6 | （空） |
+| 65 | 6 | （空） |
+| 66 | 4 | Cause Serious Wounds |
+| 67 | 4 | Neutralize Poison |
+| 68 | 4 | Poison |
+| 69 | 4 | Protection Evil, 10' Radius |
+| 70 | 4 | Sticks to Snakes |
+| 71 | 5 | Cure Critical Wounds |
+| 72 | 5 | Cause Critical Wounds |
+| 73 | 5 | Dispel Evil |
+| 74 | 5 | Flame Strike |
+| 75 | 5 | Raise Dead |
+| 76 | 5 | Slay Living |
+| 77 | 1 | Detect Magic |
+| 78 | 1 | Entangle |
+| 79 | 1 | Faerie Fire |
+| 80 | 1 | Invisibility to Animals |
+| 81 | 4 | Charm Monsters |
+| 82 | 4 | Confusion |
+| 83 | 4 | Dimension Door |
+| 84 | 4 | Fear |
+| 85 | 4 | Fire Shield |
+| 86 | 4 | Fumble |
+| 87 | 4 | Ice Storm |
+| 88 | 4 | Minor Globe Of Invulnerability |
+| 89 | 4 | Remove Curse |
+| 90 | 5 | Animate Dead |
+| 91 | 5 | Cloud Kill |
+| 92 | 5 | Cone of Cold |
+| 93 | 5 | Feeblemind |
+| 94 | 5 | Hold Monsters |
+| 95 | 6 | （空） |
+| 96 | 6 | （空） |
+| 97 | 6 | （空） |
+| 98 | 6 | （空） |
+| 99 | 6 | （空） |
+| 100 | 4 | Bestow Curse |
+
+值 6 的 13 筆名稱全是空字串；值 7 的兩筆（36 `Animate Dead`、56 `Restoration`）
+有實作但不在玩家記憶清單裡。**這 15 筆不宣稱 `+0` 是真的等級。**
