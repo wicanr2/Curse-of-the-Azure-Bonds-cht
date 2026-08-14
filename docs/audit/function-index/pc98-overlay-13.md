@@ -36,7 +36,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1565` | sub_1565 | — | 4 | 2 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 4 bytes，已逐條讀完） | — |
 | `1569` | sub_1569 | — | 1 | 1 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md |
 | `156A` | sub_156A | — | 11 | 4 | 10 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_13], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
-| `1622` | sub_1622 | — | 7 | 4 | 4 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call near ptr sub_358`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
+| `1622` | sub_1622 | — | 7 | 4 | 4 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call near ptr sub_358`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | audit/function-index/pc98-overlay-13.md |
 | `1679` | sub_1679 | — | 19 | 6 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ah, ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 19 bytes，已逐條讀完） | — |
 | `167E` | sub_167E | — | 11 | 4 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jbe short loc_16E8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1697` | sub_1697 | — | 485 | 165 | 2 | 7 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1569h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
@@ -55,7 +55,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2049` | sub_2049 | — | 482 | 169 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `225F` | sub_225F | WHOZAP | 1300 | 483 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `27A1` | sub_27A1 | CASTCOMBATSPELL | 372 | 135 | 0 | 6 | ✓ | 待解讀 | — | — | — |
-| `2915` | sub_2915 | THIEFATTACK | 223 | 73 | 2 | 3 | ✓ | 已解讀 | strong inference | docs/spec/771-extra-attacks-and-weapon-class-whitelist.md<br>與 DOS overlay-13:28C3h（entry#22）助憶碼序列完全相同，語意同該筆：物品類別白名單(retf 8)：(角色^[10Fh] > 0) 或 ((角色^[117h] > 0) 且 <呼叫>(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h < 類別 < 26h)；再要求 行動者^[18Dh]^[0Fh] > 1 且 (行動者^[0DEh] and 7Fh) <= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h] ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
+| `2915` | sub_2915 | THIEFATTACK | 223 | 73 | 2 | 3 | ✓ | 已解讀 | strong inference | docs/spec/771-extra-attacks-and-weapon-class-whitelist.md<br>與 DOS overlay-13:28C3h（entry#22）助憶碼序列完全相同，語意同該筆：物品類別白名單(retf 8)：(角色^[10Fh] > 0) 或 ((角色^[117h] > 0) 且 <呼叫>(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h < 類別 < 26h)；再要求 行動者^[18Dh]^[0Fh] > 1 且 (行動者^[0DEh] and 7Fh) <= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h] ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/pc98-overlay-13.md |
 | `29F4` | sub_29F4 | FIGDIR | 126 | 43 | 6 | 3 | ✓ | 待解讀 | — | — | — |
 | `2A72` | sub_2A72 | SHOWARROW | 546 | 223 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `2C94` | sub_2C94 | SETMORALE | 138 | 49 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/784-cross-platform-pairs-second-batch.md<br>隊伍血量百分比(retf)：與 DOS overlay-13:2E22h 49 條同形，欄位全部 +1(+198h/+197h/+1A5h/+18Ah)，結果存 DS:0A86Bh — 即 spec 758 士氣判定讀的那個值(差異 6 條，已逐條列出) | — |
