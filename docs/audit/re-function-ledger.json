@@ -25114,6 +25114,24 @@
    "level": "exact",
    "spec": "docs/spec/984-drop-character-and-pc98-put8x8symbol.md",
    "note": "Put8x8Symbol 的 PC-98 版；DS:488Ah 五個分段起始值 1/46/116/186/256 直接讀到；> 7FFFh 同樣不指派「組」"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 10020,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/985-name-edit-cursor-and-surface-composite.md",
+   "note": "pc98 02DB7h 的對應（配對工具漏判）：名字欄多畫第三次當游標，空白格畫 '%'；PC-98 沒有這段"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 3863,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/985-name-edit-cursor-and-surface-composite.md",
+   "note": "圖層合成：三個像素平面 OR、遮罩平面 AND；平面大小用 +0×+2 算；無邊界檢查、零尺寸會跑 65536 圈"
   }
  ]
 }
