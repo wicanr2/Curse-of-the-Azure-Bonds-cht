@@ -21406,6 +21406,60 @@
    "level": "exact",
    "spec": "docs/spec/833-sweep-attack.md",
    "note": "sweeps 橫掃攻擊：retf 8，宣告順序 (角色, 目標)，兩個都是遠指標，回傳 al。角色^[19Ch] >= 角色^[18Dh]^[5]（無號）、目標^[0E5h] <> 0（不是零級）、或 <far 1593h+2>(目標, 角色) <> 1，任一就回 0。n := <far 1590h>(角色, 1)；掃清單 byte[0A820h+k] → DS:9DCFh + idx*4，記下目標的格號 位置，並數出 +0E5h = 0 的個數 可打；可打 <= +19Dh 就回 0；可打 > +18Eh^[5] 就夾成 +18Eh^[5]。顯示 名字+'sweeps'(6)；若 DS:0A821h 指的不是目標，就把 byte[0A820h+位置] := DS:0A821h、DS:0A821h := <far 1939h+1>(目標)（位置在目標不在清單時未初始化，本支無防護）。再掃一遍清單，對每個 +0E5h = 0 的 q：本模組 194Ah(q, 角色)、角色^[19Ch] := 1、本模組 19D8h(q, 角色, 0, longint 0, @DS:0A86Dh)、dec(可打)，可打 <= 0 就停。回 1。+0E5h 是最高職業等級（spec 811），= 0 即 AD&D 的零級生物；+18Eh^[5] 是 spec 806 由 +0DDh 抄來的橫掃上限。spec 833"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 4647,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "834",
+   "note": "Turn Undead。DS:0367h = AD&D 轉化不死矩陣（種類 1..10 × 欄 1..10，1..20 擲點/0與0FFh 摧毀/99 不可能）。1d20 整批共用、1d12 決定影響幾個、摧毀不佔額度（額外 6）。+18Dh^[11h]:=1；被摧毀者 +195h:=8、+196h:=0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 4776,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "834",
+   "note": "同 DOS overlay-13:1227h。22 個差異全是位址（arg_2/+18Eh/+196h/+197h、表基底 DS:075Bh），無邏輯差異；矩陣 100 bytes 與 DOS 逐 byte 相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 1194,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "835",
+   "note": "AI 用道具：門檻 7 起每輪降 1、輪數 1d7（最低要求 8−1d7）。掃物品鏈找 +34h 裝備中、+3Dh>0、+3Eh<80h 且過 03B1h 閘門者。+3Dh>38h 先減 17h。DS:5CF6h 類別碼是死碼"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 1228,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "835",
+   "note": "同 DOS overlay-09:004AAh。15 條差異全是位址（+18Eh、物品節點 +52h/56h/5Ch/65h/66h、DS:0A02Ah、DS:7F05h、DS:8D84h），無邏輯差異"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 1541,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "836",
+   "note": "AI 選法術：與 004AAh 同骨架（門檻 7 起、1d7 輪、每輪降 1、判定走 03B1h），但每輪只隨機抽 3 個候選。閘門 +18Dh^[01h]（能施法）。士氣 +0F7h<=7Fh 且 DS:75DAh=0 就不施法。⚠ 收集清單 for k:=1 to 53h 漏掉 +1Eh 第一格"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 1575,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "836",
+   "note": "同 DOS overlay-09:00605h。8 條差異全是位址（+18Eh、DS:0A86Ch、DS:0A02Ah），無邏輯差異；漏第一格的 off-by-one 兩平台一致"
   }
  ]
 }
