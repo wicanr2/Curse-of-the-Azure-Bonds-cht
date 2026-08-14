@@ -23583,10 +23583,14 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1021-race-class-matrix.md",
+   "note": "轉職（選新職業）畫面。★★★ 種族可選職業表 DS:3FF8h(PC-98 DS:708Dh，值完全相同)，每種族 14 bytes：+0 = 選項數、+1.. = 職業編號，配職業名表 DS:0CB6h(筆距 27)。Dwarf/Gnome/Halfling 各 3(Fighter、Thief、Fighter/Thief)、Elf 7、Half-Elf 13(最多)、Half-Orc 6、Human 6(單職業 + Paladin/Ranger)—— 就是 Gold Box／AD\u0026D 1e 的種族—職業矩陣。⚠ 種族 0(Monster)那一列的 +0 是 18，超過 14 bytes 的列長，不是真的清單。流程：逐一用 sub_D2F(職業, 父bp) 做資格檢查，通過的配一個選單節點(名稱來自 DS:0CB6h + 職業×27)；一個都沒有就顯示 \u003c名字\u003e + \" doesn't qualify.\"；否則開 'Pick New Class'/'Select' 選單，回 'S' 就轉職：+127h/+129h 清 0、+11Ch := 2、FillChar(角色^[1Eh], 54h, 0) 清空記憶法術清單、新職業 0(Cleric)→+12Dh:=1、新職業 5(Magic-User)→+137h:=1 與 +83h/+84h/+8Ah/+8Dh:=1、+75h := 新職業，最後顯示 \u003c名字\u003e + ' is now a 1st level ' + 職業名。★★ 兩處與 spec 1016 對上：+1Eh 起 84 bytes 就是那支重算掃的記憶法術清單；+137h := 1 就是「1 環先給 1 個」。★★ 選單節點大小 DOS 2Eh(46)／PC-98 56h(86)，差 28h(名稱欄位加寬，同物品節點)；next +2Ah↔+52h、旗標 +29h↔+51h、複製長度 28h↔50h。⚠ 兩平台都拿全域當內層迴圈計數器(DS:7747h／DS:0A9D9h) ⇒ 不可重入。字串：'Pick New Class'(14)、\" doesn't qualify.\"(17)、'Select'(6，大寫 S 是熱鍵)、' is now a 1st level '(20，前接名字後接職業名)",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1021-race-class-matrix.md"
    ]
   },
   {
@@ -50813,9 +50817,13 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1021-race-class-matrix.md",
+   "note": "轉職（選新職業）畫面。★★★ 種族可選職業表 DS:3FF8h(PC-98 DS:708Dh，值完全相同)，每種族 14 bytes：+0 = 選項數、+1.. = 職業編號，配職業名表 DS:0CB6h(筆距 27)。Dwarf/Gnome/Halfling 各 3(Fighter、Thief、Fighter/Thief)、Elf 7、Half-Elf 13(最多)、Half-Orc 6、Human 6(單職業 + Paladin/Ranger)—— 就是 Gold Box／AD\u0026D 1e 的種族—職業矩陣。⚠ 種族 0(Monster)那一列的 +0 是 18，超過 14 bytes 的列長，不是真的清單。流程：逐一用 sub_D2F(職業, 父bp) 做資格檢查，通過的配一個選單節點(名稱來自 DS:0CB6h + 職業×27)；一個都沒有就顯示 \u003c名字\u003e + \" doesn't qualify.\"；否則開 'Pick New Class'/'Select' 選單，回 'S' 就轉職：+127h/+129h 清 0、+11Ch := 2、FillChar(角色^[1Eh], 54h, 0) 清空記憶法術清單、新職業 0(Cleric)→+12Dh:=1、新職業 5(Magic-User)→+137h:=1 與 +83h/+84h/+8Ah/+8Dh:=1、+75h := 新職業，最後顯示 \u003c名字\u003e + ' is now a 1st level ' + 職業名。★★ 兩處與 spec 1016 對上：+1Eh 起 84 bytes 就是那支重算掃的記憶法術清單；+137h := 1 就是「1 環先給 1 個」。★★ 選單節點大小 DOS 2Eh(46)／PC-98 56h(86)，差 28h(名稱欄位加寬，同物品節點)；next +2Ah↔+52h、旗標 +29h↔+51h、複製長度 28h↔50h。⚠ 兩平台都拿全域當內層迴圈計數器(DS:7747h／DS:0A9D9h) ⇒ 不可重入。字串：'Pick New Class'(14)、\" doesn't qualify.\"(17)、'Select'(6，大寫 S 是熱鍵)、' is now a 1st level '(20，前接名字後接職業名)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1021-race-class-matrix.md"
    ]
   },
   {
@@ -53423,9 +53431,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 15,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 4931,
    "Undefined": 733,
@@ -53978,9 +53986,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 14,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 5200,
    "Undefined": 167,
