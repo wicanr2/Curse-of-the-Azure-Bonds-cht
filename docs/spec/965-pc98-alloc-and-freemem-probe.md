@@ -15,7 +15,7 @@ if (要求大小 mod 40h) <> 0 then 要求大小 := 要求大小 ＋ 40h;
 
 結果 := <sub_18883h>(要求大小, 檔案);             { 配置（spec 945 那一族） }
 
-{ ── ② 讀 8 bytes 的標頭 ── }
+{ ── ② 從標頭抄出兩個 word（Move，不是讀檔）── }
 Move(檔案^, var_4, 4);                            { <sub_1C15Dh> ＝ Move，見 spec 968 }
 Move(var_4, var_6, 2);
 Move(var_2, var_8, 2);
