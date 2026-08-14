@@ -48,7 +48,7 @@ end;
 
 { ── 四、訊息與收尾 ── }
 <overlay-24 entry#20>(角色, 名字 ＋ 'Creates a noxious cloud', 0, 0Ah);
-<overlay-32 entry#13>(8, 0FFh, DS:755Ah, DS:7559h);
+<overlay-32 entry#13>(DS:7559h, DS:755Ah, 0FFh, 8);   { 推入順序＝宣告順序 }
 <0542h:0B33h>();                                    { 等玩家 }
 <overlay-24 entry#21>();                            { 清訊息框 }
 <overlay-23 entry#5>(…);
@@ -149,6 +149,8 @@ DOS `DS:26A2h` ↔ PC-98 `DS:48AFh`（spec 994），
 - 沒有宣稱 `DS:6F9Dh := 1` 與 `DS:6F97h` 的意義。
 - 沒有宣稱節點 `+8`..`+10h` 與 `+1Dh` 的用途。
 - 沒有宣稱「該格已經有雲」那一段的合併規則細節。
-- 沒有宣稱 `overlay-32 entry#13(8, 0FFh, y, x)` 與 `overlay-23 entry#5` 做什麼。
+- 沒有宣稱 `overlay-32 entry#13(x, y, 旗標, 8)` 與 `overlay-23 entry#5` 做什麼
+  （spec 1008 在 `overlay-08:0B06h` 看到同一支被叫成 `(x, y, 0, 8)`，
+  最後一個參數形狀上是「畫哪一種」）。
 - 姊妹支 `overlay-22:04F3Eh`（`'Creates a poisonous cloud'`）已在 spec 1003
   讀完：同一套機制，但格數 9（3×3）、效果碼 `5Bh`、地圖值 `1Ch`、鏈頭 `DS:755Fh`。
