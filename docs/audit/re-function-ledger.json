@@ -22567,6 +22567,24 @@
    "level": "exact",
    "spec": "841",
    "note": "同 DOS overlay-15:00942h（module_align 對齊，相似度 0.997）。唯一序列差異是 PC-98 多一條 mov byte ptr ds:0A385h, 6；其餘是位址與字串（'これらの呪文を覚えますか？'／'は呪文の記憶はできない。'，同樣把 DOS 那兩句只差大小寫的提示合併成一句）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 8207,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "法術的目標選擇(retf 0Ah)：arg_6 = 0 走手動（sub_3B37h 開游標，法術 53h 用另一種模式）；否則自動——法術屬性 +0Eh（37E8h）為 0 的非敵對法術直接以自己為目標（法術 3 另過 sub_1DF6h），敵對法術叫 sub_3E56h（spec 852 的 AI 選目標）取一個，若 far 150Ah+4 成立且法術屬性 +0Ah 落在 {33h,34h,35h,1Fh}（表在 DS:27CAh）就拒絕。★成功時把目標座標寫進 DS:7559h/755Ah——那正是 spec 846/847 用到的兩個全域"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 8265,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "同 DOS overlay-13:0200Fh（module_align 對齊，助憶碼序列完全相同）。差異全是位址與 IDA 參數命名偏移 2：DS:9594h/9596h↔6506h/6508h、+18Eh↔+18Dh、法術屬性表 DS:61C2h↔37E8h"
   }
  ]
 }
