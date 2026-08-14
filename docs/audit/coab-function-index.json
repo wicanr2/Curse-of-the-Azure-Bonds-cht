@@ -16582,9 +16582,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "856",
+   "note": "合併同款物品堆疊(retf 4)：走物品鏈比對 +2Eh/+2Fh/+30h/+31h/+32h/+33h/+36h/+37h(word)，相同就把數量併過來並用 1545h 移除來源；超過 0FFh 時填滿目標、差額留在來源並把目標換成來源繼續。★原版 bug：+3Ch/+3Dh/+3Eh 三個效果槽的比較兩次都載入 p（應該一次載目標），三個比較恆為真——效果不同的同型物品會被合併，其中一個的法術直接消失。兩平台一致，不是反組譯錯位",
    "citations": [
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/pc98-overlay-12.md",
+    "spec/856-item-stack-merge-bug.md"
    ]
   },
   {
@@ -21968,11 +21972,11 @@
    "note": "施法者等級(retf 2，法術編號)：依法術屬性表 +0 的類別取不同職業等級——0 牧師取 max(Cleric, Paladin−8)、1 德魯伊取 Ranger−7（負值夾 0）、2 法師取 max(Magic-User, Ranger−8)、3 固定 12。三條扣減與 AD\u0026D 一格不差。完全不會施法的角色預設 6；DS:7563h ≠ 0 時除類別 3 外一律壓成 6",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-24.md",
     "spec/705-duration-formula-and-save-roll.md",
     "spec/712-duration-table.md",
     "spec/719-spell-targeting-mode.md",
-    "spec/728-can-cast-check.md",
-    "spec/855-caster-level.md"
+    "spec/728-can-cast-check.md"
    ]
   },
   {
@@ -42602,7 +42606,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "856",
+   "note": "同 DOS overlay-19:022A3h（module_align 對齊，助憶碼序列完全相同）。差異全是物品節點位移（PC-98 大 28h：+56h..+66h↔+2Eh..+3Eh、+61h↔+39h）與 DS:9594h↔6506h、+14Eh↔+14Dh。★同一個效果槽比對 bug 兩平台都有",
+   "citations": [
+    "spec/856-item-stack-merge-bug.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50709,9 +50719,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -51264,9 +51274,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,

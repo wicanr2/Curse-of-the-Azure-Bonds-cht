@@ -22477,6 +22477,24 @@
    "level": "exact",
    "spec": "855",
    "note": "同 DOS overlay-24:028B3h（module_align 對齊，助憶碼序列完全相同）。13 條差異全是位址：DS:9594h/9596h↔6506h/6508h、法術屬性表 DS:61B4h↔37DAh、呼叫目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 8867,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "856",
+   "note": "合併同款物品堆疊(retf 4)：走物品鏈比對 +2Eh/+2Fh/+30h/+31h/+32h/+33h/+36h/+37h(word)，相同就把數量併過來並用 1545h 移除來源；超過 0FFh 時填滿目標、差額留在來源並把目標換成來源繼續。★原版 bug：+3Ch/+3Dh/+3Eh 三個效果槽的比較兩次都載入 p（應該一次載目標），三個比較恆為真——效果不同的同型物品會被合併，其中一個的法術直接消失。兩平台一致，不是反組譯錯位"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 8821,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "856",
+   "note": "同 DOS overlay-19:022A3h（module_align 對齊，助憶碼序列完全相同）。差異全是物品節點位移（PC-98 大 28h：+56h..+66h↔+2Eh..+3Eh、+61h↔+39h）與 DS:9594h↔6506h、+14Eh↔+14Dh。★同一個效果槽比對 bug 兩平台都有"
   }
  ]
 }
