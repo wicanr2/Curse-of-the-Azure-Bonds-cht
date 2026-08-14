@@ -10195,7 +10195,7 @@
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -18282,7 +18282,7 @@
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/1035-appraise-keep-chain-bug.md"
    ]
   },
   {
@@ -18303,10 +18303,10 @@
    "citations": [
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
+    "spec/1035-appraise-keep-chain-bug.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/762-ega-glyph-blit-and-movement-rate.md",
-    "spec/786-money-pool-overflow-and-turn-cost.md"
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
   },
   {
@@ -23790,9 +23790,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-index/dos-overlay-06.md",
-    "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md"
+    "audit/function-index/dos-overlay-15.md"
    ]
   },
   {
@@ -23814,9 +23814,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-index/dos-overlay-08.md",
-    "audit/function-index/dos-overlay-14.md",
-    "audit/function-index/dos-overlay-15.md"
+    "audit/function-index/dos-overlay-14.md"
    ]
   },
   {
@@ -36511,7 +36511,7 @@
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -45621,7 +45621,7 @@
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/1035-appraise-keep-chain-bug.md"
    ]
   },
   {
@@ -45643,10 +45643,10 @@
    "citations": [
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
+    "spec/1035-appraise-keep-chain-bug.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/762-ega-glyph-blit-and-movement-rate.md",
-    "spec/786-money-pool-overflow-and-turn-cost.md"
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
   },
   {
@@ -45728,7 +45728,8 @@
    "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
    "note": "拿不動的錢放進 Pool(retf 2)：與 DOS overlay-21:021Ch 53 條同形，訊息 CS:01F3h '持ちすぎです。お金は地面に置きますよ'、Pool 在 DS:0A01Ah(差異 17 條，已逐條列出)",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/1035-appraise-keep-chain-bug.md"
    ]
   },
   {
@@ -46086,11 +46087,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/1018-gem-jewelry-appraisal.md",
-   "note": "⚠ 匯出從 1BBAh 到 2305h 有一個 1867 bytes 的洞沒有反組譯（150/843 條），無法逐條讀完，維持待解讀。已確認的部分：前 150 條與 DOS overlay-21:0198Ch 同構(+105h 寶石數／+107h 珠寶數)，字串已全部讀出並記在 spec 1018（英文的單複數兩組在 PC-98 各自合併成一個）。要收這一筆需先重跑該模組的補洞匯出，或直接讀原始位元組",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1035",
+   "note": "寶石與珠寶鑑價畫面(retf 4)，同 DOS overlay-21:0198Ch(spec 1018)。★ 843 條全部讀完：IDA 匯出在 1BBAh..2305h 有 1867 bytes 空洞，用 objdump -D -b binary -m i8086 逐指令補讀；起點要從匯出最後一條(1BBAh，5 bytes)算出 1BBFh 才對齊，補出序列與 DOS 側逐條對得上。兩張價值表與 DOS 逐格相同(寶石 10/50/100/500/1000/5000；珠寶 Random(900)+100…Random(10000)+2000)。物品節點 GetMem(67h)=103 bytes，欄位全部 = DOS+28h：+52h next、+56h itemptr=46h(寶石珠寶相同)、+59h namenum3=65h(寶石)/0D6h(珠寶)、+5Ch ready=0、+5Dh identified=0、+5Fh(word)=1、+62h value。★★★ 兩個 spec 1018 沒記到的結論：①選『賣』實際入帳的是 估價 div 5(整數除法，四個分支都是)，畫面顯示的是估價不是拿到的錢；②『留下』有兩道門檻——本模組 0073h 的檢查，以及 角色^[14Dh] \u003e= 10h(物品件數上限 16；⚠ +14Dh 是件數不是鏈頭，鏈頭在 +14Eh)。★★★ 原作瑕疵：物品鏈為空時(p=NIL)，新節點只寫進區域變數、沒有寫回 角色^[14Eh]，物品與 GetMem 的記憶體一起消失 —— DOS 01E60h/021BCh、PC-98 01F19h/0228Ah 四個分支全部一樣，未實機驗證。熱鍵 G(0A33Ah)/J(0A33Bh)/E(0A33Eh)、賣 S/不賣 K(常數塊 DS:13E4h 與 DS:13EEh)；選項行 40 bytes(不是 80)。字串：あなたのお持ちになっているのは(30)/ 宝石 (6)/宝石飾(6)/抜ける(6)/見積る：(8)/宝石の値段は(12)/宝石飾りの値段は(16)/ｇｐです。(10)/どうしますか？(14)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1035-appraise-keep-chain-bug.md"
    ]
   },
   {
@@ -51083,9 +51086,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-index/dos-overlay-06.md",
-    "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md"
+    "audit/function-index/dos-overlay-15.md"
    ]
   },
   {
@@ -51108,9 +51111,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-index/dos-overlay-08.md",
-    "audit/function-index/dos-overlay-14.md",
-    "audit/function-index/dos-overlay-15.md"
+    "audit/function-index/dos-overlay-14.md"
    ]
   },
   {
@@ -54059,9 +54062,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 30,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
