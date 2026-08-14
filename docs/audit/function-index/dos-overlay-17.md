@@ -41,6 +41,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `46EC` | sub_46EC | — | 218 | 88 | 1 | 2 | ✓ | 已解讀 | exact | 850<br>有效等級(retf 4)：各職業等級總和（Ranger c=4 與 Monk c=7 各多算 1）加上 45E9h 的調整後除以職業數取平均。負調整時有下限保護。⚠ 職業數 = 0 會除以零 | audit/function-index/pc98-overlay-17.md<br>spec/850-hit-dice-and-effective-level.md |
 | `47C6` | sub_47C6 | — | 588 | 242 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `4A12` | sub_4A12 | — | 256 | 98 | 2 | 2 | ✓ | 已解讀 | exact | 850<br>升級擲 HD(retf 6，(角色, 職業遮罩))：DS:0818h 骰數 / DS:0820h 面數 / DS:3EA8h 遮罩 / DS:3EB9h HD 上限，四張 8 bytes 平行表 = AD&D 生命骰表。等級 > 1 就只擲 1 顆；擲兩次取大（非 AD&D 規則）。過上限給固定 3/2/1 但用 mov 覆寫而非累加 | audit/function-index/pc98-overlay-17.md<br>spec/850-hit-dice-and-effective-level.md |
-| `4B12` | sub_4B12 | — | 344 | 126 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `4B12` | sub_4B12 | — | 344 | 126 | 1 | 1 | ✓ | 已解讀 | exact | 1<br>付錢與找零(retf 8，(角色, 金額 longint))：金額先 × 0C8h(200) 換成銅幣（AD&D 1 gp = 200 cp）。第一段 i 由 0 往上，每種幣值取 min(金額 div 幣值[i] + 1, 持有量) 扣掉——+1 造成刻意多付；第二段若金額變負就取絕對值，i 由 4 往下把差額以大面額找回。幣值表是 DS:0CA2h（1/10/100/200/1000 銅幣）。⚠ 角色身上錢不夠時 n 恆為 0、金額不減，i 會一路遞增讀出幣值表外，可能除以零 | — |
 | `4D2A` | sub_4D2A | — | 2450 | 756 | 2 | 10 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `56BC` | sub_56BC | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/752-empty-procedures.md<br>空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取 | spec/752-empty-procedures.md |

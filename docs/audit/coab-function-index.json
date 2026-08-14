@@ -15876,7 +15876,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "付錢與找零(retf 8，(角色, 金額 longint))：金額先 × 0C8h(200) 換成銅幣（AD\u0026D 1 gp = 200 cp）。第一段 i 由 0 往上，每種幣值取 min(金額 div 幣值[i] + 1, 持有量) 扣掉——+1 造成刻意多付；第二段若金額變負就取絕對值，i 由 4 往下把差額以大面額找回。幣值表是 DS:0CA2h（1/10/100/200/1000 銅幣）。⚠ 角色身上錢不夠時 n 恆為 0、金額不減，i 會一路遞增讀出幣值表外，可能除以零"
   },
   {
    "platform": "dos",
@@ -22620,7 +22623,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "捲動清單的重繪（巢狀程序，retf 4，(靜態鏈, 頂端行號)）：先用外層 frame 的 +18h/+1Ah/+1Ch/+1Eh 設視窗，sub_11h 取第 n 個節點，逐行畫到 +18h 為止。節點屬性 +29h ≠ 0 用顏色 +24h、否則 +22h（與 spec 848 的『屬性 0 就停』同一格）。文字比欄寬 外^[−54h] 短時再用空白補滿右側",
    "citations": [
     "spec/848-scroll-list-widget.md"
    ]
@@ -23339,9 +23345,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
-    "spec/README.md"
+    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
    ]
   },
   {
@@ -41401,7 +41407,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "同 DOS overlay-17:04B12h（module_align 對齊，助憶碼序列完全相同）。差異只有 IDA 的參數命名偏移 2（arg_2/arg_6 對 arg_0/arg_4）與 longint 運算子的呼叫目標",
    "citations": [
     "audit/function-index/pc98-overlay-17.md"
    ]
@@ -48619,7 +48628,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "同 DOS overlay-26:0088Ah（module_align 對齊，相似度 0.996）。★一處真差異：補空白時 DOS 傳顏色 0、PC-98 傳外層的 +22h（實際顏色）。其餘是位址（節點 +51h/+52h↔+29h/+2Ah）與多一條 mov di,[bp+arg_0]"
   },
   {
    "platform": "pc98",
@@ -49255,9 +49267,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
-    "spec/README.md"
+    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
    ]
   },
   {
@@ -50636,9 +50648,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
@@ -50771,9 +50783,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -51191,9 +51203,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
@@ -51326,9 +51338,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,
