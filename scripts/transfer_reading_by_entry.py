@@ -28,12 +28,22 @@ SWEEP = os.path.join(ROOT, "workplace", "re-sweep")
 LEDGER = os.path.join(ROOT, "docs", "audit", "re-function-ledger.json")
 
 
+RET = ("retf", "retn", "ret")
+
+
 def mnemonics(function):
+    """助憶碼序列，**只取到最後一條 `ret` 為止**。
+
+    補洞重匯出（spec 761）會把函式尾巴後面的字串常數也解成指令，那些位元組
+    在兩個平台上本來就不同（訊息長度、Shift-JIS vs ASCII），照單全收會讓
+    每一對函式都「序列不同」而全部不能轉移。真正要比的是函式本體。
+    """
     out = []
     for item in function["items"]:
         text = re.sub(r"\s*;.*$", "", item["disasm"].strip())
         out.append(text.split()[0] if text else "")
-    return tuple(out)
+    tail = [i for i, name in enumerate(out) if name in RET]
+    return tuple(out[:tail[-1] + 1]) if tail else tuple(out)
 
 
 def entries(platform, module):
@@ -50,10 +60,12 @@ def small(platform, module):
     缺的那些會被算成「缺匯出」而整批放棄轉移。prologue 匯出以 `55 89 e5`／
     `55 8b ec` 為界，涵蓋整個模組。
     """
-    path = os.path.join(SWEEP, platform, "overlays", "prologue",
-                        "%s-%s.json" % (platform, module))
-    if os.path.exists(path):
-        return {f["ea"]: f for f in json.load(open(path, encoding="utf-8"))["functions"]}
+    for folder in ("filled", "prologue"):
+        path = os.path.join(SWEEP, platform, "overlays", folder,
+                            "%s-%s.json" % (platform, module))
+        if os.path.exists(path):
+            return {f["ea"]: f
+                    for f in json.load(open(path, encoding="utf-8"))["functions"]}
     path = os.path.join(SWEEP, platform, "small", module + ".bin.json")
     if not os.path.exists(path):
         return {}

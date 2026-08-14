@@ -19,7 +19,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `101A` | sub_101A | — | 396 | 146 | 2 | 4 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0FB1h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `119F` | sub_119F | — | 3 | 1 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_1116`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
 | `11A9` | sub_11A9 | — | 6 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完） | audit/embedded-strings.md |
-| `11AF` | sub_11AF | CHECKTARGET | 33 | 13 | 4 | 1 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-13.md |
+| `11AF` | sub_11AF | CHECKTARGET | 33 | 13 | 4 | 1 | ✓ | 已解讀 | strong inference | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>與 DOS overlay-13:1144h（entry#11）助憶碼序列完全相同，語意同該筆：暫時借用目前目標欄位(retf 8)：甲為 NIL 回 false、乙=甲 回 true；否則清 DS:6F9Bh、叫 <呼叫>(1, 甲)，未中止就把甲塞進 乙^[18Dh]^[0Ah]、叫 <呼叫>(0, 乙)、再還原，最後回 DS:6F9Bh = 0。⚠ 目前目標欄位同時是參數傳遞通道，中途離開會留下錯誤的目標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/pc98-overlay-13.md |
 | `11C7` | sub_11C7 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp dx, [bp+8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `11CC` | sub_11CC | — | 140 | 46 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 11AFh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `12A8` | sub_12A8 | TURNUNDEAD | 487 | 180 | 0 | 9 | ✓ | 待解讀 | — | — | — |
@@ -49,13 +49,13 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1923` | sub_1923 | — | 174 | 58 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1569h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/embedded-strings.md |
 | `19CB` | sub_19CB | NEWATTACKER | 142 | 53 | 3 | 2 | ✓ | 待解讀 | — | — | — |
 | `1A59` | sub_1A59 | ATTACKE | 707 | 242 | 6 | 9 | ✓ | 待解讀 | — | — | — |
-| `1D1C` | sub_1D1C | CALCRANGEMODS | 187 | 76 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `1D1C` | sub_1D1C | CALCRANGEMODS | 187 | 76 | 1 | 2 | ✓ | 已解讀 | strong inference | docs/spec/771-extra-attacks-and-weapon-class-whitelist.md<br>與 DOS overlay-13:1CE2h（entry#16）助憶碼序列完全相同，語意同該筆：由門檻算出額外攻擊(retf 0Ch，第一個遠指標是輸出累加器)：n := <呼叫>(a, b, 角色)；<呼叫>(角色) 為真時 m := (byte[5D02h + 角色^[151h]^[2Eh]*10h] − 1) div 3，否則 m := n；n−m > 0 時 n -= m 並讓 輸出^ += 2，再判一次 += 3。兩段是先後不是迴圈，最多加兩次。5D02h 是物品屬性表(DS:5CF6h，16 bytes 一筆)的 +0Ch ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1DD7` | sub_1DD7 | LOADCOMSTUFF | 57 | 15 | 0 | 7 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr sub_101A`、`call far ptr sub_1883`、`call sub_1923`、`call loc_1982+1`、`call far ptr loc_15A0+1`、`call far ptr sub_11C7`（body 共 57 bytes，已逐條讀完） | audit/overlay-init-graph.md |
 | `1E30` | sub_1E30 | COMPTARGCURE | 537 | 195 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2049` | sub_2049 | — | 482 | 169 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `225F` | sub_225F | WHOZAP | 1300 | 483 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `27A1` | sub_27A1 | CASTCOMBATSPELL | 372 | 135 | 0 | 6 | ✓ | 待解讀 | — | — | — |
-| `2915` | sub_2915 | THIEFATTACK | 223 | 73 | 2 | 3 | ✓ | 待解讀 | — | — | — |
+| `2915` | sub_2915 | THIEFATTACK | 223 | 73 | 2 | 3 | ✓ | 已解讀 | strong inference | docs/spec/771-extra-attacks-and-weapon-class-whitelist.md<br>與 DOS overlay-13:28C3h（entry#22）助憶碼序列完全相同，語意同該筆：物品類別白名單(retf 8)：(角色^[10Fh] > 0) 或 ((角色^[117h] > 0) 且 <呼叫>(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h < 類別 < 26h)；再要求 行動者^[18Dh]^[0Fh] > 1 且 (行動者^[0DEh] and 7Fh) <= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h] ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `29F4` | sub_29F4 | FIGDIR | 126 | 43 | 6 | 3 | ✓ | 待解讀 | — | — | — |
 | `2A72` | sub_2A72 | SHOWARROW | 546 | 223 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `2C94` | sub_2C94 | SETMORALE | 138 | 49 | 0 | 1 | ✓ | 待解讀 | — | — | — |
