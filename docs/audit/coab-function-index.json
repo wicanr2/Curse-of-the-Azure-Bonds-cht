@@ -7586,7 +7586,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "knowledge/gold-box-ecl-interpreter.md",
-    "spec/563-ecl-memory-model-and-operand-resolution.md"
+    "spec/563-ecl-memory-model-and-operand-resolution.md",
+    "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
    ]
   },
   {
@@ -7616,7 +7617,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7690,7 +7694,14 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md",
+   "note": "ECL 記憶體讀取（DOS 側）：bank 0-4 與 PC-98 完全對稱；關掉 spec 565 的未宣稱項；033Dh 與 C04Dh 是同一 byte 的兩種刻度",
+   "citations": [
+    "spec/565-ecl-memory-read-path-and-asymmetry.md",
+    "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
+   ]
   },
   {
    "platform": "dos",
@@ -33401,7 +33412,8 @@
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/565-ecl-memory-read-path-and-asymmetry.md",
     "spec/567-ecl-packed-text-and-bank1-field-map.md",
-    "spec/624-ecl-special-address-space.md"
+    "spec/624-ecl-special-address-space.md",
+    "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
    ]
   },
   {
@@ -33463,7 +33475,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/pc98-overlay-07.md",
-    "spec/565-ecl-memory-read-path-and-asymmetry.md"
+    "spec/565-ecl-memory-read-path-and-asymmetry.md",
+    "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
    ]
   },
   {
@@ -42539,6 +42552,7 @@
    "spec": "docs/spec/976-view-refresh-field-redraw-and-los-collect.md",
    "note": "巢狀程序：角色畫面單一欄位重畫（0..5 屬性、6 HP、7 名字），名字底色寬度用半形格數",
    "citations": [
+    "audit/function-index/dos-overlay-17.md",
     "spec/976-view-refresh-field-redraw-and-los-collect.md",
     "spec/985-name-edit-cursor-and-surface-composite.md"
    ]
@@ -49243,7 +49257,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md",
+   "note": "DOS 01975h 的對應：像素用 +11h、遮罩用 高×寬 ⇒ PC-98 的 +11h ＝ 3×高×寬",
+   "citations": [
+    "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -52227,9 +52247,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 29,
+   "Read": 30,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
@@ -53037,9 +53057,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 43,
+   "Read": 44,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,

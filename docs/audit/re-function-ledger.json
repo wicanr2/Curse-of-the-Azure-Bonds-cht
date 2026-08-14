@@ -25132,6 +25132,24 @@
    "level": "exact",
    "spec": "docs/spec/985-name-edit-cursor-and-surface-composite.md",
    "note": "圖層合成：三個像素平面 OR、遮罩平面 AND；平面大小用 +0×+2 算；無邊界檢查、零尺寸會跑 65536 圈"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 3898,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md",
+   "note": "ECL 記憶體讀取（DOS 側）：bank 0-4 與 PC-98 完全對稱；關掉 spec 565 的未宣稱項；033Dh 與 C04Dh 是同一 byte 的兩種刻度"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 6959,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md",
+   "note": "DOS 01975h 的對應：像素用 +11h、遮罩用 高×寬 ⇒ PC-98 的 +11h ＝ 3×高×寬"
   }
  ]
 }
