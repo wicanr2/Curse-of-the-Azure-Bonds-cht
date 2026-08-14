@@ -83,7 +83,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `14342` | sub_14342 | — | 48 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br>Shift-JIS 首位元組判斷:回傳 1 的條件是 81h..9Fh 或 0E0h..0FCh。⚠ 中文化必改——Big5 的首位元組是 A1h..F9h,而 A1h..DFh 在 Shift-JIS 是單位元組半形片假名,沿用會把中文字切成兩個單位元組(畫面是亂碼不是缺字) | — |
 | `14372` | sub_14372 | — | 600 | 238 | 1 | 1 |  | 待解讀 | — | — | — |
 | `145CA` | sub_145CA | — | 2253 | 814 | 2 | 4 |  | 待解讀 | — | — | — |
-| `14E97` | sub_14E97 | — | 142 | 61 | 4 | 4 |  | 待解讀 | — | — | — |
+| `14E97` | sub_14E97 | — | 142 | 61 | 4 | 4 |  | 已解讀 | exact | docs/spec/767-ac-display-sign-and-trade-overload.md<br>有欄位上限的繪字(retf 0Ch)：StoreString 進緩衝後，兩個座標參數任一 > 27h(39)就整支不畫(沒有裁切)；叫本模組 145CAh(0, @緩衝, @暫存)就地改寫後重新 StoreString，屬性經 DS:1928h 查表換算，最後 本模組 1692Dh(@緩衝[1], 長度, 參數C, 屬性, 參數E, 參數F*2) | — |
 | `152D0` | sub_152D0 | — | 265 | 123 | 1 | 5 |  | 待解讀 | — | — | — |
 | `1546F` | sub_1546F | — | 78 | 40 | 1 | 4 |  | 已解讀 | exact | docs/spec/648-pc98-text-draw-core.md<br>複製 arg_0 進 50h bytes 的區域緩衝(<sub_1AC99>,80 bytes 正好是文字畫面一整列),再 <sub_142B9>(50h,0,18h,0) 與 <sub_14E97>(緩衝,arg_4,arg_6,18h,0),最後 <sub_18036>()——回傳值存進區域變數後沒再讀,是死存 | — |
 | `1562A` | sub_1562A | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br><sub_19259>((byte_241A6 × word_280BA) div 2)。乘除都是無號,除數固定 2 | — |
