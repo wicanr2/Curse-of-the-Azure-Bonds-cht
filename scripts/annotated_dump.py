@@ -65,8 +65,10 @@ def main():
 
     # prologue 匯出只收「push bp / mov bp, sp」開場的函式；自己管堆疊的
     # （例如 PC-98 直接叫磁碟 BIOS 的那幾支）只在 full 匯出裡，見 spec 1080。
+    # filled = prologue ＋ 用 objdump 補回 IDA 匯出破洞（spec 1034／1046），
+    # 是台帳與 pending.py 採用的條數；prologue 可能少幾條，一定要優先用 filled。
     chosen = None
-    for flavour in ("prologue", "full"):
+    for flavour in ("filled", "prologue", "full"):
         path = os.path.join(SWEEP, platform, "overlays", flavour,
                             "%s-%s.json" % (platform, module))
         if not os.path.exists(path):
