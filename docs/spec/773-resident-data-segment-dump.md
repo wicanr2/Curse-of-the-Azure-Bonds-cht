@@ -51,7 +51,7 @@ spec 757 的 `overlay-21:019Eh`——後者寫的是 `參數 div 5` → 索引 4
 
 spec 748 當時寫「4 格與 9 格是位元組事實，形狀不是」，現在形狀有了。
 
-### `DS:27BDh` 法術名稱（每筆 `29h` ＝ 41 bytes，**1 起算**，共 56 筆）
+### `DS:27BDh` 法術名稱（每筆 `29h` ＝ 41 bytes，**1 起算**，共 100 筆）
 
 `1 Bless` … `56 Restoration`，第 57 格開始全是 0。完整清單在
 `docs/audit/resident-data-tables.md`。
