@@ -20650,6 +20650,42 @@
    "level": "exact",
    "spec": "docs/spec/801-take-from-pool-and-combat-state-freed.md",
    "note": "戰鬥結束的收尾：word(DS:7F09h^[590h]) := 0；掃 DS:9598h 鏈——p^[18Dh]^[13h] = 1 或 p^[197h] = 1（陣營 1）者：DS:78A2h := 1、p^[196h] <> 1 時計數 +1、先抓 後 := p^[189h] 再把 DS:9594h := p 並呼叫 <far 0EBBh+4>(1, ord(p^[18Dh]^[13h] = 1))；其餘成員：FreeMem(p^[18Dh], 16h) 並把 +18Eh 清成 NIL——**戰鬥狀態記錄是 22 bytes**。最後 DS:9594h := DS:9598h。retf。spec 801"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 1118,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
+   "note": "倒數扣時間（DS:7566h 起 7 個 word，單位與 spec 793 的遊戲時鐘相同，共用進位表 DS:3E2Ah）：索引 1..4 全為 0 就直接返回；數量 > word[7566h+索引*2]（無號）時借位——j 由 索引+1 往上找第一個非 0（上界 j < 5），j = 5 就 FillChar(DS:7566h, 0Eh, 0) 並把 數量 歸 0，否則 for k := j downto 索引+1 do dec(word[7566h+k*2])、word[7566h+(k-1)*2] += word[3E2Ah+(k-1)*2]，然後重試；夠減就 word[7566h+索引*2] -= 數量 並呼叫 本模組 0385h。retf 4 = (索引, 數量)。spec 802"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 1118,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
+   "note": "倒數扣時間（DS:0A652h 起 7 個 word，單位與 spec 793 的遊戲時鐘相同，共用進位表 DS:6804h）：索引 1..4 全為 0 就直接返回；數量 > word[0A652h+索引*2]（無號）時借位——j 由 索引+1 往上找第一個非 0（上界 j < 5），j = 5 就 FillChar(DS:0A652h, 0Eh, 0) 並把 數量 歸 0，否則 for k := j downto 索引+1 do dec(word[0A652h+k*2])、word[0A652h+(k-1)*2] += word[6804h+(k-1)*2]，然後重試；夠減就 word[0A652h+索引*2] -= 數量 並呼叫 本模組 0385h。retf 4 = (索引, 數量)。spec 802"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 945,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
+   "note": "施法前的目標閘門：byte[37E7h + 法術*10h]（屬性 +0Dh）< 門檻（無號）直接失敗；法術 = 3（Cure Light Wounds，硬寫死的特例）改問 <far 0C84h+1>(@暫存, 參數4, 參數6)，回真即通過；否則 byte[37E8h + 法術*10h]（+0Eh）= 0 即通過。n := <far 158Eh+2>(本模組 11CFh(法術), 參數4, 參數6)；n <= 0 失敗；byte[37E9h + 法術*10h]（+0Fh）= 0 即通過；否則 for k := 1 to n do i := byte[758Eh+k]，本模組 02B1h(byte[66A3h+i*4], byte[66A4h+i*4], 法術)（巢狀，多推 bp）任一回真就失敗。retf 8。spec 802"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 979,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
+   "note": "施法前的目標閘門：byte[61C1h + 法術*10h]（屬性 +0Dh）< 門檻（無號）直接失敗；法術 = 3（Cure Light Wounds，硬寫死的特例）改問 <far 0BF2h+3>(@暫存, 參數4, 參數6)，回真即通過；否則 byte[61C2h + 法術*10h]（+0Eh）= 0 即通過。n := <far sub_1560>(本模組 119Fh(法術), 參數4, 參數6)；n <= 0 失敗；byte[61C3h + 法術*10h]（+0Fh）= 0 即通過；否則 for k := 1 to n do i := byte[0A820h+k]，本模組 02D3h(byte[973Dh+i*4], byte[973Eh+i*4], 法術)（巢狀，多推 bp）任一回真就失敗。retf 8。spec 802"
   }
  ]
 }
