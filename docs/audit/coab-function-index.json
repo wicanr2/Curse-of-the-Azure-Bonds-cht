@@ -27789,7 +27789,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "944",
+   "note": "文字視窗參數初始化(near)：由 BIOS(sub_1977Bh) AH=3 取列數 − 1 存 byte_280E5h 並填進 word_280CAh/word_280F3h/word_280F5h 的高位元組、+1 存 byte_280DBh；AH=0Bh 的回傳 and 7 存 word_280C4h，其 bit 1 決定欄數 50h(80) 或 28h(40) 存 byte_280DAh，欄數 − 1 填那三個 word 的低位元組(就是 Crt 的 WindMax 那一組『右下角』)；游標位移 = (word_280F9h.hi × 欄數 + .lo) shl 1，★40 欄時再 shl 1 因為 PC-98 文字 VRAM 在 40 欄模式每格佔兩倍寬度；最後清 word_280C8h/280EFh/280F1h 與 byte_280E4h/280E3h/280C3h、byte_280C2h := 1"
   },
   {
    "platform": "pc98",
@@ -28825,7 +28828,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "944",
+   "note": "OvrInitEMS(far)：word_23AE4h = 0 回 −1(ovrError)；sub_1A485h 失敗回 0FFFBh(−5 ovrNoEMSDriver)；sub_1A49Bh 進位回 0FFFAh(−6 ovrNoEMSMemory)；sub_1A4DAh 進位就 int 67h AH=45h 釋放 EMS handle 並回 0FFFCh(−4 ovrIOError)；成功則 int 21h AH=3Eh 關掉覆疊檔、把 dword_28104h 換成 cs:loc_1A588h、把舊的 dword_23AFAh 存進 dword_2810Ah 再改成 cs:loc_1A471h，回 0。結果寫進 word_23AC6h。★四個回傳值就是 Turbo Pascal 的 OvrResult 錯誤碼 → word_23AC6h = OvrResult、word_23AE4h = 覆疊檔 DOS handle、word_23AE6h = EMS handle。★PC-98 版把整個 GAME.OVR 搬進 EMS，成功後檔案立刻關掉"
   },
   {
    "platform": "pc98",
@@ -28867,7 +28873,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "944",
+   "note": "把覆疊段搬進 EMS(near)：叫 sub_1A617h 後 int 67h AH=47h 存 mapping context；先從 word_23AD4h 沿著 es:[0Eh] 這條鏈走到 0 數出段數，再逐段設 es:[10h] := word_23ADCh 與 es:[16h]/es:[18h]、呼叫 dword_28104h(覆疊讀取常式)、成功再叫 sub_1A544h；最後 int 67h AH=48h 還原 mapping context 並叫 sub_1A634h。搬移前後各存還原一次 mapping，所以期間可以任意切頁。⚠IDA 註記 sp-analysis failed，因為 push cx/pop cx 跨越了 pop es/push es，逐條讀是配平的"
   },
   {
    "platform": "pc98",
@@ -29936,7 +29945,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "944",
+   "note": "Assign + 開檔(far, retf 6)：雙入口——預設 AH = 3Dh(開啟，存取模式取自 byte_23B0Eh)、另一入口 AX = 3C00h/DX = 1(建立)。★Turbo Pascal File record 版面：+0 DOS handle、+2 狀態魔數(0D7B0h 已 Assign、0D7B3h 已開啟)、+4 record size、+30h 起 ASCIZ 檔名。魔數都不對就設 word_23B08h(InOutRes) := 66h(102 檔案未 Assign)；已開啟就先叫 sub_1BF69h 關掉；檔名空字串就用 dx 當 handle(標準輸出入)。成功後把魔數設成 0D7B3h 並填 handle 與 record size"
   },
   {
    "platform": "pc98",
@@ -29978,7 +29990,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "944",
+   "note": "BlockRead / BlockWrite(far, retf 0Eh)：雙入口 BL = 3Fh/CX = 64h(讀，錯誤 100)與 BL = 40h/CX = 65h(寫，錯誤 101)。sub_1BF8Eh 驗 File record 失敗就回 0；否則筆數 × f^[4](record size)當位元組數做 int 21h，成功再除回筆數。★沒傳可選的 Result 參數時，實際筆數 ≠ 要求筆數就設 InOutRes := 100/101；傳了 Result 就只回報筆數不設錯誤——正是 Turbo Pascal BlockRead 三參數與四參數版的差別"
   },
   {
    "platform": "pc98",
@@ -52278,9 +52293,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 224,
+   "Read": 229,
    "NotBlocking": 29,
-   "Todo": 55,
+   "Todo": 50,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
