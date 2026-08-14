@@ -7427,7 +7427,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "624",
+   "note": "同 PC-98 overlay-07:00C28h（以 module_align 重新對齊；overlay-07 的 entry index 有 23 對錯開）。★兩處號誌性差異：DOS 用有號 jl/jg，PC-98 用無號 jb/ja——ECL 位址空間的比較值若曾超過 7Fh 兩邊會不同，remake 要照 DOS 的有號版。其餘 31 條全是位址與 IDA 命名形式",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -7498,7 +7501,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "625",
+   "note": "同 PC-98 overlay-07:01148h（module_align 對齊）。唯一序列差異是 DOS 多一條 cbw（配 cmp ax,N；PC-98 直接 cmp al,N），其餘 16 條全是位址"
   },
   {
    "platform": "dos",
@@ -7524,7 +7530,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "616",
+   "note": "同 PC-98 overlay-07:013F7h（module_align 對齊）。唯一序列差異是 DOS 多一條 cbw，其餘 54 條全是位址與 IDA 的區域變數顯示形式（[bp+var_X] vs [bp-X]）"
   },
   {
    "platform": "dos",
@@ -7732,7 +7741,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "617",
+   "note": "同 PC-98 overlay-07:01AECh（module_align 對齊）。唯一序列差異是 DOS 多一條 xor ah, ah（配 cmp ax,0/2/4/6 的方向碼比較），其餘 27 條全是位址",
    "citations": [
     "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
@@ -7753,7 +7765,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "626",
+   "note": "同 PC-98 overlay-07:01B89h（module_align 對齊）。★PC-98 多一段 7 條：les di,[var_4]; add di,14Eh; push es/di; mov ax,67h; call 81Fh:1A2h——對物品鏈頭（PC-98 +14Eh）配一個 67h(103) bytes 的節點，正是 PC-98 的物品節點大小（spec 832）；DOS 完全沒有這一段。其餘 55 條全是位址",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -18324,6 +18339,7 @@
    "note": "把不符合的目標從清單裡拿掉。⚠ **DS:7431h 是 far 指標陣列(一格 4 bytes、1-based),DS:7434h 是筆數,而一路被當成「目標」的 DS:7435h/7437h 就是它的第 1 格**(7431h+1×4=7435h)。所以 `if DS:7434h \u003c\u003e 0` 其實是「目標清單非空」。迴圈:清掉 := (p^[197h] \u003c\u003e arg_4) 或 (相符 且 DS:6F97h=1 且 DS:4FBAh=5 且 \u003coverlay-24 entry#32\u003e(p,1) \u003e 0)——**類別相符的反而可能被清掉**;清掉是把該格寫成 NIL,**筆數不變**,下游必須自己檢查 NIL。最後 \u003csub_F06h\u003e(DS:6F97h,0,0,0,0,緩衝)",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/709-target-array.md",
     "spec/710-effect-collection-and-leftover-target.md",
     "spec/716-nil-slot-hazard.md",
@@ -18529,6 +18545,7 @@
    "citations": [
     "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/681-dos-target-array-and-reduce.md",
     "spec/716-nil-slot-hazard.md",
     "spec/727-strength-spell-table.md"
@@ -18628,6 +18645,7 @@
    "note": "Sleep 的 HD 預算:預算 := ROLLDICE(4,4) 存 byte[4CB5h];走目標陣列,依 p^[0E5h] 算成本存 byte[4CB6h](\u003c=1→1、2→2、3→4、4→6、5 且 p^[74h]=0→10 否則 20、其他→20);狀態 +195h=1、或 \u003coverlay-24 entry#27\u003e(p,35h) 查到(已睡著,**不扣預算**)、或預算 \u003c 成本 → 該格清成 NIL;否則預算扣掉成本。最後在迴圈**外面**發一次 'falls asleep'。⚠ 預算用完不會提早跳出,所以誰先被睡到是陣列順序決定的不是強弱。⚠ 4CB4h/4CB5h/4CB6h 是**共用暫存不是狀態**——4CB5h 在 spec 705 是擲骰門檻、這裡是 HD 預算,4CB6h 在 705 是 base、這裡是單筆成本;建成具名全域會產生假耦合,但 08A1h 的筆數溢出確實會寫壞它們",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/715-sleep-hd-budget.md",
     "spec/716-nil-slot-hazard.md",
     "spec/727-strength-spell-table.md"
@@ -18878,6 +18896,7 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/734-animate-dead-and-faction-field.md"
    ]
   },
@@ -18937,6 +18956,7 @@
    "note": "解除效果:整段期間 DS:6F9Ch:=1,離開歸 0。用 \u003coverlay-23 entry#16\u003e(目標, id) 查 22h/2Bh/32h 三個編號,查到就把回傳值設 1;但**解掉的是不同的編號**——2Bh 命中解 2Ch 與 1Fh、32h 命中解 39h、22h 只回報不解。這是一張寫死的對應表,不是「有什麼解什麼」;寫成後者會讓 2Bh/32h 留在身上而 2Ch/1Fh/39h 不被清掉",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/704-dispel-and-the-missing-fill.md",
     "spec/707-raise-dead-and-area-effect.md",
     "spec/714-neutralize-poison.md"
@@ -18996,9 +19016,9 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-12.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/705-duration-formula-and-save-roll.md",
-    "spec/715-sleep-hd-budget.md",
-    "spec/727-strength-spell-table.md"
+    "spec/715-sleep-hd-budget.md"
    ]
   },
   {
@@ -19110,6 +19130,7 @@
    "spec": "docs/spec/717-area-target-selection.md",
    "note": "範圍法術:n := (DS:6F97h = 40h) ? ROLLDICE(1,3)×2+1(值域只有 3/5/7) : \u003coverlay-24 entry#36\u003e(DS:6F97h)。**只有 [4F99h]^[1CCh] = 0 時才重選目標**:\u003coverlay-31 entry#6\u003e(DS:7559h, DS:755Ah, 2, 0FFh, 1, DS:6E92h) 填 DS:6E97h 起的 3 bytes 記錄(筆數 DS:6E96h、每筆 +0 是 DS:6D35h 指標表的索引),再把那些指標搬進 DS:7431h 目標陣列並 DS:7434h := DS:6E96h。否則整段跳過,沿用上一條 opcode 留下的清單(可能含 NIL)。接著 \u003coverlay-32 entry#13\u003e(DS:7559h, DS:755Ah, 0, 8)、d := ROLLDAMAGEDICE(n, 6)、\u003csub_F06h\u003e(DS:6F97h, 0, 0, d, 9, 空字串)。⚠ 筆數是整個換掉不是累加,超出新筆數的舊格子不會被清只是走不到。這一段補完 spec 699:那裡是借同一片緩衝查完還原,這裡才是正常用途",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/717-area-target-selection.md"
    ]
   },
@@ -19170,6 +19191,7 @@
    "note": "兩段互相獨立:\u003coverlay-32 entry#9\u003e(@a, @b, arg_A, arg_C) 帶回 a、b。第一段 a\u003e0 且 byte[26A2h + a×4]=0FFh 且 [4F99h]^[1CCh]=1 且 **arg_0^=0** → arg_0^:=1,**否則一律覆寫成 0**(包括本來就是 1 的情況)——是「每次重算」不是「條件成立就設旗標」,而且原本是 1 時前三個條件全過也會被清成 0,這個自我否定結構改寫時很容易被簡化掉。第二段 b\u003e0 且 b\u003c\u003earg_4 時,取 far [6D35h + b×4](spec 699 那張表),在 DS:6F95h:=0Ch(傷害旗標,PC-98 對應 A02Fh)期間呼叫 overlay-23 entry#8 → entry#20 → overlay-24 entry#24(13h),之後歸 0",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/707-raise-dead-and-area-effect.md",
     "spec/729-beam-walk-and-target-collect.md"
    ]
@@ -19431,6 +19453,7 @@
    "note": "解毒。狀態 +195h=1 時只清目標陣列第 1 格;否則 \u003coverlay-24 entry#27\u003e(p, 37h) 查得到才做:HP 為 0 補成 1、在 DS:6F9Ch:=1 期間**一次解掉三個編號 37h/16h/0Fh**、顯示 '\u003c名字\u003e is unpoisoned'、+196h:=1、+195h:=0;查不到則顯示 'is unaffected'。⚠ 效果 37h = 中毒(本支解它、spec 707 復活時連同 20h 一起解、spec 709 的 24CDh 對中毒者套 4Eh,三處一致)。⚠ 與 24CDh 前兩步完全相同但之後分岔,尤其**查不到時本支有訊息、24CDh 靜默返回**,對照兩支時最容易被抹平",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/714-neutralize-poison.md",
     "spec/716-nil-slot-hazard.md"
    ]
@@ -19539,6 +19562,7 @@
    "note": "三段接力:r := \u003csub_E11h\u003e(DS:6506h, 4, 49h) → \u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0,0,0,0, 空字串 CS:4425h) → \u003csub_F06h\u003e(DS:6F97h, 0,0,0,0, 'is affected' CS:4426h)。⚠ CS:4425h 與 CS:4426h 緊鄰(前者長度 0、後者長度 11),反組譯裡兩個 offset 只差 1 很容易看成同一個字串的偏移",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/703-item-effect-slots-and-uninitialised-args.md",
     "spec/711-target-count-clamp-and-callee-arity.md",
     "spec/712-duration-table.md",
@@ -19578,6 +19602,7 @@
    "note": "復活:四道門檻(狀態 +195h 必須是 6 或 1、+18h 必須 \u003e 0(無號)、+74h 不能是 2),**三個是 early return,不過連訊息都不顯示**。通過後在 DS:6F9Ch:=1 期間解除效果 20h 與 37h,然後 +195h:=0、+196h:=1、**+18h 減 1(次數不可逆,沒有地方加回去)**、\u003coverlay-23 entry#24\u003e(p,4)、**+1A4h := 1(HP 設成 1,不是上限)**,最後顯示 'is raised'(CS:44C9h)。漏掉 +18h 的遞減會變成可以無限復活",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/707-raise-dead-and-area-effect.md",
     "spec/714-neutralize-poison.md",
     "spec/734-animate-dead-and-faction-field.md"
@@ -19696,6 +19721,7 @@
    "note": "⚠ **把目標筆數永久夾小**:n := ROLLDICE(2,8);if DS:7434h \u003e n then DS:7434h := n,**沒有還原**(與 spec 706 的 5590h 改完會還原正好相反),所以同一段腳本裡後面的 opcode 看到的是被夾過的清單;陣列本身沒重排,超過的格子還在原地只是走不到。接著走 k=1..DS:7434h,跳過 NIL,s := \u003coverlay-23 entry#8\u003e(p, 4, 0)、r := \u003csub_E11h\u003e(p, 23h, 52h)、\u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0, 0, 1, s, 'is confused' CS:4816h)。⚠ 參數個數要讀被呼叫者的 retf N,不要從呼叫端推:entry#8 retf 8(4 word)、entry#20 retf 0Ah(5)、**entry#21 retf 14h(10,不是先前推的 7)**、sub_E11h retf 2(1 word)。先前的錯誤推導兩個呼叫點都自洽,因為它們犯了同一個假設 2d8 這個上限與 AD\u0026D 1e Confusion「影響 2d8 個生物」一致,訊息也是 is confused,法術身分幾乎確定(未從法術表反查編號,標為推論)",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/711-target-count-clamp-and-callee-arity.md",
     "spec/712-duration-table.md",
     "spec/716-nil-slot-hazard.md",
@@ -19777,6 +19803,7 @@
    "citations": [
     "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/730-save-selects-which-effect.md",
     "spec/731-spell-resolution-loop.md"
    ]
@@ -19850,6 +19877,7 @@
    "note": "⚠ **數量減半但傷害用沒減半的值**:\u003coverlay-24 entry#36\u003e(DS:6F97h) 被呼叫兩次,第一次結果存 bp−6(n)、第二次 +1 後 cwd/idiv 2 存 bp−5(half,下限夾 1)。half 只餵給 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 2, half),而傷害是 ROLLDAMAGEDICE(n, 4) + n 用 n。兩個區域變數位移相鄰(bp−6/bp−5),反組譯裡極容易看成同一個;改寫時只留一個變數兩邊都會錯",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/708-slay-living-and-missile-count.md",
     "spec/729-beam-walk-and-target-collect.md"
    ]
@@ -19872,6 +19900,7 @@
    "citations": [
     "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/706-temporary-field-adjust.md",
     "spec/711-target-count-clamp-and-callee-arity.md",
     "spec/713-remove-curse.md"
@@ -19951,6 +19980,7 @@
    "note": "對整個目標陣列施加 6d6:先 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 1, 3),再走 k=1..DS:7434h,取 far [7431h + k×4],**為 NIL 就跳過**(1C39h 會把格子寫成 NIL 而不動筆數,這支示範下游該怎麼配合);flag := (p^[11Ah]=12h) ? 0 : 1;d := ROLLDAMAGEDICE(6,6);\u003coverlay-23 entry#20\u003e(p, d, byte[3E02h], flag)。⚠ entry#20 的第一個參數 p 是**呼叫端自己推的殘留**(ROLLDAMAGEDICE 只吃兩個 word)——殘留不一定來自 0A54:0634h 那條鏈,往上找時要連更早被推入而沒人消耗的東西一起看",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/710-effect-collection-and-leftover-target.md",
     "spec/729-beam-walk-and-target-collect.md",
     "spec/732-reverse-order-effect-loop.md"
@@ -50182,9 +50212,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 23,
+   "Read": 28,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 5,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,

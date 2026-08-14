@@ -21928,6 +21928,51 @@
    "level": "exact",
    "spec": "710",
    "note": "同 DOS overlay-22:056C4h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 2925,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "624",
+   "note": "同 PC-98 overlay-07:00C28h（以 module_align 重新對齊；overlay-07 的 entry index 有 23 對錯開）。★兩處號誌性差異：DOS 用有號 jl/jg，PC-98 用無號 jb/ja——ECL 位址空間的比較值若曾超過 7Fh 兩邊會不同，remake 要照 DOS 的有號版。其餘 31 條全是位址與 IDA 命名形式"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 4237,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "625",
+   "note": "同 PC-98 overlay-07:01148h（module_align 對齊）。唯一序列差異是 DOS 多一條 cbw（配 cmp ax,N；PC-98 直接 cmp al,N），其餘 16 條全是位址"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 5212,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "616",
+   "note": "同 PC-98 overlay-07:013F7h（module_align 對齊）。唯一序列差異是 DOS 多一條 cbw，其餘 54 條全是位址與 IDA 的區域變數顯示形式（[bp+var_X] vs [bp-X]）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 6975,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "617",
+   "note": "同 PC-98 overlay-07:01AECh（module_align 對齊）。唯一序列差異是 DOS 多一條 xor ah, ah（配 cmp ax,0/2/4/6 的方向碼比較），其餘 27 條全是位址"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 7136,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "626",
+   "note": "同 PC-98 overlay-07:01B89h（module_align 對齊）。★PC-98 多一段 7 條：les di,[var_4]; add di,14Eh; push es/di; mov ax,67h; call 81Fh:1A2h——對物品鏈頭（PC-98 +14Eh）配一個 67h(103) bytes 的節點，正是 PC-98 的物品節點大小（spec 832）；DOS 完全沒有這一段。其餘 55 條全是位址"
   }
  ]
 }
