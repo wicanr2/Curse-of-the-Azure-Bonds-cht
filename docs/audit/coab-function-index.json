@@ -1422,7 +1422,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "938",
+   "note": "顯示模式 2 的字模繪製(retn 0Ah = (索引, 前景, 背景, 列, 欄))，由 spec 937 的分派層在 byte_211A6h = 2 時呼叫：di = 列 × 140h + 欄 × 4；★用四個交錯半頁 0B800h/0BA00h/0BC00h/0BE00h、每列 4 bytes、每 byte 2 個像素 → 4 bits/像素 = 16 色，rol dl/dh 各 4 bit 把下一個像素的顏色送到低半位元組；字模位元同樣取自 DS:6598h。這是 Tandy/PCjr 320×200×16 色的版面，與 spec 929 的 Tandy SN76496 音效互相印證。★前景背景直接用，不過 DS:256Dh 轉換表(只有模式 0 要過)。對照 spec 935 的模式 0：2 個半頁、每 byte 4 像素、2 bits/像素、欄 × 2——這也解釋 spec 934 的『每列位元組加倍』"
   },
   {
    "platform": "dos",
@@ -51699,9 +51702,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 160,
+   "Read": 161,
    "NotBlocking": 133,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
