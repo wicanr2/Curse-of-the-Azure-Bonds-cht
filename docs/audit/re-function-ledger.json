@@ -25978,6 +25978,24 @@
    "level": "exact",
    "spec": "1035",
    "note": "寶石與珠寶鑑價畫面(retf 4)，同 DOS overlay-21:0198Ch(spec 1018)。★ 843 條全部讀完：IDA 匯出在 1BBAh..2305h 有 1867 bytes 空洞，用 objdump -D -b binary -m i8086 逐指令補讀；起點要從匯出最後一條(1BBAh，5 bytes)算出 1BBFh 才對齊，補出序列與 DOS 側逐條對得上。兩張價值表與 DOS 逐格相同(寶石 10/50/100/500/1000/5000；珠寶 Random(900)+100…Random(10000)+2000)。物品節點 GetMem(67h)=103 bytes，欄位全部 = DOS+28h：+52h next、+56h itemptr=46h(寶石珠寶相同)、+59h namenum3=65h(寶石)/0D6h(珠寶)、+5Ch ready=0、+5Dh identified=0、+5Fh(word)=1、+62h value。★★★ 兩個 spec 1018 沒記到的結論：①選『賣』實際入帳的是 估價 div 5(整數除法，四個分支都是)，畫面顯示的是估價不是拿到的錢；②『留下』有兩道門檻——本模組 0073h 的檢查，以及 角色^[14Dh] >= 10h(物品件數上限 16；⚠ +14Dh 是件數不是鏈頭，鏈頭在 +14Eh)。★★★ 原作瑕疵：物品鏈為空時(p=NIL)，新節點只寫進區域變數、沒有寫回 角色^[14Eh]，物品與 GetMem 的記憶體一起消失 —— DOS 01E60h/021BCh、PC-98 01F19h/0228Ah 四個分支全部一樣，未實機驗證。熱鍵 G(0A33Ah)/J(0A33Bh)/E(0A33Eh)、賣 S/不賣 K(常數塊 DS:13E4h 與 DS:13EEh)；選項行 40 bytes(不是 80)。字串：あなたのお持ちになっているのは(30)/ 宝石 (6)/宝石飾(6)/抜ける(6)/見積る：(8)/宝石の値段は(12)/宝石飾りの値段は(16)/ｇｐです。(10)/どうしますか？(14)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 4077,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1036",
+   "note": "隨機物品產生器 造物品(節點: 遠指標, 類別: byte)，retf 6。FillChar(節點,3Fh,0) ⇒ DOS 物品節點 63 bytes；next=NIL、ready=0、identified(+35h)=6(⚠ 不是布林)、cursed=0、itemptr=類別、namenum(1..3) 清 0。★★ 名稱是三段索引：預設 namenum(3)=類別、namenum(2)=plus+0A1h ⇒ 名稱表第 0A1h(161)筆起是『＋N』後綴，中文化這段是組字不能整句翻；類別 32h/33h/34h/35h..3Ah 改成 namenum(2)='1'/'2'/'0' 且 namenum(1)=plus+0A1h、identified:=4；4Dh 特別：plus:=plus*2+2 再依 4/6 給 namenum(1)=0DDh/0DEh。★★★ +37h(word)=重量，其中 34h→200、26h/35h→250、37h→300、39h→350、36h/38h→400、3Ah→450 正是 AD&D 1e 的護甲重量一個不差 ⇒ +37h 是重量不是價格。★★ +3Ah(word)=價值=plus×係數：3Bh→2500、1Ch/49h→150、35h/36h/4Dh→3000、37h/38h→3500、39h→4000、3Ah→5000、其他→2000。★★★ 卷軸(類別 3Dh/3Eh)：ROLLDICE(1,3) 決定 1..3 個法術，namenum(3)=0D1h/0D0h、namenum(2)=法術數+0D1h，每個法術先擲 1d5 決定環再擲區間 —— 3Dh: 1d13+8 / 1d7+28 / 1d11+44 / 1d9+80 / 1d4+90；3Eh: 1d8+0 / 1d7+21 / 1d8+36 / 1d5+65 / 1d6+70；法術編號存進 special(1..3)(+3Ch..+3Eh)，價值 += 環×300。★★★ 特殊物品範本表 DS:82Ch 是 word 陣列(shl di,1)，一筆 8 word、索引從 1 起(1,9,17,25,33,41,49)：namenum(1..3)、重量、價值、special(1..3)。索引 1(類別 47h 且 1d8=6..8)、9(54h/5Ch)、17(47h 且 1d8=1..5)、33(4Eh/4Fh)、41(3Fh/43h)、49(15h 且 1d5=5)；⚠ 索引 25 本支沒用到。六筆的 namenum(2) 都是 167(形狀上是共用連接詞 of) ⇒ 中文語序要倒過來，三段組法本身可能要改"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 4348,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1036",
+   "note": "隨機物品產生器，同 DOS overlay-21:00FEDh。⚠ 先前台帳記的『133 bytes 空洞』是誤判：函式在 1945h 的 retf 6 就結束，19CAh 之後是 IDA 多圈進來的資料；真正的函式體 10FCh..1945h 完整反組譯，778 條全部讀完。與 DOS 的差異全是位址與產碼細節：物品節點欄位一律 +28h(+52h next、+56h itemptr、+57h..+59h namenum(1..3)、+5Ah plus、+5Dh identified、+5Fh 重量、+61h、+62h 價值)，以及 cmp al vs cmp ax 這類 byte/word 比較的產碼差(DOS 788 條 vs 778 條，差的十條幾乎都是 xor ah,ah)。特殊物品範本表在 DS:1372h，七筆逐 word 與 DOS DS:82Ch 相同。重量表、價值係數、卷軸的五個環區間兩平台完全一致"
   }
  ]
 }
