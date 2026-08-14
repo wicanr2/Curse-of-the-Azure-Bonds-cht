@@ -25510,6 +25510,24 @@
    "level": "exact",
    "spec": "docs/spec/1008-combat-move-command.md",
    "note": "戰鬥移動指令(retf 0Ah，宣告順序 (角色遠指標, 指令 byte, var 結果遠指標))：八方向由小鍵盤擴充掃描碼決定——48h/49h/4Dh/51h/50h/4Fh/4Bh/47h → 0..7(上/右上/右/右下/下/左下/左/左上)，與 spec 999/991 的方向編碼一致(輸入端的獨立確認)。★ 角色^[18Dh]^[6] 是移動力，單位是半點：顯示時 div 2；一步的成本 = byte[26A2h + 地形碼×4] × (斜走 3／正交 2)，地磚值 0FFh 就是不能走。離開時 < 2 直接歸零，主迴圈條件也是 > 1。地形碼 = 0(出界)顯示 'Flee:' 問 Y/N；佔用者 > 0 就是攻擊(目標取自戰鬥員遠指標表 DS:6D35h + 佔用者×4)，這就是選單標題 'Move/Attack' 的來由。空白鍵才開選單，每圈結束把鍵設回 20h。字串：'Move/Attack, Move Left = '(25，後接數字)、'Flee:'(5)、\"can't go there\"(14)。與 dos overlay-08:00B06h 同一段原始碼(DOS 359 條、PC-98 369 條)。⚠ PC-98 多十條、且是中文化必須跟的那一版：(1) 開頭多叫一次 overlay-26 entry#3 @0858h(spec 755，十筆欄位初始化)；(2) 選單前用 resident 0A65:0262h 的 rep movsb 把 DS:06A6h 起的十個 0Dh 複製到 DS:0A335h(＝熱鍵表 DS:0A334h+i 的 1..10)，等於把十個字母熱鍵全關掉。DOS 沒有這兩段，靠選項行裡的大寫字母標熱鍵。其他差異：戰鬥狀態欄位 DOS +18Dh／PC-98 +18Eh(spec 641 同類的一 byte 位移)、選單 routine entry#3／entry#5、選單常數 0Ah,0Ah,0Fh,1,0／0Ah,0,0,1,0、選項緩衝 DS:75DBh／DS:0A86Dh、清矩形 01A0:04CDh／019E:06B5h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 8736,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1009-spell-targeting-modes.md",
+   "note": "法術目標選取(retf 8，宣告順序 (法術編號, 自動旗標, var 成功遠指標))。★★ 模式 = byte[37DBh + 法術×16 + 5] and 0Fh：0=只打自己(31 支)、2/3/4/6/7=固定 (模式 and 3)+1 個(50 支)、5=逐一點選累計等級權重到 2d4(Faerie Fire=法術 4Fh 另有上限，4 支)、8..0Eh=範圍效果半徑 = 模式 and 7(32 支)、0Fh=打已鎖定目標否則取整片(2 支)。與 AD&D 1e 對得上：牧師 Hold Person(法術 23，模式 6)3 個、法師版(49，模式 7)4 個；半徑階序 Fireball 3 > Bless/Ice Storm 2 > Sleep/Cloud Kill 1 > Lightning Bolt/Cone of Cold 0。法術名稱表 DS:27BDh 筆距 41、編號 1 起算。⚠ 模式 5 的第一個目標一定收得下(判斷是 已選數>1 且 總和>上限)。⚠⚠ 原作缺陷：模式 0Fh 的半徑算式是 (表值 and 0Fh) shr 4，恆為 0（原始位元組 24 0f / 30 e4 / b9 04 00 / d3 e8，兩平台相同）。資料端證明不是刻意：法術 25 Silence, 15' Radius 的 +5 = 1Fh(高 nibble 1)、法術 113 = 2Fh(高 nibble 2)。對照組 8..0Eh 那條路徑寫的是 and 7，沒有多餘右移。⚠ 另一個缺陷：目標表以 基底 + i×4 索引且 i 從 1 起算，基底那四個 byte 的最後一個就是計數器本身；固定數量那一支在 n=0 時仍然讀 目標表[0] 當遠指標傳給 entry#15/16。位址對照：施法者 6506h↔9594h、目標表基底/計數 7431h/7434h↔0A51Dh/0A520h、範圍結果 6E92h/6E94h/6E96h↔9F2Ch/9F2Eh/9F30h、戰鬥員遠指標表 6D35h↔9DCFh、中心座標 7559h/755Ah↔0A645h/0A646h、範圍效果旗標 6F9Dh↔0A037h、法術屬性表 37DBh↔61B5h、戰鬥狀態欄位 +18Dh↔+18Eh。字串 'Already been targeted'(21)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 8799,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1009-spell-targeting-modes.md",
+   "note": "法術目標選取(retf 8，宣告順序 (法術編號, 自動旗標, var 成功遠指標))。★★ 模式 = byte[37DBh + 法術×16 + 5] and 0Fh：0=只打自己(31 支)、2/3/4/6/7=固定 (模式 and 3)+1 個(50 支)、5=逐一點選累計等級權重到 2d4(Faerie Fire=法術 4Fh 另有上限，4 支)、8..0Eh=範圍效果半徑 = 模式 and 7(32 支)、0Fh=打已鎖定目標否則取整片(2 支)。與 AD&D 1e 對得上：牧師 Hold Person(法術 23，模式 6)3 個、法師版(49，模式 7)4 個；半徑階序 Fireball 3 > Bless/Ice Storm 2 > Sleep/Cloud Kill 1 > Lightning Bolt/Cone of Cold 0。法術名稱表 DS:27BDh 筆距 41、編號 1 起算。⚠ 模式 5 的第一個目標一定收得下(判斷是 已選數>1 且 總和>上限)。⚠⚠ 原作缺陷：模式 0Fh 的半徑算式是 (表值 and 0Fh) shr 4，恆為 0（原始位元組 24 0f / 30 e4 / b9 04 00 / d3 e8，兩平台相同）。資料端證明不是刻意：法術 25 Silence, 15' Radius 的 +5 = 1Fh(高 nibble 1)、法術 113 = 2Fh(高 nibble 2)。對照組 8..0Eh 那條路徑寫的是 and 7，沒有多餘右移。⚠ 另一個缺陷：目標表以 基底 + i×4 索引且 i 從 1 起算，基底那四個 byte 的最後一個就是計數器本身；固定數量那一支在 n=0 時仍然讀 目標表[0] 當遠指標傳給 entry#15/16。與 dos overlay-13:02220h 各 483 條，差異只有兩條 xor ah,ah、兩條有號/無號跳躍，以及多一句 ds:0BE2Dh := 法術編號。位址對照：施法者 6506h↔9594h、目標表基底/計數 7431h/7434h↔0A51Dh/0A520h、範圍結果 6E92h/6E94h/6E96h↔9F2Ch/9F2Eh/9F30h、戰鬥員遠指標表 6D35h↔9DCFh、中心座標 7559h/755Ah↔0A645h/0A646h、範圍效果旗標 6F9Dh↔0A037h、法術屬性表 37DBh↔61B5h、戰鬥狀態欄位 +18Dh↔+18Eh。字串 'Already been targeted'(21)"
   }
  ]
 }
