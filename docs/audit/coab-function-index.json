@@ -16146,7 +16146,8 @@
    "spec": "docs/spec/985-name-edit-cursor-and-surface-composite.md",
    "note": "pc98 02DB7h 的對應（配對工具漏判）：名字欄多畫第三次當游標，空白格畫 '%'；PC-98 沒有這段",
    "citations": [
-    "spec/985-name-edit-cursor-and-surface-composite.md"
+    "spec/985-name-edit-cursor-and-surface-composite.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -18906,7 +18907,8 @@
    "note": "射線走訪與目標收集(retf 0Ch,約 880 bytes),3947h/4A8Fh/54EBh/56C4h/5AA8h 共同的底層。四段:(1) 用 \u003coverlay-31 entry#3\u003e 收集方向序列;(2) 沿序列走,**射程參數先乘 2、正交方向成本 2、斜向成本 3**——所以距離單位是半格、斜向算 1.5 格,正好對上 spec 699/720 那個「除以 2」的距離;地圖邊界 x∈1..48、y∈1..23;dx/dy 表在 DS:2694h/269Dh(**在 resident 資料段,不在 overlay-22.bin 裡**);⚠ 方向序列走完會繞回開頭重用,射線可以比序列長;(3) 用 \u003coverlay-31 entry#5\u003e 蒐集沿途單位,去重是線性比對整個清單且長度無上限檢查;(4) 依 arg_0 (\u003e1、\u003e2 兩個門檻)畫效果,再填 DS:7431h 目標陣列並設 DS:7434h。⚠ **施法者自己會被排除**(兩個 word 都相等才跳過),而且寫入索引與讀取索引是兩個計數器,所以陣列不會留空洞",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
-    "spec/729-beam-walk-and-target-collect.md"
+    "spec/729-beam-walk-and-target-collect.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -19062,6 +19064,7 @@
    "spec": "docs/spec/732-reverse-order-effect-loop.md",
    "note": "效果迴圈,**從目標陣列最後一格往第 1 格走**(與 spec 731 的 sub_F06h 相反,所以「誰先被處理」剛好相反)。每格:非 NIL 才做;k \u003c DS:7434h 時才播動畫(第一次不播);(DS:6F97h = 4Fh 或 51h) 且 k = DS:7434h 時**強制豁免成功、連骰都不擲**;否則 豁免 := \u003coverlay-23 entry#8\u003e(p, 表.+9, arg_4)、旗標 := 表.+8;(p^[11Ah] \u003e 1 或 p^[0DEh] \u003e 1) 且 DS:6F97h \u003c\u003e 5Eh 時**一律豁免成功**(免疫規則,5Eh 是唯一能穿透的);最後 \u003cPUTEFFECT\u003e(p, 表.+0Ah, sub_E11h(編號), entry#36(編號), 0, 旗標, 豁免, 訊息)。與 sub_F06h 的其他差別:完全沒有傷害、等級不可覆寫、表格索引一律用 DS:6F97h",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/732-reverse-order-effect-loop.md",
     "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
    ]
@@ -20549,9 +20552,9 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-12.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/716-nil-slot-hazard.md",
-    "spec/724-fear-and-puteffect-signature.md",
-    "spec/729-beam-walk-and-target-collect.md"
+    "spec/724-fear-and-puteffect-signature.md"
    ]
   },
   {
@@ -20860,7 +20863,8 @@
     "spec/716-nil-slot-hazard.md",
     "spec/725-breath-acid-area.md",
     "spec/729-beam-walk-and-target-collect.md",
-    "spec/735-breath-fire-vs-acid.md"
+    "spec/735-breath-fire-vs-acid.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -20879,6 +20883,7 @@
    "spec": "docs/spec/735-breath-fire-vs-acid.md",
    "note": "噴火(區域),spec 725 吐酸的姊妹支。次數同樣在 arg_2^[3](DS:758Dh=0 時重設成 3、最後才扣);傷害旗標 DS:6F95h := 21h(吐酸是 30h);用 [DS:72A0h] 第 0 項模式碼 3Dh 選目標,\u003csub_175Bh\u003e(x, y, DS:7559h, DS:755Ah, **3, 9**)(吐酸是 1, 6);訊息 '\u003c名字\u003e breathes fire'(CS:5C78h);走目標陣列(**有 NIL 檢查**),s := \u003coverlay-23 entry#8\u003e(p, 3, 0)、\u003coverlay-23 entry#20\u003e(p, arg_6^[78h], 2, s)。⚠ **最實質的差別:吐酸有同類檢查(範圍內混進不同陣營就整次取消),噴火沒有——火會燒到自己人**",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/735-breath-fire-vs-acid.md",
     "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
    ]
@@ -21596,7 +21601,8 @@
    "spec": "docs/spec/980-constitution-hp-bonus-and-breath-weapon.md",
    "note": "體質 HP 加成累計：DS:3EB9h 是各職業擲骰等級上限（表值−1，AD\u0026D 全中），戰士類 17+ 走高階欄，遊俠多一個骰",
    "citations": [
-    "spec/980-constitution-hp-bonus-and-breath-weapon.md"
+    "spec/980-constitution-hp-bonus-and-breath-weapon.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -45464,7 +45470,8 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/733-cast-driver.md"
+    "spec/733-cast-driver.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -45861,10 +45868,14 @@
    "callers": 5,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/989-pc98-beam-walk-and-acid-area.md",
+   "note": "射線走訪與目標收集（DOS 0175Bh／spec 729 的對應）；兩個結構差異都是編碼差異；方向表 DS:2694h ↔ DS:489Eh",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -45883,7 +45894,8 @@
    "spec": "docs/spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
    "note": "DOS 01ABFh（spec 732）的對應；唯一結構差異是 DS:7F16h × 7",
    "citations": [
-    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -46705,7 +46717,8 @@
    "spec": "docs/spec/979-mass-cure-effect-and-two-piece-icon.md",
    "note": "群體解除效果：人數上限＝施法者等級，只對指定陣營；DS:0A51Dh 候選表每格 4 bytes、格數在 DS:0A520h",
    "citations": [
-    "spec/979-mass-cure-effect-and-two-piece-icon.md"
+    "spec/979-mass-cure-effect-and-two-piece-icon.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -47315,7 +47328,8 @@
    "note": "恐懼（DOS 04A8Fh／spec 724 的對應）；★ 豁免類別 4 ＝ 法術，把類別表補到四格",
    "citations": [
     "audit/function-strings.md",
-    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -47588,7 +47602,8 @@
    "note": "吐酸（DOS 05974h／spec 723 的對應）；⚠ PC-98 刪掉了 'and Misses' 那句未命中訊息",
    "citations": [
     "audit/function-strings.md",
-    "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md"
+    "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -47602,9 +47617,13 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/989-pc98-beam-walk-and-acid-area.md",
+   "note": "噴酸範圍（DOS 05AA8h／spec 725 的對應）；唯一結構差異是 DS:7F16h × 7",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -47624,7 +47643,8 @@
    "note": "DOS 05C86h（spec 735）的對應；唯一結構差異是 DS:7F16h × 7；印證 DS:758Dh ↔ DS:0A81Fh",
    "citations": [
     "audit/function-strings.md",
-    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -47644,7 +47664,8 @@
    "note": "噴火特殊攻擊：1d100 ≤ 50 才發動，訊息 'は炎を吹いた。'；開頭有經由 DS:0A38Ch 的間接遠呼叫（呼叫圖看不到）",
    "citations": [
     "audit/function-strings.md",
-    "spec/980-constitution-hp-bonus-and-breath-weapon.md"
+    "spec/980-constitution-hp-bonus-and-breath-weapon.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -47664,7 +47685,8 @@
    "note": "DOS 05F2Fh 的對應（'は電光を投げつけた。'）；動畫常數 32h → DS:7F16h × 0Ch",
    "citations": [
     "audit/function-strings.md",
-    "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md"
+    "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -47684,7 +47706,8 @@
    "note": "麻痺凝視（DOS 06022h／spec 722 的對應）；唯一差異是動畫常數 2Dh → DS:7F16h × 0Ch",
    "citations": [
     "audit/function-strings.md",
-    "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md"
+    "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md",
+    "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
   },
   {
@@ -53056,9 +53079,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 105,
+   "Read": 107,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 4,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,

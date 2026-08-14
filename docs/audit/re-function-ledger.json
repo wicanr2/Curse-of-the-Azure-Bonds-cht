@@ -25195,6 +25195,24 @@
    "level": "exact",
    "spec": "docs/spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
    "note": "恐懼（DOS 04A8Fh／spec 724 的對應）；★ 豁免類別 4 ＝ 法術，把類別表補到四格"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 6580,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/989-pc98-beam-walk-and-acid-area.md",
+   "note": "射線走訪與目標收集（DOS 0175Bh／spec 729 的對應）；兩個結構差異都是編碼差異；方向表 DS:2694h ↔ DS:489Eh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 24114,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/989-pc98-beam-walk-and-acid-area.md",
+   "note": "噴酸範圍（DOS 05AA8h／spec 725 的對應）；唯一結構差異是 DS:7F16h × 7"
   }
  ]
 }
