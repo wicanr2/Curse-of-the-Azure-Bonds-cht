@@ -25366,6 +25366,24 @@
    "level": "exact",
    "spec": "docs/spec/1000-derived-stats-recalc.md",
    "note": "DOS 00C28h 的對應（相似度 0.988）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 1688,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1001-character-sheet-combat-block.md",
+   "note": "角色資料畫面的戰鬥數值區：THAC0 ＝ 60 − +199h、傷害 XdY+Z（+19Eh/+1A0h/+1A2h）、六個帶尾隨空白的標籤"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 1694,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1001-character-sheet-combat-block.md",
+   "note": "DOS 00698h 的對應（相似度 0.987）"
   }
  ]
 }
