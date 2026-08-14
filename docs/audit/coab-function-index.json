@@ -17033,6 +17033,7 @@
    "citations": [
     "audit/function-index/dos-overlay-18.md",
     "audit/function-index/pc98-overlay-18.md",
+    "spec/1082-ending-scene.md",
     "spec/867-ending-animation-frame.md"
    ]
   },
@@ -17054,6 +17055,7 @@
    "citations": [
     "audit/function-index/pc98-overlay-18.md",
     "audit/function-strings.md",
+    "spec/1082-ending-scene.md",
     "spec/879-game-speed-menu.md",
     "spec/881-animation-player-and-speed.md"
    ]
@@ -17069,10 +17071,14 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1082",
+   "note": "結局過場(retf，無參數)：打倒 Tyranthraxus、青色枷解除、傳送到 Shadowdale 慶功宴。★整支沒有任何分支(指令只有 push/mov/call/lea/xor/sub/les/shl/retf/pop)，25 段台詞照順序印。印字 0542:04A4h 八參數 (1,11h,26h,16h,0Ah,0,首行旗標,字串)，只有每段第一行推 1。中途 bank0^[3FEh]:=1 → near 0B5Fh(J/M 兩個動畫) → :=0，換 bigpic z。台詞全文與 PC-98 對照見 spec 1082",
    "citations": [
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1082-ending-scene.md"
    ]
   },
   {
@@ -44040,6 +44046,7 @@
    "note": "粒子動畫初始化 PC-98 側(retf，343 條)，DOS 對側 overlay-18:000BCh(spec 1064)、動畫每一幀見 spec 1025。DS:7BA8h:=0、FillChar(DS:7BA9h,0Fh,1)，for 列:=1..3 填 byte[7BA4h..7BA8h + 列×5] —— 正好是 spec 1025 記的 PC-98 顏色斜坡表 DS:7BA3h(色階 1..5)。★★★ 完全沒有 DS:4FE6h(顯示卡種類)的判斷，走的就是 DOS 的『非 CGA』那一套：輸入色\u003e1 時 0Fh、恆填 0Fh、輸入色\u003e1 時 輸入色+8、輸入色、1；DOS 382 條 vs PC-98 343 條，差的 39 條幾乎全是 CGA 分支。幀數同樣是 DS:7BA8h := max(自己, Random(14h)+19h)。★ 其餘差異全是 RTL 位址平移：PC-98 的浮點常式一律是 DOS 位址 +50h(0C5Ah→0CAAh、0D7Eh→0DCEh、0C72h→0CC2h、0C6Eh→0CBEh、0D91h→0DE1h)，整數 Random 1105h→1155h、浮點亂數 111Bh→116Bh —— 同一份 Turbo Pascal RTL，連結位置差 80 bytes",
    "citations": [
     "spec/1065-particle-animation-init-pc98.md",
+    "spec/1082-ending-scene.md",
     "spec/585-ecl-goto-and-display-mode-pair.md"
    ]
   },
@@ -44114,7 +44121,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "1",
-   "note": "同 DOS overlay-18:009DBh（module_align 對齊，助憶碼序列完全相同）。只差兩條：DS:7BA4h↔4ACEh 與 GetMem 呼叫目標"
+   "note": "同 DOS overlay-18:009DBh（module_align 對齊，助憶碼序列完全相同）。只差兩條：DS:7BA4h↔4ACEh 與 GetMem 呼叫目標",
+   "citations": [
+    "spec/1082-ending-scene.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44133,6 +44143,7 @@
    "note": "同 DOS overlay-18:00B5Fh，但★算門檻時多乘一個全域 DS:0BE2Ah(形狀上是機種時鐘校正係數，PC-98 機種頻率差異大)。DOS 沒有這個倍率，remake 的節拍公式要各做一套。DS:4FA9h↔DS:7F16h",
    "citations": [
     "audit/function-strings.md",
+    "spec/1082-ending-scene.md",
     "spec/881-animation-player-and-speed.md"
    ]
   },
@@ -44153,6 +44164,7 @@
    "note": "結局圖片序列 CED1..CED8 自動輪播（每張 1000 計時單位）＋ CED9 停住；先清三個圖形平面各半個（3E80h）",
    "citations": [
     "audit/function-strings.md",
+    "spec/1082-ending-scene.md",
     "spec/996-pc98-ending-sequence.md"
    ]
   },
@@ -44168,10 +44180,14 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1082",
+   "note": "結局過場 PC-98 側(retf)。⚠與 DOS 的助憶碼相似度只有 0.059 —— 整段重寫不是編譯差異：DOS 25 行(英文音節斷行)、PC-98 22 行(一句一行)。多了開頭三行條件：DS:7F2Ch=0 時設 1 並把 bank0^[1FEh] 低位元 xor 1、DS:0A2C6h:=DS:0A2C7h(第二次 cmp 是冗餘的)。印字 0418:0E6Ah、等鍵 0418:12EFh + overlay-26 entry#6。日文台詞全文與英文對照見 spec 1082",
    "citations": [
     "audit/function-index/pc98-overlay-18.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1082-ending-scene.md"
    ]
   },
   {
@@ -53746,9 +53762,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 11,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 4446,
    "Undefined": 1177,
@@ -54301,9 +54317,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
