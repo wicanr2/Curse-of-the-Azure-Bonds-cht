@@ -8266,6 +8266,7 @@
    "spec": "879",
    "note": "遊戲速度選單(retf，無參數)：標題 'GameSpeed (' ＋ 14Dh:52h(DS:4FA9h) ＋ ') :'；選項動態串接——DS:4FA9h \u003c 9 才接 'Slower '、\u003e 0 才接 'Faster '、最後接 'Exit'(每次上限 28h)；167h:2Fh 收鍵，'S' inc、'F' dec。DS:4FA9h 值域 0..9，值越大越慢，邊界靠選項消失而不是按鍵無效",
    "citations": [
+    "audit/function-index/pc98-overlay-08.md",
     "audit/function-strings.md",
     "spec/879-game-speed-menu.md"
    ]
@@ -16221,9 +16222,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "881",
+   "note": "動畫播放迴圈(retf 8，(座標B, 座標A, 序號, 圈數))：0179h:34h 載入 42h bytes 的動畫描述([0] 總格數、[1] 目前格、其後每格 8 bytes，最多 8 格)，迴圈裡畫目前格、取時間差與『每格延遲 × (DS:4FA9h + 3)』比較，超過就換下一格，播完一輪 圈++，到 圈數 就結束並釋放。★關掉 spec 879 的疑問：DS:4FA9h 就是 GameSpeed 值，倍率 3(最快)..12(最慢)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/881-animation-player-and-speed.md"
    ]
   },
   {
@@ -24649,6 +24654,7 @@
    "spec": "880",
    "note": "複製一張圖再貼上(retf 0Ah，(組, 編號, 模式, 座標A, 座標B))：從二維圖庫表 遠指標(DS:65D6h + 組*8 + 編號*4) 取原圖(NIL 就離開)，用 297h:1C59h 依 +0/+2 尺寸建新圖；模式 \u003e 3 走 297h:0BB5h 轉換複製，否則兩次 Move 各 p^[11h] 搬 +17h 起的第一平面與 +13h 指到的第二平面；再叫 297h:9E4h 貼到 遠指標(DS:4FE8h)(座標各乘 3)，最後 297h:1D19h 釋放",
    "citations": [
+    "audit/function-index/pc98-overlay-33.md",
     "audit/function-strings.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
     "spec/880-sprite-copy-and-blit.md"
@@ -24749,7 +24755,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/overlay-init-graph.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/882-load-8x8-tileset.md"
    ]
   },
   {
@@ -24763,10 +24770,14 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "882",
+   "note": "載入 8×8 圖磚組(retf 4，(組, 編號))：組要先過 0A54h:8D4h 的合法表；檔名 '8x8d'＋Str(DS:5BEEh) 一位磁碟編號，叫 297h:11Bh 載入到圖庫表 DS:65B6h + 組*4；回 NIL 就組錯誤訊息 'Unable to load '＋編號＋' from 8x8D' 並收場",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/882-load-8x8-tileset.md"
    ]
   },
   {
@@ -42033,9 +42044,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "881",
+   "note": "同 DOS overlay-18:00B5Fh，但★算門檻時多乘一個全域 DS:0BE2Ah(形狀上是機種時鐘校正係數，PC-98 機種頻率差異大)。DOS 沒有這個倍率，remake 的節拍公式要各做一套。DS:4FA9h↔DS:7F16h",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/881-animation-player-and-speed.md"
    ]
   },
   {
@@ -50890,7 +50905,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/overlay-init-graph.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/882-load-8x8-tileset.md"
    ]
   },
   {
@@ -50905,9 +50921,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "882",
+   "note": "同 DOS overlay-35:00047h 的目的，但★PC-98 自己處理圖形記憶體：先 FillChar(圖^[17h], 0D20h=3360, 0) 與 FillChar(遠指標(圖^[13h])^, 460h=1120, 0)，用 723h:824h 讀檔後逐欄抄表頭(⚠前兩欄對調：圖^[0]←檔案^[2]、圖^[2]←檔案^[0])，+8 下限 1，+11h := 寬×高×3，再叫 2A8h:3BDh 並 out 0A6h,0。★3360 = 3 × 1120 → +17h 是三個色彩平面、+13h 是一個遮罩平面，這解釋了 spec 880 的平台差異",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/882-load-8x8-tileset.md"
    ]
   },
   {
@@ -51234,9 +51254,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 11,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 4446,
    "Undefined": 1177,
@@ -51489,9 +51509,9 @@
    "Module": "overlay-35",
    "Unit": "SQRPAK8",
    "Functions": 4,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 615,
    "Undefined": 74,
@@ -51789,9 +51809,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
@@ -52044,9 +52064,9 @@
    "Module": "overlay-35",
    "Unit": "SQRPAK8",
    "Functions": 4,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 1,
    "CodeBytes": 1048,
    "Undefined": 79,
