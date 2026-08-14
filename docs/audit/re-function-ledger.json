@@ -19840,6 +19840,15 @@
    "level": "exact",
    "spec": "docs/spec/781-put8x8symbol-and-wall-bit-set.md",
    "note": "牆面位元的設定端(retf 6，宣告順序 (x, y, 方向))：座標不在 0..0Fh(有號)就整支不做；否則把 DS:7206h^[300h + (y shl 4) + x] 的對應 2-bit 欄位設成 01 — 方向 6 → or 40h、4 → or 10h、2 → or 04h、0 → or 01h。與 spec 761 的 003Eh(清成 00)成對；⚠ 003Eh 沒有範圍檢查，兩半防護不對稱"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 2483,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/782-strength-percentile-display.md",
+   "note": "力量百分位的顯示(retf 4)：能力值在 DS:6506h^[11h + 索引*2]，畫在 索引+7 列；值 < 0Ah 時欄由 5 改 6 靠右對齊；索引 0 且值 = 12h(18) 且 +1Ch > 0 時再畫 '(' + 百分位 + ')'(CS:09AFh/09B1h)，百分位 < 0Ah 補 CS:09AAh 的 '0'、等於 64h(100) 直接用 CS:09ACh 的 '00' — 即 AD&D 的 18/00 記法。顏色依第一個參數在 0Dh/0Ah 二選一。⚠ 欄位靠硬編碼對齊，沒有量測字串寬度"
   }
  ]
 }

@@ -9,7 +9,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0083` | sub_83 | — | 1300 | 535 | 4 | 6 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `0597` | sub_597 | — | 183 | 79 | 4 | 1 | ✓ | 已解讀 | exact | docs/spec/772-gods-intervene-money-display-and-sound-commands.md<br>七欄的金錢顯示(retf，無參數)：for i := 6 downto 0，DS:6506h^[0FBh + i*2] > 0(無號)才佔一列 — 名稱取自 DS:0F93h + i*0Bh(每筆 11 bytes 的 Pascal 短字串)、右對齊到第 20 欄(14h − 長度)，數值固定從第 21 欄起，列號從 7 往下遞增。⚠ 右對齊用 byte 數算，全形中文會算錯；名稱表在常駐資料段，scan_pascal_strings.py 掃不到。補記(spec 773)：DS:0F93h 的七個名稱已讀出 — Copper/Silver/Electrum/Gold/Platinum/Gems/Jewelry | spec/772-gods-intervene-money-display-and-sound-commands.md |
 | `0698` | sub_698 | — | 786 | 332 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `09B3` | sub_9B3 | — | 341 | 135 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `09B3` | sub_9B3 | — | 341 | 135 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/782-strength-percentile-display.md<br>力量百分位的顯示(retf 4)：能力值在 DS:6506h^[11h + 索引*2]，畫在 索引+7 列；值 < 0Ah 時欄由 5 改 6 靠右對齊；索引 0 且值 = 12h(18) 且 +1Ch > 0 時再畫 '(' + 百分位 + ')'(CS:09AFh/09B1h)，百分位 < 0Ah 補 CS:09AAh 的 '0'、等於 64h(100) 直接用 CS:09ACh 的 '00' — 即 AD&D 的 18/00 記法。顏色依第一個參數在 0Dh/0Ah 二選一。⚠ 欄位靠硬編碼對齊，沒有量測字串寬度 | spec/782-strength-percentile-display.md |
 | `0B75` | sub_B75 | — | 768 | 303 | 0 | 14 | ✓ | 待解讀 | — | — | — |
 | `0EC5` | sub_EC5 | — | 247 | 101 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `10AB` | sub_10AB | — | 282 | 138 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-19.md |
