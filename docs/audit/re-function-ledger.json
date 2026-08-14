@@ -17075,6 +17075,16 @@
    "spec": "docs/spec/714-neutralize-poison.md",
    "bounds": "prologue",
    "note": "解毒。狀態 +195h=1 時只清目標陣列第 1 格;否則 <overlay-24 entry#27>(p, 37h) 查得到才做:HP 為 0 補成 1、在 DS:6F9Ch:=1 期間**一次解掉三個編號 37h/16h/0Fh**、顯示 '<名字> is unpoisoned'、+196h:=1、+195h:=0;查不到則顯示 'is unaffected'。⚠ 效果 37h = 中毒(本支解它、spec 707 復活時連同 20h 一起解、spec 709 的 24CDh 對中毒者套 4Eh,三處一致)。⚠ 與 24CDh 前兩步完全相同但之後分岔,尤其**查不到時本支有訊息、24CDh 靜默返回**,對照兩支時最容易被抹平"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 8884,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/715-sleep-hd-budget.md",
+   "bounds": "prologue",
+   "note": "Sleep 的 HD 預算:預算 := ROLLDICE(4,4) 存 byte[4CB5h];走目標陣列,依 p^[0E5h] 算成本存 byte[4CB6h](<=1→1、2→2、3→4、4→6、5 且 p^[74h]=0→10 否則 20、其他→20);狀態 +195h=1、或 <overlay-24 entry#27>(p,35h) 查到(已睡著,**不扣預算**)、或預算 < 成本 → 該格清成 NIL;否則預算扣掉成本。最後在迴圈**外面**發一次 'falls asleep'。⚠ 預算用完不會提早跳出,所以誰先被睡到是陣列順序決定的不是強弱。⚠ 4CB4h/4CB5h/4CB6h 是**共用暫存不是狀態**——4CB5h 在 spec 705 是擲骰門檻、這裡是 HD 預算,4CB6h 在 705 是 base、這裡是單筆成本;建成具名全域會產生假耦合,但 08A1h 的筆數溢出確實會寫壞它們"
   }
  ]
 }
