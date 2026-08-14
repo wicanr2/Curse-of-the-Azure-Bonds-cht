@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 1100、不阻塞 29、邊界碎片 338、待解讀 21；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 1101、不阻塞 29、邊界碎片 338、待解讀 20；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -90,7 +90,7 @@
 | overlay-29 | PORTRAIT | 12 | 11 | 0 | 1 | 0 | 1846 | 114 | [明細](function-index/pc98-overlay-29.md) |
 | overlay-30 | THREED | 13 | 13 | 0 | 0 | 0 | 4851 | 117 | [明細](function-index/pc98-overlay-30.md) |
 | overlay-31 | LOS | 9 | 9 | 0 | 0 | 0 | 2988 | 0 | [明細](function-index/pc98-overlay-31.md) |
-| overlay-32 | TACMAP | 25 | 24 | 0 | 0 | 1 | 6784 | 0 | [明細](function-index/pc98-overlay-32.md) |
+| overlay-32 | TACMAP | 25 | 25 | 0 | 0 | 0 | 6784 | 0 | [明細](function-index/pc98-overlay-32.md) |
 | overlay-33 | SQRPAK24 | 7 | 7 | 0 | 0 | 0 | 2106 | 146 | [明細](function-index/pc98-overlay-33.md) |
 | overlay-34 | BUG | 2 | 2 | 0 | 0 | 0 | 14 | 0 | [明細](function-index/pc98-overlay-34.md) |
 | overlay-35 | SQRPAK8 | 4 | 3 | 0 | 1 | 0 | 1048 | 79 | [明細](function-index/pc98-overlay-35.md) |
