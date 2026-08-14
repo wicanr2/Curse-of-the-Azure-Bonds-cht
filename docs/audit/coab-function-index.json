@@ -1248,7 +1248,10 @@
    "callers": 3,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "937",
+   "note": "畫字元的分派層(retf 0Eh = (轉大寫, 字元, 次數, 前景, 背景, 列, 欄))：欄 \u003e 27h、列 \u003e 18h 或 dword_22754h = NIL 就跳過；★索引 = 轉大寫 ? (UpCase(字元) mod 40h) : 字元 → 字型只有 64 個 8 bytes 的字模(共 512 bytes)，ASCII 20h..5Fh 正好映到 0..3Fh，這是中文化最硬的一道限制；Move 8 bytes 到 DS:6598h 暫存區(即 IDA 的 byte_22758h)。★byte_211A6h 是三值不是旗標：0 → sub_16147h(CGA 320×200 四色)、1 → sub_161E6h、2 → sub_16246h，各重複『次數』次並讓欄遞增。★22758h − 6598h = 1C1C0h → 常駐的 DS 線性基底是 1C1C0h，IDA linear = DS:offset + 1C1C0h。⚠轉大寫 = 0 時索引不夾範圍，呼叫端傳 \u003e 63 會讀到字模表外"
   },
   {
    "platform": "dos",
@@ -51696,9 +51699,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 159,
+   "Read": 160,
    "NotBlocking": 133,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
