@@ -9101,7 +9101,7 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/633-alignment-encoding-and-effect-callbacks.md"
+    "audit/function-index/pc98-overlay-22.md"
    ]
   },
   {
@@ -11260,7 +11260,8 @@
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "換一種傷害型別再打一次:DS:6F95h := 0Ah,d := ROLLDAMAGEDICE(2,8),\u003coverlay-23 entry#20\u003e(角色^[18Dh]^[0Ah], d, 0, 0)。不動 DS:6F94h 而是直接對目標再結算一次,所以是附加傷害不是修正值。⚠ DS:6F95h 設完沒有還原(與 spec 706 那支相反)",
    "citations": [
-    "spec/738-effproc-effect-handlers.md"
+    "spec/738-effproc-effect-handlers.md",
+    "spec/742-vorpal-and-backfire.md"
    ]
   },
   {
@@ -11343,7 +11344,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/742-vorpal-and-backfire.md",
+   "note": "特定武器直接讓目標進入狀態 8:\u003coverlay-24 entry#43\u003e(DS:6506h, @r) 非 0 且 r^[2Eh]=1Ch 且 r\u003c\u003eNIL 且 r^[31h]=87h 時,目標^[195h]:=8、+196h:=0、**+1A4h:=0(HP 歸零)**、\u003coverlay-23 entry#14\u003e(目標)、\u003coverlay-23 entry#4\u003e(目標, 0Dh),目標^[196h]=0 時再 \u003coverlay-32 entry#20\u003e(目標)。**不擲任何骰**。⚠ NIL 檢查排在 r^[2Eh] 解參照之後,順序反了(第三處同型,見 spec 720/723)。⚠ 條件是類別 1Ch **且** +31h=87h 兩個欄位都要對。最後那個 +196h=0 用的是剛被自己清成 0 的欄位",
+   "citations": [
+    "spec/742-vorpal-and-backfire.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11504,7 +11511,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/742-vorpal-and-backfire.md",
+   "note": "相鄰時傷害加倍但打的是自己:\u003coverlay-24 entry#33\u003e(arg_6, DS:6506h) \u003c 2(相鄰)時,備份 DS:6F94h 與 DS:6F95h,把傷害 shl 1、型別設成 8,顯示 '\u003c名字\u003e gets zapped'(CS:2CCDh),**\u003coverlay-23 entry#20\u003e 的第一個參數是 DS:6506h(攻擊者自己)**,最後兩個全域都還原。⚠ shl 1 之後只存回一個 byte,傷害超過 127 會回捲(第三個 byte 溢位點,但這個是傷害本身不是門檻)。⚠ 這支會還原 DS:6F95h,而 spec 738 的 27FAh 不還原——同模組兩種做法並存,改寫不能統一",
+   "citations": [
+    "spec/742-vorpal-and-backfire.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16612,6 +16625,7 @@
    "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
    "note": "套用 'is held'(CS:23EAh):v := DS:7434h;v=1 時再看 DS:6F97h 是否為 17h 決定 r 是 −2 還是 −3;v=2 → −1;v=3 或 4 → 0;**v 為其他值時 r 不被寫入,回傳堆疊殘值**。最後 \u003csub_1ABFh\u003e(r, 訊息)。⚠ DS:7434h 在治療系(spec 700)只當非 0 旗標用,這裡卻是 1..4 的列舉",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/702-more-overlay22-spell-handlers.md",
     "spec/741-on-hit-effects-and-third-uninitialised.md"
    ]
@@ -19192,12 +19206,12 @@
    "spec": "docs/spec/694-add-1e-ability-tables.md",
    "note": "把力量壓成 0..30 的索引:s := 角色^[11h];0..17 回傳 s;s=18 時依 角色^[1Ch] 的百分位分成 0/1-50/51-75/76-90/91-99/100 → 18/19/20/21/22/23;19..25 回傳 s+5(→24..30)。⚠ **有兩條路徑不寫入回傳變數**(s 在 0..25 之外且不等於 18、以及 s=18 但 p\u003e100),回傳堆疊殘值,移植要補預設。⚠ 力量有兩組欄位:本支用 +11h/+1Ch,而 DONEWSTRENGTH(overlay-23,兩平台逐指令對讀過位移相同)比的是 +10h/+1Dh",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md",
     "spec/694-add-1e-ability-tables.md",
     "spec/697-strength-hit-table-and-weapon-select.md",
     "spec/702-more-overlay22-spell-handlers.md",
-    "spec/727-strength-spell-table.md",
-    "spec/741-on-hit-effects-and-third-uninitialised.md"
+    "spec/727-strength-spell-table.md"
    ]
   },
   {
@@ -31561,7 +31575,7 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/633-alignment-encoding-and-effect-callbacks.md"
+    "audit/function-index/pc98-overlay-22.md"
    ]
   },
   {
@@ -45895,9 +45909,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 107,
+   "Read": 109,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 16,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
