@@ -23631,15 +23631,6 @@
    "note": "賣東西(retf 4，物品)：價 := 物品^[3Ah] div 2(基本價的一半)；數量 +39h > 1 時 價 := 數量×價 div 14h。訊息 \"I'll give you \"＋價＋' gold pieces for your '＋物品名，追問 'Is It a Deal? '(比 'Y')；成交印 'Sold!'、叫 1545h 移除物品，付款拆成 白金 := 價 div 5、零頭 := 價 mod 5，用 1134h 檢查負重，裝不下就印 'Overloaded.  Money will be put in pool.' 並把多出來的白金退回 DS:6F80h 公用池，最後加進 +103h(白金)與 +101h(金幣)。★字串直接證實價的單位是金幣、退回處就是『池』。⚠原版 bug：(+2Eh = 49h) and (+2Eh = 1Ch) 永遠不成立，『價 := 數量 × 價』是死碼(同 spec 856 那一類)。⚠訊息說 money 但只有白金會退回池子"
   },
   {
-   "platform": "dos",
-   "module": "overlay-19",
-   "ea": 10818,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "903",
-   "note": "鑑定物品(retf 8，(var 有沒有鑑定成功, 物品))：14F5h 取顯示名、報價、16ABh+3 追問(比 'Y')；先用 33ABh 算角色身上的錢，>= 0C8h(200) 就叫 116Bh 扣，不夠才用 1175h 算 DS:6F70h 公用池的總值、>= 200 就叫 1170h 扣，兩邊都不夠就印錢不夠。成功時 物品^[35h]≠0 才清 0、重取名字並把 var 旗標設 1；=0 只印『沒有魔法』。★付款順序角色→公用池。⚠=0 那條路一樣扣 200"
-  },
-  {
    "platform": "pc98",
    "module": "overlay-19",
    "ea": 10802,
@@ -23665,6 +23656,15 @@
    "level": "exact",
    "spec": "904",
    "note": "同 DOS overlay-10:0050Eh（同位址），只差一條 xor ah,ah(DOS 零擴充後 cmp ax、PC-98 cmp al)；13 條是 DS:4A0Eh↔7AC4h、DS:4A0Fh↔7AC5h 的位址"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 10818,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "903",
+   "note": "鑑定物品(retf 8，(var 有沒有鑑定成功, 物品))：14F5h 取顯示名、印 \"For 200 gold pieces I'll identify your \"＋物品名、16ABh+3 追問 'Is It a Deal? '(硬比 'Y')；先用 33ABh 算角色身上的錢，>= 0C8h(200) 就叫 116Bh 扣，不夠才用 1175h 算 DS:6F70h 公用池的總值、>= 200 就叫 1170h 扣，兩邊都不夠印 'Not Enough Money'。成功時 物品^[35h]≠0 才清 0、重取名字、印 'It looks like some sort of '並把 var 旗標設 1；=0 只印 \"I can't tell anything new about your \"。★付款順序角色→公用池。★『200』在字串與程式各寫死一次，改價要同步。⚠=0 那條路一樣扣 200"
   }
  ]
 }
