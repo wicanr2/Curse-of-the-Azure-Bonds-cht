@@ -16935,7 +16935,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/718-generic-affect-n-targets.md",
+   "note": "通用的「影響 N 個目標」(retf 8:訊息 far 指標、類別 arg_4、效果編號 arg_6,不含任何法術專屬常數)。預算 := \u003coverlay-24 entry#36\u003e(DS:6F97h);走目標陣列(**無 NIL 檢查**),p^[197h] \u003c\u003e arg_4 或 預算\u003c=0 → 清成 NIL;否則**先扣預算**再用 \u003coverlay-23 entry#16\u003e(p, arg_6) 查,已有該效果也清掉但**預算不退**——所以是「最多嘗試 N 個」不是「最多影響 N 個」,改寫成「檢查通過才扣」會讓法術變強。⚠ 這與 spec 715 的 Sleep 相反(Sleep 對已睡著者不扣),兩支不一致不能互補。最後 \u003csub_F06h\u003e 發訊息,再用**沒變的筆數**跑第二個迴圈 \u003coverlay-23 entry#4\u003e(格子, 12h),會餵到 NIL",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
@@ -19388,7 +19391,8 @@
    "note": "依 +197h 統計人數:清 DS:6F90h/6F91h 兩個 byte,走 DS:650Ah 的角色鏈(next 在 +189h),p^[196h] \u003c\u003e 0 者做 byte [6F90h + p^[197h]] += 1(p^[197h] 經 cbw,有號)。⚠ **只清了兩個 byte 卻拿 +197h 當索引,沒有上下界檢查**——值不是 0 或 1 就會寫進別的全域變數。移植時要自己補範圍檢查。+196h 就是 KILLTHEDUDE 裡「等於 6 整支跳過」的那個欄位",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/692-party-tally-and-list-search.md"
+    "spec/692-party-tally-and-list-search.md",
+    "spec/718-generic-affect-n-targets.md"
    ]
   },
   {
@@ -20847,7 +20851,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md"
+   ]
   },
   {
    "platform": "dos",
@@ -44708,7 +44715,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -45765,9 +45775,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 83,
+   "Read": 84,
    "NotBlocking": 0,
-   "Todo": 30,
+   "Todo": 29,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
