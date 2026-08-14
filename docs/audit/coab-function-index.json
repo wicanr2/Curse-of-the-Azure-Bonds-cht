@@ -15710,6 +15710,7 @@
     "audit/function-strings.md",
     "spec/1067-save-disk-prepare.md",
     "spec/1075-character-save-dos.md",
+    "spec/1076-savegame-load-dos.md",
     "spec/995-file-pattern-scan-and-rename.md"
    ]
   },
@@ -15749,7 +15750,8 @@
    "note": "載入角色圖並套用外觀配色(retf 2)：檔名 'CHEAD'／'CBODY' 各接一個由 DS:0515h[角色^[144h]] 取出的字尾字元，以 1998h+1 載入（圖號來自 +141h/+142h/+143h）。arg_0 非 0 時建兩張 16 格調色盤對照：預設 i→i，再對 i := 1..6 把 角色^[144h+i] 的低 nibble 寫到 DS:3EC0h[i]、高 nibble 寫到 DS:3EC0h[i]+8，最後用 sub_3F96h 對兩張圖做重映射。★角色 +144h..+14Ah 是外觀配色（每 byte 兩組顏色）",
    "citations": [
     "audit/function-index/pc98-overlay-16.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1076-savegame-load-dos.md"
    ]
   },
   {
@@ -15770,6 +15772,7 @@
    "citations": [
     "audit/function-index/pc98-overlay-16.md",
     "audit/function-strings.md",
+    "spec/1076-savegame-load-dos.md",
     "spec/868-character-file-triplet.md"
    ]
   },
@@ -15791,8 +15794,6 @@
    "citations": [
     "audit/function-strings.md",
     "audit/function-triage.md",
-    "spec/1043-save-file-scan-and-disk-creation.md",
-    "spec/1072-savegame-load-io-pc98.md",
     "spec/1075-character-save-dos.md"
    ]
   },
@@ -15997,7 +15998,8 @@
     "audit/function-index/pc98-overlay-16.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
-    "spec/1038-character-save-load.md"
+    "spec/1038-character-save-load.md",
+    "spec/1076-savegame-load-dos.md"
    ]
   },
   {
@@ -16063,6 +16065,7 @@
    "citations": [
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/pc98-overlay-16.md",
+    "spec/1076-savegame-load-dos.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
     "spec/758-morale-field-0f7h-round-trip.md",
     "spec/873-add-to-party-and-portrait-slot.md"
@@ -16079,11 +16082,15 @@
    "callers": 0,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1076",
+   "note": "DOS 存檔載入(retf，無參數)，spec 1072 的對側，含選單那一段。★★★存檔槽是字母 A..J(集合常數 CS:36F4h)，檔名 savgam\u003c字母\u003e.dat ⇒ spec 1072 的 0A65:075Fh 是 Chr 不是 Str。★★★十六個區塊與 PC-98 同構，只有第 5 塊 1E00h(7680) vs 1E41h(7745)，合計 13149 vs 13214，差 65 ⇒ 兩平台存檔不能互換。★★★兩平台圖示載入都用 +0F7h/+126h/+143h 同位移 ⇒ 角色記錄差 1 的邊界收窄到 143h..14Dh 之間。隊伍成員存成 .sav 但內容是 422(DS:7584h:=0) ⇒ 副檔名不是格式判準，已回頭修正 spec 1043/1072/1073/1075",
    "citations": [
     "audit/function-strings.md",
     "audit/function-triage.md",
-    "spec/1072-savegame-load-io-pc98.md"
+    "spec/1072-savegame-load-io-pc98.md",
+    "spec/1076-savegame-load-dos.md"
    ]
   },
   {
@@ -42178,6 +42185,7 @@
    "citations": [
     "audit/function-index/pc98-overlay-25.md",
     "audit/function-strings.md",
+    "spec/1043-save-file-scan-and-disk-creation.md",
     "spec/1073-character-file-scanner-pc98.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
@@ -42200,8 +42208,7 @@
    "note": "依類別掃存檔檔案(retf 8，兩個輸出參數先清 NIL)。DS:0A816h 選副檔名 '*.guy'(0)/'*.cha'(1)/'*.sav'(2)/'*.hil'(3)，同時當三張平行表的索引：表A DS:0BFCh(byte)=00 00 04 F7、表B DS:0BFFh(word)=247/132/19/423、表C DS:0C05h(word)=423/285/188/0。★★★ 表 C 的前三個值正是 spec 1038 的三種角色記錄長度 ⇒ 關掉 spec 1038 的未定項『DS:7584h 由誰設定』：版本就是副檔名(.guy=423 現行、.cha=285、.sav=188)，.hil 那格是 0(不是角色檔)。⚠ 三張表的位址區間互相重疊(0BFFh..0C0Ah 與 0C05h..0C0Ch)，只照組語列基底與位元組，不宣稱是不是同一筆記錄的欄位。.sav 與 .hil 是 spec 1038 沒看到的兩個副檔名。實際掃目錄的是 sub_164h",
    "citations": [
     "audit/function-strings.md",
-    "spec/1043-save-file-scan-and-disk-creation.md",
-    "spec/1075-character-save-dos.md"
+    "spec/1043-save-file-scan-and-disk-creation.md"
    ]
   },
   {
@@ -42361,7 +42368,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-strings.md",
-    "spec/1072-savegame-load-io-pc98.md"
+    "spec/1072-savegame-load-io-pc98.md",
+    "spec/1076-savegame-load-dos.md"
    ]
   },
   {
@@ -42383,6 +42391,7 @@
    "citations": [
     "audit/function-strings.md",
     "spec/1072-savegame-load-io-pc98.md",
+    "spec/1076-savegame-load-dos.md",
     "spec/868-character-file-triplet.md"
    ]
   },
@@ -51585,6 +51594,7 @@
    "note": "同 DOS overlay-26:00CD9h（module_align 對齊，助憶碼序列完全相同）。8 條差異全是 DS:0A32Ch↔7292h",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-16.md",
     "spec/1075-character-save-dos.md",
     "spec/848-scroll-list-widget.md"
    ]
@@ -53667,9 +53677,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
