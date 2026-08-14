@@ -23737,6 +23737,42 @@
    "level": "exact",
    "spec": "907",
    "note": "裝備物品的檢查(retf 4，物品；對象是 遠指標(DS:6506h))：已裝備(+34h≠0)時 +36h≠0 就印 \"It's Cursed\" 擋掉，否則清 +34h；否則四道檢查——①byte[5CF7h+類*10h] + 角色^[185h] > 2 印 'Your hands are full!' ②槽 := byte[5CF6h+類*10h]，0..8 查 +151h+槽*4、9 查 +179h、類 49h 查 +17Dh、類 1Ch 查 +181h，佔用就印 'already using '＋物品名 ③(byte[5D03h+類*10h] and 角色^[12Bh]) = 0 印 'Wrong Class'。都通過就 +34h := 1。★補齊 spec 691 的 DS:5CF6h 物品類別表：+0 裝備槽、+1 佔用手數、+0Dh 職業遮罩。★字串直接定名 +36h = 詛咒。⚠手不夠時若在戰鬥中且 +198h≠0 就不印訊息"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 7434,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "909",
+   "note": "Alter 主選單(retf，無參數)：標題 'Alter: '、選項字串在 DS:479h+1；169Dh+2 收鍵——4Fh 叫 1834h(spec 871 隊伍順序)、44h 叫 199Ch、53h 叫 1B4Dh(spec 885 速度選單)、49h 叫 F14h+15A9h、50h 進子選單切換 DS:4FBEh(Pics on/off)與 DS:4FBFh(Animation on/off)。★找到 spec 871 與 885 的呼叫端"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 7500,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "909",
+   "note": "同 DOS overlay-15:01D0Ah 的功能，但★相似度只有 0.079、UI 結構真的不同：DOS 的 P 子選單(Pics/Animation 兩個開關)在 PC-98 被攤平成主選單的 I 與 A 兩項，而且 A 的標籤本身顯示狀態(' ｱﾆﾒ無'/' ｱﾆﾒ有')。六個標籤逐格寫進 DS:0A33Fh..0A37Eh、熱鍵 DS:0A335h..0A33Eh = O/D/S/I/A/E。A 分支另 xor 遠指標(DS:7F05h)^[1FEh] 的 bit 0；I 分支多一整段畫圖(2A8h:1174h)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 1482,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "910",
+   "note": "可記憶法術數量表(retf，無參數，回布林)：3 列 × 5 欄，每格取 1522h(0282h(列, 欄)) 存成上限 2 的字串，遠指標(DS:6506h)^[12Ch + 列*5 + 欄] = 0 的格子填空白；全部為 0 就直接回 0。有東西就印 名字＋'can memorize:'，再逐列印標題('    Cleric Spells:'/'     Druid Spells:'/'Magic-User Spells:')與五格數字(欄距 3)，整列都沒有就不畫。★+12Dh..+13Bh 共 15 格 = Cleric/Druid/Magic-User 各五個法術等級能記幾個。⚠DOS 尾端 0790h 起是反組譯錯位，由 PC-98 校正"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 1484,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "910",
+   "note": "同 DOS overlay-15:005CAh。19 條差異是位址與呼叫目標；★PC-98 側是正確的反組譯，用來校正 DOS 尾端 0790h 起的錯位(正確是 欄+=3 / 列++ 的迴圈收尾與回傳)。三列標題改用全形空白對齊冒號"
   }
  ]
 }
