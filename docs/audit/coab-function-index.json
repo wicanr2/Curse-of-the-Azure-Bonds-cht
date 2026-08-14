@@ -21553,7 +21553,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/980-constitution-hp-bonus-and-breath-weapon.md",
+   "note": "體質 HP 加成累計：DS:3EB9h 是各職業擲骰等級上限（表值−1，AD\u0026D 全中），戰士類 17+ 走高階欄，遊俠多一個骰",
+   "citations": [
+    "spec/980-constitution-hp-bonus-and-breath-weapon.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23907,10 +23913,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-29.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-29.md",
-    "spec/753-small-utility-routines.md"
+    "audit/function-index/pc98-overlay-29.md"
    ]
   },
   {
@@ -39752,7 +39758,8 @@
     "audit/function-index/pc98-overlay-12.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md",
     "spec/783-cross-platform-pairs-first-batch.md",
-    "spec/819-spits-acid-special-attack.md"
+    "spec/819-spits-acid-special-attack.md",
+    "spec/980-constitution-hp-bonus-and-breath-weapon.md"
    ]
   },
   {
@@ -47537,9 +47544,13 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/980-constitution-hp-bonus-and-breath-weapon.md",
+   "note": "噴火特殊攻擊：1d100 ≤ 50 才發動，訊息 'は炎を吹いた。'；開頭有經由 DS:0A38Ch 的間接遠呼叫（呼叫圖看不到）",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/980-constitution-hp-bonus-and-breath-weapon.md"
    ]
   },
   {
@@ -50587,10 +50598,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-29.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-29.md",
-    "spec/753-small-utility-routines.md"
+    "audit/function-index/pc98-overlay-29.md"
    ]
   },
   {
@@ -52387,9 +52398,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 40,
-   "Read": 25,
+   "Read": 26,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 12,
    "CodeBytes": 9183,
    "Undefined": 376,
@@ -52927,9 +52938,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 97,
+   "Read": 98,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,

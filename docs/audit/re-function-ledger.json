@@ -25024,6 +25024,24 @@
    "level": "exact",
    "spec": "docs/spec/979-mass-cure-effect-and-two-piece-icon.md",
    "note": "畫上下兩塊拼成的圖示（組 19h／0Ch，編號 0/1，座標 B 差 3）；圖庫每組 8 bytes ＝ 每組兩個編號"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 6072,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/980-constitution-hp-bonus-and-breath-weapon.md",
+   "note": "體質 HP 加成累計：DS:3EB9h 是各職業擲骰等級上限（表值−1，AD&D 全中），戰士類 17+ 走高階欄，遊俠多一個骰"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 25005,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/980-constitution-hp-bonus-and-breath-weapon.md",
+   "note": "噴火特殊攻擊：1d100 ≤ 50 才發動，訊息 'は炎を吹いた。'；開頭有經由 DS:0A38Ch 的間接遠呼叫（呼叫圖看不到）"
   }
  ]
 }
