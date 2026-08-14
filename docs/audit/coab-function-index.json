@@ -16241,7 +16241,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "spec/979-mass-cure-effect-and-two-piece-icon.md",
-    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md",
+    "spec/997-view-panel-draw-and-position-marker.md"
    ]
   },
   {
@@ -23949,7 +23950,8 @@
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/976-view-refresh-field-redraw-and-los-collect.md",
-    "spec/979-mass-cure-effect-and-two-piece-icon.md"
+    "spec/979-mass-cure-effect-and-two-piece-icon.md",
+    "spec/997-view-panel-draw-and-position-marker.md"
    ]
   },
   {
@@ -24292,10 +24294,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/997-view-panel-draw-and-position-marker.md",
+   "note": "同上的 DOS 側；DS:4FE6h \u003c\u003e 0 走四塊版本（PC-98 沒有這個分支）",
    "citations": [
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
-    "spec/687-far-call-flattening-and-stack-leftover.md"
+    "spec/687-far-call-flattening-and-stack-leftover.md",
+    "spec/997-view-panel-draw-and-position-marker.md"
    ]
   },
   {
@@ -51088,10 +51094,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/997-view-panel-draw-and-position-marker.md",
+   "note": "視野面板三塊定點貼圖＋位置標記；PC-98 多一層 DS:169Ch 查表，第三參數 16h 是 DOS 0Bh 的兩倍",
    "citations": [
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
-    "spec/687-far-call-flattening-and-stack-leftover.md"
+    "spec/687-far-call-flattening-and-stack-leftover.md",
+    "spec/997-view-panel-draw-and-position-marker.md"
    ]
   },
   {
@@ -51189,7 +51199,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
-   "note": "與 DOS overlay-30:07C6h（entry#6）助憶碼序列完全相同，語意同該筆：讀迷宮地圖第二平面(retf 4)：先用本模組 0556h 檢查 0..15；不在範圍且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則座標環繞(\u003e0Fh→0、\u003c0→0Fh)後讀 DS:7206h^[200h + (row shl 4) + col]。與 spec 761 的清牆(+300h)共用索引式，兩個平面各 256 bytes 首尾相接。DS:8B5Eh 決定地圖邊界要不要接起來 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-30:07C6h（entry#6）助憶碼序列完全相同，語意同該筆：讀迷宮地圖第二平面(retf 4)：先用本模組 0556h 檢查 0..15；不在範圍且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則座標環繞(\u003e0Fh→0、\u003c0→0Fh)後讀 DS:7206h^[200h + (row shl 4) + col]。與 spec 761 的清牆(+300h)共用索引式，兩個平面各 256 bytes 首尾相接。DS:8B5Eh 決定地圖邊界要不要接起來 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "spec/997-view-panel-draw-and-position-marker.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -52715,9 +52728,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 5205,
    "Undefined": 84,
@@ -53270,9 +53283,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 4851,
    "Undefined": 117,

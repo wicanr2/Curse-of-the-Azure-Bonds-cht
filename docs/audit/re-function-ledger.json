@@ -25294,6 +25294,24 @@
    "level": "exact",
    "spec": "docs/spec/996-pc98-ending-sequence.md",
    "note": "結局圖片序列 CED1..CED8 自動輪播（每張 1000 計時單位）＋ CED9 停住；先清三個圖形平面各半個（3E80h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 396,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/997-view-panel-draw-and-position-marker.md",
+   "note": "視野面板三塊定點貼圖＋位置標記；PC-98 多一層 DS:169Ch 查表，第三參數 16h 是 DOS 0Bh 的兩倍"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 396,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/997-view-panel-draw-and-position-marker.md",
+   "note": "同上的 DOS 側；DS:4FE6h <> 0 走四塊版本（PC-98 沒有這個分支）"
   }
  ]
 }
