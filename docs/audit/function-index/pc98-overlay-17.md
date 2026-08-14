@@ -49,7 +49,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4320` | sub_4320 | — | 525 | 208 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `45CA` | sub_45CA | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `dec ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `45D0` | sub_45D0 | SETACTIVEICON | 1771 | 687 | 2 | 11 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |
-| `4CBB` | sub_4CBB | CHARCONBONUS | 249 | 92 | 3 | 1 | ✓ | 待解讀 | — | — | — |
+| `4CBB` | sub_4CBB | CHARCONBONUS | 249 | 92 | 3 | 1 | ✓ | 已解讀 | exact | 869<br>同 DOS overlay-17:045E9h。DOS 零擴充成 ax 用有號 jl/jg、PC-98 直接 cmp al 用無號 jb/ja(值域 0..255 結果相同)，少一條 xor ah,ah；表基底 3EB9h↔6F4Dh、427Fh↔7314h | spec/869-constitution-bonus-per-class-slot.md |
 | `4DB4` | sub_4DB4 | — | 218 | 88 | 1 | 2 | ✓ | 已解讀 | exact | 850<br>同 DOS overlay-17:046ECh（module_align 對齊）。整支只差一條呼叫目標（sub_4CBBh↔sub_45E9h） | spec/850-hit-dice-and-effective-level.md |
 | `4E8E` | sub_4E8E | — | 9 | 4 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | audit/function-index/pc98-overlay-17.md |
 | `4E97` | sub_4E97 | — | 579 | 238 | 9 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 4E8Eh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |

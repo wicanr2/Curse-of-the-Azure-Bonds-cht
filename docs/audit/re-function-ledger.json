@@ -23017,6 +23017,42 @@
    "level": "exact",
    "spec": "868",
    "note": "同 DOS overlay-16:00C7Eh 的功能，但★整段重做三次而且每個副檔名配一個不同的前綴常數(DS:8BF6h ＋ loc_A2Ah+3 / loc_A37h / loc_A28h)——PC-98 把三個檔放在三個不同位置，DOS 三個同目錄。真的邏輯差異(spec 783 第 d 類)，117 對 63 條"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 17897,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "869",
+   "note": "體質加值總和(retf 4，角色)：對八個職業槽 c=0..7，該槽等級 >0 且未達 DS:3EB9h 的 HD 上限時，加一份 byte[427Fh + 體質]；職業碼 2/3/4(戰士類)再依體質 17/18/19-20/21-23/24-25 額外加 1/2/3/4/5；c=4(遊俠)且該槽等級=1 時把累積總和乘 2。★DS:427Fh 是體質加值表(3→−2、4..6→−1、7..14→0、15→+1、16..25→+2)，配上戰士類分支後與 AD&D 一版完整體質表(含 20-25)逐格相符。與 spec 866 在 3..19 完全一致，866 只是做到 19"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 19643,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "869",
+   "note": "同 DOS overlay-17:045E9h。DOS 零擴充成 ax 用有號 jl/jg、PC-98 直接 cmp al 用無號 jb/ja(值域 0..255 結果相同)，少一條 xor ah,ah；表基底 3EB9h↔6F4Dh、427Fh↔7314h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 14040,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "870",
+   "note": "治療某人(retf 4)：15A9h 後用 15B8h 以 'Heal whom? ' 選一個隊員，量 := (164Fh+3(目標, arg_0) × arg_0^[114h] + arg_0^[10Ch]) × 2，149Eh 回真印 ' feels better' 否則 ' is unaffected'，再叫 1464h+3(arg_0, 8Ch, 5A0h, 0, 0)。+10Ch 落在 +109h 起的八個職業槽裡(槽 3 = 聖騎士)、×2 與 AD&D 聖騎士按手治療相符，隔壁 039CAh 是驅除疾病——形狀相符但不定名"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 14251,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "870",
+   "note": "同 DOS overlay-19:036D8h，但★多一段 NPC 名字對照：目標 +0F7h > 80h 時，用 0A65h:734h 比對名字，ALIAS→エイリアス、DRAGONBAIT→ドラゴンベイト、AKABAR BEL AKAS→アーカバー・ベル・アーカッシュ，再用 0A65h:649h(上限 0FFh)指派。同一段在隔壁 039CAh 又出現一次。★角色記錄裡存的是英文名，PC-98 在顯示層逐處硬做替換，沒有改記錄"
   }
  ]
 }
