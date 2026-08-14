@@ -17175,6 +17175,16 @@
    "spec": "docs/spec/726-spell-name-table.md",
    "bounds": "prologue",
    "note": "顯示施法訊息。**DS:27BDh 是法術名稱表,一格 29h=41 bytes(長度位元組 + 最多 40 字元),索引是法術編號**;表在 resident 資料段不在 overlay 裡,所以 scan_pascal_strings.py 掃不到,中文化要另外處理。DS:4FBAh=5 時:顯示 '<名字> Casts a Spell'(CS:61F4h)、清第 23 列、在 (0,17h) 畫 'Spell:'(CS:6202h)+法術名;否則:清一塊、用 <overlay-24 entry#22(18F3h)> 在 (1,13h) 畫施法者名字、在 (施法者^[0]+2, 13h) 接訊息、在 (0,14h) 畫法術名、<0542:0B33h> 等按鍵、<overlay-24 entry#21>()。⚠ 兩種模式版面不同,只改一種會讓另一種錯位"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 8096,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/727-strength-spell-table.md",
+   "bounds": "prologue",
+   "note": "力量增強:預設 ([4CB5h],[4CB6h]) = (12h, 0) 即 18;v := <overlay-24 entry#36>(DS:6F97h),v=1..6 **只改百分位**(0/1/33h/4Ch/5Bh/64h → 18、18/01、18/51、18/76、18/91、18/00),v=7..11 **只改整數值**(13h..16h → 19/20/21/22),其他維持 (18, 0)。1/51/76/91/100 正是 spec 694 那五段百分位區間的下界,兩支從不同方向確認同一組 AD&D 例外力量分級。接著 <overlay-23 entry#19>(目標, 值, 百分位, @舊值) 成功才顯示 'is stronger'(CS:1F86h)、取 <sub_E11h>(DS:6F97h) 當持續時間、<overlay-23 entry#11>(目標, 0Ch, d, 舊值, 1)、<entry#24>(目標, 0);失敗顯示 'is unaffected'(CS:1F92h)。⚠ **舊值是套用當下由 var 參數記下來的**,不是事後推算。⚠ 4CB5h/4CB6h 的第三種用途(spec 715 已記過擲骰門檻與 Sleep 的 HD 預算)"
   }
  ]
 }
