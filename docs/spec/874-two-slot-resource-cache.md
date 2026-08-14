@@ -16,7 +16,7 @@ Str(DS:5BEEh, 寬度 1, var 數字);                 { 0A54h:12ABh }
 if (編號A <> 0FFh)
    and ((DS:726Eh = 0FFh) or (DS:726Eh <> 編號A)) then begin
     暫 := 常數A ＋ 數字;                          { DOS 才串接 }
-    <far 297h:011Bh>(@DS:726Fh, 0, 0, 編號A);     { 載入 }
+    <far 297h:011Bh>(暫, 編號A, 0, 0, @DS:726Fh);  { 載入，參數順序見 spec 971 }
     if 遠指標(DS:726Fh) = NIL then begin
         暫 := 失敗訊息;
         <far 0542h:0946h>(0, 0Eh);
@@ -74,6 +74,9 @@ DOS 這條路徑上，重載時舊的那塊沒有被釋放。
 
 - 沒有宣稱頭／身體圖檔的格式。
 - 沒有宣稱 `DS:5BEEh` 是什麼（形狀上是磁碟／資料片編號）。
-- 沒有宣稱 `far 297h:011Bh` 的四個參數各是什麼。
+- `far 297h:011Bh` 的簽章已由 spec 971 定案為
+  `(檔名: string; 編號: byte; a, b: byte; var 目的: pointer)`；仍沒有宣稱中間
+  那兩個 `0` 是什麼。第三格快取（`DS:728Ch`／`DS:7290h`，`'bigpic'`）也在
+  spec 971 補齊。
 - 沒有宣稱 `far 0542h:0946h`／`418h:12EFh` 的兩個參數（`0`／`0Eh`）。
 - 沒有宣稱結尾 `far 06EAh:024Ch` 做什麼。
