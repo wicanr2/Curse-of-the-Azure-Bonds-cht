@@ -17234,6 +17234,16 @@
    "spec": "docs/spec/731-spell-resolution-loop.md",
    "bounds": "prologue",
    "note": "法術結算的共同迴圈(retf 0Eh)。參數依 Pascal 順序是 (法術編號, 等級覆寫, arg_8, 傷害量, 傷害型別, 訊息 far);傷害量為 0 時 DS:6F95h 清 0、否則設成傷害型別。走目標陣列(**有 NIL 檢查**),每個目標:表[法術編號].+8 為 0 則豁免 := 0、否則 <overlay-23 entry#8>(p, 表.+9, 0);傷害量 > 0 才 <overlay-23 entry#20>;表.+0Ah > 0 才 <PUTEFFECT>(p, 表.+0Ah, sub_E11h(法術編號), lvl, arg_8, 表.+8, 豁免, 訊息)。⚠ **訊息只在 表.+0Ah > 0 時才會被用到**——這解掉 spec 730 的未定項:4DA0h 尾端那句可能根本不顯示。⚠ 有一行用 表[DS:6F97h].+2 = 0FFh 的特例判斷,其餘全用 表[arg_C];已讀的呼叫點兩者永遠相等,但 remake 若改成參數傳遞就會讀到別的東西。DS:37DAh 表至此解出 9 個欄位(+0/+2/+3/+4/+5/+6/+7/+8/+9/+0Ah)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 6847,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/732-reverse-order-effect-loop.md",
+   "bounds": "prologue",
+   "note": "效果迴圈,**從目標陣列最後一格往第 1 格走**(與 spec 731 的 sub_F06h 相反,所以「誰先被處理」剛好相反)。每格:非 NIL 才做;k < DS:7434h 時才播動畫(第一次不播);(DS:6F97h = 4Fh 或 51h) 且 k = DS:7434h 時**強制豁免成功、連骰都不擲**;否則 豁免 := <overlay-23 entry#8>(p, 表.+9, arg_4)、旗標 := 表.+8;(p^[11Ah] > 1 或 p^[0DEh] > 1) 且 DS:6F97h <> 5Eh 時**一律豁免成功**(免疫規則,5Eh 是唯一能穿透的);最後 <PUTEFFECT>(p, 表.+0Ah, sub_E11h(編號), entry#36(編號), 0, 旗標, 豁免, 訊息)。與 sub_F06h 的其他差別:完全沒有傷害、等級不可覆寫、表格索引一律用 DS:6F97h"
   }
  ]
 }

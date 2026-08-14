@@ -16154,7 +16154,13 @@
    "callers": 3,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/732-reverse-order-effect-loop.md",
+   "note": "效果迴圈,**從目標陣列最後一格往第 1 格走**(與 spec 731 的 sub_F06h 相反,所以「誰先被處理」剛好相反)。每格:非 NIL 才做;k \u003c DS:7434h 時才播動畫(第一次不播);(DS:6F97h = 4Fh 或 51h) 且 k = DS:7434h 時**強制豁免成功、連骰都不擲**;否則 豁免 := \u003coverlay-23 entry#8\u003e(p, 表.+9, arg_4)、旗標 := 表.+8;(p^[11Ah] \u003e 1 或 p^[0DEh] \u003e 1) 且 DS:6F97h \u003c\u003e 5Eh 時**一律豁免成功**(免疫規則,5Eh 是唯一能穿透的);最後 \u003cPUTEFFECT\u003e(p, 表.+0Ah, sub_E11h(編號), entry#36(編號), 0, 旗標, 豁免, 訊息)。與 sub_F06h 的其他差別:完全沒有傷害、等級不可覆寫、表格索引一律用 DS:6F97h",
+   "citations": [
+    "spec/732-reverse-order-effect-loop.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17596,6 +17602,7 @@
    "note": "⚠ **豁免決定的是套哪一個效果,不是有沒有效果**:\u003coverlay-23 entry#8\u003e(p,4,0) 回 0 走 PUTEFFECT(p, 1Bh, sub_E11h(56h), …, 'is clumsy' CS:4D8Ch),回非 0 走 PUTEFFECT(p, 2Ah, 同一個持續時間, …, 'is slowed' CS:4D96h);兩條路接著都用 entry#27 找節點再 entry#2。本作的豁免有三種收場(這裡換效果、spec 722 凝視是完全沒事、spec 708 即死是改成傷害),不能假設「豁免成功 = 沒事」。⚠ 函式尾端**無條件**用 'is clumsy' 呼叫 sub_F06h,即使剛走的是 is slowed 那條;兩個 offset 只差 10,很像複製時忘了改,但 sub_F06h 第四個參數是 1,那個模式下訊息可能根本不顯示,本輪不下定論。⚠ 編號 2Ah 有張力:3EE2h 是「沒有 2Ah 才顯示 is Speedy」,這裡是套 2Ah 顯示 is slowed",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/dos-overlay-22.md",
     "spec/730-save-selects-which-effect.md",
     "spec/731-spell-resolution-loop.md"
    ]
@@ -17767,7 +17774,8 @@
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "spec/710-effect-collection-and-leftover-target.md",
-    "spec/729-beam-walk-and-target-collect.md"
+    "spec/729-beam-walk-and-target-collect.md",
+    "spec/732-reverse-order-effect-loop.md"
    ]
   },
   {
@@ -19446,7 +19454,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/634-str-conversion-family.md",
-   "note": "與 pc98 overlay-24:27E3h 助憶碼序列完全相同（13 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (arg_0^[198h] = 0):是則 1、否則 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-24:27E3h 助憶碼序列完全相同（13 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (arg_0^[198h] = 0):是則 1、否則 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "spec/732-reverse-order-effect-loop.md"
+   ]
   },
   {
    "platform": "dos",
@@ -45861,9 +45872,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 96,
+   "Read": 97,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
