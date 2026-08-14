@@ -6780,7 +6780,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-05.md",
-    "spec/858-post-battle-xp-and-treasure-valuation.md"
+    "spec/858-post-battle-xp-and-treasure-valuation.md",
+    "spec/861-post-combat-cleanup.md"
    ]
   },
   {
@@ -6801,7 +6802,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-05.md",
     "spec/857-xp-award-and-ability-layout.md",
-    "spec/858-post-battle-xp-and-treasure-valuation.md"
+    "spec/858-post-battle-xp-and-treasure-valuation.md",
+    "spec/861-post-combat-cleanup.md"
    ]
   },
   {
@@ -6815,7 +6817,13 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "861",
+   "note": "戰鬥結束處理(retf，無參數)：①掃有沒有人 Running(→DS:47EDh) ②掃還有沒有人沒真的倒下 ③逐一用 DS:2A7h 的 19 個效果碼呼叫 143Dh+2 清效果、並把 +196h=0 或 +195h=1 的人計進 DS:8B57h ④DS:8B5Ch 有值就叫 0039h(spec 858 算每人份)＋0351h(spec 857 發下去) ⑤依 DS:4FC7h 決定是復原狀態(Running→Okay、Dying→Unconscious 或直接救回並設 +1A4h)還是收尾把 4F9Dh^[67Ch] 人數歸零。★關掉 spec 858 的 DS:8B57h：那是「不分經驗的人數」。★+18Dh^[13h]=1 是隊伍與怪物的分界標記(22 bytes 戰鬥狀態 +13h 的第一個用途)",
+   "citations": [
+    "spec/861-post-combat-cleanup.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23760,10 +23768,10 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-31.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-31.md",
-    "spec/852-target-list-source.md",
-    "spec/860-ai-target-reachability-scan.md"
+    "spec/852-target-list-source.md"
    ]
   },
   {
@@ -31698,7 +31706,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-05.md",
-    "spec/858-post-battle-xp-and-treasure-valuation.md"
+    "spec/858-post-battle-xp-and-treasure-valuation.md",
+    "spec/861-post-combat-cleanup.md"
    ]
   },
   {
@@ -31719,7 +31728,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-05.md",
     "spec/857-xp-award-and-ability-layout.md",
-    "spec/858-post-battle-xp-and-treasure-valuation.md"
+    "spec/858-post-battle-xp-and-treasure-valuation.md",
+    "spec/861-post-combat-cleanup.md"
    ]
   },
   {
@@ -31733,7 +31743,13 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "861",
+   "note": "同 DOS overlay-05:0053Ch，51 條運算元差異全是位址。⚠但有一處真的邏輯差異：進入特殊分支的條件 DOS 是 (8B56h\u003c\u003e0) and (4FBCh\u003c\u003e0)，PC-98 把第二個旗標換成同一個 0BDE8h(=8B56h) 於是變成單一條件，第一個測試被編譯器消掉(341 對 343 條)",
+   "citations": [
+    "spec/861-post-combat-cleanup.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -49781,10 +49797,10 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-31.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-31.md",
-    "spec/852-target-list-source.md",
-    "spec/860-ai-target-reachability-scan.md"
+    "spec/852-target-list-source.md"
    ]
   },
   {
@@ -50719,9 +50735,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -51274,9 +51290,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,
