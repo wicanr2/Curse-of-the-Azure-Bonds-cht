@@ -7050,9 +7050,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-06.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-06.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -8018,12 +8018,16 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/825-round-end-bleeding-out.md",
+   "note": "回合結束的處理：retf 4 = 輸出 byte 的遠指標。\u003cfar 10A7h+3\u003e(1,1)；inc(DS:758Dh)（回合計數）；\u003cfar 0CACh+1\u003e；掃 DS:650Ah 鏈：\u003c0141h:0034h\u003e(13h, p)、\u003c0141h:0039h\u003e(0, p)；p^[195h] = 5（瀕死）時 inc(p^[18Dh]^[0Eh])，\u003e 9 就把 +195h 設成 6（死亡）——倒下後有 10 個回合可救。\u003cfar 014Dh:010Bh\u003e(0) 成立就顯示 'Your Teammate is Dying'(22) 並 \u003cfar 014Dh:007Fh\u003e；\u003cfar 014Dh:00BBh\u003e；\u003cfar 018Ch:0061h\u003e(DS:6E92h^[2]+3, DS:6E92h^[3]+3, 0FFh, 8)（加回 3 正好是隊伍位置）。(DS:6F90h = 0) 或 (DS:6F91h = 0) 或 (DS:758Dh \u003e= DS:758Eh) → 輸出^ := 1；另外獨立判斷 (DS:6F90h \u003e 0) 且 (DS:6F91h = 0) 且 (DS:4FBCh = 0) 時顯示 'Continue Battle:'(16)，\u003cfar 0167h:003Eh\u003e(0Dh,0Ah,0Fh) 回 'Y' 就把輸出蓋回 0。兩段之間沒有 else。spec 825",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
     "audit/function-index/pc98-overlay-08.md",
     "audit/function-strings.md",
-    "spec/769-combat-main-loop.md"
+    "spec/769-combat-main-loop.md",
+    "spec/825-round-end-bleeding-out.md"
    ]
   },
   {
@@ -13863,6 +13867,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 3 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/824-cannot-cast-gate.md"
    ]
   },
@@ -14113,6 +14118,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "尾呼叫：最後一條是 `jmp short loc_1581`，控制權轉交後不返回（body 共 2 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/797-cast-loop-and-view-decoration.md",
     "spec/824-cannot-cast-gate.md"
    ]
@@ -14504,10 +14510,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-00.md",
-    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-16.md",
-    "audit/function-index/dos-overlay-17.md"
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -14526,12 +14532,12 @@
    "spec": "docs/spec/758-morale-field-0f7h-round-trip.md",
    "note": "C 字串轉 Pascal 字串(retf 4)：掃到 0 得長度 n，Move n bytes 進緩衝，緩衝前一個 byte 填 n，再 StoreString 到目的(上限 0FFh)。⚠ 目的指標在 [bp+0Ah]，超出 retf 4 宣告的參數區 — 堆疊殘留當引數，已由原始 bytes(C4 7E 0A + CA 04)確認",
    "citations": [
-    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "audit/function-index/pc98-overlay-16.md"
+    "audit/function-index/pc98-overlay-16.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -16011,6 +16017,7 @@
    "note": "邊界碎片：落在 10ABh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-12.md"
    ]
   },
@@ -31313,9 +31320,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-06.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-06.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -31332,6 +31339,9 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-19.md",
+    "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-strings.md"
    ]
   },
@@ -32476,7 +32486,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/825-round-end-bleeding-out.md",
+   "note": "回合結束的處理：retf 4 = 輸出 byte 的遠指標。\u003cfar 10A7h+3\u003e(1,1)；inc(DS:0A81Fh)（回合計數）；\u003cfar 0CACh+1\u003e；掃 DS:9598h 鏈：\u003c0141h:0034h\u003e(13h, p)、\u003c0141h:0039h\u003e(0, p)；p^[195h] = 5（瀕死）時 inc(p^[18Dh]^[0Eh])，\u003e 9 就把 +196h 設成 6（死亡）——倒下後有 10 個回合可救。\u003cfar 014Dh:010Bh\u003e(0) 成立就顯示 'Your Teammate is Dying'(22) 並 \u003cfar 014Dh:007Fh\u003e；\u003cfar 014Dh:00BBh\u003e；\u003cfar 018Ch:0061h\u003e(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)（加回 3 正好是隊伍位置）。(DS:0A02Ah = 0) 或 (DS:0A02Bh = 0) 或 (DS:0A81Fh \u003e= DS:0A820h) → 輸出^ := 1；另外獨立判斷 (DS:0A02Ah \u003e 0) 且 (DS:7F1Ch = 0) 時（PC-98 少一個條件），並先設 DS:0A385h := 0Ah、DS:0A386h := 0Ah，再顯示 '戦闘を続けますか？'，\u003cfar 0167h:003Eh\u003e(0Dh,0Ah,0Fh) 回 'Y' 就把輸出蓋回 0。兩段之間沒有 else。spec 825",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-strings.md"
@@ -38797,7 +38810,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "尾呼叫：最後一條是 `jmp short loc_153D`，控制權轉交後不返回（body 共 2 bytes，已逐條讀完）"
+   "note": "尾呼叫：最後一條是 `jmp short loc_153D`，控制權轉交後不返回（body 共 2 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-15.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39169,10 +39185,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-00.md",
-    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-16.md",
-    "audit/function-index/dos-overlay-17.md"
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -39191,12 +39207,12 @@
    "spec": "docs/spec/758-morale-field-0f7h-round-trip.md",
    "note": "C 字串轉 Pascal 字串(retf 4)：0A65h:1B0Dh(Move)與 0A65h:649h(StoreString)，其餘同 DOS overlay-16:0020h，含同一個超出參數區的目的指標",
    "citations": [
-    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "audit/function-index/pc98-overlay-16.md"
+    "audit/function-index/pc98-overlay-16.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -43447,7 +43463,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:62Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:62Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-15.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -49721,9 +49740,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 21,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 7,
    "CodeBytes": 4243,
    "Undefined": 343,
@@ -50276,9 +50295,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 24,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 12,
    "CodeBytes": 3967,
    "Undefined": 372,
