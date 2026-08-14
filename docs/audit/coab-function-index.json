@@ -27322,7 +27322,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1091",
+   "note": "半形→全形轉換(retf 6，(輸入字串, 輸出字串)，兩者上限 0FFh)。整支是逐字元對照表(392 mov/128 xor/69 cmp，幾乎沒有呼叫)。★★★near 14342h 是雙位元組首位元組判定，命中就把兩個 byte 原樣抄過去 —— 繁中化的關鍵點，Big5 首位元組 A1h..F9h 與 Shift-JIS 範圍不同，不改會被逐 byte 拆掉。41 個直接對應(20h→8140 全形空白、21h→8149！、2Dh→817C－、3Ah→8146：等)；數字是算的 0..9 → 82h + (字元+1Fh) = 824F 起；A1h..DFh 半形カタカナ另對到 81h/83h 段 —— ⚠這一段正好撞上 Big5 首位元組，必須整段拿掉。08h/0Bh 兩個控制碼各翻轉一個模式位元且不輸出。★輸出一律兩個 byte ⇒ 長度翻倍，中文化沿用會溢位"
   },
   {
    "platform": "pc98",
@@ -54093,9 +54096,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 278,
+   "Read": 279,
    "NotBlocking": 29,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
