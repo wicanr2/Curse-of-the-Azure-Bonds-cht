@@ -17534,6 +17534,26 @@
    "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
    "note": "狂暴,spec 743 的 1809h 的姊妹支。套用流程幾乎相同(+198h:=1、+0F7h 三態、清掉鎖定目標、用 overlay-31 entry#6 重選、角色^[197h] := 新目標^[197h] xor 1)。⚠ **差別在解除:本支寫 角色^[197h] := 節點^[3](從節點取回原陣營),而 1809h 寫死 0**。姊妹支做對了 1809h 沒有;不過 1809h 的套用路徑也沒把原陣營存進任何地方,兩件事是一起漏掉的。這是 節點^[3] 的第三種打包(整個 byte = 陣營),與 744 的 shl 4、745 的 bit 6 都不同",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 1462,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/747-summoned-item-and-third-gaze.md",
+   "note": "召喚物品(套用與解除共用一支)。先在物品鏈找「類別 14h 且 +31h = 0F3h」那一件;arg_0 非 0 走解除(找到就 <overlay-24 entry#17> 移除並釋放);否則:已經有一件就不給、**角色^[14Ch] >= 10h(物品數量上限 16)也不給,而且靜默失敗連訊息都沒有**;通過才 GetMem(3Fh)+FillChar,填 +2Eh=14h、+30h=14h、+31h=0F3h、**+32h=1**(讓 spec 737 的「打不到」規則放行)、+3Dh=17h、+3Eh=0A0h,用 <overlay-24 entry#18> 掛上鏈(**掛的是複本**),再 <overlay-19 entry#7>,然後 **FreeMem 掉本地那份**,顯示 '<名字> Gains an item'(CS:05A8h)。⚠ 這支示範了 spec 695「掛的是複本不是來源」為什麼重要——否則這個 FreeMem 會釋放掉剛掛上去的節點。識別碼是 +2Eh 與 +31h 兩個一起比,只比類別會誤判",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 10396,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/747-summoned-item-and-third-gaze.md",
+   "note": "第三處麻痺凝視:p := 角色^[18Dh]^[0Ah](**直接讀,沒有 NIL 檢查**);顯示 '<名字> gazes...'(CS:2886h)、<overlay-24 entry#24>(12h)、entry#25 畫兩點動畫;<overlay-23 entry#8>(p,1,0) 回 0 才 <overlay-23 entry#11>(p, 34h, **0**, 0FFh, 0) 並顯示 '<名字> is paralyzed'(CS:288Fh)。⚠ 麻痺(34h)三個入口的持續時間參數不同:overlay-22:6022h 是 3Ch、overlay-12 的 2782h 與本支都是 0。兩句訊息在 overlay-22 與 overlay-12 各有一份(跨模組重複),中文化兩邊都要改",
+   "bounds": "prologue"
   }
  ]
 }
