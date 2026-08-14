@@ -16,9 +16,9 @@ if (要求大小 mod 40h) <> 0 then 要求大小 := 要求大小 ＋ 40h;
 結果 := <sub_18883h>(要求大小, 檔案);             { 配置（spec 945 那一族） }
 
 { ── ② 讀 8 bytes 的標頭 ── }
-BlockRead(檔案, var_4, 4);                        { <sub_1C15Dh> }
-BlockRead(var_4, var_6, 2);
-BlockRead(var_2, var_8, 2);
+Move(檔案^, var_4, 4);                            { <sub_1C15Dh> ＝ Move，見 spec 968 }
+Move(var_4, var_6, 2);
+Move(var_2, var_8, 2);
 
 inc(word_280B6h);                                 { 載入計數 }
 
@@ -71,7 +71,7 @@ if (主 < 讀到的主) then begin 更新主;  更新次 end;
 
 ## 明確不宣稱
 
-- 沒有宣稱 `<sub_18883h>`（配置）與 `<sub_1C15Dh>`（BlockRead）的內部。
+- 沒有宣稱 `<sub_18883h>`（配置）的內部。`<sub_1C15Dh>` 是 `Move`（spec 968）。
 - 沒有宣稱 `word_280B2h`／`word_280B4h` 是不是版本號
   （形狀上是「主／次」兩個 word 的比大小，但沒有讀到顯示端）。
 - 沒有宣稱 `word_280B6h` 由誰讀。
