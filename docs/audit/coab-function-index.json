@@ -9253,6 +9253,7 @@
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/572-resident-service-functions.md"
    ]
@@ -9273,6 +9274,7 @@
    "spec": "docs/spec/758-morale-field-0f7h-round-trip.md",
    "note": "在地圖上補兩格(retf 6，只用後兩個參數 x,y)：x \u003c 31h 時 地圖[y*50+x+1] := 40h；y \u003c 18h 且 x \u003c 31h 時 地圖[(y+1)*50+x+1] := 41h。31h/18h 就是 50×25 格陣的最後索引 — 第三次獨立印證格陣尺寸。比較有號，第一個參數沒讀",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/758-morale-field-0f7h-round-trip.md"
    ]
@@ -9294,6 +9296,7 @@
    "note": "戰場地形：畫一道兩格寬的斜向障礙(retf，無參數)。機率由 98Dh() 的位元決定（bit 20h → 35%、bit 10h → 75% 覆蓋），1d100 超過就不畫。起始欄 = 22h − 5d4 再往下對齊到 (x+2) mod 7 = 0（結果落在 12/19/26）。每列 y 0..23 放 3Bh+1d2 與 3Dh+1d2 兩格後 x 加 1；另有 1/20 機率叫 9A8h(x,y) 加點綴。索引 DS:6E92h^[y*32h + x + 7] 證實 spec 749 的 50 欄 × 24 列、資料從 +7 起。var_2 是死存",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -23597,7 +23600,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "目標緩衝的氣泡排序(retf，無參數)：對 DS:6E94h 那塊（筆數在 DS:6E96h、每筆 3 bytes，spec 852）依 +1 遞增排序；+1 相同時依 +2 遞增，但多一道 (b mod 2) \u003c= (a mod 2) 的同位判斷——奇數不得排在偶數之前。交換用 3 bytes 暫存 Move 三次",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
@@ -23642,6 +23648,7 @@
    "spec": "854",
    "note": "視線的 Bresenham 逐格推進(retf 4)：狀態記錄 +04h/+06h 終點、+08h 誤差、+0Ah/+0Ch 主軸判斷、+0Eh/+10h 目前座標、+12h/+14h 步進、+16h 累計步數（直走+2、斜走+3，與 spec 837 的移動花費同一套半格度量）、+17h 方向碼（查 DS:2558h 3×3 表）",
    "citations": [
+    "audit/function-index/pc98-overlay-31.md",
     "spec/854-bresenham-stepper-and-direction-encoding.md"
    ]
   },
@@ -23656,7 +23663,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "854",
+   "note": "視線追蹤(retf 14h，10 words：(y起, x起, @終y, @終x, @距離, 地圖))：距離上限 = 距離^ × 2 + 1（半格）。開兩份 spec 854 的 Bresenham 狀態——一份走座標、一份把地形值當座標插值（+2/+4/+6 填成 地形[起點]/max(主軸長)/地形[起點]），各用 sub_19Dh 初始化、sub_246h（spec 854 的推進器）步進。地形值取自 DS:26A2h 的 +1 與 +2 兩欄（+0 是移動成本，spec 837）。被擋就把最後位置寫回 @終y/@終x、步數寫回 @距離並回 0；走到終點回 1"
   },
   {
    "platform": "dos",
@@ -49468,7 +49478,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "同 DOS overlay-31:00035h（同位址、助憶碼序列完全相同）。14 條差異全是 DS:9F2Eh/9F30h↔6E94h/6E96h 與 Move 呼叫目標",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
@@ -49515,6 +49528,7 @@
    "spec": "854",
    "note": "同 DOS overlay-31:00246h（同位址）。整支只差一條表基底 DS:47E6h↔2558h，表內容逐 byte 相同",
    "citations": [
+    "audit/function-index/pc98-overlay-31.md",
     "spec/854-bresenham-stepper-and-direction-encoding.md"
    ]
   },
@@ -49530,7 +49544,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "854",
+   "note": "同 DOS overlay-31:003EAh（同位址、助憶碼序列完全相同）。只差三條表基底 DS:48ADh/48AEh↔26A3h/26A4h"
   },
   {
    "platform": "pc98",
@@ -50769,9 +50786,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 5,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 2999,
    "Undefined": 0,
@@ -51324,9 +51341,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 5,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 2988,
    "Undefined": 0,

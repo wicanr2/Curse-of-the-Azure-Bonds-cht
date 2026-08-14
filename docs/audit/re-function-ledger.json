@@ -22243,6 +22243,42 @@
    "level": "exact",
    "spec": "854",
    "note": "同 DOS overlay-31:00246h（同位址）。整支只差一條表基底 DS:47E6h↔2558h，表內容逐 byte 相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-31",
+   "ea": 53,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "目標緩衝的氣泡排序(retf，無參數)：對 DS:6E94h 那塊（筆數在 DS:6E96h、每筆 3 bytes，spec 852）依 +1 遞增排序；+1 相同時依 +2 遞增，但多一道 (b mod 2) <= (a mod 2) 的同位判斷——奇數不得排在偶數之前。交換用 3 bytes 暫存 Move 三次"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-31",
+   "ea": 53,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "同 DOS overlay-31:00035h（同位址、助憶碼序列完全相同）。14 條差異全是 DS:9F2Eh/9F30h↔6E94h/6E96h 與 Move 呼叫目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-31",
+   "ea": 1002,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "854",
+   "note": "視線追蹤(retf 14h，10 words：(y起, x起, @終y, @終x, @距離, 地圖))：距離上限 = 距離^ × 2 + 1（半格）。開兩份 spec 854 的 Bresenham 狀態——一份走座標、一份把地形值當座標插值（+2/+4/+6 填成 地形[起點]/max(主軸長)/地形[起點]），各用 sub_19Dh 初始化、sub_246h（spec 854 的推進器）步進。地形值取自 DS:26A2h 的 +1 與 +2 兩欄（+0 是移動成本，spec 837）。被擋就把最後位置寫回 @終y/@終x、步數寫回 @距離並回 0；走到終點回 1"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-31",
+   "ea": 1002,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "854",
+   "note": "同 DOS overlay-31:003EAh（同位址、助憶碼序列完全相同）。只差三條表基底 DS:48ADh/48AEh↔26A3h/26A4h"
   }
  ]
 }
