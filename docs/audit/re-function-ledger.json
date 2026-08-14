@@ -3660,15 +3660,6 @@
   {
    "platform": "dos",
    "module": "overlay-15",
-   "ea": 3689,
-   "state": "邊界碎片",
-   "level": "",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 63 bytes，已逐條讀完）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-15",
    "ea": 4118,
    "state": "邊界碎片",
    "level": "",
@@ -21568,6 +21559,24 @@
    "level": "exact",
    "spec": "842",
    "note": "同 DOS overlay-13:042FDh，助憶碼相似度 1.000。PC-98 把 'stone to flesh ray' 照效果翻成 '石化光線'，並未沿用 'disintergrated' 錯字"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 3689,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "843",
+   "note": "巢狀程序『加一行』(retf 8, (屬性, 字串) + 靜態鏈)：Copy 到 28h 字元、GetMem 2Eh 的節點、+00h 文字 / +29h 屬性 / +2Ah next。尾指標存在外層 frame 的 -0Ch"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 3668,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "843",
+   "note": "同 DOS overlay-15:00E69h。PC-98 字串上限 3Ch(60)、節點 56h(86)、+51h 屬性 / +52h next——比 DOS 大，中文化一行可放 30 個全形字"
   }
  ]
 }
