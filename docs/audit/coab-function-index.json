@@ -19062,7 +19062,8 @@
    "spec": "docs/spec/732-reverse-order-effect-loop.md",
    "note": "效果迴圈,**從目標陣列最後一格往第 1 格走**(與 spec 731 的 sub_F06h 相反,所以「誰先被處理」剛好相反)。每格:非 NIL 才做;k \u003c DS:7434h 時才播動畫(第一次不播);(DS:6F97h = 4Fh 或 51h) 且 k = DS:7434h 時**強制豁免成功、連骰都不擲**;否則 豁免 := \u003coverlay-23 entry#8\u003e(p, 表.+9, arg_4)、旗標 := 表.+8;(p^[11Ah] \u003e 1 或 p^[0DEh] \u003e 1) 且 DS:6F97h \u003c\u003e 5Eh 時**一律豁免成功**(免疫規則,5Eh 是唯一能穿透的);最後 \u003cPUTEFFECT\u003e(p, 表.+0Ah, sub_E11h(編號), entry#36(編號), 0, 旗標, 豁免, 訊息)。與 sub_F06h 的其他差別:完全沒有傷害、等級不可覆寫、表格索引一律用 DS:6F97h",
    "citations": [
-    "spec/732-reverse-order-effect-loop.md"
+    "spec/732-reverse-order-effect-loop.md",
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
    ]
   },
   {
@@ -20878,7 +20879,8 @@
    "spec": "docs/spec/735-breath-fire-vs-acid.md",
    "note": "噴火(區域),spec 725 吐酸的姊妹支。次數同樣在 arg_2^[3](DS:758Dh=0 時重設成 3、最後才扣);傷害旗標 DS:6F95h := 21h(吐酸是 30h);用 [DS:72A0h] 第 0 項模式碼 3Dh 選目標,\u003csub_175Bh\u003e(x, y, DS:7559h, DS:755Ah, **3, 9**)(吐酸是 1, 6);訊息 '\u003c名字\u003e breathes fire'(CS:5C78h);走目標陣列(**有 NIL 檢查**),s := \u003coverlay-23 entry#8\u003e(p, 3, 0)、\u003coverlay-23 entry#20\u003e(p, arg_6^[78h], 2, s)。⚠ **最實質的差別:吐酸有同類檢查(範圍內混進不同陣營就整次取消),噴火沒有——火會燒到自己人**",
    "citations": [
-    "spec/735-breath-fire-vs-acid.md"
+    "spec/735-breath-fire-vs-acid.md",
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
    ]
   },
   {
@@ -25100,7 +25102,8 @@
    "note": "角色倒下處理(retf 4 = 角色遠指標)：DS:4FBAh ≠ 5 就只放音效+重畫離開；否則播 9 幀 × 4 部位的兩圖交替閃爍動畫，然後若 角色^[18Dh]^[13h] = 0 就登記屍體——DS:6E91h 進位、把 地圖^[7 + 列×32h + 欄] 的原地形抄進 byte[6E58h+n×7]、原地形 ≠ 1Eh 就改寫成 1Fh、並記下角色遠指標(+0)、欄(+4)、列(+5)。★DS:6E52h 那張 7 bytes/entry 的表版面就此定案，且 1Fh 是寫進地圖的屍體地形碼而非 sentinel。⚠查『是否已登記』的迴圈計數器是 var_2、讀表卻用未初始化的 var_3 → 每圈比同一筆、位置由堆疊殘值決定(兩平台皆然，同 spec 862 的缺陷類別)",
    "citations": [
     "audit/function-index/pc98-overlay-32.md",
-    "spec/919-corpse-marker-and-fade-animation.md"
+    "spec/919-corpse-marker-and-fade-animation.md",
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
    ]
   },
   {
@@ -45400,7 +45403,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-32.md",
     "audit/string-pairs.md",
-    "spec/919-corpse-marker-and-fade-animation.md"
+    "spec/919-corpse-marker-and-fade-animation.md",
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
    ]
   },
   {
@@ -45859,7 +45863,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
    ]
   },
   {
@@ -45873,7 +45878,13 @@
    "callers": 3,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+   "note": "DOS 01ABFh（spec 732）的對應；唯一結構差異是 DS:7F16h × 7",
+   "citations": [
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -47298,9 +47309,13 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+   "note": "恐懼（DOS 04A8Fh／spec 724 的對應）；★ 豁免類別 4 ＝ 法術，把類別表補到四格",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
    ]
   },
   {
@@ -47603,9 +47618,13 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+   "note": "DOS 05C86h（spec 735）的對應；唯一結構差異是 DS:7F16h × 7；印證 DS:758Dh ↔ DS:0A81Fh",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/988-pc98-monster-attack-counterparts-and-save-categories.md"
    ]
   },
   {
@@ -53037,9 +53056,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 102,
+   "Read": 105,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 6,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,

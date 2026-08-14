@@ -25168,6 +25168,33 @@
    "level": "exact",
    "spec": "docs/spec/987-ecl-damage-message-and-pc98-spell-name-table.md",
    "note": "施法訊息兩種版面；★ DS:49B3h 是 PC-98 法術名稱表（每筆 61 bytes）；019Eh:06B5h ↔ 01A0h:04CDh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 24601,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+   "note": "DOS 05C86h（spec 735）的對應；唯一結構差異是 DS:7F16h × 7；印證 DS:758Dh ↔ DS:0A81Fh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 7435,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+   "note": "DOS 01ABFh（spec 732）的對應；唯一結構差異是 DS:7F16h × 7"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 19897,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/988-pc98-monster-attack-counterparts-and-save-categories.md",
+   "note": "恐懼（DOS 04A8Fh／spec 724 的對應）；★ 豁免類別 4 ＝ 法術，把類別表補到四格"
   }
  ]
 }
