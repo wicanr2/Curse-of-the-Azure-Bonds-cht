@@ -13479,7 +13479,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "AI 選目標(retf 0Ah)：先看現有目標 +18Dh^[0Ah] 還合不合用（陣營不同、+196h 非 0、過 sub_1144h），不合就清掉。之後兩輪：每輪從 DS:758Eh 清單（spec 852）隨機抽最多 14h(20) 次，抽中的候選過不了 sub_1144h 就把該格清 0 並檢查清單是否已空；第一輪抽不到就把 遠指標(DS:6E92h)^[6] 設 1 放寬條件再來一輪，收尾清回 0。★這就是 spec 838 呼叫前要清 ^[6] 的那一格——它是『放寬目標條件』的旗標",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
@@ -15960,6 +15963,7 @@
    "note": "送出命令 0Dh(retf 4)：同一個 16-byte 命令區塊，命令碼 0Dh，呼叫後把 DS:4FCAh 當回傳值讀出。全 DOS overlay 只有 overlay-18 這兩支寫 4FCBh、也只有這兩支呼叫 097Fh:000Bh",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-18.md",
     "audit/function-index/pc98-overlay-02.md",
     "spec/754-small-predicates-and-wrappers.md"
    ]
@@ -16050,7 +16054,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "1",
-   "note": "結局動畫的主迴圈(retf，無參數)：GetMem(DS:4ACEh, 0AC8h=2760) → 迴圈直到 KeyPressed(9ABh:2FAh) 為真才 ReadKey 存進 DS:4AE2h 離開 → FreeMem。每一輪先 Random(2710h) 需 \u003c 1 才動作（1/10000）；FillChar(DS:4AE3h, 3, 1)；筆數 = Random(2)+1，每筆 DS:4AE3h+i := Random(5)+2；起點固定 (41h, 41h)，終點 DS:4AEBh := Random(14h)+23h、DS:4AEDh := −(Random(5)+32h)（另存一份到 4AEFh/4AF1h）；接著以模式 0 呼叫 sub_843h + sub_BCh，還原座標後再以模式 1 呼叫 sub_843h + sub_780h——擦掉再畫上的兩段式更新"
+   "note": "結局動畫的主迴圈(retf，無參數)：GetMem(DS:4ACEh, 0AC8h=2760) → 迴圈直到 KeyPressed(9ABh:2FAh) 為真才 ReadKey 存進 DS:4AE2h 離開 → FreeMem。每一輪先 Random(2710h) 需 \u003c 1 才動作（1/10000）；FillChar(DS:4AE3h, 3, 1)；筆數 = Random(2)+1，每筆 DS:4AE3h+i := Random(5)+2；起點固定 (41h, 41h)，終點 DS:4AEBh := Random(14h)+23h、DS:4AEDh := −(Random(5)+32h)（另存一份到 4AEFh/4AF1h）；接著以模式 0 呼叫 sub_843h + sub_BCh，還原座標後再以模式 1 呼叫 sub_843h + sub_780h——擦掉再畫上的兩段式更新",
+   "citations": [
+    "audit/function-index/pc98-overlay-18.md"
+   ]
   },
   {
    "platform": "dos",
@@ -38501,7 +38508,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "同 DOS overlay-13:03E56h（module_align 對齊，助憶碼序列完全相同）。13 條差異全是位址：+18Eh↔+18Dh、+197h/198h↔+196h/197h、DS:9F2Ch↔6E92h、[di−57E0h]↔[di+758Eh]、[di−6231h]↔[di+6D35h]"
   },
   {
    "platform": "pc98",
@@ -50598,9 +50608,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 30,
+   "Read": 31,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -51153,9 +51163,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 32,
+   "Read": 33,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,

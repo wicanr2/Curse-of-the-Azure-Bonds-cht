@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 795、不阻塞 133、邊界碎片 243、待解讀 215；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 796、不阻塞 133、邊界碎片 243、待解讀 214；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -27,7 +27,7 @@
 | overlay-10 | COMPREP | 38 | 18 | 0 | 14 | 6 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 4 | 2 | 0 | 1 | 1 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
 | overlay-12 | EFFPROCS | 152 | 126 | 0 | 25 | 1 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
-| overlay-13 | COMSTUFF | 58 | 30 | 0 | 15 | 13 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
+| overlay-13 | COMSTUFF | 58 | 31 | 0 | 15 | 12 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 12 | 0 | 0 | 2 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
 | overlay-15 | CAMP | 42 | 26 | 0 | 10 | 6 | 8139 | 898 | [明細](function-index/dos-overlay-15.md) |
 | overlay-16 | LOADSAVE | 28 | 7 | 0 | 8 | 13 | 16063 | 787 | [明細](function-index/dos-overlay-16.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 876、不阻塞 29、邊界碎片 338、待解讀 245；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 877、不阻塞 29、邊界碎片 338、待解讀 244；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -71,7 +71,7 @@
 | overlay-10 | COMPREP | 35 | 16 | 0 | 12 | 7 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |
 | overlay-11 | INIT | 6 | 4 | 0 | 0 | 2 | 1960 | 128 | [明細](function-index/pc98-overlay-11.md) |
 | overlay-12 | EFFPROCS | 150 | 130 | 0 | 18 | 2 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
-| overlay-13 | COMSTUFF | 72 | 32 | 0 | 27 | 13 | 17459 | 905 | [明細](function-index/pc98-overlay-13.md) |
+| overlay-13 | COMSTUFF | 72 | 33 | 0 | 27 | 12 | 17459 | 905 | [明細](function-index/pc98-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 11 | 0 | 0 | 3 | 3435 | 321 | [明細](function-index/pc98-overlay-14.md) |
 | overlay-15 | CAMP | 45 | 24 | 0 | 15 | 6 | 8121 | 1126 | [明細](function-index/pc98-overlay-15.md) |
 | overlay-16 | LOADSAVE | 47 | 11 | 0 | 14 | 22 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
