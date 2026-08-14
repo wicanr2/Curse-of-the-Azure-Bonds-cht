@@ -33,5 +33,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1683` | sub_1683 | — | 10 | 3 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1695`，控制權轉交後不返回；先設定 `les di, [bp-9]`、`mov byte ptr es:[di+59h], 0D1h`（body 共 10 bytes，已逐條讀完） | — |
 | `19CA` | sub_19CA | — | 12 | 3 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr 39F6h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | audit/function-triage.md |
 | `19E0` | sub_19E0 | — | 31 | 14 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr 5A80h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
-| `1A3E` | sub_1A3E | APPRAISE | 2263 | 151 | 0 | 3 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `1A3E` | sub_1A3E | APPRAISE | 2263 | 151 | 0 | 3 | ✓ | 待解讀 | — | docs/spec/1018-gem-jewelry-appraisal.md<br>⚠ 匯出從 1BBAh 到 2305h 有一個 1867 bytes 的洞沒有反組譯（150/843 條），無法逐條讀完，維持待解讀。已確認的部分：前 150 條與 DOS overlay-21:0198Ch 同構(+105h 寶石數／+107h 珠寶數)，字串已全部讀出並記在 spec 1018（英文的單複數兩組在 PC-98 各自合併成一個）。要收這一筆需先重跑該模組的補洞匯出，或直接讀原始位元組 | audit/function-strings.md |
 | `2315` | sub_2315 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
