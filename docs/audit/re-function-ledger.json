@@ -24529,6 +24529,24 @@
    "level": "exact",
    "spec": "947",
    "note": "清一個文字矩形(near)：di = (列 × byte_280DAh + 欄) × 2、寬由 dx − cx + 101h 拆出、si = (欄數 − 寬) × 2 是每列要跳過的距離；★byte_280DAh ≠ 50h(40 欄模式)時 di/寬/si 全部再 shl 1。先在字碼平面(es = word_280D4h = A000h)用 rep stosw 填 ' '，每列前後各叫 sub_19B7Dh/sub_19B9Ch；再 di += word_280D6h(2000h)跳到屬性平面，叫 sub_18FA3h(bh) 後用 stosb + inc di 隔一個寫一個——★屬性平面每格也佔兩個 byte 但只有低位有意義。印證 spec 946 的兩平面共用位移"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105456,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "948",
+   "note": "★全形感知的字元寫入(near，al = 字元、es:di = 緩衝、bx = 游標、si = 長度、dx = 上限)：byte_280E3h ≠ 0 就直接寫。要寫的是全形前導(sub_1977Eh)時緩衝至少要再容得下一個 byte，否則清 byte_280E1h 並叫 sub_192A0h 拒絕；游標在字串尾端就直接寫。★游標下原本是完整全形字時，蓋掉前半會留下孤兒後續，所以把後面整段左移一格並 dec(si)。最後寫入、bx 前進、叫 sub_19493h 送畫面，bx > si 就把長度往外長。byte_280D0h = 0 時整套判定跳過。與 spec 945 的退格是一對"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111020,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "948",
+   "note": "6-byte real 除法(near)：al = 0 走除以零路徑；符號取兩運算元的 xor 只留 bit 15，指數相減，兩邊尾數各補隱含最高位(or 8000h)。本體是 48 bits(bp:bx:ah vs di:si:ch)的 restoring division，rcl dx,1 收商位，dx 滿了就 push 起來換下一段(第三段用 dl := 40h 只收 2 bits)；收尾 ax := dx shl 6，三段商 not 之後組成尾數，指數加 8080h(兩個 80h 偏置)後跳 loc_1B18Ah 做正規化與套符號。⚠IDA 註記 sp-analysis failed，因為 push dx 與收尾的 pop 不在同一路徑；逐條讀是配平的"
   }
  ]
 }
