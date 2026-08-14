@@ -27144,7 +27144,10 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "969",
+   "note": "PC-98 的結束畫面(near)，由 sub_1259Fh 主流程呼叫：①清文字 25 列 × 兩平面(0A000h 字碼、0A200h 屬性，每列 0A0h)；②★清圖形 200 列 × 三平面——0A800h(B)/0B000h(R)/0B800h(G)，每列 50h bytes，與 spec 954 的『每列 80 bytes、640 像素、每平面 1 bit』一致；⚠只清三個平面，第四個 I 平面(0E000h)沒動——與 spec 949/956/967 一路一致，這個遊戲只用 8 色。③印 'お疲れさまでした。'(byte_17E30h，帶 ESC[37m 與 ESC= 定位，走主控台不走遊戲文字層，同 spec 966)。④★repeat 檢查 byte(0060h:006Ch) \u003e 0 才印 'リターンキーを押すとＤＯＳに戻ります。'(byte_17E7Ah)並等 0Dh 後 sub_1A726h(0) 結束；⚠條件不成立就 jmp 回迴圈開頭，沒有其他離開路徑——那個旗標一直是 0 的話程式會停在這裡。★DOS 版沒有結束畫面，spec 924 問完 'Quit TO DOS ' 就直接離開"
   },
   {
    "platform": "pc98",
@@ -52416,9 +52419,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 270,
+   "Read": 271,
    "NotBlocking": 29,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
