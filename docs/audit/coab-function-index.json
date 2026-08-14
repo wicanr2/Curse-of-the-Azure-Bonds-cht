@@ -8125,11 +8125,11 @@
    "note": "呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr sub_104A`、`call far ptr 167h:4Dh`、`call far ptr 187h:43h`、`call far ptr 18Ch:93h`、`call far ptr 196h:43h`、`call far ptr 14Dh:101h`（body 共 77 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-09.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-13.md",
-    "audit/function-index/pc98-overlay-10.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/function-index/pc98-overlay-09.md",
+    "audit/function-index/pc98-overlay-10.md"
    ]
   },
   {
@@ -8150,10 +8150,10 @@
    "citations": [
     "audit/function-index/dos-overlay-08.md",
     "audit/function-index/pc98-overlay-08.md",
+    "audit/function-index/pc98-overlay-09.md",
     "audit/function-strings.md",
     "spec/1008-combat-move-command.md",
-    "spec/1015-combat-turn-key-dispatch.md",
-    "spec/748-cloud-effect-dispel-pair.md"
+    "spec/1015-combat-turn-key-dispatch.md"
    ]
   },
   {
@@ -15735,9 +15735,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1017-racial-ability-limits.md",
+   "note": "從範本建角色(巢狀程序，retf 2，唯一參數是父函式的 bp；範本在 ss:[父bp−1C0h]、角色在 ss:[父bp+0Ah])。逐一搬欄位(+2Eh→+74h 種族、+9Eh→+119h 性別、15 bytes 名字、+0BCh..+0C0h→+140h..+144h 等)，用 @Move$qm3Anyt14Word(0A54:1ABDh)搬 6 段陣列、@$basg(0A54:025Dh)做字串指定。★ 屬性：for i := 0 to 5 do 角色^[10h + i×2] := 範本^[10h + i] —— 範本一屬性一 byte、角色記錄一屬性兩 byte。★★★ 種族屬性上下限表 DS:3F86h(PC-98 DS:701Bh，值完全相同)，每種族 16 bytes、以 種族×16 索引，力量三組再 + 性別：+0/+1 力量下限(男/女)、+2/+3 力量上限、+4/+5 力量百分位上限、+6/+7 智力、+8/+9 智慧、+0Ah/+0Bh 敏捷、+0Ch/+0Dh 體質、+0Eh/+0Fh 魅力。與 AD\u0026D 1e PHB 的種族屬性限制一格不差(種族名表 DS:0E9Ch：0 Monster、1 Dwarf、2 Elf、3 Gnome、4 Half-Elf、5 Halfling、6 Half-Orc、7 Human)：矮人體質 12-19/魅力 3-16、精靈智力 8-18/敏捷 7-19、半身人體質 10-19、半獸人體質 13-19/魅力 3-12；例外力量百分位上限 人類男 100 女 50、矮人 99/0、精靈 75/0、地精 50/0、半精靈 90/0、半身人 0/0、半獸人 99/75。⚠ 只有力量分男女，其餘五項不分——與 AD\u0026D 1e 一致",
    "citations": [
-    "audit/function-index/dos-overlay-16.md"
+    "audit/function-index/dos-overlay-16.md",
+    "spec/1017-racial-ability-limits.md"
    ]
   },
   {
@@ -17398,6 +17402,7 @@
    "spec": "docs/spec/1016-spell-table-base-and-slots-per-level.md",
    "note": "物品效果分派(retf 6，宣告順序 (物品遠指標, 加倍 byte))：模式 = 物品^.special(3)(+3Eh) and 7Fh。★★★ 模式 0 先寫 DS:7582h := 1 再叫 CALLEFFECT(效果碼=special(3), DS:6506h, 物品, ord(加倍=0))⇒ spec 1005 的攔截旗標就是「這次效果來自物品」，效果碼 147 那一支是所有物品效果的共同入口(全 DOS 只有兩處寫 1、兩處寫 0)。★★★ 本支同時讀 byte[法術×16+37DAh](比對 2)與 byte[法術×16+37DBh] ⇒ 法術屬性表的基底是 DS:37DAh 不是 37DBh，筆距 16；+0 = 施法職業(0 牧師 37 支／1 德魯伊 4 支／2 法師 45 支／3 有 15 支)、+1 = 法術環數。與 AD\u0026D 1e 一格不差：Hold Person 兩支分別是牧師 2 環(法術 23)與法師 3 環(49)、Fireball/Lightning Bolt 法師 3 環、Faerie Fire 德魯伊 1 環、Silence 15' Radius 牧師 2 環。⇒ spec 1005 效果碼 63 的『\u003c 4』是法術環數；spec 1009 的目標模式在 +6 不是 +5(兩份已更正)。★★★ 模式 1 重算施法能力：等級 = +10Eh + +116h × overlay-25 entry#10(角色)；+137h..+13Bh 清 0、+137h := 1，再 for L := 2 to 等級 累加 byte[44A9h + L×5 + i]⇒ DS:44A9h 是「每升一級的增量」表，累加出 1/-、2/-、2/1、3/2、4/2/1、4/2/2、4/3/2/1、4/3/3/2、4/3/3/2/1、4/4/3/2/2、4/4/4/3/3、4/4/4/4/4 —— AD\u0026D 1e 法師每日法術數表 1..12 級一格不差。★ 加倍 \u003c\u003e 0 時把前三環的名額變兩倍(形狀上是一件把 1~3 環法術位加倍的魔法物品)。重算後掃記憶法術清單 +1Eh 起的 84 格，對 +0 = 2(法師)的法術依環數計數，超過該環上限就把該格清 0。其他模式：2→entry#24(3)+overlay-25 entry#4；4→special(2) and 0Fh ≠ 角色 +11Bh(陣營)時卸下 ready、DS:6F95h:=8、overlay-23 entry#20(0,0,special(2) div 16,角色)、DS:6F9Eh:=1；5→entry#24(0)；6→entry#24(4)+entry#24(5)；8→再依 special(2) 0..5 分派成 entry#24(0..5)；9→overlay-23 entry#3；0Bh→overlay-25 entry#4；其餘→entry#24",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "spec/1016-spell-table-base-and-slots-per-level.md",
     "spec/907-equip-item-checks.md"
    ]
@@ -21538,9 +21543,9 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -21825,6 +21830,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-19.md",
     "spec/864-cloud-tick-and-hd-field.md"
    ]
   },
@@ -23429,7 +23435,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-19.md"
    ]
   },
   {
@@ -34508,11 +34514,11 @@
    "note": "呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr 164h:57h`、`call far ptr 184h:43h`、`call far ptr 189h:93h`、`call far ptr 194h:43h`、`call far ptr 14Ah:101h`（body 共 77 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-09.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-13.md",
-    "audit/function-index/pc98-overlay-10.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/function-index/pc98-overlay-09.md",
+    "audit/function-index/pc98-overlay-10.md"
    ]
   },
   {
@@ -34533,10 +34539,10 @@
    "citations": [
     "audit/function-index/dos-overlay-08.md",
     "audit/function-index/pc98-overlay-08.md",
+    "audit/function-index/pc98-overlay-09.md",
     "audit/function-strings.md",
     "spec/1008-combat-move-command.md",
-    "spec/1015-combat-turn-key-dispatch.md",
-    "spec/748-cloud-effect-dispel-pair.md"
+    "spec/1015-combat-turn-key-dispatch.md"
    ]
   },
   {
@@ -42251,9 +42257,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1017-racial-ability-limits.md",
+   "note": "從範本建角色(巢狀程序，retf 2，唯一參數是父函式的 bp；範本在 ss:[父bp−1C0h]、角色在 ss:[父bp+0Ah])。逐一搬欄位(+2Eh→+74h 種族、+9Eh→+119h 性別、15 bytes 名字、+0BCh..+0C0h→+140h..+144h 等)，用 @Move$qm3Anyt14Word(0A54:1ABDh)搬 6 段陣列、@$basg(0A54:025Dh)做字串指定。★ 屬性：for i := 0 to 5 do 角色^[10h + i×2] := 範本^[10h + i] —— 範本一屬性一 byte、角色記錄一屬性兩 byte。★★★ 種族屬性上下限表 DS:3F86h(PC-98 DS:701Bh，值完全相同)，每種族 16 bytes、以 種族×16 索引，力量三組再 + 性別：+0/+1 力量下限(男/女)、+2/+3 力量上限、+4/+5 力量百分位上限、+6/+7 智力、+8/+9 智慧、+0Ah/+0Bh 敏捷、+0Ch/+0Dh 體質、+0Eh/+0Fh 魅力。與 AD\u0026D 1e PHB 的種族屬性限制一格不差(種族名表 DS:0E9Ch：0 Monster、1 Dwarf、2 Elf、3 Gnome、4 Half-Elf、5 Halfling、6 Half-Orc、7 Human)：矮人體質 12-19/魅力 3-16、精靈智力 8-18/敏捷 7-19、半身人體質 10-19、半獸人體質 13-19/魅力 3-12；例外力量百分位上限 人類男 100 女 50、矮人 99/0、精靈 75/0、地精 50/0、半精靈 90/0、半身人 0/0、半獸人 99/75。⚠ 只有力量分男女，其餘五項不分——與 AD\u0026D 1e 一致。與 dos overlay-16:01490h 同一段原始碼(DOS 910 條、PC-98 923 條，多的 13 條是展開方式不同)；範本在父框架的 −1E8h",
    "citations": [
-    "audit/function-index/pc98-overlay-16.md"
+    "audit/function-index/pc98-overlay-16.md",
+    "spec/1017-racial-ability-limits.md"
    ]
   },
   {
@@ -48655,9 +48665,9 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -50652,7 +50662,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-19.md"
    ]
   },
   {
@@ -50758,6 +50768,7 @@
    "spec": "884",
    "note": "同 DOS overlay-25:00D2Fh，9 條差異全是表基底與近呼叫位址(3FF8h↔708Dh、4172h↔7207h、41D8h↔726Dh、DS:7747h↔0A9D9h)。★PC-98 側是正確的反組譯，用來校正 DOS 的兩處錯位",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-index/pc98-overlay-26.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
     "spec/884-dual-class-eligibility.md"
@@ -53250,9 +53261,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -53805,9 +53816,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
