@@ -16618,9 +16618,13 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1066",
+   "note": "加入角色(retf，378 條)。★★★★ 關掉 spec 1038/1043 的核心疑問：選單 'Add from where? '(16) + 'Curse Pool Hillsfar Exit'(24)，'C'→DS:7584h:=0、'P'→1、'H'→2 ⇒ DS:7584h 是『角色來自哪一款遊戲』：0=Curse of the Azure Bonds(422/423，.guy)、1=Pool of Radiance(285，.cha)、2=Hillsfar(188，.sav)。選檔用 overlay-16 entry#1 掃清單、overlay-26 entry#5 選，選中項 [1]='*' 表示已在隊伍裡不能再選；GetMem(1A6h)=422 ⇒ 不管來源是哪一款，記憶體裡一律是本作版面(舊格式在 spec 1038 的讀檔函式裡轉換)；加入後把 '* '(2 bytes) 就地寫回清單項前兩格(同 spec 1057 的☆)。★★★ 掃全隊算四個量：+0F7h\u003c80h→NPC數、+10Dh\u003e0→遊俠數、(+11Bh+1) mod 3 = 0→有邪惡、+10Ch\u003e0→有聖騎士；+10Ch/+10Dh 正是 +109h+3(聖騎士)與 +109h+4(遊俠)，與 spec 1034/1055 的職業順序第三次對上。★★★ 陣營編碼：(陣營+1) mod 3 = 0 ⇒ {2,5,8} 是邪惡，只有在順序 LG(0) LN(1) LE(2) NG(3) N(4) NE(5) CG(6) CN(7) CE(8) 時成立(守序/中立/混亂為外層、善/中立/惡為內層)。★★★ 四條限制：新的是 NPC 時需 NPC數\u003c6、否則需 bank1^[67Ch]\u003c8(隊伍上限 8)；新的是聖騎士且隊裡有邪惡→拒絕('paladins do not join with evil scum' 35)；新的是遊俠且遊俠數\u003e=3→拒絕('too many rangers in party' 25)；另有 名字+' will tolerate no evil!'(23)。名字相同且 +126h 相同也拒絕(重複)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1066-add-character.md"
    ]
   },
   {
@@ -16922,6 +16926,7 @@
    "spec": "1064",
    "note": "粒子動畫初始化(retf，382 條)，動畫的每一幀見 spec 1025。arg_0 開頭 3 bytes 複製出來當每列的『輸入色』。★★★ 關掉 spec 1025 的未定項『顏色斜坡表是誰填的』：DS:4AD2h:=0、FillChar(DS:4AD3h,0Fh,1)，然後 for 列:=1..3 填 byte[4ACEh..4AD2h + 列×5] —— 正好是 spec 1025 的 4ACDh + 列×5 + 色階(色階 1..5)。★★★ 兩套值由 DS:4FE6h(顯示卡種類，spec 1046)分：CGA(=0)且輸入色\u003e1 時填 2,3,3,3,2(只有兩階明暗)；其他卡填 0Fh(白)、0Fh、輸入色+8(亮色)、輸入色、1(四階漸層)，其中第 1 與第 3 格還要 輸入色\u003e1 才寫。★★ 幀數：DS:4AD2h := max(DS:4AD2h, Random(14h)+19h) 即 25..44 —— ⚠ 這一格同時是顏色斜坡表第 1 列的最後一格，兩個用途共用同一個 byte，本規格不判斷是不是原作疏漏。初速用浮點：0A54:111Bh(浮點亂數)＋0A54:0C5Ah/0D7Eh(浮點運算)，常數 490F CF80 DC83 是 Turbo Pascal 6-byte real，與 spec 991 記的『方向用浮點算』同一組常式；另有 Random(5)+5 與 Random(0Ah)+18h",
    "citations": [
+    "audit/function-index/pc98-overlay-18.md",
     "spec/1025-particle-animation-step.md",
     "spec/1064-particle-animation-init.md"
    ]
@@ -53618,9 +53623,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
