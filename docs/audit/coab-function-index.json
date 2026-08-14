@@ -16262,11 +16262,16 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1093",
+   "note": "建角完整流程(retf)，全台帳最大的函式(2883 條，782h..2514h)。GetMem(1A6h) → 四個選單(Pick Race/Gender/Class/Alignment) → 擲屬性 → Reroll stats? → Character name: → Save X? → overlay-16 entry#6(spec 1075 存檔) → FreeMem。★★★角色^[74h] 種族、[119h] 性別、[75h] 職業組合(選單索引再過 DS:3FF8h + 種族*0Eh 一列 14 bytes 的可選職業表)、[11Bh] 陣營。★★★17 種職業組合 0..10h，起始經驗值 = 25000 平分(單職 25000/雙職 12500/三職 8333) ⇒ spec 1086/1092 三個門檻的來源；⚠例外：10h(法師/盜賊)只有兩職卻拿 8333。★★★種族屬性表 DS:3F86h + 種族*10h 一列 16 bytes：力量下限/上限/百分比上限各佔 2 bytes(再 + 性別)、其餘五屬性各下限+上限 1 byte ⇒ 只有力量依性別分(AD\u0026D 女性力量上限)。職業最低要求 DS:4172h + 組合*6 + 屬性。★力量恰好 18 且有戰士/遊俠/聖騎士 → 角色^[1Ch] := Random(100)+1 = 18/xx 的產生端。★★★角色^[76h] 是年齡，DS:404Ch + 種族*1Ch + 職業*4(基礎 word + 兩個骰子參數)是 AD\u0026D 起始年齡表，多職不擲骰改用乘積；DS:4124h/4126h/4128h + 種族*0Ah 是三個年齡分期門檻。種族天賦效果由 overlay-23 entry#11 掛上(人類 61h、矮人 61h/1Ah/2Fh…)",
    "citations": [
     "audit/function-index/dos-overlay-17.md",
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1086-modify-character-dos.md",
+    "spec/1093-character-creation-dos.md"
    ]
   },
   {
@@ -53823,9 +53828,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
