@@ -19120,6 +19120,69 @@
    "level": "exact",
    "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
    "note": "依 ^Z 截斷文字檔(近呼叫 retn，DI 指向檔案記錄)：seek 檔尾取大小，回退 80h(不足則 0)讀 80h bytes，在其中找第一個 1Ah；找到就以 AX=4202h 相對檔尾往回 seek 到該處，再用 AH=40h 配 CX=0 截斷。找不到就直接返回"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 459,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "清掉物品三個效果槽的旗標位元(retf 4)：走角色 +14Dh 的物品鏈，本模組 11DEh(p) 為真時把 p^[3Ch]/[3Dh]/[3Eh] 各 and 7Fh(保留效果 ID、清掉最高位旗標)，next 在 +2Ah。呼叫端是 overlay-15:023Eh(spec 755)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 459,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "清掉物品三個效果槽的旗標位元(retf 4)：鏈頭 +14Eh、槽在 +64h/+65h/+66h、next 在 +52h — PC-98 物品節點配置與 DOS 不同，其餘同 DOS overlay-15:01CBh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 16568,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "取兩個戰鬥員的 x/y 後畫(retf 4)：結構與 DOS overlay-13:4162h(spec 759)逐條相同，但最後一個參數 DOS 是常數 1Eh、PC-98 是 DS:7F16h * 7(有號乘法)。真實平台差異，非匯出誤差"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 15871,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "載入 CPIC(retf 2)：與 DOS overlay-16:351Ch(spec 756)同流程(DS:7F09h^[67Ch] > 7 就不做、GetMem 後填 +126h、組 CS:3DFAh 的 'CPIC'、最後叫 (參數, p^[143h]))。⚠ 配置大小 DOS 1A6h、PC-98 1A7h，多一個 byte"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-29",
+   "ea": 1114,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "逐項釋放後清空(retf 4)：p^[0] 為 0 就離開；否則由高索引往低，對 p + 8i − 1 叫 02A8h:10D5h，最後 FillChar(p^, 43h, 0)、DS:0A313h:=0、DS:0A325h:=0FFh。⚠ 計數器用全域 DS:0A9D9h 而非 local，不可重入"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 81,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "一句 Y/N 詢問(retf 4)：StoreString(參數, 緩衝, 0FFh)；014Ah:0084h(遠指標@DS:9594h, @緩衝, 0, 0)；組出 CS:0034h 的 'それでもかけてもらいますか？'(28 bytes Shift-JIS)；結果 := 0164h:0048h(0Dh, 0Ah, 0Fh)；014Ah:0089h()。該字串是 overlay 內嵌常數，不在字串表裡"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 95830,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "檔案是否存在(retf 4)：StoreString(參數, 緩衝, 50h)、InOutRes(word_23B08):=0、Assign+Reset(f,1)，成功就 Close 並回 true，否則 false，離開前再清一次 InOutRes。⚠ DOS 對應的 START.EXE:1685Fh 是用 FindFirst + DosError，兩者對唯讀/被開啟中的檔案行為不同"
   }
  ]
 }

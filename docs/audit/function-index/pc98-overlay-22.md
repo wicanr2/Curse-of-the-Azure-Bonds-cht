@@ -88,8 +88,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `39EF` | sub_39EF | — | 246 | 103 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `3AE5` | sub_3AE5 | — | 215 | 88 | 2 | 4 | ✓ | 待解讀 | — | — | — |
 | `3BCB` | sub_3BCB | — | 42 | 20 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/628-spell-effect-wrappers.md<br><sub_3AE5>(2Ah, DS:9594h^[198h], 'は加速された。')。效果 id 2Ah 與 41AFh 指同一個(加速) | audit/function-index/dos-overlay-22.md<br>spec/628-spell-effect-wrappers.md |
-| `3BF5` | sub_3BF5 | — | 188 | 71 | 5 | 4 | ✓ | 待解讀 | — | — | spec/759-combatant-xy-lookup-and-bank-select-bit.md |
-| `3CB1` | sub_3CB1 | — | 669 | 266 | 4 | 7 | ✓ | 待解讀 | — | — | spec/759-combatant-xy-lookup-and-bank-select-bit.md |
+| `3BF5` | sub_3BF5 | — | 188 | 71 | 5 | 4 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-22.md<br>spec/759-combatant-xy-lookup-and-bank-select-bit.md |
+| `3CB1` | sub_3CB1 | — | 669 | 266 | 4 | 7 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-22.md<br>spec/759-combatant-xy-lookup-and-bank-select-bit.md |
 | `3F4E` | sub_3F4E | — | 75 | 39 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>retf，無參數：n := <呼叫>(DS:0A031h)；r := ROLLDICE(n, 6)(n d6)；本模組 3BF5h(DS:0A645h, DS:0A646h, r, 4, 0, @本地)；本模組 3CB1h(7, r, 4, 1) | spec/759-combatant-xy-lookup-and-bank-select-bit.md |
 | `3FA8` | sub_3FA8 | — | 46 | 21 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は減速された。」（unk_3F99，長度 14）呼叫訊息 routine（body 共 46 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `3FEB` | sub_3FEB | — | 433 | 158 | 0 | 3 | ✓ | 待解讀 | — | — | — |

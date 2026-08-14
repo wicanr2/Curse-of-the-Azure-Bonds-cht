@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADTEMPLE | 52 | 14 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call far ptr loc_1153+1`、`call far ptr sub_101A`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call loc_6DC+4`、`call far ptr 19Ah:2Ah`（body 共 52 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-04.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/dos-overlay-25.md |
-| `0051` | sub_51 | — | 99 | 42 | 6 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/pc98-overlay-02.md |
+| `0051` | sub_51 | — | 99 | 42 | 6 | 0 | ✓ | 已解讀 | exact | docs/spec/760-item-effect-flag-clear-and-file-exists.md<br>一句 Y/N 詢問(retf 4)：StoreString(參數, 緩衝, 0FFh)；014Ah:0084h(遠指標@DS:9594h, @緩衝, 0, 0)；組出 CS:0034h 的 'それでもかけてもらいますか？'(28 bytes Shift-JIS)；結果 := 0164h:0048h(0Dh, 0Ah, 0Fh)；014Ah:0089h()。該字串是 overlay 內嵌常數，不在字串表裡 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/pc98-overlay-02.md<br>spec/760-item-effect-flag-clear-and-file-exists.md |
 | `0103` | sub_103 | — | 368 | 139 | 7 | 3 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-07.md<br>audit/function-index/dos-overlay-21.md<br>audit/function-index/pc98-overlay-07.md<br>audit/function-index/pc98-overlay-21.md |
 | `02A3` | sub_2A3 | — | 134 | 53 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `035B` | sub_35B | — | 217 | 75 | 1 | 3 | ✓ | 待解讀 | — | — | — |

@@ -55,7 +55,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3B37` | sub_3B37 | — | 799 | 315 | 1 | 10 | ✓ | 待解讀 | — | — | — |
 | `3E56` | sub_3E56 | — | 480 | 159 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `403F` | sub_403F | — | 291 | 117 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `4162` | sub_4162 | — | 106 | 39 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>取兩個戰鬥員的 x/y 後畫(retf 4)：先 overlay-24 entry#24 @1AAAh(參數+0Dh)；再用 overlay-32 entry#15/#16 對 SS 相對記錄的 +0Ch 與 −0Ah 兩個遠指標各取 x、y；最後 overlay-24 entry#25 @1AF7h(x1, y1, x2, y2, 1, 1Eh)。entry#15/#16 = 由 overlay-32:0CAEh 換索引後取 4-byte 記錄的 +0/+1，即戰鬥員座標 — 補上 spec 750「地圖表頭 = 隊伍位置 −3」的機制依據 | spec/759-combatant-xy-lookup-and-bank-select-bit.md |
+| `4162` | sub_4162 | — | 106 | 39 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>取兩個戰鬥員的 x/y 後畫(retf 4)：先 overlay-24 entry#24 @1AAAh(參數+0Dh)；再用 overlay-32 entry#15/#16 對 SS 相對記錄的 +0Ch 與 −0Ah 兩個遠指標各取 x、y；最後 overlay-24 entry#25 @1AF7h(x1, y1, x2, y2, 1, 1Eh)。entry#15/#16 = 由 overlay-32:0CAEh 換索引後取 4-byte 記錄的 +0/+1，即戰鬥員座標 — 補上 spec 750「地圖表頭 = 隊伍位置 −3」的機制依據 | spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>spec/760-item-effect-flag-clear-and-file-exists.md |
 | `41CC` | sub_41CC | — | 186 | 63 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `42FD` | sub_42FD | — | 722 | 312 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `45CF` | sub_45CF | — | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |
