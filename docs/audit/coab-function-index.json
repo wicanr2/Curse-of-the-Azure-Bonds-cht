@@ -28049,7 +28049,10 @@
    "callers": 5,
    "calls": 12,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "961",
+   "note": "PC-98 的單字元輸出(near，al = 字元)，spec 945/948/951 都呼叫它；spec 952/953 那條是批次版。byte_280E3h 有前導時本次當後續處理：屬性兩格都寫、sub_19791h 換算後 stosw 內碼與 stosw 內碼 or 8000h、欄 +2、超過右界就換行(同 spec 953 的編碼)。★是前導時先檢查 dl \u003e= 右界，放不下就先換行讓整個全形字落到下一行(與批次版規則一致但程式碼獨立)。控制字元 07h/08h/0Dh/0Ah 各自處理，\u003e= 20h 畫單字元(40 欄模式 stosw 兩次)。★★退格(08h)在行首時退到上一行行尾，而且 cs:byte_19D01h ≠ 0 時還要看那一格是不是空白——不是就再退一格(那裡是全形字的右半)。這是 spec 945 那個 self-modifying 旗標的唯一讀取端，該待答項就此關閉"
   },
   {
    "platform": "pc98",
@@ -52392,9 +52395,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 262,
+   "Read": 263,
    "NotBlocking": 29,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
