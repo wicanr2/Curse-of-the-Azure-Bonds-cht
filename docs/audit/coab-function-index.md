@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 490、不阻塞 133、邊界碎片 249、待解讀 514；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 491、不阻塞 133、邊界碎片 249、待解讀 513；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -26,7 +26,7 @@
 | overlay-09 | COMPTACT | 38 | 2 | 0 | 22 | 14 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
 | overlay-10 | COMPREP | 38 | 4 | 0 | 14 | 20 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 4 | 1 | 0 | 1 | 2 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
-| overlay-12 | EFFPROCS | 152 | 91 | 0 | 27 | 34 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
+| overlay-12 | EFFPROCS | 152 | 92 | 0 | 27 | 33 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
 | overlay-13 | COMSTUFF | 58 | 1 | 0 | 16 | 41 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 3 | 0 | 0 | 11 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
 | overlay-15 | CAMP | 42 | 5 | 0 | 11 | 26 | 8139 | 898 | [明細](function-index/dos-overlay-15.md) |
