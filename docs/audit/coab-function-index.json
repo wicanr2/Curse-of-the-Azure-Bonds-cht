@@ -1063,7 +1063,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "940",
+   "note": "帶裁切的 blit 設定(retn 14h = (目的表面, 來源表面, 旗標, arg_A, 上下, 左右))：上下/左右是有號座標(cmp ax,8000h; ja 判負)，四邊各算裁切量——左右以像素為單位、上下以 8 條掃描線為一單位(shl 3)；五道無號比較確認不是完全在畫面外，再把所有位移換算成位元組並加上 來源^[11h] × arg_A 選第幾張圖。★結尾依旗標字分派：bit 0 = 0 走 sub_15329h(純複製)、bit 0 = 1 走 sub_15388h(有遮罩)且 var_1A := (bit 2 ≠ 0)——這關掉 spec 933 的待答項，var_1A 是內迴圈開關、由旗標 bit 2 決定。本支位移量 n = 1(每像素 ×2)，var_6 = x偏移 shl 1。對應 spec 933 不裁切版的 14BDAh"
   },
   {
    "platform": "dos",
@@ -1105,7 +1108,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "940",
+   "note": "帶裁切的 blit 設定(retn 14h = (目的表面, 來源表面, 旗標, arg_A, 上下, 左右))：上下/左右是有號座標(cmp ax,8000h; ja 判負)，四邊各算裁切量——左右以像素為單位、上下以 8 條掃描線為一單位(shl 3)；五道無號比較確認不是完全在畫面外，再把所有位移換算成位元組並加上 來源^[11h] × arg_A 選第幾張圖。★結尾依旗標字分派：bit 0 = 0 走 sub_15329h(純複製)、bit 0 = 1 走 sub_15388h(有遮罩)且 var_1A := (bit 2 ≠ 0)——這關掉 spec 933 的待答項，var_1A 是內迴圈開關、由旗標 bit 2 決定。本支位移量 n = 2(每像素 ×4)，但 var_6 = x偏移 不移——與 151B1h 的差別只有這一處"
   },
   {
    "platform": "dos",
@@ -1147,7 +1153,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "940",
+   "note": "帶裁切的 blit 設定(retn 14h = (目的表面, 來源表面, 旗標, arg_A, 上下, 左右))：上下/左右是有號座標(cmp ax,8000h; ja 判負)，四邊各算裁切量——左右以像素為單位、上下以 8 條掃描線為一單位(shl 3)；五道無號比較確認不是完全在畫面外，再把所有位移換算成位元組並加上 來源^[11h] × arg_A 選第幾張圖。★結尾依旗標字分派：bit 0 = 0 走 sub_15329h(純複製)、bit 0 = 1 走 sub_15388h(有遮罩)且 var_1A := (bit 2 ≠ 0)——這關掉 spec 933 的待答項，var_1A 是內迴圈開關、由旗標 bit 2 決定。本支位移量 n = 2(每像素 ×4)，var_6 = x偏移 shl 2。對應 spec 933 不裁切版的 14DD3h/14E62h 那一組"
   },
   {
    "platform": "dos",
@@ -51705,9 +51714,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 162,
+   "Read": 165,
    "NotBlocking": 133,
-   "Todo": 10,
+   "Todo": 7,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
