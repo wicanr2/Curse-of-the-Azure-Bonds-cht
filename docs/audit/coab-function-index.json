@@ -16227,7 +16227,9 @@
    "spec": "881",
    "note": "動畫播放迴圈(retf 8，(座標B, 座標A, 序號, 圈數))：0179h:34h 載入 42h bytes 的動畫描述([0] 總格數、[1] 目前格、其後每格 8 bytes，最多 8 格)，迴圈裡畫目前格、取時間差與『每格延遲 × (DS:4FA9h + 3)』比較，超過就換下一格，播完一輪 圈++，到 圈數 就結束並釋放。★關掉 spec 879 的疑問：DS:4FA9h 就是 GameSpeed 值，倍率 3(最快)..12(最慢)",
    "citations": [
+    "audit/function-index/pc98-overlay-18.md",
     "audit/function-strings.md",
+    "spec/879-game-speed-menu.md",
     "spec/881-animation-player-and-speed.md"
    ]
   },
@@ -24554,7 +24556,8 @@
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/883-load-24x24-set.md"
    ]
   },
   {
@@ -24568,7 +24571,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "883",
+   "note": "Load24x24Set(retf 0Ah，(檔名, 資源編號, 目的起始, 筆數))：★錯誤訊息 'Start range error in Load24x24Set' 直接給出原始函式名。目的起始 \u003e 30h(48) 就印訊息並收場；297h:11Bh 載入後 Move(圖^[17h], 遠指標(DS:65CEh)^[17h + 目的起始×圖^[11h]], 筆數×圖^[11h])，再釋放。⚠只檢查起始、不檢查『起始＋筆數』，起始 40 筆數 20 會寫出界；錯誤路徑也不是 return 而是直接收場",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-strings.md",
@@ -24776,6 +24782,7 @@
    "note": "載入 8×8 圖磚組(retf 4，(組, 編號))：組要先過 0A54h:8D4h 的合法表；檔名 '8x8d'＋Str(DS:5BEEh) 一位磁碟編號，叫 297h:11Bh 載入到圖庫表 DS:65B6h + 組*4；回 NIL 就組錯誤訊息 'Unable to load '＋編號＋' from 8x8D' 並收場",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-35.md",
     "audit/function-strings.md",
     "spec/882-load-8x8-tileset.md"
    ]
@@ -50729,7 +50736,8 @@
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/883-load-24x24-set.md"
    ]
   },
   {
@@ -50744,9 +50752,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "883",
+   "note": "同 DOS overlay-33:0002Eh，但★兩處大改：(1)範圍檢查改成『目的起始＋筆數 \u003e 30h』(有號)——DOS 只檢查起始，PC-98 修掉了那個寫出界的洞；(2)先拿檔名比對 'DungCom'/'WildCom'/'RandCom'/'tiles' 分成種類 0..3(比不到就直接離開)，前三種固定用 E000h:0000h/2A50h/63D0h 當來源並靠已載入旗標只讀一次磁碟，第 4 種才用 2A8h:0F5Dh 現配。四個檔名是字串比對的 key，不能翻",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/883-load-24x24-set.md"
    ]
   },
   {
@@ -51479,9 +51491,9 @@
    "Module": "overlay-33",
    "Unit": "SQRPAK24",
    "Functions": 7,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 1515,
    "Undefined": 57,
@@ -52034,9 +52046,9 @@
    "Module": "overlay-33",
    "Unit": "SQRPAK24",
    "Functions": 7,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 2106,
    "Undefined": 146,
