@@ -104,15 +104,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 8326,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 29h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 12509,
    "state": "待解讀",
    "level": "",
@@ -26041,6 +26032,15 @@
    "level": "exact",
    "spec": "1040",
    "note": "CHECKSPECIALS DOS 側(007F1h..0B6Ah，889 bytes)，PC-98 對側見 spec 624。骨架一致：arg_0 是 byte 旗標指標(進門設 1、整條鏈落空才在出口設 0)，addr -= 7C00h 後一路比對，角色取自 DS:6506h(PC-98 DS:9594h)。位址對照與 spec 624 相同，DOS 偏移在 +18Dh 以上各少 1(7CE4h→+192h、7D1Bh→+1A5h)。★★ spec 624 漏掉的：①7CE4h 讀的是 +192h and 1(最低位元)不是整個 byte；②7CC9h 的公式是 <overlay-25 entry#10>() × 角色^[116h] + 角色^[10Eh]，三個量都 cbw；③★★★ 7ECFh 不是直接回傳 +1Bh(魅力)，而是查一張十二段換算表：3→0、4→5、5→10、6→15、7→20、8..0Ch→25、0Dh→30、0Eh→35、0Fh→40、10h→50、11h→55、12h..19h→60(形狀上是百分比，語意不宣稱；⚠ 魅力 0..2 落到出口讀未初始化值)。★★★ 關掉 spec 624 的未定項：7F12h 讀的是 DS:5BEEh ＝ 資料片編號(spec 892/1029/1033/1038 同一格)。三個要算的與 spec 624 一致(7D00h 的一次性旗標 DS:8B6Dh = PC-98 DS:0BDFFh，讀一次就清掉；7D0Ch；7EB1h/7EB4h 共用 near 0790h)。★ 7D0Dh 直接跳出口讀未初始化的 var_2、旗標仍是 1 —— 這個原作瑕疵兩平台都成立，remake 要照抄"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 8326,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1041",
+   "note": "ECL 29h(PARLAY) DOS 側(2086h..2784h，649 條)，PC-98 對側見 spec 611。★★★ 更正 spec 611：五個結果碼(operand 5..9)對應的是遭遇選單的五個選項，不是交涉態度 —— 實際餵給選單的是 '~COMBAT ~WAIT ~FLEE ~PARLAY'(27，CS:2029h)或 '~COMBAT ~WAIT ~FLEE ~ADVANCE'(28，CS:2045h)，由 bank1^[582h]<>0 且 bank0^[1CCh]<>0 決定第四格顯示哪一個；顯示 PARLAY 那一側再把 choice=3 改派成 4，所以 choice 0..4 = COMBAT/WAIT/FLEE/ADVANCE/PARLAY 各對一個 operand。⚠ '~HAUGHTY ~SLY ~NICE ~MEEK ~ABUSIVE' 在 CS:2785h，落在本函式結束(2784h)之後，屬於下一支函式，spec 611 是相鄰字串的誤認。★★★ 關掉 spec 611 兩個未定項：①bank1^[582h] := <overlay-07 entry#6>(DS:720Fh,7210h,7211h 隊伍座標與朝向) 再被 operand 2(bank1^[580h]) 當上限夾住 ⇒ 是這一格的遭遇數量，結果碼 3/4 每次 dec 一個再重畫，減到 0 才寫回結果；②t1(operand 13)比 var_40B、t2(operand 14)比 var_40A，兩者是進門時 <overlay-07 entry#30> 的兩個輸出。★★ 結果碼與選項是二維分派：結果碼[choice] 決定外層、choice 決定內層(例如 結果碼 0＋FLEE 時 var_40B<t1 ? 1 : 2；結果碼 2＋COMBAT 時 t2>var_40A 才寫 0 並設 DS:65A0h:=1、DS:65A1h:=11h)。★ 四個選項的 ~ 就是 spec 1039 的波浪號熱鍵標記；選項行上限 28h=40 bytes。文字槽 DS:7648h+i*100h 與 spec 1039 的 2Bh 共用。'Both sides wait.'(16) = PC-98「お互いに様子を見ている」"
   }
  ]
 }
