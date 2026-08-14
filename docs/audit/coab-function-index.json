@@ -5015,6 +5015,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, es:[di+14Dh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-05.md",
     "spec/758-morale-field-0f7h-round-trip.md"
    ]
   },
@@ -6831,6 +6832,7 @@
    "spec": "861",
    "note": "戰鬥結束處理(retf，無參數)：①掃有沒有人 Running(→DS:47EDh) ②掃還有沒有人沒真的倒下 ③逐一用 DS:2A7h 的 19 個效果碼呼叫 143Dh+2 清效果、並把 +196h=0 或 +195h=1 的人計進 DS:8B57h ④DS:8B5Ch 有值就叫 0039h(spec 858 算每人份)＋0351h(spec 857 發下去) ⑤依 DS:4FC7h 決定是復原狀態(Running→Okay、Dying→Unconscious 或直接救回並設 +1A4h)還是收尾把 4F9Dh^[67Ch] 人數歸零。★關掉 spec 858 的 DS:8B57h：那是「不分經驗的人數」。★+18Dh^[13h]=1 是隊伍與怪物的分界標記(22 bytes 戰鬥狀態 +13h 的第一個用途)",
    "citations": [
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-index/pc98-overlay-05.md",
     "audit/resident-data-tables.md",
     "spec/858-post-battle-xp-and-treasure-valuation.md",
@@ -6851,6 +6853,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-strings.md",
     "spec/891-battle-teardown.md"
    ]
@@ -6932,6 +6935,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-strings.md",
     "spec/891-battle-teardown.md"
    ]
@@ -7055,9 +7059,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "891",
-   "note": "戰鬥收場(retf，無參數)：清 4F9Dh^[58Eh]、DS:47ECh，DS:4FBCh=0 就叫 0053Ch(spec 861 戰鬥結束處理)，畫面模式設 6；走隊伍鏈叫 1512h+1；(DS:4FC7h≠0 且 DS:8B56h=0) 走敗北路徑(58Eh:=80h、1A0h:0、兩句訊息)；否則有人在逃(DS:47EDh)先釋放戰利品鏈並跳過發經驗值，正常則叫 14ACh + 0A7Eh(longint@DS:8B58h) + 106Ch 再釋放。收場清 4F9Dh 的 +6E0h/+6E2h/+6E4h/+5C6h/+5CCh。★關掉 spec 858 的『DS:6F8Ch 戰利品鏈誰釋放』：就是這裡，FreeMem(節點, 3Fh)，逃跑時東西與經驗值都不要",
+   "note": "戰鬥收場(retf，無參數)：清 4F9Dh^[58Eh]、DS:47ECh，DS:4FBCh=0 就叫 0053Ch(spec 861 戰鬥結束處理)，畫面模式設 6；走隊伍鏈叫 1512h+1；(DS:4FC7h≠0 且 DS:8B56h=0) 走全滅路徑——印 'The monsters rejoice for the party has been destroyed' ＋ 'Press any key to continue'；否則有人在逃(DS:47EDh)先釋放戰利品鏈並跳過發經驗值，正常則叫 14ACh + 0A7Eh(longint@DS:8B58h) + 106Ch 再釋放。收場清 4F9Dh 的 +6E0h/+6E2h/+6E4h/+5C6h/+5CCh。★關掉 spec 858 的『DS:6F8Ch 戰利品鏈誰釋放』。★DS:8B56h≠0 那條路即使全隊倒下也不走全滅畫面，形狀上是劇情安排的必敗戰鬥",
    "citations": [
+    "audit/function-index/pc98-overlay-05.md",
     "audit/function-strings.md",
+    "spec/858-post-battle-xp-and-treasure-valuation.md",
     "spec/891-battle-teardown.md"
    ]
   },
@@ -9851,6 +9857,7 @@
    "spec": "892",
    "note": "新遊戲的全域初始化(retf，無參數)：清 DS:5000h(0A8h)/50A8h(150h)/51F8h(150h,填 0FFh)/5348h(150h) 四塊與 遠指標 4F99h(800h)/4F9Dh(800h)/4FA1h(400h)/4FA5h(1E00h)，DS:720Fh 5 bytes 清零後設 7/0Dh/2，DS:7588h 3 bytes 填 1，for i:=2 to 3 把 word[7210h+i*4] 與 word[7212h+i*4] 設 0FFFFh，之後一長串常數。★五個先前規格的預設值在這裡定案：DS:4FA9h=4(遊戲速度)、DS:5BEEh=1(磁碟編號)、DS:4FBAh=4(畫面模式)、DS:728Ah/728Bh=0FFh、4F9Dh^[67Ch]=0(人數)；DS:650Ah 與 DS:6506h 一起清成 NIL",
    "citations": [
+    "audit/function-index/pc98-overlay-11.md",
     "spec/892-new-game-globals.md"
    ]
   },
@@ -16473,7 +16480,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "spec/893-spell-source-caption.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16715,7 +16725,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-   "note": "邊界碎片：落在 1588h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+   "note": "邊界碎片：落在 1588h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
+   "citations": [
+    "spec/893-spell-source-caption.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16962,9 +16975,13 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "893",
+   "note": "法術來源標題(retf 0Ch，arg_A=來源碼 0..6)：依來源碼指派標題字串('in Memory'/'in Grimoire'/'on Scroll'/'on Scrolls'/'to Choose'/'to Memorize'/第七句，其他給空字串，上限 28h)；arg_0^ := 11C9h+1(來源碼)，為 0 就回 0；否則依 DS:4FBAh=5 或 arg_8 走三種前置，再叫 155Eh、印 常數＋標題、542h:352h，最後回 11C5h(arg_4, arg_8)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/893-spell-source-caption.md"
    ]
   },
   {
@@ -21891,7 +21908,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_16E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_16E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）",
+   "citations": [
+    "spec/894-party-member-picker.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22385,9 +22405,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "894",
+   "note": "隊員選擇器(retf 0Ah，(提示字串, 可不可以離開, var 選中的角色))：迴圈裡畫出目前選中的、組『提示＋常數』與『'Select'＋(' Exit')』、叫 169Fh 收鍵；4Fh(End) 走 +189h 到下一個(NIL 就繞回 DS:650Ah)、47h(Home) 從頭走找前一個(已在第一個就整條走到最後)；可以離開時按 'E' 或 0 把選中設 NIL。單向鏈沒有 prev，上一個是 O(n)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/894-party-member-picker.md"
    ]
   },
   {
@@ -35116,6 +35140,7 @@
    "spec": "docs/spec/775-take-menu-and-palette-writer.md",
    "note": "寫入 16 組調色盤(近呼叫 retn，SI 指向 48 bytes 資料)：for i := 0Fh downto 0 — out 0A8h,i 後依序 out 0AAh/0ACh/0AEh(綠紅藍)，SI 往前遞增。⚠ 索引遞減而資料遞增，資料第一組對應索引 15。spec 755 的 overlay-11:07CDh 呼叫的就是這一段",
    "citations": [
+    "audit/function-index/dos-overlay-11.md",
     "project-status.md",
     "spec/775-take-menu-and-palette-writer.md",
     "spec/892-new-game-globals.md"
@@ -43312,9 +43337,13 @@
    "callers": 2,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "893",
+   "note": "同 DOS overlay-19:03474h，只差一條 cbw(DOS 零擴充後 cmp ax、PC-98 cmp al)。★兩處在地化差異：(1)來源碼 2 與 3 指到同一個字串('巻物上')——DOS 為單複數各留一個常數，日文沒有單複數(spec 841 模式的第三個出現點)；(2)第 5/6 句改成完整句子『記憶する魔法を選んでください』『書きこむ魔法を選んでください』，不是 DOS 的片語",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/893-spell-source-caption.md"
    ]
   },
   {
@@ -48698,10 +48727,14 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "894",
+   "note": "同 DOS overlay-24:02E6Ah，但★把 PC-98 選單陣列的版面直接寫了出來：標籤欄位陣列基底 DS:0A338h、每欄 7 bytes(string[6])；熱鍵字元陣列基底 DS:0A334h、每項 1 byte，兩者同索引。先前 spec 865/879/885 看到的散落位址(0A33Ah/0A33Bh/0A33Ch/0A33Eh/0A369h/0A370h/0A37Eh)全部整除對得上。★標籤只有 6 bytes = 三個全形字，中文同樣三個字，超過放不下",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/894-party-member-picker.md"
    ]
   },
   {
@@ -51424,9 +51457,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -51499,9 +51532,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 46,
+   "Read": 47,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -51979,9 +52012,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
@@ -52054,9 +52087,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 39,
+   "Read": 40,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,

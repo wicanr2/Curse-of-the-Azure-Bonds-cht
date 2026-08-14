@@ -23449,6 +23449,42 @@
    "level": "exact",
    "spec": "891",
    "note": "戰鬥收場(retf，無參數)：清 4F9Dh^[58Eh]、DS:47ECh，DS:4FBCh=0 就叫 0053Ch(spec 861 戰鬥結束處理)，畫面模式設 6；走隊伍鏈叫 1512h+1；(DS:4FC7h≠0 且 DS:8B56h=0) 走全滅路徑——印 'The monsters rejoice for the party has been destroyed' ＋ 'Press any key to continue'；否則有人在逃(DS:47EDh)先釋放戰利品鏈並跳過發經驗值，正常則叫 14ACh + 0A7Eh(longint@DS:8B58h) + 106Ch 再釋放。收場清 4F9Dh 的 +6E0h/+6E2h/+6E4h/+5C6h/+5CCh。★關掉 spec 858 的『DS:6F8Ch 戰利品鏈誰釋放』。★DS:8B56h≠0 那條路即使全隊倒下也不走全滅畫面，形狀上是劇情安排的必敗戰鬥"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 13428,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "893",
+   "note": "法術來源標題(retf 0Ch，arg_A=來源碼 0..6)：依來源碼指派標題字串('in Memory'/'in Grimoire'/'on Scroll'/'on Scrolls'/'to Choose'/'to Memorize'/第七句，其他給空字串，上限 28h)；arg_0^ := 11C9h+1(來源碼)，為 0 就回 0；否則依 DS:4FBAh=5 或 arg_8 走三種前置，再叫 155Eh、印 常數＋標題、542h:352h，最後回 11C5h(arg_4, arg_8)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 13540,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "893",
+   "note": "同 DOS overlay-19:03474h，只差一條 cbw(DOS 零擴充後 cmp ax、PC-98 cmp al)。★兩處在地化差異：(1)來源碼 2 與 3 指到同一個字串('巻物上')——DOS 為單複數各留一個常數，日文沒有單複數(spec 841 模式的第三個出現點)；(2)第 5/6 句改成完整句子『記憶する魔法を選んでください』『書きこむ魔法を選んでください』，不是 DOS 的片語"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 11882,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "894",
+   "note": "隊員選擇器(retf 0Ah，(提示字串, 可不可以離開, var 選中的角色))：迴圈裡畫出目前選中的、組『提示＋常數』與『'Select'＋(' Exit')』、叫 169Fh 收鍵；4Fh(End) 走 +189h 到下一個(NIL 就繞回 DS:650Ah)、47h(Home) 從頭走找前一個(已在第一個就整條走到最後)；可以離開時按 'E' 或 0 把選中設 NIL。單向鏈沒有 prev，上一個是 O(n)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 12619,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "894",
+   "note": "同 DOS overlay-24:02E6Ah，但★把 PC-98 選單陣列的版面直接寫了出來：標籤欄位陣列基底 DS:0A338h、每欄 7 bytes(string[6])；熱鍵字元陣列基底 DS:0A334h、每項 1 byte，兩者同索引。先前 spec 865/879/885 看到的散落位址(0A33Ah/0A33Bh/0A33Ch/0A33Eh/0A369h/0A370h/0A37Eh)全部整除對得上。★標籤只有 6 bytes = 三個全形字，中文同樣三個字，超過放不下"
   }
  ]
 }
