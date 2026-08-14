@@ -17044,7 +17044,17 @@
    "level": "exact",
    "spec": "docs/spec/711-target-count-clamp-and-callee-arity.md",
    "bounds": "prologue",
-   "note": "⚠ **把目標筆數永久夾小**:n := ROLLDICE(2,8);if DS:7434h > n then DS:7434h := n,**沒有還原**(與 spec 706 的 5590h 改完會還原正好相反),所以同一段腳本裡後面的 opcode 看到的是被夾過的清單;陣列本身沒重排,超過的格子還在原地只是走不到。接著走 k=1..DS:7434h,跳過 NIL,s := <overlay-23 entry#8>(p, 4, 0)、r := <sub_E11h>(p, 23h, 52h)、<overlay-23 entry#21 PUTEFFECT>(r, 0, 0, 1, s, 'is affected' CS:4816h)。由多個呼叫點的推入數量收斂出:entry#8 四個 word、entry#20 五個、entry#21 七個、sub_E11h 四個"
+   "note": "⚠ **把目標筆數永久夾小**:n := ROLLDICE(2,8);if DS:7434h > n then DS:7434h := n,**沒有還原**(與 spec 706 的 5590h 改完會還原正好相反),所以同一段腳本裡後面的 opcode 看到的是被夾過的清單;陣列本身沒重排,超過的格子還在原地只是走不到。接著走 k=1..DS:7434h,跳過 NIL,s := <overlay-23 entry#8>(p, 4, 0)、r := <sub_E11h>(p, 23h, 52h)、<overlay-23 entry#21 PUTEFFECT>(r, 0, 0, 1, s, 'is confused' CS:4816h)。⚠ 參數個數要讀被呼叫者的 retf N,不要從呼叫端推:entry#8 retf 8(4 word)、entry#20 retf 0Ah(5)、**entry#21 retf 14h(10,不是先前推的 7)**、sub_E11h retf 2(1 word)。先前的錯誤推導兩個呼叫點都自洽,因為它們犯了同一個假設 2d8 這個上限與 AD&D 1e Confusion「影響 2d8 個生物」一致,訊息也是 is confused,法術身分幾乎確定(未從法術表反查編號,標為推論)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 3601,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/712-duration-table.md",
+   "bounds": "prologue",
+   "note": "效果持續時間 sub_E11h(id): retf 2,**只吃一個 word**(先前從呼叫端推成 4 個是錯的)。id=28h → 1d6×10;39h 或 3Dh → 5d4;3Bh → 1d4×10+40;3Fh → DS:4FBAh=5 時 2d10×10、否則 (1d10+10)×10(兩條上限同為 200 但下限差很多);43h → 5A0h=1440=24×60;其他 → 表[id].+5 × <overlay-24 entry#36>(id) + 表[id].+4。表就是 spec 705 的 DS:37DAh(16 bytes 一格),(+2,+3) 與 (+4,+5) 是兩組形狀相同的線性係數,由呼叫端決定用哪組。⚠ 1440 是一天的分鐘數且其餘多為 10 的倍數,單位幾乎確定是分鐘(只有這一條證據,標為推論;AD&D 的 turn=10 分鐘也相容)"
   }
  ]
 }
