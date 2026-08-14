@@ -4813,10 +4813,10 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-07.md",
+    "audit/function-index/dos-overlay-29.md",
     "audit/function-index/pc98-overlay-07.md",
     "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/588-ecl-return-and-gosub-stack.md"
+    "spec/560-ecl-opcode-dispatch-table.md"
    ]
   },
   {
@@ -6869,7 +6869,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/801-take-from-pool-and-combat-state-freed.md",
+   "note": "戰鬥結束的收尾：word(DS:4F9Dh^[590h]) := 0；掃 DS:650Ah 鏈——p^[18Dh]^[13h] = 1 或 p^[197h] = 1（陣營 1）者：DS:47ECh := 1、p^[196h] \u003c\u003e 1 時計數 +1、先抓 後 := p^[189h] 再把 DS:6506h := p 並呼叫 \u003cfar 0F0Dh+2\u003e(1, ord(p^[18Dh]^[13h] = 1))；其餘成員：FreeMem(p^[18Dh], 16h) 並把 +18Dh 清成 NIL——**戰鬥狀態記錄是 22 bytes**。最後 DS:6506h := DS:650Ah。retf。spec 801",
+   "citations": [
+    "spec/801-take-from-pool-and-combat-state-freed.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8562,7 +8568,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-2], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-2], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-13.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12455,6 +12464,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+1A4h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "spec/799-show3dsprite-named-and-escape-check.md"
    ]
   },
@@ -12473,6 +12483,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "spec/799-show3dsprite-named-and-escape-check.md"
    ]
   },
@@ -12824,6 +12835,7 @@
    "note": "取指定陣營中最快的移動速率(retf 4)：走 DS:650Ah 隊伍鏈，\u003c呼叫\u003e(參數) 等於 p^[197h](陣營)且 p^[196h] 非 0 的成員，取 本模組 0124h(p) div 2 的最大值(無號比較)。0124h 回的是速率乘 2，這裡除回來 — 與既有『距離單位是半格』的 2 是同一個",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/762-ega-glyph-blit-and-movement-rate.md",
     "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
@@ -13883,7 +13895,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/800-party-reorder-and-footprint-check.md",
+   "note": "把目前角色 DS:6506h 在隊列中往後移一位：先從 DS:650Ah 走一遍找前一位（是隊首時 前 = 自己）；後 := DS:6506h^[189h]；後 = NIL（已在隊尾）則 DS:6506h^[189h] := DS:650Ah、DS:650Ah := DS:6506h、前^[189h] := NIL（繞回隊首）；否則 DS:6506h^[189h] := 後^[189h]、DS:650Ah = DS:6506h 時改指 後、前 \u003c\u003e DS:6506h 時 前^[189h] := 後、後^[189h] := DS:6506h。DS:6506h 本身不變。retf。spec 800",
+   "citations": [
+    "spec/800-party-reorder-and-footprint-check.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16606,7 +16624,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/801-take-from-pool-and-combat-state-freed.md",
+   "note": "從 Pool 拿錢給角色：retf 8，宣告順序 (角色, 數量, 幣別)。本模組 0073h(@餘裕, 數量, 角色) 成立（會超重）就只顯示 名字+'Overloaded'(10) 並呼叫 \u003cfar 154Fh\u003e；否則 longint(DS:6F70h + 幣別*4) \u003c 數量（有號 32 位元）時把 數量 夾成該 longint 的低 16 位，Pool 減去零延伸(數量)、角色^[0FBh + 幣別*2] += 數量、呼叫 本模組 0057h(數量, 角色)。超重時什麼都不做（不像 spec 786 的撿錢會退回 Pool）。spec 801",
+   "citations": [
+    "spec/801-take-from-pool-and-combat-state-freed.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16741,7 +16765,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `imul cx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `imul cx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完）",
+   "citations": [
+    "spec/801-take-from-pool-and-combat-state-freed.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21996,9 +22023,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -22020,9 +22047,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-29.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-29.md",
-    "spec/753-small-utility-routines.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/753-small-utility-routines.md"
    ]
   },
   {
@@ -22657,8 +22684,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/dos-overlay-32.md",
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -22807,7 +22834,11 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/635-overlay32-grid-record-array.md",
-   "note": "與 pc98 overlay-32:0A1Eh 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (0 \u003c= arg_2 \u003c= 6) and (0 \u003c= arg_0 \u003c= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-32:0A1Eh 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (0 \u003c= arg_2 \u003c= 6) and (0 \u003c= arg_0 \u003c= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/function-index/dos-overlay-32.md",
+    "spec/800-party-reorder-and-footprint-check.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22820,7 +22851,13 @@
    "callers": 5,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/800-party-reorder-and-footprint-check.md",
+   "note": "戰鬥員佔地的逐格檢查：i := 本模組 0CAEh(參數2, 參數4)；byte[66A6h + i*4]（戰鬥員記錄 +3 = 佔幾格）為 0 直接回 0；否則 for k := 0 to 3 do if 本模組 0011h(byte[66A6h+i*4], k, @dx, @dy) then r := 本模組 0732h(byte[67C6h+i] + dx, byte[680Eh+i] + dy)；參數0 \u003c\u003e 0 時 r = 0 立刻回 0（每格都要成立），參數0 = 0 時 r \u003c\u003e 0 立刻回 1（任一格成立即可）。retf 6。spec 800",
+   "citations": [
+    "spec/800-party-reorder-and-footprint-check.md"
+   ]
   },
   {
    "platform": "dos",
@@ -28259,10 +28296,10 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-07.md",
+    "audit/function-index/dos-overlay-29.md",
     "audit/function-index/pc98-overlay-07.md",
     "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/588-ecl-return-and-gosub-stack.md"
+    "spec/560-ecl-opcode-dispatch-table.md"
    ]
   },
   {
@@ -30472,7 +30509,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/801-take-from-pool-and-combat-state-freed.md",
+   "note": "戰鬥結束的收尾：word(DS:7F09h^[590h]) := 0；掃 DS:9598h 鏈——p^[18Dh]^[13h] = 1 或 p^[197h] = 1（陣營 1）者：DS:78A2h := 1、p^[196h] \u003c\u003e 1 時計數 +1、先抓 後 := p^[189h] 再把 DS:9594h := p 並呼叫 \u003cfar 0EBBh+4\u003e(1, ord(p^[18Dh]^[13h] = 1))；其餘成員：FreeMem(p^[18Dh], 16h) 並把 +18Eh 清成 NIL——**戰鬥狀態記錄是 22 bytes**。最後 DS:9594h := DS:9598h。retf。spec 801"
   },
   {
    "platform": "pc98",
@@ -32422,7 +32462,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 12h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 12h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36494,7 +36537,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov sp, bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov sp, bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36543,7 +36589,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_13], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_13], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36924,6 +36973,7 @@
    "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
    "note": "取指定陣營中最快的移動速率(retf 4)：與 DOS overlay-13:2EACh(spec 762)逐條同構，欄位為 +198h/+197h/+18Ah、鏈頭 DS:9598h",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
    ]
   },
@@ -37948,7 +37998,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/800-party-reorder-and-footprint-check.md",
+   "note": "把目前角色 DS:9594h 在隊列中往後移一位：先從 DS:9598h 走一遍找前一位（是隊首時 前 = 自己）；後 := DS:9594h^[189h]；後 = NIL（已在隊尾）則 DS:9594h^[189h] := DS:9598h、DS:9598h := DS:9594h、前^[189h] := NIL（繞回隊首）；否則 DS:9594h^[189h] := 後^[189h]、DS:9598h = DS:9594h 時改指 後、前 \u003c\u003e DS:9594h 時 前^[189h] := 後、後^[189h] := DS:9594h。DS:9594h 本身不變。retf。spec 800"
   },
   {
    "platform": "pc98",
@@ -41728,7 +41781,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/801-take-from-pool-and-combat-state-freed.md",
+   "note": "從 Pool 拿錢給角色：retf 8，宣告順序 (角色, 數量, 幣別)。本模組 0073h(@餘裕, 數量, 角色) 成立（會超重）就只顯示 名字+'持ちすぎです'(12 bytes) 並呼叫 \u003cfar 154Fh\u003e；否則 longint(DS:0A00Ah + 幣別*4) \u003c 數量（有號 32 位元）時把 數量 夾成該 longint 的低 16 位，Pool 減去零延伸(數量)、角色^[0FBh + 幣別*2] += 數量、呼叫 本模組 0057h(數量, 角色)。超重時什麼都不做（不像 spec 786 的撿錢會退回 Pool）。spec 801"
   },
   {
    "platform": "pc98",
@@ -46999,9 +47055,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -47024,9 +47080,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-29.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-29.md",
-    "spec/753-small-utility-routines.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/753-small-utility-routines.md"
    ]
   },
   {
@@ -47671,8 +47727,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/dos-overlay-32.md",
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -47846,6 +47902,7 @@
    "note": "回傳 (0 \u003c= arg_2 \u003c= 6) and (0 \u003c= arg_0 \u003c= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查",
    "citations": [
     "audit/function-index/dos-overlay-32.md",
+    "audit/function-index/pc98-overlay-32.md",
     "spec/635-overlay32-grid-record-array.md"
    ]
   },
@@ -47861,7 +47918,10 @@
    "callers": 6,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/800-party-reorder-and-footprint-check.md",
+   "note": "戰鬥員佔地的逐格檢查：i := 本模組 1363h(參數2, 參數4)；byte[9740h + i*4]（戰鬥員記錄 +3 = 佔幾格）為 0 直接回 0；否則 for k := 0 to 3 do if 本模組 0011h(byte[9740h+i*4], k, @dx, @dy) then r := 本模組 0A1Eh(byte[9860h+i] + dx, byte[98A8h+i] + dy)；參數0 \u003c\u003e 0 時 r = 0 立刻回 0（每格都要成立），參數0 = 0 時 r \u003c\u003e 0 立刻回 1（任一格成立即可）。retf 6。spec 800（PC-98 位址由 di 的負位移還原：-68C0h/-67A0h/-6758h）"
   },
   {
    "platform": "pc98",
@@ -47990,6 +48050,7 @@
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
    "note": "在指標表裡找索引(retf 4)：表 DS:9DCFh、項數 DS:9740h，與 DOS overlay-32:0CAEh 同",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
@@ -48393,9 +48454,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -48543,9 +48604,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -48633,9 +48694,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 27,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
@@ -48798,9 +48859,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -48948,9 +49009,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,
@@ -49098,9 +49159,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
@@ -49188,9 +49249,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 30,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
@@ -49353,9 +49414,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
