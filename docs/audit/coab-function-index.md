@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 995、不阻塞 133、邊界碎片 237、待解讀 21；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 996、不阻塞 133、邊界碎片 237、待解讀 20；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -40,7 +40,7 @@
 | overlay-23 | EFFECTS | 40 | 26 | 0 | 12 | 2 | 9183 | 376 | [明細](function-index/dos-overlay-23.md) |
 | overlay-24 | GENERIC | 56 | 52 | 0 | 3 | 1 | 12483 | 290 | [明細](function-index/dos-overlay-24.md) |
 | overlay-25 | TRAINING | 15 | 15 | 0 | 0 | 0 | 4931 | 733 | [明細](function-index/dos-overlay-25.md) |
-| overlay-26 | MENUS | 21 | 20 | 0 | 0 | 1 | 4571 | 163 | [明細](function-index/dos-overlay-26.md) |
+| overlay-26 | MENUS | 21 | 21 | 0 | 0 | 0 | 4571 | 163 | [明細](function-index/dos-overlay-26.md) |
 | overlay-27 | OVERLAND | 5 | 5 | 0 | 0 | 0 | 134 | 0 | [明細](function-index/dos-overlay-27.md) |
 | overlay-28 | DRAWWIN | 6 | 6 | 0 | 0 | 0 | 446 | 0 | [明細](function-index/dos-overlay-28.md) |
 | overlay-29 | PORTRAIT | 12 | 11 | 0 | 1 | 0 | 2102 | 114 | [明細](function-index/dos-overlay-29.md) |
