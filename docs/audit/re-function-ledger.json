@@ -23125,6 +23125,42 @@
    "level": "exact",
    "spec": "874",
    "note": "同 DOS overlay-29:005DDh，三個字串 'HEAD'/'BODY'/'head not found' 原樣保留(檔名前綴不能翻)。★三處真的不同：(1)載入前先檢查舊指標非 NIL 就叫 2A8h:10D5h 釋放(DOS 直接覆蓋、不釋放)；(2)檔名只用常數、不串接 Str 出來的數字(DOS 要拼磁碟編號)，區域緩衝因此從 102h 縮到 12h；(3)載入改叫 2A8h:25Bh 並多一個 0 參數。'head not found' 的訊息 bug PC-98 也沒修"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 2961,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "875",
+   "note": "幣別名稱→索引(retf 8，(輸入字串, var 標準寫法))：抄進上限 0FFh 的緩衝、跳過前導空白，依首字母分派——'G'再看 UpCase(下一字)='E' 給 5('Gems ')否則 3('Gold ')，'P'→4、'E'→2、'S'→1、'C'→0、'J'→6，同時把標準寫法寫回第二個參數。★索引順序 Copper/silver/electrum/Gold/Platinum/Gems/Jewelry 與 spec 858 的換算係數、863 的分配順序完全一致，是那七格的第三份獨立證據"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 2971,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "875",
+   "note": "同 DOS overlay-21:00B91h 的功能，但★改成整字比對(0A65h:67Bh 取子字串＋734h 比對)：宝石飾り(8 bytes)→6、宝石→5、ｇｐ→3、ｐｐ→4、ｅｐ→2、ｓｐ→1、ｃｐ→0。日文沒有首字母可看，而且長詞必須先比否則『宝石飾り』會被『宝石』吃掉。堆疊框 102h→802h(七次 Copy 各要 256 bytes)。★中文化必須跟 PC-98 走整字比對，且長詞先比"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 10861,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "876",
+   "note": "依 DS:4FBAh 分派畫面重繪(retf，無參數)：DS:7580h:=1 後 case 0/1/2/3/4/6(沒有 5)——0 叫 1A00h；1 依 DS:728Ah=50h 走 17B5h 或 17D3h+17CBh+3；2 與 6 走同一段只差 17C4h 第三參數(1Dh/1)；3 在 DS:728Ah≠50h 時叫 1774h+1；4 另外把 DS:8B6Eh 清 0。多數分支結尾叫 0795h(遠指標(DS:6506h))＋2BAAh。★DS:4FBAh 就是 overlay-20:00020h 判『戰鬥中=2』的同一格，這裡確認它是畫面模式碼"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 11428,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "876",
+   "note": "同 DOS overlay-24:02A6Dh，但★模式 1/2/4 的開頭各多一段清 GDC 文字畫面：FillChar(A000h:0, 0FA0h, 0)＋FillChar(A200h:0, 0FA0h, 1)，0FA0h=4000=80×25×2。DOS 的文字畫在圖形畫面上、PC-98 用硬體文字層，這是平台架構差異不是遊戲邏輯改動"
   }
  ]
 }
