@@ -23233,6 +23233,42 @@
    "level": "exact",
    "spec": "880",
    "note": "同 DOS overlay-33:00508h，但★第二次 Move 的長度改用 p^[0] × p^[2](寬高相乘)，DOS 兩次都用 p^[11h]——兩台機器圖形平面配置不同(PC-98 planar / DOS packed)，第二塊大小關係不一樣。其餘 14 條是位址"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-18",
+   "ea": 2911,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "881",
+   "note": "動畫播放迴圈(retf 8，(座標B, 座標A, 序號, 圈數))：0179h:34h 載入 42h bytes 的動畫描述([0] 總格數、[1] 目前格、其後每格 8 bytes，最多 8 格)，迴圈裡畫目前格、取時間差與『每格延遲 × (DS:4FA9h + 3)』比較，超過就換下一格，播完一輪 圈++，到 圈數 就結束並釋放。★關掉 spec 879 的疑問：DS:4FA9h 就是 GameSpeed 值，倍率 3(最快)..12(最慢)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 2671,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "881",
+   "note": "同 DOS overlay-18:00B5Fh，但★算門檻時多乘一個全域 DS:0BE2Ah(形狀上是機種時鐘校正係數，PC-98 機種頻率差異大)。DOS 沒有這個倍率，remake 的節拍公式要各做一套。DS:4FA9h↔DS:7F16h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-35",
+   "ea": 71,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "882",
+   "note": "載入 8×8 圖磚組(retf 4，(組, 編號))：組要先過 0A54h:8D4h 的合法表；檔名 '8x8d'＋Str(DS:5BEEh) 一位磁碟編號，叫 297h:11Bh 載入到圖庫表 DS:65B6h + 組*4；回 NIL 就組錯誤訊息 'Unable to load '＋編號＋' from 8x8D' 並收場"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-35",
+   "ea": 76,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "882",
+   "note": "同 DOS overlay-35:00047h 的目的，但★PC-98 自己處理圖形記憶體：先 FillChar(圖^[17h], 0D20h=3360, 0) 與 FillChar(遠指標(圖^[13h])^, 460h=1120, 0)，用 723h:824h 讀檔後逐欄抄表頭(⚠前兩欄對調：圖^[0]←檔案^[2]、圖^[2]←檔案^[0])，+8 下限 1，+11h := 寬×高×3，再叫 2A8h:3BDh 並 out 0A6h,0。★3360 = 3 × 1120 → +17h 是三個色彩平面、+13h 是一個遮罩平面，這解釋了 spec 880 的平台差異"
   }
  ]
 }
