@@ -21262,6 +21262,24 @@
    "level": "exact",
    "spec": "docs/spec/824-cannot-cast-gate.md",
    "note": "同 DOS，但**串接方向相反**：PC-98 的共用片段 '状態ではない'(12 bytes) 放在**後面**，三個動作片段 'は呪文を唱えられる'／'は魔法を記憶できる'／'は魔法を書き写せる'（各 18 bytes）放前面——緩衝 := 共用片段、暫存 := 動作片段、緩衝 := 暫存 + 緩衝。DOS 則是共用片段在前。地點訊息是 'ここでは、魔法が使えない'(24 bytes)。全域 DS:7F05h^[1CAh]、DS:9594h^[196h]/[197h]，顯示用 <far 1524h>。spec 824"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
+   "ea": 2455,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/825-round-end-bleeding-out.md",
+   "note": "回合結束的處理：retf 4 = 輸出 byte 的遠指標。<far 10A7h+3>(1,1)；inc(DS:758Dh)（回合計數）；<far 0CACh+1>；掃 DS:650Ah 鏈：<0141h:0034h>(13h, p)、<0141h:0039h>(0, p)；p^[195h] = 5（瀕死）時 inc(p^[18Dh]^[0Eh])，> 9 就把 +195h 設成 6（死亡）——倒下後有 10 個回合可救。<far 014Dh:010Bh>(0) 成立就顯示 'Your Teammate is Dying'(22) 並 <far 014Dh:007Fh>；<far 014Dh:00BBh>；<far 018Ch:0061h>(DS:6E92h^[2]+3, DS:6E92h^[3]+3, 0FFh, 8)（加回 3 正好是隊伍位置）。(DS:6F90h = 0) 或 (DS:6F91h = 0) 或 (DS:758Dh >= DS:758Eh) → 輸出^ := 1；另外獨立判斷 (DS:6F90h > 0) 且 (DS:6F91h = 0) 且 (DS:4FBCh = 0) 時顯示 'Continue Battle:'(16)，<far 0167h:003Eh>(0Dh,0Ah,0Fh) 回 'Y' 就把輸出蓋回 0。兩段之間沒有 else。spec 825"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-08",
+   "ea": 2469,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/825-round-end-bleeding-out.md",
+   "note": "回合結束的處理：retf 4 = 輸出 byte 的遠指標。<far 10A7h+3>(1,1)；inc(DS:0A81Fh)（回合計數）；<far 0CACh+1>；掃 DS:9598h 鏈：<0141h:0034h>(13h, p)、<0141h:0039h>(0, p)；p^[195h] = 5（瀕死）時 inc(p^[18Dh]^[0Eh])，> 9 就把 +196h 設成 6（死亡）——倒下後有 10 個回合可救。<far 014Dh:010Bh>(0) 成立就顯示 'Your Teammate is Dying'(22) 並 <far 014Dh:007Fh>；<far 014Dh:00BBh>；<far 018Ch:0061h>(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)（加回 3 正好是隊伍位置）。(DS:0A02Ah = 0) 或 (DS:0A02Bh = 0) 或 (DS:0A81Fh >= DS:0A820h) → 輸出^ := 1；另外獨立判斷 (DS:0A02Ah > 0) 且 (DS:7F1Ch = 0) 時（PC-98 少一個條件），並先設 DS:0A385h := 0Ah、DS:0A386h := 0Ah，再顯示 '戦闘を続けますか？'，<far 0167h:003Eh>(0Dh,0Ah,0Fh) 回 'Y' 就把輸出蓋回 0。兩段之間沒有 else。spec 825"
   }
  ]
 }
