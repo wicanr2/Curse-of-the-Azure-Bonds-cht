@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 859、不阻塞 133、邊界碎片 243、待解讀 151；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 861、不阻塞 133、邊界碎片 243、待解讀 149；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -33,7 +33,7 @@
 | overlay-16 | LOADSAVE | 28 | 10 | 0 | 8 | 10 | 16063 | 787 | [明細](function-index/dos-overlay-16.md) |
 | overlay-17 | GEN | 39 | 9 | 0 | 21 | 9 | 19521 | 1536 | [明細](function-index/dos-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 11 | 8 | 0 | 0 | 3 | 4446 | 1177 | [明細](function-index/dos-overlay-18.md) |
-| overlay-19 | LIBRARY | 42 | 16 | 0 | 15 | 11 | 13042 | 1293 | [明細](function-index/dos-overlay-19.md) |
+| overlay-19 | LIBRARY | 42 | 17 | 0 | 15 | 10 | 13042 | 1293 | [明細](function-index/dos-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 16 | 0 | 0 | 0 | 3536 | 191 | [明細](function-index/dos-overlay-20.md) |
 | overlay-21 | MONEY | 27 | 20 | 0 | 4 | 3 | 6469 | 385 | [明細](function-index/dos-overlay-21.md) |
 | overlay-22 | SPELLS | 139 | 108 | 0 | 26 | 5 | 25236 | 2174 | [明細](function-index/dos-overlay-22.md) |
@@ -46,14 +46,14 @@
 | overlay-29 | PORTRAIT | 12 | 9 | 0 | 1 | 2 | 2102 | 114 | [明細](function-index/dos-overlay-29.md) |
 | overlay-30 | THREED | 13 | 10 | 0 | 0 | 3 | 5205 | 84 | [明細](function-index/dos-overlay-30.md) |
 | overlay-31 | LOS | 9 | 8 | 0 | 0 | 1 | 2999 | 0 | [明細](function-index/dos-overlay-31.md) |
-| overlay-32 | TACMAP | 24 | 20 | 0 | 0 | 4 | 5064 | 0 | [明細](function-index/dos-overlay-32.md) |
+| overlay-32 | TACMAP | 24 | 21 | 0 | 0 | 3 | 5064 | 0 | [明細](function-index/dos-overlay-32.md) |
 | overlay-33 | SQRPAK24 | 7 | 6 | 0 | 0 | 1 | 1515 | 57 | [明細](function-index/dos-overlay-33.md) |
 | overlay-34 | BUG | 3 | 2 | 0 | 0 | 1 | 1749 | 562 | [明細](function-index/dos-overlay-34.md) |
 | overlay-35 | SQRPAK8 | 4 | 4 | 0 | 0 | 0 | 615 | 74 | [明細](function-index/dos-overlay-35.md) |
 
 ## PC98
 
-模組 37／函式 1488：已解讀 940、不阻塞 29、邊界碎片 338、待解讀 181；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 942、不阻塞 29、邊界碎片 338、待解讀 179；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -77,7 +77,7 @@
 | overlay-16 | LOADSAVE | 47 | 14 | 0 | 14 | 19 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
 | overlay-17 | GEN | 54 | 11 | 0 | 34 | 9 | 20976 | 2752 | [明細](function-index/pc98-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 23 | 15 | 0 | 4 | 4 | 4957 | 1311 | [明細](function-index/pc98-overlay-18.md) |
-| overlay-19 | LIBRARY | 57 | 17 | 0 | 29 | 11 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
+| overlay-19 | LIBRARY | 57 | 18 | 0 | 29 | 10 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 16 | 0 | 0 | 0 | 3555 | 225 | [明細](function-index/pc98-overlay-20.md) |
 | overlay-21 | MONEY | 30 | 20 | 0 | 8 | 2 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
 | overlay-22 | SPELLS | 138 | 92 | 0 | 27 | 19 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
@@ -90,7 +90,7 @@
 | overlay-29 | PORTRAIT | 12 | 10 | 0 | 1 | 1 | 1846 | 114 | [明細](function-index/pc98-overlay-29.md) |
 | overlay-30 | THREED | 13 | 10 | 0 | 0 | 3 | 4851 | 117 | [明細](function-index/pc98-overlay-30.md) |
 | overlay-31 | LOS | 9 | 8 | 0 | 0 | 1 | 2988 | 0 | [明細](function-index/pc98-overlay-31.md) |
-| overlay-32 | TACMAP | 25 | 20 | 0 | 0 | 5 | 6784 | 0 | [明細](function-index/pc98-overlay-32.md) |
+| overlay-32 | TACMAP | 25 | 21 | 0 | 0 | 4 | 6784 | 0 | [明細](function-index/pc98-overlay-32.md) |
 | overlay-33 | SQRPAK24 | 7 | 6 | 0 | 0 | 1 | 2106 | 146 | [明細](function-index/pc98-overlay-33.md) |
 | overlay-34 | BUG | 2 | 2 | 0 | 0 | 0 | 14 | 0 | [明細](function-index/pc98-overlay-34.md) |
 | overlay-35 | SQRPAK8 | 4 | 2 | 0 | 1 | 1 | 1048 | 79 | [明細](function-index/pc98-overlay-35.md) |

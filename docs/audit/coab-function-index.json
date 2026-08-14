@@ -13500,6 +13500,7 @@
    "spec": "899",
    "note": "瞄準選單(retf 10h)：1593h+2 取距離、29A2h 取另一個值；顯示距離時印 'Range = '＋Str(距離)＋'  '；距離 \u003c= 上限 時依 15BCh+1/15C6h+1/1590h/15C1h+1 四個條件決定選項字串('Target '＋'Next Prev Manual '＋'Center Exit')；叫 194Dh+1、設 DS:75E5h:=1、1505h+4，最後 169Bh+4 收鍵，標題 'Aim:'",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "audit/function-strings.md",
     "spec/899-combat-aim-menu.md"
    ]
@@ -14620,7 +14621,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ds:650Ah, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ds:650Ah, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14656,7 +14660,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15741,7 +15748,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16869,9 +16879,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "901",
+   "note": "賣東西(retf 4，物品)：價 := 物品^[3Ah] div 2(基本價的一半)；數量 +39h \u003e 1 時 價 := 數量×價 div 14h。組訊息、542h:4A4h 顯示、16ABh+3 追問(比 'Y')；成交就叫 1545h 把物品從角色身上移除，付款拆成 白金 := 價 div 5、零頭 := 價 mod 5，用 1134h 檢查負重，裝不下的白金退回 DS:6F80h 公用池，最後加進 +103h(白金)與 +101h(金幣)。★1 白金 = 5 金幣與 spec 858 幣值表一致。⚠原版 bug：(+2Eh = 49h) and (+2Eh = 1Ch) 永遠不成立，『價 := 數量 × 價』是死碼，成疊物品一律走 ÷20(同 spec 856 那一類的打字錯誤)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/901-sell-item-price.md"
    ]
   },
   {
@@ -18065,6 +18079,7 @@
    "spec": "900",
    "note": "法術選單入口(retf 6，(用途, ?, var 結果))：用途 1..4 各給一個選項字串(Cast/Memorize/Scribe/Learn)、其他給空字串；標題 'Choose Spell: '；顏色與兩個旗標依用途決定；迴圈叫 16A9h 直到按到離開鍵。之後走 spec 859 的顯示行鏈 DS:4B44h 算出選中的是第幾個法術行(只有 +29h=0 的行才計數)，取 DS:4B9Ch+n 當結果碼；用途 3(Scribe) 另從 DS:4BF0h+n*4 取遠指標寫進 DS:729Ch；最後叫 16B8h 釋放整條鏈",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "spec/900-spell-menu-entry.md"
    ]
@@ -18544,6 +18559,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ss:[di-1Dh], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/900-spell-menu-entry.md"
    ]
   },
@@ -18562,6 +18578,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1748`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/900-spell-menu-entry.md"
    ]
   },
@@ -24167,7 +24184,8 @@
    "citations": [
     "audit/function-index/dos-overlay-31.md",
     "audit/function-index/pc98-overlay-31.md",
-    "spec/860-ai-target-reachability-scan.md"
+    "spec/860-ai-target-reachability-scan.md",
+    "spec/902-draw-unit-on-map.md"
    ]
   },
   {
@@ -24345,10 +24363,14 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "902",
+   "note": "把一格畫出來(retf 4，(座標x, 座標y))：以 遠指標(DS:6E92h) 為地圖記錄，基準 := 座標 − 地圖^[2]/[3]；對最多四格用 0011h 取偏移、0732h 判在不在視窗內，取 地圖^[7 + y*32h + x] 的地形碼查 DS:26A5h(地形表 +3 圖磚)畫上去(座標×3)，地圖^[4]≠0 時再多畫一層 19h；最後用 0509h 查佔用者，有的話用 DS:6D35h 取戰鬥員畫上去。★地圖記錄版面定案：+2/+3 視窗原點、+4 旗標、+5 體型參數、+7 起每列 32h(50) 欄的地形碼——與 spec 888 的 x∈0..49 互相定界",
    "citations": [
     "audit/function-index/dos-overlay-32.md",
-    "spec/888-move-and-redraw.md"
+    "spec/888-move-and-redraw.md",
+    "spec/902-draw-unit-on-map.md"
    ]
   },
   {
@@ -24406,7 +24428,8 @@
     "audit/function-index/dos-overlay-32.md",
     "audit/function-index/pc98-overlay-32.md",
     "spec/784-cross-platform-pairs-second-batch.md",
-    "spec/896-probe-next-step.md"
+    "spec/896-probe-next-step.md",
+    "spec/902-draw-unit-on-map.md"
    ]
   },
   {
@@ -24448,7 +24471,8 @@
    "citations": [
     "audit/function-index/dos-overlay-32.md",
     "spec/800-party-reorder-and-footprint-check.md",
-    "spec/888-move-and-redraw.md"
+    "spec/888-move-and-redraw.md",
+    "spec/902-draw-unit-on-map.md"
    ]
   },
   {
@@ -24470,7 +24494,8 @@
     "audit/function-index/dos-overlay-32.md",
     "spec/800-party-reorder-and-footprint-check.md",
     "spec/808-attacks-per-round-and-facing-redraw.md",
-    "spec/888-move-and-redraw.md"
+    "spec/888-move-and-redraw.md",
+    "spec/902-draw-unit-on-map.md"
    ]
   },
   {
@@ -43291,9 +43316,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "901",
+   "note": "同 DOS overlay-19:027D6h。物品節點位移 +39h/+3Ah/+2Eh↔+61h/+62h/+56h(spec 832 的 +28h 位移)；組訊息的順序略有不同。⚠同一個死碼分支 PC-98 也有，沒有修",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/901-sell-item-price.md"
    ]
   },
   {
@@ -50434,7 +50463,8 @@
    "citations": [
     "audit/function-index/dos-overlay-31.md",
     "audit/function-index/pc98-overlay-31.md",
-    "spec/860-ai-target-reachability-scan.md"
+    "spec/860-ai-target-reachability-scan.md",
+    "spec/902-draw-unit-on-map.md"
    ]
   },
   {
@@ -50622,9 +50652,13 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "902",
+   "note": "同 DOS overlay-32:00174h（助憶碼序列完全相同）。19 條差異全是位址：DS:6E92h↔9F2Ch、DS:26A5h↔48AFh、DS:6D35h↔−6231h、+18Dh↔+18Eh",
    "citations": [
-    "audit/function-index/dos-overlay-02.md"
+    "audit/function-index/dos-overlay-02.md",
+    "spec/902-draw-unit-on-map.md"
    ]
   },
   {
@@ -51543,9 +51577,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -51738,9 +51772,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -52098,9 +52132,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
@@ -52293,9 +52327,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
