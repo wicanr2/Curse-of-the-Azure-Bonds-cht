@@ -13470,7 +13470,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-13.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md"
+    "spec/760-item-effect-flag-clear-and-file-exists.md",
+    "spec/842-beholder-eye-rays.md"
    ]
   },
   {
@@ -13489,7 +13490,8 @@
    "spec": "docs/spec/788-memorised-spell-slots-identified.md",
    "note": "戰鬥判定：ss:[rec-5] 預設 1；先呼叫本模組 3E56h(方向,0,0FFh,ss:[rec+0Ch])，成立才取「目標^[18Dh]^[0Ah]」的 x/y（overlay-32 entry#15/#16），再呼叫掃描程序(取x(rec+0Ch), 取y(rec+0Ch), @x1, @y1, @ss:[rec-3], 遠指標@DS:6E92h)，回非零則 ss:[rec-5] := 0。retf 4。spec 788",
    "citations": [
-    "spec/788-memorised-spell-slots-identified.md"
+    "spec/788-memorised-spell-slots-identified.md",
+    "spec/842-beholder-eye-rays.md"
    ]
   },
   {
@@ -13503,10 +13505,14 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "842",
+   "note": "眼魔(Beholder)眼柄光線：分解/石化/死亡/傷害四道 + Fear(84)/Slow(55)/Sleep(21) 三個法術，用過旗標保證每種一回合一次，剩=4 上限。1434h+1(目標,狀態碼,訊息) 狀態碼 8/7/6 對上 spec 840 的集合 {6,7,8}。原文兩處有誤：'is disintergrated'、'stone to flesh' 寫反",
    "citations": [
     "audit/function-strings.md",
-    "spec/832-gaze-attack-and-mirror-item.md"
+    "spec/832-gaze-attack-and-mirror-item.md",
+    "spec/842-beholder-eye-rays.md"
    ]
   },
   {
@@ -38264,9 +38270,13 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "842",
+   "note": "同 DOS overlay-13:042FDh，助憶碼相似度 1.000。PC-98 把 'stone to flesh ray' 照效果翻成 '石化光線'，並未沿用 'disintergrated' 錯字",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/842-beholder-eye-rays.md"
    ]
   },
   {
@@ -50087,9 +50097,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 27,
+   "Read": 28,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -50642,9 +50652,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 27,
+   "Read": 28,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 17,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,

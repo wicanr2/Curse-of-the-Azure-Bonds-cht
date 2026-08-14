@@ -21550,6 +21550,24 @@
    "level": "exact",
    "spec": "841",
    "note": "同 DOS overlay-15:00B9Bh。52 條差異全是位址與字串；PC-98 把 DOS 兩句只差大小寫的提示合併成同一個字串（loc_AE9 出現兩次），並修掉 'scibing' 錯字"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 17149,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "842",
+   "note": "眼魔(Beholder)眼柄光線：分解/石化/死亡/傷害四道 + Fear(84)/Slow(55)/Sleep(21) 三個法術，用過旗標保證每種一回合一次，剩=4 上限。1434h+1(目標,狀態碼,訊息) 狀態碼 8/7/6 對上 spec 840 的集合 {6,7,8}。原文兩處有誤：'is disintergrated'、'stone to flesh' 寫反"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 17003,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "842",
+   "note": "同 DOS overlay-13:042FDh，助憶碼相似度 1.000。PC-98 把 'stone to flesh ray' 照效果翻成 '石化光線'，並未沿用 'disintergrated' 錯字"
   }
  ]
 }
