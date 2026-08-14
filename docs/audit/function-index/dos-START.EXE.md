@@ -151,8 +151,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19A94` | sub_19A94 | — | 18 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>字串搬移輔助:長度夾到 bx 上限後 stosb 寫長度,再 rep movsb 複製內容並更新來源指標 | — |
 | `19AB0` | @__CRTInit$qv | — | 48 | 24 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__CRTInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19AE0` | unknown_libname_1 | — | 105 | 45 | 1 | 5 |  | 待解讀 | — | — | — |
-| `19B49` | sub_19B49 | — | 78 | 31 | 2 | 2 |  | 待解讀 | — | — | — |
-| `19B97` | sub_19B97 | — | 72 | 30 | 2 | 2 |  | 待解讀 | — | — | — |
+| `19B49` | sub_19B49 | — | 78 | 31 | 2 | 2 |  | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>CRT 畫面模式設定(近呼叫 retn)：清 0040h:0087h bit 0；模式非 7 且 >=4 就強制成 3 後設模式；再 AX=1112h/BL=0 載入 8×8 字型、AX=1130h 取列數，列數為 2Ah(42)時才設回 0040h:0087h bit 0、設游標形狀(AX=0100h/CX=0600h)與 AH=12h/BL=20h | — |
+| `19B97` | sub_19B97 | — | 72 | 30 | 2 | 2 |  | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>CRT 畫面參數偵測(近呼叫 retn)：INT 10h AH=0Fh 取模式，AX=1130h/BH=0/DL=0 取字型資訊(DL=列數−1)；DL=0 時改用 18h 且模式 ≤3 另設 byte_24E5Dh:=1；結果存 word_24E5Eh(模式與欄數)、word_24E68h(列數)、byte_24E5Ch:=1、word_24E62h:=0、word_24E64h:=dx；列數 > 18h 時 AH:=1 | — |
 | `19BF5` | sub_19BF5 | — | 61 | 23 | 2 | 5 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>Ctrl-Break 處理(retf 2)：byte_24E6C 非 0 才動作 — 清旗標、用 INT 16h 把鍵盤緩衝區抽乾、印 ^C 與換行，然後 INT 23h | — |
 | `19C32` | @WINDOW$q4BYTEt1t1t1 | — | 64 | 23 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WINDOW$q4BYTEt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19C72` | @CLRSCR$qv | — | 26 | 8 | 1 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@CLRSCR$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |

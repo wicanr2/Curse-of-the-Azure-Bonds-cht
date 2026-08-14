@@ -22,7 +22,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0C4A` | sub_C4A | — | 75 | 31 | 2 | 3 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 75 bytes，已逐條讀完） | — |
 | `0C95` | sub_C95 | — | 424 | 182 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0E3D` | sub_E3D | — | 382 | 183 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `0FBB` | sub_FBB | — | 80 | 30 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `0FBB` | sub_FBB | — | 80 | 30 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>清空戰場地圖(retf)：FillChar((DS:9F2Ch+7)^, 4E2h, 17h)，DS:7F05h^[342h] → DS:7ACAh，與 DOS overlay-10:0FC7h 同 | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `1023` | sub_1023 | — | 174 | 72 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `10D1` | sub_10D1 | — | 286 | 94 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `11EF` | sub_11EF | — | 49 | 18 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>判斷式(retf 4)：與 DOS overlay-10:11FBh 相同的「兩個都不在範圍內才回 true」 | spec/754-small-predicates-and-wrappers.md |

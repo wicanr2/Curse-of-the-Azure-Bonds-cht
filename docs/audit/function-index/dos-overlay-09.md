@@ -21,7 +21,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0CB7` | sub_CB7 | — | 228 | 75 | 3 | 7 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 09C7h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `0DB1` | sub_DB1 | — | 1043 | 349 | 1 | 15 | ✓ | 待解讀 | — | — | — |
 | `11CF` | sub_11CF | — | 38 | 15 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 38 bytes，已逐條讀完） | — |
-| `1201` | sub_1201 | — | 95 | 31 | 5 | 4 | ✓ | 待解讀 | — | — | — |
+| `1201` | sub_1201 | — | 95 | 31 | 5 | 4 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>兩條路的選擇(retf 4)：先無條件叫一支程序；若 f1(p) 或 f2(p) 或 p^[18Dh]^[3] = 0 則回 h1(p)，否則回 h2(p) | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `1273` | sub_1273 | — | 248 | 84 | 2 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `1388` | sub_1388 | — | 197 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `1444` | sub_1444 | — | 7 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:6FA2h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |

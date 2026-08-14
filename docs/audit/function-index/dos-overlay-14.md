@@ -11,9 +11,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0288` | sub_288 | — | 122 | 43 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0302` | sub_302 | — | 742 | 303 | 1 | 2 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md |
 | `05E8` | sub_5E8 | — | 201 | 81 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `06B1` | sub_6B1 | — | 67 | 25 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>找格子(retf 6)：f(v: byte, p: 遠指標) 在 p^[1Eh..1Eh+53h] 線性搜尋等於 v 的索引，找不到回 0FFh。與 overlay-15:0188h 同一個 84 格陣列 | spec/755-per-character-slots-sound-driver-and-text-io.md |
-| `06F4` | sub_6F4 | — | 85 | 33 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `0749` | sub_749 | — | 69 | 29 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `06B1` | sub_6B1 | — | 67 | 25 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>找格子(retf 6)：f(v: byte, p: 遠指標) 在 p^[1Eh..1Eh+53h] 線性搜尋等於 v 的索引，找不到回 0FFh。與 overlay-15:0188h 同一個 84 格陣列 | audit/function-index/pc98-overlay-14.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `06F4` | sub_6F4 | — | 85 | 33 | 2 | 2 | ✓ | 待解讀 | — | — | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `0749` | sub_749 | — | 69 | 29 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>移除值為 1Fh 的那一格(retf，無參數)：p := 本模組 06F4h(1Fh)；p 非 NIL 時 i := 找格子(1Fh, p)(overlay-14:06B1h)，把 p^[1Eh+i] 歸零並回 true，否則回 false | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `078E` | sub_78E | — | 174 | 55 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md |
 | `083C` | sub_83C | — | 196 | 70 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `090A` | sub_90A | — | 644 | 248 | 0 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
