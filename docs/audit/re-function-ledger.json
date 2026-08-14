@@ -24700,6 +24700,24 @@
    "level": "exact",
    "spec": "957",
    "note": "spec 951 的 Ctrl-O(0Fh)處理(far)：byte_24E73h = 1 時只設 byte_24E71h := 0FFh 並叫 sub_18A8Eh 就離開；byte_241B7h ∈ [1,5,7] 也直接離開。否則依 byte_28080h(機種/音源識別碼)映到 byte_24E83h——01h/31h → 3；11h/12h/21h/22h/23h/15h/43h/45h → 4；50h/51h → byte_241A1h ≠ 0 ? 6 : 5；20h/23h/40h/42h → 8；02h/10h/05h/35h → 9；03h/04h/25h/32h/33h → 0Ch；30h 不改直接往下；其餘離開不呼叫。最後叫 sub_18A44h(byte_24E83h)。★byte_28080h 的取值分成 0x/1x/2x/3x/4x/5x 六大類，形狀上是機種或音源板識別碼；⚠23h 同時出現在『→ 4』與『→ 8』兩組，由上往下比會先命中前者，第四組裡的 23h 永遠到不了(原版重複)。本規格沒讀 sub_18A44h/sub_18A8Eh 也沒找到 byte_28080h 的寫入端，不宣稱它就是音源選擇"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 110564,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "958",
+   "note": "6-byte real 的加減(near)：兩個運算元 dx:bx:ax(指數 ch)與 di:si:cx(指數 cl)；cl = 0 或 al = 0 各自短路；al < cl 就交換讓 al 是較大的指數；★指數差 >= 28h(40 = Real 尾數位元數)就直接回傳較大的那個(標準浮點短路)。否則記下符號 xor、兩邊補隱含最高位、把小的右移『差』位(先整 byte 搬再逐位 shr/rcr)，同號相加異號相減(借位就取二補數並翻符號)，結果非 0 就左移正規化並減指數，指數溢位 stc 返回。與 spec 948 的除法、spec 947 的長整數除法同屬 Turbo Pascal 軟體數學庫"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 96608,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "958",
+   "note": "開啟索引式資源檔(far, retf 14h)，★是 DOS 16B24h(spec 939)的 PC-98 版：兩個檔名各限長 14h 串成 名，用 sub_1741Dh 依序開 arg_4 與 arg_0(同樣把字串原封不動重組一次)，成功後 sub_1BFD3h(BlockRead, spec 944)從索引側讀一個 word、arg_8^ += 2、再 sub_1C03Bh(Seek)把資料側定位過去，回 1；任一次失敗回 0。★與 DOS 版的差別：路徑不是 DS:25AEh + byte_21DAEh × 1Eh 那張可索引的表，而是 byte_20AEAh 單一固定路徑，額外參數也固定傳 0——配合 spec 943 的 DOS 版有雙路徑輪替與換片提示，可見 DOS 版要應付換磁片、PC-98 版假設檔案都在同一處"
   }
  ]
 }
