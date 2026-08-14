@@ -6792,7 +6792,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "857",
-   "note": "發經驗值(retf 4，longint 每人份)：走隊伍鏈 DS:650Ah，+196h 非 0 且 +195h ≠ 1 的成員才拿。依 +75h 職業組合碼：0/2/3/4/5/6 各檢查對應的 prime requisite 屬性 \u003e 0Fh(≥16) 就 ＋10%（AD\u0026D 的 prime requisite 加成）；8/10..14/16 除以 2、9/15 除以 3（多職業平分）。結果加進 +127h 經驗值。★屬性欄位版面定案：stride 2、AD\u0026D 順序 — +11h 力量、+13h 智力、+15h 睿智、+17h 敏捷、+19h 體質"
+   "note": "發經驗值(retf 4，longint 每人份)：走隊伍鏈 DS:650Ah，+196h 非 0 且 +195h ≠ 1 的成員才拿。依 +75h 職業組合碼：0/2/3/4/5/6 各檢查對應的 prime requisite 屬性 \u003e 0Fh(≥16) 就 ＋10%（AD\u0026D 的 prime requisite 加成）；8/10..14/16 除以 2、9/15 除以 3（多職業平分）。結果加進 +127h 經驗值。★屬性欄位版面定案：stride 2、AD\u0026D 順序 — +11h 力量、+13h 智力、+15h 睿智、+17h 敏捷、+19h 體質",
+   "citations": [
+    "audit/function-index/pc98-overlay-05.md",
+    "spec/857-xp-award-and-ability-layout.md"
+   ]
   },
   {
    "platform": "dos",
@@ -9368,7 +9372,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "戰場地貌密度分級(retf，無參數)：密度由 32h(50) 起算，98Dh() 的 bit 10h +10、20h +30、40h +20、04h −10、02h −20、80h −50。掃 50 欄 × 25 列，圖磚為 16h 的格子依密度落在五個級距（−30..9 / 10..29 / 30..69 / 70..89 / 90..110）各以不同的五個權重參數呼叫巢狀程序 sub_CA1h；超出 −30..110 就不做。與 009FEh 斜向障礙、00B0Ah 植被同屬 98Dh() 驅動的地形生成家族",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
@@ -31630,7 +31637,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "857",
-   "note": "同 DOS overlay-05:00351h（同位址，相似度 0.997）。唯一序列差異是 DOS 多一條 cbw（配 cmp ax,N；PC-98 直接 cmp al,N），其餘是位址：DS:9598h↔650Ah、+197h/196h↔+196h/195h"
+   "note": "同 DOS overlay-05:00351h（同位址，相似度 0.997）。唯一序列差異是 DOS 多一條 cbw（配 cmp ax,N；PC-98 直接 cmp al,N），其餘是位址：DS:9598h↔650Ah、+197h/196h↔+196h/195h",
+   "citations": [
+    "audit/function-index/pc98-overlay-05.md",
+    "spec/857-xp-award-and-ability-layout.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34278,7 +34289,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "同 DOS overlay-10:00E49h（module_align 對齊，助憶碼序列完全相同）。13 條差異全是呼叫目標與 DS:9F2Ch↔6E92h、地形表 DS:48AFh↔26A5h"
   },
   {
    "platform": "pc98",
@@ -50655,9 +50669,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -51210,9 +51224,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
