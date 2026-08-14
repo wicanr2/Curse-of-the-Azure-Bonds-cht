@@ -8207,8 +8207,8 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-08.md",
     "audit/function-index/pc98-overlay-09.md",
-    "audit/function-strings.md",
-    "spec/1008-combat-move-command.md"
+    "audit/function-index/pc98-overlay-22.md",
+    "audit/function-strings.md"
    ]
   },
   {
@@ -15786,7 +15786,8 @@
    "state": "待解讀",
    "citations": [
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1072-savegame-load-io-pc98.md"
    ]
   },
   {
@@ -16075,7 +16076,8 @@
    "state": "待解讀",
    "citations": [
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1072-savegame-load-io-pc98.md"
    ]
   },
   {
@@ -34767,8 +34769,8 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-08.md",
     "audit/function-index/pc98-overlay-09.md",
-    "audit/function-strings.md",
-    "spec/1008-combat-move-command.md"
+    "audit/function-index/pc98-overlay-22.md",
+    "audit/function-strings.md"
    ]
   },
   {
@@ -42137,6 +42139,7 @@
    "spec": "docs/spec/978-tilde-hotkey-marker-and-underscore-to-space.md",
    "note": "把 '_' 全部換成半形空白；回傳字串的函式（@結果留在堆疊）；迴圈計數器用全域 DS:0A9D9h 不可重入",
    "citations": [
+    "spec/1073-character-file-scanner-pc98.md",
     "spec/973-pc98-text-print-signature.md",
     "spec/978-tilde-hotkey-marker-and-underscore-to-space.md"
    ]
@@ -42152,10 +42155,14 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1073",
+   "note": "角色檔掃描器(retf 18h，7 參數：路徑/樣式/名字位移/旗標位移/預期長度/@顯示名鏈頭/@檔名鏈頭)。FindFirst+FindNext 掃檔，★檔案長度接受 arg_A−1/arg_A/arg_A+1(原作自己容忍 DOS 422 vs PC-98 423)。每檔配兩個 56h 選單節點，★節點版面 = string[80](0..50h) + 填補 + next(52h) ⇒ DOS 46 與 PC-98 86 的 28h 差就是字串上限 40→80。去重比對兩邊補到 15 字元(取法不對稱，16 字名字會漏)。旗標 \u003e= 80h 或同名則整筆 FreeMem",
    "citations": [
     "audit/function-index/pc98-overlay-25.md",
     "audit/function-strings.md",
+    "spec/1073-character-file-scanner-pc98.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
@@ -42241,7 +42248,8 @@
    "note": "PC-98 的磁碟辨識(retf，389 條)。★★ 期望的磁碟種類由 DS:0A816h(檔案類別，spec 1043/1069)決定：0(*.guy/Curse)→6、2(*.sav/Hillsfar)→7、其餘→4；迴圈裡 sub_5738h 判有沒有磁碟(沒有就提示放片並按 Enter)、sub_7DCh(0) 讀磁碟種類碼與期望值比對，對了才往下走。★★★ 訊息表在 DS:0C16h、筆距 25h(37)、九筆：「セーブディスクを入れて、」(24)、「セーブディスクを作成中です。」(28)、「これはゲームディスクＡです。」(28)、「これはゲームディスクＢです。」(28)、「リターン・キーを押してください。」(32)、「セーブディスクの作成に失敗しました。」(36)、「これはPool of Radiance」(22)、「これはCurse of The Azure Bonds」(30)、「のセーブディスクです。」(22) ⇒ 放錯片時遊戲會直接說出那是哪一張(遊戲片 A/B、Pool of Radiance 的存檔片、Curse 的存檔片)，表示磁碟上有可辨識的標記而不是只靠檔案存在與否；最後兩筆是『これは＋遊戲名＋のセーブディスクです。』的組字。★ overlay 自己的 CS 段另有四句：「ドライブ２にセーブ・ディスクを入れてください」(44，★ 第 2 台磁碟機是寫死的)、「セーブ中にエラーが発生しました」(30)、「ロード中にエラーが発生しました」(30)、「ディスクに異常があります。」(26)。⚠ 遊戲名 PC-98 保留英文；訊息表每筆最長 36=18 個全形字",
    "citations": [
     "audit/function-strings.md",
-    "spec/1070-disk-identification-pc98.md"
+    "spec/1070-disk-identification-pc98.md",
+    "spec/1072-savegame-load-io-pc98.md"
    ]
   },
   {
@@ -42335,7 +42343,8 @@
    "note": "同 DOS overlay-16:00A7Eh（module_align 對齊，助憶碼序列完全相同）。差異全是位址：DS:9594h↔6506h、DS:0D91h↔0515h、DS:96C4h/96C6h↔662Eh/6630h、[di−6992h]↔[di+65D8h] 與呼叫目標；'CHEAD'／'CBODY' 兩平台都沒翻譯",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1072-savegame-load-io-pc98.md"
    ]
   },
   {
@@ -42356,6 +42365,7 @@
    "note": "同 DOS overlay-16:00C7Eh 的功能，但★整段重做三次而且每個副檔名配一個不同的前綴常數(DS:8BF6h ＋ loc_A2Ah+3 / loc_A37h / loc_A28h)——PC-98 把三個檔放在三個不同位置，DOS 三個同目錄。真的邏輯差異(spec 783 第 d 類)，117 對 63 條",
    "citations": [
     "audit/function-strings.md",
+    "spec/1072-savegame-load-io-pc98.md",
     "spec/868-character-file-triplet.md"
    ]
   },
@@ -42506,7 +42516,8 @@
    "spec": "1",
    "note": "同 DOS overlay-16:01388h（module_align 對齊，助憶碼序列完全相同）。只差三條：DS:8BF6h↔5BF0h 與兩個 CS 常數／字串函式位址",
    "citations": [
-    "audit/function-index/pc98-overlay-16.md"
+    "audit/function-index/pc98-overlay-16.md",
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -42581,9 +42592,11 @@
    "note": "角色檔讀取，同 DOS overlay-16:0228Eh(1486 條)。★★★ 長度對照：現行角色記錄 1A7h(423) vs DOS 1A6h(422) 差 1；★ 兩代舊格式 11Dh(285) 與 0BCh(188) 兩平台完全相同 —— 那是磁碟上的舊版面，PC-98 沒有跟著加寬；物品節點 67h(103) vs 3Fh(63) 差 28h；★★ 效果節點 .fx/.spc 兩平台都是 9 bytes，沒有跟著物品節點加寬。四個歸零的遠指標欄位：+0F2h(相同)、+14Eh、+18Ah、+18Eh(後三個各 +1，與 spec 1034 收窄過的邊界一致)。★ PC-98 另有大寫的 '.GUY'/'.CHA' 兩個字串(DOS 只有小寫)，其餘副檔名相同。載入提示是「読みこみ中です」(14)，與 spec 1029 同一句",
    "citations": [
     "audit/function-index/pc98-overlay-16.md",
+    "audit/function-index/pc98-overlay-24.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
-    "spec/1038-character-save-load.md"
+    "spec/1038-character-save-load.md",
+    "spec/1072-savegame-load-io-pc98.md"
    ]
   },
   {
@@ -42659,6 +42672,7 @@
    "spec": "873",
    "note": "同 DOS overlay-16:035A8h，44 條差異全是位址(DS:650Ah↔9598h、+189h↔+18Ah、DS:4F9Dh↔7F09h)。★PC-98 側在 DOS 出現 hlt 的位置是正確的 lea di,[bp+var_C]，用來校正 DOS 的反組譯錯位",
    "citations": [
+    "spec/1072-savegame-load-io-pc98.md",
     "spec/873-add-to-party-and-portrait-slot.md"
    ]
   },
@@ -42811,9 +42825,13 @@
    "callers": 2,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1072",
+   "note": "整局存檔 savgam\u003cn\u003e.dat 的載入入口。16 個區塊、固定 13214 bytes：資料片編號(1)、bank0(800h)、bank1(800h)、DS:7F0Dh^(400h)、DS:7F12h^(1E41h)、DS:0A2A9h(5)、7F28h/7F27h(各1)、三組牆面參數(2x6)、隊伍人數(1)、角色檔名表(148h=8x41)。★角色不存內容只存 string[40] 檔名，本體另由 overlay-16:02A6Dh 讀。收尾拆 bank0^[1FEh] 成 div2/and1、清 bank1^[67Ch]、走兩次隊伍鏈(後處理+CPIC 圖示)、依 bank0^[1CCh] 決定重載 3D 地圖+WALLDEF 或 bigpic(y)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1072-savegame-load-io-pc98.md"
    ]
   },
   {
@@ -52717,6 +52735,7 @@
    "note": "同 DOS overlay-32:00174h（助憶碼序列完全相同）。19 條差異全是位址：DS:6E92h↔9F2Ch、DS:26A5h↔48AFh、DS:6D35h↔−6231h、+18Dh↔+18Eh",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/902-draw-unit-on-map.md"
    ]
   },
@@ -54183,9 +54202,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 29,
+   "Read": 31,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 2,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
