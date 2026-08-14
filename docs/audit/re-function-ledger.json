@@ -22803,15 +22803,6 @@
    "note": "同 DOS overlay-20:00020h（同位址、助憶碼序列完全相同）。13 條差異全是位址：DS:7F27h↔4FBAh、DS:7BDAh/7BD9h↔4AFCh/4AFBh、DS:7F09h↔4F9Dh、DS:6804h↔3E2Ah、DS:9598h↔650Ah、+18Ah↔+189h"
   },
   {
-   "platform": "dos",
-   "module": "overlay-05",
-   "ea": 57,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "858",
-   "note": "戰後結算，算每人份經驗值(retf 4，var longint)：走 DS:650Ah 鏈，對 +197h=1 且 +195h 既非 0(Okay) 亦非 3(Running) 的單位，把 +0FBh 起七個 word 累加到 DS:6F70h 起七個 longint，並累加 +13Ch + +12Ch×+13Eh；順便把物品鏈複製成戰利品鏈(GetMem 3Fh + Move，前插，next 在 +2Ah)。最後七格依 200/20/2/1/×5/×250/×2200 換算成金幣值加進總數，戰利品鏈每個 +32h>0 再加 ×190h，除以 (DS:4F9Dh^[67Ch] − DS:8B57h)。★係數比例與 AD&D 一版錢幣表逐項相符 → 索引 0..6 = 銅/銀/琥珀金/金/白金/寶石/珠寶；也定案 0A54h:294h=longint 除法、279h=乘法、329h=GetMem、25Dh=Move。輸出正是 spec 857 收的每人份參數"
-  },
-  {
    "platform": "pc98",
    "module": "overlay-05",
    "ea": 57,
@@ -22819,6 +22810,33 @@
    "level": "exact",
    "spec": "858",
    "note": "同 DOS overlay-05:00039h（同位址、助憶碼序列完全相同）。62 條差異全是位址與尺寸：物品節點 +32h↔+5Ah、+2Ah↔+52h、3Fh↔67h（spec 832 的 +28h 位移），角色記錄 +14Dh↔+14Eh、+195h↔+196h、+197h↔+198h，runtime 段 0A54h↔0A65h／081Fh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 57,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "858",
+   "note": "戰後結算，算每人份經驗值(retf 4，var longint)：走 DS:650Ah 鏈，對 +197h=1 且 +195h 既非 0(Okay) 亦非 3(Running) 的單位，把 +0FBh 起七個 word 累加到 DS:6F70h 起七個 longint，並累加 +13Ch + +12Ch×+13Eh；順便把物品鏈複製成戰利品鏈(GetMem 3Fh + 三參數複製，前插，next 在 +2Ah)。最後七格依 ÷200/÷20/÷2/×1/×5/×250/×2200 換算成金幣值加進總數(比例與 spec 812 的 DS:0CA2h 權重表一致，幣別名稱見 spec 773)，戰利品鏈每個 +32h>0 再加 ×190h，除以 (DS:4F9Dh^[67Ch] − DS:8B57h)。★關掉 spec 812「後兩格為何不計入總價」的疑問：寶石/珠寶不是貨幣，只在折經驗值時給 gp 估值。輸出正是 spec 857 收的每人份參數"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 1460,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "859",
+   "note": "法術選單清單建構(retf 2，法術碼，bit7=前綴星號)：維護 DS:4B44h 一條 2Eh bytes 的顯示行鏈(+0 string[40]、+29h 標題行旗標、+2Ah next)＋兩個 84 格平行陣列(DS:4B48h 次數、DS:4B9Ch 法術碼)。依 DS:37DBh+碼×10h 的 +0(法術等級)遞增插入；同一法術只佔一行並把次數 +1，行尾補 ' (n)'。文字＝(' *' 或 '  ')＋DS:27BDh 法術名。★解出 DS:37DBh 是每筆 10h 的法術屬性表、+0 是等級，有效範圍 1..100(尾端接 DS:3E2Ah 時鐘進位表)，等級值與 AD&D 一版逐項相符"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 1569,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "859",
+   "note": "同 DOS overlay-22:005B4h（助憶碼序列完全相同）。26 條差異全是位址與尺寸：節點 2Eh↔56h(字串上限 40↔80，中文化必要)、+29h↔+51h、+2Ah↔+52h，表基底 37DBh↔61B5h、4B44h↔7C22h、4B48h↔7C26h、4B9Ch↔7C7Ah。三個標記字串 ' *'/'  '/' (' 兩平台相同，PC-98 沒有在地化"
   }
  ]
 }

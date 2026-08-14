@@ -6775,10 +6775,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "858",
-   "note": "戰後結算，算每人份經驗值(retf 4，var longint)：走 DS:650Ah 鏈，對 +197h=1 且 +195h 既非 0(Okay) 亦非 3(Running) 的單位，把 +0FBh 起七個 word 累加到 DS:6F70h 起七個 longint，並累加 +13Ch + +12Ch×+13Eh；順便把物品鏈複製成戰利品鏈(GetMem 3Fh + Move，前插，next 在 +2Ah)。最後七格依 200/20/2/1/×5/×250/×2200 換算成金幣值加進總數，戰利品鏈每個 +32h\u003e0 再加 ×190h，除以 (DS:4F9Dh^[67Ch] − DS:8B57h)。★係數比例與 AD\u0026D 一版錢幣表逐項相符 → 索引 0..6 = 銅/銀/琥珀金/金/白金/寶石/珠寶；也定案 0A54h:294h=longint 除法、279h=乘法、329h=GetMem、25Dh=Move。輸出正是 spec 857 收的每人份參數",
+   "note": "戰後結算，算每人份經驗值(retf 4，var longint)：走 DS:650Ah 鏈，對 +197h=1 且 +195h 既非 0(Okay) 亦非 3(Running) 的單位，把 +0FBh 起七個 word 累加到 DS:6F70h 起七個 longint，並累加 +13Ch + +12Ch×+13Eh；順便把物品鏈複製成戰利品鏈(GetMem 3Fh + 三參數複製，前插，next 在 +2Ah)。最後七格依 ÷200/÷20/÷2/×1/×5/×250/×2200 換算成金幣值加進總數(比例與 spec 812 的 DS:0CA2h 權重表一致，幣別名稱見 spec 773)，戰利品鏈每個 +32h\u003e0 再加 ×190h，除以 (DS:4F9Dh^[67Ch] − DS:8B57h)。★關掉 spec 812「後兩格為何不計入總價」的疑問：寶石/珠寶不是貨幣，只在折經驗值時給 gp 估值。輸出正是 spec 857 收的每人份參數",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-05.md",
     "spec/858-post-battle-xp-and-treasure-valuation.md"
    ]
   },
@@ -17859,10 +17860,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "859",
+   "note": "法術選單清單建構(retf 2，法術碼，bit7=前綴星號)：維護 DS:4B44h 一條 2Eh bytes 的顯示行鏈(+0 string[40]、+29h 標題行旗標、+2Ah next)＋兩個 84 格平行陣列(DS:4B48h 次數、DS:4B9Ch 法術碼)。依 DS:37DBh+碼×10h 的 +0(法術等級)遞增插入；同一法術只佔一行並把次數 +1，行尾補 ' (n)'。文字＝(' *' 或 '  ')＋DS:27BDh 法術名。★解出 DS:37DBh 是每筆 10h 的法術屬性表、+0 是等級，有效範圍 1..100(尾端接 DS:3E2Ah 時鐘進位表)，等級值與 AD\u0026D 一版逐項相符",
    "citations": [
     "audit/function-strings.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md",
+    "spec/859-spell-list-row-builder.md"
    ]
   },
   {
@@ -31671,6 +31676,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-05.md",
     "spec/858-post-battle-xp-and-treasure-valuation.md"
    ]
   },
@@ -43977,9 +43983,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "859",
+   "note": "同 DOS overlay-22:005B4h（助憶碼序列完全相同）。26 條差異全是位址與尺寸：節點 2Eh↔56h(字串上限 40↔80，中文化必要)、+29h↔+51h、+2Ah↔+52h，表基底 37DBh↔61B5h、4B44h↔7C22h、4B48h↔7C26h、4B9Ch↔7C7Ah。三個標記字串 ' *'/'  '/' (' 兩平台相同，PC-98 沒有在地化",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/859-spell-list-row-builder.md"
    ]
   },
   {
@@ -50929,9 +50939,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 104,
+   "Read": 105,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -51484,9 +51494,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 88,
+   "Read": 89,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
