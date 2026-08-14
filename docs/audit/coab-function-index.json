@@ -11103,7 +11103,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1572`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1572`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-19.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11830,6 +11833,7 @@
    "note": "三個效果都沒有才加傷害:對 p := 角色^[18Dh]^[0Ah] 依序查 14h、36h、3Dh(三次 \u003coverlay-24 entry#27\u003e,短路),**任何一個成立就完全不加**;都沒有才 DS:6F94h += ROLLDICE(1, 6)",
    "citations": [
     "audit/function-index/pc98-overlay-12.md",
+    "audit/function-index/pc98-overlay-19.md",
     "spec/741-on-hit-effects-and-third-uninitialised.md"
    ]
   },
@@ -16588,6 +16592,7 @@
    "note": "合併同款物品堆疊(retf 4)：走物品鏈比對 +2Eh/+2Fh/+30h/+31h/+32h/+33h/+36h/+37h(word)，相同就把數量併過來並用 1545h 移除來源；超過 0FFh 時填滿目標、差額留在來源並把目標換成來源繼續。★原版 bug：+3Ch/+3Dh/+3Eh 三個效果槽的比較兩次都載入 p（應該一次載目標），三個比較恆為真——效果不同的同型物品會被合併，其中一個的法術直接消失。兩平台一致，不是反組譯錯位",
    "citations": [
     "audit/function-index/pc98-overlay-12.md",
+    "audit/function-index/pc98-overlay-19.md",
     "spec/856-item-stack-merge-bug.md"
    ]
   },
@@ -23467,7 +23472,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "讀 +300h 平面的 2-bit 牆面欄位(retf 6，宣告順序 (x, y, 方向))：與 spec 778 的 4-bit 讀取端同一套前置（0556h 範圍檢查、DS:8B5Eh 為 0 或 0Ah 才放行、座標在 0..0Fh 之外環繞）。預設回 1；先叫 sub_6BDh（＝ spec 778 那支）確認該格非 0，才從 DS:7206h^[300h + (y shl 4) + x] 取 2 bits——方向 6 取 bit 6-7、4 取 4-5、2 取 2-3、0 取 0-1，正是 spec 781 設定端寫入的同一組欄位",
    "citations": [
     "audit/embedded-strings.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
@@ -49402,7 +49410,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "同 DOS overlay-30:00587h（module_align 對齊，相似度 0.996）。唯一序列差異是 DOS 多一條 xor ah, ah，其餘只差一條呼叫目標",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
@@ -50884,9 +50895,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 5205,
    "Undefined": 84,
@@ -51439,9 +51450,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 4851,
    "Undefined": 117,
