@@ -9250,11 +9250,15 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "904",
+   "note": "3D 視圖的另一層牆面(retf 2，父框架指標的巢狀程序)：與 spec 898 同一組。用 0378h 查左(6, 父[−2]−1, 父[−1])與右(0, 父[−2], 父[−1]−1)，依 DS:4A0Eh 與 DS:4A0Fh(值域 {0,1,3})與『兩邊都空』用四段 case 選圖磚，畫在 (0,1)/(0,2)/(1,1)/(1,2)。★spec 898 配 DS:4A10h 畫 (0,5)..(1,6)，本支配 DS:4A0Fh 畫 (0,1)..(1,2)——三個連續全域是三個距離層的牆面狀態。16h 是四處共用的『空』",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
-    "spec/776-first-person-view-scan-and-ega-rect-fill.md"
+    "spec/776-first-person-view-scan-and-ega-rect-fill.md",
+    "spec/904-dungeon-wall-far-layer.md"
    ]
   },
   {
@@ -9276,7 +9280,8 @@
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md",
-    "spec/898-dungeon-wall-tile-pick.md"
+    "spec/898-dungeon-wall-tile-pick.md",
+    "spec/904-dungeon-wall-far-layer.md"
    ]
   },
   {
@@ -16882,8 +16887,9 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "901",
-   "note": "賣東西(retf 4，物品)：價 := 物品^[3Ah] div 2(基本價的一半)；數量 +39h \u003e 1 時 價 := 數量×價 div 14h。組訊息、542h:4A4h 顯示、16ABh+3 追問(比 'Y')；成交就叫 1545h 把物品從角色身上移除，付款拆成 白金 := 價 div 5、零頭 := 價 mod 5，用 1134h 檢查負重，裝不下的白金退回 DS:6F80h 公用池，最後加進 +103h(白金)與 +101h(金幣)。★1 白金 = 5 金幣與 spec 858 幣值表一致。⚠原版 bug：(+2Eh = 49h) and (+2Eh = 1Ch) 永遠不成立，『價 := 數量 × 價』是死碼，成疊物品一律走 ÷20(同 spec 856 那一類的打字錯誤)",
+   "note": "賣東西(retf 4，物品)：價 := 物品^[3Ah] div 2(基本價的一半)；數量 +39h \u003e 1 時 價 := 數量×價 div 14h。訊息 \"I'll give you \"＋價＋' gold pieces for your '＋物品名，追問 'Is It a Deal? '(比 'Y')；成交印 'Sold!'、叫 1545h 移除物品，付款拆成 白金 := 價 div 5、零頭 := 價 mod 5，用 1134h 檢查負重，裝不下就印 'Overloaded.  Money will be put in pool.' 並把多出來的白金退回 DS:6F80h 公用池，最後加進 +103h(白金)與 +101h(金幣)。★字串直接證實價的單位是金幣、退回處就是『池』。⚠原版 bug：(+2Eh = 49h) and (+2Eh = 1Ch) 永遠不成立，『價 := 數量 × 價』是死碼(同 spec 856 那一類)。⚠訊息說 money 但只有白金會退回池子",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-strings.md",
     "spec/901-sell-item-price.md"
    ]
@@ -16899,9 +16905,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "903",
+   "note": "鑑定物品(retf 8，(var 有沒有鑑定成功, 物品))：14F5h 取顯示名、報價、16ABh+3 追問(比 'Y')；先用 33ABh 算角色身上的錢，\u003e= 0C8h(200) 就叫 116Bh 扣，不夠才用 1175h 算 DS:6F70h 公用池的總值、\u003e= 200 就叫 1170h 扣，兩邊都不夠就印錢不夠。成功時 物品^[35h]≠0 才清 0、重取名字並把 var 旗標設 1；=0 只印『沒有魔法』。★付款順序角色→公用池。⚠=0 那條路一樣扣 200",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/903-identify-item.md"
    ]
   },
   {
@@ -16998,7 +17008,8 @@
     "audit/function-index/pc98-overlay-21.md",
     "audit/resident-data-tables.md",
     "spec/812-coin-values-and-class-name-table.md",
-    "spec/814-rest-driver-and-pool-worth.md"
+    "spec/814-rest-driver-and-pool-worth.md",
+    "spec/903-identify-item.md"
    ]
   },
   {
@@ -24369,6 +24380,7 @@
    "note": "把一格畫出來(retf 4，(座標x, 座標y))：以 遠指標(DS:6E92h) 為地圖記錄，基準 := 座標 − 地圖^[2]/[3]；對最多四格用 0011h 取偏移、0732h 判在不在視窗內，取 地圖^[7 + y*32h + x] 的地形碼查 DS:26A5h(地形表 +3 圖磚)畫上去(座標×3)，地圖^[4]≠0 時再多畫一層 19h；最後用 0509h 查佔用者，有的話用 DS:6D35h 取戰鬥員畫上去。★地圖記錄版面定案：+2/+3 視窗原點、+4 旗標、+5 體型參數、+7 起每列 32h(50) 欄的地形碼——與 spec 888 的 x∈0..49 互相定界",
    "citations": [
     "audit/function-index/dos-overlay-32.md",
+    "audit/function-index/pc98-overlay-32.md",
     "spec/888-move-and-redraw.md",
     "spec/902-draw-unit-on-map.md"
    ]
@@ -31731,11 +31743,11 @@
    "note": "神殿收費的共用常式（九項服務都呼叫它）：retf 6 = (價錢: word, 服務名: 遠指標)，回傳 'Y'/'N'。先拼句子：0A65h:064Eh(0FFh,@暫存,服務名)，再用 0A65h:06C1h 依序接上 'は、'(4 bytes)、014Ah:004Dh 轉出的價錢字串、'ｇｐでかけてあげましょう。'(26 bytes，全形 ｇｐ)，交給 \u003c0418h:0E6Ah\u003e(暫存,1,0,0Ah,16h,26h,11h,1) 顯示。接著顯示 'かけてもらいますか？'(20 bytes) 並用 \u003c0164h:0048h\u003e(0Dh,0Ah,0Fh) 取答案。答 'Y' 時 有 := \u003c00FDh:0057h\u003e(DS:9594h)；價錢 \u003c= 有 就 \u003c0110h:006Bh\u003e(有 − 價錢)；否則 池 := \u003c0110h:0075h\u003e(@DS:0A00Ah)（longint），價錢 \u003c= 池 就 \u003c0110h:0070h\u003e(低字(池 − 價錢))（32 位元相減但只傳低 16 位），都不夠則顯示 'お金が足りません'、\u003c014Ah:007Fh\u003e 並把答案改成 'N'。答仍為 'Y' 時 \u003c014Ah:0089h\u003e、顯示 名字+'は治った'（九項服務共用同一句結尾）、\u003c014Ah:0084h\u003e(1)。PC-98 側匯出解碼正確。spec 822",
    "citations": [
     "audit/function-index/dos-overlay-07.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-07.md",
-    "audit/function-index/pc98-overlay-21.md",
-    "audit/function-strings.md"
+    "audit/function-index/pc98-overlay-21.md"
    ]
   },
   {
@@ -34651,11 +34663,15 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "904",
+   "note": "同 DOS overlay-10:0050Eh（同位址），只差一條 xor ah,ah(DOS 零擴充後 cmp ax、PC-98 cmp al)；13 條是 DS:4A0Eh↔7AC4h、DS:4A0Fh↔7AC5h 的位址",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
-    "spec/776-first-person-view-scan-and-ega-rect-fill.md"
+    "spec/776-first-person-view-scan-and-ega-rect-fill.md",
+    "spec/904-dungeon-wall-far-layer.md"
    ]
   },
   {
@@ -43336,9 +43352,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "903",
+   "note": "同 DOS overlay-19:02A42h。物品節點 +35h↔+5Dh(spec 832 的 +28h 位移)；★多一處 物品^[5Dh]:=0 與一次字串串接，位置與 DOS 那一處不同",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/903-identify-item.md"
    ]
   },
   {
@@ -51442,9 +51462,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -51577,9 +51597,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -51997,9 +52017,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
@@ -52132,9 +52152,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
