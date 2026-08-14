@@ -13748,14 +13748,17 @@
    "callers": 6,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1019-attack-action-and-ammo.md",
+   "note": "攻擊動作(retf 12h ＝ 9 word；bp+14h 目標、bp+10h 攻擊者、bp+0Eh 旗標、bp+0Ah 物品(可 NIL)、bp+06h 未宣稱遠指標)。轉向 → 重畫雙方 → 目標^[18Dh]^[0Ah] := 攻擊者(鎖定) → 延遲 → sub_14E8 結算 → 耗彈 → 派生數值重算(overlay-24 entry#7)。★★ DOS 有 攻擊者^[18Dh]^[9] := (sub_29A2 的方向 + 4) mod 8 的朝向正規化(兩處)，PC-98 整個拿掉、方向直接用，且 +18Eh^[9] 在該段完全沒被寫 —— 這是行為差異不只是位址不同。★★★ 耗彈歸零且 overlay-24 entry#42 成立且 special(3) \u003c\u003e 89h 時，GetMem 一份物品節點複製掉在地上：DOS GetMem/Move 3Fh(63 bytes)、PC-98 67h(103 bytes)，差 28h —— 物品節點 +28h 的第三次獨立確認(spec 1011 由 13 個欄位量、spec 1013 由 next 位移量、本支由 GetMem 大小量)。★★ 新節點掛進 DS:6F8Ch —— 與 spec 1013 的『商店存貨鏈』同一格 ⇒ 那條鏈其實是「這個地點地上有什麼」。★ 耗彈數在 DS:75D7h(PC-98 DS:0A869h)。⚠ PC-98 延遲是 DS:7F16h × 19h(25)，DOS 寫死 64h(100)；spec 1015 另一支是 × 32h(50) ⇒ 比例逐處重調。位址：75E5h/75E6h↔0A877h/0A878h、758Dh/758Eh↔0A81Fh/0A820h、6506h/6508h↔9594h/9596h；角色 +18Dh/+19Ch/+19Dh↔+18Eh/+19Dh/+19Eh(＋1)、物品欄位全部 +28h",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
+    "spec/1019-attack-action-and-ammo.md",
     "spec/805-combat-state-allocation-and-initial-facing.md",
     "spec/817-opportunity-attack-and-take-menu.md",
-    "spec/833-sweep-attack.md",
-    "spec/851-grapple-round-and-effect-node-plus3.md"
+    "spec/833-sweep-attack.md"
    ]
   },
   {
@@ -18661,6 +18664,7 @@
    "spec": "docs/spec/1018-gem-jewelry-appraisal.md",
    "note": "寶石與珠寶的鑑價畫面(retf 4)：角色 +105h(word)=寶石數、+107h(word)=珠寶數，兩者皆 0 就顯示 'No Gems or Jewelry' 離開。★★★ 寶石價值 = 1d100 分段：1-25→10、26-50→50、51-70→100、71-90→500、91-99→1000、100→5000 gp（AD\u0026D 1e DMG 的寶石基礎價值表，六段一格不差）。★★★ 珠寶價值 = 1d100 分段後 @Random$q4Word(n) + 基底：1-10→Random(900)+100、11-20→Random(1000)+200、21-40→Random(1500)+300、41-50→Random(2500)+500、51-70→Random(5000)+1000、71-90→Random(6000)+2000、91-100→Random(10000)+2000（與 1e DMG 的珠寶表七段對得上，上界都差 1 因為 Random(n) 回 0..n−1）。★★ 選 'Sell Keep' 的 K：GetMem 3Fh(63 bytes) ⇒ 物品節點在 DOS 是 63 bytes；FillChar 後只設 +2Ah next=NIL、+34h ready=0、+31h namenum(3)=65h(101)、+30h/+2Fh namenum(2)/(1)=0、+2Eh itemptr=46h(70)、+3Ah value=擲出的價值(欄位名全部來自 spec 1011 的除錯畫面)。★★★ 中文化：DOS 有 ' Gem'/' Gems' 與 ' piece of Jewelry'/' pieces of Jewelry' 兩組英文單複數，PC-98 各自合併成一個(「宝石」/「宝石飾り」)——中文要跟 PC-98。三個選單選項 PC-98 都是 6 bytes = 3 全形字",
    "citations": [
+    "audit/function-index/pc98-overlay-21.md",
     "audit/function-strings.md",
     "spec/1018-gem-jewelry-appraisal.md"
    ]
@@ -40152,7 +40156,13 @@
    "callers": 6,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1019-attack-action-and-ammo.md",
+   "note": "攻擊動作(retf 12h ＝ 9 word；bp+14h 目標、bp+10h 攻擊者、bp+0Eh 旗標、bp+0Ah 物品(可 NIL)、bp+06h 未宣稱遠指標)。轉向 → 重畫雙方 → 目標^[18Dh]^[0Ah] := 攻擊者(鎖定) → 延遲 → sub_14E8 結算 → 耗彈 → 派生數值重算(overlay-24 entry#7)。★★ DOS 有 攻擊者^[18Dh]^[9] := (sub_29A2 的方向 + 4) mod 8 的朝向正規化(兩處)，PC-98 整個拿掉、方向直接用，且 +18Eh^[9] 在該段完全沒被寫 —— 這是行為差異不只是位址不同。★★★ 耗彈歸零且 overlay-24 entry#42 成立且 special(3) \u003c\u003e 89h 時，GetMem 一份物品節點複製掉在地上：DOS GetMem/Move 3Fh(63 bytes)、PC-98 67h(103 bytes)，差 28h —— 物品節點 +28h 的第三次獨立確認(spec 1011 由 13 個欄位量、spec 1013 由 next 位移量、本支由 GetMem 大小量)。★★ 新節點掛進 DS:6F8Ch —— 與 spec 1013 的『商店存貨鏈』同一格 ⇒ 那條鏈其實是「這個地點地上有什麼」。★ 耗彈數在 DS:75D7h(PC-98 DS:0A869h)。⚠ PC-98 延遲是 DS:7F16h × 19h(25)，DOS 寫死 64h(100)；spec 1015 另一支是 × 32h(50) ⇒ 比例逐處重調。位址：75E5h/75E6h↔0A877h/0A878h、758Dh/758Eh↔0A81Fh/0A820h、6506h/6508h↔9594h/9596h；角色 +18Dh/+19Ch/+19Dh↔+18Eh/+19Dh/+19Eh(＋1)、物品欄位全部 +28h",
+   "citations": [
+    "spec/1019-attack-action-and-ammo.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -53225,9 +53235,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 41,
+   "Read": 42,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -53780,9 +53790,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 43,
+   "Read": 44,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
