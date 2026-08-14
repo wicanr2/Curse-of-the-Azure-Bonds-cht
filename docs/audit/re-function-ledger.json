@@ -23809,6 +23809,42 @@
    "level": "exact",
    "spec": "911",
    "note": "同 DOS overlay-04:00B12h。選單表 DS:0BBh(每筆 29h)↔DS:18Fh(每筆 51h)，PC-98 每一筆用全形空白把價格對齊到右邊(1000/1000/100/350/600/5000/5500/1000/3500/2000)，DOS 每筆不含價格。★第 7/8 項順序與 DOS 相反(レイズ・デッド/ニュートラライズ・ポイズン)，但★分派也跟著換了：PC-98 索引 6 叫 06A8h(=DOS 063Eh Raise Dead)、索引 7 叫 093Eh(=DOS 0892h Neutralize Poison)，兩平台各自自洽，不是在地化 bug。另多兩格熱鍵 0A33Fh/0A335h='H'、0A37Eh/0A33Eh='E'"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 5292,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "913",
+   "note": "分公用池(retf，無參數)：走隊伍鏈，+0F7h > 7Fh 且 +195h = 0 的人把 (+0F8h and 7) 同時加進『總份』與『人數』，其餘只讓人數 +1；總份 > 0 就對七個公用池各算 每份 := 池 div 人數 並扣掉 每份 × 總份。有扣就逐一顯示 名字＋' takes and hides '＋('his'/'her' 依 +119h)＋' share.'，每人佔兩列，最後印 'press <enter>/<return> to continue'。★+119h = 性別。⚠扣掉的錢沒有寫進任何角色錢包，本支沒讀到去向"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
+   "ea": 5382,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "913",
+   "note": "同 DOS overlay-05:014ACh，但★'his'/'her' 兩條路合併成一句 'は自分の分け前を取り、隠した。'——日文不分性別，這是『DOS 兩個只差一處的字串在 PC-98 併成一個』模式的第四個出現點(前三：spec 841 大小寫、841/memorize、893 單複數)。結尾另多一段熱鍵字串指派到 DS:0A335h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 11259,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "914",
+   "note": "依物品類別選飛行動畫與音效(retf 0Ch)：先放音效、用 29A2h 取方向 r，依 物品^[2Eh] 分五組——①09h/15h/64h/1Ch/1Fh/49h 依 r 的奇偶與 div4/mod4 選圖磚 ②02h/07h/14h 單一圖磚 基+3、步 4 延遲 32h ③55h/56h 圖磚 基+4、步 4 延遲 32h ④65h/2Fh/62h 兩格輪播、步 2 延遲 0Ah ⑤其餘 兩格輪播、步 2 延遲 14h；最後叫 156Dh(spec 886 同一支)畫從起點到迄點的軌跡。⚠DOS 開頭的 var_6 := 遠指標(DS:75E0h)^[11h] 之後從未再讀，是死變數"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 10866,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "914",
+   "note": "同 DOS overlay-13:02BFBh，但★延遲不用常數，改成 DS:7F16h(遊戲速度) × 5 或 × 2——這是 DS:4FA9h 的第四個消費端，與 spec 895 一樣是 DOS 用常數、PC-98 才看速度值。另外把 DOS 那個死變數(DS:75E0h^[11h])拿掉，直接從 arg_0^[56h] 取類別碼"
   }
  ]
 }

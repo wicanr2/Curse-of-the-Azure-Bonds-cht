@@ -6556,6 +6556,7 @@
    "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
    "note": "Cure Blindness(retf，無參數)：\u003c014Dh:00A7h\u003e(@暫存, 21h, DS:6506h) 為假時顯示 CS:0263h 'is not blind.' 並用 本模組 0047h 問 Y/N；答 Y 才顯示 CS:0271h 'Cure Blindness' 並叫 本模組 00F3h(3E8h=1000)，再答 Y 就 \u003c0141h:002Fh\u003e(0, 0, 21h, DS:6506h) 移除效果 21h。與 spec 763 石化解除同一個模子(那支用 7D0h)",
    "citations": [
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/pc98-overlay-04.md",
     "spec/785-cross-platform-pairs-third-batch.md",
     "spec/796-cure-disease-neutralize-poison.md",
@@ -6578,6 +6579,7 @@
    "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
    "note": "Cure Disease：for i := 1 to 6 查 \u003c014Dh:00A7h\u003e(@暫存, byte[0DDh+i], DS:6506h)（疾病碼表 DS:0DDh[1..6] = 1Fh,22h,2Bh,2Ch,32h,39h，兩平台相同），任一命中即算生病；否則顯示 名字+'is not Diseased.'(16) 並用 0047h 再確認。答 Y 顯示 'Cure Disease'(12)、00F3h(3E8h=1000) 再問；答 Y 則 DS:6F9Ch:=1、for i := 1 to 6 呼叫 \u003c0141h:002Fh\u003e(DS:6506h, byte[0DDh+i], longint 0)、DS:6F9Ch:=0。retf。spec 796",
    "citations": [
+    "audit/function-index/dos-overlay-04.md",
     "spec/796-cure-disease-neutralize-poison.md",
     "spec/911-temple-service-menu.md"
    ]
@@ -6598,6 +6600,7 @@
    "spec": "docs/spec/820-temple-cure-services.md",
    "note": "神殿的四種治療：retf 2 = 服務編號 1..4。1 顯示 'Cure Light Wounds'(17)、本模組 00F3h(64h=100) 回 'Y' 才 \u003c0141h:008Eh\u003e(0, \u003c0141h:004Dh\u003e(1,8), DS:6506h)；2 'Cure Serious Wounds'(19)、15Eh=350、(2,8)+1；3 'Cure Critical Wounds'(20)、258h=600、(3,8)+3；4 'Heal'(4)、1388h=5000：r := (1,4)、n := 角色^[78h] − 角色^[1A4h] − r（byte 相減無夾制，缺量小於 1d4 會迴繞）、\u003c0141h:008Eh\u003e(0,n,DS:6506h)，再 \u003c0141h:002Fh\u003e 清掉 21h（失明）、byte[0DDh+1..6]（六個疾病碼）、44h，最後 \u003c0141h:0098h\u003e(DS:6506h,1) 與 (DS:6506h,2)。三個治癒術的骰數與 spec 815 戰鬥中施法相同。註：DOS 匯出把最後一次 0098h 解成 add dl,[bx+si-66h]／cbw／add [bx+di+1],al，原始位元組 B0 02 50 9A 98 00 41 01 ＝ mov al,2 / push ax / call far 0141h:0098h（PC-98 解對）。spec 820",
    "citations": [
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-strings.md",
     "spec/820-temple-cure-services.md",
     "spec/911-temple-service-menu.md"
@@ -6619,6 +6622,8 @@
    "spec": "docs/spec/821-raise-dead-and-con-loss.md",
    "note": "Raise Dead：retf。p := DS:6506h；(p^[195h] = 6) 或 = 1 才算死亡（可 := 1）；可 = 0 時顯示 名字+'is not dead.'(12) 並用 本模組 0047h 再確認。答 'Y' 才顯示 'Raise Dead'(10)、本模組 00F3h(157Ch = 5500) 再問一次；答 Y 且 可 \u003c\u003e 0 才動手。DS:6F9Ch := 1、\u003c0141h:002Fh\u003e(p,20h,longint 0)、(p,37h,longint 0)、DS:6F9Ch := 0；p^[1A4h] := 1（目前 HP）、p^[195h] := 0、p^[196h] := 1、p^[19h]（體質）\u003e 0 就減 1。接著重算最大 HP：損 := max(0, p^[78h] − p^[12Ch]（不含體質加成的基礎 HP）)；體質 \u003c 0Eh 就離開；和 := Σ(c=0..7, p^[109h+c] \u003e 0) —— c=2（戰士）用 等級*(體質−0Eh)、體質 \u003e 0Fh 用 等級*2、否則 等級；和 \u003e 0 時 損 := 損 div 和（有號）；除非 體質 \u003e= 11h 且 +10Bh \u003c= 0 且 +10Bh \u003c= +0E6h，否則 p^[78h] -= 損。三個門檻 0Eh/0Fh/11h 對上 AD\u0026D 體質 HP 加成表。spec 821",
    "citations": [
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/pc98-overlay-04.md",
     "audit/function-strings.md",
     "spec/821-raise-dead-and-con-loss.md",
     "spec/911-temple-service-menu.md"
@@ -6640,6 +6645,8 @@
    "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
    "note": "Neutralize Poison：只查效果碼 37h（\u003c014Dh:00A7h\u003e）；沒有就顯示 名字+'is not poisoned.'(16) 並用 0047h 再確認。答 Y 顯示 'Neutralize Poison'(17)、00F3h(3E8h=1000) 再問；答 Y 則 DS:6F9Ch:=1，依序 \u003c0141h:002Fh\u003e(DS:6506h, 37h/16h/0Fh, longint 0)，DS:6F9Ch:=0。檢查與移除不對稱（查一個移三個）。retf。spec 796",
    "citations": [
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/pc98-overlay-04.md",
     "spec/796-cure-disease-neutralize-poison.md",
     "spec/911-temple-service-menu.md"
    ]
@@ -6660,6 +6667,7 @@
    "spec": "docs/spec/794-remove-curse-and-party-cycle-keys.md",
    "note": "Remove Curse：先掃 DS:6506h^[14Dh] 物品鏈（next +2Ah）找 +36h \u003c\u003e 0（詛咒旗標）；沒有就查效果碼 24h（\u003c014Dh:00A7h\u003e），兩者都沒有才顯示 名字+'is not cursed.'(14) 並用 本模組 0047h 再確認；答 Y 則顯示 'Remove Curse'(12)、本模組 00F3h(0DACh=3500) 再問一次，答 Y 則 DS:7435h := DS:6506h 後呼叫 \u003c011Ah:004Dh\u003e。與 spec 763/785 的神殿服務同一個模子，同樣沒有扣款動作。retf。spec 794",
    "citations": [
+    "audit/function-index/dos-overlay-04.md",
     "spec/794-remove-curse-and-party-cycle-keys.md",
     "spec/911-temple-service-menu.md"
    ]
@@ -6680,6 +6688,7 @@
    "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
    "note": "石化解除（retf，無參數）：DS:6506h^[195h] 不等於 7 時先顯示 名字+'is not stoned.'(14) 並用 本模組 0047h 問 'cast cure anyway: '；答 'Y' 才顯示 'Stone to Flesh'(14) 並叫 本模組 00F3h(7D0h = 2000)；再答 'Y' 且狀態仍是 7 才把 +195h 設 0、+196h 設 1、+1A4h（目前 HP）設 1。狀態欄位值 7 ＝ 石化。註：DOS 匯出把最後一句解成 test [si+101h], sp，原始位元組 26 C6 85 A4 01 01 ＝ mov byte ptr es:[di+1A4h], 1（PC-98 同 entry 已解讀，兩邊一致）。spec 763／822",
    "citations": [
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-strings.md",
     "spec/911-temple-service-menu.md"
    ]
@@ -6700,6 +6709,7 @@
    "spec": "911",
    "note": "神殿治療選單(retf，無參數)：167h:43h 建 10 個節點，每個填 DS:0BBh + i*29h 的選單字串(Cure Blindness/Cure Disease/Cure Light|Serious|Critical Wounds/Heal/Neutralize Poison/Raise Dead/Remove Curse/Stone to Flesh/Exit)；標題 名字＋', how can we help you?'；167h:39h 收鍵，48h 或 0Dh 時依索引分派 0280h/0324h/043Dh(1..4)/0892h/063Eh/097Bh/0A63h，索引 0Ah 結束；最後 167h:48h 釋放",
    "citations": [
+    "audit/function-index/pc98-overlay-04.md",
     "audit/function-strings.md",
     "spec/911-temple-service-menu.md"
    ]
@@ -7012,11 +7022,15 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "913",
+   "note": "分公用池(retf，無參數)：走隊伍鏈，+0F7h \u003e 7Fh 且 +195h = 0 的人把 (+0F8h and 7) 同時加進『總份』與『人數』，其餘只讓人數 +1；總份 \u003e 0 就對七個公用池各算 每份 := 池 div 人數 並扣掉 每份 × 總份。有扣就逐一顯示 名字＋' takes and hides '＋('his'/'her' 依 +119h)＋' share.'，每人佔兩列，最後印 'press \u003center\u003e/\u003creturn\u003e to continue'。★+119h = 性別。⚠扣掉的錢沒有寫進任何角色錢包，本支沒讀到去向",
    "citations": [
     "audit/function-index/dos-overlay-05.md",
     "audit/function-strings.md",
-    "spec/891-battle-teardown.md"
+    "spec/891-battle-teardown.md",
+    "spec/913-pool-share-out.md"
    ]
   },
   {
@@ -7054,7 +7068,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "尾呼叫：最後一條是 `jmp loc_15B3`，控制權轉交後不返回；先設定 `mov [bp-4], ax`、`mov [bp-2], dx`（body 共 9 bytes，已逐條讀完）"
+   "note": "尾呼叫：最後一條是 `jmp loc_15B3`，控制權轉交後不返回；先設定 `mov [bp-4], ax`、`mov [bp-2], dx`（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "spec/913-pool-share-out.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13033,7 +13050,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, es:[di+18Dh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
-    "spec/886-target-cursor-step.md"
+    "spec/886-target-cursor-step.md",
+    "spec/914-projectile-animation-by-item-type.md"
    ]
   },
   {
@@ -13424,7 +13442,8 @@
     "audit/function-index/pc98-overlay-13.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md",
     "spec/786-money-pool-overflow-and-turn-cost.md",
-    "spec/899-combat-aim-menu.md"
+    "spec/899-combat-aim-menu.md",
+    "spec/914-projectile-animation-by-item-type.md"
    ]
   },
   {
@@ -13438,7 +13457,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "914",
+   "note": "依物品類別選飛行動畫與音效(retf 0Ch)：先放音效、用 29A2h 取方向 r，依 物品^[2Eh] 分五組——①09h/15h/64h/1Ch/1Fh/49h 依 r 的奇偶與 div4/mod4 選圖磚 ②02h/07h/14h 單一圖磚 基+3、步 4 延遲 32h ③55h/56h 圖磚 基+4、步 4 延遲 32h ④65h/2Fh/62h 兩格輪播、步 2 延遲 0Ah ⑤其餘 兩格輪播、步 2 延遲 14h；最後叫 156Dh(spec 886 同一支)畫從起點到迄點的軌跡。⚠DOS 開頭的 var_6 := 遠指標(DS:75E0h)^[11h] 之後從未再讀，是死變數",
+   "citations": [
+    "spec/914-projectile-animation-by-item-type.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22811,6 +22836,7 @@
    "note": "八格防禦數值(retf 4，角色)：先走物品鏈找已裝備且 +3Eh\u003e80h 的，用 (+3Eh and 7Fh) 判部位 0Bh(盾)與 02h(特殊)；基 := 13BCh(角色)×+117h + +10Fh，特殊時基至少 4。for i:=1 to 8 算 角色^[0E9h+i] := byte[3EBEh+基*8+i] + 有號(byte[3F1Eh+種族*8+i]) + 調，扣成負的就寫 0；盾只在 i=1(基至少 5)與 i=2(基至少 7)給 +5 調整；i\u003c6 再加 byte[3F31h+敏捷*5+i]；特殊時全部 +0Ah。★八格對上 spec 854 的八個方向，盾只保護前兩格。⚠DOS 側 0C2Dh 與 0C99h 起兩段反組譯錯位，由 PC-98 校正",
    "citations": [
     "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-25.md",
     "spec/811-derived-stats-and-class-item-mask.md",
     "spec/912-eight-way-defence-values.md"
    ]
@@ -31838,7 +31864,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
-   "note": "Cure Blindness(retf)：與 DOS overlay-04:0280h 53 條同形，訊息換成 CS:0273h 'は盲目ではありませんよ。' 與 CS:028Ch 'キュア・ブラインドネス'，呼叫結構完全沒改(差異 15 條全是位址與近呼叫目標)"
+   "note": "Cure Blindness(retf)：與 DOS overlay-04:0280h 53 條同形，訊息換成 CS:0273h 'は盲目ではありませんよ。' 與 CS:028Ch 'キュア・ブラインドネス'，呼叫結構完全沒改(差異 15 條全是位址與近呼叫目標)",
+   "citations": [
+    "spec/911-temple-service-menu.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31854,7 +31883,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
-   "note": "Cure Disease：for i := 1 to 6 查 \u003c014Ah:00A7h\u003e(@暫存, byte[1D9h+i], DS:9594h)（疾病碼表 DS:01D9h[1..6] = 1Fh,22h,2Bh,2Ch,32h,39h，兩平台相同），任一命中即算生病；否則顯示 名字+'は病いに冒されてはいませんよ。'(30 bytes) 並用 0047h 再確認。答 Y 顯示 'キュア・ディジーズ'(18 bytes)、00F3h(3E8h=1000) 再問；答 Y 則 DS:0A036h:=1、for i := 1 to 6 呼叫 \u003c013Eh:002Fh\u003e(DS:9594h, byte[1D9h+i], longint 0)、DS:0A036h:=0。retf。spec 796"
+   "note": "Cure Disease：for i := 1 to 6 查 \u003c014Ah:00A7h\u003e(@暫存, byte[1D9h+i], DS:9594h)（疾病碼表 DS:01D9h[1..6] = 1Fh,22h,2Bh,2Ch,32h,39h，兩平台相同），任一命中即算生病；否則顯示 名字+'は病いに冒されてはいませんよ。'(30 bytes) 並用 0047h 再確認。答 Y 顯示 'キュア・ディジーズ'(18 bytes)、00F3h(3E8h=1000) 再問；答 Y 則 DS:0A036h:=1、for i := 1 to 6 呼叫 \u003c013Eh:002Fh\u003e(DS:9594h, byte[1D9h+i], longint 0)、DS:0A036h:=0。retf。spec 796",
+   "citations": [
+    "spec/911-temple-service-menu.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31872,7 +31904,8 @@
    "spec": "docs/spec/820-temple-cure-services.md",
    "note": "神殿的四種治療：retf 2 = 服務編號 1..4。1 顯示 'キュア・ライト・ウーンズ'(24 bytes)、本模組 00F3h(64h=100) 回 'Y' 才 \u003c013Eh:008Eh\u003e(0, \u003c013Eh:004Dh\u003e(1,8), DS:9594h)；2 'キュア・シリアス・ウーンズ'(26 bytes)、15Eh=350、(2,8)+1；3 'キュア・クリティカル・ウーンズ'、258h=600、(3,8)+3；4 'ヒール'、1388h=5000：r := (1,4)、n := 角色^[78h] − 角色^[1A4h] − r（byte 相減無夾制，缺量小於 1d4 會迴繞）、\u003c013Eh:008Eh\u003e(0,n,DS:9594h)，再 \u003c013Eh:002Fh\u003e 清掉 21h（失明）、byte[1D9h+1..6]（六個疾病碼）、44h，最後 \u003c013Eh:0098h\u003e(DS:9594h,1) 與 (DS:9594h,2)。三個治癒術的骰數與 spec 815 戰鬥中施法相同。註：DOS 匯出把最後一次 0098h 解成 add dl,[bx+si-66h]／cbw／add [bx+di+1],al，原始位元組 B0 02 50 9A 98 00 41 01 ＝ mov al,2 / push ax / call far 013Eh:0098h（PC-98 解對）。spec 820",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/911-temple-service-menu.md"
    ]
   },
   {
@@ -31906,7 +31939,8 @@
    "spec": "docs/spec/821-raise-dead-and-con-loss.md",
    "note": "Raise Dead：retf。p := DS:9594h；(p^[195h] = 6) 或 = 1 才算死亡（可 := 1）；可 = 0 時顯示 名字+'は死んではいませんよ'(20 bytes) 並用 本模組 0047h 再確認。答 'Y' 才顯示 'レイズ・デッド'(14 bytes)、本模組 00F3h(157Ch = 5500) 再問一次；答 Y 且 可 \u003c\u003e 0 才動手。DS:0A036h := 1、\u003c013Eh:002Fh\u003e(p,20h,longint 0)、(p,37h,longint 0)、DS:0A036h := 0；p^[1A4h] := 1（目前 HP）、p^[195h] := 0、p^[196h] := 1、p^[19h]（體質）\u003e 0 就減 1。接著重算最大 HP：損 := max(0, p^[78h] − p^[12Ch]（不含體質加成的基礎 HP）)；體質 \u003c 0Eh 就離開；和 := Σ(c=0..7, p^[109h+c] \u003e 0) —— c=2（戰士）用 等級*(體質−0Eh)、體質 \u003e 0Fh 用 等級*2、否則 等級；和 \u003e 0 時 損 := 損 div 和（有號）；除非 體質 \u003e= 11h 且 +10Bh \u003c= 0 且 +10Bh \u003c= +0E6h，否則 p^[78h] -= 損。三個門檻 0Eh/0Fh/11h 對上 AD\u0026D 體質 HP 加成表。spec 821 PC-98 另外多一道 DOS 沒有的檢查：已死時若 (p^[197h] = 8) 或 (p^[74h] = 2) 就顯示 名字+'は生き返りませんよ'(18 bytes) 並再確認一次。",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/911-temple-service-menu.md"
    ]
   },
   {
@@ -31923,7 +31957,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
-   "note": "Neutralize Poison：只查效果碼 37h（\u003c014Ah:00A7h\u003e）；沒有就顯示 名字+'は毒を受けてはいませんよ'(24 bytes) 並用 0047h 再確認。答 Y 顯示 'ニュートラライズ・ポイズン'(26 bytes)、00F3h(3E8h=1000) 再問；答 Y 則 DS:0A036h:=1，依序 \u003c013Eh:002Fh\u003e(DS:9594h, 37h/16h/0Fh, longint 0)，DS:0A036h:=0。檢查與移除不對稱（查一個移三個）。retf。spec 796"
+   "note": "Neutralize Poison：只查效果碼 37h（\u003c014Ah:00A7h\u003e）；沒有就顯示 名字+'は毒を受けてはいませんよ'(24 bytes) 並用 0047h 再確認。答 Y 顯示 'ニュートラライズ・ポイズン'(26 bytes)、00F3h(3E8h=1000) 再問；答 Y 則 DS:0A036h:=1，依序 \u003c013Eh:002Fh\u003e(DS:9594h, 37h/16h/0Fh, longint 0)，DS:0A036h:=0。檢查與移除不對稱（查一個移三個）。retf。spec 796",
+   "citations": [
+    "spec/911-temple-service-menu.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31939,7 +31976,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/794-remove-curse-and-party-cycle-keys.md",
-   "note": "Remove Curse：先掃 DS:9594h^[14Dh] 物品鏈（next +52h）找 +5Eh \u003c\u003e 0（詛咒旗標）；沒有就查效果碼 24h（\u003c014Ah:00A7h\u003e），兩者都沒有才顯示 名字+'は呪われてはいませんよ'(22 bytes) 並用 本模組 0047h 再確認；答 Y 則顯示 'リムーブ・カース'(16 bytes)、本模組 00F3h(0DACh=3500) 再問一次，答 Y 則 DS:0A521h := DS:9594h 後呼叫 \u003c011Ah:004Dh\u003e。與 spec 763/785 的神殿服務同一個模子，同樣沒有扣款動作。retf。spec 794"
+   "note": "Remove Curse：先掃 DS:9594h^[14Dh] 物品鏈（next +52h）找 +5Eh \u003c\u003e 0（詛咒旗標）；沒有就查效果碼 24h（\u003c014Ah:00A7h\u003e），兩者都沒有才顯示 名字+'は呪われてはいませんよ'(22 bytes) 並用 本模組 0047h 再確認；答 Y 則顯示 'リムーブ・カース'(16 bytes)、本模組 00F3h(0DACh=3500) 再問一次，答 Y 則 DS:0A521h := DS:9594h 後呼叫 \u003c011Ah:004Dh\u003e。與 spec 763/785 的神殿服務同一個模子，同樣沒有扣款動作。retf。spec 794",
+   "citations": [
+    "spec/911-temple-service-menu.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31960,7 +32000,8 @@
     "audit/embedded-strings.md",
     "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
     "spec/785-cross-platform-pairs-third-batch.md",
-    "spec/796-cure-disease-neutralize-poison.md"
+    "spec/796-cure-disease-neutralize-poison.md",
+    "spec/911-temple-service-menu.md"
    ]
   },
   {
@@ -31977,7 +32018,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "911",
-   "note": "同 DOS overlay-04:00B12h。選單表 DS:0BBh(每筆 29h)↔DS:18Fh(每筆 51h)，PC-98 每一筆用全形空白把價格對齊到右邊(1000/1000/100/350/600/5000/5500/1000/3500/2000)，DOS 每筆不含價格。★⚠第 7/8 項順序相反：DOS 是 Neutralize Poison/Raise Dead，PC-98 是 レイズ・デッド/ニュートラライズ・ポイズン，而 case 分派是依索引寫死的——要嘛 PC-98 連 0892h/063Eh 的內容也對調了，要嘛是在地化 bug，中文化前必須先確認。另多兩格熱鍵 0A33Fh/0A335h='H'、0A37Eh/0A33Eh='E'",
+   "note": "同 DOS overlay-04:00B12h。選單表 DS:0BBh(每筆 29h)↔DS:18Fh(每筆 51h)，PC-98 每一筆用全形空白把價格對齊到右邊(1000/1000/100/350/600/5000/5500/1000/3500/2000)，DOS 每筆不含價格。★第 7/8 項順序與 DOS 相反(レイズ・デッド/ニュートラライズ・ポイズン)，但★分派也跟著換了：PC-98 索引 6 叫 06A8h(=DOS 063Eh Raise Dead)、索引 7 叫 093Eh(=DOS 0892h Neutralize Poison)，兩平台各自自洽，不是在地化 bug。另多兩格熱鍵 0A33Fh/0A335h='H'、0A37Eh/0A33Eh='E'",
    "citations": [
     "audit/function-strings.md",
     "spec/911-temple-service-menu.md"
@@ -32390,10 +32431,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "913",
+   "note": "同 DOS overlay-05:014ACh，但★'his'/'her' 兩條路合併成一句 'は自分の分け前を取り、隠した。'——日文不分性別，這是『DOS 兩個只差一處的字串在 PC-98 併成一個』模式的第四個出現點(前三：spec 841 大小寫、841/memorize、893 單複數)。結尾另多一段熱鍵字串指派到 DS:0A335h",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/913-pool-share-out.md"
    ]
   },
   {
@@ -39047,7 +39092,13 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "914",
+   "note": "同 DOS overlay-13:02BFBh，但★延遲不用常數，改成 DS:7F16h(遊戲速度) × 5 或 × 2——這是 DS:4FA9h 的第四個消費端，與 spec 895 一樣是 DOS 用常數、PC-98 才看速度值。另外把 DOS 那個死變數(DS:75E0h^[11h])拿掉，直接從 arg_0^[56h] 取類別碼",
+   "citations": [
+    "spec/914-projectile-animation-by-item-type.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51499,9 +51550,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -51619,9 +51670,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 36,
+   "Read": 37,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -52054,9 +52105,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,
@@ -52174,9 +52225,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 38,
+   "Read": 39,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
