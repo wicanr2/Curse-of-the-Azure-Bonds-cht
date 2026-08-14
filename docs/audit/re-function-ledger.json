@@ -25150,6 +25150,24 @@
    "level": "exact",
    "spec": "docs/spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md",
    "note": "DOS 01975h 的對應：像素用 +11h、遮罩用 高×寬 ⇒ PC-98 的 +11h ＝ 3×高×寬"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 8786,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/987-ecl-damage-message-and-pc98-spell-name-table.md",
+   "note": "ECL 傷害訊息：HP+10 < 傷害 才印 ' dies. '（AD&D −10 線）；DS:65A0h/65A1h 是訊息框游標，列 17..22 滿了就暫停"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 26057,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/987-ecl-damage-message-and-pc98-spell-name-table.md",
+   "note": "施法訊息兩種版面；★ DS:49B3h 是 PC-98 法術名稱表（每筆 61 bytes）；019Eh:06B5h ↔ 01A0h:04CDh"
   }
  ]
 }

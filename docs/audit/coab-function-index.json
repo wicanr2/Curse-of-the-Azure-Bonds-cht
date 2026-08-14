@@ -8069,9 +8069,14 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/987-ecl-damage-message-and-pc98-spell-name-table.md",
+   "note": "ECL 傷害訊息：HP+10 \u003c 傷害 才印 ' dies. '（AD\u0026D −10 線）；DS:65A0h/65A1h 是訊息框游標，列 17..22 滿了就暫停",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/982-message-box-geometry.md",
+    "spec/987-ecl-damage-message-and-pc98-spell-name-table.md"
    ]
   },
   {
@@ -22559,7 +22564,8 @@
    "note": "扣血並決定狀態:剩餘/溢出兩個變數,溢出 \u003e 9(HP \u003c= −10)→狀態 6;剩餘=0 且原狀態=1 →狀態 6;溢出 1..9 →狀態 5,且**只在 DS:4FBAh=5 時**把溢出記進 角色^[18Dh]^[0Eh](spec 696 包紮會清掉它);剩餘=0 →狀態 4;其餘不變。最後用**更新後**的狀態測 CS:2401h 的集合 {0,1}:在集合裡才寫回剩餘 HP,否則 角色^[196h]:=0、HP 歸零,且 DS:4FBAh=5 時把 byte [6F90h + 角色^[197h]] 減 1(spec 692 的統計陣列)並清 18Dh^[3]。⚠ 0A54:08D4h 是 Pascal 的 in(32 bytes 位元集合),call 後直接接 jz/jnz 沒有 or al,al——極性由 overlay-26:06B5h 的字元集合 {空白,0-9,A-Z} 定死:**ZF=1 是「不在集合裡」**",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/698-set-membership-polarity-and-damage.md"
+    "spec/698-set-membership-polarity-and-damage.md",
+    "spec/987-ecl-damage-message-and-pc98-spell-name-table.md"
    ]
   },
   {
@@ -47708,9 +47714,13 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/987-ecl-damage-message-and-pc98-spell-name-table.md",
+   "note": "施法訊息兩種版面；★ DS:49B3h 是 PC-98 法術名稱表（每筆 61 bytes）；019Eh:06B5h ↔ 01A0h:04CDh",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/987-ecl-damage-message-and-pc98-spell-name-table.md"
    ]
   },
   {
@@ -52247,9 +52257,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 30,
+   "Read": 31,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
@@ -53027,9 +53037,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 101,
+   "Read": 102,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
