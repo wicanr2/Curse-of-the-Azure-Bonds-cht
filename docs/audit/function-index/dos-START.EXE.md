@@ -99,7 +99,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15F53` | sub_15F53 | — | 23 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @DELAY(byte_21169 × 100) | — |
 | `15F6A` | sub_15F6A | — | 470 | 207 | 2 | 3 |  | 待解讀 | — | — | — |
 | `16140` | sub_16140 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `16147` | sub_16147 | — | 159 | 78 | 1 | 1 |  | 待解讀 | — | — | — |
+| `16147` | sub_16147 | — | 159 | 78 | 1 | 1 |  | 已解讀 | exact | 935<br>把一個 8×8 字模畫進 CGA 畫面(retn 0Ah)：di = 列 × 140h + 欄 × 2；前景與背景都先過 DS:256Dh 轉換表(同 spec 932)，然後跑 4 對掃描線——偶數列寫 0B800h、奇數列寫 0BA00h，每列 2 bytes、每 byte 4 個像素(2 bits/像素 = CGA 四色，rol dl/dh 各兩次把顏色轉到下一個像素)，字模位元取自 DS:6598h + bx(每條掃描線 bx 遞增)。140h = 320 = 4 列 × 80 bytes。1618Eh 的 db 90h 與 161C3h 的 align 2 是對齊填充。⚠arg_0 沒有被讀 | — |
 | `161E6` | sub_161E6 | — | 96 | 46 | 1 | 1 |  | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>EGA 8×8 字元繪製(近呼叫 retn 0Ah)：ES=A000h、DI = 文字列*140h + 位元組欄；設 Graphics Mode=0Ah(Write Mode 2)、Data Rotate=0、Color Don't Care=0；8 次迴圈用 DS:[6598h+i] 當 Bit Mask 畫前景色，再用反相遮罩畫背景色，每列 DI+=28h(40 bytes)；結束還原四個暫存器。可證畫面每列 40 bytes(320 像素寬)、字元格 8×8。⚠ 字模固定取自 DS:6598h 不由參數傳入；第一個 word 參數整支沒讀。中文化要接手的就是 DS:6598h 這個字模入口 | — |
 | `16246` | sub_16246 | — | 271 | 131 | 1 | 1 |  | 待解讀 | — | — | — |
 | `16360` | sub_16360 | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @FreeMem(ptr, (size+7) and 0FFF8h) ⇒ 釋放對齊到 8 bytes 的區塊 | — |
@@ -111,7 +111,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16566` | sub_16566 | — | 75 | 32 | 1 | 6 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>等待 overlay 磁片(retf)：反覆用 1685Fh 檢查 'game.ovr' 是否存在，不在就印 'Please insert overlay disk.' 加換行、等一個按鍵再試。⚠ 沒有離開的出口 | — |
 | `16645` | sub_16645 | — | 538 | 219 | 1 | 11 |  | 待解讀 | — | — | — |
 | `1685F` | sub_1685F | — | 74 | 33 | 4 | 3 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>檔案是否存在(retf 4)：把參數字串複製進 50h bytes 緩衝，FindFirst(路徑, 0, 記錄)，回傳 (word_24E58 = 0) and (字串長度 <> 0)。word_24E58 是 DosError | — |
-| `168A9` | sub_168A9 | — | 207 | 82 | 1 | 5 |  | 待解讀 | — | — | — |
+| `168A9` | sub_168A9 | — | 207 | 82 | 1 | 5 |  | 已解讀 | exact | 935<br>刪掉所有出現的子字串(retf 8 = (要刪的, 主字串, 結果))：兩個輸入各限長 0FFh，n := length(主) − length(要刪) + 1，for i := 1 to n 若 Copy(主, i, length(要刪)) = 要刪 就 Delete；結果限長 0FFh 寫回。用 Turbo Pascal 的 Copy/Delete/字串比較 RTL。⚠上界 n 只算一次、刪除後 i 不退回 → 緊接著形成的新出現不會被刪(從 'aabb' 刪 'ab' 只刪一次)；i 會掃過縮短後的尾端但 Copy 越界回較短字串、比對不中，不會出錯只是白跑 | — |
 | `16A62` | sub_16A62 | — | 194 | 83 | 1 | 3 |  | 已解讀 | exact | docs/spec/774-packbits-rle-and-combat-hotkeys.md<br>PackBits 式 RLE 解壓(retf 10h，四個遠指標，位置參數是指向指標的遠指標)：有號碼 n 落在 0..7Eh 時 Move(來源+1, 目的, n+1)、來源前進 n+2；落在 −127..−1 時 FillChar(目的, −n, 來源[+1])、來源前進 2；直到 來源位置 >= 長度^(無號)。⚠ 7Fh 與 80h 兩條分支都不成立，來源位置不前進 → 無限迴圈 | — |
 | `16B24` | sub_16B24 | — | 243 | 109 | 1 | 7 |  | 待解讀 | — | — | — |
 | `16C17` | sub_16C17 | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>依序 @Close 兩個 File 參數(先 arg_4 再 arg_0) | — |

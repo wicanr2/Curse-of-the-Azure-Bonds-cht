@@ -24286,6 +24286,24 @@
    "level": "exact",
    "spec": "934",
    "note": "格線座標的字串輸出(retf 0Ch = (字串, arg_4, arg_6, 列, 欄))：限長 0FFh 後，★列或欄 > 27h(39) 就整個跳過——這一層走 40×40 的格線座標系，不是 80×25 文字座標；逐字元叫 sub_15606h(1, 字元, 1, arg_4, arg_6, 列, 欄) 並讓欄遞增。⚠邊界檢查只在進入時做一次，字串長到讓欄超過 39 時迴圈不會停"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 90439,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "935",
+   "note": "把一個 8×8 字模畫進 CGA 畫面(retn 0Ah)：di = 列 × 140h + 欄 × 2；前景與背景都先過 DS:256Dh 轉換表(同 spec 932)，然後跑 4 對掃描線——偶數列寫 0B800h、奇數列寫 0BA00h，每列 2 bytes、每 byte 4 個像素(2 bits/像素 = CGA 四色，rol dl/dh 各兩次把顏色轉到下一個像素)，字模位元取自 DS:6598h + bx(每條掃描線 bx 遞增)。140h = 320 = 4 列 × 80 bytes。1618Eh 的 db 90h 與 161C3h 的 align 2 是對齊填充。⚠arg_0 沒有被讀"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 92329,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "935",
+   "note": "刪掉所有出現的子字串(retf 8 = (要刪的, 主字串, 結果))：兩個輸入各限長 0FFh，n := length(主) − length(要刪) + 1，for i := 1 to n 若 Copy(主, i, length(要刪)) = 要刪 就 Delete；結果限長 0FFh 寫回。用 Turbo Pascal 的 Copy/Delete/字串比較 RTL。⚠上界 n 只算一次、刪除後 i 不退回 → 緊接著形成的新出現不會被刪(從 'aabb' 刪 'ab' 只刪一次)；i 會掃過縮短後的尾端但 Copy 越界回較短字串、比對不中，不會出錯只是白跑"
   }
  ]
 }
