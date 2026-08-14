@@ -9,14 +9,14 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 989、不阻塞 133、邊界碎片 237、待解讀 27；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 990、不阻塞 133、邊界碎片 237、待解讀 26；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | START.EXE | — | 325 | 168 | 133 | 20 | 4 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 2 | 2 | 0 | 0 | 0 | 78 | 24 | [明細](function-index/dos-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 4 | 0 | 0 | 0 | 1511 | 405 | [明細](function-index/dos-overlay-01.md) |
-| overlay-02 | INTERPET | 90 | 56 | 0 | 29 | 5 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
+| overlay-02 | INTERPET | 90 | 57 | 0 | 29 | 4 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 1 | 0 | 1 | 1 | 834 | 384 | [明細](function-index/dos-overlay-03.md) |
 | overlay-04 | TEMPLE | 14 | 13 | 0 | 1 | 0 | 3435 | 340 | [明細](function-index/dos-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 14 | 0 | 3 | 0 | 5057 | 555 | [明細](function-index/dos-overlay-05.md) |
