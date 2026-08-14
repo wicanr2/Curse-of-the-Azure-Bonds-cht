@@ -25402,6 +25402,24 @@
    "level": "exact",
    "spec": "docs/spec/1002-facing-cone-test.md",
    "note": "DOS 同位址的對應（相似度 0.999）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 20286,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1003-poisonous-cloud-3x3.md",
+   "note": "毒雲：3×3（原地＋八方向）、效果碼 5Bh、地圖值 1Ch、鏈頭 DS:755Fh；與毒霧共用機制"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 21216,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1003-poisonous-cloud-3x3.md",
+   "note": "DOS 04F3Eh 的對應（相似度 0.999）"
   }
  ]
 }
