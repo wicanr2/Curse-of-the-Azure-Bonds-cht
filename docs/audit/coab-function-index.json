@@ -9459,7 +9459,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "依隊形範本把一個戰鬥員放上戰場(retf 0Ch，6 個 byte)：範本索引式 DS:47F4h + DS:4A12h×108h + a0×42h + 列×0Bh + 欄，也就是『範本組 × 4 個區塊 × 6 列 × 11 欄』。格子非 0 才放；座標 x = a2×5 + a4×6 + 欄 + 16h、y = a2×5 + 列 + 0Ah，寫進 DS:66A3h/66A4h（該戰鬥員記錄的 +0/+1）。再叫 193Fh 檢查落點，回傳的地形碼查 DS:26A2h 不是 0FFh（可通行）才算成功，成功就把範本那一格清 0 避免重複使用",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md"
@@ -13361,6 +13364,7 @@
    "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
    "note": "Attack Ally 確認：邊 := \u003cfar 1584h+2\u003e(參數2,參數0)；(邊 = 目標^[197h]) 或 (目標^[198h] \u003c\u003e 0) 時直接回 1；否則顯示 'Attack Ally: '(13，結尾一空白)，\u003cfar 16ADh+1\u003e(0Dh,0Ah,0Fh) 回 'Y' 才回 1。答 Y 時 DS:758Ch:=1、word(DS:4F9Dh^[666h]):=1，並掃 DS:650Ah 角色鏈：+195h=0 且 +0F7h\u003e7Fh（士氣旗標）者 +197h:=1 並把 +18Dh^[0Ah]/[0Ch] 目標遠指標清 0，最後呼叫 \u003cfar 158Ah+1\u003e。retf 8。spec 790",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "spec/790-attack-ally-confirm-and-counter-animation.md"
    ]
   },
@@ -13394,7 +13398,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "833",
-   "note": "一次攻擊的完整流程(retf 12h，(攻擊者, 目標, 旗標, @可行, @記錄))：旗標=1 時先過 2F3Ch 的可打判定，不過就 FillChar(記錄, 7, 0) 收工。可打就把目標遠指標與 x/y 存進記錄 +0..+5，播動畫，再試 sub_F46h（＝ spec 833 的橫掃）——橫掃成立就由它接手；否則走 194Ah + 15BCh/15C6h/15C1h/1593h 的額外效果閘門後叫 19D8h 結算"
+   "note": "一次攻擊的完整流程(retf 12h，(攻擊者, 目標, 旗標, @可行, @記錄))：旗標=1 時先過 2F3Ch 的可打判定，不過就 FillChar(記錄, 7, 0) 收工。可打就把目標遠指標與 x/y 存進記錄 +0..+5，播動畫，再試 sub_F46h（＝ spec 833 的橫掃）——橫掃成立就由它接手；否則走 194Ah + 15BCh/15C6h/15C1h/1593h 的額外效果閘門後叫 19D8h 結算",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14706,9 +14713,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "813",
+   "note": "休息時間計算（巢狀程序，retf 2 只收靜態鏈）：走隊伍鏈 DS:650Ah，過 sub_1EDAh 的成員把 +12Dh/+130h/+131h 分別乘 0Fh/3Ch/4Bh（15/60/75 分＝每法術等級 15 分）並累加到外層 frame 的 −4/−6/−8。基礎時間：只有 +12Dh 有值 → 240 分（4 小時）、+130h 或 +131h 有值 → 360 分（6 小時），與 AD\u0026D 的 4／6 小時相符。全隊取最大值，再依 sub_206Bh 的回傳值縮放，最後拆成 DS:756Ch 小時、DS:756Ah 十分位、DS:7568h 個位分。⚠ 累加用的 var_2（bp−2）從頭到尾沒有初始化",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/pc98-overlay-15.md",
     "spec/792-memorization-timer-closed.md"
    ]
   },
@@ -23867,7 +23878,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "852",
-   "note": "建立戰場佔位圖(retf，無參數)：先 FillChar(DS:6857h, 4E2h=1250=50×25, 0)，再走 1..DS:66A6h 個戰鬥員，對每個叫 sub_11h(k=0..3, 體型) 取相對格位，把索引寫進 DS:6857h[y*32h+x]。★DS:66A3h 每筆 4 bytes 的記錄補完：+0 x、+1 y、+3 體型（佔幾格），而 DS:66A6h 本身（entry 0 的 +3）就是戰鬥員總數。另把相對於 DS:6E92h^[2]/^[3] 的偏移寫進 DS:67C6h+i 與 DS:680Eh+i"
+   "note": "建立戰場佔位圖(retf，無參數)：先 FillChar(DS:6857h, 4E2h=1250=50×25, 0)，再走 1..DS:66A6h 個戰鬥員，對每個叫 sub_11h(k=0..3, 體型) 取相對格位，把索引寫進 DS:6857h[y*32h+x]。★DS:66A3h 每筆 4 bytes 的記錄補完：+0 x、+1 y、+3 體型（佔幾格），而 DS:66A6h 本身（entry 0 的 +3）就是戰鬥員總數。另把相對於 DS:6E92h^[2]/^[3] 的偏移寫進 DS:67C6h+i 與 DS:680Eh+i",
+   "citations": [
+    "audit/function-index/pc98-overlay-32.md"
+   ]
   },
   {
    "platform": "dos",
@@ -34256,7 +34270,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "同 DOS overlay-10:0122Ch（module_align 對齊，助憶碼序列完全相同）。只差四條位址：DS:7AC8h↔4A12h、DS:78AAh↔47F4h、[di−68C3h/68C2h]↔[di+66A3h/66A4h]"
   },
   {
    "platform": "pc98",
@@ -35062,6 +35079,7 @@
    "note": "if arg_6^[18Eh]^[2] \u003c\u003e 0 則備妥「は沈黙させられた。」呼叫 \u003cfar 014A:0024\u003e(arg_6,訊息,1,0Ah);之後無條件把 ^[2] 與 ^[1] 都清 0——訊息只在 [2] 非 0 時出現,但兩個欄位一律清",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-32.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
   },
@@ -39661,7 +39679,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "813",
+   "note": "同 DOS overlay-15:020C5h（module_align 對齊，助憶碼序列完全相同）。只差四條：DS:9598h↔650Ah、+18Ah↔+189h、兩個呼叫目標",
    "citations": [
     "audit/function-index/pc98-overlay-15.md"
    ]
@@ -50491,9 +50512,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -50566,9 +50587,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 25,
+   "Read": 26,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 10,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -51046,9 +51067,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
@@ -51121,9 +51142,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
