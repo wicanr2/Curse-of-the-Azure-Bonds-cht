@@ -22513,6 +22513,24 @@
    "level": "exact",
    "spec": "781",
    "note": "同 DOS overlay-30:00587h（module_align 對齊，相似度 0.996）。唯一序列差異是 DOS 多一條 xor ah, ah，其餘只差一條呼叫目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 1013,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "法術選單的建構(retf 2，法術編號)：往 DS:4B41h+3 那條顯示行鏈（spec 843 的節點）尾端加一列。先數出目前有幾個屬性 0 的項目，比對上一筆法術的等級；等級變了就先插一列標題（DS:0875h + 等級×29h，'1st Level' 等，屬性寫 1），再放法術列——前綴 ' *'（法術編號 > 7Fh）或兩個空白，接上 DS:27BDh 的法術名稱，屬性寫 0。最後把法術編號記進 DS:4B9Ch + 序號 供選取時反查。★確認節點屬性 1 = 標題列、0 = 可選項"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 1122,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "同 DOS overlay-22:003F5h（module_align 對齊，助憶碼序列完全相同）。45 條差異全是位址與尺寸：節點 56h/+51h/+52h↔2Eh/+29h/+2Ah、標題表 DS:13CFh（'１レベル'..'９レベル'，同樣 29h 一筆）↔0875h、法術名稱表 DS:49B3h 每筆 3Dh↔27BDh 每筆 29h、DS:7C22h↔4B41h+3、DS:7C7Ah↔4B9Ch"
   }
  ]
 }
