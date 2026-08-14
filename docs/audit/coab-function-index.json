@@ -42748,9 +42748,13 @@
    "callers": 0,
    "calls": 12,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1069",
+   "note": "讀檔槽選單 PC-98(retf，317 條)，存檔側見 spec 1057。DS:0A816h:=0(檔案類別 0，spec 1043)、overlay-26 entry#3 十格初始化、sub_B4Fh(1) 不成立就離開。★★★ for 字母:='A' to 'J'：檔名 := 路徑 + 'savgam'(6) + 字母 + '.dat'(4)，far 0723:0426h 檢查存在，存在才把 (字母−1)+'  ' 寫進 DS:0A338h+(字母−'@')×7、把字母寫進 DS:0A334h+(字母−'@')(組語 [di−5CCCh]，di=i)並 inc 可用數 ⇒ PC-98 存檔檔名是 savgamA.dat..savgamJ.dat，十個槽對應 A..J，與 spec 1057 熱鍵塊 'ABCDEFGHIJ' 一致；★★ 只有真的存在的槽才進選單(存檔側是十個都列、用☆標目前的)。可用=0 就直接離開。提示「どのデータを読みこみますか？」(28)，選完 DS:0A670h := 鍵−40h(與 spec 1057 共用同一格)，再組「パーティーは」(12)+地名+「にいます。」(10)或「ます。」(6)，最後問「よろしいですか？」(16)。⚠ 每個槽的顯示文字只有 6 bytes=3 全形字",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1069-load-slot-menu-pc98.md"
    ]
   },
   {
@@ -54171,9 +54175,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 27,
+   "Read": 28,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
