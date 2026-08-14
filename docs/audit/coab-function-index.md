@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 730、不阻塞 133、邊界碎片 246、待解讀 277；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 732、不阻塞 133、邊界碎片 246、待解讀 275；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -18,9 +18,9 @@
 | overlay-01 | INTRO | 4 | 2 | 0 | 0 | 2 | 1511 | 405 | [明細](function-index/dos-overlay-01.md) |
 | overlay-02 | INTERPET | 90 | 51 | 0 | 29 | 10 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 1 | 0 | 1 | 1 | 834 | 384 | [明細](function-index/dos-overlay-03.md) |
-| overlay-04 | TEMPLE | 14 | 10 | 0 | 1 | 3 | 3435 | 340 | [明細](function-index/dos-overlay-04.md) |
+| overlay-04 | TEMPLE | 14 | 11 | 0 | 1 | 2 | 3435 | 340 | [明細](function-index/dos-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 7 | 0 | 3 | 7 | 5057 | 555 | [明細](function-index/dos-overlay-05.md) |
-| overlay-06 | SHOP | 6 | 3 | 0 | 0 | 3 | 2146 | 274 | [明細](function-index/dos-overlay-06.md) |
+| overlay-06 | SHOP | 6 | 4 | 0 | 0 | 2 | 2146 | 274 | [明細](function-index/dos-overlay-06.md) |
 | overlay-07 | ECL2 | 41 | 19 | 0 | 8 | 14 | 8745 | 191 | [明細](function-index/dos-overlay-07.md) |
 | overlay-08 | COMBAT | 21 | 9 | 0 | 7 | 5 | 4243 | 343 | [明細](function-index/dos-overlay-08.md) |
 | overlay-09 | COMPTACT | 38 | 9 | 0 | 22 | 7 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 797、不阻塞 29、邊界碎片 339、待解讀 323；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 798、不阻塞 29、邊界碎片 339、待解讀 322；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -64,7 +64,7 @@
 | overlay-03 | PROTECT | 4 | 3 | 0 | 0 | 1 | 752 | 278 | [明細](function-index/pc98-overlay-03.md) |
 | overlay-04 | TEMPLE | 23 | 11 | 0 | 10 | 2 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 6 | 0 | 4 | 7 | 5212 | 458 | [明細](function-index/pc98-overlay-05.md) |
-| overlay-06 | SHOP | 8 | 3 | 0 | 2 | 3 | 2363 | 283 | [明細](function-index/pc98-overlay-06.md) |
+| overlay-06 | SHOP | 8 | 4 | 0 | 2 | 2 | 2363 | 283 | [明細](function-index/pc98-overlay-06.md) |
 | overlay-07 | ECL2 | 46 | 30 | 0 | 16 | 0 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
 | overlay-08 | COMBAT | 24 | 6 | 0 | 12 | 6 | 3967 | 372 | [明細](function-index/pc98-overlay-08.md) |
 | overlay-09 | COMPTACT | 36 | 8 | 0 | 20 | 8 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
