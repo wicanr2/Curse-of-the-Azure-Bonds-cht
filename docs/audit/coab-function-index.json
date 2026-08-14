@@ -16187,9 +16187,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/979-mass-cure-effect-and-two-piece-icon.md",
+   "note": "畫上下兩塊拼成的圖示（組 19h／0Ch，編號 0/1，座標 B 差 3）；圖庫每組 8 bytes ＝ 每組兩個編號",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/979-mass-cure-effect-and-two-piece-icon.md"
    ]
   },
   {
@@ -23841,7 +23845,8 @@
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/976-view-refresh-field-redraw-and-los-collect.md"
+    "spec/976-view-refresh-field-redraw-and-los-collect.md",
+    "spec/979-mass-cure-effect-and-two-piece-icon.md"
    ]
   },
   {
@@ -45340,7 +45345,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/768-script-arithmetic-opcodes-and-save-size.md"
+    "spec/768-script-arithmetic-opcodes-and-save-size.md",
+    "spec/979-mass-cure-effect-and-two-piece-icon.md"
    ]
   },
   {
@@ -46607,7 +46613,13 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/979-mass-cure-effect-and-two-piece-icon.md",
+   "note": "群體解除效果：人數上限＝施法者等級，只對指定陣營；DS:0A51Dh 候選表每格 4 bytes、格數在 DS:0A520h",
+   "citations": [
+    "spec/979-mass-cure-effect-and-two-piece-icon.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -52285,9 +52297,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
@@ -52915,9 +52927,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 96,
+   "Read": 97,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
