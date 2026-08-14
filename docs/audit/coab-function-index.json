@@ -13402,7 +13402,8 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md",
-    "spec/786-money-pool-overflow-and-turn-cost.md"
+    "spec/786-money-pool-overflow-and-turn-cost.md",
+    "spec/899-combat-aim-menu.md"
    ]
   },
   {
@@ -13494,9 +13495,13 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "899",
+   "note": "瞄準選單(retf 10h)：1593h+2 取距離、29A2h 取另一個值；顯示距離時印 'Range = '＋Str(距離)＋'  '；距離 \u003c= 上限 時依 15BCh+1/15C6h+1/1590h/15C1h+1 四個條件決定選項字串('Target '＋'Next Prev Manual '＋'Center Exit')；叫 194Dh+1、設 DS:75E5h:=1、1505h+4，最後 169Bh+4 收鍵，標題 'Aim:'",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/899-combat-aim-menu.md"
    ]
   },
   {
@@ -17669,6 +17674,7 @@
    "spec": "897",
    "note": "數字輸入框(retf 8，(上限, 提示字串, 顏色))：清第 18h 列 28h 欄、印提示，迴圈 ReadKey——'0'..'9' 就串進緩衝(上限 6 字元)並 Val，若輸入值 \u003e= 上限就★把整個緩衝換成 Str(上限, 寬度 5) 的字串(夾成上限，不是拒收)；Backspace 退一格；Enter 收值、Esc 回 0",
    "citations": [
+    "audit/function-index/pc98-overlay-21.md",
     "spec/897-numeric-input-box.md"
    ]
   },
@@ -18054,9 +18060,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "900",
+   "note": "法術選單入口(retf 6，(用途, ?, var 結果))：用途 1..4 各給一個選項字串(Cast/Memorize/Scribe/Learn)、其他給空字串；標題 'Choose Spell: '；顏色與兩個旗標依用途決定；迴圈叫 16A9h 直到按到離開鍵。之後走 spec 859 的顯示行鏈 DS:4B44h 算出選中的是第幾個法術行(只有 +29h=0 的行才計數)，取 DS:4B9Ch+n 當結果碼；用途 3(Scribe) 另從 DS:4BF0h+n*4 取遠指標寫進 DS:729Ch；最後叫 16B8h 釋放整條鏈",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/900-spell-menu-entry.md"
    ]
   },
   {
@@ -18532,7 +18542,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ss:[di-1Dh], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ss:[di-1Dh], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "spec/900-spell-menu-entry.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18547,7 +18560,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1748`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1748`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "spec/900-spell-menu-entry.md"
+   ]
   },
   {
    "platform": "dos",
@@ -38978,9 +38994,14 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "899",
+   "note": "同 DOS overlay-13:03040h，但★不拼字串、逐格寫兩塊陣列：標籤 DS:0A33Fh/0A346h/0A34Dh/0A354h/0A35Bh/0A37Eh(' 決定 '/' 次順 '/' 前順 '/' 手動 '/Center/Exit)、熱鍵 DS:0A335h..0A339h/0A33Eh(T/N/P/M/C/E)。★六組連續位址把陣列基底夾定：標籤 DS:0A33Fh stride 7、熱鍵 DS:0A335h stride 1，Exit 固定索引 9；spec 894 的基底已回頭改正。另外把 arg_4 存進 DS:0BE2Ch(spec 888 髒區重繪的前置條件)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/894-party-member-picker.md",
+    "spec/899-combat-aim-menu.md"
    ]
   },
   {
@@ -44473,9 +44494,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "900",
+   "note": "同 DOS overlay-22:00219h，但★依有沒有標題把標籤/熱鍵寫到索引 0(DS:0A33Fh/0A335h)或索引 5(DS:0A362h/0A33Ah)，與 spec 899 定出的基底完全吻合。四個標籤 'かける'/'記憶ｽﾙ'/' 書ｷｺﾑ'/' 学ぶ ' 都是 6 bytes——日文版自己就被逼到要用半形片假名湊滿，中文版三個字剛好",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/900-spell-menu-entry.md"
    ]
   },
   {
@@ -51428,9 +51453,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 35,
+   "Read": 36,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -51563,9 +51588,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 107,
+   "Read": 108,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -51983,9 +52008,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 37,
+   "Read": 38,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
@@ -52118,9 +52143,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 91,
+   "Read": 92,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 19,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
