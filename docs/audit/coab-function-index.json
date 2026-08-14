@@ -43450,9 +43450,13 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1054",
+   "note": "移除隊員(retf，231 條)。DS:9594h 為 NIL 就離開。★★ 名字先做 NPC 替換 —— 'ALIAS'→エイリアス、'DRAGONBAIT'→ドラゴンベイト、'AKABAR BEL AKAS'→アーカバー・ベル・アーカッシュ，只在 +0F7h\u003c\u003e0 時；程式碼與 spec 1044 的隊伍名單逐字相同 ⇒ 替換是每個顯示點各自做、沒有集中在一支函式，中文化要把所有替換點找齊(掃這三個字串即可定位)。印『名字＋は永遠にいなくなりますよ？』(26) 之後★★ 兩次確認，兩個提示都走 overlay-26 entry#8(收 5 word)、都要按 'Y'；第一個提示字串是一個空白(CS:2888h，長度 1)，問句本身在上一行。確認後清 A000h:0E60h 長 0A0h(文字層一列)。★★★ 死活兩句不同：角色^[197h]=0(＝DOS +196h『可行動』旗標，spec 1008/1010/1028 同一格) → 「きみたちは」＋名字＋「を捨てた」(拋下)；\u003c\u003e0 → 名字＋「はさようならを言った」(道別)。★★★ 取消也有一句：名字＋「は安堵のため息をもらした」(鬆了一口氣)，之後重畫隊伍名單。成功路徑接 overlay-16 entry#5 與 sub_4122h(1,0)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1054-remove-character.md"
    ]
   },
   {
@@ -54097,9 +54101,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
