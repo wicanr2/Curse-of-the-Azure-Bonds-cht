@@ -21028,6 +21028,42 @@
    "level": "exact",
    "spec": "docs/spec/815-heal-total-and-spell-table-is-100.md",
    "note": "挑目標清單裡 +0E9h 最小的戰鬥員：retf 8，宣告順序 (角色, 輸出遠指標)。最小 := 0Dh、輸出^ := NIL；n := <far 1560h>(角色, 0FFh)；for k := 1 to n（無號）：i := byte[0A820h + k]、q := 遠指標(DS:9DCFh + i*4)；q^[18Dh]^[10h] = 0 且 有號(q^[0E9h]) > 0 且 < 最小 時更新最小值、寫輸出、有 := 1。回傳 有。+0E9h >= 13 的永遠選不上。spec 815（PC-98 匯出在 14F3h 多解出一個 std，原始位元組 FE 46 FD 與 DOS 同形，是錯位）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 5330,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/816-camp-menu-and-pointer-pair-free.md",
+   "note": "紮營選單迴圈：retf 4。repeat：<0A54h:08D4h>(20h, @空字串) 為假就離開；暫存 := ''（0A54h:0634h 從 loc_14B2+1 抄，長度位元組 0）；選 := <far 169Dh+2>(暫存, @DS:0451h（選單字串 'Cast Memorize Scribe Display Rest Exit'(38)）, 0Dh, 0Ah, 0Fh, 1, 1, @旗標)；旗標 <> 0 → <far 1022h>(選) + <far 14F8h+2>(DS:6506h)；否則依鍵分派：'C'(43h)→本模組 04CBh（spec 797 選法術）、'M'(4Dh)→0942h、'S'(53h)→0B9Bh、'D'(44h)→1016h、'R'(52h)→07B2h(輸出)（spec 814 休息）。until 輸出^ <> 0。spec 816"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 5243,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/816-camp-menu-and-pointer-pair-free.md",
+   "note": "紮營選單迴圈：retf 4。repeat：<0A65h:08D4h>(20h, @空字串) 為假就離開；暫存 := ''（0A65h:0634h 從 loc_14B2+1 抄，長度位元組 0）；選 := <far 169Dh+2>(暫存, @DS:086Bh（選單字串 '    かける　記憶　書込む　休息　 影響　…抜ける　　'(80 bytes，顯示順序把 Rest 與 Display 對調，但比較的 ASCII 鍵完全相同)）, 0Dh, 0Ah, 0Fh, 1, 1, @旗標)；旗標 <> 0 → <far 1022h>(選) + <far 14F8h+2>(DS:9594h)；否則依鍵分派：'C'(43h)→本模組 04CBh（spec 797 選法術）、'M'(4Dh)→0942h、'S'(53h)→0B9Bh、'D'(44h)→1016h、'R'(52h)→07B2h(輸出)（spec 814 休息）。until 輸出^ <> 0。spec 816 PC-98 另外多兩段：開頭 Move(loc_954, DS:0A335h, 0Ah)，旗標<>0 那路多一組 <far sub_14CA>(DS:9594h)+<far loc_157D+1>。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-33",
+   "ea": 346,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/816-camp-menu-and-pointer-pair-free.md",
+   "note": "釋放一組兩個遠指標：retf 2 = 索引。遠指標@(65D6h + 索引*8) <> NIL 時 <0297h:1D19h>(@(65D6h + 索引*8))；遠指標@(65DAh + 索引*8) <> NIL 時同樣呼叫。DS:65D6h 起每筆 8 bytes，+0 與 +4 各一個遠指標；0297h:1D19h 收的是指標變數的位址；釋放後不清成 NIL。spec 816"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-33",
+   "ea": 744,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/816-camp-menu-and-pointer-pair-free.md",
+   "note": "同 DOS，但兩處不同：開頭多一道守衛 <0A65h:08E4h>(索引, @loc_2C8) 回 0 就整支跳過；兩個欄位的相對位置相反——第一個在 DS:9670h、第二個在 DS:966Ch（DOS 是 +0 與 +4）。釋放常式是 <02A8h:10D5h>。spec 816"
   }
  ]
 }
