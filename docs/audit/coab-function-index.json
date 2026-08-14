@@ -10700,7 +10700,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov sp, bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov sp, bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "spec/829-poison-and-paralysis-attacks.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10728,11 +10731,13 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 0Ch`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/829-poison-and-paralysis-attacks.md",
+   "note": "毒殺特殊攻擊：retf 6，宣告順序 (角色, 參數6)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；\u003cfar 1457h+1\u003e(目標, 參數6, 0) 成立就離開；否則 \u003cfar 1554h\u003e(目標, 名字+'is Poisoned'(11), 0Ah, 0)、\u003cfar 0542h:0B33h\u003e、\u003cfar 1466h+1\u003e(目標, 37h, 0, 0FFh, 0)、\u003cfar 1435h\u003e(目標, 6, 名字+'is killed'(9))。效果碼 37h 確定是中毒（spec 796 的 Neutralize Poison 移除的就是它）。中毒與死亡連續發生，沒有存活判定。spec 829",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/829-poison-and-paralysis-attacks.md"
    ]
   },
   {
@@ -10851,11 +10856,13 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/829-poison-and-paralysis-attacks.md",
+   "note": "麻痺特殊攻擊：retf 8，宣告順序 (角色, 參數8, 參數6)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；\u003cfar 1457h+1\u003e(目標, 0, 0) 成立就離開；否則 \u003cfar 1572h\u003e(目標, 1, 名字+'is Paralyzed'(12))、\u003cfar 1466h+1\u003e(目標, 34h, 參數8, 0Ch, 0)。spec 829",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/829-poison-and-paralysis-attacks.md"
    ]
   },
   {
@@ -10950,7 +10957,8 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/819-spits-acid-special-attack.md"
+    "spec/819-spits-acid-special-attack.md",
+    "spec/829-poison-and-paralysis-attacks.md"
    ]
   },
   {
@@ -10985,7 +10993,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call sub_1454`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call sub_1454`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "spec/829-poison-and-paralysis-attacks.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14219,6 +14230,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "尾呼叫：最後一條是 `jmp short loc_16C7`，控制權轉交後不返回；先設定 `mov ds:650Ch, dx`（body 共 6 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/828-drop-from-party.md"
    ]
   },
@@ -14766,7 +14778,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
+   "citations": [
+    "audit/function-index/dos-overlay-15.md"
+   ]
   },
   {
    "platform": "dos",
@@ -35417,9 +35432,10 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 0Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/829-poison-and-paralysis-attacks.md",
+   "note": "麻痺特殊攻擊：retf 8，宣告順序 (角色, 參數8, 參數6)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；\u003cfar loc_1426+2\u003e(目標, 0, 0) 成立就離開；否則 \u003cfar 1572h\u003e(目標, 1, 名字+'is Paralyzed'(12))、\u003cfar 1466h+1\u003e(目標, 34h, 參數8, 0Ch, 0)。spec 829",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -39593,8 +39609,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/pc98-overlay-16.md",
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/pc98-overlay-16.md"
    ]
   },
   {
@@ -49832,10 +49847,10 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 122,
+   "Read": 124,
    "NotBlocking": 0,
    "Todo": 3,
-   "Fragment": 27,
+   "Fragment": 25,
    "CodeBytes": 12862,
    "Undefined": 455,
    "SegmentBytes": 13683,
@@ -50387,10 +50402,10 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 126,
+   "Read": 127,
    "NotBlocking": 0,
    "Todo": 5,
-   "Fragment": 19,
+   "Fragment": 18,
    "CodeBytes": 13011,
    "Undefined": 578,
    "SegmentBytes": 13835,

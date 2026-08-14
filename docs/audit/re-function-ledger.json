@@ -3237,15 +3237,6 @@
   {
    "platform": "dos",
    "module": "overlay-12",
-   "ea": 5204,
-   "state": "邊界碎片",
-   "level": "",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 0Ch`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-12",
    "ea": 5213,
    "state": "邊界碎片",
    "level": "",
@@ -3296,15 +3287,6 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 542h:0B33h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-12",
-   "ea": 5369,
-   "state": "邊界碎片",
-   "level": "",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6870,15 +6852,6 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor byte ptr [di-427Eh], 81h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-12",
-   "ea": 5407,
-   "state": "邊界碎片",
-   "level": "",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 0Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -21334,6 +21307,33 @@
    "level": "exact",
    "spec": "docs/spec/828-drop-from-party.md",
    "note": "同 DOS，但「只剩這一個」的判定**整段重寫**：只剩這一個 := 1；走 DS:9598h 鏈，若存在 p 使得 ((p^[196h] = 0) 或 (p^[196h] = 4)) 且 (p^[0F7h] = 0) 且 (p <> DS:9594h)，就設 0。DOS 只看串列結構（下一個為 NIL 且自己就是頭）。訊息：'は完全にいなくなる。'(20 bytes)／'かまわず離脱させますか？'(24 bytes)／'は別れを告げた。'(16 bytes)／'はドブに捨てられた。'(20 bytes)／'は安堵のため息をもらした。'(26 bytes)；quit TO DOS 那段無對應字串。spec 828"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 5204,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/829-poison-and-paralysis-attacks.md",
+   "note": "毒殺特殊攻擊：retf 6，宣告順序 (角色, 參數6)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；<far 1457h+1>(目標, 參數6, 0) 成立就離開；否則 <far 1554h>(目標, 名字+'is Poisoned'(11), 0Ah, 0)、<far 0542h:0B33h>、<far 1466h+1>(目標, 37h, 0, 0FFh, 0)、<far 1435h>(目標, 6, 名字+'is killed'(9))。效果碼 37h 確定是中毒（spec 796 的 Neutralize Poison 移除的就是它）。中毒與死亡連續發生，沒有存活判定。spec 829"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 5369,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/829-poison-and-paralysis-attacks.md",
+   "note": "麻痺特殊攻擊：retf 8，宣告順序 (角色, 參數8, 參數6)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；<far 1457h+1>(目標, 0, 0) 成立就離開；否則 <far 1572h>(目標, 1, 名字+'is Paralyzed'(12))、<far 1466h+1>(目標, 34h, 參數8, 0Ch, 0)。spec 829"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5407,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/829-poison-and-paralysis-attacks.md",
+   "note": "麻痺特殊攻擊：retf 8，宣告順序 (角色, 參數8, 參數6)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；<far loc_1426+2>(目標, 0, 0) 成立就離開；否則 <far 1572h>(目標, 1, 名字+'is Paralyzed'(12))、<far 1466h+1>(目標, 34h, 參數8, 0Ch, 0)。spec 829"
   }
  ]
 }
