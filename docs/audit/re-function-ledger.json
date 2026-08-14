@@ -17494,6 +17494,26 @@
    "spec": "docs/spec/744-animate-removal-and-ac-fields.md",
    "note": "AC 每次變差 2 直到 AC 10:角色^[18Dh]^[2] 非 0 時顯示 '<名字> is coughing'(CS:080Ch),清 +18Dh^[2] 與 ^[1],<overlay-24 entry#7>(角色);**+19Bh > 34h 時減 2、否則設成 32h,再整個複製到 +19Ah**;角色 = DS:6506h 時另呼叫 <overlay-24 entry#5>。⚠ **+19Bh 是 AC 基準值、+19Ah 是目前值**(顯示值 = 60 − 儲存值,spec 684/689);所以是顯示 AC 每次加 2(變差),下限 32h = 顯示 AC 10",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 715,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/745-node-field-packed-differently.md",
+   "note": "魅惑(套用與解除共用一支)。⚠ **效果節點的 +3 用位元欄位打包**:bit 5 = 已套用旗標、bit 6 = 原陣營;套用時 節點^[3] += 20h + (角色^[197h] shl 6) 再取 bit 7 當新陣營,解除時 (節點^[3] and 40h) div 40h 取回原陣營。**這與 spec 744 操縱屍體的 (原陣營 shl 4) + 等級 是同一個 byte 的兩種打包**——沒有共通版面,remake 若替它取名並統一結構兩邊都會壞。bit 5 讓套用具冪等性(重複套用不會把已改掉的陣營當原值存)。改陣營後呼叫 <overlay-24 entry#31>(= spec 692 的 25D4h)重算統計,而 spec 743 的狂暴改陣營後沒有呼叫,兩支不一致",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8492,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/745-node-field-packed-differently.md",
+   "note": "把瀕死的人拉回來:狀態 +195h=5 且 角色^[18Dh]^[0Eh] < 6 時 n := 6 − 欠血;狀態 4 時 n := 6;n > 0 且 <overlay-23 entry#23>(角色, n) 成立才 <overlay-23 entry#11>(角色, 5Fh, ROLLDICE(1,4)+1, 0FFh, 1)、節點^[4] := 0、<overlay-23 entry#3>(角色, 63h, 節點)。兩個判斷是分開的 if 不是 elif,但狀態不可能同時是 4 和 5,實際等價",
+   "bounds": "prologue"
   }
  ]
 }

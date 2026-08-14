@@ -9321,9 +9321,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/745-node-field-packed-differently.md",
+   "note": "魅惑(套用與解除共用一支)。⚠ **效果節點的 +3 用位元欄位打包**:bit 5 = 已套用旗標、bit 6 = 原陣營;套用時 節點^[3] += 20h + (角色^[197h] shl 6) 再取 bit 7 當新陣營,解除時 (節點^[3] and 40h) div 40h 取回原陣營。**這與 spec 744 操縱屍體的 (原陣營 shl 4) + 等級 是同一個 byte 的兩種打包**——沒有共通版面,remake 若替它取名並統一結構兩邊都會壞。bit 5 讓套用具冪等性(重複套用不會把已改掉的陣營當原值存)。改陣營後呼叫 \u003coverlay-24 entry#31\u003e(= spec 692 的 25D4h)重算統計,而 spec 743 的狂暴改陣營後沒有呼叫,兩支不一致",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/745-node-field-packed-differently.md"
    ]
   },
   {
@@ -10540,7 +10544,8 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md",
-    "spec/743-berserk-and-two-factions.md"
+    "spec/743-berserk-and-two-factions.md",
+    "spec/745-node-field-packed-differently.md"
    ]
   },
   {
@@ -10853,7 +10858,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/745-node-field-packed-differently.md",
+   "note": "把瀕死的人拉回來:狀態 +195h=5 且 角色^[18Dh]^[0Eh] \u003c 6 時 n := 6 − 欠血;狀態 4 時 n := 6;n \u003e 0 且 \u003coverlay-23 entry#23\u003e(角色, n) 成立才 \u003coverlay-23 entry#11\u003e(角色, 5Fh, ROLLDICE(1,4)+1, 0FFh, 1)、節點^[4] := 0、\u003coverlay-23 entry#3\u003e(角色, 63h, 節點)。兩個判斷是分開的 if 不是 elif,但狀態不可能同時是 4 和 5,實際等價",
+   "citations": [
+    "spec/745-node-field-packed-differently.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16875,6 +16886,7 @@
    "spec": "docs/spec/734-animate-dead-and-faction-field.md",
    "note": "操縱屍體。走 DS:650Ah 全體鏈(不是目標陣列),對 +195h=6(死亡)且 +11Ah=0 的,先把 (原 +197h shl 4) + 等級 打包成 v,再 **p^[197h] := DS:6506h^[197h](改成施法者的)**、+198h:=1、+0E9h:=2、+0DDh:=0、+0E4h:=6、清 +1Eh..+71h 共 84 bytes(上界寫死 53h)、+0F7h := (\u003e7Fh) ? 0B2h : 0B3h、+11Ah:=4,額度減 1,\u003coverlay-23 entry#23\u003e 成功才 \u003cPUTEFFECT\u003e(p, 20h, **持續時間常數 0 = 永久**, v, 1, 0, 0, 'is animated')並把 +195h 設成 1。⚠ **+197h 是陣營**(直接複製施法者的值,原值打包進效果參數以便還原;shl 4 表示陣營與等級各只用 4 位);這與 spec 692 用它當兩格統計索引、spec 709 用它篩選目標一致。⚠ 效果 20h = animated,spec 707 的復活會先解除它。額度是迴圈條件,用完就停(不像 Sleep 會掃完)",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/734-animate-dead-and-faction-field.md"
    ]
   },
@@ -19649,7 +19661,8 @@
     "spec/692-party-tally-and-list-search.md",
     "spec/718-generic-affect-n-targets.md",
     "spec/734-animate-dead-and-faction-field.md",
-    "spec/743-berserk-and-two-factions.md"
+    "spec/743-berserk-and-two-factions.md",
+    "spec/745-node-field-packed-differently.md"
    ]
   },
   {
@@ -45949,9 +45962,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 113,
+   "Read": 115,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 10,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
