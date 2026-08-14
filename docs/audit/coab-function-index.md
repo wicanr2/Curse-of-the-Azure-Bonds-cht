@@ -9,11 +9,11 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 1014、不阻塞 133、邊界碎片 237、待解讀 2；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 1015、不阻塞 133、邊界碎片 237、待解讀 1；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| START.EXE | — | 325 | 171 | 133 | 20 | 1 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
+| START.EXE | — | 325 | 172 | 133 | 20 | 0 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 2 | 2 | 0 | 0 | 0 | 78 | 24 | [明細](function-index/dos-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 4 | 0 | 0 | 0 | 1511 | 405 | [明細](function-index/dos-overlay-01.md) |
 | overlay-02 | INTERPET | 90 | 61 | 0 | 29 | 0 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
