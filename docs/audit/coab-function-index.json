@@ -27543,7 +27543,10 @@
    "callers": 3,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "959",
+   "note": "★播一個音效(far, retf 2 = 編號)：byte_24DE8h = 2(音效關閉，spec 951)就離開；編號 ∈ [0,1,0Dh,0Eh,0FFh] 與 0Fh 不發聲；編號 ∈ [2,4,6,9] 是不查表的單音——頻率 = 編號 × 0Ah、延遲 = 0FAh div 編號。★其餘查 DS:1A3Ch 的音效表：每筆 28h = 40 bytes = 20 個 word，索引 編號 × 28h + i × 2，i 從 1 起到 13h(19)，值為 0 就結束；值 \u003e 9C4h(2500) 改叫 sub_19259h(5)(形狀上是休止)，否則 sub_19286h(頻率) 後 sub_19D1Eh(7D0h div 頻率)。★延遲 = 2000 ÷ 頻率 → 每個音的持續時間是固定的週期數，高音短低音長，不必另存時值。⚠每筆的第一個 word(i = 0)永遠不會被讀到，40 bytes 實際只用 38 bytes"
   },
   {
    "platform": "pc98",
@@ -52386,9 +52389,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 260,
+   "Read": 261,
    "NotBlocking": 29,
-   "Todo": 19,
+   "Todo": 18,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
