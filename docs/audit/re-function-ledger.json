@@ -24718,6 +24718,15 @@
    "level": "exact",
    "spec": "958",
    "note": "開啟索引式資源檔(far, retf 14h)，★是 DOS 16B24h(spec 939)的 PC-98 版：兩個檔名各限長 14h 串成 名，用 sub_1741Dh 依序開 arg_4 與 arg_0(同樣把字串原封不動重組一次)，成功後 sub_1BFD3h(BlockRead, spec 944)從索引側讀一個 word、arg_8^ += 2、再 sub_1C03Bh(Seek)把資料側定位過去，回 1；任一次失敗回 0。★與 DOS 版的差別：路徑不是 DS:25AEh + byte_21DAEh × 1Eh 那張可索引的表，而是 byte_20AEAh 單一固定路徑，額外參數也固定傳 0——配合 spec 943 的 DOS 版有雙路徑輪替與換片提示，可見 DOS 版要應付換磁片、PC-98 版假設檔案都在同一處"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 100656,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "959",
+   "note": "★播一個音效(far, retf 2 = 編號)：byte_24DE8h = 2(音效關閉，spec 951)就離開；編號 ∈ [0,1,0Dh,0Eh,0FFh] 與 0Fh 不發聲；編號 ∈ [2,4,6,9] 是不查表的單音——頻率 = 編號 × 0Ah、延遲 = 0FAh div 編號。★其餘查 DS:1A3Ch 的音效表：每筆 28h = 40 bytes = 20 個 word，索引 編號 × 28h + i × 2，i 從 1 起到 13h(19)，值為 0 就結束；值 > 9C4h(2500) 改叫 sub_19259h(5)(形狀上是休止)，否則 sub_19286h(頻率) 後 sub_19D1Eh(7D0h div 頻率)。★延遲 = 2000 ÷ 頻率 → 每個音的持續時間是固定的週期數，高音短低音長，不必另存時值。⚠每筆的第一個 word(i = 0)永遠不會被讀到，40 bytes 實際只用 38 bytes"
   }
  ]
 }
