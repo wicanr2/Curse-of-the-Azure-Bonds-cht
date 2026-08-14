@@ -16699,9 +16699,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1001-character-sheet-combat-block.md",
+   "note": "角色資料畫面的戰鬥數值區：THAC0 ＝ 60 − +199h、傷害 XdY+Z（+19Eh/+1A0h/+1A2h）、六個帶尾隨空白的標籤",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1001-character-sheet-combat-block.md"
    ]
   },
   {
@@ -22022,6 +22026,7 @@
    "note": "顯示一個偏移 60 的修正值:v := |arg_4^[19Ah] - 3Ch| 轉成字串,而負號**由獨立的一次比較**決定(arg_4^[19Ah] \u003e 3Ch 才加 '-')。所以顯示值 = 60 - 儲存值,儲存得越大顯示越負——是「數字越小越好」的欄位用偏移量存的做法。⚠ 只看 sub + neg 那段會得到相反結論",
    "citations": [
     "audit/function-index/dos-overlay-24.md",
+    "spec/1001-character-sheet-combat-block.md",
     "spec/684-biased-modifier-display.md",
     "spec/689-dos-party-roster-render.md"
    ]
@@ -22105,8 +22110,10 @@
    "spec": "docs/spec/1000-derived-stats-recalc.md",
    "note": "角色派生數值重算：+151h 起 13 個裝備槽、DS:5CF6h 類別表決定槽位、七幣包計入總重、5000 負重減免",
    "citations": [
+    "audit/function-index/pc98-overlay-24.md",
     "audit/function-triage.md",
-    "spec/1000-derived-stats-recalc.md"
+    "spec/1000-derived-stats-recalc.md",
+    "spec/1001-character-sheet-combat-block.md"
    ]
   },
   {
@@ -43465,9 +43472,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1001-character-sheet-combat-block.md",
+   "note": "DOS 00698h 的對應（相似度 0.987）",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1001-character-sheet-combat-block.md"
    ]
   },
   {
@@ -48857,6 +48868,7 @@
    "spec": "docs/spec/767-ac-display-sign-and-trade-overload.md",
    "note": "畫出 AC(retf 8)：v := |p^[19Bh] − 3Ch| 轉成字串後接上 CS:0B3Ch(長度 2 的兩個半形空白)；p^[19Bh] \u003e 3Ch(無號)時再在前面補 CS:0B3Fh 的 '-'；最後 0418h:0D17h(@字串, 0, 0Ah, x, y)。確認顯示值 = 60 − 儲存值 且負值以獨立的 '-' 字元前綴。⚠ 兩個尾隨空白是常數的一部分，用來蓋掉上次較長的數字，中文化不能刪",
    "citations": [
+    "spec/1001-character-sheet-combat-block.md",
     "spec/767-ac-display-sign-and-trade-overload.md",
     "spec/973-pc98-text-print-signature.md"
    ]
@@ -52601,9 +52613,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -53156,9 +53168,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 24,
+   "Read": 25,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
