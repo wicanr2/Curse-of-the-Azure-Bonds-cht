@@ -1676,7 +1676,10 @@
    "callers": 10,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
+   "note": "音效命令分派(retf 2)：命令不在 CS:17130h 的集合裡就安靜丟掉；裝置代碼 unk_21DAAh 等於 2 時全部不做。00h 關兩組、01h 叫 197B4h(1)、0FFh 關兩組後叫 19355h 卸載並清 unk_21DACh、02h..0Eh 依裝置 0/1 各走一組播放程序(命令值先減 1)、0Fh 把 1388h(5000)寫進 unk_21154h 指向的 word"
   },
   {
    "platform": "dos",
@@ -8655,6 +8658,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md"
    ]
   },
@@ -12577,6 +12581,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md"
    ]
   },
@@ -12854,7 +12859,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
+   "note": "神明介入(retf，無參數)：\u003c0A54h:0724h\u003e(@DS:8C80h) 以 ZF 回報，成立才做 — 顯示 CS:48C8h 'The Gods intervene!'，走隊伍鏈把 +197h(陣營)為 1 的成員 +196h 設 0、+195h(狀態)設 6，並把 byte[66A6h + 4*索引] 歸零；最後 \u003c呼叫\u003e(地圖^[2]+3, 地圖^[3]+3, 0FFh, 8) — 加回 spec 750 減掉的 3，印證戰場原點是隊伍位置退三格。⚠ DS:66A6h 既是 DS:6D35h 的項數又是 1-based 陣列的第 0 格",
+   "citations": [
+    "spec/772-gods-intervene-money-display-and-sound-commands.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15069,7 +15080,13 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
+   "note": "七欄的金錢顯示(retf，無參數)：for i := 6 downto 0，DS:6506h^[0FBh + i*2] \u003e 0(無號)才佔一列 — 名稱取自 DS:0F93h + i*0Bh(每筆 11 bytes 的 Pascal 短字串)、右對齊到第 20 欄(14h − 長度)，數值固定從第 21 欄起，列號從 7 往下遞增。⚠ 右對齊用 byte 數算，全形中文會算錯；名稱表在常駐資料段，scan_pascal_strings.py 掃不到",
+   "citations": [
+    "spec/772-gods-intervene-money-display-and-sound-commands.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16177,7 +16194,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+    "spec/772-gods-intervene-money-display-and-sound-commands.md"
    ]
   },
   {
@@ -19703,10 +19721,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-13.md",
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
-    "spec/525-pc98-tempsearch-display-state.md",
-    "spec/564-ecl-operand-decoding-and-arity-validation.md"
+    "spec/525-pc98-tempsearch-display-state.md"
    ]
   },
   {
@@ -32073,6 +32091,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md"
    ]
   },
@@ -44349,10 +44368,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-13.md",
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
-    "spec/525-pc98-tempsearch-display-state.md",
-    "spec/564-ecl-operand-decoding-and-arity-validation.md"
+    "spec/525-pc98-tempsearch-display-state.md"
    ]
   },
   {
@@ -47495,9 +47514,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 131,
+   "Read": 132,
    "NotBlocking": 133,
-   "Todo": 44,
+   "Todo": 43,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -47705,9 +47724,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 33,
+   "Todo": 32,
    "Fragment": 16,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -47795,9 +47814,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 21,
+   "Todo": 20,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,

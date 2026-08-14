@@ -19,7 +19,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0527` | sub_527 | — | 210 | 79 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `05F9` | sub_5F9 | — | 86 | 30 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>數隊伍(retf，無參數)：走 DS:650Ah 的隊伍鏈，數出 +0F7h = 0 或 +0F7h = 0B3h 的成員數，回 byte。+0F7h 是既知「四個處理常式存回不對稱」的那個欄位 | audit/function-index/pc98-overlay-21.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/758-morale-field-0f7h-round-trip.md |
 | `064F` | sub_64F | — | 948 | 382 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `0A03` | sub_A03 | — | 124 | 50 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md<br>扣一筆並累計(retf 8)：p^[0FBh + idx*2] -= 數量(word，⚠ 沒有下限檢查，不足會迴繞)；叫本模組 003Bh(數量, p)；DS:4FBAh 為 6 或 1 時再把數量以 32-bit 加到 DS:6F70h + idx*4。DS:6F70h 這八格至此有三種互相衝突的型別用法(遠指標/商餘/累加器)，見 spec 764 | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-21.md<br>spec/764-fsplit-dbcs-and-eight-slot-longint-table.md |
+| `0A03` | sub_A03 | — | 124 | 50 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md<br>扣一筆並累計(retf 8)：p^[0FBh + idx*2] -= 數量(word，⚠ 沒有下限檢查，不足會迴繞)；叫本模組 003Bh(數量, p)；DS:4FBAh 為 6 或 1 時再把數量以 32-bit 加到 DS:6F70h + idx*4。DS:6F70h 這八格至此有三種互相衝突的型別用法(遠指標/商餘/累加器)，見 spec 764 | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-21.md<br>spec/764-fsplit-dbcs-and-eight-slot-longint-table.md<br>spec/772-gods-intervene-money-display-and-sound-commands.md |
 | `0A8A` | sub_A8A | — | 206 | 87 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0B91` | sub_B91 | — | 295 | 125 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0CF0` | sub_CF0 | — | 619 | 243 | 0 | 6 | ✓ | 待解讀 | — | — | — |

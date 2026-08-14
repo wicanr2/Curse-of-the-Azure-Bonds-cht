@@ -122,7 +122,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16FAD` | sub_16FAD | — | 319 | 116 | 6 | 12 |  | 待解讀 | — | — | — |
 | `170EC` | sub_170EC | — | 28 | 13 | 3 | 3 |  | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>清空鍵盤緩衝區(retf，無參數)：while KEYPRESSED do 讀一個鍵丟掉(以 push cs + call near 呼叫 sub_16FADh) | — |
 | `17122` | sub_17122 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `17150` | sub_17150 | — | 182 | 79 | 10 | 6 |  | 待解讀 | — | — | — |
+| `17150` | sub_17150 | — | 182 | 79 | 10 | 6 |  | 已解讀 | exact | docs/spec/772-gods-intervene-money-display-and-sound-commands.md<br>音效命令分派(retf 2)：命令不在 CS:17130h 的集合裡就安靜丟掉；裝置代碼 unk_21DAAh 等於 2 時全部不做。00h 關兩組、01h 叫 197B4h(1)、0FFh 關兩組後叫 19355h 卸載並清 unk_21DACh、02h..0Eh 依裝置 0/1 各走一組播放程序(命令值先減 1)、0Fh 把 1388h(5000)寫進 unk_21154h 指向的 word | — |
 | `17206` | sub_17206 | — | 58 | 25 | 7 | 4 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>依音效裝置決定是否安裝(retf)：dword_21154 := seg045:0124h；byte_21DAB := byte_21DAA；byte_21DAC := 1；byte_21DAA <> 2 時才叫 19320h() 與 196E0h(0)、1974Ah(0) | — |
 | `17240` | sub_17240 | — | 16 | 8 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 dword_21154 所指的 word 清成 0 | — |
 | `19320` | sub_19320 | — | 53 | 24 | 1 | 0 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>聲音驅動安裝(retf)：存 INT 08h 舊向量到 CS:dword_1931Ch，換成 seg045:225Eh；out 43h,0B6h 後把 13B1h(≈236.7 Hz)分兩次寫 port 40h。⚠ 控制字 0B6h 選的是 counter 2，資料卻寫進 counter 0 | — |
