@@ -24493,6 +24493,42 @@
    "level": "exact",
    "spec": "946",
    "note": "Ctrl-Break 處理(far, retf 2)：byte_280E2h = 0 就直接返回、byte_280C0h = 0 回 3；否則用 int 21h AH=6 DL=0FFh 清空輸入，再用 int 18h AH=1/AH=0 把鍵盤緩衝吃乾淨。⚠IDA 把 int 18h 註解成 IBM PC 的 ROM BASIC，那是錯的——PC-98 的 int 18h 是 CRT/鍵盤 BIOS。接著印 '^C'、叫 sub_1948Ch/sub_19AC2h、執行 int 23h(DOS Ctrl-C 離開位址)。回來後清 word_280F9h/word_280D8h/byte_280D0h，用 sub_19ACEh 取畫面模式：≤ 3 才重新開啟雙位元組處理(高解析才支援全形)，bit 0 決定列數 18h(24) 或 13h(19)，再叫 sub_18FE4h/sub_18FF5h/sub_19A59h 重算視窗參數"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108777,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "947",
+   "note": "32 位元有號除法(far)：bx:cx ÷ dx:ax，★商在 dx:ax、餘數在 bx:cx——這就是專案裡 0A65h:0299h / 0A54h:0294h 那個約定的實作，spec 913/925 用到的除法語意由此確認。除數為 0 時 ax := 0C8h(200 = Turbo Pascal 的 Division by zero 執行期錯誤)並跳 sub_1A721h。本體是記正負、取絕對值、跑 33 次(bp = 21h) restoring division(rcl/sub/sbb，不夠減就加回、cmc 後 rcl 進商)，最後依原正負把商與餘數各自取負"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 80725,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "947",
+   "note": "釋放一個表面(far, retf 4)：表面指標^ = NIL 就離開；甲 := s^[8] × s^[11h](張數 × 每張位元組)、乙 := s^[0] × s^[2] × s^[8](高 × 寬 × 張數)；(s^[2] > 16h) 且 s^[13h] ≠ NIL 就先 FreeMem 遮罩緩衝 乙 bytes；再 FreeMem(表面, 甲 + 17h + 乙) 並把指標寫回 NIL。標頭 17h 與 +0/+2/+8/+11h/+13h 五個欄位與 spec 934(DOS 配置端)逐格對應。⚠但算式不一樣——DOS 端 GetMem 只算 總量 + 17h，本支多算一個 高×寬×張數，釋放遮罩也多一道 寬 > 16h 的門檻；本規格沒讀 PC-98 側的配置函式，不宣稱兩邊一致"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 99971,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "947",
+   "note": "把區塊還回記憶體池(near)：sub_187ECh 進位就回 0FFFFh；否則用 sub_1883Eh 從池 A(word_2418Ah)摘下、word_2418Ch 扣掉 MCB^[0]。★若區塊尾端剛好等於 word_24186h(池尾)就直接把池邊界往回縮並把段數加回 word_24188h；否則用 sub_18810h 掛到池 B(word_2418Eh)並把大小加進 word_24190h。兩條路都把 MCB^[8] 的魔數 818Eh(spec 945)清成 0。與 spec 945 的 18612h 是一對"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 104512,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "947",
+   "note": "清一個文字矩形(near)：di = (列 × byte_280DAh + 欄) × 2、寬由 dx − cx + 101h 拆出、si = (欄數 − 寬) × 2 是每列要跳過的距離；★byte_280DAh ≠ 50h(40 欄模式)時 di/寬/si 全部再 shl 1。先在字碼平面(es = word_280D4h = A000h)用 rep stosw 填 ' '，每列前後各叫 sub_19B7Dh/sub_19B9Ch；再 di += word_280D6h(2000h)跳到屬性平面，叫 sub_18FA3h(bh) 後用 stosb + inc di 隔一個寫一個——★屬性平面每格也佔兩個 byte 但只有低位有意義。印證 spec 946 的兩平面共用位移"
   }
  ]
 }
