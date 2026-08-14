@@ -23415,15 +23415,6 @@
    "note": "同 DOS overlay-24:021DDh，但★在其中一個座標多乘一次 12h(18)，DOS 兩個座標都只乘 3(形狀上是字元格尺寸不同)；迴圈收尾的跳躍結構也多 4 條。DS:4FA9h↔DS:7F16h"
   },
   {
-   "platform": "dos",
-   "module": "overlay-05",
-   "ea": 5942,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "891",
-   "note": "戰鬥收場(retf，無參數)：清 4F9Dh^[58Eh]、DS:47ECh，DS:4FBCh=0 就叫 0053Ch(spec 861 戰鬥結束處理)，畫面模式設 6；走隊伍鏈叫 1512h+1；(DS:4FC7h≠0 且 DS:8B56h=0) 走敗北路徑(58Eh:=80h、1A0h:0、兩句訊息)；否則有人在逃(DS:47EDh)先釋放戰利品鏈並跳過發經驗值，正常則叫 14ACh + 0A7Eh(longint@DS:8B58h) + 106Ch 再釋放。收場清 4F9Dh 的 +6E0h/+6E2h/+6E4h/+5C6h/+5CCh。★關掉 spec 858 的『DS:6F8Ch 戰利品鏈誰釋放』：就是這裡，FreeMem(節點, 3Fh)，逃跑時東西與經驗值都不要"
-  },
-  {
    "platform": "pc98",
    "module": "overlay-05",
    "ea": 6005,
@@ -23449,6 +23440,15 @@
    "level": "exact",
    "spec": "892",
    "note": "同 DOS overlay-11:006D8h 的目的，但★相似度只有 0.110、幾乎各寫各的：緩衝位址整組不同(7F6Eh/8016h/8166h/82B6h/0A81Ah)，多了開頭 81Fh:14h + 0A65h:11DCh + FillChar(966Ch,0D0h)、兩次 194h:39h、一個 for DS:7AD2h:=0 to 0Bh 把 [7AD2h*5−5CFCh] 的 5-byte 記錄填 0FFh、FillChar(0A2C6h,43h)。★DS:8B56h 設 1(DOS 設 0)。兩平台的初始化不共用判讀"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 5942,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "891",
+   "note": "戰鬥收場(retf，無參數)：清 4F9Dh^[58Eh]、DS:47ECh，DS:4FBCh=0 就叫 0053Ch(spec 861 戰鬥結束處理)，畫面模式設 6；走隊伍鏈叫 1512h+1；(DS:4FC7h≠0 且 DS:8B56h=0) 走全滅路徑——印 'The monsters rejoice for the party has been destroyed' ＋ 'Press any key to continue'；否則有人在逃(DS:47EDh)先釋放戰利品鏈並跳過發經驗值，正常則叫 14ACh + 0A7Eh(longint@DS:8B58h) + 106Ch 再釋放。收場清 4F9Dh 的 +6E0h/+6E2h/+6E4h/+5C6h/+5CCh。★關掉 spec 858 的『DS:6F8Ch 戰利品鏈誰釋放』。★DS:8B56h≠0 那條路即使全隊倒下也不走全滅畫面，形狀上是劇情安排的必敗戰鬥"
   }
  ]
 }
