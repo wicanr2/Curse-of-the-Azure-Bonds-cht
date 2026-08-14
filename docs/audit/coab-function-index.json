@@ -1599,7 +1599,10 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "939",
+   "note": "開啟索引式資源檔(retf 14h = (資料檔, 索引檔, @位移, 副檔名, 主檔名))：兩個檔名各限長 14h 後串成 名 := 主 + 副，路徑取自 DS:25AEh + byte_21DAEh × 1Eh 的路徑表(每筆 30 bytes = string[29])，用 sub_16645h 依序開 arg_4 與 arg_0——★兩個 File 變數開的是同一個檔名(字串原封不動重組一次)，所以兩邊各有獨立讀取位置，一個當索引游標一個當資料游標。成功後 BlockRead(arg_0, arg_8^, 2) 從索引側讀一個 word 當資料起點，arg_8^ += 2 跳過那個 word，再 Seek(arg_4, arg_8^) 把資料側定位過去，回 1；任一次開檔失敗就回 0(無訊息無重試)。★路徑由 DS:25AEh 那張表提供，這解釋 spec 926 的 WALLDEF\u003c磁碟\u003e.dax 為什麼只把磁碟編號放進檔名"
   },
   {
    "platform": "dos",
@@ -51702,9 +51705,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 161,
+   "Read": 162,
    "NotBlocking": 133,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
