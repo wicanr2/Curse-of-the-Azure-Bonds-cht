@@ -23,7 +23,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0C95` | sub_C95 | — | 424 | 182 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0E3D` | sub_E3D | — | 382 | 183 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0FBB` | sub_FBB | — | 80 | 30 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>清空戰場地圖(retf)：FillChar((DS:9F2Ch+7)^, 4E2h, 17h)，DS:7F05h^[342h] → DS:7ACAh，與 DOS overlay-10:0FC7h 同 | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
-| `1023` | sub_1023 | — | 174 | 72 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `1023` | sub_1023 | — | 174 | 72 | 1 | 4 | ✓ | 已解讀 | exact | docs/spec/795-combat-scene-resources-and-damage-roll.md<br>進戰鬥前的場景載入：word(DS:7F05h^[1CCh]) <> 0 走 'DungCom' + sub_196A(1,0,19h)（地城），= 0 走 'WildCom' + sub_196A(1,0,22h)  ← 此常數與 DOS 不同（野外）；兩路都再載 'RandCom' + sub_196A(1,22h,6)。接著 GetMem(DS:9F2Ch, 4E9h = 7+1250) 並把表頭 +4/+5/+6 設成 0/1/0；最後依同一個旗標呼叫 sub_08BD 或 sub_0FBB。三個資源名兩平台皆為 ASCII 原文，不可中文化。retf。spec 795 | — |
 | `10D1` | sub_10D1 | — | 286 | 94 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `11EF` | sub_11EF | — | 49 | 18 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>判斷式(retf 4)：與 DOS overlay-10:11FBh 相同的「兩個都不在範圍內才回 true」 | spec/754-small-predicates-and-wrappers.md |
 | `1220` | sub_1220 | — | 324 | 138 | 1 | 2 | ✓ | 待解讀 | — | — | — |

@@ -14,7 +14,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `06A4` | sub_6A4 | — | 4 | 1 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and word ptr [bp+si-7Dh], 68h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 4 bytes，已逐條讀完） | — |
 | `06A8` | sub_6A8 | — | 610 | 192 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `093E` | sub_93E | — | 205 | 77 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `0A33` | sub_A33 | — | 202 | 72 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `0A33` | sub_A33 | — | 202 | 72 | 1 | 4 | ✓ | 已解讀 | exact | docs/spec/794-remove-curse-and-party-cycle-keys.md<br>Remove Curse：先掃 DS:9594h^[14Dh] 物品鏈（next +52h）找 +5Eh <> 0（詛咒旗標）；沒有就查效果碼 24h（<014Ah:00A7h>），兩者都沒有才顯示 名字+'は呪われてはいませんよ'(22 bytes) 並用 本模組 0047h 再確認；答 Y 則顯示 'リムーブ・カース'(16 bytes)、本模組 00F3h(0DACh=3500) 再問一次，答 Y 則 DS:0A521h := DS:9594h 後呼叫 <011Ah:004Dh>。與 spec 763/785 的神殿服務同一個模子，同樣沒有扣款動作。retf。spec 794 | — |
 | `0B31` | sub_B31 | — | 141 | 46 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md<br>石化解除(retf，無參數)：DS:9594h^[196h] 不等於 7 時先顯示 CS:0AFDh 'は石になってはいませんよ' 並用本模組 0051h 問「それでもかけてもらいますか？」；答 Y 才顯示 CS:0B16h 'ストーン・トゥ・フレッシュ' 並叫 本模組 0103h(7D0h)；再答 Y 且仍是 7 就把 +196h 設 0、+197h 設 1、+1A5h(目前 HP)設 1。可證狀態欄位值 7 = 石化 | audit/embedded-strings.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md<br>spec/785-cross-platform-pairs-third-batch.md |
 | `0BFF` | sub_BFF | — | 561 | 240 | 1 | 8 | ✓ | 待解讀 | — | — | — |
 | `0F42` | sub_F42 | GOTEMPLE | 217 | 86 | 0 | 3 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-04.md |
