@@ -12,7 +12,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `03B9` | sub_3B9 | — | 165 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `045E` | sub_45E | — | 233 | 92 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `0549` | sub_549 | — | 126 | 54 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>兩位數補零(retf 2)：先 14Dh:0052h 把數值轉成字串，n < 0Ah(無號)時在前面接上 CS:0547h 的 '0'，最後 0A54h:0680h(緩衝A, 緩衝B, 1, 2) 取固定寬度再寫回輸出參數。⚠ 補的是 ASCII '0'，換全形數字會讓寬度計算不一致 | spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md |
-| `05D4` | sub_5D4 | — | 246 | 110 | 5 | 2 | ✓ | 待解讀 | — | — | spec/768-script-arithmetic-opcodes-and-save-size.md |
+| `05D4` | sub_5D4 | — | 246 | 110 | 5 | 2 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-20.md<br>spec/768-script-arithmetic-opcodes-and-save-size.md |
 | `0712` | sub_712 | — | 310 | 131 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0862` | sub_862 | — | 173 | 65 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/768-script-arithmetic-opcodes-and-save-size.md<br>每 288 次才做一次的整隊回復(retf 2)：inc(DS:757Ch)，未達 120h(288)就離開；否則走隊伍鏈對每人叫 <呼叫>(1, 角色)，參數非 0 時再叫本模組 05D4h(0)，畫出 CS:0848h 'The Whole Party Is Healed'(25 字元，x=1、y=13h、色 0Ah)，最後計數器歸零。⚠ 訊息寫死在 x=1、沒有先清行，換短的譯文會留下殘影 | audit/embedded-strings.md<br>spec/768-script-arithmetic-opcodes-and-save-size.md |
 | `091D` | sub_91D | — | 182 | 68 | 2 | 2 | ✓ | 待解讀 | — | — | — |
