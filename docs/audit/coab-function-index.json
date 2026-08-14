@@ -15282,7 +15282,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "849",
+   "note": "角色記錄解構子(retf 4，指向角色遠指標的遠指標)：釋放 +18Dh 戰鬥狀態(16h)、+14Dh 物品鏈(每個 3Fh)、+0F2h 一條 9 bytes 的鏈(next 在 +5)，最後 FreeMem(角色, 1A6h) 並寫回 NIL。★DOS 角色記錄 = 422 bytes 的直接證據",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-19.md",
@@ -22633,6 +22636,8 @@
    "spec": "848",
    "note": "捲動清單：沿清單跳過整頁，節點 +29h（PC-98 +51h，即 spec 843 顯示行節點的屬性）為 0 就停。每次都從鏈頭重走到游標（0011h 取第 n 個節點），O(視窗高 × 游標位置)",
    "citations": [
+    "audit/function-index/dos-overlay-26.md",
+    "audit/function-index/pc98-overlay-26.md",
     "spec/848-scroll-list-widget.md"
    ]
   },
@@ -22653,6 +22658,7 @@
    "note": "捲動清單：翻頁。先記住游標在視窗裡的相對位置，頂端 DS:7292h 加減一整頁後夾限（上界 總筆數−視窗高、下界 0），再把游標放回同一個相對位置。⚠ 總筆數 \u003c 視窗高 時上界為負，頂端會被夾成負值",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-26.md",
     "spec/848-scroll-list-widget.md"
    ]
   },
@@ -22674,6 +22680,7 @@
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-26.md",
     "spec/848-scroll-list-widget.md"
    ]
   },
@@ -22720,7 +22727,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "843",
+   "note": "顯示行清單的建構子(retf 6，(鏈頭遠指標, 筆數))：GetMem 第一個節點 2Eh bytes、清 next/屬性/文字，之後 for i := 2 to 筆數 逐一 GetMem 掛在 +2Ah 並同樣清空。筆數 \u003c 2 時只建一個。與 spec 843 的『加一行』是同一種節點"
   },
   {
    "platform": "dos",
@@ -31038,10 +31048,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-26.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-04.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md",
-    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
+    "audit/function-index/pc98-overlay-26.md"
    ]
   },
   {
@@ -40475,7 +40485,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "849",
+   "note": "同 DOS overlay-17:0003Eh（同位址、助憶碼序列完全相同）。12 條差異全是位址與尺寸：+18Eh↔+18Dh、+14Eh↔+14Dh、物品節點 67h↔3Fh、角色記錄 1A7h↔1A6h；+0F2h 那條鏈兩平台節點都是 9 bytes",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-19.md",
@@ -48602,7 +48615,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "843",
+   "note": "同 DOS overlay-26:01199h（module_align 對齊，助憶碼序列完全相同）。8 條差異全是節點尺寸與位移：56h↔2Eh、+51h/+52h/+54h↔+29h/+2Ah/+2Ch、GetMem 呼叫目標"
   },
   {
    "platform": "pc98",
@@ -50453,9 +50469,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
@@ -50588,9 +50604,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -51008,9 +51024,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
@@ -51143,9 +51159,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,
