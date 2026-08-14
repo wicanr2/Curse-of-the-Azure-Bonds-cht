@@ -17033,6 +17033,7 @@
    "spec": "922",
    "note": "交易錢幣給隊友(retf，無參數)：外圈用 'Trade to?' 選收款人(存進 DS:4AF8h 當下次預設)，內圈是與 spec 920 逐條相同的七幣別選單，結尾改成 loc_115Bh+1(@來源角色, @目標角色, 數量, 幣別) 轉帳。錢包還有錢就再開一次選單。⚠取消幣別選單時只設內圈旗標 var_132，而決定『離開還是退回選人』的外圈旗標 var_131 在這條路徑上一次都沒被賦值過(只在 2C94/2F14/2F36 寫)，判斷用的是堆疊殘值——兩平台相同",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-strings.md",
     "spec/922-trade-coins-menu.md"
    ]
@@ -18302,7 +18303,13 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "923",
+   "note": "法術清單建構器(retf 2 = 模式 byte，回傳清單非空)：模式 0 列 +1Eh+i 最高位沒立的(還能用)、模式 5 列最高位立起來的(已用掉)、模式 1 列 +78h+i ≠ 0 的(已學會)、模式 4 列 +12Ch+職×5+等 \u003e 0 且 +78h+i = 0 的(還能學)、模式 2/3/6 改叫 sub_8A1h/sub_981h 且不分組。★+1Eh 那 84 格的最高位 = 這回合用掉了沒；+78h+i(i=1..100) = 已學會的法術。★法術屬性表基底其實是 DS:37DAh：+0 施法職業別(0..2)、+1 等級(1..5)，索引式 +12Ch+職×5+等 正好對上 +12Dh..+13Bh 的 3×5 可記憶數量表。分組時依等級插標題節點(+29h := 1)，標題文字取自 DS:0875h stride 29h",
+   "citations": [
+    "spec/923-spell-list-builder.md"
+   ]
   },
   {
    "platform": "dos",
@@ -44875,7 +44882,13 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "923",
+   "note": "同 DOS overlay-22:009FCh(相似度 0.995)。★唯一邏輯差異：插新標題的條件 DOS 是 前等 \u003c 等(有號 jge 跳過)、PC-98 是 前等 ≠ 等(jz 跳過)——等級變小時 DOS 不插、PC-98 會插；清單若非遞增兩平台會長得不一樣。另一差異區塊是 cmp ax,0 ↔ cmp al,0 帶來的一條 xor ah,ah(編譯器碼型)",
+   "citations": [
+    "spec/923-spell-list-builder.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51902,9 +51915,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 110,
+   "Read": 111,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -52457,9 +52470,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 94,
+   "Read": 95,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
