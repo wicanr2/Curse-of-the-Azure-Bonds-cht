@@ -65,7 +65,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1259F` | sub_1259F | — | 1244 | 502 | 1 | 27 |  | 待解讀 | — | — | — |
 | `12A80` | sub_12A80 | — | 24 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br>byte_241E2 := byte_241E3;byte_241E3 := arg_0——一格深度的歷史(舊值挪成「前一個」再寫新值),順序不能顛倒 | — |
 | `12E3D` | sub_12E3D | — | 580 | 211 | 2 | 2 |  | 待解讀 | — | — | — |
-| `13231` | sub_13231 | — | 133 | 54 | 2 | 0 |  | 待解讀 | — | — | — |
+| `13231` | sub_13231 | — | 133 | 54 | 2 | 0 |  | 已解讀 | exact | docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>byte 的位元反轉(retf 2)：八段展開，bit0↔bit7、bit1↔bit6、bit2↔bit5、bit3↔bit4，全部用加法(位元互不重疊)。第一項沒先 and 01h，靠只留 byte 得到同樣結果 | — |
 | `139DD` | sub_139DD | — | 376 | 145 | 2 | 4 |  | 待解讀 | — | — | — |
 | `13B55` | sub_13B55 | — | 159 | 56 | 1 | 2 |  | 待解讀 | — | — | — |
 | `13BF4` | sub_13BF4 | — | 542 | 224 | 1 | 3 |  | 待解讀 | — | — | — |

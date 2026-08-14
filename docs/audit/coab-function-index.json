@@ -4605,6 +4605,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-00.md",
+    "audit/function-index/dos-overlay-16.md",
     "audit/function-index/pc98-overlay-00.md",
     "spec/753-small-utility-routines.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md"
@@ -8624,7 +8625,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8637,7 +8641,13 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+   "note": "牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(方向, y, x)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(反向, y2, x2)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對",
+   "citations": [
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15549,7 +15559,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15624,7 +15637,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+   "note": "兩位數補零(retf 2)：先 14Dh:0052h 把數值轉成字串，n \u003c 0Ah(無號)時在前面接上 CS:0547h 的 '0'，最後 0A54h:0680h(緩衝A, 緩衝B, 1, 2) 取固定寬度再寫回輸出參數。⚠ 補的是 ASCII '0'，換全形數字會讓寬度計算不一致",
+   "citations": [
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16016,6 +16035,7 @@
    "note": "扣一筆並累計(retf 8)：p^[0FBh + idx*2] -= 數量(word，⚠ 沒有下限檢查，不足會迴繞)；叫本模組 003Bh(數量, p)；DS:4FBAh 為 6 或 1 時再把數量以 32-bit 加到 DS:6F70h + idx*4。DS:6F70h 這八格至此有三種互相衝突的型別用法(遠指標/商餘/累加器)，見 spec 764",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-21.md",
     "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
   },
@@ -20597,10 +20617,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-25.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "audit/function-index/pc98-overlay-26.md"
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -23526,7 +23546,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+   "note": "byte 的位元反轉(retf 2)：八段展開，bit0↔bit7、bit1↔bit6、bit2↔bit5、bit3↔bit4，全部用加法(位元互不重疊)。第一項沒先 and 01h，靠只留 byte 得到同樣結果"
   },
   {
    "platform": "pc98",
@@ -31926,7 +31949,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31939,7 +31965,13 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+   "note": "牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)",
+   "citations": [
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40269,7 +40301,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40345,7 +40380,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -45263,10 +45301,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-25.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "audit/function-index/pc98-overlay-26.md"
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -47445,9 +47483,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -47595,9 +47633,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 0,
    "CodeBytes": 3536,
    "Undefined": 191,
@@ -47835,9 +47873,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 222,
+   "Read": 223,
    "NotBlocking": 29,
-   "Todo": 57,
+   "Todo": 56,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
@@ -48000,9 +48038,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 17,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,

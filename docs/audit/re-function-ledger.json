@@ -19300,6 +19300,42 @@
    "level": "exact",
    "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
    "note": "兩筆記錄的合併(retf 8)：n := 來源^[11h] − 1；for i := 0 to n 做 目的^[17h+i] |= 來源^[17h+i]、目的^[13h]^[i] &= 來源^[13h]^[i]。同一迴圈一個取聯集一個取交集。⚠ 來源^[11h] 為 0 時 n = 0FFFFh，迴圈會跑 65536 次"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 78385,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+   "note": "byte 的位元反轉(retf 2)：八段展開，bit0↔bit7、bit1↔bit6、bit2↔bit5、bit3↔bit4，全部用加法(位元互不重疊)。第一項沒先 and 01h，靠只留 byte 得到同樣結果"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 888,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+   "note": "牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(方向, y, x)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(反向, y2, x2)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 888,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+   "note": "牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 1353,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+   "note": "兩位數補零(retf 2)：先 14Dh:0052h 把數值轉成字串，n < 0Ah(無號)時在前面接上 CS:0547h 的 '0'，最後 0A54h:0680h(緩衝A, 緩衝B, 1, 2) 取固定寬度再寫回輸出參數。⚠ 補的是 ASCII '0'，換全形數字會讓寬度計算不一致"
   }
  ]
 }
