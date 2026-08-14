@@ -20,7 +20,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0DD3` | sub_DD3 | — | 560 | 180 | 1 | 9 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-09.md |
 | `0FE8` | sub_FE8 | — | 297 | 102 | 2 | 9 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0DD3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `119F` | sub_119F | — | 14 | 4 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1592`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完） | — |
-| `1223` | sub_1223 | — | 95 | 31 | 4 | 5 | ✓ | 待解讀 | — | — | — |
+| `1223` | sub_1223 | — | 95 | 31 | 4 | 5 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>兩條路的選擇(retf 4)：戰鬥狀態指標在 +18Eh，其餘同 DOS overlay-09:1201h | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `1296` | sub_1296 | — | 239 | 80 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `13A5` | sub_13A5 | — | 111 | 36 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1414` | sub_1414 | — | 8 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+0F7h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |

@@ -7,15 +7,15 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 179h:57h 後交給 19Ch:2Ah 的 overlay 載入器 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-04.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-24.md |
 | `0011` | sub_11 | — | 99 | 38 | 5 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md<br>spec/686-dos-ecl-operand-tables-and-menu.md |
-| `0074` | sub_74 | — | 65 | 25 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>數鏈長(retf 4)：走遠指標鏈計數，next 在 +2Ah(＝物品節點的 far next)，回傳 word | audit/embedded-strings.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-25.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md |
+| `0074` | sub_74 | — | 65 | 25 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>數鏈長(retf 4)：走遠指標鏈計數，next 在 +2Ah(＝物品節點的 far next)，回傳 word | audit/embedded-strings.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-25.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `00D5` | sub_D5 | — | 240 | 92 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `01E5` | sub_1E5 | — | 431 | 180 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `03D4` | sub_3D4 | — | 1041 | 365 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `07E5` | sub_7E5 | — | 24 | 14 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 542h:311h`（body 共 24 bytes，已逐條讀完） | spec/750-combat-setup.md |
 | `07FD` | sub_7FD | — | 141 | 52 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `088A` | sub_88A | — | 314 | 121 | 2 | 3 | ✓ | 待解讀 | — | — | — |
-| `09C4` | sub_9C4 | — | 76 | 31 | 2 | 1 | ✓ | 待解讀 | — | — | — |
-| `0A10` | sub_A10 | — | 70 | 29 | 2 | 1 | ✓ | 待解讀 | — | — | — |
+| `09C4` | sub_9C4 | — | 76 | 31 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>第一個非空白的位置(retf 6)：同樣先複製進本地緩衝，再從第 1 個字元往後跳過 20h，回傳位置。與 0A10h 合起來是 trim 的左右兩半 | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `0A10` | sub_A10 | — | 70 | 29 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>裁掉尾端空白後的長度(retf 6)：先用 0A54h:064Eh 把第一個宣告的遠字串參數複製進 40 字元本地緩衝(上限 28h)，再從尾端往回跳過 20h，回傳長度(下限 1)。第二個參數整支沒讀；判準是 ASCII 空白，全形空白不算 | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0A56` | sub_A56 | — | 162 | 71 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0AF8` | sub_AF8 | — | 257 | 111 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0BF9` | sub_BF9 | — | 224 | 77 | 2 | 2 | ✓ | 待解讀 | — | — | — |
@@ -24,5 +24,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0DF9` | sub_DF9 | — | 778 | 312 | 0 | 9 | ✓ | 待解讀 | — | — | — |
 | `112A` | sub_112A | — | 111 | 52 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1199` | sub_1199 | — | 168 | 59 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `1241` | sub_1241 | — | 76 | 30 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/733-cast-driver.md |
+| `1241` | sub_1241 | — | 76 | 30 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>釋放整條選單節點鏈(retf 4，參數是指向鏈頭指標的遠指標)：next 在 +2Ah、每個節點 FreeMem 2Eh(46 bytes)。⚠ 離開時沒有把鏈頭寫回 NIL，呼叫端不自己清就是懸空指標 | audit/embedded-strings.md<br>spec/733-cast-driver.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `128D` | sub_128D | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

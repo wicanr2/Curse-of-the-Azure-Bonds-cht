@@ -18499,6 +18499,231 @@
    "level": "exact",
    "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
    "note": "指標正規化與下界夾制(近呼叫 retn)：dword_2097Eh 減 word_20982h，低 4 bits 留 SI、其餘右移 4 加到段值，與 word_2097Ch:word_2097Ah 這個下界比，低於就夾到下界；offset 為 0 有段值 +1000h 的特別路徑。與 spec 753 的 1AAD5h 同族"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 4039,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "清空戰場地圖(retf，無參數)：FillChar((DS:6E92h+7)^, 4E2h, 17h) — 4E2h=1250=50×25，獨立確認 spec 749 由 FreeMem 4E9h 反推的格陣尺寸與 7 byte 表頭；再抄 DS:4F99h^[342h] 到 DS:4A14h(另兩個 local 指派後沒用)，最後叫本模組 09FEh/0B0Ah/0E49h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 4027,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "清空戰場地圖(retf)：FillChar((DS:9F2Ch+7)^, 4E2h, 17h)，DS:7F05h^[342h] → DS:7ACAh，與 DOS overlay-10:0FC7h 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 4673,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "釋放整條選單節點鏈(retf 4，參數是指向鏈頭指標的遠指標)：next 在 +2Ah、每個節點 FreeMem 2Eh(46 bytes)。⚠ 離開時沒有把鏈頭寫回 NIL，呼叫端不自己清就是懸空指標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 2576,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "裁掉尾端空白後的長度(retf 6)：先用 0A54h:064Eh 把第一個宣告的遠字串參數複製進 40 字元本地緩衝(上限 28h)，再從尾端往回跳過 20h，回傳長度(下限 1)。第二個參數整支沒讀；判準是 ASCII 空白，全形空白不算"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 2500,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "第一個非空白的位置(retf 6)：同樣先複製進本地緩衝，再從第 1 個字元往後跳過 20h，回傳位置。與 0A10h 合起來是 trim 的左右兩半"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-01",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "可中斷的計時等待(retf 2)：06EAh:024Ch() 開頭結尾成對；起點 := 0542h:0994h()(32-bit 計數)，終點 := 起點 + 參數*100；迴圈中 09ABh:02FAh() 非 0 就提早離開，否則等到計數 >= 終點(無號 32-bit 比較)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-01",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "可中斷的計時等待(retf 2)：07E3h:02C7h／0418h:133Dh／08EEh:03B3h，其餘與 DOS overlay-01:0000h 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 1865,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "移除值為 1Fh 的那一格(retf，無參數)：p := 本模組 06F4h(1Fh)；p 非 NIL 時 i := 找格子(1Fh, p)(overlay-14:06B1h)，把 p^[1Eh+i] 歸零並回 true，否則回 false"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 1812,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "移除值為 1Fh 的那一格(retf)：與 DOS overlay-14:0749h 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 4938,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "第一個非零的職業欄位(retf 4)：p^[74h] 不等於 7 就回 0；否則在 p^[109h..10Fh] 找第一個非零 byte 回傳。⚠ 七格全為 0 時索引停在 7，會讀到 p^[110h](超出這七格)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-25",
+   "ea": 5202,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "第一個非零的職業欄位(retf 4)：與 DOS overlay-25:134Ah 同，含同一個越界一格的行為"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 13910,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "四條件合取(retf 4)：((p^[75h]=3) or ((p^[114h]>0) and <overlay 呼叫>(p))) and (DS:4FBAh<>5) and (p^[195h]=0) and (p^[191h]>0)。DS:4FBAh 就是戰鬥開場(spec 750)結尾設 5 的狀態變數；+114h 有號比較、+191h 無號"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 14013,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "四條件合取(retf 4)：對應 DS:7F27h、+196h、+192h，其餘同 DOS overlay-19:3656h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 1529,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "數隊伍(retf，無參數)：走 DS:650Ah 的隊伍鏈，數出 +0F7h = 0 或 +0F7h = 0B3h 的成員數，回 byte。+0F7h 是既知「四個處理常式存回不對稱」的那個欄位"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 1555,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "數隊伍(retf)：鏈頭 DS:9598h、next +18Ah，其餘同 DOS overlay-21:05F9h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 3931,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "兩個旗標的輸出(retf 8，兩個遠指標都是輸出參數)：a^ := DS:6F70h 起 8 個 4-byte 遠指標中前 7 個有任一非 NIL；b^ := 第 8 個(DS:6F8Ch)非 NIL。兩者先都清 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 4208,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "兩個旗標的輸出(retf 8)：表在 DS:0A00Ah，第 8 格 DS:0A026h，與 DOS overlay-21:0F5Bh 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 115,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "會不會超過上限(retf 0Ah)：上限 := 本模組 001Bh(p)；p^[187h] + n > 上限(無號)時回 true 並把 上限 − p^[187h] 寫進輸出參數，否則回 false 並寫 0。001Bh 被呼叫兩次、兩次都重算"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 115,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "會不會超過上限(retf 0Ah)：欄位是 +188h，其餘與 DOS overlay-21:0073h 相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 4609,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "兩條路的選擇(retf 4)：先無條件叫一支程序；若 f1(p) 或 f2(p) 或 p^[18Dh]^[3] = 0 則回 h1(p)，否則回 h2(p)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 4643,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "兩條路的選擇(retf 4)：戰鬥狀態指標在 +18Eh，其餘同 DOS overlay-09:1201h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 13596,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "載入 CPIC(retf 2)：DS:4F9Dh^[67Ch] > 7(無號)就整支不做；否則 GetMem(p, 1A6h)、本模組 3254h(參數, p)、p^[126h] := 參數、本模組 35A8h(p)，組出 CS:3517h 的 'CPIC' 字串後叫 overlay-33 entry#5 @01D4h(參數, p^[143h])。⚠ 匯出漏了 21h bytes，本判讀由原始 bytes 補回"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 17430,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "retf，無參數：r := 本模組 1432h(8, 2, 0, 0, DS:0A031h)；用 0A65h:062Fh 組字串(來源 CS:4415h 的長度 byte 是 0，即空字串)，帶 8 與 r+1；最後叫本模組 0F62h"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105367,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "CRT 畫面參數偵測(近呼叫 retn)：INT 10h AH=0Fh 取模式，AX=1130h/BH=0/DL=0 取字型資訊(DL=列數−1)；DL=0 時改用 18h 且模式 ≤3 另設 byte_24E5Dh:=1；結果存 word_24E5Eh(模式與欄數)、word_24E68h(列數)、byte_24E5Ch:=1、word_24E62h:=0、word_24E64h:=dx；列數 > 18h 時 AH:=1"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105289,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "CRT 畫面模式設定(近呼叫 retn)：清 0040h:0087h bit 0；模式非 7 且 >=4 就強制成 3 後設模式；再 AX=1112h/BL=0 載入 8×8 字型、AX=1130h 取列數，列數為 2Ah(42)時才設回 0040h:0087h bit 0、設游標形狀(AX=0100h/CX=0600h)與 AH=12h/BL=20h"
   }
  ]
 }
