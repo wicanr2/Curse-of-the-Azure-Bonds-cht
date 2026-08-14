@@ -23891,11 +23891,11 @@
    "note": "數鏈長(retf 4)：走遠指標鏈計數，next 在 +2Ah(＝物品節點的 far next)，回傳 word",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/dos-overlay-25.md",
-    "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-16.md"
+    "audit/function-index/pc98-overlay-04.md"
    ]
   },
   {
@@ -23949,14 +23949,17 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1060",
+   "note": "選項列選單本體(retf 16h，365 條)，spec 1030/1031/1032/1039/1059 一路呼叫的那一支；參數表與 spec 1030 從堆疊回推的完全一致(+18h/+14h 兩行選項各複製成上限 40、+12h 顏色、+10h/+0Eh 兩個 byte、+0Ch/+0Ah 兩個 byte、+06h 輸出旗標遠指標)。★★★ 大寫字母熱鍵的實作端：鍵 UpCase 後若 in 集合常數 CS:0394h(=['0'..'9','A'..'Z',' '])，空白直接結束，否則逐字元掃整條選項行找相同字元 —— 沒有熱鍵表；這解釋了 DOS 熱鍵必須是選項文字裡真的出現的大寫字母，也解釋 spec 1039 的波浪號只是給玩家看的標記(程式不看 ~)。⚠ Big5 低位元組落在 41h..5Ah 會被撞到 ⇒ DOS 版沒有安全的中文熱鍵，只能跟 PC-98 的獨立熱鍵表。★★ 游標鍵是 ','(上一個，環繞)與 '.'(下一個，環繞)，位置存 DS:7294h(spec 1013 同一格)，Enter(0Dh) 只在 +10h 或 +0Eh 非 0 時有效、選到的字元若是 0 就改回 0Dh，ESC(1Bh) 結束回 0。★ +0Ch 非 0 時另一組鍵(集合 CS:03B4h=['1'..'9','\\'])：'\\'→'7'，其餘查 DS:27CEh+(鍵−'1') = 4F 50 51 4B 20 4D 47 48 49 ⇒ 數字鍵 1..9 被翻成數字鍵盤的方向掃描碼(End/Down/PgDn/Left/空白/Right/Home/Up/PgUp) —— 對照 spec 1023/1027 的『PC-98 把掃描碼換成字母/數字』，兩平台從相反方向解同一個問題。★★ 閒置動畫與逾時：計時器 far 0542:0994h，DS:4FBAh=3 且 DS:7290h='y' 且 DS:728Ah\u003c\u003e50h 時叫 overlay-27 entry#3/#4/#5 並每 1Eh tick 再叫 entry#4；bank0^[3FEh] 或 arg_4 非 0 時每 0Ah tick 把 DS:722Dh +1(到 DS:722Ch 繞回 1)並叫 overlay-29 entry#1；DS:7296h/7298h 是 32-bit 逾時、DS:729Ah 是逾時後自動送出的鍵(demo/attract mode)",
    "citations": [
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-26.md",
     "spec/1023-scrolling-list-menu.md",
     "spec/1030-camp-menu.md",
     "spec/1032-treasure-division-menu.md",
-    "spec/865-list-header-lookup-and-key-prompt.md"
+    "spec/1060-option-row-menu-core.md"
    ]
   },
   {
@@ -24329,6 +24332,7 @@
    "citations": [
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-27.md",
+    "spec/1060-option-row-menu-core.md",
     "spec/753-small-utility-routines.md"
    ]
   },
@@ -51257,12 +51261,12 @@
    "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
    "note": "數鏈長(retf 4)：next 在 +52h，與 DOS 的 +2Ah 不同——PC-98 的節點配置重排過，引用位移前須各自確認",
    "citations": [
+    "audit/function-index/dos-overlay-21.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-25.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -51670,6 +51674,7 @@
    "citations": [
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-27.md",
+    "spec/1060-option-row-menu-core.md",
     "spec/753-small-utility-routines.md"
    ]
   },
@@ -53712,9 +53717,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
