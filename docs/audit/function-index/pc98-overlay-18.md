@@ -11,9 +11,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0682` | sub_682 | — | 198 | 76 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0748` | sub_748 | — | 419 | 154 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `08EB` | sub_8EB | — | 384 | 150 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `0A6F` | sub_A6F | — | 281 | 114 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `0B9B` | sub_B9B | — | 376 | 163 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `1213` | sub_1213 | FINAL | 870 | 437 | 0 | 3 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-18.md |
+| `0A6F` | sub_A6F | — | 281 | 114 | 2 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `0B9B` | sub_B9B | — | 376 | 163 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `1213` | sub_1213 | FINAL | 870 | 437 | 0 | 3 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-18.md<br>audit/function-strings.md |
 | `167E` | sub_167E | — | 216 | 105 | 3 | 4 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1213h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1756` | sub_1756 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-02.md<br>spec/612-ecl-main-loop.md |
 | `175D` | sub_175D | — | 67 | 30 | 3 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add bh, 8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 67 bytes，已逐條讀完） | — |

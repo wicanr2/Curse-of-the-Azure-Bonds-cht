@@ -12,7 +12,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `07E3` | sub_7E3 | SETSAVETHROWS | 737 | 282 | 2 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-25.md<br>audit/function-index/pc98-overlay-25.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/811-derived-stats-and-class-item-mask.md |
 | `0AC4` | sub_AC4 | SETTHIEFSKILLS | 595 | 224 | 2 | 2 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md<br>audit/function-index/pc98-overlay-25.md |
 | `0D17` | sub_D17 | — | 370 | 145 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-26.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
-| `0F30` | sub_F30 | CHANGEHUMANCLASS | 1130 | 437 | 0 | 8 | ✓ | 待解讀 | — | — | — |
+| `0F30` | sub_F30 | CHANGEHUMANCLASS | 1130 | 437 | 0 | 8 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `139A` | sub_139A | OLDHUMANCLASS | 92 | 33 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>第一個非零職業欄位的索引(retf 4)：掃 p^[111h..117h]，與 DOS overlay-25:1292h 同 | audit/function-index/pc98-overlay-25.md<br>spec/753-small-utility-routines.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `13F6` | sub_13F6 | CURHUMANCLASS | 92 | 33 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>第一個非零職業欄位的索引(retf 4)：掃 p^[109h..10Fh]，與 DOS overlay-25:12EEh 同 | spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `1452` | sub_1452 | CURHUMANLEVEL | 80 | 29 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>第一個非零的職業欄位(retf 4)：與 DOS overlay-25:134Ah 同，含同一個越界一格的行為 | audit/embedded-strings.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |

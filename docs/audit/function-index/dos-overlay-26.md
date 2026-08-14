@@ -21,8 +21,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0BF9` | sub_BF9 | — | 224 | 77 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `0CD9` | sub_CD9 | — | 146 | 49 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0D6B` | sub_D6B | — | 124 | 44 | 1 | 2 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md |
-| `0DF9` | sub_DF9 | — | 778 | 312 | 0 | 9 | ✓ | 待解讀 | — | — | — |
-| `112A` | sub_112A | — | 111 | 52 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `0DF9` | sub_DF9 | — | 778 | 312 | 0 | 9 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `112A` | sub_112A | — | 111 | 52 | 0 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `1199` | sub_1199 | — | 168 | 59 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1241` | sub_1241 | — | 76 | 30 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>釋放整條選單節點鏈(retf 4，參數是指向鏈頭指標的遠指標)：next 在 +2Ah、每個節點 FreeMem 2Eh(46 bytes)。⚠ 離開時沒有把鏈頭寫回 NIL，呼叫端不自己清就是懸空指標 | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-26.md<br>spec/733-cast-driver.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `128D` | sub_128D | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
