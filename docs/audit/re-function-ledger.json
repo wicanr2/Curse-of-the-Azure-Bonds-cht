@@ -17324,6 +17324,46 @@
    "spec": "docs/spec/737-effproc-small-handlers.md",
    "note": "+191h := ((v − 1) div 5) + 1,其中 v := 角色^[10Ch] + 角色^[114h] × <overlay-25 entry#10>(角色)。⚠ +10Ch/+114h 正是 spec 728 那組相差 8 的平行職業欄位,而 entry#10 在這裡是被 imul 的**數值不是布林值**(728 只測了零,語意要修正成「第二職業的權重」);spec 705 的 30C0h 用 +10Eh + +116h × entry#10 是同一個模板。⚠ idiv 往零取整,v=0 時算出 1、v 為負時大於 1,不能改寫成無號的 (v+4)/5",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 11412,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "解除恐懼(把 spec 724 的 4A8Fh 做的事還原):arg_0 非 0 時,**+0F7h 正好等於 0B3h 才**清成 0 並把 +198h 設 0;+18Dh^[10h] 則無條件清 0。⚠ +0F7h 的還原有條件——spec 734 的操縱屍體會把它設成 0B2h(原值 > 7Fh 時),那種情況下解除恐懼不會動到它。兩個效果對同一個 byte 的處理不對稱,順序會影響結果",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 10966,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "對特定目標的傷害加成:p := 角色^[18Dh]^[0Ah](目前鎖定的目標);(p^[14Bh] and 8) 非 0 時 DS:6F94h += 角色^[10Dh](**累加不是覆寫**)。與 spec 737 的 255Ah(把 DS:6F94h 覆寫成 1d6+1)對照,同一個全域一支覆寫一支累加,**執行順序決定結果**",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 10234,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "換一種傷害型別再打一次:DS:6F95h := 0Ah,d := ROLLDAMAGEDICE(2,8),<overlay-23 entry#20>(角色^[18Dh]^[0Ah], d, 0, 0)。不動 DS:6F94h 而是直接對目標再結算一次,所以是附加傷害不是修正值。⚠ DS:6F95h 設完沒有還原(與 spec 706 那支相反)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4010,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "取實際生效的武器:角色^[151h] 非 NIL 時呼叫 <overlay-24 entry#43>(角色, @r)(spec 697 的武器選擇),**回傳 0 或帶回 NIL 都算失敗**,失敗就退回 角色^[151h] 本身;回傳 r(DX:AX)。spec 697 記過「只看回傳值拿不到節點」,這支正好示範了兩個條件都要檢查的正確用法",
+   "bounds": "prologue"
   }
  ]
 }
