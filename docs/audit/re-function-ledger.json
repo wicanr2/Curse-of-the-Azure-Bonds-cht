@@ -25546,6 +25546,24 @@
    "level": "exact",
    "spec": "docs/spec/1010-attack-of-opportunity.md",
    "note": "STANDUP(hp, char)：先過一道檢定，通過才把 +195h(狀態) 設 0、★ +196h 設 1(＝站著、能行動)、+1A4h := hp；依 +197h 是否為 1 選兩則訊息之一顯示。訊息是 Pascal 短字串，直接嵌在 overlay code 段(PC-98 為 Shift-JIS)。⚠ 先前的註記把 +195h:=0 與 +196h:=1 混成「+196h 設 0(可行動)」，已依 252Ch 的原始指令更正；spec 1008／1010 兩處呼叫端都要求 +196h 非 0 才繼續"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 4267,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1011-item-debug-screen-field-names.md",
+   "note": "★★★ 開發者留下的物品結構傾印畫面(retf 4，唯一參數是物品節點遠指標，原始位元組 c4 7e 06 ⇒ bp+06h)。15 行標籤印在欄 1、15 行數值印在欄 20，列 1..15，用常駐 0542:0352h 印字。標籤是原始 Turbo Pascal 欄位名，逐行對應：itemptr=+2Eh、namenum(1..3)=+2Fh/30h/31h、plus=+32h、plussave=+33h、ready=+34h、identified=+35h、cursed=+36h、value=+3Ah(word)、special(1..3)=+3Ch/3Dh/3Eh、dice large=byte[5CF8h+itemptr×16]、sides large=byte[5CF9h+itemptr×16]。★ 因此物品類別表 DS:5CF6h 的 +2/+3 是「對大型目標」的骰數與面數(AD&D 1e 武器的 vs S/M 與 vs L 兩組傷害骰)。★ plus = 魔法加值，佐證 spec 1005 效果碼 41 的 w^[32h]=0 就是「沒有魔法加值的武器」。★★ namenum(1..3) ⇒ 物品名由三個編號組出來，中文化不能當成單一字串處理、串接順序要能重排。★★ 物品節點在 PC-98 整體 +28h(13 個欄位一個不差)：+2Eh..+3Eh ↔ +56h..+66h。⚠ 別把 +28h 推廣到角色節點——角色節點是 +1 且只從 +11Ch 之後開始(spec 1010)。★ 16 個字串一個都不用翻(除錯畫面，正常玩家路徑到不了)；PC-98 版的標籤也是英文，從未在地化"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 4212,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1011-item-debug-screen-field-names.md",
+   "note": "★★★ 開發者留下的物品結構傾印畫面(retf 4，唯一參數是物品節點遠指標，原始位元組 c4 7e 06 ⇒ bp+06h)。15 行標籤印在欄 1、15 行數值印在欄 20，列 1..15，用常駐 0542:0352h 印字。標籤是原始 Turbo Pascal 欄位名，逐行對應：itemptr=+2Eh、namenum(1..3)=+2Fh/30h/31h、plus=+32h、plussave=+33h、ready=+34h、identified=+35h、cursed=+36h、value=+3Ah(word)、special(1..3)=+3Ch/3Dh/3Eh、dice large=byte[5CF8h+itemptr×16]、sides large=byte[5CF9h+itemptr×16]。★ 因此物品類別表 DS:5CF6h 的 +2/+3 是「對大型目標」的骰數與面數(AD&D 1e 武器的 vs S/M 與 vs L 兩組傷害骰)。★ plus = 魔法加值，佐證 spec 1005 效果碼 41 的 w^[32h]=0 就是「沒有魔法加值的武器」。★★ namenum(1..3) ⇒ 物品名由三個編號組出來，中文化不能當成單一字串處理、串接順序要能重排。★★ 物品節點在 PC-98 整體 +28h(13 個欄位一個不差)：+2Eh..+3Eh ↔ +56h..+66h。⚠ 別把 +28h 推廣到角色節點——角色節點是 +1 且只從 +11Ch 之後開始(spec 1010)。★ 16 個字串一個都不用翻(除錯畫面，正常玩家路徑到不了)；PC-98 版的標籤也是英文，從未在地化。與 dos overlay-19:010ABh 逐條相同(retf 之後的差異全在函式外的資料區)"
   }
  ]
 }
