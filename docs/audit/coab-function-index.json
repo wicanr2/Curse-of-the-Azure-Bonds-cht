@@ -6741,7 +6741,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/775-take-menu-and-palette-writer.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6754,9 +6757,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/775-take-menu-and-palette-writer.md",
+   "note": "戰利品的 Take: 選單(retf 8，兩個遠指標都指向計數 byte)：任一為 0 就走各自的離開路徑；否則迴圈組出 CS:0EBFh 'Take: '(6 字元含尾隨空白) 與 CS:0EC6h 'Money Items Exit'(單一 16 字元字串)，依按鍵 'M'/'I'/'E' 或 #0 分派，'G'(47h)/'O'(4Fh) 走同一支；每輪結尾更新後，兩個計數任一歸零就結束。⚠ 熱鍵是寫死的 ASCII 大寫字母，選項字面換成中文後會與熱鍵脫節。補洞前這支匯出位移不可靠(spec 756 曾列為未判讀)",
    "citations": [
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/775-take-menu-and-palette-writer.md"
    ]
   },
   {
@@ -6844,7 +6851,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-   "note": "邊界碎片：落在 14ACh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+   "note": "邊界碎片：落在 14ACh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
+   "citations": [
+    "spec/775-take-menu-and-palette-writer.md"
+   ]
   },
   {
    "platform": "dos",
@@ -32701,7 +32711,8 @@
    "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
    "note": "16 色調色盤設定(retn 2)：out 6Ah,1 切 16 色；依參數選 CS:076Dh(非 0)或 CS:079Dh(0)這兩份 16×3=48 bytes 的調色盤，經 0A8h/0AAh/0ACh/0AEh 寫入(索引/綠/紅/藍，索引遞減)；再 int 18h AH=42h/40h/12h 與 out 68h,8。IDA 的 ROM BASIC 註解是 IBM PC 語意，PC-98 不適用",
    "citations": [
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md",
+    "spec/775-take-menu-and-palette-writer.md"
    ]
   },
   {
@@ -32715,9 +32726,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/775-take-menu-and-palette-writer.md",
+   "note": "寫入 16 組調色盤(近呼叫 retn，SI 指向 48 bytes 資料)：for i := 0Fh downto 0 — out 0A8h,i 後依序 out 0AAh/0ACh/0AEh(綠紅藍)，SI 往前遞增。⚠ 索引遞減而資料遞增，資料第一組對應索引 15。spec 755 的 overlay-11:07CDh 呼叫的就是這一段",
    "citations": [
-    "project-status.md"
+    "project-status.md",
+    "spec/775-take-menu-and-palette-writer.md"
    ]
   },
   {
@@ -47615,9 +47630,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -48260,9 +48275,9 @@
    "Module": "overlay-11",
    "Unit": "INIT",
    "Functions": 6,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 1960,
    "Undefined": 128,

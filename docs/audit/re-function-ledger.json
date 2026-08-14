@@ -19561,6 +19561,24 @@
    "level": "exact",
    "spec": "docs/spec/774-packbits-rle-and-combat-hotkeys.md",
    "note": "戰鬥中的三個熱鍵(retf 4)：KeyPressed 為假就離開；ReadKey(回 0 就再讀一次擴充碼)。'2' 切換 DS:75DAh 並顯示 CS:1260h 'Magic On' / CS:1269h 'Magic Off'；空白把 +0F7h < 80h(士氣旗標未設)且 +195h <> 1 的成員 +198h 清 0，若參數角色的 +198h 也是 0 就把 +18Dh^[3] 設 14h 並回 true；'-' 走另一支。⚠ 擴充鍵的第二個位元組會直接跟 32h/20h/2Dh 比對，掃描碼相同就會誤判"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 3799,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/775-take-menu-and-palette-writer.md",
+   "note": "戰利品的 Take: 選單(retf 8，兩個遠指標都指向計數 byte)：任一為 0 就走各自的離開路徑；否則迴圈組出 CS:0EBFh 'Take: '(6 字元含尾隨空白) 與 CS:0EC6h 'Money Items Exit'(單一 16 字元字串)，依按鍵 'M'/'I'/'E' 或 #0 分派，'G'(47h)/'O'(4Fh) 走同一支；每輪結尾更新後，兩個計數任一歸零就結束。⚠ 熱鍵是寫死的 ASCII 大寫字母，選項字面換成中文後會與熱鍵脫節。補洞前這支匯出位移不可靠(spec 756 曾列為未判讀)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-11",
+   "ea": 2048,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/775-take-menu-and-palette-writer.md",
+   "note": "寫入 16 組調色盤(近呼叫 retn，SI 指向 48 bytes 資料)：for i := 0Fh downto 0 — out 0A8h,i 後依序 out 0AAh/0ACh/0AEh(綠紅藍)，SI 往前遞增。⚠ 索引遞減而資料遞增，資料第一組對應索引 15。spec 755 的 overlay-11:07CDh 呼叫的就是這一段"
   }
  ]
 }
