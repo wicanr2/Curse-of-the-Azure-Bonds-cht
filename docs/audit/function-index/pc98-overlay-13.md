@@ -62,7 +62,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2D1E` | sub_2D1E | FASTESTENEMY | 130 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md<br>取指定陣營中最快的移動速率(retf 4)：與 DOS overlay-13:2EACh(spec 762)逐條同構，欄位為 +198h/+197h/+18Ah、鏈頭 DS:9598h | audit/function-index/pc98-overlay-13.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
 | `2DB9` | sub_2DB9 | CHECKBETRAYAL | 205 | 67 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/790-attack-ally-confirm-and-counter-animation.md<br>同 DOS，欄位各 +1（+198h 陣營、+199h、+196h 狀態、+18Eh 戰鬥狀態、+18Ah next）；全域 DS:0A81Eh / DS:7F09h / DS:9598h；訊息 '味方を攻撃するのですか？'(24 bytes)。spec 790 | — |
 | `2EBB` | sub_2EBB | — | 541 | 217 | 1 | 8 | ✓ | 待解讀 | — | — | audit/function-strings.md |
-| `30D8` | sub_30D8 | — | 361 | 132 | 2 | 9 | ✓ | 待解讀 | — | — | — |
+| `30D8` | sub_30D8 | — | 361 | 132 | 2 | 9 | ✓ | 已解讀 | exact | 833<br>同 DOS overlay-13:031F0h（module_align 對齊，助憶碼序列完全相同）。★一處真差異：動畫呼叫 sub_1921h 的第三個參數 DOS 是 3、PC-98 是 0FFh。其餘 14 條是位址（DS:9F2Ch↔6E92h 與呼叫目標） | — |
 | `329F` | sub_329F | — | 1353 | 521 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |
 | `37E8` | sub_37E8 | — | 161 | 60 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出) | audit/function-index/dos-overlay-09.md |
 | `3889` | sub_3889 | — | 427 | 142 | 1 | 3 | ✓ | 待解讀 | — | — | — |
