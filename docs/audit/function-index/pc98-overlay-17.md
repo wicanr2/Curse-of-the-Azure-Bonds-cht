@@ -50,10 +50,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `45CA` | sub_45CA | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `dec ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `45D0` | sub_45D0 | SETACTIVEICON | 1771 | 687 | 2 | 11 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |
 | `4CBB` | sub_4CBB | CHARCONBONUS | 249 | 92 | 3 | 1 | ✓ | 待解讀 | — | — | — |
-| `4DB4` | sub_4DB4 | — | 218 | 88 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `4DB4` | sub_4DB4 | — | 218 | 88 | 1 | 2 | ✓ | 已解讀 | exact | 850<br>同 DOS overlay-17:046ECh（module_align 對齊）。整支只差一條呼叫目標（sub_4CBBh↔sub_45E9h） | spec/850-hit-dice-and-effective-level.md |
 | `4E8E` | sub_4E8E | — | 9 | 4 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | audit/function-index/pc98-overlay-17.md |
 | `4E97` | sub_4E97 | — | 579 | 238 | 9 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 4E8Eh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
-| `50DA` | sub_50DA | — | 256 | 98 | 2 | 2 | ✓ | 待解讀 | — | — | — |
+| `50DA` | sub_50DA | — | 256 | 98 | 2 | 2 | ✓ | 已解讀 | exact | 850<br>同 DOS overlay-17:04A12h（module_align 對齊，助憶碼序列完全相同）。7 條差異全是表基底：DS:1354h/135Ch/6F3Ch/6F4Dh↔0818h/0820h/3EA8h/3EB9h 與擲骰呼叫目標 | spec/850-hit-dice-and-effective-level.md |
 | `51DA` | sub_51DA | — | 246 | 88 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-17.md |
 | `52D0` | sub_52D0 | — | 98 | 38 | 3 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 51DAh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `5420` | sub_5420 | TRAINCHARACTER | 72 | 25 | 2 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_FF7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 72 bytes，已逐條讀完） | audit/function-index/pc98-overlay-17.md<br>audit/function-strings.md |

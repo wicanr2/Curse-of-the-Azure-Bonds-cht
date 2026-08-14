@@ -357,3 +357,25 @@ AD&D 一版的換算（1 gp ＝ 20 sp ＝ 200 cp、1 ep ＝ ½ gp、1 pp ＝ 5 g
 
 `−1` ＝ 升不上去的哨兵。**Druid 與 Monk 整列都是 −1**，與 CoAB 不開放這兩個職業
 當玩家角色相符。每個職業區塊 99 bytes，只用到前 52，且只排到十二級。
+
+## 生命骰四表（各 8 bytes，兩平台逐 byte 相同）
+
+索引是角色 `+109h` 起那八格的職業順序。詳見 spec 850。
+
+| c | 職業 | `DS:0818h` 骰數 | `DS:0820h` 面數 | `DS:3EA8h` 遮罩 | `DS:3EB9h` HD 上限 |
+|---|---|---|---|---|---|
+| 0 | Cleric | 1 | 8 | `02h` | 10 |
+| 1 | Druid | 1 | 8 | `02h` | 15 |
+| 2 | Fighter | 1 | 10 | `08h` | 10 |
+| 3 | Paladin | 1 | 10 | `10h` | 10 |
+| 4 | Ranger | 2 | 8 | `20h` | 11 |
+| 5 | Magic-User | 1 | 4 | `01h` | 12 |
+| 6 | Thief | 1 | 6 | `04h` | 11 |
+| 7 | Monk | 2 | 4 | `04h` | 19 |
+
+PC-98 對應：`DS:1354h`／`135Ch`／`6F3Ch`／`6F4Dh`。
+過了 HD 上限之後改給固定值：Fighter／Paladin 3、Cleric／Ranger／Thief 2、
+Magic-User 1（AD&D 名望等級之後的加值）。
+
+⚠ `DS:3EA8h` 與 spec 811 的 `DS:3EA0h`（`02 10 08 40 40 01 04 20`）**是兩張不同的
+遮罩表**：`3EA8h` 讓 Cleric／Druid 共用 `02h`、Thief／Monk 共用 `04h`，分組方式不同。
