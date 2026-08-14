@@ -26230,6 +26230,15 @@
    "level": "exact",
    "spec": "1061",
    "note": "傷害訊息(retf，309 條)。DS:6F94h := arg_4(傷害量)；arg_0<>0(有做存活檢定)時依 arg_2：1→傷害歸 0(全免)、2→div 2(減半)；傷害 <=0 就什麼都不顯示。★★ 單複數是兩句完整字串：=1 時 'takes 1 point of damage '(24，整句)，否則 'takes '(6)+數字+' points of damage '(18) —— 中文可合併(同 spec 1018 的 ' Gem'/' Gems')。★★★ 五種傷害來源(DS:6F95h and 0F7h，比對相等不是測位元)：1→'from Fire'(9)、2→'from Cold'(9)、4→'from Electricity'(16)、10h→'from Acid'(9)、其他→'from Magic'(10)；⚠ and 0F7h 把 bit 3(08h)清掉，那一位是另一件事。★★ 掉法術：DS:4FBAh=5(戰鬥)時把 角色^[18Dh]^[1] 清 0，若 角色^[18Dh]^[0] > 0 就顯示 'lost a spell'(12)、叫 overlay-24 entry#16 再清 0 —— 角色^[18Dh] 正是 spec 1038 記的『載入後要歸零的四個遠指標』之一。★★★ 倒下/瀕死/死亡整段包在 if 角色^[196h]=0 裡：訊息 'Goes Down'(9)；+195h=5 再接 ', and is Dying'(14)；+195h in 集合常數 CS:1FACh={0} 時整句換成 'is killed'(9)。⇒ +196h=能不能行動、+195h=倒下的原因；★★ 與 STANDUP 的矛盾已解掉 —— 重讀 overlay-23:24EDh 確認它寫 +195h:=0 加上 +196h:=1，而站起來的角色 +196h=1 走不到這一段，所以 +195h=0 不是『死亡』而是『沒有特殊的倒下原因』，真正代表死亡的是 +196h=0 且 +195h=0 的組合。⚠ 中文語序要把來源挪到傷害前面(『受到 N 點火焰傷害』)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-03",
+   "ea": 282,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1062",
+   "note": "防拷轉輪(translation wheel)檢查，318 條。載入 'tiles' 資源的兩組字模(overlay-33 entry#2，espruar 1Ah=26 個、dethek 16h=22 個，第二組索引要 +1Ah)；espruar:=Random(26)、dethek:=Random(22) 各畫一個；路徑:=Random(3) 選 '-..-..-..'/'- - - - -'/'.........'(各 9)；方框:=Random(6)，畫面顯示 6−方框(即 1..6)。★★★ 答案公式：索引 := (espruar + 22h − dethek) + 路徑×0Ch + (5−方框)×2，再用 while ±24h 夾到 0..35；答案 := byte[DS:0000h + 方框×25h + 索引 + 1](25h=37，+1 是因為每列第 0 格是佔位的 '$')。★★★★ 答案表 DS:0000h 共 6 列×37 bytes：列0 $CWLNRTESSCEDCSHSISERRRNSHSSTSSNNHSHN、列1 $LAASRDAIILIDSUGADAEEOEGRLSELIITESOIO、列2 $LRUNIMMORIIGRRIUPTIIUELIMLHMIXACGRIL、列3 $Z0LIOHEUVNODSGEOGXYWISIOCRARLRARRHOI、列4 $AMTELRLUIYNAEOOITOUELRREREUIMADPPFAB、列5 $ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 —— 這就是轉輪的全部資料，remake 有這張表與公式就能完整重現或跳過，不需要實體轉輪。答錯顯示 \"Sorry, that's incorrect.\"(24) 與 'An unseen force hurls you into the abyss!'(41)。⚠ 答案表是 ASCII 大寫字母與數字，中文化不能動；'espruar'/'dethek' 是專有名詞；三個路徑圖樣是畫面圖形不可翻。⚠ 答錯之後 03CEh→03ECh→0446h 中間 30+90 bytes 匯出沒有反組譯，那一段不宣稱"
   }
  ]
 }
