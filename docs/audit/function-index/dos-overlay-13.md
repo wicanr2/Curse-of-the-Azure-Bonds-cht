@@ -42,7 +42,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2220` | sub_2220 | — | 1307 | 483 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-08.md<br>audit/function-triage.md<br>spec/769-combat-main-loop.md |
 | `275A` | sub_275A | — | 361 | 132 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `28C3` | sub_28C3 | — | 223 | 73 | 3 | 3 | ✓ | 已解讀 | exact | docs/spec/771-extra-attacks-and-weapon-class-whitelist.md<br>物品類別白名單(retf 8)：(角色^[10Fh] > 0) 或 ((角色^[117h] > 0) 且 <呼叫>(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h < 類別 < 26h)；再要求 行動者^[18Dh]^[0Fh] > 1 且 (行動者^[0DEh] and 7Fh) <= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h] | spec/771-extra-attacks-and-weapon-class-whitelist.md |
-| `29A2` | sub_29A2 | — | 601 | 239 | 6 | 2 | ✓ | 待解讀 | — | — | spec/771-extra-attacks-and-weapon-class-whitelist.md |
+| `29A2` | sub_29A2 | — | 601 | 239 | 6 | 2 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-13.md<br>spec/771-extra-attacks-and-weapon-class-whitelist.md |
 | `2BFB` | sub_2BFB | — | 551 | 216 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `2E22` | sub_2E22 | — | 138 | 49 | 0 | 1 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
 | `2EAC` | sub_2EAC | — | 130 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>取指定陣營中最快的移動速率(retf 4)：走 DS:650Ah 隊伍鏈，<呼叫>(參數) 等於 p^[197h](陣營)且 p^[196h] 非 0 的成員，取 本模組 0124h(p) div 2 的最大值(無號比較)。0124h 回的是速率乘 2，這裡除回來 — 與既有『距離單位是半格』的 2 是同一個 | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
@@ -61,5 +61,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `45CF` | sub_45CF | — | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `4703` | sub_4703 | — | 264 | 93 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `4811` | sub_4811 | — | 183 | 70 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/770-party-step-and-hug-attack.md<br>hugs 攻擊(retf 0Ah)：DS:6F9Fh < 12h(有號)就離開；把 攻擊者^[18Dh]^[0Ah] 抄到全域 DS:6FA3h，組出「攻擊者 + CS:480Bh 'hugs ' + 目標名」後顯示；再對目標下 3Ah、對攻擊者自己下 90h 兩個效果碼。⚠ 'hugs ' 的尾隨空白是常數的一部分(長度 byte 為 5)，用來直接接目標名 | spec/770-party-step-and-hug-attack.md |
-| `48DC` | sub_48DC | — | 214 | 76 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `48DC` | sub_48DC | — | 214 | 76 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/772-gods-intervene-money-display-and-sound-commands.md<br>神明介入(retf，無參數)：<0A54h:0724h>(@DS:8C80h) 以 ZF 回報，成立才做 — 顯示 CS:48C8h 'The Gods intervene!'，走隊伍鏈把 +197h(陣營)為 1 的成員 +196h 設 0、+195h(狀態)設 6，並把 byte[66A6h + 4*索引] 歸零；最後 <呼叫>(地圖^[2]+3, 地圖^[3]+3, 0FFh, 8) — 加回 spec 750 減掉的 3，印證戰場原點是隊伍位置退三格。⚠ DS:66A6h 既是 DS:6D35h 的項數又是 1-based 陣列的第 0 格 | spec/772-gods-intervene-money-display-and-sound-commands.md |
 | `49B2` | sub_49B2 | — | 6 | 4 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |

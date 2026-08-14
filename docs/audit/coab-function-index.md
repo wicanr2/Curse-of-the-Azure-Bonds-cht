@@ -9,11 +9,11 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 635、不阻塞 133、邊界碎片 249、待解讀 369；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 638、不阻塞 133、邊界碎片 249、待解讀 366；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| START.EXE | — | 325 | 131 | 133 | 17 | 44 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
+| START.EXE | — | 325 | 132 | 133 | 17 | 43 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 2 | 2 | 0 | 0 | 0 | 78 | 24 | [明細](function-index/dos-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 2 | 0 | 0 | 2 | 1511 | 405 | [明細](function-index/dos-overlay-01.md) |
 | overlay-02 | INTERPET | 90 | 51 | 0 | 29 | 10 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
@@ -27,13 +27,13 @@
 | overlay-10 | COMPREP | 38 | 10 | 0 | 14 | 14 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 4 | 2 | 0 | 1 | 1 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
 | overlay-12 | EFFPROCS | 152 | 121 | 0 | 27 | 4 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
-| overlay-13 | COMSTUFF | 58 | 9 | 0 | 16 | 33 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
+| overlay-13 | COMSTUFF | 58 | 10 | 0 | 16 | 32 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 7 | 0 | 0 | 7 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
 | overlay-15 | CAMP | 42 | 12 | 0 | 11 | 19 | 8139 | 898 | [明細](function-index/dos-overlay-15.md) |
 | overlay-16 | LOADSAVE | 28 | 6 | 0 | 8 | 14 | 16063 | 787 | [明細](function-index/dos-overlay-16.md) |
 | overlay-17 | GEN | 39 | 2 | 0 | 21 | 16 | 19521 | 1536 | [明細](function-index/dos-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 11 | 4 | 0 | 0 | 7 | 4446 | 1177 | [明細](function-index/dos-overlay-18.md) |
-| overlay-19 | LIBRARY | 42 | 6 | 0 | 15 | 21 | 13042 | 1293 | [明細](function-index/dos-overlay-19.md) |
+| overlay-19 | LIBRARY | 42 | 7 | 0 | 15 | 20 | 13042 | 1293 | [明細](function-index/dos-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 5 | 0 | 0 | 11 | 3536 | 191 | [明細](function-index/dos-overlay-20.md) |
 | overlay-21 | MONEY | 27 | 12 | 0 | 4 | 11 | 6469 | 385 | [明細](function-index/dos-overlay-21.md) |
 | overlay-22 | SPELLS | 139 | 100 | 0 | 26 | 13 | 25236 | 2174 | [明細](function-index/dos-overlay-22.md) |

@@ -19516,6 +19516,33 @@
    "level": "exact",
    "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
    "note": "八組寫死的參數(retf 2)：DS:4A0Eh = 1 時叫 本模組 0048h 四次 —(3,0,5)、(4,0,5)、(3,1,0Ah)、(4,1,0Ah)；否則四組第三欄全用 16h。原始碼是八行手寫呼叫不是迴圈，這 24 個數字要當資料照抄"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 18652,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
+   "note": "神明介入(retf，無參數)：<0A54h:0724h>(@DS:8C80h) 以 ZF 回報，成立才做 — 顯示 CS:48C8h 'The Gods intervene!'，走隊伍鏈把 +197h(陣營)為 1 的成員 +196h 設 0、+195h(狀態)設 6，並把 byte[66A6h + 4*索引] 歸零；最後 <呼叫>(地圖^[2]+3, 地圖^[3]+3, 0FFh, 8) — 加回 spec 750 減掉的 3，印證戰場原點是隊伍位置退三格。⚠ DS:66A6h 既是 DS:6D35h 的項數又是 1-based 陣列的第 0 格"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 1431,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
+   "note": "七欄的金錢顯示(retf，無參數)：for i := 6 downto 0，DS:6506h^[0FBh + i*2] > 0(無號)才佔一列 — 名稱取自 DS:0F93h + i*0Bh(每筆 11 bytes 的 Pascal 短字串)、右對齊到第 20 欄(14h − 長度)，數值固定從第 21 欄起，列號從 7 往下遞增。⚠ 右對齊用 byte 數算，全形中文會算錯；名稱表在常駐資料段，scan_pascal_strings.py 掃不到"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 94544,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
+   "note": "音效命令分派(retf 2)：命令不在 CS:17130h 的集合裡就安靜丟掉；裝置代碼 unk_21DAAh 等於 2 時全部不做。00h 關兩組、01h 叫 197B4h(1)、0FFh 關兩組後叫 19355h 卸載並清 unk_21DACh、02h..0Eh 依裝置 0/1 各走一組播放程序(命令值先減 1)、0Fh 把 1388h(5000)寫進 unk_21154h 指向的 word"
   }
  ]
 }
