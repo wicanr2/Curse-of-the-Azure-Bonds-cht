@@ -17145,6 +17145,16 @@
    "spec": "docs/spec/723-spits-acid.md",
    "bounds": "prologue",
    "note": "吐酸。骨架與 spec 720 龍息幾乎相同(同樣用 [DS:72A0h] 第 0 項、模式碼 41h 選目標,同樣呼叫前不清空、NIL 檢查在用過之後),四個數字不同:距離上限 >= 7(龍息是 2)、ROLLDICE(1,100) > 30 算未命中(龍息是 > 50)、**未命中有專屬訊息 'Spits Acid and Misses'(CS:595Eh)而龍息是靜默返回**、傳給 <overlay-23 entry#20> 的傷害參數是 **arg_6^[78h](攻擊者 HP 上限)**而龍息是常數 7。所以吐酸的強度隨攻擊者體質變化,龍息不會。命中時顯示 'Spits Acid'(CS:5953h)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 19087,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/724-fear-and-puteffect-signature.md",
+   "bounds": "prologue",
+   "note": "恐懼:先 <sub_175Bh>(a, b, DS:7559h, DS:755Ah, 3, 6),再走目標陣列(**無 NIL 檢查**);s := <overlay-23 entry#8>(p, 4, 0),s=0(豁免失敗)時 d := <sub_E11h>(54h) 取持續時間,<overlay-23 entry#21 PUTEFFECT>(p, 8Eh, d, 0, 1, 1, s, '<名字> runs in terror' CS:4A72h),然後 p^[18Dh]^[10h]:=1、p^[198h]:=1、p^[0F7h] <= 7Fh 時設成 0B3h、**p^[18Dh]^[0Ah] := NIL**(清掉它鎖定的目標,就是 spec 722 那個欄位);s 非 0 則顯示 'is unaffected'(CS:4A81h)。⚠ 由三個呼叫點定出 PUTEFFECT(目標 far, 效果編號, 持續時間, ?, ?, ?, 豁免結果, 訊息 far)=10 word,而**效果編號與持續時間的 id 是兩個不同的數字**(這裡 8Eh 對 54h、4822h 是 23h 對 52h、4432h 是 4 對 49h)"
   }
  ]
 }
