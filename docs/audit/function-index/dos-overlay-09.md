@@ -22,7 +22,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0DB1` | sub_DB1 | — | 1043 | 349 | 1 | 15 | ✓ | 待解讀 | — | — | — |
 | `11CF` | sub_11CF | — | 38 | 15 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 38 bytes，已逐條讀完） | — |
 | `1201` | sub_1201 | — | 95 | 31 | 5 | 4 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>兩條路的選擇(retf 4)：先無條件叫一支程序；若 f1(p) 或 f2(p) 或 p^[18Dh]^[3] = 0 則回 h1(p)，否則回 h2(p) | audit/function-index/pc98-overlay-09.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
-| `1273` | sub_1273 | — | 248 | 84 | 2 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `1273` | sub_1273 | — | 248 | 84 | 2 | 3 | ✓ | 已解讀 | exact | docs/spec/774-packbits-rle-and-combat-hotkeys.md<br>戰鬥中的三個熱鍵(retf 4)：KeyPressed 為假就離開；ReadKey(回 0 就再讀一次擴充碼)。'2' 切換 DS:75DAh 並顯示 CS:1260h 'Magic On' / CS:1269h 'Magic Off'；空白把 +0F7h < 80h(士氣旗標未設)且 +195h <> 1 的成員 +198h 清 0，若參數角色的 +198h 也是 0 就把 +18Dh^[3] 設 14h 並回 true；'-' 走另一支。⚠ 擴充鍵的第二個位元組會直接跟 32h/20h/2Dh 比對，掃描碼相同就會誤判 | audit/embedded-strings.md<br>spec/774-packbits-rle-and-combat-hotkeys.md |
 | `1388` | sub_1388 | — | 197 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `1444` | sub_1444 | — | 7 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:6FA2h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1458` | sub_1458 | — | 3 | 1 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_1539`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |

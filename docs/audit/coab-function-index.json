@@ -1542,7 +1542,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/774-packbits-rle-and-combat-hotkeys.md",
+   "note": "PackBits 式 RLE 解壓(retf 10h，四個遠指標，位置參數是指向指標的遠指標)：有號碼 n 落在 0..7Eh 時 Move(來源+1, 目的, n+1)、來源前進 n+2；落在 −127..−1 時 FillChar(目的, −n, 來源[+1])、來源前進 2；直到 來源位置 \u003e= 長度^(無號)。⚠ 7Fh 與 80h 兩條分支都不成立，來源位置不前進 → 無限迴圈"
   },
   {
    "platform": "dos",
@@ -8308,9 +8311,13 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/774-packbits-rle-and-combat-hotkeys.md",
+   "note": "戰鬥中的三個熱鍵(retf 4)：KeyPressed 為假就離開；ReadKey(回 0 就再讀一次擴充碼)。'2' 切換 DS:75DAh 並顯示 CS:1260h 'Magic On' / CS:1269h 'Magic Off'；空白把 +0F7h \u003c 80h(士氣旗標未設)且 +195h \u003c\u003e 1 的成員 +198h 清 0，若參數角色的 +198h 也是 0 就把 +18Dh^[3] 設 14h 並回 true；'-' 走另一支。⚠ 擴充鍵的第二個位元組會直接跟 32h/20h/2Dh 比對，掃描碼相同就會誤判",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/774-packbits-rle-and-combat-hotkeys.md"
    ]
   },
   {
@@ -12046,7 +12053,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -15083,7 +15091,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
-   "note": "七欄的金錢顯示(retf，無參數)：for i := 6 downto 0，DS:6506h^[0FBh + i*2] \u003e 0(無號)才佔一列 — 名稱取自 DS:0F93h + i*0Bh(每筆 11 bytes 的 Pascal 短字串)、右對齊到第 20 欄(14h − 長度)，數值固定從第 21 欄起，列號從 7 往下遞增。⚠ 右對齊用 byte 數算，全形中文會算錯；名稱表在常駐資料段，scan_pascal_strings.py 掃不到",
+   "note": "七欄的金錢顯示(retf，無參數)：for i := 6 downto 0，DS:6506h^[0FBh + i*2] \u003e 0(無號)才佔一列 — 名稱取自 DS:0F93h + i*0Bh(每筆 11 bytes 的 Pascal 短字串)、右對齊到第 20 欄(14h − 長度)，數值固定從第 21 欄起，列號從 7 往下遞增。⚠ 右對齊用 byte 數算，全形中文會算錯；名稱表在常駐資料段，scan_pascal_strings.py 掃不到。補記(spec 773)：DS:0F93h 的七個名稱已讀出 — Copper/Silver/Electrum/Gold/Platinum/Gems/Jewelry",
    "citations": [
     "spec/772-gods-intervene-money-display-and-sound-commands.md"
    ]
@@ -16083,11 +16091,12 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-   "note": "清表並拆商餘(retf 2)：把 DS:6F70h 起 5 格 4-byte 清 0；再把 參數 div 5 寫進第 4 格(DS:6F80h)、參數 mod 5 寫進第 3 格(DS:6F7Ch)，高位字都補 0，除法無號。⚠ 同一塊區域在 overlay-21:0F5Bh 被當成遠指標檢查 NIL，這裡當 32-bit 整數用",
+   "note": "清表並拆商餘(retf 2)：把 DS:6F70h 起 5 格 4-byte 清 0；再把 參數 div 5 寫進第 4 格(DS:6F80h)、參數 mod 5 寫進第 3 格(DS:6F7Ch)，高位字都補 0，除法無號。⚠ 同一塊區域在 overlay-21:0F5Bh 被當成遠指標檢查 NIL，這裡當 32-bit 整數用。補記(spec 773)：索引與金錢名稱表(DS:0F93h)同一套，div 5 → Platinum、mod 5 → Gold，即 5 金幣換 1 白金幣",
    "citations": [
     "audit/function-index/pc98-overlay-21.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+    "spec/773-resident-data-segment-dump.md"
    ]
   },
   {
@@ -16190,12 +16199,13 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
-   "note": "扣一筆並累計(retf 8)：p^[0FBh + idx*2] -= 數量(word，⚠ 沒有下限檢查，不足會迴繞)；叫本模組 003Bh(數量, p)；DS:4FBAh 為 6 或 1 時再把數量以 32-bit 加到 DS:6F70h + idx*4。DS:6F70h 這八格至此有三種互相衝突的型別用法(遠指標/商餘/累加器)，見 spec 764",
+   "note": "扣一筆並累計(retf 8)：p^[0FBh + idx*2] -= 數量(word，⚠ 沒有下限檢查，不足會迴繞)；叫本模組 003Bh(數量, p)；DS:4FBAh 為 6 或 1 時再把數量以 32-bit 加到 DS:6F70h + idx*4。DS:6F70h 這八格至此有三種互相衝突的型別用法(遠指標/商餘/累加器)，見 spec 764。補記(spec 773)：idx 與金錢名稱表同一套(0=Copper..6=Jewelry)，先前所謂「三種衝突型別」不成立",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-21.md",
     "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
-    "spec/772-gods-intervene-money-display-and-sound-commands.md"
+    "spec/772-gods-intervene-money-display-and-sound-commands.md",
+    "spec/773-resident-data-segment-dump.md"
    ]
   },
   {
@@ -16254,13 +16264,13 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-   "note": "兩個旗標的輸出(retf 8，兩個遠指標都是輸出參數)：a^ := DS:6F70h 起 8 個 4-byte 遠指標中前 7 個有任一非 NIL；b^ := 第 8 個(DS:6F8Ch)非 NIL。兩者先都清 0",
+   "note": "兩個旗標的輸出(retf 8，兩個遠指標都是輸出參數)：a^ := DS:6F70h 起 8 個 4-byte 遠指標中前 7 個有任一非 NIL；b^ := 第 8 個(DS:6F8Ch)非 NIL。兩者先都清 0。更正(spec 773)：那兩條是把兩個 word 或起來測非零，不是遠指標測 NIL；DS:6F70h 八格自始至終都是 32-bit 的量",
    "citations": [
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+    "spec/773-resident-data-segment-dump.md"
    ]
   },
   {
@@ -35522,7 +35532,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -40868,7 +40879,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-   "note": "清表並拆商餘(retf 2)：表在 DS:0A00Ah，商寫 DS:0A01Ah、餘寫 DS:0A016h，與 DOS overlay-21:019Eh 同",
+   "note": "清表並拆商餘(retf 2)：表在 DS:0A00Ah，商寫 DS:0A01Ah、餘寫 DS:0A016h，與 DOS overlay-21:019Eh 同。補記(spec 773)：同 DOS，div 5 → Platinum、mod 5 → Gold",
    "citations": [
     "audit/embedded-strings.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
@@ -40982,7 +40993,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
-   "note": "扣一筆並累計(retf 8)：與 DOS overlay-21:0A03h 助憶碼 50 條完全相同，表在 DS:0A00Ah、狀態變數 DS:7F27h",
+   "note": "扣一筆並累計(retf 8)：與 DOS overlay-21:0A03h 助憶碼 50 條完全相同，表在 DS:0A00Ah、狀態變數 DS:7F27h。補記(spec 773)：idx 與金錢名稱表同一套",
    "citations": [
     "audit/embedded-strings.md",
     "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
@@ -41050,7 +41061,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-   "note": "兩個旗標的輸出(retf 8)：表在 DS:0A00Ah，第 8 格 DS:0A026h，與 DOS overlay-21:0F5Bh 同",
+   "note": "兩個旗標的輸出(retf 8)：表在 DS:0A00Ah，第 8 格 DS:0A026h，與 DOS overlay-21:0F5Bh 同。更正(spec 773)：測的是 32-bit 非零，不是遠指標 NIL",
    "citations": [
     "audit/embedded-strings.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
@@ -47514,9 +47525,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 132,
+   "Read": 133,
    "NotBlocking": 133,
-   "Todo": 43,
+   "Todo": 42,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -47664,9 +47675,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 38,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 22,
    "CodeBytes": 7219,
    "Undefined": 92,
