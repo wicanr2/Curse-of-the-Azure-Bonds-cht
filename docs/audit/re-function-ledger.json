@@ -22153,6 +22153,24 @@
    "level": "exact",
    "spec": "850",
    "note": "同 DOS overlay-17:046ECh（module_align 對齊）。整支只差一條呼叫目標（sub_4CBBh↔sub_45E9h）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 17871,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "851",
+   "note": "扭打的每回合結算(retf 0Ah，(角色, 效果節點, 解除旗標))：對手取自 DS:6D35h[節點 +3]。任一方 +196h = 0 就整組解開（抓人方撤 8Bh、被抓方撤 3Ah 與 0Dh）。續打時把 +19Ch/+19Dh/+19Eh/+1A0h 覆寫成 2/0/2/8 再叫 19D8h——扭打期間武器與攻擊次數都不算數"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 17725,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "851",
+   "note": "同 DOS overlay-13:045CFh（module_align 對齊，助憶碼序列完全相同）。21 條差異全是位址：DS:0A03Dh/0A03Fh↔6FA3h/6FA5h、[di−6231h]↔[di+6D35h]、+197h↔+196h、+19Dh..+1A1h↔+19Ch..+1A0h"
   }
  ]
 }

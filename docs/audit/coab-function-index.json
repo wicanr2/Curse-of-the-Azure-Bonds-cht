@@ -13130,7 +13130,8 @@
     "audit/function-index/pc98-overlay-13.md",
     "spec/805-combat-state-allocation-and-initial-facing.md",
     "spec/817-opportunity-attack-and-take-menu.md",
-    "spec/833-sweep-attack.md"
+    "spec/833-sweep-attack.md",
+    "spec/851-grapple-round-and-effect-node-plus3.md"
    ]
   },
   {
@@ -13562,7 +13563,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "851",
+   "note": "扭打的每回合結算(retf 0Ah，(角色, 效果節點, 解除旗標))：對手取自 DS:6D35h[節點 +3]。任一方 +196h = 0 就整組解開（抓人方撤 8Bh、被抓方撤 3Ah 與 0Dh）。續打時把 +19Ch/+19Dh/+19Eh/+1A0h 覆寫成 2/0/2/8 再叫 19D8h——扭打期間武器與攻擊次數都不算數",
+   "citations": [
+    "spec/851-grapple-round-and-effect-node-plus3.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15772,6 +15779,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-17.md",
     "spec/850-hit-dice-and-effective-level.md"
    ]
   },
@@ -15791,6 +15799,7 @@
    "spec": "850",
    "note": "有效等級(retf 4)：各職業等級總和（Ranger c=4 與 Monk c=7 各多算 1）加上 45E9h 的調整後除以職業數取平均。負調整時有下限保護。⚠ 職業數 = 0 會除以零",
    "citations": [
+    "audit/function-index/pc98-overlay-17.md",
     "spec/850-hit-dice-and-effective-level.md"
    ]
   },
@@ -15823,6 +15832,7 @@
    "spec": "850",
    "note": "升級擲 HD(retf 6，(角色, 職業遮罩))：DS:0818h 骰數 / DS:0820h 面數 / DS:3EA8h 遮罩 / DS:3EB9h HD 上限，四張 8 bytes 平行表 = AD\u0026D 生命骰表。等級 \u003e 1 就只擲 1 顆；擲兩次取大（非 AD\u0026D 規則）。過上限給固定 3/2/1 但用 mov 覆寫而非累加",
    "citations": [
+    "audit/function-index/pc98-overlay-17.md",
     "spec/850-hit-dice-and-effective-level.md"
    ]
   },
@@ -38490,7 +38500,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "851",
+   "note": "同 DOS overlay-13:045CFh（module_align 對齊，助憶碼序列完全相同）。21 條差異全是位址：DS:0A03Dh/0A03Fh↔6FA3h/6FA5h、[di−6231h]↔[di+6D35h]、+197h↔+196h、+19Dh..+1A1h↔+19Ch..+1A0h",
+   "citations": [
+    "spec/851-grapple-round-and-effect-node-plus3.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50439,9 +50455,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 28,
+   "Read": 29,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -50994,9 +51010,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 30,
+   "Read": 31,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
