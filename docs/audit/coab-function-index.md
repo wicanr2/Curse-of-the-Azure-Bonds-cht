@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 956、不阻塞 133、邊界碎片 237、待解讀 60；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 957、不阻塞 133、邊界碎片 237、待解讀 59；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -24,7 +24,7 @@
 | overlay-07 | ECL2 | 41 | 32 | 0 | 8 | 1 | 8745 | 191 | [明細](function-index/dos-overlay-07.md) |
 | overlay-08 | COMBAT | 21 | 12 | 0 | 7 | 2 | 4243 | 343 | [明細](function-index/dos-overlay-08.md) |
 | overlay-09 | COMPTACT | 38 | 16 | 0 | 22 | 0 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
-| overlay-10 | COMPREP | 38 | 24 | 0 | 13 | 1 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
+| overlay-10 | COMPREP | 38 | 25 | 0 | 13 | 0 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 4 | 3 | 0 | 1 | 0 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
 | overlay-12 | EFFPROCS | 152 | 134 | 0 | 18 | 0 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
 | overlay-13 | COMSTUFF | 58 | 38 | 0 | 15 | 5 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 1058、不阻塞 29、邊界碎片 338、待解讀 63；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 1059、不阻塞 29、邊界碎片 338、待解讀 62；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -68,7 +68,7 @@
 | overlay-07 | ECL2 | 46 | 30 | 0 | 16 | 0 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
 | overlay-08 | COMBAT | 24 | 10 | 0 | 12 | 2 | 3967 | 372 | [明細](function-index/pc98-overlay-08.md) |
 | overlay-09 | COMPTACT | 36 | 16 | 0 | 20 | 0 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
-| overlay-10 | COMPREP | 35 | 22 | 0 | 12 | 1 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |
+| overlay-10 | COMPREP | 35 | 23 | 0 | 12 | 0 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |
 | overlay-11 | INIT | 6 | 5 | 0 | 0 | 1 | 1960 | 128 | [明細](function-index/pc98-overlay-11.md) |
 | overlay-12 | EFFPROCS | 150 | 132 | 0 | 18 | 0 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
 | overlay-13 | COMSTUFF | 72 | 40 | 0 | 27 | 5 | 17459 | 905 | [明細](function-index/pc98-overlay-13.md) |

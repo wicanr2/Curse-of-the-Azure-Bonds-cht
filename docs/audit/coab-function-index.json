@@ -5239,11 +5239,11 @@
    "note": "與 pc98 overlay-02:08A7h 助憶碼序列完全相同（77 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 0Eh(顯示圖片):READVAR(1);operand 為 FFh 是「關閉」的哨兵值,會清掉一組旗標;否則依 bank1^[5C2h] 是否為 FFh 分兩條路,是的話再依編號是否 \u003e= 78h 分兩條——\u003c 78h 帶著函式前方的 'PIC' 字串常數(檔名前綴)呼叫 far 0176:0034/0025,\u003e= 78h 走 0176:004D。同一條 ECL 指令的效果隨狀態而異 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
-    "spec/518-dos-start-ecl-call-address-space-audit.md",
-    "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
+    "spec/518-dos-start-ecl-call-address-space-audit.md"
    ]
   },
   {
@@ -9754,9 +9754,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1007-deployment-cell-search.md",
+   "note": "佈署找空位(retf 2，回 1=放進去/0=放棄)：sub_122Ch 的呼叫端。界內判斷寫死 0\u003c=欄\u003c=0Ah 且 0\u003c=列\u003c=5 ⇒ 佈署區塊是 11 欄×6 列=66 格，與 sub_122Ch 的 42h(66)／0Bh(11)／108h(4×66) 索引式對上(一個範本組 4 個區塊)。三態狀態機由中心左右交替外擴(基準→+1→−1→+2→−2…)，一排走完就往 (相位+2) 的方向平移開新排。常數表：DS:2DAh 方向組→三個要試的方向(每組第 0 筆都是 8=原地、用不到；四組首選分別是 下/左/上/右)、DS:2EAh 相位(用前 div 2)、DS:2FAh=7,2,3,6、DS:2FEh 起始欄=5,4,5,6/3,8,7,2、DS:306h 起始列=3,2,2,3/0,2,5,3(前四筆在正中央給區塊 0，後四筆在邊上)。每排長度上限第一輪由 DS:4A08h 決定、之後固定 0Bh。兩軸都出界時最多換三次方向，三個方向都被 sub_378h 判定有牆就放棄。⚠ DS:4FBAh(畫面模式)=3 時整個牆面檢查被跳過；只有在界內才真的叫 sub_122Ch。DS:4A04h/4A06h/4A08h/4A0Ah 在靜態映像是 0FFh，是執行期全域不是常數表",
    "citations": [
-    "audit/function-index/dos-overlay-10.md"
+    "audit/function-index/dos-overlay-10.md",
+    "spec/1007-deployment-cell-search.md"
    ]
   },
   {
@@ -24770,12 +24774,12 @@
    "spec": "docs/spec/1006-first-person-view-geometry.md",
    "note": "第一人稱視野主程序(retf 6，宣告順序 (欄, 列, 方向))：DS:720Eh(PC-98 DS:0A2A8h) 非 0 就改叫 sub_11h 畫自動地圖。否則 sub_18Ch 畫面板，取左=(方向+6)mod 8、後=+4、右=+2，中心先移到前方兩格，for 深度 := 2 downto 0 每層左右兩趟對稱掃描(4/4/3/3、3/3、2/2 格)，畫完退一格；由遠而近的畫家演算法。每次貼圖是 sub_448h(欄, 列, 圖號, 牆位)，欄基準表 DS:0AF6h(word)、列基準表 DS:0B0Ah(byte 筆距 2)各 10 筆(PC-98 DS:16CAh／DS:16DEh，值相同)。牆位 0..9 的寬×高相加正好 156 = sub_448h 來源陣列的列距。牆位 9 是一段正面牆結束時的收邊柱。⚠ 匯出在 0AF6h..0AFDh 與 0B05h..0B2Fh 沒反組譯，已直接讀原始位元組補上(皆為程式碼)；IDA 把 mov ax,[DS:0AF6h] 的運算元誤命名成 overlay 本地的 word_AF6，是假交叉參照",
    "citations": [
+    "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/1006-first-person-view-geometry.md",
-    "spec/517-reverse-engineering-gap-inventory.md",
-    "spec/518-dos-start-ecl-call-address-space-audit.md"
+    "spec/517-reverse-engineering-gap-inventory.md"
    ]
   },
   {
@@ -35934,9 +35938,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1007-deployment-cell-search.md",
+   "note": "佈署找空位(retf 2，回 1=放進去/0=放棄)：sub_122Ch 的呼叫端。界內判斷寫死 0\u003c=欄\u003c=0Ah 且 0\u003c=列\u003c=5 ⇒ 佈署區塊是 11 欄×6 列=66 格，與 sub_122Ch 的 42h(66)／0Bh(11)／108h(4×66) 索引式對上(一個範本組 4 個區塊)。三態狀態機由中心左右交替外擴(基準→+1→−1→+2→−2…)，一排走完就往 (相位+2) 的方向平移開新排。常數表：DS:2DAh 方向組→三個要試的方向(每組第 0 筆都是 8=原地、用不到；四組首選分別是 下/左/上/右)、DS:2EAh 相位(用前 div 2)、DS:2FAh=7,2,3,6、DS:2FEh 起始欄=5,4,5,6/3,8,7,2、DS:306h 起始列=3,2,2,3/0,2,5,3(前四筆在正中央給區塊 0，後四筆在邊上)。每排長度上限第一輪由 DS:4A08h 決定、之後固定 0Bh。兩軸都出界時最多換三次方向，三個方向都被 sub_378h 判定有牆就放棄。⚠ DS:4FBAh(畫面模式)=3 時整個牆面檢查被跳過；只有在界內才真的叫 sub_122Ch。DS:4A04h/4A06h/4A08h/4A0Ah 在靜態映像是 0FFh，是執行期全域不是常數表。與 dos overlay-10:01370h 只差一條 xor ah,ah，其餘助憶碼序列完全相同；位址對應 4A12h→7AC8h、4A04h..4A0Ah→7ABAh..7AC0h、2DAh/2EAh/2FAh/2FEh/306h→6CEh/6DEh/6EEh/6F2h/6FAh、720Fh/7210h→0A2A9h/0A2AAh、4FBAh→7F27h",
    "citations": [
-    "audit/function-index/pc98-overlay-10.md"
+    "audit/function-index/pc98-overlay-10.md",
+    "spec/1007-deployment-cell-search.md"
    ]
   },
   {
@@ -53043,9 +53051,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 24,
+   "Read": 25,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 13,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -53598,9 +53606,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
