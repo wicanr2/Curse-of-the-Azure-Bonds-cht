@@ -23287,6 +23287,24 @@
    "level": "exact",
    "spec": "883",
    "note": "同 DOS overlay-33:0002Eh，但★兩處大改：(1)範圍檢查改成『目的起始＋筆數 > 30h』(有號)——DOS 只檢查起始，PC-98 修掉了那個寫出界的洞；(2)先拿檔名比對 'DungCom'/'WildCom'/'RandCom'/'tiles' 分成種類 0..3(比不到就直接離開)，前三種固定用 E000h:0000h/2A50h/63D0h 當來源並靠已載入旗標只讀一次磁碟，第 4 種才用 2A8h:0F5Dh 現配。四個檔名是字串比對的 key，不能翻"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 3375,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "884",
+   "note": "轉職資格檢查(retf 4；arg_0 是父框架指標的巢狀程序，arg_2 是候選職業碼)：①候選 byte[3FF8h+種族*0Eh+DS:7747h] 不能等於 12EEh(角色) 的現職；②現職的需求屬性(DS:4172h 每列 6，值≥9 表示有要求)全部要 > 0Eh(≥15)；③候選的同樣要求全部要 > 10h(≥17)；④角色^[11Bh] 要在 DS:41D8h+候選*0Ah 的陣營清單裡。★15/17 正是 AD&D 一版 dual-class 門檻。★三張表全部解出並逐格對上 AD&D。⚠DOS 側 0E71h/0E86h 兩處反組譯錯位，由 PC-98 校正"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-25",
+   "ea": 3351,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "884",
+   "note": "同 DOS overlay-25:00D2Fh，9 條差異全是表基底與近呼叫位址(3FF8h↔708Dh、4172h↔7207h、41D8h↔726Dh、DS:7747h↔0A9D9h)。★PC-98 側是正確的反組譯，用來校正 DOS 的兩處錯位"
   }
  ]
 }
