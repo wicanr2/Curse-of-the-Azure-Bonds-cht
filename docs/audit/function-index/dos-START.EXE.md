@@ -88,7 +88,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15420` | sub_15420 | — | 115 | 59 | 1 | 0 |  | 已解讀 | exact | docs/spec/673-ega-graphics-controller-reset.md<br>把 EGA/VGA 繪圖暫存器設回預設:Graphics Controller(3CEh/3CFh)索引 0..5 全寫 0、7 寫 0Fh、8 寫 0FFh,Sequencer(3C4h/3C5h)索引 2 寫 0Fh(四平面全開)。索引 6(Miscellaneous)被跳過——模式本身由別處設定,這裡只清理繪圖行為。⚠ DOS 版走 EGA/VGA 平面圖形,與 PC-98 版的文字 VRAM + 三平面是兩套顯示模型,繪圖程式碼不可能共用 | — |
 | `15493` | sub_15493 | — | 49 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>切換 BIOS 顯示頁:把 Registers.AH := 5、AL := arg_0 後呼叫 Turbo Pascal 的 Intr(10h, Regs);同時自己算好 word_2119Eh := (arg_0 shl 9) + 0A000h——shl 9 是 ×512 段落 = 8KB,所以那是該頁的段位址 | — |
 | `154C4` | sub_154C4 | — | 25 | 11 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>word_211A0 := (arg_0 << 9) + 0A000h ⇒ 由列號算出顯示記憶體的段位址(A000h 起、每單位 512 bytes) | — |
-| `154DD` | sub_154DD | — | 188 | 89 | 4 | 4 |  | 待解讀 | — | — | — |
+| `154DD` | sub_154DD | — | 188 | 89 | 4 | 4 |  | 已解讀 | exact | docs/spec/776-first-person-view-scan-and-ega-rect-fill.md<br>EGA 矩形填色(retf 0Ch)：存下 unk_211A2h(目前色)後設色；位移 := 上列*28h*8 + 左欄、列數 := (下列−上列+1)*8−1；設 Graphics Mode := 2(Write Mode 2)，逐列 FillChar(unk_211A0h:位移, 右欄−左欄+1, 填充值)、位移 += 28h；結束把 Mode 歸零並還原顏色。上下界以字元列為單位(×8 換掃描線)、左右界以位元組為單位，每列 40 bytes(320 像素寬) | — |
 | `15606` | sub_15606 | — | 299 | 126 | 3 | 6 |  | 待解讀 | — | — | — |
 | `15731` | sub_15731 | — | 65 | 30 | 4 | 2 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>範圍檢查後呼叫 <sub_15606>(1,20h,arg_0,arg_2,arg_2,arg_4,arg_6)(arg_2 被推入兩次)。上限 27h(39)與 18h(24)即 40 欄 × 25 列。⚠ 兩個下限檢查(cmp x,0 + jb)是死碼——無號比較,任何值都不小於 0;是原作的冗餘不是判讀不確定,remake 直接寫上限即可 | — |
 | `15772` | sub_15772 | — | 133 | 53 | 3 | 3 |  | 待解讀 | — | — | — |
