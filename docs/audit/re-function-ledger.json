@@ -23161,6 +23161,42 @@
    "level": "exact",
    "spec": "876",
    "note": "同 DOS overlay-24:02A6Dh，但★模式 1/2/4 的開頭各多一段清 GDC 文字畫面：FillChar(A000h:0, 0FA0h, 0)＋FillChar(A200h:0, 0FA0h, 1)，0FA0h=4000=80×25×2。DOS 的文字畫在圖形畫面上、PC-98 用硬體文字層，這是平台架構差異不是遊戲邏輯改動"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 1810,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "877",
+   "note": "休息時間設定(retf，無參數，回 al)：選單字串 'Rest Days Hours Mins Add Subtract Exit'。欄 2/3/4 = 分/小時/天，方向鍵左右換欄(2..4 循環)、上下轉成 A/S；D/H/M 直接跳欄，A 加(欄 2 是 DS:7568h+=5，其餘 inc word[7566h+欄*2])、S 叫 045Eh(欄, 1) 或 045Eh(1, 5)，Enter 或 R 設 確定:=1。★三欄的單位由 DS:3E2Ah 進位表(索引 3 上限 24=小時→天、索引 4 上限 30=天→月)反推，不靠字串猜。⚠加減沒有做進位檢查"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 1850,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "877",
+   "note": "同 DOS overlay-20:00712h。★方向鍵碼 48h/50h/4Bh/4Dh↔38h/32h/34h/36h；迴圈開頭多叫 05D2h 並把 DS:136Ah 的 10 bytes 指派到熱鍵緩衝 DS:0A335h(該模式第六個出現點)。字母熱鍵 R/D/H/M/A/S 兩平台完全相同——PC-98 只換畫面標籤、熱鍵字母不動。堆疊框 2Ch↔56h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 4922,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "878",
+   "note": "Load3DMap(retf 2，編號)：★錯誤訊息 'Unable to load geo in Load3DMap.' 直接給出原始函式名。檔名 'GEO'＋Str(DS:5BEEh) 的一位數＋'.dax'，用 636h:8DEh 讀入；大小必須是 402h(=1026=2＋4×256)否則走錯誤路徑；跳過 2 bytes 標頭後分四次 Move 各 100h 進 DS:7206h，再 FreeMem(檔案, 大小)，最後把編號記進 遠指標(DS:4F99h)^[18Ah]"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 4691,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "878",
+   "note": "同 DOS overlay-30:0133Ah。★三處不同：檔名不接磁碟編號(只有 'GEO'，與 spec 874 一致)、堆疊框 110h→14h、收尾把 FreeMem 換成 mov al,0 / out 0A6h,al(PC-98 圖形硬體控制，載入器記憶體處理方式不同)。三個字串原樣保留未在地化"
   }
  ]
 }
