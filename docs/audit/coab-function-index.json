@@ -9091,7 +9091,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "戰場水域生成(retf，無參數)：先用四邊地形碼 DS:4A0Eh..4A11h（值 1 與 3 的組合）算出 DS:4A16h 這個『可不可以放』的旗標。雙層迴圈 a := 2..3、b := 2..4，格座標 x = DS:4A0Dh×5 + DS:4A0Ch×6 + 15h + a + b、y = DS:4A0Dh×5 + 0Ah + b；範圍 0..31h／0..18h、圖磚為 16h、DS:4A15h 與 DS:4A16h 都非 0、再過 1d10 \u003c= 5 才放 1Ah。放成功後對 DS:0349h/034Dh 四個位移的鄰格各以 1d10 \u003c= 9 放 1Bh",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
@@ -13225,7 +13228,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "825",
-   "note": "AI 挑鄰格的治療對象／屍體(retf 8)：掃九個方向（DS:2694h/269Dh 位移，含原地 8）。格上有戰鬥員且同陣營（+197h）且受傷（+1A4h \u003c +78h）就比較——HP 最低者優先，但若是自己且 HP \u003c 最大/2 則直接採用（自救優先）。格上沒人而地形碼為 1Fh 時，掃 DS:6E52h 的 7 bytes 一筆清單（筆數在 DS:6E91h），找座標相符且 +195h 落在集合 {6,7,8}（Dead／Stoned／Gone）的屍體。最後：最低 HP \u003e= 8 且有屍體就回屍體，否則回最傷的同伴"
+   "note": "AI 挑鄰格的治療對象／屍體(retf 8)：掃九個方向（DS:2694h/269Dh 位移，含原地 8）。格上有戰鬥員且同陣營（+197h）且受傷（+1A4h \u003c +78h）就比較——HP 最低者優先，但若是自己且 HP \u003c 最大/2 則直接採用（自救優先）。格上沒人而地形碼為 1Fh 時，掃 DS:6E52h 的 7 bytes 一筆清單（筆數在 DS:6E91h），找座標相符且 +195h 落在集合 {6,7,8}（Dead／Stoned／Gone）的屍體。最後：最低 HP \u003e= 8 且有屍體就回屍體，否則回最傷的同伴",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "dos",
@@ -34065,7 +34071,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "同 DOS overlay-10:000CCh（同位址、助憶碼序列完全相同）。差異全是位址：DS:7AC4h..7AC7h↔4A0Eh..4A11h 等",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
@@ -50721,9 +50730,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -51276,9 +51285,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
