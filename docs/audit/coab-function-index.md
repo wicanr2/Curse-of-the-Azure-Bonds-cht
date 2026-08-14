@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 855、不阻塞 133、邊界碎片 243、待解讀 155；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 857、不阻塞 133、邊界碎片 243、待解讀 153；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -24,7 +24,7 @@
 | overlay-07 | ECL2 | 41 | 28 | 0 | 8 | 5 | 8745 | 191 | [明細](function-index/dos-overlay-07.md) |
 | overlay-08 | COMBAT | 21 | 11 | 0 | 7 | 3 | 4243 | 343 | [明細](function-index/dos-overlay-08.md) |
 | overlay-09 | COMPTACT | 38 | 15 | 0 | 22 | 1 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
-| overlay-10 | COMPREP | 38 | 21 | 0 | 14 | 3 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
+| overlay-10 | COMPREP | 38 | 22 | 0 | 14 | 2 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 4 | 3 | 0 | 1 | 0 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
 | overlay-12 | EFFPROCS | 152 | 126 | 0 | 25 | 1 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
 | overlay-13 | COMSTUFF | 58 | 35 | 0 | 15 | 8 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
@@ -35,7 +35,7 @@
 | overlay-18 | ENDSTUFF | 11 | 8 | 0 | 0 | 3 | 4446 | 1177 | [明細](function-index/dos-overlay-18.md) |
 | overlay-19 | LIBRARY | 42 | 16 | 0 | 15 | 11 | 13042 | 1293 | [明細](function-index/dos-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 16 | 0 | 0 | 0 | 3536 | 191 | [明細](function-index/dos-overlay-20.md) |
-| overlay-21 | MONEY | 27 | 19 | 0 | 4 | 4 | 6469 | 385 | [明細](function-index/dos-overlay-21.md) |
+| overlay-21 | MONEY | 27 | 20 | 0 | 4 | 3 | 6469 | 385 | [明細](function-index/dos-overlay-21.md) |
 | overlay-22 | SPELLS | 139 | 107 | 0 | 26 | 6 | 25236 | 2174 | [明細](function-index/dos-overlay-22.md) |
 | overlay-23 | EFFECTS | 40 | 25 | 0 | 12 | 3 | 9183 | 376 | [明細](function-index/dos-overlay-23.md) |
 | overlay-24 | GENERIC | 56 | 47 | 0 | 3 | 6 | 12483 | 290 | [明細](function-index/dos-overlay-24.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 936、不阻塞 29、邊界碎片 338、待解讀 185；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 938、不阻塞 29、邊界碎片 338、待解讀 183；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -68,7 +68,7 @@
 | overlay-07 | ECL2 | 46 | 30 | 0 | 16 | 0 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
 | overlay-08 | COMBAT | 24 | 9 | 0 | 12 | 3 | 3967 | 372 | [明細](function-index/pc98-overlay-08.md) |
 | overlay-09 | COMPTACT | 36 | 15 | 0 | 20 | 1 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
-| overlay-10 | COMPREP | 35 | 19 | 0 | 12 | 4 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |
+| overlay-10 | COMPREP | 35 | 20 | 0 | 12 | 3 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |
 | overlay-11 | INIT | 6 | 5 | 0 | 0 | 1 | 1960 | 128 | [明細](function-index/pc98-overlay-11.md) |
 | overlay-12 | EFFPROCS | 150 | 130 | 0 | 18 | 2 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
 | overlay-13 | COMSTUFF | 72 | 37 | 0 | 27 | 8 | 17459 | 905 | [明細](function-index/pc98-overlay-13.md) |
@@ -79,7 +79,7 @@
 | overlay-18 | ENDSTUFF | 23 | 15 | 0 | 4 | 4 | 4957 | 1311 | [明細](function-index/pc98-overlay-18.md) |
 | overlay-19 | LIBRARY | 57 | 17 | 0 | 29 | 11 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 16 | 0 | 0 | 0 | 3555 | 225 | [明細](function-index/pc98-overlay-20.md) |
-| overlay-21 | MONEY | 30 | 19 | 0 | 8 | 3 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
+| overlay-21 | MONEY | 30 | 20 | 0 | 8 | 2 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
 | overlay-22 | SPELLS | 138 | 91 | 0 | 27 | 20 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
 | overlay-23 | EFFECTS | 39 | 27 | 0 | 12 | 0 | 9201 | 458 | [明細](function-index/pc98-overlay-23.md) |
 | overlay-24 | GENERIC | 65 | 40 | 0 | 17 | 8 | 13567 | 376 | [明細](function-index/pc98-overlay-24.md) |

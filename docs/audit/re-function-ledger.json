@@ -23521,6 +23521,42 @@
    "level": "exact",
    "spec": "896",
    "note": "同 DOS overlay-32:00D06h，只差一條 xor ah,ah(DOS 零擴充後 cmp ax、PC-98 cmp al)；11 條是表基底位址(66A3h↔−68C3h、2694h↔489Eh、26A2h↔48ACh)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 685,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "897",
+   "note": "數字輸入框(retf 8，(上限, 提示字串, 顏色))：清第 18h 列 28h 欄、印提示，迴圈 ReadKey——'0'..'9' 就串進緩衝(上限 6 字元)並 Val，若輸入值 >= 上限就★把整個緩衝換成 Str(上限, 寬度 5) 的字串(夾成上限，不是拒收)；Backspace 退一格；Enter 收值、Esc 回 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 683,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "897",
+   "note": "同 DOS overlay-21:002ADh，但★清列的欄數 28h(40)↔50h(80)——PC-98 文字區是 80 個半形位置＝40 個全形字，DOS 是 40 個半形字元。這解釋了 PC-98 字串上限一路從 28h 放寬到 50h(spec 859/871/894)。另外印之前多接一個常數字串"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 1772,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "898",
+   "note": "3D 視圖的四塊牆面(retf 2，父框架指標的巢狀程序)：先用 0378h 查左前(2, 父[−2]−1, 父[−1])與右前(0, 父[−2], 父[−1]+1)，再依 DS:4A0Eh(0/1/3)、DS:4A10h(是不是 0)、左/右/兩邊都空，用四段 case 各選一個圖磚編號，最後叫 0048h 畫在固定的四個位置 (0,5)/(0,6)/(1,5)/(1,6)。編號 16h 出現在四處的『什麼都沒有』分支"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 1766,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "898",
+   "note": "同 DOS overlay-10:006ECh，只差一條 xor ah,ah(DOS 零擴充後 cmp ax、PC-98 cmp al)；13 條是 DS:4A0Eh↔7AC4h、DS:4A10h↔7AC6h 的位址"
   }
  ]
 }
