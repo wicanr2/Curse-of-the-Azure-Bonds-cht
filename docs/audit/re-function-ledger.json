@@ -26203,6 +26203,15 @@
    "level": "exact",
    "spec": "1058",
    "note": "圖示換色(retf 8)。⚠ 台帳記的『160 bytes 匯出空洞』是誤判：函式在 452Ah 的 retf 8 就結束，45CAh 之後是 spec 1037 的字串資料(0C 8C C3 82 A2 83 41… =「古いアイコン」)，210 條就是完整函式體 —— 與 spec 1036 同一類誤判。★★ 先把來源槽整組複製到目的槽：槽表 DS:0966Ch(spec 1033)、資料從 +17h 起(spec 1049)、遮罩平面掛在 +13h(spec 1050)，兩個指標(.a/.b)的主資料與遮罩各 Move 一次 —— 三份既有結論在同一支函式裡對上。★★★ 換色表：先把 16 格填成恆等，再 for i:=1..7 把 角色[i]^[144h] 的低 nibble 寫進 表[byte[6F54h+i]]、高 nibble 寫進 表[byte[6F54h+i]+8]，最後 far 02A8:0C32h(表A, 表B, …, 槽) 套兩次。角色^[144h]+部位 就是 spec 1037 的六個部位、每格兩個 4-bit 顏色 ⇒ 一個角色的外觀 = 把 +145h..+14Ah 的十二個 4-bit 顏色插進一張 16 格恆等對照表再整張套到圖示上；這解釋了 spec 1037 的圖示編輯畫面改的是這張表的輸入而不是圖本身，remake 只要保留『圖＋16 格對照表』就能重現全部配色。arg_2 為 0 時整段換色跳過"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 3312,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1059",
+   "note": "從公用池取錢(retf，243 條)，是 spec 1030/1031 營地與商店選單 'T'(Take) 鍵叫的那一支。★★★ 七種貨幣名稱表 DS:0F93h、筆距 0Bh(11)：Copper(6)/Silver(6)/Electrum(8)/Gold(4)/Platinum(8)/Gems(4)/Jewelry(7) —— spec 773/798/858/1000 一路提到的『七種貨幣』名字在這裡，前五個正是 AD&D 的 cp/sp/ep/gp/pp；名稱欄位上限 10 bytes ⇒ 中文最多 5 個全形字。★★ 只把池裡有東西的幣種做成選項：for i:=6 downto 0，longint(DS:6F70h+i*4) <= 0 就跳過；否則 GetMem(2Eh)=46 bytes 的選單節點(與 spec 1030 記的 overlay-25 選單節點 DOS 46/PC-98 86 bytes 同一種)，+2Ah=next 串到前面、文字 = 幣種名+' '+Str(數量)(上限 40)、+29h:=0；由 6 數到 0 ⇒ 鏈上 Copper 在最前面。兩段對話：overlay-26 entry#5 收 'Select type of coin '(20，結尾空白)與 'Select'(6) 兩個參數；再組 'How much '(9)+幣種名+'will you take? '(15) 交給 sub_2ADh 讀十進位數(上限參數 0Ah)；收尾 sub_A8Ah + overlay-26 entry#8 並把 DS:7564h 清 0。⚠ 中文語序要把幣種挪到前面(『要拿多少金幣？』)，三段組法得改"
   }
  ]
 }
