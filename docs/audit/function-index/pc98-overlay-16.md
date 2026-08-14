@@ -30,7 +30,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B0D` | sub_1B0D | — | 264 | 109 | 1 | 1 | ✓ | 已解讀 | exact | 1<br>同 DOS overlay-16:01388h（module_align 對齊，助憶碼序列完全相同）。只差三條：DS:8BF6h↔5BF0h 與兩個 CS 常數／字串函式位址 | audit/function-index/pc98-overlay-16.md |
 | `1C15` | sub_1C15 | — | 1152 | 449 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-16.md |
 | `2095` | sub_2095 | — | 374 | 112 | 3 | 1 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1C15h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
-| `26CF` | sub_26CF | — | 798 | 241 | 1 | 5 | ✓ | 待解讀 | — | — | — |
+| `26CF` | sub_26CF | — | 798 | 241 | 1 | 5 | ✓ | 已解讀 | exact | 925<br>同 DOS overlay-16:01F21h(相似度 0.922)。五個差異區塊全是同一件事：取角色遠指標時多一次 les di, es:[di]——ss:[父bp+0Ah] 存的是指向角色遠指標的遠指標；模板的父層位移 −1C4h → −1ECh。沒有任何邏輯差異 | spec/925-npc-template-floor.md |
 | `2A6D` | sub_2A6D | LOADCHARACTER | 3141 | 1140 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-16.md<br>audit/function-strings.md<br>audit/function-triage.md |
 | `36B2` | sub_36B2 | — | 953 | 346 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 2A6Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `3AA8` | sub_3AA8 | LOADMONSTER | 850 | 324 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |

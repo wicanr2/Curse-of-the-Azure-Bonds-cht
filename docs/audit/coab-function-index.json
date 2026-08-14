@@ -13886,7 +13886,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-30.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/pc98-overlay-15.md"
    ]
   },
   {
@@ -15034,6 +15034,7 @@
    "spec": "924",
    "note": "紮營選單(retf 4 = @結果 byte)：切畫面模式 2、清 DS:7566h(14 bytes)、把 DS:7278h 限長 8 抄到 DS:7281h、開 16h×26h 視窗、印 'The party makes camp...'，然後迴圈開選單直到 結果^ ≠ 0 或按鍵落入 32 bytes 的 Pascal 集合 unk_23C5 = [0, 'E']。六個熱鍵：S 存檔後問 'Quit TO DOS ' 答 Y 就 06EAh:0000h 離開程式、V 檢視、M 法術、R 休息、F 修補、A 更動；⚠ S 與 F 不設 DS:7294h，其餘四個都設。收尾時若 Copy(DS:7281h,1,3) = 'PIC' 就叫 loc_17C3h+1，最後還原畫面模式",
    "citations": [
+    "audit/function-index/pc98-overlay-15.md",
     "audit/function-strings.md",
     "spec/924-camp-menu.md"
    ]
@@ -15395,7 +15396,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "925",
+   "note": "套模板下限(retf 2 = 巢狀程序，參數是父 bp；角色在 ss:[父bp+0Ah]、模板在 ss:[父bp−1C4h])：七組屬性各自 if 角色 \u003c 模板 就抬上去，★每次都把相鄰兩格寫同一值 → 屬性是 +10h+j*2 與 +11h+j*2 兩個副本，spec 857 讀到的是後半格；模板側 +14h 力量、+15h 對應角色 +1Ch/+1Dh(形狀上是 18/xx 百分位力量)、+16h..+1Ah 智睿敏體魅。經驗值 +127h 抬到 模板^[2Eh]。★錢不夠(loc_1024h+3 折算 \u003c 模板^[28h])就把第 0..4 格全部扣光再發 模板^[28h] div 5——先破壞再補，且只推低位字。四個職業槽 +109h/+10Eh/+10Bh/+10Fh 寫成 模板^[0B7h..0BAh] \u003e 0 的布林。最後 +0E5h := 1、換 DS:6506h、+78h := 模板^[21h]、+12Ch := +78h − loc_F23h(角色)、+1A4h := 模板^[20h]",
+   "citations": [
+    "spec/925-npc-template-floor.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23595,10 +23602,10 @@
    "citations": [
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
+    "audit/function-index/pc98-overlay-15.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -39562,7 +39569,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-30.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/pc98-overlay-15.md"
    ]
   },
   {
@@ -41124,7 +41131,13 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "925",
+   "note": "同 DOS overlay-16:01F21h(相似度 0.922)。五個差異區塊全是同一件事：取角色遠指標時多一次 les di, es:[di]——ss:[父bp+0Ah] 存的是指向角色遠指標的遠指標；模板的父層位移 −1C4h → −1ECh。沒有任何邏輯差異",
+   "citations": [
+    "spec/925-npc-template-floor.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50060,10 +50073,10 @@
    "citations": [
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
+    "audit/function-index/pc98-overlay-15.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -51834,9 +51847,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -52389,9 +52402,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 19,
+   "Todo": 18,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
