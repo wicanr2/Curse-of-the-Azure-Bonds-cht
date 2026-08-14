@@ -13493,7 +13493,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/813-rest-time-formula.md",
+   "note": "算出休息時間：retf 4 = 角色遠指標，回傳 ax（分鐘）。掃角色 +1Eh 起 84 格，值 \u003e 7Fh（還在記憶中）者取 lv := byte[37DBh + (值 and 7Fh)*10h]，最高A 取最大、總A 累加（byte 加法，會迴繞）；再掃 +14Dh 物品鏈（next +2Ah），\u003cfar 11DEh\u003e(物品) 成立時對三個效果槽 +3Ch/+3Dh/+3Eh 同樣統計出 最高B／總B。d := 0；(總A \u003e 0) 或 (總B \u003e 0) → d := 4；(最高A \u003e 2) 或 (最高B \u003e 2) → d := 6；角色^[72h] := d。結果 := 總A*0Fh + d*3Ch + 總B*0Fh，即「每個法術等級 15 分鐘 + 休息 4 或 6 小時」。由此定下 +72h 是休息小時數的倒數，配合 spec 789 每 12 拍減 1 → 12 拍 = 一小時。spec 813 註：DOS 匯出在 0068h／0082h／00FCh 三處錯位（in al,0C4h、hlt×2），原始位元組與 PC-98 完全相同，以 PC-98 的解碼為準（spec 811）。",
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
@@ -13670,7 +13673,13 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/814-rest-driver-and-pool-worth.md",
+   "note": "休息的主流程：retf 4 = 輸出 byte 的遠指標。掃 DS:650Ah 鏈，對每人呼叫 本模組 0034h(p)（spec 813，回傳分鐘），取全隊最大值（無號）；DS:756Ch := 最大 div 3Ch（時）、DS:756Ah := (最大 − 時*3Ch) div 0Ah（十分鐘）、DS:7568h := 最大 mod 0Ah（分）——索引 0 與 4（日）都不寫；輸出^ := \u003cfar 10AEh+1\u003e(1)（休息迴圈本體）；回來後 FillChar(DS:7566h, 0Eh, 0) 清掉整組，再 \u003cfar 014Dh:00DEh\u003e。註：DOS 匯出把 0850h 起解成 or bl,[bp+si+arg_D8]／dec bp，原始位元組 9A E0 1A 54 0A 9A DE 00 4D 01 ＝ call far 0A54h:1AE0h 與 call far 014Dh:00DEh（spec 811）。spec 814",
+   "citations": [
+    "spec/814-rest-driver-and-pool-worth.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13784,7 +13793,8 @@
    "note": "邊界碎片：落在 1016h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md"
+    "spec/760-item-effect-flag-clear-and-file-exists.md",
+    "spec/813-rest-time-formula.md"
    ]
   },
   {
@@ -15979,7 +15989,9 @@
    "spec": "docs/spec/812-coin-values-and-class-name-table.md",
    "note": "把身上的錢換算成金幣：retf 4 = 角色遠指標，回傳 dx:ax（longint）。總 := Σ(j=0..4) \u003c0A54h:0279h\u003e(longint(角色^[0FBh + j*2]), longint@(0CA2h + j*4))；結果 := \u003c0A54h:0294h\u003e(總 + 64h, longint@0CAEh)。幣值表 DS:0CA2h 五個 longint = 1/10/100/200/1000（單位銅幣，AD\u0026D 一版換算），除數 0CAEh 就是索引 3（金幣）那一格，+64h 是半個除數 → 四捨五入。只算前 5 種幣別，+0FBh 的後兩格（Gems/Jewelry）不計入。spec 812",
    "citations": [
-    "spec/812-coin-values-and-class-name-table.md"
+    "audit/resident-data-tables.md",
+    "spec/812-coin-values-and-class-name-table.md",
+    "spec/814-rest-driver-and-pool-worth.md"
    ]
   },
   {
@@ -16304,7 +16316,8 @@
     "spec/789-heal-budget-tick-and-halve-stack.md",
     "spec/791-priority-pick-and-second-countdown.md",
     "spec/792-memorization-timer-closed.md",
-    "spec/803-rest-time-display-and-scribe.md"
+    "spec/803-rest-time-display-and-scribe.md",
+    "spec/813-rest-time-formula.md"
    ]
   },
   {
@@ -16326,7 +16339,8 @@
     "audit/function-index/dos-overlay-20.md",
     "spec/789-heal-budget-tick-and-halve-stack.md",
     "spec/791-priority-pick-and-second-countdown.md",
-    "spec/803-rest-time-display-and-scribe.md"
+    "spec/803-rest-time-display-and-scribe.md",
+    "spec/813-rest-time-formula.md"
    ]
   },
   {
@@ -16368,7 +16382,8 @@
     "audit/function-index/dos-overlay-20.md",
     "spec/789-heal-budget-tick-and-halve-stack.md",
     "spec/791-priority-pick-and-second-countdown.md",
-    "spec/792-memorization-timer-closed.md"
+    "spec/792-memorization-timer-closed.md",
+    "spec/813-rest-time-formula.md"
    ]
   },
   {
@@ -16531,7 +16546,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/814-rest-driver-and-pool-worth.md",
+   "note": "Pool 值多少金幣：retf 4 = 遠指標，回傳 dx:ax。Move(來源^, 暫存, 1Ch)（28 bytes = 7 個 longint，先抄再算，不動原資料）；總 := Σ(j=0..4) \u003c0A54h:0279h\u003e(暫存[j], longint@(0CA2h + j*4))；結果 := \u003c0A54h:0294h\u003e(總 + 64h, longint@0CAEh)。與 spec 812 的 overlay-19:33ABh 是同一條式子，差別只在來源每格是 longint 而非 word；同樣只算前 5 種幣別。spec 814",
+   "citations": [
+    "spec/814-rest-driver-and-pool-worth.md"
+   ]
   },
   {
    "platform": "dos",
@@ -37734,7 +37755,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/813-rest-time-formula.md",
+   "note": "算出休息時間：retf 4 = 角色遠指標，回傳 ax（分鐘）。掃角色 +1Eh 起 84 格，值 \u003e 7Fh（還在記憶中）者取 lv := byte[61B5h + (值 and 7Fh)*10h]，最高A 取最大、總A 累加（byte 加法，會迴繞）；再掃 +14Eh 物品鏈（next +52h），\u003cfar 11AEh\u003e(物品) 成立時對三個效果槽 +64h/+65h/+66h 同樣統計出 最高B／總B。d := 0；(總A \u003e 0) 或 (總B \u003e 0) → d := 4；(最高A \u003e 2) 或 (最高B \u003e 2) → d := 6；角色^[72h] := d。結果 := 總A*0Fh + d*3Ch + 總B*0Fh，即「每個法術等級 15 分鐘 + 休息 4 或 6 小時」。由此定下 +72h 是休息小時數的倒數，配合 spec 789 每 12 拍減 1 → 12 拍 = 一小時。spec 813 PC-98 側匯出解碼正確。",
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
@@ -37889,7 +37913,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/814-rest-driver-and-pool-worth.md",
+   "note": "休息的主流程：retf 4 = 輸出 byte 的遠指標。掃 DS:9598h 鏈，對每人呼叫 本模組 0034h(p)（spec 813，回傳分鐘），取全隊最大值（無號）；DS:0A658h := 最大 div 3Ch（時）、DS:0A656h := (最大 − 時*3Ch) div 0Ah（十分鐘）、DS:0A654h := 最大 mod 0Ah（分）——索引 0 與 4（日）都不寫；輸出^ := \u003cfar 10AEh+1\u003e(1)（休息迴圈本體）；回來後 FillChar(DS:0A652h, 0Eh, 0) 清掉整組，再 \u003cfar 014Ah:00DEh\u003e。註：DOS 匯出把 0850h 起解成 or bl,[bp+si+arg_D8]／dec bp，原始位元組 9A E0 1A 54 0A 9A DE 00 4D 01 ＝ call far 0A65h:1B30h 與 call far 014Ah:00DEh（spec 811）。spec 814 PC-98 側匯出解碼正確。"
   },
   {
    "platform": "pc98",
@@ -38047,7 +38074,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_133F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_133F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-15.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40684,7 +40714,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-15.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41811,7 +41844,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/814-rest-driver-and-pool-worth.md",
+   "note": "Pool 值多少金幣：retf 4 = 遠指標，回傳 dx:ax。Move(來源^, 暫存, 1Ch)（28 bytes = 7 個 longint，先抄再算，不動原資料）；總 := Σ(j=0..4) \u003c0A65h:0279h\u003e(暫存[j], longint@(1C46h + j*4))；結果 := \u003c0A65h:0294h\u003e(總 + 64h, longint@1C52h)。與 spec 812 的 overlay-19:33ABh 是同一條式子，差別只在來源每格是 longint 而非 word；同樣只算前 5 種幣別。spec 814（差異只在 mov/les 的等價碼型）",
+   "citations": [
+    "spec/814-rest-driver-and-pool-worth.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48856,9 +48895,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 17,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 12,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -48946,9 +48985,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 27,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
@@ -49411,9 +49450,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 15,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 13,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
@@ -49501,9 +49540,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 30,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
