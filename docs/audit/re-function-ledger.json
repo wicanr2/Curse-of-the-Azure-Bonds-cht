@@ -20686,6 +20686,42 @@
    "level": "exact",
    "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
    "note": "施法前的目標閘門：byte[61C1h + 法術*10h]（屬性 +0Dh）< 門檻（無號）直接失敗；法術 = 3（Cure Light Wounds，硬寫死的特例）改問 <far 0BF2h+3>(@暫存, 參數4, 參數6)，回真即通過；否則 byte[61C2h + 法術*10h]（+0Eh）= 0 即通過。n := <far sub_1560>(本模組 119Fh(法術), 參數4, 參數6)；n <= 0 失敗；byte[61C3h + 法術*10h]（+0Fh）= 0 即通過；否則 for k := 1 to n do i := byte[0A820h+k]，本模組 02D3h(byte[973Dh+i*4], byte[973Eh+i*4], 法術)（巢狀，多推 bp）任一回真就失敗。retf 8。spec 802"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 1492,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/803-rest-time-display-and-scribe.md",
+   "note": "休息時間的畫面：for i := 0 to 6 顏色[i] := 0Ah、顏色[參數0] := 0Fh（高亮選中的單位）；畫 'Rest Time:'(10)；列 := 0Bh；for i := 4 downto 3 畫 word[7566h + i*2] 與 ':'(1)，每格 列 += 3；最後畫 DS:756Ah * 0Ah + DS:7568h（十分鐘*10 + 分）。顯示的是 日:時:分，獨立驗證 spec 793 的單位表。retf 2 = 高亮哪一格。spec 803"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 1490,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/803-rest-time-display-and-scribe.md",
+   "note": "休息時間的畫面：for i := 0 to 6 顏色[i] := 0Ah、顏色[參數0] := 0Fh（高亮選中的單位）；畫 '休息時間'(8 bytes)；列 := 0Bh；for i := 4 downto 3 畫 word[0A652h + i*2] 與 ':'(1)，每格 列 += 3；最後畫 DS:0A656h * 0Ah + DS:0A654h（十分鐘*10 + 分）。顯示的是 日:時:分，獨立驗證 spec 793 的單位表。retf 2 = 高亮哪一格。spec 803"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 2527,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/803-rest-time-display-and-scribe.md",
+   "note": "抄寫法術：retf 8 = (arg_4 角色, arg_0 旗標遠指標)。掃 角色^[14Dh] 物品鏈（next +2Ah），<011Ah:003Eh>(物品) 成立才看該物品的三個效果槽 +3Ch/+3Dh/+3Eh（程式寫成 +3Bh+i, i=1..3）：值 > 80h（無號，嚴格大於）時，旗標^<>0 就回傳 byte[37DBh + (值 and 7Fh)*10h]（法術等級）並結束；旗標^=0 則 s := 值 and 7Fh、角色^[78h + s] := 1、<011Ah:0043h>(s, 物品, 角色)、本模組 05D4h(0)、顯示 角色名+'has scribed'(11)、<011Ah:0048h>(s)、旗標^ := 1。不清掉物品上的最高位。因 s >= 1，+78h（最大 HP）不會被那個 56 格旗標陣列（+79h..+0B0h）覆蓋。與 spec 792 的記憶法術結構平行。spec 803"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 2577,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/803-rest-time-display-and-scribe.md",
+   "note": "抄寫法術：retf 8 = (arg_4 角色, arg_0 旗標遠指標)。掃 角色^[14Dh] 物品鏈（next +52h），<0117h:003Eh>(物品) 成立才看該物品的三個效果槽 +64h/+65h/+66h（程式寫成 +63h+i, i=1..3）：值 > 80h（無號，嚴格大於）時，旗標^<>0 就回傳 byte[61B5h + (值 and 7Fh)*10h]（法術等級）並結束；旗標^=0 則 s := 值 and 7Fh、角色^[78h + s] := 1、<0117h:0043h>(s, 物品, 角色)、本模組 05D2h(0)、顯示 角色名+'を書き写した'(12 bytes)、<0117h:0048h>(s)、旗標^ := 1。不清掉物品上的最高位。因 s >= 1，+78h（最大 HP）不會被那個 56 格旗標陣列（+79h..+0B0h）覆蓋。與 spec 792 的記憶法術結構平行。spec 803"
   }
  ]
 }

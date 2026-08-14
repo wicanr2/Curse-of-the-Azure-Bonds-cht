@@ -17,7 +17,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0F77` | sub_F77 | ADJUSTBLOWS | 45 | 19 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>依相位進位的折半(retf 2)：f(x) = (x + (DS:0A81Fh and 1)) div 2，與 DOS overlay-13:0F12h 同 | audit/embedded-strings.md<br>spec/754-small-predicates-and-wrappers.md |
 | `0FB1` | sub_FB1 | TRYTOSWEEP | 108 | 35 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `101A` | sub_101A | — | 396 | 146 | 2 | 4 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0FB1h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
-| `119F` | sub_119F | — | 3 | 1 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_1116`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
+| `119F` | sub_119F | — | 3 | 1 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_1116`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | audit/function-index/pc98-overlay-09.md |
 | `11A9` | sub_11A9 | — | 6 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `11AF` | sub_11AF | CHECKTARGET | 33 | 13 | 4 | 1 | ✓ | 已解讀 | strong inference | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>與 DOS overlay-13:1144h（entry#11）助憶碼序列完全相同，語意同該筆：暫時借用目前目標欄位(retf 8)：甲為 NIL 回 false、乙=甲 回 true；否則清 DS:6F9Bh、叫 <呼叫>(1, 甲)，未中止就把甲塞進 乙^[18Dh]^[0Ah]、叫 <呼叫>(0, 乙)、再還原，最後回 DS:6F9Bh = 0。⚠ 目前目標欄位同時是參數傳遞通道，中途離開會留下錯誤的目標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/pc98-overlay-13.md |
 | `11C7` | sub_11C7 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp dx, [bp+8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
@@ -64,7 +64,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2EBB` | sub_2EBB | — | 541 | 217 | 1 | 8 | ✓ | 待解讀 | — | — | — |
 | `30D8` | sub_30D8 | — | 361 | 132 | 2 | 9 | ✓ | 待解讀 | — | — | — |
 | `329F` | sub_329F | — | 1353 | 521 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `37E8` | sub_37E8 | — | 161 | 60 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出) | — |
+| `37E8` | sub_37E8 | — | 161 | 60 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出) | audit/function-index/dos-overlay-09.md |
 | `3889` | sub_3889 | — | 427 | 142 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `3A74` | sub_3A74 | VIEWDUDES | 779 | 303 | 1 | 11 | ✓ | 待解讀 | — | — | — |
 | `3D7F` | sub_3D7F | PICKTARGET | 480 | 159 | 2 | 4 | ✓ | 待解讀 | — | — | — |

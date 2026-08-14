@@ -8193,6 +8193,7 @@
    "note": "範圍法術的豁免掃描(retf 8)：施法者陣營(DS:6506h^[197h])為 0 時修正 −2、否則 +8；先叫掃描程序(地圖 DS:6E92h, 1, 0FFh, byte[37E9h + 法術*10h], y, x)，再對 DS:6E96h 筆結果逐一取 byte[6E94h + i*3] 當索引、由 DS:6D35h 取戰鬥員；只處理不同陣營且 byte[37E2h + 法術*10h] \u003c\u003e 1 的目標，\u003c豁免\u003e(修正, byte[37E3h + 法術*10h], 目標) 回 0 就把結果設 true。⚠ 豁免修正取決於施法者陣營，兩邊不對稱",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-09.md",
     "audit/function-index/dos-overlay-13.md",
     "spec/777-item-append-and-area-save-sweep.md",
     "spec/802-countdown-clock-and-spell-target-gate.md"
@@ -8379,6 +8380,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 38 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-09.md",
     "spec/802-countdown-clock-and-spell-target-gate.md"
    ]
   },
@@ -16100,6 +16102,7 @@
    "spec": "docs/spec/754-small-predicates-and-wrappers.md",
    "note": "上限 99 的累加(retf，無參數)：先叫本模組 sub_2D8h(@DS:7566h)；若 DS:7570h\u003e0 則 DS:756Eh += DS:3E32h * DS:7570h、DS:7570h:=0，最後 DS:756Eh 夾到 99。全部無號 word",
    "citations": [
+    "audit/function-index/dos-overlay-20.md",
     "audit/function-index/pc98-overlay-20.md",
     "spec/754-small-predicates-and-wrappers.md",
     "spec/802-countdown-clock-and-spell-target-gate.md"
@@ -16176,12 +16179,16 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/803-rest-time-display-and-scribe.md",
+   "note": "休息時間的畫面：for i := 0 to 6 顏色[i] := 0Ah、顏色[參數0] := 0Fh（高亮選中的單位）；畫 'Rest Time:'(10)；列 := 0Bh；for i := 4 downto 3 畫 word[7566h + i*2] 與 ':'(1)，每格 列 += 3；最後畫 DS:756Ah * 0Ah + DS:7568h（十分鐘*10 + 分）。顯示的是 日:時:分，獨立驗證 spec 793 的單位表。retf 2 = 高亮哪一格。spec 803",
    "citations": [
     "audit/function-index/dos-overlay-20.md",
     "audit/function-index/pc98-overlay-20.md",
     "spec/768-script-arithmetic-opcodes-and-save-size.md",
-    "spec/792-memorization-timer-closed.md"
+    "spec/792-memorization-timer-closed.md",
+    "spec/803-rest-time-display-and-scribe.md"
    ]
   },
   {
@@ -16237,7 +16244,8 @@
     "audit/function-index/dos-overlay-20.md",
     "spec/789-heal-budget-tick-and-halve-stack.md",
     "spec/791-priority-pick-and-second-countdown.md",
-    "spec/792-memorization-timer-closed.md"
+    "spec/792-memorization-timer-closed.md",
+    "spec/803-rest-time-display-and-scribe.md"
    ]
   },
   {
@@ -16251,11 +16259,15 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/803-rest-time-display-and-scribe.md",
+   "note": "抄寫法術：retf 8 = (arg_4 角色, arg_0 旗標遠指標)。掃 角色^[14Dh] 物品鏈（next +2Ah），\u003c011Ah:003Eh\u003e(物品) 成立才看該物品的三個效果槽 +3Ch/+3Dh/+3Eh（程式寫成 +3Bh+i, i=1..3）：值 \u003e 80h（無號，嚴格大於）時，旗標^\u003c\u003e0 就回傳 byte[37DBh + (值 and 7Fh)*10h]（法術等級）並結束；旗標^=0 則 s := 值 and 7Fh、角色^[78h + s] := 1、\u003c011Ah:0043h\u003e(s, 物品, 角色)、本模組 05D4h(0)、顯示 角色名+'has scribed'(11)、\u003c011Ah:0048h\u003e(s)、旗標^ := 1。不清掉物品上的最高位。因 s \u003e= 1，+78h（最大 HP）不會被那個 56 格旗標陣列（+79h..+0B0h）覆蓋。與 spec 792 的記憶法術結構平行。spec 803",
    "citations": [
     "audit/function-index/dos-overlay-20.md",
     "spec/789-heal-budget-tick-and-halve-stack.md",
-    "spec/791-priority-pick-and-second-countdown.md"
+    "spec/791-priority-pick-and-second-countdown.md",
+    "spec/803-rest-time-display-and-scribe.md"
    ]
   },
   {
@@ -32110,6 +32122,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/pc98-overlay-09.md",
     "context/50-log-2026-08-09-13.md",
     "spec/493-pc98-quick-sleep-area-target.md"
    ]
@@ -32291,7 +32304,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1592`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1592`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-09.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36318,7 +36334,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "尾呼叫：最後一條是 `jmp loc_1116`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完）"
+   "note": "尾呼叫：最後一條是 `jmp loc_1116`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-09.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37071,7 +37090,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
-   "note": "把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出)"
+   "note": "把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出)",
+   "citations": [
+    "audit/function-index/dos-overlay-09.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41274,6 +41296,7 @@
    "spec": "docs/spec/754-small-predicates-and-wrappers.md",
    "note": "上限 99 的累加(retf)：對應位址 0A652h/0A65Ch/680Ch/0A65Ah，與 DOS overlay-20:0385h 同",
    "citations": [
+    "audit/function-index/dos-overlay-20.md",
     "audit/function-index/pc98-overlay-20.md",
     "spec/754-small-predicates-and-wrappers.md",
     "spec/802-countdown-clock-and-spell-target-gate.md"
@@ -41351,7 +41374,10 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/803-rest-time-display-and-scribe.md",
+   "note": "休息時間的畫面：for i := 0 to 6 顏色[i] := 0Ah、顏色[參數0] := 0Fh（高亮選中的單位）；畫 '休息時間'(8 bytes)；列 := 0Bh；for i := 4 downto 3 畫 word[0A652h + i*2] 與 ':'(1)，每格 列 += 3；最後畫 DS:0A656h * 0Ah + DS:0A654h（十分鐘*10 + 分）。顯示的是 日:時:分，獨立驗證 spec 793 的單位表。retf 2 = 高亮哪一格。spec 803",
    "citations": [
     "audit/function-index/pc98-overlay-20.md"
    ]
@@ -41418,7 +41444,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/803-rest-time-display-and-scribe.md",
+   "note": "抄寫法術：retf 8 = (arg_4 角色, arg_0 旗標遠指標)。掃 角色^[14Dh] 物品鏈（next +52h），\u003c0117h:003Eh\u003e(物品) 成立才看該物品的三個效果槽 +64h/+65h/+66h（程式寫成 +63h+i, i=1..3）：值 \u003e 80h（無號，嚴格大於）時，旗標^\u003c\u003e0 就回傳 byte[61B5h + (值 and 7Fh)*10h]（法術等級）並結束；旗標^=0 則 s := 值 and 7Fh、角色^[78h + s] := 1、\u003c0117h:0043h\u003e(s, 物品, 角色)、本模組 05D2h(0)、顯示 角色名+'を書き写した'(12 bytes)、\u003c0117h:0048h\u003e(s)、旗標^ := 1。不清掉物品上的最高位。因 s \u003e= 1，+78h（最大 HP）不會被那個 56 格旗標陣列（+79h..+0B0h）覆蓋。與 spec 792 的記憶法術結構平行。spec 803",
    "citations": [
     "audit/function-index/pc98-overlay-20.md"
    ]
@@ -48707,9 +48736,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 11,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 3536,
    "Undefined": 191,
@@ -49262,9 +49291,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 11,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 3555,
    "Undefined": 225,
