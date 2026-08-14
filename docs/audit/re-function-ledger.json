@@ -17404,6 +17404,36 @@
    "spec": "docs/spec/740-feeblemind.md",
    "bounds": "prologue",
    "note": "把 角色^[13h] 與 角色^[15h] 都設成 **7**,顯示 '<名字> is stupid'(CS:15CFh)。⚠ 那正是 spec 728 施法資格檢查的兩個門檻欄位(分類 0/1 看 +15h、分類 2 看 +13h,都是 <= 8 就不能施放),設成 7 讓三類同時失敗——**這個角色從此什麼都不能施放**。所以 +15h/+13h 是兩個施法屬性。DS:4FBAh=5(戰鬥)時另清 +18Dh^[1],且 +18Dh^[0] > 0 時顯示 'lost a spell'(CS:15D9h,顏色 0Ch 與前一則不同)、呼叫 <overlay-24 entry#16>(角色, +18Dh^[0])(spec 733 裡 Lose it? 答 Y 與 Spell Aborted 用的同一支)再清 0"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 10114,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
+   "note": "麻痺觸碰:p := 角色^[18Dh]^[0Ah];<overlay-23 entry#8>(p, 0, 0) 回 0(豁免失敗)時 <overlay-23 entry#11>(p, 34h, **0**, 0FFh, 0) 並顯示 '<名字> is paralyzed'(CS:2775h)。效果編號與訊息都和 spec 722 的凝視相同,但那裡第三個參數是 3Ch——**同一個麻痺效果有兩種持續時間來源**;entry#8 的第二個參數也不同(這裡 0、凝視 1)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8867,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
+   "note": "三個效果都沒有才加傷害:對 p := 角色^[18Dh]^[0Ah] 依序查 14h、36h、3Dh(三次 <overlay-24 entry#27>,短路),**任何一個成立就完全不加**;都沒有才 DS:6F94h += ROLLDICE(1, 6)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8312,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
+   "note": "分段加成:DS:6FA7h 等於 4 或 2 時,依 角色^[19h] 取 bonus(4..6→1、7..10→2、0Bh..0Dh→3、0Eh..11h→4、12h..14h→5),DS:6F92h += bonus。⚠ **v 不在 4..20 時 bonus 從頭到尾沒有被賦值**,加進去的是堆疊殘值——這是第三處同型問題(spec 694 的 129Ah、spec 702 的 23F2h),共同形狀是「一串 if 範圍 then 賦值、沒有 else、區域變數也沒初始化」。remake 要補預設值但補什麼要另外決定,原作行為隨堆疊內容而定。分段長度 3/4/3/4/3 不是等距",
+   "bounds": "prologue"
   }
  ]
 }
