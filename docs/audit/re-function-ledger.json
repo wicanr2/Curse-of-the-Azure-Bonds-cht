@@ -24655,6 +24655,24 @@
    "level": "exact",
    "spec": "954",
    "note": "從 free list 配置(near)，與 DOS 的 1A986h(spec 931)同骨架但多一層重試：掃 dword_23AF0h 找夠大的一筆就切走(用光就 sub_1AC04h 移除)、否則看配置指標 word_23AECh/word_23AEEh 上面夠不夠，都不行就★呼叫 dword_23AF6h(Turbo Pascal 的 HeapError 向量)——回 0 就 stc 失敗、回 1 就把 bx 設 0(New 回 nil 但不報錯)、其他值表示已騰出空間就整支重試。DOS 版沒有這一段，找不到就直接失敗；PC-98 版多掛 HeapError，與 spec 951 的覆疊 LRU 同一個方向——對記憶體壓力做了更多處理"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 104622,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "955",
+   "note": "★文字畫面的區塊搬移(near)：寬或高為 0 就離開；40 欄模式(byte_280DAh ≠ 50h)先把兩個座標 shl 1；用 sub_199F5h 算出來源與目的位移，每列搬完跳 (50h − 寬) shl 1。★搬每一列之前檢查第一格與最後一格——只要 bit 15(spec 953 的右半標記)或字碼 bit 7 顯示它是全形字的一部分就先改成空白 20h 再搬，所以被矩形邊界切開的半個字不會變成亂碼出現在新位置。這是繼 spec 945/948/952/953 之後第五個認得雙位元組的環節。字碼平面用 rep movsw、屬性平面(word_280D4h + 200h = 0A200h)用 movsb + inc si/di 隔一個搬一個"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108326,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "955",
+   "note": "Runtime error 與程式終止(far)：錯誤碼存 word_23AFEh；有出錯位址就走 word_23AE2h 的覆疊鏈(next +14h)比對 +10h 找出是哪一段，★把段位址減去 word_23B04h 與 10h 換算成覆疊內的相對位址存 word_23B00h/word_23B02h——所以印出來的 XXXX 不是絕對段址，對照反組譯要加回去。dword_23AFAh(ExitProc)非 NIL 就清空它並用 cs:0110h 當回位址 retf 跳過去。否則還原兩個向量後，用 cs:01E1h 的 19(13h)筆中斷編號表逐一 int 21h AH=25h 還原(舊向量存 ds:0C07Eh 起每筆 4 bytes)，有位址就印 'Runtime error '(1F4h) + 碼 + ' at '(203h) + 段:偏移 + 換行(208h)，最後 int 21h AH=4Ch 帶錯誤碼離開。⚠IDA 註記 sp-analysis failed，因為 ExitProc 那條路用 push/retf 手動組遠呼叫"
   }
  ]
 }
