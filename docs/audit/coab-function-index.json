@@ -16571,6 +16571,7 @@
    "citations": [
     "audit/function-index/pc98-overlay-17.md",
     "audit/resident-data-tables.md",
+    "spec/1086-modify-character-dos.md",
     "spec/866-constitution-hp-bonus.md",
     "spec/869-constitution-bonus-per-class-slot.md"
    ]
@@ -16611,6 +16612,7 @@
    "spec": "docs/spec/985-name-edit-cursor-and-surface-composite.md",
    "note": "pc98 02DB7h 的對應（配對工具漏判）：名字欄多畫第三次當游標，空白格畫 '%'；PC-98 沒有這段",
    "citations": [
+    "spec/1086-modify-character-dos.md",
     "spec/985-name-edit-cursor-and-surface-composite.md",
     "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
@@ -16626,10 +16628,14 @@
    "callers": 1,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1086",
+   "note": "角色數值調整(Modify，retf)。★經驗值超過門檻(208Dh=8333 / 30D4h=12500 / 61A8h=25000)就印 can't be modified 並離開。八個欄位：var_37 0..5 六個屬性(角色^[11h+i*2]，spec 1079 的目前值)、6 最大 HP(+78h，同步 +1A4h 補滿)、7 名字(角色^[0] 是長度、+1 起是字元 ⇒ 印證 spec 1043 表 A 名字位移 0)。★★★加減時查兩張表夾值：DS:3F86h + 種族(+74h)*10h(一種族一列 16 bytes，力量那格再加 角色^[119h] 共六段、智力在 +6)、DS:4172h + 角色^[75h]*6。力量的百分比 +1Ch 是獨立一階，往下調先扣完百分比才動整數。⚠名字編輯逐 byte 搬移，對 Big5 雙位元組無保護，remake 必須改成以字元為單位。兩張表在資料段不在 overlay bin，內容未取",
    "citations": [
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1086-modify-character-dos.md"
    ]
   },
   {
@@ -16772,6 +16778,7 @@
    "note": "有效等級(retf 4)：各職業等級總和（Ranger c=4 與 Monk c=7 各多算 1）加上 45E9h 的調整後除以職業數取平均。負調整時有下限保護。⚠ 職業數 = 0 會除以零",
    "citations": [
     "audit/function-index/pc98-overlay-17.md",
+    "spec/1086-modify-character-dos.md",
     "spec/850-hit-dice-and-effective-level.md"
    ]
   },
@@ -16791,7 +16798,8 @@
    "spec": "1055",
    "note": "HP 上限計算(角色: 遠指標，retf 4，242 條)。for j:=0..7 掃 +109h+j 八個職業槽，等級\u003e0 才算並 inc 職業數；上限表 DS:3EB9h = 10 15 10 10 11 12 11 19。★★★ 等級\u003c上限：總和 += (sub_2515h(j) + 骰面) × 等級 —— 骰面 牧師8/德魯伊8/戰士10/聖騎士10/遊俠8/法師4/盜賊6/武僧4，其中遊俠與武僧用『等級+1』實作『1 級就有 2d8 / 2d4』，八個全部符合 AD\u0026D 1e；每級取骰子最大值 ⇒ 算的是 HP 上限不是擲出來的值。★★★ 等級\u003e=上限：超出 := 等級−上限+1，牧師 超出×2+72(9d8)、德魯伊 固定112(14d8，不再成長)、戰士/聖騎士 超出×3+90(9d10)、遊俠 超出×2+88(11d8)、法師 超出×1+44(11d4)、盜賊 超出×2+60(10d6)、武僧 固定72(18d4，不再成長) —— 一格不差等於 1e，含德魯伊與武僧兩個『到頂就不再長』的特例。★★★ 這一段完全不加 sub_2515h(j)，正是 1e『名望等級之後體質加值不再套用』的規則。★★★ 最後 結果 := 總和 div 職業數 —— 多職業取平均(整數除法)。★ 職業順序(牧師/德魯伊/戰士/聖騎士/遊俠/法師/盜賊/武僧)與 spec 1034 相同，第二次獨立確認",
    "citations": [
-    "spec/1055-max-hp-calculation.md"
+    "spec/1055-max-hp-calculation.md",
+    "spec/1086-modify-character-dos.md"
    ]
   },
   {
@@ -43706,9 +43714,11 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/pc98-overlay-17.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
-    "spec/1085-party-menu-pc98.md"
+    "spec/1085-party-menu-pc98.md",
+    "spec/1086-modify-character-dos.md"
    ]
   },
   {
@@ -53774,9 +53784,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
