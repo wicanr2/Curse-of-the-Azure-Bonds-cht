@@ -26487,7 +26487,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "964",
+   "note": "PC-98 的底列輸入欄(far, retf 0Ch = (字元集, 最大長度, 提示前景, 提示背景, 提示, @結果))，對應 DOS 的 spec 941。先用 sub_1C180h 清第 24 列——字碼平面 0A000h:0F00h 填 0、★屬性平面 0A200h:0F00h 填 1(不是 0)，長度 0A0h = 80 格 × 2；0F00h = 24 × 80 × 2 正是第 24 列起點。用 sub_14E97h 印提示，游標位移 = (提示長度 + 2) × 2 + 0F00h(提示與輸入間空兩格)。★依 arg_0 選三種允許字元集之一交給 sub_171DFh：0 → byte_1DBD8h(157 個，20h 起連續)、1 → byte_1DC76h(139 個，23h 起且跳掉 27h/2Ah/2Bh/2Ch/2Eh/2Fh，正是 DOS 檔名不合法的符號)、2 → \"0123456789\" 純數字。DOS 版把範圍寫死成 20h..7Ah 只有一種——PC-98 改成查表，允許字元是資料驅動的。★取消時把結果寫成空字串，DOS 版的 Esc 與 Enter 都回緩衝內容、呼叫端分不出來，PC-98 修掉了這個問題"
   },
   {
    "platform": "pc98",
@@ -52401,9 +52404,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 265,
+   "Read": 266,
    "NotBlocking": 29,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
