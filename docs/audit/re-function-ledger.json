@@ -22891,6 +22891,24 @@
    "level": "exact",
    "spec": "862",
    "note": "同 DOS overlay-22:0317Eh。助憶碼只差一條 cbw(DOS 讀 byte 後 cbw 再 cmp ax，PC-98 直接 cmp al，純編譯器碼型)；45 條運算元差異全是位址。堆疊框 26h↔2Ch 是字串緩衝 40→80 的連帶"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 1615,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "863",
+   "note": "戰利品分錢(retf，無參數)：對 spec 858 累積的 DS:6F70h 七個 longint 池，各算 商=總量 div 人數、餘=mod。①走隊伍，+0F7h>=80h(士氣沒崩)的人依 j=6..0(珠寶先、銅幣最後)用 0073h 試裝，裝不下就退回餘數、裝得下再從餘數多給 1；②剩下的再走一遍隊伍，用 001Bh(負重上限)−+187h(目前負重)算空間塞滿；③把剩的寫回 DS:6F70h，並用 DS:7564h 標記公用池還有沒有東西。★關掉 spec 858「誰清零」的疑問。★0A54h:294h 的商在 dx:ax、餘在 bx:cx"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 1641,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "863",
+   "note": "同 DOS overlay-21:0064Fh（助憶碼序列完全相同）。20 條差異全是位址：DS:650Ah↔9598h、公用池 6F70h↔0A00Eh−4、DS:7564h↔0A650h、+187h↔+188h、+189h↔+18Ah"
   }
  ]
 }
