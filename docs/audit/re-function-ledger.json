@@ -26032,6 +26032,15 @@
    "level": "exact",
    "spec": "1039",
    "note": "ECL 2Bh(HORIZONTAL MENU) DOS 側，PC-98 對側見 spec 605。變長骨架與 PC-98 一致：READVAR(2)→ADDFNC(DS:76C6h,DS:7706h)→ADDRESSVALUE(2) 取選項數 n→dec DS:4FB4h(ECL_PC−1)→READVAR(n)。★★★ 選項行是執行期串出來的：for i:=1..n−1 選項行 += '~'+文字表[i]+' '，最後一個只接 '~'+文字表[n]，整行上限 32h=50 bytes ⇒ spec 1030 在營地選單看到的 '~Yes ~No' 波浪號標記，產生端就在這裡 —— 波浪號是 DOS 版水平選單的通用熱鍵標記，~ 後面第一個字元就是熱鍵。★★★ PC-98 把這套整個換掉，改成 DS:0A334h+i := i+40h('A','B','C'…) 的熱鍵表 ⇒ 中文化必須跟 PC-98，~ 後接 Big5 首位元組會把熱鍵判成亂碼。★ 文字表兩平台都是 stride 100h(256)、索引從 1 起算：DOS DS:7648h(shl di,8)、PC-98 DS:0A8DAh。★★ n=1 特例：樣式 (1,0Fh,0Fh)，且若 DS:7748h 不等於 'PRESS BUTTON OR RETURN TO CONTINUE.'(35) 就換成 'PRESS <ENTER>/<RETURN> TO CONTINUE'(34) —— DOS 有兩句按鍵繼續，已經是前者就不動；n>1 樣式 (0,0Fh,0Ah)。★★★ 關掉 spec 605 的未定項：var_3C := ord((DS:8B62h<>0) and (DS:8B63h<>0))，兩個旗標都非零才是 1。收尾 0542:0B4Ah(18h,27h,18h,0)，與 PC-98 的 0418:14C7h 四個參數完全相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 2033,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1040",
+   "note": "CHECKSPECIALS DOS 側(007F1h..0B6Ah，889 bytes)，PC-98 對側見 spec 624。骨架一致：arg_0 是 byte 旗標指標(進門設 1、整條鏈落空才在出口設 0)，addr -= 7C00h 後一路比對，角色取自 DS:6506h(PC-98 DS:9594h)。位址對照與 spec 624 相同，DOS 偏移在 +18Dh 以上各少 1(7CE4h→+192h、7D1Bh→+1A5h)。★★ spec 624 漏掉的：①7CE4h 讀的是 +192h and 1(最低位元)不是整個 byte；②7CC9h 的公式是 <overlay-25 entry#10>() × 角色^[116h] + 角色^[10Eh]，三個量都 cbw；③★★★ 7ECFh 不是直接回傳 +1Bh(魅力)，而是查一張十二段換算表：3→0、4→5、5→10、6→15、7→20、8..0Ch→25、0Dh→30、0Eh→35、0Fh→40、10h→50、11h→55、12h..19h→60(形狀上是百分比，語意不宣稱；⚠ 魅力 0..2 落到出口讀未初始化值)。★★★ 關掉 spec 624 的未定項：7F12h 讀的是 DS:5BEEh ＝ 資料片編號(spec 892/1029/1033/1038 同一格)。三個要算的與 spec 624 一致(7D00h 的一次性旗標 DS:8B6Dh = PC-98 DS:0BDFFh，讀一次就清掉；7D0Ch；7EB1h/7EB4h 共用 near 0790h)。★ 7D0Dh 直接跳出口讀未初始化的 var_2、旗標仍是 1 —— 這個原作瑕疵兩平台都成立，remake 要照抄"
   }
  ]
 }

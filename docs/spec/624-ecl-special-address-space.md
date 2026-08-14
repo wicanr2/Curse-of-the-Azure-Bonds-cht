@@ -26,13 +26,13 @@ ECL 位址 `7C00h` 以上不是真的記憶體，而是**接到角色紀錄欄�
 | **`7CA5h`..`7CACh`** | **`+0E9h + (addr − 0A4h)`** | byte（**區間**，8 個連號）|
 | `7CB8h` | `+0F7h`（劇情 NPC 旗標，見 [spec 623](623-killthedude-damage-message.md)）| byte |
 | `7CBBh` `7CBDh` `7CBFh` `7CC1h` `7CC3h` | `+0FBh` `+0FDh` `+0FFh` `+101h` `+103h`（**五種硬幣**，見 [spec 622](622-character-money-block.md)）| word |
-| `7CC9h` | `+116h` 與 `+10Eh` | byte，有號 |
+| `7CC9h` | `<overlay-25 entry#10>() × +116h ＋ +10Eh`（spec 1040 補上公式） | byte，有號 |
 | `7CD6h` `7CD8h` | `+119h` `+11Bh` | byte，有號 |
-| `7CE4h` | `+193h` | byte |
+| `7CE4h` | `+193h` **`and 1`**（只取最低位元，spec 1040 補） | byte |
 | `7CF7h` `7CF9h` | `+13Ch` `+13Eh` | word／byte |
 | `7D1Bh` | `+1A6h` | byte |
-| `7ECFh` | `+1Bh` | byte |
-| `7F12h` | `DS:8BF4h` | byte |
+| `7ECFh` | `+1Bh`（魅力）**再查一張十二段換算表**，見 spec 1040 | byte |
+| `7F12h` | `DS:8BF4h` ＝ **資料片編號**（spec 1040 由 DOS 對側關掉） | byte |
 | `7F3Eh` | bank 1（`DS:7F09h`）`+67Ch` | word |
 
 五個硬幣在讀寫兩側都是**五個連號位址**，這是 spec 622「`+FBh` 起是陣列」的獨立
