@@ -77,15 +77,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 4226,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 5142,
    "state": "待解讀",
    "level": "",
@@ -26032,6 +26023,15 @@
    "level": "exact",
    "spec": "1038",
    "note": "角色檔讀取，同 DOS overlay-16:0228Eh(1486 條)。★★★ 長度對照：現行角色記錄 1A7h(423) vs DOS 1A6h(422) 差 1；★ 兩代舊格式 11Dh(285) 與 0BCh(188) 兩平台完全相同 —— 那是磁碟上的舊版面，PC-98 沒有跟著加寬；物品節點 67h(103) vs 3Fh(63) 差 28h；★★ 效果節點 .fx/.spc 兩平台都是 9 bytes，沒有跟著物品節點加寬。四個歸零的遠指標欄位：+0F2h(相同)、+14Eh、+18Ah、+18Eh(後三個各 +1，與 spec 1034 收窄過的邊界一致)。★ PC-98 另有大寫的 '.GUY'/'.CHA' 兩個字串(DOS 只有小寫)，其餘副檔名相同。載入提示是「読みこみ中です」(14)，與 spec 1029 同一句"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 4226,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1039",
+   "note": "ECL 2Bh(HORIZONTAL MENU) DOS 側，PC-98 對側見 spec 605。變長骨架與 PC-98 一致：READVAR(2)→ADDFNC(DS:76C6h,DS:7706h)→ADDRESSVALUE(2) 取選項數 n→dec DS:4FB4h(ECL_PC−1)→READVAR(n)。★★★ 選項行是執行期串出來的：for i:=1..n−1 選項行 += '~'+文字表[i]+' '，最後一個只接 '~'+文字表[n]，整行上限 32h=50 bytes ⇒ spec 1030 在營地選單看到的 '~Yes ~No' 波浪號標記，產生端就在這裡 —— 波浪號是 DOS 版水平選單的通用熱鍵標記，~ 後面第一個字元就是熱鍵。★★★ PC-98 把這套整個換掉，改成 DS:0A334h+i := i+40h('A','B','C'…) 的熱鍵表 ⇒ 中文化必須跟 PC-98，~ 後接 Big5 首位元組會把熱鍵判成亂碼。★ 文字表兩平台都是 stride 100h(256)、索引從 1 起算：DOS DS:7648h(shl di,8)、PC-98 DS:0A8DAh。★★ n=1 特例：樣式 (1,0Fh,0Fh)，且若 DS:7748h 不等於 'PRESS BUTTON OR RETURN TO CONTINUE.'(35) 就換成 'PRESS <ENTER>/<RETURN> TO CONTINUE'(34) —— DOS 有兩句按鍵繼續，已經是前者就不動；n>1 樣式 (0,0Fh,0Ah)。★★★ 關掉 spec 605 的未定項：var_3C := ord((DS:8B62h<>0) and (DS:8B63h<>0))，兩個旗標都非零才是 1。收尾 0542:0B4Ah(18h,27h,18h,0)，與 PC-98 的 0418:14C7h 四個參數完全相同"
   }
  ]
 }
