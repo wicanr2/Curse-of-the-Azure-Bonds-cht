@@ -24781,6 +24781,15 @@
    "level": "exact",
    "spec": "965",
    "note": "區塊配置 + 版本比對 + 剩餘記憶體量測(far, retf 6 = (要求大小, 檔案))，由 sub_139DDh 呼叫兩次。①要求大小向上對齊到 40h(64 bytes)倍數後 div 40h 再 shl 2 換算成段數(等於 div 10h，所以配置粒度是 64 bytes)，交給 sub_18883h 配置。②用 sub_1C15Dh(BlockRead)讀 4 + 2 + 2 bytes 的標頭，inc word_280B6h 計數。③版本比對：主(word_280B2h)相同且次(word_280B4h)較小就更新次；主較小就兩個都更新。兩個是分開的 if 不是 else if，但條件互斥所以只會更新一次。★④把 word_23AECh(配置指標)與 word_23AE8h(下界)各用 sub_1A8CEh(× 10h 長整數乘法)換算成線性位址相減，得到 dword_24E75h = 剩餘可用位元組數。⚠那兩段 les di 只是編譯器對 LongInt(Seg(p)) * 16 + Ofs(p) 的直譯，不是特殊技巧"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 99335,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "966",
+   "note": "配置失敗就印訊息並終止(far, retf 6 = (要求大小, 檔案))：大小向上對齊到 10h 再 div 10h 換算成段數；Assign(f, '')(空檔名 = 主控台)、Rewrite、送 ESC + '[32m'(ANSI 綠色)。★sub_188E3h 配置失敗就印 'ヒープエラーが発生しました。'(byte_183E5，1Ch = 28 bytes = 14 個全形字，Shift-JIS)加上診斷 <載入計數>_<主版本>:0__<段數>，然後 Close 並叫 sub_1A726h(1) = Runtime error 1(spec 955)不返回。⚠':0__' 裡的 0 是寫死的常數不是次版本，所以次版本永遠印成 0；訊息走主控台不走遊戲文字層，會疊在殘留畫面上。成功則 BlockRead 兩個 byte、inc word_280B6h、主版本較小就更新並把次版本歸 0。與 spec 965 的 18233h 是同一件事的兩個版本，差別在對齊粒度(10h vs 40h)、配置函式、失敗處理與版本更新規則"
   }
  ]
 }
