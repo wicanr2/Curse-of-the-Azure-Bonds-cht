@@ -25006,6 +25006,24 @@
    "level": "exact",
    "spec": "docs/spec/978-tilde-hotkey-marker-and-underscore-to-space.md",
    "note": "把 '_' 全部換成半形空白；回傳字串的函式（@結果留在堆疊）；迴圈計數器用全域 DS:0A9D9h 不可重入"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 15077,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/979-mass-cure-effect-and-two-piece-icon.md",
+   "note": "群體解除效果：人數上限＝施法者等級，只對指定陣營；DS:0A51Dh 候選表每格 4 bytes、格數在 DS:0A520h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 15257,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/979-mass-cure-effect-and-two-piece-icon.md",
+   "note": "畫上下兩塊拼成的圖示（組 19h／0Ch，編號 0/1，座標 B 差 3）；圖庫每組 8 bytes ＝ 每組兩個編號"
   }
  ]
 }
