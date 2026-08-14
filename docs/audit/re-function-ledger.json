@@ -25708,6 +25708,24 @@
    "level": "exact",
    "spec": "docs/spec/1019-attack-action-and-ammo.md",
    "note": "攻擊動作(retf 12h ＝ 9 word；bp+14h 目標、bp+10h 攻擊者、bp+0Eh 旗標、bp+0Ah 物品(可 NIL)、bp+06h 未宣稱遠指標)。轉向 → 重畫雙方 → 目標^[18Dh]^[0Ah] := 攻擊者(鎖定) → 延遲 → sub_14E8 結算 → 耗彈 → 派生數值重算(overlay-24 entry#7)。★★ DOS 有 攻擊者^[18Dh]^[9] := (sub_29A2 的方向 + 4) mod 8 的朝向正規化(兩處)，PC-98 整個拿掉、方向直接用，且 +18Eh^[9] 在該段完全沒被寫 —— 這是行為差異不只是位址不同。★★★ 耗彈歸零且 overlay-24 entry#42 成立且 special(3) <> 89h 時，GetMem 一份物品節點複製掉在地上：DOS GetMem/Move 3Fh(63 bytes)、PC-98 67h(103 bytes)，差 28h —— 物品節點 +28h 的第三次獨立確認(spec 1011 由 13 個欄位量、spec 1013 由 next 位移量、本支由 GetMem 大小量)。★★ 新節點掛進 DS:6F8Ch —— 與 spec 1013 的『商店存貨鏈』同一格 ⇒ 那條鏈其實是「這個地點地上有什麼」。★ 耗彈數在 DS:75D7h(PC-98 DS:0A869h)。⚠ PC-98 延遲是 DS:7F16h × 19h(25)，DOS 寫死 64h(100)；spec 1015 另一支是 × 32h(50) ⇒ 比例逐處重調。位址：75E5h/75E6h↔0A877h/0A878h、758Dh/758Eh↔0A81Fh/0A820h、6506h/6508h↔9594h/9596h；角色 +18Dh/+19Ch/+19Dh↔+18Eh/+19Dh/+19Eh(＋1)、物品欄位全部 +28h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 16093,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1020-save-game-screen.md",
+   "note": "存檔畫面(retf，不收參數)：十個槽 A..J，迴圈條件 until 鍵 in [#0,'A'..'J'](集合常數，用 @Set@MemberOf$q4Byte 0A54:08D4h 判斷，同 spec 1012)。選單第五參數是 ord(DS:4FBAh = 2)。★★ 檔名 = 字串(DS:5BF0h 執行期路徑) + 'savgam' + Chr(鍵) + '.dat'；DS:5BF1h 是磁碟機代號(− 40h 換成 1=A)。★★★ 空間檢查：檔案已存在(far 0636:04FFh)需要 0、否則 3208h(12808 bytes)，再加 sub_3D38()；與 DiskFree(far 097F:00DEh) 比，不夠就顯示 \"Can't save.  No room on this disk.\"。開檔後可接受的 IOResult 是 [0, 2, 18]，否則顯示 'Put save disk in ' + 磁碟機 + ':' 或 'Unexpected error during save: ' + 碼。成功則顯示 'Saving...Please Wait'(欄 0、列 18h、0Ah on 0)後寫全域。★★★ PC-98 是另一套存檔管理：共用把全域寫進檔案的 254 條核心，但前後完全不同——沒有 'Save Which Game: '／'A B C D E F G H I J'、沒有空間檢查；錯誤訊息改成「ライトプロテクトをはずしてください。」(36 bytes)與「セーブ中にエラーが発生しました-」(32)＋IOResult，進度訊息「書きこみ中です」(14 bytes = 7 全形字)。★★ 多維護一個 SaveList.EST 目錄檔：檔名 = 字串(DS:8BF6h)+字串(DS:0A23h)+'SaveList.EST'，byte[0A80Ah + DS:0A670h] 設成 6(失敗路徑)或 DS:0BDF0h(成功路徑)，再 BlockWrite(DS:0A80Bh, 0Ah) 十個 byte；成功路徑前有一道 if 槽字母 < 'K'。另有 'CHRDAT' 字串。⚠ mov di, offset loc_A23 的運算元其實是 DS:0A23h，是 spec 1006 同一類的假交叉參照。⚠ 中文化：'savgam'／'.dat' 是檔名不可翻；槽位字母 A..J 同時是熱鍵集合與檔名的一部分，不能換成中文數字"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 20488,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1020-save-game-screen.md",
+   "note": "存檔畫面(retf，不收參數)：十個槽 A..J，迴圈條件 until 鍵 in [#0,'A'..'J'](集合常數，用 @Set@MemberOf$q4Byte 0A54:08D4h 判斷，同 spec 1012)。選單第五參數是 ord(DS:4FBAh = 2)。★★ 檔名 = 字串(DS:5BF0h 執行期路徑) + 'savgam' + Chr(鍵) + '.dat'；DS:5BF1h 是磁碟機代號(− 40h 換成 1=A)。★★★ 空間檢查：檔案已存在(far 0636:04FFh)需要 0、否則 3208h(12808 bytes)，再加 sub_3D38()；與 DiskFree(far 097F:00DEh) 比，不夠就顯示 \"Can't save.  No room on this disk.\"。開檔後可接受的 IOResult 是 [0, 2, 18]，否則顯示 'Put save disk in ' + 磁碟機 + ':' 或 'Unexpected error during save: ' + 碼。成功則顯示 'Saving...Please Wait'(欄 0、列 18h、0Ah on 0)後寫全域。★★★ PC-98 是另一套存檔管理：共用把全域寫進檔案的 254 條核心，但前後完全不同——沒有 'Save Which Game: '／'A B C D E F G H I J'、沒有空間檢查；錯誤訊息改成「ライトプロテクトをはずしてください。」(36 bytes)與「セーブ中にエラーが発生しました-」(32)＋IOResult，進度訊息「書きこみ中です」(14 bytes = 7 全形字)。★★ 多維護一個 SaveList.EST 目錄檔：檔名 = 字串(DS:8BF6h)+字串(DS:0A23h)+'SaveList.EST'，byte[0A80Ah + DS:0A670h] 設成 6(失敗路徑)或 DS:0BDF0h(成功路徑)，再 BlockWrite(DS:0A80Bh, 0Ah) 十個 byte；成功路徑前有一道 if 槽字母 < 'K'。另有 'CHRDAT' 字串。⚠ mov di, offset loc_A23 的運算元其實是 DS:0A23h，是 spec 1006 同一類的假交叉參照。⚠ 中文化：'savgam'／'.dat' 是檔名不可翻；槽位字母 A..J 同時是熱鍵集合與檔名的一部分，不能換成中文數字"
   }
  ]
 }
