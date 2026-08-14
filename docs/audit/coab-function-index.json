@@ -6772,10 +6772,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "858",
+   "note": "戰後結算，算每人份經驗值(retf 4，var longint)：走 DS:650Ah 鏈，對 +197h=1 且 +195h 既非 0(Okay) 亦非 3(Running) 的單位，把 +0FBh 起七個 word 累加到 DS:6F70h 起七個 longint，並累加 +13Ch + +12Ch×+13Eh；順便把物品鏈複製成戰利品鏈(GetMem 3Fh + Move，前插，next 在 +2Ah)。最後七格依 200/20/2/1/×5/×250/×2200 換算成金幣值加進總數，戰利品鏈每個 +32h\u003e0 再加 ×190h，除以 (DS:4F9Dh^[67Ch] − DS:8B57h)。★係數比例與 AD\u0026D 一版錢幣表逐項相符 → 索引 0..6 = 銅/銀/琥珀金/金/白金/寶石/珠寶；也定案 0A54h:294h=longint 除法、279h=乘法、329h=GetMem、25Dh=Move。輸出正是 spec 857 收的每人份參數",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "spec/858-post-battle-xp-and-treasure-valuation.md"
    ]
   },
   {
@@ -6795,7 +6799,8 @@
    "note": "發經驗值(retf 4，longint 每人份)：走隊伍鏈 DS:650Ah，+196h 非 0 且 +195h ≠ 1 的成員才拿。依 +75h 職業組合碼：0/2/3/4/5/6 各檢查對應的 prime requisite 屬性 \u003e 0Fh(≥16) 就 ＋10%（AD\u0026D 的 prime requisite 加成）；8/10..14/16 除以 2、9/15 除以 3（多職業平分）。結果加進 +127h 經驗值。★屬性欄位版面定案：stride 2、AD\u0026D 順序 — +11h 力量、+13h 智力、+15h 睿智、+17h 敏捷、+19h 體質",
    "citations": [
     "audit/function-index/pc98-overlay-05.md",
-    "spec/857-xp-award-and-ability-layout.md"
+    "spec/857-xp-award-and-ability-layout.md",
+    "spec/858-post-battle-xp-and-treasure-valuation.md"
    ]
   },
   {
@@ -31659,10 +31664,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "858",
+   "note": "同 DOS overlay-05:00039h（同位址、助憶碼序列完全相同）。62 條差異全是位址與尺寸：物品節點 +32h↔+5Ah、+2Ah↔+52h、3Fh↔67h（spec 832 的 +28h 位移），角色記錄 +14Dh↔+14Eh、+195h↔+196h、+197h↔+198h，runtime 段 0A54h↔0A65h／081Fh",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "spec/858-post-battle-xp-and-treasure-valuation.md"
    ]
   },
   {
@@ -31682,7 +31691,8 @@
    "note": "同 DOS overlay-05:00351h（同位址，相似度 0.997）。唯一序列差異是 DOS 多一條 cbw（配 cmp ax,N；PC-98 直接 cmp al,N），其餘是位址：DS:9598h↔650Ah、+197h/196h↔+196h/195h",
    "citations": [
     "audit/function-index/pc98-overlay-05.md",
-    "spec/857-xp-award-and-ability-layout.md"
+    "spec/857-xp-award-and-ability-layout.md",
+    "spec/858-post-battle-xp-and-treasure-valuation.md"
    ]
   },
   {
@@ -43183,7 +43193,8 @@
    "spec": "docs/spec/768-script-arithmetic-opcodes-and-save-size.md",
    "note": "與 DOS overlay-20:0862h（entry#12）助憶碼序列完全相同，語意同該筆：每 288 次才做一次的整隊回復(retf 2)：inc(DS:757Ch)，未達 120h(288)就離開；否則走隊伍鏈對每人叫 \u003c呼叫\u003e(1, 角色)，參數非 0 時再叫本模組 05D4h(0)，畫出 CS:0848h 'The Whole Party Is Healed'(25 字元，x=1、y=13h、色 0Ah)，最後計數器歸零。⚠ 訊息寫死在 x=1、沒有先清行，換短的譯文會留下殘影 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/858-post-battle-xp-and-treasure-valuation.md"
    ]
   },
   {
@@ -50663,9 +50674,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -51218,9 +51229,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,

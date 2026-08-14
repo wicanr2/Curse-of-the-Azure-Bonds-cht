@@ -22801,6 +22801,24 @@
    "level": "exact",
    "spec": "849",
    "note": "同 DOS overlay-20:00020h（同位址、助憶碼序列完全相同）。13 條差異全是位址：DS:7F27h↔4FBAh、DS:7BDAh/7BD9h↔4AFCh/4AFBh、DS:7F09h↔4F9Dh、DS:6804h↔3E2Ah、DS:9598h↔650Ah、+18Ah↔+189h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 57,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "858",
+   "note": "戰後結算，算每人份經驗值(retf 4，var longint)：走 DS:650Ah 鏈，對 +197h=1 且 +195h 既非 0(Okay) 亦非 3(Running) 的單位，把 +0FBh 起七個 word 累加到 DS:6F70h 起七個 longint，並累加 +13Ch + +12Ch×+13Eh；順便把物品鏈複製成戰利品鏈(GetMem 3Fh + Move，前插，next 在 +2Ah)。最後七格依 200/20/2/1/×5/×250/×2200 換算成金幣值加進總數，戰利品鏈每個 +32h>0 再加 ×190h，除以 (DS:4F9Dh^[67Ch] − DS:8B57h)。★係數比例與 AD&D 一版錢幣表逐項相符 → 索引 0..6 = 銅/銀/琥珀金/金/白金/寶石/珠寶；也定案 0A54h:294h=longint 除法、279h=乘法、329h=GetMem、25Dh=Move。輸出正是 spec 857 收的每人份參數"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
+   "ea": 57,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "858",
+   "note": "同 DOS overlay-05:00039h（同位址、助憶碼序列完全相同）。62 條差異全是位址與尺寸：物品節點 +32h↔+5Ah、+2Ah↔+52h、3Fh↔67h（spec 832 的 +28h 位移），角色記錄 +14Dh↔+14Eh、+195h↔+196h、+197h↔+198h，runtime 段 0A54h↔0A65h／081Fh"
   }
  ]
 }
