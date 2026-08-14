@@ -16929,13 +16929,17 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "849",
+   "note": "時間推進(retf 4，(單位, 量))：非戰鬥（DS:4FBAh ≠ 2）時 FillChar(DS:4AFCh, 48h, 1) 全部標記待處理；戰鬥中沒有任何隊員有旗標就整支不做。量依 DS:3E2Ah 的進位表（10/10/6/24/30/12/256）連乘換算成最小單位，再每次最多推進 0Ah。每一輪走隊伍鏈 DS:650Ah，對有旗標的成員走 +0F2h 那條鏈：節點 +1（word）大於步長就相減並保留旗標，否則叫 141h:002Fh 以節點 +0 的效果碼移除效果。★這給出 spec 849 那條 9 bytes 鏈的用途——計時中的效果清單（+0 效果碼、+1 剩餘時間、+5 next）",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-20.md",
     "audit/function-index/pc98-overlay-20.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-    "spec/790-attack-ally-confirm-and-counter-animation.md"
+    "spec/790-attack-ally-confirm-and-counter-animation.md",
+    "spec/849-character-record-destructor.md"
    ]
   },
   {
@@ -43011,13 +43015,17 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "849",
+   "note": "同 DOS overlay-20:00020h（同位址、助憶碼序列完全相同）。13 條差異全是位址：DS:7F27h↔4FBAh、DS:7BDAh/7BD9h↔4AFCh/4AFBh、DS:7F09h↔4F9Dh、DS:6804h↔3E2Ah、DS:9598h↔650Ah、+18Ah↔+189h",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-20.md",
     "audit/function-index/pc98-overlay-20.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-    "spec/790-attack-ally-confirm-and-counter-animation.md"
+    "spec/790-attack-ally-confirm-and-counter-animation.md",
+    "spec/849-character-record-destructor.md"
    ]
   },
   {
@@ -50880,9 +50888,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 3536,
    "Undefined": 191,
@@ -51435,9 +51443,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 3555,
    "Undefined": 225,
