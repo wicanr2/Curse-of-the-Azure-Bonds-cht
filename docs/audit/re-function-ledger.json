@@ -17105,6 +17105,16 @@
    "spec": "docs/spec/718-generic-affect-n-targets.md",
    "bounds": "prologue",
    "note": "通用的「影響 N 個目標」(retf 8:訊息 far 指標、類別 arg_4、效果編號 arg_6,不含任何法術專屬常數)。預算 := <overlay-24 entry#36>(DS:6F97h);走目標陣列(**無 NIL 檢查**),p^[197h] <> arg_4 或 預算<=0 → 清成 NIL;否則**先扣預算**再用 <overlay-23 entry#16>(p, arg_6) 查,已有該效果也清掉但**預算不退**——所以是「最多嘗試 N 個」不是「最多影響 N 個」,改寫成「檢查通過才扣」會讓法術變強。⚠ 這與 spec 715 的 Sleep 相反(Sleep 對已睡著者不扣),兩支不一致不能互補。最後 <sub_F06h> 發訊息,再用**沒變的筆數**跑第二個迴圈 <overlay-23 entry#4>(格子, 12h),會餵到 NIL"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 4306,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/719-spell-targeting-mode.md",
+   "bounds": "prologue",
+   "note": "法術的選目標模式(retf 8,arg_0 是帶回成敗的 var 參數,**預設 1**)。先把 DS:7435h 設成施法者 DS:6506h、DS:7434h:=1;模式碼取自 byte [37E1h + arg_6×16](DS:37DAh 表格內 +7)。模式 1 = 自己(沿用預設);模式 2 = 叫玩家選一個(<overlay-24 entry#40>(@DS:7555h, 1, 'Which target?')),取消時 arg_0^:=0;模式 4 = 從 DS:650Ah 沿 +189h 走整條鏈全部塞進目標陣列(即全隊);其他值 arg_0^:=0。⚠ 模式 4 的迴圈**沒有上限**,鏈有多長就寫多長,目標陣列容量沒有任何檢查。⚠ DS:7555h 跨呼叫保留(進來不是 NIL 就不覆寫),模式 1/4 不更新它,所以模式 2 讀到的可能是很久以前留下的值"
   }
  ]
 }
