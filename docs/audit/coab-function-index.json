@@ -11973,7 +11973,8 @@
    "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
    "note": "分段加成:DS:6FA7h 等於 4 或 2 時,依 角色^[19h] 取 bonus(4..6→1、7..10→2、0Bh..0Dh→3、0Eh..11h→4、12h..14h→5),DS:6F92h += bonus。⚠ **v 不在 4..20 時 bonus 從頭到尾沒有被賦值**,加進去的是堆疊殘值——這是第三處同型問題(spec 694 的 129Ah、spec 702 的 23F2h),共同形狀是「一串 if 範圍 then 賦值、沒有 else、區域變數也沒初始化」。remake 要補預設值但補什麼要另外決定,原作行為隨堆疊內容而定。分段長度 3/4/3/4/3 不是等距",
    "citations": [
-    "spec/741-on-hit-effects-and-third-uninitialised.md"
+    "spec/741-on-hit-effects-and-third-uninitialised.md",
+    "spec/970-pc98-name-colour-and-segmented-bonus.md"
    ]
   },
   {
@@ -19374,7 +19375,8 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "spec/702-more-overlay22-spell-handlers.md",
-    "spec/741-on-hit-effects-and-third-uninitialised.md"
+    "spec/741-on-hit-effects-and-third-uninitialised.md",
+    "spec/970-pc98-name-colour-and-segmented-bonus.md"
    ]
   },
   {
@@ -37692,7 +37694,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "970",
+   "note": "分段加成(retf 0Ah)，DOS 對應是 spec 741 的 02078h：DS:0A041h 為 4 或 2 時，把 角色^[19h] 依 4..6/7..0Ah/0Bh..0Dh/0Eh..11h/12h..14h 五段分別給加成 1..5，再加進 DS:0A02Ch。⚠加成在 v \u003c 4 或 v \u003e 14h 時從頭到尾沒有被賦值，加進去的是堆疊殘值——與 DOS 版完全相同的缺陷，PC-98 沒有修。11 個差異區塊全是 spec 783 類別 (c) 的編譯器碼型(DOS 有號 jl/jg、PC-98 無號 jb/ja)，值域內等價",
+   "citations": [
+    "spec/970-pc98-name-colour-and-segmented-bonus.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -49013,7 +49021,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "970",
+   "note": "印一個角色的名字(retf 0Ah = (arg_0, 列, 欄, 角色))：★顏色由 角色^[197h] = 0 → 0Ch、角色^[198h] = 1 → 0Eh、其餘 → 0Bh 決定，也就是用顏色把陣營/隊伍側與『不能自由選擇』的角色分開；再用 418h:1C96h 取名字、限長 0FFh、以 418h:0D17h 印出。★DOS 的對應 01AAAh(spec 692)在同一位置做的是三次 sub_1975h 呼叫、沒有顏色判斷——相似度只有 0.488，PC-98 換成了單一的彩色名字",
+   "citations": [
+    "spec/970-pc98-name-colour-and-segmented-bonus.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -52614,9 +52628,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 130,
+   "Read": 131,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 18,
    "CodeBytes": 13011,
    "Undefined": 578,
@@ -52794,9 +52808,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 40,
+   "Read": 41,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
