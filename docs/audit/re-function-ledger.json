@@ -17185,6 +17185,16 @@
    "spec": "docs/spec/727-strength-spell-table.md",
    "bounds": "prologue",
    "note": "力量增強:預設 ([4CB5h],[4CB6h]) = (12h, 0) 即 18;v := <overlay-24 entry#36>(DS:6F97h),v=1..6 **只改百分位**(0/1/33h/4Ch/5Bh/64h → 18、18/01、18/51、18/76、18/91、18/00),v=7..11 **只改整數值**(13h..16h → 19/20/21/22),其他維持 (18, 0)。1/51/76/91/100 正是 spec 694 那五段百分位區間的下界,兩支從不同方向確認同一組 AD&D 例外力量分級。接著 <overlay-23 entry#19>(目標, 值, 百分位, @舊值) 成功才顯示 'is stronger'(CS:1F86h)、取 <sub_E11h>(DS:6F97h) 當持續時間、<overlay-23 entry#11>(目標, 0Ch, d, 舊值, 1)、<entry#24>(目標, 0);失敗顯示 'is unaffected'(CS:1F92h)。⚠ **舊值是套用當下由 var 參數記下來的**,不是事後推算。⚠ 4CB5h/4CB6h 的第三種用途(spec 715 已記過擲骰門檻與 Sleep 的 HD 預算) ⚠ 效果編號 0Ch = 力量增強:1FA0h 是套用(訊息 is stronger)、20E1h 是解除(訊息 has been reduced),同一個效果的兩個方向"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 32,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/728-can-cast-check.md",
+   "bounds": "prologue",
+   "note": "能不能施放這個法術(retf 6)。id := arg_0 **and 7Fh**(最高位是旗標,同 spec 703 的效果槽),class := byte [37DAh + id×16](表格 +0,本輪確定它是法術分類)。class=0 看 +15h/+109h/+111h/+10Ch/+114h(門檻 >8,+109h 那條是 >0);class=1 看 +15h/+10Dh/+115h(門檻 >6);class=2 看 +13h/+74h/+159h/DS:4FBAh/+10Dh/+115h/+10Eh/+116h(門檻 >8);class=3 直接 0。⚠ **+109h/+10Ch/+10Dh/+10Eh 與 +111h/+114h/+115h/+116h 是相差 8 的兩組平行欄位**,每次都是「先看第一組;若 <overlay-25 entry#10> 回非 0(雙職業)再看第二組同一欄」——這也解釋 spec 705 的 30C0h 為何用 +10Eh + +116h × 等級。三類門檻不同(8/6/8),不能共用常數。entry#10 在 class=2 那段被呼叫兩次,中間沒有快取"
   }
  ]
 }
