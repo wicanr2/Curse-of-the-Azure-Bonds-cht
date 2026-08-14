@@ -38,5 +38,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18FB` | sub_18FB | — | 1 | 1 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
 | `1900` | sub_1900 | — | 756 | 277 | 1 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 17EEh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `196A` | sub_196A | — | 26 | 11 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:7AC8h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 26 bytes，已逐條讀完） | — |
-| `1C28` | sub_1C28 | INITCOMBAT | 239 | 86 | 0 | 6 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `1C28` | sub_1C28 | INITCOMBAT | 239 | 86 | 0 | 6 | ✓ | 已解讀 | exact | 750<br>同 DOS overlay-10:01C3Eh（戰鬥開場）。★兩處真差異：(1) DOS 多清一個緩衝（mov di,722Ch + sub_17C9），PC-98 沒有；(2) PC-98 多一段依 DS:8BE2h = 47h 決定播 0Bh 或 7 號音效，DOS 沒有。其餘是位址：DS:7F36h↔4FC9h、DS:0A30Fh/0A30Ah/0A2C6h↔726Fh/7274h/728Ch | audit/function-strings.md |
 | `1DAA` | sub_1DAA | — | 6 | 4 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
