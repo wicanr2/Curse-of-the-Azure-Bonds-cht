@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADSPELLS | 32 | 10 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call sub_15A1`、`call far ptr loc_1625+2`、`call far ptr loc_147C+1`、`call far ptr loc_1696+1`、`call loc_19CA`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-04.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-23.md |
-| `0020` | sub_20 | — | 367 | 125 | 1 | 2 | ✓ | 待解讀 | — | — | audit/effect-id-catalog.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/dos-overlay-26.md |
+| `0020` | sub_20 | — | 367 | 125 | 1 | 2 | ✓ | 待解讀 | — | — | audit/effect-id-catalog.md<br>audit/function-index/dos-overlay-04.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-24.md |
 | `0227` | sub_227 | SPELLMENU | 565 | 233 | 0 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `0462` | sub_462 | — | 436 | 168 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-strings.md<br>audit/string-pairs.md |
 | `0621` | sub_621 | — | 749 | 291 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-strings.md |
