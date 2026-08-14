@@ -4743,8 +4743,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/dos-overlay-16.md",
-    "audit/function-index/dos-overlay-17.md"
+    "audit/function-index/dos-overlay-05.md",
+    "audit/function-index/dos-overlay-16.md"
    ]
   },
   {
@@ -4767,8 +4767,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-26.md",
-    "context/50-log-2026-08-09-13.md"
+    "audit/function-index/pc98-overlay-05.md",
+    "audit/function-index/pc98-overlay-26.md"
    ]
   },
   {
@@ -6704,10 +6704,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-05.md",
     "audit/overlay-init-graph.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/778-map-four-planes-and-pc98-take-menu.md",
-    "spec/817-opportunity-attack-and-take-menu.md"
+    "spec/778-map-four-planes-and-pc98-take-menu.md"
    ]
   },
   {
@@ -6781,7 +6781,8 @@
    "spec": "docs/spec/817-opportunity-attack-and-take-menu.md",
    "note": "Take 清單：retf 10h = 四個遠指標，宣告順序 (參數C, 參數8, 參數4, 參數0)。旗標 := 1；\u003cfar 01A0h:0000h\u003e（DOS 才有）；掃 DS:6F8Ch 物品鏈（next +2Ah）對每個節點呼叫 \u003cfar 14F3h+2\u003e(0,0,0,0,節點,longint 0)；輸出 := \u003cfar 16A8h+1\u003e('Items: '(7，結尾空白), 'Take'(4), 0Dh, 0Ah, 0Fh, 1, 1, 26h, 16h, DS:6F8Ch, 1, @旗標, 參數0, 參數4)；參數C^ := al、參數8^ := 參數4^。spec 817",
    "citations": [
-    "spec/817-opportunity-attack-and-take-menu.md"
+    "spec/817-opportunity-attack-and-take-menu.md",
+    "spec/818-take-loop-and-adjacent-lookup.md"
    ]
   },
   {
@@ -6795,9 +6796,13 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/818-take-loop-and-adjacent-lookup.md",
+   "note": "Take 主迴圈：retf。repeat：選中 := NIL、清單 := DS:6F8Ch、旗標 := 0；本模組 0CE6h(@鍵, @選中, @清單, @旗標)（spec 817）；鍵 \u003c\u003e 54h('T') 且 \u003c\u003e 0Dh(Enter) 就結束；否則 \u003cfar 069Ah\u003e(@失敗, 選中)，失敗 = 0 時把 選中 從 DS:6F8Ch 鏈（next +2Ah）摘掉（頭節點直接改 DS:6F8Ch，否則 while q^[2Ah] \u003c\u003e 選中 走鏈，無 NIL 守衛）、選中^[2Ah] := NIL、FreeMem(選中, 3Fh)（63 bytes，與 spec 789 的 GetMem 相同；前面的 \u003c\u003e NIL 判斷到不了）；DS:6F8Ch 變 NIL 就自動結束。迴圈後 \u003cfar 15A9h\u003e。spec 818",
    "citations": [
-    "spec/775-take-menu-and-palette-writer.md"
+    "spec/775-take-menu-and-palette-writer.md",
+    "spec/818-take-loop-and-adjacent-lookup.md"
    ]
   },
   {
@@ -6915,7 +6920,8 @@
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
    "note": "邊界碎片：落在 14ACh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
-    "spec/775-take-menu-and-palette-writer.md"
+    "spec/775-take-menu-and-palette-writer.md",
+    "spec/818-take-loop-and-adjacent-lookup.md"
    ]
   },
   {
@@ -8721,7 +8727,11 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 10h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 10h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12521,6 +12531,7 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+1A4h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-13.md",
     "spec/799-show3dsprite-named-and-escape-check.md",
     "spec/806-initiative-and-combat-state-layout.md",
     "spec/815-heal-total-and-spell-table-is-100.md",
@@ -12643,6 +12654,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+0Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-13.md",
     "spec/817-opportunity-attack-and-take-menu.md"
    ]
   },
@@ -12693,6 +12706,7 @@
    "note": "轉向要轉幾格(retf 8)：inc(p^[18Dh]^[0Fh])；目標 := 本模組 29A2h(x, y, p)；差 := (目標 − p^[18Dh]^[09h] + 8) mod 8，差 \u003e 4 時取 8 − 差(最短轉法 0..4)；p^[18Dh]^[12h] := (p^[18Dh]^[12h] + 差) mod 8。戰鬥狀態 +09h 是目前面向、+0Fh 是動作計數、+12h 是對 8 取餘的累計轉向量(不是單調成本)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/786-money-pool-overflow-and-turn-cost.md",
     "spec/817-opportunity-attack-and-take-menu.md"
@@ -19724,7 +19738,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/818-take-loop-and-adjacent-lookup.md",
+   "note": "依方向偏移找記錄：retf 0Eh，宣告順序 (參數C, 參數A, 參數6, 參數4, 參數0)，參數6 與 參數0 是遠指標，回傳 dx:ax。p := 參數6；while (p \u003c\u003e NIL) and (找到 = 0)：for k := 1 to 參數4（無號）——p^[10h+k] = 0 跳過；d := 參數0^[k]；(p^[1Ah] + byte[2694h+d]) \u003c\u003e 參數C 跳過；(p^[1Bh] + byte[269Dh+d]) \u003c\u003e 參數A 跳過；否則 找到 := 1（內層不提早跳出）。沒找到就 p := p^[4]（next）。找到回傳 遠指標(p^[0])，否則回傳 DS:650Ah（不是 NIL）。spec 818",
+   "citations": [
+    "spec/818-take-loop-and-adjacent-lookup.md"
+   ]
   },
   {
    "platform": "dos",
@@ -28453,8 +28473,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/dos-overlay-16.md",
-    "audit/function-index/dos-overlay-17.md"
+    "audit/function-index/dos-overlay-05.md",
+    "audit/function-index/dos-overlay-16.md"
    ]
   },
   {
@@ -28477,8 +28497,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-26.md",
-    "context/50-log-2026-08-09-13.md"
+    "audit/function-index/pc98-overlay-05.md",
+    "audit/function-index/pc98-overlay-26.md"
    ]
   },
   {
@@ -30586,10 +30606,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-05.md",
     "audit/overlay-init-graph.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/778-map-four-planes-and-pc98-take-menu.md",
-    "spec/817-opportunity-attack-and-take-menu.md"
+    "spec/778-map-four-planes-and-pc98-take-menu.md"
    ]
   },
   {
@@ -30674,7 +30694,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/818-take-loop-and-adjacent-lookup.md",
+   "note": "Take 主迴圈：retf。repeat：選中 := NIL、清單 := DS:0A026h、旗標 := 0；本模組 0CE6h(@鍵, @選中, @清單, @旗標)（spec 817）；鍵 \u003c\u003e 54h('T') 且 \u003c\u003e 0Dh(Enter) 就結束；否則 \u003cfar 069Ah\u003e(@失敗, 選中)，失敗 = 0 時把 選中 從 DS:0A026h 鏈（next +52h）摘掉（頭節點直接改 DS:0A026h，否則 while q^[2Ah] \u003c\u003e 選中 走鏈，無 NIL 守衛）、選中^[2Ah] := NIL、FreeMem(選中, 67h)（103 bytes，與 spec 789 的 GetMem 相同；前面的 \u003c\u003e NIL 判斷到不了）；DS:0A026h 變 NIL 就自動結束。迴圈後 \u003cfar 15A9h\u003e。spec 818 PC-98 在選單呼叫後多一次 \u003cfar 019Eh:0000h\u003e。",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -44824,7 +44847,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/818-take-loop-and-adjacent-lookup.md",
+   "note": "依方向偏移找記錄：retf 0Eh，宣告順序 (參數C, 參數A, 參數6, 參數4, 參數0)，參數6 與 參數0 是遠指標，回傳 dx:ax。p := 參數6；while (p \u003c\u003e NIL) and (找到 = 0)：for k := 1 to 參數4（無號）——p^[10h+k] = 0 跳過；d := 參數0^[k]；(p^[1Ah] + byte[489Eh+d]) \u003c\u003e 參數C 跳過；(p^[1Bh] + byte[48A7h+d]) \u003c\u003e 參數A 跳過；否則 找到 := 1（內層不提早跳出）。沒找到就 p := p^[4]（next）。找到回傳 遠指標(p^[0])，否則回傳 DS:9598h（不是 NIL）。spec 818（差異只在 mov/les 的等價碼型）"
   },
   {
    "platform": "pc98",
@@ -48840,9 +48866,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -49110,9 +49136,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 40,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 12,
    "CodeBytes": 9183,
    "Undefined": 376,
@@ -49395,9 +49421,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,
@@ -49665,9 +49691,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 39,
-   "Read": 25,
+   "Read": 26,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 12,
    "CodeBytes": 9201,
    "Undefined": 458,
