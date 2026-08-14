@@ -18597,7 +18597,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-   "note": "兩個旗標的輸出(retf 8，兩個遠指標都是輸出參數)：a^ := DS:6F70h 起 8 個 4-byte 遠指標中前 7 個有任一非 NIL；b^ := 第 8 個(DS:6F8Ch)非 NIL。兩者先都清 0"
+   "note": "兩個旗標的輸出(retf 8，兩個遠指標都是輸出參數)：a^ := DS:6F70h 起 8 個 4-byte 遠指標中前 7 個有任一非 NIL；b^ := 第 8 個(DS:6F8Ch)非 NIL。兩者先都清 0。更正(spec 773)：那兩條是把兩個 word 或起來測非零，不是遠指標測 NIL；DS:6F70h 八格自始至終都是 32-bit 的量"
   },
   {
    "platform": "pc98",
@@ -18606,7 +18606,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-   "note": "兩個旗標的輸出(retf 8)：表在 DS:0A00Ah，第 8 格 DS:0A026h，與 DOS overlay-21:0F5Bh 同"
+   "note": "兩個旗標的輸出(retf 8)：表在 DS:0A00Ah，第 8 格 DS:0A026h，與 DOS overlay-21:0F5Bh 同。更正(spec 773)：測的是 32-bit 非零，不是遠指標 NIL"
   },
   {
    "platform": "dos",
@@ -18822,7 +18822,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-   "note": "清表並拆商餘(retf 2)：把 DS:6F70h 起 5 格 4-byte 清 0；再把 參數 div 5 寫進第 4 格(DS:6F80h)、參數 mod 5 寫進第 3 格(DS:6F7Ch)，高位字都補 0，除法無號。⚠ 同一塊區域在 overlay-21:0F5Bh 被當成遠指標檢查 NIL，這裡當 32-bit 整數用"
+   "note": "清表並拆商餘(retf 2)：把 DS:6F70h 起 5 格 4-byte 清 0；再把 參數 div 5 寫進第 4 格(DS:6F80h)、參數 mod 5 寫進第 3 格(DS:6F7Ch)，高位字都補 0，除法無號。⚠ 同一塊區域在 overlay-21:0F5Bh 被當成遠指標檢查 NIL，這裡當 32-bit 整數用。補記(spec 773)：索引與金錢名稱表(DS:0F93h)同一套，div 5 → Platinum、mod 5 → Gold，即 5 金幣換 1 白金幣"
   },
   {
    "platform": "pc98",
@@ -18831,7 +18831,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-   "note": "清表並拆商餘(retf 2)：表在 DS:0A00Ah，商寫 DS:0A01Ah、餘寫 DS:0A016h，與 DOS overlay-21:019Eh 同"
+   "note": "清表並拆商餘(retf 2)：表在 DS:0A00Ah，商寫 DS:0A01Ah、餘寫 DS:0A016h，與 DOS overlay-21:019Eh 同。補記(spec 773)：同 DOS，div 5 → Platinum、mod 5 → Gold"
   },
   {
    "platform": "pc98",
@@ -19263,7 +19263,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
-   "note": "扣一筆並累計(retf 8)：p^[0FBh + idx*2] -= 數量(word，⚠ 沒有下限檢查，不足會迴繞)；叫本模組 003Bh(數量, p)；DS:4FBAh 為 6 或 1 時再把數量以 32-bit 加到 DS:6F70h + idx*4。DS:6F70h 這八格至此有三種互相衝突的型別用法(遠指標/商餘/累加器)，見 spec 764"
+   "note": "扣一筆並累計(retf 8)：p^[0FBh + idx*2] -= 數量(word，⚠ 沒有下限檢查，不足會迴繞)；叫本模組 003Bh(數量, p)；DS:4FBAh 為 6 或 1 時再把數量以 32-bit 加到 DS:6F70h + idx*4。DS:6F70h 這八格至此有三種互相衝突的型別用法(遠指標/商餘/累加器)，見 spec 764。補記(spec 773)：idx 與金錢名稱表同一套(0=Copper..6=Jewelry)，先前所謂「三種衝突型別」不成立"
   },
   {
    "platform": "pc98",
@@ -19272,7 +19272,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
-   "note": "扣一筆並累計(retf 8)：與 DOS overlay-21:0A03h 助憶碼 50 條完全相同，表在 DS:0A00Ah、狀態變數 DS:7F27h"
+   "note": "扣一筆並累計(retf 8)：與 DOS overlay-21:0A03h 助憶碼 50 條完全相同，表在 DS:0A00Ah、狀態變數 DS:7F27h。補記(spec 773)：idx 與金錢名稱表同一套"
   },
   {
    "platform": "dos",
@@ -19533,7 +19533,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
-   "note": "七欄的金錢顯示(retf，無參數)：for i := 6 downto 0，DS:6506h^[0FBh + i*2] > 0(無號)才佔一列 — 名稱取自 DS:0F93h + i*0Bh(每筆 11 bytes 的 Pascal 短字串)、右對齊到第 20 欄(14h − 長度)，數值固定從第 21 欄起，列號從 7 往下遞增。⚠ 右對齊用 byte 數算，全形中文會算錯；名稱表在常駐資料段，scan_pascal_strings.py 掃不到"
+   "note": "七欄的金錢顯示(retf，無參數)：for i := 6 downto 0，DS:6506h^[0FBh + i*2] > 0(無號)才佔一列 — 名稱取自 DS:0F93h + i*0Bh(每筆 11 bytes 的 Pascal 短字串)、右對齊到第 20 欄(14h − 長度)，數值固定從第 21 欄起，列號從 7 往下遞增。⚠ 右對齊用 byte 數算，全形中文會算錯；名稱表在常駐資料段，scan_pascal_strings.py 掃不到。補記(spec 773)：DS:0F93h 的七個名稱已讀出 — Copper/Silver/Electrum/Gold/Platinum/Gems/Jewelry"
   },
   {
    "platform": "dos",

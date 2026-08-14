@@ -128,11 +128,11 @@ f := ( (p^[75h] = 3) or ((p^[114h] > 0) and <overlay 呼叫>(p)) )
 ```pascal
 a^ := 0;  b^ := 0;
 for i := 0 to 6 do
-    if 遠指標表[DS:6F70h + i * 4] <> NIL then a^ := 1;
-if 遠指標表[DS:6F8Ch] <> NIL then b^ := 1;
+    if 32位元表[DS:6F70h + i * 4] <> 0 then a^ := 1;
+if 32位元表[DS:6F8Ch] <> 0 then b^ := 1;
 ```
 
-`DS:6F70h` 起是 **8 個 4-byte 遠指標**（`6F70h`..`6F8Fh`）；前 7 個歸 `a`，第 8 個
+`DS:6F70h` 起是 **8 個 4-byte 的量**（`6F70h`..`6F8Fh`）；前 7 個歸 `a`，第 8 個
 （`6F8Ch`）單獨歸 `b`。PC-98 對應 `DS:0A00Ah` 與 `0A026h`，同樣的 8 格。
 
 `0073h`（兩平台），`retf 0Ah`，第三個參數是輸出：
