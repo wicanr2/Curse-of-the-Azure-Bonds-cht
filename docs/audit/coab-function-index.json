@@ -22337,7 +22337,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-24.md",
-    "spec/693-text-draw-signature-and-english-grammar.md"
+    "spec/693-text-draw-signature-and-english-grammar.md",
+    "spec/983-same-text-primitive-both-platforms.md"
    ]
   },
   {
@@ -22421,12 +22422,16 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/983-same-text-primitive-both-platforms.md",
+   "note": "把圖庫一張圖填進 DS:75E0h 動畫 surface 的第 N 格（像素平面 +17h 與遮罩平面 +13h 各搬一次）",
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/692-party-tally-and-list-search.md",
-    "spec/749-combat-teardown-and-battlefield-grid.md"
+    "spec/749-combat-teardown-and-battlefield-grid.md",
+    "spec/983-same-text-primitive-both-platforms.md"
    ]
   },
   {
@@ -23439,7 +23444,8 @@
    "citations": [
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
-    "spec/977-savelist-menu-ranges-and-combat-icon.md"
+    "spec/977-savelist-menu-ranges-and-combat-icon.md",
+    "spec/983-same-text-primitive-both-platforms.md"
    ]
   },
   {
@@ -23461,7 +23467,8 @@
     "audit/function-index/dos-overlay-26.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
-    "spec/977-savelist-menu-ranges-and-combat-icon.md"
+    "spec/977-savelist-menu-ranges-and-combat-icon.md",
+    "spec/983-same-text-primitive-both-platforms.md"
    ]
   },
   {
@@ -23481,7 +23488,8 @@
    "note": "pc98 00BFEh 的 DOS 兄弟：只重畫一項的子字串；DS:7292h ↔ pc98 DS:0A32Ch 捲動起點",
    "citations": [
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
-    "spec/977-savelist-menu-ranges-and-combat-icon.md"
+    "spec/977-savelist-menu-ranges-and-combat-icon.md",
+    "spec/983-same-text-primitive-both-platforms.md"
    ]
   },
   {
@@ -23495,7 +23503,14 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/983-same-text-primitive-both-platforms.md",
+   "note": "反白版的清單單項重畫：項目 +29h（PC-98 +51h）在視窗 +22h/+24h 兩個顏色間選",
+   "citations": [
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+    "spec/983-same-text-primitive-both-platforms.md"
+   ]
   },
   {
    "platform": "dos",
@@ -25243,7 +25258,8 @@
     "audit/function-strings.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
     "spec/880-sprite-copy-and-blit.md",
-    "spec/977-savelist-menu-ranges-and-combat-icon.md"
+    "spec/977-savelist-menu-ranges-and-combat-icon.md",
+    "spec/983-same-text-primitive-both-platforms.md"
    ]
   },
   {
@@ -50259,7 +50275,8 @@
    "citations": [
     "audit/function-index/dos-overlay-26.md",
     "spec/973-pc98-text-print-signature.md",
-    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+    "spec/983-same-text-primitive-both-platforms.md"
    ]
   },
   {
@@ -52443,9 +52460,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 49,
+   "Read": 50,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -52473,9 +52490,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
