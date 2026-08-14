@@ -13692,7 +13692,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-14.md",
-    "spec/783-cross-platform-pairs-first-batch.md"
+    "spec/783-cross-platform-pairs-first-batch.md",
+    "spec/844-locked-door-menu.md"
    ]
   },
   {
@@ -13709,7 +13710,8 @@
    "state": "待解讀",
    "citations": [
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md",
+    "spec/844-locked-door-menu.md"
    ]
   },
   {
@@ -13728,7 +13730,8 @@
    "spec": "docs/spec/798-pool-all-money-and-wall-open-check.md",
    "note": "擲百分比成功就打通牆的兩側：掃 DS:650Ah 鏈，每人擲 \u003c0141h:004Dh\u003e(1,64h) 得 1..100，骰 \u003c= 角色^[0EBh]（無號）且 +195h = 0 就成立並停止（後面的人不再擲）；DS:7589h 一律清 0；成立則 本模組 0153h(DS:720Fh, DS:7210h, DS:7211h) 與 0153h(x + byte[2694h+方向], y + byte[269Dh+方向], (方向+4) mod 8) 各呼叫一次（同一道牆的兩側）。回傳 al = 是否成立。retf。spec 798",
    "citations": [
-    "spec/798-pool-all-money-and-wall-open-check.md"
+    "spec/798-pool-all-money-and-wall-open-check.md",
+    "spec/844-locked-door-menu.md"
    ]
   },
   {
@@ -13774,7 +13777,8 @@
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-14.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+    "spec/844-locked-door-menu.md"
    ]
   },
   {
@@ -13797,7 +13801,8 @@
     "audit/function-index/pc98-overlay-14.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-    "spec/788-memorised-spell-slots-identified.md"
+    "spec/788-memorised-spell-slots-identified.md",
+    "spec/844-locked-door-menu.md"
    ]
   },
   {
@@ -13841,7 +13846,8 @@
    "citations": [
     "audit/function-index/dos-overlay-14.md",
     "spec/770-party-step-and-hug-attack.md",
-    "spec/787-bresenham-record-and-edge-clamp.md"
+    "spec/787-bresenham-record-and-edge-clamp.md",
+    "spec/844-locked-door-menu.md"
    ]
   },
   {
@@ -13872,10 +13878,14 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "844",
+   "note": "上鎖的門選單：DS:7588h/7589h/758Ah 三個開關 + 0288h(6)/06F4h(1Fh) 決定 Bash/Pick/Knock 是否出現，選單只剩 ' Exit' 就走 003Eh。⚠ 模式 3 選 'P' 只把 DS:7589h 關掉不開鎖（PC-98 同樣寫法）。PC-98 側 00BCCh 相似度 0.615，未讀完",
    "citations": [
     "audit/function-strings.md",
-    "spec/749-combat-teardown-and-battlefield-grid.md"
+    "spec/749-combat-teardown-and-battlefield-grid.md",
+    "spec/844-locked-door-menu.md"
    ]
   },
   {
@@ -14214,6 +14224,7 @@
    "spec": "843",
    "note": "巢狀程序『加一行』(retf 8, (屬性, 字串) + 靜態鏈)：Copy 到 28h 字元、GetMem 2Eh 的節點、+00h 文字 / +29h 屬性 / +2Ah next。尾指標存在外層 frame 的 -0Ch",
    "citations": [
+    "audit/function-index/pc98-overlay-15.md",
     "spec/843-effect-line-list-node.md"
    ]
   },
@@ -50124,9 +50135,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 3735,
    "Undefined": 308,

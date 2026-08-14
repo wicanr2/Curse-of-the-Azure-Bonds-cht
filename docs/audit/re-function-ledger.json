@@ -21577,6 +21577,15 @@
    "level": "exact",
    "spec": "843",
    "note": "同 DOS overlay-15:00E69h。PC-98 字串上限 3Ch(60)、節點 56h(86)、+51h 屬性 / +52h next——比 DOS 大，中文化一行可放 30 個全形字"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 2991,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "844",
+   "note": "上鎖的門選單：DS:7588h/7589h/758Ah 三個開關 + 0288h(6)/06F4h(1Fh) 決定 Bash/Pick/Knock 是否出現，選單只剩 ' Exit' 就走 003Eh。⚠ 模式 3 選 'P' 只把 DS:7589h 關掉不開鎖（PC-98 同樣寫法）。PC-98 側 00BCCh 相似度 0.615，未讀完"
   }
  ]
 }
