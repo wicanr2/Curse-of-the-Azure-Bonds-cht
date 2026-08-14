@@ -15652,6 +15652,7 @@
    "spec": "docs/spec/705-duration-formula-and-save-roll.md",
    "note": "持續時間:DS:7563h=0 時 v := 表[arg_0].+3 × \u003coverlay-24 entry#36\u003e(arg_0) + 表[arg_0].+2;**非 0 時等級寫死 6**(不查 entry#36),是卷軸/物品之類的替代路徑,remake 不能只實作前一條。接著 v=0 且 表[arg_0].+6 非零 → v:=1;v=0FFh → v:=1。表在 DS:37DAh,16 bytes 一格(與 DS:5CF6h 的物品表是兩張),已知欄位 +0/+2/+3/+6。乘法是 imul 但兩個運算元零延伸載入,結果只取低 byte,+3×lvl 超過 255 會回捲 ⚠ spec 733 解出 DS:7563h \u003c\u003e 0 代表施放來自物品,所以「等級寫死 6」就是物品施放一律當 6 級",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
     "spec/705-duration-formula-and-save-roll.md",
     "spec/712-duration-table.md",
@@ -16187,7 +16188,8 @@
     "audit/function-index/dos-overlay-22.md",
     "spec/709-target-array.md",
     "spec/710-effect-collection-and-leftover-target.md",
-    "spec/716-nil-slot-hazard.md"
+    "spec/716-nil-slot-hazard.md",
+    "spec/734-animate-dead-and-faction-field.md"
    ]
   },
   {
@@ -16725,7 +16727,13 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/734-animate-dead-and-faction-field.md",
+   "note": "操縱屍體。走 DS:650Ah 全體鏈(不是目標陣列),對 +195h=6(死亡)且 +11Ah=0 的,先把 (原 +197h shl 4) + 等級 打包成 v,再 **p^[197h] := DS:6506h^[197h](改成施法者的)**、+198h:=1、+0E9h:=2、+0DDh:=0、+0E4h:=6、清 +1Eh..+71h 共 84 bytes(上界寫死 53h)、+0F7h := (\u003e7Fh) ? 0B2h : 0B3h、+11Ah:=4,額度減 1,\u003coverlay-23 entry#23\u003e 成功才 \u003cPUTEFFECT\u003e(p, 20h, **持續時間常數 0 = 永久**, v, 1, 0, 0, 'is animated')並把 +195h 設成 1。⚠ **+197h 是陣營**(直接複製施法者的值,原值打包進效果參數以便還原;shl 4 表示陣營與等級各只用 4 位);這與 spec 692 用它當兩格統計索引、spec 709 用它篩選目標一致。⚠ 效果 20h = animated,spec 707 的復活會先解除它。額度是迴圈條件,用完就停(不像 Sleep 會掃完)",
+   "citations": [
+    "spec/734-animate-dead-and-faction-field.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17418,7 +17426,8 @@
    "citations": [
     "audit/effect-id-catalog.md",
     "spec/707-raise-dead-and-area-effect.md",
-    "spec/714-neutralize-poison.md"
+    "spec/714-neutralize-poison.md",
+    "spec/734-animate-dead-and-faction-field.md"
    ]
   },
   {
@@ -19483,7 +19492,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
     "spec/692-party-tally-and-list-search.md",
-    "spec/718-generic-affect-n-targets.md"
+    "spec/718-generic-affect-n-targets.md",
+    "spec/734-animate-dead-and-faction-field.md"
    ]
   },
   {
@@ -20052,7 +20062,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -43960,7 +43971,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -45880,9 +45894,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 98,
+   "Read": 99,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
