@@ -15660,7 +15660,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/681-dos-target-array-and-reduce.md",
-   "note": "p := DS:7435h(far pointer),為 nil 或 DS:7434h(byte 計數)為 0 就返回——這對「計數 + 第 1 筆」與 PC-98 的目標陣列(0A520h/0A521h)同一個形狀,推得 DOS 基底是 7431h(strong inference)。之後四道條件:⚠ 第三道要 <loc_1456h>(0,4,p) 等於 0、第四道要 <loc_1573h>(p,0Ch,@var) 不等於 0,兩道相鄰而方向相反。通過才移除效果 0Ch、呼叫 <far loc_14A4h> 並印英文原文 'has been reduced'",
+   "note": "p := DS:7435h(far pointer),為 nil 或 DS:7434h(byte 計數)為 0 就返回——這對「計數 + 第 1 筆」與 PC-98 的目標陣列(0A520h/0A521h)同一個形狀,推得 DOS 基底是 7431h(strong inference)。之後四道條件:⚠ 第三道要 <loc_1456h>(0,4,p) 等於 0、第四道要 <loc_1573h>(p,0Ch,@var) 不等於 0,兩道相鄰而方向相反。通過才移除效果 0Ch、呼叫 <far loc_14A4h> 並印英文原文 'has been reduced' ⚠ 效果編號 0Ch = 力量增強:1FA0h 是套用(訊息 is stronger)、20E1h 是解除(訊息 has been reduced),同一個效果的兩個方向",
    "bounds": "prologue"
   },
   {
@@ -17184,7 +17184,7 @@
    "level": "exact",
    "spec": "docs/spec/727-strength-spell-table.md",
    "bounds": "prologue",
-   "note": "力量增強:預設 ([4CB5h],[4CB6h]) = (12h, 0) 即 18;v := <overlay-24 entry#36>(DS:6F97h),v=1..6 **只改百分位**(0/1/33h/4Ch/5Bh/64h → 18、18/01、18/51、18/76、18/91、18/00),v=7..11 **只改整數值**(13h..16h → 19/20/21/22),其他維持 (18, 0)。1/51/76/91/100 正是 spec 694 那五段百分位區間的下界,兩支從不同方向確認同一組 AD&D 例外力量分級。接著 <overlay-23 entry#19>(目標, 值, 百分位, @舊值) 成功才顯示 'is stronger'(CS:1F86h)、取 <sub_E11h>(DS:6F97h) 當持續時間、<overlay-23 entry#11>(目標, 0Ch, d, 舊值, 1)、<entry#24>(目標, 0);失敗顯示 'is unaffected'(CS:1F92h)。⚠ **舊值是套用當下由 var 參數記下來的**,不是事後推算。⚠ 4CB5h/4CB6h 的第三種用途(spec 715 已記過擲骰門檻與 Sleep 的 HD 預算)"
+   "note": "力量增強:預設 ([4CB5h],[4CB6h]) = (12h, 0) 即 18;v := <overlay-24 entry#36>(DS:6F97h),v=1..6 **只改百分位**(0/1/33h/4Ch/5Bh/64h → 18、18/01、18/51、18/76、18/91、18/00),v=7..11 **只改整數值**(13h..16h → 19/20/21/22),其他維持 (18, 0)。1/51/76/91/100 正是 spec 694 那五段百分位區間的下界,兩支從不同方向確認同一組 AD&D 例外力量分級。接著 <overlay-23 entry#19>(目標, 值, 百分位, @舊值) 成功才顯示 'is stronger'(CS:1F86h)、取 <sub_E11h>(DS:6F97h) 當持續時間、<overlay-23 entry#11>(目標, 0Ch, d, 舊值, 1)、<entry#24>(目標, 0);失敗顯示 'is unaffected'(CS:1F92h)。⚠ **舊值是套用當下由 var 參數記下來的**,不是事後推算。⚠ 4CB5h/4CB6h 的第三種用途(spec 715 已記過擲骰門檻與 Sleep 的 HD 預算) ⚠ 效果編號 0Ch = 力量增強:1FA0h 是套用(訊息 is stronger)、20E1h 是解除(訊息 has been reduced),同一個效果的兩個方向"
   }
  ]
 }
