@@ -29470,7 +29470,10 @@
    "callers": 7,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "963",
+   "note": "6-byte real 的乘法(near)：任一運算元的指數為 0 就跳 loc_1B1A5 回 0；符號取 xor、指數相加、兩邊補隱含最高位。低 24 bits 為 0 時走三個部分積的短路徑(數學等價的省略)，否則把六個 word 推上堆疊做九個 16×16 部分積並逐層進位。★loc_1B18Ah 是與 spec 948 除法(1B1ACh)共用的收尾——add ax, 80h 做四捨五入(Real 是 40 bits 尾數，80h 正好是第 41 位)、進位就右移並加指數、bit 14 立起來表示上溢下溢就跳 loc_1B1A5 回 0、最後套符號。loc_1B1A5 也是三支共用的『回傳 0』出口"
   },
   {
    "platform": "pc98",
@@ -52398,9 +52401,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 264,
+   "Read": 265,
    "NotBlocking": 29,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
