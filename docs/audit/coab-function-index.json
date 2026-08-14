@@ -19611,7 +19611,8 @@
     "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "spec/748-cloud-effect-dispel-pair.md",
-    "spec/862-dispel-magic-area.md"
+    "spec/862-dispel-magic-area.md",
+    "spec/919-corpse-marker-and-fade-animation.md"
    ]
   },
   {
@@ -19788,6 +19789,7 @@
    "spec": "918",
    "note": "會反彈的直線投射物走訪器(retf 8)，四個呼叫端共用(03C98h/03FF4h 已解讀 spec 759/628、057E3h、05F2Fh 帶 'throws lightning')。射程 = arg_6 × 2；每段用 24 bytes 的直線記錄(+0 起y +2 起x +4 終y +6 終x +0Eh 目前y +10h 目前x +16h 步數)從起點往『遠離施法者』畫線，逐格查地形與佔用者：byte[26A2h + 地形×4] = 1 清命中旗標、\u003e 1 停、= 0 射程歸零；佔用者 \u003e 0 且不同於上一個就停下結算(sub_3947 = spec 707)。★結算判定命中時把起點搬到撞擊格、方向變號 → 投射物沿原路彈回。上一個佔用者初值是起點那格的佔用者 → 不打自己、不連打同一目標。arg_0 = 1 時撞擊點離施法者 ≤ 8 格額外扣 8 步(只生效一次)",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/847-dragon-breath.md",
     "spec/918-bouncing-line-projectile.md"
    ]
@@ -19808,6 +19810,7 @@
    "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
    "note": "N d6,顆數算出來、面數寫死 6:n := \u003coverlay-24 entry#36\u003e(DS:6F97h);r := ROLLDICE(n, 6);\u003csub_3947h\u003e(DS:7559h, DS:755Ah, r, 4, 0, @區域);\u003csub_3A03h\u003e(7, r, 4, 1)。同一個 r 被兩支下游各用一次但參數位置不同(第三個 vs 第二個)",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/702-more-overlay22-spell-handlers.md",
     "spec/918-bouncing-line-projectile.md"
    ]
@@ -19927,6 +19930,7 @@
    "spec": "docs/spec/628-spell-effect-wrappers.md",
    "note": "與 pc98 overlay-22:42C4h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：n := ROLLDICE(1,6) + 14h (1d6+20),接著 \u003csub_3BF5\u003e(n,4,0,…) 與 \u003csub_3CB1\u003e(0,4,14h,3)。整支不印任何訊息 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/918-bouncing-line-projectile.md"
    ]
   },
@@ -20624,6 +20628,7 @@
    "note": "龍息（'Breathes!'）：DS:758Dh 開著時 1d100 \u003c= 50 直接跳過（連訊息都不印）。落點 DS:7559h/755Ah 經 1894h+1 往自己拉回，正右/正下相鄰那一格會再推一格。傷害用 +78h 最大 HP（受傷不減威力）。節點 +3 \u003e 0FDh 減 1、否則移除效果 58h",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "spec/847-dragon-breath.md",
@@ -24816,7 +24821,13 @@
    "callers": 0,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "919",
+   "note": "角色倒下處理(retf 4 = 角色遠指標)：DS:4FBAh ≠ 5 就只放音效+重畫離開；否則播 9 幀 × 4 部位的兩圖交替閃爍動畫，然後若 角色^[18Dh]^[13h] = 0 就登記屍體——DS:6E91h 進位、把 地圖^[7 + 列×32h + 欄] 的原地形抄進 byte[6E58h+n×7]、原地形 ≠ 1Eh 就改寫成 1Fh、並記下角色遠指標(+0)、欄(+4)、列(+5)。★DS:6E52h 那張 7 bytes/entry 的表版面就此定案，且 1Fh 是寫進地圖的屍體地形碼而非 sentinel。⚠查『是否已登記』的迴圈計數器是 var_2、讀表卻用未初始化的 var_3 → 每圈比同一筆、位置由堆疊殘值決定(兩平台皆然，同 spec 862 的缺陷類別)",
+   "citations": [
+    "spec/919-corpse-marker-and-fade-animation.md"
+   ]
   },
   {
    "platform": "dos",
@@ -44873,7 +44884,8 @@
    "note": "同 DOS overlay-22:00E11h（效果持續時間表，retf 2 只吃一個 word）。唯一序列差異是 xor ah, ah 的有無，其餘是 DS:7F27h↔4FBAh、法術屬性表 DS:61B8h/61B9h↔37DEh/37DFh、擲骰呼叫目標",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/919-corpse-marker-and-fade-animation.md"
    ]
   },
   {
@@ -51190,7 +51202,13 @@
    "callers": 0,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "919",
+   "note": "同 DOS overlay-32:00E75h(相似度 0.995)。★唯一差異區塊：每幀延遲從常數 0Ah 改成 DS:7F16h(遊戲速度) × 3——DS:4FA9h 的第六個消費端，『DOS 用常數、PC-98 才看速度』的第四例(spec 895/914/918/本支)。查表用錯索引的缺陷 PC-98 沒有修",
+   "citations": [
+    "spec/919-corpse-marker-and-fade-animation.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -52006,9 +52024,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -52561,9 +52579,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
