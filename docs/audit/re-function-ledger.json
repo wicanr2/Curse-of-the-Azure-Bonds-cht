@@ -26419,6 +26419,24 @@
    "level": "exact",
    "spec": "1081",
    "note": "戰術地圖彈道動畫 PC-98 側(retf 0Ch)，spec 1078 的對側。助憶碼序列 586 vs 617、相似度 0.9742，只有一個差異塊：PC-98 進門多 31 條把四個座標夾進 0..31h / 0..18h，並且★把延遲 0 改成 1 ⇒ DOS 的快速模式(只畫非格心點、終點精靈不擦)在 PC-98 執行不到。全域對照：視窗原點 DS:9F2Ch、方向表 DS:489Eh/48A7h、目的畫布 DS:7F56h(168x42)、精靈 DS:0A872h、擦除來源 DS:7F5Ah(88x22) ⇒ 與 spec 1074 配置的兩張圖對上"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-18",
+   "ea": 4351,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1082",
+   "note": "結局過場(retf，無參數)：打倒 Tyranthraxus、青色枷解除、傳送到 Shadowdale 慶功宴。★整支沒有任何分支(指令只有 push/mov/call/lea/xor/sub/les/shl/retf/pop)，25 段台詞照順序印。印字 0542:04A4h 八參數 (1,11h,26h,16h,0Ah,0,首行旗標,字串)，只有每段第一行推 1。中途 bank0^[3FEh]:=1 → near 0B5Fh(J/M 兩個動畫) → :=0，換 bigpic z。台詞全文與 PC-98 對照見 spec 1082"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 4627,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1082",
+   "note": "結局過場 PC-98 側(retf)。⚠與 DOS 的助憶碼相似度只有 0.059 —— 整段重寫不是編譯差異：DOS 25 行(英文音節斷行)、PC-98 22 行(一句一行)。多了開頭三行條件：DS:7F2Ch=0 時設 1 並把 bank0^[1FEh] 低位元 xor 1、DS:0A2C6h:=DS:0A2C7h(第二次 cmp 是冗餘的)。印字 0418:0E6Ah、等鍵 0418:12EFh + overlay-26 entry#6。日文台詞全文與英文對照見 spec 1082"
   }
  ]
 }
