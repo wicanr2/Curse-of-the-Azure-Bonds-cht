@@ -13644,10 +13644,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-09.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-30.md",
-    "audit/overlay-init-graph.md",
-    "context/50-log-2026-08-09-13.md"
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -13668,10 +13668,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-09.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-19.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/dos-overlay-19.md"
    ]
   },
   {
@@ -30354,6 +30354,7 @@
    "note": "ECL opcode 2Ch(四選一選單):READVAR(6);前四個 operand 取值當候選,兩段資料從 DS:00ACh/00F2h 複製到 DS:A33Fh/A335h,呼叫 far 0062:0084 取得選擇,直接以它索引候選陣列(沒有範圍檢查)後 STOREVALUE 到第五個 operand 指定的位址。第六個 operand 在 body 裡沒有被用到",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/599-ecl-select-member-and-0c.md"
    ]
   },
@@ -31840,6 +31841,7 @@
    "spec": "docs/spec/619-ecl-script-loading.md",
    "note": "GETECL(n):先 FillChar 清空整個 script 緩衝區(1E41h=7745 bytes,與 spec 563 的 bank3 範圍 8000h..9E40h 完全一致);迴圈顯示「読みこみ中です」並以 'ECL'+Str(DS:8BF4h)+'.dax' 為檔名讀檔,直到 size\u003e=2 才跳出(沒有錯誤處理也沒有重試上限);Move 從 buf+2 起、長度 size-2——檔案前 2 bytes 不屬於 script 本體,script 的 8000h 對應檔案 offset 2",
    "citations": [
+    "audit/function-index/dos-overlay-07.md",
     "spec/619-ecl-script-loading.md"
    ]
   },
@@ -31925,6 +31927,7 @@
    "spec": "docs/spec/626-goduel-and-charrec-size.md",
    "note": "視窗繪製:state 是 2-byte 記錄([0]=sprite 已載入、[1]=圖片已載入),依 bank0^[1CCh] 與 DS:7F27h=4 決定是否載入 'SPRIT'(sub_1794 第二參數 1、索引 arg_8);圖片側 bank1^[5C2h]=0FFh 走 'PIC'(第二參數 0、索引 arg_6),否則改走 sub_64C。資源名內嵌在 code 段 0681h/0687h/1B7Dh。DS:0A2A8h 在函式頭尾成對存回",
    "citations": [
+    "audit/function-index/dos-overlay-07.md",
     "spec/626-goduel-and-charrec-size.md"
    ]
   },
@@ -32693,6 +32696,7 @@
    "spec": "docs/spec/769-combat-main-loop.md",
    "note": "與 DOS overlay-08:00F3h（entry#1）助憶碼序列完全相同，語意同該筆：戰鬥主迴圈(retf，無參數)：DS:4FBAh := 5、把 DS:72A0h 掛鉤指到 overlay-13 entry#18 @2220h(戰鬥版選目標，spec 749 記錄的收尾會換回 overlay-22 entry#4)；迴圈直到 DS:6F90h 或 DS:6F91h 為 0 或 本模組 0997h 設旗標，每輪走隊伍鏈、清 DS:4F9Dh^[596h]、用 01ABh 取行動者再 026Bh 讓它行動；離開後叫 本模組 004Dh(spec 749 的戰鬥收尾)並設 DS:4FC9h := 1。開場(overlay-10:1C3Eh)、主迴圈、收尾三段至此接成一條鏈 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/function-index/pc98-overlay-08.md",
     "audit/function-index/pc98-overlay-32.md"
    ]
   },
@@ -38459,10 +38463,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-09.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-30.md",
-    "audit/overlay-init-graph.md",
-    "context/50-log-2026-08-09-13.md"
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -38483,10 +38487,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-09.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-19.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/dos-overlay-19.md"
    ]
   },
   {
@@ -38505,12 +38509,12 @@
    "spec": "781",
    "note": "同 DOS overlay-14:00153h（牆面位元設定端）。唯一序列差異是 PC-98 少一條 xor ah, ah（DOS 把 byte 零延伸成 word 再比，PC-98 直接 cmp al），其餘全是 DS:0A2A0h↔7206h",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-14.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "project-status.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -44105,7 +44109,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "709",
+   "note": "同 DOS overlay-22:01C39h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h"
   },
   {
    "platform": "pc98",
@@ -44326,7 +44333,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "681",
+   "note": "同 DOS overlay-22:020E1h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -44413,7 +44423,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "715",
+   "note": "同 DOS overlay-22:022B4h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -44653,7 +44666,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "734",
+   "note": "同 DOS overlay-22:02DB6h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -44708,7 +44724,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "704",
+   "note": "同 DOS overlay-22:02FD1h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h"
   },
   {
    "platform": "pc98",
@@ -44756,7 +44775,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "705",
+   "note": "同 DOS overlay-22:030C0h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h"
   },
   {
    "platform": "pc98",
@@ -44864,7 +44886,10 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "717",
+   "note": "同 DOS overlay-22:0370Eh。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h"
   },
   {
    "platform": "pc98",
@@ -44910,7 +44935,10 @@
    "callers": 5,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "707",
+   "note": "同 DOS overlay-22:03947h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
@@ -45182,7 +45210,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "714",
+   "note": "同 DOS overlay-22:04194h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -45274,7 +45305,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "703",
+   "note": "同 DOS overlay-22:04432h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -45306,7 +45340,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "707",
+   "note": "同 DOS overlay-22:044D3h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -45419,7 +45456,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "711",
+   "note": "同 DOS overlay-22:04822h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -45483,7 +45523,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "730",
+   "note": "同 DOS overlay-22:04DA0h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -45567,7 +45610,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "708",
+   "note": "同 DOS overlay-22:054EBh。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h"
   },
   {
    "platform": "pc98",
@@ -45580,7 +45626,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "706",
+   "note": "同 DOS overlay-22:05590h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h"
   },
   {
    "platform": "pc98",
@@ -45650,7 +45699,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "710",
+   "note": "同 DOS overlay-22:056C4h。以 scripts/module_align.py 重新對齊後配對（overlay-22 的 entry index 從第 12 支起整組錯開一格，舊工具會配錯），助憶碼序列完全相同、0 個差異塊，運算元差異逐條看過全是位址：DS:9594h/9598h↔6506h/650Ah、DS:0A520h/0A521h↔7434h/7435h、DS:0A031h/0A037h↔6F97h/6F9Dh、DS:7D93h/7D94h↔4CB5h、DS:7F27h↔4FBAh、DS:7F05h↔4F99h、目標陣列 [di−5AE3h]↔[di+7431h]、角色 +196h..+199h↔+195h..+198h"
   },
   {
    "platform": "pc98",
@@ -48762,6 +48814,7 @@
    "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
    "note": "逐項釋放後清空(retf 4)：p^[0] 為 0 就離開；否則由高索引往低，對 p + 8i − 1 叫 02A8h:10D5h，最後 FillChar(p^, 43h, 0)、DS:0A313h:=0、DS:0A325h:=0FFh。⚠ 計數器用全域 DS:0A9D9h 而非 local，不可重入",
    "citations": [
+    "audit/function-index/dos-overlay-29.md",
     "audit/function-index/pc98-overlay-29.md",
     "spec/758-morale-field-0f7h-round-trip.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md"
@@ -49427,7 +49480,10 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-02.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50906,9 +50962,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 68,
+   "Read": 84,
    "NotBlocking": 0,
-   "Todo": 43,
+   "Todo": 27,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
