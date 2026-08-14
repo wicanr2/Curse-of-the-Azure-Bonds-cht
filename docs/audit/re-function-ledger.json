@@ -26275,6 +26275,15 @@
    "level": "exact",
    "spec": "1066",
    "note": "加入角色(retf，378 條)。★★★★ 關掉 spec 1038/1043 的核心疑問：選單 'Add from where? '(16) + 'Curse Pool Hillsfar Exit'(24)，'C'→DS:7584h:=0、'P'→1、'H'→2 ⇒ DS:7584h 是『角色來自哪一款遊戲』：0=Curse of the Azure Bonds(422/423，.guy)、1=Pool of Radiance(285，.cha)、2=Hillsfar(188，.sav)。選檔用 overlay-16 entry#1 掃清單、overlay-26 entry#5 選，選中項 [1]='*' 表示已在隊伍裡不能再選；GetMem(1A6h)=422 ⇒ 不管來源是哪一款，記憶體裡一律是本作版面(舊格式在 spec 1038 的讀檔函式裡轉換)；加入後把 '* '(2 bytes) 就地寫回清單項前兩格(同 spec 1057 的☆)。★★★ 掃全隊算四個量：+0F7h<80h→NPC數、+10Dh>0→遊俠數、(+11Bh+1) mod 3 = 0→有邪惡、+10Ch>0→有聖騎士；+10Ch/+10Dh 正是 +109h+3(聖騎士)與 +109h+4(遊俠)，與 spec 1034/1055 的職業順序第三次對上。★★★ 陣營編碼：(陣營+1) mod 3 = 0 ⇒ {2,5,8} 是邪惡，只有在順序 LG(0) LN(1) LE(2) NG(3) N(4) NE(5) CG(6) CN(7) CE(8) 時成立(守序/中立/混亂為外層、善/中立/惡為內層)。★★★ 四條限制：新的是 NPC 時需 NPC數<6、否則需 bank1^[67Ch]<8(隊伍上限 8)；新的是聖騎士且隊裡有邪惡→拒絕('paladins do not join with evil scum' 35)；新的是遊俠且遊俠數>=3→拒絕('too many rangers in party' 25)；另有 名字+' will tolerate no evil!'(23)。名字相同且 +126h 相同也拒絕(重複)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 1603,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1067",
+   "note": "存檔前的磁碟準備(retf，381 條)。三條路由 DS:7584h(角色來源，spec 1066)分：0=Curse(本作)、1=Pool of Radiance、2=Hillsfar。★★ DS:7584h=0 那條要求路徑最後一段是 'CURSE'(5) —— 用 far 0636:0257h 取最後一段比對，不符且 UpCase(磁碟機字母 DS:5BF1h) < 'C' 時顯示 'Put save disk in '(17)+字母+':' 再重試 ⇒ 只有 A/B 槽(軟碟)才叫玩家換片，C 槽以上直接跳過。★★ 開檔：路徑 := Copy(DS:5BF0h,1,長度−1)，far 097F:0112h(路徑, 10h)，錯誤碼取 DS:8C98h(IOResult)；0=成功；2 或 12h 時若磁碟機 < 'C' 就問 'Is your save disk in drive '(27)+字母+':? '(3) 等 'Y'，不是 'Y' 就改顯示 'Put save disk in X:' 再重試；其他錯誤顯示 'Unexpected error during save: '(30)+Str(錯誤)。兩個集合常數在 CS:061Dh，用來判錯誤碼要重試還是放棄。⚠ 'CURSE' 是存檔目錄名，翻了會找不到存檔片"
   }
  ]
 }
