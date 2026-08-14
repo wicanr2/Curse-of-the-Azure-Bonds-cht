@@ -23557,6 +23557,42 @@
    "level": "exact",
    "spec": "898",
    "note": "同 DOS overlay-10:006ECh，只差一條 xor ah,ah(DOS 零擴充後 cmp ax、PC-98 cmp al)；13 條是 DS:4A0Eh↔7AC4h、DS:4A10h↔7AC6h 的位址"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 12352,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "899",
+   "note": "瞄準選單(retf 10h)：1593h+2 取距離、29A2h 取另一個值；顯示距離時印 'Range = '＋Str(距離)＋'  '；距離 <= 上限 時依 15BCh+1/15C6h+1/1590h/15C1h+1 四個條件決定選項字串('Target '＋'Next Prev Manual '＋'Center Exit')；叫 194Dh+1、設 DS:75E5h:=1、1505h+4，最後 169Bh+4 收鍵，標題 'Aim:'"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 11963,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "899",
+   "note": "同 DOS overlay-13:03040h，但★不拼字串、逐格寫兩塊陣列：標籤 DS:0A33Fh/0A346h/0A34Dh/0A354h/0A35Bh/0A37Eh(' 決定 '/' 次順 '/' 前順 '/' 手動 '/Center/Exit)、熱鍵 DS:0A335h..0A339h/0A33Eh(T/N/P/M/C/E)。★六組連續位址把陣列基底夾定：標籤 DS:0A33Fh stride 7、熱鍵 DS:0A335h stride 1，Exit 固定索引 9；spec 894 的基底已回頭改正。另外把 arg_4 存進 DS:0BE2Ch(spec 888 髒區重繪的前置條件)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 537,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "900",
+   "note": "法術選單入口(retf 6，(用途, ?, var 結果))：用途 1..4 各給一個選項字串(Cast/Memorize/Scribe/Learn)、其他給空字串；標題 'Choose Spell: '；顏色與兩個旗標依用途決定；迴圈叫 16A9h 直到按到離開鍵。之後走 spec 859 的顯示行鏈 DS:4B44h 算出選中的是第幾個法術行(只有 +29h=0 的行才計數)，取 DS:4B9Ch+n 當結果碼；用途 3(Scribe) 另從 DS:4BF0h+n*4 取遠指標寫進 DS:729Ch；最後叫 16B8h 釋放整條鏈"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 551,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "900",
+   "note": "同 DOS overlay-22:00219h，但★依有沒有標題把標籤/熱鍵寫到索引 0(DS:0A33Fh/0A335h)或索引 5(DS:0A362h/0A33Ah)，與 spec 899 定出的基底完全吻合。四個標籤 'かける'/'記憶ｽﾙ'/' 書ｷｺﾑ'/' 学ぶ ' 都是 6 bytes——日文版自己就被逼到要用半形片假名湊滿，中文版三個字剛好"
   }
  ]
 }
