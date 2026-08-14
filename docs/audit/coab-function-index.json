@@ -8283,6 +8283,7 @@
    "note": "一個戰鬥員的一回合：retf 4 = 角色遠指標。完 := 本模組 1273h(角色)；\u003cfar 16A4h\u003e；\u003cfar 1557h+2\u003e；角色^[196h] = 0 時 完 := \u003cfar 159Ah\u003e(角色)。AI 模式：模式 := 角色^[18Dh]^[15h]；除非（模式 ∈ 1..4 且 \u003cfar 145Bh+2\u003e(4,1) \u003c\u003e 1）否則重骰——先 1d8，= 8 則 1d2+4（5 或 6），否則 1d4（1..4）；寫回 +15h。（模式 1..4 有 3/4 延續、1/4 重骰；5/6 每回合必重骰。第一次 1d8 的點數本身被丟掉。）完 = 0 時 完 := 本模組 1388h(角色)；(+18Dh^[14h] \u003c\u003e 0) 且 (+18Dh^[10h] = 0) 時顯示 名字+'flees in panic'(14)。完 \u003c\u003e 0 就離開。本模組 04AAh(角色) 成立 → 完 := \u003cfar 159Ah\u003e(角色) 並離開；+18Dh^[00h] \u003e 0（正在詠唱，spec 827）→ \u003cfar 11D7h+2\u003e(@完, 1, 1, 法術) 後 完 := \u003cfar 159Ah\u003e(角色) 並離開；024Dh 成立同上；0605h 成立則 完 := 1 並離開；否則 1681h(角色)、完 := 1273h(角色)，while 完 = 0 do if 0CB7h(0,1,0FFh,角色) 且 有號(+18Dh^[3]) \u003e 0 且 +196h \u003c\u003e 0 then 完 := 0DB1h(角色) else 完 := 1201h(角色)。spec 830",
    "citations": [
     "audit/function-index/dos-overlay-14.md",
+    "audit/function-index/pc98-overlay-14.md",
     "audit/function-strings.md",
     "spec/777-item-append-and-area-save-sweep.md",
     "spec/830-monster-ai-turn.md"
@@ -9786,6 +9787,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md",
     "spec/831-morale-failure-table.md"
    ]
@@ -10754,7 +10756,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov sp, bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
-    "spec/829-poison-and-paralysis-attacks.md"
+    "spec/829-poison-and-paralysis-attacks.md",
+    "spec/832-gaze-attack-and-mirror-item.md"
    ]
   },
   {
@@ -10772,6 +10775,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 4 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/831-morale-failure-table.md"
    ]
   },
@@ -10871,6 +10876,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:634h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/831-morale-failure-table.md"
    ]
   },
@@ -11017,7 +11024,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/819-spits-acid-special-attack.md",
-    "spec/829-poison-and-paralysis-attacks.md"
+    "spec/829-poison-and-paralysis-attacks.md",
+    "spec/832-gaze-attack-and-mirror-item.md"
    ]
   },
   {
@@ -11436,9 +11444,13 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/832-gaze-attack-and-mirror-item.md",
+   "note": "凝視石化攻擊（含反射）：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；\u003cfar 1554h\u003e(角色, 名字+'gazes...'(8), 0Ah, 0)、\u003cfar 1566h+2\u003e(12h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),4,2Dh)；\u003cfar 1576h+1\u003e(角色, 7Fh, @暫存) 為假就直接跳到收尾。否則掃 DS:6FA3h^[14Dh] 物品鏈（next +2Ah）：+34h \u003c\u003e 0（裝備中）且 (+2Fh 或 +30h 或 +31h) = 76h 時 顯示 名字+'reflects it!'(12)、反向重播動畫、換過 := 1、**DS:6FA3h := 角色**（反射回發動者）；找到一件就停。收尾：if not \u003cfar 1457h+1\u003e(DS:6FA3h, 0, 1) then \u003cfar 1435h\u003e(DS:6FA3h, 7, 名字+'is Stoned'(9))。物品 +2Fh/+30h/+31h 是三個屬性槽，值 76h 表示會反射凝視。spec 832",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/832-gaze-attack-and-mirror-item.md"
    ]
   },
   {
@@ -13400,7 +13412,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/832-gaze-attack-and-mirror-item.md"
    ]
   },
   {
@@ -17743,7 +17756,11 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 2Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 2Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md"
+   ]
   },
   {
    "platform": "dos",
@@ -34282,6 +34299,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md",
     "spec/831-morale-failure-table.md"
    ]
@@ -36018,7 +36036,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/832-gaze-attack-and-mirror-item.md",
+   "note": "凝視石化攻擊（含反射）：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；\u003cfar 1554h\u003e(角色, 名字+'gazes...'(8), 0Ah, 0)、\u003cfar 1566h+2\u003e(12h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),4,2Dh)；\u003cfar 1576h+1\u003e(角色, 7Fh, @暫存) 為假就直接跳到收尾。否則掃 DS:0A03Dh^[14Dh] 物品鏈（next +52h）：+5Ch \u003c\u003e 0（裝備中）且 (+57h 或 +58h 或 +59h) = 76h 時 顯示 名字+'reflects it!'(12)、反向重播動畫、換過 := 1、**DS:0A03Dh := 角色**（反射回發動者）；找到一件就停。收尾：if not \u003cfar 1457h+1\u003e(DS:0A03Dh, 0, 1) then \u003cfar 1435h\u003e(DS:0A03Dh, 7, 名字+'is Stoned'(9))。物品 +57h/+58h/+59h 是三個屬性槽，值 76h 表示會反射凝視。spec 832 PC-98 另有三處不同：兩段多出 xor ah,ah / mov cx,0Ah / imul cx（乘 10），第三個 76h 的判斷改成 jz + jmp（分支結構不同）——本支兩平台需各自判讀。",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -49916,9 +49937,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 125,
+   "Read": 126,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 25,
    "CodeBytes": 12862,
    "Undefined": 455,
@@ -50471,9 +50492,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 128,
+   "Read": 129,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 18,
    "CodeBytes": 13011,
    "Undefined": 578,
