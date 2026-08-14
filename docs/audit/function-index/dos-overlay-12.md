@@ -131,10 +131,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2499` | sub_2499 | — | 32 | 15 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:24FBh（entry#108）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 2 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `24B9` | sub_24B9 | — | 99 | 39 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `251C` | sub_251C | — | 62 | 24 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/642-overlay12-damage-modifiers.md<br>與 pc98 overlay-12:257Eh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := <sub_FCC>(DS:9594h);if p <> nil 且 p^[5Ah] > 0(有號 jle)then DS:0A02Eh div= 2(有號)。與 133Fh 查同一個欄位但門檻不同(那支是 < 3),兩者在 1、2 兩個值上重疊 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
-| `255A` | sub_255A | — | 64 | 25 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `255A` | sub_255A | — | 64 | 25 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/737-effproc-small-handlers.md<br>某種武器把傷害**覆寫**成 1d6+1:w := DS:6506h^[151h],w 非 NIL 且 w^[2Eh] = 55h 時 DS:6F94h := ROLLDAMAGEDICE(1,6) + 1。⚠ 是指派不是累加,把原本算好的值整個蓋掉 | spec/737-effproc-small-handlers.md |
 | `259A` | sub_259A | — | 32 | 15 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:25FCh（entry#112）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 1 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
-| `25BA` | sub_25BA | — | 76 | 25 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `2606` | sub_2606 | — | 70 | 26 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `25BA` | sub_25BA | — | 76 | 25 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/737-effproc-small-handlers.md<br>打不到的規則:(w = NIL 或 w^[32h] = 0) 且 (施法者^[74h] > 0 或 施法者^[0E5h] < 4) 時 DS:6F94h := 0。⚠ 是把傷害設成 0 不是「不攻擊」,流程仍會往下走 | spec/737-effproc-small-handlers.md |
+| `2606` | sub_2606 | — | 70 | 26 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/737-effproc-small-handlers.md<br>兩種武器類別觸發同一個處理:w^[2Eh] = 57h 或 58h 時 <sub_F39h>(32h, arg_6, arg_8)。兩個類別編號相鄰且共用常數 32h | spec/737-effproc-small-handlers.md |
 | `2657` | sub_2657 | — | 286 | 109 | 0 | 10 | ✓ | 待解讀 | — | — | — |
 | `2782` | sub_2782 | — | 120 | 47 | 0 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `27FA` | sub_27FA | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -150,7 +150,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2B28` | sub_2B28 | — | 22 | 8 | 0 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:2BA0h（entry#127）助憶碼序列完全相同，語意同該筆：經兩層 far pointer(arg_6 → +18Eh)把目標 record 的 +6 清 0(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `2B3E` | sub_2B3E | — | 240 | 73 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `2C2E` | sub_2C2E | — | 33 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完） | — |
-| `2C4F` | sub_2C4F | — | 69 | 28 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `2C4F` | sub_2C4F | — | 69 | 28 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/737-effproc-small-handlers.md<br>+191h := ((v − 1) div 5) + 1,其中 v := 角色^[10Ch] + 角色^[114h] × <overlay-25 entry#10>(角色)。⚠ +10Ch/+114h 正是 spec 728 那組相差 8 的平行職業欄位,而 entry#10 在這裡是被 imul 的**數值不是布林值**(728 只測了零,語意要修正成「第二職業的權重」);spec 705 的 30C0h 用 +10Eh + +116h × entry#10 是同一個模板。⚠ idiv 往零取整,v=0 時算出 1、v 為負時大於 1,不能改寫成無號的 (v+4)/5 | spec/737-effproc-small-handlers.md |
 | `2C94` | sub_2C94 | — | 57 | 17 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `2CD9` | sub_2CD9 | — | 131 | 49 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2D7D` | sub_2D7D | — | 182 | 71 | 0 | 4 | ✓ | 待解讀 | — | — | — |
