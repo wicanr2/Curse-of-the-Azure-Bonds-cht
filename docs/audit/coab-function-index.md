@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 803、不阻塞 133、邊界碎片 243、待解讀 207；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 804、不阻塞 133、邊界碎片 243、待解讀 206；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -46,14 +46,14 @@
 | overlay-29 | PORTRAIT | 12 | 8 | 0 | 1 | 3 | 2102 | 114 | [明細](function-index/dos-overlay-29.md) |
 | overlay-30 | THREED | 13 | 9 | 0 | 0 | 4 | 5205 | 84 | [明細](function-index/dos-overlay-30.md) |
 | overlay-31 | LOS | 9 | 7 | 0 | 0 | 2 | 2999 | 0 | [明細](function-index/dos-overlay-31.md) |
-| overlay-32 | TACMAP | 24 | 16 | 0 | 0 | 8 | 5064 | 0 | [明細](function-index/dos-overlay-32.md) |
+| overlay-32 | TACMAP | 24 | 17 | 0 | 0 | 7 | 5064 | 0 | [明細](function-index/dos-overlay-32.md) |
 | overlay-33 | SQRPAK24 | 7 | 4 | 0 | 0 | 3 | 1515 | 57 | [明細](function-index/dos-overlay-33.md) |
 | overlay-34 | BUG | 3 | 2 | 0 | 0 | 1 | 1749 | 562 | [明細](function-index/dos-overlay-34.md) |
 | overlay-35 | SQRPAK8 | 4 | 3 | 0 | 0 | 1 | 615 | 74 | [明細](function-index/dos-overlay-35.md) |
 
 ## PC98
 
-模組 37／函式 1488：已解讀 884、不阻塞 29、邊界碎片 338、待解讀 237；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 885、不阻塞 29、邊界碎片 338、待解讀 236；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -90,7 +90,7 @@
 | overlay-29 | PORTRAIT | 12 | 9 | 0 | 1 | 2 | 1846 | 114 | [明細](function-index/pc98-overlay-29.md) |
 | overlay-30 | THREED | 13 | 9 | 0 | 0 | 4 | 4851 | 117 | [明細](function-index/pc98-overlay-30.md) |
 | overlay-31 | LOS | 9 | 7 | 0 | 0 | 2 | 2988 | 0 | [明細](function-index/pc98-overlay-31.md) |
-| overlay-32 | TACMAP | 25 | 16 | 0 | 0 | 9 | 6784 | 0 | [明細](function-index/pc98-overlay-32.md) |
+| overlay-32 | TACMAP | 25 | 17 | 0 | 0 | 8 | 6784 | 0 | [明細](function-index/pc98-overlay-32.md) |
 | overlay-33 | SQRPAK24 | 7 | 4 | 0 | 0 | 3 | 2106 | 146 | [明細](function-index/pc98-overlay-33.md) |
 | overlay-34 | BUG | 2 | 2 | 0 | 0 | 0 | 14 | 0 | [明細](function-index/pc98-overlay-34.md) |
 | overlay-35 | SQRPAK8 | 4 | 1 | 0 | 1 | 2 | 1048 | 79 | [明細](function-index/pc98-overlay-35.md) |

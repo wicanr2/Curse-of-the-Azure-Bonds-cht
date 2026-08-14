@@ -13219,6 +13219,7 @@
    "spec": "852",
    "note": "法術的目標選擇(retf 0Ah)：arg_6 = 0 走手動（sub_3B37h 開游標，法術 53h 用另一種模式）；否則自動——法術屬性 +0Eh（37E8h）為 0 的非敵對法術直接以自己為目標（法術 3 另過 sub_1DF6h），敵對法術叫 sub_3E56h（spec 852 的 AI 選目標）取一個，若 far 150Ah+4 成立且法術屬性 +0Ah 落在 {33h,34h,35h,1Fh}（表在 DS:27CAh）就拒絕。★成功時把目標座標寫進 DS:7559h/755Ah——那正是 spec 846/847 用到的兩個全域",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "audit/resident-data-tables.md"
    ]
   },
@@ -24043,7 +24044,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "戰術地圖捲動＋重繪(retf 6，(半徑, y, x))：視窗左上角是 遠指標(DS:6E92h)^[2]/^[3]，中心 = 左上 + 3。半徑 0FFh 視為 0 並強制捲動；目標已在框內就整支不做。捲動時把中心逐格移向目標並夾在 x 3..2Eh、y 3..15h（配 7 格視窗即 50×25 的地圖，與 spec 749 相符）。重繪 7×7 格，每格畫面座標間隔 3，圖磚取自地形表 DS:26A2h 的 +3 欄。★地形表欄位補完：+0 移動成本(837)、+1/+2 視線(854)、+3 圖磚"
   },
   {
    "platform": "dos",
@@ -38508,7 +38512,9 @@
    "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
    "note": "把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出)",
    "citations": [
-    "audit/function-index/dos-overlay-09.md"
+    "audit/function-index/dos-overlay-09.md",
+    "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-13.md"
    ]
   },
   {
@@ -50016,7 +50022,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "同 DOS overlay-32:0081Dh（module_align 對齊，助憶碼序列完全相同）。9 條差異全是 DS:9F2Ch↔6E92h、地形表 DS:48AFh↔26A5h 與繪圖呼叫目標"
   },
   {
    "platform": "pc98",
@@ -50960,9 +50969,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -51515,9 +51524,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,

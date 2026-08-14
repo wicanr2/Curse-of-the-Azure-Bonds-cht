@@ -22585,6 +22585,24 @@
    "level": "exact",
    "spec": "852",
    "note": "同 DOS overlay-13:0200Fh（module_align 對齊，助憶碼序列完全相同）。差異全是位址與 IDA 參數命名偏移 2：DS:9594h/9596h↔6506h/6508h、+18Eh↔+18Dh、法術屬性表 DS:61C2h↔37E8h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 2077,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "戰術地圖捲動＋重繪(retf 6，(半徑, y, x))：視窗左上角是 遠指標(DS:6E92h)^[2]/^[3]，中心 = 左上 + 3。半徑 0FFh 視為 0 並強制捲動；目標已在框內就整支不做。捲動時把中心逐格移向目標並夾在 x 3..2Eh、y 3..15h（配 7 格視窗即 50×25 的地圖，與 spec 749 相符）。重繪 7×7 格，每格畫面座標間隔 3，圖磚取自地形表 DS:26A2h 的 +3 欄。★地形表欄位補完：+0 移動成本(837)、+1/+2 視線(854)、+3 圖磚"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 2825,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "同 DOS overlay-32:0081Dh（module_align 對齊，助憶碼序列完全相同）。9 條差異全是 DS:9F2Ch↔6E92h、地形表 DS:48AFh↔26A5h 與繪圖呼叫目標"
   }
  ]
 }

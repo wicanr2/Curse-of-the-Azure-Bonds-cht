@@ -64,7 +64,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2EBB` | sub_2EBB | — | 541 | 217 | 1 | 8 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `30D8` | sub_30D8 | — | 361 | 132 | 2 | 9 | ✓ | 已解讀 | exact | 833<br>同 DOS overlay-13:031F0h（module_align 對齊，助憶碼序列完全相同）。★一處真差異：動畫呼叫 sub_1921h 的第三個參數 DOS 是 3、PC-98 是 0FFh。其餘 14 條是位址（DS:9F2Ch↔6E92h 與呼叫目標） | — |
 | `329F` | sub_329F | — | 1353 | 521 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |
-| `37E8` | sub_37E8 | — | 161 | 60 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出) | audit/function-index/dos-overlay-09.md |
+| `37E8` | sub_37E8 | — | 161 | 60 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出) | audit/function-index/dos-overlay-09.md<br>audit/function-index/dos-overlay-13.md<br>audit/function-index/pc98-overlay-13.md |
 | `3889` | sub_3889 | — | 427 | 142 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `3A74` | sub_3A74 | VIEWDUDES | 779 | 303 | 1 | 11 | ✓ | 待解讀 | — | — | — |
 | `3D7F` | sub_3D7F | PICKTARGET | 480 | 159 | 2 | 4 | ✓ | 已解讀 | exact | 852<br>同 DOS overlay-13:03E56h（module_align 對齊，助憶碼序列完全相同）。13 條差異全是位址：+18Eh↔+18Dh、+197h/198h↔+196h/197h、DS:9F2Ch↔6E92h、[di−57E0h]↔[di+758Eh]、[di−6231h]↔[di+6D35h] | — |
