@@ -23916,11 +23916,11 @@
    "note": "判斷式(retf 4，一個遠指標參數)：回傳 本模組 sub_134Ah(p) \u003e p^[0E6h](有號比較)",
    "citations": [
     "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-17.md",
     "audit/function-index/pc98-overlay-25.md",
     "spec/754-small-predicates-and-wrappers.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/809-cleric-spell-progression-table.md",
-    "spec/810-all-class-spell-progressions.md"
+    "spec/809-cleric-spell-progression-table.md"
    ]
   },
   {
@@ -43204,11 +43204,16 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1094",
+   "note": "建角流程 PC-98 側(retf)，spec 1093 的對側，台帳最後一支。助憶碼相似度 0.7554、六個 \u003e=12 條的差異塊全部逐條讀完：①②③三個選單改用 overlay-26 entry#3/#7/#10(spec 1085 的捲動清單，DOS 用 #1/#5/#8)；④★★★DOS 的多職年齡表(13BCh..15D5h，207 條，每種多職組合各一個表基底 404Ch/4060h/4054h…)在 PC-98 只有 14 條 —— 整段不見；⑤★★★PC-98 多一道名字驗證(0723:05BDh，不合法印「このキャラクタ名は受け付けられません。」重問)，DOS 完全沒有；⑥收尾節點大小 1A7h(DOS 1A6h)。★★★兩平台共同的收尾把六個屬性目前值(+11h+i*2)與力量百分比(+1Ch)抄成基準值(+10h+i*2、+1Dh) ⇒ spec 1086「偶數基準/奇數目前」的產生端。名字上限 0Fh=15。⚠CS:A45h 的 Select 是 PC-98 沒日文化的英文殘留",
    "citations": [
     "audit/function-index/pc98-overlay-17.md",
     "audit/function-strings.md",
-    "spec/1085-party-menu-pc98.md"
+    "spec/1085-party-menu-pc98.md",
+    "spec/1093-character-creation-dos.md",
+    "spec/1094-character-creation-pc98.md"
    ]
   },
   {
@@ -54383,9 +54388,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
