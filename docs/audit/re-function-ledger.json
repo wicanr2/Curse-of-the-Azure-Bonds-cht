@@ -24043,6 +24043,24 @@
    "level": "exact",
    "spec": "925",
    "note": "同 DOS overlay-16:01F21h(相似度 0.922)。五個差異區塊全是同一件事：取角色遠指標時多一次 les di, es:[di]——ss:[父bp+0Ah] 存的是指向角色遠指標的遠指標；模板的父層位移 −1C4h → −1ECh。沒有任何邏輯差異"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 4172,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "926",
+   "note": "載入 WALLDEF<磁碟>.dax(retf 4 = (arg_0 1..3, arg_2))：組檔名 'WALLDEF'+Str(DS:5BEEh 磁碟編號) 與 '.dax'，用 0636h:08DEh 載入；大小 = 0 或 大小 div 30Ch + arg_0 > 4 就印 'Unable to load '+arg_2+' from WALLDEF'+磁碟+'.'、等一次按鍵、★直接 06EAh:0000h 結束程式(與 spec 924 紮營的 Quit TO DOS 同一個離開入口)。成功則逐塊 30Ch 搬進 遠指標(DS:7202h) 的第 (arg_0−1) 塊起、FreeMem 緩衝，再對編號落在集合常數 [1,2,3] 的塊做重定索引：每塊 5 個 9Ch 子塊，byte ≥ DS:268Ah 就加上 word[2680h+arg_0*2] − word[2682h]"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 3983,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "926",
+   "note": "同 DOS overlay-30:0104Ch(相似度 0.938)。三個差異區塊：(a)(b) 失敗訊息只有一個字串常數 unk_F61 加一個 '.'，不組合磁碟編號(所以堆疊只要 20h，DOS 要 118h)；(c) ★DOS 的 FreeMem(@緩衝, 大小) 在 PC-98 換成 mov al,0 / out 0A6h, al(形狀上是繪圖頁選擇 port)——PC-98 在本支裡沒有釋放那塊緩衝。集合常數 [1,2,3] 兩平台相同"
   }
  ]
 }

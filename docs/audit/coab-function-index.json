@@ -15096,11 +15096,11 @@
    "note": "C 字串轉 Pascal 字串(retf 4)：掃到 0 得長度 n，Move n bytes 進緩衝，緩衝前一個 byte 填 n，再 StoreString 到目的(上限 0FFh)。⚠ 目的指標在 [bp+0Ah]，超出 retf 4 宣告的參數區 — 堆疊殘留當引數，已由原始 bytes(C4 7E 0A + CA 04)確認",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-15.md",
-    "audit/function-index/pc98-overlay-16.md"
+    "audit/function-index/pc98-overlay-15.md"
    ]
   },
   {
@@ -15401,6 +15401,7 @@
    "spec": "925",
    "note": "套模板下限(retf 2 = 巢狀程序，參數是父 bp；角色在 ss:[父bp+0Ah]、模板在 ss:[父bp−1C4h])：七組屬性各自 if 角色 \u003c 模板 就抬上去，★每次都把相鄰兩格寫同一值 → 屬性是 +10h+j*2 與 +11h+j*2 兩個副本，spec 857 讀到的是後半格；模板側 +14h 力量、+15h 對應角色 +1Ch/+1Dh(形狀上是 18/xx 百分位力量)、+16h..+1Ah 智睿敏體魅。經驗值 +127h 抬到 模板^[2Eh]。★錢不夠(loc_1024h+3 折算 \u003c 模板^[28h])就把第 0..4 格全部扣光再發 模板^[28h] div 5——先破壞再補，且只推低位字。四個職業槽 +109h/+10Eh/+10Bh/+10Fh 寫成 模板^[0B7h..0BAh] \u003e 0 的布林。最後 +0E5h := 1、換 DS:6506h、+78h := 模板^[21h]、+12Ch := +78h − loc_F23h(角色)、+1A4h := 模板^[20h]",
    "citations": [
+    "audit/function-index/pc98-overlay-16.md",
     "spec/925-npc-template-floor.md"
    ]
   },
@@ -20944,8 +20945,8 @@
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -20987,11 +20988,11 @@
    "note": "與 pc98 overlay-23:010Eh 助憶碼序列完全相同（115 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：SPELLOFF:第一參數為 nil 時依 id 搜第一個符合的節點,否則直接摘該節點;節點 +4 非 0 則先 CALLEFFECT(1,...) 通知解除;摘鏈後 Dispose(9)。善後在鏈外——id=0Eh 呼叫 sub_18F3(5,char)、id 屬 {0Ch,26h,92h} 呼叫 sub_18F3(0,char),即使該效果不在鏈上也照做 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "spec/576-adnd-strength-encoding-and-effect-removal.md"
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -24177,9 +24178,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "926",
+   "note": "載入 WALLDEF\u003c磁碟\u003e.dax(retf 4 = (arg_0 1..3, arg_2))：組檔名 'WALLDEF'+Str(DS:5BEEh 磁碟編號) 與 '.dax'，用 0636h:08DEh 載入；大小 = 0 或 大小 div 30Ch + arg_0 \u003e 4 就印 'Unable to load '+arg_2+' from WALLDEF'+磁碟+'.'、等一次按鍵、★直接 06EAh:0000h 結束程式(與 spec 924 紮營的 Quit TO DOS 同一個離開入口)。成功則逐塊 30Ch 搬進 遠指標(DS:7202h) 的第 (arg_0−1) 塊起、FreeMem 緩衝，再對編號落在集合常數 [1,2,3] 的塊做重定索引：每塊 5 個 9Ch 子塊，byte ≥ DS:268Ah 就加上 word[2680h+arg_0*2] − word[2682h]",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/926-walldef-loader.md"
    ]
   },
   {
@@ -24960,11 +24965,11 @@
    "note": "Load24x24Set(retf 0Ah，(檔名, 資源編號, 目的起始, 筆數))：★錯誤訊息 'Start range error in Load24x24Set' 直接給出原始函式名。目的起始 \u003e 30h(48) 就印訊息並收場；297h:11Bh 載入後 Move(圖^[17h], 遠指標(DS:65CEh)^[17h + 目的起始×圖^[11h]], 筆數×圖^[11h])，再釋放。⚠只檢查起始、不檢查『起始＋筆數』，起始 40 筆數 20 會寫出界；錯誤路徑也不是 return 而是直接收場",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-16.md",
     "audit/function-index/pc98-overlay-33.md",
     "audit/function-strings.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/781-put8x8symbol-and-wall-bit-set.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
   {
@@ -40723,11 +40728,11 @@
    "note": "C 字串轉 Pascal 字串(retf 4)：0A65h:1B0Dh(Move)與 0A65h:649h(StoreString)，其餘同 DOS overlay-16:0020h，含同一個超出參數區的目的指標",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-15.md",
-    "audit/function-index/pc98-overlay-16.md"
+    "audit/function-index/pc98-overlay-15.md"
    ]
   },
   {
@@ -47314,8 +47319,8 @@
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -47359,11 +47364,11 @@
    "note": "SPELLOFF:第一參數為 nil 時依 id 搜第一個符合的節點,否則直接摘該節點;節點 +4 非 0 則先 CALLEFFECT(1,...) 通知解除;摘鏈後 Dispose(9)。善後在鏈外——id=0Eh 呼叫 sub_18F3(5,char)、id 屬 {0Ch,26h,92h} 呼叫 sub_18F3(0,char),即使該效果不在鏈上也照做",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "spec/576-adnd-strength-encoding-and-effect-removal.md"
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -50580,9 +50585,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "926",
+   "note": "同 DOS overlay-30:0104Ch(相似度 0.938)。三個差異區塊：(a)(b) 失敗訊息只有一個字串常數 unk_F61 加一個 '.'，不組合磁碟編號(所以堆疊只要 20h，DOS 要 118h)；(c) ★DOS 的 FreeMem(@緩衝, 大小) 在 PC-98 換成 mov al,0 / out 0A6h, al(形狀上是繪圖頁選擇 port)——PC-98 在本支裡沒有釋放那塊緩衝。集合常數 [1,2,3] 兩平台相同",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/926-walldef-loader.md"
    ]
   },
   {
@@ -52057,9 +52066,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 5205,
    "Undefined": 84,
@@ -52612,9 +52621,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 4851,
    "Undefined": 117,
