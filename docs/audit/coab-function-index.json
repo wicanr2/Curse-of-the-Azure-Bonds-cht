@@ -17347,6 +17347,7 @@
    "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
    "note": "三段接力:r := \u003csub_E11h\u003e(DS:6506h, 4, 49h) → \u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0,0,0,0, 空字串 CS:4425h) → \u003csub_F06h\u003e(DS:6F97h, 0,0,0,0, 'is affected' CS:4426h)。⚠ CS:4425h 與 CS:4426h 緊鄰(前者長度 0、後者長度 11),反組譯裡兩個 offset 只差 1 很容易看成同一個字串的偏移",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/703-item-effect-slots-and-uninitialised-args.md",
     "spec/711-target-count-clamp-and-callee-arity.md",
     "spec/712-duration-table.md",
@@ -17505,6 +17506,7 @@
    "spec": "docs/spec/711-target-count-clamp-and-callee-arity.md",
    "note": "⚠ **把目標筆數永久夾小**:n := ROLLDICE(2,8);if DS:7434h \u003e n then DS:7434h := n,**沒有還原**(與 spec 706 的 5590h 改完會還原正好相反),所以同一段腳本裡後面的 opcode 看到的是被夾過的清單;陣列本身沒重排,超過的格子還在原地只是走不到。接著走 k=1..DS:7434h,跳過 NIL,s := \u003coverlay-23 entry#8\u003e(p, 4, 0)、r := \u003csub_E11h\u003e(p, 23h, 52h)、\u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0, 0, 1, s, 'is confused' CS:4816h)。⚠ 參數個數要讀被呼叫者的 retf N,不要從呼叫端推:entry#8 retf 8(4 word)、entry#20 retf 0Ah(5)、**entry#21 retf 14h(10,不是先前推的 7)**、sub_E11h retf 2(1 word)。先前的錯誤推導兩個呼叫點都自洽,因為它們犯了同一個假設 2d8 這個上限與 AD\u0026D 1e Confusion「影響 2d8 個生物」一致,訊息也是 is confused,法術身分幾乎確定(未從法術表反查編號,標為推論)",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/711-target-count-clamp-and-callee-arity.md",
     "spec/712-duration-table.md",
     "spec/716-nil-slot-hazard.md",
@@ -17808,9 +17810,13 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/725-breath-acid-area.md",
+   "note": "區域吐酸 '\u003c名字\u003e breathes acid'(CS:5A9Ah)。次數在 arg_2^[3](DS:758Dh=0 時重設成 3),**扣的動作在最後**所以中途 return 都不消耗次數。用 [DS:72A0h] 第 0 項模式碼 3Dh 選區域;cls := \u003coverlay-24 entry#30\u003e(攻擊者),**只要目標陣列裡有一格 +197h 不等於 cls 就整次取消**。傷害迴圈 \u003coverlay-23 entry#20\u003e(p, arg_6^[78h], 2, s),傷害參數與 spec 723 單體吐酸相同。⚠ **同一支裡兩個迴圈的 NIL 檢查不一致**:類別比對那個直接取欄位、傷害那個先檢查。所以「有沒有檢查 NIL」不是函式的性質而是每段迴圈各自的性質——spec 716 以函式為單位的掃描會漏掉這種",
    "citations": [
-    "spec/716-nil-slot-hazard.md"
+    "spec/716-nil-slot-hazard.md",
+    "spec/725-breath-acid-area.md"
    ]
   },
   {
@@ -45816,9 +45822,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 89,
+   "Read": 90,
    "NotBlocking": 0,
-   "Todo": 24,
+   "Todo": 23,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
