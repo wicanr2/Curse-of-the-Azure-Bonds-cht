@@ -169,7 +169,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18D5D` | sub_18D5D | — | 19 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定:al 無 bit7 → 非雙位元組;81h..9Fh 與 E0h..FCh → 前導位元組;A0h..DFh(半形片假名)與 FDh 以上 → 非前導 | — |
 | `18D70` | sub_18D70 | — | 212 | 113 | 1 | 2 |  | 待解讀 | — | — | — |
 | `18E44` | sub_18E44 | — | 19 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同 | — |
-| `18E59` | sub_18E59 | — | 113 | 50 | 2 | 3 |  | 待解讀 | — | — | — |
+| `18E59` | sub_18E59 | — | 113 | 50 | 2 | 3 |  | 已解讀 | exact | docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md<br>DBCS 版 FSplit(retf 10h，四個遠指標)：三個輸出上限 43h/8/4 正是 Turbo Pascal 的 DirStr/NameStr/ExtStr。掃描時每個位元組先叫 sub_18E44h，回 CF(前導位元組)就連下一個一起跳過，再判 '\' 與 ':'。原版 RTL 沒有這一步，會把 Shift-JIS 後續位元組 0x5C 誤當分隔字元。⚠ Big5 後續位元組同樣涵蓋 0x5C，中文版一樣需要，但判定範圍要重寫 | — |
 | `18ECA` | sub_18ECA | — | 18 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>字串搬移輔助,與 DOS START.EXE:19A94h 逐指令相同 | — |
 | `18EE0` | sub_18EE0 | — | 48 | 24 | 1 | 4 |  | 已解讀 | exact | docs/spec/658-color-bit-swap-and-attribute-codec.md<br>兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 <sub_192D2>,再分別交給 <sub_1BA37> 與 <sub_1BA3C>(相差 5 bytes,多半是同一支的兩個入口)。開頭先 <sub_18F10>() ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin。補洞重匯出(spec 761)複查：新增指令都是函式中段的資料(stub 描述子／常數表／nop 填充)，判讀不變 | — |
 | `18F10` | sub_18F10 | — | 146 | 53 | 1 | 5 |  | 待解讀 | — | — | — |

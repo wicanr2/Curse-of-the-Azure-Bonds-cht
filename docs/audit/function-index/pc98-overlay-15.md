@@ -42,7 +42,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1D4C` | sub_1D4C | — | 506 | 204 | 1 | 10 | ✓ | 待解讀 | — | — | — |
 | `1F46` | sub_1F46 | — | 35 | 14 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>回傳 (arg_2^[196h] = 0):是則 1、否則 0。+196h 是狀態碼(spec 623 記到 6 與 5→4 兩條) | audit/function-index/dos-overlay-15.md |
 | `1F69` | sub_1F69 | — | 183 | 73 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `2020` | sub_2020 | — | 117 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `2020` | sub_2020 | — | 117 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md<br>三級治療量累加(retf 2，SS 相對記錄)：ss:[p−4] 次 1d8、ss:[p−6] 次 2d8+1、ss:[p−8] 次 3d8+3，總量加到 ss:[p−2]。沒有任何上限檢查(理論上限 13260，word 裝得下)。⚠ IDA 把同一個位移 8b7e06 印成 arg_2 與 [bp+6] 兩種名字，判參數要看位移位元組 | spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
 | `2095` | sub_2095 | — | 61 | 24 | 3 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 61 bytes，已逐條讀完） | — |
 | `20D2` | sub_20D2 | — | 90 | 33 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>全隊受傷總量(retf 2)：目前 HP 在 +1A5h，其餘同 DOS overlay-15:206Bh | spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `212C` | sub_212C | — | 400 | 143 | 1 | 3 | ✓ | 待解讀 | — | — | — |

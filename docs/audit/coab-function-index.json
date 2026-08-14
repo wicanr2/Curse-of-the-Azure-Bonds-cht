@@ -6453,7 +6453,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
   },
   {
@@ -11947,7 +11948,8 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/758-morale-field-0f7h-round-trip.md",
-    "spec/762-ega-glyph-blit-and-movement-rate.md"
+    "spec/762-ega-glyph-blit-and-movement-rate.md",
+    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
    ]
   },
   {
@@ -12523,7 +12525,9 @@
    "note": "取指定陣營中最快的移動速率(retf 4)：走 DS:650Ah 隊伍鏈，\u003c呼叫\u003e(參數) 等於 p^[197h](陣營)且 p^[196h] 非 0 的成員，取 本模組 0124h(p) div 2 的最大值(無號比較)。0124h 回的是速率乘 2，這裡除回來 — 與既有『距離單位是半格』的 2 是同一個",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/762-ega-glyph-blit-and-movement-rate.md"
+    "audit/function-index/pc98-overlay-13.md",
+    "spec/762-ega-glyph-blit-and-movement-rate.md",
+    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
    ]
   },
   {
@@ -13765,7 +13769,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+   "note": "兩筆記錄的合併(retf 8)：n := 來源^[11h] − 1；for i := 0 to n 做 目的^[17h+i] |= 來源^[17h+i]、目的^[13h]^[i] \u0026= 來源^[13h]^[i]。同一迴圈一個取聯集一個取交集。⚠ 來源^[11h] 為 0 時 n = 0FFFFh，迴圈會跑 65536 次",
+   "citations": [
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15804,7 +15814,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/637-overlay21-small-batch.md",
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
   },
   {
@@ -15898,7 +15909,8 @@
    "note": "清表並拆商餘(retf 2)：把 DS:6F70h 起 5 格 4-byte 清 0；再把 參數 div 5 寫進第 4 格(DS:6F80h)、參數 mod 5 寫進第 3 格(DS:6F7Ch)，高位字都補 0，除法無號。⚠ 同一塊區域在 overlay-21:0F5Bh 被當成遠指標檢查 NIL，這裡當 32-bit 整數用",
    "citations": [
     "audit/function-index/pc98-overlay-21.md",
-    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
   },
   {
@@ -15998,9 +16010,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+   "note": "扣一筆並累計(retf 8)：p^[0FBh + idx*2] -= 數量(word，⚠ 沒有下限檢查，不足會迴繞)；叫本模組 003Bh(數量, p)；DS:4FBAh 為 6 或 1 時再把數量以 32-bit 加到 DS:6F70h + idx*4。DS:6F70h 這八格至此有三種互相衝突的型別用法(遠指標/商餘/累加器)，見 spec 764",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
   },
   {
@@ -16064,7 +16080,8 @@
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
   },
   {
@@ -21696,12 +21713,12 @@
    "spec": "docs/spec/754-small-predicates-and-wrappers.md",
    "note": "範圍判斷(retf 4)：兩個有號參數都落在 0..15(含端點)才回 1，否則 0。範圍是 16×16",
    "citations": [
+    "audit/function-index/dos-overlay-30.md",
     "audit/function-index/pc98-overlay-30.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
-    "spec/754-small-predicates-and-wrappers.md",
-    "spec/761-filled-export-and-dungeon-wall-bits.md"
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -21751,7 +21768,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+   "note": "讀迷宮地圖第二平面(retf 4)：先用本模組 0556h 檢查 0..15；不在範圍且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則座標環繞(\u003e0Fh→0、\u003c0→0Fh)後讀 DS:7206h^[200h + (row shl 4) + col]。與 spec 761 的清牆(+300h)共用索引式，兩個平面各 256 bytes 首尾相接。DS:8B5Eh 決定地圖邊界要不要接起來",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
@@ -24970,7 +24990,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+   "note": "DBCS 版 FSplit(retf 10h，四個遠指標)：三個輸出上限 43h/8/4 正是 Turbo Pascal 的 DirStr/NameStr/ExtStr。掃描時每個位元組先叫 sub_18E44h，回 CF(前導位元組)就連下一個一起跳過，再判 '\\' 與 ':'。原版 RTL 沒有這一步，會把 Shift-JIS 後續位元組 0x5C 誤當分隔字元。⚠ Big5 後續位元組同樣涵蓋 0x5C，中文版一樣需要，但判定範圍要重寫"
   },
   {
    "platform": "pc98",
@@ -29280,7 +29303,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-02.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md"
+    "audit/function-index/pc98-overlay-04.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md",
+    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
    ]
   },
   {
@@ -29298,8 +29323,10 @@
    "citations": [
     "audit/function-index/dos-overlay-07.md",
     "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-07.md",
-    "audit/function-index/pc98-overlay-21.md"
+    "audit/function-index/pc98-overlay-21.md",
+    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
    ]
   },
   {
@@ -29406,9 +29433,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+   "note": "石化解除(retf，無參數)：DS:9594h^[196h] 不等於 7 時先顯示 CS:0AFDh 'は石になってはいませんよ' 並用本模組 0051h 問「それでもかけてもらいますか？」；答 Y 才顯示 CS:0B16h 'ストーン・トゥ・フレッシュ' 並叫 本模組 0103h(7D0h)；再答 Y 且仍是 7 就把 +196h 設 0、+197h 設 1、+1A5h(目前 HP)設 1。可證狀態欄位值 7 = 石化",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
    ]
   },
   {
@@ -35266,7 +35297,8 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/758-morale-field-0f7h-round-trip.md",
-    "spec/762-ega-glyph-blit-and-movement-rate.md"
+    "spec/762-ega-glyph-blit-and-movement-rate.md",
+    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
    ]
   },
   {
@@ -36085,7 +36117,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+   "note": "取指定陣營中最快的移動速率(retf 4)：與 DOS overlay-13:2EACh(spec 762)逐條同構，欄位為 +198h/+197h/+18Ah、鏈頭 DS:9598h",
+   "citations": [
+    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37201,7 +37239,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+   "note": "三級治療量累加(retf 2，SS 相對記錄)：ss:[p−4] 次 1d8、ss:[p−6] 次 2d8+1、ss:[p−8] 次 3d8+3，總量加到 ss:[p−2]。沒有任何上限檢查(理論上限 13260，word 裝得下)。⚠ IDA 把同一個位移 8b7e06 印成 arg_2 與 [bp+6] 兩種名字，判參數要看位移位元組",
+   "citations": [
+    "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38125,7 +38169,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
-    "spec/758-morale-field-0f7h-round-trip.md"
+    "spec/758-morale-field-0f7h-round-trip.md",
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
   },
   {
@@ -40500,7 +40545,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/637-overlay21-small-batch.md",
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
   },
   {
@@ -40711,9 +40757,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+   "note": "扣一筆並累計(retf 8)：與 DOS overlay-21:0A03h 助憶碼 50 條完全相同，表在 DS:0A00Ah、狀態變數 DS:7F27h",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
   },
   {
@@ -47485,9 +47535,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -47560,9 +47610,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 27,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
@@ -47695,9 +47745,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 0,
    "CodeBytes": 5205,
    "Undefined": 84,
@@ -47785,9 +47835,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 221,
+   "Read": 222,
    "NotBlocking": 29,
-   "Todo": 58,
+   "Todo": 57,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
@@ -47860,9 +47910,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 23,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 10,
    "CodeBytes": 3710,
    "Undefined": 830,
@@ -47995,9 +48045,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 38,
+   "Todo": 37,
    "Fragment": 28,
    "CodeBytes": 17459,
    "Undefined": 905,
@@ -48025,9 +48075,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 22,
+   "Todo": 21,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
@@ -48115,9 +48165,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 30,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
