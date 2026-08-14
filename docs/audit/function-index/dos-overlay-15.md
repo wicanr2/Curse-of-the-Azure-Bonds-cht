@@ -16,7 +16,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `04CB` | sub_4CB | — | 182 | 77 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `05CA` | sub_5CA | — | 488 | 142 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `07B2` | sub_7B2 | — | 170 | 66 | 2 | 3 | ✓ | 待解讀 | — | — | — |
-| `085C` | sub_85C | — | 155 | 57 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `085C` | sub_85C | — | 155 | 57 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>把 84 格陣列排序(retf，無參數)：對 DS:6506h(目前角色)的 +1Eh 起 84 格做選擇排序，比較時 and 7Fh、交換時整個 byte 一起搬(高位旗標跟著值走)，遞增。固定跑 84×85/2 次比較，沒有提早結束 | spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md |
 | `0942` | sub_942 | — | 439 | 180 | 1 | 10 | ✓ | 待解讀 | — | — | — |
 | `0B9B` | sub_B9B | — | 718 | 257 | 1 | 9 | ✓ | 待解讀 | — | — | — |
 | `0E69` | sub_E69 | — | 63 | 25 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 63 bytes，已逐條讀完） | — |

@@ -131,15 +131,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 6811,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 25h／26h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 6995,
    "state": "待解讀",
    "level": "",
@@ -19336,6 +19327,51 @@
    "level": "exact",
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
    "note": "兩位數補零(retf 2)：先 14Dh:0052h 把數值轉成字串，n < 0Ah(無號)時在前面接上 CS:0547h 的 '0'，最後 0A54h:0680h(緩衝A, 緩衝B, 1, 2) 取固定寬度再寫回輸出參數。⚠ 補的是 ASCII '0'，換全形數字會讓寬度計算不一致"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 4420,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "暫時借用目前目標欄位(retf 8)：甲為 NIL 回 false、乙=甲 回 true；否則清 DS:6F9Bh、叫 <呼叫>(1, 甲)，未中止就把甲塞進 乙^[18Dh]^[0Ah]、叫 <呼叫>(0, 乙)、再還原，最後回 DS:6F9Bh = 0。⚠ 目前目標欄位同時是參數傳遞通道，中途離開會留下錯誤的目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 2140,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "把 84 格陣列排序(retf，無參數)：對 DS:6506h(目前角色)的 +1Eh 起 84 格做選擇排序，比較時 and 7Fh、交換時整個 byte 一起搬(高位旗標跟著值走)，遞增。固定跑 84×85/2 次比較，沒有提早結束"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 6811,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "腳本流的選擇分派(retf，無參數)：取得 選擇 與 筆數，dec(DS:4FB4h) 後線性找到 選擇 = i 的那一筆；DS:75FFh 為 '%'(25h)時 DS:4FB4h := <呼叫>(byte[76C5h + i+1], byte[7705h + i+1])(等於跳躍)，否則叫 <呼叫>(i+1)。DS:75FFh/DS:4FB4h 就是 spec 759 的 overlay-02:3621h 那組流位置"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 86138,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "繪圖前置(近呼叫 retn 0Eh)：由兩個點陣圖表頭算出 13 個 local(var_8 := 參數A shl 3、var_C := var_8 * 來源^[2]、var_12 := 來源^[2] − 目的^[2] − 參數B、var_E := 目的^[11h] * 參數C，其餘 shl 2)，設 BX/CX 並把三個 local 歸零後跳進 sub_15329h。兩次 sub sp,1Ch 是兩層 local 分開配置"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 86287,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "繪圖前置(近呼叫 retn 0Eh)：與 1507Ah 同一組算式，多讀 目的^[13h] 與 目的^[15h] 兩個欄位，最後跳進 sub_15388h"
   }
  ]
 }

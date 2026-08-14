@@ -8,8 +8,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0000` | sub_0 | — | 72 | 18 | 0 | 10 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B1+2`、`call far ptr sub_1847`、`call far ptr sub_1953`、`call loc_EB5+1`、`call far ptr sub_16BD`（body 共 72 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/pc98-overlay-23.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/572-resident-service-functions.md |
 | `0048` | sub_48 | — | 132 | 55 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `00CC` | sub_CC | — | 554 | 208 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `02F6` | sub_2F6 | — | 130 | 49 | 1 | 2 | ✓ | 待解讀 | — | — | spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md |
-| `0378` | sub_378 | — | 116 | 54 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(方向, y, x)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(反向, y2, x2)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對 | spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md |
+| `02F6` | sub_2F6 | — | 130 | 49 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-10.md<br>spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md |
+| `0378` | sub_378 | — | 116 | 54 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(方向, y, x)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(反向, y2, x2)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對 | audit/function-index/pc98-overlay-10.md<br>spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md |
 | `03EC` | sub_3EC | — | 165 | 78 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0491` | sub_491 | — | 125 | 73 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `050E` | sub_50E | — | 478 | 197 | 1 | 3 | ✓ | 待解讀 | — | — | — |
