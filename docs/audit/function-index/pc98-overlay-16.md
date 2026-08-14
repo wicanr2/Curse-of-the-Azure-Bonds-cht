@@ -6,12 +6,12 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADLOADSAVE | 32 | 10 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-00.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-16.md<br>audit/function-index/dos-overlay-17.md |
-| `0020` | sub_20 | — | 87 | 36 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>C 字串轉 Pascal 字串(retf 4)：0A65h:1B0Dh(Move)與 0A65h:649h(StoreString)，其餘同 DOS overlay-16:0020h，含同一個超出參數區的目的指標 | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-02.md<br>audit/function-index/pc98-overlay-16.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `0020` | sub_20 | — | 87 | 36 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>C 字串轉 Pascal 字串(retf 4)：0A65h:1B0Dh(Move)與 0A65h:649h(StoreString)，其餘同 DOS overlay-16:0020h，含同一個超出參數區的目的指標 | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-02.md<br>audit/function-index/pc98-overlay-15.md<br>audit/function-index/pc98-overlay-16.md |
 | `0079` | sub_79 | — | 214 | 84 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `0164` | sub_164 | — | 1176 | 456 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-25.md<br>spec/760-item-effect-flag-clear-and-file-exists.md |
 | `0614` | sub_614 | LOADCHARLIST | 450 | 204 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `07DC` | sub_7DC | — | 93 | 40 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `08E4` | sub_8E4 | — | 453 | 198 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `08E4` | sub_8E4 | — | 453 | 198 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-33.md |
 | `0B4F` | sub_B4F | CHECKSAVEDRIVE | 920 | 370 | 6 | 4 | ✓ | 待解讀 | — | — | — |
 | `0ECE` | sub_ECE | — | 24 | 9 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 24 bytes，已逐條讀完） | — |
 | `0ED3` | sub_ED3 | — | 46 | 18 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_F0E`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 46 bytes，已逐條讀完） | audit/embedded-strings.md |

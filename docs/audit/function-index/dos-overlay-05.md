@@ -5,12 +5,12 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 57 | 15 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr unk_104A`、`call loc_770`、`call far ptr sub_1184`、`call far ptr loc_16BC+1`、`call loc_69D+2`、`call far ptr loc_15CF+2`（body 共 57 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/overlay-init-graph.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/778-map-four-planes-and-pc98-take-menu.md |
+| `0000` | sub_0 | — | 57 | 15 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr unk_104A`、`call loc_770`、`call far ptr sub_1184`、`call far ptr loc_16BC+1`、`call loc_69D+2`、`call far ptr loc_15CF+2`（body 共 57 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/overlay-init-graph.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/778-map-four-planes-and-pc98-take-menu.md<br>spec/817-opportunity-attack-and-take-menu.md |
 | `0039` | sub_39 | — | 792 | 278 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0351` | sub_351 | — | 491 | 166 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `053C` | sub_53C | — | 1128 | 343 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `0A7E` | sub_A7E | — | 603 | 250 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `0CE6` | sub_CE6 | — | 203 | 90 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `0CE6` | sub_CE6 | — | 203 | 90 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/817-opportunity-attack-and-take-menu.md<br>Take 清單：retf 10h = 四個遠指標，宣告順序 (參數C, 參數8, 參數4, 參數0)。旗標 := 1；<far 01A0h:0000h>（DOS 才有）；掃 DS:6F8Ch 物品鏈（next +2Ah）對每個節點呼叫 <far 14F3h+2>(0,0,0,0,節點,longint 0)；輸出 := <far 16A8h+1>('Items: '(7，結尾空白), 'Take'(4), 0Dh, 0Ah, 0Fh, 1, 1, 26h, 16h, DS:6F8Ch, 1, @旗標, 參數0, 參數4)；參數C^ := al、參數8^ := 參數4^。spec 817 | spec/817-opportunity-attack-and-take-menu.md |
 | `0DB1` | sub_DB1 | — | 270 | 101 | 2 | 4 | ✓ | 待解讀 | — | — | spec/775-take-menu-and-palette-writer.md |
 | `0ED7` | sub_ED7 | — | 79 | 31 | 1 | 4 | ✓ | 已解讀 | exact | docs/spec/775-take-menu-and-palette-writer.md<br>戰利品的 Take: 選單(retf 8，兩個遠指標都指向計數 byte)：任一為 0 就走各自的離開路徑；否則迴圈組出 CS:0EBFh 'Take: '(6 字元含尾隨空白) 與 CS:0EC6h 'Money Items Exit'(單一 16 字元字串)，依按鍵 'M'/'I'/'E' 或 #0 分派，'G'(47h)/'O'(4Fh) 走同一支；每輪結尾更新後，兩個計數任一歸零就結束。⚠ 熱鍵是寫死的 ASCII 大寫字母，選項字面換成中文後會與熱鍵脫節。補洞前這支匯出位移不可靠(spec 756 曾列為未判讀) | audit/function-index/pc98-overlay-05.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/775-take-menu-and-palette-writer.md<br>spec/778-map-four-planes-and-pc98-take-menu.md |
 | `106C` | sub_106C | — | 250 | 86 | 1 | 4 | ✓ | 待解讀 | — | — | — |

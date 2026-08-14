@@ -5,12 +5,12 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADPOSTCOM | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_101A`、`call loc_6DF+1`、`call far ptr loc_1151+3`、`call loc_1696+1`、`call loc_60C+3`、`call far ptr loc_15A0+1`（body 共 57 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/overlay-init-graph.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/778-map-four-planes-and-pc98-take-menu.md |
+| `0000` | sub_0 | LOADPOSTCOM | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_101A`、`call loc_6DF+1`、`call far ptr loc_1151+3`、`call loc_1696+1`、`call loc_60C+3`、`call far ptr loc_15A0+1`（body 共 57 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/overlay-init-graph.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/778-map-four-planes-and-pc98-take-menu.md<br>spec/817-opportunity-attack-and-take-menu.md |
 | `0039` | sub_39 | — | 792 | 278 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0351` | sub_351 | — | 478 | 165 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `052F` | sub_52F | — | 1121 | 341 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `0A5C` | sub_A5C | — | 632 | 263 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `0CE9` | sub_CE9 | — | 227 | 100 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `0CE9` | sub_CE9 | — | 227 | 100 | 1 | 4 | ✓ | 已解讀 | exact | docs/spec/817-opportunity-attack-and-take-menu.md<br>Take 清單：retf 10h = 四個遠指標，宣告順序 (參數C, 參數8, 參數4, 參數0)。旗標 := 1；掃 DS:0A026h 物品鏈（next +52h）對每個節點呼叫 <far 14F3h+2>(0,0,0,0,節點,longint 0)；輸出 := <far 16A8h+1>('アイテム'(8 bytes), '取る'(4 bytes), 0Dh, 0Ah, 0Fh, 1, 1, 26h, 16h, DS:0A026h, 1, @旗標, 參數0, 參數4)；參數C^ := al、參數8^ := 參數4^。spec 817 PC-98 另外把熱鍵與標籤分開存：mov byte ds:0A33Ah, 54h（'T'）與 Move(' 取る '(6 bytes), DS:0A362h, 6)。 | — |
 | `0DCC` | sub_DCC | — | 275 | 102 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0F0F` | sub_F0F | — | 265 | 107 | 1 | 6 | ✓ | 已解讀 | exact | docs/spec/778-map-four-planes-and-pc98-take-menu.md<br>取る：戰利品選單(retf 8)：與 DOS overlay-05:0ED7h(spec 775)同結構。提示 CS:0EDFh '取る：'、選項 CS:0EE6h '   お金   ｱｲﾃﾑ                やめる    '(40 bytes，靠半形空白排版)。⚠ 熱鍵仍是 ASCII 的 'M'/'I'/'E'，標籤換成日文而比對不動 — 中文版可照此作法；捲動鍵 DOS 用 'G'/'O'(Home/End 掃描碼)，PC-98 改用 '8'/'2'(數字鍵盤上下) | spec/778-map-four-planes-and-pc98-take-menu.md |
 | `1072` | sub_1072 | — | 168 | 65 | 1 | 1 | ✓ | 待解讀 | — | — | — |
