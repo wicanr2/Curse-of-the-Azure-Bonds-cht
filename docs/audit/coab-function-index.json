@@ -9288,7 +9288,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "戰場地形：畫一道兩格寬的斜向障礙(retf，無參數)。機率由 98Dh() 的位元決定（bit 20h → 35%、bit 10h → 75% 覆蓋），1d100 超過就不畫。起始欄 = 22h − 5d4 再往下對齊到 (x+2) mod 7 = 0（結果落在 12/19/26）。每列 y 0..23 放 3Bh+1d2 與 3Dh+1d2 兩格後 x 加 1；另有 1/20 機率叫 9A8h(x,y) 加點綴。索引 DS:6E92h^[y*32h + x + 7] 證實 spec 749 的 50 欄 × 24 列、資料從 +7 起。var_2 是死存",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
@@ -21841,6 +21844,7 @@
    "spec": "852",
    "note": "填目標清單(retf 6，(角色, 半徑))：18ADh+1 先把附近戰鬥員收進 DS:6E92h 那塊（+4 筆數、+5 起每筆 3 bytes），再依 +197h 陣營過濾並用 Move 往前壓實，最後只把每筆的索引抄到 DS:758Eh+k。★這就是 spec 815/833/838 那張目標清單的來源",
    "citations": [
+    "audit/function-index/pc98-overlay-24.md",
     "spec/852-target-list-source.md"
    ]
   },
@@ -22081,6 +22085,7 @@
    "spec": "853",
    "note": "種族的職業等級上限(retf 6，(角色, 職業索引))：+74h 種族碼 0 無上限、1..5 各一組；門檻用 +11h 的 11h/12h(17/18)。種族 5 = Halfling（Fighter 4/5/6）、種族 4 = Half-elf（Fighter 6/7/8 且 Cleric 5）可直接對上 AD\u0026D。⚠ 判定是 lv = 上限 而非 \u003e=，超過就不再回報",
    "citations": [
+    "audit/function-index/pc98-overlay-24.md",
     "spec/853-racial-level-limits.md"
    ]
   },
@@ -22501,10 +22506,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-24.md",
     "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-25.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -23632,7 +23637,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "854",
+   "note": "視線的 Bresenham 逐格推進(retf 4)：狀態記錄 +04h/+06h 終點、+08h 誤差、+0Ah/+0Ch 主軸判斷、+0Eh/+10h 目前座標、+12h/+14h 步進、+16h 累計步數（直走+2、斜走+3，與 spec 837 的移動花費同一套半格度量）、+17h 方向碼（查 DS:2558h 3×3 表）",
+   "citations": [
+    "spec/854-bresenham-stepper-and-direction-encoding.md"
+   ]
   },
   {
    "platform": "dos",
@@ -34082,7 +34093,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "同 DOS overlay-10:009FEh（module_align 對齊，助憶碼序列完全相同）。7 條差異全是呼叫目標與 DS:9F2Ch↔6E92h",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -49496,7 +49510,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "854",
+   "note": "同 DOS overlay-31:00246h（同位址）。整支只差一條表基底 DS:47E6h↔2558h，表內容逐 byte 相同",
+   "citations": [
+    "spec/854-bresenham-stepper-and-direction-encoding.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50434,9 +50454,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -50749,9 +50769,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 2999,
    "Undefined": 0,
@@ -50989,9 +51009,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
@@ -51304,9 +51324,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 2988,
    "Undefined": 0,

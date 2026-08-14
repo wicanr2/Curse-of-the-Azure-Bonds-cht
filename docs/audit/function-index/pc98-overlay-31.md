@@ -9,7 +9,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0007` | sub_7 | SGN | 46 | 17 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>Sign(x: integer): integer(retf 2)：x<0→−1、x>0→1、x=0→0，有號比較。與 DOS 同位址那支 45 個 byte 完全相同 | audit/function-index/dos-overlay-31.md<br>audit/function-index/pc98-overlay-24.md<br>spec/753-small-utility-routines.md<br>spec/787-bresenham-record-and-edge-clamp.md |
 | `0035` | sub_35 | — | 360 | 148 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/pc98-overlay-12.md |
 | `019D` | sub_19D | STARTVECTOR | 169 | 58 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>Bresenham 走線初始化(retf 4)：與 DOS overlay-31:019Dh 58 條**逐位元組相同**，無任何運算元差異 | audit/function-index/dos-overlay-12.md<br>audit/function-index/pc98-overlay-12.md<br>audit/function-index/pc98-overlay-31.md<br>spec/787-bresenham-record-and-edge-clamp.md |
-| `0246` | sub_246 | STEPVECTOR | 420 | 132 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `0246` | sub_246 | STEPVECTOR | 420 | 132 | 1 | 1 | ✓ | 已解讀 | exact | 854<br>同 DOS overlay-31:00246h（同位址）。整支只差一條表基底 DS:47E6h↔2558h，表內容逐 byte 相同 | spec/854-bresenham-stepper-and-direction-encoding.md |
 | `03EA` | sub_3EA | LOSEXISTS | 352 | 144 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `054A` | sub_54A | INARC | 910 | 410 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `08D8` | sub_8D8 | SCAN | 717 | 294 | 0 | 4 | ✓ | 待解讀 | — | — | — |
