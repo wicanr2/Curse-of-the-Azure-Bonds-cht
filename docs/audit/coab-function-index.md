@@ -53,11 +53,11 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 1011、不阻塞 29、邊界碎片 338、待解讀 110；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 1012、不阻塞 29、邊界碎片 338、待解讀 109；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| PC98-GAME.EXE | — | 333 | 268 | 29 | 25 | 11 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
+| PC98-GAME.EXE | — | 333 | 269 | 29 | 25 | 10 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
 | overlay-00 | MEMORY | 2 | 1 | 0 | 1 | 0 | 77 | 2 | [明細](function-index/pc98-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 3 | 0 | 1 | 0 | 2002 | 726 | [明細](function-index/pc98-overlay-01.md) |
 | overlay-02 | INTERPET | 86 | 58 | 0 | 28 | 0 | 14044 | 266 | [明細](function-index/pc98-overlay-02.md) |
