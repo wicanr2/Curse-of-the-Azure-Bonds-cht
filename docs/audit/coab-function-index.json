@@ -6849,6 +6849,7 @@
    "spec": "1030",
    "note": "營地(Camp)主選單。DS:4FBAh:=1；FillChar(DS:6F70h,1Ch,0)(公用池 7 個 longint 每次進營地歸零)；迴圈裡先 overlay-21 entry#14 問公用池有沒有錢，據此在 'Heal View Take Pool Share Appraise Exit'(39)與 'Heal View Pool Appraise Exit'(28)之間二選一，交給 overlay-26:003D4h。分支：H=sub_B12、V=overlay-19 entry#5(spec 1028)、T=overlay-21 entry#8、P=entry#5(spec 798)、S=entry#7(spec 858)、A=entry#19(spec 1018)、G/O=overlay-19 entry#10 換角色(spec 794)、E=離開。★★★ 離開時若公用池還有錢，印兩句祭司訊息('As you leave a priest says…'74 + 'Do you want to go back…'47，分兩次呼叫不是一句)再問 '~Yes ~No' —— ★★★ 波浪號標記熱鍵，是 DOS 側第二套熱鍵慣例，與大寫字母那套並存。回應=1 才離開 ⇒ 提示回傳 0 起算索引(0=Yes=留下、1=No=離開)，中斷同 Yes。★★ 被呼叫端 retf 16h 但呼叫端只看得到 18 bytes 推入：0A54:0634h 把來源寫進先前推入的目的位址、只彈掉來源，把目的指標留在堆疊當外層第一個參數 —— Turbo Pascal 傳暫存字串參數的產碼慣例，只數呼叫端推入次數會少算 4 bytes。選單本身收兩行選項(各上限 40)＋5 個 byte＋1 個輸出旗標",
    "citations": [
+    "audit/function-index/pc98-overlay-04.md",
     "audit/function-strings.md",
     "spec/1030-camp-menu.md"
    ]
@@ -7342,9 +7343,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1031",
+   "note": "商店版營地選單，與 spec 1030 的 overlay-04:00DD6h 同一支版面(逐條比對只差開頭一段與字串)：'Heal'→'Buy'(熱鍵 H→B)、'Exit' 的日文由「やめる」改「抜ける」、說話的人由 priest 改 Shopkeeper。★ 多出來的前置：走公用池第 8 格 DS:6F8Ch 的物品鏈，每個叫 overlay-24 entry#1(0,0,0,0,物品,0)，next 在 +2Ah(PC-98 +52h，差 28h) —— 第三次確認物品節點 DOS 63/PC-98 103 bytes；也確認 DS:6F70h 八格是『七種貨幣 longint ＋ 第八格物品鏈頭』。★★ 這支用 mov [bp+var_2B],0 在迴圈外把空字串的長度 byte 設 0，推入次數與被呼叫端 retf 16h 直接對得上 —— 獨立確認 spec 1030 那條『0A54:0634h 把目的指標留在堆疊當第一個參數』的產碼慣例，選單參數表 ＝ 兩行選項字串 ＋ 5 個 byte ＋ 1 個輸出旗標。字串：'Buy View Take Pool Share Appraise Exit'(38)／'Buy View Pool Appraise Exit'(27)／'~Yes ~No'(8)／'As you Leave the Shopkeeper says, \"Excuse me but you have Left Some Money here.\"  '(82，結尾兩個空白)／'Do you want to go back and get your Money?'(42)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1031-shop-camp-menu.md"
    ]
   },
   {
@@ -23877,6 +23882,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-26.md",
     "spec/1023-scrolling-list-menu.md",
     "spec/1030-camp-menu.md",
@@ -33636,9 +33642,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1031",
+   "note": "商店版營地選單，同 DOS overlay-06:006F6h。熱鍵一樣整塊 Move 10 bytes 進 DS:0A335h：DS:0642h='B V T P S A _ _ _ E'(有寶物)、DS:064Ch='B V _ P _ A _ _ _ E'(沒寶物)。★★★ 離開的 Yes/No 熱鍵塊 DS:0656h='A'…'B' —— 而 spec 1030 的營地版是 DS:0570h='Y'…'B'。同一句提示、兩處熱鍵不同，是原作的不一致(兩塊常數相隔 0F6h，逐 byte 不同)，中文化要照抄各自的塊不能統一。★ 空槽填法也不同：營地用半形空白×6、這裡用全形空白 81 40×3，但兩邊長度 byte 都是 06 —— 第二次確認『一格 ＝ 容量固定 6 bytes 的短字串』。選項列 80 bytes = 80 欄，起始位移 5/11/18/25/32/42/70 在兩個變體固定：買う／ｷｬﾗｸﾀｰ／金戻す／金集ﾒﾙ／金分ｹﾙ／見積る／抜ける。訊息「きみたちが行こうとすると、店主が呼び止めた。…」(66)＋「引き返してお金を取りますか？」(28) —— ⚠ 後句與營地版逐 byte 相同，但 DOS 兩句不同(retrieve your money? vs get your Money?)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1031-shop-camp-menu.md"
    ]
   },
   {
@@ -53233,9 +53243,9 @@
    "Module": "overlay-06",
    "Unit": "SHOP",
    "Functions": 6,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 2146,
    "Undefined": 274,
@@ -53788,9 +53798,9 @@
    "Module": "overlay-06",
    "Unit": "SHOP",
    "Functions": 8,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 2,
    "CodeBytes": 2363,
    "Undefined": 283,

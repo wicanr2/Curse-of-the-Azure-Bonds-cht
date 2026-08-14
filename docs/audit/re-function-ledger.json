@@ -25906,6 +25906,24 @@
    "level": "exact",
    "spec": "1030",
    "note": "營地(Camp)主選單，同 DOS overlay-04:00DD6h。★★★ 熱鍵不是一格一格寫，而是從常駐資料段整塊 Move 10 bytes 進 DS:0A335h：DS:055Ch='H V T P S A _ _ _ E'(有寶物)、DS:0566h='H V _ P _ A _ _ _ E'(沒寶物) —— PC-98 把選項文字全換成日文卻原封保留 DOS 的英文大寫熱鍵，這正是熱鍵表獨立於文字的成因；用不到的選項換成空白(不可選，spec 990)而非移除，槽位索引固定。★★★ 離開的 Yes/No 同樣整塊搬：Move(DS:057Ah, DS:0A33Fh, 46h) 與 Move(DS:0570h, DS:0A335h, 0Ah)；DS:057Ah 的 70 bytes = 10 格 × 7 bytes，每格第一個 byte 一律 06 ⇒ 選項文字陣列 DS:0A338h+i*7 的一格就是『容量固定 6 bytes 的 Turbo Pascal 短字串』，把 spec 755/1012/1013/1022/1023/1028 的『6 bytes = 3 全形字』從觀察升級成結構。熱鍵 Y(はい)/B(いいえ) —— No 那格換了字母。選項：治療/ｷｬﾗｸﾀｰ/金戻す/金集ﾒﾙ/金分ｹﾙ/見積る/やめる，整列 80 bytes = 80 欄。★ 換角色鍵 '8'/'2'。⚠ PC-98 少了開場那次 overlay-24 entry#37 重繪 ⇒ DS:0BDE6h 的條件計算算完立刻被 1 覆蓋，是廢碼"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-06",
+   "ea": 1782,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1031",
+   "note": "商店版營地選單，與 spec 1030 的 overlay-04:00DD6h 同一支版面(逐條比對只差開頭一段與字串)：'Heal'→'Buy'(熱鍵 H→B)、'Exit' 的日文由「やめる」改「抜ける」、說話的人由 priest 改 Shopkeeper。★ 多出來的前置：走公用池第 8 格 DS:6F8Ch 的物品鏈，每個叫 overlay-24 entry#1(0,0,0,0,物品,0)，next 在 +2Ah(PC-98 +52h，差 28h) —— 第三次確認物品節點 DOS 63/PC-98 103 bytes；也確認 DS:6F70h 八格是『七種貨幣 longint ＋ 第八格物品鏈頭』。★★ 這支用 mov [bp+var_2B],0 在迴圈外把空字串的長度 byte 設 0，推入次數與被呼叫端 retf 16h 直接對得上 —— 獨立確認 spec 1030 那條『0A54:0634h 把目的指標留在堆疊當第一個參數』的產碼慣例，選單參數表 ＝ 兩行選項字串 ＋ 5 個 byte ＋ 1 個輸出旗標。字串：'Buy View Take Pool Share Appraise Exit'(38)／'Buy View Pool Appraise Exit'(27)／'~Yes ~No'(8)／'As you Leave the Shopkeeper says, \"Excuse me but you have Left Some Money here.\"  '(82，結尾兩個空白)／'Do you want to go back and get your Money?'(42)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-06",
+   "ea": 1912,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1031",
+   "note": "商店版營地選單，同 DOS overlay-06:006F6h。熱鍵一樣整塊 Move 10 bytes 進 DS:0A335h：DS:0642h='B V T P S A _ _ _ E'(有寶物)、DS:064Ch='B V _ P _ A _ _ _ E'(沒寶物)。★★★ 離開的 Yes/No 熱鍵塊 DS:0656h='A'…'B' —— 而 spec 1030 的營地版是 DS:0570h='Y'…'B'。同一句提示、兩處熱鍵不同，是原作的不一致(兩塊常數相隔 0F6h，逐 byte 不同)，中文化要照抄各自的塊不能統一。★ 空槽填法也不同：營地用半形空白×6、這裡用全形空白 81 40×3，但兩邊長度 byte 都是 06 —— 第二次確認『一格 ＝ 容量固定 6 bytes 的短字串』。選項列 80 bytes = 80 欄，起始位移 5/11/18/25/32/42/70 在兩個變體固定：買う／ｷｬﾗｸﾀｰ／金戻す／金集ﾒﾙ／金分ｹﾙ／見積る／抜ける。訊息「きみたちが行こうとすると、店主が呼び止めた。…」(66)＋「引き返してお金を取りますか？」(28) —— ⚠ 後句與營地版逐 byte 相同，但 DOS 兩句不同(retrieve your money? vs get your Money?)"
   }
  ]
 }
