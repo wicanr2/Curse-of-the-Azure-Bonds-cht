@@ -22495,6 +22495,24 @@
    "level": "exact",
    "spec": "856",
    "note": "同 DOS overlay-19:022A3h（module_align 對齊，助憶碼序列完全相同）。差異全是物品節點位移（PC-98 大 28h：+56h..+66h↔+2Eh..+3Eh、+61h↔+39h）與 DS:9594h↔6506h、+14Eh↔+14Dh。★同一個效果槽比對 bug 兩平台都有"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 1415,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "讀 +300h 平面的 2-bit 牆面欄位(retf 6，宣告順序 (x, y, 方向))：與 spec 778 的 4-bit 讀取端同一套前置（0556h 範圍檢查、DS:8B5Eh 為 0 或 0Ah 才放行、座標在 0..0Fh 之外環繞）。預設回 1；先叫 sub_6BDh（＝ spec 778 那支）確認該格非 0，才從 DS:7206h^[300h + (y shl 4) + x] 取 2 bits——方向 6 取 bit 6-7、4 取 4-5、2 取 2-3、0 取 0-1，正是 spec 781 設定端寫入的同一組欄位"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 1246,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "781",
+   "note": "同 DOS overlay-30:00587h（module_align 對齊，相似度 0.996）。唯一序列差異是 DOS 多一條 xor ah, ah，其餘只差一條呼叫目標"
   }
  ]
 }
