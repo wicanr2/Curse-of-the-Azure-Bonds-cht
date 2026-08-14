@@ -23701,6 +23701,42 @@
    "level": "exact",
    "spec": "906",
    "note": "同 DOS overlay-22:04BECh，但★兩個選單各前面多一段熱鍵字串指派(DS:1589h+1 與 DS:1594h 各 10 bytes → DS:0A335h)，與 spec 865/871/877/879/885 同一模式。角色記錄 +198h↔+199h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 7913,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "907",
+   "note": "裝備物品的檢查(retf 4，物品；對象是 遠指標(DS:6506h))：已裝備(+34h≠0)時 +36h≠0 就印卸不下來(詛咒)否則清 +34h；否則四道檢查——①byte[5CF7h+類*10h] + 角色^[185h] > 2(手不夠) ②槽 := byte[5CF6h+類*10h]，0..8 查 +151h+槽*4、9 查 +179h、類 49h 查 +17Dh、類 1Ch 查 +181h(已佔用) ③(byte[5D03h+類*10h] and 角色^[12Bh]) = 0(職業不能用)。都通過就 +34h := 1。★補齊 spec 691 的 DS:5CF6h 物品類別表：+0 裝備槽、+1 佔用手數、+0Dh 職業遮罩。★+36h = 詛咒(卸不下來)。⚠手不夠時若在戰鬥中且 +198h≠0 就不印訊息"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 7854,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "907",
+   "note": "同 DOS overlay-19:01EE9h。物品節點 +34h/+36h/+3Eh/+2Eh↔+5Ch/+5Eh/+66h/+56h(spec 832 的 +28h 位移)；槽的範圍檢查 DOS 用有號 jl/jg、PC-98 用無號 jb/ja(值域 0..255 結果相同)；多一次字串串接"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 4443,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "908",
+   "note": "把單位放到地圖上(retf 0Ah，(旗標, 座標B, 座標A, 戰鬥員))：DS:4FBAh≠5 直接回 1；否則把體型(+0DEh and 7Fh)與座標寫進 DS:66A3h 快取，叫 0D06h(spec 896 探一步，方向 8=原地)，有 1Ch 格/地形 0/移動成本 0FFh 就把體型清 0 表示不在場上；成功且旗標成立時先掃 DS:6E52h(每筆 7 bytes：+0 遠指標、+4/+5 座標、+6 原地形，1Fh 哨兵；筆數 DS:6E91h)把自己的備份清掉並取回原地形，新位置沒有別人的備份才把原地形寫回 遠指標(DS:6E92h)^[7 + 座標B*32h + 座標A]"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 6163,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "908",
+   "note": "同 DOS overlay-32:0115Bh（助憶碼序列完全相同）。22 條差異全是位址：DS:66A3h↔−68C3h、DS:6E52h↔−6114h、DS:6E91h↔9F2Bh、DS:6E92h↔9F2Ch、+18Dh↔+18Eh"
   }
  ]
 }

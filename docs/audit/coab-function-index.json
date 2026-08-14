@@ -8069,6 +8069,7 @@
    "spec": "905",
    "note": "戰鬥行動選單(retf 8，(var 選到的鍵, 角色))：依狀態動態串接選項——+18Dh^[6] \u003e 0 接 'Move '、無條件接 'View Aim '、+14Ch \u003e 0 接 'Use '、(掃 +1Eh..+71h 有記憶法術 且 +18Dh^[1]≠0 且 遠指標(DS:4F99h)^[1CAh]=0) 接 'Cast '、(牧師 +109h\u003e0 或 +111h\u003e0 且 160h:52h) 且 +18Dh^[11h]=0 接 'Turn '，最後接 'Quick Done'；167h:2Fh 收鍵，不在合法表就歸 0，直到按到結束鍵。★關掉 spec 834 的 +18Dh^[11h]：那是『這回合已經驅散過』，用過就從選單消失",
    "citations": [
+    "audit/function-index/pc98-overlay-08.md",
     "audit/function-strings.md",
     "spec/905-combat-action-menu.md"
    ]
@@ -15742,7 +15743,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cbw`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cbw`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16783,7 +16787,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/907-equip-item-checks.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16796,9 +16803,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "907",
+   "note": "裝備物品的檢查(retf 4，物品；對象是 遠指標(DS:6506h))：已裝備(+34h≠0)時 +36h≠0 就印卸不下來(詛咒)否則清 +34h；否則四道檢查——①byte[5CF7h+類*10h] + 角色^[185h] \u003e 2(手不夠) ②槽 := byte[5CF6h+類*10h]，0..8 查 +151h+槽*4、9 查 +179h、類 49h 查 +17Dh、類 1Ch 查 +181h(已佔用) ③(byte[5D03h+類*10h] and 角色^[12Bh]) = 0(職業不能用)。都通過就 +34h := 1。★補齊 spec 691 的 DS:5CF6h 物品類別表：+0 裝備槽、+1 佔用手數、+0Dh 職業遮罩。★+36h = 詛咒(卸不下來)。⚠手不夠時若在戰鬥中且 +198h≠0 就不印訊息",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/907-equip-item-checks.md"
    ]
   },
   {
@@ -20281,6 +20292,7 @@
    "spec": "906",
    "note": "選火焰種類(retf，無參數)：遠指標(DS:6506h)^[198h] ≠ 0 時★跳過選單改用 1d10 決定(\u003e5 Hot 否則 Cold)，否則用 169Fh 以 'flame type: '/'Hot Cold' 讓玩家選；'H' 掛效果碼 32h、'C' 掛 36h，兩條都再掛共用的 8Fh；按到其他鍵就用 'Abort spell? '/'Yes No' 追問，按 'Y' 才結束、否則回到第一個選單重問",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "spec/906-flame-type-choice.md"
    ]
@@ -21991,6 +22003,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_16E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
     "spec/894-party-member-picker.md"
    ]
@@ -24306,11 +24319,11 @@
    "note": "二維表查一對 byte(retf 0Ch)：第二索引為 0 就回 false；i := 第二索引*8 + 第一索引*2；輸出A^ := byte[27A2h+i]、輸出B^ := byte[27A3h+i]；輸出A^ \u003e= 0(有號)才回 true。DS:27A2h 是每列 8 bytes、每格 2 bytes 的表(一列四格)",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-08.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -24430,7 +24443,8 @@
    "spec": "852",
    "note": "建立戰場佔位圖(retf，無參數)：先 FillChar(DS:6857h, 4E2h=1250=50×25, 0)，再走 1..DS:66A6h 個戰鬥員，對每個叫 sub_11h(k=0..3, 體型) 取相對格位，把索引寫進 DS:6857h[y*32h+x]。★DS:66A3h 每筆 4 bytes 的記錄補完：+0 x、+1 y、+3 體型（佔幾格），而 DS:66A6h 本身（entry 0 的 +3）就是戰鬥員總數。另把相對於 DS:6E92h^[2]/^[3] 的偏移寫進 DS:67C6h+i 與 DS:680Eh+i",
    "citations": [
-    "audit/function-index/pc98-overlay-32.md"
+    "audit/function-index/pc98-overlay-32.md",
+    "spec/908-place-unit-on-map.md"
    ]
   },
   {
@@ -24689,7 +24703,8 @@
    "note": "探一步(retf 16h，五個 var 參數)：用 0CAEh 取得自己是誰，從 DS:66A3h 座標快取取基準座標與體型，對最多 4 格各算『方向位移(2694h/269Dh) + 格偏移 + 基準』，叫 0509h 查地形與佔用者；佔用者不是自己就回填『撞到誰』；地形 0 代表不能通行(整步作廢)、1Eh/1Ch 各回填一個旗標(就是 spec 862 的兩種雲)、其餘取 DS:26A2h 地形表 +0 移動成本的最大值回填『最貴地形』",
    "citations": [
     "audit/function-index/pc98-overlay-32.md",
-    "spec/896-probe-next-step.md"
+    "spec/896-probe-next-step.md",
+    "spec/908-place-unit-on-map.md"
    ]
   },
   {
@@ -24716,7 +24731,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "908",
+   "note": "把單位放到地圖上(retf 0Ah，(旗標, 座標B, 座標A, 戰鬥員))：DS:4FBAh≠5 直接回 1；否則把體型(+0DEh and 7Fh)與座標寫進 DS:66A3h 快取，叫 0D06h(spec 896 探一步，方向 8=原地)，有 1Ch 格/地形 0/移動成本 0FFh 就把體型清 0 表示不在場上；成功且旗標成立時先掃 DS:6E52h(每筆 7 bytes：+0 遠指標、+4/+5 座標、+6 原地形，1Fh 哨兵；筆數 DS:6E91h)把自己的備份清掉並取回原地形，新位置沒有別人的備份才把原地形寫回 遠指標(DS:6E92h)^[7 + 座標B*32h + 座標A]",
+   "citations": [
+    "spec/908-place-unit-on-map.md"
+   ]
   },
   {
    "platform": "dos",
@@ -43232,9 +43253,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "907",
+   "note": "同 DOS overlay-19:01EE9h。物品節點 +34h/+36h/+3Eh/+2Eh↔+5Ch/+5Eh/+66h/+56h(spec 832 的 +28h 位移)；槽的範圍檢查 DOS 用有號 jl/jg、PC-98 用無號 jb/ja(值域 0..255 結果相同)；多一次字串串接",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/907-equip-item-checks.md"
    ]
   },
   {
@@ -50605,11 +50630,11 @@
    "note": "二維表查一對 byte(retf 0Ch)：與 DOS overlay-32:0011h 41 條同形，僅表位址為 DS:49ACh/49ADh(差異 2 條，已逐條列出)",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-08.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -51017,7 +51042,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "908",
+   "note": "同 DOS overlay-32:0115Bh（助憶碼序列完全相同）。22 條差異全是位址：DS:66A3h↔−68C3h、DS:6E52h↔−6114h、DS:6E91h↔9F2Bh、DS:6E92h↔9F2Ch、+18Dh↔+18Eh",
+   "citations": [
+    "spec/908-place-unit-on-map.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51618,9 +51649,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -51813,9 +51844,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 21,
+   "Read": 22,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -52173,9 +52204,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
@@ -52368,9 +52399,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 21,
+   "Read": 22,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
