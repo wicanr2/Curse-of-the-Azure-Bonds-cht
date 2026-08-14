@@ -22615,7 +22615,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "884",
+   "note": "轉職資格檢查(retf 4；arg_0 是父框架指標的巢狀程序，arg_2 是候選職業碼)：①候選 byte[3FF8h+種族*0Eh+DS:7747h] 不能等於 12EEh(角色) 的現職；②現職的需求屬性(DS:4172h 每列 6，值≥9 表示有要求)全部要 \u003e 0Eh(≥15)；③候選的同樣要求全部要 \u003e 10h(≥17)；④角色^[11Bh] 要在 DS:41D8h+候選*0Ah 的陣營清單裡。★15/17 正是 AD\u0026D 一版 dual-class 門檻。★三張表全部解出並逐格對上 AD\u0026D。⚠DOS 側 0E71h/0E86h 兩處反組譯錯位，由 PC-98 校正",
+   "citations": [
+    "spec/884-dual-class-eligibility.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22672,7 +22678,8 @@
    "citations": [
     "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-25.md",
-    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+    "spec/884-dual-class-eligibility.md"
    ]
   },
   {
@@ -24555,9 +24562,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/pc98-overlay-33.md",
     "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/883-load-24x24-set.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
   {
@@ -24577,11 +24584,11 @@
    "note": "Load24x24Set(retf 0Ah，(檔名, 資源編號, 目的起始, 筆數))：★錯誤訊息 'Start range error in Load24x24Set' 直接給出原始函式名。目的起始 \u003e 30h(48) 就印訊息並收場；297h:11Bh 載入後 Move(圖^[17h], 遠指標(DS:65CEh)^[17h + 目的起始×圖^[11h]], 筆數×圖^[11h])，再釋放。⚠只檢查起始、不檢查『起始＋筆數』，起始 40 筆數 20 會寫出界；錯誤路徑也不是 return 而是直接收場",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-33.md",
     "audit/function-strings.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/781-put8x8symbol-and-wall-bit-set.md",
-    "spec/874-two-slot-resource-cache.md"
+    "spec/781-put8x8symbol-and-wall-bit-set.md"
    ]
   },
   {
@@ -48843,10 +48850,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "884",
+   "note": "同 DOS overlay-25:00D2Fh，9 條差異全是表基底與近呼叫位址(3FF8h↔708Dh、4172h↔7207h、41D8h↔726Dh、DS:7747h↔0A9D9h)。★PC-98 側是正確的反組譯，用來校正 DOS 的兩處錯位",
    "citations": [
     "audit/function-index/pc98-overlay-26.md",
-    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+    "spec/884-dual-class-eligibility.md"
    ]
   },
   {
@@ -50735,9 +50746,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/pc98-overlay-33.md",
     "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/883-load-24x24-set.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
   {
@@ -51371,9 +51382,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 15,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 4931,
    "Undefined": 733,
@@ -51926,9 +51937,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 14,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 5200,
    "Undefined": 167,
