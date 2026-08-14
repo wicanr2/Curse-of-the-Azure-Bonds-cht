@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 62 | 17 | 0 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md |
+| `0000` | sub_0 | — | 62 | 17 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/751-overlay-init-chain-dependency-graph.md<br>unit 初始化段(retf，不收參數)：依序呼叫 11 個相依 unit 的 0000h — overlay-24、overlay-19、overlay-22、overlay-23、overlay-29、overlay-33、overlay-16、overlay-26、overlay-32、overlay-34、overlay-25。由原始 bytes 解出(IDA 匯出在此漏 byte) | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/overlay-init-graph.md |
 | `003E` | sub_3E | — | 415 | 87 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `01DD` | sub_1DD | — | 1445 | 363 | 0 | 11 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1F8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1445 bytes，已逐條讀完） | — |
 | `0782` | sub_782 | — | 2622 | 999 | 1 | 7 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-17.md<br>audit/function-triage.md |
@@ -43,4 +43,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4A12` | sub_4A12 | — | 256 | 98 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `4B12` | sub_4B12 | — | 344 | 126 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `4D2A` | sub_4D2A | — | 2450 | 756 | 2 | 10 | ✓ | 待解讀 | — | — | — |
-| `56BC` | sub_56BC | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `56BC` | sub_56BC | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/752-empty-procedures.md<br>空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取 | spec/752-empty-procedures.md |

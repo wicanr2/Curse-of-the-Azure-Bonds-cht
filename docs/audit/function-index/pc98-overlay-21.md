@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADMONEY | 23 | 6 | 0 | 4 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19CA`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `0000` | sub_0 | LOADMONEY | 23 | 6 | 0 | 4 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19CA`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md |
 | `001B` | sub_1B | MAXIUMWEIGHT | 32 | 12 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>回傳 <far 0176:0A31>(arg_0,arg_2) + 5DCh(1500) | audit/function-index/dos-overlay-21.md<br>spec/637-overlay21-small-batch.md |
 | `003B` | sub_3B | LOSEWEIGHT | 28 | 10 | 3 | 0 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>arg_2^[188h] -= arg_0(word)。與 0057h 逐指令相同只差 sub/add,兩支都不做上下限檢查——減到負數會回捲 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-21.md<br>audit/function-index/pc98-overlay-21.md<br>spec/637-overlay21-small-batch.md |
 | `0057` | sub_57 | GAINWEIGHT | 28 | 10 | 4 | 0 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>arg_2^[188h] += arg_0(word)。與 003Bh 成對 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-21.md<br>audit/function-index/pc98-overlay-21.md<br>spec/637-overlay21-small-batch.md |

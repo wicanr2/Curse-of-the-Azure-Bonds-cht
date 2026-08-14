@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADLIBRARY | 57 | 15 | 0 | 8 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_1695+2`、`call far ptr sub_17B7`、`call far ptr loc_11C4+3`、`call sub_147D`、`call far ptr sub_1154`、`call far ptr loc_1083+1`（body 共 57 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `0000` | sub_0 | LOADLIBRARY | 57 | 15 | 0 | 8 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_1695+2`、`call far ptr sub_17B7`、`call far ptr loc_11C4+3`、`call sub_147D`、`call far ptr sub_1154`、`call far ptr loc_1083+1`（body 共 57 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-12.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md |
 | `0098` | sub_98 | SHOWACTIVECHAR | 1305 | 537 | 4 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `05B1` | sub_5B1 | SHOWLOOT | 189 | 82 | 4 | 2 | ✓ | 待解讀 | — | — | — |
 | `069E` | sub_69E | SHOWACTIVECOMBATSTUFF | 784 | 332 | 1 | 2 | ✓ | 待解讀 | — | — | — |

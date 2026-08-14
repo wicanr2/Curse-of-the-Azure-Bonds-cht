@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 62 | 16 | 0 | 8 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1046+4`、`call loc_18B2+1`、`call far ptr loc_1951+2`、`call far ptr sub_1847`、`call far ptr loc_16BC+1`、`call far ptr sub_15D1`（body 共 62 bytes，已逐條讀完） | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/583-ledger-denominator-repair.md |
+| `0000` | sub_0 | — | 62 | 16 | 0 | 8 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1046+4`、`call loc_18B2+1`、`call far ptr loc_1951+2`、`call far ptr sub_1847`、`call far ptr loc_16BC+1`、`call far ptr sub_15D1`（body 共 62 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>context/50-log-2026-08-09-13.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/583-ledger-denominator-repair.md<br>spec/751-overlay-init-chain-dependency-graph.md |
 | `004D` | sub_4D | — | 512 | 186 | 0 | 14 | ✓ | 待解讀 | — | — | — |
 | `024D` | sub_24D | — | 100 | 33 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `02B1` | sub_2B1 | — | 256 | 96 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
@@ -42,4 +42,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18A9` | sub_18A9 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-0Eh], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1921` | sub_1921 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 10h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1926` | sub_1926 | — | 664 | 206 | 2 | 6 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1681h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
-| `1BC6` | sub_1BC6 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `1BC6` | sub_1BC6 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/752-empty-procedures.md<br>空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取 | spec/752-empty-procedures.md |

@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADTEMPLE | 52 | 14 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call far ptr loc_1153+1`、`call far ptr sub_101A`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call loc_6DC+4`、`call far ptr 19Ah:2Ah`（body 共 52 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/string-pairs.md |
+| `0000` | sub_0 | LOADTEMPLE | 52 | 14 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call far ptr loc_1153+1`、`call far ptr sub_101A`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call loc_6DC+4`、`call far ptr 19Ah:2Ah`（body 共 52 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md |
 | `0051` | sub_51 | — | 99 | 42 | 6 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0103` | sub_103 | — | 368 | 139 | 7 | 3 | ✓ | 待解讀 | — | — | — |
 | `02A3` | sub_2A3 | — | 134 | 53 | 1 | 3 | ✓ | 待解讀 | — | — | — |

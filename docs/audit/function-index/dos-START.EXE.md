@@ -120,7 +120,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16EA0` | sub_16EA0 | — | 81 | 28 | 2 | 5 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call @Halt$q4Word`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完） | — |
 | `16F03` | sub_16F03 | — | 122 | 51 | 1 | 4 |  | 待解讀 | — | — | — |
 | `16FAD` | sub_16FAD | — | 319 | 116 | 6 | 12 |  | 待解讀 | — | — | — |
-| `170EC` | sub_170EC | — | 28 | 13 | 3 | 3 |  | 待解讀 | — | — | — |
+| `170EC` | sub_170EC | — | 28 | 13 | 3 | 3 |  | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>清空鍵盤緩衝區(retf，無參數)：while KEYPRESSED do 讀一個鍵丟掉(以 push cs + call near 呼叫 sub_16FADh) | — |
 | `17122` | sub_17122 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `17150` | sub_17150 | — | 182 | 79 | 10 | 6 |  | 待解讀 | — | — | — |
 | `17206` | sub_17206 | — | 58 | 25 | 7 | 4 |  | 待解讀 | — | — | — |
@@ -224,7 +224,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A939` | @MaxAvail$qv | — | 77 | 31 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MaxAvail$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A986` | sub_1A986 | — | 156 | 62 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1AA22` | sub_1AA22 | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1AAD5` | sub_1AAD5 | — | 36 | 15 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1AAD5` | sub_1AAD5 | — | 36 | 15 | 1 | 1 |  | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>向下配置 8 bytes 並檢查下界(近呼叫，失敗時 CF=1)：di := word[2097Eh]−8，為 0 則失敗；si := (di shr 4) + word[20980h]，si <= word[2097Ch] 則失敗；成功才把 di 寫回。減法未處理借位 | — |
 | `1AAF9` | sub_1AAF9 | — | 21 | 9 | 2 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>以 dword_2097E 為來源連續四次 movsw 複製 8 bytes,之後 di 回退 8 並更新來源指標 | — |
 | `1AB0E` | sub_1AB0E | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1AB57` | sub_1AB57 | — | 14 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh | — |

@@ -5,5 +5,5 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0017` | sub_17 | — | 58 | 23 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `0051` | sub_51 | — | 20 | 9 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0017` | sub_17 | — | 58 | 23 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/753-small-utility-routines.md |
+| `0051` | sub_51 | — | 20 | 9 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>安裝回呼(retf，無參數)：把遠指標 0039h:0025h 寫進 DS:47C4h；0039h:0025h 是 VROOMM stub → overlay-00 entry#1 @0017h | audit/embedded-strings.md<br>spec/753-small-utility-routines.md |
