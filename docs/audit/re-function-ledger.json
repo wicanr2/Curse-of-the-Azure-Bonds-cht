@@ -22315,6 +22315,42 @@
    "level": "exact",
    "spec": "833",
    "note": "同 DOS overlay-13:031F0h（module_align 對齊，助憶碼序列完全相同）。★一處真差異：動畫呼叫 sub_1921h 的第三個參數 DOS 是 3、PC-98 是 0FFh。其餘 14 條是位址（DS:9F2Ch↔6E92h 與呼叫目標）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 8389,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "813",
+   "note": "休息時間計算（巢狀程序，retf 2 只收靜態鏈）：走隊伍鏈 DS:650Ah，過 sub_1EDAh 的成員把 +12Dh/+130h/+131h 分別乘 0Fh/3Ch/4Bh（15/60/75 分＝每法術等級 15 分）並累加到外層 frame 的 −4/−6/−8。基礎時間：只有 +12Dh 有值 → 240 分（4 小時）、+130h 或 +131h 有值 → 360 分（6 小時），與 AD&D 的 4／6 小時相符。全隊取最大值，再依 sub_206Bh 的回傳值縮放，最後拆成 DS:756Ch 小時、DS:756Ah 十分位、DS:7568h 個位分。⚠ 累加用的 var_2（bp−2）從頭到尾沒有初始化"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 8492,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "813",
+   "note": "同 DOS overlay-15:020C5h（module_align 對齊，助憶碼序列完全相同）。只差四條：DS:9598h↔650Ah、+18Ah↔+189h、兩個呼叫目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 4652,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "依隊形範本把一個戰鬥員放上戰場(retf 0Ch，6 個 byte)：範本索引式 DS:47F4h + DS:4A12h×108h + a0×42h + 列×0Bh + 欄，也就是『範本組 × 4 個區塊 × 6 列 × 11 欄』。格子非 0 才放；座標 x = a2×5 + a4×6 + 欄 + 16h、y = a2×5 + 列 + 0Ah，寫進 DS:66A3h/66A4h（該戰鬥員記錄的 +0/+1）。再叫 193Fh 檢查落點，回傳的地形碼查 DS:26A2h 不是 0FFh（可通行）才算成功，成功就把範本那一格清 0 避免重複使用"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 4640,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "同 DOS overlay-10:0122Ch（module_align 對齊，助憶碼序列完全相同）。只差四條位址：DS:7AC8h↔4A12h、DS:78AAh↔47F4h、[di−68C3h/68C2h]↔[di+66A3h/66A4h]"
   }
  ]
 }
