@@ -15529,6 +15529,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
@@ -15597,7 +15598,9 @@
    "spec": "docs/spec/710-effect-collection-and-leftover-target.md",
    "note": "把物品身上還有效的效果收成一張表。先依 \u003coverlay-24 entry#27\u003e(DS:6506h, 10h)、DS:6506h^[109h] \u003e 0、DS:6506h^[111h] \u003e DS:6506h^[0E6h] 與 [5CF6h + DS:729Ch^[2Eh]×16] = 0Ch 決定要不要把 DS:729Ch^[35h] 清成 0;**+35h 不為 0 就整支不做事**。否則掃三個效果槽 DS:729Ch^[3Ch..3Eh](spec 703):arg_0 非 0 收 slot \u003e 80h(無號 ja,**80h 本身不算**,改寫成 (slot and 80h) \u003c\u003e 0 會多收)、arg_0 為 0 收 slot \u003e 0;收的話呼叫 \u003csub_3F5h\u003e(slot) 並把 DS:729Ch 存進 far [4BF0h + byte[4CB4h]×4],4CB4h 加 1。⚠ 只加不清且**沒有上界檢查**,而 4CB5h 正是 spec 705 的擲骰門檻,溢出會直接寫壞它",
    "citations": [
-    "spec/710-effect-collection-and-leftover-target.md"
+    "audit/effect-id-catalog.md",
+    "spec/710-effect-collection-and-leftover-target.md",
+    "spec/715-sleep-hd-budget.md"
    ]
   },
   {
@@ -15712,6 +15715,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md"
    ]
   },
@@ -16305,7 +16309,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 16h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 16h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-id-catalog.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16339,6 +16346,7 @@
    "spec": "docs/spec/681-dos-target-array-and-reduce.md",
    "note": "p := DS:7435h(far pointer),為 nil 或 DS:7434h(byte 計數)為 0 就返回——這對「計數 + 第 1 筆」與 PC-98 的目標陣列(0A520h/0A521h)同一個形狀,推得 DOS 基底是 7431h(strong inference)。之後四道條件:⚠ 第三道要 \u003cloc_1456h\u003e(0,4,p) 等於 0、第四道要 \u003cloc_1573h\u003e(p,0Ch,@var) 不等於 0,兩道相鄰而方向相反。通過才移除效果 0Ch、呼叫 \u003cfar loc_14A4h\u003e 並印英文原文 'has been reduced'",
    "citations": [
+    "audit/effect-id-catalog.md",
     "spec/681-dos-target-array-and-reduce.md"
    ]
   },
@@ -16430,7 +16438,14 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/715-sleep-hd-budget.md",
+   "note": "Sleep 的 HD 預算:預算 := ROLLDICE(4,4) 存 byte[4CB5h];走目標陣列,依 p^[0E5h] 算成本存 byte[4CB6h](\u003c=1→1、2→2、3→4、4→6、5 且 p^[74h]=0→10 否則 20、其他→20);狀態 +195h=1、或 \u003coverlay-24 entry#27\u003e(p,35h) 查到(已睡著,**不扣預算**)、或預算 \u003c 成本 → 該格清成 NIL;否則預算扣掉成本。最後在迴圈**外面**發一次 'falls asleep'。⚠ 預算用完不會提早跳出,所以誰先被睡到是陣列順序決定的不是強弱。⚠ 4CB4h/4CB5h/4CB6h 是**共用暫存不是狀態**——4CB5h 在 spec 705 是擲骰門檻、這裡是 HD 預算,4CB6h 在 705 是 base、這裡是單筆成本;建成具名全域會產生假耦合,但 08A1h 的筆數溢出確實會寫壞它們",
+   "citations": [
+    "audit/effect-id-catalog.md",
+    "spec/715-sleep-hd-budget.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16506,6 +16521,8 @@
    "spec": "docs/spec/709-target-array.md",
    "note": "狀態 1 時直接把目標陣列第 1 格清成 NIL(不動筆數);否則若 \u003coverlay-24 entry#27\u003e(p, 37h, @node) 找到,先在 p^[1A4h]=0 時補成 1(同 spec 707 復活那支的模式),再 \u003csub_F06h\u003e(DS:6F97h, 0FFh, 1, 0, 0, 'is affected')、\u003coverlay-23 entry#2\u003e(4Eh, p, 0, 1)、\u003coverlay-23 entry#11\u003e(p, 0Fh, 0Ah, 0FFh, 1)。效果編號 37h 在復活流程裡也被解除,是死亡相關的效果。⚠ sub_F06h 的第二、三個參數這次是 0FFh 與 1,與先前看過的組合都不同,那幾個欄位是模式選擇不是固定值",
    "citations": [
+    "audit/effect-id-catalog.md",
+    "audit/function-index/dos-overlay-22.md",
     "spec/709-target-array.md",
     "spec/714-neutralize-poison.md"
    ]
@@ -16679,7 +16696,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/628-spell-effect-wrappers.md",
-   "note": "與 pc98 overlay-22:3223h 助憶碼序列完全相同（25 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 013E:0070\u003e(21h, DS:0A521h:0A523h) \u003c\u003e 0 then \u003cfar 014A:00A2\u003e(目標,1,'の視力は戻った。')。與 41AFh 分支方向相反,交叉確定 013E:0070 是「目標身上有沒有這個效果」,21h 是失明 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-22:3223h 助憶碼序列完全相同（25 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 013E:0070\u003e(21h, DS:0A521h:0A523h) \u003c\u003e 0 then \u003cfar 014A:00A2\u003e(目標,1,'の視力は戻った。')。與 41AFh 分支方向相反,交叉確定 013E:0070 是「目標身上有沒有這個效果」,21h 是失明 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-id-catalog.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16716,6 +16736,7 @@
    "spec": "docs/spec/704-dispel-and-the-missing-fill.md",
    "note": "解除效果:整段期間 DS:6F9Ch:=1,離開歸 0。用 \u003coverlay-23 entry#16\u003e(目標, id) 查 22h/2Bh/32h 三個編號,查到就把回傳值設 1;但**解掉的是不同的編號**——2Bh 命中解 2Ch 與 1Fh、32h 命中解 39h、22h 只回報不解。這是一張寫死的對應表,不是「有什麼解什麼」;寫成後者會讓 2Bh/32h 留在身上而 2Ch/1Fh/39h 不被清掉",
    "citations": [
+    "audit/effect-id-catalog.md",
     "spec/704-dispel-and-the-missing-fill.md",
     "spec/707-raise-dead-and-area-effect.md",
     "spec/714-neutralize-poison.md"
@@ -16772,7 +16793,8 @@
    "spec": "docs/spec/705-duration-formula-and-save-roll.md",
    "note": "擲骰門檻:base := 目標^[10Eh] + 目標^[116h] × \u003coverlay-25 entry#10\u003e(DS:6506h)(兩個欄位都 cbw);v := ss:[arg_0 − 2];v\u003ebase → 門檻 := (v−base)×5 + 50;v\u003cbase → 門檻 := 50 − (base−v)×2;相等 → 50;回傳 ROLLDICE(1,100) \u003c= 門檻。⚠ **門檻存在一個 byte(4CB5h,base 在 4CB6h),兩個公式都會回捲且方向相反**:v−base \u003e= 42 時 \u003e=260 → 存成 4,幾乎必定失敗;base−v \u003e 25 時為負 → 例如 246,幾乎必定成功。優勢或劣勢拉大到一定程度結果會翻轉。remake 要先決定重不重現,夾成 0..100 會讓極端情況與原作相反",
    "citations": [
-    "spec/705-duration-formula-and-save-roll.md"
+    "spec/705-duration-formula-and-save-roll.md",
+    "spec/715-sleep-hd-budget.md"
    ]
   },
   {
@@ -16786,7 +16808,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/effect-id-catalog.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16820,6 +16845,7 @@
    "spec": "docs/spec/713-remove-curse.md",
    "note": "解除詛咒。身上有效果 24h 時只顯示 '\u003c名字\u003e is un-cursed' 並**完全不碰物品鏈**;否則走 目標^[14Dh] 的物品鏈找第一個 p^[36h] \u003c\u003e 0 的,清 **p^[34h] := 0**,若 p^[3Eh] \u003e 7Fh(第三個效果槽最高位)則 DS:7582h:=1、\u003coverlay-23 entry#2\u003e(p^[3Eh], 目標, p, 1)、並對 k=0..5 各呼叫一次 \u003coverlay-23 entry#24\u003e(目標, k);找到就顯示 '\u003c名字\u003e has an item un-cursed'。⚠ **搜尋鍵是 +36h 但清掉的是 +34h**,+36h 從頭到尾沒被改,所以再施放一次會找到同一件物品並重複顯示訊息。⚠ 一次只解一件(迴圈找到第一個就停)。角色被詛咒與物品被詛咒是兩套互斥機制",
    "citations": [
+    "audit/effect-id-catalog.md",
     "spec/713-remove-curse.md"
    ]
   },
@@ -17007,7 +17033,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/628-spell-effect-wrappers.md",
-   "note": "與 pc98 overlay-22:41AFh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 013E:0070\u003e(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 \u003csub_F62\u003e。沒有該效果才施放,故 2Ah 是加速 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-22:41AFh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 013E:0070\u003e(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 \u003csub_F62\u003e。沒有該效果才施放,故 2Ah 是加速 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-id-catalog.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17176,6 +17205,7 @@
    "spec": "docs/spec/714-neutralize-poison.md",
    "note": "解毒。狀態 +195h=1 時只清目標陣列第 1 格;否則 \u003coverlay-24 entry#27\u003e(p, 37h) 查得到才做:HP 為 0 補成 1、在 DS:6F9Ch:=1 期間**一次解掉三個編號 37h/16h/0Fh**、顯示 '\u003c名字\u003e is unpoisoned'、+196h:=1、+195h:=0;查不到則顯示 'is unaffected'。⚠ 效果 37h = 中毒(本支解它、spec 707 復活時連同 20h 一起解、spec 709 的 24CDh 對中毒者套 4Eh,三處一致)。⚠ 與 24CDh 前兩步完全相同但之後分岔,尤其**查不到時本支有訊息、24CDh 靜默返回**,對照兩支時最容易被抹平",
    "citations": [
+    "audit/effect-id-catalog.md",
     "spec/714-neutralize-poison.md"
    ]
   },
@@ -17218,6 +17248,7 @@
    "spec": "docs/spec/704-dispel-and-the-missing-fill.md",
    "note": "兩條路:目標^[0E5h] \u003e= 6(有號)時 \u003coverlay-24 entry#20\u003e(目標, 'smashes them flat' CS:42FFh, 0Ah, 1);否則 n := \u003coverlay-24 entry#36\u003e(DS:6F97h),\u003csub_F06h\u003e(DS:6F97h, n, 0, 0, 8, 空字串 CS:42FEh),再用 \u003coverlay-24 entry#27\u003e(目標, 3, @node) 找節點,找到才 \u003coverlay-23 entry#2\u003e(0, node, 目標, 3)。⚠ 這支給出了 spec 703 裡 4289h 那兩個未初始化區域**應該**是什麼:最後兩條 push 兩支逐位元組相同(ff76fe + ff76fc),差別只在 4311h 先用 entry#27 把 far 指標填進去。CS:42FEh/42FFh 又是緊鄰的兩條字串",
    "citations": [
+    "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
     "spec/704-dispel-and-the-missing-fill.md",
     "spec/706-temporary-field-adjust.md",
@@ -17317,6 +17348,7 @@
    "spec": "docs/spec/707-raise-dead-and-area-effect.md",
    "note": "復活:四道門檻(狀態 +195h 必須是 6 或 1、+18h 必須 \u003e 0(無號)、+74h 不能是 2),**三個是 early return,不過連訊息都不顯示**。通過後在 DS:6F9Ch:=1 期間解除效果 20h 與 37h,然後 +195h:=0、+196h:=1、**+18h 減 1(次數不可逆,沒有地方加回去)**、\u003coverlay-23 entry#24\u003e(p,4)、**+1A4h := 1(HP 設成 1,不是上限)**,最後顯示 'is raised'(CS:44C9h)。漏掉 +18h 的遞減會變成可以無限復活",
    "citations": [
+    "audit/effect-id-catalog.md",
     "spec/707-raise-dead-and-area-effect.md",
     "spec/714-neutralize-poison.md"
    ]
@@ -17410,7 +17442,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/632-spell-target-array-loop.md",
-   "note": "與 pc98 overlay-22:4A9Ah 助憶碼序列完全相同（57 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆\u003cfar 014A:00A7\u003e(0Bh,陣列[i],@var) 非 0 時接 \u003cfar 013E:002A\u003e(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-22:4A9Ah 助憶碼序列完全相同（57 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆\u003cfar 014A:00A7\u003e(0Bh,陣列[i],@var) 非 0 時接 \u003cfar 013E:002A\u003e(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-id-catalog.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17443,7 +17478,10 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/effect-id-catalog.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17482,7 +17520,10 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/effect-id-catalog.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17567,6 +17608,7 @@
    "spec": "docs/spec/706-temporary-field-adjust.md",
    "note": "暫時改欄位再還原:先存 舊值 := 目標^[0E3h],依 目標^[75h] 調整(0 → 減 1、5 → 加 4、其他 → 加 2),接著 \u003csub_F06h\u003e(DS:6F97h,0,0,0,0,空字串) 與 \u003coverlay-24 entry#27\u003e(目標, 44h, @node),找到就 \u003coverlay-23 entry#2\u003e(44h, 目標, 0, 0),**最後一定把 目標^[0E3h] 還原成舊值**。⚠ 修改與還原之間隔著三個呼叫,還原在最尾端且兩條路徑都會經過——只讀前半段會得出「永久調整」的相反結論。下游在這段期間讀該欄位會拿到臨時值,改寫成傳參數行為會不同(原作是任何讀該欄位的程式碼都看得到)",
    "citations": [
+    "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
     "spec/706-temporary-field-adjust.md",
     "spec/711-target-count-clamp-and-callee-arity.md",
@@ -17679,7 +17721,10 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/effect-id-catalog.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17903,12 +17948,12 @@
    "spec": "docs/spec/579-character-status-fields.md",
    "note": "與 pc98 overlay-23:0016h 助憶碼序列完全相同（64 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：KILLDUDE(msg,new_state,char):顯示訊息後,狀態 +196h 已是 {6,7,8} 就不覆寫;否則設新狀態、+197h=0、+1A5h(目前 HP)=0,再 REMOVEFX + CHECKFX(0Dh) 與四個 far call 善後 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-22.md",
-    "audit/function-index/pc98-overlay-24.md",
-    "knowledge/gold-box-ecl-interpreter.md"
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -39377,6 +39422,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
@@ -41638,12 +41684,12 @@
    "spec": "docs/spec/579-character-status-fields.md",
    "note": "KILLDUDE(msg,new_state,char):顯示訊息後,狀態 +196h 已是 {6,7,8} 就不覆寫;否則設新狀態、+197h=0、+1A5h(目前 HP)=0,再 REMOVEFX + CHECKFX(0Dh) 與四個 far call 善後",
    "citations": [
+    "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-22.md",
-    "audit/function-index/pc98-overlay-24.md",
-    "knowledge/gold-box-ecl-interpreter.md"
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -45673,9 +45719,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 81,
+   "Read": 82,
    "NotBlocking": 0,
-   "Todo": 32,
+   "Todo": 31,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
