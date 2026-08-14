@@ -14671,8 +14671,8 @@
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-22.md"
+    "audit/function-index/dos-overlay-32.md",
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -21330,9 +21330,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/809-cleric-spell-progression-table.md",
+   "note": "牧師系可記憶法術數重算：retf 6，宣告順序 (角色, 要不要重算)。等級 := 角色^[109h] + 角色^[111h] * 本模組 13BCh(角色)，有號 \u003c= 0 就離開。要不要重算 \u003c\u003e 0 時：for j := 2 to 5 清 角色^[12Ch+j]、角色^[12Dh] := 1、for L := 2 to 等級 do for j := 1 to 5 do 角色^[12Ch+j] += byte[42BAh + L*5 + j]（進階表每等級 5 bytes 的增量，兩平台逐位元組相同，累計結果＝AD\u0026D 一版牧師表；L \u003e= 13 整列為 FFh 且迴圈無上界檢查）。接著六條智慧加成（角色^[15h] \u003e 0Ch/0Dh → +12Dh、\u003e 0Eh/0Fh → +12Eh、\u003e 10h → +12Fh、\u003e 11h → +130h，各自要求該等級目前 \u003e 0）——要不要重算 = 0 時仍照跑，連呼兩次會累積。+12Ch 本身從未被碰，職業 0（牧師系）的區塊是 +12Dh..+131h。spec 809",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/809-cleric-spell-progression-table.md"
    ]
   },
   {
@@ -21511,7 +21515,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-25.md",
     "spec/754-small-predicates-and-wrappers.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/809-cleric-spell-progression-table.md"
    ]
   },
   {
@@ -22909,6 +22914,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-32.md",
     "spec/808-attacks-per-round-and-facing-redraw.md"
    ]
   },
@@ -22948,6 +22954,7 @@
    "spec": "docs/spec/800-party-reorder-and-footprint-check.md",
    "note": "戰鬥員佔地的逐格檢查：i := 本模組 0CAEh(參數2, 參數4)；byte[66A6h + i*4]（戰鬥員記錄 +3 = 佔幾格）為 0 直接回 0；否則 for k := 0 to 3 do if 本模組 0011h(byte[66A6h+i*4], k, @dx, @dy) then r := 本模組 0732h(byte[67C6h+i] + dx, byte[680Eh+i] + dy)；參數0 \u003c\u003e 0 時 r = 0 立刻回 0（每格都要成立），參數0 = 0 時 r \u003c\u003e 0 立刻回 1（任一格成立即可）。retf 6。spec 800",
    "citations": [
+    "audit/function-index/dos-overlay-32.md",
     "spec/800-party-reorder-and-footprint-check.md",
     "spec/808-attacks-per-round-and-facing-redraw.md"
    ]
@@ -31792,7 +31799,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/769-combat-main-loop.md",
-   "note": "與 DOS overlay-08:00F3h（entry#1）助憶碼序列完全相同，語意同該筆：戰鬥主迴圈(retf，無參數)：DS:4FBAh := 5、把 DS:72A0h 掛鉤指到 overlay-13 entry#18 @2220h(戰鬥版選目標，spec 749 記錄的收尾會換回 overlay-22 entry#4)；迴圈直到 DS:6F90h 或 DS:6F91h 為 0 或 本模組 0997h 設旗標，每輪走隊伍鏈、清 DS:4F9Dh^[596h]、用 01ABh 取行動者再 026Bh 讓它行動；離開後叫 本模組 004Dh(spec 749 的戰鬥收尾)並設 DS:4FC9h := 1。開場(overlay-10:1C3Eh)、主迴圈、收尾三段至此接成一條鏈 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-08:00F3h（entry#1）助憶碼序列完全相同，語意同該筆：戰鬥主迴圈(retf，無參數)：DS:4FBAh := 5、把 DS:72A0h 掛鉤指到 overlay-13 entry#18 @2220h(戰鬥版選目標，spec 749 記錄的收尾會換回 overlay-22 entry#4)；迴圈直到 DS:6F90h 或 DS:6F91h 為 0 或 本模組 0997h 設旗標，每輪走隊伍鏈、清 DS:4F9Dh^[596h]、用 01ABh 取行動者再 026Bh 讓它行動；離開後叫 本模組 004Dh(spec 749 的戰鬥收尾)並設 DS:4FC9h := 1。開場(overlay-10:1C3Eh)、主迴圈、收尾三段至此接成一條鏈 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/function-index/pc98-overlay-32.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39214,8 +39224,8 @@
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-22.md"
+    "audit/function-index/dos-overlay-32.md",
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -46513,9 +46523,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/809-cleric-spell-progression-table.md",
+   "note": "牧師系可記憶法術數重算：retf 6，宣告順序 (角色, 要不要重算)。等級 := 角色^[109h] + 角色^[111h] * 本模組 14C4h(角色)，有號 \u003c= 0 就離開。要不要重算 \u003c\u003e 0 時：for j := 2 to 5 清 角色^[12Ch+j]、角色^[12Dh] := 1、for L := 2 to 等級 do for j := 1 to 5 do 角色^[12Ch+j] += byte[734Fh + L*5 + j]（進階表每等級 5 bytes 的增量，兩平台逐位元組相同，累計結果＝AD\u0026D 一版牧師表；L \u003e= 13 整列為 FFh 且迴圈無上界檢查）。接著六條智慧加成（角色^[15h] \u003e 0Ch/0Dh → +12Dh、\u003e 0Eh/0Fh → +12Eh、\u003e 10h → +12Fh、\u003e 11h → +130h，各自要求該等級目前 \u003e 0）——要不要重算 = 0 時仍照跑，連呼兩次會累積。+12Ch 本身從未被碰，職業 0（牧師系）的區塊是 +12Dh..+131h。spec 809",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/809-cleric-spell-progression-table.md"
    ]
   },
   {
@@ -48057,7 +48071,10 @@
    "callers": 3,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-32.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48096,7 +48113,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/800-party-reorder-and-footprint-check.md",
-   "note": "戰鬥員佔地的逐格檢查：i := 本模組 1363h(參數2, 參數4)；byte[9740h + i*4]（戰鬥員記錄 +3 = 佔幾格）為 0 直接回 0；否則 for k := 0 to 3 do if 本模組 0011h(byte[9740h+i*4], k, @dx, @dy) then r := 本模組 0A1Eh(byte[9860h+i] + dx, byte[98A8h+i] + dy)；參數0 \u003c\u003e 0 時 r = 0 立刻回 0（每格都要成立），參數0 = 0 時 r \u003c\u003e 0 立刻回 1（任一格成立即可）。retf 6。spec 800（PC-98 位址由 di 的負位移還原：-68C0h/-67A0h/-6758h）"
+   "note": "戰鬥員佔地的逐格檢查：i := 本模組 1363h(參數2, 參數4)；byte[9740h + i*4]（戰鬥員記錄 +3 = 佔幾格）為 0 直接回 0；否則 for k := 0 to 3 do if 本模組 0011h(byte[9740h+i*4], k, @dx, @dy) then r := 本模組 0A1Eh(byte[9860h+i] + dx, byte[98A8h+i] + dy)；參數0 \u003c\u003e 0 時 r = 0 立刻回 0（每格都要成立），參數0 = 0 時 r \u003c\u003e 0 立刻回 1（任一格成立即可）。retf 6。spec 800（PC-98 位址由 di 的負位移還原：-68C0h/-67A0h/-6758h）",
+   "citations": [
+    "audit/function-index/pc98-overlay-32.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48125,6 +48145,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "audit/function-triage.md"
    ]
   },
@@ -48932,9 +48953,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 15,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 2,
    "CodeBytes": 4931,
    "Undefined": 733,
@@ -49487,9 +49508,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 14,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 5200,
    "Undefined": 167,
