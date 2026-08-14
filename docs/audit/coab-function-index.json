@@ -22412,7 +22412,7 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-13.md",
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/pc98-overlay-16.md"
    ]
   },
   {
@@ -48875,9 +48875,13 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1071",
+   "note": "分派表初始化 PC-98(retf，443 條，整支是一長串賦值沒有分支)。★★★ 表基底 DS:0A38Ch、一筆 4 bytes(遠指標)、本支填索引 0..100 共 101 筆，段全部是 0117h(一個 overlay 的 entry stub 段)，offset 範圍 0034h..0241h，相異 handler 81 個(101 筆裡有 20 筆重複指向)。相異 offset 之間的差是 5/10/15/25/85 —— 5 正是 overlay entry stub 的長度(CD 3F + code_offset + flags)，所以這 81 個 handler 是同一個 overlay 裡連號的 entry。★★ 二十筆共用：00BBh 被 8 個索引指到、00B6h 被 6 個、00F2h 3 個、0110h/012Eh/014Ch/004Dh/015Bh/0165h 各 2 個 —— 與 spec 1005 在效果分派表看到的重複指向同一種結構。★ 索引 0 指向 0034h，與其他 handler 的連號區(00A2h 起)分開，形狀上是『0 號 = 無效/預設』。另外把 DS:0A036h/0A64Fh 清 0、DS:0A641h/0A643h 當 32-bit 清 0、DS:0A038h:=1。⚠ 沒有宣稱這是法術表還是效果表(spec 705/721 的 DOS 側是 DS:72A0h、spec 1005 是另一張)，也沒有宣稱索引 101 以後由誰填",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1071-spell-dispatch-table-init-pc98.md"
    ]
   },
   {
@@ -49743,7 +49747,7 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-13.md",
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/pc98-overlay-16.md"
    ]
   },
   {
@@ -54269,9 +54273,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 110,
+   "Read": 111,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
