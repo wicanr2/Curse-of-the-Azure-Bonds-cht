@@ -63,12 +63,21 @@ def main():
     end = int(sys.argv[4], 16) if len(sys.argv) > 4 else None
     other = "pc98" if platform == "dos" else "dos"
 
-    path = os.path.join(SWEEP, platform, "overlays", "prologue",
-                        "%s-%s.json" % (platform, module))
-    functions = json.load(open(path, encoding="utf-8"))["functions"]
-    chosen = next((f for f in functions if f["ea"] == start), None)
+    # prologue 匯出只收「push bp / mov bp, sp」開場的函式；自己管堆疊的
+    # （例如 PC-98 直接叫磁碟 BIOS 的那幾支）只在 full 匯出裡，見 spec 1080。
+    chosen = None
+    for flavour in ("prologue", "full"):
+        path = os.path.join(SWEEP, platform, "overlays", flavour,
+                            "%s-%s.json" % (platform, module))
+        if not os.path.exists(path):
+            continue
+        functions = json.load(open(path, encoding="utf-8"))["functions"]
+        chosen = next((f for f in functions
+                       if f["ea"] == start and f.get("items")), None)
+        if chosen is not None:
+            break
     if chosen is None:
-        print("找不到起點 %04Xh（prologue 匯出裡沒有這個位址）" % start)
+        print("找不到起點 %04Xh（prologue 與 full 匯出裡都沒有這個位址）" % start)
         return 2
     limit = end if end is not None else 1 << 30
 
