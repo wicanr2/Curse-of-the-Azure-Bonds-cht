@@ -41,7 +41,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1EDA` | sub_1EDA | — | 35 | 14 | 2 | 1 | ✓ | 已解讀 | strong inference | docs/spec/637-overlay21-small-batch.md<br>與 pc98 overlay-15:1F46h 助憶碼序列完全相同（14 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (arg_2^[196h] = 0):是則 1、否則 0。+196h 是狀態碼(spec 623 記到 6 與 5→4 兩條) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1EFD` | sub_1EFD | — | 188 | 74 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `1FB9` | sub_1FB9 | — | 178 | 70 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `206B` | sub_206B | — | 90 | 33 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>全隊受傷總量(retf 2，參數沒被讀)：走隊伍鏈累加 p^[78h] − p^[1A4h](最大 HP 減目前 HP)，回 word。⚠ 兩個 byte 零延伸後相減，目前 HP 大於最大 HP 時會變成很大的正數 | spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
+| `206B` | sub_206B | — | 90 | 33 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>全隊受傷總量(retf 2，參數沒被讀)：走隊伍鏈累加 p^[78h] − p^[1A4h](最大 HP 減目前 HP)，回 word。⚠ 兩個 byte 零延伸後相減，目前 HP 大於最大 HP 時會變成很大的正數 | audit/function-index/pc98-overlay-15.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `20C5` | sub_20C5 | — | 400 | 143 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2255` | sub_2255 | — | 180 | 63 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `2309` | sub_2309 | — | 164 | 68 | 1 | 9 | ✓ | 待解讀 | — | — | — |

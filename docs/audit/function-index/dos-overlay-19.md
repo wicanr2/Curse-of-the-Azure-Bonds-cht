@@ -42,8 +42,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `32DC` | sub_32DC | — | 207 | 71 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `33AB` | sub_33AB | — | 118 | 44 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `3474` | sub_3474 | — | 381 | 158 | 2 | 4 | ✓ | 待解讀 | — | — | — |
-| `35F1` | sub_35F1 | — | 101 | 37 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `3656` | sub_3656 | — | 89 | 30 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>四條件合取(retf 4)：((p^[75h]=3) or ((p^[114h]>0) and <overlay 呼叫>(p))) and (DS:4FBAh<>5) and (p^[195h]=0) and (p^[191h]>0)。DS:4FBAh 就是戰鬥開場(spec 750)結尾設 5 的狀態變數；+114h 有號比較、+191h 無號 | audit/function-index/pc98-overlay-19.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `35F1` | sub_35F1 | — | 101 | 37 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>與 3656h 成對的判斷(retf 4)：前三個條件與 overlay-19:3656h(spec 756)逐字相同，最後一項改成呼叫 <overlay>(輸出參數, 8Ch, p) 並要求回 0 | spec/758-morale-field-0f7h-round-trip.md |
+| `3656` | sub_3656 | — | 89 | 30 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>四條件合取(retf 4)：((p^[75h]=3) or ((p^[114h]>0) and <overlay 呼叫>(p))) and (DS:4FBAh<>5) and (p^[195h]=0) and (p^[191h]>0)。DS:4FBAh 就是戰鬥開場(spec 750)結尾設 5 的狀態變數；+114h 有號比較、+191h 無號 | audit/function-index/pc98-overlay-19.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/758-morale-field-0f7h-round-trip.md |
 | `36D8` | sub_36D8 | — | 224 | 91 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `37EC` | sub_37EC | — | 375 | 145 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `3963` | sub_3963 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

@@ -193,7 +193,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A374` | sub_1A374 | — | 184 | 74 | 1 | 5 |  | 待解讀 | — | — | — |
 | `1A42C` | sub_1A42C | — | 12 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>回傳 (es:[8] + 0Fh) >> 4,即把 es:[8] 的位元組數無條件進位換算成 paragraph 數 | — |
 | `1A438` | sub_1A438 | — | 93 | 35 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 93 bytes，已逐條讀完） | — |
-| `1A495` | sub_1A495 | — | 78 | 38 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A495` | sub_1A495 | — | 78 | 38 | 1 | 1 |  | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>搬移 overlay 區並改寫 stub(近呼叫 retn)：新段 := word_2096C、舊段 := es:10h；沿鏈把 [bp+4] 等於舊段的節點改成新段；用 std 反向搬 es:8 個 bytes；最後由 di=23h 起、每格前進 5、共 es:0Ch 次寫入新段。與 spec 757 的 1A4E3h 合起來確定 stub 陣列在 +20h、每格 5 bytes、格數在控制區塊 +0Ch；⚠ 兩支寫入位置在 +3 重疊，本輪不宣稱 stub 內部欄位切法 | — |
 | `1A4E3` | sub_1A4E3 | — | 88 | 35 | 2 | 1 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>重建 VROOMM stub(近呼叫 retn)：從控制區塊 +20h 起、依 es:0Ch 的項數，每項寫 5 bytes = CD 3F(INT 3Fh) + 原本 es:[di+1] 的 2 bytes + 1 個 0。這是 stub 版面的產生端證據(既有結論是由 stub 內容反推) | — |
 | `1A540` | @__SystemInit$qv | — | 157 | 72 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__SystemInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A611` | sub_1A611 | — | 4 | 3 | 13 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1A61C`，控制權轉交後不返回；先設定 `pop cx`、`pop bx`（body 共 4 bytes，已逐條讀完） | — |
