@@ -22387,6 +22387,42 @@
    "level": "exact",
    "spec": "781",
    "note": "同 DOS overlay-30:00011h（同位址、助憶碼序列完全相同）。只差七條呼叫目標（sub_60Dh↔sub_6BDh、232h:2Fh↔20Bh:2Fh、2A8h:0B7Dh↔297h:1316h）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 19218,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "付錢與找零(retf 8，(角色, 金額 longint))：金額先 × 0C8h(200) 換成銅幣（AD&D 1 gp = 200 cp）。第一段 i 由 0 往上，每種幣值取 min(金額 div 幣值[i] + 1, 持有量) 扣掉——+1 造成刻意多付；第二段若金額變負就取絕對值，i 由 4 往下把差額以大面額找回。幣值表是 DS:0CA2h（1/10/100/200/1000 銅幣）。⚠ 角色身上錢不夠時 n 恆為 0、金額不減，i 會一路遞增讀出幣值表外，可能除以零"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 20954,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "同 DOS overlay-17:04B12h（module_align 對齊，助憶碼序列完全相同）。差異只有 IDA 的參數命名偏移 2（arg_2/arg_6 對 arg_0/arg_4）與 longint 運算子的呼叫目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 2186,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "捲動清單的重繪（巢狀程序，retf 4，(靜態鏈, 頂端行號)）：先用外層 frame 的 +18h/+1Ah/+1Ch/+1Eh 設視窗，sub_11h 取第 n 個節點，逐行畫到 +18h 為止。節點屬性 +29h ≠ 0 用顏色 +24h、否則 +22h（與 spec 848 的『屬性 0 就停』同一格）。文字比欄寬 外^[−54h] 短時再用空白補滿右側"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 2666,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "同 DOS overlay-26:0088Ah（module_align 對齊，相似度 0.996）。★一處真差異：補空白時 DOS 傳顏色 0、PC-98 傳外層的 +22h（實際顏色）。其餘是位址（節點 +51h/+52h↔+29h/+2Ah）與多一條 mov di,[bp+arg_0]"
   }
  ]
 }

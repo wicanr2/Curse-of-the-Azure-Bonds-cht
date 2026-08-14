@@ -14,7 +14,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0858` | sub_858 | INIMNUBUF | 64 | 26 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>十筆欄位初始化(retf)：for i:=1 to 10，把 CS:0851h 的 6 bytes 複製到 DS:0A338h+i*7，再把 DS:0A334h+i 設成空白。兩個平行陣列(7 bytes 一筆的記錄 + byte 旗標) | spec/755-per-character-slots-sound-driver-and-text-io.md |
 | `08AE` | sub_8AE | MKEMNULST | 304 | 126 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `09DE` | sub_9DE | — | 140 | 52 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `0A6A` | sub_A6A | — | 319 | 122 | 2 | 3 | ✓ | 待解讀 | — | — | — |
+| `0A6A` | sub_A6A | — | 319 | 122 | 2 | 3 | ✓ | 已解讀 | exact | 848<br>同 DOS overlay-26:0088Ah（module_align 對齊，相似度 0.996）。★一處真差異：補空白時 DOS 傳顏色 0、PC-98 傳外層的 +22h（實際顏色）。其餘是位址（節點 +51h/+52h↔+29h/+2Ah）與多一條 mov di,[bp+arg_0] | — |
 | `0BA9` | sub_BA9 | — | 85 | 34 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>retf 4：參數是 SS 相對的記錄指標；用 +14h 起的遠指標與第二個參數叫本模組 0011h 取得遠指標，再叫 0418h:0D17h(該指標, 0, [+20h], [+1Ch] + (參數 − DS:0A32Ch), [+1Eh]) | spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `0BFE` | sub_BFE | — | 146 | 58 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0C90` | sub_C90 | — | 224 | 77 | 2 | 2 | ✓ | 已解讀 | exact | 848<br>同 DOS overlay-26:00BF9h（module_align 對齊，助憶碼序列完全相同）。6 條差異全是位址：節點屬性 +51h↔+29h、DS:0A32Ch↔7292h | spec/848-scroll-list-widget.md |

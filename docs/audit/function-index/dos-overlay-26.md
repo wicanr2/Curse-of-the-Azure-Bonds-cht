@@ -13,7 +13,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `03D4` | sub_3D4 | — | 1041 | 365 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `07E5` | sub_7E5 | — | 24 | 14 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 542h:311h`（body 共 24 bytes，已逐條讀完） | spec/750-combat-setup.md |
 | `07FD` | sub_7FD | — | 141 | 52 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `088A` | sub_88A | — | 314 | 121 | 2 | 3 | ✓ | 待解讀 | — | — | spec/848-scroll-list-widget.md |
+| `088A` | sub_88A | — | 314 | 121 | 2 | 3 | ✓ | 已解讀 | exact | 848<br>捲動清單的重繪（巢狀程序，retf 4，(靜態鏈, 頂端行號)）：先用外層 frame 的 +18h/+1Ah/+1Ch/+1Eh 設視窗，sub_11h 取第 n 個節點，逐行畫到 +18h 為止。節點屬性 +29h ≠ 0 用顏色 +24h、否則 +22h（與 spec 848 的『屬性 0 就停』同一格）。文字比欄寬 外^[−54h] 短時再用空白補滿右側 | spec/848-scroll-list-widget.md |
 | `09C4` | sub_9C4 | — | 76 | 31 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>第一個非空白的位置(retf 6)：同樣先複製進本地緩衝，再從第 1 個字元往後跳過 20h，回傳位置。與 0A10h 合起來是 trim 的左右兩半 | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0A10` | sub_A10 | — | 70 | 29 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>裁掉尾端空白後的長度(retf 6)：先用 0A54h:064Eh 把第一個宣告的遠字串參數複製進 40 字元本地緩衝(上限 28h)，再從尾端往回跳過 20h，回傳長度(下限 1)。第二個參數整支沒讀；判準是 ASCII 空白，全形空白不算 | audit/function-index/dos-overlay-26.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0A56` | sub_A56 | — | 162 | 71 | 1 | 3 | ✓ | 待解讀 | — | — | — |
