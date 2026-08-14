@@ -17039,9 +17039,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "920",
+   "note": "丟棄錢幣選單(retf，無參數)：掃 角色(遠指標 DS:6506h)^[0FBh + i*2] 七種幣別(i = 0..6)，非零就 GetMem 2Eh 的節點(+0 string[40] 限長 28h、+29h 旗標、+2Ah next)接成鏈，文字 = 補齊空白 + 幣別名(DS:0F93h stride 0Bh) + ' ' + Str(數量)，補的個數 = 8 − 幣別名長度。★節點往回接、傳給選單的是最後建的那個 → 清單由幣別索引大到小。選完用 loc_1156h+1 輸入數量(上限 = 持有量)、loc_1160h+1 扣款，然後重掃；還有任何一格 \u003e 0 就再開一次選單，取消或丟光才離開",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/920-drop-coins-menu.md"
    ]
   },
   {
@@ -24826,6 +24830,7 @@
    "spec": "919",
    "note": "角色倒下處理(retf 4 = 角色遠指標)：DS:4FBAh ≠ 5 就只放音效+重畫離開；否則播 9 幀 × 4 部位的兩圖交替閃爍動畫，然後若 角色^[18Dh]^[13h] = 0 就登記屍體——DS:6E91h 進位、把 地圖^[7 + 列×32h + 欄] 的原地形抄進 byte[6E58h+n×7]、原地形 ≠ 1Eh 就改寫成 1Fh、並記下角色遠指標(+0)、欄(+4)、列(+5)。★DS:6E52h 那張 7 bytes/entry 的表版面就此定案，且 1Fh 是寫進地圖的屍體地形碼而非 sentinel。⚠查『是否已登記』的迴圈計數器是 var_2、讀表卻用未初始化的 var_3 → 每圈比同一筆、位置由堆疊殘值決定(兩平台皆然，同 spec 862 的缺陷類別)",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "spec/919-corpse-marker-and-fade-animation.md"
    ]
   },
@@ -43595,9 +43600,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "920",
+   "note": "同 DOS overlay-19:02FA9h(相似度 0.975)。★補齊空白改用全形 '　'，所以個數要 (8 − 長度) div 2 才有同樣視覺寬度(唯一的邏輯差異，三條指令)。節點 2Eh→56h、字串限長 28h→50h(40 欄→80 欄)、幣別名表 DS:2057h stride 9。另多一段 ' 決定 ' → DS:0A362h 限長 6 的熱鍵字串",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/920-drop-coins-menu.md"
    ]
   },
   {
@@ -44884,6 +44893,7 @@
    "note": "同 DOS overlay-22:00E11h（效果持續時間表，retf 2 只吃一個 word）。唯一序列差異是 xor ah, ah 的有無，其餘是 DS:7F27h↔4FBAh、法術屬性表 DS:61B8h/61B9h↔37DEh/37DFh、擲骰呼叫目標",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-32.md",
     "audit/string-pairs.md",
     "spec/919-corpse-marker-and-fade-animation.md"
    ]
@@ -51829,9 +51839,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -52384,9 +52394,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
