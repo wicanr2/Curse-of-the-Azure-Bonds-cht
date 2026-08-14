@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 817、不阻塞 133、邊界碎片 243、待解讀 193；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 818、不阻塞 133、邊界碎片 243、待解讀 192；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -45,7 +45,7 @@
 | overlay-28 | DRAWWIN | 6 | 5 | 0 | 0 | 1 | 446 | 0 | [明細](function-index/dos-overlay-28.md) |
 | overlay-29 | PORTRAIT | 12 | 8 | 0 | 1 | 3 | 2102 | 114 | [明細](function-index/dos-overlay-29.md) |
 | overlay-30 | THREED | 13 | 9 | 0 | 0 | 4 | 5205 | 84 | [明細](function-index/dos-overlay-30.md) |
-| overlay-31 | LOS | 9 | 7 | 0 | 0 | 2 | 2999 | 0 | [明細](function-index/dos-overlay-31.md) |
+| overlay-31 | LOS | 9 | 8 | 0 | 0 | 1 | 2999 | 0 | [明細](function-index/dos-overlay-31.md) |
 | overlay-32 | TACMAP | 24 | 18 | 0 | 0 | 6 | 5064 | 0 | [明細](function-index/dos-overlay-32.md) |
 | overlay-33 | SQRPAK24 | 7 | 4 | 0 | 0 | 3 | 1515 | 57 | [明細](function-index/dos-overlay-33.md) |
 | overlay-34 | BUG | 3 | 2 | 0 | 0 | 1 | 1749 | 562 | [明細](function-index/dos-overlay-34.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 898、不阻塞 29、邊界碎片 338、待解讀 223；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 899、不阻塞 29、邊界碎片 338、待解讀 222；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -89,7 +89,7 @@
 | overlay-28 | DRAWWIN | 3 | 2 | 0 | 0 | 1 | 196 | 0 | [明細](function-index/pc98-overlay-28.md) |
 | overlay-29 | PORTRAIT | 12 | 9 | 0 | 1 | 2 | 1846 | 114 | [明細](function-index/pc98-overlay-29.md) |
 | overlay-30 | THREED | 13 | 9 | 0 | 0 | 4 | 4851 | 117 | [明細](function-index/pc98-overlay-30.md) |
-| overlay-31 | LOS | 9 | 7 | 0 | 0 | 2 | 2988 | 0 | [明細](function-index/pc98-overlay-31.md) |
+| overlay-31 | LOS | 9 | 8 | 0 | 0 | 1 | 2988 | 0 | [明細](function-index/pc98-overlay-31.md) |
 | overlay-32 | TACMAP | 25 | 18 | 0 | 0 | 7 | 6784 | 0 | [明細](function-index/pc98-overlay-32.md) |
 | overlay-33 | SQRPAK24 | 7 | 4 | 0 | 0 | 3 | 2106 | 146 | [明細](function-index/pc98-overlay-33.md) |
 | overlay-34 | BUG | 2 | 2 | 0 | 0 | 0 | 14 | 0 | [明細](function-index/pc98-overlay-34.md) |

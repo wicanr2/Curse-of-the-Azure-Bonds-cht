@@ -17865,6 +17865,7 @@
    "spec": "859",
    "note": "法術選單清單建構(retf 2，法術碼，bit7=前綴星號)：維護 DS:4B44h 一條 2Eh bytes 的顯示行鏈(+0 string[40]、+29h 標題行旗標、+2Ah next)＋兩個 84 格平行陣列(DS:4B48h 次數、DS:4B9Ch 法術碼)。依 DS:37DBh+碼×10h 的 +0(法術等級)遞增插入；同一法術只佔一行並把次數 +1，行尾補 ' (n)'。文字＝(' *' 或 '  ')＋DS:27BDh 法術名。★解出 DS:37DBh 是每筆 10h 的法術屬性表、+0 是等級，有效範圍 1..100(尾端接 DS:3E2Ah 時鐘進位表)，等級值與 AD\u0026D 一版逐項相符",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/859-spell-list-row-builder.md"
@@ -23756,7 +23757,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-12.md",
-    "audit/function-index/pc98-overlay-31.md"
+    "audit/function-index/pc98-overlay-31.md",
+    "spec/860-ai-target-reachability-scan.md"
    ]
   },
   {
@@ -23817,7 +23819,8 @@
    "spec": "854",
    "note": "視線追蹤(retf 14h，10 words：(y起, x起, @終y, @終x, @距離, 地圖))：距離上限 = 距離^ × 2 + 1（半格）。開兩份 spec 854 的 Bresenham 狀態——一份走座標、一份把地形值當座標插值（+2/+4/+6 填成 地形[起點]/max(主軸長)/地形[起點]），各用 sub_19Dh 初始化、sub_246h（spec 854 的推進器）步進。地形值取自 DS:26A2h 的 +1 與 +2 兩欄（+0 是移動成本，spec 837）。被擋就把最後位置寫回 @終y/@終x、步數寫回 @距離並回 0；走到終點回 1",
    "citations": [
-    "audit/function-index/pc98-overlay-31.md"
+    "audit/function-index/pc98-overlay-31.md",
+    "spec/860-ai-target-reachability-scan.md"
    ]
   },
   {
@@ -23831,7 +23834,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/860-ai-target-reachability-scan.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23844,7 +23850,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "860",
+   "note": "戰鬥 AI 目標可及性掃描(retf 0Eh，(基準A, 基準B, 成本上限, 攻擊方式, 我方體型, 遠指標))：先用 far 18Ch:2Ah 展開我方與每個目標各自佔的最多 4 格(不存在的填 0FFh，之後用有號 \u003c0 濾掉)，再做 4×4 配對——054Ah 篩攻擊方式可及、03EAh 算路徑成本(var 終點/var 成本，進去是上限)，取最小。有解就寫進 DS:6E94h 結果表(每筆 3 bytes：目標序號/最小成本/攻擊方式)。攻擊方式 ≥8 表示自己從 0 往上找最省的(此 while 無上界)。★目標表 DS:66A3h 與結果表 DS:6E94h 都把第 0 筆的最後一格當筆數用，與 DS:27BDh 拿第 0 筆塞小表是同一個習慣",
+   "citations": [
+    "spec/860-ai-target-reachability-scan.md"
+   ]
   },
   {
    "platform": "dos",
@@ -49761,7 +49773,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-12.md",
-    "audit/function-index/pc98-overlay-31.md"
+    "audit/function-index/pc98-overlay-31.md",
+    "spec/860-ai-target-reachability-scan.md"
    ]
   },
   {
@@ -49825,7 +49838,8 @@
    "spec": "854",
    "note": "同 DOS overlay-31:003EAh（同位址、助憶碼序列完全相同）。只差三條表基底 DS:48ADh/48AEh↔26A3h/26A4h",
    "citations": [
-    "audit/function-index/pc98-overlay-31.md"
+    "audit/function-index/pc98-overlay-31.md",
+    "spec/860-ai-target-reachability-scan.md"
    ]
   },
   {
@@ -49840,7 +49854,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/860-ai-target-reachability-scan.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -49854,7 +49871,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "860",
+   "note": "同 DOS overlay-31:008E3h（助憶碼序列完全相同）。15 條差異全是位址：18Ch↔189h、目標表 66A3h↔9740h−3、結果表 6E94h↔9F30h−2",
+   "citations": [
+    "spec/860-ai-target-reachability-scan.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51074,9 +51097,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 2999,
    "Undefined": 0,
@@ -51629,9 +51652,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 2988,
    "Undefined": 0,
