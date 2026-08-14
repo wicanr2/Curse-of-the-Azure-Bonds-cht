@@ -4692,6 +4692,7 @@
    "note": "製作群畫面(retf，無參數)，由 spec 915 片頭近呼叫。整支就是 34 行寫死的 印字(欄, 列, 色, 0, 字串)，每行固定 16 條指令(34×16+7 = 551 逐條對上，無漏讀)。色碼 10=說明文字 11=人名 14=分類標題；下半段排兩欄(欄 2 與欄 22)。★決定性證據：建字串助手 0A54h:0634h 只彈掉 @來源，把 @目的 留在堆疊上當下一個呼叫的引數——印字呼叫自己一條參數都沒推。完整版面表見 spec 916",
    "citations": [
     "audit/function-index/dos-overlay-01.md",
+    "audit/function-index/pc98-overlay-01.md",
     "audit/function-strings.md",
     "spec/915-title-sequence.md",
     "spec/916-credits-screen.md"
@@ -4713,6 +4714,7 @@
    "spec": "915",
    "note": "片頭四張圖(retf，無參數)：資源檔名 'title'，依序載入圖 1..4——圖1(0,0) 停 5，接著 DS:4F98h = 0 就直接離開；圖2(0,0) 無延遲、圖3(列6,欄0Bh) 停 0Ah、圖4(列0,欄0Bh) 配音效 word[25C6h] 停 0Ah；最後清畫面(0542h:0A0Eh)、呼叫本模組 001DFh 製作群名單、再清畫面。⚠DOS 圖 1 從未釋放就被圖 2 蓋掉(記憶體洩漏)，PC-98 有補",
    "citations": [
+    "audit/function-index/dos-overlay-01.md",
     "audit/function-index/pc98-overlay-01.md",
     "audit/function-strings.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
@@ -6884,11 +6886,15 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "917",
+   "note": "戰鬥結束結算(retf 4 = 一個 longint 經驗值)：依旗標印五種結果之一——(DS:47ECh = 0 且非決鬥)→'The party has found Treasure!'；DS:47EDh ≠ 0 →逃跑；否則依 DS:8B5Ch/遠指標(DS:4F9Dh)^[5CCh] 判勝敗，決鬥(DS:8B56h ≠ 0)印 'You have won the duel.'。接著 Str(經驗值) 接前綴印在列 5、'experience points.' 印在列 7。★逃跑分支會走 DS:6F8Ch 鏈逐一 FreeMem(節點, 3Fh)(節點大小與 next 位移 +2Ah 同角色物品節點 → DS:6F8Ch 是戰利品鏈)、FillChar(DS:6F70h, 1Ch, 0)(28 bytes = 七個 longint，閉合 spec 913 的公用池尺寸)、經驗值歸零。⚠釋放後沒把 DS:6F8Ch 寫回 NIL",
    "citations": [
     "audit/function-index/dos-overlay-05.md",
     "audit/function-strings.md",
-    "spec/891-battle-teardown.md"
+    "spec/891-battle-teardown.md",
+    "spec/917-combat-end-summary.md"
    ]
   },
   {
@@ -32321,9 +32327,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "917",
+   "note": "同 DOS overlay-05:00A7Eh(相似度 0.963，只有一個差異區塊)：等按鍵前多一段 10 bytes 熱鍵字串指派到 DS:0A335h、等按鍵三個屬性參數 0Fh/0Fh/0Fh 改成 7/0/0。經驗值句同樣切成列 5 + 列 7，切點落在日文文法接得上的地方('各キャラクターは1234' / '点の経験点を得た。')",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/917-combat-end-summary.md"
    ]
   },
   {
@@ -51575,9 +51585,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -52130,9 +52140,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,

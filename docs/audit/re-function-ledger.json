@@ -23881,6 +23881,24 @@
    "level": "exact",
    "spec": "916",
    "note": "同 DOS overlay-01:001DFh，48 行(48×16+7 = 775 逐條對上)。★80 欄把同一份名單從兩欄改排四欄(欄 2/13/23/32)，列數 22 壓到 14，下半頁多 14 行 PonyCanyon 移植組名單 + 'ＶＥＲＳＩＯＮ１．２'(全支唯一全形字)。另：全小寫改成標題全大寫/人名首字大寫、'tsr, inc.'→'TSR,INC.'(逗號無空格)、DOS 分兩列的 'jeff grubb'+'george mac donald' 併成一個字串 'Jeff Grubb,George Mac Donald'(版面因素，非文法)。用兩支印字助手 418h:0D17h(26 次)與 418h:0DA5h(70 次)，分流原因無結論"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 2686,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "917",
+   "note": "戰鬥結束結算(retf 4 = 一個 longint 經驗值)：依旗標印五種結果之一——(DS:47ECh = 0 且非決鬥)→'The party has found Treasure!'；DS:47EDh ≠ 0 →逃跑；否則依 DS:8B5Ch/遠指標(DS:4F9Dh)^[5CCh] 判勝敗，決鬥(DS:8B56h ≠ 0)印 'You have won the duel.'。接著 Str(經驗值) 接前綴印在列 5、'experience points.' 印在列 7。★逃跑分支會走 DS:6F8Ch 鏈逐一 FreeMem(節點, 3Fh)(節點大小與 next 位移 +2Ah 同角色物品節點 → DS:6F8Ch 是戰利品鏈)、FillChar(DS:6F70h, 1Ch, 0)(28 bytes = 七個 longint，閉合 spec 913 的公用池尺寸)、經驗值歸零。⚠釋放後沒把 DS:6F8Ch 寫回 NIL"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
+   "ea": 2652,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "917",
+   "note": "同 DOS overlay-05:00A7Eh(相似度 0.963，只有一個差異區塊)：等按鍵前多一段 10 bytes 熱鍵字串指派到 DS:0A335h、等按鍵三個屬性參數 0Fh/0Fh/0Fh 改成 7/0/0。經驗值句同樣切成列 5 + 列 7，切點落在日文文法接得上的地方('各キャラクターは1234' / '点の経験点を得た。')"
   }
  ]
 }
