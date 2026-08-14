@@ -24988,6 +24988,24 @@
    "level": "exact",
    "spec": "docs/spec/977-savelist-menu-ranges-and-combat-icon.md",
    "note": "重畫戰場一格的戰鬥員圖示；定案 overlay-33 entry#6 的推疊順序；DS:6D35h/67C6h/680Eh 三張表"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 5843,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/978-tilde-hotkey-marker-and-underscore-to-space.md",
+   "note": "ECL 文字轉「本文＋熱鍵表」：英數字 +20h 轉小寫，'~' 標記的字元刪標記後轉大寫並收進輸出（上限 40）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 121,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/978-tilde-hotkey-marker-and-underscore-to-space.md",
+   "note": "把 '_' 全部換成半形空白；回傳字串的函式（@結果留在堆疊）；迴圈計數器用全域 DS:0A9D9h 不可重入"
   }
  ]
 }
