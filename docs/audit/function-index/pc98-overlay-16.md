@@ -35,7 +35,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `36B2` | sub_36B2 | — | 953 | 346 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 2A6Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `3AA8` | sub_3AA8 | LOADMONSTER | 850 | 324 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `3DFF` | sub_3DFF | LOADNPC | 108 | 42 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/760-item-effect-flag-clear-and-file-exists.md<br>載入 CPIC(retf 2)：與 DOS overlay-16:351Ch(spec 756)同流程(DS:7F09h^[67Ch] > 7 就不做、GetMem 後填 +126h、組 CS:3DFAh 的 'CPIC'、最後叫 (參數, p^[143h]))。⚠ 配置大小 DOS 1A6h、PC-98 1A7h，多一個 byte | spec/760-item-effect-flag-clear-and-file-exists.md |
-| `3E8B` | sub_3E8B | ATTACHCHARACTER | 300 | 98 | 2 | 2 | ✓ | 待解讀 | — | — | — |
+| `3E8B` | sub_3E8B | ATTACHCHARACTER | 300 | 98 | 2 | 2 | ✓ | 已解讀 | exact | 873<br>同 DOS overlay-16:035A8h，44 條差異全是位址(DS:650Ah↔9598h、+189h↔+18Ah、DS:4F9Dh↔7F09h)。★PC-98 側在 DOS 出現 hlt 的位置是正確的 lea di,[bp+var_C]，用來校正 DOS 的反組譯錯位 | spec/873-add-to-party-and-portrait-slot.md |
 | `3FB7` | sub_3FB7 | — | 115 | 53 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `402A` | sub_402A | — | 303 | 120 | 2 | 2 | ✓ | 已解讀 | exact | docs/spec/780-submap-blit-entry-init-and-weighted-score.md<br>清單項目初始化(retf 4)：記錄陣列 DS:0A648h、每筆 29h(41) bytes、索引取自 參數^[0] — 長度 byte 設 14h 並用 ' ' 填滿 20 格、叫本模組 45C9h 後 StoreString(28h)、+09h 填 87h、+0Ah 填 i+3Fh；byte[0A80Ah + i] 不等於 5 時，從 DS:6812h 起每筆 15h bytes 的表搬一段到 +0Dh(長度取自該筆第一個 byte)。⚠ 20 個空白是寫死的欄寬 | spec/780-submap-blit-entry-init-and-weighted-score.md |
 | `4193` | sub_4193 | — | 183 | 77 | 2 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
