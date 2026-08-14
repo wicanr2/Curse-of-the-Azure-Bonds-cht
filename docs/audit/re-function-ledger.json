@@ -17135,6 +17135,16 @@
    "spec": "docs/spec/722-gaze-attack-and-slot0-helper.md",
    "bounds": "prologue",
    "note": "凝視攻擊:**先把 arg_6^[18Dh]^[0Ah] 清成 NIL**,再 <[DS:72A0h] 第 0 項>(@DS:7746h, 1, 24h) 選目標,結果從那個欄位讀回來(不是回傳值);為 NIL 就返回。顯示 '<名字> gazes...'(CS:600Ch)、<overlay-24 entry#24>(12h)、用兩組 entry#15/#16 座標呼叫 entry#25(…, 4, 2Dh);<overlay-23 entry#8>(p, 1, 0) 非 0(豁免成功)**完全沒事**,沒有減半也沒有替代效果;失敗才 <overlay-23 entry#11>(p, 34h, 3Ch, 0FFh, 0) 並顯示 '<名字> is paralyzed'(CS:6015h,長度 12,所以效果編號 34h 是麻痺)。⚠ 與 spec 720 的 5E11h 結構幾乎相同但**那支呼叫前不清空**,沒選到目標時會讀到上一次留下的值並拿去算距離"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 22900,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/723-spits-acid.md",
+   "bounds": "prologue",
+   "note": "吐酸。骨架與 spec 720 龍息幾乎相同(同樣用 [DS:72A0h] 第 0 項、模式碼 41h 選目標,同樣呼叫前不清空、NIL 檢查在用過之後),四個數字不同:距離上限 >= 7(龍息是 2)、ROLLDICE(1,100) > 30 算未命中(龍息是 > 50)、**未命中有專屬訊息 'Spits Acid and Misses'(CS:595Eh)而龍息是靜默返回**、傳給 <overlay-23 entry#20> 的傷害參數是 **arg_6^[78h](攻擊者 HP 上限)**而龍息是常數 7。所以吐酸的強度隨攻擊者體質變化,龍息不會。命中時顯示 'Spits Acid'(CS:5953h)"
   }
  ]
 }
