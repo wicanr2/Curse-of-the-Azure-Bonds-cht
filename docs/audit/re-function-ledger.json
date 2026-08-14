@@ -20074,6 +20074,60 @@
    "level": "exact",
    "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
    "note": "把一格寫進螢幕緩衝(retf 6)：與 DOS overlay-10:0048h 55 條同形，計數器 DS:7AC2h/7AC3h、緩衝 DS:9F2Ch(差異 4 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-31",
+   "ea": 413,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "Bresenham 走線初始化(retf 4)：r^[0Eh]/[10h] := 起點 x/y、r^[0Ah]/[0Ch] := |dx|/|dy|、r^[12h]/[14h] := Sign(dx)/Sign(dy)(overlay-31:0007h)、r^[8] := 0、r^[16h] := 0。記錄共 17h bytes：+0/+2 起點、+4/+6 終點、+8 誤差、+0Ah/+0Ch 絕對差、+0Eh/+10h 目前、+12h/+14h 步進、+16h 結束旗標。⚠ 兩平台逐位元組相同(差異 0 條)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-31",
+   "ea": 413,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "Bresenham 走線初始化(retf 4)：與 DOS overlay-31:019Dh 58 條**逐位元組相同**，無任何運算元差異"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 1934,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "地圖邊界夾制(retf，無參數)：清 DS:4F9Dh^[5AAh]；<017Fh:0039h>(x, y, 面向) 為真時算出新座標，⚠ 只有越界才寫回 DS:720Fh/7210h(夾到 0 或 0Fh)並把 +5AAh 設 1，留在範圍內的新座標算完就丟(實際移動由 spec 770 的 083Ch 做)。同模組兩種邊界政策並存：本支夾制、083Ch 環繞"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 1881,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "地圖邊界夾制(retf)：與 DOS overlay-14:078Eh 55 條同形，座標在 DS:0A2A9h/0A2AAh/0A2ABh、dx/dy 表 489Eh/48A7h(差異 15 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 14506,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "把掃描結果複製出來(retf 6)：叫掃描程序(緩衝 DS:6E92h, …, 0FFh, 7Fh, 戰鬥員 y, 戰鬥員 x)後，把筆數 DS:6E96h 存進 ss:[rec−0DAh]，再逐筆 Move(DS:6E94h + i*3 → ss:[rec−0DBh + i*3], 3)。與 spec 777 的 overlay-09:02B1h 用同一組全域。⚠ 呼叫端陣列大小沒有任何檢查"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 14312,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
+   "note": "把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出)"
   }
  ]
 }
