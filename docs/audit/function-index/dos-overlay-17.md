@@ -28,7 +28,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1994` | sub_1994 | — | 10 | 4 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mul dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
 | `199E` | sub_199E | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, [di+4124h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1ECD` | sub_1ECD | — | 1608 | 600 | 3 | 13 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/function-index/dos-overlay-19.md<br>audit/function-triage.md |
-| `2515` | sub_2515 | — | 146 | 53 | 2 | 1 | ✓ | 已解讀 | exact | 866<br>體質的 HP 加值(retf 2，職業碼)：讀 遠指標(DS:6506h)^[19h](體質，spec 857)，3→−2、4..6→−1、7..14→0、15→+1、16→+2、17..19→戰士類(職業碼 2/3/4)給 體質−0Eh(即 +3/+4/+5)否則 +2。★與 AD&D 一版逐格相符，同時是 +19h=體質 與那組職業編號的第二份佐證。⚠體質 ≥20 時所有分支都不成立，直接回傳未初始化的堆疊殘值 | audit/resident-data-tables.md<br>spec/866-constitution-hp-bonus.md |
+| `2515` | sub_2515 | — | 146 | 53 | 2 | 1 | ✓ | 已解讀 | exact | 866<br>體質的 HP 加值(retf 2，職業碼)：讀 遠指標(DS:6506h)^[19h](體質，spec 857)，3→−2、4..6→−1、7..14→0、15→+1、16→+2、17..19→戰士類(職業碼 2/3/4)給 體質−0Eh(即 +3/+4/+5)否則 +2。★與 AD&D 一版逐格相符，同時是 +19h=體質 與那組職業編號的第二份佐證。⚠體質 ≥20 時所有分支都不成立，直接回傳未初始化的堆疊殘值 | audit/function-index/pc98-overlay-17.md<br>audit/resident-data-tables.md<br>spec/866-constitution-hp-bonus.md |
 | `260C` | sub_260C | — | 278 | 111 | 1 | 6 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `2724` | sub_2724 | — | 285 | 121 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `2868` | sub_2868 | — | 3454 | 1290 | 1 | 9 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |

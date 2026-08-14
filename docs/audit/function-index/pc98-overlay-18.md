@@ -5,10 +5,10 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 38 | 18 | 2 | 0 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>retf，無參數：02A8h:1392h(9, 0Fh)；08EEh:0379h(1)；02A8h:1392h(9, 9) | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-02.md<br>audit/overlay-init-graph.md<br>spec/612-ecl-main-loop.md<br>spec/751-overlay-init-chain-dependency-graph.md<br>spec/754-small-predicates-and-wrappers.md |
+| `0000` | sub_0 | — | 38 | 18 | 2 | 0 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>retf，無參數：02A8h:1392h(9, 0Fh)；08EEh:0379h(1)；02A8h:1392h(9, 9) | audit/embedded-strings.md<br>audit/function-index/dos-overlay-18.md<br>audit/function-index/pc98-overlay-02.md<br>audit/function-index/pc98-overlay-18.md<br>audit/overlay-init-graph.md<br>spec/612-ecl-main-loop.md |
 | `0026` | sub_26 | — | 950 | 343 | 1 | 2 | ✓ | 待解讀 | — | — | spec/585-ecl-goto-and-display-mode-pair.md |
 | `03DC` | sub_3DC | — | 678 | 235 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `0682` | sub_682 | — | 198 | 76 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `0682` | sub_682 | — | 198 | 76 | 1 | 3 | ✓ | 已解讀 | exact | 867<br>同 DOS overlay-18:00780h，但★兩處真的不同：可見上界 41h↔42h、送出改叫 sub_175D 並多傳一個常數 1(DOS 是 本模組 0000h 三參數)。其餘 7 條差異是位址 | spec/867-ending-animation-frame.md |
 | `0748` | sub_748 | — | 419 | 154 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `08EB` | sub_8EB | — | 384 | 150 | 1 | 4 | ✓ | 已解讀 | exact | 1<br>同 DOS overlay-18:009DBh（module_align 對齊，助憶碼序列完全相同）。只差兩條：DS:7BA4h↔4ACEh 與 GetMem 呼叫目標 | — |
 | `0A6F` | sub_A6F | — | 281 | 114 | 2 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
