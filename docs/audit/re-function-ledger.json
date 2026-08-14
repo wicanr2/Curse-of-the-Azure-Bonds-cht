@@ -21316,6 +21316,24 @@
    "level": "exact",
    "spec": "docs/spec/827-casting-time-and-camp-only.md",
    "note": "開始施法：retf 8，宣告順序 (法術, 參數4, 輸出遠指標)。p := DS:9594h、輸出^ := 0；法術 = 0 時 法術 := <far 102Ch>(@var_6, @var_5, 1, 0) 讓玩家選；法術 > 0 且 byte[61BFh + 法術*10h]（屬性 +0Bh）= 0 → 顯示 'キャンプでのみ使う呪文だ'(24 bytes)、<far 154Ch+3>、法術 := 0（100 筆裡只有 8 筆是 0，正好是 AD&D 的非戰鬥法術：Friends／Read Magic／Find Traps／Knock／Strength／Cure Disease／Neutralize Poison／Raise Dead）；參數4 = 0 時 <far 15B3h>、DS:0A878h := 1、DS:0A877h := 1、<far 194Dh+1>(1,3,p)、<far 1505h+4>(p)。法術 <= 0（無號）就離開；延遲 := 有號(byte[61C0h + 法術*10h]（屬性 +0Ch，AD&D 施法時間，單位「節」）) div 3。延遲 = 0 → <far 11D9h>(法術, 參數4, 1, 輸出) 並 輸出^ := <far 159Ah>(p)；否則 輸出^ := 1、<far 1552h+2>(p, 名字+'は呪文を唱え始めた。'(20 bytes), 0Ah, 1)、p^[18Dh]^[00h] := 法術（正在詠唱的法術編號）、先攻 p^[18Dh]^[3] 大於延遲就減掉，否則設 1。spec 827 PC-98 在 11D9h 那條路之前多兩條 mov al,[bp+arg_6] / mov ds:0BE2Dh, al。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 6556,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/828-drop-from-party.md",
+   "note": "把角色踢出隊伍：retf。只剩這一個（DOS：DS:6506h^[189h] = NIL 且 DS:6506h = DS:650Ah）時顯示 'quit TO DOS: '(13)，<far 16AEh>(0Eh,0Ah,0Fh) 回 'Y' 就 <far 0F0Fh>(1,0) 並 <far 06EAh:0000h> 直接離開遊戲（不返回）。否則 <far 1554h>(DS:6506h, 名字+'will be gone'(12), 0Ah, 0)、顯示 'Drop from party? '(17)；回答不是 'Y' 就 <far 1554h>(…, 名字+'Breathes A sigh of relief'(25，A 大寫), 0Ah, 1) 並離開；是 'Y' 則依 DS:6506h^[196h] 分流——<> 0 顯示 名字+'bids you farewell'(17)，= 0 顯示 名字+'is dumped in a ditch'(20)；最後 <far 0F0Fh>(1,0)、<far 1EC9h+4>(0Bh,26h,1,11h)、<far 14F8h+2>(DS:6506h)。spec 828"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 6564,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/828-drop-from-party.md",
+   "note": "同 DOS，但「只剩這一個」的判定**整段重寫**：只剩這一個 := 1；走 DS:9598h 鏈，若存在 p 使得 ((p^[196h] = 0) 或 (p^[196h] = 4)) 且 (p^[0F7h] = 0) 且 (p <> DS:9594h)，就設 0。DOS 只看串列結構（下一個為 NIL 且自己就是頭）。訊息：'は完全にいなくなる。'(20 bytes)／'かまわず離脱させますか？'(24 bytes)／'は別れを告げた。'(16 bytes)／'はドブに捨てられた。'(20 bytes)／'は安堵のため息をもらした。'(26 bytes)；quit TO DOS 那段無對應字串。spec 828"
   }
  ]
 }
