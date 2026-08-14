@@ -23087,10 +23087,14 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1078",
+   "note": "戰術地圖彈道動畫(retf 0Ch，六個 word：起點 x/y、終點 x/y、動畫幀數、每格延遲)。先用 overlay-31 entry#2/#3 把整條 Bresenham 走成 148 bytes 的方向碼緩衝(座標一律 x3)，再沿方向碼逐格畫/擦精靈(0297:09E4h 兩種圖來源 + 0297:1316h 送畫面 + 09AB:029Eh 延遲)。方向→dx/dy 是 DS:2694h/DS:269Dh 兩張 9 筆表；誤差累到 ±3 用 overlay-31 entry#1(Sign) 進位成一整格。★★★飛出視窗(0..12h ⇒ 視窗 7x7 格)時倒著走回去算新視窗原點、叫 overlay-32 entry#13 捲動，然後整條線從頭重畫一次(不是接著畫)。地圖邊界 x\u003c=31h(49)、y\u003c=18h(24)。⚠IDA 的 arg_N 基準與 retf 0Ch 差 2 bytes，只用相對順序",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
     "audit/function-triage.md",
+    "spec/1078-tacmap-projectile-animation-dos.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
    ]
   },
@@ -53802,9 +53806,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 52,
+   "Read": 53,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
