@@ -15770,7 +15770,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/850-hit-dice-and-effective-level.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15783,7 +15786,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "850",
+   "note": "有效等級(retf 4)：各職業等級總和（Ranger c=4 與 Monk c=7 各多算 1）加上 45E9h 的調整後除以職業數取平均。負調整時有下限保護。⚠ 職業數 = 0 會除以零",
+   "citations": [
+    "spec/850-hit-dice-and-effective-level.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15809,7 +15818,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "850",
+   "note": "升級擲 HD(retf 6，(角色, 職業遮罩))：DS:0818h 骰數 / DS:0820h 面數 / DS:3EA8h 遮罩 / DS:3EB9h HD 上限，四張 8 bytes 平行表 = AD\u0026D 生命骰表。等級 \u003e 1 就只擲 1 顆；擲兩次取大（非 AD\u0026D 規則）。過上限給固定 3/2/1 但用 mov 覆寫而非累加",
+   "citations": [
+    "spec/850-hit-dice-and-effective-level.md"
+   ]
   },
   {
    "platform": "dos",
@@ -20341,8 +20356,8 @@
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-23.md"
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -22463,9 +22478,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-25.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -22730,7 +22745,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "843",
-   "note": "顯示行清單的建構子(retf 6，(鏈頭遠指標, 筆數))：GetMem 第一個節點 2Eh bytes、清 next/屬性/文字，之後 for i := 2 to 筆數 逐一 GetMem 掛在 +2Ah 並同樣清空。筆數 \u003c 2 時只建一個。與 spec 843 的『加一行』是同一種節點"
+   "note": "顯示行清單的建構子(retf 6，(鏈頭遠指標, 筆數))：GetMem 第一個節點 2Eh bytes、清 next/屬性/文字，之後 for i := 2 to 筆數 逐一 GetMem 掛在 +2Ah 並同樣清空。筆數 \u003c 2 時只建一個。與 spec 843 的『加一行』是同一種節點",
+   "citations": [
+    "audit/function-index/pc98-overlay-26.md"
+   ]
   },
   {
    "platform": "dos",
@@ -41209,7 +41227,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "850",
+   "note": "同 DOS overlay-17:046ECh（module_align 對齊）。整支只差一條呼叫目標（sub_4CBBh↔sub_45E9h）",
+   "citations": [
+    "spec/850-hit-dice-and-effective-level.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41255,7 +41279,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "850",
+   "note": "同 DOS overlay-17:04A12h（module_align 對齊，助憶碼序列完全相同）。7 條差異全是表基底：DS:1354h/135Ch/6F3Ch/6F4Dh↔0818h/0820h/3EA8h/3EB9h 與擲骰呼叫目標",
+   "citations": [
+    "spec/850-hit-dice-and-effective-level.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -46086,8 +46116,8 @@
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-23.md"
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -50469,9 +50499,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 3,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 13,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
@@ -51024,9 +51054,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 5,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 13,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
