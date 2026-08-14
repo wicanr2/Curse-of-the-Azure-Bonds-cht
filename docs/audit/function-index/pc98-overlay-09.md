@@ -7,7 +7,7 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADCOMPTACT | 62 | 16 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1018+2`、`call far ptr loc_187F+4`、`call sub_1923`、`call far ptr loc_1817`、`call far ptr loc_1695+2`、`call far ptr sub_15A1`（body 共 62 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>context/50-log-2026-08-09-13.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/583-ledger-denominator-repair.md<br>spec/751-overlay-init-chain-dependency-graph.md |
 | `005D` | sub_5D | COMPUTERCONTROL | 530 | 191 | 0 | 14 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `026F` | sub_26F | — | 100 | 33 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `026F` | sub_26F | — | 100 | 33 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>retf 4：戰鬥狀態在 +18Eh，其餘同 DOS overlay-09:024Dh | spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `02D3` | sub_2D3 | — | 256 | 96 | 1 | 3 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>spec/493-pc98-quick-sleep-area-target.md |
 | `03D3` | sub_3D3 | — | 249 | 97 | 2 | 4 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/493-pc98-quick-sleep-area-target.md<br>spec/503-pc98-quick-target-object-chain-boundary.md |
 | `04CC` | sub_4CC | — | 347 | 122 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/493-pc98-quick-sleep-area-target.md<br>spec/503-pc98-quick-target-object-chain-boundary.md |

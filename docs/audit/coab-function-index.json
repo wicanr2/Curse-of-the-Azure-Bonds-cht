@@ -1473,7 +1473,10 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "等待 overlay 磁片(retf)：反覆用 1685Fh 檢查 'game.ovr' 是否存在，不在就印 'Please insert overlay disk.' 加換行、等一個按鍵再試。⚠ 沒有離開的出口"
   },
   {
    "platform": "dos",
@@ -1497,7 +1500,10 @@
    "callers": 4,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "檔案是否存在(retf 4)：把參數字串複製進 50h bytes 緩衝，FindFirst(路徑, 0, 記錄)，回傳 (word_24E58 = 0) and (字串長度 \u003c\u003e 0)。word_24E58 是 DosError"
   },
   {
    "platform": "dos",
@@ -2655,7 +2661,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "重建 VROOMM stub(近呼叫 retn)：從控制區塊 +20h 起、依 es:0Ch 的項數，每項寫 5 bytes = CD 3F(INT 3Fh) + 原本 es:[di+1] 的 2 bytes + 1 個 0。這是 stub 版面的產生端證據(既有結論是由 stub 內容反推)"
   },
   {
    "platform": "dos",
@@ -3754,7 +3763,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "6-byte real 的 Horner 多項式求值(近呼叫 retn)：入口 AX:BX:DX 是 x、CS:DI 指向係數表、CX 是項數；迴圈用 __RealAdd/__RealMul，最後加上 CX=81h,SI=0,DI=0(Turbo Pascal real 的 1.0)。屬 RTL 數學核心"
   },
   {
    "platform": "dos",
@@ -4358,7 +4370,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "取檔案大小(近呼叫 retn)：檔案記錄 +02h 不等於 0D7B3h(fmInOut)就把 word_20996(IOResult) 設 67h(103 檔案未開啟)並回 CF；否則用 INT 21h AH=42h 做 AL=01/02/00 三次 LSEEK(取現位置、取檔尾、移回)，把檔案大小放進 BX:CX"
   },
   {
    "platform": "dos",
@@ -4617,6 +4632,7 @@
    "note": "可中斷的計時等待(retf 2)：06EAh:024Ch() 開頭結尾成對；起點 := 0542h:0994h()(32-bit 計數)，終點 := 起點 + 參數*100；迴圈中 09ABh:02FAh() 非 0 就提早離開，否則等到計數 \u003e= 終點(無號 32-bit 比較)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-01.md",
     "audit/overlay-init-graph.md",
     "spec/751-overlay-init-chain-dependency-graph.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
@@ -7971,7 +7987,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "retf 4：p^[18Dh]^[11h] 非 0 回 false；否則 (p^[109h] \u003c= 0) and (p^[111h] \u003c= p^[0E6h]) 也回 false；再叫一支帶輸出參數的 overlay 函式，回 0 就 false；都通過才叫另一支並回 true。比較都是有號",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8182,6 +8204,7 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "兩條路的選擇(retf 4)：先無條件叫一支程序；若 f1(p) 或 f2(p) 或 p^[18Dh]^[3] = 0 則回 h1(p)，否則回 h2(p)",
    "citations": [
+    "audit/function-index/pc98-overlay-09.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -8696,6 +8719,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -8712,6 +8736,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -8761,6 +8786,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -8780,6 +8806,7 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "清空戰場地圖(retf，無參數)：FillChar((DS:6E92h+7)^, 4E2h, 17h) — 4E2h=1250=50×25，獨立確認 spec 749 由 FreeMem 4E9h 反推的格陣尺寸與 7 byte 表頭；再抄 DS:4F99h^[342h] 到 DS:4A14h(另兩個 local 指派後沒用)，最後叫本模組 09FEh/0B0Ah/0E49h",
    "citations": [
+    "audit/function-index/pc98-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -9273,6 +9300,7 @@
    "note": "與 PC-98 overlay-12:0075h（entry#5）助憶碼序列完全相同，語意同該筆：以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -11858,7 +11886,8 @@
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
     "spec/751-overlay-init-chain-dependency-graph.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -12689,11 +12718,11 @@
    "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr 141h:9Dh`、`call far ptr 14Dh:101h`、`call far ptr 0FDh:7Ah`、`call far ptr 175h:2Ah`、`call loc_EB2+4`、`call far ptr 196h:43h`（body 共 62 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-15.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md"
+    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
    ]
   },
   {
@@ -12795,9 +12824,11 @@
    "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
    "note": "找格子(retf 6)：f(v: byte, p: 遠指標) 在 p^[1Eh..1Eh+53h] 線性搜尋等於 v 的索引，找不到回 0FFh。與 overlay-15:0188h 同一個 84 格陣列",
    "citations": [
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-14.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -12811,9 +12842,14 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "找持有某值的隊員(retf 2，回遠指標)：走隊伍鏈，對每個成員叫 06B1h 找格子(v, 成員)，回傳值不是 0FFh 就回傳該成員；走完沒找到回 NIL。spec 756 的 0749h 是其呼叫端",
    "citations": [
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "audit/function-index/dos-overlay-14.md",
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -12832,7 +12868,9 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "移除值為 1Fh 的那一格(retf，無參數)：p := 本模組 06F4h(1Fh)；p 非 NIL 時 i := 找格子(1Fh, p)(overlay-14:06B1h)，把 p^[1Eh+i] 歸零並回 true，否則回 false",
    "citations": [
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "audit/function-index/pc98-overlay-14.md",
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -13479,7 +13517,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "全隊受傷總量(retf 2，參數沒被讀)：走隊伍鏈累加 p^[78h] − p^[1A4h](最大 HP 減目前 HP)，回 word。⚠ 兩個 byte 零延伸後相減，目前 HP 大於最大 HP 時會變成很大的正數",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13866,6 +13910,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-16.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -13901,6 +13946,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-16.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -15316,6 +15362,7 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "四條件合取(retf 4)：((p^[75h]=3) or ((p^[114h]\u003e0) and \u003coverlay 呼叫\u003e(p))) and (DS:4FBAh\u003c\u003e5) and (p^[195h]=0) and (p^[191h]\u003e0)。DS:4FBAh 就是戰鬥開場(spec 750)結尾設 5 的狀態變數；+114h 有號比較、+191h 無號",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -15702,6 +15749,7 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "會不會超過上限(retf 0Ah)：上限 := 本模組 001Bh(p)；p^[187h] + n \u003e 上限(無號)時回 true 並把 上限 − p^[187h] 寫進輸出參數，否則回 false 並寫 0。001Bh 被呼叫兩次、兩次都重算",
    "citations": [
+    "audit/function-index/pc98-overlay-21.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
@@ -15746,7 +15794,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "清表並拆商餘(retf 2)：把 DS:6F70h 起 5 格 4-byte 清 0；再把 參數 div 5 寫進第 4 格(DS:6F80h)、參數 mod 5 寫進第 3 格(DS:6F7Ch)，高位字都補 0，除法無號。⚠ 同一塊區域在 overlay-21:0F5Bh 被當成遠指標檢查 NIL，這裡當 32-bit 整數用",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15816,6 +15870,7 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "數隊伍(retf，無參數)：走 DS:650Ah 的隊伍鏈，數出 +0F7h = 0 或 +0F7h = 0B3h 的成員數，回 byte。+0F7h 是既知「四個處理常式存回不對稱」的那個欄位",
    "citations": [
+    "audit/function-index/pc98-overlay-21.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -15906,7 +15961,9 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "兩個旗標的輸出(retf 8，兩個遠指標都是輸出參數)：a^ := DS:6F70h 起 8 個 4-byte 遠指標中前 7 個有任一非 NIL；b^ := 第 8 個(DS:6F8Ch)非 NIL。兩者先都清 0",
    "citations": [
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "audit/function-index/pc98-overlay-21.md",
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -16080,8 +16137,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "audit/function-index/dos-overlay-26.md",
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -20418,7 +20475,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/pc98-overlay-12.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -20537,7 +20595,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "第一個非零職業欄位的索引(retf 4)：同 12EEh，但掃的是 p^[111h..117h]",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "dos",
@@ -20550,7 +20614,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "第一個非零職業欄位的索引(retf 4)：p^[74h] 非 7 回 11h；否則在 p^[109h..10Fh] 找第一個非零，回索引，找不到回 11h。七格全零時索引推到 7 會多讀 p^[110h]，但結果有 \u003e 0 檢查所以不會採用(對比 overlay-25:134Ah 沒有這層檢查)",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "dos",
@@ -20568,7 +20638,9 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "第一個非零的職業欄位(retf 4)：p^[74h] 不等於 7 就回 0；否則在 p^[109h..10Fh] 找第一個非零 byte 回傳。⚠ 七格全為 0 時索引停在 7，會讀到 p^[110h](超出這七格)",
    "citations": [
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "audit/function-index/pc98-overlay-25.md",
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -20588,7 +20660,8 @@
    "note": "判斷式(retf 4，一個遠指標參數)：回傳 p^[74h] = 7",
    "citations": [
     "audit/function-index/pc98-overlay-25.md",
-    "spec/753-small-utility-routines.md"
+    "spec/753-small-utility-routines.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -20669,8 +20742,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-24.md",
-    "spec/686-dos-ecl-operand-tables-and-menu.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -20693,7 +20766,8 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-25.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -20815,6 +20889,7 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "裁掉尾端空白後的長度(retf 6)：先用 0A54h:064Eh 把第一個宣告的遠字串參數複製進 40 字元本地緩衝(上限 28h)，再從尾端往回跳過 20h，回傳長度(下限 1)。第二個參數整支沒讀；判準是 ASCII 空白，全形空白不算",
    "citations": [
+    "audit/function-index/dos-overlay-26.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -20947,7 +21022,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "spec/733-cast-driver.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -21794,7 +21870,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/overlay-init-graph.md"
+    "audit/overlay-init-graph.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -22069,7 +22146,13 @@
    "callers": 9,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "在指標表裡找索引(retf 4)：從 1 起逐格比對 DS:6D35h + i*4 這個遠指標是否等於參數，相等回索引；走到 DS:66A6h(項數)還沒找到回 0",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22225,6 +22308,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-16.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -27167,6 +27251,7 @@
    "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
    "note": "retf 2：與 DOS overlay-00:0017h 同構(0A65h:062Fh、0418h:12EFh、overlay-16 entry#11、DS:8CF7h、07E3h:0077h)；同樣回傳未被本函式寫過的 [bp-2]",
    "citations": [
+    "audit/function-index/pc98-overlay-16.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
@@ -27202,6 +27287,7 @@
    "note": "可中斷的計時等待(retf 2)：07E3h:02C7h／0418h:133Dh／08EEh:03B3h，其餘與 DOS overlay-01:0000h 同",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-01.md",
     "audit/overlay-init-graph.md",
     "spec/751-overlay-init-chain-dependency-graph.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
@@ -31070,7 +31156,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "retf 4：戰鬥狀態在 +18Eh，其餘同 DOS overlay-09:024Dh",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32311,6 +32403,7 @@
    "note": "以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數)",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -34990,7 +35083,8 @@
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
     "spec/751-overlay-init-chain-dependency-graph.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -35146,7 +35240,8 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/pc98-overlay-13.md"
+    "audit/function-index/pc98-overlay-13.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -36077,11 +36172,11 @@
    "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr 13Eh:9Dh`、`call far ptr 14Ah:101h`、`call far ptr 0FAh:7Ah`、`call far ptr 172h:2Ah`、`call far ptr 0DCh:66h`、`call far ptr 194h:43h`（body 共 62 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-15.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md"
+    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
    ]
   },
   {
@@ -36214,7 +36309,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "找持有某值的隊員(retf 2)：與 DOS overlay-14:06F4h 同",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36944,7 +37045,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "全隊受傷總量(retf 2)：目前 HP 在 +1A5h，其餘同 DOS overlay-15:206Bh",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38822,7 +38929,13 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "讀一個像素(retn 4，參數 x, y)：位移 := y*80 + x div 8、遮罩 := 80h shr (x and 7)，依序測 A800h/B000h/B800h 三個平面組成 0..7 的值。同樣不含第四平面",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38835,7 +38948,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "載入 3 平面圖檔並置中貼上(近呼叫 retn)：out 0A6h,1 後開檔(AH=3Dh)，讀 4 bytes 檔頭(寬像素、高列數)到 0C29h:7BCCh；寬位元組 := (寬+7) div 8，水平置中 (80−寬位元組) div 2、垂直置中 ((400−高) div 2)*80；逐列貼 A800h/0B000h/0B800h 三個平面(每列 80 bytes)。成功回 0、失敗回 0FFFFh。⚠ 只有三平面(8 色)，沒有 E000h；0C29h 是寫死的段值",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38956,7 +39075,8 @@
    "spec": "docs/spec/754-small-predicates-and-wrappers.md",
    "note": "近呼叫 retn 4：把 Pascal 短字串就地改成 NUL 結尾(rep movsb 把內容往前搬一格蓋掉長度 byte，再補 0)，之後 bx:=段、cx:=位移、dl:=另一參數，呼叫 sub_17F3h。⚠ 原字串在呼叫後已被覆寫。同一段匯出後面還接兩支獨立小程序 1979h/1985h(PC-98 INT 18h AH=42h 畫面模式控制，IDA 的 ROM BASIC 註解不適用)",
    "citations": [
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -40215,6 +40335,7 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "會不會超過上限(retf 0Ah)：欄位是 +188h，其餘與 DOS overlay-21:0073h 相同",
    "citations": [
+    "audit/function-index/pc98-overlay-21.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
@@ -40266,9 +40387,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "清表並拆商餘(retf 2)：表在 DS:0A00Ah，商寫 DS:0A01Ah、餘寫 DS:0A016h，與 DOS overlay-21:019Eh 同",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -40667,8 +40792,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "audit/function-index/dos-overlay-26.md",
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -40809,6 +40934,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -40938,6 +41064,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xchg dl, [bp+si-7D9Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -44857,7 +44984,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/pc98-overlay-12.md"
+    "audit/function-index/pc98-overlay-12.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -44937,7 +45065,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44965,10 +45096,14 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "第一個非零職業欄位的索引(retf 4)：掃 p^[111h..117h]，與 DOS overlay-25:1292h 同",
    "citations": [
     "audit/function-index/pc98-overlay-25.md",
-    "spec/753-small-utility-routines.md"
+    "spec/753-small-utility-routines.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -44983,7 +45118,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "第一個非零職業欄位的索引(retf 4)：掃 p^[109h..10Fh]，與 DOS overlay-25:12EEh 同",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -45105,8 +45246,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-24.md",
-    "spec/686-dos-ecl-operand-tables-and-menu.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -45255,7 +45396,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "retf 4：參數是 SS 相對的記錄指標；用 +14h 起的遠指標與第二個參數叫本模組 0011h 取得遠指標，再叫 0418h:0D17h(該指標, 0, [+20h], [+1Ch] + (參數 − DS:0A32Ch), [+1Eh])",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -45372,7 +45519,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "釋放整條鏈(retf 4)：next 在 +52h、每節點 FreeMem 56h(86 bytes)，離開前有把鏈頭寫回 NIL。⚠ DOS 的對應功能 overlay-26:1241h 是 2Eh(46 bytes)、next +2Ah，而且沒有清鏈頭 — 兩平台在節點大小與收尾行為都不同",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -46175,7 +46328,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/overlay-init-graph.md"
+    "audit/overlay-init-graph.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -46256,7 +46410,8 @@
     "audit/function-index/dos-overlay-08.md",
     "audit/function-index/dos-overlay-22.md",
     "spec/635-overlay32-grid-record-array.md",
-    "spec/710-effect-collection-and-leftover-target.md"
+    "spec/710-effect-collection-and-leftover-target.md",
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
   {
@@ -46499,7 +46654,13 @@
    "callers": 9,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "在指標表裡找索引(retf 4)：表 DS:9DCFh、項數 DS:9740h，與 DOS overlay-32:0CAEh 同",
+   "citations": [
+    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -46802,9 +46963,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 119,
+   "Read": 124,
    "NotBlocking": 133,
-   "Todo": 56,
+   "Todo": 51,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -46952,9 +47113,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 38,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 22,
    "CodeBytes": 7219,
    "Undefined": 92,
@@ -47027,9 +47188,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 0,
    "CodeBytes": 3735,
    "Undefined": 308,
@@ -47042,9 +47203,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -47132,9 +47293,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 27,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
@@ -47192,9 +47353,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 15,
-   "Read": 6,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 5,
    "Fragment": 2,
    "CodeBytes": 4931,
    "Undefined": 733,
@@ -47297,9 +47458,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -47507,9 +47668,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 36,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 20,
    "CodeBytes": 6325,
    "Undefined": 111,
@@ -47582,9 +47743,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 0,
    "CodeBytes": 3435,
    "Undefined": 321,
@@ -47597,9 +47758,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 24,
+   "Todo": 23,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
@@ -47642,9 +47803,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 9,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 8,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
@@ -47687,9 +47848,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 30,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
@@ -47747,9 +47908,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 14,
-   "Read": 5,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 7,
    "Fragment": 0,
    "CodeBytes": 5200,
    "Undefined": 167,
@@ -47762,9 +47923,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 5,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 13,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,
@@ -47852,9 +48013,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,

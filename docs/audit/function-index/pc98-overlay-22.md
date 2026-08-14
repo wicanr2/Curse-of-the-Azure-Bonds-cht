@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADSPELLS | 32 | 10 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call sub_15A1`、`call far ptr loc_1625+2`、`call far ptr loc_147C+1`、`call far ptr loc_1696+1`、`call loc_19CA`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-04.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-23.md |
-| `0020` | sub_20 | — | 367 | 125 | 1 | 2 | ✓ | 待解讀 | — | — | audit/effect-id-catalog.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-12.md<br>knowledge/golden-box-reverse-engineering-worklist.md |
+| `0020` | sub_20 | — | 367 | 125 | 1 | 2 | ✓ | 待解讀 | — | — | audit/effect-id-catalog.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/dos-overlay-26.md<br>audit/function-index/pc98-overlay-12.md |
 | `0227` | sub_227 | SPELLMENU | 565 | 233 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0462` | sub_462 | — | 436 | 168 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `0621` | sub_621 | — | 749 | 291 | 1 | 1 | ✓ | 待解讀 | — | — | — |
@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0A69` | sub_A69 | BUILDSPELLLIST | 866 | 325 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `0DCB` | sub_DCB | FIGSPELLRANGE | 170 | 67 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/705-duration-formula-and-save-roll.md<br>與 DOS overlay-22:0D67h（entry#3）助憶碼序列完全相同，語意同該筆：持續時間:DS:7563h=0 時 v := 表[arg_0].+3 × <overlay-24 entry#36>(arg_0) + 表[arg_0].+2;**非 0 時等級寫死 6**(不查 entry#36),是卷軸/物品之類的替代路徑,remake 不能只實作前一條。接著 v=0 且 表[arg_0].+6 非零 → v:=1;v=0FFh → v:=1。表在 DS:37DAh,16 bytes 一格(與 DS:5CF6h 的物品表是兩張),已知欄位 +0/+2/+3/+6。乘法是 imul 但兩個運算元零延伸載入,結果只取低 byte,+3×lvl 超過 255 會回捲 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `0E75` | sub_E75 | — | 237 | 99 | 10 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
-| `0F62` | sub_F62 | — | 441 | 156 | 47 | 5 | ✓ | 待解讀 | — | — | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `0F62` | sub_F62 | — | 441 | 156 | 47 | 5 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-22.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `112C` | sub_112C | GETSPELLTARGETS | 283 | 103 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1247` | sub_1247 | TARGETDIR | 333 | 117 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/733-cast-driver.md |
 | `140A` | sub_140A | — | 1 | 1 | 8 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
@@ -23,7 +23,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1414` | sub_1414 | — | 5 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `adc al, 8Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | audit/function-index/dos-overlay-12.md<br>audit/function-index/pc98-overlay-12.md |
 | `1419` | sub_1419 | — | 1 | 1 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
 | `1423` | sub_1423 | — | 6 | 2 | 0 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `fadd qword ptr [bp+si-7D49h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
-| `1432` | sub_1432 | — | 6 | 2 | 13 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xchg dl, [bp+si-7D9Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `1432` | sub_1432 | — | 6 | 2 | 13 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xchg dl, [bp+si-7D9Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | audit/function-index/pc98-overlay-22.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `143D` | sub_143D | CASTSPELL | 39 | 14 | 0 | 2 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 39 bytes，已逐條讀完） | audit/function-index/pc98-overlay-22.md |
 | `1510` | sub_1510 | — | 6 | 4 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `151F` | sub_151F | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
