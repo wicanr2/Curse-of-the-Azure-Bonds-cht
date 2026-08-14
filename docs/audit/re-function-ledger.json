@@ -24673,6 +24673,24 @@
    "level": "exact",
    "spec": "955",
    "note": "Runtime error 與程式終止(far)：錯誤碼存 word_23AFEh；有出錯位址就走 word_23AE2h 的覆疊鏈(next +14h)比對 +10h 找出是哪一段，★把段位址減去 word_23B04h 與 10h 換算成覆疊內的相對位址存 word_23B00h/word_23B02h——所以印出來的 XXXX 不是絕對段址，對照反組譯要加回去。dword_23AFAh(ExitProc)非 NIL 就清空它並用 cs:0110h 當回位址 retf 跳過去。否則還原兩個向量後，用 cs:01E1h 的 19(13h)筆中斷編號表逐一 int 21h AH=25h 還原(舊向量存 ds:0C07Eh 起每筆 4 bytes)，有位址就印 'Runtime error '(1F4h) + 碼 + ' at '(203h) + 段:偏移 + 換行(208h)，最後 int 21h AH=4Ch 帶錯誤碼離開。⚠IDA 註記 sp-analysis failed，因為 ExitProc 那條路用 push/retf 手動組遠呼叫"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 81580,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "956",
+   "note": "★帶遮罩的三平面貼圖(near, retn 0Eh)，參數同 spec 949 的 13E22h(目的表面, 來源表面, 張號, 列, 欄)：每個 word 做 es:[di] := (es:[di] and 遮罩) or 來源；遮罩取自 來源^[13h](spec 934 的遮罩緩衝遠指標)，位移 = 來源^[0] × 來源^[2] × 張號。★遮罩指標在每個平面開始時重設回起點，而來源 si 連續讀下去——所以一張遮罩給三個平面共用，遮罩每張只佔 高 × 寬 bytes、主資料每張佔 來源^[11h](三平面份)。這解釋 spec 947 釋放表面時為何要分開算 甲(張數 × +11h)與 乙(高 × 寬 × 張數)。⚠與 13E22h 一樣每列以 word 為單位，寬是奇數時最後一個 byte 不會被處理"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 104775,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "956",
+   "note": "反向的區塊搬移(near)，是 spec 955 的 198AEh 的反向版：起點改成矩形右下角、進來設 std、離開前 cld，給來源與目的重疊且目的在來源之後的情況用。全形保護判定與正向版相同(bit 15 或字碼 bit 7 就先改成空白 20h)，只是最後一格的位移是 −(寬 − 1) × 2。字碼平面 rep movsw、屬性平面(word_280D4h + 200h)用 movsb + dec si/di。⚠rep movsw 前後有 add di,2 / sub di,2 夾著 sub_19B7Dh——反向搬移時 di 指的是最後一個 word 的起點，呼叫鉤子前要先補回 2，正向版沒有這一段"
   }
  ]
 }
