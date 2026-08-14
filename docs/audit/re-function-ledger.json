@@ -25312,6 +25312,24 @@
    "level": "exact",
    "spec": "docs/spec/997-view-panel-draw-and-position-marker.md",
    "note": "同上的 DOS 側；DS:4FE6h <> 0 走四塊版本（PC-98 沒有這個分支）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 131,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/998-character-sheet-layout.md",
+   "note": "角色資料畫面：完整版面＋六個標籤；定名 +74h 種族、+11Bh 陣營、+76h 年齡；五張名稱表的 stride"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 152,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/998-character-sheet-layout.md",
+   "note": "DOS 00083h 的對應（相似度 0.998）；版面常數與五張表 stride 完全相同"
   }
  ]
 }

@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 940、不阻塞 133、邊界碎片 244、待解讀 69；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 941、不阻塞 133、邊界碎片 244、待解讀 68；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -33,7 +33,7 @@
 | overlay-16 | LOADSAVE | 28 | 12 | 0 | 8 | 8 | 16063 | 787 | [明細](function-index/dos-overlay-16.md) |
 | overlay-17 | GEN | 39 | 12 | 0 | 21 | 6 | 19521 | 1536 | [明細](function-index/dos-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 11 | 8 | 0 | 0 | 3 | 4446 | 1177 | [明細](function-index/dos-overlay-18.md) |
-| overlay-19 | LIBRARY | 42 | 22 | 0 | 15 | 5 | 13042 | 1293 | [明細](function-index/dos-overlay-19.md) |
+| overlay-19 | LIBRARY | 42 | 23 | 0 | 15 | 4 | 13042 | 1293 | [明細](function-index/dos-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 16 | 0 | 0 | 0 | 3536 | 191 | [明細](function-index/dos-overlay-20.md) |
 | overlay-21 | MONEY | 27 | 20 | 0 | 4 | 3 | 6469 | 385 | [明細](function-index/dos-overlay-21.md) |
 | overlay-22 | SPELLS | 139 | 112 | 0 | 25 | 2 | 25236 | 2174 | [明細](function-index/dos-overlay-22.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 1049、不阻塞 29、邊界碎片 338、待解讀 72；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 1050、不阻塞 29、邊界碎片 338、待解讀 71；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -77,7 +77,7 @@
 | overlay-16 | LOADSAVE | 47 | 20 | 0 | 14 | 13 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
 | overlay-17 | GEN | 54 | 14 | 0 | 34 | 6 | 20976 | 2752 | [明細](function-index/pc98-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 23 | 16 | 0 | 4 | 3 | 4957 | 1311 | [明細](function-index/pc98-overlay-18.md) |
-| overlay-19 | LIBRARY | 57 | 23 | 0 | 29 | 5 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
+| overlay-19 | LIBRARY | 57 | 24 | 0 | 29 | 4 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 16 | 0 | 0 | 0 | 3555 | 225 | [明細](function-index/pc98-overlay-20.md) |
 | overlay-21 | MONEY | 30 | 20 | 0 | 8 | 2 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
 | overlay-22 | SPELLS | 138 | 108 | 0 | 27 | 3 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
