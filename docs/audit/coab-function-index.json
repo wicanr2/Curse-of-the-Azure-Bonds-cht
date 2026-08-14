@@ -15599,6 +15599,7 @@
    "note": "把物品身上還有效的效果收成一張表。先依 \u003coverlay-24 entry#27\u003e(DS:6506h, 10h)、DS:6506h^[109h] \u003e 0、DS:6506h^[111h] \u003e DS:6506h^[0E6h] 與 [5CF6h + DS:729Ch^[2Eh]×16] = 0Ch 決定要不要把 DS:729Ch^[35h] 清成 0;**+35h 不為 0 就整支不做事**。否則掃三個效果槽 DS:729Ch^[3Ch..3Eh](spec 703):arg_0 非 0 收 slot \u003e 80h(無號 ja,**80h 本身不算**,改寫成 (slot and 80h) \u003c\u003e 0 會多收)、arg_0 為 0 收 slot \u003e 0;收的話呼叫 \u003csub_3F5h\u003e(slot) 並把 DS:729Ch 存進 far [4BF0h + byte[4CB4h]×4],4CB4h 加 1。⚠ 只加不清且**沒有上界檢查**,而 4CB5h 正是 spec 705 的擲骰門檻,溢出會直接寫壞它",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/dos-overlay-22.md",
     "spec/710-effect-collection-and-leftover-target.md",
     "spec/715-sleep-hd-budget.md"
    ]
@@ -15686,7 +15687,8 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -15700,7 +15702,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/716-nil-slot-hazard.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15999,7 +16004,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-22.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -16133,7 +16139,10 @@
    "callers": 3,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/716-nil-slot-hazard.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16153,7 +16162,8 @@
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "spec/709-target-array.md",
-    "spec/710-effect-collection-and-leftover-target.md"
+    "spec/710-effect-collection-and-leftover-target.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -16347,7 +16357,8 @@
    "note": "p := DS:7435h(far pointer),為 nil 或 DS:7434h(byte 計數)為 0 就返回——這對「計數 + 第 1 筆」與 PC-98 的目標陣列(0A520h/0A521h)同一個形狀,推得 DOS 基底是 7431h(strong inference)。之後四道條件:⚠ 第三道要 \u003cloc_1456h\u003e(0,4,p) 等於 0、第四道要 \u003cloc_1573h\u003e(p,0Ch,@var) 不等於 0,兩道相鄰而方向相反。通過才移除效果 0Ch、呼叫 \u003cfar loc_14A4h\u003e 並印英文原文 'has been reduced'",
    "citations": [
     "audit/effect-id-catalog.md",
-    "spec/681-dos-target-array-and-reduce.md"
+    "spec/681-dos-target-array-and-reduce.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -16444,7 +16455,8 @@
    "note": "Sleep 的 HD 預算:預算 := ROLLDICE(4,4) 存 byte[4CB5h];走目標陣列,依 p^[0E5h] 算成本存 byte[4CB6h](\u003c=1→1、2→2、3→4、4→6、5 且 p^[74h]=0→10 否則 20、其他→20);狀態 +195h=1、或 \u003coverlay-24 entry#27\u003e(p,35h) 查到(已睡著,**不扣預算**)、或預算 \u003c 成本 → 該格清成 NIL;否則預算扣掉成本。最後在迴圈**外面**發一次 'falls asleep'。⚠ 預算用完不會提早跳出,所以誰先被睡到是陣列順序決定的不是強弱。⚠ 4CB4h/4CB5h/4CB6h 是**共用暫存不是狀態**——4CB5h 在 spec 705 是擲骰門檻、這裡是 HD 預算,4CB6h 在 705 是 base、這裡是單筆成本;建成具名全域會產生假耦合,但 08A1h 的筆數溢出確實會寫壞它們",
    "citations": [
     "audit/effect-id-catalog.md",
-    "spec/715-sleep-hd-budget.md"
+    "spec/715-sleep-hd-budget.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -16524,7 +16536,8 @@
     "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
     "spec/709-target-array.md",
-    "spec/714-neutralize-poison.md"
+    "spec/714-neutralize-poison.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -16541,7 +16554,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/630-spell-target-array.md",
-   "note": "與 pc98 overlay-22:282Dh 助憶碼序列完全相同（67 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：挑目標填進陣列:budget := DS:9594h^[1A5h](存 DS:7D93h),掃 DS:9598h 角色鏈,+11Ah(RACETYPE)=0Eh 且 budget \u003e= p^[1A5h] 時扣掉該值、inc DS:0A520h、把 far pointer 存進 [0A51Dh + 4×索引]。索引由 1 開始,所以 DS:0A521h 就是第 1 筆——這解釋了其他法術函式都在讀的那個位址。逐個扣預算不是固定選 N 個,扣不動的整個跳過(不會部分影響),而且預算歸零後仍走完整條鏈。訊息「は魅了された。」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-22:282Dh 助憶碼序列完全相同（67 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：挑目標填進陣列:budget := DS:9594h^[1A5h](存 DS:7D93h),掃 DS:9598h 角色鏈,+11Ah(RACETYPE)=0Eh 且 budget \u003e= p^[1A5h] 時扣掉該值、inc DS:0A520h、把 far pointer 存進 [0A51Dh + 4×索引]。索引由 1 開始,所以 DS:0A521h 就是第 1 筆——這解釋了其他法術函式都在讀的那個位址。逐個扣預算不是固定選 N 個,扣不動的整個跳過(不會部分影響),而且預算歸零後仍走完整條鏈。訊息「は魅了された。」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "spec/716-nil-slot-hazard.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16698,7 +16714,8 @@
    "spec": "docs/spec/628-spell-effect-wrappers.md",
    "note": "與 pc98 overlay-22:3223h 助憶碼序列完全相同（25 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 013E:0070\u003e(21h, DS:0A521h:0A523h) \u003c\u003e 0 then \u003cfar 014A:00A2\u003e(目標,1,'の視力は戻った。')。與 41AFh 分支方向相反,交叉確定 013E:0070 是「目標身上有沒有這個效果」,21h 是失明 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/effect-id-catalog.md"
+    "audit/effect-id-catalog.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -16898,7 +16915,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/716-nil-slot-hazard.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16917,7 +16937,8 @@
     "audit/function-index/pc98-overlay-22.md",
     "spec/628-spell-effect-wrappers.md",
     "spec/629-spell-pack-idiom-and-uninit.md",
-    "spec/631-strength-spell-exceptional.md"
+    "spec/631-strength-spell-exceptional.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -17035,7 +17056,8 @@
    "spec": "docs/spec/628-spell-effect-wrappers.md",
    "note": "與 pc98 overlay-22:41AFh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 013E:0070\u003e(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 \u003csub_F62\u003e。沒有該效果才施放,故 2Ah 是加速 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/effect-id-catalog.md"
+    "audit/effect-id-catalog.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -17206,7 +17228,8 @@
    "note": "解毒。狀態 +195h=1 時只清目標陣列第 1 格;否則 \u003coverlay-24 entry#27\u003e(p, 37h) 查得到才做:HP 為 0 補成 1、在 DS:6F9Ch:=1 期間**一次解掉三個編號 37h/16h/0Fh**、顯示 '\u003c名字\u003e is unpoisoned'、+196h:=1、+195h:=0;查不到則顯示 'is unaffected'。⚠ 效果 37h = 中毒(本支解它、spec 707 復活時連同 20h 一起解、spec 709 的 24CDh 對中毒者套 4Eh,三處一致)。⚠ 與 24CDh 前兩步完全相同但之後分岔,尤其**查不到時本支有訊息、24CDh 靜默返回**,對照兩支時最容易被抹平",
    "citations": [
     "audit/effect-id-catalog.md",
-    "spec/714-neutralize-poison.md"
+    "spec/714-neutralize-poison.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -17388,7 +17411,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/632-spell-target-array-loop.md",
-   "note": "與 pc98 overlay-22:496Bh 助憶碼序列完全相同（72 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := \u003cfar 013E:0048\u003e(0,4,t)、x := \u003csub_E75\u003e(t,88h,88h),備妥「は絡みつかれた。」呼叫 \u003cfar 013E:0089\u003e(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-22:496Bh 助憶碼序列完全相同（72 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := \u003cfar 013E:0048\u003e(0,4,t)、x := \u003csub_E75\u003e(t,88h,88h),備妥「は絡みつかれた。」呼叫 \u003cfar 013E:0089\u003e(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "spec/716-nil-slot-hazard.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17444,7 +17470,8 @@
    "spec": "docs/spec/632-spell-target-array-loop.md",
    "note": "與 pc98 overlay-22:4A9Ah 助憶碼序列完全相同（57 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆\u003cfar 014A:00A7\u003e(0Bh,陣列[i],@var) 非 0 時接 \u003cfar 013E:002A\u003e(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/effect-id-catalog.md"
+    "audit/effect-id-catalog.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -17464,7 +17491,8 @@
    "note": "⚠ **把目標筆數永久夾小**:n := ROLLDICE(2,8);if DS:7434h \u003e n then DS:7434h := n,**沒有還原**(與 spec 706 的 5590h 改完會還原正好相反),所以同一段腳本裡後面的 opcode 看到的是被夾過的清單;陣列本身沒重排,超過的格子還在原地只是走不到。接著走 k=1..DS:7434h,跳過 NIL,s := \u003coverlay-23 entry#8\u003e(p, 4, 0)、r := \u003csub_E11h\u003e(p, 23h, 52h)、\u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0, 0, 1, s, 'is confused' CS:4816h)。⚠ 參數個數要讀被呼叫者的 retf N,不要從呼叫端推:entry#8 retf 8(4 word)、entry#20 retf 0Ah(5)、**entry#21 retf 14h(10,不是先前推的 7)**、sub_E11h retf 2(1 word)。先前的錯誤推導兩個呼叫點都自洽,因為它們犯了同一個假設 2d8 這個上限與 AD\u0026D 1e Confusion「影響 2d8 個生物」一致,訊息也是 is confused,法術身分幾乎確定(未從法術表反查編號,標為推論)",
    "citations": [
     "spec/711-target-count-clamp-and-callee-arity.md",
-    "spec/712-duration-table.md"
+    "spec/712-duration-table.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -17494,7 +17522,10 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/716-nil-slot-hazard.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17688,7 +17719,8 @@
    "spec": "docs/spec/710-effect-collection-and-leftover-target.md",
    "note": "對整個目標陣列施加 6d6:先 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 1, 3),再走 k=1..DS:7434h,取 far [7431h + k×4],**為 NIL 就跳過**(1C39h 會把格子寫成 NIL 而不動筆數,這支示範下游該怎麼配合);flag := (p^[11Ah]=12h) ? 0 : 1;d := ROLLDAMAGEDICE(6,6);\u003coverlay-23 entry#20\u003e(p, d, byte[3E02h], flag)。⚠ entry#20 的第一個參數 p 是**呼叫端自己推的殘留**(ROLLDAMAGEDICE 只吃兩個 word)——殘留不一定來自 0A54:0634h 那條鏈,往上找時要連更早被推入而沒人消耗的東西一起看",
    "citations": [
-    "spec/710-effect-collection-and-leftover-target.md"
+    "spec/710-effect-collection-and-leftover-target.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
@@ -17750,7 +17782,10 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/716-nil-slot-hazard.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17763,7 +17798,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/716-nil-slot-hazard.md"
+   ]
   },
   {
    "platform": "dos",
@@ -40664,7 +40702,8 @@
     "audit/function-index/pc98-overlay-22.md",
     "spec/628-spell-effect-wrappers.md",
     "spec/629-spell-pack-idiom-and-uninit.md",
-    "spec/631-strength-spell-exceptional.md"
+    "spec/631-strength-spell-exceptional.md",
+    "spec/716-nil-slot-hazard.md"
    ]
   },
   {
