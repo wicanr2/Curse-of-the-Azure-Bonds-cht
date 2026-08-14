@@ -9981,7 +9981,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/739-resistance-and-level-threshold.md",
+   "note": "減傷:(DS:6F95h and 1) 非 0 時,以 n := DS:6F98h 為次數,每輪 DS:6F94h -= 2 並夾在 DS:6F98h 以上;之後 DS:6F92h += 4;(DS:6F95h and 8) = 0 時呼叫 \u003csub_1Bh\u003e(0)。⚠ DS:6F98h **同時是迴圈次數與傷害下限**,兩者不能拆開改。⚠ 夾限用**無號**比較,DS:6F94h 減到負數會回捲成大值而讓夾限失效,要靠 n 夠小才不會出事",
+   "citations": [
+    "spec/739-resistance-and-level-threshold.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10904,7 +10910,13 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/739-resistance-and-level-threshold.md",
+   "note": "⚠ **第二個會回捲的百分比門檻**:門檻 := (0Bh − \u003coverlay-24 entry#36\u003e(DS:6F97h)) × 5 + arg_0,存進一個 byte;DS:6F93h 非 0 或 (DS:6F95h and 8) 非 0 時擲 ROLLDICE(1,100),\u003c= 門檻 就呼叫 \u003csub_1Bh\u003e(0)。等級 \u003e 11 時算式為負,存成 byte 變成很大的值(例如 12 級是 0FBh+arg_0),**高等級反而變成必定觸發**。與 spec 705 的 30C0h 同型同向,應當成本作的共通模式處理而不是兩個獨立 bug",
+   "citations": [
+    "spec/739-resistance-and-level-threshold.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11077,7 +11089,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/739-resistance-and-level-threshold.md",
+   "note": "武器決定要不要減半:w := \u003csub_FAAh\u003e(DS:6506h)(spec 738);t := byte [5CFDh + w^[2Eh]×16](物品屬性表格內 +7,基底 5CF6h);**t = 0 或 (t and 1) 非 0 都減半**,只有「t 非 0 且 bit 0 為 0」不減——寫成單獨判斷 (t and 1) 會漏掉 t = 0 那一半。除法是有號 idiv 往零取整",
+   "citations": [
+    "spec/739-resistance-and-level-threshold.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11111,6 +11129,7 @@
    "spec": "docs/spec/737-effproc-small-handlers.md",
    "note": "某種武器把傷害**覆寫**成 1d6+1:w := DS:6506h^[151h],w 非 NIL 且 w^[2Eh] = 55h 時 DS:6F94h := ROLLDAMAGEDICE(1,6) + 1。⚠ 是指派不是累加,把原本算好的值整個蓋掉",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/737-effproc-small-handlers.md",
     "spec/738-effproc-effect-handlers.md"
    ]
@@ -16901,7 +16920,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/705-duration-formula-and-save-roll.md",
-   "note": "擲骰門檻:base := 目標^[10Eh] + 目標^[116h] × \u003coverlay-25 entry#10\u003e(DS:6506h)(兩個欄位都 cbw);v := ss:[arg_0 − 2];v\u003ebase → 門檻 := (v−base)×5 + 50;v\u003cbase → 門檻 := 50 − (base−v)×2;相等 → 50;回傳 ROLLDICE(1,100) \u003c= 門檻。⚠ **門檻存在一個 byte(4CB5h,base 在 4CB6h),兩個公式都會回捲且方向相反**:v−base \u003e= 42 時 \u003e=260 → 存成 4,幾乎必定失敗;base−v \u003e 25 時為負 → 例如 246,幾乎必定成功。優勢或劣勢拉大到一定程度結果會翻轉。remake 要先決定重不重現,夾成 0..100 會讓極端情況與原作相反",
+   "note": "擲骰門檻:base := 目標^[10Eh] + 目標^[116h] × \u003coverlay-25 entry#10\u003e(DS:6506h)(兩個欄位都 cbw);v := ss:[arg_0 − 2];v\u003ebase → 門檻 := (v−base)×5 + 50;v\u003cbase → 門檻 := 50 − (base−v)×2;相等 → 50;回傳 ROLLDICE(1,100) \u003c= 門檻。⚠ **門檻存在一個 byte(4CB5h,base 在 4CB6h),兩個公式都會回捲且方向相反**:v−base \u003e= 42 時 \u003e=260 → 存成 4,幾乎必定失敗;base−v \u003e 25 時為負 → 例如 246,幾乎必定成功。優勢或劣勢拉大到一定程度結果會翻轉。remake 要先決定重不重現,夾成 0..100 會讓極端情況與原作相反 ⚠ spec 739 找到第二個同型的(overlay-12:2334h,等級 \u003e 11 時門檻回捲成大值),兩處成因與方向相同,應當成共通模式處理",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "spec/705-duration-formula-and-save-roll.md",
@@ -18129,11 +18148,11 @@
    "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call loc_15D0+1`、`call far ptr sub_19EA`、`call loc_1657`（body 共 22 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-23.md",
-    "audit/string-pairs.md",
-    "knowledge/gold-box-ecl-interpreter.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -18197,12 +18216,12 @@
    "spec": "docs/spec/578-effect-node-list.md",
    "note": "與 pc98 overlay-23:010Eh 助憶碼序列完全相同（115 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：SPELLOFF:第一參數為 nil 時依 id 搜第一個符合的節點,否則直接摘該節點;節點 +4 非 0 則先 CALLEFFECT(1,...) 通知解除;摘鏈後 Dispose(9)。善後在鏈外——id=0Eh 呼叫 sub_18F3(5,char)、id 屬 {0Ch,26h,92h} 呼叫 sub_18F3(0,char),即使該效果不在鏈上也照做 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md",
     "spec/578-effect-node-list.md",
-    "spec/702-more-overlay22-spell-handlers.md",
-    "spec/705-duration-formula-and-save-roll.md"
+    "spec/702-more-overlay22-spell-handlers.md"
    ]
   },
   {
@@ -18832,10 +18851,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-23.md"
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -41904,11 +41923,11 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1627`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-23.md",
-    "audit/string-pairs.md",
-    "knowledge/gold-box-ecl-interpreter.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -41975,12 +41994,12 @@
    "spec": "docs/spec/578-effect-node-list.md",
    "note": "SPELLOFF:第一參數為 nil 時依 id 搜第一個符合的節點,否則直接摘該節點;節點 +4 非 0 則先 CALLEFFECT(1,...) 通知解除;摘鏈後 Dispose(9)。善後在鏈外——id=0Eh 呼叫 sub_18F3(5,char)、id 屬 {0Ch,26h,92h} 呼叫 sub_18F3(0,char),即使該效果不在鏈上也照做",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md",
     "spec/578-effect-node-list.md",
-    "spec/702-more-overlay22-spell-handlers.md",
-    "spec/705-duration-formula-and-save-roll.md"
+    "spec/702-more-overlay22-spell-handlers.md"
    ]
   },
   {
@@ -42683,10 +42702,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-23.md"
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -45828,9 +45847,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 100,
+   "Read": 103,
    "NotBlocking": 0,
-   "Todo": 25,
+   "Todo": 22,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,

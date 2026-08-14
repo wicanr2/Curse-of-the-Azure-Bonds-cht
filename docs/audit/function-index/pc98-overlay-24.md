@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADGENERIC | 37 | 11 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_1982+1`、`call sub_19CA`、`call far ptr loc_17B7`、`call loc_1749+1`、`call sub_1697`、`call loc_1626+1`（body 共 37 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-02.md<br>audit/function-index/pc98-overlay-23.md |
+| `0000` | sub_0 | LOADGENERIC | 37 | 11 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_1982+1`、`call sub_19CA`、`call far ptr loc_17B7`、`call loc_1749+1`、`call sub_1697`、`call loc_1626+1`（body 共 37 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-02.md |
 | `0025` | sub_25 | — | 504 | 179 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md |
 | `021D` | sub_21D | — | 138 | 45 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md<br>spec/683-encumbrance-movement.md |
 | `02A7` | sub_2A7 | — | 286 | 104 | 1 | 1 | ✓ | 待解讀 | — | — | — |
