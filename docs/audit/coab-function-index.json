@@ -14055,10 +14055,14 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1012-target-cursor-and-hotkey-proof.md",
+   "note": "目標游標畫面(retf 18h＝12 word；宣告順序 (施法者, 起點遠指標, 射程, 模式, arg_A, arg_8, var 選定了, var 結果記錄))。結果那 7 bytes 是 +0..3 目標遠指標／+4 欄／+5 列，與 DS:6E52h 的已選目標清單(筆距 7、數量 DS:6E91h)同一種記錄。★★ 主迴圈條件是 while not (鍵 in [#0, #13, 'E', 'T'])——far 0A54:08D4h 的 Borland 符號是 @Set@MemberOf$q4Byte，第二個運算元是 32 bytes 的集合點陣圖不是字串(⚠ function_strings.py 會把它讀成長度 1 的 ' ')。游標用小鍵盤掃描碼(同 spec 1008)移動，夾在 0..31h × 0..18h ＝ 50 欄 × 25 列；'C' 拉回中心。★ 距離 div 2 ⇒ 射程也是半格制(同 spec 1008 的移動力)；射程 \u003c 距離 或 地磚表 26A2h 值為 0FFh 就不可選。★ 地形碼 1Fh ＝ 這一格站著東西 ⇒ 要去 DS:6E52h 那張 7 bytes 一筆的清單按座標找人(spec 748 的消費端)。★★★ 熱鍵機制差異的鐵證：DOS 只有 'Center Exit'／'Target '／'(Use Cursor keys) ' 三個字串，熱鍵藏在大寫 C/E/T 裡，沒有熱鍵表；PC-98 多 28 條，把「決定」「中央」「やめる」寫進 DS:0A338h+i×7(i=6/7/10)，熱鍵 'T'/'C'/'E' 另外寫進 DS:0A334h+i(同樣 i=6/7/10)，兩個索引完全對齊，正是 spec 755 的兩張平行陣列。中文化必須跟 PC-98(Big5 次位元組含 43h/45h/54h)。⚠ 三個選項的複製長度寫死 6 bytes ＝ 3 個全形字，中文也只有 3 個字的空間。位址：6E92h/6E94h↔9F2Ch/9F2Eh、6E91h↔9F2Bh、75E5h↔0A877h、6D35h↔9DCFh",
    "citations": [
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1012-target-cursor-and-hotkey-proof.md"
    ]
   },
   {
@@ -17096,6 +17100,7 @@
    "note": "★★★ 開發者留下的物品結構傾印畫面(retf 4，唯一參數是物品節點遠指標，原始位元組 c4 7e 06 ⇒ bp+06h)。15 行標籤印在欄 1、15 行數值印在欄 20，列 1..15，用常駐 0542:0352h 印字。標籤是原始 Turbo Pascal 欄位名，逐行對應：itemptr=+2Eh、namenum(1..3)=+2Fh/30h/31h、plus=+32h、plussave=+33h、ready=+34h、identified=+35h、cursed=+36h、value=+3Ah(word)、special(1..3)=+3Ch/3Dh/3Eh、dice large=byte[5CF8h+itemptr×16]、sides large=byte[5CF9h+itemptr×16]。★ 因此物品類別表 DS:5CF6h 的 +2/+3 是「對大型目標」的骰數與面數(AD\u0026D 1e 武器的 vs S/M 與 vs L 兩組傷害骰)。★ plus = 魔法加值，佐證 spec 1005 效果碼 41 的 w^[32h]=0 就是「沒有魔法加值的武器」。★★ namenum(1..3) ⇒ 物品名由三個編號組出來，中文化不能當成單一字串處理、串接順序要能重排。★★ 物品節點在 PC-98 整體 +28h(13 個欄位一個不差)：+2Eh..+3Eh ↔ +56h..+66h。⚠ 別把 +28h 推廣到角色節點——角色節點是 +1 且只從 +11Ch 之後開始(spec 1010)。★ 16 個字串一個都不用翻(除錯畫面，正常玩家路徑到不了)；PC-98 版的標籤也是英文，從未在地化",
    "citations": [
     "audit/function-index/dos-overlay-19.md",
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-strings.md",
     "spec/1011-item-debug-screen-field-names.md"
    ]
@@ -40381,10 +40386,14 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1012-target-cursor-and-hotkey-proof.md",
+   "note": "目標游標畫面(retf 18h＝12 word；宣告順序 (施法者, 起點遠指標, 射程, 模式, arg_A, arg_8, var 選定了, var 結果記錄))。結果那 7 bytes 是 +0..3 目標遠指標／+4 欄／+5 列，與 DS:6E52h 的已選目標清單(筆距 7、數量 DS:6E91h)同一種記錄。★★ 主迴圈條件是 while not (鍵 in [#0, #13, 'E', 'T'])——far 0A54:08D4h 的 Borland 符號是 @Set@MemberOf$q4Byte，第二個運算元是 32 bytes 的集合點陣圖不是字串(⚠ function_strings.py 會把它讀成長度 1 的 ' ')。游標用小鍵盤掃描碼(同 spec 1008)移動，夾在 0..31h × 0..18h ＝ 50 欄 × 25 列；'C' 拉回中心。★ 距離 div 2 ⇒ 射程也是半格制(同 spec 1008 的移動力)；射程 \u003c 距離 或 地磚表 26A2h 值為 0FFh 就不可選。★ 地形碼 1Fh ＝ 這一格站著東西 ⇒ 要去 DS:6E52h 那張 7 bytes 一筆的清單按座標找人(spec 748 的消費端)。★★★ 熱鍵機制差異的鐵證：DOS 只有 'Center Exit'／'Target '／'(Use Cursor keys) ' 三個字串，熱鍵藏在大寫 C/E/T 裡，沒有熱鍵表；PC-98 多 28 條，把「決定」「中央」「やめる」寫進 DS:0A338h+i×7(i=6/7/10)，熱鍵 'T'/'C'/'E' 另外寫進 DS:0A334h+i(同樣 i=6/7/10)，兩個索引完全對齊，正是 spec 755 的兩張平行陣列。中文化必須跟 PC-98(Big5 次位元組含 43h/45h/54h)。⚠ 三個選項的複製長度寫死 6 bytes ＝ 3 個全形字，中文也只有 3 個字的空間。位址：6E92h/6E94h↔9F2Ch/9F2Eh、6E91h↔9F2Bh、75E5h↔0A877h、6D35h↔9DCFh",
    "citations": [
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1012-target-cursor-and-hotkey-proof.md"
    ]
   },
   {
@@ -53147,9 +53156,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 40,
+   "Read": 41,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -53702,9 +53711,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 42,
+   "Read": 43,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
