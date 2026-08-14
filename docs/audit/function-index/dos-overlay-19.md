@@ -30,7 +30,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A00` | sub_1A00 | — | 250 | 104 | 4 | 8 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1588h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1B00` | sub_1B00 | — | 877 | 320 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `1EE9` | sub_1EE9 | — | 567 | 203 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `213C` | sub_213C | — | 166 | 61 | 1 | 4 | ✓ | 已解讀 | exact | docs/spec/767-ac-display-sign-and-trade-overload.md<br>交易給誰(retf 4)：以 DS:4AF8h 記住上次選的人當預設，用 CS:2120h 'Trade with Whom?' 選人；取消就離開；否則寫回 DS:4AF8h，用 overlay-19:3258h(spec 762)判超重 — 超重就顯示 CS:2131h 'Overloaded'，否則做三個呼叫(從物品端移除、加到 DS:6506h、更新對象) | spec/767-ac-display-sign-and-trade-overload.md |
+| `213C` | sub_213C | — | 166 | 61 | 1 | 4 | ✓ | 已解讀 | exact | docs/spec/767-ac-display-sign-and-trade-overload.md<br>交易給誰(retf 4)：以 DS:4AF8h 記住上次選的人當預設，用 CS:2120h 'Trade with Whom?' 選人；取消就離開；否則寫回 DS:4AF8h，用 overlay-19:3258h(spec 762)判超重 — 超重就顯示 CS:2131h 'Overloaded'，否則做三個呼叫(從物品端移除、加到 DS:6506h、更新對象) | audit/function-index/pc98-overlay-19.md<br>spec/767-ac-display-sign-and-trade-overload.md |
 | `21F3` | sub_21F3 | — | 176 | 66 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `22A3` | sub_22A3 | — | 465 | 154 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-12.md |
 | `248D` | sub_248D | — | 742 | 263 | 1 | 7 | ✓ | 待解讀 | — | — | — |
@@ -38,7 +38,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2A42` | sub_2A42 | — | 465 | 193 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `2C57` | sub_2C57 | — | 793 | 307 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `2FA9` | sub_2FA9 | — | 687 | 269 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `3258` | sub_3258 | — | 132 | 45 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>拿不拿得下(retf 8)：角色^[14Ch] > 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] > 0 時再乘上去(單位重量×數量)；上限 := <呼叫>(角色) + 5DCh(1500)；角色^[187h](累計負重) + w > 上限(無號)也算超過 | spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/767-ac-display-sign-and-trade-overload.md |
+| `3258` | sub_3258 | — | 132 | 45 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>拿不拿得下(retf 8)：角色^[14Ch] > 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] > 0 時再乘上去(單位重量×數量)；上限 := <呼叫>(角色) + 5DCh(1500)；角色^[187h](累計負重) + w > 上限(無號)也算超過 | audit/function-index/dos-overlay-19.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/767-ac-display-sign-and-trade-overload.md |
 | `32DC` | sub_32DC | — | 207 | 71 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `33AB` | sub_33AB | — | 118 | 44 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `3474` | sub_3474 | — | 381 | 158 | 2 | 4 | ✓ | 待解讀 | — | — | — |

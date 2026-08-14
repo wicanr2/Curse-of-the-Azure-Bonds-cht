@@ -19,7 +19,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0763` | sub_763 | — | 186 | 79 | 5 | 4 | ✓ | 待解讀 | — | — | — |
 | `081D` | sub_81D | — | 450 | 167 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `09DF` | sub_9DF | — | 352 | 142 | 3 | 6 | ✓ | 待解讀 | — | — | — |
-| `0B3F` | sub_B3F | — | 247 | 101 | 0 | 7 | ✓ | 待解讀 | — | — | — |
+| `0B3F` | sub_B3F | — | 247 | 101 | 0 | 7 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-24.md |
 | `0C36` | sub_C36 | — | 40 | 17 | 3 | 1 | ✓ | 已解讀 | strong inference | docs/spec/635-overlay32-grid-record-array.md<br>與 PC-98 overlay-32:12EBh（entry#15）助憶碼序列完全相同，語意同該筆：i := <sub_1363>(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | spec/750-combat-setup.md<br>spec/759-combatant-xy-lookup-and-bank-select-bit.md |
 | `0C5E` | sub_C5E | — | 40 | 17 | 3 | 1 | ✓ | 已解讀 | strong inference | docs/spec/635-overlay32-grid-record-array.md<br>與 PC-98 overlay-32:1313h（entry#16）助憶碼序列完全相同，語意同該筆：同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | spec/750-combat-setup.md<br>spec/759-combatant-xy-lookup-and-bank-select-bit.md |
 | `0C86` | sub_C86 | — | 40 | 17 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/635-overlay32-grid-record-array.md<br>與 PC-98 overlay-32:133Bh（entry#17）助憶碼序列完全相同，語意同該筆：同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |

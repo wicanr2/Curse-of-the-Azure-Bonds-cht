@@ -4839,16 +4839,17 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 04h／05h／06h／07h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/768-script-arithmetic-opcodes-and-save-size.md",
+   "note": "腳本 VM 的四則運算(retf，無參數)：取兩個運算元 A、B 與目的(兩張表 DS:76C5h/7705h 的第 3 格)，依 DS:75FFh 的運算碼 — 4: A+B、5: B−A、6: A div B(無號，餘數存 DS:4F9Dh^[67Eh])、7: A*B。⚠ 減法是 B−A 而除法是 A div B，順序不一致；除法沒有除零檢查；運算碼不在 4..7 時結果 local 未指派",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
-    "spec/602-ecl-party-power-score.md",
-    "spec/736-phantom-instructions-from-decode-gaps.md"
+    "audit/function-index/pc98-overlay-24.md",
+    "spec/602-ecl-party-power-score.md"
    ]
   },
   {
@@ -14056,7 +14057,8 @@
     "audit/function-index/pc98-overlay-16.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
     "spec/760-item-effect-flag-clear-and-file-exists.md",
-    "spec/761-filled-export-and-dungeon-wall-bits.md"
+    "spec/761-filled-export-and-dungeon-wall-bits.md",
+    "spec/768-script-arithmetic-opcodes-and-save-size.md"
    ]
   },
   {
@@ -14104,7 +14106,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/768-script-arithmetic-opcodes-and-save-size.md",
+   "note": "算整隊要多少 bytes(retf 2，參數沒被讀)：每個角色 1A6h(422)、每件物品 3Fh(63，鏈在 +14Dh/next +2Ah)、+0F2h 那條鏈每個節點 9(next 在 +5)，全部累加成 word 回傳。三個常數與既有的 GetMem 大小、物品節點大小一致。⚠ 沒有溢位檢查，+0F2h 那條鏈沒有已知上限",
+   "citations": [
+    "spec/768-script-arithmetic-opcodes-and-save-size.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15317,6 +15325,7 @@
    "spec": "docs/spec/767-ac-display-sign-and-trade-overload.md",
    "note": "交易給誰(retf 4)：以 DS:4AF8h 記住上次選的人當預設，用 CS:2120h 'Trade with Whom?' 選人；取消就離開；否則寫回 DS:4AF8h，用 overlay-19:3258h(spec 762)判超重 — 超重就顯示 CS:2131h 'Overloaded'，否則做三個呼叫(從物品端移除、加到 DS:6506h、更新對象)",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "spec/767-ac-display-sign-and-trade-overload.md"
    ]
   },
@@ -15430,6 +15439,7 @@
    "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
    "note": "拿不拿得下(retf 8)：角色^[14Ch] \u003e 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] \u003e 0 時再乘上去(單位重量×數量)；上限 := \u003c呼叫\u003e(角色) + 5DCh(1500)；角色^[187h](累計負重) + w \u003e 上限(無號)也算超過",
    "citations": [
+    "audit/function-index/dos-overlay-19.md",
     "spec/762-ega-glyph-blit-and-movement-rate.md",
     "spec/767-ac-display-sign-and-trade-overload.md"
    ]
@@ -15688,7 +15698,10 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/768-script-arithmetic-opcodes-and-save-size.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15714,9 +15727,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/768-script-arithmetic-opcodes-and-save-size.md",
+   "note": "每 288 次才做一次的整隊回復(retf 2)：inc(DS:757Ch)，未達 120h(288)就離開；否則走隊伍鏈對每人叫 \u003c呼叫\u003e(1, 角色)，參數非 0 時再叫本模組 05D4h(0)，畫出 CS:0848h 'The Whole Party Is Healed'(25 字元，x=1、y=13h、色 0Ah)，最後計數器歸零。⚠ 訊息寫死在 x=1、沒有先清行，換短的譯文會留下殘影",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/768-script-arithmetic-opcodes-and-save-size.md"
    ]
   },
   {
@@ -22279,7 +22296,10 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-24.md"
+   ]
   },
   {
    "platform": "dos",
@@ -41276,7 +41296,8 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/768-script-arithmetic-opcodes-and-save-size.md"
    ]
   },
   {
@@ -42798,7 +42819,13 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/768-script-arithmetic-opcodes-and-save-size.md",
+   "note": "retf，無參數：DS:0A521h^[0E5h] \u003e= 6(有號)時顯示 CS:45E2h 'は叩きつけた。'；否則以 CS:45E1h(長度 byte 為 0 的空字串)組字串後叫本模組 0F62h，再視 \u003cloc_1546+1\u003e(@暫存, 3, 角色) 的結果叫 sub_140Ah。⚠ 45E1h 與 45E2h 在位元組上重疊相鄰，替換時不能蓋掉 45E1h 的長度 byte",
+   "citations": [
+    "spec/768-script-arithmetic-opcodes-and-save-size.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -47412,9 +47439,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 50,
+   "Read": 51,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 29,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -47622,9 +47649,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -47682,9 +47709,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 0,
    "CodeBytes": 3536,
    "Undefined": 191,
@@ -48267,9 +48294,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 61,
+   "Read": 62,
    "NotBlocking": 0,
-   "Todo": 50,
+   "Todo": 49,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
