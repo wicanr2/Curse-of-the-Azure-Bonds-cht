@@ -17349,7 +17349,8 @@
    "citations": [
     "spec/703-item-effect-slots-and-uninitialised-args.md",
     "spec/711-target-count-clamp-and-callee-arity.md",
-    "spec/712-duration-table.md"
+    "spec/712-duration-table.md",
+    "spec/724-fear-and-puteffect-signature.md"
    ]
   },
   {
@@ -17506,7 +17507,8 @@
    "citations": [
     "spec/711-target-count-clamp-and-callee-arity.md",
     "spec/712-duration-table.md",
-    "spec/716-nil-slot-hazard.md"
+    "spec/716-nil-slot-hazard.md",
+    "spec/724-fear-and-puteffect-signature.md"
    ]
   },
   {
@@ -17536,9 +17538,13 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/724-fear-and-puteffect-signature.md",
+   "note": "恐懼:先 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 3, 6),再走目標陣列(**無 NIL 檢查**);s := \u003coverlay-23 entry#8\u003e(p, 4, 0),s=0(豁免失敗)時 d := \u003csub_E11h\u003e(54h) 取持續時間,\u003coverlay-23 entry#21 PUTEFFECT\u003e(p, 8Eh, d, 0, 1, 1, s, '\u003c名字\u003e runs in terror' CS:4A72h),然後 p^[18Dh]^[10h]:=1、p^[198h]:=1、p^[0F7h] \u003c= 7Fh 時設成 0B3h、**p^[18Dh]^[0Ah] := NIL**(清掉它鎖定的目標,就是 spec 722 那個欄位);s 非 0 則顯示 'is unaffected'(CS:4A81h)。⚠ 由三個呼叫點定出 PUTEFFECT(目標 far, 效果編號, 持續時間, ?, ?, ?, 豁免結果, 訊息 far)=10 word,而**效果編號與持續時間的 id 是兩個不同的數字**(這裡 8Eh 對 54h、4822h 是 23h 對 52h、4432h 是 4 對 49h)",
    "citations": [
-    "spec/716-nil-slot-hazard.md"
+    "spec/716-nil-slot-hazard.md",
+    "spec/724-fear-and-puteffect-signature.md"
    ]
   },
   {
@@ -45810,9 +45816,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 88,
+   "Read": 89,
    "NotBlocking": 0,
-   "Todo": 25,
+   "Todo": 24,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
