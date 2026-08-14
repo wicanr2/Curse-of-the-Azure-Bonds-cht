@@ -9378,6 +9378,7 @@
    "note": "戰場地貌密度分級(retf，無參數)：密度由 32h(50) 起算，98Dh() 的 bit 10h +10、20h +30、40h +20、04h −10、02h −20、80h −50。掃 50 欄 × 25 列，圖磚為 16h 的格子依密度落在五個級距（−30..9 / 10..29 / 30..69 / 70..89 / 90..110）各以不同的五個權重參數呼叫巢狀程序 sub_CA1h；超出 −30..110 就不做。與 009FEh 斜向障礙、00B0Ah 植被同屬 98Dh() 驅動的地形生成家族",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -14959,7 +14960,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "載入角色圖並套用外觀配色(retf 2)：檔名 'CHEAD'／'CBODY' 各接一個由 DS:0515h[角色^[144h]] 取出的字尾字元，以 1998h+1 載入（圖號來自 +141h/+142h/+143h）。arg_0 非 0 時建兩張 16 格調色盤對照：預設 i→i，再對 i := 1..6 把 角色^[144h+i] 的低 nibble 寫到 DS:3EC0h[i]、高 nibble 寫到 DS:3EC0h[i]+8，最後用 sub_3F96h 對兩張圖做重映射。★角色 +144h..+14Ah 是外觀配色（每 byte 兩組顏色）",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -40099,7 +40103,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "同 DOS overlay-16:00A7Eh（module_align 對齊，助憶碼序列完全相同）。差異全是位址：DS:9594h↔6506h、DS:0D91h↔0515h、DS:96C4h/96C6h↔662Eh/6630h、[di−6992h]↔[di+65D8h] 與呼叫目標；'CHEAD'／'CBODY' 兩平台都沒翻譯",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-strings.md"
@@ -50759,9 +50766,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -51314,9 +51321,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 22,
+   "Todo": 21,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,

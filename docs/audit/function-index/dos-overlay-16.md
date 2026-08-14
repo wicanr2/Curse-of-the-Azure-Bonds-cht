@@ -11,7 +11,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0453` | sub_453 | — | 375 | 169 | 0 | 3 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `0643` | sub_643 | — | 936 | 381 | 4 | 3 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `09EB` | sub_9EB | — | 135 | 50 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md<br>兩筆記錄的合併(retf 8)：n := 來源^[11h] − 1；for i := 0 to n 做 目的^[17h+i] |= 來源^[17h+i]、目的^[13h]^[i] &= 來源^[13h]^[i]。同一迴圈一個取聯集一個取交集。⚠ 來源^[11h] 為 0 時 n = 0FFFFh，迴圈會跑 65536 次 | spec/764-fsplit-dbcs-and-eight-slot-longint-table.md |
-| `0A7E` | sub_A7E | — | 498 | 183 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `0A7E` | sub_A7E | — | 498 | 183 | 1 | 4 | ✓ | 已解讀 | exact | 1<br>載入角色圖並套用外觀配色(retf 2)：檔名 'CHEAD'／'CBODY' 各接一個由 DS:0515h[角色^[144h]] 取出的字尾字元，以 1998h+1 載入（圖號來自 +141h/+142h/+143h）。arg_0 非 0 時建兩張 16 格調色盤對照：預設 i→i，再對 i := 1..6 把 角色^[144h+i] 的低 nibble 寫到 DS:3EC0h[i]、高 nibble 寫到 DS:3EC0h[i]+8，最後用 sub_3F96h 對兩張圖做重映射。★角色 +144h..+14Ah 是外觀配色（每 byte 兩組顏色） | audit/function-strings.md |
 | `0C7E` | sub_C7E | — | 157 | 63 | 2 | 0 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `0DEA` | sub_DEA | — | 1436 | 546 | 1 | 5 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |
 | `1388` | sub_1388 | — | 264 | 109 | 1 | 1 | ✓ | 已解讀 | exact | 1<br>存檔掃描（巢狀程序，retf 2 只收靜態鏈）：以 DS:5BF0h ＋ CS 常數 ＋ 外層 frame 的樣式字串組出搜尋路徑，FindFirst(97Fh:112h)／FindNext(97Fh:150h)，迴圈條件是 DosError(DS:8C98h) = 0。每一輪把找到的檔名接在 DS:5BF0h 後面開檔，Seek 到 0 再 BlockRead 16 bytes 進 var_3C，關檔；下一輪先拿 var_3C 跟外層的目標字串比對，相符就跳出。回傳是否找到 | audit/function-index/pc98-overlay-16.md |
