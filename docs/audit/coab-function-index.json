@@ -28466,7 +28466,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "948",
+   "note": "★全形感知的字元寫入(near，al = 字元、es:di = 緩衝、bx = 游標、si = 長度、dx = 上限)：byte_280E3h ≠ 0 就直接寫。要寫的是全形前導(sub_1977Eh)時緩衝至少要再容得下一個 byte，否則清 byte_280E1h 並叫 sub_192A0h 拒絕；游標在字串尾端就直接寫。★游標下原本是完整全形字時，蓋掉前半會留下孤兒後續，所以把後面整段左移一格並 dec(si)。最後寫入、bx 前進、叫 sub_19493h 送畫面，bx \u003e si 就把長度往外長。byte_280D0h = 0 時整套判定跳過。與 spec 945 的退格是一對"
   },
   {
    "platform": "pc98",
@@ -29410,7 +29413,10 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "948",
+   "note": "6-byte real 除法(near)：al = 0 走除以零路徑；符號取兩運算元的 xor 只留 bit 15，指數相減，兩邊尾數各補隱含最高位(or 8000h)。本體是 48 bits(bp:bx:ah vs di:si:ch)的 restoring division，rcl dx,1 收商位，dx 滿了就 push 起來換下一段(第三段用 dl := 40h 只收 2 bits)；收尾 ax := dx shl 6，三段商 not 之後組成尾數，指數加 8080h(兩個 80h 偏置)後跳 loc_1B18Ah 做正規化與套符號。⚠IDA 註記 sp-analysis failed，因為 push dx 與收尾的 pop 不在同一路徑；逐條讀是配平的"
   },
   {
    "platform": "pc98",
@@ -52323,9 +52329,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 239,
+   "Read": 241,
    "NotBlocking": 29,
-   "Todo": 40,
+   "Todo": 38,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,

@@ -221,7 +221,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19B7D` | sub_19B7D | — | 31 | 13 | 6 | 1 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>看前一格:不在左界且 es:[di-2] 是全形的**左半**(ah 非 0、ah 與 al 的 bit 7 都沒設)時,把它清成 0020h。與 19B9Ch 成對——寫進全形字的一半會讓另一半落單,這兩支負責清掉 | — |
 | `19B9C` | sub_19B9C | — | 32 | 15 | 6 | 1 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>看目前這一格:不在右界(low(word_280EAh) <> 50h)且 es:[di] 是全形的某一半(ah 非 0 且 ah 或 al 的 bit 7 已設)時清成 0020h | — |
 | `19BBC` | sub_19BBC | — | 52 | 25 | 1 | 3 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>在游標處放一個空白:word_280E8h 與 word_280EAh 都設成目前游標;屬性經 <18FA3h> 換算後寫 es:[bx+di](所以 byte_280C6h 存的是打包格式不是 PC-98 原生屬性);順序是 <19B7Dh> 清前一格 → stosw 寫入 → <19B9Ch> 清後一格 | — |
-| `19BF0` | sub_19BF0 | — | 129 | 58 | 1 | 4 |  | 待解讀 | — | — | — |
+| `19BF0` | sub_19BF0 | — | 129 | 58 | 1 | 4 |  | 已解讀 | exact | 948<br>★全形感知的字元寫入(near，al = 字元、es:di = 緩衝、bx = 游標、si = 長度、dx = 上限)：byte_280E3h ≠ 0 就直接寫。要寫的是全形前導(sub_1977Eh)時緩衝至少要再容得下一個 byte，否則清 byte_280E1h 並叫 sub_192A0h 拒絕；游標在字串尾端就直接寫。★游標下原本是完整全形字時，蓋掉前半會留下孤兒後續，所以把後面整段左移一格並 dec(si)。最後寫入、bx 前進、叫 sub_19493h 送畫面，bx > si 就把長度往外長。byte_280D0h = 0 時整套判定跳過。與 spec 945 的退格是一對 | — |
 | `19C71` | sub_19C71 | — | 32 | 12 | 1 | 3 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>讀一格:byte_280D0h(雙位元組總開關)開啟且 <sub_1977Eh> 判定為前導時先送第一個 byte 再 bx++,然後一律再送一個。開關關掉時一律只送一個 byte。sub_1977Eh 用進位回答(jnb),與 169D9h 同一種慣例 | — |
 | `19C91` | sub_19C91 | — | 112 | 51 | 1 | 3 |  | 已解讀 | exact | 945<br>★會處理全形字的退格(near)：先把 byte_280E3h 清 0，再從頭掃到倒數第二個位元組，用 sub_1977Eh 逐位元組判前導/後續(ah 是前導旗標)，據此判斷最後一個字是單位元組還是全形的後半。單位元組送 BS/' '/BS 並 dec bx；★全形則先把 cs:byte_19D01h 設 1(self-modifying 旗標)送一個 BS、清回 0、再送兩個 ' ' 與兩個 BS，並 dec bx 兩次。byte_280D0h = 0 時完全不做雙位元組判定。Big5 與 Shift-JIS 同為雙位元組，繁中版可照抄此結構只換前導判定範圍；DOS 版的輸入欄(spec 941)沒有這一層 | — |
 | `19D02` | sub_19D02 | — | 28 | 13 | 4 | 2 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>游標形狀:byte_280FFh := al;al 的 bit 0 為 0 時送 <sub_1977Bh>(AH=12h),否則送 (AH=10h, AL=al shr 1) 再送 (AH=11h)。11h 與 19A10h 用的是同一個功能碼 | — |
@@ -287,7 +287,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1AFE0` | sub_1AFE0 | — | 4 | 1 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor di, 8000h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 4 bytes，已逐條讀完） | — |
 | `1AFE4` | sub_1AFE4 | — | 195 | 97 | 11 | 2 |  | 待解讀 | — | — | — |
 | `1B0A7` | sub_1B0A7 | — | 261 | 123 | 7 | 2 |  | 待解讀 | — | — | — |
-| `1B1AC` | sub_1B1AC | — | 119 | 58 | 5 | 2 |  | 待解讀 | — | — | — |
+| `1B1AC` | sub_1B1AC | — | 119 | 58 | 5 | 2 |  | 已解讀 | exact | 948<br>6-byte real 除法(near)：al = 0 走除以零路徑；符號取兩運算元的 xor 只留 bit 15，指數相減，兩邊尾數各補隱含最高位(or 8000h)。本體是 48 bits(bp:bx:ah vs di:si:ch)的 restoring division，rcl dx,1 收商位，dx 滿了就 push 起來換下一段(第三段用 dl := 40h 只收 2 bits)；收尾 ax := dx shl 6，三段商 not 之後組成尾數，指數加 8080h(兩個 80h 偏置)後跳 loc_1B18Ah 做正規化與套符號。⚠IDA 註記 sp-analysis failed，因為 push dx 與收尾的 pop 不在同一路徑；逐條讀是配平的 | — |
 | `1B223` | sub_1B223 | — | 23 | 14 | 7 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealCmp` 逐位元組相同（23 bytes） | — |
 | `1B23A` | sub_1B23A | — | 19 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>多欄位相等比較,與 DOS START.EXE:1B0DAh 逐指令相同 | — |
 | `1B24D` | sub_1B24D | — | 63 | 30 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealFloat` 逐位元組相同（63 bytes） | — |
