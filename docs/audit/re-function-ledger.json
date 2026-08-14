@@ -847,7 +847,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "DS:A031h 大於 0 時,以 A031h × 10h 為索引查 DS:61B5h 起的表;該項小於 4 就呼叫 1Bh(0)"
+   "note": "DS:A031h 大於 0 時,以 A031h × 10h 為索引查 DS:61B5h 起的表;該項小於 4 就呼叫 1Bh(0) ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
   },
   {
    "platform": "pc98",
@@ -10892,7 +10892,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
-   "note": "ROUTINGREMOVEFX:以 1..4 索引 DS:15B1h 起的位元組表逐一呼叫 SPELLOFF(char, id, 0, 0)。清單內容在 DS,未定位"
+   "note": "ROUTINGREMOVEFX:以 1..4 索引 DS:15B1h 起的位元組表逐一呼叫 SPELLOFF(char, id, 0, 0)。清單內容在 DS,未定位 ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
   },
   {
    "platform": "pc98",
@@ -12017,7 +12017,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/612-ecl-main-loop.md",
-   "note": "空函式:原始位元組 55 89 e5 89 ec 5d cb = push bp/mov bp,sp/mov sp,bp/pop bp/retf,沒有呼叫者。IDA 把 89 ec 的第二個位元組單獨當成 ec(in al,dx)——看起來像 I/O 存取的假指令是位元組邊界錯位的典型症狀。同形的 7-byte 空函式在 overlay-16:5581h、overlay-18:1756h 也出現過"
+   "note": "空函式:原始位元組 55 89 e5 89 ec 5d cb = push bp/mov bp,sp/mov sp,bp/pop bp/retf,沒有呼叫者。IDA 把 89 ec 的第二個位元組單獨當成 ec(in al,dx)——看起來像 I/O 存取的假指令是位元組邊界錯位的典型症狀。同形的 7-byte 空函式在 overlay-16:5581h、overlay-18:1756h 也出現過 ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
   },
   {
    "platform": "pc98",
@@ -13864,7 +13864,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
-   "note": "毒:DS:0A03Dh := arg_4^[18Eh]^[0Ah];<far 013E:0028>(arg_2,0,目標) = 0(豁免失敗)時,依序印「は毒を受けた。」→ <far 0418:14AAh> → <sub_1437>(目標,37h,0,0FFh,0) → 印「は死んだ。」。兩句訊息在同一條路徑上,中毒後沒有再判定就直接死亡(AD&D 的毒,不是逐回合扣血)。⚠ IDA 給的 size 是 86 但實際 retf 6 在 1512h,真長度 155 bytes——只讀 IDA 範圍會在第一句訊息後停住",
+   "note": "毒:DS:0A03Dh := arg_4^[18Eh]^[0Ah];<far 013E:0028>(arg_2,0,目標) = 0(豁免失敗)時,依序印「は毒を受けた。」→ <far 0418:14AAh> → <sub_1437>(目標,37h,0,0FFh,0) → 印「は死んだ。」。兩句訊息在同一條路徑上,中毒後沒有再判定就直接死亡(AD&D 的毒,不是逐回合扣血)。⚠ IDA 給的 size 是 86 但實際 retf 6 在 1512h,真長度 155 bytes——只讀 IDA 範圍會在第一句訊息後停住 ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin",
    "bounds": "prologue"
   },
   {
@@ -14376,7 +14376,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/643-hp-fields-and-slot-array.md",
-   "note": "在紀錄^[1Eh + 0..53h](84 格)裡找出第一個等於 arg_0 的格子清成 0,然後把迴圈變數設成 54h 提前結束(Pascal 沒有 break 的標準寫法)。只清第一個相符的。這 84 格與 spec 624 的 STORESPECIALS 寫入範圍(+1Fh..+6Fh,81 格)完全吻合,兩邊各自獨立量到同一個陣列",
+   "note": "在紀錄^[1Eh + 0..53h](84 格)裡找出第一個等於 arg_0 的格子清成 0,然後把迴圈變數設成 54h 提前結束(Pascal 沒有 break 的標準寫法)。只清第一個相符的。這 84 格與 spec 624 的 STORESPECIALS 寫入範圍(+1Fh..+6Fh,81 格)完全吻合,兩邊各自獨立量到同一個陣列 ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin",
    "bounds": "prologue"
   },
   {
@@ -14683,7 +14683,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/653-rle-decompressor.md",
-   "note": "RLE 解壓縮器。串流前兩個 byte 不是資料:第一個被完全略過(沒有任何指令讀它)、第二個是預設填充 byte DH。控制 byte 三種形式:bit7=0 → 原樣複製 CL 個;bit7=1 且 bit6=1 → 重複 DH,長度 (CL and 3Fh)+2;bit7=1 且 bit6=0 → 重複下一個 byte,長度 (CL and 3Fh)+3。兩種重複的起始長度不同(2 與 3),指令數就差在 inc cl 的次數。結束條件是來源用完(SI >= 起點+arg_0),不檢查目的緩衝大小,輸出溢位不會被發現"
+   "note": "RLE 解壓縮器。串流前兩個 byte 不是資料:第一個被完全略過(沒有任何指令讀它)、第二個是預設填充 byte DH。控制 byte 三種形式:bit7=0 → 原樣複製 CL 個;bit7=1 且 bit6=1 → 重複 DH,長度 (CL and 3Fh)+2;bit7=1 且 bit6=0 → 重複下一個 byte,長度 (CL and 3Fh)+3。兩種重複的起始長度不同(2 與 3),指令數就差在 inc cl 的次數。結束條件是來源用完(SI >= 起點+arg_0),不檢查目的緩衝大小,輸出溢位不會被發現 ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
   },
   {
    "platform": "pc98",
@@ -14845,7 +14845,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
-   "note": "兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 <sub_192D2>,再分別交給 <sub_1BA37> 與 <sub_1BA3C>(相差 5 bytes,多半是同一支的兩個入口)。開頭先 <sub_18F10>()"
+   "note": "兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 <sub_192D2>,再分別交給 <sub_1BA37> 與 <sub_1BA3C>(相差 5 bytes,多半是同一支的兩個入口)。開頭先 <sub_18F10>() ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
   },
   {
    "platform": "pc98",
@@ -15196,7 +15196,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/667-longint-to-decimal.md",
-   "note": "走 6-byte 一筆的表:三個暫存器一組(CX:SI:DI 正是 Turbo Pascal 6-byte real 的傳遞方式),每筆呼叫 <sub_1AFE4h> 與 <sub_1B0A7h>,收尾用 (81h,0,0) 再呼叫一次 sub_1AFE4h"
+   "note": "走 6-byte 一筆的表:三個暫存器一組(CX:SI:DI 正是 Turbo Pascal 6-byte real 的傳遞方式),每筆呼叫 <sub_1AFE4h> 與 <sub_1B0A7h>,收尾用 (81h,0,0) 再呼叫一次 sub_1AFE4h ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
   },
   {
    "platform": "pc98",
@@ -15983,7 +15983,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完）"
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完） ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
   },
   {
    "platform": "pc98",
@@ -15992,7 +15992,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 192 bytes，已逐條讀完）"
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 192 bytes，已逐條讀完） ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
   },
   {
    "platform": "pc98",
@@ -17274,6 +17274,16 @@
    "spec": "docs/spec/735-breath-fire-vs-acid.md",
    "bounds": "prologue",
    "note": "噴火(區域),spec 725 吐酸的姊妹支。次數同樣在 arg_2^[3](DS:758Dh=0 時重設成 3、最後才扣);傷害旗標 DS:6F95h := 21h(吐酸是 30h);用 [DS:72A0h] 第 0 項模式碼 3Dh 選目標,<sub_175Bh>(x, y, DS:7559h, DS:755Ah, **3, 9**)(吐酸是 1, 6);訊息 '<名字> breathes fire'(CS:5C78h);走目標陣列(**有 NIL 檢查**),s := <overlay-23 entry#8>(p, 3, 0)、<overlay-23 entry#20>(p, arg_6^[78h], 2, s)。⚠ **最實質的差別:吐酸有同類檢查(範圍內混進不同陣營就整次取消),噴火沒有——火會燒到自己人**"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 13676,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/736-phantom-instructions-from-decode-gaps.md",
+   "bounds": "prologue",
+   "note": "**空函式**。原始位元組是 55 89 E5 89 EC 5D CB(push bp / mov bp,sp / mov sp,bp / pop bp / retf)。⚠ 匯出把它讀成 push bp / mov bp,sp / **in al,dx** / pop bp / retf——`89 EC` 被切掉前面的 89,剩下的 EC 正好是 in al,dx。假指令看起來完全合理(硬體存取),照著寫會有人去追不存在的連接埠。全工作區這類位元組缺口共 236 處,1~4 bytes 的有 107 處,見 scripts/decode_gap_scan.py"
   }
  ]
 }

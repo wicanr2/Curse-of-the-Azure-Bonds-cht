@@ -156,4 +156,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2D7D` | sub_2D7D | — | 182 | 71 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2E33` | sub_2E33 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `2E3C` | sub_2E3C | — | 1840 | 569 | 0 | 0 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `356C` | sub_356C | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `356C` | sub_356C | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/736-phantom-instructions-from-decode-gaps.md<br>**空函式**。原始位元組是 55 89 E5 89 EC 5D CB(push bp / mov bp,sp / mov sp,bp / pop bp / retf)。⚠ 匯出把它讀成 push bp / mov bp,sp / **in al,dx** / pop bp / retf——`89 EC` 被切掉前面的 89,剩下的 EC 正好是 in al,dx。假指令看起來完全合理(硬體存取),照著寫會有人去追不存在的連接埠。全工作區這類位元組缺口共 236 處,1~4 bytes 的有 107 處,見 scripts/decode_gap_scan.py | spec/736-phantom-instructions-from-decode-gaps.md |
