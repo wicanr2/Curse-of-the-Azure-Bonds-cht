@@ -24637,6 +24637,24 @@
    "level": "exact",
    "spec": "953",
    "note": "OvrInit(far, retf 4)：word_23AD4h = 0 回 0FFFFh(−1 ovrError)；依序用 sub_19F7Eh/sub_19F8Ah/sub_19FC5h 三種方式試開檔，全失敗回 0FFFEh(−2 ovrNotFound)。★讀標頭：5A4Dh('MZ')表示覆疊資料附在 EXE 影像後面，算出 標頭[4] × 200h − ((−標頭[6]) and 1FFh) 後 int 21h AX=4200h LSEEK 過去再重讀；★接著必須是 5054h + 564Fh 也就是 'TPOV' 簽章，否則關檔回 −1。成功則存 handle 到 word_23AE4h、資料起點到 dword_23AD0h、把 dword_28104h 設成 cs:loc_1A119h(讀取常式)、★int 21h AX=253Fh 掛上 INT 3Fh handler(cs:02E7h)——spec 928 那 871 個 CD 3F entry stub 最終跳的就是它。結果寫 word_23AC6h(OvrResult)"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 82336,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "954",
+   "note": "清一個圖形矩形(far, retf 0Ch = (填值, 平面, 下, 右, 上, 左)，六個 byte)：起位移 = longint(上 × 50h) shl 3 + 左、行數 = ((下 − 上 + 1) shl 3) − 1；先存 byte_241E0h(目前平面)、叫 sub_14187h(平面) 與 sub_14180h，逐行叫 sub_1C180h(word_241DEh : 起位移, 右 − 左 + 1, 填值) 並讓位移 += 50h，收尾還原平面。★50h = 80 bytes/掃描線 → PC-98 圖形是 640 像素寬、每平面 1 bit/像素；shl 3 表示一個『列』仍是 8 條掃描線，與 spec 937/940/942/949 的縱向單位一致。⚠起位移用 32 位元算但只送低位字——640×400 單平面 32000 bytes 在 16 bits 內，不會溢位"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109170,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "954",
+   "note": "從 free list 配置(near)，與 DOS 的 1A986h(spec 931)同骨架但多一層重試：掃 dword_23AF0h 找夠大的一筆就切走(用光就 sub_1AC04h 移除)、否則看配置指標 word_23AECh/word_23AEEh 上面夠不夠，都不行就★呼叫 dword_23AF6h(Turbo Pascal 的 HeapError 向量)——回 0 就 stc 失敗、回 1 就把 bx 設 0(New 回 nil 但不報錯)、其他值表示已騰出空間就整支重試。DOS 版沒有這一段，找不到就直接失敗；PC-98 版多掛 HeapError，與 spec 951 的覆疊 LRU 同一個方向——對記憶體壓力做了更多處理"
   }
  ]
 }
