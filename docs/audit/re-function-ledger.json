@@ -25888,6 +25888,24 @@
    "level": "exact",
    "spec": "docs/spec/1029-picture-loading-and-cache.md",
    "note": "圖片載入(retf 0Ch)。★★ 一格快取：圖名相同(字串 DS:7278h，8 bytes)且子索引相同(DS:728Ah)就直接返回；子索引 = 0FFh 也直接返回 ⇒ ★ 關掉 spec 892 的未定項：DS:7278h 是目前載入的圖名、DS:728Ah 是子索引、0FFh 是「尚未載入」的哨兵(PC-98 對應 DS:0A313h／DS:0A325h)。DS:4FBFh <> 0 時先清一行再印 'Loading...Please Wait'(21)——⚠ PC-98 沒有這道判斷、一律顯示(「読みこみ中です」14 bytes = 7 全形字)。特例 := (圖名 = 'PIC') or (圖名 = 'FINAL')；檔名 = 圖名 + Str(DS:5BEEh 資料片編號) + '.dax'(與 spec 1024 同一套組法)；載入失敗顯示 'PIC not found'(13；PC-98 是 'PIC not found '(14) 且後接子索引、沒翻)。★★ PC-98 每張圖前進 高×寬×3(三個平面)，圖名 = 'SPRIT' 時再加 高×寬(遮罩平面) —— 這是既有結論「PC-98 +11h ＝ 3×高×寬、遮罩 ＝ 高×寬」的載入端確認，並指名觸發遮罩的圖名是 'SPRIT'。★ PC-98 每張表頭比 DOS 多一個 byte(es:[di+2] := 1 對 DOS 的 es:[di+1] := 1)；收尾的 out 0A6h 是繪圖頁選擇器(不是 8259A)。⚠ 'PIC'/'FINAL'/'SPRIT'/'.dax' 同時是檔名前綴與程式裡的比較字串，翻了會同時弄壞載入與特例判斷"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "ea": 3542,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1030",
+   "note": "營地(Camp)主選單。DS:4FBAh:=1；FillChar(DS:6F70h,1Ch,0)(公用池 7 個 longint 每次進營地歸零)；迴圈裡先 overlay-21 entry#14 問公用池有沒有錢，據此在 'Heal View Take Pool Share Appraise Exit'(39)與 'Heal View Pool Appraise Exit'(28)之間二選一，交給 overlay-26:003D4h。分支：H=sub_B12、V=overlay-19 entry#5(spec 1028)、T=overlay-21 entry#8、P=entry#5(spec 798)、S=entry#7(spec 858)、A=entry#19(spec 1018)、G/O=overlay-19 entry#10 換角色(spec 794)、E=離開。★★★ 離開時若公用池還有錢，印兩句祭司訊息('As you leave a priest says…'74 + 'Do you want to go back…'47，分兩次呼叫不是一句)再問 '~Yes ~No' —— ★★★ 波浪號標記熱鍵，是 DOS 側第二套熱鍵慣例，與大寫字母那套並存。回應=1 才離開 ⇒ 提示回傳 0 起算索引(0=Yes=留下、1=No=離開)，中斷同 Yes。★★ 被呼叫端 retf 16h 但呼叫端只看得到 18 bytes 推入：0A54:0634h 把來源寫進先前推入的目的位址、只彈掉來源，把目的指標留在堆疊當外層第一個參數 —— Turbo Pascal 傳暫存字串參數的產碼慣例，只數呼叫端推入次數會少算 4 bytes。選單本身收兩行選項(各上限 40)＋5 個 byte＋1 個輸出旗標"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 3906,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1030",
+   "note": "營地(Camp)主選單，同 DOS overlay-04:00DD6h。★★★ 熱鍵不是一格一格寫，而是從常駐資料段整塊 Move 10 bytes 進 DS:0A335h：DS:055Ch='H V T P S A _ _ _ E'(有寶物)、DS:0566h='H V _ P _ A _ _ _ E'(沒寶物) —— PC-98 把選項文字全換成日文卻原封保留 DOS 的英文大寫熱鍵，這正是熱鍵表獨立於文字的成因；用不到的選項換成空白(不可選，spec 990)而非移除，槽位索引固定。★★★ 離開的 Yes/No 同樣整塊搬：Move(DS:057Ah, DS:0A33Fh, 46h) 與 Move(DS:0570h, DS:0A335h, 0Ah)；DS:057Ah 的 70 bytes = 10 格 × 7 bytes，每格第一個 byte 一律 06 ⇒ 選項文字陣列 DS:0A338h+i*7 的一格就是『容量固定 6 bytes 的 Turbo Pascal 短字串』，把 spec 755/1012/1013/1022/1023/1028 的『6 bytes = 3 全形字』從觀察升級成結構。熱鍵 Y(はい)/B(いいえ) —— No 那格換了字母。選項：治療/ｷｬﾗｸﾀｰ/金戻す/金集ﾒﾙ/金分ｹﾙ/見積る/やめる，整列 80 bytes = 80 欄。★ 換角色鍵 '8'/'2'。⚠ PC-98 少了開場那次 overlay-24 entry#37 重繪 ⇒ DS:0BDE6h 的條件計算算完立刻被 1 覆蓋，是廢碼"
   }
  ]
 }

@@ -6844,9 +6844,13 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1030",
+   "note": "營地(Camp)主選單。DS:4FBAh:=1；FillChar(DS:6F70h,1Ch,0)(公用池 7 個 longint 每次進營地歸零)；迴圈裡先 overlay-21 entry#14 問公用池有沒有錢，據此在 'Heal View Take Pool Share Appraise Exit'(39)與 'Heal View Pool Appraise Exit'(28)之間二選一，交給 overlay-26:003D4h。分支：H=sub_B12、V=overlay-19 entry#5(spec 1028)、T=overlay-21 entry#8、P=entry#5(spec 798)、S=entry#7(spec 858)、A=entry#19(spec 1018)、G/O=overlay-19 entry#10 換角色(spec 794)、E=離開。★★★ 離開時若公用池還有錢，印兩句祭司訊息('As you leave a priest says…'74 + 'Do you want to go back…'47，分兩次呼叫不是一句)再問 '~Yes ~No' —— ★★★ 波浪號標記熱鍵，是 DOS 側第二套熱鍵慣例，與大寫字母那套並存。回應=1 才離開 ⇒ 提示回傳 0 起算索引(0=Yes=留下、1=No=離開)，中斷同 Yes。★★ 被呼叫端 retf 16h 但呼叫端只看得到 18 bytes 推入：0A54:0634h 把來源寫進先前推入的目的位址、只彈掉來源，把目的指標留在堆疊當外層第一個參數 —— Turbo Pascal 傳暫存字串參數的產碼慣例，只數呼叫端推入次數會少算 4 bytes。選單本身收兩行選項(各上限 40)＋5 個 byte＋1 個輸出旗標",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1030-camp-menu.md"
    ]
   },
   {
@@ -23875,6 +23879,7 @@
    "citations": [
     "audit/function-index/dos-overlay-26.md",
     "spec/1023-scrolling-list-menu.md",
+    "spec/1030-camp-menu.md",
     "spec/865-list-header-lookup-and-key-prompt.md"
    ]
   },
@@ -33023,10 +33028,14 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1030",
+   "note": "營地(Camp)主選單，同 DOS overlay-04:00DD6h。★★★ 熱鍵不是一格一格寫，而是從常駐資料段整塊 Move 10 bytes 進 DS:0A335h：DS:055Ch='H V T P S A _ _ _ E'(有寶物)、DS:0566h='H V _ P _ A _ _ _ E'(沒寶物) —— PC-98 把選項文字全換成日文卻原封保留 DOS 的英文大寫熱鍵，這正是熱鍵表獨立於文字的成因；用不到的選項換成空白(不可選，spec 990)而非移除，槽位索引固定。★★★ 離開的 Yes/No 同樣整塊搬：Move(DS:057Ah, DS:0A33Fh, 46h) 與 Move(DS:0570h, DS:0A335h, 0Ah)；DS:057Ah 的 70 bytes = 10 格 × 7 bytes，每格第一個 byte 一律 06 ⇒ 選項文字陣列 DS:0A338h+i*7 的一格就是『容量固定 6 bytes 的 Turbo Pascal 短字串』，把 spec 755/1012/1013/1022/1023/1028 的『6 bytes = 3 全形字』從觀察升級成結構。熱鍵 Y(はい)/B(いいえ) —— No 那格換了字母。選項：治療/ｷｬﾗｸﾀｰ/金戻す/金集ﾒﾙ/金分ｹﾙ/見積る/やめる，整列 80 bytes = 80 欄。★ 換角色鍵 '8'/'2'。⚠ PC-98 少了開場那次 overlay-24 entry#37 重繪 ⇒ DS:0BDE6h 的條件計算算完立刻被 1 覆蓋，是廢碼",
    "citations": [
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1030-camp-menu.md"
    ]
   },
   {
@@ -51124,6 +51133,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-triage.md",
+    "spec/1030-camp-menu.md",
     "spec/972-pc98-ring-slot-repaint.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
@@ -53193,9 +53203,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 14,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 1,
    "CodeBytes": 3435,
    "Undefined": 340,
@@ -53748,9 +53758,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 23,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 10,
    "CodeBytes": 3710,
    "Undefined": 830,
