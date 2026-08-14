@@ -26320,6 +26320,24 @@
    "level": "exact",
    "spec": "1071",
    "note": "分派表初始化 PC-98(retf，443 條，整支是一長串賦值沒有分支)。★★★ 表基底 DS:0A38Ch、一筆 4 bytes(遠指標)、本支填索引 0..100 共 101 筆，段全部是 0117h(一個 overlay 的 entry stub 段)，offset 範圍 0034h..0241h，相異 handler 81 個(101 筆裡有 20 筆重複指向)。相異 offset 之間的差是 5/10/15/25/85 —— 5 正是 overlay entry stub 的長度(CD 3F + code_offset + flags)，所以這 81 個 handler 是同一個 overlay 裡連號的 entry。★★ 二十筆共用：00BBh 被 8 個索引指到、00B6h 被 6 個、00F2h 3 個、0110h/012Eh/014Ch/004Dh/015Bh/0165h 各 2 個 —— 與 spec 1005 在效果分派表看到的重複指向同一種結構。★ 索引 0 指向 0034h，與其他 handler 的連號區(00A2h 起)分開，形狀上是『0 號 = 無效/預設』。另外把 DS:0A036h/0A64Fh 清 0、DS:0A641h/0A643h 當 32-bit 清 0、DS:0A038h:=1。⚠ 沒有宣稱這是法術表還是效果表(spec 705/721 的 DOS 側是 DS:72A0h、spec 1005 是另一張)，也沒有宣稱索引 101 以後由誰填"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 18886,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1072",
+   "note": "整局存檔 savgam<n>.dat 的載入入口。16 個區塊、固定 13214 bytes：資料片編號(1)、bank0(800h)、bank1(800h)、DS:7F0Dh^(400h)、DS:7F12h^(1E41h)、DS:0A2A9h(5)、7F28h/7F27h(各1)、三組牆面參數(2x6)、隊伍人數(1)、角色檔名表(148h=8x41)。★角色不存內容只存 string[40] 檔名，本體另由 overlay-16:02A6Dh 讀。收尾拆 bank0^[1FEh] 成 div2/and1、清 bank1^[67Ch]、走兩次隊伍鏈(後處理+CPIC 圖示)、依 bank0^[1CCh] 決定重載 3D 地圖+WALLDEF 或 bigpic(y)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 356,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1073",
+   "note": "角色檔掃描器(retf 18h，7 參數：路徑/樣式/名字位移/旗標位移/預期長度/@顯示名鏈頭/@檔名鏈頭)。FindFirst+FindNext 掃檔，★檔案長度接受 arg_A−1/arg_A/arg_A+1(原作自己容忍 DOS 422 vs PC-98 423)。每檔配兩個 56h 選單節點，★節點版面 = string[80](0..50h) + 填補 + next(52h) ⇒ DOS 46 與 PC-98 86 的 28h 差就是字串上限 40→80。去重比對兩邊補到 15 字元(取法不對稱，16 字名字會漏)。旗標 >= 80h 或同名則整筆 FreeMem"
   }
  ]
 }
