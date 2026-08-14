@@ -22621,6 +22621,24 @@
    "level": "exact",
    "spec": "749",
    "note": "同 DOS overlay-10:00B0Ah（module_align 對齊，助憶碼序列完全相同）。16 條差異全是呼叫目標與 DS:9F2Ch↔6E92h、地形表 DS:48AFh↔26A5h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 849,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "857",
+   "note": "發經驗值(retf 4，longint 每人份)：走隊伍鏈 DS:650Ah，+196h 非 0 且 +195h ≠ 1 的成員才拿。依 +75h 職業組合碼：0/2/3/4/5/6 各檢查對應的 prime requisite 屬性 > 0Fh(≥16) 就 ＋10%（AD&D 的 prime requisite 加成）；8/10..14/16 除以 2、9/15 除以 3（多職業平分）。結果加進 +127h 經驗值。★屬性欄位版面定案：stride 2、AD&D 順序 — +11h 力量、+13h 智力、+15h 睿智、+17h 敏捷、+19h 體質"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
+   "ea": 849,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "857",
+   "note": "同 DOS overlay-05:00351h（同位址，相似度 0.997）。唯一序列差異是 DOS 多一條 cbw（配 cmp ax,N；PC-98 直接 cmp al,N），其餘是位址：DS:9598h↔650Ah、+197h/196h↔+196h/195h"
   }
  ]
 }

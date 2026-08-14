@@ -6789,7 +6789,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "857",
+   "note": "發經驗值(retf 4，longint 每人份)：走隊伍鏈 DS:650Ah，+196h 非 0 且 +195h ≠ 1 的成員才拿。依 +75h 職業組合碼：0/2/3/4/5/6 各檢查對應的 prime requisite 屬性 \u003e 0Fh(≥16) 就 ＋10%（AD\u0026D 的 prime requisite 加成）；8/10..14/16 除以 2、9/15 除以 3（多職業平分）。結果加進 +127h 經驗值。★屬性欄位版面定案：stride 2、AD\u0026D 順序 — +11h 力量、+13h 智力、+15h 睿智、+17h 敏捷、+19h 體質"
   },
   {
    "platform": "dos",
@@ -9317,6 +9320,7 @@
    "note": "戰場植被生成(retf，無參數)：98Dh() 的 bit 80h 設起來就整支不做；機率由 10 起算，bit 02h −5、04h −2、40h +5、08h +10，負值夾成 1。掃 50 欄 × 24 列（y 由 1 起），本格與上一格的地形圖磚（DS:26A2h 的 +3 欄）都是 16h 才有機會長：1d100 過兩次 → 本格放 29h+1d2（一格高）；過一次 → 上格放 1Fh+1d5、本格放 24h+1d5（兩格高）",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -31623,7 +31627,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "857",
+   "note": "同 DOS overlay-05:00351h（同位址，相似度 0.997）。唯一序列差異是 DOS 多一條 cbw（配 cmp ax,N；PC-98 直接 cmp al,N），其餘是位址：DS:9598h↔650Ah、+197h/196h↔+196h/195h"
   },
   {
    "platform": "pc98",
@@ -50573,9 +50580,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -51128,9 +51135,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,
