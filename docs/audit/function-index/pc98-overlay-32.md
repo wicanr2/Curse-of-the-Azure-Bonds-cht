@@ -13,7 +13,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `012E` | sub_12E | SHOWCURSOR | 428 | 190 | 1 | 6 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-02.md |
 | `02DA` | sub_2DA | — | 409 | 184 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `0473` | sub_473 | HIDECURSOR | 612 | 255 | 1 | 5 | ✓ | 待解讀 | — | — | — |
-| `06D7` | sub_6D7 | CALCWHOISWHERE | 286 | 122 | 2 | 2 | ✓ | 待解讀 | — | — | — |
+| `06D7` | sub_6D7 | CALCWHOISWHERE | 286 | 122 | 2 | 2 | ✓ | 已解讀 | exact | 852<br>同 DOS overlay-32:003EBh（module_align 對齊，助憶碼序列完全相同）。10 條差異全是位址：DS:98F1h↔6857h、DS:9740h↔66A6h、[di−68C3h/68C2h/68C0h]↔[di+66A3h/66A4h/66A6h]、DS:9F2Ch↔6E92h | — |
 | `07F5` | sub_7F5 | FINDOBJECT | 111 | 43 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/784-cross-platform-pairs-second-batch.md<br>讀戰場兩個平面(retf 0Ch)：與 DOS overlay-32:0509h 43 條同形，地圖 DS:9F2Ch、靜態陣列 [di−670Fh](＝98F1h)(差異 2 條，已逐條列出) | — |
 | `0864` | sub_864 | PUTMAPSYMBOL | 442 | 196 | 3 | 5 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-32.md |
 | `0A1E` | sub_A1E | ONVISSCREEN | 49 | 18 | 6 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>回傳 (0 <= arg_2 <= 6) and (0 <= arg_0 <= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查 | audit/function-index/dos-overlay-32.md<br>audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |

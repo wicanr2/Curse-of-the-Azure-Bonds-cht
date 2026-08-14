@@ -22279,6 +22279,42 @@
    "level": "exact",
    "spec": "854",
    "note": "同 DOS overlay-31:003EAh（同位址、助憶碼序列完全相同）。只差三條表基底 DS:48ADh/48AEh↔26A3h/26A4h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 1003,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "建立戰場佔位圖(retf，無參數)：先 FillChar(DS:6857h, 4E2h=1250=50×25, 0)，再走 1..DS:66A6h 個戰鬥員，對每個叫 sub_11h(k=0..3, 體型) 取相對格位，把索引寫進 DS:6857h[y*32h+x]。★DS:66A3h 每筆 4 bytes 的記錄補完：+0 x、+1 y、+3 體型（佔幾格），而 DS:66A6h 本身（entry 0 的 +3）就是戰鬥員總數。另把相對於 DS:6E92h^[2]/^[3] 的偏移寫進 DS:67C6h+i 與 DS:680Eh+i"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 1751,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "同 DOS overlay-32:003EBh（module_align 對齊，助憶碼序列完全相同）。10 條差異全是位址：DS:98F1h↔6857h、DS:9740h↔66A6h、[di−68C3h/68C2h/68C0h]↔[di+66A3h/66A4h/66A6h]、DS:9F2Ch↔6E92h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 12784,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "833",
+   "note": "一次攻擊的完整流程(retf 12h，(攻擊者, 目標, 旗標, @可行, @記錄))：旗標=1 時先過 2F3Ch 的可打判定，不過就 FillChar(記錄, 7, 0) 收工。可打就把目標遠指標與 x/y 存進記錄 +0..+5，播動畫，再試 sub_F46h（＝ spec 833 的橫掃）——橫掃成立就由它接手；否則走 194Ah + 15BCh/15C6h/15C1h/1593h 的額外效果閘門後叫 19D8h 結算"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 12504,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "833",
+   "note": "同 DOS overlay-13:031F0h（module_align 對齊，助憶碼序列完全相同）。★一處真差異：動畫呼叫 sub_1921h 的第三個參數 DOS 是 3、PC-98 是 0FFh。其餘 14 條是位址（DS:9F2Ch↔6E92h 與呼叫目標）"
   }
  ]
 }
