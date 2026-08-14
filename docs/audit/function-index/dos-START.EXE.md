@@ -92,7 +92,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15606` | sub_15606 | — | 299 | 126 | 3 | 6 |  | 待解讀 | — | — | — |
 | `15731` | sub_15731 | — | 65 | 30 | 4 | 2 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>範圍檢查後呼叫 <sub_15606>(1,20h,arg_0,arg_2,arg_2,arg_4,arg_6)(arg_2 被推入兩次)。上限 27h(39)與 18h(24)即 40 欄 × 25 列。⚠ 兩個下限檢查(cmp x,0 + jb)是死碼——無號比較,任何值都不小於 0;是原作的冗餘不是判讀不確定,remake 直接寫上限即可 | — |
 | `15772` | sub_15772 | — | 133 | 53 | 3 | 3 |  | 待解讀 | — | — | — |
-| `157F7` | sub_157F7 | — | 119 | 45 | 3 | 3 |  | 待解讀 | — | — | — |
+| `157F7` | sub_157F7 | — | 119 | 45 | 3 | 3 |  | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>逐字輸出＋可調速(retf 2，SS 相對記錄)：while 游標(−103h) <= 長度(−104h) 逐 byte 呼叫繪字，unk_21189 為真時每字之間 Delay(unk_21169 * 3)，每輸出一個字 unk_22760(欄位)＋1。⚠ 一次送一個 byte 且欄位每次＋1，全形字會被拆成兩次畫。記錄配置與 spec 754 的 1586Eh 相同，這裡多知道 −104h 是長度 | — |
 | `1586E` | sub_1586E | — | 60 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>跳過開頭空白(retf 2)：參數是 SS 相對位址，-103h 是游標、-101h 是長度、-100h 起是內容；游標小於長度且該位置是空白就前進。無號比較 | — |
 | `15B42` | sub_15B42 | — | 401 | 171 | 1 | 10 |  | 待解讀 | — | — | — |
 | `15D66` | sub_15D66 | — | 78 | 40 | 1 | 4 |  | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>顯示一行並等一個鍵(retf 8)：StoreString(參數字串, 緩衝, 28h)；本模組 15731h(0, 18h, 0, 28h)；本模組 15772h(0, 18h, c, b, @緩衝)；ReadKey(結果存進不再讀的 local)。28h/18h 成對，形狀是 40 欄×24 列的文字視窗 | — |
@@ -100,7 +100,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15F6A` | sub_15F6A | — | 470 | 207 | 2 | 3 |  | 待解讀 | — | — | — |
 | `16140` | sub_16140 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `16147` | sub_16147 | — | 159 | 78 | 1 | 1 |  | 待解讀 | — | — | — |
-| `161E6` | sub_161E6 | — | 96 | 46 | 1 | 1 |  | 待解讀 | — | — | — |
+| `161E6` | sub_161E6 | — | 96 | 46 | 1 | 1 |  | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>EGA 8×8 字元繪製(近呼叫 retn 0Ah)：ES=A000h、DI = 文字列*140h + 位元組欄；設 Graphics Mode=0Ah(Write Mode 2)、Data Rotate=0、Color Don't Care=0；8 次迴圈用 DS:[6598h+i] 當 Bit Mask 畫前景色，再用反相遮罩畫背景色，每列 DI+=28h(40 bytes)；結束還原四個暫存器。可證畫面每列 40 bytes(320 像素寬)、字元格 8×8。⚠ 字模固定取自 DS:6598h 不由參數傳入；第一個 word 參數整支沒讀。中文化要接手的就是 DS:6598h 這個字模入口 | — |
 | `16246` | sub_16246 | — | 271 | 131 | 1 | 1 |  | 待解讀 | — | — | — |
 | `16360` | sub_16360 | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @FreeMem(ptr, (size+7) and 0FFF8h) ⇒ 釋放對齊到 8 bytes 的區塊 | — |
 | `1637D` | sub_1637D | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @GetMem(ptr, (size+7) and 0FFF8h) ⇒ 配置對齊到 8 bytes 的區塊 | — |

@@ -19183,6 +19183,51 @@
    "level": "exact",
    "spec": "docs/spec/761-filled-export-and-dungeon-wall-bits.md",
    "note": "清掉一個方向的牆面位元(retf 6)：地圖在 DS:0A2A0h^[300h + (row shl 4) + col]，位元遮罩與 DOS overlay-14:003Eh 相同；唯一差別是用 cmp al,6 取代 xor ah,ah + cmp ax,6。同樣更正自被截斷的舊匯出"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 90598,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "EGA 8×8 字元繪製(近呼叫 retn 0Ah)：ES=A000h、DI = 文字列*140h + 位元組欄；設 Graphics Mode=0Ah(Write Mode 2)、Data Rotate=0、Color Don't Care=0；8 次迴圈用 DS:[6598h+i] 當 Bit Mask 畫前景色，再用反相遮罩畫背景色，每列 DI+=28h(40 bytes)；結束還原四個暫存器。可證畫面每列 40 bytes(320 像素寬)、字元格 8×8。⚠ 字模固定取自 DS:6598h 不由參數傳入；第一個 word 參數整支沒讀。中文化要接手的就是 DS:6598h 這個字模入口"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 88055,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "逐字輸出＋可調速(retf 2，SS 相對記錄)：while 游標(−103h) <= 長度(−104h) 逐 byte 呼叫繪字，unk_21189 為真時每字之間 Delay(unk_21169 * 3)，每輸出一個字 unk_22760(欄位)＋1。⚠ 一次送一個 byte 且欄位每次＋1，全形字會被拆成兩次畫。記錄配置與 spec 754 的 1586Eh 相同，這裡多知道 −104h 是長度"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 541,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "設定移動速率(retf 8)：byte[(a^[56h] shl 4) − 727Ch] = 2 時，依 a^[5Fh](word，無號)分三段寫 b^[1A6h] — <=96h(150)用 b^[0E4h]、97h..18Fh(151..399)給 9、其餘給 6；a^[5Ah] 非 0 且結果 <= 9 時再 +3"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 11948,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "取指定陣營中最快的移動速率(retf 4)：走 DS:650Ah 隊伍鏈，<呼叫>(參數) 等於 p^[197h](陣營)且 p^[196h] 非 0 的成員，取 本模組 0124h(p) div 2 的最大值(無號比較)。0124h 回的是速率乘 2，這裡除回來 — 與既有『距離單位是半格』的 2 是同一個"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 12888,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "拿不拿得下(retf 8)：角色^[14Ch] > 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] > 0 時再乘上去(單位重量×數量)；上限 := <呼叫>(角色) + 5DCh(1500)；角色^[187h](累計負重) + w > 上限(無號)也算超過"
   }
  ]
 }

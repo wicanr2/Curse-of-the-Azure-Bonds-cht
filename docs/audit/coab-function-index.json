@@ -1263,7 +1263,10 @@
    "callers": 3,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "逐字輸出＋可調速(retf 2，SS 相對記錄)：while 游標(−103h) \u003c= 長度(−104h) 逐 byte 呼叫繪字，unk_21189 為真時每字之間 Delay(unk_21169 * 3)，每輸出一個字 unk_22760(欄位)＋1。⚠ 一次送一個 byte 且欄位每次＋1，全形字會被拆成兩次畫。記錄配置與 spec 754 的 1586Eh 相同，這裡多知道 −104h 是長度"
   },
   {
    "platform": "dos",
@@ -1371,7 +1374,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "EGA 8×8 字元繪製(近呼叫 retn 0Ah)：ES=A000h、DI = 文字列*140h + 位元組欄；設 Graphics Mode=0Ah(Write Mode 2)、Data Rotate=0、Color Don't Care=0；8 次迴圈用 DS:[6598h+i] 當 Bit Mask 畫前景色，再用反相遮罩畫背景色，每列 DI+=28h(40 bytes)；結束還原四個暫存器。可證畫面每列 40 bytes(320 像素寬)、字元格 8×8。⚠ 字模固定取自 DS:6598h 不由參數傳入；第一個 word 參數整支沒讀。中文化要接手的就是 DS:6598h 這個字模入口"
   },
   {
    "platform": "dos",
@@ -11939,7 +11945,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-13.md",
-    "spec/758-morale-field-0f7h-round-trip.md"
+    "spec/758-morale-field-0f7h-round-trip.md",
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
   },
   {
@@ -12509,9 +12516,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "取指定陣營中最快的移動速率(retf 4)：走 DS:650Ah 隊伍鏈，\u003c呼叫\u003e(參數) 等於 p^[197h](陣營)且 p^[196h] 非 0 的成員，取 本模組 0124h(p) div 2 的最大值(無號比較)。0124h 回的是速率乘 2，這裡除回來 — 與既有『距離單位是半格』的 2 是同一個",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
   },
   {
@@ -12790,10 +12801,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/pc98-overlay-14.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "project-status.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "project-status.md"
    ]
   },
   {
@@ -15362,7 +15373,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "拿不拿得下(retf 8)：角色^[14Ch] \u003e 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] \u003e 0 時再乘上去(單位重量×數量)；上限 := \u003c呼叫\u003e(角色) + 5DCh(1500)；角色^[187h](累計負重) + w \u003e 上限(無號)也算超過",
+   "citations": [
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15830,7 +15847,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-21.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
   },
   {
@@ -19530,7 +19548,8 @@
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
-    "spec/683-encumbrance-movement.md"
+    "spec/683-encumbrance-movement.md",
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
   },
   {
@@ -24356,7 +24375,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/653-rle-decompressor.md",
-   "note": "RLE 解壓縮器。串流前兩個 byte 不是資料:第一個被完全略過(沒有任何指令讀它)、第二個是預設填充 byte DH。控制 byte 三種形式:bit7=0 → 原樣複製 CL 個;bit7=1 且 bit6=1 → 重複 DH,長度 (CL and 3Fh)+2;bit7=1 且 bit6=0 → 重複下一個 byte,長度 (CL and 3Fh)+3。兩種重複的起始長度不同(2 與 3),指令數就差在 inc cl 的次數。結束條件是來源用完(SI \u003e= 起點+arg_0),不檢查目的緩衝大小,輸出溢位不會被發現 ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
+   "note": "RLE 解壓縮器。串流前兩個 byte 不是資料:第一個被完全略過(沒有任何指令讀它)、第二個是預設填充 byte DH。控制 byte 三種形式:bit7=0 → 原樣複製 CL 個;bit7=1 且 bit6=1 → 重複 DH,長度 (CL and 3Fh)+2;bit7=1 且 bit6=0 → 重複下一個 byte,長度 (CL and 3Fh)+3。兩種重複的起始長度不同(2 與 3),指令數就差在 inc cl 的次數。結束條件是來源用完(SI \u003e= 起點+arg_0),不檢查目的緩衝大小,輸出溢位不會被發現 ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin。補洞重匯出(spec 761)複查：新增指令都是函式中段的資料(stub 描述子／常數表／nop 填充)，判讀不變"
   },
   {
    "platform": "pc98",
@@ -24980,7 +24999,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
-   "note": "兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 \u003csub_192D2\u003e,再分別交給 \u003csub_1BA37\u003e 與 \u003csub_1BA3C\u003e(相差 5 bytes,多半是同一支的兩個入口)。開頭先 \u003csub_18F10\u003e() ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
+   "note": "兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 \u003csub_192D2\u003e,再分別交給 \u003csub_1BA37\u003e 與 \u003csub_1BA3C\u003e(相差 5 bytes,多半是同一支的兩個入口)。開頭先 \u003csub_18F10\u003e() ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin。補洞重匯出(spec 761)複查：新增指令都是函式中段的資料(stub 描述子／常數表／nop 填充)，判讀不變"
   },
   {
    "platform": "pc98",
@@ -26806,7 +26825,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/667-longint-to-decimal.md",
-   "note": "走 6-byte 一筆的表:三個暫存器一組(CX:SI:DI 正是 Turbo Pascal 6-byte real 的傳遞方式),每筆呼叫 \u003csub_1AFE4h\u003e 與 \u003csub_1B0A7h\u003e,收尾用 (81h,0,0) 再呼叫一次 sub_1AFE4h ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
+   "note": "走 6-byte 一筆的表:三個暫存器一組(CX:SI:DI 正是 Turbo Pascal 6-byte real 的傳遞方式),每筆呼叫 \u003csub_1AFE4h\u003e 與 \u003csub_1B0A7h\u003e,收尾用 (81h,0,0) 再呼叫一次 sub_1AFE4h ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin。補洞重匯出(spec 761)複查：新增指令都是函式中段的資料(stub 描述子／常數表／nop 填充)，判讀不變"
   },
   {
    "platform": "pc98",
@@ -35244,7 +35263,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-13.md",
-    "spec/758-morale-field-0f7h-round-trip.md"
+    "spec/758-morale-field-0f7h-round-trip.md",
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
   },
   {
@@ -36350,10 +36370,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/pc98-overlay-14.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "project-status.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "project-status.md"
    ]
   },
   {
@@ -40169,6 +40189,831 @@
   },
   {
    "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 0,
+   "ida_name": "sub_0",
+   "borland_symbol": "LOADLIBRARY",
+   "size": 57,
+   "instructions": 15,
+   "callers": 0,
+   "calls": 7,
+   "is_overlay_entry": true,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_1695+2`、`call far ptr sub_17B7`、`call far ptr loc_11C4+3`、`call sub_147D`、`call far ptr sub_1154`、`call far ptr loc_1083+1`（body 共 57 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/overlay-init-graph.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 152,
+   "ida_name": "sub_98",
+   "borland_symbol": "SHOWACTIVECHAR",
+   "size": 1305,
+   "instructions": 537,
+   "callers": 4,
+   "calls": 6,
+   "is_overlay_entry": true,
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 1457,
+   "ida_name": "sub_5B1",
+   "borland_symbol": "SHOWLOOT",
+   "size": 189,
+   "instructions": 82,
+   "callers": 4,
+   "calls": 2,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 1694,
+   "ida_name": "sub_69E",
+   "borland_symbol": "SHOWACTIVECOMBATSTUFF",
+   "size": 784,
+   "instructions": 332,
+   "callers": 1,
+   "calls": 2,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 2492,
+   "ida_name": "sub_9BC",
+   "borland_symbol": "DISPLAYSTAT",
+   "size": 341,
+   "instructions": 135,
+   "callers": 1,
+   "calls": 2,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 2946,
+   "ida_name": "sub_B82",
+   "borland_symbol": "VIEWACTIVECHAR",
+   "size": 673,
+   "instructions": 262,
+   "callers": 0,
+   "calls": 13,
+   "is_overlay_entry": true,
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 3726,
+   "ida_name": "sub_E8E",
+   "size": 247,
+   "instructions": 101,
+   "callers": 1,
+   "calls": 4,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 4212,
+   "ida_name": "sub_1074",
+   "borland_symbol": "VIEWITEM",
+   "size": 289,
+   "instructions": 143,
+   "callers": 1,
+   "calls": 1,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 4501,
+   "ida_name": "sub_1195",
+   "size": 5,
+   "instructions": 3,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 4506,
+   "ida_name": "sub_119A",
+   "size": 15,
+   "instructions": 5,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 418h:0D17h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 4521,
+   "ida_name": "sub_11A9",
+   "size": 5,
+   "instructions": 3,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 4526,
+   "ida_name": "sub_11AE",
+   "size": 6,
+   "instructions": 4,
+   "callers": 4,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5165,
+   "ida_name": "sub_142D",
+   "size": 10,
+   "instructions": 3,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr unk_14F2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5175,
+   "ida_name": "sub_1437",
+   "size": 48,
+   "instructions": 21,
+   "callers": 3,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr unk_14F2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 48 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5230,
+   "ida_name": "sub_146E",
+   "size": 10,
+   "instructions": 7,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5240,
+   "ida_name": "sub_1478",
+   "size": 5,
+   "instructions": 2,
+   "callers": 15,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5245,
+   "ida_name": "sub_147D",
+   "size": 63,
+   "instructions": 26,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 63 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5347,
+   "ida_name": "sub_14E3",
+   "size": 5,
+   "instructions": 2,
+   "callers": 4,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and [bp-7D99h], cl`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5352,
+   "ida_name": "sub_14E8",
+   "size": 5,
+   "instructions": 2,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and ds:9320h, al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5387,
+   "ida_name": "sub_150B",
+   "size": 3,
+   "instructions": 1,
+   "callers": 1,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "尾呼叫：最後一條是 `jmp near ptr loc_1B2D+1`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5397,
+   "ida_name": "sub_1515",
+   "size": 8,
+   "instructions": 2,
+   "callers": 5,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and word ptr [di-7Dh], 0FF80h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5482,
+   "ida_name": "sub_156A",
+   "size": 14,
+   "instructions": 5,
+   "callers": 1,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `test ax, 4881h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5496,
+   "ida_name": "sub_1578",
+   "borland_symbol": "ITEMS",
+   "size": 1,
+   "instructions": 1,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": true,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-19.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5497,
+   "ida_name": "sub_1579",
+   "size": 10,
+   "instructions": 3,
+   "callers": 6,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les ax, ds:9594h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5507,
+   "ida_name": "sub_1583",
+   "size": 5,
+   "instructions": 2,
+   "callers": 3,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-3Fh], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5512,
+   "ida_name": "sub_1588",
+   "size": 25,
+   "instructions": 8,
+   "callers": 5,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ax, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 25 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-19.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5537,
+   "ida_name": "sub_15A1",
+   "size": 125,
+   "instructions": 42,
+   "callers": 2,
+   "calls": 1,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1578h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5636,
+   "ida_name": "sub_1604",
+   "size": 15,
+   "instructions": 5,
+   "callers": 3,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:0A335h, 52h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5651,
+   "ida_name": "sub_1613",
+   "size": 9,
+   "instructions": 2,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+197h], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5666,
+   "ida_name": "sub_1622",
+   "size": 6,
+   "instructions": 1,
+   "callers": 5,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp word ptr es:[di+1CAh], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5763,
+   "ida_name": "sub_1683",
+   "size": 9,
+   "instructions": 2,
+   "callers": 4,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+196h], 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 5962,
+   "ida_name": "sub_174A",
+   "size": 109,
+   "instructions": 41,
+   "callers": 2,
+   "calls": 3,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1578h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 6071,
+   "ida_name": "sub_17B7",
+   "size": 617,
+   "instructions": 261,
+   "callers": 2,
+   "calls": 13,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1578h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 6340,
+   "ida_name": "sub_18C4",
+   "size": 7,
+   "instructions": 3,
+   "callers": 2,
+   "calls": 0,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:62Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 6602,
+   "ida_name": "sub_19CA",
+   "size": 23,
+   "instructions": 11,
+   "callers": 2,
+   "calls": 1,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, 59h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-triage.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 7854,
+   "ida_name": "sub_1EAE",
+   "borland_symbol": "READYITEM",
+   "size": 487,
+   "instructions": 176,
+   "callers": 1,
+   "calls": 2,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 8341,
+   "ida_name": "sub_2095",
+   "size": 79,
+   "instructions": 29,
+   "callers": 7,
+   "calls": 1,
+   "is_overlay_entry": false,
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 79 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 8450,
+   "ida_name": "sub_2102",
+   "size": 166,
+   "instructions": 61,
+   "callers": 1,
+   "calls": 6,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 8645,
+   "ida_name": "sub_21C5",
+   "size": 176,
+   "instructions": 66,
+   "callers": 1,
+   "calls": 1,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 8821,
+   "ida_name": "sub_2275",
+   "size": 465,
+   "instructions": 154,
+   "callers": 1,
+   "calls": 2,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 9327,
+   "ida_name": "sub_246F",
+   "borland_symbol": "USEITEM",
+   "size": 786,
+   "instructions": 280,
+   "callers": 1,
+   "calls": 9,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 10204,
+   "ida_name": "sub_27DC",
+   "size": 482,
+   "instructions": 183,
+   "callers": 1,
+   "calls": 5,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 10802,
+   "ida_name": "sub_2A32",
+   "size": 482,
+   "instructions": 199,
+   "callers": 1,
+   "calls": 5,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 11369,
+   "ida_name": "sub_2C69",
+   "size": 828,
+   "instructions": 321,
+   "callers": 1,
+   "calls": 7,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 12261,
+   "ida_name": "sub_2FE5",
+   "size": 722,
+   "instructions": 283,
+   "callers": 1,
+   "calls": 4,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 12983,
+   "ida_name": "sub_32B7",
+   "borland_symbol": "OVERLOADED",
+   "size": 132,
+   "instructions": 45,
+   "callers": 1,
+   "calls": 3,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 13115,
+   "ida_name": "sub_333B",
+   "borland_symbol": "ACTIVECHAR",
+   "size": 207,
+   "instructions": 71,
+   "callers": 0,
+   "calls": 1,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 13322,
+   "ida_name": "sub_340A",
+   "borland_symbol": "CASH",
+   "size": 117,
+   "instructions": 44,
+   "callers": 1,
+   "calls": 1,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 13540,
+   "ida_name": "sub_34E4",
+   "borland_symbol": "PICKSPELL",
+   "size": 372,
+   "instructions": 157,
+   "callers": 2,
+   "calls": 5,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 13912,
+   "ida_name": "sub_3658",
+   "borland_symbol": "CANDOHEAL",
+   "size": 101,
+   "instructions": 37,
+   "callers": 1,
+   "calls": 2,
+   "is_overlay_entry": true,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/758-morale-field-0f7h-round-trip.md",
+   "note": "與 36BDh 成對的判斷(retf 4)：與 DOS overlay-19:35F1h 同",
+   "citations": [
+    "spec/758-morale-field-0f7h-round-trip.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 14013,
+   "ida_name": "sub_36BD",
+   "borland_symbol": "CANDOCURE",
+   "size": 89,
+   "instructions": 30,
+   "callers": 1,
+   "calls": 2,
+   "is_overlay_entry": true,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+   "note": "四條件合取(retf 4)：對應 DS:7F27h、+196h、+192h，其餘同 DOS overlay-19:3656h",
+   "citations": [
+    "audit/function-index/pc98-overlay-19.md",
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+   ]
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 14251,
+   "ida_name": "sub_37AB",
+   "borland_symbol": "DOHEAL",
+   "size": 373,
+   "instructions": 156,
+   "callers": 1,
+   "calls": 7,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 14794,
+   "ida_name": "sub_39CA",
+   "borland_symbol": "DOCURE",
+   "size": 525,
+   "instructions": 210,
+   "callers": 1,
+   "calls": 6,
+   "is_overlay_entry": true,
+   "state": "待解讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "unit": "LIBRARY",
+   "ea": 15319,
+   "ida_name": "sub_3BD7",
+   "size": 7,
+   "instructions": 5,
+   "callers": 0,
+   "calls": 0,
+   "is_overlay_entry": true,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
    "module": "overlay-20",
    "unit": "CLOCK",
    "ea": 0,
@@ -40524,7 +41369,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-21.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
   },
   {
@@ -44083,11 +44929,15 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
+   "note": "設定移動速率(retf 8)：byte[(a^[56h] shl 4) − 727Ch] = 2 時，依 a^[5Fh](word，無號)分三段寫 b^[1A6h] — \u003c=96h(150)用 b^[0E4h]、97h..18Fh(151..399)給 9、其餘給 6；a^[5Ah] 非 0 且結果 \u003c= 9 時再 +3",
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
-    "spec/683-encumbrance-movement.md"
+    "spec/683-encumbrance-movement.md",
+    "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
   },
   {
@@ -47203,9 +48053,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 127,
+   "Read": 129,
    "NotBlocking": 133,
-   "Todo": 48,
+   "Todo": 46,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -47413,9 +48263,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 38,
+   "Todo": 37,
    "Fragment": 16,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -47503,9 +48353,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -48070,6 +48920,21 @@
   },
   {
    "Platform": "pc98",
+   "Module": "overlay-19",
+   "Unit": "LIBRARY",
+   "Functions": 54,
+   "Read": 5,
+   "NotBlocking": 0,
+   "Todo": 22,
+   "Fragment": 27,
+   "CodeBytes": 11644,
+   "Undefined": 1629,
+   "SegmentBytes": 15326,
+   "Instructions": 4582,
+   "SHA256": "a2f07cae17eb508436f6c330ba8a77e4d933ac2c59475daa5ff606da86778e40"
+  },
+  {
+   "Platform": "pc98",
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
@@ -48133,9 +48998,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 27,
+   "Read": 28,
    "NotBlocking": 0,
-   "Todo": 21,
+   "Todo": 20,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
