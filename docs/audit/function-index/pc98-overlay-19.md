@@ -47,7 +47,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2095` | sub_2095 | — | 79 | 29 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 79 bytes，已逐條讀完） | — |
 | `2102` | sub_2102 | — | 166 | 61 | 1 | 6 | ✓ | 已解讀 | exact | docs/spec/767-ac-display-sign-and-trade-overload.md<br>交易給誰(retf 4)：快取在 DS:7BD6h，提示 CS:20E4h '誰に渡しますか？'、拒絕訊息 CS:20F5h '持ちすぎです'，其餘同 DOS overlay-19:213Ch | spec/767-ac-display-sign-and-trade-overload.md |
 | `21C5` | sub_21C5 | — | 176 | 66 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/789-heal-budget-tick-and-halve-stack.md<br>同 DOS：節點 67h(103) bytes，數量欄 +61h、next +52h、清掉的欄 +5Ch；訊息 'それは分けることはできません'(28 bytes)。spec 789 | — |
-| `2275` | sub_2275 | — | 465 | 154 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `2275` | sub_2275 | — | 465 | 154 | 1 | 2 | ✓ | 已解讀 | exact | 856<br>同 DOS overlay-19:022A3h（module_align 對齊，助憶碼序列完全相同）。差異全是物品節點位移（PC-98 大 28h：+56h..+66h↔+2Eh..+3Eh、+61h↔+39h）與 DS:9594h↔6506h、+14Eh↔+14Dh。★同一個效果槽比對 bug 兩平台都有 | spec/856-item-stack-merge-bug.md |
 | `246F` | sub_246F | USEITEM | 786 | 280 | 1 | 9 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `27DC` | sub_27DC | — | 482 | 183 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `2A32` | sub_2A32 | — | 482 | 199 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |

@@ -32,7 +32,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1EE9` | sub_1EE9 | — | 567 | 203 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `213C` | sub_213C | — | 166 | 61 | 1 | 4 | ✓ | 已解讀 | exact | docs/spec/767-ac-display-sign-and-trade-overload.md<br>交易給誰(retf 4)：以 DS:4AF8h 記住上次選的人當預設，用 CS:2120h 'Trade with Whom?' 選人；取消就離開；否則寫回 DS:4AF8h，用 overlay-19:3258h(spec 762)判超重 — 超重就顯示 CS:2131h 'Overloaded'，否則做三個呼叫(從物品端移除、加到 DS:6506h、更新對象) | audit/function-index/pc98-overlay-19.md<br>spec/767-ac-display-sign-and-trade-overload.md |
 | `21F3` | sub_21F3 | — | 176 | 66 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/789-heal-budget-tick-and-halve-stack.md<br>物品堆對半分：半 := 有號(節點^[39h]) div 2；半 > 0（無號比較）才做。GetMem(新,3Fh) + Move(節點^,新^,3Fh) 複製整個 63-byte 節點，新^[39h]:=半、新^[34h]:=0、新^[2Ah]:=節點^[2Ah]、節點^[39h]:=數量−半、節點^[2Ah]:=新（插在原節點後）。否則顯示 'Can't halve that'(16)。數量 ≥ 80h 時有號 div 2 為負而無號比較會通過，無防護。retf 4。spec 789 | spec/789-heal-budget-tick-and-halve-stack.md |
-| `22A3` | sub_22A3 | — | 465 | 154 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-12.md |
+| `22A3` | sub_22A3 | — | 465 | 154 | 1 | 1 | ✓ | 已解讀 | exact | 856<br>合併同款物品堆疊(retf 4)：走物品鏈比對 +2Eh/+2Fh/+30h/+31h/+32h/+33h/+36h/+37h(word)，相同就把數量併過來並用 1545h 移除來源；超過 0FFh 時填滿目標、差額留在來源並把目標換成來源繼續。★原版 bug：+3Ch/+3Dh/+3Eh 三個效果槽的比較兩次都載入 p（應該一次載目標），三個比較恆為真——效果不同的同型物品會被合併，其中一個的法術直接消失。兩平台一致，不是反組譯錯位 | audit/function-index/pc98-overlay-12.md<br>spec/856-item-stack-merge-bug.md |
 | `248D` | sub_248D | — | 742 | 263 | 1 | 7 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `27D6` | sub_27D6 | — | 482 | 183 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `2A42` | sub_2A42 | — | 465 | 193 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
