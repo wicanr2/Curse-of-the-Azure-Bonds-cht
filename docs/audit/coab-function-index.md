@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 739、不阻塞 133、邊界碎片 244、待解讀 270；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 740、不阻塞 133、邊界碎片 244、待解讀 269；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -23,7 +23,7 @@
 | overlay-06 | SHOP | 6 | 4 | 0 | 0 | 2 | 2146 | 274 | [明細](function-index/dos-overlay-06.md) |
 | overlay-07 | ECL2 | 41 | 19 | 0 | 8 | 14 | 8745 | 191 | [明細](function-index/dos-overlay-07.md) |
 | overlay-08 | COMBAT | 21 | 10 | 0 | 7 | 4 | 4243 | 343 | [明細](function-index/dos-overlay-08.md) |
-| overlay-09 | COMPTACT | 38 | 9 | 0 | 22 | 7 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
+| overlay-09 | COMPTACT | 38 | 10 | 0 | 22 | 6 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
 | overlay-10 | COMPREP | 38 | 16 | 0 | 14 | 8 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 4 | 2 | 0 | 1 | 1 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
 | overlay-12 | EFFPROCS | 152 | 124 | 0 | 25 | 3 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 804、不阻塞 29、邊界碎片 338、待解讀 317；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 805、不阻塞 29、邊界碎片 338、待解讀 316；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -67,7 +67,7 @@
 | overlay-06 | SHOP | 8 | 4 | 0 | 2 | 2 | 2363 | 283 | [明細](function-index/pc98-overlay-06.md) |
 | overlay-07 | ECL2 | 46 | 30 | 0 | 16 | 0 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
 | overlay-08 | COMBAT | 24 | 7 | 0 | 12 | 5 | 3967 | 372 | [明細](function-index/pc98-overlay-08.md) |
-| overlay-09 | COMPTACT | 36 | 8 | 0 | 20 | 8 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
+| overlay-09 | COMPTACT | 36 | 9 | 0 | 20 | 7 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
 | overlay-10 | COMPREP | 35 | 13 | 0 | 12 | 10 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |
 | overlay-11 | INIT | 6 | 4 | 0 | 0 | 2 | 1960 | 128 | [明細](function-index/pc98-overlay-11.md) |
 | overlay-12 | EFFPROCS | 150 | 127 | 0 | 18 | 5 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
