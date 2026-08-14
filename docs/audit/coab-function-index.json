@@ -27757,7 +27757,10 @@
    "callers": 2,
    "calls": 12,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1052",
+   "note": "分塊讀取 PC-98 側(retf 12h、609 bytes、227 條)，DOS 對側 START.EXE:16C3Eh(spec 1047)，五個參數同形(檔名A/檔名B 各上限 80、要的id byte、長度出、指標出)。★★★ 塊目錄項是 9 bytes：+0 id(byte)、+1 位移(4 bytes)、+5 word(寫進 長度出^)、+7 大小(word)；項數 = (檔案長度 − 2) div 9 ⇒ 檔案開頭有 2 bytes 不屬於目錄項。欄位順序與寬度與 DOS 側逐塊讀出來的完全一致 —— DOS 是逐塊 seek+read 掃過去、PC-98 是把整張目錄表一次讀進來再線性掃，實作不同格式相同 ⇒ 那 9 bytes 是 .dax 這一族的檔案格式，remake 兩邊都要照做。★★★ PC-98 把兩個圖形平面直接當載入期暫存：目錄表讀到 A800h:0000h(藍平面)、解出來的塊放 B000h:0000h(紅平面，寫進 指標出^) ⇒ 這兩塊 VRAM 在載入期間是垃圾，載入完一定要重畫；與 spec 1048『清矩形只清三個平面』同一個世界。★ 開頭 out 0A6h,1(繪圖頁選擇器，spec 1029 記過 IDA 標成 8259A 是錯的)，進出各叫一次 far 0893:0000h。找不到就把兩個輸出清零、關檔、回 false，與 DOS 對側同形"
   },
   {
    "platform": "pc98",
@@ -53821,9 +53824,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 275,
+   "Read": 276,
    "NotBlocking": 29,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
