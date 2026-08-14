@@ -23377,6 +23377,42 @@
    "level": "exact",
    "spec": "888",
    "note": "同 DOS overlay-32:009DFh，但★多 437 條的髒區重繪：確認 DS:0BE2Ch 與 DS:8BEEh 後依 DS:0BE2Dh 的值(15h/19h/5Bh/22h/52h/2Fh/29h/2Eh/32h/34h/35h/45h/57h)選一種形狀，對每格叫 02DAh(x,y)——3×3、三格 L 形、±2×±1、±3×±1 等。DOS 沒有這一段：DOS 把文字畫在圖形畫面上整塊重畫，PC-98 是硬體文字層必須自己算髒格(與 spec 876 同一成因)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 11257,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "889",
+   "note": "力量增強法術(retf，無參數，對象 遠指標(DS:7435h))：依職業槽擲骰——+10Eh(法師)1d4、+109h(牧師)或 +10Fh(盜賊)1d6、+10Bh(戰士)1d8，三個 if 依序覆寫所以多職業拿最後一個；n := 骰 + +11h(力量)，> 12h(18) 就把 (n−18)×10 累加到 +1Ch 並夾在 64h(100)、力量壓回 18。★逐項對上 AD&D 一版 Strength 法術與 18/01~18/00 百分比力量；+1Ch 定名為百分比力量(就在六個屬性 +10h..+1Bh 的正後方)。⚠百分比是累加不是取代"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 11954,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "889",
+   "note": "同 DOS overlay-22:02BF9h（助憶碼序列完全相同）。9 條差異全是位址：DS:7435h↔0A521h、DS:6F97h↔0A031h，其餘是呼叫目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 8669,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "890",
+   "note": "戰鬥中的四格動畫(retf 0Ah)：DS:4FBAh ≠ 5 就只叫 17D6h 印訊息離開；否則依 arg_4 選 16h/17h 模式，畫框、印訊息，再用 1938h+2 取戰鬥員索引 k，x := byte[67C6h+k]×3、y := byte[680Eh+k]×3，外圈跑 0..DS:4FA9h、內圈 j=0..3 各畫一格並延遲(9ABh:29Eh(46h))後蓋回去。★DS:4FA9h 的第二個消費端——整套動畫重播『速度值+1』次，與 spec 881 的乘法門檻是不同機制。★DS:67C6h/DS:680Eh 是戰鬥員的畫面座標(spec 888 只看到執行期才填)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 9226,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "890",
+   "note": "同 DOS overlay-24:021DDh，但★在其中一個座標多乘一次 12h(18)，DOS 兩個座標都只乘 3(形狀上是字元格尺寸不同)；迴圈收尾的跳躍結構也多 4 條。DS:4FA9h↔DS:7F16h"
   }
  ]
 }
