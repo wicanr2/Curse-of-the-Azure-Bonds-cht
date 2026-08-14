@@ -22603,6 +22603,24 @@
    "level": "exact",
    "spec": "852",
    "note": "同 DOS overlay-32:0081Dh（module_align 對齊，助憶碼序列完全相同）。9 條差異全是 DS:9F2Ch↔6E92h、地形表 DS:48AFh↔26A5h 與繪圖呼叫目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 2826,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "戰場植被生成(retf，無參數)：98Dh() 的 bit 80h 設起來就整支不做；機率由 10 起算，bit 02h −5、04h −2、40h +5、08h +10，負值夾成 1。掃 50 欄 × 24 列（y 由 1 起），本格與上一格的地形圖磚（DS:26A2h 的 +3 欄）都是 16h 才有機會長：1d100 過兩次 → 本格放 29h+1d2（一格高）；過一次 → 上格放 1Fh+1d5、本格放 24h+1d5（兩格高）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 2814,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "同 DOS overlay-10:00B0Ah（module_align 對齊，助憶碼序列完全相同）。16 條差異全是呼叫目標與 DS:9F2Ch↔6E92h、地形表 DS:48AFh↔26A5h"
   }
  ]
 }
