@@ -13457,7 +13457,10 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "927",
+   "note": "八方向判定(retf 8 = 兩組座標，回 al = 方向 0..7)：用 loc_192Ah+1 取欄、loc_192Dh+3 取列，算 dx/dy 絕對值，然後從 方向 0 起逐一測扇區條件直到命中。★兩個常數就是 8.8 定點的正切值——26Ah/100h = 2.4141 = tan 67.5°、6Ah/100h = 0.4141 = tan 22.5°；方向 0/4 要 dy 佔優、2/6 要 dx 佔優、1/3/5/7 介於兩者之間。這關掉 spec 914 的待答項：那裡的 r 就是八方向編號。⚠比較用有號 imul/idiv，dx \u003e 53 會溢位翻號(地圖尺寸碰不到)",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
@@ -24183,6 +24186,7 @@
    "spec": "926",
    "note": "載入 WALLDEF\u003c磁碟\u003e.dax(retf 4 = (arg_0 1..3, arg_2))：組檔名 'WALLDEF'+Str(DS:5BEEh 磁碟編號) 與 '.dax'，用 0636h:08DEh 載入；大小 = 0 或 大小 div 30Ch + arg_0 \u003e 4 就印 'Unable to load '+arg_2+' from WALLDEF'+磁碟+'.'、等一次按鍵、★直接 06EAh:0000h 結束程式(與 spec 924 紮營的 Quit TO DOS 同一個離開入口)。成功則逐塊 30Ch 搬進 遠指標(DS:7202h) 的第 (arg_0−1) 塊起、FreeMem 緩衝，再對編號落在集合常數 [1,2,3] 的塊做重定索引：每塊 5 個 9Ch 子塊，byte ≥ DS:268Ah 就加上 word[2680h+arg_0*2] − word[2682h]",
    "citations": [
+    "audit/function-index/pc98-overlay-30.md",
     "audit/function-strings.md",
     "spec/926-walldef-loader.md"
    ]
@@ -38561,7 +38565,8 @@
    "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
    "note": "與 DOS overlay-13:1144h（entry#11）助憶碼序列完全相同，語意同該筆：暫時借用目前目標欄位(retf 8)：甲為 NIL 回 false、乙=甲 回 true；否則清 DS:6F9Bh、叫 \u003c呼叫\u003e(1, 甲)，未中止就把甲塞進 乙^[18Dh]^[0Ah]、叫 \u003c呼叫\u003e(0, 乙)、再還原，最後回 DS:6F9Bh = 0。⚠ 目前目標欄位同時是參數傳遞通道，中途離開會留下錯誤的目標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/function-index/pc98-overlay-13.md"
+    "audit/function-index/pc98-overlay-13.md",
+    "spec/927-eight-sector-direction.md"
    ]
   },
   {
@@ -38592,7 +38597,11 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-   "note": "邊界碎片：落在 11AFh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+   "note": "邊界碎片：落在 11AFh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md",
+    "spec/927-eight-sector-direction.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39175,7 +39184,13 @@
    "callers": 6,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "927",
+   "note": "同 DOS overlay-13:029A2h 的介面，但只有 42 條：取完四個座標就委派出去。★IDA 顯示的 'call sub_11CC' 是撞號——實際位元組 9A 5C 00 17 01 = call far ptr 0117h:005Ch(far 不是 near)，0117h 是正常外部模組(本 overlay 的 far call 目標段裡出現 8 次)；0117h×16+5Ch = 11CCh 剛好撞上本 overlay 偏移 11CCh，那裡是 CHECKTARGET(011AFh、spec 766) body 裡的一條 jnz。函式索引那筆『sub_11CC 140 bytes 邊界碎片』是同一個撞號造出的幻影。★掃過兩平台全部 36 個 overlay 與兩支常駐執行檔，正切常數 26Ah/6Ah 只出現在 DOS overlay-13(各 6 處)、PC-98 完全沒有 → PC-98 換了算法不是搬家。⚠fallback 是死碼：mov al/xor ah,ah 零延伸後 cmp ax, 0FFFFh 永遠不相等，方向 := 角色^[18Eh]^[9] 從來不會執行",
+   "citations": [
+    "spec/927-eight-sector-direction.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51811,9 +51826,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 37,
+   "Read": 38,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -52366,9 +52381,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 39,
+   "Read": 40,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
