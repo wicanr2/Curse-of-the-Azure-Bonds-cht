@@ -37,7 +37,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1794` | sub_1794 | — | 5 | 1 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+18Ah], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1799` | sub_1799 | — | 9 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 9 bytes，已逐條讀完） | — |
 | `17F6` | sub_17F6 | — | 296 | 124 | 1 | 7 | ✓ | 待解讀 | — | — | audit/function-strings.md |
-| `19A4` | sub_19A4 | — | 404 | 160 | 1 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-strings.md |
+| `19A4` | sub_19A4 | — | 404 | 160 | 1 | 6 | ✓ | 已解讀 | exact | docs/spec/828-drop-from-party.md<br>同 DOS，但「只剩這一個」的判定**整段重寫**：只剩這一個 := 1；走 DS:9598h 鏈，若存在 p 使得 ((p^[196h] = 0) 或 (p^[196h] = 4)) 且 (p^[0F7h] = 0) 且 (p <> DS:9594h)，就設 0。DOS 只看串列結構（下一個為 NIL 且自己就是頭）。訊息：'は完全にいなくなる。'(20 bytes)／'かまわず離脱させますか？'(24 bytes)／'は別れを告げた。'(16 bytes)／'はドブに捨てられた。'(20 bytes)／'は安堵のため息をもらした。'(26 bytes)；quit TO DOS 那段無對應字串。spec 828 | audit/embedded-strings.md<br>audit/function-strings.md |
 | `1B94` | sub_1B94 | — | 184 | 71 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `1D4C` | sub_1D4C | — | 506 | 204 | 1 | 10 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `1F46` | sub_1F46 | — | 35 | 14 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>回傳 (arg_2^[196h] = 0):是則 1、否則 0。+196h 是狀態碼(spec 623 記到 6 與 5→4 兩條) | audit/function-index/dos-overlay-15.md<br>audit/function-index/pc98-overlay-15.md |
