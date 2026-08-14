@@ -7627,7 +7627,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/615-ecl2-findguy-maxrange.md",
-   "note": "與 pc98 overlay-07:085Ch 助憶碼序列完全相同（35 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：FINDGUY(ptr):沿 DS:9598h 角色鏈找出 ptr 的 0-based 序號。找不到不是回 FFh 而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-07:085Ch 助憶碼序列完全相同（35 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：FINDGUY(ptr):沿 DS:9598h 角色鏈找出 ptr 的 0-based 序號。找不到不是回 FFh 而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "spec/1040-checkspecials-dos.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7640,8 +7643,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1040",
+   "note": "CHECKSPECIALS DOS 側(007F1h..0B6Ah，889 bytes)，PC-98 對側見 spec 624。骨架一致：arg_0 是 byte 旗標指標(進門設 1、整條鏈落空才在出口設 0)，addr -= 7C00h 後一路比對，角色取自 DS:6506h(PC-98 DS:9594h)。位址對照與 spec 624 相同，DOS 偏移在 +18Dh 以上各少 1(7CE4h→+192h、7D1Bh→+1A5h)。★★ spec 624 漏掉的：①7CE4h 讀的是 +192h and 1(最低位元)不是整個 byte；②7CC9h 的公式是 \u003coverlay-25 entry#10\u003e() × 角色^[116h] + 角色^[10Eh]，三個量都 cbw；③★★★ 7ECFh 不是直接回傳 +1Bh(魅力)，而是查一張十二段換算表：3→0、4→5、5→10、6→15、7→20、8..0Ch→25、0Dh→30、0Eh→35、0Fh→40、10h→50、11h→55、12h..19h→60(形狀上是百分比，語意不宣稱；⚠ 魅力 0..2 落到出口讀未初始化值)。★★★ 關掉 spec 624 的未定項：7F12h 讀的是 DS:5BEEh ＝ 資料片編號(spec 892/1029/1033/1038 同一格)。三個要算的與 spec 624 一致(7D00h 的一次性旗標 DS:8B6Dh = PC-98 DS:0BDFFh，讀一次就清掉；7D0Ch；7EB1h/7EB4h 共用 near 0790h)。★ 7D0Dh 直接跳出口讀未初始化的 var_2、旗標仍是 1 —— 這個原作瑕疵兩平台都成立，remake 要照抄",
    "citations": [
+    "spec/1040-checkspecials-dos.md",
     "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
    ]
   },
@@ -33996,10 +34003,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "knowledge/gold-box-ecl-interpreter.md",
+    "spec/1040-checkspecials-dos.md",
     "spec/565-ecl-memory-read-path-and-asymmetry.md",
     "spec/567-ecl-packed-text-and-bank1-field-map.md",
-    "spec/624-ecl-special-address-space.md",
-    "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
+    "spec/624-ecl-special-address-space.md"
    ]
   },
   {
@@ -53331,9 +53338,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 32,
+   "Read": 33,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
