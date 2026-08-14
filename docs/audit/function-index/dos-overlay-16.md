@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 32 | 10 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/751-overlay-init-chain-dependency-graph.md<br>unit 初始化段(retf，不收參數)：依序呼叫 5 個相依 unit 的 0000h — overlay-33、overlay-34、overlay-25、overlay-23、overlay-24。由原始 bytes 解出(IDA 匯出在此漏 byte) | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-02.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/612-ecl-main-loop.md |
-| `0020` | sub_20 | — | 87 | 36 | 2 | 1 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-02.md |
+| `0000` | sub_0 | — | 32 | 10 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/751-overlay-init-chain-dependency-graph.md<br>unit 初始化段(retf，不收參數)：依序呼叫 5 個相依 unit 的 0000h — overlay-33、overlay-34、overlay-25、overlay-23、overlay-24。由原始 bytes 解出(IDA 匯出在此漏 byte) | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-16.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-23.md |
+| `0020` | sub_20 | — | 87 | 36 | 2 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-02.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md |
 | `008D` | sub_8D | — | 966 | 385 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0453` | sub_453 | — | 375 | 169 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `0643` | sub_643 | — | 936 | 381 | 4 | 3 | ✓ | 待解讀 | — | — | — |

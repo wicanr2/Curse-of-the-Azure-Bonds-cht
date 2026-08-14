@@ -1275,7 +1275,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "跳過開頭空白(retf 2)：參數是 SS 相對位址，-103h 是游標、-101h 是長度、-100h 起是內容；游標小於長度且該位置是空白就前進。無號比較"
   },
   {
    "platform": "dos",
@@ -1664,7 +1667,10 @@
    "callers": 7,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "依音效裝置決定是否安裝(retf)：dword_21154 := seg045:0124h；byte_21DAB := byte_21DAA；byte_21DAC := 1；byte_21DAA \u003c\u003e 2 時才叫 19320h() 與 196E0h(0)、1974Ah(0)"
   },
   {
    "platform": "dos",
@@ -1691,7 +1697,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "聲音驅動安裝(retf)：存 INT 08h 舊向量到 CS:dword_1931Ch，換成 seg045:225Eh；out 43h,0B6h 後把 13B1h(≈236.7 Hz)分兩次寫 port 40h。⚠ 控制字 0B6h 選的是 counter 2，資料卻寫進 counter 0"
   },
   {
    "platform": "dos",
@@ -1703,7 +1712,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "聲音驅動卸載(retf)：還原 INT 08h；counter 0 寫回 0FFFFh(18.2 Hz)；in 61h/and 0FCh/out 61h 關喇叭閘；對 port 0C0h 依序寫 9Fh/0BFh/0DFh/0FFh — SN76489(Tandy 三音)四聲道全部最大衰減，即靜音"
   },
   {
    "platform": "dos",
@@ -2062,7 +2074,10 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "Ctrl-Break 處理(retf 2)：byte_24E6C 非 0 才動作 — 清旗標、用 INT 16h 把鍵盤緩衝區抽乾、印 ^C 與換行，然後 INT 23h"
   },
   {
    "platform": "dos",
@@ -3083,7 +3098,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "指標正規化與下界夾制(近呼叫 retn)：dword_2097Eh 減 word_20982h，低 4 bits 留 SI、其餘右移 4 加到段值，與 word_2097Ch:word_2097Ah 這個下界比，低於就夾到下界；offset 為 0 有段值 +1000h 的特別路徑。與 spec 753 的 1AAD5h 同族"
   },
   {
    "platform": "dos",
@@ -4038,7 +4056,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "Text 檔案的 I/O 派工(近呼叫 retn)：以 Turbo Pascal TextRec 配置對上 — +08h BufPos 先由 BX 寫入，call dword ptr es:[di+14h](InOutFunc)，結果非 0 存進 word_20996(IOResult)，再把 +0Ah BufEnd→AX、+08h BufPos→BX、+04h BufSize→DX、+0Ch BufPtr→ES:DI"
   },
   {
    "platform": "dos",
@@ -4427,7 +4448,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "掃 PSP 命令列(近呼叫 retn)：從 ES:0080h 起跳過空白(\u003c= 20h)、量一段非空白長度，DX 每數完一段減一，BX 累計段數，SI/DI 留下該段起訖。ParamCount/ParamStr 的掃描核心"
   },
   {
    "platform": "dos",
@@ -4538,10 +4562,15 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "retf 2：0A54h:0634h(0Eh, 0, @本地緩衝區, CS:0000h)、0542h:0946h()、overlay-16 entry#11()，DS:5CF1h 非 0 時再叫 06EAh:0000h；回傳 [bp-2]。⚠ 本函式沒有任何指令寫過 bp-2，是否為堆疊殘值取決於 0A54h:0634h 實際寫入長度，實作前需實機確認",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/753-small-utility-routines.md"
+    "audit/function-index/dos-overlay-00.md",
+    "spec/753-small-utility-routines.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -4649,9 +4678,9 @@
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-07.md"
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -5099,7 +5128,8 @@
    "note": "與 pc98 overlay-02:0AF9h 助憶碼序列完全相同（30 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 13h(RETURN):無 operand;GOSUB 堆疊鏈頭在 DS:A882h,節點 6 bytes(+0 返回 PC、+2 next far ptr),取回 PC 後 Dispose(6)。堆疊空時不是錯誤,而是轉去執行 opcode 00h 的 handler(sub_52) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
-    "audit/function-index/pc98-overlay-27.md"
+    "audit/function-index/pc98-overlay-27.md",
+    "audit/function-index/pc98-overlay-29.md"
    ]
   },
   {
@@ -6348,9 +6378,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -6895,9 +6926,9 @@
     "audit/ecl-handler-operand-audit.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-07.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/pc98-overlay-07.md"
    ]
   },
   {
@@ -7566,7 +7597,8 @@
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
     "spec/748-cloud-effect-dispel-pair.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -7849,10 +7881,14 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清掉同陣營的目標(retf 4)：p^[198h]:=1；若 p^[18Dh]^[0Ah](目前目標)非 NIL 且其 +197h(陣營)與 p^[197h] 相同，就把目標設回 NIL",
    "citations": [
     "audit/duplicate-strings.md",
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -8468,11 +8504,11 @@
    "note": "呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B1+2`、`call far ptr sub_1847`、`call far ptr sub_1953`、`call loc_EB5+1`、`call far ptr sub_16BD`（body 共 72 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-23.md",
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
-    "spec/572-resident-service-functions.md",
-    "spec/748-cloud-effect-dispel-pair.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/572-resident-service-functions.md"
    ]
   },
   {
@@ -8753,7 +8789,14 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "判斷式(retf 4)：if (a\u003e=0) and (a\u003c11) then false else if (b\u003e=0) and (b\u003c6) then false else true。⚠ 是「兩個都不在範圍內才回 true」，不是一般的界內檢查；兩個範圍不同(0..10 與 0..5)",
+   "citations": [
+    "audit/function-index/pc98-overlay-10.md",
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8768,7 +8811,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -9124,8 +9168,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-23.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-23.md"
    ]
   },
   {
@@ -11776,7 +11820,8 @@
     "audit/embedded-strings.md",
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -11900,7 +11945,14 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "依相位進位的折半(retf 2)：f(x: byte) = (x + (DS:758Dh and 1)) div 2。shr 只用來取 bit 0 進 CF，值本身丟掉。DS:758Dh 在戰鬥開場(spec 750)被設 0",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md",
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12701,7 +12753,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "找格子(retf 6)：f(v: byte, p: 遠指標) 在 p^[1Eh..1Eh+53h] 線性搜尋等於 v 的索引，找不到回 0FFh。與 overlay-15:0188h 同一個 84 格陣列",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12825,9 +12883,11 @@
    "note": "unit 初始化段(retf，不收參數)：依序呼叫 9 個相依 unit 的 0000h — overlay-34、overlay-22、overlay-20、overlay-24、overlay-16、overlay-26、overlay-19、overlay-28、overlay-23。由原始 bytes 解出(IDA 匯出在此漏 byte)",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/583-ledger-denominator-repair.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/dos-overlay-28.md"
    ]
   },
   {
@@ -12844,7 +12904,9 @@
    "state": "待解讀",
    "citations": [
     "audit/duplicate-strings.md",
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -12858,7 +12920,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清掉超界值(retf 4)：for i:=0 to 53h，若 p^[1Eh+i] \u003e 7Fh(無號)則歸零；最後 p^[72h]:=0。1Eh+53h=71h 與 72h 相接，可證角色記錄 +1Eh 起是 84 格陣列。⚠ IDA 匯出在 01BDh 吃掉 ES 前綴 26h，看似兩平台差異，回查原始 bytes 兩邊相同",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12873,7 +12941,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -12887,7 +12956,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "整隊清理(retf，無參數)：從 DS:650Ah 沿 +189h 走隊伍鏈，對每個成員叫本模組 0188h 與 01CBh",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13135,7 +13210,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov dx, es`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完）",
    "citations": [
-    "audit/function-index/dos-overlay-15.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -13437,10 +13513,11 @@
    "note": "unit 初始化段(retf，不收參數)：依序呼叫 5 個相依 unit 的 0000h — overlay-33、overlay-34、overlay-25、overlay-23、overlay-24。由原始 bytes 解出(IDA 匯出在此漏 byte)",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/612-ecl-main-loop.md"
+    "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -13456,7 +13533,10 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-02.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -13852,7 +13932,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -13868,7 +13951,11 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-22.md"
    ]
   },
   {
@@ -14430,13 +14517,17 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "送出命令 0Ch(retf 6)：填 DS:4FCAh 起的 16-byte 命令區塊(+1 命令碼=0Ch、+0=第三個參數、+3=0、+4=第一個參數、+6=第二個參數)後呼叫 097Fh:000Bh(@DS:4FCAh, 10h)",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/overlay-init-graph.md",
     "spec/612-ecl-main-loop.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -14450,10 +14541,14 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "送出命令 0Dh(retf 4)：同一個 16-byte 命令區塊，命令碼 0Dh，呼叫後把 DS:4FCAh 當回傳值讀出。全 DOS overlay 只有 overlay-18 這兩支寫 4FCBh、也只有這兩支呼叫 097Fh:000Bh",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -14603,9 +14698,11 @@
    "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_16BB+2`、`call far ptr loc_17E5+2`、`call far ptr loc_11F6+1`、`call far ptr loc_14AC+1`、`call far ptr loc_1183+1`、`call far ptr loc_10B2+2`（body 共 57 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -15209,8 +15306,10 @@
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr 19Ch:2Ah`、`call far ptr 11Ah:57h`、`call far ptr 141h:9Dh`、`call far ptr 14Dh:101h`、`call far ptr 167h:4Dh`（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-15.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -15250,7 +15349,14 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "上限 99 的累加(retf，無參數)：先叫本模組 sub_2D8h(@DS:7566h)；若 DS:7570h\u003e0 則 DS:756Eh += DS:3E32h * DS:7570h、DS:7570h:=0，最後 DS:756Eh 夾到 99。全部無號 word",
+   "citations": [
+    "audit/function-index/pc98-overlay-20.md",
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15434,8 +15540,10 @@
    "note": "呼叫序列：依序執行 4 個呼叫，沒有其他動作：`call far ptr loc_16BC+1`、`call far ptr loc_15CF+2`、`call far ptr loc_14AC+1`、`call loc_19E9+1`（body 共 27 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -15455,7 +15563,8 @@
    "note": "與 pc98 overlay-21:001Bh 助憶碼序列完全相同（12 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 \u003cfar 0176:0A31\u003e(arg_0,arg_2) + 5DCh(1500) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-21.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/637-overlay21-small-batch.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -15513,7 +15622,10 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15717,7 +15829,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "1d20 兩段分支(retf，無參數)：r := ROLLDICE(1,20)(overlay-23 entry#9)；1..14 回 1、15..20 回 2。⚠ 兩段外的路徑 local 未初始化(1d20 走不到，但值域一改就會回傳堆疊殘值)。14:6 的分法",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15844,11 +15962,11 @@
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr sub_15D1`、`call loc_1656+1`、`call far ptr loc_14AB+2`、`call sub_16BD`、`call loc_19E7+3`（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-23.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -18424,11 +18542,11 @@
    "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call loc_15D0+1`、`call far ptr sub_19EA`、`call loc_1657`（body 共 22 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-23.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -18452,7 +18570,7 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-22.md"
+    "audit/function-index/pc98-overlay-10.md"
    ]
   },
   {
@@ -18493,11 +18611,11 @@
    "note": "與 pc98 overlay-23:010Eh 助憶碼序列完全相同（115 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：SPELLOFF:第一參數為 nil 時依 id 搜第一個符合的節點,否則直接摘該節點;節點 +4 非 0 則先 CALLEFFECT(1,...) 通知解除;摘鏈後 Dispose(9)。善後在鏈外——id=0Eh 呼叫 sub_18F3(5,char)、id 屬 {0Ch,26h,92h} 呼叫 sub_18F3(0,char),即使該效果不在鏈上也照做 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/576-adnd-strength-encoding-and-effect-removal.md",
-    "spec/578-effect-node-list.md"
+    "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
   },
   {
@@ -19137,10 +19255,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md"
    ]
   },
   {
@@ -20183,9 +20301,11 @@
    "note": "unit 初始化段(retf，不收參數)：依序呼叫 2 個相依 unit 的 0000h — overlay-34、overlay-26。由原始 bytes 解出(IDA 匯出在此漏 byte)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/overlay-init-graph.md",
-    "spec/583-ledger-denominator-repair.md"
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -20205,6 +20325,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/pc98-overlay-12.md"
    ]
   },
@@ -20365,6 +20486,7 @@
    "spec": "docs/spec/753-small-utility-routines.md",
    "note": "判斷式(retf 4，一個遠指標參數)：回傳 p^[74h] = 7",
    "citations": [
+    "audit/function-index/pc98-overlay-25.md",
     "spec/753-small-utility-routines.md"
    ]
   },
@@ -20379,7 +20501,14 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "判斷式(retf 4，一個遠指標參數)：回傳 本模組 sub_134Ah(p) \u003e p^[0E6h](有號比較)",
+   "citations": [
+    "audit/function-index/pc98-overlay-25.md",
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -20415,9 +20544,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/overlay-init-graph.md",
-    "spec/686-dos-ecl-operand-tables-and-menu.md"
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -20435,6 +20565,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/686-dos-ecl-operand-tables-and-menu.md"
@@ -20451,10 +20582,15 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "數鏈長(retf 4)：走遠指標鏈計數，next 在 +2Ah(＝物品節點的 far next)，回傳 word",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-25.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -20749,6 +20885,7 @@
    "note": "取值(retf，無參數)：q := DS:4F99h^[342h]，把 byte[q+0A48h] 與 byte[q+0A68h](相差 20h)零延伸成 word 存進 DS:8C78h / 8C7Ah",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-27.md",
     "spec/753-small-utility-routines.md"
    ]
   },
@@ -20769,6 +20906,7 @@
    "note": "兩次繪製(retf，無參數)：0297h:0EFFh(DS:8C78h, DS:8C7Ah, 遠指標@DS:65CAh) 與 0297h:1110h(DS:8C78h, DS:8C7Ah, 遠指標@DS:8C7Ch)。參數形狀由推入順序解出：末兩個 word 先高後低＝一個遠指標",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-27.md",
     "spec/753-small-utility-routines.md"
    ]
   },
@@ -20823,6 +20961,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call far ptr 196h:43h`、`call far ptr 19Ch:2Ah`、`call far ptr 179h:57h`（body 共 22 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-28.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
@@ -20840,7 +20980,14 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "三項查表(retf 4)：只用第一個宣告的參數([bp+8])，08h→00h、41h→00h、0E8h→0Fh、其他→0Fh。第二個參數整支沒讀；0E8h 分支與 default 同值(多餘的比較)",
+   "citations": [
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "dos",
@@ -20853,10 +21000,15 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "三項查表(retf 4)：08h→08h、41h→07h、0E8h→07h、其他→07h。第二個參數整支沒讀；0E8h 分支與 default 同值",
    "citations": [
     "context/50-log-2026-08-09-13.md",
-    "project-status.md"
+    "project-status.md",
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -20870,9 +21022,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "三項查表(retf 4)：只用第一個宣告的參數，0Bh→8、9→6、0DBh→6、6→1、其他→6。與 spec 754 的 overlay-28:0016h/004Fh 同族",
    "citations": [
-    "project-status.md"
+    "project-status.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -20927,8 +21083,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -20946,7 +21104,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "spec/753-small-utility-routines.md"
+    "spec/753-small-utility-routines.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -20976,7 +21135,14 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "包裝(retf 8)：f(a: byte, b: byte, p: 遠指標) → 本模組 sub_Ch(a, b+5, 0, p)。兩個 byte 參數零延伸成 word",
+   "citations": [
+    "audit/function-index/pc98-overlay-29.md",
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21155,6 +21321,7 @@
    "note": "四個 byte 的 setter(retf 8)：四個 word 參數只取低位 byte，依序寫 DS:720Ah/720Bh/720Ch/720Dh(第一個宣告的參數在 [bp+0Ch] → 720Ah)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-30.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
     "spec/753-small-utility-routines.md"
    ]
@@ -21200,11 +21367,16 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "範圍判斷(retf 4)：兩個有號參數都落在 0..15(含端點)才回 1，否則 0。範圍是 16×16",
    "citations": [
+    "audit/function-index/pc98-overlay-30.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
+    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -21499,6 +21671,7 @@
    "citations": [
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/overlay-init-graph.md"
    ]
@@ -21518,6 +21691,7 @@
    "citations": [
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-24.md"
@@ -21861,6 +22035,8 @@
    "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/overlay-init-graph.md"
    ]
   },
@@ -21978,8 +22154,11 @@
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/overlay-init-graph.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -26857,7 +27036,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "retf 2：與 DOS overlay-00:0017h 同構(0A65h:062Fh、0418h:12EFh、overlay-16 entry#11、DS:8CF7h、07E3h:0077h)；同樣回傳未被本函式寫過的 [bp-2]",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -26957,9 +27142,9 @@
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-07.md"
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -28713,9 +28898,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -28731,7 +28917,9 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -28745,7 +28933,13 @@
    "callers": 7,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-07.md",
+    "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-07.md",
+    "audit/function-index/pc98-overlay-21.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -29441,9 +29635,9 @@
     "audit/ecl-handler-operand-audit.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-07.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/pc98-overlay-07.md"
    ]
   },
   {
@@ -30335,7 +30529,8 @@
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
     "spec/748-cloud-effect-dispel-pair.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -30683,7 +30878,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清掉同陣營的目標(retf 4)：位移各 +1(199h/18Eh/198h)，其餘同 DOS overlay-08:1314h",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31269,11 +31470,11 @@
    "note": "呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr loc_1882+1`、`call far ptr loc_1815+2`、`call loc_1922+1`、`call loc_E26`、`call far ptr loc_1694+3`（body 共 72 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-23.md",
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
-    "spec/572-resident-service-functions.md",
-    "spec/748-cloud-effect-dispel-pair.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/572-resident-service-functions.md"
    ]
   },
   {
@@ -31545,7 +31746,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "判斷式(retf 4)：與 DOS overlay-10:11FBh 相同的「兩個都不在範圍內才回 true」",
+   "citations": [
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31848,7 +32055,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "16 色調色盤設定(retn 2)：out 6Ah,1 切 16 色；依參數選 CS:076Dh(非 0)或 CS:079Dh(0)這兩份 16×3=48 bytes 的調色盤，經 0A8h/0AAh/0ACh/0AEh 寫入(索引/綠/紅/藍，索引遞減)；再 int 18h AH=42h/40h/12h 與 out 68h,8。IDA 的 ROM BASIC 註解是 IBM PC 語意，PC-98 不適用",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31887,8 +32100,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-23.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-23.md"
    ]
   },
   {
@@ -34633,7 +34846,8 @@
     "audit/embedded-strings.md",
     "audit/overlay-init-graph.md",
     "audit/string-pairs.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -34765,9 +34979,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "依相位進位的折半(retf 2)：f(x) = (x + (DS:0A81Fh and 1)) div 2，與 DOS overlay-13:0F12h 同",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -35834,7 +36052,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "找格子(retf 6)：與 DOS overlay-14:06B1h 同",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35976,9 +36200,11 @@
    "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_19C8+2`、`call sub_11C7`、`call far ptr sub_1084`、`call far ptr loc_159F+2`、`call far ptr loc_E22+4`、`call sub_1697`（body 共 52 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/583-ledger-denominator-repair.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/dos-overlay-28.md"
    ]
   },
   {
@@ -35995,7 +36221,9 @@
    "state": "待解讀",
    "citations": [
     "audit/duplicate-strings.md",
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -36009,7 +36237,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清掉超界值(retf 4)：與 DOS overlay-15:0188h 位元組相同",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36024,7 +36258,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -36038,7 +36273,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "整隊清理(retf)：鏈頭 DS:9598h、next 在 +18Ah，其餘同 DOS overlay-15:023Eh",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36641,10 +36882,11 @@
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/612-ecl-main-loop.md"
+    "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -36660,7 +36902,10 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-02.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -36687,7 +36932,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-25.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36983,7 +37231,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-24.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37375,7 +37626,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -37391,7 +37645,11 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-22.md"
    ]
   },
   {
@@ -37407,7 +37665,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -38225,13 +38484,17 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "retf，無參數：02A8h:1392h(9, 0Fh)；08EEh:0379h(1)；02A8h:1392h(9, 9)",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/overlay-init-graph.md",
     "spec/612-ecl-main-loop.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "spec/751-overlay-init-chain-dependency-graph.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -38536,7 +38799,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "近呼叫 retn 4：把 Pascal 短字串就地改成 NUL 結尾(rep movsb 把內容往前搬一格蓋掉長度 byte，再補 0)，之後 bx:=段、cx:=位移、dl:=另一參數，呼叫 sub_17F3h。⚠ 原字串在呼叫後已被覆寫。同一段匯出後面還接兩支獨立小程序 1979h/1985h(PC-98 INT 18h AH=42h 畫面模式控制，IDA 的 ROM BASIC 註解不適用)",
+   "citations": [
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38552,7 +38821,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=0C000h(CRT 顯示模式設定)。⚠ IDA 的 TRANSFER TO ROM BASIC 註解是 IBM PC 語意,不適用 PC-98"
+   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=0C000h(CRT 顯示模式設定)。⚠ IDA 的 TRANSFER TO ROM BASIC 註解是 IBM PC 語意,不適用 PC-98",
+   "citations": [
+    "audit/function-index/pc98-overlay-18.md",
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38568,7 +38841,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=8000h(另一種 CRT 模式),再 out 68h, 8"
+   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=8000h(另一種 CRT 模式),再 out 68h, 8",
+   "citations": [
+    "audit/function-index/pc98-overlay-18.md",
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38588,9 +38865,11 @@
    "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_1695+2`、`call far ptr sub_17B7`、`call far ptr loc_11C4+3`、`call sub_147D`、`call far ptr sub_1154`、`call far ptr loc_1083+1`（body 共 57 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -39441,8 +39720,10 @@
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr 19Ah:2Ah`、`call far ptr 117h:57h`、`call far ptr 13Eh:9Dh`、`call far ptr 14Ah:101h`、`call far ptr 164h:57h`（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-15.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -39482,7 +39763,14 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "上限 99 的累加(retf)：對應位址 0A652h/0A65Ch/680Ch/0A65Ah，與 DOS overlay-20:0385h 同",
+   "citations": [
+    "audit/function-index/pc98-overlay-20.md",
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39675,8 +39963,10 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19CA`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -39697,7 +39987,8 @@
    "note": "回傳 \u003cfar 0176:0A31\u003e(arg_0,arg_2) + 5DCh(1500)",
    "citations": [
     "audit/function-index/dos-overlay-21.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/637-overlay21-small-batch.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -39758,7 +40049,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40174,11 +40468,11 @@
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call sub_15A1`、`call far ptr loc_1625+2`、`call far ptr loc_147C+1`、`call far ptr loc_1696+1`、`call loc_19CA`（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-23.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -41156,7 +41450,8 @@
     "audit/function-index/pc98-overlay-22.md",
     "spec/629-spell-pack-idiom-and-uninit.md",
     "spec/630-spell-target-array.md",
-    "spec/632-spell-target-array-loop.md"
+    "spec/632-spell-target-array-loop.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -41649,7 +41944,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "retf，無參數：DS:0A520h 非 0 時，r := ROLLDICE(8,2)，若 overlay-23 entry#22 @2419h(0, r+1) 為真則叫 overlay-24 entry#29 @2776h(遠指標@DS:0A521h)",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41842,7 +42143,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "與 41F0h 同一段的第二份實例：ROLLDICE(8,3)、r+3，其餘相同",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -42441,11 +42748,11 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1627`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-23.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -42470,7 +42777,7 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-22.md"
+    "audit/function-index/pc98-overlay-10.md"
    ]
   },
   {
@@ -42513,11 +42820,11 @@
    "note": "SPELLOFF:第一參數為 nil 時依 id 搜第一個符合的節點,否則直接摘該節點;節點 +4 非 0 則先 CALLEFFECT(1,...) 通知解除;摘鏈後 Dispose(9)。善後在鏈外——id=0Eh 呼叫 sub_18F3(5,char)、id 屬 {0Ch,26h,92h} 呼叫 sub_18F3(0,char),即使該效果不在鏈上也照做",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/576-adnd-strength-encoding-and-effect-removal.md",
-    "spec/578-effect-node-list.md"
+    "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
   },
   {
@@ -42869,6 +43176,7 @@
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
    "note": "REMOVEFX:以 1..19 索引 DS:159Dh 起的位元組表逐一呼叫 SPELLOFF(char, id, 0, 0);之後查找 effect 4Dh,命中且 char^[0F7h]=0B3h 時把 char^[198h] 清零。清單內容在 DS,未定位",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-23.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
@@ -43162,7 +43470,8 @@
    "note": "HEALDUDE(char,amount,only_if_hurt):狀態 +196h 不在 {0,1,4,5}(函式前方 32 bytes 的 Pascal set 常數,兩平台相同)就回 false;only_if_hurt 非 0 且已滿血也回 false;否則 +1A5h += amount 並以 +78h(最大 HP)為上限;+197h=0 時狀態 5 降為 4,狀態 4 且 DS:7F27h\u003c\u003e5 觸發 CALLEFFECT(...,4Eh) ⚠ 參數順序已於 spec 700 更正:Pascal 先推的參數在最高位址,宣告順序照 [bp+0Ah]→[bp+8]→[bp+6] 讀",
    "citations": [
     "audit/function-index/dos-overlay-23.md",
-    "spec/579-character-status-fields.md"
+    "spec/579-character-status-fields.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -43221,10 +43530,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md"
    ]
   },
   {
@@ -43993,7 +44302,8 @@
    "note": "與 DOS overlay-24:2543h（entry#29）助憶碼序列完全相同，語意同該筆：依角色^[1A4h](目前 HP)是否**等於** 角色^[78h](上限,用 jnz 不是 jnb)選 CS:251Fh 'is fully healed' 或 CS:252Fh 'is partially healed',呼叫 \u003c17D6h\u003e(角色, s, 0Ah, 1);DS:4FBAh \u003c\u003e 5 時再用 0795h 重畫名單。⚠ 中文化:主詞由呼叫端補、述部是常數字串;'is partially healed' 長 19,緩衝上限 28h=40 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/pc98-overlay-22.md"
+    "audit/function-index/pc98-overlay-22.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -44337,9 +44647,11 @@
    "note": "unit 初始化:far call 19Ah:2Ah 與 164h:57h",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-12.md",
-    "audit/overlay-init-graph.md",
-    "spec/583-ledger-denominator-repair.md"
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -44357,6 +44669,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/pc98-overlay-12.md"
    ]
   },
@@ -44464,6 +44777,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/pc98-overlay-25.md",
     "spec/753-small-utility-routines.md"
    ]
   },
@@ -44530,7 +44844,13 @@
    "callers": 4,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "判斷式(retf 4)：回傳 本模組 sub_1452h(p) \u003e p^[0E6h]，與 DOS overlay-25:13BCh 同",
+   "citations": [
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44567,9 +44887,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/overlay-init-graph.md",
-    "spec/686-dos-ecl-operand-tables-and-menu.md"
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -44588,6 +44909,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/686-dos-ecl-operand-tables-and-menu.md"
@@ -44605,9 +44927,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "數鏈長(retf 4)：next 在 +52h，與 DOS 的 +2Ah 不同——PC-98 的節點配置重排過，引用位移前須各自確認",
    "citations": [
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-22.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -44655,7 +44981,13 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清最下面一列文字(retf)：0A65h:1B30h(A000h:0F00h, 0A0h, 0) 與 (A200h:0F00h, 0A0h, 0)。參數形狀與效果可認定 0A65h:1B30h 是 FillChar(DOS 對應 0A54h:1AE0h)——注意兩平台 resident 沒有固定位移，不能用位址換算",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44669,7 +45001,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "十筆欄位初始化(retf)：for i:=1 to 10，把 CS:0851h 的 6 bytes 複製到 DS:0A338h+i*7，再把 DS:0A334h+i 設成空白。兩個平行陣列(7 bytes 一筆的記錄 + byte 旗標)",
+   "citations": [
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44901,6 +45239,7 @@
    "note": "取值(retf，無參數)：q := DS:7F05h^[342h]，byte[q+160Ch] 與 byte[q+162Ch](相差 20h)→ DS:0BE04h / 0BE06h。與 DOS overlay-27:0007h 同形",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-27.md",
     "spec/753-small-utility-routines.md"
    ]
   },
@@ -44922,6 +45261,7 @@
    "note": "兩次繪製(retf，無參數)：02A8h:098Fh(DS:0BE04h, DS:0BE06h, 遠指標@DS:9660h) 與 02A8h:0A86h(…, 遠指標@DS:0BE08h)。與 DOS overlay-27:0032h 同形",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-27.md",
     "spec/753-small-utility-routines.md"
    ]
   },
@@ -44978,6 +45318,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call far ptr 194h:43h`、`call far ptr 19Ah:2Ah`、`call far ptr 176h:57h`（body 共 22 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-28.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
@@ -44996,7 +45338,11 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -45033,8 +45379,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -45053,7 +45401,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
-    "spec/753-small-utility-routines.md"
+    "spec/753-small-utility-routines.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -45085,7 +45434,14 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "包裝(retf 8)：與 DOS overlay-29:00B3h 位元組相同",
+   "citations": [
+    "audit/function-index/pc98-overlay-29.md",
+    "spec/754-small-predicates-and-wrappers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -45269,6 +45625,7 @@
    "note": "四個 byte 的 setter(retf 8)：依序寫 DS:0A2A4h..0A2A7h，與 DOS overlay-30:016Bh 同",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-30.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
     "spec/753-small-utility-routines.md"
    ]
@@ -45315,9 +45672,13 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "範圍判斷(retf 4)：兩個有號參數都落在 0..15 才回 1。與 DOS overlay-30:0556h 同",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -45616,6 +45977,7 @@
    "citations": [
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/overlay-init-graph.md"
    ]
@@ -45636,6 +45998,7 @@
    "citations": [
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-24.md"
@@ -46032,6 +46395,8 @@
    "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
     "audit/overlay-init-graph.md"
    ]
   },
@@ -46142,8 +46507,11 @@
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/overlay-init-graph.md",
-    "spec/751-overlay-init-chain-dependency-graph.md"
+    "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -46237,9 +46605,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 109,
+   "Read": 117,
    "NotBlocking": 133,
-   "Todo": 66,
+   "Todo": 58,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -46252,9 +46620,9 @@
    "Module": "overlay-00",
    "Unit": "MEMORY",
    "Functions": 2,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 78,
    "Undefined": 24,
@@ -46372,9 +46740,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 21,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 7,
    "CodeBytes": 4243,
    "Undefined": 343,
@@ -46402,9 +46770,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 19,
+   "Todo": 18,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -46447,9 +46815,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 41,
+   "Todo": 40,
    "Fragment": 16,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -46462,9 +46830,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 0,
    "CodeBytes": 3735,
    "Undefined": 308,
@@ -46477,9 +46845,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 6,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 25,
+   "Todo": 23,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -46522,9 +46890,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 11,
-   "Read": 2,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 7,
    "Fragment": 0,
    "CodeBytes": 4446,
    "Undefined": 1177,
@@ -46552,9 +46920,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 0,
    "CodeBytes": 3536,
    "Undefined": 191,
@@ -46567,9 +46935,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 27,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
@@ -46627,9 +46995,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 15,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 2,
    "CodeBytes": 4931,
    "Undefined": 733,
@@ -46642,9 +47010,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 17,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -46672,9 +47040,9 @@
    "Module": "overlay-28",
    "Unit": "DRAWWIN",
    "Functions": 6,
-   "Read": 2,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 446,
    "Undefined": 0,
@@ -46687,9 +47055,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 1,
    "CodeBytes": 2102,
    "Undefined": 114,
@@ -46702,9 +47070,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 0,
    "CodeBytes": 5205,
    "Undefined": 84,
@@ -46807,9 +47175,9 @@
    "Module": "overlay-00",
    "Unit": "MEMORY",
    "Functions": 2,
-   "Read": 0,
+   "Read": 1,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 1,
    "CodeBytes": 77,
    "Undefined": 2,
@@ -46927,9 +47295,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 24,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 12,
    "CodeBytes": 3967,
    "Undefined": 372,
@@ -46957,9 +47325,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 21,
+   "Todo": 20,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
@@ -46972,9 +47340,9 @@
    "Module": "overlay-11",
    "Unit": "INIT",
    "Functions": 6,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 1960,
    "Undefined": 128,
@@ -47002,9 +47370,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 41,
+   "Todo": 40,
    "Fragment": 28,
    "CodeBytes": 17459,
    "Undefined": 905,
@@ -47017,9 +47385,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 0,
    "CodeBytes": 3435,
    "Undefined": 321,
@@ -47032,9 +47400,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 4,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 26,
+   "Todo": 24,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
@@ -47077,9 +47445,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 7,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 10,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
@@ -47107,9 +47475,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 0,
    "CodeBytes": 3555,
    "Undefined": 225,
@@ -47137,9 +47505,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 57,
+   "Read": 59,
    "NotBlocking": 0,
-   "Todo": 54,
+   "Todo": 52,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
@@ -47182,9 +47550,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 14,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 0,
    "CodeBytes": 5200,
    "Undefined": 167,
@@ -47197,9 +47565,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 2,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 15,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,
@@ -47242,9 +47610,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 1,
    "CodeBytes": 1846,
    "Undefined": 114,
@@ -47257,9 +47625,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 0,
    "CodeBytes": 4851,
    "Undefined": 117,

@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md |
+| `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md<br>spec/754-small-predicates-and-wrappers.md |
 | `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0192` | sub_192 | — | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `031D` | sub_31D | — | 841 | 334 | 3 | 4 | ✓ | 待解讀 | — | — | — |
@@ -14,7 +14,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `095A` | sub_95A | — | 935 | 334 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `0D1C` | sub_D1C | — | 189 | 74 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `0DD9` | sub_DD9 | — | 313 | 105 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `0F12` | sub_F12 | — | 45 | 19 | 2 | 1 | ✓ | 待解讀 | — | — | — |
+| `0F12` | sub_F12 | — | 45 | 19 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>依相位進位的折半(retf 2)：f(x: byte) = (x + (DS:758Dh and 1)) div 2。shr 只用來取 bit 0 進 CF，值本身丟掉。DS:758Dh 在戰鬥開場(spec 750)被設 0 | audit/function-index/pc98-overlay-13.md<br>spec/754-small-predicates-and-wrappers.md |
 | `0F46` | sub_F46 | — | 510 | 184 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1144` | sub_1144 | — | 169 | 57 | 4 | 2 | ✓ | 待解讀 | — | — | — |
 | `1227` | sub_1227 | — | 524 | 190 | 0 | 8 | ✓ | 待解讀 | — | — | — |

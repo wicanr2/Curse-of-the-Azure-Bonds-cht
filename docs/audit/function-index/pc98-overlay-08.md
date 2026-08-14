@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADCOMBAT | 77 | 19 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr 164h:57h`、`call far ptr 184h:43h`、`call far ptr 189h:93h`、`call far ptr 194h:43h`、`call far ptr 14Ah:101h`（body 共 77 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/748-cloud-effect-dispel-pair.md<br>spec/751-overlay-init-chain-dependency-graph.md |
+| `0000` | sub_0 | LOADCOMBAT | 77 | 19 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr 164h:57h`、`call far ptr 184h:43h`、`call far ptr 189h:93h`、`call far ptr 194h:43h`、`call far ptr 14Ah:101h`（body 共 77 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/748-cloud-effect-dispel-pair.md<br>spec/751-overlay-init-chain-dependency-graph.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md |
 | `004D` | sub_4D | — | 246 | 86 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-08.md<br>spec/748-cloud-effect-dispel-pair.md<br>spec/749-combat-teardown-and-battlefield-grid.md |
 | `0143` | sub_143 | GOCOMBAT | 184 | 67 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `01FB` | sub_1FB | — | 192 | 68 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
@@ -28,4 +28,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `107A` | sub_107A | — | 14 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:0A339h, 44h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完） | — |
 | `11C7` | sub_11C7 | — | 263 | 105 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1028h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `124D` | sub_124D | — | 296 | 123 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `1375` | sub_1375 | — | 81 | 24 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `1375` | sub_1375 | — | 81 | 24 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>清掉同陣營的目標(retf 4)：位移各 +1(199h/18Eh/198h)，其餘同 DOS overlay-08:1314h | spec/755-per-character-slots-sound-driver-and-text-io.md |

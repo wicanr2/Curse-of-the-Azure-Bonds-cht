@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 38 | 18 | 2 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-02.md<br>audit/overlay-init-graph.md<br>spec/612-ecl-main-loop.md<br>spec/751-overlay-init-chain-dependency-graph.md |
+| `0000` | sub_0 | — | 38 | 18 | 2 | 0 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>retf，無參數：02A8h:1392h(9, 0Fh)；08EEh:0379h(1)；02A8h:1392h(9, 9) | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-02.md<br>audit/overlay-init-graph.md<br>spec/612-ecl-main-loop.md<br>spec/751-overlay-init-chain-dependency-graph.md<br>spec/754-small-predicates-and-wrappers.md |
 | `0026` | sub_26 | — | 950 | 343 | 1 | 2 | ✓ | 待解讀 | — | — | spec/585-ecl-goto-and-display-mode-pair.md |
 | `03DC` | sub_3DC | — | 678 | 235 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0682` | sub_682 | — | 198 | 76 | 1 | 3 | ✓ | 待解讀 | — | — | — |
@@ -25,6 +25,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18F7` | sub_18F7 | — | 17 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0FFFFh ⇒ 把 32000 bytes 的顯示平面填滿(18E7h 的填 0 版本) | — |
 | `1908` | sub_1908 | — | 22 | 9 | 1 | 2 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>以 si 從 0 起、每次加 2B67h 並 and 7FFFh,重複 8000h 次呼叫 sub_191E ⇒ 對 32KB 平面做打散順序的逐格處理 | spec/575-random-core-and-pc98-vram.md |
 | `191E` | sub_191E | — | 51 | 23 | 1 | 0 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 189Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/embedded-strings.md |
-| `1951` | sub_1951 | — | 40 | 22 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `1979` | sub_1979 | — | 12 | 8 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>PC-98 螢幕 BIOS:INT 18h AH=42h、CX=0C000h(CRT 顯示模式設定)。⚠ IDA 的 TRANSFER TO ROM BASIC 註解是 IBM PC 語意,不適用 PC-98 | — |
-| `1985` | sub_1985 | — | 16 | 10 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>PC-98 螢幕 BIOS:INT 18h AH=42h、CX=8000h(另一種 CRT 模式),再 out 68h, 8 | — |
+| `1951` | sub_1951 | — | 40 | 22 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>近呼叫 retn 4：把 Pascal 短字串就地改成 NUL 結尾(rep movsb 把內容往前搬一格蓋掉長度 byte，再補 0)，之後 bx:=段、cx:=位移、dl:=另一參數，呼叫 sub_17F3h。⚠ 原字串在呼叫後已被覆寫。同一段匯出後面還接兩支獨立小程序 1979h/1985h(PC-98 INT 18h AH=42h 畫面模式控制，IDA 的 ROM BASIC 註解不適用) | spec/754-small-predicates-and-wrappers.md |
+| `1979` | sub_1979 | — | 12 | 8 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>PC-98 螢幕 BIOS:INT 18h AH=42h、CX=0C000h(CRT 顯示模式設定)。⚠ IDA 的 TRANSFER TO ROM BASIC 註解是 IBM PC 語意,不適用 PC-98 | audit/function-index/pc98-overlay-18.md<br>spec/754-small-predicates-and-wrappers.md |
+| `1985` | sub_1985 | — | 16 | 10 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>PC-98 螢幕 BIOS:INT 18h AH=42h、CX=8000h(另一種 CRT 模式),再 out 68h, 8 | audit/function-index/pc98-overlay-18.md<br>spec/754-small-predicates-and-wrappers.md |

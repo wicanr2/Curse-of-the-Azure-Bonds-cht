@@ -5,11 +5,11 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 52 | 14 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/751-overlay-init-chain-dependency-graph.md<br>unit 初始化段(retf，不收參數)：依序呼叫 9 個相依 unit 的 0000h — overlay-34、overlay-22、overlay-20、overlay-24、overlay-16、overlay-26、overlay-19、overlay-28、overlay-23。由原始 bytes 解出(IDA 匯出在此漏 byte) | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/583-ledger-denominator-repair.md |
-| `0034` | sub_34 | — | 340 | 73 | 1 | 1 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md |
-| `0188` | sub_188 | — | 67 | 24 | 2 | 1 | ✓ | 待解讀 | — | — | — |
-| `01CB` | sub_1CB | — | 115 | 42 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `023E` | sub_23E | — | 68 | 27 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | — | 52 | 14 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/751-overlay-init-chain-dependency-graph.md<br>unit 初始化段(retf，不收參數)：依序呼叫 9 個相依 unit 的 0000h — overlay-34、overlay-22、overlay-20、overlay-24、overlay-16、overlay-26、overlay-19、overlay-28、overlay-23。由原始 bytes 解出(IDA 匯出在此漏 byte) | audit/embedded-strings.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-16.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/dos-overlay-28.md |
+| `0034` | sub_34 | — | 340 | 73 | 1 | 1 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-23.md |
+| `0188` | sub_188 | — | 67 | 24 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>清掉超界值(retf 4)：for i:=0 to 53h，若 p^[1Eh+i] > 7Fh(無號)則歸零；最後 p^[72h]:=0。1Eh+53h=71h 與 72h 相接，可證角色記錄 +1Eh 起是 84 格陣列。⚠ IDA 匯出在 01BDh 吃掉 ES 前綴 26h，看似兩平台差異，回查原始 bytes 兩邊相同 | spec/755-per-character-slots-sound-driver-and-text-io.md |
+| `01CB` | sub_1CB | — | 115 | 42 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md |
+| `023E` | sub_23E | — | 68 | 27 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>整隊清理(retf，無參數)：從 DS:650Ah 沿 +189h 走隊伍鏈，對每個成員叫本模組 0188h 與 01CBh | spec/755-per-character-slots-sound-driver-and-text-io.md |
 | `0282` | sub_282 | — | 271 | 44 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `0391` | sub_391 | — | 24 | 7 | 3 | 0 | ✓ | 待解讀 | — | — | — |
 | `03A9` | nullsub_1 | — | 3 | 1 | 0 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 3 bytes，已逐條讀完） | — |
@@ -26,7 +26,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `14D2` | sub_14D2 | — | 86 | 41 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `1522` | sub_1522 | — | 92 | 38 | 4 | 8 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_14DC`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 92 bytes，已逐條讀完） | — |
 | `1554` | sub_1554 | — | 2 | 1 | 7 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1581`，控制權轉交後不返回（body 共 2 bytes，已逐條讀完） | — |
-| `158A` | sub_158A | — | 31 | 12 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov dx, es`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | audit/function-index/dos-overlay-15.md |
+| `158A` | sub_158A | — | 31 | 12 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov dx, es`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-23.md |
 | `15A9` | sub_15A9 | — | 219 | 68 | 7 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 158Ah 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `15D1` | sub_15D1 | — | 35 | 11 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-8], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 35 bytes，已逐條讀完） | — |
 | `16A9` | sub_16A9 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ds:650Ah, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |

@@ -93,7 +93,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15731` | sub_15731 | — | 65 | 30 | 4 | 2 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>範圍檢查後呼叫 <sub_15606>(1,20h,arg_0,arg_2,arg_2,arg_4,arg_6)(arg_2 被推入兩次)。上限 27h(39)與 18h(24)即 40 欄 × 25 列。⚠ 兩個下限檢查(cmp x,0 + jb)是死碼——無號比較,任何值都不小於 0;是原作的冗餘不是判讀不確定,remake 直接寫上限即可 | — |
 | `15772` | sub_15772 | — | 133 | 53 | 3 | 3 |  | 待解讀 | — | — | — |
 | `157F7` | sub_157F7 | — | 119 | 45 | 3 | 3 |  | 待解讀 | — | — | — |
-| `1586E` | sub_1586E | — | 60 | 20 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1586E` | sub_1586E | — | 60 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>跳過開頭空白(retf 2)：參數是 SS 相對位址，-103h 是游標、-101h 是長度、-100h 起是內容；游標小於長度且該位置是空白就前進。無號比較 | — |
 | `15B42` | sub_15B42 | — | 401 | 171 | 1 | 10 |  | 待解讀 | — | — | — |
 | `15D66` | sub_15D66 | — | 78 | 40 | 1 | 4 |  | 待解讀 | — | — | — |
 | `15F53` | sub_15F53 | — | 23 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @DELAY(byte_21169 × 100) | — |
@@ -123,10 +123,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `170EC` | sub_170EC | — | 28 | 13 | 3 | 3 |  | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>清空鍵盤緩衝區(retf，無參數)：while KEYPRESSED do 讀一個鍵丟掉(以 push cs + call near 呼叫 sub_16FADh) | — |
 | `17122` | sub_17122 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `17150` | sub_17150 | — | 182 | 79 | 10 | 6 |  | 待解讀 | — | — | — |
-| `17206` | sub_17206 | — | 58 | 25 | 7 | 4 |  | 待解讀 | — | — | — |
+| `17206` | sub_17206 | — | 58 | 25 | 7 | 4 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>依音效裝置決定是否安裝(retf)：dword_21154 := seg045:0124h；byte_21DAB := byte_21DAA；byte_21DAC := 1；byte_21DAA <> 2 時才叫 19320h() 與 196E0h(0)、1974Ah(0) | — |
 | `17240` | sub_17240 | — | 16 | 8 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 dword_21154 所指的 word 清成 0 | — |
-| `19320` | sub_19320 | — | 53 | 24 | 1 | 0 |  | 待解讀 | — | — | — |
-| `19355` | sub_19355 | — | 57 | 27 | 1 | 0 |  | 待解讀 | — | — | — |
+| `19320` | sub_19320 | — | 53 | 24 | 1 | 0 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>聲音驅動安裝(retf)：存 INT 08h 舊向量到 CS:dword_1931Ch，換成 seg045:225Eh；out 43h,0B6h 後把 13B1h(≈236.7 Hz)分兩次寫 port 40h。⚠ 控制字 0B6h 選的是 counter 2，資料卻寫進 counter 0 | — |
+| `19355` | sub_19355 | — | 57 | 27 | 1 | 0 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>聲音驅動卸載(retf)：還原 INT 08h；counter 0 寫回 0FFFFh(18.2 Hz)；in 61h/and 0FCh/out 61h 關喇叭閘；對 port 0C0h 依序寫 9Fh/0BFh/0DFh/0FFh — SN76489(Tandy 三音)四聲道全部最大衰減，即靜音 | — |
 | `1941B` | sub_1941B | — | 117 | 40 | 1 | 2 |  | 待解讀 | — | — | — |
 | `19490` | sub_19490 | — | 142 | 57 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1951E` | sub_1951E | — | 145 | 55 | 2 | 2 |  | 待解讀 | — | — | — |
@@ -153,7 +153,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19AE0` | unknown_libname_1 | — | 105 | 45 | 1 | 5 |  | 待解讀 | — | — | — |
 | `19B49` | sub_19B49 | — | 78 | 31 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19B97` | sub_19B97 | — | 72 | 30 | 2 | 2 |  | 待解讀 | — | — | — |
-| `19BF5` | sub_19BF5 | — | 61 | 23 | 2 | 5 |  | 待解讀 | — | — | — |
+| `19BF5` | sub_19BF5 | — | 61 | 23 | 2 | 5 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>Ctrl-Break 處理(retf 2)：byte_24E6C 非 0 才動作 — 清旗標、用 INT 16h 把鍵盤緩衝區抽乾、印 ^C 與換行，然後 INT 23h | — |
 | `19C32` | @WINDOW$q4BYTEt1t1t1 | — | 64 | 23 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WINDOW$q4BYTEt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19C72` | @CLRSCR$qv | — | 26 | 8 | 1 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@CLRSCR$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19C8C` | @CLREOL$qv | — | 20 | 7 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@CLREOL$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
@@ -226,7 +226,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1AA22` | sub_1AA22 | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1AAD5` | sub_1AAD5 | — | 36 | 15 | 1 | 1 |  | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>向下配置 8 bytes 並檢查下界(近呼叫，失敗時 CF=1)：di := word[2097Eh]−8，為 0 則失敗；si := (di shr 4) + word[20980h]，si <= word[2097Ch] 則失敗；成功才把 di 寫回。減法未處理借位 | — |
 | `1AAF9` | sub_1AAF9 | — | 21 | 9 | 2 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>以 dword_2097E 為來源連續四次 movsw 複製 8 bytes,之後 di 回退 8 並更新來源指標 | — |
-| `1AB0E` | sub_1AB0E | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
+| `1AB0E` | sub_1AB0E | — | 73 | 27 | 3 | 1 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>指標正規化與下界夾制(近呼叫 retn)：dword_2097Eh 減 word_20982h，低 4 bits 留 SI、其餘右移 4 加到段值，與 word_2097Ch:word_2097Ah 這個下界比，低於就夾到下界；offset 為 0 有段值 +1000h 的特別路徑。與 spec 753 的 1AAD5h 同族 | — |
 | `1AB57` | sub_1AB57 | — | 14 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh | — |
 | `1AB65` | sub_1AB65 | — | 15 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 合併:rol(DX,4) 後把高 12 位併進 AX、DX 留低 4 位 | — |
 | `1AB74` | @$basg$qm6Stringt1 | — | 26 | 12 | 15 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6Stringt1`，`$b` 前綴是 Borland 的運算子編碼 | — |
@@ -294,7 +294,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BB0A` | __GetChar | — | 28 | 14 | 4 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__GetChar`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BB26` | __PutEntry | — | 36 | 10 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__PutEntry`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BB4A` | __PutChar | — | 15 | 7 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__PutChar`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1BB59` | sub_1BB59 | — | 49 | 24 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1BB59` | sub_1BB59 | — | 49 | 24 | 2 | 1 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>Text 檔案的 I/O 派工(近呼叫 retn)：以 Turbo Pascal TextRec 配置對上 — +08h BufPos 先由 BX 寫入，call dword ptr es:[di+14h](InOutFunc)，結果非 0 存進 word_20996(IOResult)，再把 +0Ah BufEnd→AX、+08h BufPos→BX、+04h BufSize→DX、+0Ch BufPtr→ES:DI | — |
 | `1BB8A` | @ReadLn$qm4Text | — | 41 | 20 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ReadLn$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BBB3` | @WriteLn$qm4Text | — | 31 | 14 | 3 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WriteLn$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BBD2` | @Write$qm4Text | — | 38 | 14 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Write$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
@@ -322,7 +322,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1C020` | @FillChar$qm3Any4Word4Byte | — | 20 | 7 | 19 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FillChar$qm3Any4Word4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1C034` | @ParamStr$qm6String4Word | — | 79 | 38 | 4 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ParamStr$qm6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1C083` | @ParamCount$qv | — | 7 | 4 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ParamCount$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1C08A` | sub_1C08A | — | 50 | 24 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1C08A` | sub_1C08A | — | 50 | 24 | 2 | 1 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>掃 PSP 命令列(近呼叫 retn)：從 ES:0080h 起跳過空白(<= 20h)、量一段非空白長度，DX 每數完一段減一，BX 累計段數，SI/DI 留下該段起訖。ParamCount/ParamStr 的掃描核心 | — |
 | `1C0BC` | @GetDir$q4Bytem6String4Word | — | 81 | 40 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDir$q4Bytem6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1C10D` | @ChDir$qm6String | — | 65 | 27 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ChDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1C14E` | @MkDir$qm6String | — | 21 | 9 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MkDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
