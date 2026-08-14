@@ -23413,6 +23413,42 @@
    "level": "exact",
    "spec": "890",
    "note": "同 DOS overlay-24:021DDh，但★在其中一個座標多乘一次 12h(18)，DOS 兩個座標都只乘 3(形狀上是字元格尺寸不同)；迴圈收尾的跳躍結構也多 4 條。DS:4FA9h↔DS:7F16h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 5942,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "891",
+   "note": "戰鬥收場(retf，無參數)：清 4F9Dh^[58Eh]、DS:47ECh，DS:4FBCh=0 就叫 0053Ch(spec 861 戰鬥結束處理)，畫面模式設 6；走隊伍鏈叫 1512h+1；(DS:4FC7h≠0 且 DS:8B56h=0) 走敗北路徑(58Eh:=80h、1A0h:0、兩句訊息)；否則有人在逃(DS:47EDh)先釋放戰利品鏈並跳過發經驗值，正常則叫 14ACh + 0A7Eh(longint@DS:8B58h) + 106Ch 再釋放。收場清 4F9Dh 的 +6E0h/+6E2h/+6E4h/+5C6h/+5CCh。★關掉 spec 858 的『DS:6F8Ch 戰利品鏈誰釋放』：就是這裡，FreeMem(節點, 3Fh)，逃跑時東西與經驗值都不要"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
+   "ea": 6005,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "891",
+   "note": "同 DOS overlay-05:01736h，但★PC-98 沒有 DOS 那三處 DS:4FBCh 分支，改成自己重算『戰鬥是不是真的結束』：走隊伍鏈，只要有人的 +196h 不在 {1 Animated, 2 tempgone, 6 Dead, 7 Stoned, 8 Gone} 就把 DS:7F34h(=DOS 4FC7h) 清 0。另多一段 893h:114h(DS:8BF3h) + DS:7F36h:=1。節點大小 3Fh↔67h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-11",
+   "ea": 1752,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "892",
+   "note": "新遊戲的全域初始化(retf，無參數)：清 DS:5000h(0A8h)/50A8h(150h)/51F8h(150h,填 0FFh)/5348h(150h) 四塊與 遠指標 4F99h(800h)/4F9Dh(800h)/4FA1h(400h)/4FA5h(1E00h)，DS:720Fh 5 bytes 清零後設 7/0Dh/2，DS:7588h 3 bytes 填 1，for i:=2 to 3 把 word[7210h+i*4] 與 word[7212h+i*4] 設 0FFFFh，之後一長串常數。★五個先前規格的預設值在這裡定案：DS:4FA9h=4(遊戲速度)、DS:5BEEh=1(磁碟編號)、DS:4FBAh=4(畫面模式)、DS:728Ah/728Bh=0FFh、4F9Dh^[67Ch]=0(人數)；DS:650Ah 與 DS:6506h 一起清成 NIL"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-11",
+   "ea": 1288,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "892",
+   "note": "同 DOS overlay-11:006D8h 的目的，但★相似度只有 0.110、幾乎各寫各的：緩衝位址整組不同(7F6Eh/8016h/8166h/82B6h/0A81Ah)，多了開頭 81Fh:14h + 0A65h:11DCh + FillChar(966Ch,0D0h)、兩次 194h:39h、一個 for DS:7AD2h:=0 to 0Bh 把 [7AD2h*5−5CFCh] 的 5-byte 記錄填 0FFh、FillChar(0A2C6h,43h)。★DS:8B56h 設 1(DOS 設 0)。兩平台的初始化不共用判讀"
   }
  ]
 }
