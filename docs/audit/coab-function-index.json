@@ -10177,12 +10177,12 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:0075h（entry#5）助憶碼序列完全相同，語意同該筆：以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/573-effprocs-effect-handlers-first-batch.md",
-    "spec/831-morale-failure-table.md"
+    "spec/1005-effect-dispatch-table.md"
    ]
   },
   {
@@ -10223,6 +10223,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:009Eh（entry#7）助憶碼序列完全相同，語意同該筆：DS:A03Ch 加 5、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -10243,6 +10244,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:00B0h（entry#8）助憶碼序列完全相同，語意同該筆：DS:A03Ch 小於 5 時歸零,否則減 5;並將 DS:A039h(命中骰)減一 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -10263,6 +10265,7 @@
    "spec": "docs/spec/676-dos-overlay12-effects.md",
    "note": "total := arg_6^[19Dh] + arg_6^[19Ch](兩欄位相加當一個總量);arg_2^[3] 嚴格大於 total 才直接扣,相等或不足改呼叫 \u003cfar 013Eh:043Fh\u003e(arg_6,3,0)。之後備妥英文原文 'is fighting with snakes' 顯示。⚠ 這兩個欄位對應 PC-98 的 +19Bh/+19Ch,差 1,與 spec 641 對照表一致",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/585-ecl-goto-and-display-mode-pair.md",
@@ -10285,6 +10288,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:0166h（entry#10）助憶碼序列完全相同，語意同該筆：若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md"
    ]
   },
@@ -10304,6 +10308,7 @@
    "spec": "docs/spec/676-dos-overlay12-effects.md",
    "note": "依 RACETYPE(+11Ah,兩平台同偏移)給加成:0Ah→1、9 或 0Ch→2、4→3、其餘→0(case 有 else,無未初始化問題);同一個加成同時加到 DS:6F9Fh 與 DS:6F94h(傷害值),再把 DS:6F95h 整個覆寫成 9。種族 9 與 0Ch 共用結果",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/676-dos-overlay12-effects.md",
@@ -10324,7 +10329,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
-   "note": "與 pc98 overlay-12:01E6h 助憶碼序列完全相同（21 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：兩個欄位各自夾上限:if arg_6^[19Bh] \u003c 3Ah then += 2 else := 3Ch,+19Ch 同樣做一次。門檻 58、上限 60,所以 58/59 都會被拉到 60 而不是 60/61 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:01E6h 助憶碼序列完全相同（21 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：兩個欄位各自夾上限:if arg_6^[19Bh] \u003c 3Ah then += 2 else := 3Ch,+19Ch 同樣做一次。門檻 58、上限 60,所以 58/59 都會被拉到 60 而不是 60/61 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10340,7 +10348,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
-   "note": "與 PC-98 overlay-12:022Dh（entry#13）助憶碼序列完全相同，語意同該筆：if DS:9594h^[11Bh](ALIGNMENT) in {2,5,8} then DS:0A02Ch += 2、DS:0A039h -= 2。與 0264h({0,3,6})互補——兩組都是每隔 3 取一個,證明陣營是 9 值一維編碼、value mod 3 是善惡軸(0 善 1 中立 2 惡)。中立 {1,4,7} 兩支都不處理。效果 +2/-2 對應 AD\u0026D 的 Protection from Evil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:022Dh（entry#13）助憶碼序列完全相同，語意同該筆：if DS:9594h^[11Bh](ALIGNMENT) in {2,5,8} then DS:0A02Ch += 2、DS:0A039h -= 2。與 0264h({0,3,6})互補——兩組都是每隔 3 取一個,證明陣營是 9 值一維編碼、value mod 3 是善惡軸(0 善 1 中立 2 惡)。中立 {1,4,7} 兩支都不處理。效果 +2/-2 對應 AD\u0026D 的 Protection from Evil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10356,7 +10367,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
-   "note": "與 PC-98 overlay-12:0264h（entry#14）助憶碼序列完全相同，語意同該筆：if DS:9594h^[11Bh](ALIGNMENT) in {0,3,6} then DS:0A02Ch += 2、DS:0A039h -= 2。針對善,與 022Dh(惡)互補 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:0264h（entry#14）助憶碼序列完全相同，語意同該筆：if DS:9594h^[11Bh](ALIGNMENT) in {0,3,6} then DS:0A02Ch += 2、DS:0A039h -= 2。針對善,與 022Dh(惡)互補 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10372,7 +10386,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:029Bh（entry#15）助憶碼序列完全相同，語意同該筆：傷害旗標 bit 1 非零時:DS:A02Eh 有號減半,並把 DS:A02Ch 加 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:029Bh（entry#15）助憶碼序列完全相同，語意同該筆：傷害旗標 bit 1 非零時:DS:A02Eh 有號減半,並把 DS:A02Ch 加 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10390,6 +10407,7 @@
    "spec": "docs/spec/745-node-field-packed-differently.md",
    "note": "魅惑(套用與解除共用一支)。⚠ **效果節點的 +3 用位元欄位打包**:bit 5 = 已套用旗標、bit 6 = 原陣營;套用時 節點^[3] += 20h + (角色^[197h] shl 6) 再取 bit 7 當新陣營,解除時 (節點^[3] and 40h) div 40h 取回原陣營。**這與 spec 744 操縱屍體的 (原陣營 shl 4) + 等級 是同一個 byte 的兩種打包**——沒有共通版面,remake 若替它取名並統一結構兩邊都會壞。bit 5 讓套用具冪等性(重複套用不會把已改掉的陣營當原值存)。改陣營後呼叫 \u003coverlay-24 entry#31\u003e(= spec 692 的 25D4h)重算統計,而 spec 743 的狂暴改陣營後沒有呼叫,兩支不一致",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
@@ -10410,7 +10428,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10426,7 +10447,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
-   "note": "與 pc98 overlay-12:0397h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_2^[3] = 0 則備妥「は窒息した。」呼叫 \u003cfar 013E:0005\u003e(arg_6,arg_8,6,訊息),否則 dec arg_2^[3]——+3 是效果節點上的倒數計時器,每次呼叫減 1,歸零那次才發作(不是立刻生效) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:0397h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_2^[3] = 0 則備妥「は窒息した。」呼叫 \u003cfar 013E:0005\u003e(arg_6,arg_8,6,訊息),否則 dec arg_2^[3]——+3 是效果節點上的倒數計時器,每次呼叫減 1,歸零那次才發作(不是立刻生效) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10442,7 +10466,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10460,6 +10487,7 @@
    "spec": "docs/spec/676-dos-overlay12-effects.md",
    "note": "兩道條件:\u003csub_3C\u003e(0Ah, arg_2^[3], 0Fh, arg_6) 非 0,且 arg_6^[1A4h](目前 HP,= PC-98 的 +1A5h)**嚴格大於 1**(jbe,等於 1 也不動手)。通過後 DS:6F95h := 0 並呼叫 \u003cfar 014Ah:0494h\u003e;最後 DS:4FBAh = 5 的檢查在動作之後,只跳過最後一個呼叫",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/676-dos-overlay12-effects.md"
    ]
@@ -10480,6 +10508,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md"
    ]
   },
@@ -10497,7 +10526,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:0443h（entry#22）助憶碼序列完全相同，語意同該筆：目標 record 的 +19Bh 小於 39h 時夾到 39h,並把 DS:A02Ch 加一;若 DS:A031h 等於 0Fh 則 DS:A02Eh 歸零 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:0443h（entry#22）助憶碼序列完全相同，語意同該筆：目標 record 的 +19Bh 小於 39h 時夾到 39h,並把 DS:A02Ch 加一;若 DS:A031h 等於 0Fh 則 DS:A02Eh 歸零 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10513,7 +10545,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
-   "note": "與 PC-98 overlay-12:0470h（entry#23）助憶碼序列完全相同，語意同該筆：p := arg_6^[18Eh]^[0Ah](兩層間接),存進 DS:0A03Dh;if p^[14Ch] and 2 \u003c\u003e 0 then inc DS:0A039h。與 072Eh 逐指令相同,只差遮罩(2 對 4)——+14Ch 是位元旗標欄位,一支查一個 bit ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:0470h（entry#23）助憶碼序列完全相同，語意同該筆：p := arg_6^[18Eh]^[0Ah](兩層間接),存進 DS:0A03Dh;if p^[14Ch] and 2 \u003c\u003e 0 then inc DS:0A039h。與 072Eh 逐指令相同,只差遮罩(2 對 4)——+14Ch 是位元旗標欄位,一支查一個 bit ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10531,6 +10566,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:04A4h（entry#24）助憶碼序列完全相同，語意同該筆：arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/string-pairs.md"
    ]
@@ -10549,7 +10585,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
-   "note": "與 pc98 overlay-12:04E2h 助憶碼序列完全相同（30 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_6^[18Eh]^[2] \u003c\u003e 0 則備妥「は沈黙させられた。」呼叫 \u003cfar 014A:0024\u003e(arg_6,訊息,1,0Ah);之後無條件把 ^[2] 與 ^[1] 都清 0——訊息只在 [2] 非 0 時出現,但兩個欄位一律清 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:04E2h 助憶碼序列完全相同（30 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_6^[18Eh]^[2] \u003c\u003e 0 則備妥「は沈黙させられた。」呼叫 \u003cfar 014A:0024\u003e(arg_6,訊息,1,0Ah);之後無條件把 ^[2] 與 ^[1] 都清 0——訊息只在 [2] 非 0 時出現,但兩個欄位一律清 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10567,6 +10606,7 @@
    "spec": "docs/spec/677-pc98-overlay12-twins.md",
    "note": "與 pc98 overlay-12:054Ch 助憶碼序列完全相同（39 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：效果 id 37h(與 147Ah 的毒同一個)存在時印「は毒のために死んだ。」——與 147Ah 的「は毒を受けた。」+「は死んだ。」是兩條不同的毒死路徑、訊息不同。之後 DS:0A036h 設 1、呼叫 \u003csub_140Fh\u003e(arg_6,arg_8,0Fh,0)、再設回 0。⚠ 003Ch(spec 633)正是查這個旗標決定要不要動作,所以只有在這段中間 003Ch 才會真的做事 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-31.md"
    ]
   },
@@ -10586,6 +10626,7 @@
    "spec": "docs/spec/747-summoned-item-and-third-gaze.md",
    "note": "召喚物品(套用與解除共用一支)。先在物品鏈找「類別 14h 且 +31h = 0F3h」那一件;arg_0 非 0 走解除(找到就 \u003coverlay-24 entry#17\u003e 移除並釋放);否則:已經有一件就不給、**角色^[14Ch] \u003e= 10h(物品數量上限 16)也不給,而且靜默失敗連訊息都沒有**;通過才 GetMem(3Fh)+FillChar,填 +2Eh=14h、+30h=14h、+31h=0F3h、**+32h=1**(讓 spec 737 的「打不到」規則放行)、+3Dh=17h、+3Eh=0A0h,用 \u003coverlay-24 entry#18\u003e 掛上鏈(**掛的是複本**),再 \u003coverlay-19 entry#7\u003e,然後 **FreeMem 掉本地那份**,顯示 '\u003c名字\u003e Gains an item'(CS:05A8h)。⚠ 這支示範了 spec 695「掛的是複本不是來源」為什麼重要——否則這個 FreeMem 會釋放掉剛掛上去的節點。識別碼是 +2Eh 與 +31h 兩個一起比,只比類別會誤判",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/747-summoned-item-and-third-gaze.md"
    ]
@@ -10604,7 +10645,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
-   "note": "與 pc98 overlay-12:06F9h 助憶碼序列完全相同（20 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_0 = 0 且 \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:06F9h 助憶碼序列完全相同（20 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_0 = 0 且 \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10620,7 +10664,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
-   "note": "與 PC-98 overlay-12:072Eh（entry#29）助憶碼序列完全相同，語意同該筆：與 0470h 逐指令相同的另一個遮罩版本:p := arg_6^[18Eh]^[0Ah];if p^[14Ch] and 4 \u003c\u003e 0 then inc DS:0A039h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:072Eh（entry#29）助憶碼序列完全相同，語意同該筆：與 0470h 逐指令相同的另一個遮罩版本:p := arg_6^[18Eh]^[0Ah];if p^[14Ch] and 4 \u003c\u003e 0 then inc DS:0A039h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10636,7 +10683,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/677-pc98-overlay12-twins.md",
-   "note": "與 pc98 overlay-12:0773h 助憶碼序列完全相同（55 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：n := (arg_2^[3] div 16) + 1(取效果節點 +3 的高 4 bit 再加一),r := ROLLDICE(1, n)——**面數由資料算出**不是常數,可以是 1d1 到 1d16;高 nibble 為 0 時 1d1 結果恆為 1。除法用 cwd + idiv 但輸入先零延伸,實際是無號。+3 的低 nibble 另有用途(1222h 取它的 bit 4) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:0773h 助憶碼序列完全相同（55 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：n := (arg_2^[3] div 16) + 1(取效果節點 +3 的高 4 bit 再加一),r := ROLLDICE(1, n)——**面數由資料算出**不是常數,可以是 1d1 到 1d16;高 nibble 為 0 時 1d1 結果恆為 1。除法用 cwd + idiv 但輸入先零延伸,實際是無號。+3 的低 nibble 另有用途(1222h 取它的 bit 4) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10652,7 +10702,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:07F6h（entry#32）助憶碼序列完全相同，語意同該筆：DS:A02Eh := DS:A02Eh − (DS:A02Eh ÷ 4) ⇒ 取四分之三 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:07F6h（entry#32）助憶碼序列完全相同，語意同該筆：DS:A02Eh := DS:A02Eh − (DS:A02Eh ÷ 4) ⇒ 取四分之三 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10670,6 +10723,7 @@
    "spec": "docs/spec/744-animate-removal-and-ac-fields.md",
    "note": "AC 每次變差 2 直到 AC 10:角色^[18Dh]^[2] 非 0 時顯示 '\u003c名字\u003e is coughing'(CS:080Ch),清 +18Dh^[2] 與 ^[1],\u003coverlay-24 entry#7\u003e(角色);**+19Bh \u003e 34h 時減 2、否則設成 32h,再整個複製到 +19Ah**;角色 = DS:6506h 時另呼叫 \u003coverlay-24 entry#5\u003e。⚠ **+19Bh 是 AC 基準值、+19Ah 是目前值**(顯示值 = 60 − 儲存值,spec 684/689);所以是顯示 AC 每次加 2(變差),下限 32h = 顯示 AC 10",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/744-animate-removal-and-ac-fields.md"
    ]
@@ -10690,6 +10744,7 @@
    "spec": "docs/spec/744-animate-removal-and-ac-fields.md",
    "note": "操縱屍體的解除程序(對應 spec 734 的 2DB6h)。⚠ **角色^[197h] := 節點^[3] div 16 還原陣營**——這解掉 spec 724 留的一格:PUTEFFECT 的**第四個參數會被存進效果節點的 +3**。DS:6F9Ch = 0 時才顯示 '\u003c名字\u003e collapses'(CS:08C3h)。⚠ 與套用**不對稱**:+0E9h 套用寫 2、解除寫 0;+0E4h 套用寫 6、解除寫 0Ch;兩邊都不看原值,所以活人被操縱再解除後這兩個欄位會停在解除值上。+0DDh := 角色^[10Bh] + 角色^[113h] × \u003coverlay-25 entry#10\u003e(角色) 是第四對平行職業欄位(spec 728 模板)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/744-animate-removal-and-ac-fields.md"
    ]
@@ -10708,7 +10763,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:0994h（entry#35）助憶碼序列完全相同，語意同該筆：DS:A039h(命中骰)減 4、arg_6 所指 record 的 +19Bh 與 +19Ch 各減 4、DS:A02Ch 減 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:0994h（entry#35）助憶碼序列完全相同，語意同該筆：DS:A039h(命中骰)減 4、arg_6 所指 record 的 +19Bh 與 +19Ch 各減 4、DS:A02Ch 減 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10724,7 +10782,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
-   "note": "與 pc98 overlay-12:09B9h 助憶碼序列完全相同（23 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：\u003cfar 013E:002A\u003e(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:09B9h 助憶碼序列完全相同（23 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：\u003cfar 013E:002A\u003e(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10743,6 +10804,7 @@
    "note": "士氣失敗的四種結果：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。r := \u003cfar 145Dh\u003e(1, 64h) 擲 1..100。1..10 → \u003cfar 143Eh+1\u003e(角色, 23h, longint 0)、+18Dh^[10h] := 1、+198h := 1、+0F7h \u003c= 7Fh 時補成 0B3h（上限 102 的編碼）、清掉 +18Dh^[0Ah] 目標、\u003cfar 1499h\u003e(角色, 8Eh, 0Ah, 0, 1, 1, 0, 名字+'runs away'(9))；11..60 → \u003cfar 1572h\u003e(角色, 1, 名字+'is confused'(11))、\u003cfar 1558h+1\u003e、本模組 0075h(0, 參數2, 參數4, 角色)；61..80 → \u003cfar 1499h\u003e(角色, 89h, 1, 角色^[197h], 1, 1, 0, 名字+'goes berserk'(12))、本模組 143Ah(0, longint 0, 角色, 89h)；81..100 → \u003cfar 1572h\u003e(角色, 1, 名字+'is enraged'(10))、\u003cfar 1558h+1\u003e。四段機率 10/50/20/20，沒有落空的骰值。最後不論哪一段都問 \u003cfar 1457h+1\u003e(角色, 4, 0FEh)，成立就再 \u003cfar 143Eh+1\u003e(角色, 23h, longint 0)。spec 831",
    "citations": [
     "audit/duplicate-strings.md",
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-strings.md",
     "spec/831-morale-failure-table.md"
@@ -10764,6 +10826,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:0BC8h（entry#38）助憶碼序列完全相同，語意同該筆：DS:A039h(命中骰)減 4、DS:A02Ch 減 4(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-strings.md"
    ]
   },
@@ -10781,7 +10844,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:0BDBh（entry#39）助憶碼序列完全相同，語意同該筆：若 arg_6 → +18Eh 所指 record 的 +3 為 0,則 DS:A035h := 1 且 DS:A039h(命中骰) := 0FFh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:0BDBh（entry#39）助憶碼序列完全相同，語意同該筆：若 arg_6 → +18Eh 所指 record 的 +3 為 0,則 DS:A035h := 1 且 DS:A039h(命中骰) := 0FFh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10797,7 +10863,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/678-dodge-and-once-only-marker.md",
-   "note": "與 pc98 overlay-12:0C0Ch 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：用 arg_2^[3] 的 bit 4 當「已套用過」標記:未設時才設上、印「は歳をとった。」並讓 arg_6^[76h](word)加一;DS:0A030h × 2 在條件外面每次都做(只存回 byte,第 8 次之後固定是 0)。⚠ bit 4 同時屬於高 4 bit,而 0773h 取高 4 bit 當骰子面數——這支執行過的節點會讓那邊的面數多 1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:0C0Ch 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：用 arg_2^[3] 的 bit 4 當「已套用過」標記:未設時才設上、印「は歳をとった。」並讓 arg_6^[76h](word)加一;DS:0A030h × 2 在條件外面每次都做(只存回 byte,第 8 次之後固定是 0)。⚠ bit 4 同時屬於高 4 bit,而 0773h 取高 4 bit 當骰子面數——這支執行過的節點會讓那邊的面數多 1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10815,8 +10884,10 @@
    "spec": "docs/spec/748-cloud-effect-dispel-pair.md",
    "note": "雲霧類效果的解除：依(擁有者,key)在 DS:755Bh 鏈上找節點，逐格還原被蓋掉的原磚(有生物站著改畫 1Fh)，unlink 後 FreeMem 30 bytes，再把剩餘節點整條鏈重畫 1Eh。4 格，形狀索引取自 DS:27D8h..27DBh。retf 0Ah＝(擁有者 far, 節點 far, 未用 word)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
+    "spec/1005-effect-dispatch-table.md",
     "spec/748-cloud-effect-dispel-pair.md"
    ]
   },
@@ -10866,9 +10937,14 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr ds:6508h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 41 的處理常式（overlay entry stub 的目標，起點確定）。w := 取武器(DS:6506h/PC98 DS:9594h)；w\u003c\u003eNIL 且 w^[32h]=0(PC-98 是 +5Ah) 時 \u003csub_F39\u003e(角色, 64h)。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）",
+   "citations": [
+    "audit/effect-dispatch-table.md",
+    "spec/1005-effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10886,6 +10962,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:106Dh（entry#45）助憶碼序列完全相同，語意同該筆：DS:A030h := DS:A030h ÷ 2(有號)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-strings.md"
    ]
   },
@@ -10903,7 +10980,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/679-stat-drain-with-floor.md",
-   "note": "與 pc98 overlay-12:1091h 助憶碼序列完全相同（60 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003csub_3C\u003e(3Ch, arg_2^[3], 2Bh, arg_6) \u003c\u003e 0:arg_6^[11h] \u003e 3 時印「は弱まった。」並減一(下限 3);否則查目標有無效果 1Fh,沒有才 \u003csub_1437\u003e(arg_6,1Fh,0,0FFh,0)。與 111Bh 的下半段一字不差 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:1091h 助憶碼序列完全相同（60 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003csub_3C\u003e(3Ch, arg_2^[3], 2Bh, arg_6) \u003c\u003e 0:arg_6^[11h] \u003e 3 時印「は弱まった。」並減一(下限 3);否則查目標有無效果 1Fh,沒有才 \u003csub_1437\u003e(arg_6,1Fh,0,0FFh,0)。與 111Bh 的下半段一字不差 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10919,7 +10999,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/679-stat-drain-with-floor.md",
-   "note": "與 pc98 overlay-12:111Bh 助憶碼序列完全相同（59 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：與 1091h 同骨架:if \u003csub_3C\u003e(0Ah, arg_2^[3], 2Ch, arg_6) \u003c\u003e 0:arg_6^[1A5h](目前 HP)\u003e 1 時 DS:0A02Fh := 0、\u003cfar 014Ah:0464h\u003e(arg_6,0,0,1),且 DS:7F27h \u003c\u003e 5 時再呼叫 \u003cfar 014Ah:04CAh\u003e;否則同樣改施加效果 1Fh。⚠ 下限是 1 不是 0——這支自己不會把角色降到死亡,死亡由 1Fh 那邊處理。2Bh 與 2Ch 相鄰,對應 09B9h 那支「同一組參數連續套用兩個 id」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:111Bh 助憶碼序列完全相同（59 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：與 1091h 同骨架:if \u003csub_3C\u003e(0Ah, arg_2^[3], 2Ch, arg_6) \u003c\u003e 0:arg_6^[1A5h](目前 HP)\u003e 1 時 DS:0A02Fh := 0、\u003cfar 014Ah:0464h\u003e(arg_6,0,0,1),且 DS:7F27h \u003c\u003e 5 時再呼叫 \u003cfar 014Ah:04CAh\u003e;否則同樣改施加效果 1Fh。⚠ 下限是 1 不是 0——這支自己不會把角色降到死亡,死亡由 1Fh 那邊處理。2Bh 與 2Ch 相鄰,對應 09B9h 那支「同一組參數連續套用兩個 id」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10935,7 +11018,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
-   "note": "與 pc98 overlay-12:11ACh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A03Dh := arg_6^[18Eh]^[0Ah];if DS:9594h^[11Ah](RACETYPE) in {2,0Ah} 且 (DS:9594h^[0DEh] and 7Fh) = 2 則 DS:0A039h -= 4。+0DEh 比較前先遮掉最高位——那是另一個用途的旗標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:11ACh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A03Dh := arg_6^[18Eh]^[0Ah];if DS:9594h^[11Ah](RACETYPE) in {2,0Ah} 且 (DS:9594h^[0DEh] and 7Fh) = 2 則 DS:0A039h -= 4。+0DEh 比較前先遮掉最高位——那是另一個用途的旗標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10951,7 +11037,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:11F9h（entry#49）助憶碼序列完全相同，語意同該筆：DS:9594h 所指 record 的 +11Ah 等於 1、且 +0DEh 的低 7 位元等於 2 時,DS:A039h(命中骰)減 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:11F9h（entry#49）助憶碼序列完全相同，語意同該筆：DS:9594h 所指 record 的 +11Ah 等於 1、且 +0DEh 的低 7 位元等於 2 時,DS:A039h(命中骰)減 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10967,7 +11056,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
-   "note": "與 pc98 overlay-12:1222h 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：v := (arg_2^[3] and 10h) div 10h(取 bit 4 得 0 或 1,編譯成 cwd + idiv 16);if arg_6^[198h] = v then \u003csub_8D\u003e(arg_0,arg_2,arg_6) else dec DS:0A039h 與 dec DS:0A02Ch ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:1222h 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：v := (arg_2^[3] and 10h) div 10h(取 bit 4 得 0 或 1,編譯成 cwd + idiv 16);if arg_6^[198h] = v then \u003csub_8D\u003e(arg_0,arg_2,arg_6) else dec DS:0A039h 與 dec DS:0A02Ch ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10983,7 +11075,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
-   "note": "與 PC-98 overlay-12:126Dh（entry#51）助憶碼序列完全相同，語意同該筆：if DS:0A02Fh and 2 則 DS:0A02Ch += 2;否則若 (DS:0A02Fh and 1) 且 DS:0A042h = 0 則 DS:0A02Eh := byte(DS:0A02Eh × 2)(shl 後只存回 al,溢位靜默丟掉)。與 12A0h 幾乎鏡像但守門的變數不同(這支看 DS:0A042h、那支看 DS:8CF7h),不能合併成一支帶參數的函式 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:126Dh（entry#51）助憶碼序列完全相同，語意同該筆：if DS:0A02Fh and 2 則 DS:0A02Ch += 2;否則若 (DS:0A02Fh and 1) 且 DS:0A042h = 0 則 DS:0A02Eh := byte(DS:0A02Eh × 2)(shl 後只存回 al,溢位靜默丟掉)。與 12A0h 幾乎鏡像但守門的變數不同(這支看 DS:0A042h、那支看 DS:8CF7h),不能合併成一支帶參數的函式 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10999,7 +11094,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
-   "note": "與 PC-98 overlay-12:12A0h（entry#52）助憶碼序列完全相同，語意同該筆：與 126Dh 對稱:兩個 bit 對調(先看 and 1 再看 and 2),而守門的變數是 DS:8CF7h 不是 DS:0A042h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:12A0h（entry#52）助憶碼序列完全相同，語意同該筆：與 126Dh 對稱:兩個 bit 對調(先看 and 1 再看 and 2),而守門的變數是 DS:8CF7h 不是 DS:0A042h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11015,7 +11113,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11031,7 +11132,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11047,7 +11151,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:12FDh（entry#55）助憶碼序列完全相同，語意同該筆：把 arg_6 → +18Eh 所指 record 的 +6 清 0;若 DS:A034h 非零則 DS:A030h := 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:12FDh（entry#55）助憶碼序列完全相同，語意同該筆：把 arg_6 → +18Eh 所指 record 的 +6 清 0;若 DS:A034h 非零則 DS:A030h := 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11065,6 +11172,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:131Fh（entry#56）助憶碼序列完全相同，語意同該筆：以 (0, 0FFh, 0, 62h, arg_6, arg_8) 呼叫 sub_1437 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -11083,7 +11191,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
-   "note": "與 pc98 overlay-12:133Fh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FCC\u003e(DS:9594h);p = nil 或 p^[5Ah] = 0 則 DS:0A02Eh := 0;否則 p^[5Ah] \u003c 3 時 DS:0A02Eh := DS:0A02Eh div 2(有號)。第二個條件又檢查了一次 p \u003c\u003e nil,編譯出來是兩次檢查 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:133Fh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FCC\u003e(DS:9594h);p = nil 或 p^[5Ah] = 0 則 DS:0A02Eh := 0;否則 p^[5Ah] \u003c 3 時 DS:0A02Eh := DS:0A02Eh div 2(有號)。第二個條件又檢查了一次 p \u003c\u003e nil,編譯出來是兩次檢查 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11101,6 +11212,7 @@
    "spec": "docs/spec/739-resistance-and-level-threshold.md",
    "note": "減傷:(DS:6F95h and 1) 非 0 時,以 n := DS:6F98h 為次數,每輪 DS:6F94h -= 2 並夾在 DS:6F98h 以上;之後 DS:6F92h += 4;(DS:6F95h and 8) = 0 時呼叫 \u003csub_1Bh\u003e(0)。⚠ DS:6F98h **同時是迴圈次數與傷害下限**,兩者不能拆開改。⚠ 夾限用**無號**比較,DS:6F94h 減到負數會回捲成大值而讓夾限失效,要靠 n 夠小才不會出事",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/739-resistance-and-level-threshold.md"
    ]
@@ -11121,6 +11233,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "與 PC-98 overlay-12:13F1h（entry#59）助憶碼序列完全相同，語意同該筆：13F1h..1434h(retf 0Ah)的完整一支:if \u003csub_3C\u003e(arg_A:arg_8, 3Eh, arg_4^[3], 3Ch) \u003c\u003e 0 且 \u003cfar 013E:008E\u003e(arg_A:arg_8, 1, 1) \u003c\u003e 0 then \u003cfar 014A:00B1\u003e(arg_A:arg_8)。先前被誤標成邊界碎片,而其中段 1414h 被誤標成已解讀——由 scripts/verify_size_truncation.py 查出 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-22.md"
    ]
@@ -11136,9 +11249,14 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push cs`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 32 bytes，已逐條讀完）"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 63 的處理常式（overlay entry stub 的目標，起點確定）。DS:6F97h(法術編號，PC-98 DS:A031h) \u003e 0 且 byte[編號*16 + 37DBh(PC-98 61B5h)] \u003c 4(有號比較) 時 \u003csub_1B\u003e(0)。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）",
+   "citations": [
+    "audit/effect-dispatch-table.md",
+    "spec/1005-effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11446,12 +11564,15 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 64 的處理常式（overlay entry stub 的目標，起點確定）。\u003csub_1454\u003e(角色, 節點, 0)——與 0157Fh/01595h 是同一支的三個包裝，只差常數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
-    "audit/function-index/pc98-overlay-13.md"
+    "audit/function-index/pc98-overlay-13.md",
+    "spec/1005-effect-dispatch-table.md"
    ]
   },
   {
@@ -11486,9 +11607,14 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完）"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 65 的處理常式（overlay entry stub 的目標，起點確定）。\u003csub_1454\u003e(角色, 節點, 4)——與 01569h/01595h 是同一支的三個包裝，只差常數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）",
+   "citations": [
+    "audit/effect-dispatch-table.md",
+    "spec/1005-effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11519,12 +11645,15 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_A]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 66 的處理常式（overlay entry stub 的目標，起點確定）。\u003csub_1454\u003e(角色, 節點, 2)——與 01569h/0157Fh 是同一支的三個包裝，只差常數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
+    "spec/1005-effect-dispatch-table.md",
     "spec/819-spits-acid-special-attack.md"
    ]
   },
@@ -11539,9 +11668,14 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call sub_14F9`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完）"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 67 的處理常式（overlay entry stub 的目標，起點確定）。\u003csub_14F9\u003e(角色, 節點, \u003coverlay-23 entry#9\u003e(2,8), 0)——第三個參數是 2d8。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）",
+   "citations": [
+    "audit/effect-dispatch-table.md",
+    "spec/1005-effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11559,6 +11693,7 @@
    "spec": "docs/spec/740-feeblemind.md",
    "note": "把 角色^[13h] 與 角色^[15h] 都設成 **7**,顯示 '\u003c名字\u003e is stupid'(CS:15CFh)。⚠ 那正是 spec 728 施法資格檢查的兩個門檻欄位(分類 0/1 看 +15h、分類 2 看 +13h,都是 \u003c= 8 就不能施放),設成 7 讓三類同時失敗——**這個角色從此什麼都不能施放**。所以 +15h/+13h 是兩個施法屬性。DS:4FBAh=5(戰鬥)時另清 +18Dh^[1],且 +18Dh^[0] \u003e 0 時顯示 'lost a spell'(CS:15D9h,顏色 0Ch 與前一則不同)、呼叫 \u003coverlay-24 entry#16\u003e(角色, +18Dh^[0])(spec 733 裡 Lose it? 答 Y 與 Spell Aborted 用的同一支)再清 0",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-22.md",
     "spec/740-feeblemind.md"
    ]
@@ -11577,7 +11712,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
-   "note": "與 pc98 overlay-12:16C2h 助憶碼序列完全相同（21 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:9594h^[11Ah](RACETYPE) = 13h then { if \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1; DS:0A039h -= 4 }。⚠ 減法那行在內層條件之外(jnz 跳到減法那行不是跳過),與 06F9h 兩行都在條件內不同——差別只有一個跳躍目標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:16C2h 助憶碼序列完全相同（21 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:9594h^[11Ah](RACETYPE) = 13h then { if \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1; DS:0A039h -= 4 }。⚠ 減法那行在內層條件之外(jnz 跳到減法那行不是跳過),與 06F9h 兩行都在條件內不同——差別只有一個跳躍目標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11595,6 +11733,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1454`（body 共 22 bytes，已逐條讀完）",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
@@ -11613,7 +11752,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:1713h（entry#70）助憶碼序列完全相同，語意同該筆：DS:A035h := 1、DS:A039h(命中骰)減 4(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:1713h（entry#70）助憶碼序列完全相同，語意同該筆：DS:A035h := 1、DS:A039h(命中骰)減 4(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11629,7 +11771,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:1726h（entry#71）助憶碼序列完全相同，語意同該筆：擲 d100;結果 \u003c= 5Fh(95) 時以 (0, 0Ch, 1, 19h, arg_6, arg_8) 呼叫 sub_1437 ⇒ 95% 機率套用該效果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:1726h（entry#71）助憶碼序列完全相同，語意同該筆：擲 d100;結果 \u003c= 5Fh(95) 時以 (0, 0Ch, 1, 19h, arg_6, arg_8) 呼叫 sub_1437 ⇒ 95% 機率套用該效果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11645,7 +11790,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
-   "note": "與 pc98 overlay-12:176Dh 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A02Fh and 20h \u003c\u003e 0 then \u003csub_1B\u003e(0) 並備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0024\u003e(arg_6,arg_8,訊息,1,0Ah) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:176Dh 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A02Fh and 20h \u003c\u003e 0 then \u003csub_1B\u003e(0) 並備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0024\u003e(arg_6,arg_8,訊息,1,0Ah) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11661,7 +11809,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11677,7 +11828,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
-   "note": "與 pc98 overlay-12:17B5h 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 3 then x := \u003cfar 0176:0506\u003e(arg_6)(cbw 有號),DS:0A02Eh := byte(ROLLDICE(1,0Ch)×3 + 4 + x)(1d12×3+4 是 7..40,加 x 後只存低 byte),DS:0A039h += 2 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:17B5h 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 3 then x := \u003cfar 0176:0506\u003e(arg_6)(cbw 有號),DS:0A02Eh := byte(ROLLDICE(1,0Ch)×3 + 4 + x)(1d12×3+4 是 7..40,加 x 後只存低 byte),DS:0A039h += 2 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11693,7 +11847,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
-   "note": "與 pc98 overlay-12:180Ch 助憶碼序列完全相同（16 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 8 then DS:0A039h += 3、DS:0A02Eh += 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:180Ch 助憶碼序列完全相同（16 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 8 then DS:0A039h += 3、DS:0A02Eh += 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11711,12 +11868,12 @@
    "spec": "docs/spec/743-berserk-and-two-factions.md",
    "note": "狂暴(套用與解除共用一支,由 arg_2 切換)。套用:+198h:=1、+0F7h 依三態設成 0B3h 或 0B2h;戰鬥中(DS:4FBAh=5)才繼續——先把 +18Dh^[0Ah] 清成 NIL,用 \u003coverlay-31 entry#6\u003e 重新選一個目標,然後 **角色^[197h] := 新目標^[197h] xor 1**(設成目標陣營的相反),顯示 '\u003c名字\u003e goes berzerk'(CS:17FCh)。⚠ **xor 1 定死了 +197h(陣營)只有 0 與 1 兩個值**——這回頭解釋 spec 692 的統計陣列為何只有兩格。⚠ 解除路徑寫 角色^[197h] := 0,**沒有還原原本的陣營**(對照 spec 734 特地打包保存);若 0 是玩家側,敵方狂暴結束後會變我方,需實機驗證 ⚠ spec 746:姊妹支 2B3Eh 解除時是 角色^[197h] := 節點^[3](從節點取回原陣營),本支寫死 0;而本支的套用路徑也沒把原陣營存進任何地方——兩件事一起漏掉,所以「解除後歸 0」很可能是缺陷不是設計",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/743-berserk-and-two-factions.md",
-    "spec/745-node-field-packed-differently.md",
-    "spec/746-dispel-evil-and-berserk-sibling.md"
+    "spec/745-node-field-packed-differently.md"
    ]
   },
   {
@@ -11745,13 +11902,16 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 78 的處理常式（overlay entry stub 的目標，起點確定）。\u003coverlay-23 entry#23\u003e(角色, 角色^[1A4h])(STANDUP，PC-98 讀 +1A5h) 回 0 時，\u003csub_3C\u003e(角色, 4Eh, 節點^[3], 1)；回傳值只存進區域變數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
+    "spec/1005-effect-dispatch-table.md",
     "spec/819-spits-acid-special-attack.md"
    ]
   },
@@ -11789,6 +11949,7 @@
    "spec": "docs/spec/640-save-for-half-and-damage-global.md",
    "note": "與 PC-98 overlay-12:19B3h（entry#78）助憶碼序列完全相同，語意同該筆：DS:0A02Fh := 9;\u003cfar 013E:0064\u003e(arg_6^[18Eh]^[0Ah], ROLLDICE(2,0Ah)=2d10, 0, 0)。與 19E8h 逐指令相同,只差 DS:0A02Fh 的值與骰子 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md"
    ]
   },
@@ -11806,7 +11967,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/640-save-for-half-and-damage-global.md",
-   "note": "與 PC-98 overlay-12:19E8h（entry#79）助憶碼序列完全相同，語意同該筆：DS:0A02Fh := 10h;\u003cfar 013E:0064\u003e(arg_6^[18Eh]^[0Ah], ROLLDICE(1,4)=1d4, 0, 0)。與 19B3h 成對 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:19E8h（entry#79）助憶碼序列完全相同，語意同該筆：DS:0A02Fh := 10h;\u003cfar 013E:0064\u003e(arg_6^[18Eh]^[0Ah], ROLLDICE(1,4)=1d4, 0, 0)。與 19B3h 成對 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11822,7 +11986,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:1A1Dh（entry#80）助憶碼序列完全相同，語意同該筆：DS:A02Eh := DS:A02Eh ÷ 2(有號)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:1A1Dh（entry#80）助憶碼序列完全相同，語意同該筆：DS:A02Eh := DS:A02Eh ÷ 2(有號)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11838,7 +12005,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/640-save-for-half-and-damage-global.md",
-   "note": "與 pc98 overlay-12:1A34h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) 或 (and 2) then:\u003cfar 013E:0028\u003e(0,4,arg_6,arg_8) 非 0(豁免成功)且 byte[DS:0A031h×16 + 61BCh] \u003c\u003e 0 時 DS:0A02Eh := 0(完全免疫),否則 DS:0A02Eh div 2(有號)。⚠ 兩條路徑都減半——豁免失敗也減半,只有「豁免成功且在免疫表裡」才歸零,與 AD\u0026D 慣例不同。DS:61BCh 是 16 bytes 一筆的表,索引取自 DS:0A031h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:1A34h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) 或 (and 2) then:\u003cfar 013E:0028\u003e(0,4,arg_6,arg_8) 非 0(豁免成功)且 byte[DS:0A031h×16 + 61BCh] \u003c\u003e 0 時 DS:0A02Eh := 0(完全免疫),否則 DS:0A02Eh div 2(有號)。⚠ 兩條路徑都減半——豁免失敗也減半,只有「豁免成功且在免疫表裡」才歸零,與 AD\u0026D 慣例不同。DS:61BCh 是 16 bytes 一筆的表,索引取自 DS:0A031h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11856,6 +12026,7 @@
    "spec": "docs/spec/832-gaze-attack-and-mirror-item.md",
    "note": "凝視石化攻擊（含反射）：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；\u003cfar 1554h\u003e(角色, 名字+'gazes...'(8), 0Ah, 0)、\u003cfar 1566h+2\u003e(12h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),4,2Dh)；\u003cfar 1576h+1\u003e(角色, 7Fh, @暫存) 為假就直接跳到收尾。否則掃 DS:6FA3h^[14Dh] 物品鏈（next +2Ah）：+34h \u003c\u003e 0（裝備中）且 (+2Fh 或 +30h 或 +31h) = 76h 時 顯示 名字+'reflects it!'(12)、反向重播動畫、換過 := 1、**DS:6FA3h := 角色**（反射回發動者）；找到一件就停。收尾：if not \u003cfar 1457h+1\u003e(DS:6FA3h, 0, 1) then \u003cfar 1435h\u003e(DS:6FA3h, 7, 名字+'is Stoned'(9))。物品 +2Fh/+30h/+31h 是三個屬性槽，值 76h 表示會反射凝視。spec 832",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-strings.md",
     "spec/832-gaze-attack-and-mirror-item.md"
    ]
@@ -11876,6 +12047,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "if DS:6F95h and 4 \u003c\u003e 0 then \u003csub_1B\u003e(0)、\u003cfar 013E:007D\u003e(8,1)、arg_6^[1A4h](目前 HP)+= 8,不夾上限(對照 20FAh 有夾)。013E:007D 的回傳值存進區域變數後沒再讀,是死存。與 PC-98 176Dh 同型(DS:6F95h ↔ DS:0A02Fh)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
@@ -11896,6 +12068,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 byte[p^[2Eh]×16 + 5CFDh] = 1 then DS:6F94h := 1。DS:5CFDh 是 16 bytes 一筆的表,對應 PC-98 的 DS:61BCh",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
@@ -11917,6 +12090,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "if DS:758Dh = 0 且 DS:6F9Fh = 0 then arg_2^[3] and= 0Fh(清高 nibble);否則若 (arg_2^[3] and 10h) = 0 則 DS:6F9Fh := 0FFh、arg_2^[3] or= 10h(設 bit 4)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
@@ -11937,7 +12111,9 @@
    "spec": "docs/spec/748-cloud-effect-dispel-pair.md",
    "note": "與 0C61h 同一段原始碼的第二份實例：268 條助憶碼相同，運算元僅差 13 處(鏈頭 755Fh、字串 1CDBh、形狀表 27DBh、格數 9、磚碼 1Ch)，差異已窮舉於 spec 748",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
+    "spec/1005-effect-dispatch-table.md",
     "spec/748-cloud-effect-dispel-pair.md"
    ]
   },
@@ -11955,7 +12131,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:202Ch（entry#87）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 0 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:202Ch（entry#87）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 0 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11973,6 +12152,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 (byte[p^[2Eh]×16 + 5CFDh] and 81h) \u003c\u003e 0 then DS:6F94h := DS:6F94h div 2(有號)。與 PC-98 1A34h 同一個動作,故 DS:6F94h ↔ DS:0A02Eh(傷害值)。注意判準與 1C4Fh 不同:這支 and 81h、那支 = 1",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
@@ -11993,6 +12173,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "arg_2^[4] := 0;if arg_6^[196h] \u003c\u003e 0 then 備妥 'Falls dead' 呼叫 \u003cfar 013E:0005\u003e(arg_6,訊息,6)。⚠ DOS 的 +196h 對應 PC-98 的 +197h,不是狀態碼——狀態碼在 DOS 是 +195h(見 spec 641 的對照表)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
@@ -12013,6 +12194,7 @@
    "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
    "note": "分段加成:DS:6FA7h 等於 4 或 2 時,依 角色^[19h] 取 bonus(4..6→1、7..10→2、0Bh..0Dh→3、0Eh..11h→4、12h..14h→5),DS:6F92h += bonus。⚠ **v 不在 4..20 時 bonus 從頭到尾沒有被賦值**,加進去的是堆疊殘值——這是第三處同型問題(spec 694 的 129Ah、spec 702 的 23F2h),共同形狀是「一串 if 範圍 then 賦值、沒有 else、區域變數也沒初始化」。remake 要補預設值但補什麼要另外決定,原作行為隨堆疊內容而定。分段長度 3/4/3/4/3 不是等距",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/741-on-hit-effects-and-third-uninitialised.md",
     "spec/970-pc98-name-colour-and-segmented-bonus.md"
@@ -12034,6 +12216,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "arg_6^[1A4h] := min(arg_6^[1A4h] + 3, arg_6^[78h])——加血並夾在上限。⚠ DOS 的 +1A4h 對應 PC-98 的 +1A5h(目前 HP),兩平台紀錄後段偏移差 1;+196h 以前則相同",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-24.md",
@@ -12056,6 +12239,7 @@
    "spec": "docs/spec/745-node-field-packed-differently.md",
    "note": "把瀕死的人拉回來:狀態 +195h=5 且 角色^[18Dh]^[0Eh] \u003c 6 時 n := 6 − 欠血;狀態 4 時 n := 6;n \u003e 0 且 \u003coverlay-23 entry#23\u003e(角色, n) 成立才 \u003coverlay-23 entry#11\u003e(角色, 5Fh, ROLLDICE(1,4)+1, 0FFh, 1)、節點^[4] := 0、\u003coverlay-23 entry#3\u003e(角色, 63h, 節點)。兩個判斷是分開的 if 不是 elif,但狀態不可能同時是 4 和 5,實際等價",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/745-node-field-packed-differently.md"
    ]
@@ -12074,7 +12258,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
-   "note": "與 pc98 overlay-12:2237h 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) = 0 且 (and 10h) = 0 then \u003csub_1437\u003e(arg_8,arg_6,66h,ROLLDICE(3,6)=3d6,0FFh,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:2237h 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) = 0 且 (and 10h) = 0 then \u003csub_1437\u003e(arg_8,arg_6,66h,ROLLDICE(3,6)=3d6,0FFh,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12090,7 +12277,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
-   "note": "與 pc98 overlay-12:2274h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 014A:00A7\u003e(arg_6,arg_8,62h,@var_4) = 0 且 同樣以 3Bh 查也 = 0 then \u003csub_1437\u003e(arg_8,arg_6,3Bh,3,0FFh,1)。連查兩個效果 id,兩個都沒有才施加 3Bh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:2274h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 014A:00A7\u003e(arg_6,arg_8,62h,@var_4) = 0 且 同樣以 3Bh 查也 = 0 then \u003csub_1437\u003e(arg_8,arg_6,3Bh,3,0FFh,1)。連查兩個效果 id,兩個都沒有才施加 3Bh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12106,7 +12296,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
-   "note": "與 PC98 overlay-12:22C6h（entry#95）助憶碼序列完全相同，語意同該筆：if \u003cfar 0176:0473\u003e(arg_6, arg_6^[78h]) = 0 then \u003csub_3C\u003e(arg_6,66h,arg_2^[3],1)。sub_3C 的呼叫形狀與 1973h/13F1h 一致(far pointer, id, byte, 旗標) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC98 overlay-12:22C6h（entry#95）助憶碼序列完全相同，語意同該筆：if \u003cfar 0176:0473\u003e(arg_6, arg_6^[78h]) = 0 then \u003csub_3C\u003e(arg_6,66h,arg_2^[3],1)。sub_3C 的呼叫形狀與 1973h/13F1h 一致(far pointer, id, byte, 旗標) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12124,6 +12317,7 @@
    "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
    "note": "三個效果都沒有才加傷害:對 p := 角色^[18Dh]^[0Ah] 依序查 14h、36h、3Dh(三次 \u003coverlay-24 entry#27\u003e,短路),**任何一個成立就完全不加**;都沒有才 DS:6F94h += ROLLDICE(1, 6)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-19.md",
     "spec/741-on-hit-effects-and-third-uninitialised.md"
@@ -12143,7 +12337,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F39`（body 共 22 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F39`（body 共 22 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12180,7 +12377,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2334`（body 共 16 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2334`（body 共 16 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12196,7 +12396,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2334`（body 共 16 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2334`（body 共 16 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12212,7 +12415,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:2414h（entry#101）助憶碼序列完全相同，語意同該筆：擲 d100(count=1,sides=64h);結果 \u003c= 5Ah(90) 時依序呼叫 1Bh(35h) 與 1Bh(0Bh) ⇒ 90% 機率取消這兩類傷害 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:2414h（entry#101）助憶碼序列完全相同，語意同該筆：擲 d100(count=1,sides=64h);結果 \u003c= 5Ah(90) 時依序呼叫 1Bh(35h) 與 1Bh(0Bh) ⇒ 90% 機率取消這兩類傷害 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12228,7 +12434,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:243Ah（entry#102）助憶碼序列完全相同，語意同該筆：依序以常數 0Bh 與 35h 呼叫 overlay-12 local 1Bh(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:243Ah（entry#102）助憶碼序列完全相同，語意同該筆：依序以常數 0Bh 與 35h 呼叫 overlay-12 local 1Bh(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12244,7 +12453,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12260,7 +12472,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:2461h（entry#104）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 1 非零時呼叫 overlay-12 local 1Bh(0)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:2461h（entry#104）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 1 非零時呼叫 overlay-12 local 1Bh(0)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12276,7 +12491,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:247Ah（entry#105）助憶碼序列完全相同，語意同該筆：依序呼叫 1Bh(37h) 與 1Bh(34h);若 DS:A041h 為 0 則 DS:A02Ch := 64h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:247Ah（entry#105）助憶碼序列完全相同，語意同該筆：依序呼叫 1Bh(37h) 與 1Bh(34h);若 DS:A041h 為 0 則 DS:A02Ch := 64h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12292,7 +12510,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:249Dh（entry#106）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 0(依 spec 412 為 Fire)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:249Dh（entry#106）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 0(依 spec 412 為 Fire)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12308,7 +12529,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
-   "note": "與 pc98 overlay-12:24B6h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A02Fh and 1 then n := DS:0A032h;for i := 1 to n do { dec DS:0A02Eh;if DS:0A02Eh \u003c DS:0A032h then DS:0A02Eh := DS:0A032h }。⚠ 減的次數與下限是同一個變數,而且夾限在迴圈裡面每次都做——等同 max(傷害 - n, n),但兩者在原作裡綁在一起,remake 不能當成兩個獨立參數。n=0 時整段跳過,比較用無號 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:24B6h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A02Fh and 1 then n := DS:0A032h;for i := 1 to n do { dec DS:0A02Eh;if DS:0A02Eh \u003c DS:0A032h then DS:0A02Eh := DS:0A032h }。⚠ 減的次數與下限是同一個變數,而且夾限在迴圈裡面每次都做——等同 max(傷害 - n, n),但兩者在原作裡綁在一起,remake 不能當成兩個獨立參數。n=0 時整段跳過,比較用無號 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12324,7 +12548,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:24FBh（entry#108）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 2 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:24FBh（entry#108）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 2 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12342,6 +12569,7 @@
    "spec": "docs/spec/739-resistance-and-level-threshold.md",
    "note": "武器決定要不要減半:w := \u003csub_FAAh\u003e(DS:6506h)(spec 738);t := byte [5CFDh + w^[2Eh]×16](物品屬性表格內 +7,基底 5CF6h);**t = 0 或 (t and 1) 非 0 都減半**,只有「t 非 0 且 bit 0 為 0」不減——寫成單獨判斷 (t and 1) 會漏掉 t = 0 那一半。除法是有號 idiv 往零取整",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/739-resistance-and-level-threshold.md"
    ]
@@ -12360,7 +12588,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
-   "note": "與 pc98 overlay-12:257Eh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FCC\u003e(DS:9594h);if p \u003c\u003e nil 且 p^[5Ah] \u003e 0(有號 jle)then DS:0A02Eh div= 2(有號)。與 133Fh 查同一個欄位但門檻不同(那支是 \u003c 3),兩者在 1、2 兩個值上重疊 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-12:257Eh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FCC\u003e(DS:9594h);if p \u003c\u003e nil 且 p^[5Ah] \u003e 0(有號 jle)then DS:0A02Eh div= 2(有號)。與 133Fh 查同一個欄位但門檻不同(那支是 \u003c 3),兩者在 1、2 兩個值上重疊 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12378,6 +12609,7 @@
    "spec": "docs/spec/737-effproc-small-handlers.md",
    "note": "某種武器把傷害**覆寫**成 1d6+1:w := DS:6506h^[151h],w 非 NIL 且 w^[2Eh] = 55h 時 DS:6F94h := ROLLDAMAGEDICE(1,6) + 1。⚠ 是指派不是累加,把原本算好的值整個蓋掉",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/737-effproc-small-handlers.md",
@@ -12398,7 +12630,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:25FCh（entry#112）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 1 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:25FCh（entry#112）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 1 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12416,6 +12651,7 @@
    "spec": "docs/spec/737-effproc-small-handlers.md",
    "note": "打不到的規則:(w = NIL 或 w^[32h] = 0) 且 (施法者^[74h] \u003e 0 或 施法者^[0E5h] \u003c 4) 時 DS:6F94h := 0。⚠ 是把傷害設成 0 不是「不攻擊」,流程仍會往下走",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/737-effproc-small-handlers.md",
     "spec/747-summoned-item-and-third-gaze.md"
@@ -12437,7 +12673,9 @@
    "spec": "docs/spec/737-effproc-small-handlers.md",
    "note": "兩種武器類別觸發同一個處理:w^[2Eh] = 57h 或 58h 時 \u003csub_F39h\u003e(32h, arg_6, arg_8)。兩個類別編號相鄰且共用常數 32h",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
+    "spec/1005-effect-dispatch-table.md",
     "spec/737-effproc-small-handlers.md"
    ]
   },
@@ -12457,6 +12695,7 @@
    "spec": "docs/spec/819-spits-acid-special-attack.md",
    "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；\u003cfar 145Dh\u003e(1,64h) 擲 1..100 \u003e 19h（25）就離開；\u003cfar 1595h\u003e(目標, 角色) \u003e= 4（無號）也離開——兩道門檻都不印訊息。否則 \u003cfar 1598h+2\u003e(角色)、顯示 角色名+'Spits Acid'(10)、\u003cfar 1554h\u003e(角色, 角色名+訊息, 0Ah, 1)、\u003cfar 1566h+2\u003e(17h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、\u003cfar 1494h\u003e(\u003cfar 1462h\u003e(目標,8,4), \u003cfar 1457h+1\u003e(2,目標,3,0))、\u003cfar 143Eh+1\u003e(角色, 79h, longint(參數4:參數2))、\u003cfar 143Eh+1\u003e(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "spec/819-spits-acid-special-attack.md"
    ]
   },
@@ -12476,6 +12715,7 @@
    "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
    "note": "麻痺觸碰:p := 角色^[18Dh]^[0Ah];\u003coverlay-23 entry#8\u003e(p, 0, 0) 回 0(豁免失敗)時 \u003coverlay-23 entry#11\u003e(p, 34h, **0**, 0FFh, 0) 並顯示 '\u003c名字\u003e is paralyzed'(CS:2775h)。效果編號與訊息都和 spec 722 的凝視相同,但那裡第三個參數是 3Ch——**同一個麻痺效果有兩種持續時間來源**;entry#8 的第二個參數也不同(這裡 0、凝視 1)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
@@ -12499,6 +12739,7 @@
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "換一種傷害型別再打一次:DS:6F95h := 0Ah,d := ROLLDAMAGEDICE(2,8),\u003coverlay-23 entry#20\u003e(角色^[18Dh]^[0Ah], d, 0, 0)。不動 DS:6F94h 而是直接對目標再結算一次,所以是附加傷害不是修正值。⚠ DS:6F95h 設完沒有還原(與 spec 706 那支相反)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/738-effproc-effect-handlers.md",
@@ -12521,6 +12762,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:289Dh（entry#118）助憶碼序列完全相同，語意同該筆：擲 d100;結果 \u003c= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md"
    ]
   },
@@ -12540,6 +12782,7 @@
    "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
    "note": "連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/585-ecl-goto-and-display-mode-pair.md"
@@ -12561,6 +12804,7 @@
    "spec": "docs/spec/747-summoned-item-and-third-gaze.md",
    "note": "第三處麻痺凝視:p := 角色^[18Dh]^[0Ah](**直接讀,沒有 NIL 檢查**);顯示 '\u003c名字\u003e gazes...'(CS:2886h)、\u003coverlay-24 entry#24\u003e(12h)、entry#25 畫兩點動畫;\u003coverlay-23 entry#8\u003e(p,1,0) 回 0 才 \u003coverlay-23 entry#11\u003e(p, 34h, **0**, 0FFh, 0) 並顯示 '\u003c名字\u003e is paralyzed'(CS:288Fh)。⚠ 麻痺(34h)三個入口的持續時間參數不同:overlay-22:6022h 是 3Ch、overlay-12 的 2782h 與本支都是 0。兩句訊息在 overlay-22 與 overlay-12 各有一份(跨模組重複),中文化兩邊都要改",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/747-summoned-item-and-third-gaze.md"
    ]
@@ -12579,7 +12823,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:29F2h（entry#121）助憶碼序列完全相同，語意同該筆：DS:A02Dh 為 0 且傷害旗標 bit 3 為 0 時直接返回,否則呼叫 1Bh(0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:29F2h（entry#121）助憶碼序列完全相同，語意同該筆：DS:A02Dh 為 0 且傷害旗標 bit 3 為 0 時直接返回,否則呼叫 1Bh(0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12597,6 +12844,7 @@
    "spec": "docs/spec/742-vorpal-and-backfire.md",
    "note": "特定武器直接讓目標進入狀態 8:\u003coverlay-24 entry#43\u003e(DS:6506h, @r) 非 0 且 r^[2Eh]=1Ch 且 r\u003c\u003eNIL 且 r^[31h]=87h 時,目標^[195h]:=8、+196h:=0、**+1A4h:=0(HP 歸零)**、\u003coverlay-23 entry#14\u003e(目標)、\u003coverlay-23 entry#4\u003e(目標, 0Dh),目標^[196h]=0 時再 \u003coverlay-32 entry#20\u003e(目標)。**不擲任何骰**。⚠ NIL 檢查排在 r^[2Eh] 解參照之後,順序反了(第三處同型,見 spec 720/723)。⚠ 條件是類別 1Ch **且** +31h=87h 兩個欄位都要對。最後那個 +196h=0 用的是剛被自己清成 0 的欄位",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/742-vorpal-and-backfire.md"
    ]
@@ -12617,6 +12865,7 @@
    "spec": "docs/spec/743-berserk-and-two-factions.md",
    "note": "用物品節點第二個效果槽(+3Dh,spec 703)的套用/解除,由 arg_0 切換:解除走 \u003coverlay-23 entry#3\u003e(目標, id, 0);套用走 \u003coverlay-23 entry#11\u003e(目標, id, 0, 0FFh, 1),且**非戰鬥時才多呼叫** \u003coverlay-23 entry#2\u003e(id, 目標, 0, 0)。開頭 DS:7582h := 0",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/743-berserk-and-two-factions.md"
    ]
@@ -12635,7 +12884,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:2B20h（entry#124）助憶碼序列完全相同，語意同該筆：依序呼叫 1Bh(8Eh)、1Bh(1Dh)、1Bh(44h);傷害旗標 bit 6 非零時再呼叫 1Bh(0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:2B20h（entry#124）助憶碼序列完全相同，語意同該筆：依序呼叫 1Bh(8Eh)、1Bh(1Dh)、1Bh(44h);傷害旗標 bit 6 非零時再呼叫 1Bh(0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12653,6 +12905,7 @@
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "對特定目標的傷害加成:p := 角色^[18Dh]^[0Ah](目前鎖定的目標);(p^[14Bh] and 8) 非 0 時 DS:6F94h += 角色^[10Dh](**累加不是覆寫**)。與 spec 737 的 255Ah(把 DS:6F94h 覆寫成 1d6+1)對照,同一個全域一支覆寫一支累加,**執行順序決定結果**",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/738-effproc-effect-handlers.md",
@@ -12673,7 +12926,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:2B87h（entry#126）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 2(依 spec 412 為 Electricity)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:2B87h（entry#126）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 2(依 spec 412 為 Electricity)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12689,7 +12945,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:2BA0h（entry#127）助憶碼序列完全相同，語意同該筆：經兩層 far pointer(arg_6 → +18Eh)把目標 record 的 +6 清 0(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:2BA0h（entry#127）助憶碼序列完全相同，語意同該筆：經兩層 far pointer(arg_6 → +18Eh)把目標 record 的 +6 清 0(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12707,6 +12966,7 @@
    "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
    "note": "狂暴,spec 743 的 1809h 的姊妹支。套用流程幾乎相同(+198h:=1、+0F7h 三態、清掉鎖定目標、用 overlay-31 entry#6 重選、角色^[197h] := 新目標^[197h] xor 1)。⚠ **差別在解除:本支寫 角色^[197h] := 節點^[3](從節點取回原陣營),而 1809h 寫死 0**。姊妹支做對了 1809h 沒有;不過 1809h 的套用路徑也沒把原陣營存進任何地方,兩件事是一起漏掉的。這是 節點^[3] 的第三種打包(整個 byte = 陣營),與 744 的 shl 4、745 的 bit 6 都不同",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/746-dispel-evil-and-berserk-sibling.md"
@@ -12726,7 +12986,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12744,6 +13007,7 @@
    "spec": "docs/spec/737-effproc-small-handlers.md",
    "note": "+191h := ((v − 1) div 5) + 1,其中 v := 角色^[10Ch] + 角色^[114h] × \u003coverlay-25 entry#10\u003e(角色)。⚠ +10Ch/+114h 正是 spec 728 那組相差 8 的平行職業欄位,而 entry#10 在這裡是被 imul 的**數值不是布林值**(728 只測了零,語意要修正成「第二職業的權重」);spec 705 的 30C0h 用 +10Eh + +116h × entry#10 是同一個模板。⚠ idiv 往零取整,v=0 時算出 1、v 為負時大於 1,不能改寫成無號的 (v+4)/5",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/737-effproc-small-handlers.md"
@@ -12765,6 +13029,7 @@
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "解除恐懼(把 spec 724 的 4A8Fh 做的事還原):arg_0 非 0 時,**+0F7h 正好等於 0B3h 才**清成 0 並把 +198h 設 0;+18Dh^[10h] 則無條件清 0。⚠ +0F7h 的還原有條件——spec 734 的操縱屍體會把它設成 0B2h(原值 \u003e 7Fh 時),那種情況下解除恐懼不會動到它。兩個效果對同一個 byte 的處理不對稱,順序會影響結果",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/738-effproc-effect-handlers.md",
     "spec/743-berserk-and-two-factions.md"
@@ -12786,6 +13051,7 @@
    "spec": "docs/spec/742-vorpal-and-backfire.md",
    "note": "相鄰時傷害加倍但打的是自己:\u003coverlay-24 entry#33\u003e(arg_6, DS:6506h) \u003c 2(相鄰)時,備份 DS:6F94h 與 DS:6F95h,把傷害 shl 1、型別設成 8,顯示 '\u003c名字\u003e gets zapped'(CS:2CCDh),**\u003coverlay-23 entry#20\u003e 的第一個參數是 DS:6506h(攻擊者自己)**,最後兩個全域都還原。⚠ shl 1 之後只存回一個 byte,傷害超過 127 會回捲(第三個 byte 溢位點,但這個是傷害本身不是門檻)。⚠ 這支會還原 DS:6F95h,而 spec 738 的 27FAh 不還原——同模組兩種做法並存,改寫不能統一",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/742-vorpal-and-backfire.md"
    ]
@@ -12806,6 +13072,7 @@
    "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
    "note": "Dispel Evil:p := 角色^[18Dh]^[0Ah];(p^[14Bh] and 1) 非 0(邪惡)且 \u003coverlay-23 entry#8\u003e(p,4,0) 回 0(豁免失敗)時,\u003coverlay-23 entry#1\u003e(p, 8, '\u003c名字\u003e is dispelled' CS:2D5Ch),然後 **\u003coverlay-23 entry#3\u003e(DS:6506h, 4, 0) 與 (DS:6506h, 91h, 0)——解除的是施法者身上的效果不是目標的**;否則顯示 '\u003c名字\u003e resists dispel evil'(CS:2D69h)。⚠ 兩條失敗路徑(不邪惡、豁免成功)共用同一句訊息,玩家分不出。+14Bh 的 bit 0 是邪惡旗標,而 spec 738 的 2AD6h 用同一個 byte 的 bit 3",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/746-dispel-evil-and-berserk-sibling.md"
    ]
@@ -12824,7 +13091,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md",
+    "spec/1005-effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12837,9 +13108,13 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果分派表的初始化：569 條全部是直線賦值，把 141 個 far pointer 寫進 DS:6FAAh 起的表（PC-98 DS:A044h）。每個 far pointer 都精確落在某個 overlay entry stub 上(段 0094h/00C1h 皆為 CODE，位移間隔 5)。消費端是 overlay-23:00C9h(CALLEFFECT)，call dword ptr [di+6FA6h]、di=效果碼*4 ⇒ 效果碼 1..147。效果碼 86/88/90/128/131/132 六格兩平台都沒被指定，維持 NIL",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1005-effect-dispatch-table.md"
    ]
   },
   {
@@ -13587,6 +13862,7 @@
    "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
    "note": "物品類別白名單(retf 8)：(角色^[10Fh] \u003e 0) 或 ((角色^[117h] \u003e 0) 且 \u003c呼叫\u003e(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h \u003c 類別 \u003c 26h)；再要求 行動者^[18Dh]^[0Fh] \u003e 1 且 (行動者^[0DEh] and 7Fh) \u003c= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h]",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md",
@@ -13849,6 +14125,7 @@
    "spec": "docs/spec/826-engulf-and-name-at-offset-zero.md",
    "note": "engulfs 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah]；DS:6FA0h \u003c\u003e 2、目標^[196h] = 0、\u003cfar 1575h+2\u003e(@暫存,3Ah,目標) 成立、或 (…,0Dh,目標) 成立，任一就離開；重讀目標後 緩衝 := 角色名 + 'engulfs '(8，結尾空白)（0A54h:0634h），再 0A54h:06C1h 把**目標遠指標當字串**接上去——可證角色/戰鬥員記錄 +0 起就是 Pascal 字串的名字（與 spec 807 的 DS:6506h^[0] 互證）；\u003cfar 1552h+2\u003e(緩衝,1,0Ch) 顯示。接著 \u003cfar 1466h+1\u003e(目標,3Ah,0,\u003cfar 1939h+1\u003e(目標),0)、\u003cfar 1439h+1\u003e(3Ah,目標,longint 0,0)、\u003cfar 1466h+1\u003e(目標,0Dh,0,\u003cfar 145Ah+3\u003e(2,4),0)、\u003cfar 1466h+1\u003e(角色,8Bh,0,\u003cfar 1939h+1\u003e(目標),1)。進場的兩道守衛查的就是後面要掛的 3Ah 與 0Dh。spec 826",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-strings.md",
     "spec/826-engulf-and-name-at-offset-zero.md"
    ]
@@ -13911,6 +14188,7 @@
    "spec": "842",
    "note": "眼魔(Beholder)眼柄光線：分解/石化/死亡/傷害四道 + Fear(84)/Slow(55)/Sleep(21) 三個法術，用過旗標保證每種一回合一次，剩=4 上限。1434h+1(目標,狀態碼,訊息) 狀態碼 8/7/6 對上 spec 840 的集合 {6,7,8}。原文兩處有誤：'is disintergrated'、'stone to flesh' 寫反",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-13.md",
     "audit/function-strings.md",
     "spec/832-gaze-attack-and-mirror-item.md",
@@ -13933,6 +14211,7 @@
    "spec": "851",
    "note": "扭打的每回合結算(retf 0Ah，(角色, 效果節點, 解除旗標))：對手取自 DS:6D35h[節點 +3]。任一方 +196h = 0 就整組解開（抓人方撤 8Bh、被抓方撤 3Ah 與 0Dh）。續打時把 +19Ch/+19Dh/+19Eh/+1A0h 覆寫成 2/0/2/8 再叫 19D8h——扭打期間武器與攻擊次數都不算數",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/851-grapple-round-and-effect-node-plus3.md"
    ]
@@ -13953,6 +14232,7 @@
    "spec": "docs/spec/805-combat-state-allocation-and-initial-facing.md",
    "note": "暫時改寫攻擊資料後攻擊：目標 := 遠指標(DS:6D35h + 記錄^[3]*4)（戰鬥員遠指標表），存入 DS:6FA3h；旗標 \u003c\u003e 0 或 角色^[196h] = 0 或 目標^[196h] = 0 時走 \u003c143Dh+2\u003e(目標, 3Ah, longint 0)，且 旗標 = 0 時再 記錄^[4] := 0 與 \u003c143Dh+2\u003e(角色, 90h, 記錄)；否則 角色^[19Ch]:=1、+19Dh:=0、+19Eh:=2、+1A0h:=8（把 spec 795 的兩組攻擊資料就地改成第 1 組 (2,8)），呼叫 本模組 19D8h(角色, 目標, 1, longint 0, @暫存)、暫存 := \u003cfar 159Ah\u003e(角色)；目標^[196h] = 0 時再 \u003c143Dh+2\u003e(角色, 90h, longint 0) 與 \u003c143Dh+2\u003e(目標, 3Ah, longint 0)。retf 0Ah。spec 805",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "spec/805-combat-state-allocation-and-initial-facing.md",
     "spec/806-initiative-and-combat-state-layout.md",
     "spec/817-opportunity-attack-and-take-menu.md"
@@ -13974,6 +14254,7 @@
    "spec": "docs/spec/770-party-step-and-hug-attack.md",
    "note": "hugs 攻擊(retf 0Ah)：DS:6F9Fh \u003c 12h(有號)就離開；把 攻擊者^[18Dh]^[0Ah] 抄到全域 DS:6FA3h，組出「攻擊者 + CS:480Bh 'hugs ' + 目標名」後顯示；再對目標下 3Ah、對攻擊者自己下 90h 兩個效果碼。⚠ 'hugs ' 的尾隨空白是常數的一部分(長度 byte 為 5)，用來直接接目標名",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/770-party-step-and-hug-attack.md"
    ]
@@ -21179,8 +21460,10 @@
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
    "note": "與 pc98 overlay-23:00C9h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：CALLEFFECT:DS:A66Eh 非零時一律 far call DS:A28Ch(忽略 id);否則以 id*4 索引 DS:A040h 起的 far pointer 表分派。五個參數原樣轉傳 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
+    "spec/1005-effect-dispatch-table.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md",
     "spec/864-cloud-tick-and-hd-field.md"
    ]
@@ -21307,7 +21590,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/571-trytohit-attack-resolution.md",
-   "note": "與 pc98 overlay-23:11C4h 助憶碼序列完全相同（41 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：TRYTOHIT(modifier,target):d20 存全域 DS:A039h;自然 1 必失手、自然 20 改記為 100;CHECKFX(10h,target) 可改寫該全域;命中條件是 骰值+modifier \u003e target^[19Bh](嚴格大於) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-23:11C4h 助憶碼序列完全相同（41 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：TRYTOHIT(modifier,target):d20 存全域 DS:A039h;自然 1 必失手、自然 20 改記為 100;CHECKFX(10h,target) 可改寫該全域;命中條件是 骰值+modifier \u003e target^[19Bh](嚴格大於) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21466,7 +21752,9 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 19h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完）",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/effect-dispatch-table.md",
+    "audit/embedded-strings.md",
+    "spec/1005-effect-dispatch-table.md"
    ]
   },
   {
@@ -36048,12 +36336,12 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/573-effprocs-effect-handlers-first-batch.md",
-    "spec/831-morale-failure-table.md"
+    "spec/1005-effect-dispatch-table.md"
    ]
   },
   {
@@ -36094,6 +36382,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:A03Ch 加 5、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -36114,6 +36403,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:A03Ch 小於 5 時歸零,否則減 5;並將 DS:A039h(命中骰)減一",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -36134,6 +36424,7 @@
    "spec": "docs/spec/676-dos-overlay12-effects.md",
    "note": "與 dos overlay-12:00E8h 助憶碼序列完全相同（49 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：total := arg_6^[19Dh] + arg_6^[19Ch](兩欄位相加當一個總量);arg_2^[3] 嚴格大於 total 才直接扣,相等或不足改呼叫 \u003cfar 013Eh:043Fh\u003e(arg_6,3,0)。之後備妥英文原文 'is fighting with snakes' 顯示。⚠ 這兩個欄位對應 PC-98 的 +19Bh/+19Ch,差 1,與 spec 641 對照表一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-22.md"
    ]
   },
@@ -36153,6 +36444,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -36173,6 +36465,7 @@
    "spec": "docs/spec/677-pc98-overlay12-twins.md",
    "note": "DOS 0188h 的 PC-98 對應:同樣的 RACETYPE case(0Ah→1、9/0Ch→2、4→3、其餘→0),加成同時寫進 DS:0A039h 與 DS:0A02Eh(傷害值),再把 DS:0A02Fh 覆寫成 9。**由這對同構函式新定出全域對照 DS:6F9Fh ↔ DS:0A039h**",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "spec/677-pc98-overlay12-twins.md"
    ]
   },
@@ -36192,6 +36485,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "兩個欄位各自夾上限:if arg_6^[19Bh] \u003c 3Ah then += 2 else := 3Ch,+19Ch 同樣做一次。門檻 58、上限 60,所以 58/59 都會被拉到 60 而不是 60/61",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md",
     "spec/676-dos-overlay12-effects.md"
@@ -36213,6 +36507,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "if DS:9594h^[11Bh](ALIGNMENT) in {2,5,8} then DS:0A02Ch += 2、DS:0A039h -= 2。與 0264h({0,3,6})互補——兩組都是每隔 3 取一個,證明陣營是 9 值一維編碼、value mod 3 是善惡軸(0 善 1 中立 2 惡)。中立 {1,4,7} 兩支都不處理。效果 +2/-2 對應 AD\u0026D 的 Protection from Evil",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
@@ -36234,6 +36529,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "if DS:9594h^[11Bh](ALIGNMENT) in {0,3,6} then DS:0A02Ch += 2、DS:0A039h -= 2。針對善,與 022Dh(惡)互補",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
@@ -36255,6 +36551,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "傷害旗標 bit 1 非零時:DS:A02Eh 有號減半,並把 DS:A02Ch 加 3",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -36273,7 +36570,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/745-node-field-packed-differently.md",
-   "note": "與 DOS overlay-12:02CBh（entry#16）助憶碼序列完全相同，語意同該筆：魅惑(套用與解除共用一支)。⚠ **效果節點的 +3 用位元欄位打包**:bit 5 = 已套用旗標、bit 6 = 原陣營;套用時 節點^[3] += 20h + (角色^[197h] shl 6) 再取 bit 7 當新陣營,解除時 (節點^[3] and 40h) div 40h 取回原陣營。**這與 spec 744 操縱屍體的 (原陣營 shl 4) + 等級 是同一個 byte 的兩種打包**——沒有共通版面,remake 若替它取名並統一結構兩邊都會壞。bit 5 讓套用具冪等性(重複套用不會把已改掉的陣營當原值存)。改陣營後呼叫 \u003coverlay-24 entry#31\u003e(= spec 692 的 25D4h)重算統計,而 spec 743 的狂暴改陣營後沒有呼叫,兩支不一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:02CBh（entry#16）助憶碼序列完全相同，語意同該筆：魅惑(套用與解除共用一支)。⚠ **效果節點的 +3 用位元欄位打包**:bit 5 = 已套用旗標、bit 6 = 原陣營;套用時 節點^[3] += 20h + (角色^[197h] shl 6) 再取 bit 7 當新陣營,解除時 (節點^[3] and 40h) div 40h 取回原陣營。**這與 spec 744 操縱屍體的 (原陣營 shl 4) + 等級 是同一個 byte 的兩種打包**——沒有共通版面,remake 若替它取名並統一結構兩邊都會壞。bit 5 讓套用具冪等性(重複套用不會把已改掉的陣營當原值存)。改陣營後呼叫 \u003coverlay-24 entry#31\u003e(= spec 692 的 25D4h)重算統計,而 spec 743 的狂暴改陣營後沒有呼叫,兩支不一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36289,7 +36589,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36307,6 +36610,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "if arg_2^[3] = 0 則備妥「は窒息した。」呼叫 \u003cfar 013E:0005\u003e(arg_6,arg_8,6,訊息),否則 dec arg_2^[3]——+3 是效果節點上的倒數計時器,每次呼叫減 1,歸零那次才發作(不是立刻生效)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
@@ -36325,7 +36629,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36341,7 +36648,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/676-dos-overlay12-effects.md",
-   "note": "與 dos overlay-12:03E5h 助憶碼序列完全相同（36 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：兩道條件:\u003csub_3C\u003e(0Ah, arg_2^[3], 0Fh, arg_6) 非 0,且 arg_6^[1A4h](目前 HP,= PC-98 的 +1A5h)**嚴格大於 1**(jbe,等於 1 也不動手)。通過後 DS:6F95h := 0 並呼叫 \u003cfar 014Ah:0494h\u003e;最後 DS:4FBAh = 5 的檢查在動作之後,只跳過最後一個呼叫 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 dos overlay-12:03E5h 助憶碼序列完全相同（36 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：兩道條件:\u003csub_3C\u003e(0Ah, arg_2^[3], 0Fh, arg_6) 非 0,且 arg_6^[1A4h](目前 HP,= PC-98 的 +1A5h)**嚴格大於 1**(jbe,等於 1 也不動手)。通過後 DS:6F95h := 0 並呼叫 \u003cfar 014Ah:0494h\u003e;最後 DS:4FBAh = 5 的檢查在動作之後,只跳過最後一個呼叫 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36357,7 +36667,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36375,6 +36688,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "目標 record 的 +19Bh 小於 39h 時夾到 39h,並把 DS:A02Ch 加一;若 DS:A031h 等於 0Fh 則 DS:A02Eh 歸零",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md"
    ]
   },
@@ -36394,6 +36708,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "p := arg_6^[18Eh]^[0Ah](兩層間接),存進 DS:0A03Dh;if p^[14Ch] and 2 \u003c\u003e 0 then inc DS:0A039h。與 072Eh 逐指令相同,只差遮罩(2 對 4)——+14Ch 是位元旗標欄位,一支查一個 bit",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
@@ -36415,6 +36730,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md"
    ]
@@ -36435,6 +36751,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "if arg_6^[18Eh]^[2] \u003c\u003e 0 則備妥「は沈黙させられた。」呼叫 \u003cfar 014A:0024\u003e(arg_6,訊息,1,0Ah);之後無條件把 ^[2] 與 ^[1] 都清 0——訊息只在 [2] 非 0 時出現,但兩個欄位一律清",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-32.md",
     "spec/638-overlay12-effect-batch2.md"
@@ -36456,6 +36773,7 @@
    "spec": "docs/spec/677-pc98-overlay12-twins.md",
    "note": "效果 id 37h(與 147Ah 的毒同一個)存在時印「は毒のために死んだ。」——與 147Ah 的「は毒を受けた。」+「は死んだ。」是兩條不同的毒死路徑、訊息不同。之後 DS:0A036h 設 1、呼叫 \u003csub_140Fh\u003e(arg_6,arg_8,0Fh,0)、再設回 0。⚠ 003Ch(spec 633)正是查這個旗標決定要不要動作,所以只有在這段中間 003Ch 才會真的做事",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/677-pc98-overlay12-twins.md"
    ]
@@ -36474,7 +36792,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/747-summoned-item-and-third-gaze.md",
-   "note": "與 DOS overlay-12:05B6h（entry#27）助憶碼序列完全相同，語意同該筆：召喚物品(套用與解除共用一支)。先在物品鏈找「類別 14h 且 +31h = 0F3h」那一件;arg_0 非 0 走解除(找到就 \u003coverlay-24 entry#17\u003e 移除並釋放);否則:已經有一件就不給、**角色^[14Ch] \u003e= 10h(物品數量上限 16)也不給,而且靜默失敗連訊息都沒有**;通過才 GetMem(3Fh)+FillChar,填 +2Eh=14h、+30h=14h、+31h=0F3h、**+32h=1**(讓 spec 737 的「打不到」規則放行)、+3Dh=17h、+3Eh=0A0h,用 \u003coverlay-24 entry#18\u003e 掛上鏈(**掛的是複本**),再 \u003coverlay-19 entry#7\u003e,然後 **FreeMem 掉本地那份**,顯示 '\u003c名字\u003e Gains an item'(CS:05A8h)。⚠ 這支示範了 spec 695「掛的是複本不是來源」為什麼重要——否則這個 FreeMem 會釋放掉剛掛上去的節點。識別碼是 +2Eh 與 +31h 兩個一起比,只比類別會誤判 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:05B6h（entry#27）助憶碼序列完全相同，語意同該筆：召喚物品(套用與解除共用一支)。先在物品鏈找「類別 14h 且 +31h = 0F3h」那一件;arg_0 非 0 走解除(找到就 \u003coverlay-24 entry#17\u003e 移除並釋放);否則:已經有一件就不給、**角色^[14Ch] \u003e= 10h(物品數量上限 16)也不給,而且靜默失敗連訊息都沒有**;通過才 GetMem(3Fh)+FillChar,填 +2Eh=14h、+30h=14h、+31h=0F3h、**+32h=1**(讓 spec 737 的「打不到」規則放行)、+3Dh=17h、+3Eh=0A0h,用 \u003coverlay-24 entry#18\u003e 掛上鏈(**掛的是複本**),再 \u003coverlay-19 entry#7\u003e,然後 **FreeMem 掉本地那份**,顯示 '\u003c名字\u003e Gains an item'(CS:05A8h)。⚠ 這支示範了 spec 695「掛的是複本不是來源」為什麼重要——否則這個 FreeMem 會釋放掉剛掛上去的節點。識別碼是 +2Eh 與 +31h 兩個一起比,只比類別會誤判 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36492,6 +36813,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "if arg_0 = 0 且 \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md",
@@ -36514,6 +36836,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "與 0470h 逐指令相同的另一個遮罩版本:p := arg_6^[18Eh]^[0Ah];if p^[14Ch] and 4 \u003c\u003e 0 then inc DS:0A039h",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
@@ -36535,6 +36858,7 @@
    "spec": "docs/spec/677-pc98-overlay12-twins.md",
    "note": "n := (arg_2^[3] div 16) + 1(取效果節點 +3 的高 4 bit 再加一),r := ROLLDICE(1, n)——**面數由資料算出**不是常數,可以是 1d1 到 1d16;高 nibble 為 0 時 1d1 結果恆為 1。除法用 cwd + idiv 但輸入先零延伸,實際是無號。+3 的低 nibble 另有用途(1222h 取它的 bit 4)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/677-pc98-overlay12-twins.md",
@@ -36557,6 +36881,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:A02Eh := DS:A02Eh − (DS:A02Eh ÷ 4) ⇒ 取四分之三",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -36575,7 +36900,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/744-animate-removal-and-ac-fields.md",
-   "note": "與 DOS overlay-12:0818h（entry#33）助憶碼序列完全相同，語意同該筆：AC 每次變差 2 直到 AC 10:角色^[18Dh]^[2] 非 0 時顯示 '\u003c名字\u003e is coughing'(CS:080Ch),清 +18Dh^[2] 與 ^[1],\u003coverlay-24 entry#7\u003e(角色);**+19Bh \u003e 34h 時減 2、否則設成 32h,再整個複製到 +19Ah**;角色 = DS:6506h 時另呼叫 \u003coverlay-24 entry#5\u003e。⚠ **+19Bh 是 AC 基準值、+19Ah 是目前值**(顯示值 = 60 − 儲存值,spec 684/689);所以是顯示 AC 每次加 2(變差),下限 32h = 顯示 AC 10 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:0818h（entry#33）助憶碼序列完全相同，語意同該筆：AC 每次變差 2 直到 AC 10:角色^[18Dh]^[2] 非 0 時顯示 '\u003c名字\u003e is coughing'(CS:080Ch),清 +18Dh^[2] 與 ^[1],\u003coverlay-24 entry#7\u003e(角色);**+19Bh \u003e 34h 時減 2、否則設成 32h,再整個複製到 +19Ah**;角色 = DS:6506h 時另呼叫 \u003coverlay-24 entry#5\u003e。⚠ **+19Bh 是 AC 基準值、+19Ah 是目前值**(顯示值 = 60 − 儲存值,spec 684/689);所以是顯示 AC 每次加 2(變差),下限 32h = 顯示 AC 10 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36591,7 +36919,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/744-animate-removal-and-ac-fields.md",
-   "note": "與 DOS overlay-12:08CDh（entry#34）助憶碼序列完全相同，語意同該筆：操縱屍體的解除程序(對應 spec 734 的 2DB6h)。⚠ **角色^[197h] := 節點^[3] div 16 還原陣營**——這解掉 spec 724 留的一格:PUTEFFECT 的**第四個參數會被存進效果節點的 +3**。DS:6F9Ch = 0 時才顯示 '\u003c名字\u003e collapses'(CS:08C3h)。⚠ 與套用**不對稱**:+0E9h 套用寫 2、解除寫 0;+0E4h 套用寫 6、解除寫 0Ch;兩邊都不看原值,所以活人被操縱再解除後這兩個欄位會停在解除值上。+0DDh := 角色^[10Bh] + 角色^[113h] × \u003coverlay-25 entry#10\u003e(角色) 是第四對平行職業欄位(spec 728 模板) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:08CDh（entry#34）助憶碼序列完全相同，語意同該筆：操縱屍體的解除程序(對應 spec 734 的 2DB6h)。⚠ **角色^[197h] := 節點^[3] div 16 還原陣營**——這解掉 spec 724 留的一格:PUTEFFECT 的**第四個參數會被存進效果節點的 +3**。DS:6F9Ch = 0 時才顯示 '\u003c名字\u003e collapses'(CS:08C3h)。⚠ 與套用**不對稱**:+0E9h 套用寫 2、解除寫 0;+0E4h 套用寫 6、解除寫 0Ch;兩邊都不看原值,所以活人被操縱再解除後這兩個欄位會停在解除值上。+0DDh := 角色^[10Bh] + 角色^[113h] × \u003coverlay-25 entry#10\u003e(角色) 是第四對平行職業欄位(spec 728 模板) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36609,6 +36940,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:A039h(命中骰)減 4、arg_6 所指 record 的 +19Bh 與 +19Ch 各減 4、DS:A02Ch 減 4",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -36629,6 +36961,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "\u003cfar 013E:002A\u003e(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-19.md",
@@ -36653,6 +36986,7 @@
    "note": "士氣失敗的四種結果：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。r := \u003cfar 145Dh\u003e(1, 64h) 擲 1..100。1..10 → \u003cfar 143Eh+1\u003e(角色, 23h, longint 0)、+18Eh^[10h] := 1、+199h := 1、+0F7h \u003c= 7Fh 時補成 0B3h（上限 102 的編碼）、清掉 +18Eh^[0Ah] 目標、\u003cfar 1499h\u003e(角色, 8Eh, 0Ah, 0, 1, 1, 0, 名字+'runs away'(9))；11..60 → \u003cfar 1572h\u003e(角色, 1, 名字+'is confused'(11))、\u003cfar 1558h+1\u003e、本模組 0075h(0, 參數2, 參數4, 角色)；61..80 → \u003cfar 1499h\u003e(角色, 89h, 1, 角色^[197h], 1, 1, 0, 名字+'goes berserk'(12))、本模組 143Ah(0, longint 0, 角色, 89h)；81..100 → \u003cfar 1572h\u003e(角色, 1, 名字+'is enraged'(10))、\u003cfar 1558h+1\u003e。四段機率 10/50/20/20，沒有落空的骰值。最後不論哪一段都問 \u003cfar 1457h+1\u003e(角色, 4, 0FEh)，成立就再 \u003cfar 143Eh+1\u003e(角色, 23h, longint 0)。spec 831 PC-98 的四段比較改用無號跳躍（jnb/jbe/jb/ja），DOS 用有號並多一條 xor ah,ah；骰值 1..100 兩者結果相同，是編譯器差異。",
    "citations": [
     "audit/duplicate-strings.md",
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-strings.md"
    ]
@@ -36673,6 +37007,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:A039h(命中骰)減 4、DS:A02Ch 減 4(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -36693,6 +37028,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "若 arg_6 → +18Eh 所指 record 的 +3 為 0,則 DS:A035h := 1 且 DS:A039h(命中骰) := 0FFh",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -36713,6 +37049,7 @@
    "spec": "docs/spec/678-dodge-and-once-only-marker.md",
    "note": "用 arg_2^[3] 的 bit 4 當「已套用過」標記:未設時才設上、印「は歳をとった。」並讓 arg_6^[76h](word)加一;DS:0A030h × 2 在條件外面每次都做(只存回 byte,第 8 次之後固定是 0)。⚠ bit 4 同時屬於高 4 bit,而 0773h 取高 4 bit 當骰子面數——這支執行過的節點會讓那邊的面數多 1",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/678-dodge-and-once-only-marker.md"
    ]
@@ -36731,7 +37068,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/748-cloud-effect-dispel-pair.md",
-   "note": "與 DOS overlay-12:0C61h（entry#41）助憶碼序列完全相同，語意同該筆：雲霧類效果的解除：依(擁有者,key)在 DS:755Bh 鏈上找節點，逐格還原被蓋掉的原磚(有生物站著改畫 1Fh)，unlink 後 FreeMem 30 bytes，再把剩餘節點整條鏈重畫 1Eh。4 格，形狀索引取自 DS:27D8h..27DBh。retf 0Ah＝(擁有者 far, 節點 far, 未用 word) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:0C61h（entry#41）助憶碼序列完全相同，語意同該筆：雲霧類效果的解除：依(擁有者,key)在 DS:755Bh 鏈上找節點，逐格還原被蓋掉的原磚(有生物站著改畫 1Fh)，unlink 後 FreeMem 30 bytes，再把剩餘節點整條鏈重畫 1Eh。4 格，形狀索引取自 DS:27D8h..27DBh。retf 0Ah＝(擁有者 far, 節點 far, 未用 word) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36781,9 +37121,10 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/638-overlay12-effect-batch2.md",
-   "note": "if \u003csub_FCC\u003e(DS:9594h) \u003c\u003e nil 且其 ^[5Ah] = 0 則 \u003csub_F5B\u003e(arg_6,arg_8,64h)。⚠ sub_FCC 用同樣參數呼叫了兩次,結果沒有暫存",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 41 的處理常式（overlay entry stub 的目標，起點確定）。w := 取武器(DS:6506h/PC98 DS:9594h)；w\u003c\u003eNIL 且 w^[32h]=0(PC-98 是 +5Ah) 時 \u003csub_F39\u003e(角色, 64h)。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）；助憶碼序列與 DOS 對側完全相同",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
   },
@@ -36803,6 +37144,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:A030h := DS:A030h ÷ 2(有號)(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -36823,6 +37165,7 @@
    "spec": "docs/spec/679-stat-drain-with-floor.md",
    "note": "if \u003csub_3C\u003e(3Ch, arg_2^[3], 2Bh, arg_6) \u003c\u003e 0:arg_6^[11h] \u003e 3 時印「は弱まった。」並減一(下限 3);否則查目標有無效果 1Fh,沒有才 \u003csub_1437\u003e(arg_6,1Fh,0,0FFh,0)。與 111Bh 的下半段一字不差",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/679-stat-drain-with-floor.md"
@@ -36844,6 +37187,7 @@
    "spec": "docs/spec/679-stat-drain-with-floor.md",
    "note": "與 1091h 同骨架:if \u003csub_3C\u003e(0Ah, arg_2^[3], 2Ch, arg_6) \u003c\u003e 0:arg_6^[1A5h](目前 HP)\u003e 1 時 DS:0A02Fh := 0、\u003cfar 014Ah:0464h\u003e(arg_6,0,0,1),且 DS:7F27h \u003c\u003e 5 時再呼叫 \u003cfar 014Ah:04CAh\u003e;否則同樣改施加效果 1Fh。⚠ 下限是 1 不是 0——這支自己不會把角色降到死亡,死亡由 1Fh 那邊處理。2Bh 與 2Ch 相鄰,對應 09B9h 那支「同一組參數連續套用兩個 id」",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
@@ -36866,6 +37210,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "DS:0A03Dh := arg_6^[18Eh]^[0Ah];if DS:9594h^[11Ah](RACETYPE) in {2,0Ah} 且 (DS:9594h^[0DEh] and 7Fh) = 2 則 DS:0A039h -= 4。+0DEh 比較前先遮掉最高位——那是另一個用途的旗標",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
@@ -36886,6 +37231,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:9594h 所指 record 的 +11Ah 等於 1、且 +0DEh 的低 7 位元等於 2 時,DS:A039h(命中骰)減 4",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md"
    ]
   },
@@ -36905,6 +37251,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "v := (arg_2^[3] and 10h) div 10h(取 bit 4 得 0 或 1,編譯成 cwd + idiv 16);if arg_6^[198h] = v then \u003csub_8D\u003e(arg_0,arg_2,arg_6) else dec DS:0A039h 與 dec DS:0A02Ch",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md",
@@ -36928,6 +37275,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "if DS:0A02Fh and 2 則 DS:0A02Ch += 2;否則若 (DS:0A02Fh and 1) 且 DS:0A042h = 0 則 DS:0A02Eh := byte(DS:0A02Eh × 2)(shl 後只存回 al,溢位靜默丟掉)。與 12A0h 幾乎鏡像但守門的變數不同(這支看 DS:0A042h、那支看 DS:8CF7h),不能合併成一支帶參數的函式",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md"
@@ -36949,6 +37297,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "與 126Dh 對稱:兩個 bit 對調(先看 and 1 再看 and 2),而守門的變數是 DS:8CF7h 不是 DS:0A042h",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md"
@@ -36968,7 +37317,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36984,7 +37336,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37002,6 +37357,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "把 arg_6 → +18Eh 所指 record 的 +6 清 0;若 DS:A034h 非零則 DS:A030h := 0",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -37022,6 +37378,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "以 (0, 0FFh, 0, 62h, arg_6, arg_8) 呼叫 sub_1437",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -37042,6 +37399,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "p := \u003csub_FCC\u003e(DS:9594h);p = nil 或 p^[5Ah] = 0 則 DS:0A02Eh := 0;否則 p^[5Ah] \u003c 3 時 DS:0A02Eh := DS:0A02Eh div 2(有號)。第二個條件又檢查了一次 p \u003c\u003e nil,編譯出來是兩次檢查",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md",
@@ -37063,7 +37421,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/739-resistance-and-level-threshold.md",
-   "note": "與 DOS overlay-12:1374h（entry#58）助憶碼序列完全相同，語意同該筆：減傷:(DS:6F95h and 1) 非 0 時,以 n := DS:6F98h 為次數,每輪 DS:6F94h -= 2 並夾在 DS:6F98h 以上;之後 DS:6F92h += 4;(DS:6F95h and 8) = 0 時呼叫 \u003csub_1Bh\u003e(0)。⚠ DS:6F98h **同時是迴圈次數與傷害下限**,兩者不能拆開改。⚠ 夾限用**無號**比較,DS:6F94h 減到負數會回捲成大值而讓夾限失效,要靠 n 夠小才不會出事 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:1374h（entry#58）助憶碼序列完全相同，語意同該筆：減傷:(DS:6F95h and 1) 非 0 時,以 n := DS:6F98h 為次數,每輪 DS:6F94h -= 2 並夾在 DS:6F98h 以上;之後 DS:6F92h += 4;(DS:6F95h and 8) = 0 時呼叫 \u003csub_1Bh\u003e(0)。⚠ DS:6F98h **同時是迴圈次數與傷害下限**,兩者不能拆開改。⚠ 夾限用**無號**比較,DS:6F94h 減到負數會回捲成大值而讓夾限失效,要靠 n 夠小才不會出事 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37081,6 +37442,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "13F1h..1434h(retf 0Ah)的完整一支:if \u003csub_3C\u003e(arg_A:arg_8, 3Eh, arg_4^[3], 3Ch) \u003c\u003e 0 且 \u003cfar 013E:008E\u003e(arg_A:arg_8, 1, 1) \u003c\u003e 0 then \u003cfar 014A:00B1\u003e(arg_A:arg_8)。先前被誤標成邊界碎片,而其中段 1414h 被誤標成已解讀——由 scripts/verify_size_truncation.py 查出",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
@@ -37167,9 +37529,10 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "DS:A031h 大於 0 時,以 A031h × 10h 為索引查 DS:61B5h 起的表;該項小於 4 就呼叫 1Bh(0) ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 63 的處理常式（overlay entry stub 的目標，起點確定）。DS:6F97h(法術編號，PC-98 DS:A031h) \u003e 0 且 byte[編號*16 + 37DBh(PC-98 61B5h)] \u003c 4(有號比較) 時 \u003csub_1B\u003e(0)。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）；助憶碼序列與 DOS 對側完全相同",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "spec/736-phantom-instructions-from-decode-gaps.md"
    ]
   },
@@ -37391,8 +37754,11 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 64 的處理常式（overlay entry stub 的目標，起點確定）。\u003csub_1454\u003e(角色, 節點, 0)——與 0157Fh/01595h 是同一支的三個包裝，只差常數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）；助憶碼序列與 DOS 對側完全相同",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37407,8 +37773,11 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 65 的處理常式（overlay entry stub 的目標，起點確定）。\u003csub_1454\u003e(角色, 節點, 4)——與 01569h/01595h 是同一支的三個包裝，只差常數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）；助憶碼序列與 DOS 對側完全相同",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37423,8 +37792,11 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 66 的處理常式（overlay entry stub 的目標，起點確定）。\u003csub_1454\u003e(角色, 節點, 2)——與 01569h/0157Fh 是同一支的三個包裝，只差常數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）；助憶碼序列與 DOS 對側完全相同",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37439,9 +37811,10 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "以 (8, 2, arg_6, arg_8) 呼叫 far routine,回傳值零延伸後與 0 一起傳給 sub_151F",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 67 的處理常式（overlay entry stub 的目標，起點確定）。\u003csub_14F9\u003e(角色, 節點, \u003coverlay-23 entry#9\u003e(2,8), 0)——第三個參數是 2d8。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）；助憶碼序列與 DOS 對側完全相同",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
   },
@@ -37460,6 +37833,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完）",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md",
     "audit/function-strings.md"
    ]
@@ -37517,6 +37891,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "if DS:9594h^[11Ah](RACETYPE) = 13h then { if \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1; DS:0A039h -= 4 }。⚠ 減法那行在內層條件之外(jnz 跳到減法那行不是跳過),與 06F9h 兩行都在條件內不同——差別只有一個跳躍目標",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
@@ -37535,7 +37910,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37553,6 +37931,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:A035h := 1、DS:A039h(命中骰)減 4(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -37573,6 +37952,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "擲 d100;結果 \u003c= 5Fh(95) 時以 (0, 0Ch, 1, 19h, arg_6, arg_8) 呼叫 sub_1437 ⇒ 95% 機率套用該效果",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md"
    ]
   },
@@ -37592,6 +37972,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "if DS:0A02Fh and 20h \u003c\u003e 0 then \u003csub_1B\u003e(0) 並備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0024\u003e(arg_6,arg_8,訊息,1,0Ah)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md",
@@ -37613,7 +37994,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37631,6 +38015,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 3 then x := \u003cfar 0176:0506\u003e(arg_6)(cbw 有號),DS:0A02Eh := byte(ROLLDICE(1,0Ch)×3 + 4 + x)(1d12×3+4 是 7..40,加 x 後只存低 byte),DS:0A039h += 2",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md",
     "spec/639-overlay12-poison-and-race-gates.md",
@@ -37653,6 +38038,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 8 then DS:0A039h += 3、DS:0A02Eh += 3",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md",
     "spec/640-save-for-half-and-damage-global.md"
@@ -37672,7 +38058,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/743-berserk-and-two-factions.md",
-   "note": "與 DOS overlay-12:1809h（entry#76）助憶碼序列完全相同，語意同該筆：狂暴(套用與解除共用一支,由 arg_2 切換)。套用:+198h:=1、+0F7h 依三態設成 0B3h 或 0B2h;戰鬥中(DS:4FBAh=5)才繼續——先把 +18Dh^[0Ah] 清成 NIL,用 \u003coverlay-31 entry#6\u003e 重新選一個目標,然後 **角色^[197h] := 新目標^[197h] xor 1**(設成目標陣營的相反),顯示 '\u003c名字\u003e goes berzerk'(CS:17FCh)。⚠ **xor 1 定死了 +197h(陣營)只有 0 與 1 兩個值**——這回頭解釋 spec 692 的統計陣列為何只有兩格。⚠ 解除路徑寫 角色^[197h] := 0,**沒有還原原本的陣營**(對照 spec 734 特地打包保存);若 0 是玩家側,敵方狂暴結束後會變我方,需實機驗證 ⚠ spec 746:姊妹支 2B3Eh 解除時是 角色^[197h] := 節點^[3](從節點取回原陣營),本支寫死 0;而本支的套用路徑也沒把原陣營存進任何地方——兩件事一起漏掉,所以「解除後歸 0」很可能是缺陷不是設計 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:1809h（entry#76）助憶碼序列完全相同，語意同該筆：狂暴(套用與解除共用一支,由 arg_2 切換)。套用:+198h:=1、+0F7h 依三態設成 0B3h 或 0B2h;戰鬥中(DS:4FBAh=5)才繼續——先把 +18Dh^[0Ah] 清成 NIL,用 \u003coverlay-31 entry#6\u003e 重新選一個目標,然後 **角色^[197h] := 新目標^[197h] xor 1**(設成目標陣營的相反),顯示 '\u003c名字\u003e goes berzerk'(CS:17FCh)。⚠ **xor 1 定死了 +197h(陣營)只有 0 與 1 兩個值**——這回頭解釋 spec 692 的統計陣列為何只有兩格。⚠ 解除路徑寫 角色^[197h] := 0,**沒有還原原本的陣營**(對照 spec 734 特地打包保存);若 0 是玩家側,敵方狂暴結束後會變我方,需實機驗證 ⚠ spec 746:姊妹支 2B3Eh 解除時是 角色^[197h] := 節點^[3](從節點取回原陣營),本支寫死 0;而本支的套用路徑也沒把原陣營存進任何地方——兩件事一起漏掉,所以「解除後歸 0」很可能是缺陷不是設計 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37687,9 +38076,10 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
-   "note": "if \u003cfar 0176:0473\u003e(byte(arg_6^[1A5h]), arg_6) = 0 then \u003csub_3C\u003e(1, arg_2^[3], 4Eh, arg_6)",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "效果碼 78 的處理常式（overlay entry stub 的目標，起點確定）。\u003coverlay-23 entry#23\u003e(角色, 角色^[1A4h])(STANDUP，PC-98 讀 +1A5h) 回 0 時，\u003csub_3C\u003e(角色, 4Eh, 節點^[3], 1)；回傳值只存進區域變數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）；助憶碼序列與 DOS 對側完全相同",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md",
@@ -37712,6 +38102,7 @@
    "spec": "docs/spec/640-save-for-half-and-damage-global.md",
    "note": "DS:0A02Fh := 9;\u003cfar 013E:0064\u003e(arg_6^[18Eh]^[0Ah], ROLLDICE(2,0Ah)=2d10, 0, 0)。與 19E8h 逐指令相同,只差 DS:0A02Fh 的值與骰子",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/640-save-for-half-and-damage-global.md"
@@ -37733,6 +38124,7 @@
    "spec": "docs/spec/640-save-for-half-and-damage-global.md",
    "note": "DS:0A02Fh := 10h;\u003cfar 013E:0064\u003e(arg_6^[18Eh]^[0Ah], ROLLDICE(1,4)=1d4, 0, 0)。與 19B3h 成對",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/640-save-for-half-and-damage-global.md"
@@ -37754,6 +38146,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:A02Eh := DS:A02Eh ÷ 2(有號)(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -37774,6 +38167,7 @@
    "spec": "docs/spec/640-save-for-half-and-damage-global.md",
    "note": "if (DS:0A02Fh and 1) 或 (and 2) then:\u003cfar 013E:0028\u003e(0,4,arg_6,arg_8) 非 0(豁免成功)且 byte[DS:0A031h×16 + 61BCh] \u003c\u003e 0 時 DS:0A02Eh := 0(完全免疫),否則 DS:0A02Eh div 2(有號)。⚠ 兩條路徑都減半——豁免失敗也減半,只有「豁免成功且在免疫表裡」才歸零,與 AD\u0026D 慣例不同。DS:61BCh 是 16 bytes 一筆的表,索引取自 DS:0A031h",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/640-save-for-half-and-damage-global.md",
@@ -37797,6 +38191,7 @@
    "spec": "docs/spec/832-gaze-attack-and-mirror-item.md",
    "note": "凝視石化攻擊（含反射）：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；\u003cfar 1554h\u003e(角色, 名字+'gazes...'(8), 0Ah, 0)、\u003cfar 1566h+2\u003e(12h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),4,2Dh)；\u003cfar 1576h+1\u003e(角色, 7Fh, @暫存) 為假就直接跳到收尾。否則掃 DS:0A03Dh^[14Dh] 物品鏈（next +52h）：+5Ch \u003c\u003e 0（裝備中）且 (+57h 或 +58h 或 +59h) = 76h 時 顯示 名字+'reflects it!'(12)、反向重播動畫、換過 := 1、**DS:0A03Dh := 角色**（反射回發動者）；找到一件就停。收尾：if not \u003cfar 1457h+1\u003e(DS:0A03Dh, 0, 1) then \u003cfar 1435h\u003e(DS:0A03Dh, 7, 名字+'is Stoned'(9))。物品 +57h/+58h/+59h 是三個屬性槽，值 76h 表示會反射凝視。spec 832 PC-98 另有三處不同：兩段多出 xor ah,ah / mov cx,0Ah / imul cx（乘 10），第三個 76h 的判斷改成 jz + jmp（分支結構不同）——本支兩平台需各自判讀。",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-strings.md"
    ]
   },
@@ -37814,7 +38209,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/641-dos-field-offset-shift.md",
-   "note": "與 dos overlay-12:1C1Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:6F95h and 4 \u003c\u003e 0 then \u003csub_1B\u003e(0)、\u003cfar 013E:007D\u003e(8,1)、arg_6^[1A4h](目前 HP)+= 8,不夾上限(對照 20FAh 有夾)。013E:007D 的回傳值存進區域變數後沒再讀,是死存。與 PC-98 176Dh 同型(DS:6F95h ↔ DS:0A02Fh) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 dos overlay-12:1C1Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:6F95h and 4 \u003c\u003e 0 then \u003csub_1B\u003e(0)、\u003cfar 013E:007D\u003e(8,1)、arg_6^[1A4h](目前 HP)+= 8,不夾上限(對照 20FAh 有夾)。013E:007D 的回傳值存進區域變數後沒再讀,是死存。與 PC-98 176Dh 同型(DS:6F95h ↔ DS:0A02Fh) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37830,7 +38228,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/641-dos-field-offset-shift.md",
-   "note": "與 dos overlay-12:1C4Fh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 byte[p^[2Eh]×16 + 5CFDh] = 1 then DS:6F94h := 1。DS:5CFDh 是 16 bytes 一筆的表,對應 PC-98 的 DS:61BCh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 dos overlay-12:1C4Fh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 byte[p^[2Eh]×16 + 5CFDh] = 1 then DS:6F94h := 1。DS:5CFDh 是 16 bytes 一筆的表,對應 PC-98 的 DS:61BCh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37848,6 +38249,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "與 dos overlay-12:1C90h 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:758Dh = 0 且 DS:6F9Fh = 0 then arg_2^[3] and= 0Fh(清高 nibble);否則若 (arg_2^[3] and 10h) = 0 則 DS:6F9Fh := 0FFh、arg_2^[3] or= 10h(設 bit 4) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md"
    ]
   },
@@ -37865,7 +38267,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/748-cloud-effect-dispel-pair.md",
-   "note": "與 DOS overlay-12:1CF6h（entry#86）助憶碼序列完全相同，語意同該筆：與 0C61h 同一段原始碼的第二份實例：268 條助憶碼相同，運算元僅差 13 處(鏈頭 755Fh、字串 1CDBh、形狀表 27DBh、格數 9、磚碼 1Ch)，差異已窮舉於 spec 748 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:1CF6h（entry#86）助憶碼序列完全相同，語意同該筆：與 0C61h 同一段原始碼的第二份實例：268 條助憶碼相同，運算元僅差 13 處(鏈頭 755Fh、字串 1CDBh、形狀表 27DBh、格數 9、磚碼 1Ch)，差異已窮舉於 spec 748 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37883,6 +38288,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "傷害旗標 DS:A02Fh bit 0 非零時,DS:A02Eh 有號除以 2(減半)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -37901,7 +38307,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/641-dos-field-offset-shift.md",
-   "note": "與 dos overlay-12:1FE4h 助憶碼序列完全相同（31 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 (byte[p^[2Eh]×16 + 5CFDh] and 81h) \u003c\u003e 0 then DS:6F94h := DS:6F94h div 2(有號)。與 PC-98 1A34h 同一個動作,故 DS:6F94h ↔ DS:0A02Eh(傷害值)。注意判準與 1C4Fh 不同:這支 and 81h、那支 = 1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 dos overlay-12:1FE4h 助憶碼序列完全相同（31 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 (byte[p^[2Eh]×16 + 5CFDh] and 81h) \u003c\u003e 0 then DS:6F94h := DS:6F94h div 2(有號)。與 PC-98 1A34h 同一個動作,故 DS:6F94h ↔ DS:0A02Eh(傷害值)。注意判準與 1C4Fh 不同:這支 and 81h、那支 = 1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37917,7 +38326,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/641-dos-field-offset-shift.md",
-   "note": "與 dos overlay-12:203Ch 助憶碼序列完全相同（23 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_2^[4] := 0;if arg_6^[196h] \u003c\u003e 0 then 備妥 'Falls dead' 呼叫 \u003cfar 013E:0005\u003e(arg_6,訊息,6)。⚠ DOS 的 +196h 對應 PC-98 的 +197h,不是狀態碼——狀態碼在 DOS 是 +195h(見 spec 641 的對照表) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 dos overlay-12:203Ch 助憶碼序列完全相同（23 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_2^[4] := 0;if arg_6^[196h] \u003c\u003e 0 then 備妥 'Falls dead' 呼叫 \u003cfar 013E:0005\u003e(arg_6,訊息,6)。⚠ DOS 的 +196h 對應 PC-98 的 +197h,不是狀態碼——狀態碼在 DOS 是 +195h(見 spec 641 的對照表) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37935,6 +38347,7 @@
    "spec": "970",
    "note": "分段加成(retf 0Ah)，DOS 對應是 spec 741 的 02078h：DS:0A041h 為 4 或 2 時，把 角色^[19h] 依 4..6/7..0Ah/0Bh..0Dh/0Eh..11h/12h..14h 五段分別給加成 1..5，再加進 DS:0A02Ch。⚠加成在 v \u003c 4 或 v \u003e 14h 時從頭到尾沒有被賦值，加進去的是堆疊殘值——與 DOS 版完全相同的缺陷，PC-98 沒有修。11 個差異區塊全是 spec 783 類別 (c) 的編譯器碼型(DOS 有號 jl/jg、PC-98 無號 jb/ja)，值域內等價",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "spec/741-on-hit-effects-and-third-uninitialised.md",
     "spec/970-pc98-name-colour-and-segmented-bonus.md"
    ]
@@ -37953,7 +38366,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/641-dos-field-offset-shift.md",
-   "note": "與 dos overlay-12:20FAh 助憶碼序列完全相同（16 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_6^[1A4h] := min(arg_6^[1A4h] + 3, arg_6^[78h])——加血並夾在上限。⚠ DOS 的 +1A4h 對應 PC-98 的 +1A5h(目前 HP),兩平台紀錄後段偏移差 1;+196h 以前則相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 dos overlay-12:20FAh 助憶碼序列完全相同（16 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_6^[1A4h] := min(arg_6^[1A4h] + 3, arg_6^[78h])——加血並夾在上限。⚠ DOS 的 +1A4h 對應 PC-98 的 +1A5h(目前 HP),兩平台紀錄後段偏移差 1;+196h 以前則相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37969,7 +38385,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/745-node-field-packed-differently.md",
-   "note": "與 DOS overlay-12:212Ch（entry#92）助憶碼序列完全相同，語意同該筆：把瀕死的人拉回來:狀態 +195h=5 且 角色^[18Dh]^[0Eh] \u003c 6 時 n := 6 − 欠血;狀態 4 時 n := 6;n \u003e 0 且 \u003coverlay-23 entry#23\u003e(角色, n) 成立才 \u003coverlay-23 entry#11\u003e(角色, 5Fh, ROLLDICE(1,4)+1, 0FFh, 1)、節點^[4] := 0、\u003coverlay-23 entry#3\u003e(角色, 63h, 節點)。兩個判斷是分開的 if 不是 elif,但狀態不可能同時是 4 和 5,實際等價 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:212Ch（entry#92）助憶碼序列完全相同，語意同該筆：把瀕死的人拉回來:狀態 +195h=5 且 角色^[18Dh]^[0Eh] \u003c 6 時 n := 6 − 欠血;狀態 4 時 n := 6;n \u003e 0 且 \u003coverlay-23 entry#23\u003e(角色, n) 成立才 \u003coverlay-23 entry#11\u003e(角色, 5Fh, ROLLDICE(1,4)+1, 0FFh, 1)、節點^[4] := 0、\u003coverlay-23 entry#3\u003e(角色, 63h, 節點)。兩個判斷是分開的 if 不是 elif,但狀態不可能同時是 4 和 5,實際等價 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37987,6 +38406,7 @@
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
    "note": "if (DS:0A02Fh and 1) = 0 且 (and 10h) = 0 then \u003csub_1437\u003e(arg_8,arg_6,66h,ROLLDICE(3,6)=3d6,0FFh,1)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
@@ -38007,6 +38427,7 @@
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
    "note": "if \u003cfar 014A:00A7\u003e(arg_6,arg_8,62h,@var_4) = 0 且 同樣以 3Bh 查也 = 0 then \u003csub_1437\u003e(arg_8,arg_6,3Bh,3,0FFh,1)。連查兩個效果 id,兩個都沒有才施加 3Bh",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
@@ -38027,6 +38448,7 @@
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
    "note": "if \u003cfar 0176:0473\u003e(arg_6, arg_6^[78h]) = 0 then \u003csub_3C\u003e(arg_6,66h,arg_2^[3],1)。sub_3C 的呼叫形狀與 1973h/13F1h 一致(far pointer, id, byte, 旗標)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
@@ -38045,7 +38467,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
-   "note": "與 DOS overlay-12:22A3h（entry#96）助憶碼序列完全相同，語意同該筆：三個效果都沒有才加傷害:對 p := 角色^[18Dh]^[0Ah] 依序查 14h、36h、3Dh(三次 \u003coverlay-24 entry#27\u003e,短路),**任何一個成立就完全不加**;都沒有才 DS:6F94h += ROLLDICE(1, 6) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:22A3h（entry#96）助憶碼序列完全相同，語意同該筆：三個效果都沒有才加傷害:對 p := 角色^[18Dh]^[0Ah] 依序查 14h、36h、3Dh(三次 \u003coverlay-24 entry#27\u003e,短路),**任何一個成立就完全不加**;都沒有才 DS:6F94h += ROLLDICE(1, 6) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38061,7 +38486,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F5B`（body 共 22 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F5B`（body 共 22 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38096,7 +38524,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38112,7 +38543,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38130,6 +38564,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "擲 d100(count=1,sides=64h);結果 \u003c= 5Ah(90) 時依序呼叫 1Bh(35h) 與 1Bh(0Bh) ⇒ 90% 機率取消這兩類傷害",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
@@ -38151,6 +38586,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "依序以常數 0Bh 與 35h 呼叫 overlay-12 local 1Bh(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -38169,7 +38605,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38187,6 +38626,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "傷害旗標 DS:A02Fh bit 1 非零時呼叫 overlay-12 local 1Bh(0)(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md",
     "spec/707-raise-dead-and-area-effect.md"
@@ -38208,6 +38648,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "依序呼叫 1Bh(37h) 與 1Bh(34h);若 DS:A041h 為 0 則 DS:A02Ch := 64h",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -38228,6 +38669,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "傷害旗標 DS:A02Fh bit 0(依 spec 412 為 Fire)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -38248,6 +38690,7 @@
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
    "note": "if DS:0A02Fh and 1 then n := DS:0A032h;for i := 1 to n do { dec DS:0A02Eh;if DS:0A02Eh \u003c DS:0A032h then DS:0A02Eh := DS:0A032h }。⚠ 減的次數與下限是同一個變數,而且夾限在迴圈裡面每次都做——等同 max(傷害 - n, n),但兩者在原作裡綁在一起,remake 不能當成兩個獨立參數。n=0 時整段跳過,比較用無號",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
@@ -38268,6 +38711,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "傷害旗標 DS:A02Fh bit 2 非零時,DS:A02Eh 有號除以 2(減半)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -38286,7 +38730,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/739-resistance-and-level-threshold.md",
-   "note": "與 DOS overlay-12:24B9h（entry#109）助憶碼序列完全相同，語意同該筆：武器決定要不要減半:w := \u003csub_FAAh\u003e(DS:6506h)(spec 738);t := byte [5CFDh + w^[2Eh]×16](物品屬性表格內 +7,基底 5CF6h);**t = 0 或 (t and 1) 非 0 都減半**,只有「t 非 0 且 bit 0 為 0」不減——寫成單獨判斷 (t and 1) 會漏掉 t = 0 那一半。除法是有號 idiv 往零取整 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:24B9h（entry#109）助憶碼序列完全相同，語意同該筆：武器決定要不要減半:w := \u003csub_FAAh\u003e(DS:6506h)(spec 738);t := byte [5CFDh + w^[2Eh]×16](物品屬性表格內 +7,基底 5CF6h);**t = 0 或 (t and 1) 非 0 都減半**,只有「t 非 0 且 bit 0 為 0」不減——寫成單獨判斷 (t and 1) 會漏掉 t = 0 那一半。除法是有號 idiv 往零取整 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38304,6 +38751,7 @@
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
    "note": "p := \u003csub_FCC\u003e(DS:9594h);if p \u003c\u003e nil 且 p^[5Ah] \u003e 0(有號 jle)then DS:0A02Eh div= 2(有號)。與 133Fh 查同一個欄位但門檻不同(那支是 \u003c 3),兩者在 1、2 兩個值上重疊",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
@@ -38322,7 +38770,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/737-effproc-small-handlers.md",
-   "note": "與 DOS overlay-12:255Ah（entry#111）助憶碼序列完全相同，語意同該筆：某種武器把傷害**覆寫**成 1d6+1:w := DS:6506h^[151h],w 非 NIL 且 w^[2Eh] = 55h 時 DS:6F94h := ROLLDAMAGEDICE(1,6) + 1。⚠ 是指派不是累加,把原本算好的值整個蓋掉 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:255Ah（entry#111）助憶碼序列完全相同，語意同該筆：某種武器把傷害**覆寫**成 1d6+1:w := DS:6506h^[151h],w 非 NIL 且 w^[2Eh] = 55h 時 DS:6F94h := ROLLDAMAGEDICE(1,6) + 1。⚠ 是指派不是累加,把原本算好的值整個蓋掉 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38340,6 +38791,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "傷害旗標 DS:A02Fh bit 1 非零時,DS:A02Eh 有號除以 2(減半)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -38358,7 +38810,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/737-effproc-small-handlers.md",
-   "note": "與 DOS overlay-12:25BAh（entry#113）助憶碼序列完全相同，語意同該筆：打不到的規則:(w = NIL 或 w^[32h] = 0) 且 (施法者^[74h] \u003e 0 或 施法者^[0E5h] \u003c 4) 時 DS:6F94h := 0。⚠ 是把傷害設成 0 不是「不攻擊」,流程仍會往下走 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:25BAh（entry#113）助憶碼序列完全相同，語意同該筆：打不到的規則:(w = NIL 或 w^[32h] = 0) 且 (施法者^[74h] \u003e 0 或 施法者^[0E5h] \u003c 4) 時 DS:6F94h := 0。⚠ 是把傷害設成 0 不是「不攻擊」,流程仍會往下走 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38374,7 +38829,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/737-effproc-small-handlers.md",
-   "note": "與 DOS overlay-12:2606h（entry#114）助憶碼序列完全相同，語意同該筆：兩種武器類別觸發同一個處理:w^[2Eh] = 57h 或 58h 時 \u003csub_F39h\u003e(32h, arg_6, arg_8)。兩個類別編號相鄰且共用常數 32h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:2606h（entry#114）助憶碼序列完全相同，語意同該筆：兩種武器類別觸發同一個處理:w^[2Eh] = 57h 或 58h 時 \u003csub_F39h\u003e(32h, arg_6, arg_8)。兩個類別編號相鄰且共用常數 32h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38390,7 +38848,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/819-spits-acid-special-attack.md",
-   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；\u003cfar 145Dh\u003e(1,64h) 擲 1..100 \u003e 19h（25）就離開；\u003cfar 1595h\u003e(目標, 角色) \u003e= 4（無號）也離開——兩道門檻都不印訊息。否則 \u003cfar 1598h+2\u003e(角色)、顯示 角色名+'は酸を吹いた。'(14 bytes)、\u003cfar 1554h\u003e(角色, 角色名+訊息, 0Ah, 1)、\u003cfar 1566h+2\u003e(17h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、\u003cfar 1494h\u003e(\u003cfar 1462h\u003e(目標,8,4), \u003cfar 1457h+1\u003e(2,目標,3,0))、\u003cfar 143Eh+1\u003e(角色, 79h, longint(參數4:參數2))、\u003cfar 143Eh+1\u003e(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819 PC-98 另外多一段 xor ah,ah / mov cx,7 / imul cx（把某個 byte 乘 7），DOS 沒有；與 spec 760 的 overlay-13:040B8h 同一種常數／算式差異。"
+   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；\u003cfar 145Dh\u003e(1,64h) 擲 1..100 \u003e 19h（25）就離開；\u003cfar 1595h\u003e(目標, 角色) \u003e= 4（無號）也離開——兩道門檻都不印訊息。否則 \u003cfar 1598h+2\u003e(角色)、顯示 角色名+'は酸を吹いた。'(14 bytes)、\u003cfar 1554h\u003e(角色, 角色名+訊息, 0Ah, 1)、\u003cfar 1566h+2\u003e(17h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、\u003cfar 1494h\u003e(\u003cfar 1462h\u003e(目標,8,4), \u003cfar 1457h+1\u003e(2,目標,3,0))、\u003cfar 143Eh+1\u003e(角色, 79h, longint(參數4:參數2))、\u003cfar 143Eh+1\u003e(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819 PC-98 另外多一段 xor ah,ah / mov cx,7 / imul cx（把某個 byte 乘 7），DOS 沒有；與 spec 760 的 overlay-13:040B8h 同一種常數／算式差異。",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38406,7 +38867,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
-   "note": "與 DOS overlay-12:2782h（entry#116）助憶碼序列完全相同，語意同該筆：麻痺觸碰:p := 角色^[18Dh]^[0Ah];\u003coverlay-23 entry#8\u003e(p, 0, 0) 回 0(豁免失敗)時 \u003coverlay-23 entry#11\u003e(p, 34h, **0**, 0FFh, 0) 並顯示 '\u003c名字\u003e is paralyzed'(CS:2775h)。效果編號與訊息都和 spec 722 的凝視相同,但那裡第三個參數是 3Ch——**同一個麻痺效果有兩種持續時間來源**;entry#8 的第二個參數也不同(這裡 0、凝視 1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:2782h（entry#116）助憶碼序列完全相同，語意同該筆：麻痺觸碰:p := 角色^[18Dh]^[0Ah];\u003coverlay-23 entry#8\u003e(p, 0, 0) 回 0(豁免失敗)時 \u003coverlay-23 entry#11\u003e(p, 34h, **0**, 0FFh, 0) 並顯示 '\u003c名字\u003e is paralyzed'(CS:2775h)。效果編號與訊息都和 spec 722 的凝視相同,但那裡第三個參數是 3Ch——**同一個麻痺效果有兩種持續時間來源**;entry#8 的第二個參數也不同(這裡 0、凝視 1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38424,6 +38888,7 @@
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "與 DOS overlay-12:27FAh（entry#117）助憶碼序列完全相同，語意同該筆：換一種傷害型別再打一次:DS:6F95h := 0Ah,d := ROLLDAMAGEDICE(2,8),\u003coverlay-23 entry#20\u003e(角色^[18Dh]^[0Ah], d, 0, 0)。不動 DS:6F94h 而是直接對目標再結算一次,所以是附加傷害不是修正值。⚠ DS:6F95h 設完沒有還原(與 spec 706 那支相反) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-strings.md",
     "audit/function-triage.md"
    ]
@@ -38444,6 +38909,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "擲 d100;結果 \u003c= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -38464,6 +38930,7 @@
    "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
    "note": "與 dos overlay-12:2855h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md"
    ]
@@ -38484,6 +38951,7 @@
    "spec": "747",
    "note": "同 DOS overlay-12:0289Ch（第三處麻痺凝視）。★DOS 算 2Dh(45) × 0Bh(11) = 495 當常數，PC-98 改讀全域 DS:7F16h（同一個全域也出現在 pc98 overlay-14:00807h）。其餘是位址：+18Eh↔+18Dh、DS:0A03Dh/0A03Fh↔6FA3h/6FA5h",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-14.md",
     "audit/function-strings.md"
    ]
@@ -38504,6 +38972,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "DS:A02Dh 為 0 且傷害旗標 bit 3 為 0 時直接返回,否則呼叫 1Bh(0)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -38522,7 +38991,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/742-vorpal-and-backfire.md",
-   "note": "與 DOS overlay-12:299Ch（entry#122）助憶碼序列完全相同，語意同該筆：特定武器直接讓目標進入狀態 8:\u003coverlay-24 entry#43\u003e(DS:6506h, @r) 非 0 且 r^[2Eh]=1Ch 且 r\u003c\u003eNIL 且 r^[31h]=87h 時,目標^[195h]:=8、+196h:=0、**+1A4h:=0(HP 歸零)**、\u003coverlay-23 entry#14\u003e(目標)、\u003coverlay-23 entry#4\u003e(目標, 0Dh),目標^[196h]=0 時再 \u003coverlay-32 entry#20\u003e(目標)。**不擲任何骰**。⚠ NIL 檢查排在 r^[2Eh] 解參照之後,順序反了(第三處同型,見 spec 720/723)。⚠ 條件是類別 1Ch **且** +31h=87h 兩個欄位都要對。最後那個 +196h=0 用的是剛被自己清成 0 的欄位 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:299Ch（entry#122）助憶碼序列完全相同，語意同該筆：特定武器直接讓目標進入狀態 8:\u003coverlay-24 entry#43\u003e(DS:6506h, @r) 非 0 且 r^[2Eh]=1Ch 且 r\u003c\u003eNIL 且 r^[31h]=87h 時,目標^[195h]:=8、+196h:=0、**+1A4h:=0(HP 歸零)**、\u003coverlay-23 entry#14\u003e(目標)、\u003coverlay-23 entry#4\u003e(目標, 0Dh),目標^[196h]=0 時再 \u003coverlay-32 entry#20\u003e(目標)。**不擲任何骰**。⚠ NIL 檢查排在 r^[2Eh] 解參照之後,順序反了(第三處同型,見 spec 720/723)。⚠ 條件是類別 1Ch **且** +31h=87h 兩個欄位都要對。最後那個 +196h=0 用的是剛被自己清成 0 的欄位 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38538,7 +39010,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/743-berserk-and-two-factions.md",
-   "note": "與 DOS overlay-12:2A2Ch（entry#123）助憶碼序列完全相同，語意同該筆：用物品節點第二個效果槽(+3Dh,spec 703)的套用/解除,由 arg_0 切換:解除走 \u003coverlay-23 entry#3\u003e(目標, id, 0);套用走 \u003coverlay-23 entry#11\u003e(目標, id, 0, 0FFh, 1),且**非戰鬥時才多呼叫** \u003coverlay-23 entry#2\u003e(id, 目標, 0, 0)。開頭 DS:7582h := 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:2A2Ch（entry#123）助憶碼序列完全相同，語意同該筆：用物品節點第二個效果槽(+3Dh,spec 703)的套用/解除,由 arg_0 切換:解除走 \u003coverlay-23 entry#3\u003e(目標, id, 0);套用走 \u003coverlay-23 entry#11\u003e(目標, id, 0, 0FFh, 1),且**非戰鬥時才多呼叫** \u003coverlay-23 entry#2\u003e(id, 目標, 0, 0)。開頭 DS:7582h := 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38556,6 +39031,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "依序呼叫 1Bh(8Eh)、1Bh(1Dh)、1Bh(44h);傷害旗標 bit 6 非零時再呼叫 1Bh(0)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md"
    ]
   },
@@ -38573,7 +39049,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/738-effproc-effect-handlers.md",
-   "note": "與 DOS overlay-12:2AD6h（entry#125）助憶碼序列完全相同，語意同該筆：對特定目標的傷害加成:p := 角色^[18Dh]^[0Ah](目前鎖定的目標);(p^[14Bh] and 8) 非 0 時 DS:6F94h += 角色^[10Dh](**累加不是覆寫**)。與 spec 737 的 255Ah(把 DS:6F94h 覆寫成 1d6+1)對照,同一個全域一支覆寫一支累加,**執行順序決定結果** ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:2AD6h（entry#125）助憶碼序列完全相同，語意同該筆：對特定目標的傷害加成:p := 角色^[18Dh]^[0Ah](目前鎖定的目標);(p^[14Bh] and 8) 非 0 時 DS:6F94h += 角色^[10Dh](**累加不是覆寫**)。與 spec 737 的 255Ah(把 DS:6F94h 覆寫成 1d6+1)對照,同一個全域一支覆寫一支累加,**執行順序決定結果** ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38591,6 +39070,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "傷害旗標 DS:A02Fh bit 2(依 spec 412 為 Electricity)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -38611,6 +39091,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "經兩層 far pointer(arg_6 → +18Eh)把目標 record 的 +6 清 0(retf 0Ah,5 個 word 參數)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -38629,7 +39110,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
-   "note": "與 DOS overlay-12:2B3Eh（entry#128）助憶碼序列完全相同，語意同該筆：狂暴,spec 743 的 1809h 的姊妹支。套用流程幾乎相同(+198h:=1、+0F7h 三態、清掉鎖定目標、用 overlay-31 entry#6 重選、角色^[197h] := 新目標^[197h] xor 1)。⚠ **差別在解除:本支寫 角色^[197h] := 節點^[3](從節點取回原陣營),而 1809h 寫死 0**。姊妹支做對了 1809h 沒有;不過 1809h 的套用路徑也沒把原陣營存進任何地方,兩件事是一起漏掉的。這是 節點^[3] 的第三種打包(整個 byte = 陣營),與 744 的 shl 4、745 的 bit 6 都不同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:2B3Eh（entry#128）助憶碼序列完全相同，語意同該筆：狂暴,spec 743 的 1809h 的姊妹支。套用流程幾乎相同(+198h:=1、+0F7h 三態、清掉鎖定目標、用 overlay-31 entry#6 重選、角色^[197h] := 新目標^[197h] xor 1)。⚠ **差別在解除:本支寫 角色^[197h] := 節點^[3](從節點取回原陣營),而 1809h 寫死 0**。姊妹支做對了 1809h 沒有;不過 1809h 的套用路徑也沒把原陣營存進任何地方,兩件事是一起漏掉的。這是 節點^[3] 的第三種打包(整個 byte = 陣營),與 744 的 shl 4、745 的 bit 6 都不同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38645,7 +39129,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38661,7 +39148,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/737-effproc-small-handlers.md",
-   "note": "與 DOS overlay-12:2C4Fh（entry#130）助憶碼序列完全相同，語意同該筆：+191h := ((v − 1) div 5) + 1,其中 v := 角色^[10Ch] + 角色^[114h] × \u003coverlay-25 entry#10\u003e(角色)。⚠ +10Ch/+114h 正是 spec 728 那組相差 8 的平行職業欄位,而 entry#10 在這裡是被 imul 的**數值不是布林值**(728 只測了零,語意要修正成「第二職業的權重」);spec 705 的 30C0h 用 +10Eh + +116h × entry#10 是同一個模板。⚠ idiv 往零取整,v=0 時算出 1、v 為負時大於 1,不能改寫成無號的 (v+4)/5 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:2C4Fh（entry#130）助憶碼序列完全相同，語意同該筆：+191h := ((v − 1) div 5) + 1,其中 v := 角色^[10Ch] + 角色^[114h] × \u003coverlay-25 entry#10\u003e(角色)。⚠ +10Ch/+114h 正是 spec 728 那組相差 8 的平行職業欄位,而 entry#10 在這裡是被 imul 的**數值不是布林值**(728 只測了零,語意要修正成「第二職業的權重」);spec 705 的 30C0h 用 +10Eh + +116h × entry#10 是同一個模板。⚠ idiv 往零取整,v=0 時算出 1、v 為負時大於 1,不能改寫成無號的 (v+4)/5 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38677,7 +39167,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/738-effproc-effect-handlers.md",
-   "note": "與 DOS overlay-12:2C94h（entry#131）助憶碼序列完全相同，語意同該筆：解除恐懼(把 spec 724 的 4A8Fh 做的事還原):arg_0 非 0 時,**+0F7h 正好等於 0B3h 才**清成 0 並把 +198h 設 0;+18Dh^[10h] 則無條件清 0。⚠ +0F7h 的還原有條件——spec 734 的操縱屍體會把它設成 0B2h(原值 \u003e 7Fh 時),那種情況下解除恐懼不會動到它。兩個效果對同一個 byte 的處理不對稱,順序會影響結果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:2C94h（entry#131）助憶碼序列完全相同，語意同該筆：解除恐懼(把 spec 724 的 4A8Fh 做的事還原):arg_0 非 0 時,**+0F7h 正好等於 0B3h 才**清成 0 並把 +198h 設 0;+18Dh^[10h] 則無條件清 0。⚠ +0F7h 的還原有條件——spec 734 的操縱屍體會把它設成 0B2h(原值 \u003e 7Fh 時),那種情況下解除恐懼不會動到它。兩個效果對同一個 byte 的處理不對稱,順序會影響結果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38693,7 +39186,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/742-vorpal-and-backfire.md",
-   "note": "與 DOS overlay-12:2CD9h（entry#132）助憶碼序列完全相同，語意同該筆：相鄰時傷害加倍但打的是自己:\u003coverlay-24 entry#33\u003e(arg_6, DS:6506h) \u003c 2(相鄰)時,備份 DS:6F94h 與 DS:6F95h,把傷害 shl 1、型別設成 8,顯示 '\u003c名字\u003e gets zapped'(CS:2CCDh),**\u003coverlay-23 entry#20\u003e 的第一個參數是 DS:6506h(攻擊者自己)**,最後兩個全域都還原。⚠ shl 1 之後只存回一個 byte,傷害超過 127 會回捲(第三個 byte 溢位點,但這個是傷害本身不是門檻)。⚠ 這支會還原 DS:6F95h,而 spec 738 的 27FAh 不還原——同模組兩種做法並存,改寫不能統一 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:2CD9h（entry#132）助憶碼序列完全相同，語意同該筆：相鄰時傷害加倍但打的是自己:\u003coverlay-24 entry#33\u003e(arg_6, DS:6506h) \u003c 2(相鄰)時,備份 DS:6F94h 與 DS:6F95h,把傷害 shl 1、型別設成 8,顯示 '\u003c名字\u003e gets zapped'(CS:2CCDh),**\u003coverlay-23 entry#20\u003e 的第一個參數是 DS:6506h(攻擊者自己)**,最後兩個全域都還原。⚠ shl 1 之後只存回一個 byte,傷害超過 127 會回捲(第三個 byte 溢位點,但這個是傷害本身不是門檻)。⚠ 這支會還原 DS:6F95h,而 spec 738 的 27FAh 不還原——同模組兩種做法並存,改寫不能統一 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38709,7 +39205,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
-   "note": "與 DOS overlay-12:2D7Dh（entry#133）助憶碼序列完全相同，語意同該筆：Dispel Evil:p := 角色^[18Dh]^[0Ah];(p^[14Bh] and 1) 非 0(邪惡)且 \u003coverlay-23 entry#8\u003e(p,4,0) 回 0(豁免失敗)時,\u003coverlay-23 entry#1\u003e(p, 8, '\u003c名字\u003e is dispelled' CS:2D5Ch),然後 **\u003coverlay-23 entry#3\u003e(DS:6506h, 4, 0) 與 (DS:6506h, 91h, 0)——解除的是施法者身上的效果不是目標的**;否則顯示 '\u003c名字\u003e resists dispel evil'(CS:2D69h)。⚠ 兩條失敗路徑(不邪惡、豁免成功)共用同一句訊息,玩家分不出。+14Bh 的 bit 0 是邪惡旗標,而 spec 738 的 2AD6h 用同一個 byte 的 bit 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-12:2D7Dh（entry#133）助憶碼序列完全相同，語意同該筆：Dispel Evil:p := 角色^[18Dh]^[0Ah];(p^[14Bh] and 1) 非 0(邪惡)且 \u003coverlay-23 entry#8\u003e(p,4,0) 回 0(豁免失敗)時,\u003coverlay-23 entry#1\u003e(p, 8, '\u003c名字\u003e is dispelled' CS:2D5Ch),然後 **\u003coverlay-23 entry#3\u003e(DS:6506h, 4, 0) 與 (DS:6506h, 91h, 0)——解除的是施法者身上的效果不是目標的**;否則顯示 '\u003c名字\u003e resists dispel evil'(CS:2D69h)。⚠ 兩條失敗路徑(不邪惡、豁免成功)共用同一句訊息,玩家分不出。+14Bh 的 bit 0 是邪惡旗標,而 spec 738 的 2AD6h 用同一個 byte 的 bit 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38725,7 +39224,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/effect-dispatch-table.md",
+    "spec/1005-effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38739,9 +39242,13 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1005-effect-dispatch-table.md",
+   "note": "與 dos overlay-12:02E3Ch 助憶碼序列完全相同（569 條，相似度 1.000），逐格解碼後 147 個效果碼指向的 overlay entry 編號兩平台一模一樣、六個未指定的格也一樣。表基底 DS:A040h(效果碼 0)、第一格 A044h、攔截槽 A28Ch＝效果碼 147",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1005-effect-dispatch-table.md"
    ]
   },
   {
@@ -39310,8 +39817,10 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完）",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
-    "audit/function-index/pc98-overlay-13.md"
+    "audit/function-index/pc98-overlay-13.md",
+    "spec/1005-effect-dispatch-table.md"
    ]
   },
   {
@@ -39722,6 +40231,7 @@
    "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
    "note": "隊伍血量百分比(retf)：與 DOS overlay-13:2E22h 49 條同形，欄位全部 +1(+198h/+197h/+1A5h/+18Ah)，結果存 DS:0A86Bh — 即 spec 758 士氣判定讀的那個值(差異 6 條，已逐條列出)",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-index/pc98-overlay-12.md"
    ]
   },
@@ -39905,6 +40415,7 @@
    "spec": "docs/spec/826-engulf-and-name-at-offset-zero.md",
    "note": "同 DOS，但兩處不同：(1) 句子拆成兩個片段夾住目標名——'は'(2 bytes) + \u003c0418h:1C96h(緩衝,目標) 產生的目標名\u003e + 'を包みこんだ。'(14 bytes)，而 DOS 只有一個片段 'engulfs ' 後面直接接目標指標；(2) 多一道 +197h 的狀態守衛。全域 DS:0A03Ah，欄位 +18Eh/+197h。spec 826",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-strings.md"
    ]
   },
@@ -39965,6 +40476,7 @@
    "spec": "842",
    "note": "同 DOS overlay-13:042FDh，助憶碼相似度 1.000。PC-98 把 'stone to flesh ray' 照效果翻成 '石化光線'，並未沿用 'disintergrated' 錯字",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-strings.md",
     "spec/842-beholder-eye-rays.md"
    ]
@@ -39986,6 +40498,7 @@
    "spec": "851",
    "note": "同 DOS overlay-13:045CFh（module_align 對齊，助憶碼序列完全相同）。21 條差異全是位址：DS:0A03Dh/0A03Fh↔6FA3h/6FA5h、[di−6231h]↔[di+6D35h]、+197h↔+196h、+19Dh..+1A1h↔+19Ch..+1A0h",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "spec/851-grapple-round-and-effect-node-plus3.md"
    ]
   },
@@ -40004,7 +40517,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/805-combat-state-allocation-and-initial-facing.md",
-   "note": "暫時改寫攻擊資料後攻擊：目標 := 遠指標(DS:9DCFh + 記錄^[3]*4)（戰鬥員遠指標表），存入 DS:0A03Dh；旗標 \u003c\u003e 0 或 角色^[196h] = 0 或 目標^[196h] = 0 時走 \u003c140Eh+1\u003e(目標, 3Ah, longint 0)，且 旗標 = 0 時再 記錄^[4] := 0 與 \u003c140Eh+1\u003e(角色, 90h, 記錄)；否則 角色^[19Ch]:=1、+19Dh:=0、+19Eh:=2、+1A0h:=8（把 spec 795 的兩組攻擊資料就地改成第 1 組 (2,8)），呼叫 本模組 19D8h(角色, 目標, 1, longint 0, @暫存)、暫存 := \u003cfar 159Ah\u003e(角色)；目標^[196h] = 0 時再 \u003c140Eh+1\u003e(角色, 90h, longint 0) 與 \u003c140Eh+1\u003e(目標, 3Ah, longint 0)。retf 0Ah。spec 805"
+   "note": "暫時改寫攻擊資料後攻擊：目標 := 遠指標(DS:9DCFh + 記錄^[3]*4)（戰鬥員遠指標表），存入 DS:0A03Dh；旗標 \u003c\u003e 0 或 角色^[196h] = 0 或 目標^[196h] = 0 時走 \u003c140Eh+1\u003e(目標, 3Ah, longint 0)，且 旗標 = 0 時再 記錄^[4] := 0 與 \u003c140Eh+1\u003e(角色, 90h, 記錄)；否則 角色^[19Ch]:=1、+19Dh:=0、+19Eh:=2、+1A0h:=8（把 spec 795 的兩組攻擊資料就地改成第 1 組 (2,8)），呼叫 本模組 19D8h(角色, 目標, 1, longint 0, @暫存)、暫存 := \u003cfar 159Ah\u003e(角色)；目標^[196h] = 0 時再 \u003c140Eh+1\u003e(角色, 90h, longint 0) 與 \u003c140Eh+1\u003e(目標, 3Ah, longint 0)。retf 0Ah。spec 805",
+   "citations": [
+    "audit/effect-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40023,6 +40539,7 @@
    "spec": "770",
    "note": "同 DOS overlay-13:04811h（hugs 攻擊）。★兩處真差異：(1) PC-98 進場多一道 攻擊者^[197h] 的陣營判斷再跳收尾；(2) PC-98 多組一段字串（418h:1C96h 產生後接到訊息尾），緩衝從 106h 放大到 206h。其餘是位址：DS:0A039h↔6F9Fh、DS:0A03Dh/0A03Fh↔6FA3h/6FA5h、+18Eh↔+18Dh",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/function-strings.md"
    ]
   },
@@ -47994,8 +48511,10 @@
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
    "note": "CALLEFFECT:DS:A66Eh 非零時一律 far call DS:A28Ch(忽略 id);否則以 id*4 索引 DS:A040h 起的 far pointer 表分派。五個參數原樣轉傳",
    "citations": [
+    "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
+    "spec/1005-effect-dispatch-table.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md",
     "spec/864-cloud-tick-and-hd-field.md"
    ]
@@ -52538,10 +53057,10 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 126,
+   "Read": 134,
    "NotBlocking": 0,
-   "Todo": 1,
-   "Fragment": 25,
+   "Todo": 0,
+   "Fragment": 18,
    "CodeBytes": 12862,
    "Undefined": 455,
    "SegmentBytes": 13683,
@@ -53093,9 +53612,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 131,
+   "Read": 132,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 18,
    "CodeBytes": 13011,
    "Undefined": 578,
