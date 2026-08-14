@@ -6521,7 +6521,13 @@
    "callers": 0,
    "calls": 12,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1045",
+   "note": "地城探索主迴圈(DOS，整支沒有字串)。進場：DS:47E7h 記住目前角色、DS:4FBAh:=4(畫面模式，spec 1042 的門選單也要 4)、bank0^[1E4h] 非 0 就沿用狀態否則重新初始化並畫隊伍名單、bank0^[1CCh]=0 時模式降成 3。主迴圈：\u003coverlay-14 entry#2\u003e 走一步收鍵 → 當 bank1^[594h]\u003e1 或鍵='E' 時進內圈：'E' 走 \u003coverlay-15 entry#3\u003e；否則把 bank1^[594h] 暫存成 and 1、設 1、叫 ★★ \u003coverlay-28 entry#1\u003e(ECL 執行入口，全迴圈出現三次)、sub_3621、DS:47E1h\u003c\u003e0 時 sub_3691，再還原 bank1^[594h]。★★★ 座標比對：進 ECL 前把 DS:720Fh/7210h 存進 bank0^[1E0h]/[1E2h]，跑完比對，只有被 ECL 搬動過才叫 far 0713:0020h。DS:8B62h:=0、DS:8B63h:=1 就是 spec 1039/1041 決定選單樣式的那兩個旗標。DS:4FC7h 是離開旗標，出迴圈後清 0。另一條路：DS:4FBCh\u003c\u003e0 時，隊伍鏈頭為空就一直叫 \u003coverlay-17 entry#3\u003e(1,1) 直到有人",
+   "citations": [
+    "spec/1045-dungeon-main-loop-dos.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22460,9 +22466,9 @@
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
     "audit/function-strings.md",
+    "spec/1044-party-roster-pc98-name-substitution.md",
     "spec/689-dos-party-roster-render.md",
-    "spec/693-text-draw-signature-and-english-grammar.md",
-    "spec/876-screen-mode-dispatch.md"
+    "spec/693-text-draw-signature-and-english-grammar.md"
    ]
   },
   {
@@ -40938,12 +40944,12 @@
    "spec": "docs/spec/1026-open-doors-table.md",
    "note": "撞門判定：走隊伍鏈 DS:650Ah(next 在 +189h)，每個隊員各擲一次、任何一人成功就停；地形碼由 overlay-30 entry#5(DS:720Fh, DS:7210h, DS:7211h) 取得，= 3 走「上鎖」欄、其餘走「一般」欄。判定用角色的 +11h(力量，即 +10h + i×2 那組屬性的第 0 項)與 +1Ch(18/xx 百分位)。★★★ 一般門：力量 15→1d6=1(1/6)、16-17→1d6\u003c=2、18 且百分位\u003c=50→\u003c=3、18 且 51-99→\u003c=4、18 且 100→\u003c=5、19-20→1d8\u003c=7、21→1d10\u003c=9、22-23→1d12\u003c=11、24→1d20\u003c=19 —— AD\u0026D 1e PHB 力量表的 Open Doors 欄一格不差。★★★ 上鎖／頂住的門：18 且百分位 91-99→1d6=1、18 且 100→\u003c=2、18 其餘百分位→直接打不開(DS:7588h := 0，連骰都不骰)、19-20→1d6\u003c=3、21-22→\u003c=4、23→\u003c=5、24→1d8\u003c=7 —— 就是 1e 的括號欄(locked/barred/magically held)。⚠ 兩平台的門檻與骰子完全相同，差異只在位址(720Fh/7210h/7211h↔0A2A9h/0A2AAh/0A2ABh，同 spec 1022)。本支沒有字串",
    "citations": [
+    "audit/function-index/pc98-overlay-14.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/1026-open-doors-table.md",
-    "spec/1042-locked-door-menu.md",
-    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md"
+    "spec/1042-locked-door-menu.md"
    ]
   },
   {
@@ -49722,9 +49728,13 @@
    "callers": 3,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1044",
+   "note": "隊伍名單繪製 PC-98 側(entry#2，retf 4)，DOS 對側 overlay-24:0795h。畫面模式 DS:7F27h=3 什麼都不畫；起始欄 1 或 11h；表頭「名前」(4)與「ＡＣ　　ＨＰ」(12)。★★★ 三個劇情 NPC 的名字是畫面上才替換的(只在 +0F7h\u003c\u003e0 時)：'ALIAS'(5)→「エイリアス」(10)、'DRAGONBAIT'(10)→「ドラゴンベイト」(14)、'AKABAR BEL AKAS'(15)→「アーカバー・ベル・アーカッシュ」(30) —— 角色資料裡存的仍是英文名字。⚠ 第三個在程式裡是 15 字元、末尾沒有 H(手冊拼法是 Akabar Bel Akash)，比對逐字元，寫錯就替換不到。⇒ 中文化要在同一處插替換，不要改存檔或 ECL 裡的英文名字。★★ 右對齊補位獨立確認 spec 684：AC 欄 +19Bh 分段 0..32h→k=1、33h..3Ch→2、3Dh..45h→1、其他→0，畫在欄 20h+k；HP 欄 +1A5h 分段 0..9→2、0Ah..63h→1、其他→0，畫在欄 24h+k —— 欄基底與 DOS 完全相同，分段值正好等於 k=3−顯示字元數。欄位 +19Bh/+1A5h = DOS +19Ah/+1A4h 各 +1",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1044-party-roster-pc98-name-substitution.md"
    ]
   },
   {
@@ -53279,9 +53289,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 57,
+   "Read": 58,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 29,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -54164,9 +54174,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 46,
+   "Read": 47,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
