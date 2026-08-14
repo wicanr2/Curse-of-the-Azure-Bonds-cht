@@ -20434,6 +20434,78 @@
    "level": "exact",
    "spec": "docs/spec/795-combat-scene-resources-and-damage-roll.md",
    "note": "傷害擲骰：retf 0Ah，宣告順序 (角色遠指標, 參數4, 參數2, 武器索引 i)。傷 := <1461h+1>(角色^[19Dh+i], 角色^[19Fh+i]) + 有號(角色^[1A1h+i]) 存入 DS:0A02Eh（三個 byte 陣列相距 2，i 只能是 0/1；隨後的 cmp/jnb 讓「夾成 0」那句永遠執行不到，負加值會迴繞）；若 本模組 2915h(參數2, 參數4, 角色) 成立，m := 有號(<far 1622h>(角色))，倍 := ((有號(+117h)*m + 有號(+10Fh) − 1) div 4) + 2，DS:0A02Eh *= 倍（m=0 時即 AD&D 背刺倍數表）。最後 DS:0A02Fh := 0、<1442h+2>(角色,4)、<1442h+2>(參數2,參數4,5)。spec 795"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "ea": 804,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
+   "note": "Cure Disease：for i := 1 to 6 查 <014Dh:00A7h>(@暫存, byte[0DDh+i], DS:6506h)（疾病碼表 DS:0DDh[1..6] = 1Fh,22h,2Bh,2Ch,32h,39h，兩平台相同），任一命中即算生病；否則顯示 名字+'is not Diseased.'(16) 並用 0047h 再確認。答 Y 顯示 'Cure Disease'(12)、00F3h(3E8h=1000) 再問；答 Y 則 DS:6F9Ch:=1、for i := 1 to 6 呼叫 <0141h:002Fh>(DS:6506h, byte[0DDh+i], longint 0)、DS:6F9Ch:=0。retf。spec 796"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 859,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
+   "note": "Cure Disease：for i := 1 to 6 查 <014Ah:00A7h>(@暫存, byte[1D9h+i], DS:9594h)（疾病碼表 DS:01D9h[1..6] = 1Fh,22h,2Bh,2Ch,32h,39h，兩平台相同），任一命中即算生病；否則顯示 名字+'は病いに冒されてはいませんよ。'(30 bytes) 並用 0047h 再確認。答 Y 顯示 'キュア・ディジーズ'(18 bytes)、00F3h(3E8h=1000) 再問；答 Y 則 DS:0A036h:=1、for i := 1 to 6 呼叫 <013Eh:002Fh>(DS:9594h, byte[1D9h+i], longint 0)、DS:0A036h:=0。retf。spec 796"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "ea": 2194,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
+   "note": "Neutralize Poison：只查效果碼 37h（<014Dh:00A7h>）；沒有就顯示 名字+'is not poisoned.'(16) 並用 0047h 再確認。答 Y 顯示 'Neutralize Poison'(17)、00F3h(3E8h=1000) 再問；答 Y 則 DS:6F9Ch:=1，依序 <0141h:002Fh>(DS:6506h, 37h/16h/0Fh, longint 0)，DS:6F9Ch:=0。檢查與移除不對稱（查一個移三個）。retf。spec 796"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 2366,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
+   "note": "Neutralize Poison：只查效果碼 37h（<014Ah:00A7h>）；沒有就顯示 名字+'は毒を受けてはいませんよ'(24 bytes) 並用 0047h 再確認。答 Y 顯示 'ニュートラライズ・ポイズン'(26 bytes)、00F3h(3E8h=1000) 再問；答 Y 則 DS:0A036h:=1，依序 <013Eh:002Fh>(DS:9594h, 37h/16h/0Fh, longint 0)，DS:0A036h:=0。檢查與移除不對稱（查一個移三個）。retf。spec 796"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 1227,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
+   "note": "選法術的外迴圈：用過:=0、var_2:=0FFFFh、DS:7555h/7557h 清 0、DS:7294h:=1；本模組 0391h(1) 成立才進迴圈。每輪 選 := <far 102Bh+1>(0, 1, @var_2, @var_3)；選<>0 → 用過:=1、<1EC9h+4>(1,11h,26h,16h)、<11D8h+1>(選,0,1,@var_5)；選=0 且 var_3<>0 → 用過:=1；兩者皆否 → 顯示 名字+'has no spells memorized'(23，無句點) 並 sub_1554(0Ah,1)。選=0 才離開；離開後 用過<>0 才呼叫 sub_15A9。retf。spec 797"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 1218,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
+   "note": "選法術的外迴圈：用過:=0、var_2:=0FFFFh、DS:0A641h/0A643h 清 0、DS:0A32Eh:=1；本模組 0386h(1) 成立才進迴圈。每輪 選 := <far sub_FFC>(0, 1, @var_2, @var_3)；選<>0 → 用過:=1、<sub_2095>(1,11h,26h,16h)、<far sub_11A9>(選,0,1,@var_5)；選=0 且 var_3<>0 → 用過:=1；兩者皆否 → 顯示 名字+'は呪文をまったく覚えていない。'(30 bytes，有句點) 並 sub_1524(0Ah,1)。選=0 才離開；離開後 用過<>0 才呼叫 <far loc_1577+2>。retf。spec 797"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 1004,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
+   "note": "第一人稱視野的底圖與裝飾（呼叫 sub_48 = overlay-10:0048h，簽名 (x位移, y位移, 磚)）：先 for y := 2 to 4、for x := 0 to 5 寫格(x, y, 16h) 鋪 6x3 的底；DS:4A0Fh = 1 時 for k := 2 to 4 寫格(k-1,k,04h)、(k,k,03h)、(k+1,k,0Dh)；DS:4A0Fh = 3 時 寫格(1,2,08h)、(5,4,00h)；其他值不畫裝飾。retf 2 的那個 word 本體從不讀（巢狀程序的靜態鏈）。spec 797"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 1004,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
+   "note": "第一人稱視野的底圖與裝飾（呼叫 sub_48 = overlay-10:0048h，簽名 (x位移, y位移, 磚)）：先 for y := 2 to 4、for x := 0 to 5 寫格(x, y, 16h) 鋪 6x3 的底；DS:7AC5h = 1 時 for k := 2 to 4 寫格(k-1,k,04h)、(k,k,03h)、(k+1,k,0Dh)；DS:7AC5h = 3 時 寫格(1,2,08h)、(5,4,00h)；其他值不畫裝飾。retf 2 的那個 word 本體從不讀（巢狀程序的靜態鏈）。spec 797（兩平台只差這個位址）"
   }
  ]
 }

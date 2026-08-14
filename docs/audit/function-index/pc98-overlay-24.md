@@ -25,7 +25,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1498` | sub_1498 | — | 152 | 62 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `1530` | sub_1530 | STRHITBONUS | 163 | 67 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `15D3` | sub_15D3 | STRDAMBONUS | 79 | 31 | 2 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jb short loc_1633`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 79 bytes，已逐條讀完） | — |
-| `1622` | sub_1622 | — | 55 | 23 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 55 bytes，已逐條讀完） | — |
+| `1622` | sub_1622 | — | 55 | 23 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 55 bytes，已逐條讀完） | audit/function-index/pc98-overlay-13.md |
 | `1659` | sub_1659 | STRWGTBONUS | 22 | 9 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+var_3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 22 bytes，已逐條讀完） | audit/function-index/pc98-overlay-24.md |
 | `166F` | sub_166F | — | 40 | 16 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `ja short loc_169F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 40 bytes，已逐條讀完） | — |
 | `1697` | sub_1697 | — | 162 | 64 | 2 | 1 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1659h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |

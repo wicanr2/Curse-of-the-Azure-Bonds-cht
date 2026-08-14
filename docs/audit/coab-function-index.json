@@ -6504,7 +6504,8 @@
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/pc98-overlay-04.md",
     "spec/785-cross-platform-pairs-third-batch.md",
-    "spec/794-remove-curse-and-party-cycle-keys.md"
+    "spec/794-remove-curse-and-party-cycle-keys.md",
+    "spec/796-cure-disease-neutralize-poison.md"
    ]
   },
   {
@@ -6524,7 +6525,8 @@
    "note": "Cure Blindness(retf，無參數)：\u003c014Dh:00A7h\u003e(@暫存, 21h, DS:6506h) 為假時顯示 CS:0263h 'is not blind.' 並用 本模組 0047h 問 Y/N；答 Y 才顯示 CS:0271h 'Cure Blindness' 並叫 本模組 00F3h(3E8h=1000)，再答 Y 就 \u003c0141h:002Fh\u003e(0, 0, 21h, DS:6506h) 移除效果 21h。與 spec 763 石化解除同一個模子(那支用 7D0h)",
    "citations": [
     "audit/function-index/pc98-overlay-04.md",
-    "spec/785-cross-platform-pairs-third-batch.md"
+    "spec/785-cross-platform-pairs-third-batch.md",
+    "spec/796-cure-disease-neutralize-poison.md"
    ]
   },
   {
@@ -6538,7 +6540,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
+   "note": "Cure Disease：for i := 1 to 6 查 \u003c014Dh:00A7h\u003e(@暫存, byte[0DDh+i], DS:6506h)（疾病碼表 DS:0DDh[1..6] = 1Fh,22h,2Bh,2Ch,32h,39h，兩平台相同），任一命中即算生病；否則顯示 名字+'is not Diseased.'(16) 並用 0047h 再確認。答 Y 顯示 'Cure Disease'(12)、00F3h(3E8h=1000) 再問；答 Y 則 DS:6F9Ch:=1、for i := 1 to 6 呼叫 \u003c0141h:002Fh\u003e(DS:6506h, byte[0DDh+i], longint 0)、DS:6F9Ch:=0。retf。spec 796",
+   "citations": [
+    "spec/796-cure-disease-neutralize-poison.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6577,7 +6585,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
+   "note": "Neutralize Poison：只查效果碼 37h（\u003c014Dh:00A7h\u003e）；沒有就顯示 名字+'is not poisoned.'(16) 並用 0047h 再確認。答 Y 顯示 'Neutralize Poison'(17)、00F3h(3E8h=1000) 再問；答 Y 則 DS:6F9Ch:=1，依序 \u003c0141h:002Fh\u003e(DS:6506h, 37h/16h/0Fh, longint 0)，DS:6F9Ch:=0。檢查與移除不對稱（查一個移三個）。retf。spec 796",
+   "citations": [
+    "spec/796-cure-disease-neutralize-poison.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8747,7 +8761,8 @@
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md",
-    "spec/786-money-pool-overflow-and-turn-cost.md"
+    "spec/786-money-pool-overflow-and-turn-cost.md",
+    "spec/797-cast-loop-and-view-decoration.md"
    ]
   },
   {
@@ -8787,7 +8802,8 @@
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-    "spec/784-cross-platform-pairs-second-batch.md"
+    "spec/784-cross-platform-pairs-second-batch.md",
+    "spec/797-cast-loop-and-view-decoration.md"
    ]
   },
   {
@@ -8824,11 +8840,15 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
+   "note": "第一人稱視野的底圖與裝飾（呼叫 sub_48 = overlay-10:0048h，簽名 (x位移, y位移, 磚)）：先 for y := 2 to 4、for x := 0 to 5 寫格(x, y, 16h) 鋪 6x3 的底；DS:4A0Fh = 1 時 for k := 2 to 4 寫格(k-1,k,04h)、(k,k,03h)、(k+1,k,0Dh)；DS:4A0Fh = 3 時 寫格(1,2,08h)、(5,4,00h)；其他值不畫裝飾。retf 2 的那個 word 本體從不讀（巢狀程序的靜態鏈）。spec 797",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
-    "spec/776-first-person-view-scan-and-ega-rect-fill.md"
+    "spec/776-first-person-view-scan-and-ega-rect-fill.md",
+    "spec/797-cast-loop-and-view-decoration.md"
    ]
   },
   {
@@ -12488,6 +12508,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+1A2h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "spec/795-combat-scene-resources-and-damage-roll.md"
    ]
   },
@@ -12714,6 +12735,7 @@
    "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
    "note": "物品類別白名單(retf 8)：(角色^[10Fh] \u003e 0) 或 ((角色^[117h] \u003e 0) 且 \u003c呼叫\u003e(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h \u003c 類別 \u003c 26h)；再要求 行動者^[18Dh]^[0Fh] \u003e 1 且 (行動者^[0DEh] and 7Fh) \u003c= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h]",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md",
     "spec/795-combat-scene-resources-and-damage-roll.md"
@@ -13489,7 +13511,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/797-cast-loop-and-view-decoration.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13518,7 +13543,13 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
+   "note": "選法術的外迴圈：用過:=0、var_2:=0FFFFh、DS:7555h/7557h 清 0、DS:7294h:=1；本模組 0391h(1) 成立才進迴圈。每輪 選 := \u003cfar 102Bh+1\u003e(0, 1, @var_2, @var_3)；選\u003c\u003e0 → 用過:=1、\u003c1EC9h+4\u003e(1,11h,26h,16h)、\u003c11D8h+1\u003e(選,0,1,@var_5)；選=0 且 var_3\u003c\u003e0 → 用過:=1；兩者皆否 → 顯示 名字+'has no spells memorized'(23，無句點) 並 sub_1554(0Ah,1)。選=0 才離開；離開後 用過\u003c\u003e0 才呼叫 sub_15A9。retf。spec 797",
+   "citations": [
+    "spec/797-cast-loop-and-view-decoration.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19352,11 +19383,11 @@
    "note": "與 pc98 overlay-23:0016h 助憶碼序列完全相同（64 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：KILLDUDE(msg,new_state,char):顯示訊息後,狀態 +196h 已是 {6,7,8} 就不覆寫;否則設新狀態、+197h=0、+1A5h(目前 HP)=0,再 REMOVEFX + CHECKFX(0Dh) 與四個 far call 善後 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-10.md"
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -20463,7 +20494,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+14Dh], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+14Dh], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-13.md"
+   ]
   },
   {
    "platform": "dos",
@@ -29950,7 +29984,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
+   "note": "Cure Disease：for i := 1 to 6 查 \u003c014Ah:00A7h\u003e(@暫存, byte[1D9h+i], DS:9594h)（疾病碼表 DS:01D9h[1..6] = 1Fh,22h,2Bh,2Ch,32h,39h，兩平台相同），任一命中即算生病；否則顯示 名字+'は病いに冒されてはいませんよ。'(30 bytes) 並用 0047h 再確認。答 Y 顯示 'キュア・ディジーズ'(18 bytes)、00F3h(3E8h=1000) 再問；答 Y 則 DS:0A036h:=1、for i := 1 to 6 呼叫 \u003c013Eh:002Fh\u003e(DS:9594h, byte[1D9h+i], longint 0)、DS:0A036h:=0。retf。spec 796"
   },
   {
    "platform": "pc98",
@@ -30004,7 +30041,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/796-cure-disease-neutralize-poison.md",
+   "note": "Neutralize Poison：只查效果碼 37h（\u003c014Ah:00A7h\u003e）；沒有就顯示 名字+'は毒を受けてはいませんよ'(24 bytes) 並用 0047h 再確認。答 Y 顯示 'ニュートラライズ・ポイズン'(26 bytes)、00F3h(3E8h=1000) 再問；答 Y 則 DS:0A036h:=1，依序 \u003c013Eh:002Fh\u003e(DS:9594h, 37h/16h/0Fh, longint 0)，DS:0A036h:=0。檢查與移除不對稱（查一個移三個）。retf。spec 796"
   },
   {
    "platform": "pc98",
@@ -30040,7 +30080,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
-    "spec/785-cross-platform-pairs-third-batch.md"
+    "spec/785-cross-platform-pairs-third-batch.md",
+    "spec/796-cure-disease-neutralize-poison.md"
    ]
   },
   {
@@ -32529,7 +32570,8 @@
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md",
-    "spec/786-money-pool-overflow-and-turn-cost.md"
+    "spec/786-money-pool-overflow-and-turn-cost.md",
+    "spec/797-cast-loop-and-view-decoration.md"
    ]
   },
   {
@@ -32569,7 +32611,8 @@
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-    "spec/784-cross-platform-pairs-second-batch.md"
+    "spec/784-cross-platform-pairs-second-batch.md",
+    "spec/797-cast-loop-and-view-decoration.md"
    ]
   },
   {
@@ -32606,11 +32649,15 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
+   "note": "第一人稱視野的底圖與裝飾（呼叫 sub_48 = overlay-10:0048h，簽名 (x位移, y位移, 磚)）：先 for y := 2 to 4、for x := 0 to 5 寫格(x, y, 16h) 鋪 6x3 的底；DS:7AC5h = 1 時 for k := 2 to 4 寫格(k-1,k,04h)、(k,k,03h)、(k+1,k,0Dh)；DS:7AC5h = 3 時 寫格(1,2,08h)、(5,4,00h)；其他值不畫裝飾。retf 2 的那個 word 本體從不讀（巢狀程序的靜態鏈）。spec 797（兩平台只差這個位址）",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
-    "spec/776-first-person-view-scan-and-ega-rect-fill.md"
+    "spec/776-first-person-view-scan-and-ega-rect-fill.md",
+    "spec/797-cast-loop-and-view-decoration.md"
    ]
   },
   {
@@ -36470,7 +36517,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call near ptr sub_358`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call near ptr sub_358`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36766,7 +36816,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
-   "note": "與 DOS overlay-13:28C3h（entry#22）助憶碼序列完全相同，語意同該筆：物品類別白名單(retf 8)：(角色^[10Fh] \u003e 0) 或 ((角色^[117h] \u003e 0) 且 \u003c呼叫\u003e(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h \u003c 類別 \u003c 26h)；再要求 行動者^[18Dh]^[0Fh] \u003e 1 且 (行動者^[0DEh] and 7Fh) \u003c= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h] ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-13:28C3h（entry#22）助憶碼序列完全相同，語意同該筆：物品類別白名單(retf 8)：(角色^[10Fh] \u003e 0) 或 ((角色^[117h] \u003e 0) 且 \u003c呼叫\u003e(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h \u003c 類別 \u003c 26h)；再要求 行動者^[18Dh]^[0Fh] \u003e 1 且 (行動者^[0DEh] and 7Fh) \u003c= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h] ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37525,7 +37578,10 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
+   "note": "選法術的外迴圈：用過:=0、var_2:=0FFFFh、DS:0A641h/0A643h 清 0、DS:0A32Eh:=1；本模組 0386h(1) 成立才進迴圈。每輪 選 := \u003cfar sub_FFC\u003e(0, 1, @var_2, @var_3)；選\u003c\u003e0 → 用過:=1、\u003csub_2095\u003e(1,11h,26h,16h)、\u003cfar sub_11A9\u003e(選,0,1,@var_5)；選=0 且 var_3\u003c\u003e0 → 用過:=1；兩者皆否 → 顯示 名字+'は呪文をまったく覚えていない。'(30 bytes，有句點) 並 sub_1524(0Ah,1)。選=0 才離開；離開後 用過\u003c\u003e0 才呼叫 \u003cfar loc_1577+2\u003e。retf。spec 797"
   },
   {
    "platform": "pc98",
@@ -44215,11 +44271,11 @@
    "note": "KILLDUDE(msg,new_state,char):顯示訊息後,狀態 +196h 已是 {6,7,8} 就不覆寫;否則設新狀態、+197h=0、+1A5h(目前 HP)=0,再 REMOVEFX + CHECKFX(0Dh) 與四個 far call 善後",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-10.md"
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -45347,7 +45403,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 55 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 55 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48264,9 +48323,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 14,
-   "Read": 4,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 7,
    "Fragment": 1,
    "CodeBytes": 3435,
    "Undefined": 340,
@@ -48354,9 +48413,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -48429,9 +48488,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -48819,9 +48878,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 23,
-   "Read": 6,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 5,
    "Fragment": 10,
    "CodeBytes": 3710,
    "Undefined": 830,
@@ -48909,9 +48968,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
@@ -48984,9 +49043,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
