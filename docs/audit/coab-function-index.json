@@ -7565,7 +7565,8 @@
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "字元碼調整:arg \u003c= 1Fh 時回傳 arg + 40h,否則原樣回傳(控制字元映射到 40h 之後)",
    "citations": [
-    "spec/572-resident-service-functions.md"
+    "spec/572-resident-service-functions.md",
+    "spec/992-dos-findstr-six-bit-packing.md"
    ]
   },
   {
@@ -7730,7 +7731,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/992-dos-findstr-six-bit-packing.md",
+   "note": "FINDSTR 的 DOS 版：6-bit 壓縮（每 3 bytes 4 字），字元集就是字型的 64 格；PC-98 為了日文改成逐 byte",
+   "citations": [
+    "spec/992-dos-findstr-six-bit-packing.md"
+   ]
   },
   {
    "platform": "dos",
@@ -33551,7 +33558,8 @@
    "citations": [
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/567-ecl-packed-text-and-bank1-field-map.md",
-    "spec/616-ecl2-string-sources.md"
+    "spec/616-ecl2-string-sources.md",
+    "spec/992-dos-findstr-six-bit-packing.md"
    ]
   },
   {
@@ -52308,9 +52316,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 31,
+   "Read": 32,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
