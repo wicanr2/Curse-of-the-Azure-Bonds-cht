@@ -19759,6 +19759,42 @@
    "level": "exact",
    "spec": "docs/spec/778-map-four-planes-and-pc98-take-menu.md",
    "note": "取る：戰利品選單(retf 8)：與 DOS overlay-05:0ED7h(spec 775)同結構。提示 CS:0EDFh '取る：'、選項 CS:0EE6h '   お金   ｱｲﾃﾑ                やめる    '(40 bytes，靠半形空白排版)。⚠ 熱鍵仍是 ASCII 的 'M'/'I'/'E'，標籤換成日文而比對不動 — 中文版可照此作法；捲動鍵 DOS 用 'G'/'O'(Home/End 掃描碼)，PC-98 改用 '8'/'2'(數字鍵盤上下)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104160,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/779-two-shape-clusters.md",
+   "note": "音樂起播(音源 A，retf，一個曲目編號)：DS := seg045；word[17278h] := 曲目；SI := 曲目*8；忙碌旗標 byte[17251h] := 1；四個通道由 DI = 176h 起、每個 30h bytes — 曲目表 word[SI+4A8h] 非 0 才清空該區塊、寫 +2 資料指標、byte[(4−通道)+152h] := 曲目低位、+0 設 1；結束把忙碌旗標歸零。⚠ 通道資料為 0 時區塊不清，保留前一首"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104266,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/779-two-shape-clusters.md",
+   "note": "音樂起播(音源 B，retf)：與 196E0h 43 條指令同形，只差通道區塊起點 310h 與曲目表基底 [si+548h]。spec 772 的音效命令分派中裝置 0 走 196E0h、裝置 1 走本支"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 5012,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/779-two-shape-clusters.md",
+   "note": "分段查表(retf 4)：輸入 p^[17h]，無號比較 — 01h..03h → 0FCh(−4)、04h..06h → 輸入−07h、0Fh..12h → 輸入−0Eh、13h..14h → 4、15h..17h → 5、18h..19h → 6、其他 → 0。⚠ 00h 與 07h..0Eh 沒有涵蓋，會落到 0，與正常結果 0 無法區分"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 5142,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/779-two-shape-clusters.md",
+   "note": "分段查表(retf 4)：與 1394h 同形，輸入區間往下錯一格、後三段輸出各減 1 — 00h..02h → 0FCh、03h..05h → 輸入−06h、10h..12h → 輸入−0Fh、13h..14h → 3、15h..17h → 4、18h..19h → 5、其他 → 0。未涵蓋區間是 06h..0Fh"
   }
  ]
 }

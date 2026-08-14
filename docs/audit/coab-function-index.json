@@ -1805,7 +1805,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/779-two-shape-clusters.md",
+   "note": "音樂起播(音源 A，retf，一個曲目編號)：DS := seg045；word[17278h] := 曲目；SI := 曲目*8；忙碌旗標 byte[17251h] := 1；四個通道由 DI = 176h 起、每個 30h bytes — 曲目表 word[SI+4A8h] 非 0 才清空該區塊、寫 +2 資料指標、byte[(4−通道)+152h] := 曲目低位、+0 設 1；結束把忙碌旗標歸零。⚠ 通道資料為 0 時區塊不清，保留前一首"
   },
   {
    "platform": "dos",
@@ -1817,7 +1820,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/779-two-shape-clusters.md",
+   "note": "音樂起播(音源 B，retf)：與 196E0h 43 條指令同形，只差通道區塊起點 310h 與曲目表基底 [si+548h]。spec 772 的音效命令分派中裝置 0 走 196E0h、裝置 1 走本支"
   },
   {
    "platform": "dos",
@@ -6766,6 +6772,7 @@
    "spec": "docs/spec/775-take-menu-and-palette-writer.md",
    "note": "戰利品的 Take: 選單(retf 8，兩個遠指標都指向計數 byte)：任一為 0 就走各自的離開路徑；否則迴圈組出 CS:0EBFh 'Take: '(6 字元含尾隨空白) 與 CS:0EC6h 'Money Items Exit'(單一 16 字元字串)，依按鍵 'M'/'I'/'E' 或 #0 分派，'G'(47h)/'O'(4Fh) 走同一支；每輪結尾更新後，兩個計數任一歸零就結束。⚠ 熱鍵是寫死的 ASCII 大寫字母，選項字面換成中文後會與熱鍵脫節。補洞前這支匯出位移不可靠(spec 756 曾列為未判讀)",
    "citations": [
+    "audit/function-index/pc98-overlay-05.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
     "spec/775-take-menu-and-palette-writer.md",
     "spec/778-map-four-planes-and-pc98-take-menu.md"
@@ -12985,10 +12992,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-30.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -21892,10 +21899,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-30.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -36750,10 +36757,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-30.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -44799,9 +44806,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/779-two-shape-clusters.md",
+   "note": "分段查表(retf 4)：輸入 p^[17h]，無號比較 — 01h..03h → 0FCh(−4)、04h..06h → 輸入−07h、0Fh..12h → 輸入−0Eh、13h..14h → 4、15h..17h → 5、18h..19h → 6、其他 → 0。⚠ 00h 與 07h..0Eh 沒有涵蓋，會落到 0，與正常結果 0 無法區分",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/779-two-shape-clusters.md"
    ]
   },
   {
@@ -44816,7 +44827,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/779-two-shape-clusters.md",
+   "note": "分段查表(retf 4)：與 1394h 同形，輸入區間往下錯一格、後三段輸出各減 1 — 00h..02h → 0FCh、03h..05h → 輸入−06h、10h..12h → 輸入−0Fh、13h..14h → 3、15h..17h → 4、18h..19h → 5、其他 → 0。未涵蓋區間是 06h..0Fh",
+   "citations": [
+    "spec/779-two-shape-clusters.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -46648,10 +46665,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-30.md",
     "audit/overlay-init-graph.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -47690,9 +47707,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 134,
+   "Read": 136,
    "NotBlocking": 133,
-   "Todo": 41,
+   "Todo": 39,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -48620,9 +48637,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 29,
+   "Read": 31,
    "NotBlocking": 0,
-   "Todo": 19,
+   "Todo": 17,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,

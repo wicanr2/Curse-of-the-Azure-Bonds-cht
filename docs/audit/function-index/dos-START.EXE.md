@@ -131,8 +131,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19490` | sub_19490 | — | 142 | 57 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1951E` | sub_1951E | — | 145 | 55 | 2 | 2 |  | 待解讀 | — | — | — |
 | `195AF` | sub_195AF | — | 305 | 121 | 1 | 1 |  | 待解讀 | — | — | — |
-| `196E0` | sub_196E0 | — | 106 | 43 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1974A` | sub_1974A | — | 106 | 43 | 2 | 1 |  | 待解讀 | — | — | — |
+| `196E0` | sub_196E0 | — | 106 | 43 | 2 | 1 |  | 已解讀 | exact | docs/spec/779-two-shape-clusters.md<br>音樂起播(音源 A，retf，一個曲目編號)：DS := seg045；word[17278h] := 曲目；SI := 曲目*8；忙碌旗標 byte[17251h] := 1；四個通道由 DI = 176h 起、每個 30h bytes — 曲目表 word[SI+4A8h] 非 0 才清空該區塊、寫 +2 資料指標、byte[(4−通道)+152h] := 曲目低位、+0 設 1；結束把忙碌旗標歸零。⚠ 通道資料為 0 時區塊不清，保留前一首 | — |
+| `1974A` | sub_1974A | — | 106 | 43 | 2 | 1 |  | 已解讀 | exact | docs/spec/779-two-shape-clusters.md<br>音樂起播(音源 B，retf)：與 196E0h 43 條指令同形，只差通道區塊起點 310h 與曲目表基底 [si+548h]。spec 772 的音效命令分派中裝置 0 走 196E0h、裝置 1 走本支 | — |
 | `197B4` | sub_197B4 | — | 20 | 12 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>跨段寫入:切到 seg045 後把 arg_0 寫進 byte_17286,再還原 DS(前後以 push/pop 保存 AX 與 DS) | — |
 | `197D0` | sub_197D0 | — | 26 | 14 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：字串指派：把字面值「Wooden」寫入目的字串變數（body 共 26 bytes，已逐條讀完） | — |
 | `197F0` | @MSDOS$qm9REGISTERS | — | 11 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MSDOS$qm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
