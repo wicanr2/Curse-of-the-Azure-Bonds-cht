@@ -24520,9 +24520,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1029-picture-loading-and-cache.md",
+   "note": "圖片載入(retf 0Ch)。★★ 一格快取：圖名相同(字串 DS:7278h，8 bytes)且子索引相同(DS:728Ah)就直接返回；子索引 = 0FFh 也直接返回 ⇒ ★ 關掉 spec 892 的未定項：DS:7278h 是目前載入的圖名、DS:728Ah 是子索引、0FFh 是「尚未載入」的哨兵(PC-98 對應 DS:0A313h／DS:0A325h)。DS:4FBFh \u003c\u003e 0 時先清一行再印 'Loading...Please Wait'(21)——⚠ PC-98 沒有這道判斷、一律顯示(「読みこみ中です」14 bytes = 7 全形字)。特例 := (圖名 = 'PIC') or (圖名 = 'FINAL')；檔名 = 圖名 + Str(DS:5BEEh 資料片編號) + '.dax'(與 spec 1024 同一套組法)；載入失敗顯示 'PIC not found'(13；PC-98 是 'PIC not found '(14) 且後接子索引、沒翻)。★★ PC-98 每張圖前進 高×寬×3(三個平面)，圖名 = 'SPRIT' 時再加 高×寬(遮罩平面) —— 這是既有結論「PC-98 +11h ＝ 3×高×寬、遮罩 ＝ 高×寬」的載入端確認，並指名觸發遮罩的圖名是 'SPRIT'。★ PC-98 每張表頭比 DOS 多一個 byte(es:[di+2] := 1 對 DOS 的 es:[di+1] := 1)；收尾的 out 0A6h 是繪圖頁選擇器(不是 8259A)。⚠ 'PIC'/'FINAL'/'SPRIT'/'.dax' 同時是檔名前綴與程式裡的比較字串，翻了會同時弄壞載入與特例判斷",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1029-picture-loading-and-cache.md"
    ]
   },
   {
@@ -25195,7 +25199,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-19.md"
    ]
   },
   {
@@ -25562,11 +25566,11 @@
    "note": "在指標表裡找索引(retf 4)：從 1 起逐格比對 DS:6D35h + i*4 這個遠指標是否等於參數，相等回索引；走到 DS:66A6h(項數)還沒找到回 0",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-32.md",
     "audit/function-index/pc98-overlay-32.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-    "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
-    "spec/777-item-append-and-area-save-sweep.md"
+    "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
    ]
   },
   {
@@ -51698,9 +51702,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1029-picture-loading-and-cache.md",
+   "note": "圖片載入(retf 0Ch)。★★ 一格快取：圖名相同(字串 DS:7278h，8 bytes)且子索引相同(DS:728Ah)就直接返回；子索引 = 0FFh 也直接返回 ⇒ ★ 關掉 spec 892 的未定項：DS:7278h 是目前載入的圖名、DS:728Ah 是子索引、0FFh 是「尚未載入」的哨兵(PC-98 對應 DS:0A313h／DS:0A325h)。DS:4FBFh \u003c\u003e 0 時先清一行再印 'Loading...Please Wait'(21)——⚠ PC-98 沒有這道判斷、一律顯示(「読みこみ中です」14 bytes = 7 全形字)。特例 := (圖名 = 'PIC') or (圖名 = 'FINAL')；檔名 = 圖名 + Str(DS:5BEEh 資料片編號) + '.dax'(與 spec 1024 同一套組法)；載入失敗顯示 'PIC not found'(13；PC-98 是 'PIC not found '(14) 且後接子索引、沒翻)。★★ PC-98 每張圖前進 高×寬×3(三個平面)，圖名 = 'SPRIT' 時再加 高×寬(遮罩平面) —— 這是既有結論「PC-98 +11h ＝ 3×高×寬、遮罩 ＝ 高×寬」的載入端確認，並指名觸發遮罩的圖名是 'SPRIT'。★ PC-98 每張表頭比 DOS 多一個 byte(es:[di+2] := 1 對 DOS 的 es:[di+1] := 1)；收尾的 out 0A6h 是繪圖頁選擇器(不是 8259A)。⚠ 'PIC'/'FINAL'/'SPRIT'/'.dax' 同時是檔名前綴與程式裡的比較字串，翻了會同時弄壞載入與特例判斷",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1029-picture-loading-and-cache.md"
    ]
   },
   {
@@ -52373,7 +52381,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-19.md"
    ]
   },
   {
@@ -52742,6 +52750,7 @@
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
    "note": "在指標表裡找索引(retf 4)：表 DS:9DCFh、項數 DS:9740h，與 DOS overlay-32:0CAEh 同",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-index/pc98-overlay-32.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
@@ -53559,9 +53568,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 1,
    "CodeBytes": 2102,
    "Undefined": 114,
@@ -54114,9 +54123,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 1,
    "CodeBytes": 1846,
    "Undefined": 114,
