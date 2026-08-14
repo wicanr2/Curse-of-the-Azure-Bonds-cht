@@ -13536,7 +13536,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "886",
+   "note": "目標游標前後切換(retf 6；arg_0 是父框架指標的巢狀程序，arg_2 要不要動畫，arg_4 步進 ±1)：父框架上放著每筆 3 bytes、第 0 筆當 header 的目標清單(父[−0DBh] 目前索引、父[−0DAh] 筆數)；索引環狀走訪(0→筆數、超過→1)，用 k 去 DS:66A3h+k*4 取座標(spec 860 的戰鬥員座標快取)、DS:6D35h+k*4 取遠指標(spec 852)當回傳值；要動畫就叫 156Dh 把游標從舊格移到新格，否則叫 1901h+2 抹掉",
    "citations": [
     "spec/886-target-cursor-step.md"
    ]
@@ -14706,9 +14709,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "885",
+   "note": "第二個遊戲速度選單(retf，無參數)：標題 'Game Speed = '＋1522h(DS:4FA9h)＋' (0=fastest 9=slowest)'；選項 DS:4FA9h \u003e 0 才接 ' Faster'、\u003c 9 才接 ' Slower'、最後 ' Exit'；169Dh+2 收鍵，方向鍵 50h/48h 帶邊界檢查地 dec/inc，字母 'F'/'S' 則直接 dec/inc。★' (0=fastest 9=slowest)' 是遊戲自己印的字，直接證實 spec 879/881 的『值越大越慢』。⚠字母鍵那條路徑沒有邊界檢查，可把值推出 0..9",
    "citations": [
     "audit/function-strings.md",
+    "spec/881-animation-player-and-speed.md",
     "spec/885-speed-menu-second-entry.md"
    ]
   },
@@ -38895,7 +38902,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "886",
+   "note": "同 DOS overlay-13:0394Bh，10 條差異全是位址與回傳值取法(DOS 兩次 mov、PC-98 les)。沒有邏輯差異",
    "citations": [
     "spec/886-target-cursor-step.md"
    ]
@@ -40015,7 +40025,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "885",
+   "note": "同 DOS overlay-15:01B4Dh。★把 PC-98 的選單機制補完整：標籤欄位(DS:0A369h/0A370h/0A37Eh)與熱鍵字元(DS:0A33Bh:='F'、DS:0A33Ch:='S')是兩塊平行的固定陣列，選項不可用時兩邊都寫 0(DOS 是不串接那一段)。堆疊框 22Ch↔254h",
    "citations": [
     "audit/function-strings.md",
     "spec/885-speed-menu-second-entry.md"
@@ -51219,9 +51232,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 34,
+   "Read": 35,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -51249,9 +51262,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 28,
+   "Read": 29,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 10,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -51774,9 +51787,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 36,
+   "Read": 37,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
@@ -51804,9 +51817,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 26,
+   "Read": 27,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
