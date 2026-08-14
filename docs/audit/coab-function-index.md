@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 1014、不阻塞 29、邊界碎片 338、待解讀 107；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 1016、不阻塞 29、邊界碎片 338、待解讀 105；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -70,7 +70,7 @@
 | overlay-09 | COMPTACT | 36 | 15 | 0 | 20 | 1 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
 | overlay-10 | COMPREP | 35 | 21 | 0 | 12 | 2 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |
 | overlay-11 | INIT | 6 | 5 | 0 | 0 | 1 | 1960 | 128 | [明細](function-index/pc98-overlay-11.md) |
-| overlay-12 | EFFPROCS | 150 | 130 | 0 | 18 | 2 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
+| overlay-12 | EFFPROCS | 150 | 131 | 0 | 18 | 1 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
 | overlay-13 | COMSTUFF | 72 | 40 | 0 | 27 | 5 | 17459 | 905 | [明細](function-index/pc98-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 11 | 0 | 0 | 3 | 3435 | 321 | [明細](function-index/pc98-overlay-14.md) |
 | overlay-15 | CAMP | 45 | 30 | 0 | 15 | 0 | 8121 | 1126 | [明細](function-index/pc98-overlay-15.md) |
@@ -82,7 +82,7 @@
 | overlay-21 | MONEY | 30 | 20 | 0 | 8 | 2 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
 | overlay-22 | SPELLS | 138 | 95 | 0 | 27 | 16 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
 | overlay-23 | EFFECTS | 39 | 27 | 0 | 12 | 0 | 9201 | 458 | [明細](function-index/pc98-overlay-23.md) |
-| overlay-24 | GENERIC | 65 | 40 | 0 | 17 | 8 | 13567 | 376 | [明細](function-index/pc98-overlay-24.md) |
+| overlay-24 | GENERIC | 65 | 41 | 0 | 17 | 7 | 13567 | 376 | [明細](function-index/pc98-overlay-24.md) |
 | overlay-25 | TRAINING | 14 | 12 | 0 | 0 | 2 | 5200 | 167 | [明細](function-index/pc98-overlay-25.md) |
 | overlay-26 | MENUS | 20 | 15 | 0 | 0 | 5 | 4937 | 183 | [明細](function-index/pc98-overlay-26.md) |
 | overlay-27 | OVERLAND | 5 | 5 | 0 | 0 | 0 | 134 | 0 | [明細](function-index/pc98-overlay-27.md) |
