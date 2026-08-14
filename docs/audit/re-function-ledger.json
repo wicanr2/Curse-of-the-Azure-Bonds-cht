@@ -24061,6 +24061,24 @@
    "level": "exact",
    "spec": "926",
    "note": "同 DOS overlay-30:0104Ch(相似度 0.938)。三個差異區塊：(a)(b) 失敗訊息只有一個字串常數 unk_F61 加一個 '.'，不組合磁碟編號(所以堆疊只要 20h，DOS 要 118h)；(c) ★DOS 的 FreeMem(@緩衝, 大小) 在 PC-98 換成 mov al,0 / out 0A6h, al(形狀上是繪圖頁選擇 port)——PC-98 在本支裡沒有釋放那塊緩衝。集合常數 [1,2,3] 兩平台相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 10658,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "927",
+   "note": "八方向判定(retf 8 = 兩組座標，回 al = 方向 0..7)：用 loc_192Ah+1 取欄、loc_192Dh+3 取列，算 dx/dy 絕對值，然後從 方向 0 起逐一測扇區條件直到命中。★兩個常數就是 8.8 定點的正切值——26Ah/100h = 2.4141 = tan 67.5°、6Ah/100h = 0.4141 = tan 22.5°；方向 0/4 要 dy 佔優、2/6 要 dx 佔優、1/3/5/7 介於兩者之間。這關掉 spec 914 的待答項：那裡的 r 就是八方向編號。⚠比較用有號 imul/idiv，dx > 53 會溢位翻號(地圖尺寸碰不到)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 10740,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "927",
+   "note": "同 DOS overlay-13:029A2h 的介面，但只有 42 條：取完四個座標就委派出去。★IDA 顯示的 'call sub_11CC' 是撞號——實際位元組 9A 5C 00 17 01 = call far ptr 0117h:005Ch(far 不是 near)，0117h 是正常外部模組(本 overlay 的 far call 目標段裡出現 8 次)；0117h×16+5Ch = 11CCh 剛好撞上本 overlay 偏移 11CCh，那裡是 CHECKTARGET(011AFh、spec 766) body 裡的一條 jnz。函式索引那筆『sub_11CC 140 bytes 邊界碎片』是同一個撞號造出的幻影。★掃過兩平台全部 36 個 overlay 與兩支常駐執行檔，正切常數 26Ah/6Ah 只出現在 DOS overlay-13(各 6 處)、PC-98 完全沒有 → PC-98 換了算法不是搬家。⚠fallback 是死碼：mov al/xor ah,ah 零延伸後 cmp ax, 0FFFFh 永遠不相等，方向 := 角色^[18Eh]^[9] 從來不會執行"
   }
  ]
 }
