@@ -10201,8 +10201,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "spec/1005-effect-dispatch-table.md"
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -10223,6 +10223,8 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md",
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-25.md",
     "audit/function-strings.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -14597,10 +14599,14 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1022-dungeon-main-menu.md",
+   "note": "地城主選單／走動主迴圈（DS:4FBAh 畫面模式 = 4 才進來）。★★ 六個寫在選單上的指令：DOS 的選項是資料段一整條 33 字元字串 DS:03D6h ＝ 'Area Cast View Encamp Search Look'，熱鍵就是那六個大寫字母（41h A/43h C/56h V/45h E/53h S/4Ch L）。A = 切換自動地圖 DS:720Eh 再重畫視野（★ 關掉 spec 1006 的未宣稱項）；C/V/E 先寫 DS:7294h := 1；A 那段先看 遠指標(DS:4F99h)^[1F6h]，不通過就顯示 'Not Here'(8)。★★★ 另有四個沒寫在選單上的方向鍵（小鍵盤擴充掃描碼，方向編碼的第五個獨立確認）：48h↑ = sub_78E 前進、50h↓ = 朝向 +4 mod 8(180°)、4Bh← = +6(左轉 90°)、4Dh→ = +2(右轉 90°)；與 spec 1006 由 (方向+6/4/2) mod 8 推出的左/後/右完全一致。轉完一律 DS:7212h := overlay-30 entry#4(DS:720Fh, DS:7210h, DS:7211h) 再 overlay-30 entry#7(同三個) 重畫視野⇒ 確認 spec 1006 的簽章，並定下 DS:7211h ＝ 隊伍朝向。★★★ 熱鍵機制的完整對照：PC-98 開頭多一段（DOS 沒有）——overlay-26 entry#3 @0858h 十筆欄位初始化，然後 rep movsb 把 DS:07CAh 起 70 bytes（十筆 × 7 的選項文字）搬到 DS:0A33Fh、DS:0810h 起 10 bytes（熱鍵表）搬到 DS:0A335h。表的內容：1 マップ/A、2 ｷｬﾗｸﾀｰ/V、3 魔法/C、4 ｷｬﾝﾌﾟ/E、5 空/' '、6 捜索/S、7 調査/L、8-10 空/' '；熱鍵表整條是 'AVCE SL   '。⇒ 同一個選單，DOS 靠大寫字母、PC-98 靠平行的兩張表，熱鍵字母完全相同。空白熱鍵 ＝ 不可選（spec 990）。⚠ 每個選項只有 6 bytes ＝ 3 個全形字。位址：720Eh↔0A2A8h、720Fh/7210h↔0A2A9h/0A2AAh、7211h↔0A2ABh、7212h↔0A2ACh、7294h↔0A32Eh、4FBAh↔7F27h",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1022-dungeon-main-menu.md"
    ]
   },
   {
@@ -15589,6 +15595,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-25.md",
     "audit/function-strings.md",
     "spec/995-file-pattern-scan-and-rename.md"
    ]
@@ -16999,12 +17007,12 @@
    "spec": "docs/spec/998-character-sheet-layout.md",
    "note": "角色資料畫面：完整版面＋六個標籤；定名 +74h 種族、+11Bh 陣營、+76h 年齡；五張名稱表的 stride",
    "citations": [
+    "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-19.md",
+    "audit/function-index/pc98-overlay-25.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
-    "spec/870-lay-on-hands-and-npc-name-mapping.md",
-    "spec/887-paladin-cure-disease.md",
-    "spec/998-character-sheet-layout.md"
+    "spec/870-lay-on-hands-and-npc-name-mapping.md"
    ]
   },
   {
@@ -32766,10 +32774,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-25.md",
     "audit/function-index/dos-overlay-26.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-22.md"
+    "audit/function-index/pc98-overlay-04.md"
    ]
   },
   {
@@ -36452,8 +36460,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "spec/1005-effect-dispatch-table.md"
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -36474,6 +36482,8 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-19.md",
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-25.md",
     "audit/function-strings.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -40964,9 +40974,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1022-dungeon-main-menu.md",
+   "note": "地城主選單／走動主迴圈（DS:4FBAh 畫面模式 = 4 才進來）。★★ 六個寫在選單上的指令：DOS 的選項是資料段一整條 33 字元字串 DS:03D6h ＝ 'Area Cast View Encamp Search Look'，熱鍵就是那六個大寫字母（41h A/43h C/56h V/45h E/53h S/4Ch L）。A = 切換自動地圖 DS:720Eh 再重畫視野（★ 關掉 spec 1006 的未宣稱項）；C/V/E 先寫 DS:7294h := 1；A 那段先看 遠指標(DS:4F99h)^[1F6h]，不通過就顯示 'Not Here'(8)。★★★ 另有四個沒寫在選單上的方向鍵（小鍵盤擴充掃描碼，方向編碼的第五個獨立確認）：48h↑ = sub_78E 前進、50h↓ = 朝向 +4 mod 8(180°)、4Bh← = +6(左轉 90°)、4Dh→ = +2(右轉 90°)；與 spec 1006 由 (方向+6/4/2) mod 8 推出的左/後/右完全一致。轉完一律 DS:7212h := overlay-30 entry#4(DS:720Fh, DS:7210h, DS:7211h) 再 overlay-30 entry#7(同三個) 重畫視野⇒ 確認 spec 1006 的簽章，並定下 DS:7211h ＝ 隊伍朝向。★★★ 熱鍵機制的完整對照：PC-98 開頭多一段（DOS 沒有）——overlay-26 entry#3 @0858h 十筆欄位初始化，然後 rep movsb 把 DS:07CAh 起 70 bytes（十筆 × 7 的選項文字）搬到 DS:0A33Fh、DS:0810h 起 10 bytes（熱鍵表）搬到 DS:0A335h。表的內容：1 マップ/A、2 ｷｬﾗｸﾀｰ/V、3 魔法/C、4 ｷｬﾝﾌﾟ/E、5 空/' '、6 捜索/S、7 調査/L、8-10 空/' '；熱鍵表整條是 'AVCE SL   '。⇒ 同一個選單，DOS 靠大寫字母、PC-98 靠平行的兩張表，熱鍵字母完全相同。空白熱鍵 ＝ 不可選（spec 990）。⚠ 每個選項只有 6 bytes ＝ 3 個全形字。位址：720Eh↔0A2A8h、720Fh/7210h↔0A2A9h/0A2AAh、7211h↔0A2ABh、7212h↔0A2ACh、7294h↔0A32Eh、4FBAh↔7F27h",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1022-dungeon-main-menu.md"
    ]
   },
   {
@@ -53266,9 +53280,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 3735,
    "Undefined": 308,
@@ -53821,9 +53835,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 3435,
    "Undefined": 321,

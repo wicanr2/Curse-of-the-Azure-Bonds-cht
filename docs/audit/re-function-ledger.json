@@ -25744,6 +25744,24 @@
    "level": "exact",
    "spec": "docs/spec/1021-race-class-matrix.md",
    "note": "轉職（選新職業）畫面。★★★ 種族可選職業表 DS:3FF8h(PC-98 DS:708Dh，值完全相同)，每種族 14 bytes：+0 = 選項數、+1.. = 職業編號，配職業名表 DS:0CB6h(筆距 27)。Dwarf/Gnome/Halfling 各 3(Fighter、Thief、Fighter/Thief)、Elf 7、Half-Elf 13(最多)、Half-Orc 6、Human 6(單職業 + Paladin/Ranger)—— 就是 Gold Box／AD&D 1e 的種族—職業矩陣。⚠ 種族 0(Monster)那一列的 +0 是 18，超過 14 bytes 的列長，不是真的清單。流程：逐一用 sub_D2F(職業, 父bp) 做資格檢查，通過的配一個選單節點(名稱來自 DS:0CB6h + 職業×27)；一個都沒有就顯示 <名字> + \" doesn't qualify.\"；否則開 'Pick New Class'/'Select' 選單，回 'S' 就轉職：+127h/+129h 清 0、+11Ch := 2、FillChar(角色^[1Eh], 54h, 0) 清空記憶法術清單、新職業 0(Cleric)→+12Dh:=1、新職業 5(Magic-User)→+137h:=1 與 +83h/+84h/+8Ah/+8Dh:=1、+75h := 新職業，最後顯示 <名字> + ' is now a 1st level ' + 職業名。★★ 兩處與 spec 1016 對上：+1Eh 起 84 bytes 就是那支重算掃的記憶法術清單；+137h := 1 就是「1 環先給 1 個」。★★ 選單節點大小 DOS 2Eh(46)／PC-98 56h(86)，差 28h(名稱欄位加寬，同物品節點)；next +2Ah↔+52h、旗標 +29h↔+51h、複製長度 28h↔50h。⚠ 兩平台都拿全域當內層迴圈計數器(DS:7747h／DS:0A9D9h) ⇒ 不可重入。字串：'Pick New Class'(14)、\" doesn't qualify.\"(17)、'Select'(6，大寫 S 是熱鍵)、' is now a 1st level '(20，前接名字後接職業名)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 2314,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1022-dungeon-main-menu.md",
+   "note": "地城主選單／走動主迴圈（DS:4FBAh 畫面模式 = 4 才進來）。★★ 六個寫在選單上的指令：DOS 的選項是資料段一整條 33 字元字串 DS:03D6h ＝ 'Area Cast View Encamp Search Look'，熱鍵就是那六個大寫字母（41h A/43h C/56h V/45h E/53h S/4Ch L）。A = 切換自動地圖 DS:720Eh 再重畫視野（★ 關掉 spec 1006 的未宣稱項）；C/V/E 先寫 DS:7294h := 1；A 那段先看 遠指標(DS:4F99h)^[1F6h]，不通過就顯示 'Not Here'(8)。★★★ 另有四個沒寫在選單上的方向鍵（小鍵盤擴充掃描碼，方向編碼的第五個獨立確認）：48h↑ = sub_78E 前進、50h↓ = 朝向 +4 mod 8(180°)、4Bh← = +6(左轉 90°)、4Dh→ = +2(右轉 90°)；與 spec 1006 由 (方向+6/4/2) mod 8 推出的左/後/右完全一致。轉完一律 DS:7212h := overlay-30 entry#4(DS:720Fh, DS:7210h, DS:7211h) 再 overlay-30 entry#7(同三個) 重畫視野⇒ 確認 spec 1006 的簽章，並定下 DS:7211h ＝ 隊伍朝向。★★★ 熱鍵機制的完整對照：PC-98 開頭多一段（DOS 沒有）——overlay-26 entry#3 @0858h 十筆欄位初始化，然後 rep movsb 把 DS:07CAh 起 70 bytes（十筆 × 7 的選項文字）搬到 DS:0A33Fh、DS:0810h 起 10 bytes（熱鍵表）搬到 DS:0A335h。表的內容：1 マップ/A、2 ｷｬﾗｸﾀｰ/V、3 魔法/C、4 ｷｬﾝﾌﾟ/E、5 空/' '、6 捜索/S、7 調査/L、8-10 空/' '；熱鍵表整條是 'AVCE SL   '。⇒ 同一個選單，DOS 靠大寫字母、PC-98 靠平行的兩張表，熱鍵字母完全相同。空白熱鍵 ＝ 不可選（spec 990）。⚠ 每個選項只有 6 bytes ＝ 3 個全形字。位址：720Eh↔0A2A8h、720Fh/7210h↔0A2A9h/0A2AAh、7211h↔0A2ABh、7212h↔0A2ACh、7294h↔0A32Eh、4FBAh↔7F27h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 2276,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1022-dungeon-main-menu.md",
+   "note": "地城主選單／走動主迴圈（DS:4FBAh 畫面模式 = 4 才進來）。★★ 六個寫在選單上的指令：DOS 的選項是資料段一整條 33 字元字串 DS:03D6h ＝ 'Area Cast View Encamp Search Look'，熱鍵就是那六個大寫字母（41h A/43h C/56h V/45h E/53h S/4Ch L）。A = 切換自動地圖 DS:720Eh 再重畫視野（★ 關掉 spec 1006 的未宣稱項）；C/V/E 先寫 DS:7294h := 1；A 那段先看 遠指標(DS:4F99h)^[1F6h]，不通過就顯示 'Not Here'(8)。★★★ 另有四個沒寫在選單上的方向鍵（小鍵盤擴充掃描碼，方向編碼的第五個獨立確認）：48h↑ = sub_78E 前進、50h↓ = 朝向 +4 mod 8(180°)、4Bh← = +6(左轉 90°)、4Dh→ = +2(右轉 90°)；與 spec 1006 由 (方向+6/4/2) mod 8 推出的左/後/右完全一致。轉完一律 DS:7212h := overlay-30 entry#4(DS:720Fh, DS:7210h, DS:7211h) 再 overlay-30 entry#7(同三個) 重畫視野⇒ 確認 spec 1006 的簽章，並定下 DS:7211h ＝ 隊伍朝向。★★★ 熱鍵機制的完整對照：PC-98 開頭多一段（DOS 沒有）——overlay-26 entry#3 @0858h 十筆欄位初始化，然後 rep movsb 把 DS:07CAh 起 70 bytes（十筆 × 7 的選項文字）搬到 DS:0A33Fh、DS:0810h 起 10 bytes（熱鍵表）搬到 DS:0A335h。表的內容：1 マップ/A、2 ｷｬﾗｸﾀｰ/V、3 魔法/C、4 ｷｬﾝﾌﾟ/E、5 空/' '、6 捜索/S、7 調査/L、8-10 空/' '；熱鍵表整條是 'AVCE SL   '。⇒ 同一個選單，DOS 靠大寫字母、PC-98 靠平行的兩張表，熱鍵字母完全相同。空白熱鍵 ＝ 不可選（spec 990）。⚠ 每個選項只有 6 bytes ＝ 3 個全形字。位址：720Eh↔0A2A8h、720Fh/7210h↔0A2A9h/0A2AAh、7211h↔0A2ABh、7212h↔0A2ACh、7294h↔0A32Eh、4FBAh↔7F27h"
   }
  ]
 }
