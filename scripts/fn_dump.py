@@ -12,7 +12,18 @@ import sys
 import os
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from module_align import load, clean
+from module_align import load as _load, clean, SWEEP
+
+
+def load(platform, module):
+    """常駐執行檔用 `full/` 那一份（與函式索引同一套函式集合）。"""
+    import json
+    path = os.path.join(SWEEP, platform, "full", "%s-%s.json" % (platform, module))
+    if os.path.exists(path):
+        data = json.load(open(path, encoding="utf-8"))
+        fns = data["functions"] if isinstance(data, dict) else data
+        return [f for f in fns if f.get("items")]
+    return _load(platform, module)
 
 
 def show(f):
