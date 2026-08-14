@@ -21100,6 +21100,42 @@
    "level": "exact",
    "spec": "docs/spec/817-opportunity-attack-and-take-menu.md",
    "note": "Take 清單：retf 10h = 四個遠指標，宣告順序 (參數C, 參數8, 參數4, 參數0)。旗標 := 1；掃 DS:0A026h 物品鏈（next +52h）對每個節點呼叫 <far 14F3h+2>(0,0,0,0,節點,longint 0)；輸出 := <far 16A8h+1>('アイテム'(8 bytes), '取る'(4 bytes), 0Dh, 0Ah, 0Fh, 1, 1, 26h, 16h, DS:0A026h, 1, @旗標, 參數0, 參數4)；參數C^ := al、參數8^ := 參數4^。spec 817 PC-98 另外把熱鍵與標籤分開存：mov byte ds:0A33Ah, 54h（'T'）與 Move(' 取る '(6 bytes), DS:0A362h, 6)。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 3505,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/818-take-loop-and-adjacent-lookup.md",
+   "note": "Take 主迴圈：retf。repeat：選中 := NIL、清單 := DS:6F8Ch、旗標 := 0；本模組 0CE6h(@鍵, @選中, @清單, @旗標)（spec 817）；鍵 <> 54h('T') 且 <> 0Dh(Enter) 就結束；否則 <far 069Ah>(@失敗, 選中)，失敗 = 0 時把 選中 從 DS:6F8Ch 鏈（next +2Ah）摘掉（頭節點直接改 DS:6F8Ch，否則 while q^[2Ah] <> 選中 走鏈，無 NIL 守衛）、選中^[2Ah] := NIL、FreeMem(選中, 3Fh)（63 bytes，與 spec 789 的 GetMem 相同；前面的 <> NIL 判斷到不了）；DS:6F8Ch 變 NIL 就自動結束。迴圈後 <far 15A9h>。spec 818"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
+   "ea": 3532,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/818-take-loop-and-adjacent-lookup.md",
+   "note": "Take 主迴圈：retf。repeat：選中 := NIL、清單 := DS:0A026h、旗標 := 0；本模組 0CE6h(@鍵, @選中, @清單, @旗標)（spec 817）；鍵 <> 54h('T') 且 <> 0Dh(Enter) 就結束；否則 <far 069Ah>(@失敗, 選中)，失敗 = 0 時把 選中 從 DS:0A026h 鏈（next +52h）摘掉（頭節點直接改 DS:0A026h，否則 while q^[2Ah] <> 選中 走鏈，無 NIL 守衛）、選中^[2Ah] := NIL、FreeMem(選中, 67h)（103 bytes，與 spec 789 的 GetMem 相同；前面的 <> NIL 判斷到不了）；DS:0A026h 變 NIL 就自動結束。迴圈後 <far 15A9h>。spec 818 PC-98 在選單呼叫後多一次 <far 019Eh:0000h>。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 3335,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/818-take-loop-and-adjacent-lookup.md",
+   "note": "依方向偏移找記錄：retf 0Eh，宣告順序 (參數C, 參數A, 參數6, 參數4, 參數0)，參數6 與 參數0 是遠指標，回傳 dx:ax。p := 參數6；while (p <> NIL) and (找到 = 0)：for k := 1 to 參數4（無號）——p^[10h+k] = 0 跳過；d := 參數0^[k]；(p^[1Ah] + byte[2694h+d]) <> 參數C 跳過；(p^[1Bh] + byte[269Dh+d]) <> 參數A 跳過；否則 找到 := 1（內層不提早跳出）。沒找到就 p := p^[4]（next）。找到回傳 遠指標(p^[0])，否則回傳 DS:650Ah（不是 NIL）。spec 818"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 3309,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/818-take-loop-and-adjacent-lookup.md",
+   "note": "依方向偏移找記錄：retf 0Eh，宣告順序 (參數C, 參數A, 參數6, 參數4, 參數0)，參數6 與 參數0 是遠指標，回傳 dx:ax。p := 參數6；while (p <> NIL) and (找到 = 0)：for k := 1 to 參數4（無號）——p^[10h+k] = 0 跳過；d := 參數0^[k]；(p^[1Ah] + byte[489Eh+d]) <> 參數C 跳過；(p^[1Bh] + byte[48A7h+d]) <> 參數A 跳過；否則 找到 := 1（內層不提早跳出）。沒找到就 p := p^[4]（next）。找到回傳 遠指標(p^[0])，否則回傳 DS:9598h（不是 NIL）。spec 818（差異只在 mov/les 的等價碼型）"
   }
  ]
 }
