@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 650、不阻塞 133、邊界碎片 249、待解讀 354；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 652、不阻塞 133、邊界碎片 249、待解讀 352；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -28,7 +28,7 @@
 | overlay-11 | INIT | 4 | 2 | 0 | 1 | 1 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
 | overlay-12 | EFFPROCS | 152 | 121 | 0 | 27 | 4 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
 | overlay-13 | COMSTUFF | 58 | 10 | 0 | 16 | 32 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
-| overlay-14 | MOVEMENT | 14 | 7 | 0 | 0 | 7 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
+| overlay-14 | MOVEMENT | 14 | 8 | 0 | 0 | 6 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
 | overlay-15 | CAMP | 42 | 12 | 0 | 11 | 19 | 8139 | 898 | [明細](function-index/dos-overlay-15.md) |
 | overlay-16 | LOADSAVE | 28 | 6 | 0 | 8 | 14 | 16063 | 787 | [明細](function-index/dos-overlay-16.md) |
 | overlay-17 | GEN | 39 | 2 | 0 | 21 | 16 | 19521 | 1536 | [明細](function-index/dos-overlay-17.md) |
@@ -49,7 +49,7 @@
 | overlay-32 | TACMAP | 24 | 9 | 0 | 0 | 15 | 5064 | 0 | [明細](function-index/dos-overlay-32.md) |
 | overlay-33 | SQRPAK24 | 7 | 3 | 0 | 0 | 4 | 1515 | 57 | [明細](function-index/dos-overlay-33.md) |
 | overlay-34 | BUG | 3 | 2 | 0 | 0 | 1 | 1749 | 562 | [明細](function-index/dos-overlay-34.md) |
-| overlay-35 | SQRPAK8 | 4 | 2 | 0 | 0 | 2 | 615 | 74 | [明細](function-index/dos-overlay-35.md) |
+| overlay-35 | SQRPAK8 | 4 | 3 | 0 | 0 | 1 | 615 | 74 | [明細](function-index/dos-overlay-35.md) |
 
 ## PC98
 
