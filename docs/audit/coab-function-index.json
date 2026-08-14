@@ -28103,7 +28103,10 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "953",
+   "note": "★★把累積的一段文字寫進 PC-98 文字 VRAM(near)，就是 spec 952 的『沖出』：di = (起列 × byte_280DAh + 起欄) × 2，40 欄模式再 shl 1；es = word_280D4h(0A000h)、bx = word_280D6h(2000h) 是屬性平面偏移、dh = byte_280C6h 屬性。★全形字的 VRAM 編碼：sub_19791h 換算後 xchg ah,al 並 sub al,20h，左半格 stosw 寫該值、右半格 stosw 寫 同值 or 8000h(bit 15 = 右半標記)，屬性平面兩格都寫同一個屬性；40 欄模式每格再重複一次。單位元組就只 stosw 一次。★byte_280E3h 是跨呼叫保留的前導旗標，所以分段輸出不會把全形字拆壞。繁中化最關鍵的一層——Big5 要換算成 PC-98 內碼或改走圖形"
   },
   {
    "platform": "pc98",
@@ -28588,7 +28591,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "953",
+   "note": "OvrInit(far, retf 4)：word_23AD4h = 0 回 0FFFFh(−1 ovrError)；依序用 sub_19F7Eh/sub_19F8Ah/sub_19FC5h 三種方式試開檔，全失敗回 0FFFEh(−2 ovrNotFound)。★讀標頭：5A4Dh('MZ')表示覆疊資料附在 EXE 影像後面，算出 標頭[4] × 200h − ((−標頭[6]) and 1FFh) 後 int 21h AX=4200h LSEEK 過去再重讀；★接著必須是 5054h + 564Fh 也就是 'TPOV' 簽章，否則關檔回 −1。成功則存 handle 到 word_23AE4h、資料起點到 dword_23AD0h、把 dword_28104h 設成 cs:loc_1A119h(讀取常式)、★int 21h AX=253Fh 掛上 INT 3Fh handler(cs:02E7h)——spec 928 那 871 個 CD 3F entry stub 最終跳的就是它。結果寫 word_23AC6h(OvrResult)"
   },
   {
    "platform": "pc98",
@@ -52353,9 +52359,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 249,
+   "Read": 251,
    "NotBlocking": 29,
-   "Todo": 30,
+   "Todo": 28,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
