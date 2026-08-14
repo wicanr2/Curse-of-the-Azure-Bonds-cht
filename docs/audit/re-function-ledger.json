@@ -59,15 +59,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 970,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Ch 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 3093,
    "state": "待解讀",
    "level": "",
@@ -127,15 +118,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 29h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 10152,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Ch 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "dos",
@@ -21712,6 +21694,96 @@
    "level": "exact",
    "spec": "604",
    "note": "同 PC-98 overlay-02:0049Ch（ECL opcode 0Bh 產生 N 個角色）。★PC-98 多印一句 '読み込み中です'（16 條指令），DOS 沒有。其餘是位址：DS:6506h↔9594h、名額上限全域 DS:47E6h↔789Ch，以及區域變數位移各差 1"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 970,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "599",
+   "note": "同 PC-98 overlay-02:003E0h（ECL opcode 0Ch）。★PC-98 多兩塊：進場把 DS:0A2A8h 存進區域變數、收尾多呼叫 loc_167Ch+2 後再寫回——DOS 沒有這組存還原。其餘是位址：DS:7601h/7602h↔0A893h/0A894h、DS:720Fh/7210h/7211h↔0A2A9h/0A2AAh/0A2ABh、DS:4F9Dh↔7F09h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 4758,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "774",
+   "note": "同 DOS overlay-09:01273h（戰鬥中的熱鍵）。★兩處真差異：(1) 切換 DS:75DAh 的熱鍵 DOS 是 32h('2')、PC-98 改成 4Dh('M')——與 spec 817 的『熱鍵維持英數但可改字母』一致；(2) DOS 另有一段 cmp al,2Dh('-') 的分支，PC-98 沒有；PC-98 則多一次 0A65h:1C2Ah 呼叫"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 7208,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "750",
+   "note": "同 DOS overlay-10:01C3Eh（戰鬥開場）。★兩處真差異：(1) DOS 多清一個緩衝（mov di,722Ch + sub_17C9），PC-98 沒有；(2) PC-98 多一段依 DS:8BE2h = 47h 決定播 0Bh 或 7 號音效，DOS 沒有。其餘是位址：DS:7F36h↔4FC9h、DS:0A30Fh/0A30Ah/0A2C6h↔726Fh/7274h/728Ch"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 18315,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "770",
+   "note": "同 DOS overlay-13:04811h（hugs 攻擊）。★兩處真差異：(1) PC-98 進場多一道 攻擊者^[197h] 的陣營判斷再跳收尾；(2) PC-98 多組一段字串（418h:1C96h 產生後接到訊息尾），緩衝從 106h 放大到 206h。其餘是位址：DS:0A039h↔6F9Fh、DS:0A03Dh/0A03Fh↔6FA3h/6FA5h、+18Eh↔+18Dh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 18550,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "772",
+   "note": "同 DOS overlay-13:048DCh（神明介入）。★觸發條件兩平台不同：DOS 用 0A54h:724h 比對 DS:8C80h 的字串當閘門，PC-98 改成檢查 目標^[0F7h] >= 80h（士氣未崩）。其餘是位址：DS:9598h↔650Ah、+198h/197h/196h↔+197h/196h/195h（狀態 6 = 死亡）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-29",
+   "ea": 1371,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "760",
+   "note": "同 PC-98 overlay-29:0045Ah（逐項釋放後清空，retf 4）。DOS 版：n := p^[0]，n < 1 就跳過；i 由 1 遞增到 n，逐項對 p + 8i − 2 叫 297h:1D19h；收尾 FillChar(p^, 42h, 0)、DS:7278h:=0、DS:728Ah:=0FFh。★與 PC-98 的差異：方向相反（DOS inc、PC-98 dec）、元素位移 8i−2 vs 8i−1、FillChar 42h vs 43h——後兩者正是 PC-98 記錄大 1 byte 的老差異，釋放的元素集合相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 1425,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "626",
+   "note": "同 PC-98 overlay-07:0068Bh（視窗繪製，state 是 2-byte 記錄）。★三處真差異：(1) 兩個 state 欄位的檢查順序相反（DOS 先看 +1 再看 +0）；(2) DOS 把 bank1^[5C2h] 快取進 DS:8B6Ch 再用，PC-98 直接讀；(3) PC-98 進出時存還原 DS:0A2A8h，DOS 沒有。其餘是位址：DS:720Eh↔0A2A8h、DS:7580h↔0A66Ch、DS:4F99h↔7F05h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 896,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "619",
+   "note": "同 PC-98 overlay-07:00499h（GETECL 載入 ECL script）。★三處真差異：(1) FillChar 長度 DOS 1E00h(7680)、PC-98 1E41h(7745)；(2) DOS 多一段字串接續與 0A54h:364h，緩衝 112h vs 1Ch；(3) PC-98 收尾多一條 out 0A6h, al（PC-98 專屬 I/O 埠），DOS 沒有。其餘是位址：DS:4FA5h↔7F12h、DS:5CF0h↔8CF6h、DS:5BEEh↔8BF4h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 10152,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "599",
+   "note": "同 PC-98 overlay-02:02940h（ECL opcode 2Ch 四選一選單）。★DOS 是把選項字串接起來（0A54h:74Fh + 634h，緩衝 12Eh），PC-98 改成把兩段固定資料 Move 到 DS:0A33Fh/0A335h 的固定槽（46h bytes）——與 spec 817／844 同一套『固定槽選單』手法；PC-98 收尾另多一次 loc_167Ch+2"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-08",
+   "ea": 77,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "同 DOS overlay-08:0004Dh（戰鬥收尾）。★PC-98 多一整段（24 條）：走隊伍鏈 DS:9598h，對 +143h < 8 且 +1A5h > 0 且 +197h = 0 的成員把 +197h 設成 1，DOS 完全沒有這一段。其餘是位址：DS:0A647h/0A64Bh↔755Bh/755Fh、DS:9F2Ch↔6E92h"
   }
  ]
 }
