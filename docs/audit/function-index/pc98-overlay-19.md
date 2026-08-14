@@ -50,7 +50,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2275` | sub_2275 | — | 465 | 154 | 1 | 2 | ✓ | 已解讀 | exact | 856<br>同 DOS overlay-19:022A3h（module_align 對齊，助憶碼序列完全相同）。差異全是物品節點位移（PC-98 大 28h：+56h..+66h↔+2Eh..+3Eh、+61h↔+39h）與 DS:9594h↔6506h、+14Eh↔+14Dh。★同一個效果槽比對 bug 兩平台都有 | spec/856-item-stack-merge-bug.md |
 | `246F` | sub_246F | USEITEM | 786 | 280 | 1 | 9 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `27DC` | sub_27DC | — | 482 | 183 | 1 | 4 | ✓ | 已解讀 | exact | 901<br>同 DOS overlay-19:027D6h。物品節點位移 +39h/+3Ah/+2Eh↔+61h/+62h/+56h(spec 832 的 +28h 位移)；組訊息的順序略有不同。⚠同一個死碼分支 PC-98 也有，沒有修 | audit/function-strings.md<br>spec/901-sell-item-price.md |
-| `2A32` | sub_2A32 | — | 482 | 199 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `2A32` | sub_2A32 | — | 482 | 199 | 1 | 4 | ✓ | 已解讀 | exact | 903<br>同 DOS overlay-19:02A42h。物品節點 +35h↔+5Dh(spec 832 的 +28h 位移)；★多一處 物品^[5Dh]:=0 與一次字串串接，位置與 DOS 那一處不同 | audit/function-strings.md<br>spec/903-identify-item.md |
 | `2C69` | sub_2C69 | — | 828 | 321 | 1 | 6 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `2FE5` | sub_2FE5 | — | 722 | 283 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `32B7` | sub_32B7 | OVERLOADED | 132 | 45 | 1 | 3 | ✓ | 已解讀 | strong inference | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>與 DOS overlay-19:3258h（entry#9）助憶碼序列完全相同，語意同該筆：拿不拿得下(retf 8)：角色^[14Ch] > 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] > 0 時再乘上去(單位重量×數量)；上限 := <呼叫>(角色) + 5DCh(1500)；角色^[187h](累計負重) + w > 上限(無號)也算超過 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
