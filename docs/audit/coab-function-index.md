@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 732、不阻塞 133、邊界碎片 246、待解讀 275；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 733、不阻塞 133、邊界碎片 246、待解讀 274；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -29,7 +29,7 @@
 | overlay-12 | EFFPROCS | 152 | 122 | 0 | 27 | 3 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
 | overlay-13 | COMSTUFF | 58 | 22 | 0 | 15 | 21 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 11 | 0 | 0 | 3 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
-| overlay-15 | CAMP | 42 | 21 | 0 | 11 | 10 | 8139 | 898 | [明細](function-index/dos-overlay-15.md) |
+| overlay-15 | CAMP | 42 | 22 | 0 | 11 | 9 | 8139 | 898 | [明細](function-index/dos-overlay-15.md) |
 | overlay-16 | LOADSAVE | 28 | 6 | 0 | 8 | 14 | 16063 | 787 | [明細](function-index/dos-overlay-16.md) |
 | overlay-17 | GEN | 39 | 2 | 0 | 21 | 16 | 19521 | 1536 | [明細](function-index/dos-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 11 | 4 | 0 | 0 | 7 | 4446 | 1177 | [明細](function-index/dos-overlay-18.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 798、不阻塞 29、邊界碎片 339、待解讀 322；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 799、不阻塞 29、邊界碎片 339、待解讀 321；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -73,7 +73,7 @@
 | overlay-12 | EFFPROCS | 150 | 126 | 0 | 19 | 5 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
 | overlay-13 | COMSTUFF | 72 | 22 | 0 | 27 | 23 | 17459 | 905 | [明細](function-index/pc98-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 9 | 0 | 0 | 5 | 3435 | 321 | [明細](function-index/pc98-overlay-14.md) |
-| overlay-15 | CAMP | 45 | 19 | 0 | 15 | 11 | 8121 | 1126 | [明細](function-index/pc98-overlay-15.md) |
+| overlay-15 | CAMP | 45 | 20 | 0 | 15 | 10 | 8121 | 1126 | [明細](function-index/pc98-overlay-15.md) |
 | overlay-16 | LOADSAVE | 47 | 10 | 0 | 14 | 23 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
 | overlay-17 | GEN | 54 | 4 | 0 | 34 | 16 | 20976 | 2752 | [明細](function-index/pc98-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 23 | 11 | 0 | 4 | 8 | 4957 | 1311 | [明細](function-index/pc98-overlay-18.md) |

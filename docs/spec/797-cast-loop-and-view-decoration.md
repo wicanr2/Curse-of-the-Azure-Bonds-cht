@@ -24,8 +24,7 @@ if <本模組 0391h>(1) then
         else if var_3 <> 0 then
             用過 := 1
         else begin
-            顯示(名字 ＋ 'has no spells memorized');
-            <sub_1554>(0Ah, 1);
+            <far 1554h>(角色, 名字 ＋ 'has no spells memorized', 0Ah, 1);
         end;
     until 選 = 0;
 if 用過 <> 0 then <sub_15A9>();
