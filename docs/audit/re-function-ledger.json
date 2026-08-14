@@ -25870,6 +25870,24 @@
    "level": "exact",
    "spec": "docs/spec/1028-character-view-menu.md",
    "note": "角色檢視選單(＝ overlay-19 entry#5)，spec 1015 的 'V' 鍵與 spec 1022 地城主選單 'V' 鍵的入口。DS:4FBAh = 5 時先叫 overlay-32 entry#5；DS:4AF8h 存目前在看的角色；迴圈 until 鍵 in [#0,'E'](集合常數 CS:0B08h)。★★ 七個選項按狀態動態接上：'Items '(6，+14Dh 物品鏈非 NIL)、'Spells '(7，★ +1Eh+i (i=0..53h) 有任一格非 0)、'Trade '(6，有錢且 DS:4FBAh<>5 且 (+0F7h>=80h 或 +196h=0 或 +195h<>1))、'Drop '(5，有錢)、'Heal '(5，sub_35F1 成立)、'Cure '(5，sub_3656 成立)、'Exit'(4，一律)。熱鍵是大寫 I/S/T/D/H/C/E。★★★ 'Spells ' 的條件掃的正是 +1Eh 起的 84 格記憶法術清單 —— 與 spec 1016(重算時掃 0..53h)、spec 1021(轉職時 FillChar(+1Eh, 54h, 0)) 第三次對上。★ 「有錢」是掃 word(角色^[0FBh + i×2]) i=0..6 的七種貨幣(spec 1000 同一組)。★★★ PC-98 七個選項各 6 bytes = 3 全形字(ｱｲﾃﾑ／魔法／渡す／捨てる／回復／治療／抜ける)，熱鍵寫進 DS:0A335h/0A336h/0A337h/0A338h/0A33Bh/0A33Ch/0A33Eh(i = 1,2,3,4,7,8,10)。★ 熱鍵表是 DS:0A334h + i(i=0..10，共 11 bytes 到 0A33Eh)、選項文字是 DS:0A338h + i×7(i=1..10，從 0A33Fh 起)，兩者不重疊 —— spec 755/1012/1013/1022/1023 的版面再確認一次。⚠ 中文各選項也只有 3 個字"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-29",
+   "ea": 267,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1029-picture-loading-and-cache.md",
+   "note": "圖片載入(retf 0Ch)。★★ 一格快取：圖名相同(字串 DS:7278h，8 bytes)且子索引相同(DS:728Ah)就直接返回；子索引 = 0FFh 也直接返回 ⇒ ★ 關掉 spec 892 的未定項：DS:7278h 是目前載入的圖名、DS:728Ah 是子索引、0FFh 是「尚未載入」的哨兵(PC-98 對應 DS:0A313h／DS:0A325h)。DS:4FBFh <> 0 時先清一行再印 'Loading...Please Wait'(21)——⚠ PC-98 沒有這道判斷、一律顯示(「読みこみ中です」14 bytes = 7 全形字)。特例 := (圖名 = 'PIC') or (圖名 = 'FINAL')；檔名 = 圖名 + Str(DS:5BEEh 資料片編號) + '.dax'(與 spec 1024 同一套組法)；載入失敗顯示 'PIC not found'(13；PC-98 是 'PIC not found '(14) 且後接子索引、沒翻)。★★ PC-98 每張圖前進 高×寬×3(三個平面)，圖名 = 'SPRIT' 時再加 高×寬(遮罩平面) —— 這是既有結論「PC-98 +11h ＝ 3×高×寬、遮罩 ＝ 高×寬」的載入端確認，並指名觸發遮罩的圖名是 'SPRIT'。★ PC-98 每張表頭比 DOS 多一個 byte(es:[di+2] := 1 對 DOS 的 es:[di+1] := 1)；收尾的 out 0A6h 是繪圖頁選擇器(不是 8259A)。⚠ 'PIC'/'FINAL'/'SPRIT'/'.dax' 同時是檔名前綴與程式裡的比較字串，翻了會同時弄壞載入與特例判斷"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-29",
+   "ea": 267,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1029-picture-loading-and-cache.md",
+   "note": "圖片載入(retf 0Ch)。★★ 一格快取：圖名相同(字串 DS:7278h，8 bytes)且子索引相同(DS:728Ah)就直接返回；子索引 = 0FFh 也直接返回 ⇒ ★ 關掉 spec 892 的未定項：DS:7278h 是目前載入的圖名、DS:728Ah 是子索引、0FFh 是「尚未載入」的哨兵(PC-98 對應 DS:0A313h／DS:0A325h)。DS:4FBFh <> 0 時先清一行再印 'Loading...Please Wait'(21)——⚠ PC-98 沒有這道判斷、一律顯示(「読みこみ中です」14 bytes = 7 全形字)。特例 := (圖名 = 'PIC') or (圖名 = 'FINAL')；檔名 = 圖名 + Str(DS:5BEEh 資料片編號) + '.dax'(與 spec 1024 同一套組法)；載入失敗顯示 'PIC not found'(13；PC-98 是 'PIC not found '(14) 且後接子索引、沒翻)。★★ PC-98 每張圖前進 高×寬×3(三個平面)，圖名 = 'SPRIT' 時再加 高×寬(遮罩平面) —— 這是既有結論「PC-98 +11h ＝ 3×高×寬、遮罩 ＝ 高×寬」的載入端確認，並指名觸發遮罩的圖名是 'SPRIT'。★ PC-98 每張表頭比 DOS 多一個 byte(es:[di+2] := 1 對 DOS 的 es:[di+1] := 1)；收尾的 out 0A6h 是繪圖頁選擇器(不是 8259A)。⚠ 'PIC'/'FINAL'/'SPRIT'/'.dax' 同時是檔名前綴與程式裡的比較字串，翻了會同時弄壞載入與特例判斷"
   }
  ]
 }
