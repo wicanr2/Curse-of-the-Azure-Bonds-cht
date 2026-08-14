@@ -5,7 +5,12 @@
 
 ## `overlay-05:01736h`（DOS 161 條）↔ `overlay-05:01775h`（PC-98 192 條）
 
-`retf` ＝ 無參數。
+`retf` ＝ 無參數。兩句訊息：
+
+| | DOS |
+|---|---|
+| 全滅 | `'The monsters rejoice for the party has been destroyed'` |
+| 等按鍵 | `'Press any key to continue'` |
 
 ```pascal
 遠指標(DS:4F9Dh)^[58Eh] := 0;
@@ -35,8 +40,10 @@ goto 收尾;
     遠指標(DS:4F9Dh)^[58Eh] := 80h;
     <far 01A0h:0000h>();
     DS:65A0h := 2;  DS:65A1h := 6;
-    訊息A;  <far 0542h:04A4h>(1, 0, 0Ah, 16h, 25h, 5, 2);
-    訊息B;  <far 0542h:0946h>(0, 0Dh);
+    訊息('The monsters rejoice for the party has been destroyed');
+    <far 0542h:04A4h>(1, 0, 0Ah, 16h, 25h, 5, 2);
+    訊息('Press any key to continue');
+    <far 0542h:0946h>(0, 0Dh);
 
 收尾:
     DS:4FC9h := 1;
@@ -114,9 +121,17 @@ DOS 的 `DS:4FC7h` 是在 spec 861 裡算好的；**PC-98 在這裡又算了一�
 PC-98 另外多一段 `far 0893h:0114h(DS:8BF3h)` ＋ `DS:7F36h := 1`。
 本規格不宣稱那是什麼。
 
-## 明確不宣稱
+## 敗北路徑就是全滅
 
-- 沒有宣稱兩句訊息的內容（`function_strings` 沒有抽到）。
+字串 `'The monsters rejoice for the party has been destroyed'` 把那條路徑定死了：
+`(DS:4FC7h ≠ 0) and (DS:8B56h = 0)` 成立就是**全隊被消滅**。
+
+`DS:4FC7h` 是 spec 861 算出來的「戰鬥真的結束」旗標，
+所以「真的結束」＋「`DS:8B56h` 沒設」＝ 玩家輸了。
+反過來說 `DS:8B56h` ≠ 0 那條路（spec 858 的固定經驗值、spec 861 的特殊分支）
+**即使全隊倒下也不會走全滅畫面**——形狀上是劇情安排的必敗戰鬥。
+
+## 明確不宣稱
 - 沒有宣稱 `DS:4FBCh`／`DS:8B56h`／`DS:47ECh`／`DS:4FC9h`／`DS:65A0h`／
   `DS:65A1h` 的意義。
 - 沒有宣稱 `本模組 1370h`／`14ACh`／`0A7Eh`／`106Ch`／`far 1512h+1` 各做什麼。
