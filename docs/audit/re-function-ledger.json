@@ -25213,6 +25213,15 @@
    "level": "exact",
    "spec": "docs/spec/989-pc98-beam-walk-and-acid-area.md",
    "note": "噴酸範圍（DOS 05AA8h／spec 725 的對應）；唯一結構差異是 DS:7F16h × 7"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 2222,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/990-pc98-menu-line-assembler-and-slot-layout.md",
+   "note": "十格選單的選項行組裝：一格 7 欄（6 字元＋1 空白）、第 5 格後多 3 欄、全行 80 欄；DS:0A33Fh 起十個 7-byte 字串"
   }
  ]
 }
