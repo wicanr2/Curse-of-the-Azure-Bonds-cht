@@ -25285,6 +25285,15 @@
    "level": "exact",
    "spec": "docs/spec/995-file-pattern-scan-and-rename.md",
    "note": "改名流程：名字上限 15 個半形字元（中文 7 字）；確認答 N 等於放棄不是重輸；寫回角色記錄 +0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 2971,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/996-pc98-ending-sequence.md",
+   "note": "結局圖片序列 CED1..CED8 自動輪播（每張 1000 計時單位）＋ CED9 停住；先清三個圖形平面各半個（3E80h）"
   }
  ]
 }

@@ -15280,6 +15280,7 @@
    "note": "依 DS:7584h 掃 *.guy／*.cha＋*.sav／*.hil；DS:50Fh 是每筆記錄大小，模式 0 的 1A6h ＝ 角色記錄 ⇒ .guy 是角色檔",
    "citations": [
     "audit/function-strings.md",
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
     "spec/995-file-pattern-scan-and-rename.md"
    ]
   },
@@ -43075,9 +43076,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/996-pc98-ending-sequence.md",
+   "note": "結局圖片序列 CED1..CED8 自動輪播（每張 1000 計時單位）＋ CED9 停住；先清三個圖形平面各半個（3E80h）",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/996-pc98-ending-sequence.md"
    ]
   },
   {
@@ -43309,7 +43314,8 @@
    "citations": [
     "spec/754-small-predicates-and-wrappers.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-    "spec/758-morale-field-0f7h-round-trip.md"
+    "spec/758-morale-field-0f7h-round-trip.md",
+    "spec/996-pc98-ending-sequence.md"
    ]
   },
   {
@@ -43329,7 +43335,8 @@
    "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=0C000h(CRT 顯示模式設定)。⚠ IDA 的 TRANSFER TO ROM BASIC 註解是 IBM PC 語意,不適用 PC-98",
    "citations": [
     "audit/function-index/pc98-overlay-18.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/996-pc98-ending-sequence.md"
    ]
   },
   {
@@ -43349,7 +43356,8 @@
    "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=8000h(另一種 CRT 模式),再 out 68h, 8",
    "citations": [
     "audit/function-index/pc98-overlay-18.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/996-pc98-ending-sequence.md"
    ]
   },
   {
@@ -53082,9 +53090,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
