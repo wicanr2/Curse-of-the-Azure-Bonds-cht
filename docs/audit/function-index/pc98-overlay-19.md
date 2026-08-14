@@ -9,7 +9,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0098` | sub_98 | SHOWACTIVECHAR | 1305 | 537 | 4 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `05B1` | sub_5B1 | SHOWLOOT | 189 | 82 | 4 | 2 | ✓ | 待解讀 | — | — | — |
 | `069E` | sub_69E | SHOWACTIVECOMBATSTUFF | 784 | 332 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `09BC` | sub_9BC | DISPLAYSTAT | 341 | 135 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `09BC` | sub_9BC | DISPLAYSTAT | 341 | 135 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/782-strength-percentile-display.md<br>力量百分位的顯示(retf 4)：135 條指令與 DOS overlay-19:09B3h 逐條同構，角色指標 DS:9594h、繪字 418h:0D17h。⚠ 唯一差別是四條常數換成全形 — CS:09AEh '０'、09B1h '００'、09B6h '（'、09B9h '）'；對齊的程式碼(欄 := 5 或 6、百分位固定第 7 欄第 7 列)一個字都沒改。中文版可照此作法 | spec/782-strength-percentile-display.md |
 | `0B82` | sub_B82 | VIEWACTIVECHAR | 673 | 262 | 0 | 13 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0E8E` | sub_E8E | — | 247 | 101 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1074` | sub_1074 | VIEWITEM | 144 | 70 | 1 | 1 | ✓ | 待解讀 | — | — | — |

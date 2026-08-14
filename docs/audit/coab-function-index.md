@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 718、不阻塞 29、邊界碎片 340、待解讀 401；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 719、不阻塞 29、邊界碎片 340、待解讀 400；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -77,7 +77,7 @@
 | overlay-16 | LOADSAVE | 47 | 10 | 0 | 14 | 23 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
 | overlay-17 | GEN | 54 | 4 | 0 | 34 | 16 | 20976 | 2752 | [明細](function-index/pc98-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 23 | 11 | 0 | 4 | 8 | 4957 | 1311 | [明細](function-index/pc98-overlay-18.md) |
-| overlay-19 | LIBRARY | 57 | 7 | 0 | 29 | 21 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
+| overlay-19 | LIBRARY | 57 | 8 | 0 | 29 | 20 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 5 | 0 | 0 | 11 | 3555 | 225 | [明細](function-index/pc98-overlay-20.md) |
 | overlay-21 | MONEY | 30 | 12 | 0 | 8 | 10 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
 | overlay-22 | SPELLS | 138 | 63 | 0 | 27 | 48 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
