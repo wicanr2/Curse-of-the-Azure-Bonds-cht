@@ -6631,8 +6631,8 @@
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-04.md",
-    "audit/function-strings.md"
+    "audit/function-index/dos-overlay-26.md",
+    "audit/function-index/pc98-overlay-04.md"
    ]
   },
   {
@@ -15926,10 +15926,14 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1024-monster-data-loading.md",
+   "note": "怪物資料載入：一隻怪物要讀三個 .dax 檔。DOS 把檔名組成 'MON' + Str(DS:5BEEh 磁碟/資料片編號) + 'CHA'/'SPC'/'ITM' + '.dax'；⚠ PC-98 沒有插編號，用寫死的 'MONCHA'/'MONSPC'/'MONITM'。讀不到就顯示 'Unable to load monster'(22)(PC-98「モンスターをロードできませんでした」34 bytes)並走 far 06EA:0000h。★★ 三種紀錄的大小：CHA 怪物範本 DOS 1A6h(422) / PC-98 1A7h(423) bytes，用 Move 進呼叫端緩衝（★ PC-98 大 1 byte，與 spec 1010/1017 的角色記錄 +1 位移一致，和物品節點的 +28h 是兩種規則）；SPC 特殊攻擊節點 GetMem 9 bytes 串成鏈；ITM 物品節點 GetMem 3Fh(63，PC-98 103) 串成鏈★★★ 這是物品節點 63/103 bytes 的第四個獨立確認(前三個在 spec 1011/1013、1018、1019)。⚠ 'MON'/'CHA'/'SPC'/'ITM'/'.dax' 是檔名不可翻；DOS 是三段拼的、PC-98 是整條，中文化要分別處理",
    "citations": [
     "audit/function-index/dos-overlay-16.md",
     "audit/function-strings.md",
+    "spec/1024-monster-data-loading.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -42390,9 +42394,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1024-monster-data-loading.md",
+   "note": "怪物資料載入：一隻怪物要讀三個 .dax 檔。DOS 把檔名組成 'MON' + Str(DS:5BEEh 磁碟/資料片編號) + 'CHA'/'SPC'/'ITM' + '.dax'；⚠ PC-98 沒有插編號，用寫死的 'MONCHA'/'MONSPC'/'MONITM'。讀不到就顯示 'Unable to load monster'(22)(PC-98「モンスターをロードできませんでした」34 bytes)並走 far 06EA:0000h。★★ 三種紀錄的大小：CHA 怪物範本 DOS 1A6h(422) / PC-98 1A7h(423) bytes，用 Move 進呼叫端緩衝（★ PC-98 大 1 byte，與 spec 1010/1017 的角色記錄 +1 位移一致，和物品節點的 +28h 是兩種規則）；SPC 特殊攻擊節點 GetMem 9 bytes 串成鏈；ITM 物品節點 GetMem 3Fh(63，PC-98 103) 串成鏈★★★ 這是物品節點 63/103 bytes 的第四個獨立確認(前三個在 spec 1011/1013、1018、1019)。⚠ 'MON'/'CHA'/'SPC'/'ITM'/'.dax' 是檔名不可翻；DOS 是三段拼的、PC-98 是整條，中文化要分別處理",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1024-monster-data-loading.md"
    ]
   },
   {
@@ -53319,9 +53327,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -53874,9 +53882,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
