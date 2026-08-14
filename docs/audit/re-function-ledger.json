@@ -25096,6 +25096,24 @@
    "level": "exact",
    "spec": "docs/spec/983-same-text-primitive-both-platforms.md",
    "note": "把圖庫一張圖填進 DS:75E0h 動畫 surface 的第 N 格（像素平面 +17h 與遮罩平面 +13h 各搬一次）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 9740,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/984-drop-character-and-pc98-put8x8symbol.md",
+   "note": "DROP CHARACTER：雙重確認，死者/生者/反悔三種台詞；+196h=0 走 'You dump ... out back.'"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-35",
+   "ea": 810,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/984-drop-character-and-pc98-put8x8symbol.md",
+   "note": "Put8x8Symbol 的 PC-98 版；DS:488Ah 五個分段起始值 1/46/116/186/256 直接讀到；> 7FFFh 同樣不指派「組」"
   }
  ]
 }
