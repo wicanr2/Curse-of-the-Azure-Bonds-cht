@@ -21973,6 +21973,24 @@
    "level": "exact",
    "spec": "626",
    "note": "同 PC-98 overlay-07:01B89h（module_align 對齊）。★PC-98 多一段 7 條：les di,[var_4]; add di,14Eh; push es/di; mov ax,67h; call 81Fh:1A2h——對物品鏈頭（PC-98 +14Eh）配一個 67h(103) bytes 的節點，正是 PC-98 的物品節點大小（spec 832）；DOS 完全沒有這一段。其餘 55 條全是位址"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 15655,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "845",
+   "note": "Restoration（'is restored'）：+0E7h=被吸走的等級數、+0E8h=被吸走的 HP 總量、+127h=經驗值(longint)。每級HP = +0E8h div +0E7h，加回 +78h/+1A4h/+12Ch。挑升級最便宜的職業（DS:4291h 經驗值表，職業 × 63h + (等級+1) × 4）。⚠ 選中職業的變數沒有初值"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 16363,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "845",
+   "note": "同 DOS overlay-22:03D27h（module_align 對齊，助憶碼序列完全相同、0 個差異塊）。13 條差異全是位址：DS:0A521h↔7435h、經驗值表 DS:7326h↔4291h、+1A5h↔+1A4h；訊息 'はレベルを回復した。'"
   }
  ]
 }
