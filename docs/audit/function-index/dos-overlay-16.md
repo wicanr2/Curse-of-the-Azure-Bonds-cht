@@ -14,7 +14,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0A7E` | sub_A7E | — | 498 | 183 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `0C7E` | sub_C7E | — | 157 | 63 | 2 | 0 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `0DEA` | sub_DEA | — | 1436 | 546 | 1 | 5 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |
-| `1388` | sub_1388 | — | 264 | 109 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `1388` | sub_1388 | — | 264 | 109 | 1 | 1 | ✓ | 已解讀 | exact | 1<br>存檔掃描（巢狀程序，retf 2 只收靜態鏈）：以 DS:5BF0h ＋ CS 常數 ＋ 外層 frame 的樣式字串組出搜尋路徑，FindFirst(97Fh:112h)／FindNext(97Fh:150h)，迴圈條件是 DosError(DS:8C98h) = 0。每一輪把找到的檔名接在 DS:5BF0h 後面開檔，Seek 到 0 再 BlockRead 16 bytes 進 var_3C，關檔；下一輪先拿 var_3C 跟外層的目標字串比對，相符就跳出。回傳是否找到 | audit/function-index/pc98-overlay-16.md |
 | `1490` | sub_1490 | — | 143 | 49 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-16.md |
 | `1522` | sub_1522 | — | 348 | 128 | 4 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `169F` | sub_169F | — | 5 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cbw`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
