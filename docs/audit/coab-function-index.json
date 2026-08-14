@@ -16849,9 +16849,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1025-particle-animation-step.md",
+   "note": "粒子動畫的一幀(巢狀程序，retf 8；bp+0Ch 色階上限、bp+08h 粒子陣列遠指標、bp+06h 父 bp——本體讀 ss:[父bp−6] 當幀計數)。★★ 陣列 = 3 列 × 40 行、每顆 23 bytes(17h)、列距 398h(=40×23)，索引 1 起算所以基底先減 3AFh(0FC51h)。版面：+2 顯示橫座標、+4/+6 顯示座標(=累加器 div 32)、+8/+0Ah x/y 累加器、+0Ch/+0Eh x/y 速度、+10h 目前色階(0..5)、+11h 目標色階。★★ 物理：累加器 += 速度；顯示座標 = 累加器 div 32(8.5 定點)；(幀 mod 6)=0 時 y 速度 +1(★ 重力每 6 幀才加一次)；x 速度每幀往 0 收斂 ±1(水平阻力)；目前色階每幀 +1，上限 5 且不超過目標色階。三趟迴圈走同一組 120 顆：(1) 物理 (2) 8 \u003c 顯示x \u003c 65 才畫，色用 +11h (3) 同條件再畫一次，色改用 byte[4ACDh + 列×5 + 目前色階](每列自己一條 5 階顏色斜坡，靜態值是 0FFh ⇒ 執行期填)，最後 目前色階 = 2 時另叫 sub_6A。⚠ 兩平台只差兩處：右邊界 DOS \u003c 41h(65)／PC-98 \u003c 42h(66)、顏色斜坡表 DS:4ACDh↔DS:7BA3h；陣列版面與物理常數(6、32、5)完全相同。本支沒有字串",
    "citations": [
     "audit/function-index/dos-overlay-18.md",
+    "spec/1025-particle-animation-step.md",
     "spec/867-ending-animation-frame.md"
    ]
   },
@@ -25669,9 +25673,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/pc98-overlay-16.md",
     "audit/function-index/pc98-overlay-33.md",
-    "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -43731,7 +43735,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1025-particle-animation-step.md",
+   "note": "粒子動畫的一幀(巢狀程序，retf 8；bp+0Ch 色階上限、bp+08h 粒子陣列遠指標、bp+06h 父 bp——本體讀 ss:[父bp−6] 當幀計數)。★★ 陣列 = 3 列 × 40 行、每顆 23 bytes(17h)、列距 398h(=40×23)，索引 1 起算所以基底先減 3AFh(0FC51h)。版面：+2 顯示橫座標、+4/+6 顯示座標(=累加器 div 32)、+8/+0Ah x/y 累加器、+0Ch/+0Eh x/y 速度、+10h 目前色階(0..5)、+11h 目標色階。★★ 物理：累加器 += 速度；顯示座標 = 累加器 div 32(8.5 定點)；(幀 mod 6)=0 時 y 速度 +1(★ 重力每 6 幀才加一次)；x 速度每幀往 0 收斂 ±1(水平阻力)；目前色階每幀 +1，上限 5 且不超過目標色階。三趟迴圈走同一組 120 顆：(1) 物理 (2) 8 \u003c 顯示x \u003c 65 才畫，色用 +11h (3) 同條件再畫一次，色改用 byte[4ACDh + 列×5 + 目前色階](每列自己一條 5 階顏色斜坡，靜態值是 0FFh ⇒ 執行期填)，最後 目前色階 = 2 時另叫 sub_6A。⚠ 兩平台只差兩處：右邊界 DOS \u003c 41h(65)／PC-98 \u003c 42h(66)、顏色斜坡表 DS:4ACDh↔DS:7BA3h；陣列版面與物理常數(6、32、5)完全相同。本支沒有字串",
+   "citations": [
+    "spec/1025-particle-animation-step.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -52822,9 +52832,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/pc98-overlay-16.md",
     "audit/function-index/pc98-overlay-33.md",
-    "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -53357,9 +53367,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 11,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 4446,
    "Undefined": 1177,
@@ -53912,9 +53922,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
