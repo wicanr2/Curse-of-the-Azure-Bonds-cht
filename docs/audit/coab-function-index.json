@@ -14130,7 +14130,13 @@
    "callers": 1,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1027-attack-target-selection.md",
+   "note": "攻擊指令(＝ overlay-13 entry#21)，spec 1015 的 'A' 鍵叫的那一支。★ 攻擊次數：arg_E = 0FFh 時改從第 0 個裝備槽(+151h)的武器類別查 byte[5D02h + itemptr×16] − 1，沒武器就 1；0 或 0FFh 一律夾成 1。5D02h − 5CF6h = 0Ch ⇒ 物品類別表 DS:5CF6h 的 +0Ch 是新欄位(類別表已知七格：+0 槽位、+1 佔手數、+2/+3 對大型目標的骰、+0Ch 本項、+0Dh 可用性遮罩、+0Eh 旗標)。主迴圈用兩個集合常數(@Set@MemberOf，spec 1012 同一支)：CS:3AF7h = [#0,'E'] 離開條件、CS:3B17h = [47h,48h,49h,4Bh,4Dh,4Fh,50h,51h] 八個方向掃描碼。DS:7295h(spec 1015 的方向鍵直接操作旗標) = 0 時自己處理方向鍵，否則把方向鍵丟給 sub_33ACh(spec 1012 的目標游標畫面)。'N'/'P' 換上下一個目標、'C' 把游標拉回自己(entry#13(x, y, 0, 8))。★★★ PC-98 的 cmp al 清單只有 C/M/N/P/T 五個字母、一個方向掃描碼都沒有：移游標改成 'M'(叫 sub_329Fh ＝ spec 1012 的 PC-98 對側)、另加 'T' 指定目標(sub_30D8h)；N/P/C 相同。⇒ 同一個功能 DOS 綁 IBM PC 擴充掃描碼、PC-98 改成字母熱鍵，與 spec 1023 的游標鍵差異同一類。本支沒有字串",
+   "citations": [
+    "spec/1027-attack-target-selection.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23782,8 +23788,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-08.md",
-    "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md"
+    "audit/function-index/dos-overlay-14.md",
+    "audit/function-index/dos-overlay-15.md"
    ]
   },
   {
@@ -24694,10 +24700,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-30.md",
-    "context/50-log-2026-08-09-13.md",
-    "spec/1026-open-doors-table.md"
+    "audit/function-index/pc98-overlay-14.md",
+    "audit/function-index/pc98-overlay-30.md"
    ]
   },
   {
@@ -40540,7 +40546,13 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1027-attack-target-selection.md",
+   "note": "攻擊指令(＝ overlay-13 entry#21)，spec 1015 的 'A' 鍵叫的那一支。★ 攻擊次數：arg_E = 0FFh 時改從第 0 個裝備槽(+151h)的武器類別查 byte[5D02h + itemptr×16] − 1，沒武器就 1；0 或 0FFh 一律夾成 1。5D02h − 5CF6h = 0Ch ⇒ 物品類別表 DS:5CF6h 的 +0Ch 是新欄位(類別表已知七格：+0 槽位、+1 佔手數、+2/+3 對大型目標的骰、+0Ch 本項、+0Dh 可用性遮罩、+0Eh 旗標)。主迴圈用兩個集合常數(@Set@MemberOf，spec 1012 同一支)：CS:3AF7h = [#0,'E'] 離開條件、CS:3B17h = [47h,48h,49h,4Bh,4Dh,4Fh,50h,51h] 八個方向掃描碼。DS:7295h(spec 1015 的方向鍵直接操作旗標) = 0 時自己處理方向鍵，否則把方向鍵丟給 sub_33ACh(spec 1012 的目標游標畫面)。'N'/'P' 換上下一個目標、'C' 把游標拉回自己(entry#13(x, y, 0, 8))。★★★ PC-98 的 cmp al 清單只有 C/M/N/P/T 五個字母、一個方向掃描碼都沒有：移游標改成 'M'(叫 sub_329Fh ＝ spec 1012 的 PC-98 對側)、另加 'T' 指定目標(sub_30D8h)；N/P/C 相同。⇒ 同一個功能 DOS 綁 IBM PC 擴充掃描碼、PC-98 改成字母熱鍵，與 spec 1023 的游標鍵差異同一類。本支沒有字串",
+   "citations": [
+    "spec/1027-attack-target-selection.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51036,8 +51048,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-08.md",
-    "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md"
+    "audit/function-index/dos-overlay-14.md",
+    "audit/function-index/dos-overlay-15.md"
    ]
   },
   {
@@ -51866,10 +51878,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-30.md",
-    "context/50-log-2026-08-09-13.md",
-    "spec/1026-open-doors-table.md"
+    "audit/function-index/pc98-overlay-14.md",
+    "audit/function-index/pc98-overlay-30.md"
    ]
   },
   {
@@ -53299,9 +53311,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 42,
+   "Read": 43,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -53854,9 +53866,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 44,
+   "Read": 45,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
