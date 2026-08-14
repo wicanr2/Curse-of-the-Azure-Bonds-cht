@@ -16227,7 +16227,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1F8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1445 bytes，已逐條讀完）",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1084-training-hall-dos.md"
    ]
   },
   {
@@ -16748,6 +16749,7 @@
    "citations": [
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/pc98-overlay-17.md",
+    "spec/1084-training-hall-dos.md",
     "spec/850-hit-dice-and-effective-level.md",
     "spec/869-constitution-bonus-per-class-slot.md"
    ]
@@ -16808,6 +16810,7 @@
    "note": "升級擲 HD(retf 6，(角色, 職業遮罩))：DS:0818h 骰數 / DS:0820h 面數 / DS:3EA8h 遮罩 / DS:3EB9h HD 上限，四張 8 bytes 平行表 = AD\u0026D 生命骰表。等級 \u003e 1 就只擲 1 顆；擲兩次取大（非 AD\u0026D 規則）。過上限給固定 3/2/1 但用 mov 覆寫而非累加",
    "citations": [
     "audit/function-index/pc98-overlay-17.md",
+    "spec/1084-training-hall-dos.md",
     "spec/850-hit-dice-and-effective-level.md"
    ]
   },
@@ -16827,7 +16830,8 @@
    "spec": "1",
    "note": "付錢與找零(retf 8，(角色, 金額 longint))：金額先 × 0C8h(200) 換成銅幣（AD\u0026D 1 gp = 200 cp）。第一段 i 由 0 往上，每種幣值取 min(金額 div 幣值[i] + 1, 持有量) 扣掉——+1 造成刻意多付；第二段若金額變負就取絕對值，i 由 4 往下把差額以大面額找回。幣值表是 DS:0CA2h（1/10/100/200/1000 銅幣）。⚠ 角色身上錢不夠時 n 恆為 0、金額不減，i 會一路遞增讀出幣值表外，可能除以零",
    "citations": [
-    "audit/function-index/pc98-overlay-17.md"
+    "audit/function-index/pc98-overlay-17.md",
+    "spec/1084-training-hall-dos.md"
    ]
   },
   {
@@ -16841,9 +16845,13 @@
    "callers": 2,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1084",
+   "note": "訓練所升級主流程(retf，無參數)。★★★角色 +74h 是種族，1=矮人 2=精靈 3=地精 4=半精靈 5=半身人 0=人類(無上限)，等級上限表逐一對上 AD\u0026D 1e：矮人戰士 7/8/9、精靈戰士 5/6/7、精靈法師 9/10/11、地精戰士 5/6、半精靈牧師 5、半精靈戰士/遊俠 6/7/8、半精靈法師 6/7/8、半身人戰士 4/5/6，主屬性用目前值(+11h/+13h) ⇒ 裝備能突破上限。⇒ 第五次確認職業槽順序。經驗表 DS:4291h + 職業槽*63h + (等級+1)*4(32-bit，列距 99 不是 4 的倍數)。DS:3EA8h 是八職業位元遮罩、bank1^[550h] 是這間訓練所收哪些職業、DS:7587h 是免費訓練開關(連昏迷/沒錢/經驗不足全略過)、DS:7586h 經驗不足旗標。職業名表 DS:0CB6h + j*1Bh(27 bytes)。升級 HP 加值除以職業數且目前 HP 跟著最大 HP 一起加(先算受傷差額)。⚠IDA 把 DS:4FC8h 標成 loc_4FC7+1、DS:4F9Dh 標成 dword ptr loc_4F9D",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1084-training-hall-dos.md"
    ]
   },
   {
@@ -42302,7 +42310,8 @@
    "citations": [
     "audit/function-strings.md",
     "spec/1070-disk-identification-pc98.md",
-    "spec/1072-savegame-load-io-pc98.md"
+    "spec/1072-savegame-load-io-pc98.md",
+    "spec/1076-savegame-load-dos.md"
    ]
   },
   {
@@ -43973,7 +43982,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_FF7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 72 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/pc98-overlay-17.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1084-training-hall-dos.md"
    ]
   },
   {
@@ -53753,9 +53763,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
