@@ -23891,7 +23891,7 @@
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-17.md"
+    "audit/function-index/pc98-overlay-16.md"
    ]
   },
   {
@@ -43637,7 +43637,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1058",
+   "note": "圖示換色(retf 8)。⚠ 台帳記的『160 bytes 匯出空洞』是誤判：函式在 452Ah 的 retf 8 就結束，45CAh 之後是 spec 1037 的字串資料(0C 8C C3 82 A2 83 41… =「古いアイコン」)，210 條就是完整函式體 —— 與 spec 1036 同一類誤判。★★ 先把來源槽整組複製到目的槽：槽表 DS:0966Ch(spec 1033)、資料從 +17h 起(spec 1049)、遮罩平面掛在 +13h(spec 1050)，兩個指標(.a/.b)的主資料與遮罩各 Move 一次 —— 三份既有結論在同一支函式裡對上。★★★ 換色表：先把 16 格填成恆等，再 for i:=1..7 把 角色[i]^[144h] 的低 nibble 寫進 表[byte[6F54h+i]]、高 nibble 寫進 表[byte[6F54h+i]+8]，最後 far 02A8:0C32h(表A, 表B, …, 槽) 套兩次。角色^[144h]+部位 就是 spec 1037 的六個部位、每格兩個 4-bit 顏色 ⇒ 一個角色的外觀 = 把 +145h..+14Ah 的十二個 4-bit 顏色插進一張 16 格恆等對照表再整張套到圖示上；這解釋了 spec 1037 的圖示編輯畫面改的是這張表的輸入而不是圖本身，remake 只要保留『圖＋16 格對照表』就能重現全部配色。arg_2 為 0 時整段換色跳過",
+   "citations": [
+    "spec/1058-icon-palette-remap.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43652,7 +43658,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `dec ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `dec ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "spec/1058-icon-palette-remap.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -54117,9 +54126,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
