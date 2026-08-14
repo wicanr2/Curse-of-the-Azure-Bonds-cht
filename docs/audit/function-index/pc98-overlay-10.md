@@ -18,7 +18,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0981` | sub_981 | — | 27 | 12 | 3 | 0 | ✓ | 已解讀 | strong inference | docs/spec/572-resident-service-functions.md<br>與 dos overlay-10:098Dh 助憶碼序列完全相同（12 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `099C` | sub_99C | — | 86 | 36 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>在地圖上補兩格(retf 6)：與 DOS overlay-10:09A8h 同 | spec/758-morale-field-0f7h-round-trip.md |
 | `09F2` | sub_9F2 | — | 268 | 115 | 1 | 4 | ✓ | 已解讀 | exact | 749<br>同 DOS overlay-10:009FEh（module_align 對齊，助憶碼序列完全相同）。7 條差異全是呼叫目標與 DS:9F2Ch↔6E92h | audit/embedded-strings.md |
-| `0AFE` | sub_AFE | — | 326 | 138 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `0AFE` | sub_AFE | — | 326 | 138 | 1 | 4 | ✓ | 已解讀 | exact | 749<br>同 DOS overlay-10:00B0Ah（module_align 對齊，助憶碼序列完全相同）。16 條差異全是呼叫目標與 DS:9F2Ch↔6E92h、地形表 DS:48AFh↔26A5h | — |
 | `0C4A` | sub_C4A | — | 75 | 31 | 2 | 3 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 75 bytes，已逐條讀完） | — |
 | `0C95` | sub_C95 | — | 424 | 182 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0E3D` | sub_E3D | — | 382 | 183 | 1 | 3 | ✓ | 待解讀 | — | — | — |

@@ -9311,7 +9311,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "戰場植被生成(retf，無參數)：98Dh() 的 bit 80h 設起來就整支不做；機率由 10 起算，bit 02h −5、04h −2、40h +5、08h +10，負值夾成 1。掃 50 欄 × 24 列（y 由 1 起），本格與上一格的地形圖磚（DS:26A2h 的 +3 欄）都是 16h 才有機會長：1d100 過兩次 → 本格放 29h+1d2（一格高）；過一次 → 上格放 1Fh+1d5、本格放 24h+1d5（兩格高）",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
@@ -24047,7 +24050,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "852",
-   "note": "戰術地圖捲動＋重繪(retf 6，(半徑, y, x))：視窗左上角是 遠指標(DS:6E92h)^[2]/^[3]，中心 = 左上 + 3。半徑 0FFh 視為 0 並強制捲動；目標已在框內就整支不做。捲動時把中心逐格移向目標並夾在 x 3..2Eh、y 3..15h（配 7 格視窗即 50×25 的地圖，與 spec 749 相符）。重繪 7×7 格，每格畫面座標間隔 3，圖磚取自地形表 DS:26A2h 的 +3 欄。★地形表欄位補完：+0 移動成本(837)、+1/+2 視線(854)、+3 圖磚"
+   "note": "戰術地圖捲動＋重繪(retf 6，(半徑, y, x))：視窗左上角是 遠指標(DS:6E92h)^[2]/^[3]，中心 = 左上 + 3。半徑 0FFh 視為 0 並強制捲動；目標已在框內就整支不做。捲動時把中心逐格移向目標並夾在 x 3..2Eh、y 3..15h（配 7 格視窗即 50×25 的地圖，與 spec 749 相符）。重繪 7×7 格，每格畫面座標間隔 3，圖磚取自地形表 DS:26A2h 的 +3 欄。★地形表欄位補完：+0 移動成本(837)、+1/+2 視線(854)、+3 圖磚",
+   "citations": [
+    "audit/function-index/pc98-overlay-32.md"
+   ]
   },
   {
    "platform": "dos",
@@ -34221,7 +34227,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "749",
+   "note": "同 DOS overlay-10:00B0Ah（module_align 對齊，助憶碼序列完全相同）。16 條差異全是呼叫目標與 DS:9F2Ch↔6E92h、地形表 DS:48AFh↔26A5h"
   },
   {
    "platform": "pc98",
@@ -50639,9 +50648,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -51194,9 +51203,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
