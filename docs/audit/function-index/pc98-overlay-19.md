@@ -46,7 +46,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2055` | sub_2055 | — | 64 | 28 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-7]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 64 bytes，已逐條讀完） | — |
 | `2095` | sub_2095 | — | 79 | 29 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 79 bytes，已逐條讀完） | — |
 | `2102` | sub_2102 | — | 166 | 61 | 1 | 6 | ✓ | 已解讀 | exact | docs/spec/767-ac-display-sign-and-trade-overload.md<br>交易給誰(retf 4)：快取在 DS:7BD6h，提示 CS:20E4h '誰に渡しますか？'、拒絕訊息 CS:20F5h '持ちすぎです'，其餘同 DOS overlay-19:213Ch | spec/767-ac-display-sign-and-trade-overload.md |
-| `21C5` | sub_21C5 | — | 176 | 66 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `21C5` | sub_21C5 | — | 176 | 66 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/789-heal-budget-tick-and-halve-stack.md<br>同 DOS：節點 67h(103) bytes，數量欄 +61h、next +52h、清掉的欄 +5Ch；訊息 'それは分けることはできません'(28 bytes)。spec 789 | — |
 | `2275` | sub_2275 | — | 465 | 154 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `246F` | sub_246F | USEITEM | 786 | 280 | 1 | 9 | ✓ | 待解讀 | — | — | — |
 | `27DC` | sub_27DC | — | 482 | 183 | 1 | 4 | ✓ | 待解讀 | — | — | — |
