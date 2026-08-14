@@ -17085,6 +17085,16 @@
    "spec": "docs/spec/715-sleep-hd-budget.md",
    "bounds": "prologue",
    "note": "Sleep 的 HD 預算:預算 := ROLLDICE(4,4) 存 byte[4CB5h];走目標陣列,依 p^[0E5h] 算成本存 byte[4CB6h](<=1→1、2→2、3→4、4→6、5 且 p^[74h]=0→10 否則 20、其他→20);狀態 +195h=1、或 <overlay-24 entry#27>(p,35h) 查到(已睡著,**不扣預算**)、或預算 < 成本 → 該格清成 NIL;否則預算扣掉成本。最後在迴圈**外面**發一次 'falls asleep'。⚠ 預算用完不會提早跳出,所以誰先被睡到是陣列順序決定的不是強弱。⚠ 4CB4h/4CB5h/4CB6h 是**共用暫存不是狀態**——4CB5h 在 spec 705 是擲骰門檻、這裡是 HD 預算,4CB6h 在 705 是 base、這裡是單筆成本;建成具名全域會產生假耦合,但 08A1h 的筆數溢出確實會寫壞它們"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 14094,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/717-area-target-selection.md",
+   "bounds": "prologue",
+   "note": "範圍法術:n := (DS:6F97h = 40h) ? ROLLDICE(1,3)×2+1(值域只有 3/5/7) : <overlay-24 entry#36>(DS:6F97h)。**只有 [4F99h]^[1CCh] = 0 時才重選目標**:<overlay-31 entry#6>(DS:7559h, DS:755Ah, 2, 0FFh, 1, DS:6E92h) 填 DS:6E97h 起的 3 bytes 記錄(筆數 DS:6E96h、每筆 +0 是 DS:6D35h 指標表的索引),再把那些指標搬進 DS:7431h 目標陣列並 DS:7434h := DS:6E96h。否則整段跳過,沿用上一條 opcode 留下的清單(可能含 NIL)。接著 <overlay-32 entry#13>(DS:7559h, DS:755Ah, 0, 8)、d := ROLLDAMAGEDICE(n, 6)、<sub_F06h>(DS:6F97h, 0, 0, d, 9, 空字串)。⚠ 筆數是整個換掉不是累加,超出新筆數的舊格子不會被清只是走不到。這一段補完 spec 699:那裡是借同一片緩衝查完還原,這裡才是正常用途"
   }
  ]
 }

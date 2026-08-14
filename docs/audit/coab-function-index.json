@@ -16915,9 +16915,13 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/717-area-target-selection.md",
+   "note": "範圍法術:n := (DS:6F97h = 40h) ? ROLLDICE(1,3)×2+1(值域只有 3/5/7) : \u003coverlay-24 entry#36\u003e(DS:6F97h)。**只有 [4F99h]^[1CCh] = 0 時才重選目標**:\u003coverlay-31 entry#6\u003e(DS:7559h, DS:755Ah, 2, 0FFh, 1, DS:6E92h) 填 DS:6E97h 起的 3 bytes 記錄(筆數 DS:6E96h、每筆 +0 是 DS:6D35h 指標表的索引),再把那些指標搬進 DS:7431h 目標陣列並 DS:7434h := DS:6E96h。否則整段跳過,沿用上一條 opcode 留下的清單(可能含 NIL)。接著 \u003coverlay-32 entry#13\u003e(DS:7559h, DS:755Ah, 0, 8)、d := ROLLDAMAGEDICE(n, 6)、\u003csub_F06h\u003e(DS:6F97h, 0, 0, d, 9, 空字串)。⚠ 筆數是整個換掉不是累加,超出新筆數的舊格子不會被清只是走不到。這一段補完 spec 699:那裡是借同一片緩衝查完還原,這裡才是正常用途",
    "citations": [
-    "spec/716-nil-slot-hazard.md"
+    "spec/716-nil-slot-hazard.md",
+    "spec/717-area-target-selection.md"
    ]
   },
   {
@@ -17252,7 +17256,8 @@
     "spec/703-item-effect-slots-and-uninitialised-args.md",
     "spec/704-dispel-and-the-missing-fill.md",
     "spec/706-temporary-field-adjust.md",
-    "spec/708-slay-living-and-missile-count.md"
+    "spec/708-slay-living-and-missile-count.md",
+    "spec/717-area-target-selection.md"
    ]
   },
   {
@@ -17394,7 +17399,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "spec/708-slay-living-and-missile-count.md",
-    "spec/710-effect-collection-and-leftover-target.md"
+    "spec/710-effect-collection-and-leftover-target.md",
+    "spec/717-area-target-selection.md"
    ]
   },
   {
@@ -19415,7 +19421,8 @@
    "note": "借共用緩衝做查詢再還原:進入時 Move 備份 DS:6E97h 起 216 bytes,設 DS:6E92h^[6]:=1,用 overlay-32 entry#15/#16/#17 取出 a/b/c(DS:973Dh 那張 4 bytes 一格表的 +0/+1/+3),呼叫 \u003coverlay-31 entry#6\u003e(a, b, 0FFh, 0FFh, c, DS:6E92h) 讓它填那片緩衝,清旗標,然後在 3 bytes 一格的表(k 從 1 起,筆數在 DS:6E96h)裡找 far [6D35h + 該筆 +0 欄 ×4] 等於 (arg_0,arg_2) 的那筆,取它的 +1 欄 div 2 當結果,最後 Move 還原緩衝。⚠ **找不到不會有訊號**——迴圈跑到 DS:6E96h 也直接往下走,回傳最後一筆的值。⚠ div 2 是 cwd+idiv(往零取整),不能換成 sar。⚠ 執行期間那片共用緩衝內容是壞的,不能重入",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/699-lookup-with-save-restore-buffer.md"
+    "spec/699-lookup-with-save-restore-buffer.md",
+    "spec/717-area-target-selection.md"
    ]
   },
   {
@@ -45758,9 +45765,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 82,
+   "Read": 83,
    "NotBlocking": 0,
-   "Todo": 31,
+   "Todo": 30,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
