@@ -16,7 +16,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0DD9` | sub_DD9 | — | 313 | 105 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0F12` | sub_F12 | — | 45 | 19 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>依相位進位的折半(retf 2)：f(x: byte) = (x + (DS:758Dh and 1)) div 2。shr 只用來取 bit 0 進 CF，值本身丟掉。DS:758Dh 在戰鬥開場(spec 750)被設 0 | audit/function-index/pc98-overlay-13.md<br>spec/754-small-predicates-and-wrappers.md |
 | `0F46` | sub_F46 | — | 510 | 184 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `1144` | sub_1144 | — | 169 | 57 | 4 | 2 | ✓ | 已解讀 | exact | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>暫時借用目前目標欄位(retf 8)：甲為 NIL 回 false、乙=甲 回 true；否則清 DS:6F9Bh、叫 <呼叫>(1, 甲)，未中止就把甲塞進 乙^[18Dh]^[0Ah]、叫 <呼叫>(0, 乙)、再還原，最後回 DS:6F9Bh = 0。⚠ 目前目標欄位同時是參數傳遞通道，中途離開會留下錯誤的目標 | spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md |
+| `1144` | sub_1144 | — | 169 | 57 | 4 | 2 | ✓ | 已解讀 | exact | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>暫時借用目前目標欄位(retf 8)：甲為 NIL 回 false、乙=甲 回 true；否則清 DS:6F9Bh、叫 <呼叫>(1, 甲)，未中止就把甲塞進 乙^[18Dh]^[0Ah]、叫 <呼叫>(0, 乙)、再還原，最後回 DS:6F9Bh = 0。⚠ 目前目標欄位同時是參數傳遞通道，中途離開會留下錯誤的目標 | spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>spec/769-combat-main-loop.md |
 | `1227` | sub_1227 | — | 524 | 190 | 0 | 8 | ✓ | 待解讀 | — | — | — |
 | `1433` | sub_1433 | — | 18 | 7 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | — |
 | `1476` | sub_1476 | — | 31 | 12 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
@@ -39,7 +39,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1D9D` | sub_1D9D | — | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B0+3`、`call loc_1953`、`call loc_19A3`、`call far ptr loc_15D0+1`、`call far ptr unk_11F7`（body 共 57 bytes，已逐條讀完） | audit/overlay-init-graph.md<br>spec/751-overlay-init-chain-dependency-graph.md |
 | `1DF6` | sub_1DF6 | — | 537 | 195 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `200F` | sub_200F | — | 507 | 176 | 1 | 6 | ✓ | 待解讀 | — | — | — |
-| `2220` | sub_2220 | — | 1307 | 483 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-triage.md |
+| `2220` | sub_2220 | — | 1307 | 483 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-triage.md<br>spec/769-combat-main-loop.md |
 | `275A` | sub_275A | — | 361 | 132 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `28C3` | sub_28C3 | — | 223 | 73 | 3 | 3 | ✓ | 待解讀 | — | — | — |
 | `29A2` | sub_29A2 | — | 601 | 239 | 6 | 2 | ✓ | 待解讀 | — | — | — |
