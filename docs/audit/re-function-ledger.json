@@ -14674,7 +14674,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/653-rle-decompressor.md",
-   "note": "RLE 解壓縮器。串流前兩個 byte 不是資料:第一個被完全略過(沒有任何指令讀它)、第二個是預設填充 byte DH。控制 byte 三種形式:bit7=0 → 原樣複製 CL 個;bit7=1 且 bit6=1 → 重複 DH,長度 (CL and 3Fh)+2;bit7=1 且 bit6=0 → 重複下一個 byte,長度 (CL and 3Fh)+3。兩種重複的起始長度不同(2 與 3),指令數就差在 inc cl 的次數。結束條件是來源用完(SI >= 起點+arg_0),不檢查目的緩衝大小,輸出溢位不會被發現 ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
+   "note": "RLE 解壓縮器。串流前兩個 byte 不是資料:第一個被完全略過(沒有任何指令讀它)、第二個是預設填充 byte DH。控制 byte 三種形式:bit7=0 → 原樣複製 CL 個;bit7=1 且 bit6=1 → 重複 DH,長度 (CL and 3Fh)+2;bit7=1 且 bit6=0 → 重複下一個 byte,長度 (CL and 3Fh)+3。兩種重複的起始長度不同(2 與 3),指令數就差在 inc cl 的次數。結束條件是來源用完(SI >= 起點+arg_0),不檢查目的緩衝大小,輸出溢位不會被發現 ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin。補洞重匯出(spec 761)複查：新增指令都是函式中段的資料(stub 描述子／常數表／nop 填充)，判讀不變"
   },
   {
    "platform": "pc98",
@@ -14836,7 +14836,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
-   "note": "兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 <sub_192D2>,再分別交給 <sub_1BA37> 與 <sub_1BA3C>(相差 5 bytes,多半是同一支的兩個入口)。開頭先 <sub_18F10>() ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
+   "note": "兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 <sub_192D2>,再分別交給 <sub_1BA37> 與 <sub_1BA3C>(相差 5 bytes,多半是同一支的兩個入口)。開頭先 <sub_18F10>() ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin。補洞重匯出(spec 761)複查：新增指令都是函式中段的資料(stub 描述子／常數表／nop 填充)，判讀不變"
   },
   {
    "platform": "pc98",
@@ -15187,7 +15187,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/667-longint-to-decimal.md",
-   "note": "走 6-byte 一筆的表:三個暫存器一組(CX:SI:DI 正是 Turbo Pascal 6-byte real 的傳遞方式),每筆呼叫 <sub_1AFE4h> 與 <sub_1B0A7h>,收尾用 (81h,0,0) 再呼叫一次 sub_1AFE4h ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
+   "note": "走 6-byte 一筆的表:三個暫存器一組(CX:SI:DI 正是 Turbo Pascal 6-byte real 的傳遞方式),每筆呼叫 <sub_1AFE4h> 與 <sub_1B0A7h>,收尾用 (81h,0,0) 再呼叫一次 sub_1AFE4h ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin。補洞重匯出(spec 761)複查：新增指令都是函式中段的資料(stub 描述子／常數表／nop 填充)，判讀不變"
   },
   {
    "platform": "pc98",
@@ -15974,7 +15974,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 192 bytes，已逐條讀完） ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin"
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 192 bytes，已逐條讀完） ⚠ spec 736:本函式的反組譯有 1~4 bytes 的位元組缺口,缺口後那條可能是**假指令**(掉位元組後重新對齊產生的),引用該處前必須回去對原始 .bin。補洞重匯出(spec 761)複查：新增指令都是函式中段的資料(stub 描述子／常數表／nop 填充)，判讀不變"
   },
   {
    "platform": "pc98",
@@ -15992,7 +15992,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 160 bytes，已逐條讀完）"
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 160 bytes，已逐條讀完）。補洞重匯出(spec 761)複查：新增指令都是函式中段的資料(stub 描述子／常數表／nop 填充)，判讀不變"
   },
   {
    "platform": "pc98",

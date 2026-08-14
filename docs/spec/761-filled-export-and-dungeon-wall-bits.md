@@ -16,9 +16,17 @@ spec 736／752 記錄過它最輕微的形式（`89 EC` 掉一個 byte 變成 `i
 ## 作法與副作用
 
 對每個缺口 `del_items` 後逐條 `create_insn`，一條都建不起來就跳過。全 72 個
-模組跑完（其中 `pc98/overlay-19` 的 `.i64` 已損壞，`idat` 回
-「Failed to initialize IDA as library (error code 4)」，用
-`tools/ida.sh binary16` 從 `.bin` 重建後才成功）。
+overlay 模組加上 `START.EXE`／`PC98-GAME.EXE` 兩個常駐檔跑完。
+
+`pc98/overlay-19` 中途出過一次意外：它的 `.i64` 損壞，`idat` 回
+「Failed to initialize IDA as library (error code 4)」。**第一次用
+`tools/ida.sh binary16` 重建是錯的**——那條路徑少了 `analyze_overlay.py`，
+建出來的資料庫是 64-bit `metapc`，匯出裡出現 `push rbp`／`qword ptr [rsi]`
+這種在 16-bit real mode 不可能存在的東西。重建一定要照 `tools/re-sweep.sh`
+的原樣：`idat -A -p8086 -b0 -S/work-tools/analyze_overlay.py …`。
+**驗收方式是看匯出裡有沒有 16-bit 的指令形狀，不是看檔案有沒有產生出來。**
+（順帶：`tools/ida.sh binary16` 引用的 `seed_binary16.py` 根本不存在於
+`tools/ida/`，那條子命令目前是壞的。）
 
 **副作用要講清楚**：這個作法會把函式尾巴後面的字串常數也解成一堆無意義的
 指令。全庫 534 支有新增指令，其中 **497 支的新增全部落在原本最後一條 `ret`
@@ -27,19 +35,30 @@ spec 736／752 記錄過它最輕微的形式（`89 EC` 掉一個 byte 變成 `i
 
 | 分類 | 判準 | 數量 | 意義 |
 |---|---|---|---|
-| 尾巴誤解 | 新增指令全在最後一條 `ret` 之後 | 497 | 忽略 |
-| 本體截斷 | 有新增指令在最後一條 `ret` 之前 | 47 | 本體真的少讀了 |
+| 尾巴誤解 | 新增指令全在最後一條 `ret` 之後 | 561 | 忽略 |
+| 本體截斷 | 有新增指令在最後一條 `ret` 之前 | 50 | 要逐支看 |
 
-47 支被截斷的裡面，**4 支先前已判為「已解讀」**。
+50 支裡面 **9 支先前已判為「已解讀」**。逐支查完之後，真正需要更正的只有兩支
+——「本體截斷」這個判準會把兩種東西一起抓進來：
 
-## 四支要重讀的
+- **函式中段夾著資料**（VROOMM stub 陣列、跳躍表）。那些位元組本來就不是指令，
+  被 `create_insn` 解成 `daa`／`verr`／`aas` 之類的東西，落在最後一條 `ret`
+  之前純粹是因為它們夾在中間。這是**假陽性**。
+- **函式真的被截斷**。
+
+## 九支的逐支結果
 
 | 函式 | 指令數 | 結果 |
 |---|---|---|
-| `dos overlay-14:003Eh` | 6 → 115 | 判讀完全錯誤，見下節 |
+| `dos overlay-14:003Eh` | 6 → 115 | **判讀完全錯誤**，見下節 |
 | `pc98 overlay-14:003Eh` | 6 → 114 | 同上 |
-| `dos overlay-16:351Ch` | 29 → 43 | **判讀正確**，spec 756 已由原始 bytes 補讀過那 `21h` bytes |
-| `pc98 overlay-22:2776h` | 62 → 78 | 少了最後一個呼叫，見下節 |
+| `pc98 overlay-22:2776h` | 62 → 78 | **少了最後一個呼叫**，見下節 |
+| `dos overlay-16:351Ch` | 29 → 43 | 判讀正確——spec 756 已由原始 bytes 補讀過那 `21h` bytes |
+| `pc98 PC98-GAME.EXE:10D00h` | 11 → 45 | 假陽性：本來就判為 VROOMM stub 陣列，新增的是描述子位元組 |
+| `pc98 PC98-GAME.EXE:10E90h` | 12 → 14 | 同上 |
+| `pc98 PC98-GAME.EXE:1B756h` | 202 → 211 | 假陽性：函式中段的 6-byte real 常數表 |
+| `pc98 PC98-GAME.EXE:18EE0h` | 491 → 496 | 假陽性：新增的兩條都是 `nop` 對齊填充 |
+| `pc98 PC98-GAME.EXE:17DD5h` | 43 → 44 | 同上，一條 `nop` |
 
 `overlay-14:003Eh` 兩支原本的台帳註記寫「整個 body 只準備參數並執行
 `jmp loc_14D`（body 共 277 bytes，**已逐條讀完**）」——匯出裡只有 6 條指令，
