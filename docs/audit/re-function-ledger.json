@@ -26095,6 +26095,15 @@
    "level": "exact",
    "spec": "1046",
    "note": "清除矩形區域(左,上,右,下 四個 byte，retf 8，472 bytes)，呼叫端 11A00h/11CA5h/11DAAh。★ 常駐段沒有補洞匯出，annotated_dump.py 只吃 overlay；本次改用 objdump -D -b binary -m i8086，檔案位移 = ea − 10000h + MZ 標頭長度(DOS 1968)，11ECDh→267Dh 開頭 55 89 e5 對上 ⇒ 常駐段的待解讀函式從此可逐條讀。★★★ DS:4FE6h 是顯示卡種類，三條路：①=0 CGA —— 兩個交錯 bank B800h/BA00h，每列 50h(80) bytes、每字元欄 2 bytes、每字元列 4 條掃描列(320×200 4 色)；②=1 交給 far 0542:00BDh 呼叫兩次，只差第五個參數 0/1(形狀上是兩個平面或 page)；③=2 Tandy/PCjr —— 四個 bank B800h/BA00h/BC00h/BE00h，每列 0A0h(160) bytes、每字元欄 4 bytes、每字元列 2 條掃描列(320×200 16 色)。⇒ spec 1037 的 byte_4FE6=0 時印 'Sorry, not in CGA' 那個判斷就是在問『是不是 CGA』。★ 三條路的幾何一致：字元格一律 8×8 像素，且本支參數是字元座標不是像素 —— 中文全形字要 16×16 就得佔兩格寬兩格高，呼叫端的矩形會跟著放大一倍"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 93246,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1047",
+   "note": "資料檔的分塊讀取(檔名A, 檔名B, 要的id: byte, 長度出: 遠指標, 指標出: 遠指標)，retf 12h=18 bytes 與五個參數對得上；559 bytes、235 條，用 spec 1046 的 objdump 路線讀。開不起來就 長度出^:=0、指標出^:=NIL 回 false。★★ 一塊的表頭是 9 bytes：id(1)＋位移(4，longint)＋一個 word(寫進 長度出^)＋大小(2)；id 不合就往下一塊掃，掃到檔尾為止。★★★ 大小 > 8CA0h(36000) 就組錯誤訊息(Str(大小,6) 接在後面)並叫 far 06EA:0000h 中止 ⇒ remake 的資料塊不能超過 36000 bytes。找到之後 DS:5CF2h:=NIL、指標出^:=GetMem(長度出^)、Seek(位置+位移)、BlockRead 進 DS:5CF2h^，再用 sub_7212h(原始塊, 輸出, @大小, 長度) 處理(形狀上是解壓)，最後把 DS:5CF2h 釋放 —— 原始塊是暫存的，交出去的是處理過的結果。★ DS:5CF2h 剛好落在物品類別表 DS:5CF6h 前面 4 bytes。⚠ 常駐段不是單一程式碼段：錯誤訊息來自 push cs; mov di,08D4h，把它當 IDA 線性 108D4h 換算會讀到 overlay stub 表(CD 3F)不是字串 —— objdump 路線可逐條讀指令(進入點換算已驗證)，但函式內的 CS: 資料參照沒有段表解不出來，因此不宣稱那句錯誤訊息"
   }
  ]
 }
