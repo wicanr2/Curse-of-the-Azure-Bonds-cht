@@ -13254,9 +13254,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/826-engulf-and-name-at-offset-zero.md",
+   "note": "engulfs 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah]；DS:6FA0h \u003c\u003e 2、目標^[196h] = 0、\u003cfar 1575h+2\u003e(@暫存,3Ah,目標) 成立、或 (…,0Dh,目標) 成立，任一就離開；重讀目標後 緩衝 := 角色名 + 'engulfs '(8，結尾空白)（0A54h:0634h），再 0A54h:06C1h 把**目標遠指標當字串**接上去——可證角色/戰鬥員記錄 +0 起就是 Pascal 字串的名字（與 spec 807 的 DS:6506h^[0] 互證）；\u003cfar 1552h+2\u003e(緩衝,1,0Ch) 顯示。接著 \u003cfar 1466h+1\u003e(目標,3Ah,0,\u003cfar 1939h+1\u003e(目標),0)、\u003cfar 1439h+1\u003e(3Ah,目標,longint 0,0)、\u003cfar 1466h+1\u003e(目標,0Dh,0,\u003cfar 145Ah+3\u003e(2,4),0)、\u003cfar 1466h+1\u003e(角色,8Bh,0,\u003cfar 1939h+1\u003e(目標),1)。進場的兩道守衛查的就是後面要掛的 3Ah 與 0Dh。spec 826",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/826-engulf-and-name-at-offset-zero.md"
    ]
   },
   {
@@ -37944,7 +37948,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/826-engulf-and-name-at-offset-zero.md",
+   "note": "同 DOS，但兩處不同：(1) 句子拆成兩個片段夾住目標名——'は'(2 bytes) + \u003c0418h:1C96h(緩衝,目標) 產生的目標名\u003e + 'を包みこんだ。'(14 bytes)，而 DOS 只有一個片段 'engulfs ' 後面直接接目標指標；(2) 多一道 +197h 的狀態守衛。全域 DS:0A03Ah，欄位 +18Eh/+197h。spec 826",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -49815,9 +49822,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 21,
+   "Todo": 20,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -50370,9 +50377,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,

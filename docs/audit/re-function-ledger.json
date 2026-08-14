@@ -21280,6 +21280,24 @@
    "level": "exact",
    "spec": "docs/spec/825-round-end-bleeding-out.md",
    "note": "回合結束的處理：retf 4 = 輸出 byte 的遠指標。<far 10A7h+3>(1,1)；inc(DS:0A81Fh)（回合計數）；<far 0CACh+1>；掃 DS:9598h 鏈：<0141h:0034h>(13h, p)、<0141h:0039h>(0, p)；p^[195h] = 5（瀕死）時 inc(p^[18Dh]^[0Eh])，> 9 就把 +196h 設成 6（死亡）——倒下後有 10 個回合可救。<far 014Dh:010Bh>(0) 成立就顯示 'Your Teammate is Dying'(22) 並 <far 014Dh:007Fh>；<far 014Dh:00BBh>；<far 018Ch:0061h>(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)（加回 3 正好是隊伍位置）。(DS:0A02Ah = 0) 或 (DS:0A02Bh = 0) 或 (DS:0A81Fh >= DS:0A820h) → 輸出^ := 1；另外獨立判斷 (DS:0A02Ah > 0) 且 (DS:7F1Ch = 0) 時（PC-98 少一個條件），並先設 DS:0A385h := 0Ah、DS:0A386h := 0Ah，再顯示 '戦闘を続けますか？'，<far 0167h:003Eh>(0Dh,0Ah,0Fh) 回 'Y' 就把輸出蓋回 0。兩段之間沒有 else。spec 825"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 16447,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/826-engulf-and-name-at-offset-zero.md",
+   "note": "engulfs 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah]；DS:6FA0h <> 2、目標^[196h] = 0、<far 1575h+2>(@暫存,3Ah,目標) 成立、或 (…,0Dh,目標) 成立，任一就離開；重讀目標後 緩衝 := 角色名 + 'engulfs '(8，結尾空白)（0A54h:0634h），再 0A54h:06C1h 把**目標遠指標當字串**接上去——可證角色/戰鬥員記錄 +0 起就是 Pascal 字串的名字（與 spec 807 的 DS:6506h^[0] 互證）；<far 1552h+2>(緩衝,1,0Ch) 顯示。接著 <far 1466h+1>(目標,3Ah,0,<far 1939h+1>(目標),0)、<far 1439h+1>(3Ah,目標,longint 0,0)、<far 1466h+1>(目標,0Dh,0,<far 145Ah+3>(2,4),0)、<far 1466h+1>(角色,8Bh,0,<far 1939h+1>(目標),1)。進場的兩道守衛查的就是後面要掛的 3Ah 與 0Dh。spec 826"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 16241,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/826-engulf-and-name-at-offset-zero.md",
+   "note": "同 DOS，但兩處不同：(1) 句子拆成兩個片段夾住目標名——'は'(2 bytes) + <0418h:1C96h(緩衝,目標) 產生的目標名> + 'を包みこんだ。'(14 bytes)，而 DOS 只有一個片段 'engulfs ' 後面直接接目標指標；(2) 多一道 +197h 的狀態守衛。全域 DS:0A03Ah，欄位 +18Eh/+197h。spec 826"
   }
  ]
 }

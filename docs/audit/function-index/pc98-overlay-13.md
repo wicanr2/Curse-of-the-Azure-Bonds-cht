@@ -68,7 +68,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3889` | sub_3889 | — | 427 | 142 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `3A74` | sub_3A74 | VIEWDUDES | 779 | 303 | 1 | 11 | ✓ | 待解讀 | — | — | — |
 | `3D7F` | sub_3D7F | PICKTARGET | 480 | 159 | 2 | 4 | ✓ | 待解讀 | — | — | — |
-| `3F71` | sub_3F71 | EFF57 | 327 | 128 | 0 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `3F71` | sub_3F71 | EFF57 | 327 | 128 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/826-engulf-and-name-at-offset-zero.md<br>同 DOS，但兩處不同：(1) 句子拆成兩個片段夾住目標名——'は'(2 bytes) + <0418h:1C96h(緩衝,目標) 產生的目標名> + 'を包みこんだ。'(14 bytes)，而 DOS 只有一個片段 'engulfs ' 後面直接接目標指標；(2) 多一道 +197h 的狀態守衛。全域 DS:0A03Ah，欄位 +18Eh/+197h。spec 826 | audit/function-strings.md |
 | `40B8` | sub_40B8 | — | 114 | 42 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/760-item-effect-flag-clear-and-file-exists.md<br>取兩個戰鬥員的 x/y 後畫(retf 4)：結構與 DOS overlay-13:4162h(spec 759)逐條相同，但最後一個參數 DOS 是常數 1Eh、PC-98 是 DS:7F16h * 7(有號乘法)。真實平台差異，非匯出誤差 | audit/function-index/pc98-overlay-12.md<br>spec/760-item-effect-flag-clear-and-file-exists.md<br>spec/783-cross-platform-pairs-first-batch.md<br>spec/819-spits-acid-special-attack.md |
 | `412A` | sub_412A | — | 186 | 63 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/788-memorised-spell-slots-identified.md<br>戰鬥判定：ss:[rec-5] 預設 1；先呼叫本模組 3E56h(方向,0,0FFh,ss:[rec+0Ch])，成立才取「目標^[18Dh]^[0Ah]」的 x/y（overlay-32 entry#15/#16），再呼叫掃描程序(取x(rec+0Ch), 取y(rec+0Ch), @x1, @y1, @ss:[rec-3], 遠指標@DS:6E92h)，回非零則 ss:[rec-5] := 0。retf 4。spec 788（PC-98：DS:9F2Ch/9F2Eh，欄位 +1） | — |
 | `426B` | sub_426B | EFF87 | 722 | 312 | 0 | 7 | ✓ | 待解讀 | — | — | audit/function-strings.md |
