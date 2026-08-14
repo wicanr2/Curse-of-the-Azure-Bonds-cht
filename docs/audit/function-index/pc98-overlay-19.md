@@ -42,7 +42,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18C4` | sub_18C4 | — | 7 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:62Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19CA` | sub_19CA | — | 23 | 11 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, 59h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | audit/function-triage.md |
 | `1A8F` | sub_1A8F | — | 1055 | 342 | 1 | 6 | ✓ | 待解讀 | — | — | — |
-| `1EAE` | sub_1EAE | READYITEM | 423 | 148 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `1EAE` | sub_1EAE | READYITEM | 423 | 148 | 1 | 3 | ✓ | 已解讀 | exact | 907<br>同 DOS overlay-19:01EE9h。物品節點 +34h/+36h/+3Eh/+2Eh↔+5Ch/+5Eh/+66h/+56h(spec 832 的 +28h 位移)；槽的範圍檢查 DOS 用有號 jl/jg、PC-98 用無號 jb/ja(值域 0..255 結果相同)；多一次字串串接 | audit/function-strings.md<br>spec/907-equip-item-checks.md |
 | `2055` | sub_2055 | — | 64 | 28 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-7]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 64 bytes，已逐條讀完） | — |
 | `2095` | sub_2095 | — | 79 | 29 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 79 bytes，已逐條讀完） | — |
 | `2102` | sub_2102 | — | 166 | 61 | 1 | 6 | ✓ | 已解讀 | exact | docs/spec/767-ac-display-sign-and-trade-overload.md<br>交易給誰(retf 4)：快取在 DS:7BD6h，提示 CS:20E4h '誰に渡しますか？'、拒絕訊息 CS:20F5h '持ちすぎです'，其餘同 DOS overlay-19:213Ch | spec/767-ac-display-sign-and-trade-overload.md |
