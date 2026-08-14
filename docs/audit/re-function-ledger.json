@@ -17065,6 +17065,16 @@
    "spec": "docs/spec/713-remove-curse.md",
    "bounds": "prologue",
    "note": "解除詛咒。身上有效果 24h 時只顯示 '<名字> is un-cursed' 並**完全不碰物品鏈**;否則走 目標^[14Dh] 的物品鏈找第一個 p^[36h] <> 0 的,清 **p^[34h] := 0**,若 p^[3Eh] > 7Fh(第三個效果槽最高位)則 DS:7582h:=1、<overlay-23 entry#2>(p^[3Eh], 目標, p, 1)、並對 k=0..5 各呼叫一次 <overlay-23 entry#24>(目標, k);找到就顯示 '<名字> has an item un-cursed'。⚠ **搜尋鍵是 +36h 但清掉的是 +34h**,+36h 從頭到尾沒被改,所以再施放一次會找到同一件物品並重複顯示訊息。⚠ 一次只解一件(迴圈找到第一個就停)。角色被詛咒與物品被詛咒是兩套互斥機制"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 16788,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/714-neutralize-poison.md",
+   "bounds": "prologue",
+   "note": "解毒。狀態 +195h=1 時只清目標陣列第 1 格;否則 <overlay-24 entry#27>(p, 37h) 查得到才做:HP 為 0 補成 1、在 DS:6F9Ch:=1 期間**一次解掉三個編號 37h/16h/0Fh**、顯示 '<名字> is unpoisoned'、+196h:=1、+195h:=0;查不到則顯示 'is unaffected'。⚠ 效果 37h = 中毒(本支解它、spec 707 復活時連同 20h 一起解、spec 709 的 24CDh 對中毒者套 4Eh,三處一致)。⚠ 與 24CDh 前兩步完全相同但之後分岔,尤其**查不到時本支有訊息、24CDh 靜默返回**,對照兩支時最容易被抹平"
   }
  ]
 }
