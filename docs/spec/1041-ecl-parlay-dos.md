@@ -1,7 +1,10 @@
-# 1041 — ECL `29h`（PARLAY）DOS 側：五個結果碼是「遭遇選單」的五個選項，不是交涉態度
+# 1041 — ECL `29h`（ENCOUNTER MENU）DOS 側：五個結果碼是遭遇選單的五個選項，不是交涉態度
 
 - 證據等級：`exact`（DOS 側 649 條逐條讀完）
 - 作法見 spec 783；PC-98 對側見 spec 611
+
+★ 指令名稱由 spec 1083 定案：`29h` ＝ **`ENCOUNTER MENU`**（`PARLAY` 是另一個指令 `2Ch`）。
+本規格原本把 `29h` 叫做 PARLAY，那是錯的；下面的行為描述不受影響。
 
 ## `dos overlay-02:02086h`（`retf`）
 

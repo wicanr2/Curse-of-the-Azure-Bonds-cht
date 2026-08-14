@@ -1,4 +1,8 @@
-# 第六百一十一輪：`29h`（PARLAY／交涉）
+# 第六百一十一輪：`29h`（ENCOUNTER MENU／遭遇選單）
+
+> ★ **指令名稱更正**：`29h` ＝ **`ENCOUNTER MENU`**，不是 `PARLAY`
+> （`PARLAY` 是另一個指令 `2Ch`）。原作自己的助憶碼表見 spec 1083；
+> 五個結果碼的對應由 spec 1041 更正。
 
 狀態：`READY`。等級：`exact`。日期：2026-08-14
 位置：PC-98 `overlay-02:222Ch`（1,812 bytes，669 條指令）。

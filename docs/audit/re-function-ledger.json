@@ -26437,6 +26437,15 @@
    "level": "exact",
    "spec": "1082",
    "note": "結局過場 PC-98 側(retf)。⚠與 DOS 的助憶碼相似度只有 0.059 —— 整段重寫不是編譯差異：DOS 25 行(英文音節斷行)、PC-98 22 行(一句一行)。多了開頭三行條件：DS:7F2Ch=0 時設 1 並把 bank0^[1FEh] 低位元 xor 1、DS:0A2C6h:=DS:0A2C7h(第二次 cmp 是冗餘的)。印字 0418:0E6Ah、等鍵 0418:12EFh + overlay-26 entry#6。日文台詞全文與英文對照見 spec 1082"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-34",
+   "ea": 576,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1083",
+   "note": "ECL 助憶碼表(retf 2)：整支是 65 路 case，把 DS:75FFh(指令碼) 換成字串常數寫進 arg_2(上限 0FFh)。★★★原作自己留下的 ECL 指令名稱，一次把幾十份 ECL 規格的名字釘到確切指令碼上。★★★29h = ENCOUNTER MENU 不是 PARLAY(PARLAY 是 2Ch) ⇒ 更正 spec 611/1041 的名字(行為描述不受影響)；2Bh = HORIZONTAL MENU 與 spec 1039 吻合。★1Fh 完全沒有分支 ⇒ 未使用的指令碼，arg_2 不被寫入。★字串在資料段的排列順序與指令碼不一致(LOAD PIECES 排在 21h 與 22h 之間但對應 37h) ⇒ 不能靠排列推碼。SUBTRAT 少一個 C、IF = 尾端多空白，都是原作瑕疵"
   }
  ]
 }
