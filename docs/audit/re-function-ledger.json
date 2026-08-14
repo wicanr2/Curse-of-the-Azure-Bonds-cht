@@ -21217,6 +21217,33 @@
    "level": "exact",
    "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
    "note": "一句 Y/N 詢問（retf 4）：0A54h:064Eh(0FFh, @緩衝, 參數) 存下字串；<014Dh:0084h>(0, 0, @緩衝, DS:6506h)；組出 CS:0034h 的 'cast cure anyway: '(18，結尾一個空白)；結果 := <0167h:003Eh>(0Dh, 0Ah, 0Fh)；<014Dh:0089h>()。註：DOS 匯出在 0098h 起錯位，原始位元組 50 9A 3E 00 67 01 88 46 FF 9A 89 00 4D 01 8A 46 FF ＝ push ax / call far 0167h:003Eh / mov [bp-1],al / call far 014Dh:0089h / mov al,[bp-1]（PC-98 同 entry 已解讀，兩邊一致）。spec 760／822"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "ea": 2659,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+   "note": "石化解除（retf，無參數）：DS:6506h^[195h] 不等於 7 時先顯示 名字+'is not stoned.'(14) 並用 本模組 0047h 問 'cast cure anyway: '；答 'Y' 才顯示 'Stone to Flesh'(14) 並叫 本模組 00F3h(7D0h = 2000)；再答 'Y' 且狀態仍是 7 才把 +195h 設 0、+196h 設 1、+1A4h（目前 HP）設 1。狀態欄位值 7 ＝ 石化。註：DOS 匯出把最後一句解成 test [si+101h], sp，原始位元組 26 C6 85 A4 01 01 ＝ mov byte ptr es:[di+1A4h], 1（PC-98 同 entry 已解讀，兩邊一致）。spec 763／822"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-06",
+   "ea": 1140,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/823-shop-price-multiplier.md",
+   "note": "商店買東西的主迴圈：retf。repeat：選中 := NIL、清單 := DS:6F8Ch、旗標 := 0；<far 01A0h:0000h>；DS:47EEh := 1；本模組 0050h(@鍵, @選中, @清單, @旗標)；鍵 <> 42h('B') 且 <> 0Dh(Enter) 就結束。否則依 word(DS:4F9Dh^[6DAh]) 算價：1→選中^[3Ah] div 10h、2→div 8、4→div 4、8→div 2、20h→shl 1、40h→shl 2、80h→shl 3——**10h 那一段與 else 都沒有程式碼，價是未初始化的區域變數（缺陷）**。有 := <00FDh:0057h>(DS:6506h)；價 <= 有 → 本模組 0355h(@失敗, 選中)，失敗 = 0 才 <0110h:006Bh>(有 − 價)；否則 池 := <0110h:0075h>(@DS:6F70h)，價 <= 池 → 同樣先 0355h 再 <0110h:0070h>(低字(池 − 價))；都不夠則顯示 'Not enough Money.'(17，大寫 M，與 spec 822 神殿的小寫 m 是兩個不同字串) 並 <014Dh:007Fh>。付款模型與 spec 822 相同，但多一個回滾點：0355h 失敗就不扣錢。spec 823"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-06",
+   "ea": 1214,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/823-shop-price-multiplier.md",
+   "note": "商店買東西的主迴圈：retf。repeat：選中 := NIL、清單 := DS:0A026h、旗標 := 0；<far 019Eh:0000h>；DS:78A4h := 1；本模組 0050h(@鍵, @選中, @清單, @旗標)；鍵 <> 42h('B') 且 <> 0Dh(Enter) 就結束。否則依 word(DS:7F09h^[62h]) 算價：1→選中^[62h] div 10h、2→div 8、4→div 4、8→div 2、20h→shl 1、40h→shl 2、80h→shl 3——**10h 那一段與 else 都沒有程式碼，價是未初始化的區域變數（缺陷）**。有 := <00FAh:0057h>(DS:9594h)；價 <= 有 → 本模組 0355h(@失敗, 選中)，失敗 = 0 才 <010Dh:006Bh>(有 − 價)；否則 池 := <010Dh:0075h>(@DS:0A00Ah)，價 <= 池 → 同樣先 0355h 再 <010Dh:0070h>(低字(池 − 價))；都不夠則顯示 'お金が足りません' 並 <014Ah:007Fh>。付款模型與 spec 822 相同，但多一個回滾點：0355h 失敗就不扣錢。spec 823"
   }
  ]
 }
