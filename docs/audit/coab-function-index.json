@@ -15658,11 +15658,15 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1068",
+   "note": "角色檔清單(retf，382 條)，是 spec 1066(加入角色)與 spec 1057(存檔槽)清單的來源。參數(宣告序)：bp+10h 樣式字串(上限 80)、bp+0Eh 名字位移、bp+0Ch 旗標位移、bp+0Ah 期望長度，另有兩個輸出鏈。far 097F:0112h(樣式,0,@搜尋記錄) 當 FindFirst，DS:8C98h\u003c\u003e0 就走。★★ 每個檔 Assign+Reset(recsize 1) 後比 FileSize，★ 只收長度剛好等於『期望長度』的檔 —— 正是 spec 1043 那張長度表(423/285/188)的用途，掃 *.guy 只收 423、*.cha 只收 285、*.sav 只收 188 ⇒ 檔案長度就是格式驗證，遊戲不看檔頭。每個合格的檔配兩個 GetMem(2Eh)=46 bytes 的選單節點(FillChar 清 0)，Seek(名字位移) 讀 10h=16 bytes 當名字、Seek(旗標位移) 讀 1 byte；★★ DS:7584h=2(Hillsfar)走不同讀法：名字先讀進暫存再經 sub_20h 轉換，旗標不讀檔直接給 0 ⇒ Hillsfar 的角色檔沒有那個旗標欄位。★★ 副檔名用 Copy(檔名,9,4) 取(檔名固定 8.3)，='.SAV'(4) 時後面接 'from saved game '(16)+磁碟機字母讓玩家分辨。名字欄補到 15 欄(Copy(空白,1,0Fh−長度)) ⇒ 中文全形只有 7 個字空間。⚠ 另外兩個位移參數形狀上對應 spec 1043 的 DS:0BFCh(00 00 04 F7)與 DS:0BFFh(247/132/19/423)兩張表，但那是 PC-98 側的另一支函式，不宣稱哪張對哪個",
    "citations": [
     "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-25.md",
     "audit/function-strings.md",
+    "spec/1068-character-file-list.md",
     "spec/995-file-pattern-scan-and-rename.md"
    ]
   },
@@ -53612,9 +53616,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
