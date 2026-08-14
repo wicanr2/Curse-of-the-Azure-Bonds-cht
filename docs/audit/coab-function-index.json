@@ -27135,7 +27135,10 @@
    "callers": 6,
    "calls": 7,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "951",
+   "note": "PC-98 的等按鍵(far)，對應 DOS 的 spec 936：Ctrl-S(13h) 切音效——byte_24DE8h ≠ 2 就存進 byte_24DE9h、叫 sub_18930h(word_20ACAh)、設 2；已是 2 就檢查 byte_24DE9h 落在集合常數 byte_18016h(db 3, 1Fh dup(0) = [0,1])才還原並叫 sub_18930h(word_20ACCh)。★三個 DOS 沒有的切換鍵：0Fh 把 byte_24E73h xor 1 後叫 sub_18AA7h、02h 反轉 byte_24E7Eh 並設 byte_24E80h := 1、16h 反轉 byte_24E82h 後叫 sub_18194h。★★完全沒有 DOS 版的 STING 命令列後門(無 ParamStr 比對、無 debug.txt、無 Ctrl-D/Z/C)，也沒有非阻塞模式那一段。結尾同 DOS：鍵 ≠ 0 就 while sub_19293h do 鍵 := sub_192A0h 吃掉多餘按鍵"
   },
   {
    "platform": "pc98",
@@ -28724,7 +28727,10 @@
    "callers": 2,
    "calls": 9,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "951",
+   "note": "覆疊段的載入與淘汰(near)：inc word_23AC8h(請求計數)；es^[10h] ≠ 0 表示已在記憶體，只把 es^[12h] 設 1 就收尾。否則 inc word_23ACAh(實際載入計數)、算出需要的段數((es^[0Ah]+0Fh) shr 4 + sub_1A3FCh)，★走 word_23AE2h 的鏈(next 在 +14h)做 second-chance 淘汰——+12h = 0 就叫 sub_1A31Ch 丟掉並把 +10h 清 0，≠ 0 就 dec 一次留著(降一級)，直到騰出足夠空間。接著把 +10h 設成 word_23ADEh、叫 dword_28104h 讀進來，失敗就跳 sub_19EB0h。★+12h 是 clock 演算法的參照位元、+10h 是在不在記憶體、+0Ah 是段大小；word_23AC8h/word_23ACAh 相除就是覆疊快取命中率，原版自己有在數"
   },
   {
    "platform": "pc98",
@@ -52341,9 +52347,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 245,
+   "Read": 247,
    "NotBlocking": 29,
-   "Todo": 34,
+   "Todo": 32,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
