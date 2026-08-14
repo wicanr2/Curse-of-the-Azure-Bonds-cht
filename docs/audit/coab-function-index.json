@@ -6811,7 +6811,8 @@
     "audit/function-index/pc98-overlay-05.md",
     "spec/857-xp-award-and-ability-layout.md",
     "spec/858-post-battle-xp-and-treasure-valuation.md",
-    "spec/861-post-combat-cleanup.md"
+    "spec/861-post-combat-cleanup.md",
+    "spec/891-battle-teardown.md"
    ]
   },
   {
@@ -6833,7 +6834,8 @@
     "audit/function-index/pc98-overlay-05.md",
     "audit/resident-data-tables.md",
     "spec/858-post-battle-xp-and-treasure-valuation.md",
-    "spec/861-post-combat-cleanup.md"
+    "spec/861-post-combat-cleanup.md",
+    "spec/891-battle-teardown.md"
    ]
   },
   {
@@ -6849,7 +6851,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/891-battle-teardown.md"
    ]
   },
   {
@@ -6929,7 +6932,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/891-battle-teardown.md"
    ]
   },
   {
@@ -6978,7 +6982,8 @@
    "spec": "docs/spec/801-take-from-pool-and-combat-state-freed.md",
    "note": "戰鬥結束的收尾：word(DS:4F9Dh^[590h]) := 0；掃 DS:650Ah 鏈——p^[18Dh]^[13h] = 1 或 p^[197h] = 1（陣營 1）者：DS:47ECh := 1、p^[196h] \u003c\u003e 1 時計數 +1、先抓 後 := p^[189h] 再把 DS:6506h := p 並呼叫 \u003cfar 0F0Dh+2\u003e(1, ord(p^[18Dh]^[13h] = 1))；其餘成員：FreeMem(p^[18Dh], 16h) 並把 +18Dh 清成 NIL——**戰鬥狀態記錄是 22 bytes**。最後 DS:6506h := DS:650Ah。retf。spec 801",
    "citations": [
-    "spec/801-take-from-pool-and-combat-state-freed.md"
+    "spec/801-take-from-pool-and-combat-state-freed.md",
+    "spec/891-battle-teardown.md"
    ]
   },
   {
@@ -6995,7 +7000,8 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-05.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/891-battle-teardown.md"
    ]
   },
   {
@@ -7046,9 +7052,13 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "891",
+   "note": "戰鬥收場(retf，無參數)：清 4F9Dh^[58Eh]、DS:47ECh，DS:4FBCh=0 就叫 0053Ch(spec 861 戰鬥結束處理)，畫面模式設 6；走隊伍鏈叫 1512h+1；(DS:4FC7h≠0 且 DS:8B56h=0) 走敗北路徑(58Eh:=80h、1A0h:0、兩句訊息)；否則有人在逃(DS:47EDh)先釋放戰利品鏈並跳過發經驗值，正常則叫 14ACh + 0A7Eh(longint@DS:8B58h) + 106Ch 再釋放。收場清 4F9Dh 的 +6E0h/+6E2h/+6E4h/+5C6h/+5CCh。★關掉 spec 858 的『DS:6F8Ch 戰利品鏈誰釋放』：就是這裡，FreeMem(節點, 3Fh)，逃跑時東西與經驗值都不要",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/891-battle-teardown.md"
    ]
   },
   {
@@ -9836,7 +9846,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "892",
+   "note": "新遊戲的全域初始化(retf，無參數)：清 DS:5000h(0A8h)/50A8h(150h)/51F8h(150h,填 0FFh)/5348h(150h) 四塊與 遠指標 4F99h(800h)/4F9Dh(800h)/4FA1h(400h)/4FA5h(1E00h)，DS:720Fh 5 bytes 清零後設 7/0Dh/2，DS:7588h 3 bytes 填 1，for i:=2 to 3 把 word[7210h+i*4] 與 word[7212h+i*4] 設 0FFFFh，之後一長串常數。★五個先前規格的預設值在這裡定案：DS:4FA9h=4(遊戲速度)、DS:5BEEh=1(磁碟編號)、DS:4FBAh=4(畫面模式)、DS:728Ah/728Bh=0FFh、4F9Dh^[67Ch]=0(人數)；DS:650Ah 與 DS:6506h 一起清成 NIL",
+   "citations": [
+    "spec/892-new-game-globals.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19241,6 +19257,7 @@
    "spec": "889",
    "note": "力量增強法術(retf，無參數，對象 遠指標(DS:7435h))：依職業槽擲骰——+10Eh(法師)1d4、+109h(牧師)或 +10Fh(盜賊)1d6、+10Bh(戰士)1d8，三個 if 依序覆寫所以多職業拿最後一個；n := 骰 + +11h(力量)，\u003e 12h(18) 就把 (n−18)×10 累加到 +1Ch 並夾在 64h(100)、力量壓回 18。★逐項對上 AD\u0026D 一版 Strength 法術與 18/01~18/00 百分比力量；+1Ch 定名為百分比力量(就在六個屬性 +10h..+1Bh 的正後方)。⚠百分比是累加不是取代",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/889-strength-spell-and-percentile.md"
    ]
   },
@@ -22074,6 +22091,7 @@
    "spec": "890",
    "note": "戰鬥中的四格動畫(retf 0Ah)：DS:4FBAh ≠ 5 就只叫 17D6h 印訊息離開；否則依 arg_4 選 16h/17h 模式，畫框、印訊息，再用 1938h+2 取戰鬥員索引 k，x := byte[67C6h+k]×3、y := byte[680Eh+k]×3，外圈跑 0..DS:4FA9h、內圈 j=0..3 各畫一格並延遲(9ABh:29Eh(46h))後蓋回去。★DS:4FA9h 的第二個消費端——整套動畫重播『速度值+1』次，與 spec 881 的乘法門檻是不同機制。★DS:67C6h/DS:680Eh 是戰鬥員的畫面座標(spec 888 只看到執行期才填)",
    "citations": [
+    "audit/function-index/pc98-overlay-24.md",
     "spec/890-combat-sprite-animation.md"
    ]
   },
@@ -22557,7 +22575,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-25.md"
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -22861,7 +22879,7 @@
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -24183,8 +24201,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/dos-overlay-32.md"
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -32012,7 +32030,8 @@
     "audit/function-index/pc98-overlay-05.md",
     "spec/857-xp-award-and-ability-layout.md",
     "spec/858-post-battle-xp-and-treasure-valuation.md",
-    "spec/861-post-combat-cleanup.md"
+    "spec/861-post-combat-cleanup.md",
+    "spec/891-battle-teardown.md"
    ]
   },
   {
@@ -32228,10 +32247,14 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "891",
+   "note": "同 DOS overlay-05:01736h，但★PC-98 沒有 DOS 那三處 DS:4FBCh 分支，改成自己重算『戰鬥是不是真的結束』：走隊伍鏈，只要有人的 +196h 不在 {1 Animated, 2 tempgone, 6 Dead, 7 Stoned, 8 Gone} 就把 DS:7F34h(=DOS 4FC7h) 清 0。另多一段 893h:114h(DS:8BF3h) + DS:7F36h:=1。節點大小 3Fh↔67h",
    "citations": [
     "audit/function-strings.md",
-    "spec/558-pc98-ecl-treasure-combat-boundary.md"
+    "spec/558-pc98-ecl-treasure-combat-boundary.md",
+    "spec/891-battle-teardown.md"
    ]
   },
   {
@@ -35031,9 +35054,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "892",
+   "note": "同 DOS overlay-11:006D8h 的目的，但★相似度只有 0.110、幾乎各寫各的：緩衝位址整組不同(7F6Eh/8016h/8166h/82B6h/0A81Ah)，多了開頭 81Fh:14h + 0A65h:11DCh + FillChar(966Ch,0D0h)、兩次 194h:39h、一個 for DS:7AD2h:=0 to 0Bh 把 [7AD2h*5−5CFCh] 的 5-byte 記錄填 0FFh、FillChar(0A2C6h,43h)。★DS:8B56h 設 1(DOS 設 0)。兩平台的初始化不共用判讀",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/892-new-game-globals.md"
    ]
   },
   {
@@ -35090,7 +35117,8 @@
    "note": "寫入 16 組調色盤(近呼叫 retn，SI 指向 48 bytes 資料)：for i := 0Fh downto 0 — out 0A8h,i 後依序 out 0AAh/0ACh/0AEh(綠紅藍)，SI 往前遞增。⚠ 索引遞減而資料遞增，資料第一組對應索引 15。spec 755 的 overlay-11:07CDh 呼叫的就是這一段",
    "citations": [
     "project-status.md",
-    "spec/775-take-menu-and-palette-writer.md"
+    "spec/775-take-menu-and-palette-writer.md",
+    "spec/892-new-game-globals.md"
    ]
   },
   {
@@ -48849,7 +48877,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-25.md"
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -49140,7 +49168,7 @@
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -50396,8 +50424,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/dos-overlay-32.md"
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -51186,9 +51214,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -51276,9 +51304,9 @@
    "Module": "overlay-11",
    "Unit": "INIT",
    "Functions": 4,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 1,
    "CodeBytes": 2236,
    "Undefined": 743,
@@ -51741,9 +51769,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,
@@ -51831,9 +51859,9 @@
    "Module": "overlay-11",
    "Unit": "INIT",
    "Functions": 6,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 1960,
    "Undefined": 128,
