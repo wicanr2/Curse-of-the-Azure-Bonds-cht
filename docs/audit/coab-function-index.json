@@ -38600,7 +38600,8 @@
    "note": "邊界碎片：落在 11AFh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-index/pc98-overlay-13.md",
-    "spec/927-eight-sector-direction.md"
+    "spec/927-eight-sector-direction.md",
+    "spec/928-tpov-stub-phantom-functions.md"
    ]
   },
   {
@@ -39189,7 +39190,8 @@
    "spec": "927",
    "note": "同 DOS overlay-13:029A2h 的介面，但只有 42 條：取完四個座標就委派出去。★IDA 顯示的 'call sub_11CC' 是撞號——實際位元組 9A 5C 00 17 01 = call far ptr 0117h:005Ch(far 不是 near)，0117h 是正常外部模組(本 overlay 的 far call 目標段裡出現 8 次)；0117h×16+5Ch = 11CCh 剛好撞上本 overlay 偏移 11CCh，那裡是 CHECKTARGET(011AFh、spec 766) body 裡的一條 jnz。函式索引那筆『sub_11CC 140 bytes 邊界碎片』是同一個撞號造出的幻影。★掃過兩平台全部 36 個 overlay 與兩支常駐執行檔，正切常數 26Ah/6Ah 只出現在 DOS overlay-13(各 6 處)、PC-98 完全沒有 → PC-98 換了算法不是搬家。⚠fallback 是死碼：mov al/xor ah,ah 零延伸後 cmp ax, 0FFFFh 永遠不相等，方向 := 角色^[18Eh]^[9] 從來不會執行",
    "citations": [
-    "spec/927-eight-sector-direction.md"
+    "spec/927-eight-sector-direction.md",
+    "spec/928-tpov-stub-phantom-functions.md"
    ]
   },
   {
