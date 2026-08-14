@@ -27270,7 +27270,10 @@
    "callers": 2,
    "calls": 12,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "966",
+   "note": "配置失敗就印訊息並終止(far, retf 6 = (要求大小, 檔案))：大小向上對齊到 10h 再 div 10h 換算成段數；Assign(f, '')(空檔名 = 主控台)、Rewrite、送 ESC + '[32m'(ANSI 綠色)。★sub_188E3h 配置失敗就印 'ヒープエラーが発生しました。'(byte_183E5，1Ch = 28 bytes = 14 個全形字，Shift-JIS)加上診斷 \u003c載入計數\u003e_\u003c主版本\u003e:0__\u003c段數\u003e，然後 Close 並叫 sub_1A726h(1) = Runtime error 1(spec 955)不返回。⚠':0__' 裡的 0 是寫死的常數不是次版本，所以次版本永遠印成 0；訊息走主控台不走遊戲文字層，會疊在殘留畫面上。成功則 BlockRead 兩個 byte、inc word_280B6h、主版本較小就更新並把次版本歸 0。與 spec 965 的 18233h 是同一件事的兩個版本，差別在對齊粒度(10h vs 40h)、配置函式、失敗處理與版本更新規則"
   },
   {
    "platform": "pc98",
@@ -52407,9 +52410,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 267,
+   "Read": 268,
    "NotBlocking": 29,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
