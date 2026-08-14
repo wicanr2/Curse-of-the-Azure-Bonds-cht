@@ -21136,6 +21136,24 @@
    "level": "exact",
    "spec": "docs/spec/818-take-loop-and-adjacent-lookup.md",
    "note": "依方向偏移找記錄：retf 0Eh，宣告順序 (參數C, 參數A, 參數6, 參數4, 參數0)，參數6 與 參數0 是遠指標，回傳 dx:ax。p := 參數6；while (p <> NIL) and (找到 = 0)：for k := 1 to 參數4（無號）——p^[10h+k] = 0 跳過；d := 參數0^[k]；(p^[1Ah] + byte[489Eh+d]) <> 參數C 跳過；(p^[1Bh] + byte[48A7h+d]) <> 參數A 跳過；否則 找到 := 1（內層不提早跳出）。沒找到就 p := p^[4]（next）。找到回傳 遠指標(p^[0])，否則回傳 DS:9598h（不是 NIL）。spec 818（差異只在 mov/les 的等價碼型）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9815,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/819-spits-acid-special-attack.md",
+   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；<far 145Dh>(64h,1) 擲 1..100 > 19h（25）就離開；<far 1595h>(目標, 角色) >= 4（無號）也離開——兩道門檻都不印訊息。否則 <far 1598h+2>(角色)、顯示 角色名+'Spits Acid'(10)、<far 1554h>(1,0Ah)、<far 1566h+2>(17h)、<far 156Ch+1>(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、<far 1494h>(<far 1457h+1>(0,3,目標,2), <far 1462h>(4,8,目標))、<far 143Eh+1>(角色, 79h, longint(參數4:參數2))、<far 143Eh+1>(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9917,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/819-spits-acid-special-attack.md",
+   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；<far 145Dh>(64h,1) 擲 1..100 > 19h（25）就離開；<far 1595h>(目標, 角色) >= 4（無號）也離開——兩道門檻都不印訊息。否則 <far 1598h+2>(角色)、顯示 角色名+'は酸を吹いた。'(14 bytes)、<far 1554h>(1,0Ah)、<far 1566h+2>(17h)、<far 156Ch+1>(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、<far 1494h>(<far 1457h+1>(0,3,目標,2), <far 1462h>(4,8,目標))、<far 143Eh+1>(角色, 79h, longint(參數4:參數2))、<far 143Eh+1>(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819 PC-98 另外多一段 xor ah,ah / mov cx,7 / imul cx（把某個 byte 乘 7），DOS 沒有；與 spec 760 的 overlay-13:040B8h 同一種常數／算式差異。"
   }
  ]
 }

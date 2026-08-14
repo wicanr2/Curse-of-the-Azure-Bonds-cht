@@ -6705,9 +6705,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-05.md",
-    "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/778-map-four-planes-and-pc98-take-menu.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-05.md",
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -6723,7 +6723,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -6781,6 +6782,8 @@
    "spec": "docs/spec/817-opportunity-attack-and-take-menu.md",
    "note": "Take 清單：retf 10h = 四個遠指標，宣告順序 (參數C, 參數8, 參數4, 參數0)。旗標 := 1；\u003cfar 01A0h:0000h\u003e（DOS 才有）；掃 DS:6F8Ch 物品鏈（next +2Ah）對每個節點呼叫 \u003cfar 14F3h+2\u003e(0,0,0,0,節點,longint 0)；輸出 := \u003cfar 16A8h+1\u003e('Items: '(7，結尾空白), 'Take'(4), 0Dh, 0Ah, 0Fh, 1, 1, 26h, 16h, DS:6F8Ch, 1, @旗標, 參數0, 參數4)；參數C^ := al、參數8^ := 參數4^。spec 817",
    "citations": [
+    "audit/function-index/dos-overlay-05.md",
+    "audit/function-index/pc98-overlay-05.md",
     "spec/817-opportunity-attack-and-take-menu.md",
     "spec/818-take-loop-and-adjacent-lookup.md"
    ]
@@ -6920,6 +6923,8 @@
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
    "note": "邊界碎片：落在 14ACh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
+    "audit/function-index/dos-overlay-05.md",
+    "audit/function-index/pc98-overlay-05.md",
     "spec/775-take-menu-and-palette-writer.md",
     "spec/818-take-loop-and-adjacent-lookup.md"
    ]
@@ -9577,9 +9582,10 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-23.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/573-effprocs-effect-handlers-first-batch.md",
-    "spec/748-cloud-effect-dispel-pair.md"
+    "audit/function-index/pc98-overlay-23.md",
+    "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
   },
   {
@@ -10621,7 +10627,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, es:[di+18Dh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, es:[di+18Dh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "spec/819-spits-acid-special-attack.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10636,7 +10645,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov dx, es`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov dx, es`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "spec/819-spits-acid-special-attack.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10651,7 +10663,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "spec/819-spits-acid-special-attack.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10801,7 +10816,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ch`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ch`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "spec/819-spits-acid-special-attack.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10879,7 +10897,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_A]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_A]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "spec/819-spits-acid-special-attack.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11102,7 +11123,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完）",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/819-spits-acid-special-attack.md"
    ]
   },
   {
@@ -11118,7 +11140,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+0Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+0Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "spec/819-spits-acid-special-attack.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11789,7 +11814,13 @@
    "callers": 0,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/819-spits-acid-special-attack.md",
+   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；\u003cfar 145Dh\u003e(64h,1) 擲 1..100 \u003e 19h（25）就離開；\u003cfar 1595h\u003e(目標, 角色) \u003e= 4（無號）也離開——兩道門檻都不印訊息。否則 \u003cfar 1598h+2\u003e(角色)、顯示 角色名+'Spits Acid'(10)、\u003cfar 1554h\u003e(1,0Ah)、\u003cfar 1566h+2\u003e(17h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、\u003cfar 1494h\u003e(\u003cfar 1457h+1\u003e(0,3,目標,2), \u003cfar 1462h\u003e(4,8,目標))、\u003cfar 143Eh+1\u003e(角色, 79h, longint(參數4:參數2))、\u003cfar 143Eh+1\u003e(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819",
+   "citations": [
+    "spec/819-spits-acid-special-attack.md"
+   ]
   },
   {
    "platform": "dos",
@@ -30607,9 +30638,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-05.md",
-    "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/778-map-four-planes-and-pc98-take-menu.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-05.md",
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -30625,7 +30656,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -33642,9 +33674,10 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-23.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/573-effprocs-effect-handlers-first-batch.md",
-    "spec/748-cloud-effect-dispel-pair.md"
+    "audit/function-index/pc98-overlay-23.md",
+    "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
   },
   {
@@ -35994,7 +36027,10 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/819-spits-acid-special-attack.md",
+   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；\u003cfar 145Dh\u003e(64h,1) 擲 1..100 \u003e 19h（25）就離開；\u003cfar 1595h\u003e(目標, 角色) \u003e= 4（無號）也離開——兩道門檻都不印訊息。否則 \u003cfar 1598h+2\u003e(角色)、顯示 角色名+'は酸を吹いた。'(14 bytes)、\u003cfar 1554h\u003e(1,0Ah)、\u003cfar 1566h+2\u003e(17h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、\u003cfar 1494h\u003e(\u003cfar 1457h+1\u003e(0,3,目標,2), \u003cfar 1462h\u003e(4,8,目標))、\u003cfar 143Eh+1\u003e(角色, 79h, longint(參數4:參數2))、\u003cfar 143Eh+1\u003e(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819 PC-98 另外多一段 xor ah,ah / mov cx,7 / imul cx（把某個 byte 乘 7），DOS 沒有；與 spec 760 的 overlay-13:040B8h 同一種常數／算式差異。"
   },
   {
    "platform": "pc98",
@@ -37431,7 +37467,8 @@
    "note": "取兩個戰鬥員的 x/y 後畫(retf 4)：結構與 DOS overlay-13:4162h(spec 759)逐條相同，但最後一個參數 DOS 是常數 1Eh、PC-98 是 DS:7F16h * 7(有號乘法)。真實平台差異，非匯出誤差",
    "citations": [
     "spec/760-item-effect-flag-clear-and-file-exists.md",
-    "spec/783-cross-platform-pairs-first-batch.md"
+    "spec/783-cross-platform-pairs-first-batch.md",
+    "spec/819-spits-acid-special-attack.md"
    ]
   },
   {
@@ -48971,9 +49008,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 121,
+   "Read": 122,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
@@ -49526,9 +49563,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 125,
+   "Read": 126,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 19,
    "CodeBytes": 13011,
    "Undefined": 578,
