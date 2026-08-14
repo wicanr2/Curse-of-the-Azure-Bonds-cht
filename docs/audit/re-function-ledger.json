@@ -24313,6 +24313,15 @@
    "level": "exact",
    "spec": "936",
    "note": "等一個按鍵(retf，回傳 al)：byte_2117Ch ≠ 0 走非阻塞(KeyPressed 才 ReadKey，否則回 0)，否則阻塞 ReadKey。Ctrl-S(13h) 永遠有效：byte_21DAAh ≠ 2 就把它存進 byte_21DABh、叫 sub_17150h(word_1E76Ch)、設成 2(關閉)；已是 2 就檢查 byte_21DABh 落在集合常數 byte_16F7D = [0,1] 才還原並叫 sub_17150h(word_1E76Eh)。★byte_21DAAh 的三個值 0/1/2 正好是 spec 929 的 PC speaker / Tandy 兩種裝置 + 關閉。★★ParamStr(1) = 'STING' 時另外啟用三個開發者除錯鍵：Ctrl-D 切換除錯記錄(開啟時 Assign+Rewrite 建 'debug.txt'、關閉時 Close)、Ctrl-Z 在記錄開著時走 dword_226CAh 起的隊伍鏈(next 在 +189h)對每個角色叫 sub_16F03h 把效果鏈傾印進 debug.txt、Ctrl-C 叫 sub_16EA0h。'STING' 在 START.EXE 裡出現兩次(另一處在 seg000:016Eh 的啟動碼)。收尾用 while KeyPressed do ReadKey 清空緩衝區只留最後一個鍵"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 87558,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "937",
+   "note": "畫字元的分派層(retf 0Eh = (轉大寫, 字元, 次數, 前景, 背景, 列, 欄))：欄 > 27h、列 > 18h 或 dword_22754h = NIL 就跳過；★索引 = 轉大寫 ? (UpCase(字元) mod 40h) : 字元 → 字型只有 64 個 8 bytes 的字模(共 512 bytes)，ASCII 20h..5Fh 正好映到 0..3Fh，這是中文化最硬的一道限制；Move 8 bytes 到 DS:6598h 暫存區(即 IDA 的 byte_22758h)。★byte_211A6h 是三值不是旗標：0 → sub_16147h(CGA 320×200 四色)、1 → sub_161E6h、2 → sub_16246h，各重複『次數』次並讓欄遞增。★22758h − 6598h = 1C1C0h → 常駐的 DS 線性基底是 1C1C0h，IDA linear = DS:offset + 1C1C0h。⚠轉大寫 = 0 時索引不夾範圍，呼叫端傳 > 63 會讀到字模表外"
   }
  ]
 }
