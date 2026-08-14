@@ -8194,7 +8194,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-13.md",
-    "spec/777-item-append-and-area-save-sweep.md"
+    "spec/777-item-append-and-area-save-sweep.md",
+    "spec/802-countdown-clock-and-spell-target-gate.md"
    ]
   },
   {
@@ -8208,9 +8209,13 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
+   "note": "施法前的目標閘門：byte[37E7h + 法術*10h]（屬性 +0Dh）\u003c 門檻（無號）直接失敗；法術 = 3（Cure Light Wounds，硬寫死的特例）改問 \u003cfar 0C84h+1\u003e(@暫存, 參數4, 參數6)，回真即通過；否則 byte[37E8h + 法術*10h]（+0Eh）= 0 即通過。n := \u003cfar 158Eh+2\u003e(本模組 11CFh(法術), 參數4, 參數6)；n \u003c= 0 失敗；byte[37E9h + 法術*10h]（+0Fh）= 0 即通過；否則 for k := 1 to n do i := byte[758Eh+k]，本模組 02B1h(byte[66A3h+i*4], byte[66A4h+i*4], 法術)（巢狀，多推 bp）任一回真就失敗。retf 8。spec 802",
    "citations": [
-    "spec/687-far-call-flattening-and-stack-leftover.md"
+    "spec/687-far-call-flattening-and-stack-leftover.md",
+    "spec/802-countdown-clock-and-spell-target-gate.md"
    ]
   },
   {
@@ -8372,7 +8377,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 38 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 38 bytes，已逐條讀完）",
+   "citations": [
+    "spec/802-countdown-clock-and-spell-target-gate.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14086,7 +14094,8 @@
    "spec": "docs/spec/792-memorization-timer-closed.md",
    "note": "巢狀程序組成的流程（每個呼叫多推 bp 當靜態鏈）：輸出^:=0；2069h 回 0 就離開；呼叫 1EFDh；再問 2069h，回 0 走 \u003c14F8h+2\u003e(DS:6506h)+\u003c15ADh+1\u003e；否則 Move(DS:7566h→暫存,0Eh)、20C5h、輸出^ := \u003c10AEh+1\u003e(0)；輸出^=0 時 1FB9h、2255h、\u003c14F8h+2\u003e+\u003c15ADh+1\u003e，並 Move(暫存→DS:7566h,0Eh) 還原（回非 0 就不還原）。retf 4。spec 792",
    "citations": [
-    "spec/792-memorization-timer-closed.md"
+    "spec/792-memorization-timer-closed.md",
+    "spec/802-countdown-clock-and-spell-target-gate.md"
    ]
   },
   {
@@ -16092,7 +16101,8 @@
    "note": "上限 99 的累加(retf，無參數)：先叫本模組 sub_2D8h(@DS:7566h)；若 DS:7570h\u003e0 則 DS:756Eh += DS:3E32h * DS:7570h、DS:7570h:=0，最後 DS:756Eh 夾到 99。全部無號 word",
    "citations": [
     "audit/function-index/pc98-overlay-20.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/802-countdown-clock-and-spell-target-gate.md"
    ]
   },
   {
@@ -16127,7 +16137,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
+   "note": "倒數扣時間（DS:7566h 起 7 個 word，單位與 spec 793 的遊戲時鐘相同，共用進位表 DS:3E2Ah）：索引 1..4 全為 0 就直接返回；數量 \u003e word[7566h+索引*2]（無號）時借位——j 由 索引+1 往上找第一個非 0（上界 j \u003c 5），j = 5 就 FillChar(DS:7566h, 0Eh, 0) 並把 數量 歸 0，否則 for k := j downto 索引+1 do dec(word[7566h+k*2])、word[7566h+(k-1)*2] += word[3E2Ah+(k-1)*2]，然後重試；夠減就 word[7566h+索引*2] -= 數量 並呼叫 本模組 0385h。retf 4 = (索引, 數量)。spec 802",
+   "citations": [
+    "spec/802-countdown-clock-and-spell-target-gate.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16767,6 +16783,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `imul cx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-21.md",
     "spec/801-take-from-pool-and-combat-state-freed.md"
    ]
   },
@@ -32107,7 +32125,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
+   "note": "施法前的目標閘門：byte[61C1h + 法術*10h]（屬性 +0Dh）\u003c 門檻（無號）直接失敗；法術 = 3（Cure Light Wounds，硬寫死的特例）改問 \u003cfar 0BF2h+3\u003e(@暫存, 參數4, 參數6)，回真即通過；否則 byte[61C2h + 法術*10h]（+0Eh）= 0 即通過。n := \u003cfar sub_1560\u003e(本模組 119Fh(法術), 參數4, 參數6)；n \u003c= 0 失敗；byte[61C3h + 法術*10h]（+0Fh）= 0 即通過；否則 for k := 1 to n do i := byte[0A820h+k]，本模組 02D3h(byte[973Dh+i*4], byte[973Eh+i*4], 法術)（巢狀，多推 bp）任一回真就失敗。retf 8。spec 802",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
@@ -41254,7 +41275,8 @@
    "note": "上限 99 的累加(retf)：對應位址 0A652h/0A65Ch/680Ch/0A65Ah，與 DOS overlay-20:0385h 同",
    "citations": [
     "audit/function-index/pc98-overlay-20.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/802-countdown-clock-and-spell-target-gate.md"
    ]
   },
   {
@@ -41290,7 +41312,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
+   "note": "倒數扣時間（DS:0A652h 起 7 個 word，單位與 spec 793 的遊戲時鐘相同，共用進位表 DS:6804h）：索引 1..4 全為 0 就直接返回；數量 \u003e word[0A652h+索引*2]（無號）時借位——j 由 索引+1 往上找第一個非 0（上界 j \u003c 5），j = 5 就 FillChar(DS:0A652h, 0Eh, 0) 並把 數量 歸 0，否則 for k := j downto 索引+1 do dec(word[0A652h+k*2])、word[0A652h+(k-1)*2] += word[6804h+(k-1)*2]，然後重試；夠減就 word[0A652h+索引*2] -= 數量 並呼叫 本模組 0385h。retf 4 = (索引, 數量)。spec 802",
+   "citations": [
+    "spec/802-countdown-clock-and-spell-target-gate.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48514,9 +48542,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 38,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 22,
    "CodeBytes": 7219,
    "Undefined": 92,
@@ -48679,9 +48707,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 3536,
    "Undefined": 191,
@@ -49069,9 +49097,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 36,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 20,
    "CodeBytes": 6325,
    "Undefined": 111,
@@ -49234,9 +49262,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 3555,
    "Undefined": 225,
