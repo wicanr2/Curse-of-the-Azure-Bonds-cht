@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 196h:43h 後交給 19Ch:2Ah | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-24.md<br>audit/overlay-init-graph.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
+| `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 196h:43h 後交給 19Ch:2Ah | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md<br>audit/overlay-init-graph.md |
 | `0011` | sub_11 | — | 104 | 41 | 6 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-12.md<br>audit/function-index/pc98-overlay-24.md |
 | `0079` | sub_79 | — | 123 | 51 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `00F4` | sub_F4 | — | 64 | 31 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/585-ecl-goto-and-display-mode-pair.md<br>同上形狀,參數為 (0Fh,8)/(8,0) 等;兩個分支的參數順序不對稱,照抄 | spec/585-ecl-goto-and-display-mode-pair.md<br>spec/635-overlay32-grid-record-array.md |
