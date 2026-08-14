@@ -15698,9 +15698,13 @@
    "callers": 4,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1067",
+   "note": "存檔前的磁碟準備(retf，381 條)。三條路由 DS:7584h(角色來源，spec 1066)分：0=Curse(本作)、1=Pool of Radiance、2=Hillsfar。★★ DS:7584h=0 那條要求路徑最後一段是 'CURSE'(5) —— 用 far 0636:0257h 取最後一段比對，不符且 UpCase(磁碟機字母 DS:5BF1h) \u003c 'C' 時顯示 'Put save disk in '(17)+字母+':' 再重試 ⇒ 只有 A/B 槽(軟碟)才叫玩家換片，C 槽以上直接跳過。★★ 開檔：路徑 := Copy(DS:5BF0h,1,長度−1)，far 097F:0112h(路徑, 10h)，錯誤碼取 DS:8C98h(IOResult)；0=成功；2 或 12h 時若磁碟機 \u003c 'C' 就問 'Is your save disk in drive '(27)+字母+':? '(3) 等 'Y'，不是 'Y' 就改顯示 'Put save disk in X:' 再重試；其他錯誤顯示 'Unexpected error during save: '(30)+Str(錯誤)。兩個集合常數在 CS:061Dh，用來判錯誤碼要重試還是放棄。⚠ 'CURSE' 是存檔目錄名，翻了會找不到存檔片",
    "citations": [
     "audit/function-strings.md",
+    "spec/1067-save-disk-prepare.md",
     "spec/995-file-pattern-scan-and-rename.md"
    ]
   },
@@ -53608,9 +53612,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
