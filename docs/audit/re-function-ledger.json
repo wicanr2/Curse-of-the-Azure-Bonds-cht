@@ -22909,6 +22909,24 @@
    "level": "exact",
    "spec": "863",
    "note": "同 DOS overlay-21:0064Fh（助憶碼序列完全相同）。20 條差異全是位址：DS:650Ah↔9598h、公用池 6F70h↔0A00Eh−4、DS:7564h↔0A650h、+187h↔+188h、+189h↔+18Ah"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 3653,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "864",
+   "note": "站在雲裡的每回合處理(retf 6，(角色, 旗標))：193Fh 以碼 8 回填惡臭/毒殺兩個旗標。前半惡臭——四種免疫碼(1Fh/20h/6Fh/7Dh)任一成立就跳過，12EBh 豁免成功印 'starts to cough' 掛 1Eh、失敗印 'chokes and gags from nausea' 掛 1Fh。後半毒殺——依 +0E5h：≤4 直接死、=5 帶 0FCh(−4) 豁免、=6 無修正豁免、≥7 免疫，死時印 'is Poisoned'＋'is killed'。★+0E5h = 生命骰數(HD)，階梯與 AD&D 一版 Cloudkill 對應；回頭確認 spec 858 的固定值路線是 經驗值 = HD × 100"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 3634,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "864",
+   "note": "同 DOS overlay-23:00E45h（助憶碼序列完全相同）。差異全是位址與字串：DS:6506h↔9594h、+196h↔+197h、DS:755Bh↔0A647h、DS:27D8h↔49E2h。三句訊息改寫成完整日文句(は咳きこみ始めた。/は窒息し、喉をかきむしった。/は毒を受けた。)"
   }
  ]
 }
