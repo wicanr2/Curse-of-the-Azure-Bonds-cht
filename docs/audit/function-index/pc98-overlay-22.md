@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADSPELLS | 32 | 10 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call sub_15A1`、`call far ptr loc_1625+2`、`call far ptr loc_147C+1`、`call far ptr loc_1696+1`、`call loc_19CA`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-23.md<br>audit/string-pairs.md<br>knowledge/golden-box-reverse-engineering-worklist.md |
-| `0020` | sub_20 | — | 367 | 125 | 1 | 2 | ✓ | 待解讀 | — | — | audit/effect-id-catalog.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-24.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md<br>spec/707-raise-dead-and-area-effect.md |
+| `0000` | sub_0 | LOADSPELLS | 32 | 10 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call sub_15A1`、`call far ptr loc_1625+2`、`call far ptr loc_147C+1`、`call far ptr loc_1696+1`、`call loc_19CA`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-23.md<br>audit/string-pairs.md |
+| `0020` | sub_20 | — | 367 | 125 | 1 | 2 | ✓ | 待解讀 | — | — | audit/effect-id-catalog.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-12.md<br>knowledge/golden-box-reverse-engineering-worklist.md |
 | `0227` | sub_227 | SPELLMENU | 565 | 233 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0462` | sub_462 | — | 436 | 168 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `0621` | sub_621 | — | 749 | 291 | 1 | 1 | ✓ | 待解讀 | — | — | — |
@@ -20,7 +20,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1247` | sub_1247 | TARGETDIR | 333 | 117 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/733-cast-driver.md |
 | `140A` | sub_140A | — | 1 | 1 | 8 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
 | `140F` | sub_140F | — | 5 | 1 | 7 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub byte ptr [bx+di-507Eh], 82h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `1414` | sub_1414 | — | 5 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `adc al, 8Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
+| `1414` | sub_1414 | — | 5 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `adc al, 8Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | audit/function-index/dos-overlay-12.md<br>audit/function-index/pc98-overlay-12.md |
 | `1419` | sub_1419 | — | 1 | 1 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
 | `1423` | sub_1423 | — | 6 | 2 | 0 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `fadd qword ptr [bp+si-7D49h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1432` | sub_1432 | — | 6 | 2 | 13 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xchg dl, [bp+si-7D9Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
