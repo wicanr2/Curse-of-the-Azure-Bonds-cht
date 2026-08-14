@@ -24322,6 +24322,15 @@
    "level": "exact",
    "spec": "937",
    "note": "畫字元的分派層(retf 0Eh = (轉大寫, 字元, 次數, 前景, 背景, 列, 欄))：欄 > 27h、列 > 18h 或 dword_22754h = NIL 就跳過；★索引 = 轉大寫 ? (UpCase(字元) mod 40h) : 字元 → 字型只有 64 個 8 bytes 的字模(共 512 bytes)，ASCII 20h..5Fh 正好映到 0..3Fh，這是中文化最硬的一道限制；Move 8 bytes 到 DS:6598h 暫存區(即 IDA 的 byte_22758h)。★byte_211A6h 是三值不是旗標：0 → sub_16147h(CGA 320×200 四色)、1 → sub_161E6h、2 → sub_16246h，各重複『次數』次並讓欄遞增。★22758h − 6598h = 1C1C0h → 常駐的 DS 線性基底是 1C1C0h，IDA linear = DS:offset + 1C1C0h。⚠轉大寫 = 0 時索引不夾範圍，呼叫端傳 > 63 會讀到字模表外"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 90694,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "938",
+   "note": "顯示模式 2 的字模繪製(retn 0Ah = (索引, 前景, 背景, 列, 欄))，由 spec 937 的分派層在 byte_211A6h = 2 時呼叫：di = 列 × 140h + 欄 × 4；★用四個交錯半頁 0B800h/0BA00h/0BC00h/0BE00h、每列 4 bytes、每 byte 2 個像素 → 4 bits/像素 = 16 色，rol dl/dh 各 4 bit 把下一個像素的顏色送到低半位元組；字模位元同樣取自 DS:6598h。這是 Tandy/PCjr 320×200×16 色的版面，與 spec 929 的 Tandy SN76496 音效互相印證。★前景背景直接用，不過 DS:256Dh 轉換表(只有模式 0 要過)。對照 spec 935 的模式 0：2 個半頁、每 byte 4 像素、2 bits/像素、欄 × 2——這也解釋 spec 934 的『每列位元組加倍』"
   }
  ]
 }
