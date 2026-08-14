@@ -15,7 +15,7 @@
 
 ```pascal
 p := DS:6506h;  可 := 0;  答 := 'Y';
-if (p^[195h] = 6) or (p^[195h] = 1) then 可 := 1;        { 這兩個狀態算死亡 }
+if (p^[195h] = 6) or (p^[195h] = 1) then 可 := 1;        { Dead 或 Animated }
 
 if 可 = 0 then begin
     顯示(名字 ＋ 'is not dead.');
@@ -73,8 +73,10 @@ spec 809／810 已經確認 `+12Ch` 本身**從來不被法術可記憶數那張
 
 ### 幾個要照抄的邊界
 
-- **狀態 `6` 與 `1` 都算死亡**（`+195h`，spec 772 的「The Gods intervene!」寫的
-  就是 6）。
+- **狀態 `6`（`Dead`）與 `1`（`Animated`）都可以復活**。名稱表見
+  `resident-data-tables.md` 的 `DS:0FE0h`——**`1` 不是「死亡」**，是
+  Animate Dead 造出來的不死體，Raise Dead 對它一樣有效。
+  spec 772 的「The Gods intervene!」寫的是 6。
 - **付了錢也可能什麼都不做**：`可 = 0`（沒死）時流程仍會走到問價那一步，答 `'Y'`
   之後才在 `if 可 = 0 then 離開` 被擋掉。
 - `損` 與 `和` 都是 byte，`損 div 和` 是**有號**除法。

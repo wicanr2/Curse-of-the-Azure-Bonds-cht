@@ -22729,6 +22729,24 @@
    "level": "exact",
    "spec": "825",
    "note": "同 DOS overlay-24:00A34h（module_align 對齊，助憶碼序列完全相同）。差異全是位址與字串：DS:0A877h↔75E5h、狀態名稱表 DS:2096h↔0FE0h、呼叫目標"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 1400,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "擦掉戰鬥員佔的格子（重畫地形）(retf 6，(索引, 列, 欄))：索引為 0 時先用 sub_509h 由螢幕座標反查戰鬥員。仍為 0 就只重畫那一格；否則取 DS:67C6h/680Eh 的螢幕相對座標與 DS:66A6h+idx*4 的體型，用 sub_11h(k=0..3, 體型) 展開最多四格，每格過 sub_732h 的可見判定後以地形表 DS:26A2h 的 +3 欄圖磚重畫（畫面座標 ×3）。★是 spec 852 佔位圖建立端的擦除對應"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 2148,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "同 DOS overlay-32:00578h（module_align 對齊，助憶碼序列完全相同）。16 條差異全是位址：DS:9F2Ch↔6E92h、[di−67A0h/6758h/68C0h]↔[di+67C6h/680Eh/66A6h]、DS:48AFh↔26A5h 與呼叫目標"
   }
  ]
 }
