@@ -17,9 +17,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0A6A` | sub_A6A | — | 319 | 122 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `0BA9` | sub_BA9 | — | 85 | 34 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>retf 4：參數是 SS 相對的記錄指標；用 +14h 起的遠指標與第二個參數叫本模組 0011h 取得遠指標，再叫 0418h:0D17h(該指標, 0, [+20h], [+1Ch] + (參數 − DS:0A32Ch), [+1Eh]) | spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `0BFE` | sub_BFE | — | 146 | 58 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `0C90` | sub_C90 | — | 224 | 77 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `0D70` | sub_D70 | — | 146 | 49 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `0E02` | sub_E02 | — | 124 | 44 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-24.md |
+| `0C90` | sub_C90 | — | 224 | 77 | 2 | 2 | ✓ | 已解讀 | exact | 848<br>同 DOS overlay-26:00BF9h（module_align 對齊，助憶碼序列完全相同）。6 條差異全是位址：節點屬性 +51h↔+29h、DS:0A32Ch↔7292h | spec/848-scroll-list-widget.md |
+| `0D70` | sub_D70 | — | 146 | 49 | 1 | 3 | ✓ | 已解讀 | exact | 848<br>同 DOS overlay-26:00CD9h（module_align 對齊，助憶碼序列完全相同）。8 條差異全是 DS:0A32Ch↔7292h | audit/embedded-strings.md<br>spec/848-scroll-list-widget.md |
+| `0E02` | sub_E02 | — | 124 | 44 | 1 | 2 | ✓ | 已解讀 | exact | 848<br>同 DOS overlay-26:00D6Bh（module_align 對齊，助憶碼序列完全相同）。5 條差異全是 DS:0A32Ch↔7292h 與呼叫目標 | audit/function-index/dos-overlay-24.md<br>spec/848-scroll-list-widget.md |
 | `0ED3` | sub_ED3 | VERTICALLIST | 897 | 360 | 0 | 10 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-strings.md |
 | `129D` | sub_129D | YESNO | 130 | 61 | 0 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `131F` | sub_131F | BUILDMENULIST | 168 | 59 | 0 | 1 | ✓ | 待解讀 | — | — | — |
