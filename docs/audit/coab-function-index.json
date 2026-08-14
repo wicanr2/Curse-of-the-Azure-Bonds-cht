@@ -13033,7 +13033,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/781-put8x8symbol-and-wall-bit-set.md",
+   "note": "牆面位元的設定端(retf 6，宣告順序 (x, y, 方向))：座標不在 0..0Fh(有號)就整支不做；否則把 DS:7206h^[300h + (y shl 4) + x] 的對應 2-bit 欄位設成 01 — 方向 6 → or 40h、4 → or 10h、2 → or 04h、0 → or 01h。與 spec 761 的 003Eh(清成 00)成對；⚠ 003Eh 沒有範圍檢查，兩半防護不對稱",
+   "citations": [
+    "spec/781-put8x8symbol-and-wall-bit-set.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22709,7 +22715,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/781-put8x8symbol-and-wall-bit-set.md"
    ]
   },
   {
@@ -22730,7 +22737,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-33.md",
-    "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
+    "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+    "spec/781-put8x8symbol-and-wall-bit-set.md"
    ]
   },
   {
@@ -22906,7 +22914,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/781-put8x8symbol-and-wall-bit-set.md",
+   "note": "Put8x8Symbol(retf 0Ah；函式名由自身錯誤訊息 CS:0150h 'Bad symbol number in Put8x8Symbol.' 定住)：編號分五段(1..2Dh/2Eh..73h/74h..0B9h/0BAh..0FFh/100h..127h)選 DS:65B6h 起的遠指標，減掉 word[2680h + 組*2] 的起始編號；第二個參數非 0 走 0297h:08F8h 直接畫，否則先 Move(p^[17h + n*p^[11h]] → DS:65CAh^[17h], p^[11h]) 再叫 0297h:1110h。可證符號資源表頭 17h bytes、+11h 是每符號位元組數。⚠ 編號為負數時「組」這個 local 未指派，會用堆疊殘值當索引",
+   "citations": [
+    "spec/781-put8x8symbol-and-wall-bit-set.md"
+   ]
   },
   {
    "platform": "dos",
@@ -47955,9 +47969,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 3735,
    "Undefined": 308,
@@ -48270,9 +48284,9 @@
    "Module": "overlay-35",
    "Unit": "SQRPAK8",
    "Functions": 4,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 615,
    "Undefined": 74,

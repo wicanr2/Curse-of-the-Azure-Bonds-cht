@@ -19822,6 +19822,24 @@
    "level": "exact",
    "spec": "docs/spec/780-submap-blit-entry-init-and-weighted-score.md",
    "note": "依代碼加權累計(retf 6，第二個參數是 SS 相對記錄)：先以 byte[6F4Dh + 等級] 夾制(n := 上限 − 1，比表上少一)；等級 4 另有一個條件成立就 n+1；等級 2/3/4 走一張權重表(c 在 0Fh..13h → c−0Eh、14h → 5、15h..17h → 6、18h..19h → 7)，其他等級走另一張(c > 0Fh → 2、= 0Fh → 1、< 4 → −2、< 7 → −1)。⚠ imul 是有號的，後兩段會讓累計值減少；累計目標是 byte 加法無上下限；非 2/3/4 等級時 c 在 07h..0Eh 四個條件都不成立"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-35",
+   "ea": 371,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/781-put8x8symbol-and-wall-bit-set.md",
+   "note": "Put8x8Symbol(retf 0Ah；函式名由自身錯誤訊息 CS:0150h 'Bad symbol number in Put8x8Symbol.' 定住)：編號分五段(1..2Dh/2Eh..73h/74h..0B9h/0BAh..0FFh/100h..127h)選 DS:65B6h 起的遠指標，減掉 word[2680h + 組*2] 的起始編號；第二個參數非 0 走 0297h:08F8h 直接畫，否則先 Move(p^[17h + n*p^[11h]] → DS:65CAh^[17h], p^[11h]) 再叫 0297h:1110h。可證符號資源表頭 17h bytes、+11h 是每符號位元組數。⚠ 編號為負數時「組」這個 local 未指派，會用堆疊殘值當索引"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 339,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/781-put8x8symbol-and-wall-bit-set.md",
+   "note": "牆面位元的設定端(retf 6，宣告順序 (x, y, 方向))：座標不在 0..0Fh(有號)就整支不做；否則把 DS:7206h^[300h + (y shl 4) + x] 的對應 2-bit 欄位設成 01 — 方向 6 → or 40h、4 → or 10h、2 → or 04h、0 → or 01h。與 spec 761 的 003Eh(清成 00)成對；⚠ 003Eh 沒有範圍檢查，兩半防護不對稱"
   }
  ]
 }
