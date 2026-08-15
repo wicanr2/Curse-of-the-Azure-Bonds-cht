@@ -106,6 +106,7 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	out[0x186] = byte(character.SavingThrowBonus)
 	out[0xF7] = character.ControlMorale
 	out[0x192] = character.ECLFlag192
+	out[0x119] = uint8(character.Gender)
 	return out, nil
 }
 
@@ -136,6 +137,8 @@ type DOSPlayerRecord struct {
 	ControlMorale    uint8
 	// ECLFlag192 是記錄位移 0x192，ECL 用投影位址 7CE4h 讀（只取 and 1）。
 	ECLFlag192       uint8
+	// Gender 是記錄位移 0x119（spec 1093）。
+	Gender uint8
 	IconHead         uint8
 	IconWeapon       uint8
 	IconID           uint8
@@ -302,7 +305,7 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		Level: level, MaxHitPoints: int(data[0x78]), CurrentHitPoints: int(data[0x1A4]),
 		Age:           int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
 		Experience:    binary.LittleEndian.Uint32(data[0x127:0x12B]),
-		ControlMorale: data[0xF7], ECLFlag192: data[0x192],
+		ControlMorale: data[0xF7], ECLFlag192: data[0x192], Gender: data[0x119],
 		IconHead: data[0x141], IconWeapon: data[0x142], IconID: data[0x143], IconSize: data[0x144],
 		Copper:           binary.LittleEndian.Uint16(data[0x0FB:0x0FD]),
 		Silver:           binary.LittleEndian.Uint16(data[0x0FD:0x0FF]),
@@ -333,6 +336,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		Level:      r.Level, Age: r.Age, Experience: r.Experience,
 		HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		NPC: r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale, ECLFlag192: r.ECLFlag192,
+		Gender: Gender(r.Gender),
 		ClassLevels: r.ClassLevels, HitDice: r.HitDice, MulticlassLevel: r.MulticlassLevel,
 		Copper: r.Copper, Silver: r.Silver, Electrum: r.Electrum,
 		Gold: r.Gold, Platinum: r.Platinum, Gems: r.Gems, Jewelry: r.Jewelry,

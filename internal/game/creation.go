@@ -162,7 +162,14 @@ func (s *State) AdjustCreationAbility(delta int) error {
 	if !s.CreationEditingAbilities || len(s.CreationOptions) == 0 {
 		return fmt.Errorf("ability editor is not active")
 	}
-	if err := s.CreationOptions[s.CreationCursor].Abilities.Adjust(s.CreationAbility, delta); err != nil {
+	// 夾值走原作的兩張表（種族上下限 ＋ 職業組合最低要求，spec 1086／1099），
+	// 而不是通用的 3..18。
+	limits, err := gamepack.LimitLookup()
+	if err != nil {
+		return err
+	}
+	option := &s.CreationOptions[s.CreationCursor]
+	if err := option.Abilities.AdjustWithin(limits, option, s.CreationAbility, delta); err != nil {
 		s.CreationMessage = err.Error()
 		return err
 	}

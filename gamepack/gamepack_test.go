@@ -1144,3 +1144,81 @@ func TestPackAndUILocaleSharedStableIDsDoNotDrift(t *testing.T) {
 		t.Fatalf("shared stable IDs compared=%d, want the 77 current pack/UI overlaps", compared)
 	}
 }
+
+func TestAbilityLimitsFollowReferenceRaceAndClassTables(t *testing.T) {
+	tables, err := Tables()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// spec 1099：種族編號 1..7；力量三格再依性別分（0 男 1 女）。
+	for _, tc := range []struct {
+		name       string
+		raceID     int
+		gender     int
+		classCombo int
+		index      int
+		wantLow    int
+		wantHigh   int
+	}{
+		// 矮人體質 12–19、魅力上限 16 是 AD&D 1e 的指紋。
+		{"矮人體質", 1, 0, 2, 4, 12, 19},
+		{"矮人魅力", 1, 0, 2, 5, 3, 16},
+		// 半身人男性力量上限 17；女性 14。下限被職業組合 2（力量 9）蓋過
+		// ——兩張表取較嚴的下限，這正是 spec 1086 的兩次夾值。
+		{"半身人男力量", 5, 0, 2, 0, 9, 17},
+		{"半身人女力量", 5, 1, 2, 0, 9, 14},
+		// 人類沒有種族限制（3–18），敏捷下限來自職業組合 2 的 6。
+		{"人類敏捷", 7, 0, 2, 3, 6, 18},
+		// 組合 1 對敏捷無要求（0），此時只剩種族的 3–18。
+		{"人類敏捷（無職業要求）", 7, 0, 1, 3, 3, 18},
+		// 職業組合 3（聖騎士）魅力最低 17 蓋過種族下限 3。
+		{"人類聖騎士魅力", 7, 0, 3, 5, 17, 18},
+		// 職業組合 4（遊俠）睿智最低 14。
+		{"人類遊俠睿智", 7, 0, 4, 2, 14, 18},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			limits, ok := tables.AbilityLimitsFor(tc.raceID, tc.gender, tc.classCombo)
+			if !ok {
+				t.Fatalf("race %d 查不到上下限", tc.raceID)
+			}
+			if limits[tc.index][0] != tc.wantLow || limits[tc.index][1] != tc.wantHigh {
+				t.Fatalf("limits=%v, want %d..%d", limits[tc.index], tc.wantLow, tc.wantHigh)
+			}
+		})
+	}
+	// 半身人不能有 18/xx：力量百分比上限是 0。
+	if percentile, ok := tables.StrengthPercentileMax(5, 0); !ok || percentile != 0 {
+		t.Fatalf("半身人男性力量百分比上限=%d ok=%v, want 0", percentile, ok)
+	}
+	if percentile, ok := tables.StrengthPercentileMax(7, 0); !ok || percentile != 100 {
+		t.Fatalf("人類男性力量百分比上限=%d ok=%v, want 100", percentile, ok)
+	}
+}
+
+func TestRaceClassChoicesMatchReference(t *testing.T) {
+	tables, err := Tables()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// spec 1099 §五：每列第一格是數量，其後才是職業組合編號。
+	// 只有人類能當聖騎士(3)與遊俠(4)。
+	for raceID, want := range map[int]int{1: 3, 2: 7, 3: 3, 4: 13, 5: 3, 6: 6, 7: 6} {
+		race, ok := tables.RaceByID(raceID)
+		if !ok {
+			t.Fatalf("race %d 不存在", raceID)
+		}
+		if len(race.ClassChoices) != want {
+			t.Fatalf("race %d (%s) 有 %d 個可選職業, want %d",
+				raceID, race.Name, len(race.ClassChoices), want)
+		}
+		hasPaladin := slices.Contains(race.ClassChoices, 3)
+		hasRanger := slices.Contains(race.ClassChoices, 4)
+		if raceID == 7 {
+			if !hasPaladin || !hasRanger {
+				t.Fatal("人類必須能當聖騎士與遊俠")
+			}
+		} else if hasPaladin {
+			t.Fatalf("race %d (%s) 不該能當聖騎士", raceID, race.Name)
+		}
+	}
+}
