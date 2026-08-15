@@ -8,6 +8,27 @@ import (
 	"github.com/wicanr2/golden-box-remake-engine/randomstream"
 )
 
+// ECL 位址空間不是平坦記憶體：原作把絕對位址分成五區，前三區各自映射到一塊
+// bank，bank 內位移是 (位址 − 區基底) × 2（spec 1096）。
+//
+//	區 0  4B00h..4EFFh -> bank0   word
+//	區 1  7C00h..7FFFh -> bank1   word
+//	區 2  7A00h..7BFFh -> bank2   word
+//	區 3  8000h..9DFFh -> ECL 程式碼本身，byte（自我修改）
+//	區 4  其他          -> 特例表，未列出的一律靜默丟棄
+//
+// bank 是引擎與 ECL 的共用記憶體，不是訊息傳遞。只被 ECL 自己讀寫的格子怎麼放
+// 都自洽；被引擎也讀寫的格子（spec 1097 清出 24 個）必須逐格對上，否則錯誤是
+// 靜默的——寫入永遠成功，只是指向了別的地方。
+//
+// 下列常數是本套件用到的 ECL 位址，附原作 bank 欄位對照，方便逐格查核。
+const (
+	// 引擎寫入、24h 讀取並清零的請求旗標（spec 1097 §四）。
+	addrShopRequest    uint16 = 0x7F6C // bank1^[6D8h] 商店
+	addrShopPriceScale uint16 = 0x7F6D // bank1^[6DAh] 商店價格倍率
+	addrCampRequest    uint16 = 0x7EE2 // bank1^[5C4h] 營地（本實作目前當神殿用）
+)
+
 // RunResult is the observable output of the bounded ECL subset runner.
 // It deliberately exposes text and stop position, not DOS rendering state.
 type RunResult struct {
@@ -958,16 +979,28 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			saveState(next)
 			return result, nil
 		case 0x24: // COMBAT
-			// CMD_Combat is also the external service dispatcher when no
-			// monsters are loaded. Area2.EnterShop/EnterTemple are mirrored in
-			// the ECL player-memory window and take precedence over combat.
-			if memory[0x7F6C] == 1 {
+			// 24h 在原作是三選一的服務分派點，不只是「打一場」（spec 1095）：
+			// 先看兩個請求旗標，命中就跑對應服務並跳過戰鬥，否則才進戰鬥。
+			// 旗標讀到就立刻清零，exactly-once 由清零保證。
+			//
+			// 兩個旗標的位址依 spec 1096 的區 1 映射 (位址-7C00h)*2 換算後，
+			// 與原作 handler 檢查的 bank1 欄位逐格對上（spec 1097 §四）：
+			//   addrShopRequest (7F6Ch) -> bank1^[6D8h]  商店
+			//   addrCampRequest (7EE2h) -> bank1^[5C4h]  營地（overlay-04 entry#1）
+			// 這兩格在 1,355 條 ECL 指令裡從未被寫過，是引擎寫入、24h 讀取的請求旗標。
+			//
+			// ⚠ 已知差異：原作 7EE2h 是「營地」，本實作目前把它當神殿請求。
+			// 位址正確、語意不符。改正不只是換名字——原作的營地由 24h 觸發且結束後
+			// 回到同一個 ECL 迴圈續跑，而本實作的營地是獨立的引擎功能
+			// (State.Camp/EnterDungeonCamp)，缺的是「營地結束後 ECL 續跑」。
+			// 修正屬於營地流程的範圍，先保留現行行為避免無證據的改動。
+			if memory[addrShopRequest] == 1 {
 				result.ShopRequested = true
-				result.ShopPriceScale = memory[0x7F6D]
-				memory[0x7F6C] = 0
-			} else if memory[0x7EE2] == 1 {
+				result.ShopPriceScale = memory[addrShopPriceScale]
+				memory[addrShopRequest] = 0
+			} else if memory[addrCampRequest] == 1 {
 				result.TempleRequested = true
-				memory[0x7EE2] = 0
+				memory[addrCampRequest] = 0
 			} else {
 				result.CombatRequested = true
 				if runtime != nil {

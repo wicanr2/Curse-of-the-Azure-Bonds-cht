@@ -98,8 +98,9 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | ID | 項目 | 現況 | 要做什麼 | 產物 |
 |---|---|---|---|---|
 | `RE-01` | **ECL 有序副作用與 exactly-once**（全域 P0-RE-1） | 33 個候選已審 4 個；主迴圈、`24h` handler 與**位址空間映射**已閉合（spec 1095／1096） | 續閉合其餘 29 個候選；建立 opcode 當下的 ordered effect record，標明 immediate／pause-before-commit／deferred／resume-only | `ecl-ordered-effects` READY spec ＋ trace corpus |
-| `RE-14` | **ECL↔引擎共用格子清冊**（**新增，擋路**） | spec 1096 解出五區映射；82 個變數位址中 69 個在 remake 沒有明確處理 | 在 overlay 匯出裡搜尋引擎側對 `bank0+6A00h`／`bank1+800h`／`DS:4FA1h+0C00h` 的存取點，與 ECL 側 82 個位址取交集。交集之外自洽即可；**交集之內每一格都要逐格對上**。已知兩格：`4BE6h` ＝ 室內／室外旗標（連帶切畫面模式）、`7F6Ch`／`7EE2h` ＝ 商店／營地請求（引擎寫、ECL 讀） | `ecl-shared-cell-registry` |
+| `RE-14` | **ECL↔引擎共用格子清冊** | ✅ **已完成**（spec 1097、`docs/audit/ecl-shared-cells.md`）：81 個 ECL 變數位址中 **24 個是共用格子**，57 個 ECL 私有 | 逐格對上剩餘語意：`7ED2h`／`7ED3h`／`7ED5h` 的引擎側存取點（`overlay-07:01FC`／`overlay-20:0C9C`／`overlay-14:078E`）尚未逐條讀 | `ecl-shared-cells.md` 已產出 |
 | `RE-15` | **ECL 變數讀取端** | spec 1096 只讀了寫入端 `overlay-07:00D70h` | 讀取端（getter）是否用同一張分區表、區 3 的讀寫寬度是否對稱 | 補進 spec 1096 |
+| `RE-16` | **`7ECAh` 還原方式的時機對應** | spec 1097 §三：原作跑完還原成 `and 1`，remake 一律寫 0 | 先確認 remake 的 `SearchLocation` 對應原作哪一段流程，再決定是否照抄 `and 1` | 補進 spec 1097 |
 | `RE-02` | **全遊戲事件清冊**（P0-RE-2） | 靜態層完成（6 DAX／25 block／125 entry／1,355 instruction） | 補動態 branch、座標／terrain、條件旗標、consumer、resume、R1–R5 回填 | `ecl-event-catalog` 動態層 |
 | `RE-03` | **External `CALL` 登記表** | `2E10／C01E／B200` 只有局部證據 | 23 個靜態可達 CALL 的 caller、operand、state projection、consumer、返回與未知 fallback；只追玩家可見副作用 | `external-call-registry` |
 | `RE-04` | **劇情與全地圖事件** | 大量 fixture，缺逐格覆蓋 | 每區逐格／逐事件的 producer、條件、分支、副作用、重訪 | `area-event-coverage` |
@@ -251,12 +252,9 @@ rulebook 65 的規定是：**debug／後門串起來的「能跑完」不算能�
 
 1. **`VER-03`**（讓 `go test ./...` 能當 gate）與 **`VER-01`**（音訊套件能建置）——
    沒有可信的全套訊號，後面每一項的「完成」都無法驗證。成本低，先做。
-2. **`RE-14` ECL↔引擎共用格子清冊**——**這一項是新的第一順位**。
-   spec 1096 證明 ECL 變數不是平坦記憶體，而是三層間接到三塊 bank；
-   ECL 與引擎**共用同一塊記憶體**，對不上時是**靜默錯誤**（map 寫入永遠成功）。
-   在這張清冊完成前，`ENG-01` 每寫一條事件都可能撞到未校準的格子，
-   而且症狀是「走錯劇情分支」而不是「報錯」。
-   ★ 這是有限封閉集合（82 個位址、1,355 條指令已全掃），做得完。
+2. **`RE-14` 共用格子清冊 ✅ 已完成**——81 個 ECL 變數位址中 24 個是共用格子。
+   風險面積從「69 個位址未校準」收斂成「24 個要逐格對上、57 個自洽即可」。
+   剩下 `RE-15`（讀取端）與 `RE-16`（`7ECAh` 時機）兩個小尾巴，不擋路。
 3. **`RE-01` ECL 有序副作用**——矩陣列為全域 P0，也是「單點測試通過、正常流程仍卡住」的首要嫌疑。
    **它決定 `ENG-01` 寫出來的事件資料是什麼形狀**；在它閉合前大量產出內容，等於押注在可能要重做的 schema 上。
 4. **`RE-12` 資料段表格取出**——多份規格卡在同一個原因，取出後 `ENG-04`／`ENG-05`／`ENG-06` 一起解鎖。
