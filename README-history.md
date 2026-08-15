@@ -1,5 +1,10 @@
 # Curse of the Azure Bonds 中文化／Remake
 
+> ⚠ **這份是歷史紀錄，不是目前狀態。** 逐輪里程碑與當時的研究過程留在這裡供
+> 追溯；裡面的「目前」「下一步」都是寫下當時的狀態，**不得當成現況引用**。
+> 現況請看 [`README.md`](README.md)、[`CONTEXT.md`](CONTEXT.md) 與
+> [剩餘工作盤點](docs/knowledge/coab-remake-todo.md)。
+
 這是 SSI《Curse of the Azure Bonds》（青色枷的詛咒）的反組譯、繁體中文化與 remake 研究專案。目前是**可執行的初步 prototype**，不是完整重製版；GitHub 上的每輪提交都保留可測試的成果與驗證邊界。
 
 > 可重用引擎已拆分至
