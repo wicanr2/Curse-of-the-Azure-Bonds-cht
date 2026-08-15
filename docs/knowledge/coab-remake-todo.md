@@ -99,7 +99,8 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 |---|---|---|---|---|
 | `RE-01` | **ECL 有序副作用與 exactly-once**（全域 P0-RE-1） | 33 個候選已審 4 個；主迴圈、`24h` handler 與**位址空間映射**已閉合（spec 1095／1096） | 續閉合其餘 29 個候選；建立 opcode 當下的 ordered effect record，標明 immediate／pause-before-commit／deferred／resume-only | `ecl-ordered-effects` READY spec ＋ trace corpus |
 | `RE-14` | **ECL↔引擎共用格子清冊** | ✅ **已完成**（spec 1097、`docs/audit/ecl-shared-cells.md`）：81 個 ECL 變數位址中 **24 個是共用格子**，57 個 ECL 私有 | 逐格對上剩餘語意：`7ED2h`／`7ED3h`／`7ED5h` 的引擎側存取點（`overlay-07:01FC`／`overlay-20:0C9C`／`overlay-14:078E`）尚未逐條讀 | `ecl-shared-cells.md` 已產出 |
-| `RE-15` | **ECL 變數讀取端** | spec 1096 只讀了寫入端 `overlay-07:00D70h` | 讀取端（getter）是否用同一張分區表、區 3 的讀寫寬度是否對稱 | 補進 spec 1096 |
+| `RE-15` | **ECL 變數讀取端** | ✅ **已完成**（spec 1098）：分區表、`×2`、區 3 的 byte 寬度三項完全對稱 | — | spec 1098 |
+| `RE-17` | **角色欄位投影** | ✅ 機制已解：讀取側投影表 spec 624／1040 早有；spec 1098 補上**寫入側也有一張表且與讀取側不同** ⇒ 12 個位址是唯讀投影（寫了讀不到） | 寫入側表未逐條人工確認的部分（含 `7C80h`／`7C81h`） | 補進 spec 1098 |
 | `RE-16` | **`7ECAh` 還原方式的時機對應** | spec 1097 §三：原作跑完還原成 `and 1`，remake 一律寫 0 | 先確認 remake 的 `SearchLocation` 對應原作哪一段流程，再決定是否照抄 `and 1` | 補進 spec 1097 |
 | `RE-02` | **全遊戲事件清冊**（P0-RE-2） | 靜態層完成（6 DAX／25 block／125 entry／1,355 instruction） | 補動態 branch、座標／terrain、條件旗標、consumer、resume、R1–R5 回填 | `ecl-event-catalog` 動態層 |
 | `RE-03` | **External `CALL` 登記表** | `2E10／C01E／B200` 只有局部證據 | 23 個靜態可達 CALL 的 caller、operand、state projection、consumer、返回與未知 fallback；只追玩家可見副作用 | `external-call-registry` |
@@ -141,6 +142,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 |---|---|---|
 | `ENG-01` | **事件內容補齊** | 依 `RE-04` 的逐格盤點結果，把每個區域的事件寫成 `text_rules`／`option_rules`／`events`；優先序照矩陣的區域表，`待逆向` 的四個區域（艾森布拉、希爾斯法、尤拉什／摩安德之坑、Myth Drannor 正常入口）先補 |
 | `ENG-02` | **game pack 分檔** | 目前是單一 261 KB JSON。區域內容補齊後量會成長數倍，需要先決定分檔方式（依 DAX／依區域）與 schema 邊界，否則後期難以維護與 review |
+| `ENG-13` | **補 `7CE4h` 的角色欄位投影** | ECL 有 1 次 `COMPARE 7CE4h, 0`（`ECL1` block `0x50`），原作讀的是角色 `+192h and 1`（spec 1040）。remake 沒有這一格，會讀到 map 預設 `0`。⚠ `internal/party` 目前沒有 `+192h` 欄位，補之前要先確認該欄位在角色記錄裡的既有讀寫者 |
 | `ENG-03` | **stable ID 與 schema 版本** | 事件、物品、法術、怪物、地圖的穩定 ID；schema 變更要有遷移路徑。分檔（`ENG-02`）之前先定案 |
 | `ENG-12` | **engine／遊戲切分複查** | `internal/` 29 個套件對 `golden-box-remake-engine` 69 個 `.go` 的比例偏低；逐套件判定哪些機制該上移。⚠ 這是既有機制的整理，不阻塞內容產出，排在後面 |
 
