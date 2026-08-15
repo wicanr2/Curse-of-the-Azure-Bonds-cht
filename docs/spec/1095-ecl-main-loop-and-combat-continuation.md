@@ -201,8 +201,23 @@ remake 跑在 Ebiten 事件迴圈上，無法在 opcode handler 內阻塞整場�
 `0x24` 的三選一是 `memory[0x7F6C]` → Shop、`memory[0x7EE2]` → Temple。
 原作 DOS 的兩格是 `bank1^[6D8h]` → **商店**、`bank1^[5C4h]` → **營地（Camp）**，
 第二格呼叫的是 `overlay-04 entry#1`（營地主選單，spec 1030），不是神殿。
-⚠ 本規格不宣稱 `memory[0x7EE2]` 對應原作哪一格——ECL player-memory window
-與 `DS:4F9Dh` bank 的映射尚未對上。**這是下一個要查的點，不是本規格的結論。**
+★★★ **映射已由 spec 1096 解出**，兩格精確對上：
+
+| remake | 算式 | 原作 | `24h` handler 的分支 |
+|---|---|---|---|
+| `memory[0x7F6C]` | `(7F6Ch−7C00h)×2 = 6D8h` | `bank1^[6D8h]` | 商店 ✓ |
+| `memory[0x7EE2]` | `(7EE2h−7C00h)×2 = 5C4h` | `bank1^[5C4h]` | **營地（Camp）**，不是神殿 |
+
+> ★★★ **remake 選的兩個位址與原作映射一致；但第二格的語意標成 Temple 與原作不符**
+> ——`bank1^[5C4h]` 那一支呼叫的是 `overlay-04 entry#1`（營地主選單，spec 1030）。
+>
+> ★★★ **這兩格在 1,355 條 ECL 指令裡沒有任何一條寫過**（已全掃確認）。
+> ⇒ 它們是**引擎寫入、ECL 讀取**的共用格子，正是 spec 1096 §五第 2 點指出的
+> 最高風險類別：map 寫入永遠成功，對不上時不會有任何錯誤訊息。
+>
+> ⚠ 本規格不宣稱 remake 現行行為是否因此出錯——若 remake 的營地不經由 ECL 觸發，
+> 這一格在 remake 內部仍可自洽。**要判定的是「原作的營地會從 `24h` 回到 ECL 續跑」
+> 這個語意在 remake 有沒有等價物**，這需要另外查 `internal/game` 的營地流程。
 
 ## 明確不宣稱
 
