@@ -609,5 +609,141 @@
       0,
       0
     ]
+  ],
+  "class_combinations": [
+    {
+      "combo": 0,
+      "class_slots": [
+        0
+      ],
+      "starting_experience": 25000
+    },
+    {
+      "combo": 1,
+      "class_slots": [
+        1
+      ],
+      "starting_experience": 25000
+    },
+    {
+      "combo": 2,
+      "class_slots": [
+        2
+      ],
+      "starting_experience": 25000
+    },
+    {
+      "combo": 3,
+      "class_slots": [
+        3
+      ],
+      "starting_experience": 25000,
+      "note": "paladin: also sets +191h := 1 and adds effect 08h"
+    },
+    {
+      "combo": 4,
+      "class_slots": [
+        4
+      ],
+      "starting_experience": 25000,
+      "note": "ranger: also adds effect 86h"
+    },
+    {
+      "combo": 5,
+      "class_slots": [
+        5
+      ],
+      "starting_experience": 25000
+    },
+    {
+      "combo": 6,
+      "class_slots": [
+        6
+      ],
+      "starting_experience": 25000
+    },
+    {
+      "combo": 7,
+      "class_slots": [
+        7
+      ],
+      "starting_experience": 25000
+    },
+    {
+      "combo": 8,
+      "class_slots": [
+        0,
+        2
+      ],
+      "starting_experience": 12500
+    },
+    {
+      "combo": 9,
+      "class_slots": [
+        0,
+        2,
+        5
+      ],
+      "starting_experience": 8333
+    },
+    {
+      "combo": 10,
+      "class_slots": [
+        0,
+        4
+      ],
+      "starting_experience": 12500,
+      "note": "cleric/ranger: also adds effect 86h"
+    },
+    {
+      "combo": 11,
+      "class_slots": [
+        0,
+        5
+      ],
+      "starting_experience": 12500
+    },
+    {
+      "combo": 12,
+      "class_slots": [
+        0,
+        6
+      ],
+      "starting_experience": 12500
+    },
+    {
+      "combo": 13,
+      "class_slots": [
+        2,
+        5
+      ],
+      "starting_experience": 12500
+    },
+    {
+      "combo": 14,
+      "class_slots": [
+        2,
+        6
+      ],
+      "starting_experience": 12500
+    },
+    {
+      "combo": 15,
+      "class_slots": [
+        2,
+        5,
+        6
+      ],
+      "starting_experience": 8333
+    },
+    {
+      "combo": 16,
+      "class_slots": [
+        5,
+        6
+      ],
+      "starting_experience": 8333,
+      "note": "two classes but receives the three-class 8,333; reference behaviour, see spec 1093"
+    }
   ]
 }

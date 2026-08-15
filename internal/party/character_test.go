@@ -901,3 +901,67 @@ func TestRollAbilitiesIsDeterministicAndWithin3d6(t *testing.T) {
 		}
 	}
 }
+
+// fakeLimits 提供 AbilityLimitLookup 與 StrengthPercentileLookup 兩個介面，
+// 值取自 spec 1099：人類七項 3–18／百分比上限 100，半身人力量 6–17／百分比 0。
+type fakeLimits struct {
+	limits     [6][2]int
+	percentile int
+}
+
+func (f fakeLimits) AbilityLimits(int, int, int) ([6][2]int, bool) { return f.limits, true }
+func (f fakeLimits) StrengthPercentileMax(int, int) (int, bool)    { return f.percentile, true }
+
+func TestAdjustWithinTreatsStrengthPercentileAsSeparateStep(t *testing.T) {
+	// spec 1086 §三：力量的 18/xx 是獨立的一階——往下調先把百分比扣完才動
+	// 整數，往上調要整數到頂才開始加百分比。
+	human := fakeLimits{limits: [6][2]int{{3, 18}, {3, 18}, {3, 18}, {3, 18}, {3, 18}, {3, 18}}, percentile: 100}
+	character := &Character{Race: RaceHuman, Gender: GenderMale, RawClassID: 2}
+
+	abilities := Abilities{Strength: 18, StrengthExceptional: 2}
+	if err := abilities.AdjustWithin(human, character, 0, -1); err != nil {
+		t.Fatal(err)
+	}
+	if abilities.Strength != 18 || abilities.StrengthExceptional != 1 {
+		t.Fatalf("往下調應先扣百分比：力量=%d/%d", abilities.Strength, abilities.StrengthExceptional)
+	}
+	if err := abilities.AdjustWithin(human, character, 0, -1); err != nil {
+		t.Fatal(err)
+	}
+	if abilities.Strength != 18 || abilities.StrengthExceptional != 0 {
+		t.Fatalf("百分比未扣完就動整數：力量=%d/%d", abilities.Strength, abilities.StrengthExceptional)
+	}
+	if err := abilities.AdjustWithin(human, character, 0, -1); err != nil {
+		t.Fatal(err)
+	}
+	if abilities.Strength != 17 || abilities.StrengthExceptional != 0 {
+		t.Fatalf("百分比歸零後才該動整數：力量=%d/%d", abilities.Strength, abilities.StrengthExceptional)
+	}
+
+	// 往上調：整數先回到 18，再開始加百分比。
+	if err := abilities.AdjustWithin(human, character, 0, 1); err != nil {
+		t.Fatal(err)
+	}
+	if abilities.Strength != 18 || abilities.StrengthExceptional != 0 {
+		t.Fatalf("整數未到頂就加百分比：力量=%d/%d", abilities.Strength, abilities.StrengthExceptional)
+	}
+	if err := abilities.AdjustWithin(human, character, 0, 1); err != nil {
+		t.Fatal(err)
+	}
+	if abilities.Strength != 18 || abilities.StrengthExceptional != 1 {
+		t.Fatalf("整數到頂後應加百分比：力量=%d/%d", abilities.Strength, abilities.StrengthExceptional)
+	}
+}
+
+func TestAdjustWithinRejectsPercentileForRacesThatCannotHaveIt(t *testing.T) {
+	// 半身人的力量百分比上限是 0（spec 1099），所以力量到 17 就不能再加。
+	halfling := fakeLimits{limits: [6][2]int{{6, 17}, {6, 18}, {3, 17}, {8, 18}, {10, 19}, {3, 18}}, percentile: 0}
+	character := &Character{Race: RaceHalfling, Gender: GenderMale, RawClassID: 2}
+	abilities := Abilities{Strength: 17}
+	if err := abilities.AdjustWithin(halfling, character, 0, 1); err == nil {
+		t.Fatal("半身人力量上限是 17，不該還能往上加")
+	}
+	if abilities.StrengthExceptional != 0 {
+		t.Fatalf("半身人不該取得 18/xx：%d", abilities.StrengthExceptional)
+	}
+}
