@@ -1107,3 +1107,40 @@ func TestRunSubsetExposesWhoSelectionBoundary(t *testing.T) {
 		t.Fatalf("WHO result=%+v", result)
 	}
 }
+
+func TestRunSubsetLoadCharacterProjectsFlag192MaskedToLowBit(t *testing.T) {
+	// LOAD CHARACTER 0; COMPARE [player+0x192 投影 7CE4h], 0; IF <>; GOTO 命中分支。
+	// 原作讀取端只取最低位元（and 1，spec 1040／1098），所以偶數值必須讀成 0。
+	block := []byte{0, 0,
+		0x0A, 0x02, 0x00, 0x00,
+		0x03, 0x01, 0xE4, 0x7C, 0x00, 0x00,
+		0x17, // IF <>
+		0x01, 0x02, 0x16, 0x80,
+		0x11, 0x80, 0x03, 0x38, 0xF0, 0x00, // "YES"
+		0x00,
+		0x11, 0x80, 0x03, 0x64, 0x54, 0xC0, // "NO"
+		0x00,
+	}
+	for _, tc := range []struct {
+		name string
+		flag uint8
+		want string
+	}{
+		{"最低位元為 1", 0x01, "YES"},
+		{"最低位元為 1 但有高位元", 0x03, "YES"},
+		{"偶數值遮罩後為 0", 0x02, "NO"},
+		{"未設定", 0x00, "NO"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 20, nil, 1, PartyContext{
+				Members: []PartyMemberContext{{Name: "HERO", ECLFlag192: tc.flag}},
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(result.Text) != 1 || result.Text[0] != tc.want {
+				t.Fatalf("ECLFlag192=%#02x text=%q, want %q", tc.flag, result.Text, tc.want)
+			}
+		})
+	}
+}

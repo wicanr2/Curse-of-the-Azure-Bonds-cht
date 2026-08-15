@@ -236,6 +236,11 @@ type Character struct {
 	// ControlMorale >= 0x80 is the reference NPC namespace.
 	NPC           bool  `json:"npc,omitempty"`
 	ControlMorale uint8 `json:"control_morale,omitempty"`
+	// ECLFlag192 保留 DOS 角色記錄位移 0x192（PC-98 是 0x193）。ECL 透過位址
+	// 投影 7CE4h 讀它，而且只取 and 1（spec 1040/1098）。原作唯一的寫入者是
+	// 舊格式轉換 overlay-16:01F21h，在來源結構某欄位非 0 時設 1，沒有設 0 的
+	// 路徑，所以預設就是 0。語意未定，命名沿用位移。
+	ECLFlag192 uint8 `json:"ecl_flag_192,omitempty"`
 	// IconSize follows Player.icon_size: 1 is small and 2 is normal.
 	// Zero means derive the original default from Race for old save files.
 	IconSize        uint8                  `json:"icon_size,omitempty"`

@@ -142,7 +142,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 |---|---|---|
 | `ENG-01` | **事件內容補齊** | 依 `RE-04` 的逐格盤點結果，把每個區域的事件寫成 `text_rules`／`option_rules`／`events`；優先序照矩陣的區域表，`待逆向` 的四個區域（艾森布拉、希爾斯法、尤拉什／摩安德之坑、Myth Drannor 正常入口）先補 |
 | `ENG-02` | **game pack 分檔** | 目前是單一 261 KB JSON。區域內容補齊後量會成長數倍，需要先決定分檔方式（依 DAX／依區域）與 schema 邊界，否則後期難以維護與 review |
-| `ENG-13` | **補 `7CE4h` 的角色欄位投影** | ECL 有 1 次 `COMPARE 7CE4h, 0`（`ECL1` block `0x50`），原作讀的是角色 `+192h and 1`（spec 1040）。remake 沒有這一格，會讀到 map 預設 `0`。⚠ `internal/party` 目前沒有 `+192h` 欄位，補之前要先確認該欄位在角色記錄裡的既有讀寫者 |
+| `ENG-13` | **補 `7CE4h` 的角色欄位投影** | ✅ **已完成**：`Character.ECLFlag192`／`DOSPlayerRecord.ECLFlag192`／`PartyMemberContext.ECLFlag192` 三處加欄位，DOS 記錄 `0x192` 讀寫 round-trip，`LOAD CHARACTER` 時投影並套 `and 1` 遮罩；回歸測試 `TestRunSubsetLoadCharacterProjectsFlag192MaskedToLowBit` |
 | `ENG-03` | **stable ID 與 schema 版本** | 事件、物品、法術、怪物、地圖的穩定 ID；schema 變更要有遷移路徑。分檔（`ENG-02`）之前先定案 |
 | `ENG-12` | **engine／遊戲切分複查** | `internal/` 29 個套件對 `golden-box-remake-engine` 69 個 `.go` 的比例偏低；逐套件判定哪些機制該上移。⚠ 這是既有機制的整理，不阻塞內容產出，排在後面 |
 
