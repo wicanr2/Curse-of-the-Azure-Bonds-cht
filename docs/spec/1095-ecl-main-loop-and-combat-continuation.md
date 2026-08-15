@@ -161,6 +161,11 @@ end;
 
 | offset | opcode | 指令 | 內容 |
 |---|---|---|---|
+| `0x046B` | `09h` | `SAVE` | `0Ah` → `7F79h`（★ 進入條件的第一步） |
+| `0x0477` | `0Ah` | `LOAD CHARACTER` | `7F79h` ⇒ 把**第 10 個角色**設成目前角色 |
+| `0x047B` | `03h` | `COMPARE` | `7D00h`, `0` ⇒ 讀該角色的 `+196h`（角色欄位投影，spec 1098） |
+| `0x0481` | `16h` | `IF =` | |
+| `0x0482` | `01h` | `GOTO` | `0x84BC` ⇒ **成立才跳到 `COMBAT`** |
 | `0x04BC` | `24h` | `COMBAT` | 單 byte |
 | `0x04BD` | `12h` | `PRINTCLEAR` | 40 bytes：`THE GUILDMASTER GASPS, 'ON BALANCE, I'D RATHER BE IN ` |
 | `0x04E8` | `11h` | `PRINT` | 21 bytes：`YULASH,' AND THEN HE DIES. ` |
@@ -168,6 +173,9 @@ end;
 | `0x052D` | `11h` | `PRINT` | 6 bytes：`ENTRY 4.` |
 | `0x0536` | `02h` | `GOSUB` | → `0x8D04` |
 | `0x053A` | `01h` | `GOTO` | → `0x8CCB` |
+
+★ **`COMBAT` 不是無條件執行的**：先載入第 10 個角色、檢查 `+196h = 0` 才跳過去
+（`7D00h` 是角色欄位投影，不是 bank1 記憶體——見 spec 1098 §三）。
 
 執行序列：
 
