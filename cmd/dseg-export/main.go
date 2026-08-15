@@ -34,6 +34,19 @@ const (
 	startingAgeSize   = 0x1C
 	classRequireBase  = 0x4172
 	classRequireSize  = 6
+	// DS:41D8h 職業組合可選陣營，每列 0Ah bytes，[0] 是筆數（spec 884／1102）。
+	alignmentBase = 0x41D8
+	alignmentSize = 0x0A
+	// 生命骰四張平行表，每張 8 bytes，索引 = 職業槽（spec 850）。
+	hitDiceCountBase = 0x0818
+	hitDiceSizeBase  = 0x0820
+	hitDiceCapBase   = 0x3EB9
+	// DS:45B1h／45B2h 起始金錢的骰子參數，交錯排列，筆距 2（spec 1101 §四）。
+	startingMoneyBase = 0x45B1
+	// DS:427Fh 體質 → HP 加值，直接用體質值當索引（spec 869）。有效範圍 3..25。
+	constitutionBonusBase = 0x427F
+	constitutionMin       = 3
+	constitutionMax       = 25
 
 	firstRace = 1 // spec 1084／884：+74h 的種族編號 1..7，0 不是合法值
 	lastRace  = 7
@@ -56,6 +69,20 @@ var classSlotNames = [ageColumns]string{
 	"cleric", "druid", "fighter", "paladin", "ranger", "magic-user", "thief",
 }
 
+// allClassSlotNames 是完整的八個職業槽（spec 1084）。年齡表只排到盜賊，
+// 生命骰與體質加值則八個都有。
+var allClassSlotNames = [8]string{
+	"cleric", "druid", "fighter", "paladin", "ranger", "magic-user", "thief", "monk",
+}
+
+// selectableRaces 是建角種族選單實際列出的六項（spec 1102 §一）。
+// 6（半獸人）資料齊全但選單沒有分支收它 ⇒ 建角取不到。
+var selectableRaces = map[int]bool{1: true, 2: true, 3: true, 4: true, 5: true, 7: true}
+
+// raceSizes 是 +144h，來自建角流程的 case 分支而非資料表（spec 1093 §七）。
+// 1 ＝ 小體型、2 ＝ 中體型；6／7 走同一個 else。
+var raceSizes = map[int]int{1: 1, 2: 2, 3: 1, 4: 2, 5: 1, 6: 2, 7: 2}
+
 type abilityRange struct {
 	Min uint8 `json:"min"`
 	Max uint8 `json:"max"`
@@ -75,8 +102,12 @@ type startingAge struct {
 }
 
 type raceRules struct {
-	RaceID          int            `json:"race_id"`
-	Name            string         `json:"name"`
+	RaceID int    `json:"race_id"`
+	Name   string `json:"name"`
+	// Selectable 是「建角種族選單列不列這一項」（spec 1102 §一）。
+	Selectable bool `json:"selectable"`
+	// Size 是 +144h：1 小體型、2 中體型（spec 1093 §七）。
+	Size            int            `json:"size"`
 	StrengthMale    strengthLimits `json:"strength_male"`
 	StrengthFemale  strengthLimits `json:"strength_female"`
 	Intelligence    abilityRange   `json:"intelligence"`
@@ -100,8 +131,25 @@ type classCombination struct {
 	ClassSlots []int `json:"class_slots"`
 	// StartingExperience 是 25,000 平分後的值（spec 1093）。
 	StartingExperience int `json:"starting_experience"`
+	// Alignments 是這個組合能選的陣營編號，取自 DS:41D8h（spec 1102 §二）。
+	Alignments []int `json:"alignments"`
 	// Note 記錄原作的例外。
 	Note string `json:"note,omitempty"`
+}
+
+// classSlotRules 是每個職業槽的生命骰與起始金錢參數。
+type classSlotRules struct {
+	Slot int    `json:"slot"`
+	Name string `json:"name"`
+	// HitDiceCount／HitDiceSize：一級擲幾顆幾面（spec 850）。
+	HitDiceCount uint8 `json:"hit_dice_count"`
+	HitDiceSize  uint8 `json:"hit_dice_size"`
+	// HitDiceLevelCap 是 DS:3EB9h：等級 >= 這個值就不再擲骰、也不再給體質加值。
+	HitDiceLevelCap uint8 `json:"hit_dice_level_cap"`
+	// StartingMoneyCount／StartingMoneySize 是 AD&D 起始金錢的骰子參數。
+	// ⚠ 原作擲了但沒有使用（spec 1101 §四），保留是為了亂數序列一致。
+	StartingMoneyCount uint8 `json:"starting_money_count"`
+	StartingMoneySize  uint8 `json:"starting_money_size"`
 }
 
 // referenceClassCombinations 依 spec 1093 §二的表。
@@ -130,12 +178,30 @@ var referenceClassCombinations = []classCombination{
 }
 
 type characterRules struct {
-	Source            string     `json:"source"`
-	Spec              string     `json:"spec"`
-	Races             []raceRules `json:"races"`
-	ClassRequirements [][]int           `json:"class_requirements"`
+	Source            string             `json:"source"`
+	Spec              string             `json:"spec"`
+	Races             []raceRules        `json:"races"`
+	ClassRequirements [][]int            `json:"class_requirements"`
 	ClassCombinations []classCombination `json:"class_combinations"`
+	ClassSlots        []classSlotRules   `json:"class_slots"`
+	// ConstitutionHPBonus 的索引 0 對應體質 constitutionMin。
+	ConstitutionHPBonusFrom int   `json:"constitution_hp_bonus_from"`
+	ConstitutionHPBonus     []int `json:"constitution_hp_bonus"`
+	// 戰士系的額外體質加值（spec 869）。判斷用的是**職業組合編號**
+	// `+75h`，不是職業槽 ⇒ 只有單職戰士／聖騎士／遊俠拿得到，多職拿不到。
+	FighterConstitutionCombos    []int `json:"fighter_constitution_combos"`
+	FighterConstitutionBonusFrom int   `json:"fighter_constitution_bonus_from"`
+	FighterConstitutionBonus     []int `json:"fighter_constitution_bonus"`
 }
+
+// referenceFighterConstitutionBonus 是 spec 869 的 case 分支，索引 0 對應體質 17。
+// 這不是資料段的表——原作把它寫死在程式碼裡，抄進 JSON 是為了讓 remake
+// 只讀資料、不在 Go 裡重寫規則。
+var (
+	referenceFighterCombos    = []int{2, 3, 4}
+	referenceFighterBonusFrom = 17
+	referenceFighterBonus     = []int{1, 2, 3, 3, 4, 4, 4, 5, 5}
+)
 
 func main() {
 	dsegPath := flag.String("dseg", "workplace/re-sweep/dos/dseg/dos-dseg-dseg.bin",
@@ -154,14 +220,16 @@ func main() {
 
 	rules := characterRules{
 		Source: "DOS START.EXE 常駐資料段",
-		Spec:   "docs/spec/1099-character-creation-data-tables.md",
+		Spec:   "docs/spec/1099-character-creation-data-tables.md, 1101, 1102",
 	}
 	for race := firstRace; race <= lastRace; race++ {
 		limits := blob[abilityLimitsBase+race*abilityLimitsSize:]
 		choices := blob[classChoicesBase+race*classChoicesSize:][:classChoicesSize]
 		entry := raceRules{
-			RaceID: race,
-			Name:   raceNames[race],
+			RaceID:     race,
+			Name:       raceNames[race],
+			Selectable: selectableRaces[race],
+			Size:       raceSizes[race],
 			// 每組的第二個位元組是女性欄；spec 1086 的索引算式是
 			// 「基底 + 種族×10h + 角色^[119h]（性別）」。
 			StrengthMale:   strengthLimits{Min: limits[0], Max: limits[2], PercentileMax: limits[4]},
@@ -209,6 +277,40 @@ func main() {
 	}
 
 	rules.ClassCombinations = referenceClassCombinations
+	for i := range rules.ClassCombinations {
+		row := blob[alignmentBase+i*alignmentSize:][:alignmentSize]
+		count := int(row[0])
+		if count > alignmentSize-1 {
+			log.Fatalf("class combination %d declares %d alignments, exceeding the row capacity", i, count)
+		}
+		for _, value := range row[1 : 1+count] {
+			rules.ClassCombinations[i].Alignments =
+				append(rules.ClassCombinations[i].Alignments, int(value))
+		}
+	}
+
+	for slot, name := range allClassSlotNames {
+		rules.ClassSlots = append(rules.ClassSlots, classSlotRules{
+			Slot:               slot,
+			Name:               name,
+			HitDiceCount:       blob[hitDiceCountBase+slot],
+			HitDiceSize:        blob[hitDiceSizeBase+slot],
+			HitDiceLevelCap:    blob[hitDiceCapBase+slot],
+			StartingMoneyCount: blob[startingMoneyBase+slot*2],
+			StartingMoneySize:  blob[startingMoneyBase+slot*2+1],
+		})
+	}
+
+	rules.FighterConstitutionCombos = referenceFighterCombos
+	rules.FighterConstitutionBonusFrom = referenceFighterBonusFrom
+	rules.FighterConstitutionBonus = referenceFighterBonus
+
+	rules.ConstitutionHPBonusFrom = constitutionMin
+	for value := constitutionMin; value <= constitutionMax; value++ {
+		// 表存的是有號位元組（0FEh ＝ −2、0FFh ＝ −1）。
+		rules.ConstitutionHPBonus =
+			append(rules.ConstitutionHPBonus, int(int8(blob[constitutionBonusBase+value])))
+	}
 
 	data, err := json.MarshalIndent(rules, "", "  ")
 	if err != nil {

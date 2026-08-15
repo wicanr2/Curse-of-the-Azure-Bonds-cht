@@ -460,6 +460,9 @@ type Character struct {
 	IconID          uint8                  `json:"icon_id,omitempty"`
 	HitPoints       int                    `json:"hit_points,omitempty"`
 	MaxHitPoints    int                    `json:"max_hit_points,omitempty"`
+	// BaseMaxHitPoints 是原作的 +12Ch：**不含**體質加值的最大 HP。
+	// 屬性重算時 +78h 會先回到這一格再重新加上加值（spec 1079）。
+	BaseMaxHitPoints int `json:"base_max_hit_points,omitempty"`
 	HealthStatus    HealthStatus           `json:"health_status,omitempty"`
 	Bleeding        int                    `json:"bleeding,omitempty"`
 	Copper          uint16                 `json:"copper,omitempty"`

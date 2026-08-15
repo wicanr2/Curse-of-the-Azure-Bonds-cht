@@ -534,6 +534,13 @@ func (a *app) Update() error {
 			if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 				return a.state.RollGuidedAbilities(time.Now().UnixNano())
 			}
+			// 原作是「重擲到滿意為止」，滿意就往下走決定年齡與 HP。
+			if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+				return a.state.AcceptGuidedAbilities(time.Now().UnixNano())
+			}
+			return nil
+		}
+		if a.state.GuidedStep == game.CreationStepDone {
 			return nil
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
@@ -2003,6 +2010,19 @@ func (a *app) drawGuidedCreation(screen *ebiten.Image, face font.Face, white, cy
 			drawFittedText(screen, "  "+label, face, 64, 140+index*25, 512, white)
 		}
 		drawFittedText(screen, a.state.LocaleText("creation_reroll_prompt"), face, 48, 320, 544, cyan)
+		return
+	}
+	if a.state.GuidedStep == game.CreationStepDone {
+		draft := a.state.GuidedDraft
+		rows := []string{
+			fmt.Sprintf(a.state.LocaleText("creation_summary_age"), draft.Age),
+			fmt.Sprintf(a.state.LocaleText("creation_summary_hp"),
+				draft.HitPoints, draft.MaxHitPoints),
+		}
+		for index, row := range rows {
+			drawFittedText(screen, "  "+row, face, 64, 140+index*25, 512, white)
+		}
+		drawFittedText(screen, a.state.LocaleText("creation_name_prompt"), face, 48, 320, 544, cyan)
 		return
 	}
 	options, err := a.state.GuidedCreationOptions()
