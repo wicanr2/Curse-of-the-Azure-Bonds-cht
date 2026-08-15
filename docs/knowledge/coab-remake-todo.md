@@ -112,7 +112,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | `RE-09` | **近戰／弓箭／投射物** | 命中核心與基本箭矢 | 武器速度／射程／彈藥／多攻、逐幀 projectile、sound、impact、death、continuation | `physical-attack-matrix` |
 | `RE-10` | **跨遊戲角色轉移** | 手冊證明功能存在 | source selector、record conversion、裝備／法術／等級限制、round-trip | `move-party-transfer-contract`（不阻塞單作通關） |
 | `RE-11` | **未定義區段判定** | **`WORKLIST.md` 第 559 輪第 5 步尚未執行** | DOS 16,044 bytes／PC-98 20,319 bytes 未被任何函式涵蓋的區段，逐段判定是資料表、對齊填充還是漏掉的程式碼 | 台帳補列 ＋ 判定紀錄 |
-| `RE-12` | **資料段表格取出** | 多份規格明寫「表在資料段，未取出」 | 至少取出：種族屬性上下限 `DS:3F86h`（16 bytes/列）、職業最低要求 `DS:4172h`（6 bytes/筆）、起始年齡 `DS:404Ch`、種族→可選職業 `DS:3FF8h`、隨機寶物表 | 補進 spec 1084／1086／1093 |
+| `RE-12` | **資料段表格取出** | ✅ **四張已取出**（spec 1099、`docs/audit/resident-data-tables.md`）：種族屬性上下限 `DS:3F86h`、職業最低要求 `DS:4172h`、起始年齡 `DS:404Ch`、可選職業 `DS:3FF8h`，全部以 AD&D 1e 指紋驗證 | 剩隨機寶物表未取；三張表的索引 0 都不是該表資料，人類要當特例 | `resident-data-tables.md` |
 | `RE-13` | **未被引用的舊腳本判定** | 7 支 `scripts/ida/*.idc` 沒有任何文件按檔名引用 | 逐支判定補引用／合併／archived | 稽核紀錄 |
 
 ### 已閉合、可直接接進實作的成果（第 560 輪新增）
