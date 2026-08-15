@@ -109,7 +109,7 @@ gate 只能作輸入，不等於此清冊已完成。
 |---|---|---|---|---|
 | 原始檔與平台 inventory | DOS 主檔多有 hash；PC-98 VFD 有缺 sector | 局部 | 建立 DOS／PC-98 executable、overlay、DAX、GEO、save、音訊與手冊的單一 manifest；標示 pristine／derived | `coab-source-manifest` |
 | DAX container／壓縮 | 多種真實資產已可抽取 | 局部 | 對所有實際成員補 record count、bounds、round-trip 與 malformed gate；區分不同 DAX payload | `dax-corpus-matrix` |
-| ECL framing／控制流 | 第 557／558 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊與穩定 candidate ID | 局部 | 33 個候選中 3 個已審查；其餘 30 個與動態 branch、間接 dispatch、外部 boundary、錯誤路徑仍缺；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
+| ECL framing／控制流 | 第 557／558 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊與穩定 candidate ID | 局部 | 33 個候選中 4 個已審查（來源：`docs/audit/ecl-ordered-effect-reviews.json`）；其餘 29 個與動態 branch、間接 dispatch、外部 boundary、錯誤路徑仍缺；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
 | ECL 副作用／時序 | 主迴圈、dispatcher、`24h` handler 與**位址空間五區映射**已閉合（spec 1095／1096）；4 個候選 `covered/exact` | **待逆向／待規格** | **先建 ECL↔引擎共用格子清冊**（82 個變數位址中 69 個在 remake 無明確處理，錯了是靜默的），再續閉合其餘 29 個候選與全域 ordered event log、commit phase、exactly-once | `ecl-shared-cell-registry` → `ecl-ordered-effects` |
 | External `CALL` | `2E10／C01E／B200` 等有局部證據 | 待逆向 | 實際使用地址全集；每址的 caller、operand、state projection、consumer、返回與未知 fallback | `external-call-registry` |
 | `NEWECL／PROGRAM` | boundary ID 與部分 context 已知 | 局部 | 全 context 的 area/resource/map/save/ending 副作用與 resume ownership | `program-newecl-context-matrix` |

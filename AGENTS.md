@@ -161,9 +161,14 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   audit 工具；不得留下只會列印結果、沒有驗證條件的常態測試。尤其禁止
   commit `temporary probe`、刻意 `Fatalf` dump 或只為觀察狀態而永遠失敗的
   測試。
-- direct-entry、直接設定 PC／旗標或注入戰鬥只適合縮小問題；完成驗收必須
-  再從正常地圖移動、事件互動與戰後續跑抵達同一狀態。否則只能聲稱局部
-  opcode／事件測試通過。
+- direct-entry、直接設定 PC／旗標或注入戰鬥可以當**分段驗收的進入點**
+  （使用者 2026-08-16 修正 rulebook 65：分階段驗收算數）。每一段用 debug
+  進入點直入並各自對 reference 驗證無誤，即算該段完成；全部段落通過即算
+  跑完，不必為了宣稱完成而跑一次連續全程。
+  ⚠ 放寬的是驗收成本，不是證據標準：每段仍要對 reference 實測。
+  ⚠ **段與段之間的狀態交接本身就是一段**（存檔、旗標、隊伍、pending ECL／
+  combat transaction）。debug 旗標注入的是合成起始狀態，未必等於上一段真的
+  跑出來的結束狀態；兩端都綠不等於接縫通過，接縫要自己列一段驗。
 - 看見第一場戰鬥或第一段文字不代表事件完成。必須追蹤戰後 ECL continuation、
   後續戰鬥、旗標寫入、地圖持久狀態、Journal／獎勵及離開再進入的結果。
 - 不得把解碼器「可以讀」誤寫成遊戲「已可玩」，也不得把靜態數學核心、短秒
@@ -463,7 +468,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   一律加 `//go:build ignore`，單檔 `./tools/go.sh run <檔案>` 不受影響。
 - `git diff --check`。
 - deterministic screenshot 或 runtime trace。
-- 真正玩家路徑驗證，而不只 direct-entry debug flag。
+- 玩家路徑驗證：分段進行，每段可用 direct-entry 旗標進入，但每段都要走到
+  該段的正常結束狀態（含接縫交接），不是只驗一個畫面或一次 opcode。
 - 原版／remake 對照，明確標示 exact／reconstructed／未完成。
 - 戰鬥不能只驗證靜態 layout 與數值；原版 DOS runtime／遊戲影片還要逐項
   對照近戰、弓箭／投射物、法術施放與命中、死亡動畫、音效及回合節奏。
