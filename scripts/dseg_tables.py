@@ -93,6 +93,54 @@ def main():
         lines.append("| %d | %s | %s |" % (index, name, cells))
     lines.append("")
 
+    # ---- HP 計算兩表（spec 1101）----------------------------------------
+    slots = ["牧師", "德魯伊", "戰士", "聖騎士", "遊俠", "法師", "盜賊", "武僧"]
+    lines += ["## `DS:3EB9h` 各職業槽的體質加成等級上限（8 bytes）", "",
+              "判定是「等級 ≥ 上限就不再加體質」，所以可加的是 `1..上限−1`",
+              "——八個全部命中 AD&D 1e 的 HD 上限。", "",
+              "| 槽 | 職業 | 值 | 可加等級 |", "|---|---|---|---|"]
+    for index, name in enumerate(slots):
+        value = blob[0x3EB9 + index]
+        lines.append("| %d | %s | %d | 1..%d |" % (index, name, value, value - 1))
+    lines.append("")
+
+    lines += ["## `DS:427Fh` 體質 → HP 加成（依 `角色^[19h]` 索引）", "",
+              "⚠ 索引 0 那格形狀上不屬於本表（體質最低是 3）。", "",
+              "| 體質 | 加成 |", "|---|---|"]
+    previous, start = None, None
+    for constitution in range(3, 26):
+        raw = blob[0x427F + constitution]
+        value = raw - 256 if raw > 127 else raw
+        if value != previous:
+            if previous is not None:
+                label = str(start) if start == constitution - 1 else "%d–%d" % (start, constitution - 1)
+                lines.append("| %s | %+d |" % (label, previous))
+            previous, start = value, constitution
+    label = str(start) if start == 25 else "%d–25" % start
+    lines.append("| %s | %+d |" % (label, previous))
+    lines.append("")
+
+    # ---- 建角選單字串（spec 1100）--------------------------------------
+    for title, base, stride, count, note in [
+        ("`DS:0CB6h` 職業組合名稱（17 筆，每筆 `1Bh` bytes）", 0x0CB6, 27, 17,
+         "索引就是 `角色^[75h]` 的職業組合編號，與 spec 1093 §二 的表一字不差。"),
+        ("`DS:0E9Ch` 種族名稱（8 筆，每筆 `0Ah` bytes）", 0x0E9C, 10, 8,
+         "★ **索引 0 是 `Monster`**——非玩家種族。玩家種族是 1..7，"
+         "這正是 spec 1099 三張表沒有第 0 列的原因。"),
+        ("`DS:0EECh` 陣營名稱（9 筆，每筆 `11h` bytes）", 0x0EEC, 17, 9,
+         "★ 順序是「守序軸 × 3 ＋ 善惡軸」，`{2, 5, 8}` 正好是三個 Evil"
+         "——與 spec 1066 的判定相符。"),
+        ("`DS:0F85h` 性別名稱（2 筆，每筆 7 bytes）", 0x0F85, 7, 2,
+         "索引就是 `角色^[119h]`：0 男、1 女。"),
+    ]:
+        lines += ["## " + title, "", note, "", "| 索引 | 位移 | 名稱 |", "|---|---|---|"]
+        for index in range(count):
+            offset = base + index * stride
+            length = blob[offset]
+            text = blob[offset + 1:offset + 1 + length].decode("ascii", "replace")
+            lines.append("| %d | `%04Xh` | %s |" % (index, offset, text))
+        lines.append("")
+
     # ---- 建角三表（spec 1099）----------------------------------------
     # spec 1084／884：+74h 的種族編號是 1..7，0 不是合法值。
     races = [(1, "矮人"), (2, "精靈"), (3, "地精"), (4, "半精靈"),

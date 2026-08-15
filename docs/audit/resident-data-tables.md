@@ -159,6 +159,98 @@
 | 55 | Slow | 02 | 03 | 09 | 01 | 03 | 01 | 0A | 00 | 00 | 04 | 2A | 01 | 03 | 04 | 01 | 00 |
 | 56 | Restoration | 00 | 07 | 00 | 00 | 00 | 00 | 04 | 02 | 00 | 04 | 00 | 02 | 06 | 00 | 00 | 00 |
 
+## `DS:3EB9h` 各職業槽的體質加成等級上限（8 bytes）
+
+判定是「等級 ≥ 上限就不再加體質」，所以可加的是 `1..上限−1`
+——八個全部命中 AD&D 1e 的 HD 上限。
+
+| 槽 | 職業 | 值 | 可加等級 |
+|---|---|---|---|
+| 0 | 牧師 | 10 | 1..9 |
+| 1 | 德魯伊 | 15 | 1..14 |
+| 2 | 戰士 | 10 | 1..9 |
+| 3 | 聖騎士 | 10 | 1..9 |
+| 4 | 遊俠 | 11 | 1..10 |
+| 5 | 法師 | 12 | 1..11 |
+| 6 | 盜賊 | 11 | 1..10 |
+| 7 | 武僧 | 19 | 1..18 |
+
+## `DS:427Fh` 體質 → HP 加成（依 `角色^[19h]` 索引）
+
+⚠ 索引 0 那格形狀上不屬於本表（體質最低是 3）。
+
+| 體質 | 加成 |
+|---|---|
+| 3 | -2 |
+| 4–6 | -1 |
+| 7–14 | +0 |
+| 15 | +1 |
+| 16–25 | +2 |
+
+## `DS:0CB6h` 職業組合名稱（17 筆，每筆 `1Bh` bytes）
+
+索引就是 `角色^[75h]` 的職業組合編號，與 spec 1093 §二 的表一字不差。
+
+| 索引 | 位移 | 名稱 |
+|---|---|---|
+| 0 | `0CB6h` | Cleric |
+| 1 | `0CD1h` | Druid |
+| 2 | `0CECh` | Fighter |
+| 3 | `0D07h` | Paladin |
+| 4 | `0D22h` | Ranger |
+| 5 | `0D3Dh` | Magic-User |
+| 6 | `0D58h` | Thief |
+| 7 | `0D73h` | Monk |
+| 8 | `0D8Eh` | Cleric/Fighter |
+| 9 | `0DA9h` | Cleric/Fighter/Magic-User |
+| 10 | `0DC4h` | Cleric/Ranger |
+| 11 | `0DDFh` | Cleric/Magic-User |
+| 12 | `0DFAh` | Cleric/Thief |
+| 13 | `0E15h` | Fighter/Magic-User |
+| 14 | `0E30h` | Fighter/Thief |
+| 15 | `0E4Bh` | Fighter/Magic-User/Thief |
+| 16 | `0E66h` | Magic-User/Thief |
+
+## `DS:0E9Ch` 種族名稱（8 筆，每筆 `0Ah` bytes）
+
+★ **索引 0 是 `Monster`**——非玩家種族。玩家種族是 1..7，這正是 spec 1099 三張表沒有第 0 列的原因。
+
+| 索引 | 位移 | 名稱 |
+|---|---|---|
+| 0 | `0E9Ch` | Monster |
+| 1 | `0EA6h` | Dwarf |
+| 2 | `0EB0h` | Elf |
+| 3 | `0EBAh` | Gnome |
+| 4 | `0EC4h` | Half-Elf |
+| 5 | `0ECEh` | Halfling |
+| 6 | `0ED8h` | Half-Orc |
+| 7 | `0EE2h` | Human |
+
+## `DS:0EECh` 陣營名稱（9 筆，每筆 `11h` bytes）
+
+★ 順序是「守序軸 × 3 ＋ 善惡軸」，`{2, 5, 8}` 正好是三個 Evil——與 spec 1066 的判定相符。
+
+| 索引 | 位移 | 名稱 |
+|---|---|---|
+| 0 | `0EECh` | Lawful Good |
+| 1 | `0EFDh` | Lawful Neutral |
+| 2 | `0F0Eh` | Lawful Evil |
+| 3 | `0F1Fh` | Neutral Good |
+| 4 | `0F30h` | True Neutral |
+| 5 | `0F41h` | Neutral Evil |
+| 6 | `0F52h` | Chaotic Good |
+| 7 | `0F63h` | Chaotic Neutral |
+| 8 | `0F74h` | Chaotic Evil |
+
+## `DS:0F85h` 性別名稱（2 筆，每筆 7 bytes）
+
+索引就是 `角色^[119h]`：0 男、1 女。
+
+| 索引 | 位移 | 名稱 |
+|---|---|---|
+| 0 | `0F85h` | Male |
+| 1 | `0F8Ch` | Female |
+
 ## `DS:3F86h` 種族屬性上下限（每列 `10h` bytes，索引 ＝ 種族）
 
 版面：力量下限（男／女）、力量上限（男／女）、百分比上限（男／女），
