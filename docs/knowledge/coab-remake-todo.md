@@ -152,7 +152,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | ID | 項目 | 依賴 | 要做什麼 |
 |---|---|---|---|
 | `ENG-04` | AD&D 規則完整表 | `RE-12` | 全職業／種族限制、能力修正、升級、休息、時間、負重、狀態、item special consumer |
-| `ENG-05` | 建角完整流程 | spec 1093／1094／1099 ✅ | ✅ **起始年齡已接上 JSON**（`gamepack/rules/character-tables.json`，由 `cmd/dseg-export` 產生；修正了漏掉德魯伊欄造成的錯位）。仍缺：種族／性別／職業／陣營四段選單、17 種組合、屬性擲點與夾值（`class_requirements`／種族上下限尚未接）、起始經驗值、目前值→基準值收尾 |
+| `ENG-05` | 建角完整流程 | spec 1093／1094／1099 ✅ | ✅ **起始年齡已接上 JSON**（`gamepack/rules/character-tables.json`，由 `cmd/dseg-export` 產生；修正了漏掉德魯伊欄造成的錯位）。仍缺：① **`Character` 沒有性別欄位**，而種族力量上下限要 `+119h` 性別才能查（spec 1086）——接夾值前要先補；② 種族／職業／陣營選單改用 `class_choices`（每種族的可選職業已在 JSON）；③ 屬性擲點與夾值（`class_requirements` 17 筆與種族上下限已在 JSON，尚未接）；④ 起始經驗值；⑤ 目前值→基準值收尾 |
 | `ENG-06` | 訓練所升級 | spec 1084 ✅ | 亞人等級上限（比目前值）、經驗門檻、HP 保留受傷差額 |
 | `ENG-07` | 戰鬥回合生命週期 | `RE-06` | initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
 | `ENG-08` | 怪物 AI | `RE-07` | 移動、目標選擇、施法、逃跑、抗性與各種特殊能力 |
