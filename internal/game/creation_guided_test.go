@@ -1,7 +1,12 @@
 package game
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
@@ -131,6 +136,47 @@ func TestGuidedCreationDwarfHasNoPaladin(t *testing.T) {
 	for _, option := range classes {
 		if option.Value == 3 || option.Value == 4 {
 			t.Fatalf("矮人不該能當聖騎士或遊俠：%v", classes)
+		}
+	}
+}
+
+// 四段選單用到的每個 locale key 都必須在 assets/locale/zh-TW.json 裡有譯文。
+// 這是防漏詞條的檢查——測試用的 catalog 只有幾條字串，所以直接驗證正式檔案。
+func TestGuidedCreationLocaleKeysExist(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "assets", "locale", "zh-TW.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := locale.Load(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	keys := []string{
+		"creation_pick_race", "creation_pick_gender", "creation_pick_class",
+		"creation_pick_alignment", "creation_ability_prompt", "creation_reroll_prompt",
+		"gender_male", "gender_female",
+	}
+	for _, race := range guidedRaces {
+		keys = append(keys, race.LocaleKey)
+	}
+	for _, alignment := range guidedAlignments {
+		keys = append(keys, alignment.LocaleKey)
+	}
+	for _, key := range keys {
+		if text := catalog.Text(key, ""); text == "" {
+			t.Fatalf("locale 缺少建角詞條 %q", key)
+		}
+	}
+
+	// 職業組合的顯示名在 game pack（作品內容），十五個組合都要有。
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for combo, key := range classComboKeys {
+		text, ok := pack.Text(key, "zh-TW")
+		if !ok || text == "" {
+			t.Fatalf("game pack 缺少職業組合 %d 的顯示名 %q", combo, key)
 		}
 	}
 }

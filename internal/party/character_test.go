@@ -965,3 +965,53 @@ func TestAdjustWithinRejectsPercentileForRacesThatCannotHaveIt(t *testing.T) {
 		t.Fatalf("半身人不該取得 18/xx：%d", abilities.StrengthExceptional)
 	}
 }
+
+func TestSyncBaseFromCurrentMirrorsReferenceCreationTail(t *testing.T) {
+	// spec 1094 §三：建角收尾把六個屬性與力量百分比的目前值抄成基準值。
+	abilities := Abilities{
+		Strength: 10, StrengthFull: 17, StrengthExceptional: 55,
+		Intelligence: 9, Wisdom: 9, Dexterity: 9, Constitution: 9, Charisma: 9,
+		Current: [5]int{14, 13, 16, 15, 12},
+	}
+	abilities.SyncBaseFromCurrent()
+	if abilities.Strength != 17 || abilities.StrengthFull != 17 {
+		t.Fatalf("力量基準未抄成目前值：%d/%d", abilities.Strength, abilities.StrengthFull)
+	}
+	if abilities.StrengthExceptionalBase != 55 {
+		t.Fatalf("百分比基準=%d, want 55", abilities.StrengthExceptionalBase)
+	}
+	for index, want := range map[int]int{1: 14, 2: 13, 3: 16, 4: 15, 5: 12} {
+		value, err := abilities.Value(index)
+		if err != nil || value != want {
+			t.Fatalf("屬性 %d 基準=%d err=%v, want %d", index, value, err, want)
+		}
+	}
+	if abilities.Current != ([5]int{}) {
+		t.Fatalf("抄完之後目前值應歸零改由基準值代表：%v", abilities.Current)
+	}
+}
+
+func TestCurrentValueFallsBackToBaseAndSyncRestores(t *testing.T) {
+	// 目前值沒算過時以基準值為準；裝備改過目前值後，卸下要能回到基準值。
+	abilities := Abilities{Strength: 12, Intelligence: 11, Wisdom: 10,
+		Dexterity: 9, Constitution: 8, Charisma: 7}
+	for index, want := range map[int]int{0: 12, 1: 11, 2: 10, 3: 9, 4: 8, 5: 7} {
+		value, err := abilities.CurrentValue(index)
+		if err != nil || value != want {
+			t.Fatalf("屬性 %d 目前值=%d err=%v, want 退回基準 %d", index, value, err, want)
+		}
+	}
+	// 模擬裝備把敏捷加到 18、力量加到 16。
+	abilities.Current[2] = 18
+	abilities.StrengthFull = 16
+	if value, _ := abilities.CurrentValue(3); value != 18 {
+		t.Fatalf("敏捷目前值=%d, want 18", value)
+	}
+	abilities.SyncCurrentFromBase()
+	if value, _ := abilities.CurrentValue(3); value != 9 {
+		t.Fatalf("卸下裝備後敏捷=%d, want 回到基準 9", value)
+	}
+	if value, _ := abilities.CurrentValue(0); value != 12 {
+		t.Fatalf("卸下裝備後力量=%d, want 回到基準 12", value)
+	}
+}

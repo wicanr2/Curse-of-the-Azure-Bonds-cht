@@ -34,21 +34,21 @@ var guidedRaces = []struct {
 	Race      party.Race
 	LocaleKey string
 }{
-	{1, party.RaceDwarf, "creation.race.dwarf"},
-	{2, party.RaceElf, "creation.race.elf"},
-	{3, party.RaceGnome, "creation.race.gnome"},
-	{4, party.RaceHalfElf, "creation.race.half-elf"},
-	{5, party.RaceHalfling, "creation.race.halfling"},
-	{6, party.RaceHalfOrc, "creation.race.half-orc"},
-	{7, party.RaceHuman, "creation.race.human"},
+	{1, party.RaceDwarf, "race_dwarf"},
+	{2, party.RaceElf, "race_elf"},
+	{3, party.RaceGnome, "race_gnome"},
+	{4, party.RaceHalfElf, "race_half_elf"},
+	{5, party.RaceHalfling, "race_halfling"},
+	{6, party.RaceHalfOrc, "race_half_orc"},
+	{7, party.RaceHuman, "race_human"},
 }
 
 var guidedGenders = []struct {
 	Gender    party.Gender
 	LocaleKey string
 }{
-	{party.GenderMale, "creation.gender.male"},
-	{party.GenderFemale, "creation.gender.female"},
+	{party.GenderMale, "gender_male"},
+	{party.GenderFemale, "gender_female"},
 }
 
 // guidedAlignments 是九個陣營編碼。spec 1066 只確認 (陣營+1) mod 3 = 0
@@ -59,15 +59,15 @@ var guidedAlignments = []struct {
 	Code      uint8
 	LocaleKey string
 }{
-	{0, "creation.alignment.lawful-good"},
-	{1, "creation.alignment.lawful-neutral"},
-	{2, "creation.alignment.lawful-evil"},
-	{3, "creation.alignment.neutral-good"},
-	{4, "creation.alignment.true-neutral"},
-	{5, "creation.alignment.neutral-evil"},
-	{6, "creation.alignment.chaotic-good"},
-	{7, "creation.alignment.chaotic-neutral"},
-	{8, "creation.alignment.chaotic-evil"},
+	{0, "alignment_lawful_good"},
+	{1, "alignment_lawful_neutral"},
+	{2, "alignment_lawful_evil"},
+	{3, "alignment_neutral_good"},
+	{4, "alignment_true_neutral"},
+	{5, "alignment_neutral_evil"},
+	{6, "alignment_chaotic_good"},
+	{7, "alignment_chaotic_neutral"},
+	{8, "alignment_chaotic_evil"},
 }
 
 // GuidedCreationOption 是目前這一段的一個可選項。Value 的意義依段別而定：
@@ -87,7 +87,7 @@ func (s *State) BeginGuidedCreation() error {
 	s.GuidedStep = CreationStepRace
 	s.GuidedDraft = party.Character{Level: 1}
 	s.GuidedClassCombos = nil
-	s.CreationMessage = s.LocaleText("creation.pick-race")
+	s.CreationMessage = s.LocaleText("creation_pick_race")
 	return nil
 }
 
@@ -128,8 +128,7 @@ func (s *State) GuidedCreationOptions() ([]GuidedCreationOption, error) {
 		options := make([]GuidedCreationOption, 0, len(race.ClassChoices))
 		for _, combo := range race.ClassChoices {
 			options = append(options, GuidedCreationOption{
-				Label: s.LocaleText(fmt.Sprintf("creation.class-combo.%d", combo)),
-				Value: combo,
+				Label: s.classComboName(combo), Value: combo,
 			})
 		}
 		return options, nil
@@ -159,27 +158,56 @@ func (s *State) SelectGuidedOption(index int) error {
 	case CreationStepRace:
 		s.GuidedDraft.Race = guidedRaces[index].Race
 		s.GuidedStep = CreationStepGender
-		s.CreationMessage = s.LocaleText("creation.pick-gender")
+		s.CreationMessage = s.LocaleText("creation_pick_gender")
 	case CreationStepGender:
 		s.GuidedDraft.Gender = party.Gender(value)
 		s.GuidedStep = CreationStepClass
-		s.CreationMessage = s.LocaleText("creation.pick-class")
+		s.CreationMessage = s.LocaleText("creation_pick_class")
 	case CreationStepClass:
 		// 原作寫進 +75h 的是職業組合編號，不是選單索引。
 		if err := applyClassCombination(&s.GuidedDraft, value); err != nil {
 			return err
 		}
 		s.GuidedStep = CreationStepAlignment
-		s.CreationMessage = s.LocaleText("creation.pick-alignment")
+		s.CreationMessage = s.LocaleText("creation_pick_alignment")
 	case CreationStepAlignment:
 		s.GuidedDraft.Alignment = uint8(value)
 		s.GuidedDraft.AlignmentKnown = true
 		s.GuidedStep = CreationStepAbilities
-		s.CreationMessage = s.LocaleText("creation.roll-abilities")
+		s.CreationMessage = s.LocaleText("creation_ability_prompt")
 	default:
 		return fmt.Errorf("creation step %d does not take a menu selection", s.GuidedStep)
 	}
 	return nil
+}
+
+// classComboKeys 把職業組合編號對到 game pack 既有的顯示名 key
+// （spec 1093 §二 的組合表）。德魯伊（1）與武僧（7）原作有槽位但
+// 本作沒有可選職業，所以沒有對應的 key。
+var classComboKeys = map[int]string{
+	0: "creation.class.cleric", 2: "creation.class.fighter",
+	3: "creation.class.paladin", 4: "creation.class.ranger",
+	5: "creation.class.magic-user", 6: "creation.class.thief",
+	8: "creation.class.cleric-fighter", 9: "creation.class.cleric-fighter-magic-user",
+	10: "creation.class.cleric-ranger", 11: "creation.class.cleric-magic-user",
+	12: "creation.class.cleric-thief", 13: "creation.class.fighter-magic-user",
+	14: "creation.class.fighter-thief", 15: "creation.class.fighter-magic-user-thief",
+	16: "creation.class.magic-user-thief",
+}
+
+// classComboName 取職業組合的顯示名。文字在 game pack 而不是 UI locale，
+// 因為那是作品內容（AGENTS.md §2）。
+func (s *State) classComboName(combo int) string {
+	key, ok := classComboKeys[combo]
+	if !ok {
+		return fmt.Sprintf("class-combo-%d", combo)
+	}
+	if s.dataPack != nil {
+		if text, ok := s.dataPack.Text(key, s.catalog.Language); ok && text != "" {
+			return text
+		}
+	}
+	return key
 }
 
 // classSlotToClass 把原作的職業槽索引換成本套件的 Class。
@@ -270,6 +298,6 @@ func (s *State) RollGuidedAbilities(seed int64) error {
 		Strength: values[0], Intelligence: values[1], Wisdom: values[2],
 		Dexterity: values[3], Constitution: values[4], Charisma: values[5],
 	}
-	s.CreationMessage = s.LocaleText("creation.reroll-prompt")
+	s.CreationMessage = s.LocaleText("creation_reroll_prompt")
 	return nil
 }
