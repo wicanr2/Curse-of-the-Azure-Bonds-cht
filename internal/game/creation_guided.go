@@ -29,6 +29,8 @@ const (
 )
 
 // guidedRaces 依原作的 +74h 種族編號 1..7 排列（spec 1084／884）。
+// 原作的種族字串表還有索引 0 = Monster（spec 1100），那是非玩家種族，
+// 建角選單不列。
 var guidedRaces = []struct {
 	DOSRaceID int
 	Race      party.Race
@@ -51,10 +53,10 @@ var guidedGenders = []struct {
 	{party.GenderFemale, "gender_female"},
 }
 
-// guidedAlignments 是九個陣營編碼。spec 1066 只確認 (陣營+1) mod 3 = 0
-// ——也就是 {2, 5, 8}——是邪惡；本表把它推成 AD&D 的九宮格
-// 「陣營 = 守序軸×3 + 善惡軸」，善惡軸 0 善／1 中立／2 惡。
-// ⚠ 這是 strong inference，不是 exact：原作的選單文字尚未取出佐證。
+// guidedAlignments 是九個陣營編碼，順序由原作字串表確認（spec 1100）：
+// 陣營 = 守序軸×3 + 善惡軸（善惡軸 0 善／1 中立／2 惡），
+// 索引 4 的原作用字是 True Neutral。{2, 5, 8} 正好是三個 Evil，
+// 與 spec 1066 的「(陣營+1) mod 3 = 0 ⇒ 邪惡」吻合。
 var guidedAlignments = []struct {
 	Code      uint8
 	LocaleKey string
