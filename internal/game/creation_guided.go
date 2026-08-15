@@ -2,6 +2,8 @@ package game
 
 import (
 	"fmt"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
@@ -13,7 +15,14 @@ import (
 //	選單('Pick Gender')    → 角色^[119h] := 性別
 //	選單('Pick Class')     → 角色^[75h]  := byte[DS:3FF8h + 種族×0Eh + 選單索引]
 //	選單('Pick Alignment') → 角色^[11Bh] := 陣營
-//	…擲屬性…repeat 問('Reroll stats? ') until 不再重擲
+//	repeat …擲屬性…決定 HP… 問('Reroll stats? ') until 答 = 'N'
+//	問('Character name: ')
+//	基準值 := 目前值
+//	if 問('Save <名字>? ') <> 'N' then 存檔
+//
+// ⚠ 兩個順序容易擺錯（`overlay-17:00782h` 的 15CAh 迴圈邊界）：
+// **HP 在重擲迴圈裡面**（每擲一次屬性就重算一次），
+// **基準值複製在名字輸入之後**（不是擲完屬性就抄）。
 //
 // 職業那一段的選項不是固定清單：要先用種族去查可選職業表，把「第 n 個選項」
 // 翻成真正的職業組合編號（spec 1099 §五，資料在 game pack）。
@@ -25,6 +34,8 @@ const (
 	CreationStepClass
 	CreationStepAlignment
 	CreationStepAbilities
+	CreationStepName
+	CreationStepSave
 	CreationStepDone
 )
 
@@ -343,13 +354,42 @@ func (s *State) RollGuidedAbilities(seed int64) error {
 		Strength: values[0], Intelligence: values[1], Wisdom: values[2],
 		Dexterity: values[3], Constitution: values[4], Charisma: values[5],
 	}
+	// HP 也在重擲迴圈裡（`overlay-17:00782h` 的 15CAh 迴圈，spec 1101）：
+	// 屬性重擲一次，體質變了，HP 就跟著重算。
+	if err := s.rollGuidedHitPoints(seed); err != nil {
+		return err
+	}
 	s.CreationMessage = s.LocaleText("creation_reroll_prompt")
 	return nil
 }
 
-// AcceptGuidedAbilities 結束重擲迴圈，補上原作在建角尾端才決定的欄位：
-// 年齡（spec 1093 §五）、HP（spec 1101），最後把目前值抄成基準值
-// （spec 1093 §六之二）。
+// rollGuidedHitPoints 依 spec 1101 決定 +78h／+12Ch／+1A4h 三格。
+func (s *State) rollGuidedHitPoints(seed int64) error {
+	dice, err := gamepack.HitDice()
+	if err != nil {
+		return err
+	}
+	// 體質用的是**目前值**（角色^[19h]，spec 869）。
+	constitution, err := s.GuidedDraft.Abilities.CurrentValue(4)
+	if err != nil {
+		return err
+	}
+	points, err := party.RollCreationHitPoints(dice, s.GuidedDraft.ClassLevels,
+		int(s.GuidedDraft.RawClassID), constitution, seed)
+	if err != nil {
+		return err
+	}
+	s.GuidedDraft.MaxHitPoints = points.MaxHitPoints
+	s.GuidedDraft.BaseMaxHitPoints = points.BaseMaxHitPoints
+	// 原作直接補滿：角色^[1A4h] := 角色^[78h]。
+	s.GuidedDraft.HitPoints = points.MaxHitPoints
+	return nil
+}
+
+// AcceptGuidedAbilities 是 `Reroll stats? ` 答 'N' 那一步：離開重擲迴圈，
+// 進入名字輸入。年齡在這裡決定——原作是在陣營選完之後（`1230h`）就算好的，
+// 但它只看種族與職業，兩者在進入重擲迴圈前就已固定，所以擺在這裡結果相同
+// （spec 1093 §五）。
 func (s *State) AcceptGuidedAbilities(seed int64) error {
 	if s.GuidedStep != CreationStepAbilities {
 		return fmt.Errorf("cannot accept abilities at creation step %d", s.GuidedStep)
@@ -367,31 +407,89 @@ func (s *State) AcceptGuidedAbilities(seed int64) error {
 	}
 	s.GuidedDraft.Age = age
 
-	dice, err := gamepack.HitDice()
-	if err != nil {
-		return err
-	}
-	// 體質用的是**目前值**（角色^[19h]，spec 869）。建角這一刻目前值與
-	// 基準值還相同，但欄位要取對，否則之後接上裝備加成就會算錯。
-	constitution, err := s.GuidedDraft.Abilities.CurrentValue(4)
-	if err != nil {
-		return err
-	}
-	points, err := party.RollCreationHitPoints(dice, s.GuidedDraft.ClassLevels,
-		int(s.GuidedDraft.RawClassID), constitution, seed)
-	if err != nil {
-		return err
-	}
-	s.GuidedDraft.MaxHitPoints = points.MaxHitPoints
-	s.GuidedDraft.BaseMaxHitPoints = points.BaseMaxHitPoints
-	// 原作直接補滿：角色^[1A4h] := 角色^[78h]。
-	s.GuidedDraft.HitPoints = points.MaxHitPoints
-
-	s.GuidedDraft.Abilities.SyncBaseFromCurrent()
-	s.GuidedStep = CreationStepDone
+	s.GuidedName = ""
+	s.GuidedStep = CreationStepName
 	s.CreationMessage = s.LocaleText("creation_name_prompt")
 	return nil
 }
+
+// AppendGuidedName 把輸入的字加進名字。上限是 remake 自己的 20 字元
+// ——原版的欄位只有 15 個，但 remake 有自己的存檔格式（只需要能讀原版存檔）。
+func (s *State) AppendGuidedName(chars []rune) error {
+	if s.GuidedStep != CreationStepName {
+		return fmt.Errorf("name input is unavailable at creation step %d", s.GuidedStep)
+	}
+	if utf8.RuneCountInString(s.GuidedName)+len(chars) > guidedNameLimit {
+		return fmt.Errorf("character name is limited to %d characters", guidedNameLimit)
+	}
+	s.GuidedName += string(chars)
+	return nil
+}
+
+// BackspaceGuidedName 刪掉名字的最後一個字（依字元而不是位元組，中文才不會斷）。
+func (s *State) BackspaceGuidedName() error {
+	if s.GuidedStep != CreationStepName {
+		return fmt.Errorf("name input is unavailable at creation step %d", s.GuidedStep)
+	}
+	name := []rune(s.GuidedName)
+	if len(name) > 0 {
+		s.GuidedName = string(name[:len(name)-1])
+	}
+	return nil
+}
+
+// CommitGuidedName 收下名字並把目前值抄成基準值（spec 1093 §六之二）。
+// ⚠ 這個複製在**名字之後**才做，不是擲完屬性就做——原作的順序是
+// 名字輸入 → 基準值複製 → `Save <名字>?`。
+func (s *State) CommitGuidedName() error {
+	if s.GuidedStep != CreationStepName {
+		return fmt.Errorf("name input is unavailable at creation step %d", s.GuidedStep)
+	}
+	// 原作在名字為空時直接重問（`2441h` 的 `jz loc_240D`）。
+	if strings.TrimSpace(s.GuidedName) == "" {
+		return fmt.Errorf("character name cannot be empty")
+	}
+	s.GuidedDraft.Name = s.GuidedName
+	s.GuidedDraft.Abilities.SyncBaseFromCurrent()
+	s.GuidedStep = CreationStepSave
+	s.CreationMessage = fmt.Sprintf(s.LocaleText("creation_save_prompt"), s.GuidedName)
+	return nil
+}
+
+// ConfirmGuidedSave 是原作最後那句 `Save <名字>? `：回答 'N' 就把角色丟掉，
+// 其餘任何鍵都存檔（`24BBh` 只比對 'N'）。
+func (s *State) ConfirmGuidedSave(save bool) error {
+	if s.GuidedStep != CreationStepSave {
+		return fmt.Errorf("save prompt is unavailable at creation step %d", s.GuidedStep)
+	}
+	if !save {
+		// 原作直接 FreeMem 離開，角色不留。
+		message := s.LocaleText("creation_discarded")
+		if err := s.CancelGuidedCreation(); err != nil {
+			return err
+		}
+		s.CreationMessage = message
+		return nil
+	}
+	if len(s.CreationRoster) >= 6 {
+		return fmt.Errorf("party already has six characters")
+	}
+	character := s.GuidedDraft
+	character.ID = fmt.Sprintf("guided-%d", len(s.CreationRoster)+1)
+	s.CreationRoster = append(s.CreationRoster, character)
+	// 原作一次呼叫只建一個角色，存完就回上一層。
+	message := fmt.Sprintf(s.LocaleText("creation_added"),
+		character.Name, len(s.CreationRoster))
+	if err := s.CancelGuidedCreation(); err != nil {
+		return err
+	}
+	s.GuidedStep = CreationStepDone
+	s.CreationMessage = message
+	return nil
+}
+
+// guidedNameLimit 是 remake 的名字上限。原版是 15（`0Fh`）。
+const guidedNameLimit = 20
 
 // MoveGuidedCursor 在目前這一段的選項之間移動，兩端環繞——原作四個選單
 // 都是同一組上下鍵操作（spec 1093 §一）。
