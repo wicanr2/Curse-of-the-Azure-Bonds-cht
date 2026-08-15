@@ -540,6 +540,33 @@ func (a *app) Update() error {
 			}
 			return nil
 		}
+		if a.state.GuidedStep == game.CreationStepName {
+			if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+				return a.state.BackspaceGuidedName()
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+				if err := a.state.CommitGuidedName(); err != nil {
+					a.state.CreationMessage = err.Error()
+				}
+				return nil
+			}
+			if chars := ebiten.InputChars(); len(chars) > 0 {
+				if err := a.state.AppendGuidedName(chars); err != nil {
+					a.state.CreationMessage = err.Error()
+				}
+			}
+			return nil
+		}
+		if a.state.GuidedStep == game.CreationStepSave {
+			// 原作只比對 'N'，其餘任何鍵都存檔（spec 1093 §一）。
+			if inpututil.IsKeyJustPressed(ebiten.KeyN) {
+				return a.state.ConfirmGuidedSave(false)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyY) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+				return a.state.ConfirmGuidedSave(true)
+			}
+			return nil
+		}
 		if a.state.GuidedStep == game.CreationStepDone {
 			return nil
 		}
@@ -1990,6 +2017,44 @@ func dungeonSkyColor(areaState area.State, wallRoof uint8) color.RGBA {
 	return gfx.EGA16[skyColours[index%uint16(len(skyColours))]]
 }
 
+// driveGuidedCreation 用固定的選擇把四段建角推到指定的段，只為 headless 擷取
+// 拿得到確定性畫面。選的是人類／男性／第一個可選職業與陣營。
+func driveGuidedCreation(state *game.State, step, name string) error {
+	const captureSeed = int64(0xC0AB)
+	// 人類是種族選單的最後一項（半獸人不列，spec 1102 §一）。
+	races, err := state.GuidedCreationOptions()
+	if err != nil {
+		return err
+	}
+	if err := state.SelectGuidedOption(len(races) - 1); err != nil {
+		return err
+	}
+	for i := 0; i < 3; i++ {
+		if err := state.SelectGuidedOption(0); err != nil {
+			return err
+		}
+	}
+	if err := state.RollGuidedAbilities(captureSeed); err != nil {
+		return err
+	}
+	if step == "abilities" {
+		return nil
+	}
+	if err := state.AcceptGuidedAbilities(captureSeed); err != nil {
+		return err
+	}
+	if err := state.AppendGuidedName([]rune(name)); err != nil {
+		return err
+	}
+	if step == "name" {
+		return nil
+	}
+	if step != "save" {
+		return fmt.Errorf("unknown guided creation step %q", step)
+	}
+	return state.CommitGuidedName()
+}
+
 func dungeonDirectionName(direction uint8) string {
 	names := [...]string{"N", "NE", "E", "SE", "S", "SW", "W", "NW"}
 	if int(direction) >= len(names) {
@@ -2012,7 +2077,7 @@ func (a *app) drawGuidedCreation(screen *ebiten.Image, face font.Face, white, cy
 		drawFittedText(screen, a.state.LocaleText("creation_reroll_prompt"), face, 48, 320, 544, cyan)
 		return
 	}
-	if a.state.GuidedStep == game.CreationStepDone {
+	if a.state.GuidedStep == game.CreationStepName || a.state.GuidedStep == game.CreationStepSave {
 		draft := a.state.GuidedDraft
 		rows := []string{
 			fmt.Sprintf(a.state.LocaleText("creation_summary_age"), draft.Age),
@@ -2022,7 +2087,13 @@ func (a *app) drawGuidedCreation(screen *ebiten.Image, face font.Face, white, cy
 		for index, row := range rows {
 			drawFittedText(screen, "  "+row, face, 64, 140+index*25, 512, white)
 		}
-		drawFittedText(screen, a.state.LocaleText("creation_name_prompt"), face, 48, 320, 544, cyan)
+		// 提示句已經畫在上方的訊息列，正文只放輸入內容。
+		if a.state.GuidedStep == game.CreationStepName {
+			drawFittedText(screen, "  "+a.state.GuidedName+"_", face, 64, 220, 512, white)
+			drawFittedText(screen, a.state.LocaleText("creation_name_hint"), face, 48, 320, 544, cyan)
+			return
+		}
+		drawFittedText(screen, a.state.LocaleText("creation_save_hint"), face, 48, 320, 544, cyan)
 		return
 	}
 	options, err := a.state.GuidedCreationOptions()
@@ -3081,6 +3152,8 @@ func main() {
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	characterCreation := flag.Bool("character-creation", false, "show the opening character-creation command as a deterministic renderer checkpoint")
 	guidedCreation := flag.Bool("guided-creation", false, "show the original four-menu character creation (race/gender/class/alignment)")
+	guidedCreationStep := flag.String("guided-creation-step", "", "drive -guided-creation to a later step for capture: abilities, name or save")
+	guidedCreationName := flag.String("guided-creation-name", "Adventurer", "name typed by -guided-creation-step; pass a CJK name to check glyph rendering")
 	tilvertonDungeon := flag.Bool("tilverton-dungeon", false, "enter Tilverton's first-person map through the formal new-game flow")
 	inn := flag.Bool("inn", false, "start at the first Windlord's Inn event through the formal new-game flow")
 	filani := flag.Bool("filani", false, "start at sage Filani through the formal Tilverton ECL flow")
@@ -3585,6 +3658,11 @@ func main() {
 		// 存在的目的是讓 headless 擷取拿得到確定性畫面。
 		if err := state.BeginGuidedCreation(); err != nil {
 			log.Fatal(err)
+		}
+		if *guidedCreationStep != "" {
+			if err := driveGuidedCreation(&state, *guidedCreationStep, *guidedCreationName); err != nil {
+				log.Fatal(err)
+			}
 		}
 	} else if *characterCreation {
 		if len(state.PartyFighters()) != 0 {

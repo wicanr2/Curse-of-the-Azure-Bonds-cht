@@ -145,6 +145,10 @@ type State struct {
 	// GuidedActive 為真時建角畫面走原版的四段選單，而不是選預做範本。
 	GuidedActive bool
 	GuidedCursor int
+	// GuidedName 是名字輸入段的暫存。原版的欄位只有 15 個字元
+	// （`overlay-17:00782h` 的 `2430h` 用長度 0Fh 抄進角色紀錄），
+	// 但 remake 有自己的存檔格式，維持本作的 20 字元上限。
+	GuidedName string
 
 	catalog                 locale.Catalog
 	eclBlock                []byte

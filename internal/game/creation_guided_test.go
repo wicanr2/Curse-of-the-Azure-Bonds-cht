@@ -120,19 +120,108 @@ func TestGuidedCreationFollowsReferenceFourMenus(t *testing.T) {
 		t.Fatalf("聖騎士屬性下限未套用：%+v", abilities)
 	}
 
-	// 收尾：年齡與 HP 是原作在最後才決定的（spec 1093 §五、spec 1101）。
+	// HP 在重擲迴圈裡就算好了（spec 1101）。
+	// 單職聖騎士：1d10 擲兩次取大 ⇒ 1..10，再加體質加值。
+	if state.GuidedDraft.MaxHitPoints < 1 ||
+		state.GuidedDraft.HitPoints != state.GuidedDraft.MaxHitPoints {
+		t.Fatalf("HP=%d max=%d", state.GuidedDraft.HitPoints, state.GuidedDraft.MaxHitPoints)
+	}
+
+	// `Reroll stats? ` 答 'N' ⇒ 進名字輸入，年齡在這一步決定。
 	if err := state.AcceptGuidedAbilities(1234); err != nil {
 		t.Fatal(err)
 	}
-	if state.GuidedStep != CreationStepDone {
-		t.Fatalf("step=%d, want done", state.GuidedStep)
+	if state.GuidedStep != CreationStepName {
+		t.Fatalf("step=%d, want name", state.GuidedStep)
 	}
 	if state.GuidedDraft.Age <= 0 {
 		t.Fatalf("年齡=%d", state.GuidedDraft.Age)
 	}
-	// 單職聖騎士：1d10 擲兩次取大 ⇒ 1..10，再加體質加值。
-	if state.GuidedDraft.MaxHitPoints < 1 || state.GuidedDraft.HitPoints != state.GuidedDraft.MaxHitPoints {
-		t.Fatalf("HP=%d max=%d", state.GuidedDraft.HitPoints, state.GuidedDraft.MaxHitPoints)
+
+	// 名字要支援中文，而且空名字要被擋下來（原作直接重問）。
+	if err := state.CommitGuidedName(); err == nil {
+		t.Fatal("空名字應該被擋下")
+	}
+	if err := state.AppendGuidedName([]rune("凱蘭德爾")); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BackspaceGuidedName(); err != nil {
+		t.Fatal(err)
+	}
+	if state.GuidedName != "凱蘭德" {
+		t.Fatalf("退格是按字元不是位元組：%q", state.GuidedName)
+	}
+	if err := state.CommitGuidedName(); err != nil {
+		t.Fatal(err)
+	}
+	if state.GuidedStep != CreationStepSave {
+		t.Fatalf("step=%d, want save", state.GuidedStep)
+	}
+	// 基準值複製在名字之後（spec 1093 §六之二）。
+	for index := 0; index < 5; index++ {
+		current, err := state.GuidedDraft.Abilities.CurrentValue(index + 1)
+		if err != nil {
+			t.Fatal(err)
+		}
+		base, err := state.GuidedDraft.Abilities.Value(index + 1)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if current != base {
+			t.Fatalf("屬性 %d 的基準值沒抄過去：目前=%d 基準=%d", index+1, current, base)
+		}
+	}
+
+	// `Save <名字>? ` 答 'N' 之外都存檔。
+	if err := state.ConfirmGuidedSave(true); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.CreationRoster) != 1 || state.CreationRoster[0].Name != "凱蘭德" {
+		t.Fatalf("隊伍名冊=%v", state.CreationRoster)
+	}
+	if state.GuidedActive {
+		t.Fatal("存完應該離開四段流程")
+	}
+}
+
+// 答 'N' 的角色不留下來（原作直接 FreeMem 離開）。
+func TestGuidedCreationDiscardsOnNo(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.BeginGuidedCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.SelectGuidedOption(5); err != nil { // 人類
+		t.Fatal(err)
+	}
+	if err := state.SelectGuidedOption(0); err != nil { // 男性
+		t.Fatal(err)
+	}
+	if err := state.SelectGuidedOption(0); err != nil { // 第一個可選職業
+		t.Fatal(err)
+	}
+	if err := state.SelectGuidedOption(0); err != nil { // 第一個可選陣營
+		t.Fatal(err)
+	}
+	if err := state.RollGuidedAbilities(99); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.AcceptGuidedAbilities(99); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.AppendGuidedName([]rune("測試")); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CommitGuidedName(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.ConfirmGuidedSave(false); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.CreationRoster) != 0 {
+		t.Fatalf("放棄的角色不應該進名冊：%v", state.CreationRoster)
+	}
+	if state.GuidedActive {
+		t.Fatal("放棄後應該離開四段流程")
 	}
 }
 
