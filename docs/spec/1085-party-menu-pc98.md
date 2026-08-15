@@ -151,6 +151,8 @@ end;
   `near 4122h`、`near 3BBDh`（加入角色）各自的內容。
 - 沒有宣稱 `overlay-24 entry#2`／`entry#40`、`overlay-25 entry#5／#6／#7`、
   `overlay-19 entry#5` 的介面。
-- 沒有宣稱 `bank0^[3FAh]`（`0FFh` ＝ 已通關）與 `bank0^[1E4h]` 的完整語意。
+- 沒有宣稱 `bank0^[3FAh]`（`0FFh` ＝ 已通關）的完整語意。
+★ `bank0^[1E4h]` ＝ **上一個 block／scene 編號**（spec 1097 §一）⇒ 本規格的
+`啟用[8] := ord(bank0^[1E4h] = 0)` 是「**還沒進過任何 block（新遊戲）才給載入**」。
 - 沒有宣稱 `DS:0A819h`、`DS:8CF7h` 由誰設定成非 0。
 - 沒有宣稱 `CS:180h`／`CS:181h` 兩個空字串／集合常數的內容。
