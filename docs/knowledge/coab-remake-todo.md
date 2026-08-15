@@ -1,6 +1,6 @@
 # 完成 remake 所需的 TODO 盤點
 
-狀態日期：2026-08-16（第 563 輪）
+狀態日期：2026-08-16
 
 ## 這份清單的口徑
 
@@ -28,28 +28,31 @@ PC-98 的作用是**降低 DOS 側的推論成本**，不是交付目標。已�
 物品節點 `3Fh` vs `67h`、選單節點 `2Eh` vs `56h`、存檔第 5 塊 `1E00h` vs `1E41h`、
 DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 
-## 現況量測（2026-08-15）
+## 現況量測（2026-08-16 實測）
+
+數字一律現場量，不沿用上一輪的文件行。
 
 | 指標 | 數字 | 來源 |
 |---|---|---|
 | 函式覆蓋台帳 | 2,922 個函式，**已解讀 2,175／不阻塞 162／邊界碎片 585／待解讀 0** | `re-function-ledger.json` |
-| ├ DOS | 已解讀 1,016 ／ 不阻塞 133 ／ 邊界碎片 238 | 同上 |
-| ├ PC-98 | 已解讀 1,159 ／ 不阻塞 29 ／ 邊界碎片 347 | 同上 |
-| └ 證據等級 | `exact` 1,952 ／ `strong inference` 223 | 同上 |
-| 規格文件 | 1,075 份 `docs/spec/*.md` | `ls` |
-| remake 程式 | 218 個 `.go`／73,539 行 | `find`／`wc` |
-| ├ `internal/game` 機制碼 | 15 檔／**13,356 行**，另有 29 個測試檔／20,144 行 | `wc` |
-| └ 檔名 | `state` `combat_state` `creation` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
+| ├ DOS | 1,387：已解讀 1,016 ／ 不阻塞 133 ／ 邊界碎片 238 | 同上 |
+| ├ PC-98 | 1,535：已解讀 1,159 ／ 不阻塞 29 ／ 邊界碎片 347 | 同上 |
+| └ 證據等級 | `exact` 1,955 ／ `strong inference` 223 | 同上 |
+| 規格文件 | **1,084** 份 `docs/spec/*.md` | `ls` |
+| remake 程式（不含巢狀 repo） | **230 個 `.go`／77,123 行** | `find`／`wc` |
+| ├ `internal/game` 機制碼 | **16 檔／13,908 行**（非測試） | `wc` |
+| └ 檔名 | `state` `combat_state` `creation` `creation_guided` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
 | 共用 engine | 獨立 repo，69 個 `.go` | `golden-box-remake-engine/` |
 | 內容資料 | `gamepack/events/pit-of-moander.json` **261 KB 單一 game pack** | `wc -c` |
 | ├ 事件 | 4 個 `events`、113 條 `option_rules`、**369 條 `text_rules`** | `json` |
-| ├ 地圖 | 20 張（其中 9 張 `original.geo*` 直引原始 block） | `json` |
-| ├ 規則 | 12 個玩家法術、12 個 AI 法術、13 組 `combat_visuals`、40 個建角範本、12 首曲目 | `json` |
 | └ 語系 | `en` **607** 條、`zh-TW` **607** 條，**一一對齊、沒有漏譯** | `json` |
-| UI 詞條 | `assets/locale/zh-TW.json` **847 條** | `json` |
+| UI 詞條 | `assets/locale/zh-TW.json` **870** 條 | `json` |
+| 建角規則表 | `gamepack/rules/character-tables.json`：7 種族、17 職業組合、8 職業槽、擲點與體質加值 | `json` |
 | 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**1,355 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
-| 正常玩家路徑 | `TestRealNewGameContinuesFromHapToBeholderCaveEntrance` **PASS**，終點是眼魔洞穴東門 → 散提爾堡邊緣 | `go test` |
-| 遊戲入口旗標 | 55 個，其中 **30 個是場景直入／視覺 oracle 捷徑** | `cmd/azure-bonds-game/main.go` |
+| ECL 副作用候選 | 33 個中 **4 個已審查**、29 個未審查 | `ecl-ordered-effect-reviews.json` |
+| 正常玩家路徑 | 走到**眼魔洞穴東門 → 散提爾堡邊緣** | `go test` |
+| 全套 gate | `./tools/go.sh test ./...` 全綠 | 本輪實跑 |
+| 遊戲入口旗標 | **58** 個，其中 30 個是分段驗收的直入點 | `main.go` |
 
 **函式層已經全部看過一遍，語意層與內容量才是剩下的工作。**
 兩層不可互換：函式已盤點不代表系統語意閉合。
@@ -158,7 +161,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | ID | 項目 | 依賴 | 要做什麼 |
 |---|---|---|---|
 | `ENG-04` | AD&D 規則完整表 | `RE-12` | 全職業／種族限制、能力修正、升級、休息、時間、負重、狀態、item special consumer |
-| `ENG-05` | 建角完整流程 | spec 1093／1094／1099 ✅ | ✅ **起始年齡已接上 JSON**（`gamepack/rules/character-tables.json`，由 `cmd/dseg-export` 產生；修正了漏掉德魯伊欄造成的錯位）。✅ 性別欄位、✅ 屬性夾值（兩次夾值）、✅ **力量 18/xx 的獨立階**、✅ **四段選單機制**（`BeginGuidedCreation`／`SelectGuidedOption`／`RollGuidedAbilities`，職業選項由種族查表）、✅ **起始經驗值 25,000 平分**（`class_combinations` 進 JSON）。✅ **UI 已接**（`-guided-creation` 旗標、建角畫面按 `G` 進入，上下移動 ＋ Enter 選定；headless 截圖確認七個種族與中文正常）、✅ **locale 詞條齊全**（16 個新詞條，另有測試直接驗證正式檔案）、✅ **基準值／目前值成對保存**（`Abilities.Current`／`SyncBaseFromCurrent`）。✅ **陣營九宮格升為 exact**（spec 1100 取出原作字串表，順序確認；種族索引 0 是 `Monster`）。
+| `ENG-05` | 建角完整流程 | spec 1093／1094／1099 ✅ | ✅ **起始年齡已接上 JSON**（`gamepack/rules/character-tables.json`，由 `cmd/dseg-export` 產生；修正了漏掉德魯伊欄造成的錯位）。✅ 性別欄位、✅ 屬性夾值（兩次夾值）、✅ **力量 18/xx 的獨立階**、✅ **四段選單機制**（`BeginGuidedCreation`／`SelectGuidedOption`／`RollGuidedAbilities`，職業選項由種族查表）、✅ **起始經驗值 25,000 平分**（`class_combinations` 進 JSON）。✅ **UI 已接**（`-guided-creation` 旗標、建角畫面按 `G` 進入，上下移動 ＋ Enter 選定；headless 截圖確認選單與中文正常）、✅ **locale 詞條齊全**（16 個新詞條，另有測試直接驗證正式檔案）、✅ **基準值／目前值成對保存**（`Abilities.Current`／`SyncBaseFromCurrent`）。✅ **陣營九宮格升為 exact**（spec 1100 取出原作字串表，順序確認；種族索引 0 是 `Monster`）。
 多職組合：✅ 職業槽等級、✅ 起始經驗值平分、✅ 主職業對應（三個來源交叉驗證）、
 ✅ **多職 HP**（spec 1101：八個職業槽各擲一次生命骰、逐槽體質加值，再除以職業數；
 `+12Ch` 基礎最大 HP 與 `+78h` 最大 HP 分開存；戰士系額外體質加值看的是**職業組合編號**
