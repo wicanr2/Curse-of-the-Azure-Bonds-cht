@@ -235,22 +235,30 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 ✅ `go test ./...` 現在可以當全套 gate（前提是先跑 `tools/build-go-image.sh`
 建好 `coab-go-ebiten:1.24`）。`AGENTS.md` §8 已同步更新。
 
-### E-2 debug 捷徑清單（rulebook 65 [HARD]）
+### E-2 分段驗收清單（rulebook 65，使用者 2026-08-16 修正）
 
-`cmd/azure-bonds-game/main.go` 有 55 個旗標，其中 **30 個是繞過正常玩家路徑的捷徑**。
-rulebook 65 的規定是：**debug／後門串起來的「能跑完」不算能跑完**。
-最終驗收必須全部關掉，從正常開場一路玩到結局。
+`cmd/azure-bonds-game/main.go` 有 55 個旗標，其中 **30 個是直接進入某一段的入口**。
 
-| 類別 | 旗標 | 驗收時 |
+修正後的口徑：**分階段驗收算數**——每一段用 debug 進入點直入並各自對 reference
+驗證無誤，即算該段完成；全部段落通過即算跑完，不必為了宣稱完成而跑一次連續全程。
+所以下表不再是「待移除清單」，而是**覆蓋率清單**：每個旗標對應一段，
+要記錄那一段驗過沒有、用什麼 oracle 驗的。
+
+| 類別 | 旗標 | 分段驗收時的角色 |
 |---|---|---|
-| 場景直入（25） | `-encounter` `-character-creation` `-tilverton-dungeon` `-inn` `-filani` `-weapon-shop` `-temple` `-training` `-tavern` `-high-priest` `-carriage` `-guildmaster` `-sewers` `-lava-tube` `-wizard-tower` `-wizard-tower-battle` `-wizard-tower-parlay` `-wizard-tower-exit` `-burial-red-web` `-burial-red-web-battle` `-burial-grave-battle` `-burial-daemir` `-inner-ritual` `-inner-final-battle` `-world-map` | **全部不得使用** |
-| 視覺 oracle（5） | `-dungeon-x` `-dungeon-y` `-area-map` `-combat-terrain` `-combat-visual-demo` | 只用於 deterministic 截圖比對，不得出現在通關驗收 |
-| 正常入口 | `-opening` | ⚠ 它「用一個產生好的角色開場」，**跳過建角**；正式驗收要從建角開始 |
+| 場景直入（25） | `-encounter` `-character-creation` `-tilverton-dungeon` `-inn` `-filani` `-weapon-shop` `-temple` `-training` `-tavern` `-high-priest` `-carriage` `-guildmaster` `-sewers` `-lava-tube` `-wizard-tower` `-wizard-tower-battle` `-wizard-tower-parlay` `-wizard-tower-exit` `-burial-red-web` `-burial-red-web-battle` `-burial-grave-battle` `-burial-daemir` `-inner-ritual` `-inner-final-battle` `-world-map` | **各自是一段的進入點**；該段要走到正常結束狀態，不是只驗一個畫面 |
+| 視覺 oracle（5） | `-dungeon-x` `-dungeon-y` `-area-map` `-combat-terrain` `-combat-visual-demo` | deterministic 截圖比對；不單獨構成一段 |
+| 正常入口 | `-opening` | ⚠ 它跳過建角 ⇒ 建角是**另外一段**，用 `-guided-creation` 驗 |
 | 資產／設定 | `-font` `-eten-font` `-locale` `-image` `-sound-dir` `-savgam-dir` 等 | 允許 |
+
+⚠ **接縫本身也是一段。** debug 旗標注入的是合成起始狀態，未必等於上一段真的跑出來的
+結束狀態；兩端都綠不等於接縫通過。狀態交接（存檔、旗標、隊伍、pending ECL／combat
+transaction）要自己列一段驗——這是 rulebook 65 來源案例的失敗點，放寬驗收成本時
+不能一併放掉。
 
 | ID | 項目 |
 |---|---|
-| `VER-04` | 建立「零捷徑通關」腳本：`-opening` 也不用，從建角 → 提爾佛頓 → … → Myth Drannor 終戰 → 結局 → 存檔重開 |
+| `VER-04` | 建立**分段驗收矩陣**：每一段列出進入點旗標、正常結束狀態、用什麼 oracle 驗、驗過沒有；另外把段與段的接縫列成獨立條目（建角→開場、提爾佛頓→世界地圖、各戰後 continuation、存檔→重開） |
 | `VER-05` | 對 reference 實測：DOSBox 原版與 remake 逐段對照，標明 `exact`／`reconstructed`／未完成 |
 | `VER-06` | 每個遠程／法術能力記錄影片 URL、平台、絕對時間碼、逐幀順序與對應 sprite block（`AGENTS.md` §8） |
 | `VER-07` | 存檔互通測試：原版 `SAVGAM?.DAT` 讀進 remake、remake 寫回原版可讀（spec 1072／1076 的 16 塊版面）。⚠ DOS 13,149 與 PC-98 13,214 bytes **不能互換** |
@@ -293,7 +301,7 @@ rulebook 65 的規定是：**debug／後門串起來的「能跑完」不算能�
 9. **`RE-05` ＋ `ENG-10` ＋ `VER-07`**——存檔。
 10. **`UI-01`／`UI-02`／`AUD-01`**——表現層，需要原版 runtime 當 oracle。
 11. **`RE-11`（未定義區段判定）／`RE-13`／`ENG-12`**——盤點與整理的收尾，不阻塞玩家路徑。
-12. **`VER-04`／`VER-05`／`VER-06`**——最終驗收：零捷徑通關 ＋ 對 DOSBox 原版實測。
+12. **`VER-04`／`VER-05`／`VER-06`**——最終驗收：分段驗收矩陣（含接縫）＋ 對 DOSBox 原版實測。
 13. **`RE-10`／`AUD-02`**——不阻塞 DOS 單作通關，最後補。
 
 ## 維護
