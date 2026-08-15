@@ -7,6 +7,14 @@
       "name": "dwarf",
       "selectable": true,
       "size": 1,
+      "ability_adjustments": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        -1
+      ],
       "strength_male": {
         "min": 8,
         "max": 18,
@@ -68,6 +76,14 @@
       "name": "elf",
       "selectable": true,
       "size": 2,
+      "ability_adjustments": [
+        0,
+        0,
+        0,
+        1,
+        -1,
+        0
+      ],
       "strength_male": {
         "min": 3,
         "max": 18,
@@ -139,6 +155,14 @@
       "name": "gnome",
       "selectable": true,
       "size": 1,
+      "ability_adjustments": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
       "strength_male": {
         "min": 6,
         "max": 18,
@@ -206,6 +230,14 @@
       "name": "half-elf",
       "selectable": true,
       "size": 2,
+      "ability_adjustments": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
       "strength_male": {
         "min": 3,
         "max": 18,
@@ -283,6 +315,14 @@
       "name": "halfling",
       "selectable": true,
       "size": 1,
+      "ability_adjustments": [
+        -1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
       "strength_male": {
         "min": 6,
         "max": 17,
@@ -338,6 +378,14 @@
       "name": "half-orc",
       "selectable": false,
       "size": 2,
+      "ability_adjustments": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        -2
+      ],
       "strength_male": {
         "min": 6,
         "max": 18,
@@ -402,6 +450,14 @@
       "name": "human",
       "selectable": true,
       "size": 2,
+      "ability_adjustments": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
       "strength_male": {
         "min": 3,
         "max": 18,
@@ -1015,6 +1071,12 @@
     2,
     2
   ],
+  "ability_roll": {
+    "dice_count": 3,
+    "dice_size": 6,
+    "bonus": 1,
+    "attempts": 6
+  },
   "fighter_constitution_combos": [
     2,
     3,

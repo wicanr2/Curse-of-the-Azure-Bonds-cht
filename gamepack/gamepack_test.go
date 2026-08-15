@@ -1222,3 +1222,53 @@ func TestRaceClassChoicesMatchReference(t *testing.T) {
 		}
 	}
 }
+
+// 種族屬性調整逐格對 AD&D 一版（spec 1103 §三）。這張表是從建角流程的
+// case 分支抄出來的，沒有資料段可以自我驗證，所以用規則指紋釘住。
+func TestRaceAbilityAdjustmentsMatchReference(t *testing.T) {
+	tables, err := Tables()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[int][6]int{
+		1: {0, 0, 0, 0, 1, -1},  // 矮人：體質 +1、魅力 −1
+		2: {0, 0, 0, 1, -1, 0},  // 精靈：敏捷 +1、體質 −1
+		3: {},                   // 地精：無
+		4: {},                   // 半精靈：無
+		5: {-1, 0, 0, 1, 0, 0},  // 半身人：力量 −1、敏捷 +1
+		6: {1, 0, 0, 0, 1, -2},  // 半獸人：力量 +1、體質 +1、魅力 −2
+		7: {},                   // 人類：無
+	}
+	lookup, err := AbilityRoll()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for raceID, expected := range want {
+		got, ok := lookup.RaceAbilityAdjustments(raceID)
+		if !ok {
+			t.Fatalf("race %d has no ability adjustments", raceID)
+		}
+		if got != expected {
+			t.Fatalf("race %d adjustments = %v, want %v", raceID, got, expected)
+		}
+	}
+	if len(tables.Races) != 7 {
+		t.Fatalf("races = %d, want 7", len(tables.Races))
+	}
+}
+
+// 擲點參數：3d6 + 1，六次取最大（spec 1103 §二）。
+func TestAbilityRollSpecMatchesReference(t *testing.T) {
+	lookup, err := AbilityRoll()
+	if err != nil {
+		t.Fatal(err)
+	}
+	count, size, bonus, attempts, ok := lookup.AbilityRollSpec()
+	if !ok {
+		t.Fatal("game pack has no ability roll rules")
+	}
+	if count != 3 || size != 6 || bonus != 1 || attempts != 6 {
+		t.Fatalf("ability roll = %dd%d+%d best of %d, want 3d6+1 best of 6",
+			count, size, bonus, attempts)
+	}
+}

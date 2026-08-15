@@ -338,10 +338,16 @@ func (s *State) RollGuidedAbilities(seed int64) error {
 	if !ok {
 		return fmt.Errorf("race %d has no ability limits", raceID)
 	}
-	rolled := party.RollAbilities(seed)
+	rolls, err := gamepack.AbilityRoll()
+	if err != nil {
+		return err
+	}
+	// 擲點是 `3d6 + 1`、每個屬性六次取最大、種族調整加在每一次上（spec 1103）。
+	values, err := party.RollCreationAbilities(rolls, raceID, seed)
+	if err != nil {
+		return err
+	}
 	// 擲出來的值夾進種族與職業允許的範圍。
-	values := [6]int{rolled.Strength, rolled.Intelligence, rolled.Wisdom,
-		rolled.Dexterity, rolled.Constitution, rolled.Charisma}
 	for index := range values {
 		if values[index] < bounds[index][0] {
 			values[index] = bounds[index][0]

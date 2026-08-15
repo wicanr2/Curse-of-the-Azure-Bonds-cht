@@ -83,6 +83,19 @@ var selectableRaces = map[int]bool{1: true, 2: true, 3: true, 4: true, 5: true, 
 // 1 ＝ 小體型、2 ＝ 中體型；6／7 走同一個 else。
 var raceSizes = map[int]int{1: 1, 2: 2, 3: 1, 4: 2, 5: 1, 6: 2, 7: 2}
 
+// raceAbilityAdjustments 是建角擲點時套的種族調整（spec 1103 §三）。
+// 這也是程式碼裡的 case 分支，不是資料段的表。
+// 六個位置依序是力、智、睿、敏、體、魅；地精／半精靈／人類走 else，全 0。
+var raceAbilityAdjustments = map[int][6]int{
+	1: {0, 0, 0, 0, 1, -1},  // 矮人
+	2: {0, 0, 0, 1, -1, 0},  // 精靈
+	3: {},                   // 地精
+	4: {},                   // 半精靈
+	5: {-1, 0, 0, 1, 0, 0},  // 半身人
+	6: {1, 0, 0, 0, 1, -2},  // 半獸人
+	7: {},                   // 人類
+}
+
 type abilityRange struct {
 	Min uint8 `json:"min"`
 	Max uint8 `json:"max"`
@@ -107,7 +120,9 @@ type raceRules struct {
 	// Selectable 是「建角種族選單列不列這一項」（spec 1102 §一）。
 	Selectable bool `json:"selectable"`
 	// Size 是 +144h：1 小體型、2 中體型（spec 1093 §七）。
-	Size            int            `json:"size"`
+	Size int `json:"size"`
+	// AbilityAdjustments 依力、智、睿、敏、體、魅六個位置（spec 1103 §三）。
+	AbilityAdjustments []int         `json:"ability_adjustments"`
 	StrengthMale    strengthLimits `json:"strength_male"`
 	StrengthFemale  strengthLimits `json:"strength_female"`
 	Intelligence    abilityRange   `json:"intelligence"`
@@ -187,11 +202,22 @@ type characterRules struct {
 	// ConstitutionHPBonus 的索引 0 對應體質 constitutionMin。
 	ConstitutionHPBonusFrom int   `json:"constitution_hp_bonus_from"`
 	ConstitutionHPBonus     []int `json:"constitution_hp_bonus"`
+	// AbilityRoll 是建角擲點的參數（spec 1103 §二）。
+	AbilityRoll abilityRollRules `json:"ability_roll"`
 	// 戰士系的額外體質加值（spec 869）。判斷用的是**職業組合編號**
 	// `+75h`，不是職業槽 ⇒ 只有單職戰士／聖騎士／遊俠拿得到，多職拿不到。
 	FighterConstitutionCombos    []int `json:"fighter_constitution_combos"`
 	FighterConstitutionBonusFrom int   `json:"fighter_constitution_bonus_from"`
 	FighterConstitutionBonus     []int `json:"fighter_constitution_bonus"`
+}
+
+// abilityRollRules 是 `ROLLDICE(3, 6) + 1`，每個屬性擲 Attempts 次取最大。
+// ⚠ Bonus 與 Attempts 都不是 AD&D 桌上規則，是這個引擎自己加的（spec 1103）。
+type abilityRollRules struct {
+	DiceCount int `json:"dice_count"`
+	DiceSize  int `json:"dice_size"`
+	Bonus     int `json:"bonus"`
+	Attempts  int `json:"attempts"`
 }
 
 // referenceFighterConstitutionBonus 是 spec 869 的 case 分支，索引 0 對應體質 17。
@@ -251,6 +277,8 @@ func main() {
 		for _, choice := range choices[1 : 1+count] {
 			entry.ClassChoices = append(entry.ClassChoices, int(choice))
 		}
+		adjustments := raceAbilityAdjustments[race]
+		entry.AbilityAdjustments = append(entry.AbilityAdjustments, adjustments[:]...)
 		for column := 0; column < ageColumns; column++ {
 			row := blob[startingAgeBase+race*startingAgeSize+column*4:]
 			count, size := row[2], row[3]
@@ -301,6 +329,7 @@ func main() {
 		})
 	}
 
+	rules.AbilityRoll = abilityRollRules{DiceCount: 3, DiceSize: 6, Bonus: 1, Attempts: 6}
 	rules.FighterConstitutionCombos = referenceFighterCombos
 	rules.FighterConstitutionBonusFrom = referenceFighterBonusFrom
 	rules.FighterConstitutionBonus = referenceFighterBonus
