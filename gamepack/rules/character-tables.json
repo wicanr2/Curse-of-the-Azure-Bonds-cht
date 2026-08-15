@@ -1,0 +1,638 @@
+{
+  "source": "DOS START.EXE 常駐資料段",
+  "spec": "docs/spec/1099-character-creation-data-tables.md",
+  "races": [
+    {
+      "race_id": 1,
+      "name": "dwarf",
+      "strength_male": {
+        "min": 8,
+        "max": 18,
+        "percentile_max": 99
+      },
+      "strength_female": {
+        "min": 8,
+        "max": 17,
+        "percentile_max": 0
+      },
+      "intelligence": {
+        "min": 3,
+        "max": 18
+      },
+      "wisdom": {
+        "min": 3,
+        "max": 18
+      },
+      "dexterity": {
+        "min": 3,
+        "max": 17
+      },
+      "constitution": {
+        "min": 12,
+        "max": 19
+      },
+      "charisma": {
+        "min": 3,
+        "max": 16
+      },
+      "class_choices": [
+        3,
+        2,
+        6,
+        14,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "starting_ages": [
+        {
+          "class_slot": "cleric",
+          "base_age": 250,
+          "dice_count": 2,
+          "dice_size": 20
+        },
+        {
+          "class_slot": "fighter",
+          "base_age": 40,
+          "dice_count": 5,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "thief",
+          "base_age": 75,
+          "dice_count": 3,
+          "dice_size": 6
+        }
+      ]
+    },
+    {
+      "race_id": 2,
+      "name": "elf",
+      "strength_male": {
+        "min": 3,
+        "max": 18,
+        "percentile_max": 75
+      },
+      "strength_female": {
+        "min": 3,
+        "max": 16,
+        "percentile_max": 0
+      },
+      "intelligence": {
+        "min": 8,
+        "max": 18
+      },
+      "wisdom": {
+        "min": 3,
+        "max": 18
+      },
+      "dexterity": {
+        "min": 7,
+        "max": 19
+      },
+      "constitution": {
+        "min": 6,
+        "max": 18
+      },
+      "charisma": {
+        "min": 8,
+        "max": 18
+      },
+      "class_choices": [
+        7,
+        2,
+        5,
+        6,
+        13,
+        14,
+        15,
+        16,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "starting_ages": [
+        {
+          "class_slot": "cleric",
+          "base_age": 650,
+          "dice_count": 10,
+          "dice_size": 10
+        },
+        {
+          "class_slot": "fighter",
+          "base_age": 130,
+          "dice_count": 5,
+          "dice_size": 6
+        },
+        {
+          "class_slot": "magic-user",
+          "base_age": 150,
+          "dice_count": 5,
+          "dice_size": 6
+        },
+        {
+          "class_slot": "thief",
+          "base_age": 100,
+          "dice_count": 5,
+          "dice_size": 6
+        }
+      ]
+    },
+    {
+      "race_id": 3,
+      "name": "gnome",
+      "strength_male": {
+        "min": 6,
+        "max": 18,
+        "percentile_max": 50
+      },
+      "strength_female": {
+        "min": 6,
+        "max": 15,
+        "percentile_max": 0
+      },
+      "intelligence": {
+        "min": 7,
+        "max": 18
+      },
+      "wisdom": {
+        "min": 3,
+        "max": 18
+      },
+      "dexterity": {
+        "min": 3,
+        "max": 18
+      },
+      "constitution": {
+        "min": 8,
+        "max": 18
+      },
+      "charisma": {
+        "min": 3,
+        "max": 18
+      },
+      "class_choices": [
+        3,
+        2,
+        6,
+        14,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "starting_ages": [
+        {
+          "class_slot": "cleric",
+          "base_age": 300,
+          "dice_count": 3,
+          "dice_size": 12
+        },
+        {
+          "class_slot": "fighter",
+          "base_age": 60,
+          "dice_count": 5,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "magic-user",
+          "base_age": 100,
+          "dice_count": 2,
+          "dice_size": 12
+        },
+        {
+          "class_slot": "thief",
+          "base_age": 80,
+          "dice_count": 5,
+          "dice_size": 4
+        }
+      ]
+    },
+    {
+      "race_id": 4,
+      "name": "half-elf",
+      "strength_male": {
+        "min": 3,
+        "max": 18,
+        "percentile_max": 90
+      },
+      "strength_female": {
+        "min": 3,
+        "max": 17,
+        "percentile_max": 0
+      },
+      "intelligence": {
+        "min": 4,
+        "max": 18
+      },
+      "wisdom": {
+        "min": 3,
+        "max": 18
+      },
+      "dexterity": {
+        "min": 6,
+        "max": 18
+      },
+      "constitution": {
+        "min": 6,
+        "max": 18
+      },
+      "charisma": {
+        "min": 3,
+        "max": 18
+      },
+      "class_choices": [
+        13,
+        0,
+        2,
+        5,
+        6,
+        4,
+        8,
+        10,
+        9,
+        11,
+        13,
+        14,
+        15,
+        16
+      ],
+      "starting_ages": [
+        {
+          "class_slot": "cleric",
+          "base_age": 40,
+          "dice_count": 2,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "fighter",
+          "base_age": 22,
+          "dice_count": 3,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "magic-user",
+          "base_age": 30,
+          "dice_count": 2,
+          "dice_size": 8
+        },
+        {
+          "class_slot": "thief",
+          "base_age": 22,
+          "dice_count": 3,
+          "dice_size": 8
+        }
+      ]
+    },
+    {
+      "race_id": 5,
+      "name": "halfling",
+      "strength_male": {
+        "min": 6,
+        "max": 17,
+        "percentile_max": 0
+      },
+      "strength_female": {
+        "min": 6,
+        "max": 14,
+        "percentile_max": 0
+      },
+      "intelligence": {
+        "min": 6,
+        "max": 18
+      },
+      "wisdom": {
+        "min": 3,
+        "max": 17
+      },
+      "dexterity": {
+        "min": 8,
+        "max": 18
+      },
+      "constitution": {
+        "min": 10,
+        "max": 19
+      },
+      "charisma": {
+        "min": 3,
+        "max": 18
+      },
+      "class_choices": [
+        3,
+        2,
+        6,
+        14,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "starting_ages": [
+        {
+          "class_slot": "fighter",
+          "base_age": 20,
+          "dice_count": 3,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "thief",
+          "base_age": 40,
+          "dice_count": 2,
+          "dice_size": 4
+        }
+      ]
+    },
+    {
+      "race_id": 6,
+      "name": "half-orc",
+      "strength_male": {
+        "min": 6,
+        "max": 18,
+        "percentile_max": 99
+      },
+      "strength_female": {
+        "min": 6,
+        "max": 18,
+        "percentile_max": 75
+      },
+      "intelligence": {
+        "min": 3,
+        "max": 17
+      },
+      "wisdom": {
+        "min": 3,
+        "max": 14
+      },
+      "dexterity": {
+        "min": 3,
+        "max": 17
+      },
+      "constitution": {
+        "min": 13,
+        "max": 19
+      },
+      "charisma": {
+        "min": 3,
+        "max": 12
+      },
+      "class_choices": [
+        6,
+        0,
+        2,
+        6,
+        8,
+        12,
+        14,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "starting_ages": [
+        {
+          "class_slot": "cleric",
+          "base_age": 20,
+          "dice_count": 1,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "fighter",
+          "base_age": 13,
+          "dice_count": 1,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "thief",
+          "base_age": 20,
+          "dice_count": 2,
+          "dice_size": 4
+        }
+      ]
+    },
+    {
+      "race_id": 7,
+      "name": "human",
+      "strength_male": {
+        "min": 3,
+        "max": 18,
+        "percentile_max": 100
+      },
+      "strength_female": {
+        "min": 3,
+        "max": 18,
+        "percentile_max": 50
+      },
+      "intelligence": {
+        "min": 3,
+        "max": 18
+      },
+      "wisdom": {
+        "min": 3,
+        "max": 18
+      },
+      "dexterity": {
+        "min": 3,
+        "max": 18
+      },
+      "constitution": {
+        "min": 3,
+        "max": 18
+      },
+      "charisma": {
+        "min": 3,
+        "max": 18
+      },
+      "class_choices": [
+        6,
+        0,
+        2,
+        5,
+        6,
+        3,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "starting_ages": [
+        {
+          "class_slot": "cleric",
+          "base_age": 18,
+          "dice_count": 1,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "druid",
+          "base_age": 18,
+          "dice_count": 1,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "fighter",
+          "base_age": 15,
+          "dice_count": 1,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "paladin",
+          "base_age": 17,
+          "dice_count": 1,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "ranger",
+          "base_age": 20,
+          "dice_count": 1,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "magic-user",
+          "base_age": 24,
+          "dice_count": 2,
+          "dice_size": 4
+        },
+        {
+          "class_slot": "thief",
+          "base_age": 18,
+          "dice_count": 1,
+          "dice_size": 4
+        }
+      ]
+    }
+  ],
+  "class_requirements": [
+    [
+      6,
+      6,
+      9,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      12,
+      0,
+      0,
+      15
+    ],
+    [
+      9,
+      0,
+      6,
+      6,
+      7,
+      0
+    ],
+    [
+      12,
+      9,
+      13,
+      0,
+      9,
+      17
+    ],
+    [
+      13,
+      13,
+      14,
+      0,
+      14,
+      0
+    ],
+    [
+      0,
+      9,
+      6,
+      6,
+      0,
+      0
+    ],
+    [
+      6,
+      6,
+      0,
+      9,
+      0,
+      0
+    ],
+    [
+      15,
+      0,
+      15,
+      15,
+      11,
+      0
+    ],
+    [
+      9,
+      0,
+      9,
+      0,
+      0,
+      0
+    ],
+    [
+      9,
+      9,
+      9,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      13,
+      14,
+      0,
+      14,
+      0
+    ],
+    [
+      0,
+      9,
+      9,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      9,
+      9,
+      0,
+      0
+    ]
+  ]
+}

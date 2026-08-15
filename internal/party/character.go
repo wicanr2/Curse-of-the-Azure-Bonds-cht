@@ -57,38 +57,75 @@ type StartingAgeSpec struct {
 	DiceSize  int
 }
 
-// StartingAgeSpecFor returns the verified single-class CoAB age entry. A zero
-// dice entry represents a class/race combination not supported by the current
-// single-class remake model.
-func StartingAgeSpecFor(race Race, class Class) (StartingAgeSpec, error) {
-	if race < RaceDwarf || race > RaceHalfOrc {
-		return StartingAgeSpec{}, fmt.Errorf("race %d has no CoAB age table", race)
+// DOSRaceID 把本套件的 Race 常數換成原作角色記錄 +74h 的種族編號（1..7）。
+// 兩套編號不同：Race 從 0 起算（RaceDwarf = iota），原作 0 不是合法值。
+func DOSRaceID(race Race) (int, bool) {
+	switch race {
+	case RaceDwarf:
+		return 1, true
+	case RaceElf:
+		return 2, true
+	case RaceGnome:
+		return 3, true
+	case RaceHalfElf:
+		return 4, true
+	case RaceHalfling:
+		return 5, true
+	case RaceHalfOrc:
+		return 6, true
+	case RaceHuman:
+		return 7, true
 	}
-	// Rows follow the reference race_ages table; columns are cleric, fighter,
-	// ranger, paladin, magic-user, thief in this package's class order.
-	table := [...][6]StartingAgeSpec{
-		{{0, 0, 0}, {40, 5, 4}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {75, 3, 6}},         // dwarf
-		{{650, 10, 10}, {130, 5, 6}, {0, 0, 0}, {0, 0, 0}, {150, 5, 6}, {100, 5, 6}}, // elf
-		{{300, 3, 12}, {60, 5, 4}, {0, 0, 0}, {0, 0, 0}, {100, 2, 12}, {80, 5, 4}},   // gnome
-		{{40, 2, 4}, {22, 3, 4}, {0, 0, 0}, {0, 0, 0}, {30, 2, 8}, {22, 3, 8}},       // half-elf
-		{{0, 0, 0}, {20, 3, 4}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {40, 2, 4}},         // halfling
-		{{18, 1, 4}, {18, 1, 4}, {17, 1, 4}, {20, 1, 4}, {24, 2, 4}, {18, 1, 4}},     // human
-		{{20, 1, 4}, {13, 1, 4}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {20, 2, 4}},        // half-orc
-	}
-	if class < ClassCleric || class > ClassThief {
-		return StartingAgeSpec{}, fmt.Errorf("class %d has no CoAB age table", class)
-	}
-	spec := table[race][class]
-	if spec.DiceCount == 0 || spec.DiceSize == 0 {
-		return StartingAgeSpec{}, fmt.Errorf("%s cannot generate a single-class age for %s", race, class)
-	}
-	return spec, nil
+	return 0, false
 }
 
-// RollStartingAge reproduces reference roll_dice(diceSize, diceCount) plus
-// base_age using a caller-provided seed for replayable creation tests.
-func RollStartingAge(race Race, class Class, seed int64) (int16, error) {
-	spec, err := StartingAgeSpecFor(race, class)
+// DOSClassSlot 把本套件的 Class 常數換成原作的職業槽名。
+// 槽順序見 spec 1084：牧師／德魯伊／戰士／聖騎士／遊俠／法師／盜賊／武僧。
+func DOSClassSlot(class Class) (string, bool) {
+	switch class {
+	case ClassCleric:
+		return "cleric", true
+	case ClassFighter:
+		return "fighter", true
+	case ClassRanger:
+		return "ranger", true
+	case ClassPaladin:
+		return "paladin", true
+	case ClassMagicUser:
+		return "magic-user", true
+	case ClassThief:
+		return "thief", true
+	}
+	return "", false
+}
+
+// StartingAgeLookup 是建角年齡表的查詢介面。資料由 game pack 提供
+// （gamepack.Tables），本套件只放機制——避免把原版資料表 hardcode 在 Go 裡。
+type StartingAgeLookup interface {
+	StartingAgeFor(raceID int, classSlot string) (baseAge, diceCount, diceSize int, ok bool)
+}
+
+// StartingAgeSpecFrom 由注入的表查出單職起始年齡。
+// 查不到代表原作沒有為這個種族／職業準備年齡。
+func StartingAgeSpecFrom(tables StartingAgeLookup, race Race, class Class) (StartingAgeSpec, error) {
+	raceID, ok := DOSRaceID(race)
+	if !ok {
+		return StartingAgeSpec{}, fmt.Errorf("race %d has no DOS race id", race)
+	}
+	slot, ok := DOSClassSlot(class)
+	if !ok {
+		return StartingAgeSpec{}, fmt.Errorf("class %d has no DOS class slot", class)
+	}
+	base, count, size, ok := tables.StartingAgeFor(raceID, slot)
+	if !ok || count == 0 || size == 0 {
+		return StartingAgeSpec{}, fmt.Errorf("%s cannot generate a single-class age for %s", race, class)
+	}
+	return StartingAgeSpec{BaseAge: base, DiceCount: count, DiceSize: size}, nil
+}
+
+// RollStartingAgeFrom 用注入的表擲起始年齡。
+func RollStartingAgeFrom(tables StartingAgeLookup, race Race, class Class, seed int64) (int16, error) {
+	spec, err := StartingAgeSpecFrom(tables, race, class)
 	if err != nil {
 		return 0, err
 	}
@@ -99,6 +136,7 @@ func RollStartingAge(race Race, class Class, seed int64) (int16, error) {
 	}
 	return int16(age), nil
 }
+
 
 // WithAgeEffects applies the reference new-character age brackets to a base
 // ability roll. DOS player records already contain the resulting stats, so

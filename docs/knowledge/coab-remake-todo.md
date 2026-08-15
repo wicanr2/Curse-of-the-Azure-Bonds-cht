@@ -143,6 +143,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | `ENG-01` | **事件內容補齊** | 依 `RE-04` 的逐格盤點結果，把每個區域的事件寫成 `text_rules`／`option_rules`／`events`；優先序照矩陣的區域表，`待逆向` 的四個區域（艾森布拉、希爾斯法、尤拉什／摩安德之坑、Myth Drannor 正常入口）先補 |
 | `ENG-02` | **game pack 分檔** | 目前是單一 261 KB JSON。區域內容補齊後量會成長數倍，需要先決定分檔方式（依 DAX／依區域）與 schema 邊界，否則後期難以維護與 review |
 | `ENG-13` | **補 `7CE4h` 的角色欄位投影** | ✅ **已完成**：`Character.ECLFlag192`／`DOSPlayerRecord.ECLFlag192`／`PartyMemberContext.ECLFlag192` 三處加欄位，DOS 記錄 `0x192` 讀寫 round-trip，`LOAD CHARACTER` 時投影並套 `and 1` 遮罩；回歸測試 `TestRunSubsetLoadCharacterProjectsFlag192MaskedToLowBit` |
+| `ENG-14` | **原版資料表一律走 JSON** | 使用者要求：原版取出的資料表全部轉成 game pack JSON，Go 只留機制，不再 hardcode。已完成起始年齡（`gamepack/rules/character-tables.json`）。⚠ 仍 hardcode 在 `internal/party/character.go` 的：`WithAgeEffects` 的年齡分期門檻與效果表、`raceAllowsClass`；`internal/party/dos_spell_record.go` 的 `parseDOSRace`／`parseDOSClass` 對應表也應改由 JSON 提供 |
 | `ENG-03` | **stable ID 與 schema 版本** | 事件、物品、法術、怪物、地圖的穩定 ID；schema 變更要有遷移路徑。分檔（`ENG-02`）之前先定案 |
 | `ENG-12` | **engine／遊戲切分複查** | `internal/` 29 個套件對 `golden-box-remake-engine` 69 個 `.go` 的比例偏低；逐套件判定哪些機制該上移。⚠ 這是既有機制的整理，不阻塞內容產出，排在後面 |
 
@@ -151,7 +152,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | ID | 項目 | 依賴 | 要做什麼 |
 |---|---|---|---|
 | `ENG-04` | AD&D 規則完整表 | `RE-12` | 全職業／種族限制、能力修正、升級、休息、時間、負重、狀態、item special consumer |
-| `ENG-05` | 建角完整流程 | spec 1093／1094 ✅ | 種族／性別／職業／陣營四段選單、17 種組合、起始經驗值、屬性擲點與夾值、起始年齡、目前值→基準值收尾 |
+| `ENG-05` | 建角完整流程 | spec 1093／1094／1099 ✅ | ✅ **起始年齡已接上 JSON**（`gamepack/rules/character-tables.json`，由 `cmd/dseg-export` 產生；修正了漏掉德魯伊欄造成的錯位）。仍缺：種族／性別／職業／陣營四段選單、17 種組合、屬性擲點與夾值（`class_requirements`／種族上下限尚未接）、起始經驗值、目前值→基準值收尾 |
 | `ENG-06` | 訓練所升級 | spec 1084 ✅ | 亞人等級上限（比目前值）、經驗門檻、HP 保留受傷差額 |
 | `ENG-07` | 戰鬥回合生命週期 | `RE-06` | initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
 | `ENG-08` | 怪物 AI | `RE-07` | 移動、目標選擇、施法、逃跑、抗性與各種特殊能力 |
