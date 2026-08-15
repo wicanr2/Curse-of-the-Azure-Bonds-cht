@@ -25,7 +25,7 @@ READVAR(4);
 for i := 1 to 4 do o[i] := ADDRESSVALUE(i);
 甲 := o[4] ＋ 2 − o[1];
 乙 := o[2] ＋ 2 − o[3];
-r1 := ROLLDICE(6, 1);   r2 := ROLLDICE(6, 1);      { ★ 各擲一顆 d6 }
+r1 := ROLLDICE(1, 6);   r2 := ROLLDICE(1, 6);      { ★ 各擲一顆 d6，參數是（骰數, 面數），見 spec 1103 }
 結果 := 0;
 if r1 <= 甲 then begin
     if r2 <= 乙 then 結果 := 3 else 結果 := 1;
@@ -170,13 +170,13 @@ n := ADDRESSVALUE(8);
 ### 隨機寶物的 d100 分段
 
 ```pascal
-r1 := ROLLDICE(100, 1);
+r1 := ROLLDICE(1, 100);
 if r1 in [1..3Ch] then begin                       { 1..60 }
-    r2 := ROLLDICE(100, 1);
+    r2 := ROLLDICE(1, 100);
     if (r2 in [1..2Fh]) or (r2 in [32h..3Bh]) then
         類型 := (r2 = 2Dh) ? 3Bh : r2               { ★ 45 這一格改判成 59 }
     else if r2 in [3Ch..5Ah] then begin            { 60..90 }
-        r3 := ROLLDICE(100, 1);
+        r3 := ROLLDICE(1, 100);
         case r3 of 1..4: 24h;  5..7: 23h;  8: 22h;  9: 25h;  0Ah: 26h end;
     end
     else if r2 in [5Bh..5Eh] then 類型 := 49h
@@ -187,7 +187,7 @@ end
 else if r1 in [3Dh..55h] then 類型 := 3Dh          { 61..85 }
 else if r1 in [56h..5Ch] then 類型 := 3Eh          { 86..92 }
 else if r1 in [5Bh..62h] then begin                { ⚠ 與上一段重疊 }
-    r3 := ROLLDICE(100, 1);
+    r3 := ROLLDICE(1, 100);
     case r3 of 1..9: 47h;  0Ah: 54h;  0Bh..0Fh: 4Fh end;
 end
 else if r1 in [63h..64h] then 類型 := 3Bh;         { 99..100 }

@@ -50,11 +50,23 @@ type CharacterTables struct {
 	// ConstitutionHPBonus 的索引 0 對應體質 ConstitutionHPBonusFrom（spec 869）。
 	ConstitutionHPBonusFrom int   `json:"constitution_hp_bonus_from"`
 	ConstitutionHPBonus     []int `json:"constitution_hp_bonus"`
+	// AbilityRoll 是建角擲點的參數（spec 1103 §二）。
+	AbilityRoll AbilityRollRules `json:"ability_roll"`
 	// 戰士系的額外體質加值（spec 869）：判斷用職業組合編號 +75h，
 	// 所以只有單職戰士／聖騎士／遊俠拿得到，多職組合拿不到。
 	FighterConstitutionCombos    []int `json:"fighter_constitution_combos"`
 	FighterConstitutionBonusFrom int   `json:"fighter_constitution_bonus_from"`
 	FighterConstitutionBonus     []int `json:"fighter_constitution_bonus"`
+}
+
+// AbilityRollRules 是建角每個屬性的擲法（spec 1103 §二）：
+// 擲 Attempts 次 `DiceCount d DiceSize + Bonus`，取最大。
+// ⚠ Bonus 與 Attempts 都不是 AD&D 桌上規則，是這個引擎自己加的。
+type AbilityRollRules struct {
+	DiceCount int `json:"dice_count"`
+	DiceSize  int `json:"dice_size"`
+	Bonus     int `json:"bonus"`
+	Attempts  int `json:"attempts"`
 }
 
 // ClassSlotRules 是單一職業槽的生命骰參數（spec 850）。
@@ -76,7 +88,10 @@ type RaceRules struct {
 	// 半獸人資料齊全但選單沒有分支收它。
 	Selectable bool `json:"selectable"`
 	// Size 是原作的 +144h：1 小體型、2 中體型（spec 1093 §七）。
-	Size           int            `json:"size"`
+	Size int `json:"size"`
+	// AbilityAdjustments 是種族屬性調整，依力、智、睿、敏、體、魅
+	// 六個位置（spec 1103 §三）。
+	AbilityAdjustments []int          `json:"ability_adjustments"`
 	StrengthMale   StrengthLimits `json:"strength_male"`
 	StrengthFemale StrengthLimits `json:"strength_female"`
 	Intelligence   AbilityRange   `json:"intelligence"`
@@ -324,6 +339,44 @@ func (t *CharacterTables) FighterConstitutionBonusFor(classCombo, constitution i
 		index = len(t.FighterConstitutionBonus) - 1
 	}
 	return t.FighterConstitutionBonus[index]
+}
+
+// AbilityRollLookup 把擲點參數與種族調整包給 internal/party。
+type AbilityRollLookup struct{ tables *CharacterTables }
+
+// AbilityRoll 取得 game pack 的擲點查詢。
+func AbilityRoll() (AbilityRollLookup, error) {
+	parsed, err := Tables()
+	if err != nil {
+		return AbilityRollLookup{}, err
+	}
+	return AbilityRollLookup{tables: parsed}, nil
+}
+
+// AbilityRollSpec 回傳擲幾顆幾面、加多少、擲幾次取最大。
+func (l AbilityRollLookup) AbilityRollSpec() (diceCount, diceSize, bonus, attempts int, ok bool) {
+	if l.tables == nil {
+		return 0, 0, 0, 0, false
+	}
+	rules := l.tables.AbilityRoll
+	if rules.DiceCount <= 0 || rules.DiceSize <= 0 || rules.Attempts <= 0 {
+		return 0, 0, 0, 0, false
+	}
+	return rules.DiceCount, rules.DiceSize, rules.Bonus, rules.Attempts, true
+}
+
+// RaceAbilityAdjustments 回傳六個屬性的種族調整。
+func (l AbilityRollLookup) RaceAbilityAdjustments(raceID int) ([6]int, bool) {
+	if l.tables == nil {
+		return [6]int{}, false
+	}
+	race, ok := l.tables.RaceByID(raceID)
+	if !ok || len(race.AbilityAdjustments) != 6 {
+		return [6]int{}, false
+	}
+	var out [6]int
+	copy(out[:], race.AbilityAdjustments)
+	return out, true
 }
 
 // HitDiceLookup 把生命骰與體質加值兩組資料包給 internal/party，
