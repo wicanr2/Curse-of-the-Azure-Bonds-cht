@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》全遊戲逆向工程完整度矩陣
 
-狀態日期：2026-08-13（第 559 輪：新增模組／函式層）
+狀態日期：2026-08-15（第 560 輪：ECL 主迴圈與 `COMBAT` 續跑閉合）
 
 ## 兩層完整度
 
@@ -110,7 +110,7 @@ gate 只能作輸入，不等於此清冊已完成。
 | 原始檔與平台 inventory | DOS 主檔多有 hash；PC-98 VFD 有缺 sector | 局部 | 建立 DOS／PC-98 executable、overlay、DAX、GEO、save、音訊與手冊的單一 manifest；標示 pristine／derived | `coab-source-manifest` |
 | DAX container／壓縮 | 多種真實資產已可抽取 | 局部 | 對所有實際成員補 record count、bounds、round-trip 與 malformed gate；區分不同 DAX payload | `dax-corpus-matrix` |
 | ECL framing／控制流 | 第 557／558 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊與穩定 candidate ID | 局部 | 33 個候選中 3 個已審查；其餘 30 個與動態 branch、間接 dispatch、外部 boundary、錯誤路徑仍缺；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
-| ECL 副作用／時序 | typed signal、多個 adapter；3 個 `TREASURE → COMBAT` 候選已 `covered/exact` | **待逆向／待規格** | 從 `COMBAT → text` 開始閉合其餘 30 個候選，再完成全域 ordered event log、commit phase、exactly-once、跨 boundary continuation | `ecl-ordered-effects` READY spec＋trace corpus |
+| ECL 副作用／時序 | ECL 主迴圈、dispatcher 與 `24h` handler 兩平台逐條閉合（spec 1095）；4 個候選 `covered/exact` | **待逆向／待規格** | 續閉合其餘 29 個候選，再完成全域 ordered event log、commit phase、exactly-once、跨 boundary continuation | `ecl-ordered-effects` READY spec＋trace corpus |
 | External `CALL` | `2E10／C01E／B200` 等有局部證據 | 待逆向 | 實際使用地址全集；每址的 caller、operand、state projection、consumer、返回與未知 fallback | `external-call-registry` |
 | `NEWECL／PROGRAM` | boundary ID 與部分 context 已知 | 局部 | 全 context 的 area/resource/map/save/ending 副作用與 resume ownership | `program-newecl-context-matrix` |
 | GEO 幾何／四平面 | 16 個原始 block 已宣告；loader／部分 plane consumer 有證據 | 局部 | 所有 plane 欄位、wall/door/roof/terrain interaction、wrapped edge、視覺 consumer | `geo-block-and-cell-schema` |
@@ -182,9 +182,13 @@ IDAPython 並放 `tools/ida/`。
 
 ## 第一批執行順序
 
-1. 靜態 `ecl-event-catalog` 已完成；三組 `TREASURE → COMBAT` 已由第 558 輪閉合並
-   寫入 fail-closed review ledger。下一個 probe 是 ECL2 block `0x02` 的
-   `COMBAT → text` 戰後續跑。
+1. 靜態 `ecl-event-catalog` 已完成。三組 `TREASURE → COMBAT`（第 558 輪）與
+   ECL2 block `0x02` 的 `COMBAT → text`（第 560 輪，spec 1095）已閉合並寫入
+   fail-closed review ledger，未審查候選 29 個。spec 1095 同時釘住了主迴圈本身：
+   PC 由各 handler 自行推進、戰鬥是同步巢狀呼叫、`COMBAT` 與其後的文字指令之間
+   沒有 pause／commit／resume 邊界。下一個 probe 是同一 block 的
+   `PRINT → PICTURE → CALL → SETUP MONSTER`（`0x02CB-0x0325`），
+   它同時是 `external-call-registry` 的入口。
 2. 將已驗證的動態 edge、條件與 continuation 回填 catalog，逐步完成
    `ecl-ordered-effects` 規格；未審查候選維持 unknown，不因相似序列批次升格。
 3. 建立 `external-call-registry`，從 23 個靜態可達 CALL 只追玩家可見副作用的
