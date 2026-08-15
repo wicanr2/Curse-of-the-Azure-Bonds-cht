@@ -1,0 +1,34 @@
+# 帶 Ebiten／oto 建置相依的 Go 工具鏈映像。
+#
+# 基底 golang:1.24 沒有 X11 與 ALSA 的開發標頭，所以 internal/sound
+# （github.com/ebitengine/oto/v3）與 cmd/azure-bonds-game
+# （github.com/hajimehoshi/ebiten/v2）在裡面建置不起來，
+# `go test ./...` 因此無法當成全套 gate。
+#
+# 另外裝 xvfb：Ebiten 在 init 階段就會開 GLFW，沒有 DISPLAY 會 panic，
+# 所以 tools/go.sh 一律用 xvfb-run 包起來（xvfb-run 需要 xauth）。
+#
+# 建立方式見 tools/build-go-image.sh；建好之後 tools/go.sh 會自動採用。
+FROM golang:1.24
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libasound2-dev \
+        libgl1-mesa-dev \
+        libxrandr-dev \
+        libxcursor-dev \
+        libxinerama-dev \
+        libxi-dev \
+        libxxf86vm-dev \
+        pkg-config \
+        xvfb \
+        xauth \
+        x11-xserver-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# xvfb-run 需要可寫的 HOME（放 .Xauthority）與 /tmp/.X11-unix；
+# tools/go.sh 以 -u <uid>:<gid> 執行，沒有這兩者 xvfb-run 會無限等待。
+RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
+ENV HOME=/tmp
+
+COPY with-xvfb.sh /usr/local/bin/with-xvfb
+RUN chmod 0755 /usr/local/bin/with-xvfb

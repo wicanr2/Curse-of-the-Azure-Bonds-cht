@@ -198,18 +198,19 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 
 ## E. 工程衛生與驗收
 
-### E-1 目前量到的失敗（2026-08-15 `./tools/go.sh test ./...`）
+### E-1 全套 gate（2026-08-15 更新）
 
-25 個套件 `ok`，另有三類失敗，**都不是本輪造成的**：
+三類失敗已全部處理，`./tools/go.sh test ./...` 現在可以當全套 gate。
+前提是先跑一次 `tools/build-go-image.sh` 建好 `coab-go-ebiten:1.24`。
 
 | ID | 失敗 | 原因 | 處置 |
 |---|---|---|---|
-| `VER-01` | `internal/sound` **建置失敗** | docker `golang:1.24` image 缺 ALSA 開發標頭：`Package alsa was not found in the pkg-config search path`（`ebitengine/oto/v3` 需要） | 建一份帶 `libasound2-dev` 的 build image，或把音訊套件的測試改成 build tag 隔離 |
-| `VER-02` | `internal/sourceaudit` `TestRepositoryGoHanLiteralBaselineIsExact` **FAIL** | Han literal baseline drift，29 筆新增全在 `cmd/borland-symbols`、`cmd/ovr-manifest`、`cmd/re-ledger`，分類 `runtime_ui_debt` | 判定這 29 筆是該外部化還是該進 baseline，然後更新 baseline |
-| `VER-03` | `scripts/`／`workplace/` 建置失敗 | `main redeclared in this block`（`p0_search_probe.go` vs `p0_geo_route_probe.go`；`extract_dos_*.go` 四支互撞） | `AGENTS.md` §8 已記錄這是既存結構問題。這兩個是暫存目錄，處置方式是各自獨立成子目錄，讓 `go test ./...` 能成為真正的全套 gate |
+| `VER-01` | `internal/sound` 與 `cmd/azure-bonds-game` **建置失敗** | ✅ **已解決**：新增 `tools/Dockerfile.go-ebiten`（`golang:1.24` ＋ ALSA／X11 開發標頭 ＋ Xvfb）與 `tools/build-go-image.sh`；`tools/go.sh` 自動採用 `coab-go-ebiten:1.24` 並用 `with-xvfb` 在 Xvfb `:99` 下執行。⚠ 不用 `xvfb-run`——它在 `-u <uid>:<gid>` 且該 uid 不在 `/etc/passwd` 時會**無限等待** | — |
+| `VER-02` | `internal/sourceaudit` Han literal baseline drift | ✅ **已解決**：29 筆新增與既有 9 筆性質相同（全是開發工具的中文訊息，不是玩家可見 UI），用既有的 `cmd/coab-audit -write-baseline` 重生成 38 筆。⚠ `category()` 目前把所有非 `cmd/azure-bonds-game/` 的都歸成 `runtime_ui_debt`，開發工具訊息與遊戲執行時訊息混在一起，這個分類值得後續調整 | — |
+| `VER-03` | `scripts/`／`workplace/` 建置失敗 | ✅ **已解決**：`scripts/*.go` 五支各自移進同名子目錄成為獨立套件；`workplace/` 的兩支一次性 probe 加 `//go:build ignore`（保留檔案，單檔 `go run` 不受影響） | — |
 
-⚠ 在 `VER-03` 修好之前，`go test ./...` **不能當成全套 gate**，
-`AGENTS.md` §8 要求「如實分開報告」。
+✅ `go test ./...` 現在可以當全套 gate（前提是先跑 `tools/build-go-image.sh`
+建好 `coab-go-ebiten:1.24`）。`AGENTS.md` §8 已同步更新。
 
 ### E-2 debug 捷徑清單（rulebook 65 [HARD]）
 
@@ -252,8 +253,8 @@ rulebook 65 的規定是：**debug／後門串起來的「能跑完」不算能�
 
 擋路的在前面，能平行的標出來。
 
-1. **`VER-03`**（讓 `go test ./...` 能當 gate）與 **`VER-01`**（音訊套件能建置）——
-   沒有可信的全套訊號，後面每一項的「完成」都無法驗證。成本低，先做。
+1. ✅ **`VER-01`／`VER-02`／`VER-03` 已完成**——`./tools/go.sh test ./...`
+   現在 31 個套件全綠，可以當全套 gate（先跑 `tools/build-go-image.sh`）。
 2. **`RE-14` 共用格子清冊 ✅ 已完成**——81 個 ECL 變數位址中 24 個是共用格子。
    風險面積從「69 個位址未校準」收斂成「24 個要逐格對上、57 個自洽即可」。
    剩下 `RE-15`（讀取端）與 `RE-16`（`7ECAh` 時機）兩個小尾巴，不擋路。

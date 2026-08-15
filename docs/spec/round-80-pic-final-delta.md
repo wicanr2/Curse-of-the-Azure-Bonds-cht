@@ -11,7 +11,7 @@
 ## 本輪成果
 
 - `gfx.ParseAnimationWithDelta(..., xorFromFirst)` 提供明確 bounded API；原本 `ParseAnimation` 預設 false，保持 SPRIT 正確。
-- `scripts/render_previews.go` 對 PIC1–PIC6 使用 delta mode，對 SPRIT1–SPRIT6 使用 full-frame mode。
+- `scripts/render_previews/` 對 PIC1–PIC6 使用 delta mode，對 SPRIT1–SPRIT6 使用 full-frame mode。
 - 從本地原始映像重新產生 152 張 PIC frame PNG，並納入 animation manifest／sprite sheet 證據。
 - regression test 覆蓋第二幀 XOR 第一幀後的 indexed pixel 還原。
 

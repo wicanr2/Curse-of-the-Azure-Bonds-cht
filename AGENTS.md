@@ -454,8 +454,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 連續低風險抽樣最多四個 milestone；第五個 milestone、重大整合點、README
   截圖更新、release／完成聲明前必須重跑正式全套 gate。若抽樣曾失敗、碰到
   非預期跨模組副作用或無法清楚界定影響範圍，立即升級全套，不等週期。
-- `go test ./...` 會因 `scripts/` 兩個獨立 main 同目錄的既存結構失敗，修正該
-  gate 前要如實分開報告。
+- 全套 gate 用 `./tools/go.sh test ./...`。`tools/go.sh` 預設採用本專案映像
+  `coab-go-ebiten:1.24`（`tools/build-go-image.sh` 建立），它帶 Ebiten／oto 需要的
+  X11 與 ALSA 開發標頭，並用 `with-xvfb` 在 Xvfb `:99` 下執行——沒有這顆映像會
+  退回 `golang:1.24`，`internal/sound` 與 `cmd/azure-bonds-game` 會建置失敗。
+- `workplace/` 是本地工作目錄（`.gitignore` 已整個排除）。在裡面放一次性的
+  `package main` 探查工具會讓 `go test ./...` 出現 `main redeclared`；
+  一律加 `//go:build ignore`，單檔 `./tools/go.sh run <檔案>` 不受影響。
 - `git diff --check`。
 - deterministic screenshot 或 runtime trace。
 - 真正玩家路徑驗證，而不只 direct-entry debug flag。

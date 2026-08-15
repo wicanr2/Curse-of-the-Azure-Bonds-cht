@@ -25,7 +25,7 @@ remake `(48,48)..(223,223)`，嚴格 2× nearest-neighbour；周圍灰色 stage 
 ## 實作
 
 - 新增 `dos-character-creation-frame.png`，由
-  [`extract_dos_character_creation_frame.go`](../../scripts/extract_dos_character_creation_frame.go)
+  [`scripts/extract_dos_character_creation_frame/`](../../scripts/extract_dos_character_creation_frame/main.go)
   從本機原版捕捉抽出；它只保留固定 stone chrome，排除角色數值與 prompt。
   資產 SHA-256：
   `8618b170ac1c7afad78a127f3389554d439634abac0730f20729447f4fa4d5fe`。
