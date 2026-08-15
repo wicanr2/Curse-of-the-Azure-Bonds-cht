@@ -1,6 +1,16 @@
 {
   "format_version": 1,
   "reviews": {
+    "ECL2.DAX/0x02/0x04BC-0x053A": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1095-ecl-main-loop-and-combat-continuation.md",
+        "1083-ecl-opcode-mnemonics.md",
+        "1045-dungeon-main-loop-dos.md"
+      ],
+      "note": "ECL 主迴圈、dispatcher 與 24h handler 兩平台逐條讀完：COMBAT 是同步巢狀呼叫，PC 在戰鬥前已推進，戰後由同一個 while 迴圈續跑 PRINTCLEAR／PRINT，中間沒有 pause／commit／resume 邊界。"
+    },
     "ECL3.DAX/0x15/0x050A-0x0578": {
       "status": "covered",
       "confidence": "exact",

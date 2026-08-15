@@ -97,7 +97,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 
 | ID | 項目 | 現況 | 要做什麼 | 產物 |
 |---|---|---|---|---|
-| `RE-01` | **ECL 有序副作用與 exactly-once**（全域 P0-RE-1） | 33 個跨類型候選只審 3 個 | 從 ECL2 block `0x02` 的 `COMBAT → text` 開始，逐個閉合其餘 30 個；建立 opcode 當下的 ordered effect record，標明 immediate／pause-before-commit／deferred／resume-only | `ecl-ordered-effects` READY spec ＋ trace corpus |
+| `RE-01` | **ECL 有序副作用與 exactly-once**（全域 P0-RE-1） | 33 個候選已審 4 個；主迴圈與 `24h` handler 已閉合（spec 1095） | 續閉合其餘 29 個候選；建立 opcode 當下的 ordered effect record，標明 immediate／pause-before-commit／deferred／resume-only。⚠ spec 1095 已釘住主迴圈語意：PC 由各 handler 自行推進、戰鬥是同步巢狀呼叫、`COMBAT → text` 之間沒有提交邊界 | `ecl-ordered-effects` READY spec ＋ trace corpus |
 | `RE-02` | **全遊戲事件清冊**（P0-RE-2） | 靜態層完成（6 DAX／25 block／125 entry／1,355 instruction） | 補動態 branch、座標／terrain、條件旗標、consumer、resume、R1–R5 回填 | `ecl-event-catalog` 動態層 |
 | `RE-03` | **External `CALL` 登記表** | `2E10／C01E／B200` 只有局部證據 | 23 個靜態可達 CALL 的 caller、operand、state projection、consumer、返回與未知 fallback；只追玩家可見副作用 | `external-call-registry` |
 | `RE-04` | **劇情與全地圖事件** | 大量 fixture，缺逐格覆蓋 | 每區逐格／逐事件的 producer、條件、分支、副作用、重訪 | `area-event-coverage` |

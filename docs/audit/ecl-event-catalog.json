@@ -6651,7 +6651,17 @@
               "reachable_from": [
                 "per_turn"
               ],
-              "evidence": "static_straight_line_candidate"
+              "evidence": "static_straight_line_candidate",
+              "review": {
+                "status": "covered",
+                "confidence": "exact",
+                "spec_refs": [
+                  "1045-dungeon-main-loop-dos.md",
+                  "1083-ecl-opcode-mnemonics.md",
+                  "1095-ecl-main-loop-and-combat-continuation.md"
+                ],
+                "note": "ECL 主迴圈、dispatcher 與 24h handler 兩平台逐條讀完：COMBAT 是同步巢狀呼叫，PC 在戰鬥前已推進，戰後由同一個 while 迴圈續跑 PRINTCLEAR／PRINT，中間沒有 pause／commit／resume 邊界。"
+              }
             },
             {
               "id": "ECL2.DAX/0x02/0x0CCB-0x0CD4",
