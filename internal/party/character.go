@@ -53,10 +53,22 @@ const (
 	ClassThief
 )
 
+// Abilities 依 spec 1079 的成對版面保存六個屬性：
+//
+//	屬性 i  基準值 +10h+i×2（建角時決定，不受裝備影響）
+//	        目前值 +11h+i×2（每次裝備／效果變動就重算）
+//	力量另有百分比：目前 +1Ch、基準 +1Dh
+//
+// 只存一格會讓脫下裝備後屬性回不去，所以兩格都要留。
+//
+// ⚠ 既有欄位的實際對應（匯入 DOS 記錄時就是這樣讀的）：
+// Strength ＝ +10h（基準）、StrengthFull ＝ +11h（目前力量）、
+// StrengthExceptional ＝ +1Ch（目前百分比）；
+// Intelligence..Charisma 是 +12h/+14h/+16h/+18h/+1Ah，全部是**基準值**。
 type Abilities struct {
 	Strength int
-	// StrengthFull and StrengthExceptional preserve DOS Str.full and
-	// Str00.cur when imported; Strength remains the legacy normalized value.
+	// StrengthFull 是 +11h 的目前力量；StrengthExceptional 是 +1Ch 的
+	// 目前百分比。名稱沿用早期匯入時的命名，語意見上方說明。
 	StrengthFull        int
 	StrengthExceptional int
 	Intelligence        int
@@ -64,6 +76,57 @@ type Abilities struct {
 	Dexterity           int
 	Constitution        int
 	Charisma            int
+	// Current 是五個非力量屬性的目前值（+13h/+15h/+17h/+19h/+1Bh），
+	// 順序與 Value 的索引 1..5 相同：智、睿、敏、體、魅。
+	// 零值代表「還沒算過」，此時一律以基準值為準（見 CurrentValue）。
+	Current [5]int
+	// StrengthExceptionalBase 是 +1Dh 的基準百分比。
+	StrengthExceptionalBase int
+}
+
+// CurrentValue 回傳第 index 個屬性的目前值。目前值沒被算過（零值）時
+// 退回基準值——原作建角收尾就是把兩者設成一樣（spec 1094 §三）。
+func (a Abilities) CurrentValue(index int) (int, error) {
+	if index == 0 {
+		if a.StrengthFull != 0 {
+			return a.StrengthFull, nil
+		}
+		return a.Strength, nil
+	}
+	if index < 1 || index > 5 {
+		return 0, fmt.Errorf("ability index %d is out of range", index)
+	}
+	if a.Current[index-1] != 0 {
+		return a.Current[index-1], nil
+	}
+	return a.Value(index)
+}
+
+// SyncBaseFromCurrent 是原作建角的收尾（spec 1094 §三）：
+//
+//	for i := 0 to 5 do 角色^[10h + i×2] := 角色^[11h + i×2];
+//	角色^[1Dh] := 角色^[1Ch];
+//
+// 六個屬性與力量百分比的目前值原封不動抄成基準值，之後裝備／法術只改
+// 目前值，脫下來就能回到基準值。
+func (a *Abilities) SyncBaseFromCurrent() {
+	for index := 0; index <= 5; index++ {
+		value, err := a.CurrentValue(index)
+		if err != nil {
+			continue
+		}
+		_ = a.set(index, value)
+	}
+	a.StrengthFull = a.Strength
+	a.StrengthExceptionalBase = a.StrengthExceptional
+	a.Current = [5]int{}
+}
+
+// SyncCurrentFromBase 把目前值重設成基準值——卸下所有裝備／效果後的狀態。
+func (a *Abilities) SyncCurrentFromBase() {
+	a.StrengthFull = a.Strength
+	a.StrengthExceptional = a.StrengthExceptionalBase
+	a.Current = [5]int{}
 }
 
 // StartingAgeSpec is the reference race/class age generator shape.

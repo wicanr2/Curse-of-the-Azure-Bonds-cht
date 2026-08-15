@@ -51,6 +51,15 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	out[0x16] = uint8(character.Abilities.Dexterity)
 	out[0x18] = uint8(character.Abilities.Constitution)
 	out[0x1A] = uint8(character.Abilities.Charisma)
+	// 目前值（奇數位移，spec 1079）。零值代表沒算過，回寫成基準值。
+	out[0x1D] = uint8(character.Abilities.StrengthExceptionalBase)
+	for index := 1; index <= 5; index++ {
+		value, err := character.Abilities.CurrentValue(index)
+		if err != nil {
+			return nil, err
+		}
+		out[0x11+index*2] = uint8(value)
+	}
 	out[0x78] = uint8(character.MaxHitPoints)
 	if character.ClassLevels != [8]uint8{} {
 		copy(out[0x109:0x111], character.ClassLevels[:])
@@ -298,9 +307,14 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		ID: id, Name: name, Race: rawRace, Class: rawClass,
 		RawRace: data[0x74], RawClass: data[0x75],
 		Abilities: Abilities{
-			Strength: int(data[0x10]), StrengthFull: int(data[0x11]), StrengthExceptional: int(data[0x1C]),
+			// spec 1079：偶數位移是基準值、奇數位移是目前值，兩格都要讀，
+			// 否則脫下裝備後屬性回不去。
+			Strength: int(data[0x10]), StrengthFull: int(data[0x11]),
+			StrengthExceptional: int(data[0x1C]), StrengthExceptionalBase: int(data[0x1D]),
 			Intelligence: int(data[0x12]), Wisdom: int(data[0x14]),
 			Dexterity: int(data[0x16]), Constitution: int(data[0x18]), Charisma: int(data[0x1A]),
+			Current: [5]int{int(data[0x13]), int(data[0x15]), int(data[0x17]),
+				int(data[0x19]), int(data[0x1B])},
 		},
 		Level: level, MaxHitPoints: int(data[0x78]), CurrentHitPoints: int(data[0x1A4]),
 		Age:           int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
