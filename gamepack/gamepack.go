@@ -43,7 +43,8 @@ type CharacterTables struct {
 	Races  []RaceRules `json:"races"`
 	// ClassRequirements 依職業組合編號（角色^[75h]，0..0Ch）索引，
 	// 每筆六個屬性最低要求，順序為力、智、睿、敏、體、魅。
-	ClassRequirements [][]int `json:"class_requirements"`
+	ClassRequirements [][]int           `json:"class_requirements"`
+	ClassCombinations []ClassCombination `json:"class_combinations"`
 }
 
 type RaceRules struct {
@@ -222,4 +223,25 @@ func (l AbilityLimitLookup) AbilityLimits(raceID, gender, classCombo int) ([6][2
 		return [6][2]int{}, false
 	}
 	return l.tables.AbilityLimitsFor(raceID, gender, classCombo)
+}
+
+// ClassCombination 是職業組合編號的語意（spec 1093 §二）。
+// 這張表不是資料段的表，來源是建角流程的 switch。
+type ClassCombination struct {
+	Combo int `json:"combo"`
+	// ClassSlots 是原作職業槽索引：0 牧師 1 德魯伊 2 戰士 3 聖騎士
+	// 4 遊俠 5 法師 6 盜賊 7 武僧。
+	ClassSlots         []int  `json:"class_slots"`
+	StartingExperience int    `json:"starting_experience"`
+	Note               string `json:"note,omitempty"`
+}
+
+// CombinationByID 依職業組合編號取語意。
+func (t *CharacterTables) CombinationByID(combo int) (ClassCombination, bool) {
+	for _, entry := range t.ClassCombinations {
+		if entry.Combo == combo {
+			return entry, true
+		}
+	}
+	return ClassCombination{}, false
 }

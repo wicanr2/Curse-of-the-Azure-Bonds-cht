@@ -90,11 +90,51 @@ type raceRules struct {
 	StartingAges []startingAge `json:"starting_ages"`
 }
 
+// classCombination 是職業組合編號的語意。這張表**不是資料段的表**，
+// 來源是 spec 1093 §二逐條讀出的建角 switch；放進同一份 JSON 是為了讓
+// remake 只讀資料、不在 Go 裡重寫規則。
+type classCombination struct {
+	Combo int `json:"combo"`
+	// ClassSlots 是原作職業槽索引（0 牧師 1 德魯伊 2 戰士 3 聖騎士
+	// 4 遊俠 5 法師 6 盜賊 7 武僧）。
+	ClassSlots []int `json:"class_slots"`
+	// StartingExperience 是 25,000 平分後的值（spec 1093）。
+	StartingExperience int `json:"starting_experience"`
+	// Note 記錄原作的例外。
+	Note string `json:"note,omitempty"`
+}
+
+// referenceClassCombinations 依 spec 1093 §二的表。
+var referenceClassCombinations = []classCombination{
+	{Combo: 0, ClassSlots: []int{0}, StartingExperience: 25000},
+	{Combo: 1, ClassSlots: []int{1}, StartingExperience: 25000},
+	{Combo: 2, ClassSlots: []int{2}, StartingExperience: 25000},
+	{Combo: 3, ClassSlots: []int{3}, StartingExperience: 25000,
+		Note: "paladin: also sets +191h := 1 and adds effect 08h"},
+	{Combo: 4, ClassSlots: []int{4}, StartingExperience: 25000,
+		Note: "ranger: also adds effect 86h"},
+	{Combo: 5, ClassSlots: []int{5}, StartingExperience: 25000},
+	{Combo: 6, ClassSlots: []int{6}, StartingExperience: 25000},
+	{Combo: 7, ClassSlots: []int{7}, StartingExperience: 25000},
+	{Combo: 8, ClassSlots: []int{0, 2}, StartingExperience: 12500},
+	{Combo: 9, ClassSlots: []int{0, 2, 5}, StartingExperience: 8333},
+	{Combo: 10, ClassSlots: []int{0, 4}, StartingExperience: 12500,
+		Note: "cleric/ranger: also adds effect 86h"},
+	{Combo: 11, ClassSlots: []int{0, 5}, StartingExperience: 12500},
+	{Combo: 12, ClassSlots: []int{0, 6}, StartingExperience: 12500},
+	{Combo: 13, ClassSlots: []int{2, 5}, StartingExperience: 12500},
+	{Combo: 14, ClassSlots: []int{2, 6}, StartingExperience: 12500},
+	{Combo: 15, ClassSlots: []int{2, 5, 6}, StartingExperience: 8333},
+	{Combo: 16, ClassSlots: []int{5, 6}, StartingExperience: 8333,
+		Note: "two classes but receives the three-class 8,333; reference behaviour, see spec 1093"},
+}
+
 type characterRules struct {
 	Source            string     `json:"source"`
 	Spec              string     `json:"spec"`
 	Races             []raceRules `json:"races"`
-	ClassRequirements [][]int     `json:"class_requirements"`
+	ClassRequirements [][]int           `json:"class_requirements"`
+	ClassCombinations []classCombination `json:"class_combinations"`
 }
 
 func main() {
@@ -109,7 +149,7 @@ func main() {
 	}
 	required := classRequireBase + classCombinations*classRequireSize
 	if len(blob) < required {
-		log.Fatalf("dseg dump 只有 %d bytes，至少需要 %d", len(blob), required)
+		log.Fatalf("dseg dump is %d bytes; need at least %d", len(blob), required)
 	}
 
 	rules := characterRules{
@@ -138,7 +178,7 @@ func main() {
 		// 遊俠，精靈 7 個、矮人 3 個（戰士／盜賊／戰士-盜賊），全部符合 AD&D 1e。
 		count := int(choices[0])
 		if count > classChoicesSize-1 {
-			log.Fatalf("種族 %d 的可選職業數 %d 超出一列容量", race, count)
+			log.Fatalf("race %d declares %d class choices, exceeding the row capacity", race, count)
 		}
 		for _, choice := range choices[1 : 1+count] {
 			entry.ClassChoices = append(entry.ClassChoices, int(choice))
@@ -168,6 +208,8 @@ func main() {
 		rules.ClassRequirements = append(rules.ClassRequirements, requirement)
 	}
 
+	rules.ClassCombinations = referenceClassCombinations
+
 	data, err := json.MarshalIndent(rules, "", "  ")
 	if err != nil {
 		log.Fatal(err)
@@ -180,6 +222,6 @@ func main() {
 	if err := os.WriteFile(*output, data, 0o644); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("已寫入 %s：%d 個種族、%d 個職業組合\n",
+	fmt.Printf("wrote %s: %d races, %d class combinations\n",
 		*output, len(rules.Races), len(rules.ClassRequirements))
 }

@@ -239,11 +239,19 @@ type AbilityLimitLookup interface {
 	AbilityLimits(raceID, gender, classCombo int) ([6][2]int, bool)
 }
 
-// AdjustWithin 依原作規則調整一個屬性：先夾種族的上下限，再夾職業組合的
-// 最低要求（spec 1086 的兩次夾值）。tables 為 nil 時退回 3..18 的通用範圍。
+// StrengthPercentileLookup 讓機制層查得到力量百分比上限（0 ＝ 不能有 18/xx）。
+type StrengthPercentileLookup interface {
+	StrengthPercentileMax(raceID, gender int) (int, bool)
+}
+
+// AdjustWithin 依原作規則調整一個屬性（spec 1086 §三）：
 //
-// ⚠ 力量的 18/xx 百分比是獨立的一階（spec 1086：往下調時先把百分比扣完才
-// 動整數部分），本函式只處理整數部分。
+//   - 力量（index 0）的 18/xx 百分比是**獨立的一階**：往下調時先把百分比
+//     一點一點扣掉，扣到 0 才動整數部分；往上調是鏡像的同一套——整數到了
+//     上限之後才開始加百分比。
+//   - 其餘五個屬性只做兩次夾值：先夾種族的上下限，再夾職業組合的最低要求。
+//
+// tables 為 nil 時退回 3..18 的通用範圍。
 func (a *Abilities) AdjustWithin(tables AbilityLimitLookup, character *Character, index, delta int) error {
 	if delta == 0 {
 		return nil
@@ -253,6 +261,7 @@ func (a *Abilities) AdjustWithin(tables AbilityLimitLookup, character *Character
 		return err
 	}
 	low, high := 3, 18
+	percentileMax := 0
 	if tables != nil && character != nil {
 		raceID, ok := DOSRaceID(character.Race)
 		if !ok {
@@ -263,7 +272,32 @@ func (a *Abilities) AdjustWithin(tables AbilityLimitLookup, character *Character
 			return fmt.Errorf("race %d has no ability limits", character.Race)
 		}
 		low, high = limits[index][0], limits[index][1]
+		if percentiles, ok := tables.(StrengthPercentileLookup); ok {
+			if maximum, ok := percentiles.StrengthPercentileMax(raceID, int(character.Gender)); ok {
+				percentileMax = maximum
+			}
+		}
 	}
+
+	// 力量的百分比階：只有整數已經在上限、且該種族／性別允許 18/xx 時才存在。
+	if index == 0 && percentileMax > 0 {
+		if delta < 0 && a.StrengthExceptional > 0 {
+			a.StrengthExceptional--
+			return nil
+		}
+		if delta > 0 && value >= high {
+			if a.StrengthExceptional >= percentileMax {
+				return fmt.Errorf("strength percentile must remain at most %d", percentileMax)
+			}
+			a.StrengthExceptional++
+			return nil
+		}
+	}
+	// 整數部分回到上限以下時，百分比必須歸零——18/xx 只存在於力量 18。
+	if index == 0 && delta < 0 && a.StrengthExceptional > 0 {
+		a.StrengthExceptional = 0
+	}
+
 	if value+delta < low {
 		return fmt.Errorf("ability value must remain at least %d", low)
 	}
