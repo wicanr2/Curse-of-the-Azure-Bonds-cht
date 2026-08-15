@@ -152,7 +152,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | ID | 項目 | 依賴 | 要做什麼 |
 |---|---|---|---|
 | `ENG-04` | AD&D 規則完整表 | `RE-12` | 全職業／種族限制、能力修正、升級、休息、時間、負重、狀態、item special consumer |
-| `ENG-05` | 建角完整流程 | spec 1093／1094／1099 ✅ | ✅ **起始年齡已接上 JSON**（`gamepack/rules/character-tables.json`，由 `cmd/dseg-export` 產生；修正了漏掉德魯伊欄造成的錯位）。✅ 性別欄位、✅ 屬性夾值（兩次夾值）、✅ **力量 18/xx 的獨立階**、✅ **四段選單機制**（`BeginGuidedCreation`／`SelectGuidedOption`／`RollGuidedAbilities`，職業選項由種族查表）、✅ **起始經驗值 25,000 平分**（`class_combinations` 進 JSON）。仍缺：① **UI 未接**——四段流程只有 State 機制，`cmd/azure-bonds-game` 還是舊的「選預做範本」；② 陣營九宮格是 `strong inference`，原作選單文字未取出；③ locale 缺 `creation.race.*`／`creation.gender.*`／`creation.alignment.*`／`creation.class-combo.*` 詞條；④ **目前值→基準值收尾做不了**：remake 的 `Abilities` 沒有分基準值與目前值（spec 1079 的 `+10h+i*2` vs `+11h+i*2`），要先擴充模型 |
+| `ENG-05` | 建角完整流程 | spec 1093／1094／1099 ✅ | ✅ **起始年齡已接上 JSON**（`gamepack/rules/character-tables.json`，由 `cmd/dseg-export` 產生；修正了漏掉德魯伊欄造成的錯位）。✅ 性別欄位、✅ 屬性夾值（兩次夾值）、✅ **力量 18/xx 的獨立階**、✅ **四段選單機制**（`BeginGuidedCreation`／`SelectGuidedOption`／`RollGuidedAbilities`，職業選項由種族查表）、✅ **起始經驗值 25,000 平分**（`class_combinations` 進 JSON）。✅ **UI 已接**（`-guided-creation` 旗標、建角畫面按 `G` 進入，上下移動 ＋ Enter 選定；headless 截圖確認七個種族與中文正常）、✅ **locale 詞條齊全**（16 個新詞條，另有測試直接驗證正式檔案）、✅ **基準值／目前值成對保存**（`Abilities.Current`／`SyncBaseFromCurrent`）。仍缺：① 四段流程尚未成為預設入口——舊的「選預做範本」還在，要決定去留；② 名字輸入與 `Save <名字>?` 收尾（spec 1093 §一 的最後兩步）還沒接進四段流程；③ 陣營九宮格是 `strong inference`，原作選單文字未取出佐證；④ 多職組合的 `ClassLevels` 只設 1 級，多職的等級分配未做 |
 | `ENG-06` | 訓練所升級 | spec 1084 ✅ | 亞人等級上限（比目前值）、經驗門檻、HP 保留受傷差額 |
 | `ENG-07` | 戰鬥回合生命週期 | `RE-06` | initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
 | `ENG-08` | 怪物 AI | `RE-07` | 移動、目標選擇、施法、逃跑、抗性與各種特殊能力 |

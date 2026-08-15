@@ -87,6 +87,8 @@ func (s *State) BeginGuidedCreation() error {
 	s.GuidedStep = CreationStepRace
 	s.GuidedDraft = party.Character{Level: 1}
 	s.GuidedClassCombos = nil
+	s.GuidedActive = true
+	s.GuidedCursor = 0
 	s.CreationMessage = s.LocaleText("creation_pick_race")
 	return nil
 }
@@ -154,6 +156,7 @@ func (s *State) SelectGuidedOption(index int) error {
 		return fmt.Errorf("creation option %d is out of range", index)
 	}
 	value := options[index].Value
+	s.GuidedCursor = 0
 	switch s.GuidedStep {
 	case CreationStepRace:
 		s.GuidedDraft.Race = guidedRaces[index].Race
@@ -299,5 +302,30 @@ func (s *State) RollGuidedAbilities(seed int64) error {
 		Dexterity: values[3], Constitution: values[4], Charisma: values[5],
 	}
 	s.CreationMessage = s.LocaleText("creation_reroll_prompt")
+	return nil
+}
+
+// MoveGuidedCursor 在目前這一段的選項之間移動，兩端環繞——原作四個選單
+// 都是同一組上下鍵操作（spec 1093 §一）。
+func (s *State) MoveGuidedCursor(delta int) error {
+	options, err := s.GuidedCreationOptions()
+	if err != nil {
+		return err
+	}
+	if len(options) == 0 {
+		return fmt.Errorf("creation step %d has no options", s.GuidedStep)
+	}
+	s.GuidedCursor = (s.GuidedCursor + delta + len(options)) % len(options)
+	return nil
+}
+
+// CancelGuidedCreation 離開四段流程，回到進入前的模式。
+func (s *State) CancelGuidedCreation() error {
+	s.GuidedActive = false
+	s.GuidedStep = CreationStepRace
+	s.Mode = s.creationReturnMode
+	if s.Mode == ModeCharacterCreation || s.Mode == ModeTitle {
+		s.Mode = ModeWilderness
+	}
 	return nil
 }

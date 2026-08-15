@@ -525,6 +525,28 @@ func (a *app) Update() error {
 		}
 		return nil
 	}
+	if a.state.Mode == game.ModeCharacterCreation && a.state.GuidedActive {
+		// 原版的四段選單（spec 1093 §一）：上下移動、Enter 選定。
+		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			return a.state.CancelGuidedCreation()
+		}
+		if a.state.GuidedStep == game.CreationStepAbilities {
+			if inpututil.IsKeyJustPressed(ebiten.KeyR) {
+				return a.state.RollGuidedAbilities(time.Now().UnixNano())
+			}
+			return nil
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			return a.state.MoveGuidedCursor(-1)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			return a.state.MoveGuidedCursor(1)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			return a.state.SelectGuidedOption(a.state.GuidedCursor)
+		}
+		return nil
+	}
 	if a.state.Mode == game.ModeCharacterCreation {
 		if a.state.CreationEditing {
 			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -566,6 +588,9 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			return a.state.CancelCharacterCreation()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyG) {
+			return a.state.BeginGuidedCreation()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyN) {
 			return a.state.BeginCreationName()
@@ -1966,6 +1991,46 @@ func dungeonDirectionName(direction uint8) string {
 	return names[direction]
 }
 
+// drawGuidedCreation 畫原版的四段選單與擲屬性結果（spec 1093 §一）。
+func (a *app) drawGuidedCreation(screen *ebiten.Image, face font.Face, white, cyan color.Color) {
+	if a.state.GuidedStep == game.CreationStepAbilities {
+		abilityKeys := []string{"ability_strength", "ability_intelligence", "ability_wisdom",
+			"ability_dexterity", "ability_constitution", "ability_charisma"}
+		for index, key := range abilityKeys {
+			value, _ := a.state.GuidedDraft.Abilities.CurrentValue(index)
+			label := fmt.Sprintf(a.state.LocaleText("creation_ability_row"),
+				a.state.LocaleText(key), value)
+			drawFittedText(screen, "  "+label, face, 64, 140+index*25, 512, white)
+		}
+		drawFittedText(screen, a.state.LocaleText("creation_reroll_prompt"), face, 48, 320, 544, cyan)
+		return
+	}
+	options, err := a.state.GuidedCreationOptions()
+	if err != nil {
+		drawFittedText(screen, err.Error(), face, 32, 140, 576, white)
+		return
+	}
+	const visibleGuidedOptions = 9
+	start := a.state.GuidedCursor - visibleGuidedOptions/2
+	if start < 0 {
+		start = 0
+	}
+	if start > len(options)-visibleGuidedOptions {
+		start = len(options) - visibleGuidedOptions
+	}
+	if start < 0 {
+		start = 0
+	}
+	for row := 0; row < visibleGuidedOptions && start+row < len(options); row++ {
+		index := start + row
+		prefix := "  "
+		if index == a.state.GuidedCursor {
+			prefix = "> "
+		}
+		drawFittedText(screen, prefix+options[index].Label, face, 64, 140+row*25, 512, white)
+	}
+}
+
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	// The DOS character-creation sheet is a single full-width panel, unlike
 	// the adventure viewport plus roster. Keep the 16x15 CJK face here: the
@@ -1974,6 +2039,10 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	face := a.compactFace
 	drawFittedText(screen, a.state.LocaleText("creation_title"), face, 32, 46, 576, cyan)
 	drawFittedText(screen, a.state.CreationMessage, face, 32, 82, 576, white)
+	if a.state.GuidedActive {
+		a.drawGuidedCreation(screen, face, white, cyan)
+		return
+	}
 	if a.state.CreationEditing {
 		drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_name_input"), a.state.CreationName), face, 48, 140, 544, white)
 		drawFittedText(screen, a.state.LocaleText("creation_name_help"), face, 48, 190, 544, cyan)
@@ -2991,6 +3060,7 @@ func main() {
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	characterCreation := flag.Bool("character-creation", false, "show the opening character-creation command as a deterministic renderer checkpoint")
+	guidedCreation := flag.Bool("guided-creation", false, "show the original four-menu character creation (race/gender/class/alignment)")
 	tilvertonDungeon := flag.Bool("tilverton-dungeon", false, "enter Tilverton's first-person map through the formal new-game flow")
 	inn := flag.Bool("inn", false, "start at the first Windlord's Inn event through the formal new-game flow")
 	filani := flag.Bool("filani", false, "start at sage Filani through the formal Tilverton ECL flow")
@@ -3486,6 +3556,15 @@ func main() {
 			if !reachedParlayText {
 				log.Fatal("-wizard-tower-parlay did not reach the original successful parlay text")
 			}
+		}
+	} else if *guidedCreation {
+		if len(state.PartyFighters()) != 0 {
+			log.Fatal("-guided-creation cannot be combined with a loaded party")
+		}
+		// 原版的四段建角（spec 1093 §一）。與 -character-creation 一樣，
+		// 存在的目的是讓 headless 擷取拿得到確定性畫面。
+		if err := state.BeginGuidedCreation(); err != nil {
+			log.Fatal(err)
 		}
 	} else if *characterCreation {
 		if len(state.PartyFighters()) != 0 {
