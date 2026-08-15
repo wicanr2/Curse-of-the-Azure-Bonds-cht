@@ -43,13 +43,40 @@ type CharacterTables struct {
 	Races  []RaceRules `json:"races"`
 	// ClassRequirements 依職業組合編號（角色^[75h]，0..0Ch）索引，
 	// 每筆六個屬性最低要求，順序為力、智、睿、敏、體、魅。
-	ClassRequirements [][]int           `json:"class_requirements"`
+	ClassRequirements [][]int            `json:"class_requirements"`
 	ClassCombinations []ClassCombination `json:"class_combinations"`
+	// ClassSlots 依職業槽索引 0..7，帶生命骰與起始金錢參數（spec 850／1101）。
+	ClassSlots []ClassSlotRules `json:"class_slots"`
+	// ConstitutionHPBonus 的索引 0 對應體質 ConstitutionHPBonusFrom（spec 869）。
+	ConstitutionHPBonusFrom int   `json:"constitution_hp_bonus_from"`
+	ConstitutionHPBonus     []int `json:"constitution_hp_bonus"`
+	// 戰士系的額外體質加值（spec 869）：判斷用職業組合編號 +75h，
+	// 所以只有單職戰士／聖騎士／遊俠拿得到，多職組合拿不到。
+	FighterConstitutionCombos    []int `json:"fighter_constitution_combos"`
+	FighterConstitutionBonusFrom int   `json:"fighter_constitution_bonus_from"`
+	FighterConstitutionBonus     []int `json:"fighter_constitution_bonus"`
+}
+
+// ClassSlotRules 是單一職業槽的生命骰參數（spec 850）。
+type ClassSlotRules struct {
+	Slot            int    `json:"slot"`
+	Name            string `json:"name"`
+	HitDiceCount    int    `json:"hit_dice_count"`
+	HitDiceSize     int    `json:"hit_dice_size"`
+	HitDiceLevelCap int    `json:"hit_dice_level_cap"`
+	// 起始金錢在原版被擲出來就丟掉（spec 1101 §四），保留只為亂數序列。
+	StartingMoneyCount int `json:"starting_money_count"`
+	StartingMoneySize  int `json:"starting_money_size"`
 }
 
 type RaceRules struct {
-	RaceID         int            `json:"race_id"`
-	Name           string         `json:"name"`
+	RaceID int    `json:"race_id"`
+	Name   string `json:"name"`
+	// Selectable 是「建角種族選單列不列這一項」（spec 1102 §一）。
+	// 半獸人資料齊全但選單沒有分支收它。
+	Selectable bool `json:"selectable"`
+	// Size 是原作的 +144h：1 小體型、2 中體型（spec 1093 §七）。
+	Size           int            `json:"size"`
 	StrengthMale   StrengthLimits `json:"strength_male"`
 	StrengthFemale StrengthLimits `json:"strength_female"`
 	Intelligence   AbilityRange   `json:"intelligence"`
@@ -231,9 +258,12 @@ type ClassCombination struct {
 	Combo int `json:"combo"`
 	// ClassSlots 是原作職業槽索引：0 牧師 1 德魯伊 2 戰士 3 聖騎士
 	// 4 遊俠 5 法師 6 盜賊 7 武僧。
-	ClassSlots         []int  `json:"class_slots"`
-	StartingExperience int    `json:"starting_experience"`
-	Note               string `json:"note,omitempty"`
+	ClassSlots         []int `json:"class_slots"`
+	StartingExperience int   `json:"starting_experience"`
+	// Alignments 是這個組合能選的陣營編號（spec 1102 §二）。原作的陣營選單
+	// 只列這幾項，例如聖騎士只有守序善一項。
+	Alignments []int  `json:"alignments"`
+	Note       string `json:"note,omitempty"`
 }
 
 // CombinationByID 依職業組合編號取語意。
@@ -244,4 +274,95 @@ func (t *CharacterTables) CombinationByID(combo int) (ClassCombination, bool) {
 		}
 	}
 	return ClassCombination{}, false
+}
+
+// SlotRules 依職業槽索引取生命骰參數。
+func (t *CharacterTables) SlotRules(slot int) (ClassSlotRules, bool) {
+	for _, entry := range t.ClassSlots {
+		if entry.Slot == slot {
+			return entry, true
+		}
+	}
+	return ClassSlotRules{}, false
+}
+
+// ConstitutionHPBonusFor 依體質目前值（角色^[19h]）取 HP 加值（spec 869）。
+// 超出表的有效範圍就夾到兩端——原作直接用體質當索引，取到的是相鄰資料，
+// 這裡不重現那個越界行為。
+func (t *CharacterTables) ConstitutionHPBonusFor(constitution int) int {
+	if len(t.ConstitutionHPBonus) == 0 {
+		return 0
+	}
+	index := constitution - t.ConstitutionHPBonusFrom
+	if index < 0 {
+		index = 0
+	}
+	if index >= len(t.ConstitutionHPBonus) {
+		index = len(t.ConstitutionHPBonus) - 1
+	}
+	return t.ConstitutionHPBonus[index]
+}
+
+// FighterConstitutionBonusFor 是戰士系的額外體質加值（spec 869）。
+// classCombo 是原作的 +75h；不在名單裡就沒有加值。
+func (t *CharacterTables) FighterConstitutionBonusFor(classCombo, constitution int) int {
+	eligible := false
+	for _, combo := range t.FighterConstitutionCombos {
+		if combo == classCombo {
+			eligible = true
+			break
+		}
+	}
+	if !eligible || len(t.FighterConstitutionBonus) == 0 {
+		return 0
+	}
+	index := constitution - t.FighterConstitutionBonusFrom
+	if index < 0 {
+		return 0
+	}
+	if index >= len(t.FighterConstitutionBonus) {
+		index = len(t.FighterConstitutionBonus) - 1
+	}
+	return t.FighterConstitutionBonus[index]
+}
+
+// HitDiceLookup 把生命骰與體質加值兩組資料包給 internal/party，
+// 讓規則資料留在 game pack、機制留在 Go。
+type HitDiceLookup struct{ tables *CharacterTables }
+
+// HitDice 取得 game pack 的生命骰查詢。
+func HitDice() (HitDiceLookup, error) {
+	parsed, err := Tables()
+	if err != nil {
+		return HitDiceLookup{}, err
+	}
+	return HitDiceLookup{tables: parsed}, nil
+}
+
+// HitDiceFor 回傳職業槽一級的骰數、面數與體質加值的等級上限。
+func (l HitDiceLookup) HitDiceFor(slot int) (count, size, levelCap int, ok bool) {
+	if l.tables == nil {
+		return 0, 0, 0, false
+	}
+	entry, found := l.tables.SlotRules(slot)
+	if !found {
+		return 0, 0, 0, false
+	}
+	return entry.HitDiceCount, entry.HitDiceSize, entry.HitDiceLevelCap, true
+}
+
+// ConstitutionHPBonus 是一般職業的體質加值。
+func (l HitDiceLookup) ConstitutionHPBonus(constitution int) int {
+	if l.tables == nil {
+		return 0
+	}
+	return l.tables.ConstitutionHPBonusFor(constitution)
+}
+
+// FighterConstitutionHPBonus 是戰士系職業組合的額外體質加值。
+func (l HitDiceLookup) FighterConstitutionHPBonus(classCombo, constitution int) int {
+	if l.tables == nil {
+		return 0
+	}
+	return l.tables.FighterConstitutionBonusFor(classCombo, constitution)
 }

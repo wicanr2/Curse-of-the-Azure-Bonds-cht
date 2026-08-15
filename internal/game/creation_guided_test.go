@@ -25,13 +25,19 @@ func TestGuidedCreationFollowsReferenceFourMenus(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// 七個種族，值就是原作的 +74h 編號 1..7。
-	if len(races) != 7 || races[0].Value != 1 || races[6].Value != 7 {
+	// 六個種族：原作的顯示迴圈沒有分支收半獸人（6），所以建角取不到它；
+	// 其餘仍用原作的 +74h 編號，不重新連號（spec 1102 §一）。
+	if len(races) != 6 || races[0].Value != 1 || races[5].Value != 7 {
 		t.Fatalf("種族選單=%v", races)
 	}
+	for _, option := range races {
+		if option.Value == 6 {
+			t.Fatalf("半獸人不應該出現在建角選單：%v", races)
+		}
+	}
 
-	// 選人類（索引 6 ＝ 編號 7）。
-	if err := state.SelectGuidedOption(6); err != nil {
+	// 選人類（最後一項，編號 7）。
+	if err := state.SelectGuidedOption(5); err != nil {
 		t.Fatal(err)
 	}
 	if state.GuidedDraft.Race != party.RaceHuman || state.GuidedStep != CreationStepGender {
@@ -87,8 +93,9 @@ func TestGuidedCreationFollowsReferenceFourMenus(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(alignments) != 9 {
-		t.Fatalf("陣營應有 9 個，得到 %d", len(alignments))
+	// 聖騎士只有守序善一項（spec 1102 §二 的 DS:41D8h）。
+	if len(alignments) != 1 || alignments[0].Value != 0 {
+		t.Fatalf("聖騎士的陣營選單=%v", alignments)
 	}
 	if err := state.SelectGuidedOption(0); err != nil { // 守序善良
 		t.Fatal(err)
@@ -111,6 +118,21 @@ func TestGuidedCreationFollowsReferenceFourMenus(t *testing.T) {
 	}
 	if abilities.Strength < 12 || abilities.Wisdom < 13 || abilities.Constitution < 9 {
 		t.Fatalf("聖騎士屬性下限未套用：%+v", abilities)
+	}
+
+	// 收尾：年齡與 HP 是原作在最後才決定的（spec 1093 §五、spec 1101）。
+	if err := state.AcceptGuidedAbilities(1234); err != nil {
+		t.Fatal(err)
+	}
+	if state.GuidedStep != CreationStepDone {
+		t.Fatalf("step=%d, want done", state.GuidedStep)
+	}
+	if state.GuidedDraft.Age <= 0 {
+		t.Fatalf("年齡=%d", state.GuidedDraft.Age)
+	}
+	// 單職聖騎士：1d10 擲兩次取大 ⇒ 1..10，再加體質加值。
+	if state.GuidedDraft.MaxHitPoints < 1 || state.GuidedDraft.HitPoints != state.GuidedDraft.MaxHitPoints {
+		t.Fatalf("HP=%d max=%d", state.GuidedDraft.HitPoints, state.GuidedDraft.MaxHitPoints)
 	}
 }
 

@@ -72,6 +72,16 @@ var guidedAlignments = []struct {
 	{8, "alignment_chaotic_evil"},
 }
 
+// raceByDOSID 把原作的 +74h 種族編號換回本套件的 Race。
+func raceByDOSID(dosRaceID int) (party.Race, bool) {
+	for _, race := range guidedRaces {
+		if race.DOSRaceID == dosRaceID {
+			return race.Race, true
+		}
+	}
+	return 0, false
+}
+
 // GuidedCreationOption 是目前這一段的一個可選項。Value 的意義依段別而定：
 // 種族段是 DOS 種族編號、性別段是 0/1、職業段是職業組合編號、陣營段是陣營碼。
 type GuidedCreationOption struct {
@@ -99,8 +109,18 @@ func (s *State) BeginGuidedCreation() error {
 func (s *State) GuidedCreationOptions() ([]GuidedCreationOption, error) {
 	switch s.GuidedStep {
 	case CreationStepRace:
+		// 選單只列 selectable 的種族：原作的顯示迴圈沒有分支收半獸人
+		// （spec 1102 §一），所以建角取不到它。
+		tables, err := gamepack.Tables()
+		if err != nil {
+			return nil, err
+		}
 		options := make([]GuidedCreationOption, 0, len(guidedRaces))
 		for _, race := range guidedRaces {
+			entry, ok := tables.RaceByID(race.DOSRaceID)
+			if !ok || !entry.Selectable {
+				continue
+			}
 			options = append(options, GuidedCreationOption{
 				Label: s.LocaleText(race.LocaleKey), Value: race.DOSRaceID,
 			})
@@ -137,10 +157,25 @@ func (s *State) GuidedCreationOptions() ([]GuidedCreationOption, error) {
 		}
 		return options, nil
 	case CreationStepAlignment:
-		options := make([]GuidedCreationOption, 0, len(guidedAlignments))
-		for _, alignment := range guidedAlignments {
+		// 可選陣營由職業組合決定（spec 1102 §二）：聖騎士只有守序善、
+		// 遊俠只有三個善、盜賊系少掉兩個善。
+		tables, err := gamepack.Tables()
+		if err != nil {
+			return nil, err
+		}
+		combo, ok := tables.CombinationByID(int(s.GuidedDraft.RawClassID))
+		if !ok {
+			return nil, fmt.Errorf("class combination %d is missing from the character tables",
+				s.GuidedDraft.RawClassID)
+		}
+		options := make([]GuidedCreationOption, 0, len(combo.Alignments))
+		for _, code := range combo.Alignments {
+			if code < 0 || code >= len(guidedAlignments) {
+				return nil, fmt.Errorf("class combination %d allows unknown alignment %d",
+					combo.Combo, code)
+			}
 			options = append(options, GuidedCreationOption{
-				Label: s.LocaleText(alignment.LocaleKey), Value: int(alignment.Code),
+				Label: s.LocaleText(guidedAlignments[code].LocaleKey), Value: code,
 			})
 		}
 		return options, nil
@@ -161,7 +196,12 @@ func (s *State) SelectGuidedOption(index int) error {
 	s.GuidedCursor = 0
 	switch s.GuidedStep {
 	case CreationStepRace:
-		s.GuidedDraft.Race = guidedRaces[index].Race
+		// 選單索引與種族編號不再一一對應（半獸人被跳過），一律用 Value。
+		race, ok := raceByDOSID(value)
+		if !ok {
+			return fmt.Errorf("creation option gave unknown DOS race id %d", value)
+		}
+		s.GuidedDraft.Race = race
 		s.GuidedStep = CreationStepGender
 		s.CreationMessage = s.LocaleText("creation_pick_gender")
 	case CreationStepGender:
@@ -304,6 +344,52 @@ func (s *State) RollGuidedAbilities(seed int64) error {
 		Dexterity: values[3], Constitution: values[4], Charisma: values[5],
 	}
 	s.CreationMessage = s.LocaleText("creation_reroll_prompt")
+	return nil
+}
+
+// AcceptGuidedAbilities 結束重擲迴圈，補上原作在建角尾端才決定的欄位：
+// 年齡（spec 1093 §五）、HP（spec 1101），最後把目前值抄成基準值
+// （spec 1093 §六之二）。
+func (s *State) AcceptGuidedAbilities(seed int64) error {
+	if s.GuidedStep != CreationStepAbilities {
+		return fmt.Errorf("cannot accept abilities at creation step %d", s.GuidedStep)
+	}
+	if s.GuidedDraft.Abilities == (party.Abilities{}) {
+		return fmt.Errorf("abilities have not been rolled yet")
+	}
+	ages, err := gamepack.AgeLookup()
+	if err != nil {
+		return err
+	}
+	age, err := party.RollStartingAgeFrom(ages, s.GuidedDraft.Race, s.GuidedDraft.Class, seed)
+	if err != nil {
+		return err
+	}
+	s.GuidedDraft.Age = age
+
+	dice, err := gamepack.HitDice()
+	if err != nil {
+		return err
+	}
+	// 體質用的是**目前值**（角色^[19h]，spec 869）。建角這一刻目前值與
+	// 基準值還相同，但欄位要取對，否則之後接上裝備加成就會算錯。
+	constitution, err := s.GuidedDraft.Abilities.CurrentValue(4)
+	if err != nil {
+		return err
+	}
+	points, err := party.RollCreationHitPoints(dice, s.GuidedDraft.ClassLevels,
+		int(s.GuidedDraft.RawClassID), constitution, seed)
+	if err != nil {
+		return err
+	}
+	s.GuidedDraft.MaxHitPoints = points.MaxHitPoints
+	s.GuidedDraft.BaseMaxHitPoints = points.BaseMaxHitPoints
+	// 原作直接補滿：角色^[1A4h] := 角色^[78h]。
+	s.GuidedDraft.HitPoints = points.MaxHitPoints
+
+	s.GuidedDraft.Abilities.SyncBaseFromCurrent()
+	s.GuidedStep = CreationStepDone
+	s.CreationMessage = s.LocaleText("creation_name_prompt")
 	return nil
 }
 

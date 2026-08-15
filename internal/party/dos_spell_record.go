@@ -61,6 +61,7 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 		out[0x11+index*2] = uint8(value)
 	}
 	out[0x78] = uint8(character.MaxHitPoints)
+	out[0x12C] = uint8(character.BaseMaxHitPoints)
 	if character.ClassLevels != [8]uint8{} {
 		copy(out[0x109:0x111], character.ClassLevels[:])
 	}
@@ -141,6 +142,8 @@ type DOSPlayerRecord struct {
 	Level            int
 	MaxHitPoints     int
 	CurrentHitPoints int
+	// BaseMaxHitPoints 是 +12Ch：不含體質加值的最大 HP（spec 1079／1101）。
+	BaseMaxHitPoints int
 	Age              int16
 	Experience       uint32
 	ControlMorale    uint8
@@ -317,6 +320,7 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 				int(data[0x19]), int(data[0x1B])},
 		},
 		Level: level, MaxHitPoints: int(data[0x78]), CurrentHitPoints: int(data[0x1A4]),
+		BaseMaxHitPoints: int(data[0x12C]),
 		Age:           int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
 		Experience:    binary.LittleEndian.Uint32(data[0x127:0x12B]),
 		ControlMorale: data[0xF7], ECLFlag192: data[0x192], Gender: data[0x119],
@@ -349,6 +353,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		RawClassID: r.RawClass,
 		Level:      r.Level, Age: r.Age, Experience: r.Experience,
 		HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
+		BaseMaxHitPoints: r.BaseMaxHitPoints,
 		NPC: r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale, ECLFlag192: r.ECLFlag192,
 		Gender: Gender(r.Gender),
 		ClassLevels: r.ClassLevels, HitDice: r.HitDice, MulticlassLevel: r.MulticlassLevel,
