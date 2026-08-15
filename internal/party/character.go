@@ -26,6 +26,22 @@ const (
 	RaceSaurial
 )
 
+// Gender 是角色記錄 +119h 的值。原作的種族屬性表把每組限制排成
+// （男, 女）兩格，索引就是這個欄位，所以 0 ＝ 男、1 ＝ 女。
+type Gender uint8
+
+const (
+	GenderMale Gender = iota
+	GenderFemale
+)
+
+func (g Gender) String() string {
+	if g == GenderFemale {
+		return "female"
+	}
+	return "male"
+}
+
 type Class uint8
 
 const (
@@ -217,6 +233,66 @@ func (a Abilities) Value(index int) (int, error) {
 	return values[index], nil
 }
 
+// AbilityLimitLookup 是屬性上下限的查詢介面。資料由 game pack 提供
+// （gamepack.LimitLookup），本套件只放機制。
+type AbilityLimitLookup interface {
+	AbilityLimits(raceID, gender, classCombo int) ([6][2]int, bool)
+}
+
+// AdjustWithin 依原作規則調整一個屬性：先夾種族的上下限，再夾職業組合的
+// 最低要求（spec 1086 的兩次夾值）。tables 為 nil 時退回 3..18 的通用範圍。
+//
+// ⚠ 力量的 18/xx 百分比是獨立的一階（spec 1086：往下調時先把百分比扣完才
+// 動整數部分），本函式只處理整數部分。
+func (a *Abilities) AdjustWithin(tables AbilityLimitLookup, character *Character, index, delta int) error {
+	if delta == 0 {
+		return nil
+	}
+	value, err := a.Value(index)
+	if err != nil {
+		return err
+	}
+	low, high := 3, 18
+	if tables != nil && character != nil {
+		raceID, ok := DOSRaceID(character.Race)
+		if !ok {
+			return fmt.Errorf("race %d has no DOS race id", character.Race)
+		}
+		limits, ok := tables.AbilityLimits(raceID, int(character.Gender), int(character.RawClassID))
+		if !ok {
+			return fmt.Errorf("race %d has no ability limits", character.Race)
+		}
+		low, high = limits[index][0], limits[index][1]
+	}
+	if value+delta < low {
+		return fmt.Errorf("ability value must remain at least %d", low)
+	}
+	if value+delta > high {
+		return fmt.Errorf("ability value must remain at most %d", high)
+	}
+	return a.set(index, value+delta)
+}
+
+func (a *Abilities) set(index, value int) error {
+	switch index {
+	case 0:
+		a.Strength = value
+	case 1:
+		a.Intelligence = value
+	case 2:
+		a.Wisdom = value
+	case 3:
+		a.Dexterity = value
+	case 4:
+		a.Constitution = value
+	case 5:
+		a.Charisma = value
+	default:
+		return fmt.Errorf("ability index %d is out of range", index)
+	}
+	return nil
+}
+
 func (a *Abilities) Adjust(index, delta int) error {
 	if delta == 0 {
 		return nil
@@ -315,6 +391,10 @@ type Character struct {
 	// SavingThrowBonus preserves DOS player field_186, including signed item or
 	// effect-derived bonus already present in an imported record.
 	SavingThrowBonus int8 `json:"saving_throw_bonus,omitempty"`
+	// Gender 對應角色記錄 +119h（spec 1093 的 Pick Gender）。種族的力量下限／
+	// 上限／百分比上限三格會再依性別分（spec 1086 的
+	// 「基底 + 種族×10h + 角色^[119h]」），其餘五個屬性只看種族。
+	Gender Gender `json:"gender,omitempty"`
 	// Alignment mirrors CHARREC.ALIGNMENT at +11B. Zero is a valid alignment,
 	// so imported records carry an explicit known bit for conditional effects.
 	Alignment      uint8 `json:"alignment,omitempty"`

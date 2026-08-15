@@ -156,3 +156,70 @@ func (l StartingAgeLookup) StartingAgeFor(raceID int, classSlot string) (int, in
 	}
 	return entry.BaseAge, entry.DiceCount, entry.DiceSize, true
 }
+
+// AbilityLimitsFor 依原作的種族編號、性別（0 男 1 女）與職業組合編號，
+// 回傳六個屬性各自的下限與上限。
+//
+// 規則來自 spec 1086／1099：
+//   - 種族表給每個屬性一組（下限, 上限）；力量的下限／上限／百分比上限
+//     三格再依性別分。
+//   - 職業組合表給六個屬性的最低要求，`0` 代表無要求；兩者取較嚴的下限。
+func (t *CharacterTables) AbilityLimitsFor(raceID, gender, classCombo int) ([6][2]int, bool) {
+	race, ok := t.RaceByID(raceID)
+	if !ok {
+		return [6][2]int{}, false
+	}
+	strength := race.StrengthMale
+	if gender == 1 {
+		strength = race.StrengthFemale
+	}
+	limits := [6][2]int{
+		{strength.Min, strength.Max},
+		{race.Intelligence.Min, race.Intelligence.Max},
+		{race.Wisdom.Min, race.Wisdom.Max},
+		{race.Dexterity.Min, race.Dexterity.Max},
+		{race.Constitution.Min, race.Constitution.Max},
+		{race.Charisma.Min, race.Charisma.Max},
+	}
+	if classCombo >= 0 && classCombo < len(t.ClassRequirements) {
+		for index, minimum := range t.ClassRequirements[classCombo] {
+			if index >= len(limits) {
+				break
+			}
+			if minimum > limits[index][0] {
+				limits[index][0] = minimum
+			}
+		}
+	}
+	return limits, true
+}
+
+// StrengthPercentileMax 回傳該種族／性別的力量百分比上限（0 代表不能有 18/xx）。
+func (t *CharacterTables) StrengthPercentileMax(raceID, gender int) (int, bool) {
+	race, ok := t.RaceByID(raceID)
+	if !ok {
+		return 0, false
+	}
+	if gender == 1 {
+		return race.StrengthFemale.PercentileMax, true
+	}
+	return race.StrengthMale.PercentileMax, true
+}
+
+// AbilityLimitLookup 是可注入 internal/party 的屬性上下限查詢器。
+type AbilityLimitLookup struct{ tables *CharacterTables }
+
+func LimitLookup() (AbilityLimitLookup, error) {
+	loaded, err := Tables()
+	if err != nil {
+		return AbilityLimitLookup{}, err
+	}
+	return AbilityLimitLookup{tables: loaded}, nil
+}
+
+func (l AbilityLimitLookup) AbilityLimits(raceID, gender, classCombo int) ([6][2]int, bool) {
+	if l.tables == nil {
+		return [6][2]int{}, false
+	}
+	return l.tables.AbilityLimitsFor(raceID, gender, classCombo)
+}
