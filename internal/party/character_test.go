@@ -2,6 +2,7 @@ package party
 
 import (
 	"encoding/binary"
+	"fmt"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -44,27 +45,68 @@ func TestAbilitiesWithAgeEffectsDoesNotImplicitlyTouchDOSProjection(t *testing.T
 	}
 }
 
+// fakeAgeTable 讓本套件的測試不必相依 gamepack；值取自 spec 1099 的
+// DS:404Ch 起始年齡表。
+type fakeAgeTable map[string]StartingAgeSpec
+
+func (f fakeAgeTable) StartingAgeFor(raceID int, classSlot string) (int, int, int, bool) {
+	spec, ok := f[fmt.Sprintf("%d/%s", raceID, classSlot)]
+	if !ok {
+		return 0, 0, 0, false
+	}
+	return spec.BaseAge, spec.DiceCount, spec.DiceSize, true
+}
+
+func referenceAgeTable() fakeAgeTable {
+	return fakeAgeTable{
+		"7/fighter": {BaseAge: 15, DiceCount: 1, DiceSize: 4}, // 人類戰士
+		"6/fighter": {BaseAge: 13, DiceCount: 1, DiceSize: 4}, // 半獸人戰士
+		"6/cleric":  {BaseAge: 20, DiceCount: 1, DiceSize: 4},
+		"6/thief":   {BaseAge: 20, DiceCount: 2, DiceSize: 4},
+	}
+}
+
 func TestRollStartingAgeUsesReferenceHumanFighterEntry(t *testing.T) {
-	spec, err := StartingAgeSpecFor(RaceHuman, ClassFighter)
-	if err != nil || spec != (StartingAgeSpec{BaseAge: 18, DiceCount: 1, DiceSize: 4}) {
+	tables := referenceAgeTable()
+	// spec 1099：DS:404Ch 的人類列（4110h）欄 2 ＝ 戰士 ＝ 15+1d4。
+	// 職業槽順序是牧師／德魯伊／戰士／…，少算德魯伊那一欄就會取到 18+1d4。
+	spec, err := StartingAgeSpecFrom(tables, RaceHuman, ClassFighter)
+	if err != nil || spec != (StartingAgeSpec{BaseAge: 15, DiceCount: 1, DiceSize: 4}) {
 		t.Fatalf("human fighter spec=%+v err=%v", spec, err)
 	}
-	age, err := RollStartingAge(RaceHuman, ClassFighter, 7)
-	if err != nil || age < 19 || age > 22 {
-		t.Fatalf("starting age=%d err=%v, want 19..22", age, err)
+	age, err := RollStartingAgeFrom(tables, RaceHuman, ClassFighter, 7)
+	if err != nil || age < 16 || age > 19 {
+		t.Fatalf("starting age=%d err=%v, want 16..19", age, err)
 	}
-	if _, err := StartingAgeSpecFor(RaceDwarf, ClassCleric); err == nil {
+	if _, err := StartingAgeSpecFrom(tables, RaceDwarf, ClassCleric); err == nil {
 		t.Fatal("unsupported dwarf cleric age entry was accepted")
 	}
 }
 
+func TestDOSRaceIDMatchesReferenceNumbering(t *testing.T) {
+	// spec 1084／884：+74h 的種族編號 1..7，0 不是合法值。
+	for race, want := range map[Race]int{
+		RaceDwarf: 1, RaceElf: 2, RaceGnome: 3, RaceHalfElf: 4,
+		RaceHalfling: 5, RaceHalfOrc: 6, RaceHuman: 7,
+	} {
+		got, ok := DOSRaceID(race)
+		if !ok || got != want {
+			t.Fatalf("race %v -> %d (ok=%v), want %d", race, got, ok, want)
+		}
+	}
+	if _, ok := DOSRaceID(RaceSaurial); ok {
+		t.Fatal("RaceSaurial 不是可建角種族，不該有 DOS 編號")
+	}
+}
+
 func TestHalfOrcSingleClassEvidence(t *testing.T) {
+	tables := referenceAgeTable()
 	for _, class := range []Class{ClassCleric, ClassFighter, ClassThief} {
-		if _, err := StartingAgeSpecFor(RaceHalfOrc, class); err != nil {
+		if _, err := StartingAgeSpecFrom(tables, RaceHalfOrc, class); err != nil {
 			t.Fatalf("half-orc %s age spec: %v", class, err)
 		}
 	}
-	if spec, err := StartingAgeSpecFor(RaceHalfOrc, ClassFighter); err != nil || spec != (StartingAgeSpec{BaseAge: 13, DiceCount: 1, DiceSize: 4}) {
+	if spec, err := StartingAgeSpecFrom(tables, RaceHalfOrc, ClassFighter); err != nil || spec != (StartingAgeSpec{BaseAge: 13, DiceCount: 1, DiceSize: 4}) {
 		t.Fatalf("half-orc fighter spec=%+v err=%v", spec, err)
 	}
 	character := Character{ID: "orc", Name: "半獸人", Race: RaceHalfOrc, Class: ClassCleric, Level: 1, Abilities: Abilities{Strength: 10, Intelligence: 10, Wisdom: 16, Dexterity: 10, Constitution: 14, Charisma: 10}}

@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
@@ -5215,7 +5216,11 @@ func TestCharacterCreationListsVerifiedClassOptions(t *testing.T) {
 		if err := character.Validate(); err != nil {
 			t.Fatalf("option %d=%#v is invalid: %v", index, character, err)
 		}
-		if _, err := party.StartingAgeSpecFor(character.Race, character.Class); err != nil {
+		ageLookup, lookupErr := gamepack.AgeLookup()
+		if lookupErr != nil {
+			t.Fatal(lookupErr)
+		}
+		if _, err := party.StartingAgeSpecFrom(ageLookup, character.Race, character.Class); err != nil {
 			t.Fatalf("option %d has no starting-age evidence: %v", index, err)
 		}
 		if character.RawClassID >= 8 {

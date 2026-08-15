@@ -7,6 +7,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -47,7 +48,11 @@ func starterCharacters(pack *goldenbox.Pack, language string) ([]party.Character
 		if len(character.SavingThrows) != 5 {
 			return nil, fmt.Errorf("character creation template %q must provide five saving throws", template.ID)
 		}
-		if _, err := party.StartingAgeSpecFor(character.Race, character.Class); err != nil {
+		lookup, lookupErr := gamepack.AgeLookup()
+		if lookupErr != nil {
+			return nil, lookupErr
+		}
+		if _, err := party.StartingAgeSpecFrom(lookup, character.Race, character.Class); err != nil {
 			return nil, fmt.Errorf("character creation template %q age: %w", template.ID, err)
 		}
 		if err := character.Validate(); err != nil {
@@ -90,7 +95,11 @@ func (s *State) AddCreationCharacter(index int) error {
 	// values editable, then apply the generated age only to the copied party
 	// character so an option can be previewed and reused without double-aging.
 	seed := int64(0xC0AB) + int64(index)*97 + int64(len(s.CreationRoster))*13
-	age, err := party.RollStartingAge(character.Race, character.Class, seed)
+	lookup, err := gamepack.AgeLookup()
+	if err != nil {
+		return err
+	}
+	age, err := party.RollStartingAgeFrom(lookup, character.Race, character.Class, seed)
 	if err != nil {
 		return err
 	}

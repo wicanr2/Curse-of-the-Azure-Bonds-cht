@@ -16,6 +16,41 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/dseg-export/main.go",
+      "function": "main",
+      "sha256": "1040debcb8677950569c8d97a172ef970220420b234b471effbdbc17e3411593",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dseg-export/main.go",
+      "function": "main",
+      "sha256": "50800ea366fe5c79fcee9d163e350968ee7e4509fd96a62194c83aa87c4549de",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dseg-export/main.go",
+      "function": "main",
+      "sha256": "721c8d5ef615a058a2a220abc028499483395b5da84370ddec13007bf1b1c23c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dseg-export/main.go",
+      "function": "main",
+      "sha256": "e114c26aade135ee027dcf2e2e0dba68b341a43f3d66f5b82e761b7b035f17d4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dseg-export/main.go",
+      "function": "main",
+      "sha256": "e9848510014c11b9bd855495ef04cbfc2538bc207fd1c509174a89fc19ee72df",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/locale-drift-audit/main.go",
       "function": "main",
       "sha256": "5f5ebcca8586b6b6edda024a534b95501d4bc1997517af85cd73923391f5b72e",
