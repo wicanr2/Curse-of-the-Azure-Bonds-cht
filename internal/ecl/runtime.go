@@ -27,6 +27,13 @@ const (
 	addrShopRequest    uint16 = 0x7F6C // bank1^[6D8h] 商店
 	addrShopPriceScale uint16 = 0x7F6D // bank1^[6DAh] 商店價格倍率
 	addrCampRequest    uint16 = 0x7EE2 // bank1^[5C4h] 營地（本實作目前當神殿用）
+
+	// 區 1 低段的一部分位址不是 bank1 記憶體，而是「目前角色」記錄的欄位投影：
+	// 讀取端 overlay-07:007F1h 會攔截這些位址並改讀 DS:6506h 指向的角色
+	// （對照表見 spec 1040，機制見 spec 1098）。LOAD CHARACTER 換人之後，
+	// 同一個 ECL 位址就該讀到新角色的值，所以下列位址每次換人都要重新投影。
+	addrPlayerControlMorale uint16 = 0x7CB8 // 角色 +0F7h，>=80h 是 NPC（spec 1066）
+	addrPlayerFlag192       uint16 = 0x7CE4 // 角色 +192h，讀取端只取 and 1
 )
 
 // RunResult is the observable output of the bounded ECL subset runner.
@@ -215,8 +222,10 @@ type PartySurpriseRequest struct {
 // commands. It deliberately avoids importing party/combat packages so the ECL
 // VM remains reusable by other Gold Box works.
 type PartyMemberContext struct {
-	Name              string
-	ControlMorale     uint8
+	Name          string
+	ControlMorale uint8
+	// ECLFlag192 是角色記錄 +192h，透過投影位址 7CE4h 讀（spec 1098 §五）。
+	ECLFlag192        uint8
 	ItemTypes         []uint8
 	HitPoints         int
 	ArmorClass        int
@@ -1145,11 +1154,16 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 					// Player +0xB8 is the control/morale byte. NPC records use
 					// values >=0x80; ECL5 block 0x30 relies on this validity
 					// probe before comparing Akabar's selected name.
-					memory[0x7CB8] = uint16(workingPartyContext.Members[playerIndex].ControlMorale)
+					memory[addrPlayerControlMorale] = uint16(workingPartyContext.Members[playerIndex].ControlMorale)
+					// 角色 +192h 的投影。原作讀取端只取最低位元（and 1，
+					// spec 1040/1098），ECL1 block 0x50 用 COMPARE 7CE4h, 0
+					// 判斷是否跳轉，所以這裡必須跟著模擬同樣的遮罩。
+					memory[addrPlayerFlag192] = uint16(workingPartyContext.Members[playerIndex].ECLFlag192 & 1)
 					selectedPlayerIndex = playerIndex
 					selectedPlayerSet = true
 				} else {
-					memory[0x7CB8] = 0
+					memory[addrPlayerControlMorale] = 0
+					memory[addrPlayerFlag192] = 0
 				}
 			}
 		case 0x32: // FIND ITEM

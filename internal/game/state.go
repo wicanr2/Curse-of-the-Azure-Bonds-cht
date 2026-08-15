@@ -463,6 +463,7 @@ func (s *State) eclPartyContext() ecl.PartyContext {
 		member := ecl.PartyMemberContext{
 			Name:           scriptName,
 			ControlMorale:  character.ControlMorale,
+			ECLFlag192:     character.ECLFlag192,
 			HitPoints:      character.HitPoints,
 			ClericLevel:    character.ClassLevel(party.ClassCleric),
 			MagicUserLevel: character.ClassLevel(party.ClassMagicUser),
