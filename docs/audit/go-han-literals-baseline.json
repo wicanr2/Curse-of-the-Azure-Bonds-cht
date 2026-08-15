@@ -32,6 +32,13 @@
     {
       "path": "cmd/dseg-export/main.go",
       "function": "main",
+      "sha256": "5a555b0c73831973d875898b40958631f1987f923daefefaf24392096389254a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dseg-export/main.go",
+      "function": "main",
       "sha256": "721c8d5ef615a058a2a220abc028499483395b5da84370ddec13007bf1b1c23c",
       "occurrences": 1,
       "category": "runtime_ui_debt"

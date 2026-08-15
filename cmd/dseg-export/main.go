@@ -40,8 +40,9 @@ const (
 	// 職業槽順序（spec 1084 第五次確認）：牧師／德魯伊／戰士／聖騎士／
 	// 遊俠／法師／盜賊／武僧。年齡表只排到盜賊，共 7 欄。
 	ageColumns = 7
-	// 職業組合編號值域 0..0Ch（spec 1086 的 角色^[75h]）。
-	classCombinations = 13
+	// 職業組合編號 0..10h ＝ 17 筆（spec 1093）。第 18 筆（41D8h）是
+	// `9 0 1 2 3 4`，遞增序列，明顯不屬於本表 ⇒ 表到 10h 為止。
+	classCombinations = 17
 )
 
 // raceNames 只用於產出時的可讀註記，索引即原作的 +74h 種族編號。
@@ -131,7 +132,15 @@ func main() {
 			Constitution:   abilityRange{Min: limits[12], Max: limits[13]},
 			Charisma:       abilityRange{Min: limits[14], Max: limits[15]},
 		}
-		for _, choice := range choices {
+		// 每列的第一個位元組是「這個種族有幾個可選職業」，其後才是職業組合
+		// 編號。spec 1093 的算式 byte[3FF8h + 種族×0Eh + 選單索引] 因此是
+		// 從索引 1 開始取。驗證：人類 6 個 ＝ 牧師／戰士／法師／盜賊／聖騎士／
+		// 遊俠，精靈 7 個、矮人 3 個（戰士／盜賊／戰士-盜賊），全部符合 AD&D 1e。
+		count := int(choices[0])
+		if count > classChoicesSize-1 {
+			log.Fatalf("種族 %d 的可選職業數 %d 超出一列容量", race, count)
+		}
+		for _, choice := range choices[1 : 1+count] {
 			entry.ClassChoices = append(entry.ClassChoices, int(choice))
 		}
 		for column := 0; column < ageColumns; column++ {
