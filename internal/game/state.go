@@ -142,6 +142,9 @@ type State struct {
 	GuidedStep        CreationStep
 	GuidedDraft       party.Character
 	GuidedClassCombos []int
+	// GuidedActive 為真時建角畫面走原版的四段選單，而不是選預做範本。
+	GuidedActive bool
+	GuidedCursor int
 
 	catalog                 locale.Catalog
 	eclBlock                []byte
