@@ -11,7 +11,7 @@
 
 ## 本輪成果
 
-- `scripts/render_previews.go` 會從本地原始 ZIP 抽出 CHEAD／CBODY，並產生六張 `assets/sprites/party-block-XX.png` 合成圖。
+- `scripts/render_previews/` 會從本地原始 ZIP 抽出 CHEAD／CBODY，並產生六張 `assets/sprites/party-block-XX.png` 合成圖。
 - Ebiten party fighter 優先顯示這些合成小人；敵人仍依 CPIC／SPRIT block 顯示。
 - 原始 DAX 不放入 repository；可重新產生流程、manifest 與 PNG 證據放在 repository。
 

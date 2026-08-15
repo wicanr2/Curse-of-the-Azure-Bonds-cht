@@ -367,11 +367,11 @@ LocationStandingStone。
 - `cmd/azure-bonds-game` 已以 `G` 顯示 `GEO2` 第一個 block 的 16×16 raw wall geometry viewport；background floor construction、tile mapping、碰撞與 camera 仍未完成。
 - `geo.Grid.CanMove` 已依 raw wall fields 建立 shared 四方向 traversal contract；viewport 黃點遵守目前／相鄰 cell wall 與邊界，完整 movement cost、encounter 與 floor collision 仍未完成。
 - `internal/mapdata` 已保存 reference `BackGroundTiles` 實際 74 筆 metadata，保留 0xFF impassable sentinel 與 reserved tail；尚未宣稱完成 floor／tile mapping。
-- 根目錄 `README.md` 已加入目前成果與限制，`docs/screenshots/tiles-gallery.png`、`geo-geometry.png` 由 `scripts/render_previews.go` 從原始 DAX 以現有 parser 可重現產生。
+- 根目錄 `README.md` 已加入目前成果與限制，`docs/screenshots/tiles-gallery.png`、`geo-geometry.png` 由 `scripts/render_previews/` 從原始 DAX 以現有 parser 可重現產生。
 - README 截圖證明 TILES indexed graphics 與 GEO raw wall geometry 管線已初步完成；不代表完整地圖、完整劇情或完整遊戲已完成。
 - `mapdata.GenerateWilderness` 已依 reference `SetupWildernessFloor01–03` 建立 50×25 floor，保留 city flags、骰點與 background entry → pixel tile 的資料邊界。
 - `game.State` 進入 Shadowdale map slice 時生成 seeded wilderness floor；`Move` 已檢查 map boundary 與 `BackgroundTile.MoveCost` impassable sentinel。
-- `scripts/render_previews.go` 新增 `docs/screenshots/wilderness-floor.png`，由原始 TILES 與同一 floor generator 組合產生。
+- `scripts/render_previews/` 新增 `docs/screenshots/wilderness-floor.png`，由原始 TILES 與同一 floor generator 組合產生。
 - `mapdata.GenerateDungeon` 已依 reference `SetupDungeonFloor` 的四段 builder，將 GEO wall／door detail 組成 13×5 dungeon background-entry window。
 - `cmd/azure-bonds-game` 新增 `D` dungeon floor preview；`docs/screenshots/dungeon-floor.png` 使用同一組 GEO、mapdata 與 TILES pipeline 產生。
 - dungeon floor 的桌椅 decoration 已完成 reference `sub_370D3` 的 seeded pass；area selection、camera、combat placement、encounter 與音效仍未完成。
