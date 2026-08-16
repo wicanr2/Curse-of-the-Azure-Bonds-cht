@@ -676,5 +676,171 @@
    "consumed_bytes": 0
   }
  ],
- "mismatches": null
+ "mismatches": null,
+ "sidecars": [
+  {
+   "name": ".SWG 物品記錄",
+   "size": 63,
+   "bytes_by_status": {
+    "decoded": 59,
+    "documented": 4
+   },
+   "fields": [
+    {
+     "offset": "+00h",
+     "size": 42,
+     "name": "名稱（右側補 NUL／空白）",
+     "status": "decoded",
+     "spec": "185",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+2Ah",
+     "size": 4,
+     "name": "物品鏈的 next（遠指標）",
+     "status": "documented",
+     "spec": "1000／832",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+2Eh",
+     "size": 1,
+     "name": "物品類型（索引 DS:5CF6h 那張 16 bytes 的類別表）",
+     "status": "decoded",
+     "spec": "1000／832",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+2Fh",
+     "size": 3,
+     "name": "名稱編號三格（未鑑定時顯示用）",
+     "status": "decoded",
+     "spec": "1036",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+32h",
+     "size": 1,
+     "name": "加值（有號）",
+     "status": "decoded",
+     "spec": "1036",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+33h",
+     "size": 1,
+     "name": "豁免用的加值",
+     "status": "decoded",
+     "spec": "1036",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+34h",
+     "size": 1,
+     "name": "裝備中（非 0 ＝ 已裝備）",
+     "status": "decoded",
+     "spec": "1000／832",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+35h",
+     "size": 1,
+     "name": "名稱隱藏旗標",
+     "status": "decoded",
+     "spec": "1036",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+36h",
+     "size": 1,
+     "name": "詛咒",
+     "status": "decoded",
+     "spec": "1036",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+37h",
+     "size": 2,
+     "name": "單位重量（word）",
+     "status": "decoded",
+     "spec": "1000／762",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+39h",
+     "size": 1,
+     "name": "數量（重量與價值都要乘它）",
+     "status": "decoded",
+     "spec": "1000／762",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+3Ah",
+     "size": 2,
+     "name": "價值（word，有號）",
+     "status": "decoded",
+     "spec": "1035",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+3Ch",
+     "size": 3,
+     "name": "三個效果槽（`+3Ch`／`+3Dh`／`+3Eh`）",
+     "status": "decoded",
+     "spec": "803／807",
+     "consumed_bytes": 0
+    }
+   ]
+  },
+  {
+   "name": ".FX 效果記錄",
+   "size": 9,
+   "bytes_by_status": {
+    "decoded": 5,
+    "documented": 4
+   },
+   "fields": [
+    {
+     "offset": "+00h",
+     "size": 1,
+     "name": "效果碼",
+     "status": "decoded",
+     "spec": "1005",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+01h",
+     "size": 2,
+     "name": "持續時間（word，分鐘）",
+     "status": "decoded",
+     "spec": "712",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+03h",
+     "size": 1,
+     "name": "強度（0FFh ＝ 永久）",
+     "status": "decoded",
+     "spec": "441",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+04h",
+     "size": 1,
+     "name": "生效旗標",
+     "status": "decoded",
+     "spec": "441",
+     "consumed_bytes": 0
+    },
+    {
+     "offset": "+05h",
+     "size": 4,
+     "name": "效果鏈的 next（遠指標，原樣保留）",
+     "status": "documented",
+     "spec": "1000",
+     "consumed_bytes": 0
+    }
+   ]
+  }
+ ]
 }
