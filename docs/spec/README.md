@@ -510,3 +510,4 @@
 - [第四百九十八輪 PC-98 寒冷抗性與資料驅動傷害效果](./498-pc98-resist-cold-data-driven-affect-rule.md)（`READY`：effect `0Ah` 的寒冷傷害減半、`70h／87h` 免疫規則移入 engine＋CoAB JSON，開戰／讀檔重新注入；寒冷法術入口與完整戰鬥仍未完成）
 - [第四百九十九輪 PC-98 alignment 與條件式 effect `08h／09h`](./499-pc98-alignment-conditional-effects.md)（`READY`：`RACETYPE／ALIGNMENT／MONSTERTYPE` 欄位修正、互動 alignment 條件與 `SAVEROLL／ROLLTOHIT` 資料驅動規則；完整 effect 生命週期與全作通關仍未完成）
 - [1104 ECL opcode 有序副作用相位](./1104-ecl-opcode-ordered-effect-phases.md)（`READY`：DOS 23 支 handler ＋ operand 解碼器 ＋ lifecycle 驅動器；PC 先推進的通則、`20h NEWECL` 終止、`CALL 2E10h` 是畫面唯一提交點、`21h`＋`37h` 配對閂鎖、`2Dh` 七路登記表；21 支 handler 仍未讀，PC-98 只比對兩項）
+- [1105 game pack 分檔與 stable ID](./1105-game-pack-file-split-and-stable-ids.md)（`READY`：依種類切成四檔、`LoadPackParts` 合併契約（重複即失敗、合併後才驗證）、ID 命名規範與 155 筆既有基線；依區域再切與熱鍵表留待後續）

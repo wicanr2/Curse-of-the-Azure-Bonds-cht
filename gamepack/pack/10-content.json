@@ -1,0 +1,3805 @@
+{
+ "text_rules": [
+  {
+   "id": "wizard-tower.courtyard.entering",
+   "all_contains": [
+    "HEADING UP INTO THE WIZARD'S TOWER"
+   ],
+   "message_id": "wizard-tower.courtyard"
+  },
+  {
+   "id": "wizard-tower.courtyard.description",
+   "all_contains": [
+    "COURTYARD OF A FIVE",
+    "SURROUNDING THE TOWER ARE HIGH MOUNTAINS"
+   ],
+   "message_id": "wizard-tower.courtyard"
+  },
+  {
+   "id": "wizard-tower.dracandros.arrival",
+   "all_contains": [
+    "AN IMPRESSIVE ROBED FIGURE APPROACHES YOU",
+    "I AM DRACANDROS"
+   ],
+   "message_id": "wizard-tower.dracandros.arrival"
+  },
+  {
+   "id": "wizard-tower.dracandros.freezes-party",
+   "all_contains": [
+    "FREEZE WHERE YOU STAND",
+    "THE BONDS PARALYZE YOU"
+   ],
+   "message_id": "wizard-tower.dracandros.freezes-party"
+  },
+  {
+   "id": "wizard-tower.dragon-roof",
+   "all_contains": [
+    "ROOF OF THE TOWER",
+    "HUGE HOST OF BLACK DRAGONS"
+   ],
+   "message_id": "wizard-tower.dragon-roof"
+  },
+  {
+   "id": "wizard-tower.dragon-steps-out",
+   "all_contains": [
+    "ONE OF THE DRAGONS DISENGAGES HIMSELF"
+   ],
+   "message_id": "wizard-tower.dragon-steps-out"
+  },
+  {
+   "id": "wizard-tower.dracandros.attack-order",
+   "all_contains": [
+    "ATTACK THE DRAGON AS ELMINSTER TOLD YOU"
+   ],
+   "message_id": "wizard-tower.dracandros.attack-order"
+  },
+  {
+   "id": "wizard-tower.dragon-illusion",
+   "all_contains": [
+    "UNDER THE FORCE OF THE BONDS",
+    "DRAGON WAS ONLY AN ILLUSION"
+   ],
+   "message_id": "wizard-tower.dragon-illusion"
+  },
+  {
+   "id": "wizard-tower.dracandros.journal-15",
+   "all_contains": [
+    "FREEZE, BASE SLAYERS OF DRAGONKIND",
+    "JOURNAL ENTRY 15"
+   ],
+   "message_id": "wizard-tower.dracandros.journal-15",
+   "journal_message_ids": [
+    "journal.15.1",
+    "journal.15.2"
+   ]
+  },
+  {
+   "id": "wizard-tower.dracandros.bond-fades",
+   "all_contains": [
+    "DRACANDROS' MUMBLED PHRASE",
+    "BONDS TO",
+    "FADE"
+   ],
+   "message_id": "wizard-tower.dracandros.bond-fades"
+  },
+  {
+   "id": "wizard-tower.dragons-depart",
+   "all_contains": [
+    "THIS IS A MATTER BETWEEN MEN",
+    "WE LEAVE YOU TO YOUR SQUABBLES"
+   ],
+   "message_id": "wizard-tower.dragons-depart"
+  },
+  {
+   "id": "wizard-tower.dracandros.calls-troops",
+   "all_contains": [
+    "TROOPS DEFEND ME",
+    "DRACANDROS FLEES DOWN THE STAIRS"
+   ],
+   "message_id": "wizard-tower.dracandros.calls-troops"
+  },
+  {
+   "id": "wizard-tower.safe-roof",
+   "all_contains": [
+    "HOLD THE ROOF WELL ENOUGH",
+    "REST SAFELY"
+   ],
+   "message_id": "wizard-tower.safe-roof"
+  },
+  {
+   "id": "wizard-tower.dragons-convinced",
+   "all_contains": [
+    "YOU HAVE CONVINCED US",
+    "NO PLOT AGAINST",
+    "DISPUTE WITH DRACANDROS"
+   ],
+   "message_id": "wizard-tower.dragons-convinced"
+  },
+  {
+   "id": "wizard-tower.dragons-condemn",
+   "all_contains": [
+    "YOU ARE RIGHT DRACANDROS",
+    "THEY CONDEMN THEMSELVES"
+   ],
+   "message_id": "wizard-tower.dragons-condemn"
+  },
+  {
+   "id": "wizard-tower.take-dragon-heart",
+   "all_contains": [
+    "DRACANDROS ESCAPED DOWNSTAIRS",
+    "DRAGON BODIES LIE STREWN ABOUT",
+    "DO YOU TAKE ONE OF THEIR HEARTS"
+   ],
+   "message_id": "wizard-tower.take-dragon-heart"
+  },
+  {
+   "id": "wizard-tower.dragon-bodies",
+   "all_contains": [
+    "DRACANDROS ESCAPED DOWNSTAIRS",
+    "DRAGON BODIES LIE STREWN ABOUT"
+   ],
+   "message_id": "wizard-tower.dragon-bodies"
+  },
+  {
+   "id": "wizard-tower.dragon-heart-acid",
+   "all_contains": [
+    "CUT INTO THE DRAGON",
+    "SPRAY OF ACID",
+    "EXTRACT THE HEART"
+   ],
+   "message_id": "wizard-tower.dragon-heart-acid"
+  },
+  {
+   "id": "wizard-tower.wilderness-exit",
+   "all_contains": [
+    "STOP BY HAPTOOTH VILLAGE",
+    "DEPART THE AREA"
+   ],
+   "message_id": "wizard-tower.wilderness-exit"
+  },
+  {
+   "id": "wizard-tower.roof-exit",
+   "all_contains": [
+    "WAY DOWN TO THE CAVES",
+    "SECRET PASSAGE",
+    "DIRECTLY TO THE WILDERNESS"
+   ],
+   "message_id": "wizard-tower.roof-exit"
+  },
+  {
+   "id": "myth-drannor.tyranthraxus-reveal",
+   "all_contains": [
+    "REVEALING TYRANTHRAXUS",
+    "MEET ME AT MYTH DRANNOR"
+   ],
+   "message_id": "myth-drannor.tyranthraxus-reveal"
+  },
+  {
+   "id": "myth-drannor.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF MYTH DRANNOR",
+    "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"
+   ],
+   "message_id": "myth-drannor.edge"
+  },
+  {
+   "id": "myth-drannor.helm-north",
+   "all_contains": [
+    "THE HELM OF DRAGONS REPORTS",
+    "TYRANTHRAXUS",
+    "TO THE NORTH"
+   ],
+   "message_id": "myth-drannor.helm-north"
+  },
+  {
+   "id": "myth-drannor.inner.helm-northeast",
+   "all_contains": [
+    "THE HELM OF DRAGONS SHOWS TYRANTHRAXUS",
+    "SECOND FLOOR",
+    "NORTHEAST CORNER"
+   ],
+   "message_id": "myth-drannor.inner.helm-northeast"
+  },
+  {
+   "id": "myth-drannor.elf-spirit.greeting",
+   "all_contains": [
+    "AN ELFISH SPIRIT APPEARS AND GREETS YOU",
+    "WHAT DO YOU DO"
+   ],
+   "message_id": "myth-drannor.elf-spirit.greeting"
+  },
+  {
+   "id": "myth-drannor.elf-spirit.journal-25",
+   "all_contains": [
+    "THE SPIRIT TALKS OF THE GLEN",
+    "JOURNAL ENTRY",
+    "25. THEN, THE SPIRIT FADES"
+   ],
+   "message_id": "myth-drannor.elf-spirit.journal-25",
+   "journal_message_ids": [
+    "journal.25"
+   ]
+  },
+  {
+   "id": "myth-drannor.elf-spirit.flee",
+   "all_contains": [
+    "SO, YOU ARE SHEEP",
+    "THEN YOU SHALL FEED ME",
+    "THE SPIRIT FADES"
+   ],
+   "message_id": "myth-drannor.elf-spirit.flee"
+  },
+  {
+   "id": "myth-drannor.spirit-disappears",
+   "all_contains": [
+    "THE SPIRIT DISAPPEARS"
+   ],
+   "message_id": "myth-drannor.spirit-disappears"
+  },
+  {
+   "id": "myth-drannor.red-web",
+   "all_contains": [
+    "A RED WEB STRETCHES ACROSS THE PASSAGE",
+    "GLOWING DULLY"
+   ],
+   "message_id": "myth-drannor.red-web"
+  },
+  {
+   "id": "myth-drannor.red-web.word",
+   "all_contains": [
+    "WHAT WORD DO YOU SAY"
+   ],
+   "message_id": "myth-drannor.red-web.word"
+  },
+  {
+   "id": "myth-drannor.red-web.brighter",
+   "all_contains": [
+    "THE WEB GLOWS MORE BRIGHTLY"
+   ],
+   "message_id": "myth-drannor.red-web.brighter"
+  },
+  {
+   "id": "myth-drannor.red-web.stuck",
+   "all_contains": [
+    "YOU FIND YOURSELF STUCK FAST"
+   ],
+   "message_id": "myth-drannor.red-web.stuck"
+  },
+  {
+   "id": "myth-drannor.red-web.hack",
+   "all_contains": [
+    "AS YOU STRIKE",
+    "WIRE SNARES AS WELL",
+    "THEN RUNNING FEET"
+   ],
+   "message_id": "myth-drannor.red-web.hack"
+  },
+  {
+   "id": "myth-drannor.red-web.spiders",
+   "all_contains": [
+    "SOME SPIDERS INVESTIGATE THE NOISE"
+   ],
+   "message_id": "myth-drannor.red-web.spiders"
+  },
+  {
+   "id": "myth-drannor.red-web.rakshasa",
+   "all_contains": [
+    "THE SPIRIT APPEARS LAUGHING",
+    "A RAKSHASA"
+   ],
+   "message_id": "myth-drannor.red-web.rakshasa"
+  },
+  {
+   "id": "myth-drannor.red-web.free",
+   "all_contains": [
+    "YOU EVENTUALLY FREE YOURSELF"
+   ],
+   "message_id": "myth-drannor.red-web.free"
+  },
+  {
+   "id": "myth-drannor.grave.thri-kreen",
+   "all_contains": [
+    "A THRI-KREEN IS EXCAVATING A GRAVE",
+    "AT YOUR",
+    "APPROACH IT TURNS AND ATTACKS"
+   ],
+   "message_id": "myth-drannor.grave.thri-kreen"
+  },
+  {
+   "id": "myth-drannor.grave.skeleton",
+   "all_contains": [
+    "YOU SEE A PARTIALLY EXCAVATED ELF SKELETON",
+    "JEWELRY GLITTERS ON ITS WRIST",
+    "WHAT WILL YOU DO"
+   ],
+   "message_id": "myth-drannor.grave.skeleton"
+  },
+  {
+   "id": "myth-drannor.daemir.offer",
+   "all_contains": [
+    "I AM THE SPIRIT OF",
+    "PRINCESS DAEMIR",
+    "YOU SEEM GOOD PEOPLE",
+    "ACCEPT MY BLESSING"
+   ],
+   "message_id": "myth-drannor.daemir.offer"
+  },
+  {
+   "id": "myth-drannor.daemir.forgiveness-offer",
+   "all_contains": [
+    "I AM THE SPIRIT OF",
+    "PRINCESS DAEMIR",
+    "YOU HAVE DESPOILED THE GLEN",
+    "ACCEPT MY FORGIVENESS"
+   ],
+   "message_id": "myth-drannor.daemir.forgiveness-offer"
+  },
+  {
+   "id": "myth-drannor.daemir.forgiven",
+   "all_contains": [
+    "YOU ARE FORGIVEN",
+    "SHE FADES AWAY"
+   ],
+   "message_id": "myth-drannor.daemir.forgiven"
+  },
+  {
+   "id": "myth-drannor.daemir.blessing",
+   "all_contains": [
+    "GO FORTH WITH MY BLESSING",
+    "SHE FADES AWAY"
+   ],
+   "message_id": "myth-drannor.daemir.blessing"
+  },
+  {
+   "id": "myth-drannor.daemir.curse",
+   "all_contains": [
+    "YOU PRESUME TOO MUCH",
+    "YOUR WEAPONS WILL TWIST IN YOUR HANDS",
+    "SHE FADES AWAY"
+   ],
+   "message_id": "myth-drannor.daemir.curse"
+  },
+  {
+   "id": "myth-drannor.phase-spider-wall",
+   "all_contains": [
+    "AS YOU ENTER",
+    "SPIDERS COME OUT OF THE SOLID WALLS"
+   ],
+   "message_id": "myth-drannor.phase-spider-wall"
+  },
+  {
+   "id": "myth-drannor.phase-spider-glowing",
+   "all_contains": [
+    "GLOWING SPIDERS SKITTER FORWARD",
+    "AT YOUR APPROACH"
+   ],
+   "message_id": "myth-drannor.phase-spider-glowing"
+  },
+  {
+   "id": "myth-drannor.phase-spider-bones",
+   "all_contains": [
+    "SPIDERS HAVE GATHERED A PILE OF BONES HERE",
+    "AND DEFEND IT"
+   ],
+   "message_id": "myth-drannor.phase-spider-bones"
+  },
+  {
+   "id": "myth-drannor.bones.prompt",
+   "all_contains": [
+    "WHAT DO YOU DO",
+    "WITH THE BONES"
+   ],
+   "message_id": "myth-drannor.bones.prompt"
+  },
+  {
+   "id": "myth-drannor.thri-kreen.entrance",
+   "all_contains": [
+    "A PARTY OF THRI-KREEN BAR YOUR ENTRANCE"
+   ],
+   "message_id": "myth-drannor.thri-kreen.entrance"
+  },
+  {
+   "id": "myth-drannor.thri-kreen.guards",
+   "all_contains": [
+    "GUARDS HERE PREPARE FOR COMBAT"
+   ],
+   "message_id": "myth-drannor.thri-kreen.guards"
+  },
+  {
+   "id": "myth-drannor.thri-kreen.bivouac",
+   "all_contains": [
+    "THE THRI-KREEN HAVE BIVOUACKED HERE",
+    "PREPARE TO MAKE A STAND"
+   ],
+   "message_id": "myth-drannor.thri-kreen.bivouac"
+  },
+  {
+   "id": "myth-drannor.thri-kreen.reinforcements",
+   "all_contains": [
+    "OTHER THRI-KREEN RESPOND TO THE NOISE"
+   ],
+   "message_id": "myth-drannor.thri-kreen.reinforcements"
+  },
+  {
+   "id": "myth-drannor.thri-kreen.stragglers",
+   "all_contains": [
+    "A FEW MORE STRAGGLE IN"
+   ],
+   "message_id": "myth-drannor.thri-kreen.stragglers"
+  },
+  {
+   "id": "myth-drannor.thri-kreen.valuables",
+   "all_contains": [
+    "YOU GATHER UP SOME VALUABLES"
+   ],
+   "message_id": "myth-drannor.thri-kreen.valuables"
+  },
+  {
+   "id": "myth-drannor.spider-mausoleum",
+   "all_contains": [
+    "WEBS FESTOON THIS MAUSOLEUM",
+    "THE WEBS ARE INHABITED"
+   ],
+   "message_id": "myth-drannor.spider-mausoleum"
+  },
+  {
+   "id": "myth-drannor.spider-funnel",
+   "all_contains": [
+    "YOU SEE A FUNNEL OF WEBS"
+   ],
+   "message_id": "myth-drannor.spider-funnel"
+  },
+  {
+   "id": "myth-drannor.spider-warning",
+   "all_contains": [
+    "A WHISPERY VOICE CALLS OUT",
+    "THE SPIDERS WILL",
+    "GUARD THEIR NEST FIERCELY",
+    "DO YOU CONTINUE"
+   ],
+   "message_id": "myth-drannor.spider-warning"
+  },
+  {
+   "id": "myth-drannor.spider-eggs",
+   "all_contains": [
+    "SPIDERS LEAP FORTH",
+    "YOU CAN SEE SOME EGGS",
+    "BEHIND THEM"
+   ],
+   "message_id": "myth-drannor.spider-eggs"
+  },
+  {
+   "id": "myth-drannor.court.entry",
+   "all_contains": [
+    "NEAR THE ENTRANCE TO THIS BUILDING",
+    "A CRUSHED THRI-KREEN",
+    "IN THE DOORWAY IS A GHOSTLY SHAPE"
+   ],
+   "message_id": "myth-drannor.court.entry"
+  },
+  {
+   "id": "myth-drannor.court.enter",
+   "all_contains": [
+    "DO YOU WANT TO ENTER THE BUILDING"
+   ],
+   "message_id": "myth-drannor.court.enter"
+  },
+  {
+   "id": "myth-drannor.court.welcome",
+   "all_contains": [
+    "THE SPIRIT SPEAKS",
+    "WELCOME WARRIORS",
+    "ENTER AND MEET OUR QUEEN"
+   ],
+   "message_id": "myth-drannor.court.welcome"
+  },
+  {
+   "id": "myth-drannor.court.armor",
+   "all_contains": [
+    "TWO SUITS OF ARMOR FLANK THIS STAIRWAY",
+    "THE QUEEN WILL SEE YOU"
+   ],
+   "message_id": "myth-drannor.court.armor"
+  },
+  {
+   "id": "myth-drannor.court.armor-bows",
+   "all_contains": [
+    "THE ARMOR SEEMS TO BOW AS YOU PASS"
+   ],
+   "message_id": "myth-drannor.court.armor-bows"
+  },
+  {
+   "id": "myth-drannor.court.armor-crumbles",
+   "all_contains": [
+    "THE ARMOR CRUMBLES INTO RUSTY FLAKES"
+   ],
+   "message_id": "myth-drannor.court.armor-crumbles"
+  },
+  {
+   "id": "myth-drannor.court.greeting",
+   "all_contains": [
+    "AS YOU APPROACH THE STAIRS",
+    "THE COURT GIVES GREETINGS"
+   ],
+   "message_id": "myth-drannor.court.greeting"
+  },
+  {
+   "id": "myth-drannor.court.hostile",
+   "all_contains": [
+    "AS YOU APPROACH THE STAIRS",
+    "DESPOILERS SHALL FIGHT DESPOILERS"
+   ],
+   "message_id": "myth-drannor.court.hostile"
+  },
+  {
+   "id": "myth-drannor.court.reward",
+   "all_contains": [
+    "MY HEART REJOICES TO HAVE SUCH DEFENDERS",
+    "THESE ITEMS MAY HELP YOUR QUEST"
+   ],
+   "message_id": "myth-drannor.court.reward"
+  },
+  {
+   "id": "myth-drannor.court.farewell",
+   "all_contains": [
+    "ALAS, MY TIME IS SHORT HERE",
+    "MY BEST WISHES",
+    "SHE DISAPPEARS"
+   ],
+   "message_id": "myth-drannor.court.farewell"
+  },
+  {
+   "id": "myth-drannor.court.hostile-offer",
+   "all_contains": [
+    "THIS GLEN HAS BEEN CRUSHED BY YOUR KIND",
+    "REMNANTS OF OUR TREASURE",
+    "WILL YOU"
+   ],
+   "message_id": "myth-drannor.court.hostile-offer"
+  },
+  {
+   "id": "myth-drannor.court.refusal",
+   "all_contains": [
+    "THEN LIE WITH US",
+    "THE TOWER BEGINS",
+    "YOU RUSH OUTSIDE"
+   ],
+   "message_id": "myth-drannor.court.refusal"
+  },
+  {
+   "id": "myth-drannor.court.collapse",
+   "all_contains": [
+    "THE TOWER FALLS INTO A PILE OF RUBBLE"
+   ],
+   "message_id": "myth-drannor.court.collapse"
+  },
+  {
+   "id": "myth-drannor.red-plume.gesture",
+   "all_contains": [
+    "HE MAKES A GESTURE OF FRIENDSHIP"
+   ],
+   "message_id": "myth-drannor.red-plume.gesture"
+  },
+  {
+   "id": "myth-drannor.red-plume.journal",
+   "all_contains": [
+    "THE RED PLUME TELLS YOU HIS TALE",
+    "JOURNAL ENTRY",
+    "33.",
+    "WHAT DO YOU DO"
+   ],
+   "message_id": "myth-drannor.red-plume.journal",
+   "journal_message_ids": [
+    "journal.33"
+   ]
+  },
+  {
+   "id": "myth-drannor.red-plume.no-payment",
+   "all_contains": [
+    "THANK YOU FOR YOUR MAGNANAMOUS GESTURE"
+   ],
+   "message_id": "myth-drannor.red-plume.no-payment"
+  },
+  {
+   "id": "myth-drannor.red-plume.warning",
+   "all_contains": [
+    "BEWARE, A TRAP",
+    "THE RED PLUME SNARLS",
+    "CUTS OFF THE VOICE"
+   ],
+   "message_id": "myth-drannor.red-plume.warning"
+  },
+  {
+   "id": "myth-drannor.red-plume.refusal",
+   "all_contains": [
+    "THEN I SHALL TRY MYSELF",
+    "A SCREAM PIERCES THE AIR",
+    "INVESTIGATE"
+   ],
+   "message_id": "myth-drannor.red-plume.refusal"
+  },
+  {
+   "id": "myth-drannor.red-plume.reveal",
+   "all_contains": [
+    "WITHIN AN UNEARTHED GRAVE ARE GLOWING SPIDERS",
+    "THE RED PLUME STEPS AWAY",
+    "HIS SHAPE CHANGES"
+   ],
+   "message_id": "myth-drannor.red-plume.reveal"
+  },
+  {
+   "id": "myth-drannor.red-plume.spiders",
+   "all_contains": [
+    "WITHIN AN UNEARTHED GRAVE ARE GLOWING SPIDERS",
+    "PROTECT THEIR EGGS"
+   ],
+   "message_id": "myth-drannor.red-plume.spiders"
+  },
+  {
+   "id": "myth-drannor.clan-figure.greeting",
+   "all_contains": [
+    "A FIGURE APPEARS FROM THE SHADOWS",
+    "HAIL BONDED ONES"
+   ],
+   "message_id": "myth-drannor.clan-figure.greeting"
+  },
+  {
+   "id": "myth-drannor.clan-figure.journal",
+   "all_contains": [
+    "THE FIGURE BREAKS INTO RAPID SPEECH",
+    "JOURNAL ENTRY",
+    "56.",
+    "HURRY ON"
+   ],
+   "message_id": "myth-drannor.clan-figure.journal",
+   "journal_message_ids": [
+    "journal.56"
+   ]
+  },
+  {
+   "id": "myth-drannor.more-ruins",
+   "all_contains": [
+    "YOU ARE HEADING TOWARD MORE RUINS",
+    "VIA A PATH OR THROUGH THE WOODS"
+   ],
+   "message_id": "myth-drannor.more-ruins"
+  },
+  {
+   "id": "myth-drannor.outer.tirsheya.greeting",
+   "all_contains": [
+    "A RAKSHASA WITH MATTED FUR",
+    "GESTURE OF PEACE",
+    "WHAT DO YOU DO"
+   ],
+   "message_id": "myth-drannor.outer.tirsheya.greeting"
+  },
+  {
+   "id": "myth-drannor.outer.tirsheya.tale",
+   "all_contains": [
+    "I AM TIRSHEYA",
+    "JOURNAL ENTRY",
+    "5. WILL YOU GO WITH HIM"
+   ],
+   "message_id": "myth-drannor.outer.tirsheya.tale",
+   "journal_message_ids": [
+    "journal.5"
+   ]
+  },
+  {
+   "id": "myth-drannor.outer.tirsheya.guards",
+   "all_contains": [
+    "THEN COME WITH ME",
+    "THE ENTRANCE IS GUARDED",
+    "DO YOU ATTACK"
+   ],
+   "message_id": "myth-drannor.outer.tirsheya.guards"
+  },
+  {
+   "id": "myth-drannor.outer.tirsheya.beyrha-arrives",
+   "all_contains": [
+    "THE SOUNDS OF BATTLE HAVE BROUGHT ANOTHER RAKSHASA",
+    "SO TIRSHEYA",
+    "ROBBING THE CLAN"
+   ],
+   "message_id": "myth-drannor.outer.tirsheya.beyrha-arrives"
+  },
+  {
+   "id": "myth-drannor.outer.tirsheya.ultimatum",
+   "all_contains": [
+    "KNOW HUMANS",
+    "BRING ME HIS HEAD",
+    "PROMISE OF BEYRHA",
+    "WHO DO YOU ATTACK"
+   ],
+   "message_id": "myth-drannor.outer.tirsheya.ultimatum"
+  },
+  {
+   "id": "myth-drannor.outer.tirsheya.attack-beyrha",
+   "all_contains": [
+    "YOU ARE FOOLS",
+    "THANK YOU AT DINNER"
+   ],
+   "message_id": "myth-drannor.outer.tirsheya.attack-beyrha"
+  },
+  {
+   "id": "myth-drannor.outer.storehouse.guards",
+   "all_contains": [
+    "SOME MARGOYLES AND HELL HOUNDS",
+    "GUARD THE ENTRANCE",
+    "DO YOU FLEE"
+   ],
+   "message_id": "myth-drannor.outer.storehouse.guards"
+  },
+  {
+   "id": "myth-drannor.outer.storehouse.valuables",
+   "all_contains": [
+    "PILED WITHIN THIS BUILDING",
+    "FOODSTUFFS",
+    "EVENTUALLY YOU FIND A FEW VALUABLES"
+   ],
+   "message_id": "myth-drannor.outer.storehouse.valuables"
+  },
+  {
+   "id": "myth-drannor.outer.storehouse.supplies",
+   "all_contains": [
+    "PILED WITHIN THIS BUILDING",
+    "FOODSTUFFS",
+    "CLOTHING AND TRINKETS"
+   ],
+   "message_id": "myth-drannor.outer.storehouse.supplies"
+  },
+  {
+   "id": "myth-drannor.outer.fugitive.intro",
+   "all_contains": [
+    "A MAN RUNNING",
+    "PACK OF HELL HOUNDS",
+    "DO YOU GO TO THE RESCUE"
+   ],
+   "message_id": "myth-drannor.outer.fugitive.intro"
+  },
+  {
+   "id": "myth-drannor.outer.fugitive.killed",
+   "all_contains": [
+    "THE HOUNDS LEAP ON HIM",
+    "TEAR HIM TO SHREDS",
+    "DO YOU ATTACK"
+   ],
+   "message_id": "myth-drannor.outer.fugitive.killed"
+  },
+  {
+   "id": "myth-drannor.outer.fugitive.hounds-leave",
+   "all_contains": [
+    "THE HOUNDS LEAVE THE REMAINS"
+   ],
+   "message_id": "myth-drannor.outer.fugitive.hounds-leave"
+  },
+  {
+   "id": "myth-drannor.outer.fugitive.clue",
+   "all_contains": [
+    "THE MAN THANKS YOU",
+    "RUINED BUILDING",
+    "NORTHEAST",
+    "HIS BREATHING STOPS"
+   ],
+   "message_id": "myth-drannor.outer.fugitive.clue"
+  },
+  {
+   "id": "myth-drannor.outer.fugitive.remains",
+   "all_contains": [
+    "THE HOUNDS LEFT LITTLE",
+    "RECOGNIZABLE AS HUMAN",
+    "NOTHING OF VALUE"
+   ],
+   "message_id": "myth-drannor.outer.fugitive.remains"
+  },
+  {
+   "id": "myth-drannor.outer.fugitive.cache",
+   "all_contains": [
+    "JUST AS THE DYING MAN DESCRIBED",
+    "LOCATE A CACHE"
+   ],
+   "message_id": "myth-drannor.outer.fugitive.cache"
+  },
+  {
+   "id": "myth-drannor.outer.nameless-warning",
+   "all_contains": [
+    "NAMELESS SLIDES OUT OF THE SHADOWS",
+    "DIRECT APPROACH IS DANGEROUS",
+    "TEMPLE IS TO THE NORTH"
+   ],
+   "message_id": "myth-drannor.outer.nameless-warning"
+  },
+  {
+   "id": "myth-drannor.outer.brush-decoy",
+   "all_contains": [
+    "DENSE BRUSH",
+    "SMALL CHILD",
+    "OR HOBBIT",
+    "HELL HOUND",
+    "DO YOU GO TO THE RESCUE"
+   ],
+   "message_id": "myth-drannor.outer.brush-decoy"
+  },
+  {
+   "id": "myth-drannor.outer.brush-rescue",
+   "all_contains": [
+    "ARRIVE BEFORE THE HOUND",
+    "FORCE ITS WAY IN",
+    "CUT IT DOWN"
+   ],
+   "message_id": "myth-drannor.outer.brush-rescue"
+  },
+  {
+   "id": "myth-drannor.outer.brush-ambush",
+   "all_contains": [
+    "A RAKSHASA STANDS UP FROM THE BUSH",
+    "SUCH KINDNESS SHOULD BE REWARDED",
+    "MARGOYLES ON NEARBY ROOFS"
+   ],
+   "message_id": "myth-drannor.outer.brush-ambush"
+  },
+  {
+   "id": "myth-drannor.outer.brush-attack",
+   "all_contains": [
+    "THE MONSTERS THEN LEAP DOWN TO ATTACK"
+   ],
+   "message_id": "myth-drannor.outer.brush-attack"
+  },
+  {
+   "id": "myth-drannor.outer.brush-victim",
+   "all_contains": [
+    "THE HOUND EMERGES FROM THE BUSH",
+    "SOMETHING BLOODY IN ITS MOUTH",
+    "TROTS OFF"
+   ],
+   "message_id": "myth-drannor.outer.brush-victim"
+  },
+  {
+   "id": "myth-drannor.outer.brush-bloodstains",
+   "all_contains": [
+    "THE BRUSH IS DENSE AND FILLED WITH RUBBLE",
+    "BLOODSTAINS MARK THE LEAVES"
+   ],
+   "message_id": "myth-drannor.outer.brush-bloodstains"
+  },
+  {
+   "id": "myth-drannor.outer.margoyle-trap",
+   "all_contains": [
+    "TWO MARGOYLES ARE TORTURING A SMALL ANIMAL",
+    "THEY ARE UNAWARE OF YOU",
+    "DO YOU WANT TO ATTACK"
+   ],
+   "message_id": "myth-drannor.outer.margoyle-trap"
+  },
+  {
+   "id": "myth-drannor.outer.margoyle-collapse",
+   "all_contains": [
+    "YOU SWIFTLY KILL THEM",
+    "THE DOORWAY COLLAPSES ONTO YOU"
+   ],
+   "message_id": "myth-drannor.outer.margoyle-collapse"
+  },
+  {
+   "id": "myth-drannor.outer.margoyle-rakshasa",
+   "all_contains": [
+    "A RAKSHASA COMES UP WHILE YOU ARE BURIED",
+    "DO YOU PLAY DEAD"
+   ],
+   "message_id": "myth-drannor.outer.margoyle-rakshasa"
+  },
+  {
+   "id": "myth-drannor.outer.margoyle-surprise",
+   "all_contains": [
+    "YOU SURPRISE HIM AS HE REACHES FOR YOU"
+   ],
+   "message_id": "myth-drannor.outer.margoyle-surprise"
+  },
+  {
+   "id": "myth-drannor.outer.margoyle-retreat",
+   "all_contains": [
+    "THE COLLAPSE FAILED TO FINISH YOU OFF",
+    "TURNS ON HIS HEEL AND DISAPPEARS"
+   ],
+   "message_id": "myth-drannor.outer.margoyle-retreat"
+  },
+  {
+   "id": "myth-drannor.outer.sewer-margoyle",
+   "all_contains": [
+    "A LONE MARGOYLE SKITTERS AWAY",
+    "UNCOVERING A SEWER GRATE",
+    "DO YOU LET IT"
+   ],
+   "message_id": "myth-drannor.outer.sewer-margoyle"
+  },
+  {
+   "id": "myth-drannor.outer.sewer-escape",
+   "all_contains": [
+    "IT RUNS DOWN THROUGH THE SEWER AND DISAPPEARS"
+   ],
+   "message_id": "myth-drannor.outer.sewer-escape"
+  },
+  {
+   "id": "myth-drannor.outer.sewer-kill",
+   "all_contains": [
+    "YOU SLAUGHTER IT WHERE IT STANDS"
+   ],
+   "message_id": "myth-drannor.outer.sewer-kill"
+  },
+  {
+   "id": "myth-drannor.outer.sewer-grate",
+   "all_contains": [
+    "THERE IS A SEWER GRATE HERE",
+    "DO YOU WANT TO ENTER"
+   ],
+   "message_id": "myth-drannor.outer.sewer-grate"
+  },
+  {
+   "id": "myth-drannor.outer.sewer-warning",
+   "all_contains": [
+    "A DREAM-LIKE VOICE IN YOUR HEAD",
+    "GREAT DANGER LIES BEFORE YOU",
+    "DO YOU STILL CONTINUE"
+   ],
+   "message_id": "myth-drannor.outer.sewer-warning"
+  },
+  {
+   "id": "myth-drannor.kitchen-arrival",
+   "all_contains": [
+    "THE SEWER ENDS IN A DARKENED KITCHEN",
+    "A RUMBLE AND A CLOUD OF DUST"
+   ],
+   "message_id": "myth-drannor.kitchen-arrival"
+  },
+  {
+   "id": "myth-drannor.outer.gambling-room",
+   "all_contains": [
+    "AS YOU STEP INTO THIS OPULENT ROOM",
+    "RAKSHASAS GAMBLING WITH DICE",
+    "MARGOYLES ARE WATCHING"
+   ],
+   "message_id": "myth-drannor.outer.gambling-room"
+  },
+  {
+   "id": "myth-drannor.outer.gambling-rise",
+   "all_contains": [
+    "THEY NOTICE YOU ONLY NOW",
+    "SLOWLY RISE TO THEIR FEET",
+    "DO YOU FLEE"
+   ],
+   "message_id": "myth-drannor.outer.gambling-rise"
+  },
+  {
+   "id": "myth-drannor.outer.gambling-treasure",
+   "all_contains": [
+    "YOU GATHER THE VALUABLES"
+   ],
+   "message_id": "myth-drannor.outer.gambling-treasure"
+  },
+  {
+   "id": "myth-drannor.inner.bedroom",
+   "all_contains": [
+    "YOU HAVE ENTERED AN ELEGANT BEDROOM",
+    "FOUR-POSTER BED",
+    "DO YOU WANT TO LOOT THE ROOM"
+   ],
+   "message_id": "myth-drannor.inner.bedroom"
+  },
+  {
+   "id": "myth-drannor.inner.office",
+   "all_contains": [
+    "THIS ROOM HAS BEEN CONVERTED TO AN OFFICE",
+    "ICONS OF BANE"
+   ],
+   "message_id": "myth-drannor.inner.office"
+  },
+  {
+   "id": "myth-drannor.inner.kitchen",
+   "all_contains": [
+    "YOU HAVE COME INTO THE KITCHEN",
+    "SLAVES DIVE UNDER",
+    "NO THREAT TO YOU"
+   ],
+   "message_id": "myth-drannor.inner.kitchen"
+  },
+  {
+   "id": "myth-drannor.inner.kennel",
+   "all_contains": [
+    "A SULFEROUS SMELL ASSAULTS YOUR NOSTRILS",
+    "CONVERTED TO A KENNEL",
+    "INHABITANTS RISE"
+   ],
+   "message_id": "myth-drannor.inner.kennel"
+  },
+  {
+   "id": "myth-drannor.inner.statuary",
+   "all_contains": [
+    "ROOM SEEMS FILLED WITH BONES",
+    "HIDEOUS STATUARY",
+    "STATUES BEGIN TO MOVE"
+   ],
+   "message_id": "myth-drannor.inner.statuary"
+  },
+  {
+   "id": "myth-drannor.inner.minions-attack",
+   "all_contains": [
+    "MINIONS OF TYRANTHRAXUS RUSH TO ATTACK YOU"
+   ],
+   "message_id": "myth-drannor.inner.minions-attack"
+  },
+  {
+   "id": "myth-drannor.inner.chapel",
+   "all_contains": [
+    "WALKED INTO AN ELEGANT PRIVATE CHAPEL",
+    "WELL-DRESSED, ELDERLY MAN"
+   ],
+   "message_id": "myth-drannor.inner.chapel"
+  },
+  {
+   "id": "myth-drannor.inner.chapel-priest",
+   "all_contains": [
+    "TYRANTHRAXUS' GRAND TOOLS",
+    "TOO POPULAR WITH BANE",
+    "OTHER PRIESTS SLIP UP BESIDE HIM"
+   ],
+   "message_id": "myth-drannor.inner.chapel-priest"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.arrival",
+   "all_contains": [
+    "AS YOU ENTER, YOU HEAR A VOICE",
+    "UNABLE TO CONTROL YOURSELF",
+    "CENTER OF THE ROOM"
+   ],
+   "message_id": "myth-drannor.inner.ritual.arrival"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.control",
+   "all_contains": [
+    "THROUGH THE BONDS",
+    "MINE TO CONTROL",
+    "FOLLOW ME"
+   ],
+   "message_id": "myth-drannor.inner.ritual.control"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.journal",
+   "all_contains": [
+    "TYRANTHRAXUS MAKES A SPEECH",
+    "JOURNAL ENTRY 48"
+   ],
+   "message_id": "myth-drannor.inner.ritual.journal",
+   "journal_message_ids": [
+    "journal.48"
+   ]
+  },
+  {
+   "id": "myth-drannor.inner.ritual.hand-over",
+   "all_contains": [
+    "HAND YOUR TOYS OVER TO MY PRIEST",
+    "HANDS OVER THE THREE ARTIFACTS",
+    "RESIST WITH ALL THEIR MIGHT"
+   ],
+   "message_id": "myth-drannor.inner.ritual.hand-over"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.dispose-order",
+   "all_contains": [
+    "NOW PRIEST",
+    "DISPOSE OF THESE UNPLEASANT ITEMS",
+    "THROUGH THE POOL"
+   ],
+   "message_id": "myth-drannor.inner.ritual.dispose-order"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.pool",
+   "all_contains": [
+    "PRIEST MOVES WITH GREAT FLOURISH",
+    "ARCS EACH ARTIFACT INTO THE POOL",
+    "ITEMS ARE GONE"
+   ],
+   "message_id": "myth-drannor.inner.ritual.pool"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.parchment",
+   "all_contains": [
+    "PARCHMENT WITH THE PHRASE TO RELEASE YOUR BONDS",
+    "HANDS THE PARCHMENT TO THE PRIEST",
+    "DISPOSE OF THIS THROUGH THE POOL"
+   ],
+   "message_id": "myth-drannor.inner.ritual.parchment"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.final-spell",
+   "all_contains": [
+    "YOU BONDED ONES COME WITH ME",
+    "COMPLETE THE FINAL SPELL"
+   ],
+   "message_id": "myth-drannor.inner.ritual.final-spell"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.nameless-reveal",
+   "all_contains": [
+    "PRIEST THROWS BACK HIS HOOD",
+    "REVEALING HIMSELF AS NAMELESS",
+    "TOSSES THE ARTIFACTS BACK TO YOU"
+   ],
+   "message_id": "myth-drannor.inner.ritual.nameless-reveal"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.nameless-falls",
+   "all_contains": [
+    "STRIKES NAMELESS DOWN WITH A SINGLE BLOW",
+    "WITH HIS LAST BREATH",
+    "MEANINGLESS PHRASE ON THE PARCHMENT"
+   ],
+   "message_id": "myth-drannor.inner.ritual.nameless-falls"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.bonds-fade",
+   "all_contains": [
+    "BOND'S CONTROL FADE",
+    "TYRANTHRAXUS' SIGIL DOES NOT GO AWAY",
+    "ONLY I CAN REMOVE THOSE BONDS"
+   ],
+   "message_id": "myth-drannor.inner.ritual.bonds-fade"
+  },
+  {
+   "id": "myth-drannor.inner.ritual.recover",
+   "all_contains": [
+    "PARTY RETRIEVES THE ARTIFACTS",
+    "TYRANTHRAXUS LOOKS AFRAID",
+    "KILL THEM MY PETS"
+   ],
+   "message_id": "myth-drannor.inner.ritual.recover"
+  },
+  {
+   "id": "myth-drannor.inner.magic-circle",
+   "all_contains": [
+    "A HIGH PRIEST IS HERE",
+    "SUMMONING UP THE POWER OF BANE",
+    "BLUE LIGHTNING ARCS AT YOU"
+   ],
+   "message_id": "myth-drannor.inner.magic-circle"
+  },
+  {
+   "id": "myth-drannor.inner.magic-circle-disrupted",
+   "all_contains": [
+    "ON THE POSITIVE SIDE",
+    "YOU HAVE DISRUPTED THE CEREMONY"
+   ],
+   "message_id": "myth-drannor.inner.magic-circle-disrupted"
+  },
+  {
+   "id": "myth-drannor.inner.food-storeroom",
+   "all_contains": [
+    "RATS SKITTER UNDER BAGS",
+    "FOOD STOREROOM"
+   ],
+   "message_id": "myth-drannor.inner.food-storeroom"
+  },
+  {
+   "id": "myth-drannor.inner.library",
+   "all_contains": [
+    "ROOM IS LINED WITH SHELVES",
+    "MOULDERING BOOKS"
+   ],
+   "message_id": "myth-drannor.inner.library"
+  },
+  {
+   "id": "myth-drannor.inner.biers",
+   "all_contains": [
+    "ROOM CONTAINS OLD BIERS AND CASKETS"
+   ],
+   "message_id": "myth-drannor.inner.biers"
+  },
+  {
+   "id": "myth-drannor.inner.preservation-room",
+   "all_contains": [
+    "STENCH OF PRESERVING FLUIDS",
+    "TABLES WITH WRAPPED FORMS",
+    "SHIFT AND RISE"
+   ],
+   "message_id": "myth-drannor.inner.preservation-room"
+  },
+  {
+   "id": "myth-drannor.inner.preservation-illusion",
+   "all_contains": [
+    "LIGHT IS PLAYING TRICKS ON YOUR EYES"
+   ],
+   "message_id": "myth-drannor.inner.preservation-illusion"
+  },
+  {
+   "id": "myth-drannor.inner.stairs-up",
+   "all_contains": [
+    "STAIRS LEAD UP HERE",
+    "DO YOU WANT TO GO UP"
+   ],
+   "message_id": "myth-drannor.inner.stairs-up"
+  },
+  {
+   "id": "myth-drannor.inner.stairs-down",
+   "all_contains": [
+    "STAIRS LEAD DOWN HERE",
+    "DO YOU WANT TO DESCEND"
+   ],
+   "message_id": "myth-drannor.inner.stairs-down"
+  },
+  {
+   "id": "myth-drannor.inner.final-compulsion",
+   "all_contains": [
+    "POWER OF YOUR BONDS HAS RETURNED",
+    "GROVEL AT MY FEET",
+    "BODY BEGINS TO BOW DOWN"
+   ],
+   "message_id": "myth-drannor.inner.final-compulsion"
+  },
+  {
+   "id": "myth-drannor.inner.final-defiance",
+   "all_contains": [
+    "GREAT FORCE OF WILL",
+    "OVERCOME THE COMPULSION",
+    "GROUND TO DUST BENEATH MY FEET"
+   ],
+   "message_id": "myth-drannor.inner.final-defiance"
+  },
+  {
+   "id": "myth-drannor.inner.final-amulet",
+   "all_contains": [
+    "THAT AMULET WILL LET YOU SCRATCH ME",
+    "FAR FROM ENOUGH TO DEFEAT ME",
+    "LET YOUR LIVES BE FORFEIT"
+   ],
+   "message_id": "myth-drannor.inner.final-amulet"
+  },
+  {
+   "id": "myth-drannor.inner.bonds-returning",
+   "all_contains": [
+    "BONDS ARE WIGGLING BENEATH THE SKIN",
+    "POWER IS SLOWLY RETURNING"
+   ],
+   "message_id": "myth-drannor.inner.bonds-returning"
+  },
+  {
+   "id": "myth-drannor.outer.rakshasa-residence",
+   "all_contains": [
+    "A RAKSHASA RESIDES HERE IN SPLENDOR"
+   ],
+   "message_id": "myth-drannor.outer.rakshasa-residence"
+  },
+  {
+   "id": "myth-drannor.outer.rakshasa-threat",
+   "all_contains": [
+    "THE RAKSHASA STANDS",
+    "TO HAVE DISTURBED ONE OF MY RANK INVITES DEATH"
+   ],
+   "message_id": "myth-drannor.outer.rakshasa-threat"
+  },
+  {
+   "id": "myth-drannor.outer.rakshasa-parlay",
+   "all_contains": [
+    "YOU HAVE A BOLDNESS THAT IS REFRESHING",
+    "JOURNAL ENTRY 57"
+   ],
+   "message_id": "myth-drannor.outer.rakshasa-parlay",
+   "journal_message_ids": [
+    "journal.57"
+   ]
+  },
+  {
+   "id": "zhentil.patrol_pass",
+   "all_contains": [
+    "YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP",
+    "NOTING THE SIGILS ON YOUR ARMS",
+    "THEY LET YOU PASS"
+   ],
+   "message_id": "zhentil.patrol_pass"
+  },
+  {
+   "id": "zhentil.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF",
+    "ZHENTIL KEEP",
+    "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"
+   ],
+   "message_id": "zhentil.edge"
+  },
+  {
+   "id": "zhentil.guards_question",
+   "all_contains": [
+    "STOP!  GET OVER HERE",
+    "GUARDS TAKE YOU ASIDE FOR QUESTIONING",
+    "JOURNAL ENTRY 32"
+   ],
+   "message_id": "zhentil.guards_question",
+   "journal_message_ids": [
+    "journal.32"
+   ]
+  },
+  {
+   "id": "zhentil.guards_warning",
+   "all_contains": [
+    "AS YOU LEAVE, YOU OVERHEAR A GUARD SAY",
+    "JUST AS THE LITTLE THIEF SAID",
+    "THEY'LL GET THEIRS INSIDE"
+   ],
+   "message_id": "zhentil.guards_warning"
+  },
+  {
+   "id": "zhentil.inner_city",
+   "all_contains": [
+    "YOU JOIN THE TEEMING MASSES OF THE INNER CITY"
+   ],
+   "message_id": "zhentil.inner_city"
+  },
+  {
+   "id": "zhentil.fritz-accusation",
+   "all_contains": [
+    "YOU KILLED FRITZ",
+    "WHAT DO YOU DO"
+   ],
+   "message_id": "zhentil.fritz-accusation"
+  },
+  {
+   "id": "zhentil.fritz-killed",
+   "all_contains": [
+    "YOU KILL THE SOLDIER IN COLD BLOOD",
+    "THE CROWD GASPS"
+   ],
+   "message_id": "zhentil.fritz-killed"
+  },
+  {
+   "id": "zhentil.fritz-let-go",
+   "all_contains": [
+    "HE CONTINUES DOWN THE STREET",
+    "CROWDS HAVE THINNED OUT"
+   ],
+   "message_id": "zhentil.fritz-let-go"
+  },
+  {
+   "id": "zhentil.olive_appears",
+   "all_contains": [
+    "A FEMALE HALFLING APPEARS FROM A HIDDEN NICHE",
+    "JOURNAL ENTRY 50"
+   ],
+   "message_id": "zhentil.olive_appears",
+   "journal_message_ids": [
+    "journal.50.1",
+    "journal.50.2"
+   ]
+  },
+  {
+   "id": "zhentil.olive_follow",
+   "all_contains": [
+    "DO YOU FOLLOW HER"
+   ],
+   "message_id": "zhentil.olive_follow"
+  },
+  {
+   "id": "zhentil.dark_shrine_entry",
+   "all_contains": [
+    "YOU HAVE ENTERED THE DARK SHRINE THROUGH A HOLE IN THE WALL",
+    "DEVICE SMOKE AND DISAPPEAR"
+   ],
+   "message_id": "zhentil.dark_shrine_entry"
+  },
+  {
+   "id": "zhentil.olive_explains",
+   "all_contains": [
+    "AS OLIVE LEADS YOU THROUGH THE DUNGEON",
+    "JOURNAL ENTRY 51"
+   ],
+   "message_id": "zhentil.olive_explains",
+   "journal_message_ids": [
+    "journal.51.1",
+    "journal.51.2"
+   ]
+  },
+  {
+   "id": "zhentil.dimswart_door",
+   "all_contains": [
+    "DIMSWART IS JUST BEYOND THIS DOOR"
+   ],
+   "message_id": "zhentil.dimswart_door"
+  },
+  {
+   "id": "zhentil.olive_leaves",
+   "all_contains": [
+    "OLIVE SMILES AND DISAPPEARS"
+   ],
+   "message_id": "zhentil.olive_leaves"
+  },
+  {
+   "id": "zhentil.olive_cell_hint",
+   "all_contains": [
+    "OLIVE SUDDENLY APPEARS IN FRONT OF YOU",
+    "CELL TO THE SOUTH"
+   ],
+   "message_id": "zhentil.olive_cell_hint"
+  },
+  {
+   "id": "zhentil.olive_repeats_dimswart",
+   "all_contains": [
+    "AS SHE EXPLAINS ABOUT DIMSWART",
+    "JOURNAL ENTRY 51"
+   ],
+   "message_id": "zhentil.olive_repeats_dimswart",
+   "journal_message_ids": [
+    "journal.51.1",
+    "journal.51.2"
+   ]
+  },
+  {
+   "id": "zhentil.dimswart_appears",
+   "all_contains": [
+    "YOU SEE AN OLD MAN IN THE CELL",
+    "JOURNAL ENTRY 12"
+   ],
+   "message_id": "zhentil.dimswart_appears",
+   "journal_message_ids": [
+    "journal.12.1",
+    "journal.12.2",
+    "journal.12.3",
+    "journal.12.4",
+    "journal.12.5",
+    "journal.12.6"
+   ]
+  },
+  {
+   "id": "zhentil.dimswart_join",
+   "all_contains": [
+    "WILL YOU TAKE DIMSWART ALONG"
+   ],
+   "message_id": "zhentil.dimswart_join"
+  },
+  {
+   "id": "zhentil.hooded_offer",
+   "all_contains": [
+    "A HOODED WOMAN SUDDENLY APPEARS",
+    "MY MASTER CAN HELP YOU"
+   ],
+   "message_id": "zhentil.hooded_offer"
+  },
+  {
+   "id": "zhentil.hooded_follow",
+   "all_contains": [
+    "DO YOU FOLLOW"
+   ],
+   "message_id": "zhentil.hooded_follow"
+  },
+  {
+   "id": "zhentil.fzoul_interrupts",
+   "all_contains": [
+    "A STRANGE SHIMMER SURROUNDS YOU",
+    "FZOUL CHEMBRYL",
+    "WOMAN, YOU GO TO FAR"
+   ],
+   "message_id": "zhentil.fzoul_interrupts"
+  },
+  {
+   "id": "zhentil.fzoul_retreats",
+   "all_contains": [
+    "AS THE ROOM FADES AWAY",
+    "RUSHES OUT OF THE ROOM"
+   ],
+   "message_id": "zhentil.fzoul_retreats"
+  },
+  {
+   "id": "dexam.arrival",
+   "all_contains": [
+    "DEXAM THE BEHOLDER",
+    "ARMORED MINOTAURS"
+   ],
+   "message_id": "dexam.arrival"
+  },
+  {
+   "id": "dexam.dead-elf.remains",
+   "all_contains": [
+    "REMAINS OF AN ELF FIGHTER"
+   ],
+   "message_id": "dexam.dead-elf.remains"
+  },
+  {
+   "id": "dexam.dead-elf.pouch",
+   "all_contains": [
+    "BURIED BENEATH THE MOLDERING CLOTHING",
+    "LEATHER POUCH"
+   ],
+   "message_id": "dexam.dead-elf.pouch"
+  },
+  {
+   "id": "dexam.dead-elf.pouch-moves",
+   "all_contains": [
+    "THE POUCH MOVES",
+    "PAPER-LIKE SUBSTANCE"
+   ],
+   "message_id": "dexam.dead-elf.pouch-moves"
+  },
+  {
+   "id": "dexam.dead-elf.gas-trap",
+   "all_contains": [
+    "A GAS TRAP GOES OFF"
+   ],
+   "message_id": "dexam.dead-elf.gas-trap"
+  },
+  {
+   "id": "dexam.dead-elf.map",
+   "all_contains": [
+    "YOU DISCOVER A MAP",
+    "JOURNAL AS ENTRY 59"
+   ],
+   "message_id": "dexam.dead-elf.map",
+   "journal_message_ids": [
+    "journal.59"
+   ]
+  },
+  {
+   "id": "dexam.dead-elf.drop-pouch",
+   "all_contains": [
+    "DROP THE POUCH AND LEAVE"
+   ],
+   "message_id": "dexam.dead-elf.drop-pouch"
+  },
+  {
+   "id": "dexam.journal_30",
+   "all_contains": [
+    "DEXAM SPEAKS",
+    "JOURNAL ENTRY 30"
+   ],
+   "message_id": "dexam.journal_30",
+   "journal_message_ids": [
+    "journal.30.1",
+    "journal.30.2"
+   ]
+  },
+  {
+   "id": "dexam.amulet_choice",
+   "all_contains": [
+    "DIMSWART THE SAGE WHISPERS",
+    "AMULET OF LATHANDER",
+    "WHAT DO YOU DO"
+   ],
+   "message_id": "dexam.amulet_choice"
+  },
+  {
+   "id": "dexam.fzoul_journal_7",
+   "all_contains": [
+    "BEFORE YOU CAN ACT",
+    "HIS STATEMENT IS IN JOURNAL ENTRY 7"
+   ],
+   "message_id": "dexam.fzoul_journal_7",
+   "journal_message_ids": [
+    "journal.7.1",
+    "journal.7.2"
+   ]
+  },
+  {
+   "id": "dexam.kills_fzoul",
+   "all_contains": [
+    "DEXAM ROARS",
+    "BLASTS FZOUL INTO A HEAP OF ASH"
+   ],
+   "message_id": "dexam.kills_fzoul"
+  },
+  {
+   "id": "dexam.fzoul_bond_fades",
+   "all_contains": [
+    "THE BOND OF FZOUL FADES"
+   ],
+   "message_id": "dexam.fzoul_bond_fades"
+  },
+  {
+   "id": "dexam.kill_order",
+   "all_contains": [
+    "NOW THAT THE BOND IS GONE",
+    "KILL THEM"
+   ],
+   "message_id": "dexam.kill_order"
+  },
+  {
+   "id": "dexam.amulet_rises",
+   "all_contains": [
+    "DEXAM TURNS TO THE ALTAR",
+    "AMULET RISING TO MEET HIM"
+   ],
+   "message_id": "dexam.amulet_rises"
+  },
+  {
+   "id": "dexam.altar_melee",
+   "all_contains": [
+    "AS DEXAM LEAVES",
+    "START TO MELEE IN THE ROOM AROUND YOU"
+   ],
+   "message_id": "dexam.altar_melee"
+  },
+  {
+   "id": "dexam.final_reveal",
+   "all_contains": [
+    "YOU HAVE MET UP WITH DEXAM AND HIS MINIONS",
+    "HOODED WOMAN REVEALS HERSELF TO BE A MEDUSA"
+   ],
+   "message_id": "dexam.final_reveal"
+  },
+  {
+   "id": "dexam.attack",
+   "all_contains": [
+    "THEY ATTACK"
+   ],
+   "message_id": "dexam.attack"
+  },
+  {
+   "id": "dexam.amulet_retrieved",
+   "all_contains": [
+    "YOU RETRIEVE THE AMULET OF LATHANDER",
+    "MANGLED REMAINS OF DEXAM"
+   ],
+   "message_id": "dexam.amulet_retrieved"
+  },
+  {
+   "id": "dexam.zhentil_attack",
+   "all_contains": [
+    "YOU ARE ATTACKED BY FORCES OF ZHENTIL KEEP"
+   ],
+   "message_id": "dexam.zhentil_attack"
+  },
+  {
+   "id": "dexam.departure.olive",
+   "all_contains": [
+    "OLIVE RUSKETTLE APPEARS JUST OUTSIDE THE DOOR",
+    "SO, YOU MADE IT"
+   ],
+   "message_id": "dexam.departure.olive"
+  },
+  {
+   "id": "dexam.departure.dimswart",
+   "all_contains": [
+    "DIMSWART, YOU COME WITH ME",
+    "OLIVE AND DIMSWART LEAVE"
+   ],
+   "message_id": "dexam.departure.dimswart"
+  },
+  {
+   "id": "dexam.departure.gharri",
+   "all_contains": [
+    "YOU SEE A RIDER IN THE DISTANCE",
+    "GHARRIIII"
+   ],
+   "message_id": "dexam.departure.gharri"
+  },
+  {
+   "id": "dexam.departure.riders",
+   "all_contains": [
+    "THE RIDER CHANGES DIRECTION",
+    "THEY RIDE AWAY"
+   ],
+   "message_id": "dexam.departure.riders"
+  },
+  {
+   "id": "world.shadowdale.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF SHADOWDALE",
+    "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"
+   ],
+   "message_id": "world.shadowdale.edge"
+  },
+  {
+   "id": "opening.curse-summary",
+   "all_contains": [
+    "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE",
+    "THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS",
+    "AND REGAIN CONTROL OF YOUR OWN DESTINY",
+    "THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE"
+   ],
+   "message_id": "opening.curse-summary"
+  },
+  {
+   "id": "opening.new-game-awakening",
+   "all_contains": [
+    "YOU AWAKEN IN A SMALL ROOM",
+    "ALL YOUR GEAR IS GONE"
+   ],
+   "message_id": "opening.new-game-awakening"
+  },
+  {
+   "id": "opening.new-game-marks",
+   "all_contains": [
+    "ADDING TO YOUR DISQUIET",
+    "IMPRINTED WITH STRANGE PATTERNS",
+    "IDENTICALLY MARKED"
+   ],
+   "message_id": "opening.new-game-marks"
+  },
+  {
+   "id": "hap.black-dragons",
+   "all_contains": [
+    "SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES",
+    "FEARSOME BLACK DRAGONS"
+   ],
+   "message_id": "hap.black-dragons"
+  },
+  {
+   "id": "hap.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF HAP"
+   ],
+   "message_id": "hap.edge"
+  },
+  {
+   "id": "hap.abandoned-village",
+   "all_contains": [
+    "THIS RUN DOWN VILLAGE IS STRANGELY QUIET",
+    "NO ONE IS ABOUT"
+   ],
+   "message_id": "hap.abandoned-village"
+  },
+  {
+   "id": "hap.hiding-peasants",
+   "all_contains": [
+    "YOU BURST IN ON SOME PEASANTS WHO SCUTTLE BACK",
+    "LEAVE BEFORE THE HORDE FINDS YOU WITH US"
+   ],
+   "message_id": "hap.hiding-peasants"
+  },
+  {
+   "id": "hap.peasants-flee",
+   "all_contains": [
+    "THE CRINGING PEASANTS FLEE OUT INTO THE STREET"
+   ],
+   "message_id": "hap.peasants-flee"
+  },
+  {
+   "id": "hap.dark-elf-attack",
+   "all_contains": [
+    "YOU UNGRATEFUL SLIME",
+    "BE HAPPY FOR A QUICK DEATH"
+   ],
+   "message_id": "hap.dark-elf-attack"
+  },
+  {
+   "id": "hap.akabar-join",
+   "all_contains": [
+    "I AM AKABAR BEL AKASH",
+    "WILL YOU LET HIM JOIN YOUR PARTY"
+   ],
+   "message_id": "hap.akabar-join"
+  },
+  {
+   "id": "hap.inn-before-liberation",
+   "all_contains": [
+    "A SURLY INNKEEPER COMES UP",
+    "DO YOU STAY"
+   ],
+   "message_id": "hap.inn-before-liberation"
+  },
+  {
+   "id": "hap.efreet-barn",
+   "all_contains": [
+    "THIS BARN IS EMPTY",
+    "EFREET AND HIS DARK ELFIN COHORTS"
+   ],
+   "message_id": "hap.efreet-barn"
+  },
+  {
+   "id": "hap.efreet-threat",
+   "all_contains": [
+    "THE EFREET VOICE BOOMS OUT",
+    "DOOM ON YOUR VILLAGE"
+   ],
+   "message_id": "hap.efreet-threat"
+  },
+  {
+   "id": "hap.efreet-map",
+   "all_contains": [
+    "ON THE BODY OF THE EFREET IS A MAP",
+    "THE TOWN AND A CAVE"
+   ],
+   "message_id": "hap.efreet-map"
+  },
+  {
+   "id": "hap.liberated-crowd",
+   "all_contains": [
+    "A SHORT TIME AFTER THE SOUNDS OF BATTLE FADE",
+    "LOUD CHEERS AND LAUGHTER"
+   ],
+   "message_id": "hap.liberated-crowd"
+  },
+  {
+   "id": "hap.elder-thanks",
+   "all_contains": [
+    "AN ELDER OF THE VILLAGE COMES FORWARD",
+    "ALWAYS BE WELCOME IN HAPTOOTH"
+   ],
+   "message_id": "hap.elder-thanks"
+  },
+  {
+   "id": "hap.elder-wizard-tower",
+   "all_contains": [
+    "THE ELDER LOWERS HIS VOICE",
+    "CONTROLLED FROM THE WIZARD'S TOWER NEARBY"
+   ],
+   "message_id": "hap.elder-wizard-tower"
+  },
+  {
+   "id": "hap.akabar-secret-routes",
+   "all_contains": [
+    "AKABAR MENTIONS THAT HE HAS HEARD OF SECRET TRADE ROUTES",
+    "HAPPY TO GUIDE THE PARTY THERE"
+   ],
+   "message_id": "hap.akabar-secret-routes"
+  },
+  {
+   "id": "hap.leave",
+   "all_contains": [
+    "YOU ARE HEADING BACK TO THE WILDERNESS",
+    "WANT TO CONTINUE"
+   ],
+   "message_id": "hap.leave"
+  },
+  {
+   "id": "hap.map-route",
+   "all_contains": [
+    "FOLLOW THE MAP TO THE CAVES",
+    "GO INTO THE WILDERNESS"
+   ],
+   "message_id": "hap.map-route"
+  },
+  {
+   "id": "lava-tube.entry",
+   "all_contains": [
+    "YOU HAVE ENTERED AN ANCIENT LAVA TUBE",
+    "ASH COVERS THE FLOOR"
+   ],
+   "message_id": "lava-tube.entry"
+  },
+  {
+   "id": "lava-tube.ambush",
+   "all_contains": [
+    "FROM HIDDEN ALCOVES COMES A WAVE OF HEAT",
+    "SALAMANDERS AND DARK ELVES"
+   ],
+   "message_id": "lava-tube.ambush"
+  },
+  {
+   "id": "lava-tube.guarded-door",
+   "all_contains": [
+    "THE DOOR IS GUARDED BY A SALAMANDER LED PATROL"
+   ],
+   "message_id": "lava-tube.guarded-door"
+  },
+  {
+   "id": "lava-tube.dream-warning",
+   "all_contains": [
+    "A DREAM-LIKE VOICE IN YOUR HEAD SAYS",
+    "BE FULLY PREPARED"
+   ],
+   "message_id": "lava-tube.dream-warning"
+  },
+  {
+   "id": "lava-tube.salamander-pools",
+   "all_contains": [
+    "THE ROOM IS FILLED WITH ACTIVE GEYSERS AND LAVA PITS",
+    "SALAMANDERS ARE SPORTING IN THE POOLS"
+   ],
+   "message_id": "lava-tube.salamander-pools"
+  },
+  {
+   "id": "lava-tube.intense-heat",
+   "all_contains": [
+    "INTENSE HEAT WASHES OVER YOU"
+   ],
+   "message_id": "lava-tube.intense-heat"
+  },
+  {
+   "id": "lava-tube.sly-parlay",
+   "all_contains": [
+    "WE HAVE NO LOVE FOR DARK ELVES",
+    "TAKE ANY TREASURE"
+   ],
+   "message_id": "lava-tube.sly-parlay"
+  },
+  {
+   "id": "lava-tube.nice-parlay",
+   "all_contains": [
+    "YOU COLD THINGS SHOULD LEAVE",
+    "CRIMDRAC FINDS YOU"
+   ],
+   "message_id": "lava-tube.nice-parlay"
+  },
+  {
+   "id": "lava-tube.fireproof-casks",
+   "all_contains": [
+    "AMONGST THE POOLS OF LAVA",
+    "SIX FIREPROOF CASKS",
+    "OPEN ONE"
+   ],
+   "message_id": "lava-tube.fireproof-casks"
+  },
+  {
+   "id": "lava-tube.cask-heat-retreat",
+   "all_contains": [
+    "THE HEAT IS TOO INTENSE",
+    "DOES ANYONE WANT TO TRY AGAIN"
+   ],
+   "message_id": "lava-tube.cask-heat-retreat"
+  },
+  {
+   "id": "area5.depart-akabar",
+   "all_contains": [
+    "YOUR HELP WAS INVALUABLE TO ME",
+    "BUSINESS TO ATTEND TO"
+   ],
+   "message_id": "area5.depart-akabar"
+  },
+  {
+   "id": "area5.depart-akabar-reluctant",
+   "all_contains": [
+    "AKABAR FROWNS AT YOU",
+    "MUST FREE THIS TOWN FROM THE WIZARD'S TYRANY",
+    "HE STAMPS OFF"
+   ],
+   "message_id": "area5.depart-akabar-reluctant"
+  },
+  {
+   "id": "area5.dark-elf-gear-decays",
+   "all_contains": [
+    "DARK ELF",
+    "DECAY TO USELESSNESS"
+   ],
+   "message_id": "area5.dark-elf-gear-decays"
+  },
+  {
+   "id": "post-wizard.dracolich",
+   "all_contains": [
+    "OUT OF A COPSE OF TREES COMES A SKELETAL",
+    "YOU HAVE DEPRIVED ME OF MY TUTOR",
+    "I CAN AVENGE MYSELF"
+   ],
+   "message_id": "post-wizard.dracolich"
+  },
+  {
+   "id": "essembra.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF ESSEMBRA"
+   ],
+   "message_id": "essembra.edge"
+  },
+  {
+   "id": "essembra.places",
+   "all_contains": [
+    "YOU ARE IN ESSEMBRA",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "essembra.places"
+  },
+  {
+   "id": "essembra.branching-oak",
+   "all_contains": [
+    "WELCOME TO THE BRANCHING OAK"
+   ],
+   "message_id": "essembra.branching-oak"
+  },
+  {
+   "id": "essembra.outdoor-bar",
+   "all_contains": [
+    "YOU ARE IN A N OUTDOOR BAR",
+    "OVERLOOKING THE WOODS"
+   ],
+   "message_id": "essembra.outdoor-bar"
+  },
+  {
+   "id": "hillsfar.fire-knives-ambush",
+   "all_contains": [
+    "AMBUSHED BY FIRE KNIVES DISGUISED AS FIGHTERS"
+   ],
+   "message_id": "hillsfar.fire-knives-ambush"
+  },
+  {
+   "id": "hillsfar.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF HILLSFAR"
+   ],
+   "message_id": "hillsfar.edge"
+  },
+  {
+   "id": "hillsfar.places",
+   "all_contains": [
+    "YOU ARE IN HILLSFAR",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "hillsfar.places"
+  },
+  {
+   "id": "hillsfar.dockside-bar",
+   "all_contains": [
+    "YOU ARE IN A DOCKSIDE BAR"
+   ],
+   "message_id": "hillsfar.dockside-bar"
+  },
+  {
+   "id": "hillsfar.red-plumes-spill-drinks",
+   "all_contains": [
+    "SOME RED PLUMES COME OVER",
+    "ORDER YOU TO CLEAN UP THE MESS"
+   ],
+   "message_id": "hillsfar.red-plumes-spill-drinks"
+  },
+  {
+   "id": "yulash.red-plume-patrol",
+   "all_contains": [
+    "YOU ARE APPROACHED BY A RED PLUME PATROL",
+    "TATOO BETRAYS YOU AS A ZHENTRIM SPY"
+   ],
+   "message_id": "yulash.red-plume-patrol"
+  },
+  {
+   "id": "yulash.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF YULASH"
+   ],
+   "message_id": "yulash.edge"
+  },
+  {
+   "id": "yulash.entry",
+   "all_contains": [
+    "SMOKE RISES FROM BEHIND THE RUINED WALLS",
+    "OF YULASH",
+    "HOW DO YOU ENTER"
+   ],
+   "message_id": "yulash.entry"
+  },
+  {
+   "id": "yulash.riders-burst-out",
+   "all_contains": [
+    "JUST BEFORE YOU ENTER A MAN MOUNTED ON A LARGE HORSE",
+    "A WOMAN DRESSED IN PURPLE",
+    "SORRY"
+   ],
+   "message_id": "yulash.riders-burst-out"
+  },
+  {
+   "id": "yulash.checkpoint-halt",
+   "all_contains": [
+    "HALT! A GUARD WARILY COMES OUT OF A CHECKPOINT",
+    "OTHER GUARDS GATHER BEHIND HIM"
+   ],
+   "message_id": "yulash.checkpoint-halt"
+  },
+  {
+   "id": "yulash.see-commander",
+   "all_contains": [
+    "YOU MUST COME WITH US TO SEE THE COMMANDER"
+   ],
+   "message_id": "yulash.see-commander"
+  },
+  {
+   "id": "yulash.waiting-room",
+   "all_contains": [
+    "THIS IS THE COMMANDER'S WAITING ROOM",
+    "REMAIN HERE UNTIL YOU ARE CALLED"
+   ],
+   "message_id": "yulash.waiting-room"
+  },
+  {
+   "id": "yulash.zhentarim-spies",
+   "all_contains": [
+    "TROOPS COME BURSTING OUT OF THE COMMANDER'S OFFICE",
+    "THEY'RE SPIES FOR ZHENTIL KEEP"
+   ],
+   "message_id": "yulash.zhentarim-spies"
+  },
+  {
+   "id": "yulash.led-to-commander",
+   "all_contains": [
+    "YOU HAVE BEEN LED IN TO SEE THE RED PLUME COMMANDER"
+   ],
+   "message_id": "yulash.led-to-commander"
+  },
+  {
+   "id": "yulash.commander-business",
+   "all_contains": [
+    "THE COMMANDER DEMANDS TO KNOW YOUR BUSINESS IN YULASH",
+    "HOW DO YOU RESPOND"
+   ],
+   "message_id": "yulash.commander-business"
+  },
+  {
+   "id": "yulash.commander-side-door",
+   "all_contains": [
+    "THE COMMANDER SHOWS YOU OUT THE SIDE DOOR"
+   ],
+   "message_id": "yulash.commander-side-door"
+  },
+  {
+   "id": "yulash.pit-entrance",
+   "all_contains": [
+    "THE PIT CREATED BY MOANDER",
+    "STEP FORWARD TO ENTER THE DARK DEMESNE"
+   ],
+   "message_id": "yulash.pit-entrance"
+  },
+  {
+   "id": "pit.opening-dead-cultists",
+   "all_contains": [
+    "YOU SEE THREE CULTISTS LYING DEAD ON THE FLOOR",
+    "JUST AHEAD OF YOU, ANOTHER CLERIC GASPS FOR BREATH"
+   ],
+   "message_id": "pit.opening-dead-cultists"
+  },
+  {
+   "id": "pit.opening-chosen",
+   "all_contains": [
+    "THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC",
+    "TRIUMPH. HE HOWLS",
+    "THE CHOSEN ONES"
+   ],
+   "message_id": "pit.opening-chosen"
+  },
+  {
+   "id": "pit.trapped",
+   "all_contains": [
+    "THE CLERIC SLAMS HIS FIST AGAINST A PROTRUDING ROCK",
+    "YOU ARE TRAPPED IN THE PIT OF MOANDER"
+   ],
+   "message_id": "pit.trapped"
+  },
+  {
+   "id": "pit.cleric-dies",
+   "all_contains": [
+    "THE CLERIC GIVES YOU ONE LAST TRIUMPHANT GLARE",
+    "COUGHS BLOOD AND DIES AT YOUR FEET"
+   ],
+   "message_id": "pit.cleric-dies"
+  },
+  {
+   "id": "pit.ambience",
+   "all_contains": [
+    "YOU HEAR THE SOUNDS OF BATTLE IN THE DISTANCE",
+    "SMELL OF BAKED BREAD"
+   ],
+   "message_id": "pit.ambience"
+  },
+  {
+   "id": "pit.alias-dragonbait-meet",
+   "all_contains": [
+    "YOU SEE A FEMALE FIGHTER AND A STRANGE-LOOKING LIZARD MAN",
+    "VIOLETS, BRIMSTONE AND HONEYSUCKLE"
+   ],
+   "message_id": "pit.alias-dragonbait-meet"
+  },
+  {
+   "id": "pit.alias-bonded-reaction",
+   "all_contains": [
+    "THE FEMALE FIGHTER GASPS",
+    "THEY'RE BONDED",
+    "WHAT DO YOU DO"
+   ],
+   "message_id": "pit.alias-bonded-reaction"
+  },
+  {
+   "id": "pit.alias-dragonbait-introduction",
+   "all_contains": [
+    "THE FIGHTER INTRODUCES HERSELF AS ALIAS",
+    "HER COMPANION AS DRAGONBAIT",
+    "SHE ASKS YOU TO TELL YOUR STORY"
+   ],
+   "message_id": "pit.alias-dragonbait-introduction"
+  },
+  {
+   "id": "pit.alias-dragonbait-join",
+   "all_contains": [
+    "DO YOU WANT THEM TO JOIN YOU"
+   ],
+   "message_id": "pit.alias-dragonbait-join"
+  },
+  {
+   "id": "pit.alias-dragonbait-joined",
+   "all_contains": [
+    "ALIAS AND DRAGONBAIT JOIN YOUR PARTY",
+    "TREASURE THAT MOGION",
+    "KEEPS BEHIND HER ALTAR"
+   ],
+   "message_id": "pit.alias-dragonbait-joined"
+  },
+  {
+   "id": "pit.stairs-down",
+   "all_contains": [
+    "YOU SEE STAIRS LEADING DOWN TO THE SOUTH",
+    "DO YOU WISH TO GO DOWN"
+   ],
+   "message_id": "pit.stairs-down"
+  },
+  {
+   "id": "pit.stairs-up",
+   "all_contains": [
+    "YOU SEE STAIRS GOING UP IN THE NORTH WALL",
+    "DO YOU WISH TO GO UP"
+   ],
+   "message_id": "pit.stairs-up"
+  },
+  {
+   "id": "pit.dead-zhentrim",
+   "all_contains": [
+    "MANGLED REMAINS OF A DEAD ZHENTRIM FIGHTER",
+    "WHAT DO YOU DO"
+   ],
+   "message_id": "pit.dead-zhentrim"
+  },
+  {
+   "id": "pit.zhentrim-scroll",
+   "all_contains": [
+    "GRASPED IN THE FIGHTER'S FIST",
+    "SEAL OF ZHENTIL",
+    "JOURNAL ENTRY 46"
+   ],
+   "message_id": "pit.zhentrim-scroll",
+   "journal_message_ids": [
+    "journal.46"
+   ]
+  },
+  {
+   "id": "pit.mogion-altar",
+   "all_contains": [
+    "YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY",
+    "CULTISTS CHANTING IN A LOW DRONE"
+   ],
+   "message_id": "pit.mogion-altar"
+  },
+  {
+   "id": "pit.mogion-self-identifies",
+   "all_contains": [
+    "I AM MOGION"
+   ],
+   "message_id": "pit.mogion-self-identifies"
+  },
+  {
+   "id": "pit.alias-identifies-mogion",
+   "all_contains": [
+    "ALIAS MUTTERS",
+    "PRIESTESS OF MOANDER",
+    "SPITS ON THE GROUND"
+   ],
+   "message_id": "pit.alias-identifies-mogion"
+  },
+  {
+   "id": "pit.mogion-greeting",
+   "all_contains": [
+    "MOGION SAYS",
+    "PROPER TOOLS",
+    "WHAT DO YOU DO"
+   ],
+   "message_id": "pit.mogion-greeting"
+  },
+  {
+   "id": "pit.bond-paralysis",
+   "all_contains": [
+    "BEFORE YOU CAN ACT",
+    "BLUE FLASH",
+    "YOU CANNOT MOVE"
+   ],
+   "message_id": "pit.bond-paralysis"
+  },
+  {
+   "id": "pit.alias-dragonbait-tendrils",
+   "all_contains": [
+    "TENDRILS COME UP FROM THE FLOOR",
+    "ALIAS AND DRAGONBAIT"
+   ],
+   "message_id": "pit.alias-dragonbait-tendrils"
+  },
+  {
+   "id": "pit.mogion-ritual",
+   "all_contains": [
+    "MOGION TURNS TO THE ALTAR",
+    "CHANTING RISES"
+   ],
+   "message_id": "pit.mogion-ritual"
+  },
+  {
+   "id": "pit.dimensional-window",
+   "all_contains": [
+    "BLUE LIGHT THAT SURROUNDS YOU",
+    "DIMENSIONAL WINDOW ABOVE THE ALTAR"
+   ],
+   "message_id": "pit.dimensional-window"
+  },
+  {
+   "id": "pit.moander-returns",
+   "all_contains": [
+    "MOGION SHRIEKS",
+    "MOANDER RETURNS",
+    "DIMENSIONAL RIFT"
+   ],
+   "message_id": "pit.moander-returns"
+  },
+  {
+   "id": "pit.bond-fades",
+   "all_contains": [
+    "ENERGY IN THE DIMENSIONAL RIFT INCREASES",
+    "BOND OF MOANDER BEGIN TO FADE"
+   ],
+   "message_id": "pit.bond-fades"
+  },
+  {
+   "id": "pit.bond-broken",
+   "all_contains": [
+    "THE SIGIL DISAPPEARS",
+    "PARALYSIS THAT GRIPPED YOU IS NOW GONE"
+   ],
+   "message_id": "pit.bond-broken"
+  },
+  {
+   "id": "pit.alias-attack-mogion",
+   "all_contains": [
+    "ALIAS AND DRAGONBAIT HAVE HACKED THEIR WAY FREE",
+    "UNLESS YOU WISH TO FIGHT A GOD"
+   ],
+   "message_id": "pit.alias-attack-mogion"
+  },
+  {
+   "id": "pit.rift-closes",
+   "all_contains": [
+    "THE DIMENSIONAL RIFT SNAPS SHUT"
+   ],
+   "message_id": "pit.rift-closes"
+  },
+  {
+   "id": "pit.remnants-scream",
+   "all_contains": [
+    "THREE PSUEDOPODS OF MOANDER",
+    "HUNDREDS OF MOUTHS",
+    "YOU HAVE KILLED ME"
+   ],
+   "message_id": "pit.remnants-scream"
+  },
+  {
+   "id": "pit.remnants-attack",
+   "all_contains": [
+    "THE OOZING MOUNDS TURN AND ATTACK YOU"
+   ],
+   "message_id": "pit.remnants-attack"
+  },
+  {
+   "id": "pit.gauntlet",
+   "all_contains": [
+    "YOU FIND THE GAUNTLET OF MOANDER",
+    "SLIMY REMAINS"
+   ],
+   "message_id": "pit.gauntlet"
+  },
+  {
+   "id": "pit.priest-flees",
+   "all_contains": [
+    "A PRIEST BURSTS INTO THE ROOM",
+    "THEY HAVE KILLED THE GOD"
+   ],
+   "message_id": "pit.priest-flees"
+  },
+  {
+   "id": "pit.altar-treasure",
+   "all_contains": [
+    "YOU HAVE FOUND A CACHE OF JEWELS AND GEMS"
+   ],
+   "message_id": "pit.altar-treasure"
+  },
+  {
+   "id": "pit.exit-last-stand",
+   "all_contains": [
+    "YOU ARE ATTACKED BY A LARGE FORCE OF",
+    "CULTISTS IN A LAST-DITCH EFFORT TO STOP YOU"
+   ],
+   "message_id": "pit.exit-last-stand"
+  },
+  {
+   "id": "ashabenford.tilvers-gap",
+   "all_contains": [
+    "MOUNTAINS RISE INTO AN IMPASSABLE WALL",
+    "TILVER'S GAP",
+    "FLYING SHAPES"
+   ],
+   "message_id": "ashabenford.tilvers-gap"
+  },
+  {
+   "id": "ashabenford.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF ASHABENFORD"
+   ],
+   "message_id": "ashabenford.edge"
+  },
+  {
+   "id": "ashabenford.places",
+   "all_contains": [
+    "YOU ARE IN ASHABENFORD",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "ashabenford.places"
+  },
+  {
+   "id": "ashabenford.ale-house",
+   "all_contains": [
+    "YOU ARE IN A RIVERSIDE ALE HOUSE",
+    "WHAT WILL YOU DO"
+   ],
+   "message_id": "ashabenford.ale-house"
+  },
+  {
+   "id": "ashabenford.tavern-tale-28",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 28"
+   ],
+   "message_id": "ashabenford.tavern-tale-28"
+  },
+  {
+   "id": "shadow-gap.fire-knives-patrol",
+   "all_contains": [
+    "AMBUSHED BY FIRE KNIVES DISGUISED AS A PATROL"
+   ],
+   "message_id": "shadow-gap.fire-knives-patrol"
+  },
+  {
+   "id": "standing-stone.grey-man",
+   "all_contains": [
+    "YOU ARE AT THE STANDING STONES",
+    "GREY ROBED MAN"
+   ],
+   "message_id": "standing-stone.grey-man"
+  },
+  {
+   "id": "standing-stone.four-masters",
+   "all_contains": [
+    "YOU PRESENTLY SERVE FOUR MASTER",
+    "RETURN TO ME WHEN YOU HAVE SLAIN THREE MORE"
+   ],
+   "message_id": "standing-stone.four-masters"
+  },
+  {
+   "id": "standing-stone.seek-red",
+   "all_contains": [
+    "SEEK RED TO THE SOUTH"
+   ],
+   "message_id": "standing-stone.seek-red"
+  },
+  {
+   "id": "world-route.essembra",
+   "all_contains": [
+    "HOW WILL YOU GET TO ESSEMBRA"
+   ],
+   "message_id": "world-route.essembra"
+  },
+  {
+   "id": "world-route.hap",
+   "all_contains": [
+    "HOW WILL YOU GET TO HAP"
+   ],
+   "message_id": "world-route.hap"
+  },
+  {
+   "id": "tilverton.guildmaster-greeting",
+   "all_contains": [
+    "BEFORE YOU STANDS A BURLY MAN",
+    "CARE TO REST"
+   ],
+   "message_id": "tilverton.guildmaster-greeting"
+  },
+  {
+   "id": "tilverton.running-thieves",
+   "all_contains": [
+    "YOU COME UPON SOME RUNNING THIEVES",
+    "WHAT DO YOU DO"
+   ],
+   "message_id": "tilverton.running-thieves"
+  },
+  {
+   "id": "tilverton.running-thieves-warning",
+   "all_contains": [
+    "THEY YELL",
+    "FIRE KNIVES ARE PUSHING UP FROM THE SOUTH",
+    "BOILING OUT OF THE SEWERS"
+   ],
+   "message_id": "tilverton.running-thieves-warning"
+  },
+  {
+   "id": "tilverton.fire-knives-spot-you",
+   "all_contains": [
+    "A PARTY OF FIRE KNIVES SPOTS YOU"
+   ],
+   "message_id": "tilverton.fire-knives-spot-you"
+  },
+  {
+   "id": "tilverton.guild-assassins-attack",
+   "all_contains": [
+    "ASSASSINS LEAP ON YOU"
+   ],
+   "message_id": "tilverton.guild-assassins-attack"
+  },
+  {
+   "id": "tilverton.guild-metal-and-animals",
+   "all_contains": [
+    "CLANG OF METAL ON METAL",
+    "GROWLS OF ANIMALS",
+    "MORTAL COMBAT"
+   ],
+   "message_id": "tilverton.guild-metal-and-animals"
+  },
+  {
+   "id": "tilverton.guild-bodies-after-battle",
+   "all_contains": [
+    "BODIES LIE TWISTED ONE ABOUT ANOTHER",
+    "LOCKED IN COMBAT UNTIL DEATH"
+   ],
+   "message_id": "tilverton.guild-bodies-after-battle"
+  },
+  {
+   "id": "tilverton.guildmaster-briefing",
+   "all_contains": [
+    "THE FIRE KNIVES HAVE THE KING'S DAUGHTER",
+    "I CAN OFFER INFORMATION"
+   ],
+   "message_id": "tilverton.guildmaster-briefing"
+  },
+  {
+   "id": "tilverton.guild-breach",
+   "all_contains": [
+    "SIDE DOOR EXPLODES INWARD",
+    "DEAFENING CRASH"
+   ],
+   "message_id": "tilverton.guild-breach"
+  },
+  {
+   "id": "tilverton.guild-fire-knife-command",
+   "all_contains": [
+    "TRAITOROUS SCUM",
+    "SEIZE THEM ALL"
+   ],
+   "message_id": "tilverton.guild-fire-knife-command"
+  },
+  {
+   "id": "tilverton.guild-poisoned-dagger",
+   "all_contains": [
+    "GUILDMASTER HURLS A POISONED DAGGER",
+    "TWITCHING VIOLENTLY"
+   ],
+   "message_id": "tilverton.guild-poisoned-dagger"
+  },
+  {
+   "id": "tilverton.guild-battle-joined",
+   "all_contains": [
+    "ARROW HIT THE GUILDMASTER IN THE CHEST",
+    "THE BATTLE IS JOINED"
+   ],
+   "message_id": "tilverton.guild-battle-joined"
+  },
+  {
+   "id": "tilverton.guild-halfling",
+   "all_contains": [
+    "HALFLING WITH A HARP",
+    "DISAPPEAR"
+   ],
+   "message_id": "tilverton.guild-halfling"
+  },
+  {
+   "id": "tilverton.guild-kennel-intro",
+   "all_contains": [
+    "HUNGRY SNARLS",
+    "RELEASES THE PACK"
+   ],
+   "message_id": "tilverton.guild-kennel-intro"
+  },
+  {
+   "id": "tilverton.guild-kennel-aftermath",
+   "all_contains": [
+    "GNAWED BONES",
+    "LEASHES"
+   ],
+   "message_id": "tilverton.guild-kennel-aftermath"
+  },
+  {
+   "id": "tilverton.guild-monkey-cages",
+   "all_contains": [
+    "CAGES THAT ONCE HELD MONKEYS"
+   ],
+   "message_id": "tilverton.guild-monkey-cages"
+  },
+  {
+   "id": "tilverton.guild-guest-book",
+   "all_contains": [
+    "OPEN GUEST BOOK",
+    "O.RUSKETTLE"
+   ],
+   "message_id": "tilverton.guild-guest-book"
+  },
+  {
+   "id": "tilverton.guild-sewer-traces",
+   "all_contains": [
+    "GREEN SLIMY MARKS",
+    "MORE DISTINCT NEAR THE DOOR"
+   ],
+   "message_id": "tilverton.guild-sewer-traces"
+  },
+  {
+   "id": "tilverton.sewers-entry",
+   "all_contains": [
+    "FOUL SMELLING, SLIME COVERED",
+    "FIGHTING WILL BE",
+    "AWKWARD"
+   ],
+   "message_id": "tilverton.sewers-entry"
+  },
+  {
+   "id": "tilverton.sewers.guild-battle-echoes",
+   "all_contains": [
+    "YOU STILL HEAR THE OCCASIONAL SOUNDS OF BATTLE",
+    "ECHOING FROM THE GUILD HALL"
+   ],
+   "message_id": "tilverton.sewers.guild-battle-echoes"
+  },
+  {
+   "id": "fire-knife.hideout-entry",
+   "all_contains": [
+    "YOU ARE ENTERING THE HIDEOUT"
+   ],
+   "message_id": "fire-knife.hideout-entry"
+  },
+  {
+   "id": "fire-knife.blade-barrier-fades",
+   "all_contains": [
+    "BLADES SLOW DOWN",
+    "FADE AWAY"
+   ],
+   "message_id": "fire-knife.blade-barrier-fades"
+  },
+  {
+   "id": "fire-knife.blade-barrier",
+   "all_contains": [
+    "CLOUD OF BLADES WHIRLING",
+    "METALLIC WHINE"
+   ],
+   "message_id": "fire-knife.blade-barrier"
+  },
+  {
+   "id": "fire-knife.blade-barrier-damage",
+   "all_contains": [
+    "THE BLADES TEAR INTO YOU"
+   ],
+   "message_id": "fire-knife.blade-barrier-damage"
+  },
+  {
+   "id": "fire-knife.frozen-kill",
+   "all_contains": [
+    "YOU SLAUGHTER THEM",
+    "BEING HELD"
+   ],
+   "message_id": "fire-knife.frozen-kill"
+  },
+  {
+   "id": "fire-knife.frozen-room",
+   "all_contains": [
+    "PEOPLE FROZEN IN",
+    "BEGINNING TO MOVE"
+   ],
+   "message_id": "fire-knife.frozen-room"
+  },
+  {
+   "id": "fire-knife.office",
+   "all_contains": [
+    "ORNATE ROOM",
+    "HIGH UP IN THE FIRE KNIVES"
+   ],
+   "message_id": "fire-knife.office"
+  },
+  {
+   "id": "fire-knife.smoky-hall",
+   "all_contains": [
+    "STRANGE SMOKY SCENT"
+   ],
+   "message_id": "fire-knife.smoky-hall"
+  },
+  {
+   "id": "fire-knife.ordered-bedroom",
+   "all_contains": [
+    "EXTREMELY WELL ORDERED BEDROOM",
+    "UNSEEN SERVANTS"
+   ],
+   "message_id": "fire-knife.ordered-bedroom"
+  },
+  {
+   "id": "fire-knife.burned-library",
+   "all_contains": [
+    "ROOM WAS ONCE A LIBRARY",
+    "CHARRED BODY"
+   ],
+   "message_id": "fire-knife.burned-library"
+  },
+  {
+   "id": "fire-knife.burned-lab",
+   "all_contains": [
+    "ONCE A LAB",
+    "NOTHING ESCAPED DESTRUCTION"
+   ],
+   "message_id": "fire-knife.burned-lab"
+  },
+  {
+   "id": "fire-knife.shrouded-bodies",
+   "all_contains": [
+    "TWO ROWS OF SHROUDED BODIES",
+    "TO BE RAISED"
+   ],
+   "message_id": "fire-knife.shrouded-bodies"
+  },
+  {
+   "id": "tilverton.carriage-gate-closed",
+   "all_contains": [
+    "THIS WAY IS CLOSED",
+    "ROYAL CARRIAGE IS COMING SOON"
+   ],
+   "message_id": "tilverton.carriage-gate-closed"
+  },
+  {
+   "id": "tilverton.green-robes-rumor",
+   "all_contains": [
+    "AS YOU ARE PASSING THROUGH THE CROWDS",
+    "WOMAN IN THE GREEN ROBES",
+    "EYES OF A FANATIC"
+   ],
+   "message_id": "tilverton.green-robes-rumor"
+  },
+  {
+   "id": "tilverton.carriage-make-way",
+   "all_contains": [
+    "MAKE WAY FOR THE ROYAL CARRIAGE"
+   ],
+   "message_id": "tilverton.carriage-make-way"
+  },
+  {
+   "id": "tilverton.carriage-bond-compulsion",
+   "all_contains": [
+    "KING'S VOICE COMING FROM THE CARRIAGE",
+    "COMPULSION TO ATTACK"
+   ],
+   "message_id": "tilverton.carriage-bond-compulsion"
+  },
+  {
+   "id": "tilverton.carriage-false-king",
+   "all_contains": [
+    "I'M NOT REALLY THE KING",
+    "OH NO! NOT AGAIN"
+   ],
+   "message_id": "tilverton.carriage-false-king"
+  },
+  {
+   "id": "tilverton.carriage-alarm",
+   "all_contains": [
+    "LOUD BELL STARTS RINGING",
+    "SWORDS DRAWN"
+   ],
+   "message_id": "tilverton.carriage-alarm"
+  },
+  {
+   "id": "tilverton.carriage-abduction",
+   "all_contains": [
+    "TWO RED ROBED MEN JUMP THE CARRIAGE",
+    "DRAG HIM INTO AN ALLEYWAY"
+   ],
+   "message_id": "tilverton.carriage-abduction"
+  },
+  {
+   "id": "tilverton.sewers-checkpoint",
+   "all_contains": [
+    "FIRE KNIVES DEMAND YOUR IMMEDIATE SURRENDER",
+    "DO YOU SURRENDER"
+   ],
+   "message_id": "tilverton.sewers-checkpoint"
+  },
+  {
+   "id": "tilverton.carriage-surrender",
+   "all_contains": [
+    "DO YOU SURRENDER"
+   ],
+   "message_id": "tilverton.carriage-surrender"
+  },
+  {
+   "id": "tilverton.carriage-jailed",
+   "all_contains": [
+    "YOU ARE THROWN IN JAIL"
+   ],
+   "message_id": "tilverton.carriage-jailed"
+  },
+  {
+   "id": "tilverton.carriage-thief-rescue",
+   "all_contains": [
+    "ONE WALL SLIDES OPEN AND A THIEF APPEARS",
+    "SIGNALS YOU TO FOLLOW HIM"
+   ],
+   "message_id": "tilverton.carriage-thief-rescue"
+  },
+  {
+   "id": "tilverton.carriage-guild-arrival",
+   "all_contains": [
+    "LEADS YOU THROUGH HIDDEN PASSAGES",
+    "THE THIEVES' GUILD"
+   ],
+   "message_id": "tilverton.carriage-guild-arrival"
+  },
+  {
+   "id": "tilverton.sewers-hide-bodies",
+   "all_contains": [
+    "YOU QUICKLY HIDE THEIR BODIES"
+   ],
+   "message_id": "tilverton.sewers-hide-bodies"
+  },
+  {
+   "id": "tilverton.sewers-knight-appears",
+   "all_contains": [
+    "SLAUGHTERED REMAINS OF A FIRE KNIFE",
+    "KNIGHTS OF MYTH DRANNOR"
+   ],
+   "message_id": "tilverton.sewers-knight-appears"
+  },
+  {
+   "id": "tilverton.sewers-knight-allegiance",
+   "all_contains": [
+    "BLUE TATTOO MARKINGS OF THE FIRE KNIVES",
+    "TO WHOM DO YOU OWE ALLEGIANCE"
+   ],
+   "message_id": "tilverton.sewers-knight-allegiance"
+  },
+  {
+   "id": "tilverton.sewers-knight-princess-friend",
+   "all_contains": [
+    "THAT PRINCESS IS A POPULAR GIRL",
+    "DON'T KILL THE CLERIC WITH A HAMMER"
+   ],
+   "message_id": "tilverton.sewers-knight-princess-friend"
+  },
+  {
+   "id": "tilverton.high-priest-intro",
+   "all_contains": [
+    "I AM THE HIGH PRIEST",
+    "TELL ME YOUR STORY"
+   ],
+   "message_id": "tilverton.high-priest-intro"
+  },
+  {
+   "id": "tilverton.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF TILVERTON"
+   ],
+   "message_id": "tilverton.edge"
+  },
+  {
+   "id": "tilverton.entry-barred",
+   "all_contains": [
+    "GUARDS BAR YOUR WAY"
+   ],
+   "message_id": "tilverton.entry-barred"
+  },
+  {
+   "id": "bond-dream.first-night",
+   "all_contains": [
+    "FIRST NIGHT OUTSIDE THE CITY",
+    "VIVID DREAM"
+   ],
+   "message_id": "bond-dream.first-night"
+  },
+  {
+   "id": "bond-dream.masters-taunt",
+   "all_contains": [
+    "FOUR FACES LEER DOWN",
+    "WEAKEST OF YOUR MASTERS"
+   ],
+   "message_id": "bond-dream.masters-taunt"
+  },
+  {
+   "id": "bond-dream.masters-prophecy",
+   "all_contains": [
+    "WIZARD IN RED",
+    "PAWNS OF THE FLAMED ONE"
+   ],
+   "message_id": "bond-dream.masters-prophecy"
+  },
+  {
+   "id": "bond-dream.ends",
+   "all_contains": [
+    "FACES LAUGH WITH EVIL JOY",
+    "AWAKE IN A COLD SWEAT"
+   ],
+   "message_id": "bond-dream.ends"
+  },
+  {
+   "id": "essembra.tavern-tale-60",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 60"
+   ],
+   "message_id": "essembra.tavern-tale-60"
+  },
+  {
+   "id": "essembra.tavern-tale-44",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 44"
+   ],
+   "message_id": "essembra.tavern-tale-44"
+  },
+  {
+   "id": "journal-trigger.pit-temple-map-20",
+   "all_contains": [
+    "YOU HAVE ALSO FOUND A MAP OF THE TEMPLE",
+    "JOURNAL ENTRY 20"
+   ],
+   "message_id": "journal-trigger.pit-temple-map-20",
+   "journal_message_ids": [
+    "journal.20"
+   ]
+  },
+  {
+   "id": "journal-trigger.alias-story-3",
+   "all_contains": [
+    "SHE TELLS HER STORY",
+    "JOURNAL ENTRY 3"
+   ],
+   "message_id": "journal-trigger.alias-story-3",
+   "journal_message_ids": [
+    "journal.3.1",
+    "journal.3.2",
+    "journal.3.3"
+   ]
+  },
+  {
+   "id": "journal-trigger.yulash-commander-22",
+   "all_contains": [
+    "YOU HAVE PLEASED THE COMMANDER",
+    "JOURNAL ENTRY 22"
+   ],
+   "message_id": "journal-trigger.yulash-commander-22",
+   "journal_message_ids": [
+    "journal.22.1",
+    "journal.22.2",
+    "journal.52"
+   ]
+  },
+  {
+   "id": "journal-trigger.guildmaster-map-4",
+   "all_contains": [
+    "THE GUILDMASTER GASPS",
+    "JOURNAL ENTRY 4"
+   ],
+   "message_id": "journal-trigger.guildmaster-map-4",
+   "journal_message_ids": [
+    "journal.4"
+   ]
+  },
+  {
+   "id": "journal-trigger.fire-knives-leader-11",
+   "all_contains": [
+    "LEADER OF THE FIRE KNIVES",
+    "JOURNAL ENTRY",
+    "11"
+   ],
+   "message_id": "journal-trigger.fire-knives-leader-11",
+   "journal_message_ids": [
+    "journal.11.1",
+    "journal.11.2"
+   ]
+  },
+  {
+   "id": "journal-trigger.fire-knives-victory-54",
+   "all_contains": [
+    "FIRE KNIVES HAVE BEEN DEFEATED",
+    "JOURNAL ENTRY 54"
+   ],
+   "message_id": "journal-trigger.fire-knives-victory-54",
+   "journal_message_ids": [
+    "journal.54"
+   ]
+  },
+  {
+   "id": "journal-trigger.fire-knives-royal-arrival-53",
+   "all_contains": [
+    "FREEING GIOGI",
+    "JOURNAL ENTRY 53"
+   ],
+   "message_id": "journal-trigger.fire-knives-royal-arrival-53",
+   "journal_message_ids": [
+    "journal.53.1",
+    "journal.53.2"
+   ]
+  },
+  {
+   "id": "journal-trigger.tilverton-inn-31",
+   "all_contains": [
+    "JOURNAL ENTRY 31."
+   ],
+   "message_id": "journal-trigger.tilverton-inn-31",
+   "journal_message_ids": [
+    "journal.31"
+   ]
+  },
+  {
+   "id": "journal-trigger.filani-38",
+   "all_contains": [
+    "SHE TALKS",
+    "38."
+   ],
+   "message_id": "journal-trigger.filani-38",
+   "journal_message_ids": [
+    "journal.38.1",
+    "journal.38.2",
+    "journal.38.3"
+   ]
+  },
+  {
+   "id": "journal-trigger.tavern-knife-17",
+   "all_contains": [
+    "ORNATE KNIFE",
+    "17."
+   ],
+   "message_id": "journal-trigger.tavern-knife-17",
+   "journal_message_ids": [
+    "journal.17"
+   ]
+  },
+  {
+   "id": "journal-trigger.shadowdale-warning-18",
+   "all_contains": [
+    "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER",
+    "18."
+   ],
+   "message_id": "journal-trigger.shadowdale-warning-18",
+   "journal_message_ids": [
+    "journal.18"
+   ]
+  },
+  {
+   "id": "journal-trigger.high-priest-19",
+   "all_contains": [
+    "REMOVE CURSE SPELL",
+    "19."
+   ],
+   "message_id": "journal-trigger.high-priest-19",
+   "journal_message_ids": [
+    "journal.19"
+   ]
+  },
+  {
+   "id": "journal-trigger.frozen-room-26",
+   "all_contains": [
+    "YOU DISARM THE FIRE KNIVES",
+    "JOURNAL ENTRY 26"
+   ],
+   "message_id": "journal-trigger.frozen-room-26",
+   "journal_message_ids": [
+    "journal.26"
+   ]
+  },
+  {
+   "id": "journal-trigger.fire-knives-office-9",
+   "all_contains": [
+    "DRAWERS OF A ROSEWOOD DESK",
+    "9. OTHER ITEMS"
+   ],
+   "message_id": "journal-trigger.fire-knives-office-9",
+   "journal_message_ids": [
+    "journal.9"
+   ]
+  },
+  {
+   "id": "journal-trigger.fire-knives-paper-29",
+   "all_contains": [
+    "HAND KEPT THE PAPER",
+    "JOURNAL ENTRY 29"
+   ],
+   "message_id": "journal-trigger.fire-knives-paper-29",
+   "journal_message_ids": [
+    "journal.29"
+   ]
+  }
+ ],
+ "option_rules": [
+  {
+   "id": "wizard-tower.option.attack-dragons",
+   "source": "ATTACK DRAGONS",
+   "message_id": "wizard-tower.option.attack-dragons"
+  },
+  {
+   "id": "wizard-tower.option.attack-wizard",
+   "source": "ATTACK WIZARD",
+   "message_id": "wizard-tower.option.attack-wizard"
+  },
+  {
+   "id": "wizard-tower.option.parlay-dragons",
+   "source": "PARLAY WITH THE DRAGONS",
+   "message_id": "wizard-tower.option.parlay-dragons"
+  },
+  {
+   "id": "myth-drannor.grave.loot",
+   "source": "LOOT GRAVE",
+   "message_id": "myth-drannor.grave.loot"
+  },
+  {
+   "id": "myth-drannor.grave.rebury",
+   "source": "REBURY SKELETON",
+   "message_id": "myth-drannor.grave.rebury"
+  },
+  {
+   "id": "myth-drannor.bones.loot",
+   "source": "LOOT",
+   "message_id": "myth-drannor.bones.loot"
+  },
+  {
+   "id": "myth-drannor.bones.replace",
+   "source": "REPLACE IN CRYPTS",
+   "message_id": "myth-drannor.bones.replace"
+  },
+  {
+   "id": "myth-drannor.bones.ignore",
+   "source": "IGNORE",
+   "message_id": "myth-drannor.bones.ignore"
+  },
+  {
+   "id": "myth-drannor.court.go-upstairs",
+   "source": "GO UPSTAIRS",
+   "message_id": "myth-drannor.court.go-upstairs"
+  },
+  {
+   "id": "myth-drannor.court.take-armor",
+   "source": "TAKE ARMOR",
+   "message_id": "myth-drannor.court.take-armor"
+  },
+  {
+   "id": "option.yes",
+   "source": "YES",
+   "message_id": "option.yes"
+  },
+  {
+   "id": "option.no",
+   "source": "NO",
+   "message_id": "option.no"
+  },
+  {
+   "id": "option.accept",
+   "source": "ACCEPT",
+   "message_id": "option.accept"
+  },
+  {
+   "id": "option.reject",
+   "source": "REJECT",
+   "message_id": "option.reject"
+  },
+  {
+   "id": "option.kill",
+   "source": "KILL",
+   "message_id": "option.kill"
+  },
+  {
+   "id": "option.flee",
+   "source": "FLEE",
+   "message_id": "option.flee"
+  },
+  {
+   "id": "option.go",
+   "source": "GO",
+   "message_id": "option.go"
+  },
+  {
+   "id": "myth-drannor.red-plume.agree",
+   "source": "AGREE",
+   "message_id": "myth-drannor.red-plume.agree"
+  },
+  {
+   "id": "myth-drannor.red-plume.refuse-payment",
+   "source": "REFUSE PAYMENT",
+   "message_id": "myth-drannor.red-plume.refuse-payment"
+  },
+  {
+   "id": "myth-drannor.red-plume.disagree",
+   "source": "DISAGREE",
+   "message_id": "myth-drannor.red-plume.disagree"
+  },
+  {
+   "id": "myth-drannor.path",
+   "source": "PATH",
+   "message_id": "myth-drannor.path"
+  },
+  {
+   "id": "myth-drannor.woods",
+   "source": "WOODS",
+   "message_id": "myth-drannor.woods"
+  },
+  {
+   "id": "myth-drannor.turn-back",
+   "source": "TURN BACK",
+   "message_id": "myth-drannor.turn-back"
+  },
+  {
+   "id": "myth-drannor.outer.tirsheya.name",
+   "source": "TIRSHEYA",
+   "message_id": "myth-drannor.outer.tirsheya.name"
+  },
+  {
+   "id": "myth-drannor.outer.beyrha.name",
+   "source": "BEYRHA",
+   "message_id": "myth-drannor.outer.beyrha.name"
+  },
+  {
+   "id": "ecl-option.press-button-or-return-to-continue",
+   "source": "PRESS BUTTON OR RETURN TO CONTINUE.",
+   "message_id": "press_button"
+  },
+  {
+   "id": "ecl-option.tell-the-truth",
+   "source": "TELL THE TRUTH",
+   "message_id": "tell_truth"
+  },
+  {
+   "id": "ecl-option.punch-barkeep",
+   "source": "PUNCH BARKEEP",
+   "message_id": "tavern_punch"
+  },
+  {
+   "id": "ecl-option.have-a-drink",
+   "source": "HAVE A DRINK",
+   "message_id": "tavern_drink"
+  },
+  {
+   "id": "ecl-option.dragon-s-breath",
+   "source": "DRAGON'S BREATH",
+   "message_id": "tavern_dragon_breath"
+  },
+  {
+   "id": "ecl-option.basilisk",
+   "source": "BASILISK",
+   "message_id": "tavern_basilisk"
+  },
+  {
+   "id": "ecl-option.lemonade",
+   "source": "LEMONADE",
+   "message_id": "tavern_lemonade"
+  },
+  {
+   "id": "ecl-option.whiskey",
+   "source": "WHISKEY",
+   "message_id": "tavern_whiskey"
+  },
+  {
+   "id": "ecl-option.beer",
+   "source": "BEER",
+   "message_id": "tavern_beer"
+  },
+  {
+   "id": "ecl-option.ale",
+   "source": "ALE",
+   "message_id": "tavern_ale"
+  },
+  {
+   "id": "ecl-option.port",
+   "source": "PORT",
+   "message_id": "tavern_port"
+  },
+  {
+   "id": "ecl-option.mead",
+   "source": "MEAD",
+   "message_id": "tavern_mead"
+  },
+  {
+   "id": "ecl-option.lie",
+   "source": "LIE",
+   "message_id": "lie"
+  },
+  {
+   "id": "ecl-option.enter-city",
+   "source": "ENTER CITY",
+   "message_id": "enter_city"
+  },
+  {
+   "id": "ecl-option.journey-on",
+   "source": "JOURNEY ON",
+   "message_id": "journey_on"
+  },
+  {
+   "id": "ecl-option.camp",
+   "source": "CAMP",
+   "message_id": "camp"
+  },
+  {
+   "id": "ecl-option.search-area",
+   "source": "SEARCH AREA",
+   "message_id": "search_area"
+  },
+  {
+   "id": "ecl-option.inn",
+   "source": "INN",
+   "message_id": "inn"
+  },
+  {
+   "id": "ecl-option.store",
+   "source": "STORE",
+   "message_id": "store"
+  },
+  {
+   "id": "ecl-option.bar",
+   "source": "BAR",
+   "message_id": "bar"
+  },
+  {
+   "id": "ecl-option.hall",
+   "source": "HALL",
+   "message_id": "training_hall"
+  },
+  {
+   "id": "ecl-option.temple",
+   "source": "TEMPLE",
+   "message_id": "temple"
+  },
+  {
+   "id": "ecl-option.relax",
+   "source": "RELAX",
+   "message_id": "relax"
+  },
+  {
+   "id": "ecl-option.patrol-forest",
+   "source": "PATROL FOREST",
+   "message_id": "patrol_forest"
+  },
+  {
+   "id": "ecl-option.thank-him",
+   "source": "THANK HIM",
+   "message_id": "thank_him"
+  },
+  {
+   "id": "ecl-option.attack",
+   "source": "ATTACK",
+   "message_id": "attack"
+  },
+  {
+   "id": "ecl-option.evade",
+   "source": "EVADE",
+   "message_id": "evade"
+  },
+  {
+   "id": "tilverton.option.remain-calm",
+   "source": "REMAIN CALM",
+   "message_id": "remain_calm"
+  },
+  {
+   "id": "ecl-option.enter-it",
+   "source": "ENTER IT",
+   "message_id": "enter_it"
+  },
+  {
+   "id": "ecl-option.speak",
+   "source": "SPEAK",
+   "message_id": "speak"
+  },
+  {
+   "id": "ecl-option.hack-it",
+   "source": "HACK IT",
+   "message_id": "hack_it"
+  },
+  {
+   "id": "ecl-option.greet",
+   "source": "GREET",
+   "message_id": "greet"
+  },
+  {
+   "id": "ecl-option.leave",
+   "source": "LEAVE",
+   "message_id": "leave"
+  },
+  {
+   "id": "ecl-option.leave-title-case",
+   "source": "Leave",
+   "message_id": "leave"
+  },
+  {
+   "id": "dexam.dead-elf.examine-remains",
+   "source": "EXAMINE REMAINS",
+   "message_id": "dexam.dead-elf.option.examine-remains"
+  },
+  {
+   "id": "dexam.dead-elf.pick-up-pouch",
+   "source": "PICK UP POUCH",
+   "message_id": "dexam.dead-elf.option.pick-up-pouch"
+  },
+  {
+   "id": "dexam.dead-elf.poke-pouch",
+   "source": "POKE AT POUCH",
+   "message_id": "dexam.dead-elf.option.poke-pouch"
+  },
+  {
+   "id": "dexam.dead-elf.find-trap",
+   "source": "CAST FIND TRAP",
+   "message_id": "dexam.dead-elf.option.find-trap"
+  },
+  {
+   "id": "ecl-option.examine-corpse",
+   "source": "EXAMINE CORPSE",
+   "message_id": "examine_corpse"
+  },
+  {
+   "id": "ecl-option.shadowdale",
+   "source": "SHADOWDALE",
+   "message_id": "shadowdale"
+  },
+  {
+   "id": "ecl-option.ashabenford",
+   "source": "ASHABENFORD",
+   "message_id": "ashabenford"
+  },
+  {
+   "id": "ecl-option.dagger-falls",
+   "source": "DAGGER FALLS",
+   "message_id": "dagger_falls"
+  },
+  {
+   "id": "ecl-option.tilverton",
+   "source": "TILVERTON",
+   "message_id": "tilverton"
+  },
+  {
+   "id": "ecl-option.the-standing-stone",
+   "source": "THE STANDING STONE",
+   "message_id": "standing_stone"
+  },
+  {
+   "id": "ecl-option.essembra",
+   "source": "ESSEMBRA",
+   "message_id": "essembra"
+  },
+  {
+   "id": "ecl-option.hap",
+   "source": "HAP",
+   "message_id": "hap"
+  },
+  {
+   "id": "ecl-option.hillsfar",
+   "source": "HILLSFAR",
+   "message_id": "hillsfar"
+  },
+  {
+   "id": "ecl-option.voonlar",
+   "source": "VOONLAR",
+   "message_id": "voonlar"
+  },
+  {
+   "id": "ecl-option.phlan",
+   "source": "PHLAN",
+   "message_id": "phlan"
+  },
+  {
+   "id": "ecl-option.teshwave",
+   "source": "TESHWAVE",
+   "message_id": "teshwave"
+  },
+  {
+   "id": "ecl-option.yulash",
+   "source": "YULASH",
+   "message_id": "yulash"
+  },
+  {
+   "id": "ecl-option.zhentil-keep",
+   "source": "ZHENTIL KEEP",
+   "message_id": "zhentil_keep"
+  },
+  {
+   "id": "ecl-option.myth-drannor",
+   "source": "MYTH DRANNOR",
+   "message_id": "myth_drannor"
+  },
+  {
+   "id": "ecl-option.sneak-in",
+   "source": "SNEAK IN",
+   "message_id": "sneak_in"
+  },
+  {
+   "id": "ecl-option.ask-permission",
+   "source": "ASK PERMISSION",
+   "message_id": "ask_permission"
+  },
+  {
+   "id": "ecl-option.run-away",
+   "source": "RUN AWAY",
+   "message_id": "run_away"
+  },
+  {
+   "id": "ecl-option.fight",
+   "source": "FIGHT",
+   "message_id": "fight"
+  },
+  {
+   "id": "ecl-option.go-with-guards",
+   "source": "GO WITH GUARDS",
+   "message_id": "go_with_guards"
+  },
+  {
+   "id": "ecl-option.fight-the-men",
+   "source": "FIGHT THE MEN",
+   "message_id": "fight_the_men"
+  },
+  {
+   "id": "ecl-option.let-them-go",
+   "source": "LET THEM GO",
+   "message_id": "let_them_go"
+  },
+  {
+   "id": "ecl-option.kill-him",
+   "source": "KILL HIM",
+   "message_id": "kill_him"
+  },
+  {
+   "id": "ecl-option.let-him-go",
+   "source": "LET HIM GO",
+   "message_id": "let_him_go"
+  },
+  {
+   "id": "ecl-option.tell-her-your-story",
+   "source": "TELL HER YOUR STORY",
+   "message_id": "tell_her_your_story"
+  },
+  {
+   "id": "ecl-option.tell-her-you-re-hunting-cultists",
+   "source": "TELL HER YOU'RE HUNTING CULTISTS",
+   "message_id": "tell_her_hunting_cultists"
+  },
+  {
+   "id": "ecl-option.tell-her-it-s-none-of-her-affair",
+   "source": "TELL HER IT'S NONE OF HER AFFAIR",
+   "message_id": "tell_her_none_of_affair"
+  },
+  {
+   "id": "ecl-option.try-to-talk-further",
+   "source": "TRY TO TALK FURTHER",
+   "message_id": "try_talk_further"
+  },
+  {
+   "id": "ecl-option.wilderness",
+   "source": "WILDERNESS",
+   "message_id": "wilderness"
+  },
+  {
+   "id": "ecl-option.caves",
+   "source": "CAVES",
+   "message_id": "caves"
+  },
+  {
+   "id": "ecl-option.stay-here",
+   "source": "STAY HERE",
+   "message_id": "stay_here"
+  },
+  {
+   "id": "ecl-option.village",
+   "source": "VILLAGE",
+   "message_id": "village"
+  },
+  {
+   "id": "ecl-option.depart",
+   "source": "DEPART",
+   "message_id": "depart"
+  },
+  {
+   "id": "ecl-option.trail",
+   "source": "TRAIL",
+   "message_id": "trail"
+  },
+  {
+   "id": "ecl-option.combat",
+   "source": "COMBAT",
+   "message_id": "encounter_combat"
+  },
+  {
+   "id": "ecl-option.wait",
+   "source": "WAIT",
+   "message_id": "encounter_wait"
+  },
+  {
+   "id": "ecl-option.enter-the-blades",
+   "source": "ENTER THE BLADES",
+   "message_id": "enter_blades"
+  },
+  {
+   "id": "ecl-option.retreat",
+   "source": "RETREAT",
+   "message_id": "retreat"
+  },
+  {
+   "id": "ecl-option.interrogate",
+   "source": "INTERROGATE",
+   "message_id": "interrogate"
+  },
+  {
+   "id": "ecl-option.advance",
+   "source": "ADVANCE",
+   "message_id": "encounter_advance"
+  },
+  {
+   "id": "ecl-option.parlay",
+   "source": "PARLAY",
+   "message_id": "encounter_parlay"
+  },
+  {
+   "id": "ecl-option.parlay-haughty",
+   "source": "PARLAY_HAUGHTY",
+   "message_id": "parlay_haughty"
+  },
+  {
+   "id": "ecl-option.parlay-sly",
+   "source": "PARLAY_SLY",
+   "message_id": "parlay_sly"
+  },
+  {
+   "id": "ecl-option.parlay-meek",
+   "source": "PARLAY_MEEK",
+   "message_id": "parlay_meek"
+  },
+  {
+   "id": "ecl-option.parlay-nice",
+   "source": "PARLAY_NICE",
+   "message_id": "parlay_nice"
+  },
+  {
+   "id": "ecl-option.parlay-abusive",
+   "source": "PARLAY_ABUSIVE",
+   "message_id": "parlay_abusive"
+  },
+  {
+   "id": "ecl-option.fire-knives",
+   "source": "FIRE KNIVES",
+   "message_id": "fire_knives"
+  },
+  {
+   "id": "ecl-option.princess-nacacia",
+   "source": "PRINCESS NACACIA",
+   "message_id": "princess_nacacia"
+  },
+  {
+   "id": "ecl-option.no-one",
+   "source": "NO ONE",
+   "message_id": "no_one"
+  },
+  {
+   "id": "ecl-option.exit",
+   "source": "EXIT",
+   "message_id": "exit"
+  }
+ ],
+ "events": [
+  {
+   "id": "tilverton.sewers.fire-knife-victory-handoff",
+   "once": true,
+   "when": {
+    "ecl_block": 3,
+    "memory": {
+     "0x7F72": 253,
+     "0x4C2B": 1
+    }
+   },
+   "actions": [
+    {
+     "type": "set_map_position",
+     "mode": "dungeon",
+     "position": {
+      "map_kind": "first_person",
+      "area_id": 2,
+      "geometry_block": 3,
+      "x": 13,
+      "y": 10,
+      "direction": 2,
+      "wall_type": 15,
+      "wall_roof": 131
+     }
+    }
+   ]
+  },
+  {
+   "id": "zhentil-keep.inner-city.route-memory-reset",
+   "once": true,
+   "when": {
+    "ecl_block": 32,
+    "memory": {
+     "0x4C00": 2
+    }
+   },
+   "actions": [
+    {
+     "type": "set_memory",
+     "address": "0x4C00",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "id": "zhentil-keep.beholder-cave.same-block-launch",
+   "once": true,
+   "when": {
+    "ecl_block": 34,
+    "memory": {
+     "0xC04B": 13,
+     "0xC04C": 1,
+     "0xC04D": 3,
+     "0x4C06": 1
+    }
+   },
+   "actions": [
+    {
+     "type": "set_memory",
+     "address": "0x4C03",
+     "value": 0
+    },
+    {
+     "type": "set_map_position",
+     "mode": "dungeon",
+     "continue_result": true,
+     "position": {
+      "map_kind": "first_person",
+      "area_id": 4,
+      "geometry_block": 37,
+      "x": 13,
+      "y": 1,
+      "direction": 6,
+      "wall_type": 8,
+      "wall_roof": 192
+     }
+    }
+   ]
+  },
+  {
+   "id": "pit-of-moander.departure",
+   "once": true,
+   "when": {
+    "ecl_block": 81,
+    "memory": {
+     "0x4C5B": 255,
+     "0x7F12": 1
+    }
+   },
+   "variants": [
+    {
+     "when": {
+      "member": {
+       "script_name": "ALIAS",
+       "alive": true
+      }
+     },
+     "actions": [
+      {
+       "type": "remove_members",
+       "script_names": [
+        "ALIAS",
+        "DRAGONBAIT"
+       ]
+      },
+      {
+       "type": "show_message",
+       "message_id": "pit.departure.alias_alive"
+      },
+      {
+       "type": "return_to_pending_menu",
+       "mode": "world_menu"
+      }
+     ]
+    },
+    {
+     "when": {
+      "member": {
+       "script_name": "ALIAS",
+       "alive": false
+      }
+     },
+     "actions": [
+      {
+       "type": "remove_members",
+       "script_names": [
+        "ALIAS",
+        "DRAGONBAIT"
+       ]
+      },
+      {
+       "type": "show_message",
+       "message_id": "pit.departure.alias_dead"
+      },
+      {
+       "type": "return_to_pending_menu",
+       "mode": "world_menu"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -254,6 +254,7 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
 |---|---|
 | `tools/ida.sh` | IDA headless 唯一入口（固定 `ida-pro-9.4-idapython:py312-v1`） |
 | `tools/go.sh` | Docker 內 Go 工具鏈（主機不裝 Go；`.git` 在 workplace 故帶 `-buildvcs=false`） |
+| `tools/engine-proxy.sh` | 把 nested engine 的某個 commit 打包成檔案型 Go module proxy，供 `go get` 鎖版 |
 | `tools/re-sweep.sh` | 一個平台的全模組建庫＋匯出：manifest → resident → 36 段 overlay |
 | `tools/ida/export_module.py` | 匯出一個 database 的函式／xref／字串／segment／未定義區 |
 | `tools/ida/analyze_overlay.py` | raw overlay 建庫：強制 16-bit、種子 entry point、再匯出 |
@@ -453,6 +454,25 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 只有重大、已測試、可展示的 milestone 才集中 commit＋push；不要每個小改
   都提交。
 - 兩個 repo 各自 commit／push，歷史保持獨立。
+### 升級 engine 相依（私有 repo，容器沒有憑證）
+
+`golden-box-remake-engine` 是**私有** repo：`proxy.golang.org` 取不到，容器裡也
+沒有 GitHub 憑證（依規則不得放）。所以 `go get <module>@<commit>` 一定會失敗在
+`could not read Username for 'https://github.com'`。固定流程是：
+
+```sh
+git -C golden-box-remake-engine push origin main   # 先推，zip 內容才對得上 remote
+tools/engine-proxy.sh                              # 印出 pseudo-version
+tools/go.sh get github.com/wicanr2/golden-box-remake-engine@<印出來的版本>
+tools/go.sh test ./...                             # 確認沒有殘留 replace
+```
+
+`tools/go.sh` 已把該 proxy 排在 `GOPROXY` 最前面並關掉 sumdb（`GOSUMDB=off`；
+go.sum 仍然逐版本鎖雜湊）。
+⚠ **不要改用 `GOPRIVATE`**：它會強制走 direct，正好繞過這個 proxy。
+⚠ **不要為了讓 CoAB 建得起來而在 `go.mod` 留 `replace`**：nested engine 不在 CoAB
+版控裡，留著會讓乾淨 checkout 建不起來。
+
 - CoAB 使用：
   `git --git-dir=workplace/azure-bonds-git --work-tree=.`
   （2026-08-13 由 `/tmp/azure-bonds-git` 搬入 repo 底下並列入 `.gitignore`；
