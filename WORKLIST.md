@@ -6,20 +6,20 @@
 
 ### 第 0 批：把上一輪留下的邊界收乾淨
 
-這三項不是新功能，是**讓前一輪的結論站得住**。做完才往下走。
+這三項不是新功能，是**讓前一輪的結論站得住**。**2026-08-16 全部完成**（spec 1110）。
 
-| # | 項目 | 現況 | 要做什麼 |
-|---:|---|---|---|
-| 0-1 | **變長指令的長度守衛** | ✅ 長度公式已補（`ecl.BranchTargets`／`ecl.MenuEnd`，spec 1110） | 加**上限驗證與回歸測試**：`25h`／`26h`／`15h`／`2Bh` 的 arity 是 0，`Instruction.Next` 指向自己的第一個運算元；任何相信它的走訪器會把資料當程式解而**不報錯**。要有測試擋住「有人又拿 `Next` 去走這四個 opcode」 |
-| 0-2 | **`ECL1.DAX/0x51` 走訪截斷** | 碰到 400 萬狀態上限提早停，世界地圖那兩個 block 可能有頁沒進分母 | 收斂狀態空間或分段走訪，讓全 corpus 都走得完；走不完就要能說出**漏了哪些位址**，不能只說「可能有」 |
-| 0-3 | **16 頁 `variable-insert`** | 頁裡印的是執行期的值，靜態驗不到；其中 7 頁沒有任何規則 | 逐頁判定：按值列舉（同 `world.night-note.24/35/42`）、或確認 remake 不需要。**不准寫會把值吃掉的固定句** |
+| # | 項目 | 結果 |
+|---:|---|---|
+| 0-1 | **變長指令的長度守衛** | ✅ 新增 `ecl.RecordEnd`（唯一正確的「下一條在哪」）與 `VariableLengthCommands`，三條測試釘住：陷阱仍在（四個 opcode arity 仍是 0）、corpus 裡 **363 筆**變長記錄逐筆算得出結尾且一定大於 `Next`、個數不可知或越界時一律回錯誤 |
+| 0-2 | **走訪截斷** | ✅ 分母與比對拆成兩趟。`walkPages` 不帶文字也不帶呼叫堆疊（子程式做成摘要），整份 corpus 都走得完 ⇒ 分母完整；`walkRuns` 碰到上限只會少判。`TestPageWalkCoversEveryPageTheRunWalkFinds` 印出差額，**實測 0 頁** |
+| 0-3 | **16 頁 `variable-insert`** | ✅ 逐格判定值的來源：`7B01h` 目的地 14 個、`7B89h` 招牌 7 塊、`7B88h` 方向 4 個都是字串常數 ⇒ 逐項列舉（32 條規則）；`7F79h` 傳聞編號、`7F7Bh` 賭金、`7F82h` 距離、`7C00h` 隊員名無法列舉，寫成 `TestVariableInsertPagesAreWiredAtRuntime` 的 unhandled 清單並附理由。⚠ 列舉不會讓 `variable-insert` 的數字變小——靜態文字裡沒有那個值，這一類只能在執行期驗 |
 
 ### 第 1 批：使用者指定的主線（依序）
 
 | 順序 | ID | 內容 |
 |---:|---|---|
-| 1 | `ENG-01` | 事件內容——**文字層已接完**（spec 1110），剩副作用與第 0 批的尾巴 |
-| 2 | `RE-04` | 劇情與全地圖事件的**逐格盤點**：producer、條件、分支、副作用、重訪 |
+| 1 | `ENG-01` | 事件內容——**文字層已接完**（spec 1110），剩副作用（見下一列）|
+| 2 | `RE-04` | 劇情與全地圖事件的逐格盤點。**副作用的分母已建立**（`docs/audit/ecl-effect-coverage.md`）：可達 14,177 條指令中 `done` 13,097／`partial` 1,057／`consumed` 23。依出現次數排，缺口是 `1Ch CLEARMONSTERS`(206)、`0Eh PICTURE`(199)、`24h COMBAT`(199→RE-06)、`2Dh CALL`(168→RE-03)、`33h PRINT RETURN`(120)、`27h TREASURE`(63)|
 | 3 | `RE-06` → `ENG-07` | 戰鬥回合生命週期：initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
 | 4 | `RE-07` → `ENG-08` | 怪物 AI 與特殊能力：移動、目標優先、施法、逃跑、群體、抗性、免疫、毒素、凝視 |
 | 5 | `ENG-09` | 全法術表：target、range/area、save、duration、stack/dispel |
