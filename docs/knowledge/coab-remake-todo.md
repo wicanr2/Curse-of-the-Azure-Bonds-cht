@@ -59,15 +59,15 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | └ 檔名 | `state` `combat_state` `creation` `creation_guided` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
 | 共用 engine | 獨立 repo，69 個 `.go` | `golden-box-remake-engine/` |
 | 內容資料 | `gamepack/pack/` **四檔**：core 46 KB／content 86 KB／locale.en 66 KB／locale.zh-TW 72 KB | `ls -la` |
-| ├ 事件 | 4 個 `events`、113 條 `option_rules`、**369 條 `text_rules`** | `json` |
-| └ 語系 | `en` **607** 條、`zh-TW` **607** 條，**一一對齊、沒有漏譯** | `json` |
+| ├ 事件 | 4 個 `events`、113 條 `option_rules`、**381 條 `text_rules`** | `json` |
+| └ 語系 | `en` **619** 條、`zh-TW` **619** 條，**一一對齊、沒有漏譯** | `json` |
 | UI 詞條 | `assets/locale/zh-TW.json` **870** 條 | `json` |
 | 建角規則表 | `gamepack/rules/character-tables.json`：7 種族、17 職業組合、8 職業槽、擲點與體質加值 | `json` |
 | 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**4,222 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
 | ECL 靜態可達 instruction | **4,222**（spec 1106 補上 `IF` 的 else 路徑後，由 1,355 增為三倍） | `ecl-event-catalog.md` |
 | ECL 副作用候選 | **154** 個中 33 個已審（31 筆依效果序列沿用） | `ecl-ordered-effect-reviews.json` |
 | ECL opcode commit phase | **55** 個 corpus opcode 中 25 支 handler 已讀、**30 支 `unknown`** | `ecl-opcode-effect-phases.md` |
-| **原作文字段落覆蓋** | **221** 段靜態可達，已接上 `text_rule` **64**、**未接上 157** | `ecl-text-coverage.md` |
+| **原作文字段落覆蓋** | **195** 頁靜態可達（一頁 ＝ 一個 `PRINTCLEAR`），已接上 **90**、**未接上 105** | `ecl-text-coverage.md` |
 | 正常玩家路徑 | 走到**眼魔洞穴東門 → 散提爾堡邊緣** | `go test` |
 | 全套 gate | `./tools/go.sh test ./...` 全綠 | 本輪實跑 |
 | 遊戲入口旗標 | **58** 個，其中 30 個是分段驗收的直入點 | `main.go` |
@@ -167,7 +167,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 
 | ID | 項目 | 要做什麼 |
 |---|---|---|
-| `ENG-01` | **事件內容補齊** | 依 `RE-04` 的逐格盤點結果，把每個區域的事件寫成 `text_rules`／`option_rules`／`events`；優先序照矩陣的區域表，`待逆向` 的四個區域（艾森布拉、希爾斯法、尤拉什／摩安德之坑、Myth Drannor 正常入口）先補 |
+| `ENG-01` | **事件內容補齊** | ✅ **有分母了**：`cmd/ecl-text-coverage` 逐頁列出原作文字與 game pack 的接線（`ecl-text-coverage.md`），每寫一條規則數字就掉一。目前 195 頁中已接上 90、未接上 105。依 `RE-04` 的逐格盤點結果，把每個區域的事件寫成 `text_rules`／`option_rules`／`events`；優先序照矩陣的區域表，`待逆向` 的四個區域（艾森布拉、希爾斯法、尤拉什／摩安德之坑、Myth Drannor 正常入口）先補 |
 | `ENG-02` | **game pack 分檔** | ✅ **第一步已完成**（spec 1105）：切成 `gamepack/pack/` 四檔——`00-core`（機制資料）、`10-content`（`text_rules`／`option_rules`／`events`）、`20-locale.en`／`20-locale.zh-TW`。引擎新增 `LoadPackParts`，合併後才驗證，重複一律失敗不做後蓋前。⚠ **依區域再切留給命名收斂之後**：實測 ID 命名空間不一致（83 條 `ecl-option.*`、約 100 個沒有命名空間的扁平 locale 鍵），現在依區域切會夾帶一次大改名 |
 | `ENG-13` | **補 `7CE4h` 的角色欄位投影** | ✅ **已完成**：`Character.ECLFlag192`／`DOSPlayerRecord.ECLFlag192`／`PartyMemberContext.ECLFlag192` 三處加欄位，DOS 記錄 `0x192` 讀寫 round-trip，`LOAD CHARACTER` 時投影並套 `and 1` 遮罩；回歸測試 `TestRunSubsetLoadCharacterProjectsFlag192MaskedToLowBit` |
 | `ENG-14` | **原版資料表一律走 JSON** | 使用者要求：原版取出的資料表全部轉成 game pack JSON，Go 只留機制，不再 hardcode。已完成起始年齡（`gamepack/rules/character-tables.json`）。⚠ 仍 hardcode 在 `internal/party/character.go` 的：`WithAgeEffects` 的年齡分期門檻與效果表、`raceAllowsClass`；`internal/party/dos_spell_record.go` 的 `parseDOSRace`／`parseDOSClass` 對應表也應改由 JSON 提供 |
