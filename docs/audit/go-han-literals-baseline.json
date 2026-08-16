@@ -53,6 +53,13 @@
     {
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "main",
+      "sha256": "450bca06483d716e1d1cfa13915101098945484dbb7da85f58cc90152960ac67",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-text-coverage/main.go",
+      "function": "main",
       "sha256": "4d3b7a0f753f498a71ada1ab8326de02e1899494a90b5d37eb2747480a7d8b69",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -61,13 +68,6 @@
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "main",
       "sha256": "7a34e313b90d7672e9ecd434e427a6fa460f87e632eb6bacfaa4bf59913193ee",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/ecl-text-coverage/main.go",
-      "function": "main",
-      "sha256": "8953145f01bfcc53a1282a1fc77962b72e84368f765e07b33157b680443168e3",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -95,13 +95,6 @@
     {
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "main",
-      "sha256": "d40fe719425a4b48c38578db0c27d640242a8f2563cb2c5b2a2daf5e9a600084",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/ecl-text-coverage/main.go",
-      "function": "main",
       "sha256": "d6be44be96a58c198b8f845de28174a0d1a714de95c73d3e2ae015f923203766",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -117,6 +110,20 @@
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "main",
       "sha256": "f20e4cb5d7938bb3398fe4a8a78a5a6cd7f98754b6dcfabf4554904e4363839a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-text-coverage/main.go",
+      "function": "main",
+      "sha256": "fa64c409b7f0dc1cfbb3dfacc081fa6b4813bb947a09b9a9010e286a61529fcd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-text-coverage/main.go",
+      "function": "main",
+      "sha256": "fbe078e1ab2788684207e7ae63e63bf5980e16eb1ec1a79dd3bd2f2faa621d9a",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

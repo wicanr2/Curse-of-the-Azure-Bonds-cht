@@ -210,6 +210,62 @@ func FindSaveDestinationCandidates(block []byte, destination uint16) ([]Instruct
 	return output, nil
 }
 
+// VariableLengthCommands lists the opcodes whose record length is only known
+// after an operand is read, and whose KnownCommands arity is therefore 0.
+//
+// ⚠ 這四個 opcode 的 `Instruction.Next` **指向自己的第一個運算元**，不是下一條
+// 指令。任何拿 `Next` 往下走的程式都會把目標表／選項字串當成程式碼解，
+// 而且**不會報錯**——只會安靜地少走一塊（spec 1110 §一）。走控制流一律用
+// `RecordEnd`，不要用 `Next`。
+var VariableLengthCommands = map[byte]string{
+	0x15: "VERTICAL MENU",
+	0x25: "ON GOTO",
+	0x26: "ON GOSUB",
+	0x2B: "HORIZONTAL MENU",
+}
+
+// RecordEnd returns the offset just past the instruction at offset — the real
+// one, including the variable-length tail of the four commands above. For every
+// other opcode it is Instruction.Next.
+//
+// 邊界檢查在這裡集中做：算出來的結尾必須**往前走**且落在 payload 內，
+// 個數運算元必須是常數（`ON` 最多 256 個目的地、選單 1..64 個選項）。
+// 任何一條不成立就回錯誤，讓呼叫端停下來，而不是拿一個看起來合理的數字繼續走。
+func RecordEnd(block []byte, offset int) (int, error) {
+	if len(block) < 2 {
+		return 0, fmt.Errorf("ECL block is shorter than two-byte prefix")
+	}
+	payload := block[2:]
+	if offset < 0 || offset >= len(payload) {
+		return 0, fmt.Errorf("record offset %d is outside payload", offset)
+	}
+	var end int
+	switch opcode := payload[offset]; opcode {
+	case 0x25, 0x26:
+		_, after, err := branchTargets(payload, offset)
+		if err != nil {
+			return 0, err
+		}
+		end = after
+	case 0x15, 0x2B:
+		after, err := menuEnd(payload, offset)
+		if err != nil {
+			return 0, err
+		}
+		end = after
+	default:
+		instruction, err := decodeInstruction(payload, offset)
+		if err != nil {
+			return 0, err
+		}
+		end = instruction.Next
+	}
+	if end <= offset || end > len(payload) {
+		return 0, fmt.Errorf("record at %d ends at %d, outside (%d, %d]", offset, end, offset, len(payload))
+	}
+	return end, nil
+}
+
 // BranchTargets decodes the variable-length 25h ON GOTO / 26h ON GOSUB record
 // at a payload offset: the branch index, the target count and the target list,
 // followed by the offset of the next instruction. The command table gives both

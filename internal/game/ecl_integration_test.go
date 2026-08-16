@@ -479,7 +479,9 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			}
 			return
 		}
-		wantSign := state.catalog.Text("ecl_tilverton_temple_sign", "ecl_tilverton_temple_sign")
+		// 招牌原本靠 `localizeECLText` 的特例（剛德神殿一塊），現在七塊招牌都由
+		// game pack 按值列舉（原作 7B89h 的字串常數，spec 1110 §六）。
+		wantSign := requireGamePackText(t, &state, "tilverton.sign.temple-of-gond")
 		// 下水道尖叫的傳聞先前只有 Go 的 fallback，本輪改由 game pack 供應。
 		wantRumor := requireGamePackText(t, &state, "tilverton.rumor.sewer-scream")
 		wantGreenRobesRumor := requireGamePackText(t, &state, "tilverton.green-robes-rumor")

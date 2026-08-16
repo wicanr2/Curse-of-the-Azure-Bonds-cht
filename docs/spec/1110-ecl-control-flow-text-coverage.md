@@ -98,24 +98,73 @@ entry 走，跟循序與 `GOTO`／`GOSUB`，然後把走到的指令依 **offset
 ——要嘛像 `world.night-note.24/35/42` 那樣按值列舉，要嘛等能插值的機制。
 **沒有規則只是顯示原文，寫錯規則是把資訊刪掉。**
 
-## 五、明確不宣稱
+## ★★★ 五、分母與比對走兩趟
 
-- **沒有宣稱分母就是全部。** `ECL1.DAX/0x51` 的走訪會碰到 400 萬狀態上限而提早停
-  （世界地圖那一段 `IF` 分岔多又長）。碰到上限會在 stderr 印一行，**不是靜默截斷**；
-  代價是那個 block 可能有走不到的頁沒進分母。
-- **沒有宣稱 16 個 `variable-insert` 都接對了。** 它們要靠實機路徑驗；
-  其中 9 個有既有的規則家族（逐城 `*.edge`、`*.tavern-tale-*`、`world-route.*`、
-  `world.night-note.*`），另外 7 個目前沒有規則。
+第一版把「有哪些頁」與「那一頁接上沒有」綁在同一次走訪裡，於是
+`ECL1.DAX/0x50`／`0x51` 一碰到狀態上限，那個 block 就**同時**失去頁與比對，
+報告只能寫「可能有頁沒進分母」——一句無法查證的保留。
+
+拆成兩趟就沒有這個問題：
+
+| 走訪 | 狀態 | 保證 |
+|---|---|---|
+| `walkPages`（分母） | 位址 ＋ 子程式摘要 ＋「這一頁開著沒有」一個位元 | 整份 corpus 都走得完，**頁不會漏** |
+| `walkRuns`（比對） | 位址 ＋ 呼叫堆疊 ＋ 已累積文字 | 碰到上限只會**少判**，頁不會消失 |
+
+★ 分母那一趟不能帶呼叫堆疊。**堆疊本身就是乘數**：世界地圖的頁尾翻頁提示
+子程式有上百個呼叫點，每個返回位址都是一個不同的堆疊，(位址, 堆疊, 一個位元)
+在 200 萬狀態就爆掉。改成 `GOSUB` 進去走一次、記下它產生哪些頁、回來從 `Next`
+繼續（子程式摘要），狀態就只剩位址數×2。
+
+★ 子程式回來之後那一頁是開是關取決於它印了什麼，分不清時兩種都推。
+這是**過近似**：會多列頁（變成看得見的待辦），不會少列頁。
+**分母寧可多，比對寧可少**——兩個方向刻意相反。
+
+⇒ `TestPageWalkCoversEveryPageTheRunWalkFinds` 釘住 `walkRuns ⊆ walkPages`，
+並把差額印出來。**實測差額是 0**：截斷目前沒有讓任何一頁比對不到。
+
+## ★★★ 六、`variable-insert` 的值是哪一格來的
+
+這 16 頁是靜態工具**結構上**驗不到的一類。要判斷它們能不能接，先看值的來源
+（`cmd/ecl-text-coverage` 現在把運算元位址記進 `variable_inserts`）：
+
+| 格 | 內容 | 可否列舉 | 處置 |
+|---|---|---|---|
+| `7B01h` | 目的地名（14 個字串常數，ECL1 `0x50`／`0x51`）| ✅ | 逐地列舉 `*.edge`／`world-route.*` |
+| `7B89h` | 提爾佛頓店家招牌（7 個字串常數，ECL2 `0x01`）| ✅ | 逐塊列舉 `tilverton.sign.*` |
+| `7B88h` | 方向（`NORTH.`／`EAST.`／`SOUTH.`／`WEST.`）| ✅ | 逐向列舉，兩種檢查哨各一組 |
+| `7F7Fh` | 手札編號（24／35／42）| ✅ | 已列舉（spec 1108 §一之一）|
+| `7F79h` | 酒館傳聞編號 | ❌ 尚未 | 那一格在 corpus 裡被許多不相干流程寫過，要先追出這一頁的寫入來源 |
+| `7F7Bh` | 競技場賭金 | ❌ | 算出來的數，無法列舉 |
+| `7F82h` | 光球距離 | ❌ | 逐回合遞減，同上 |
+| `7C00h` | 隊員名字 | ❌ | 玩家自己取的 |
+
+★ **列舉不會讓 `variable-insert` 的數字變小。** 靜態文字裡沒有那個值，工具永遠
+比對不了——這一類的驗收只能在**執行期**做。所以改用
+`gamepack.TestVariableInsertPagesAreWiredAtRuntime`：依 `runtime.go` 的
+`result.Text` 形狀重建實機字串序列再問 `MatchText`。已接的必須命中，
+**還沒接的必須不命中**——「已知沒接」與「忘了接」在報告裡長得一樣，
+只有把它寫死才分得開。
+
+## 七、明確不宣稱
+
+- **沒有宣稱後四類（傳聞編號、賭金、距離、隊員名）不需要。** 它們是玩家看得到
+  的資訊，現在維持原文；要接需要規則支援佔位符，那是引擎 schema 的改動。
 - **沒有宣稱譯文正確。** `matched` 只表示有一條規則的 `all_contains` 全部命中。
 - 沒有宣稱事件副作用（解鎖、旗標、戰鬥編成）已還原，那是另一條線。
 - 78 條規則在報告裡從未出現在 `rule_id` 欄。多數是 `variable-insert` 家族
   （靜態驗不到），少數是被更早的規則先命中同一份 run。**沒有逐條核過**。
 
-## 六、回歸
+## 八、回歸
 
 | 測試 | 釘住什麼 |
 |---|---|
 | `ecl.TestRealECLCorpusHasNoUnknownReachableCommands` | 加進 `ON GOTO`／選單長度之後，全 corpus 仍然沒有解不出來的指令 |
+| `ecl.TestVariableLengthCommandsAreNotWalkableByNext` | 四個變長指令的 arity 仍是 0（陷阱還在），`RecordEnd` 是唯一正確的走法 |
+| `ecl.TestRecordEndCoversEveryVariableLengthRecordInTheCorpus` | corpus 裡 363 筆變長記錄逐筆算得出結尾，且一定大於 `Next` |
+| `ecl.TestRecordEndRejectsUnknowableAndOutOfRangeLengths` | 個數是記憶體參照、表被截斷、選項數 0 時一律回錯誤，不回一個看起來合理的數字 |
+| `TestPageWalkCoversEveryPageTheRunWalkFinds` | 分母 ⊇ 比對，差額是印出來的數字不是一句保留 |
+| `gamepack.TestVariableInsertPagesAreWiredAtRuntime` | 16 頁裡已接的在實機命中、還沒接的明確不命中 |
 | `gamepack.TestNoTextRuleIsShadowedByAnEarlierOne` | 沒有規則被更早的規則整個遮蔽 |
 | `gamepack.TestDefaultPackMergesAllCommittedParts` | 合併後的條數等於各分檔加總，且 id 不重複 |
 | `game.TestRealNewGame*`（三條實機路徑） | 提爾佛頓那一段的每一頁都拿 game pack 的文字比對 |

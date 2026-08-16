@@ -1,13 +1,14 @@
 {
  "schema": "coab-ecl-text-coverage/1",
  "limitations": [
-  "分母是**控制流走訪**得到的頁，不是位址順序切出來的段：從五個 lifecycle entry 出發，跟循序、`GOTO`／`GOSUB`／`RETURN`、`IF` 的兩條路（spec 1106）、以及 `25h ON GOTO`／`26h ON GOSUB` 的每一個目的地。`15h`／`2Bh` 選單與 `25h`／`26h` 都是變長指令，長度自己算（`ecl.MenuEnd`／`ecl.BranchTargets`）——信 `Instruction.Next` 會走進運算元裡把資料當程式解。",
+  "分母是**控制流走訪**得到的頁，不是位址順序切出來的段：從五個 lifecycle entry 出發，跟循序、`GOTO`／`GOSUB`／`RETURN`、`IF` 的兩條路（spec 1106）、以及 `25h ON GOTO`／`26h ON GOSUB` 的每一個目的地。`15h`／`2Bh` 選單與 `25h`／`26h` 是變長指令，長度一律用 `ecl.RecordEnd`——它們的 `Instruction.Next` 指向自己的第一個運算元，信它會把資料當程式解而且不報錯。",
+  "分母與比對**走兩趟**：`walkPages` 不帶文字（狀態只有位址、子程式摘要與一個位元），整份 corpus 都走得完，所以「有哪些頁」是完整的；`walkRuns` 帶文字用來比對，碰到狀態上限只會**少判**，不會讓頁從分母裡消失。兩者的差額由 `TestPageWalkCoversEveryPageTheRunWalkFinds` 印出來（目前 0 頁）。",
   "比對以 **run** 為單位：runtime 把一次執行累積的文字**一次**交給 `MatchText`，所以一條規則可以橫跨好幾頁（開場捲軸就是七頁一條）。run 在會 `return result` 的指令處結束（選單、戰鬥、寶物、輸入、換 block、離開）。",
   "一條 run 命中，它經過的每一頁就都算接上了——規則命中的是那一整份文字，不是其中某一頁。反過來，同一份文字可能印在好幾個位址上，那些位址一律算進同一條 run。",
   "`variable-insert` 是**唯一**還無法靜態驗證的一類：頁裡印的是執行期的值（城名、酒館傳聞編號、隊員名），靜態文字裡沒有那幾個字，規則要靠它才會命中。逐城的 `*.edge`、`*.tavern-tale-*`、`world-route.*`、`world.night-note.*` 都屬於這一類，要靠實機路徑驗。",
   "`subroutine` 是共用子程式的片段（`WHAT DO YOU DO?`、`UP`／`DOWN`）。判準是「落在被 `GOSUB` 呼叫的範圍內」**且**「從來沒有和別的頁同屬一份 run」——實機它一定被併進呼叫端那一頁。**不要**替它們寫規則：只有一兩個字的 `all_contains` 會攔截到別的文字。",
   "`gosub_inserts`／`dynamic_branch` 只是**註記**，不是狀態：那兩種插入已經在走訪時展開，展開後沒命中就照樣算 `unmatched`。兩個計數與 `matched`／`unmatched` 有重疊，加起來不等於 `groups`。",
-  "⚠ `ECL1.DAX/0x51` 的走訪會碰到狀態數上限（4,000,000）而提早停：世界地圖那一段 `IF` 分岔多又長，狀態數隨之指數成長。碰到上限會在 stderr 印一行，**沒有靜默截斷**；代價是那個 block 可能有走不到的頁沒進分母。",
+  "⚠ `ECL1.DAX/0x50`／`0x51` 的**比對**走訪會碰到狀態上限（4,000,000）而提早停：世界地圖那一段 `IF` 分岔多又長。碰到上限會在 stderr 印一行，**沒有靜默截斷**；分母不受影響（見上一條），代價只是那個 block 可能有頁比對不到而算成待辦。實測目前兩趟走訪找到的頁完全相同，代價為 0。",
   "『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。"
  ],
  "groups": [
@@ -17,7 +18,7 @@
    "offset": "0x00C8",
    "text": "YOU ARE AT THE EDGE OF . WILL YOU ENTER OR CONTINUE YOUR JOURNEY?",
    "variable_inserts": [
-    "0x00DD"
+    "0x00DD@7B01h"
    ],
    "status": "variable-insert"
   },
@@ -40,8 +41,8 @@
     "0x0268"
    ],
    "variable_inserts": [
-    "0x027E",
-    "0x02B4"
+    "0x027E@7B4Ah",
+    "0x02B4@7B50h"
    ],
    "status": "matched"
   },
@@ -88,7 +89,7 @@
    "text": "YOU ARE IN . WHAT PLACE WILL YOU VISIT?",
    "rule_id": "world.tavern.drank-the-night-away",
    "variable_inserts": [
-    "0x05F8"
+    "0x05F8@7B01h"
    ],
    "status": "matched"
   },
@@ -150,7 +151,7 @@
    "offset": "0x0BBB",
    "text": "YOU OVERHEAR TAVERN TALE .",
    "variable_inserts": [
-    "0x0BD1"
+    "0x0BD1@7F79h"
    ],
    "status": "variable-insert"
   },
@@ -177,7 +178,7 @@
    "offset": "0x0EB1",
    "text": "HOW WILL YOU GET TO ?",
    "variable_inserts": [
-    "0x0EC3"
+    "0x0EC3@7B01h"
    ],
    "status": "variable-insert"
   },
@@ -343,8 +344,8 @@
     "0x1A6E"
    ],
    "variable_inserts": [
-    "0x1A56",
-    "0x1A7C"
+    "0x1A56@7C00h",
+    "0x1A7C@7F7Fh"
    ],
    "status": "variable-insert"
   },
@@ -410,7 +411,7 @@
    "offset": "0x018B",
    "text": "YOU ARE AT THE EDGE OF . WILL YOU ENTER OR CONTINUE YOUR JOURNEY?",
    "variable_inserts": [
-    "0x01A0"
+    "0x01A0@7B01h"
    ],
    "status": "variable-insert"
   },
@@ -445,7 +446,7 @@
    "text": "YOU ARE IN . WHAT PLACE WILL YOU VISIT?",
    "rule_id": "world.wilderness.green-robed-followers",
    "variable_inserts": [
-    "0x03B2"
+    "0x03B2@7B01h"
    ],
    "status": "matched"
   },
@@ -489,7 +490,7 @@
    "offset": "0x08C6",
    "text": "YOU OVERHEAR TAVERN TALE .",
    "variable_inserts": [
-    "0x08DC"
+    "0x08DC@7F79h"
    ],
    "status": "variable-insert"
   },
@@ -525,7 +526,7 @@
    "offset": "0x0B84",
    "text": "HOW WILL YOU GET TO ?",
    "variable_inserts": [
-    "0x0B96"
+    "0x0B96@7B01h"
    ],
    "status": "variable-insert"
   },
@@ -676,7 +677,7 @@
     "0x15F4"
    ],
    "variable_inserts": [
-    "0x1625"
+    "0x1625@7B50h"
    ],
    "status": "matched"
   },
@@ -1036,7 +1037,7 @@
    "offset": "0x0B1D",
    "text": "HE TELLS TAVERN TALE #",
    "variable_inserts": [
-    "0x0B3B"
+    "0x0B3B@7F79h"
    ],
    "status": "variable-insert"
   },
@@ -1419,7 +1420,7 @@
    "text": "YOU SEE A SIGN OVERHEAD",
    "dynamic_branch": true,
    "variable_inserts": [
-    "0x1D75"
+    "0x1D75@7B89h"
    ],
    "status": "variable-insert"
   },
@@ -1800,7 +1801,7 @@
    "offset": "0x0A0E",
    "text": "YOU SPOT THE REMAINS OF A CHECKPOINT TO THE",
    "variable_inserts": [
-    "0x0A40"
+    "0x0A40@7B88h"
    ],
    "status": "variable-insert"
   },
@@ -1977,7 +1978,7 @@
    "rule_id": "tilverton.sewers.walls-too-slimy",
    "dynamic_branch": true,
    "variable_inserts": [
-    "0x1580"
+    "0x1580@7C00h"
    ],
    "status": "matched"
   },
@@ -2250,7 +2251,7 @@
    "offset": "0x0697",
    "text": "YOU SPOT A CHECKPOINT TO THE",
    "variable_inserts": [
-    "0x06B0"
+    "0x06B0@7B88h"
    ],
    "status": "variable-insert"
   },
@@ -2806,7 +2807,7 @@
    "rule_id": "yulash.purse-lighter",
    "dynamic_branch": true,
    "variable_inserts": [
-    "0x13C4"
+    "0x13C4@7C00h"
    ],
    "status": "matched"
   },
@@ -2841,7 +2842,7 @@
    "offset": "0x14A2",
    "text": "AS YOU CONSUME THE LOCAL EXCUSE FOR FOOD AND DRINK, YOU OVERHEAR TAVERN TALE",
    "variable_inserts": [
-    "0x14E2"
+    "0x14E2@7F79h"
    ],
    "status": "variable-insert"
   },
@@ -2916,7 +2917,7 @@
    "text": "JUST BEFORE YOU ENTER A MAN MOUNTED ON A LARGE HORSE BURSTS OUT OF YULASH AND RUNS OVER",
    "rule_id": "yulash.riders-burst-out",
    "variable_inserts": [
-    "0x1B47"
+    "0x1B47@7C00h"
    ],
    "status": "matched"
   },
@@ -3428,7 +3429,7 @@
    "text": "ALIAS GRABS 'S HAND. WHERE DID YOU GET THIS TATOO? WHAT DO YOU DO?",
    "rule_id": "pit.alias-grabs-hand",
    "variable_inserts": [
-    "0x0849"
+    "0x0849@7C00h"
    ],
    "status": "matched"
   },
@@ -4146,8 +4147,8 @@
    "text": "THE SOLDIER CUFFS ON THE HEAD, LAUGHS AND GOES ON HIS WAY. GRINS SLYLY IN TRIUMPH.",
    "rule_id": "zhentil.street.soldier-cuffs",
    "variable_inserts": [
-    "0x0C0A",
-    "0x0C31"
+    "0x0C0A@7C00h",
+    "0x0C31@7C00h"
    ],
    "status": "matched"
   },
@@ -4166,7 +4167,7 @@
    "text": "AS FEELS THE DAGGER ENTER HIS SIDE, HE REALIZES THAT HE WILL PROBABLY NEED MORE PRACTICE.",
    "rule_id": "zhentil.street.dagger-in-his-side",
    "variable_inserts": [
-    "0x0CBC"
+    "0x0CBC@7C00h"
    ],
    "status": "matched"
   },
@@ -5433,7 +5434,7 @@
    "offset": "0x095B",
    "text": "CONGRATULATIONS, YOU HAVE WON PLATINUM.",
    "variable_inserts": [
-    "0x0975"
+    "0x0975@7F7Bh"
    ],
    "status": "variable-insert"
   },
@@ -5443,7 +5444,7 @@
    "offset": "0x099C",
    "text": "YOU OVERHEAR TAVERN TALE #",
    "variable_inserts": [
-    "0x09B3"
+    "0x09B3@7F79h"
    ],
    "status": "variable-insert"
   },
@@ -6193,7 +6194,7 @@
    "rule_id": "lava-tube.silk-introduction",
    "dynamic_branch": true,
    "variable_inserts": [
-    "0x0BC3"
+    "0x0BC3@7C00h"
    ],
    "status": "matched"
   },
@@ -6204,8 +6205,8 @@
    "text": "SHE CONTINUES, AND YOU RECORD IT IN JOURNAL ENTRY 44. WILL STEP FORWARD?",
    "rule_id": "lava-tube.silk-mark-offer",
    "variable_inserts": [
-    "0x0C21",
-    "0x0C47"
+    "0x0C21@7C00h",
+    "0x0C47@4C68h"
    ],
    "status": "matched"
   },
@@ -6216,7 +6217,7 @@
    "text": "STEPS FORWARD. SILK PASSES HER HAND OVER THE BACK OF 'S HAND, AND A TATOO OF A STYLIZED SWAN APPEARS.",
    "rule_id": "lava-tube.silk-marks-hand",
    "variable_inserts": [
-    "0x0C77"
+    "0x0C77@4C68h"
    ],
    "status": "matched"
   },
@@ -6371,7 +6372,7 @@
    "text": "'THEN TAKE CARE, AND CARRY OUR MARK PROUDLY. THE SAFEST WAY OUT SHOULD BE THROUGH THE SECRET DOOR OF THE TOWER.' SHE SLIPS BACK INTO THE SHADOWS.",
    "rule_id": "lava-tube.carry-our-mark",
    "variable_inserts": [
-    "0x15FA"
+    "0x15FA@4C68h"
    ],
    "status": "matched"
   },
@@ -6724,8 +6725,8 @@
    ],
    "dynamic_branch": true,
    "variable_inserts": [
-    "0x14DE",
-    "0x14EE"
+    "0x14DE@7F82h",
+    "0x14EE@7C00h"
    ],
    "status": "variable-insert"
   },
@@ -6736,7 +6737,7 @@
    "text": "THE SPHERE REACHES , WHO IS SUCKED INTO THE SPHERE AND GONE FOREVER.",
    "rule_id": "wizard-tower.dark-elf-party",
    "variable_inserts": [
-    "0x151C"
+    "0x151C@7B00h"
    ],
    "status": "matched"
   },
@@ -6762,7 +6763,7 @@
    "offset": "0x1642",
    "text": "IT IS NOW ONLY FEET FROM THE RED WIZARD.",
    "variable_inserts": [
-    "0x1651"
+    "0x1651@7F82h"
    ],
    "status": "variable-insert"
   },
