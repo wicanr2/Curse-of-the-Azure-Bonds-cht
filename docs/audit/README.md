@@ -38,6 +38,19 @@ spec 1104）。
 
 ⚠ 分母只會再往上：`ON GOTO`／`ON GOSUB` 的動態目的地與選單分支仍未納入可達性。
 
+⚠ 分頁另有兩種結構性誤差，寫規則前要知道：
+
+- **頁中夾 `GOSUB` 的頁**（報告裡標 ⚠，全 corpus 4 頁）真實文字比報告多一段，
+  子程式印的字本工具不追。⇒ `all_contains` 的片段**不可以跨過插入點**。
+- **被 `GOSUB` 呼叫的純文字子程式會自成一頁**（如巫師塔的 `UP`／`DOWN`），
+  實機不會單獨出現。⇒ **不要**替它們寫規則；那種只有一兩個字的「頁」寫成規則
+  會攔截到別的文字。
+
+兩者的實例都在 `ECL5.DAX/0x33`：`THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE.` 的中間那個字
+由 `02h GOSUB 89B2h` 印出，所以那一頁在報告裡永遠是「未接上」，而規則
+（`wizard-tower.stairs.up`／`.down`）其實已經寫好，由
+`gamepack.TestWizardTowerInteriorIsGamePackDriven` 用實機的字串序列釘住。
+
 ## Go 漢字字串基線
 
 `go-han-literals-baseline.json` 由 `cmd/coab-audit` 使用 Go AST 產生，只掃正式

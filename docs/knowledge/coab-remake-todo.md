@@ -59,15 +59,15 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | └ 檔名 | `state` `combat_state` `creation` `creation_guided` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
 | 共用 engine | 獨立 repo，69 個 `.go` | `golden-box-remake-engine/` |
 | 內容資料 | `gamepack/pack/` **四檔**：core 46 KB／content 86 KB／locale.en 66 KB／locale.zh-TW 72 KB | `ls -la` |
-| ├ 事件 | 4 個 `events`、113 條 `option_rules`、**381 條 `text_rules`** | `json` |
-| └ 語系 | `en` **619** 條、`zh-TW` **619** 條，**一一對齊、沒有漏譯** | `json` |
+| ├ 事件 | 4 個 `events`、113 條 `option_rules`、**397 條 `text_rules`** | `json` |
+| └ 語系 | `en` **635** 條、`zh-TW` **635** 條，**一一對齊、沒有漏譯** | `json` |
 | UI 詞條 | `assets/locale/zh-TW.json` **870** 條 | `json` |
 | 建角規則表 | `gamepack/rules/character-tables.json`：7 種族、17 職業組合、8 職業槽、擲點與體質加值 | `json` |
 | 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**4,222 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
 | ECL 靜態可達 instruction | **4,222**（spec 1106 補上 `IF` 的 else 路徑後，由 1,355 增為三倍） | `ecl-event-catalog.md` |
 | ECL 副作用候選 | **154** 個中 33 個已審（31 筆依效果序列沿用） | `ecl-ordered-effect-reviews.json` |
 | ECL opcode commit phase | **55** 個 corpus opcode 中 25 支 handler 已讀、**30 支 `unknown`** | `ecl-opcode-effect-phases.md` |
-| **原作文字段落覆蓋** | **195** 頁靜態可達（一頁 ＝ 一個 `PRINTCLEAR`），已接上 **90**、**未接上 105** | `ecl-text-coverage.md` |
+| **原作文字段落覆蓋** | **197** 頁靜態可達（一頁 ＝ 一個 `PRINTCLEAR`），已接上 **104**、**未接上 93** | `ecl-text-coverage.md` |
 | 正常玩家路徑 | 走到**眼魔洞穴東門 → 散提爾堡邊緣** | `go test` |
 | 全套 gate | `./tools/go.sh test ./...` 全綠 | 本輪實跑 |
 | 遊戲入口旗標 | **58** 個，其中 30 個是分段驗收的直入點 | `main.go` |
@@ -80,20 +80,20 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 架構分離已經到位：`internal/game` 的 15 個非測試檔全是機制（狀態機、戰鬥、建角、
 訓練、商店、神殿、時間、法術），**沒有任何區域或劇情專屬檔**；劇情、座標、選項、
 文字都在 game pack JSON 裡，符合 `AGENTS.md` §2 的界線。翻譯管線同樣到位——
-game pack 內 `en` 與 `zh-TW` 各 607 條，一一對齊沒有漏。
+game pack 內 `en` 與 `zh-TW` 各 635 條，一一對齊沒有漏。
 
-所以剩下的**不是重構程式碼，是產出資料**：把原作 25 個 block／1,355 個可達
-instruction 的事件，逐條寫成 game pack JSON。目前 369 條 `text_rules` 的區域分佈
+所以剩下的**不是重構程式碼，是產出資料**：把原作 25 個 block／4,222 個可達
+instruction 的事件，逐條寫成 game pack JSON。目前 397 條 `text_rules` 的區域分佈
 顯示缺口集中在哪裡：
 
 | 區域前綴 | `text_rules` 條數 | 對照矩陣判定 |
 |---|---|---|
 | `myth-drannor` | 132 | 待逆向（條數多是因為做過 vertical slice，不是主線已通） |
+| `pit`（摩安德之坑） | 45 | 待逆向 |
 | `tilverton` | 39 | 局部 |
-| `pit` | 33 | 待逆向 |
+| `wizard-tower`（巫師塔） | 36 | 局部 |
 | `dexam` | 23 | 局部 |
 | `zhentil` | 22 | 局部 |
-| `wizard-tower` | 20 | 局部 |
 | `hap` | 17 | 局部 |
 | `journal-trigger` | 15 | 局部 |
 | `yulash` | 12 | **待逆向** |
@@ -167,7 +167,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 
 | ID | 項目 | 要做什麼 |
 |---|---|---|
-| `ENG-01` | **事件內容補齊** | ✅ **有分母了**：`cmd/ecl-text-coverage` 逐頁列出原作文字與 game pack 的接線（`ecl-text-coverage.md`），每寫一條規則數字就掉一。目前 195 頁中已接上 90、未接上 105。依 `RE-04` 的逐格盤點結果，把每個區域的事件寫成 `text_rules`／`option_rules`／`events`；優先序照矩陣的區域表，`待逆向` 的四個區域（艾森布拉、希爾斯法、尤拉什／摩安德之坑、Myth Drannor 正常入口）先補 |
+| `ENG-01` | **事件內容補齊** | ✅ **有分母了**：`cmd/ecl-text-coverage` 逐頁列出原作文字與 game pack 的接線（`ecl-text-coverage.md`），每寫一條規則數字就掉一。目前 197 頁中已接上 104、未接上 93。依 `RE-04` 的逐格盤點結果，把每個區域的事件寫成 `text_rules`／`option_rules`／`events`；優先序照矩陣的區域表，`待逆向` 的四個區域（艾森布拉、希爾斯法、尤拉什／摩安德之坑、Myth Drannor 正常入口）先補。⚠ 分母本身有兩種**結構性**誤差，寫規則前先看報告的 Limitations：頁中夾 `GOSUB` 的四頁（標 ⚠）真實文字比報告多一段，片段不可跨過插入點；被 `GOSUB` 呼叫的純文字子程式會自成一頁（如巫師塔的 `UP`／`DOWN`），實機不會單獨出現，**不要**為它們寫規則 |
 | `ENG-02` | **game pack 分檔** | ✅ **第一步已完成**（spec 1105）：切成 `gamepack/pack/` 四檔——`00-core`（機制資料）、`10-content`（`text_rules`／`option_rules`／`events`）、`20-locale.en`／`20-locale.zh-TW`。引擎新增 `LoadPackParts`，合併後才驗證，重複一律失敗不做後蓋前。⚠ **依區域再切留給命名收斂之後**：實測 ID 命名空間不一致（83 條 `ecl-option.*`、約 100 個沒有命名空間的扁平 locale 鍵），現在依區域切會夾帶一次大改名 |
 | `ENG-13` | **補 `7CE4h` 的角色欄位投影** | ✅ **已完成**：`Character.ECLFlag192`／`DOSPlayerRecord.ECLFlag192`／`PartyMemberContext.ECLFlag192` 三處加欄位，DOS 記錄 `0x192` 讀寫 round-trip，`LOAD CHARACTER` 時投影並套 `and 1` 遮罩；回歸測試 `TestRunSubsetLoadCharacterProjectsFlag192MaskedToLowBit` |
 | `ENG-14` | **原版資料表一律走 JSON** | 使用者要求：原版取出的資料表全部轉成 game pack JSON，Go 只留機制，不再 hardcode。已完成起始年齡（`gamepack/rules/character-tables.json`）。⚠ 仍 hardcode 在 `internal/party/character.go` 的：`WithAgeEffects` 的年齡分期門檻與效果表、`raceAllowsClass`；`internal/party/dos_spell_record.go` 的 `parseDOSRace`／`parseDOSClass` 對應表也應改由 JSON 提供 |
@@ -212,7 +212,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 
 ## C. 繁體中文化
 
-目前 `assets/locale/zh-TW.json` 870 條；game pack 內建雙語 `en` 607 ＝ `zh-TW` 607，key 完全對齊。
+目前 `assets/locale/zh-TW.json` 870 條；game pack 內建雙語 `en` 635 ＝ `zh-TW` 635，key 完全對齊。
 
 **擋路的不是雙位元組處理（那在 remake 不存在），是 `CHT-04` 的熱鍵欄位與 `CHT-09` 的譯名表。**
 
@@ -224,7 +224,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | `CHT-03` | **名字長度上限** | DOS 名字欄位長度上限要重新確認（PC-98 是 `0Fh` ＝ 15 bytes ＝ 全形 7 字）；PC-98 另有 `0723:05BDh` 名字驗證，判定規則未取出，很可能擋掉 Big5 |
 | `CHT-04` | **指令列的按鍵與標籤沒有對應** | 缺口不在 `option_rule`——ECL 選單是**按索引**選的，沒有字母熱鍵（spec 1105 §六）。真正的問題在指令列：畫面用 locale 字串顯示中文（`combat_menu_main` ＝「移動　查看　瞄準　施法…」），按鍵卻是散在前端的英文首字母常數（`ebiten.KeyM`／`KeyL`／`KeyC`／`KeyQ`），**翻譯後玩家看不出要按哪個鍵**，而且標籤與繫結沒有任何地方對得起來。處置方向：把「指令 ID → 按鍵 → `message_id`」做成一張表，繪製端與輸入端讀同一張。⚠ 在有消費端之前不要先往引擎 schema 加欄位 |
 | `CHT-05` | **固定欄寬排版** | PC-98 是 40 bytes 固定欄位、機能鍵列每格 7 欄（spec 1077／1092）；DOS 是靠熱鍵字母。兩者中文化做法不同，繁中版採 DOS 的做法但要處理全形寬度 |
-| `CHT-06` | **翻譯隨內容同步** | 目前 game pack 的 `en`／`zh-TW` 各 607 條**一一對齊、沒有漏譯**。翻譯不是獨立階段，是 `ENG-01` 每寫一條事件就同時寫兩個語系。把「兩語系條數與 key 完全一致」設成 CI gate（`cmd/locale-drift-audit` 已有基礎），漏一條就紅 |
+| `CHT-06` | **翻譯隨內容同步** | 目前 game pack 的 `en`／`zh-TW` 各 635 條**一一對齊、沒有漏譯**。翻譯不是獨立階段，是 `ENG-01` 每寫一條事件就同時寫兩個語系。把「兩語系條數與 key 完全一致」設成 CI gate（`cmd/locale-drift-audit` 已有基礎），漏一條就紅 |
 | `CHT-09` | **統一譯名表**（**擋路項**） | 內容量會成長數倍，人名／地名／物品／法術譯名要先定表再展開，否則後期回頭校對成本高。目前尚未開始，是 `ENG-01` 大量產出的前提 |
 | `CHT-07` | **Journal 整合進遊戲** | 59 則手冊條目已重建、31 則有資料綁定；缺剩餘 producer、解鎖條件、原圖、重讀與不提前劇透 |
 | `CHT-08` | **字型** | 倚天點陣字（16×15 粗體）已接通；缺全形標點 fallback 與 24×24 的取捨判定 |

@@ -3,6 +3,7 @@
  "limitations": [
   "只統計靜態可達的文字：TraceGraph 跟 GOTO／GOSUB、循序 fallthrough 與 IF 的兩條路（spec 1106），但**不跟** ON GOTO／ON GOSUB 的動態目的地與選單分支——分母只會再往上。",
   "一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。",
+  "`02h GOSUB` 進去印的文字不會併進這一段。例：`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」，中間那個字由 `89B2h` 印出。⇒ 寫 `all_contains` 時**片段不要跨越 GOSUB 的插入點**，否則實機接不上。",
   "『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。"
  ],
  "groups": [
@@ -23,7 +24,10 @@
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x0226",
-   "text": "HE SPEAKS, ' YOU PRESENTLY SERVE MASTER S. RETURN TO ME WHEN YOU HAVE SLAIN MORE. THEN YOU SHALL ACHIEVE YOUR DESTINY.'"
+   "text": "HE SPEAKS, ' YOU PRESENTLY SERVE MASTER S. RETURN TO ME WHEN YOU HAVE SLAIN MORE. THEN YOU SHALL ACHIEVE YOUR DESTINY.'",
+   "gosub_inserts": [
+    "0x0268"
+   ]
   },
   {
    "member": "ECL1.DAX",
@@ -36,7 +40,10 @@
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1A30",
-   "text": "ONE MORNING, THE PARTY SPOTS A NOTE PINNED TO 'S CHEST. YOU READ IT, ."
+   "text": "ONE MORNING, THE PARTY SPOTS A NOTE PINNED TO 'S CHEST. YOU READ IT, .",
+   "gosub_inserts": [
+    "0x1A6E"
+   ]
   },
   {
    "member": "ECL1.DAX",
@@ -72,7 +79,13 @@
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1BC5",
-   "text": "AND YOU RECORD IT IN JOURNAL ENTRY WHAT DO YOU DO?"
+   "text": "AND YOU RECORD IT IN JOURNAL ENTRY"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "offset": "0x1BE4",
+   "text": "WHAT DO YOU DO?"
   },
   {
    "member": "ECL1.DAX",
@@ -236,7 +249,10 @@
    "block": "0x02",
    "offset": "0x023A",
    "text": "'OKAY, LET'S CONTINUE. THE FIRE KNIVES HAVE THE KING'S DAUGHTER IN THE HIDEOUT, HOPING TO LURE HIM INTO A TRAP. I CANNOT DIRECTLY INTERVENE, BUT I CAN OFFER INFORMATION.' SUDDENLY, THE SIDE DOOR EXPLODES INWARD WITH A DEAFENING CRASH.",
-   "rule_id": "tilverton.guildmaster-briefing"
+   "rule_id": "tilverton.guildmaster-briefing",
+   "gosub_inserts": [
+    "0x02C7"
+   ]
   },
   {
    "member": "ECL2.DAX",
@@ -984,97 +1000,120 @@
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x091F",
-   "text": "THE STAIRS LEAD HERE. DO YOU WANT TO TAKE THEM?"
+   "text": "THE STAIRS LEAD HERE. DO YOU WANT TO TAKE THEM?",
+   "gosub_inserts": [
+    "0x093E"
+   ]
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x09B7",
-   "text": "UP DOWN"
+   "text": "UP"
+  },
+  {
+   "member": "ECL5.DAX",
+   "block": "0x33",
+   "offset": "0x09BD",
+   "text": "DOWN"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x0EEC",
-   "text": "DRACANDROS IS DRAGGING A HEAVY BAG ACROSS THE COURTYARD. DROPPING THE BAG, HE SAYS, 'YOU HAVE DOGGED MY STEPS FOR TOO LONG. NOW YOU SHALL BE DESTROYED.'"
+   "text": "DRACANDROS IS DRAGGING A HEAVY BAG ACROSS THE COURTYARD. DROPPING THE BAG, HE SAYS, 'YOU HAVE DOGGED MY STEPS FOR TOO LONG. NOW YOU SHALL BE DESTROYED.'",
+   "rule_id": "wizard-tower.dracandros.final-challenge"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x0F8E",
-   "text": "AMONG HIS TREASURES YOU FIND THE HELM OF DRAGONS."
+   "text": "AMONG HIS TREASURES YOU FIND THE HELM OF DRAGONS.",
+   "rule_id": "wizard-tower.helm-of-dragons"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x0FE6",
-   "text": "YOU HAVE FOUND A MYSTICAL LABORATORY. IN THE CENTER IS A MURKY, SHALLOW POOL WHICH SMELLS OF ROTTING VEGETATION. DO YOU GO FORWARD?"
+   "text": "YOU HAVE FOUND A MYSTICAL LABORATORY. IN THE CENTER IS A MURKY, SHALLOW POOL WHICH SMELLS OF ROTTING VEGETATION. DO YOU GO FORWARD?",
+   "rule_id": "wizard-tower.laboratory.pool"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x105C",
-   "text": "THE POOL LOOKS TO BE SEVERAL FEET DEEP THOUGH YOU CANNOT SEE TO THE BOTTOM. DO YOU REACH INTO THE POOL?"
+   "text": "THE POOL LOOKS TO BE SEVERAL FEET DEEP THOUGH YOU CANNOT SEE TO THE BOTTOM. DO YOU REACH INTO THE POOL?",
+   "rule_id": "wizard-tower.laboratory.pool-depth"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x10B9",
-   "text": "ROOTING AROUND IN THE MUCK, YOU FIND A LEATHERY ELLIPSOID ABOUT THE SIZE OF A HEAD. IT IS WARM AND PULSES FAINTLY. DO YOU TAKE IT?"
+   "text": "ROOTING AROUND IN THE MUCK, YOU FIND A LEATHERY ELLIPSOID ABOUT THE SIZE OF A HEAD. IT IS WARM AND PULSES FAINTLY. DO YOU TAKE IT?",
+   "rule_id": "wizard-tower.laboratory.ellipsoid"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x1148",
-   "text": "A SIGN OVER THIS EERIE BLACK DOOR SAYS, 'TRIAL OF THE SPHERE. ONE CHALLENGER ONLY.' DOES ANYONE WISH TO ENTER?"
+   "text": "A SIGN OVER THIS EERIE BLACK DOOR SAYS, 'TRIAL OF THE SPHERE. ONE CHALLENGER ONLY.' DOES ANYONE WISH TO ENTER?",
+   "rule_id": "wizard-tower.sphere-trial.sign"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x11D6",
-   "text": "THAT ONE CANNOT ENTER."
+   "text": "THAT ONE CANNOT ENTER.",
+   "rule_id": "wizard-tower.sphere-trial.cannot-enter"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x121B",
-   "text": "YOU PASS INTO A DIM ROOM OCCUPIED BY A YOUNG MAGE DRESSED IN RED AND HOLDING A SILVERY ROD. BETWEEN THE TWO OF YOU IS A FLOATING DEAD BLACK SPHERE."
+   "text": "YOU PASS INTO A DIM ROOM OCCUPIED BY A YOUNG MAGE DRESSED IN RED AND HOLDING A SILVERY ROD. BETWEEN THE TWO OF YOU IS A FLOATING DEAD BLACK SPHERE.",
+   "rule_id": "wizard-tower.sphere-trial.chamber"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x1298",
-   "text": "THE WIZARD INTONES, 'THIS IS A SPHERE OF ANNIHILATION. ITS TOUCH MEANS UTTER DESTRUCTION. ONLY A MAGE CAN CONTROL ITS FLIGHT. YOU MAY SURRENDER AT ANY TIME.'"
+   "text": "THE WIZARD INTONES, 'THIS IS A SPHERE OF ANNIHILATION. ITS TOUCH MEANS UTTER DESTRUCTION. ONLY A MAGE CAN CONTROL ITS FLIGHT. YOU MAY SURRENDER AT ANY TIME.'",
+   "rule_id": "wizard-tower.sphere-trial.rules"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x1782",
-   "text": "THIS AREA IS GUARDED BY DARK ELVES WITH OWL BEARS."
+   "text": "THIS AREA IS GUARDED BY DARK ELVES WITH OWL BEARS.",
+   "rule_id": "wizard-tower.dark-elf-owlbear-guard"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x1800",
-   "text": "YOU ARE ASSAULTED BY A REPTILIAN STENCH. YOU SEE MASSIVE CHAINS ATTACHED TO THE WALLS WITH HUGE, BUT EMPTY COLLARS. ACROSS THE ROOM YOU HEAR A DEEP GROWL."
+   "text": "YOU ARE ASSAULTED BY A REPTILIAN STENCH. YOU SEE MASSIVE CHAINS ATTACHED TO THE WALLS WITH HUGE, BUT EMPTY COLLARS. ACROSS THE ROOM YOU HEAR A DEEP GROWL.",
+   "rule_id": "wizard-tower.dragon-pen"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x18A1",
-   "text": "YOU HAVE ENTERED A VERY ELEGANT BEDROOM, RED SILK TAPESTRIES ADORN THE WALLS. THE ROOM IS DISARRANGED AS IF SOMEONE HAD QUICKLY PACKED. DO YOU WANT TO TAKE THE TIME TO LOOT?"
+   "text": "YOU HAVE ENTERED A VERY ELEGANT BEDROOM, RED SILK TAPESTRIES ADORN THE WALLS. THE ROOM IS DISARRANGED AS IF SOMEONE HAD QUICKLY PACKED. DO YOU WANT TO TAKE THE TIME TO LOOT?",
+   "rule_id": "wizard-tower.bedroom"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x1968",
-   "text": "THE WALLS OF THIS ROOM ARE LINED WITH BOOKS ON MANY SUBJECTS. NONE RADIATE MAGIC."
+   "text": "THE WALLS OF THIS ROOM ARE LINED WITH BOOKS ON MANY SUBJECTS. NONE RADIATE MAGIC.",
+   "rule_id": "wizard-tower.library"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x19C7",
-   "text": "THE WALLS ARE COVERED WITH RACKS FOR SCROLL CASES. THE SCROLLS LOOK TO HAVE BEEN RECENTLY REMOVED."
+   "text": "THE WALLS ARE COVERED WITH RACKS FOR SCROLL CASES. THE SCROLLS LOOK TO HAVE BEEN RECENTLY REMOVED.",
+   "rule_id": "wizard-tower.scroll-room"
   },
   {
    "member": "ECL5.DAX",
@@ -1268,11 +1307,11 @@
   }
  ],
  "summary": {
-  "groups": 195,
-  "matched": 90,
-  "unmatched": 105,
+  "groups": 197,
+  "matched": 104,
+  "unmatched": 93,
   "unmatched_by_block": {
-   "ECL1.DAX/0x50": 9,
+   "ECL1.DAX/0x50": 10,
    "ECL1.DAX/0x51": 3,
    "ECL1.DAX/0x52": 7,
    "ECL2.DAX/0x01": 8,
@@ -1289,7 +1328,7 @@
    "ECL4.DAX/0x25": 12,
    "ECL5.DAX/0x31": 1,
    "ECL5.DAX/0x32": 8,
-   "ECL5.DAX/0x33": 16,
+   "ECL5.DAX/0x33": 3,
    "ECL5.DAX/0x35": 6,
    "ECL6.DAX/0x40": 2,
    "ECL6.DAX/0x43": 3,

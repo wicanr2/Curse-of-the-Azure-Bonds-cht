@@ -38,6 +38,10 @@ type group struct {
 	Offset string `json:"offset"`
 	Text   string `json:"text"`
 	RuleID string `json:"rule_id,omitempty"`
+	// GosubInserts 記錄「這一頁的文字中間插進了一支子程式」的位置。子程式印的字
+	// 本工具不追（見 Limitations），所以 `Text` 少了那一段；寫 `all_contains` 的
+	// 片段**不可以跨過這些位置**，否則實機接不上。
+	GosubInserts []string `json:"gosub_inserts,omitempty"`
 }
 
 type report struct {
@@ -76,6 +80,7 @@ func main() {
 		Limitations: []string{
 			"只統計靜態可達的文字：TraceGraph 跟 GOTO／GOSUB、循序 fallthrough 與 IF 的兩條路（spec 1106），但**不跟** ON GOTO／ON GOSUB 的動態目的地與選單分支——分母只會再往上。",
 			"一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。",
+			"`02h GOSUB` 進去印的文字不會併進這一段。例：`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」，中間那個字由 `89B2h` 印出。⇒ 寫 `all_contains` 時**片段不要跨越 GOSUB 的插入點**，否則實機接不上。",
 			"『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。",
 		},
 		Summary: summary{ByBlock: map[string]int{}},
@@ -155,10 +160,22 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 
 	var groups []group
 	var current *group
+	var pendingGosub []string
+	guarded := false
 	for _, instruction := range instructions {
 		opcode := instruction.Command.Opcode
-		if endsTextRun(opcode) {
-			current = nil
+		wasGuarded := guarded
+		guarded = opcode >= 0x16 && opcode <= 0x1B
+		// 被 `IF` 守衛的指令，條件不成立時整條被跳過（spec 1106 §一），
+		// 所以下一條在 offset 順序上仍然是同一頁的延續。
+		if !wasGuarded && endsTextGroup(opcode) {
+			current, pendingGosub = nil, nil
+			continue
+		}
+		if opcode == 0x02 && current != nil {
+			// 先記著。只有後面還有 PRINT 接上來，它才算是**頁中**的插入點；
+			// 收尾的那個 GOSUB（翻頁提示、Yes/No）不算。
+			pendingGosub = append(pendingGosub, fmt.Sprintf("0x%04X", instruction.Offset))
 			continue
 		}
 		if opcode != 0x11 && opcode != 0x12 {
@@ -177,21 +194,38 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 				Member: member, Block: blockID,
 				Offset: fmt.Sprintf("0x%04X", instruction.Offset), Text: text,
 			})
-			current = &groups[len(groups)-1]
+			current, pendingGosub = &groups[len(groups)-1], nil
 			continue
 		}
 		current.Text += " " + text
+		current.GosubInserts = append(current.GosubInserts, pendingGosub...)
+		pendingGosub = nil
 	}
 	return groups, nil
 }
 
-// endsTextRun lists the opcodes that make the VM return from a run, which is
-// where the accumulated text is handed to MatchText. Everything else keeps
-// accumulating.
+// endsTextGroup lists the opcodes after which the next instruction in offset
+// order is no longer the next instruction to execute. Everything else keeps
+// accumulating into the current page.
 //
-// 邊界取自 `internal/ecl/runtime.go` 裡會 `return result` 的那些 case：
-// 離開、換 block、戰鬥、寶物、三種選單、字串輸入、選人、終局。
-func endsTextRun(opcode byte) bool {
+// 兩類邊界：
+//
+//   - **交出文字**：`internal/ecl/runtime.go` 裡會 `return result` 的那些 case
+//     （離開、換 block、戰鬥、寶物、三種選單、字串輸入、選人、終局）。
+//   - **離開直線**：`GOTO`／`RETURN`／`ON GOTO`／`ON GOSUB` 之後的位元組是別條路徑
+//     或別支子程式。同 `eclcatalog.endsStraightLine`。
+//
+// ⚠ 少了第二類會把**互斥分支**的文字併成同一頁。`ECL5.DAX/0x33 +09B2h` 是
+// `IF =; GOTO 89BDh`：不成立印 `UP` 後 `RETURN`，成立印 `DOWN` 後 `RETURN`，
+// 併起來就得到現實中不存在的「UP DOWN」，任何規則都接不上它。
+//
+// ⚠⚠ 但**被 `IF` 守衛的**這些指令不算邊界（判斷寫在呼叫端）。ECL 表達 if/else
+// 的慣用法就是 `IF; GOTO x`，條件不成立時那個 `GOTO` 整條被跳過——落下來的
+// 文字仍是同一頁。把守衛版本也當邊界會切出「YOU ARE AT THE STANDING STONES.」
+// 這種半頁，反而讓原本接得上的規則接不上。
+//
+// `02h GOSUB` 不在此列：它會回來，後面的文字仍屬同一頁。代價寫在 Limitations。
+func endsTextGroup(opcode byte) bool {
 	switch opcode {
 	case 0x00, // EXIT
 		0x20, // NEWECL
@@ -204,7 +238,11 @@ func endsTextRun(opcode byte) bool {
 		0x10, // INPUT STRING
 		0x0F, // INPUT NUMBER
 		0x39, // WHO
-		0x38: // PROGRAM
+		0x38, // PROGRAM
+		0x01, // GOTO
+		0x13, // RETURN
+		0x25, // ON GOTO
+		0x26: // ON GOSUB
 		return true
 	default:
 		return false
@@ -276,6 +314,9 @@ func renderMarkdown(result report) []byte {
 		text := strings.ReplaceAll(item.Text, "|", "\\|")
 		if len(text) > 160 {
 			text = text[:160] + "…"
+		}
+		if len(item.GosubInserts) > 0 {
+			text += " ⚠ 文字中間有 `GOSUB " + strings.Join(item.GosubInserts, "`／`") + "`"
 		}
 		fmt.Fprintf(&out, "| `%s/%s` | `%s` | %s | %s |\n",
 			item.Member, item.Block, item.Offset, rule, text)
