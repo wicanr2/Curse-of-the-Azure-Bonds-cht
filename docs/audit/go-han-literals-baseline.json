@@ -2,6 +2,20 @@
   "schema_version": 1,
   "findings": [
     {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "main",
+      "sha256": "70cfc7b45f7fc65e265f15ee9780721953d115a928445e5e66615e4a8fd163b0",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "main",
+      "sha256": "a18a181fc4d20a963fb311b03a8c87b99db2f0b65615849dd7bd3ecee89a940f",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
       "path": "cmd/borland-symbols/main.go",
       "function": "main",
       "sha256": "5b913c9420b2f595d28289a7ad360efd4644cf8b7f940fdc7ea1bf696adf1bee",

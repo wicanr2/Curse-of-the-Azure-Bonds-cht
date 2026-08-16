@@ -60,8 +60,8 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | 共用 engine | 獨立 repo，69 個 `.go` | `golden-box-remake-engine/` |
 | 內容資料 | `gamepack/pack/` **四檔**：core 46 KB／content 86 KB／locale.en 66 KB／locale.zh-TW 72 KB | `ls -la` |
 | ├ 事件 | 4 個 `events`、113 條 `option_rules`、**421 條 `text_rules`** | `json` |
-| └ 語系 | `en` **675** 條、`zh-TW` **675** 條，**一一對齊、沒有漏譯**；譯名一致性由 `internal/glossary` fail-closed 擋住（92 詞條、0 不一致） | `json` |
-| UI 詞條 | `assets/locale/zh-TW.json` **870** 條 | `json` |
+| └ 語系 | `en` **681** 條、`zh-TW` **681** 條，**一一對齊、沒有漏譯**；譯名一致性由 `internal/glossary` fail-closed 擋住（92 詞條、0 不一致） | `json` |
+| UI 詞條 | `assets/locale/zh-TW.json` **873** 條 | `json` |
 | 建角規則表 | `gamepack/rules/character-tables.json`：7 種族、17 職業組合、8 職業槽、擲點與體質加值 | `json` |
 | 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**4,222 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
 | ECL 靜態可達 instruction | **4,222**（spec 1106 補上 `IF` 的 else 路徑後，由 1,355 增為三倍） | `ecl-event-catalog.md` |
@@ -70,7 +70,7 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | **原作文字段落覆蓋** | **197** 頁靜態可達（一頁 ＝ 一個 `PRINTCLEAR`），已接上 **106**、**未接上 91**。⚠ 另有 12 頁的文字被 `GOSUB` 插入，規則寫了但報告接不上，實際覆蓋比這個數字高 | `ecl-text-coverage.md` |
 | 正常玩家路徑 | 走到**眼魔洞穴東門 → 散提爾堡邊緣** | `go test` |
 | 全套 gate | `./tools/go.sh test ./...` 全綠 | 本輪實跑 |
-| 遊戲入口旗標 | **58** 個，其中 30 個是分段驗收的直入點 | `main.go` |
+| 遊戲入口旗標 | **60** 個，其中 32 個是分段驗收的直入點 | `main.go` |
 
 **函式層已經全部看過一遍，語意層與內容量才是剩下的工作。**
 兩層不可互換：函式已盤點不代表系統語意閉合。
@@ -80,7 +80,7 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 架構分離已經到位：`internal/game` 的 15 個非測試檔全是機制（狀態機、戰鬥、建角、
 訓練、商店、神殿、時間、法術），**沒有任何區域或劇情專屬檔**；劇情、座標、選項、
 文字都在 game pack JSON 裡，符合 `AGENTS.md` §2 的界線。翻譯管線同樣到位——
-game pack 內 `en` 與 `zh-TW` 各 675 條，一一對齊沒有漏。
+game pack 內 `en` 與 `zh-TW` 各 681 條，一一對齊沒有漏。
 
 所以剩下的**不是重構程式碼，是產出資料**：把原作 25 個 block／4,222 個可達
 instruction 的事件，逐條寫成 game pack JSON。目前 421 條 `text_rules` 的區域分佈
@@ -213,7 +213,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 
 ## C. 繁體中文化
 
-目前 `assets/locale/zh-TW.json` 870 條；game pack 內建雙語 `en` 675 ＝ `zh-TW` 675，key 完全對齊。
+目前 `assets/locale/zh-TW.json` 873 條；game pack 內建雙語 `en` 681 ＝ `zh-TW` 681，key 完全對齊。
 
 **擋路的不是雙位元組處理（那在 remake 不存在），是 `CHT-04` 的熱鍵欄位；`CHT-09` 的譯名表已於 spec 1107 立完。**
 
@@ -225,9 +225,9 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | `CHT-03` | **名字長度上限** | DOS 名字欄位長度上限要重新確認（PC-98 是 `0Fh` ＝ 15 bytes ＝ 全形 7 字）；PC-98 另有 `0723:05BDh` 名字驗證，判定規則未取出，很可能擋掉 Big5 |
 | `CHT-04` | **指令列的按鍵與標籤沒有對應** | 缺口不在 `option_rule`——ECL 選單是**按索引**選的，沒有字母熱鍵（spec 1105 §六）。真正的問題在指令列：畫面用 locale 字串顯示中文（`combat_menu_main` ＝「移動　查看　瞄準　施法…」），按鍵卻是散在前端的英文首字母常數（`ebiten.KeyM`／`KeyL`／`KeyC`／`KeyQ`），**翻譯後玩家看不出要按哪個鍵**，而且標籤與繫結沒有任何地方對得起來。處置方向：把「指令 ID → 按鍵 → `message_id`」做成一張表，繪製端與輸入端讀同一張。⚠ 在有消費端之前不要先往引擎 schema 加欄位 |
 | `CHT-05` | **固定欄寬排版** | PC-98 是 40 bytes 固定欄位、機能鍵列每格 7 欄（spec 1077／1092）；DOS 是靠熱鍵字母。兩者中文化做法不同，繁中版採 DOS 的做法但要處理全形寬度 |
-| `CHT-06` | **翻譯隨內容同步** | 目前 game pack 的 `en`／`zh-TW` 各 675 條**一一對齊、沒有漏譯**。翻譯不是獨立階段，是 `ENG-01` 每寫一條事件就同時寫兩個語系。把「兩語系條數與 key 完全一致」設成 CI gate（`cmd/locale-drift-audit` 已有基礎），漏一條就紅 |
+| `CHT-06` | **翻譯隨內容同步** | 目前 game pack 的 `en`／`zh-TW` 各 681 條**一一對齊、沒有漏譯**。翻譯不是獨立階段，是 `ENG-01` 每寫一條事件就同時寫兩個語系。把「兩語系條數與 key 完全一致」設成 CI gate（`cmd/locale-drift-audit` 已有基礎），漏一條就紅 |
 | `CHT-09` | **統一譯名表** | ✅ **已完成**（spec 1107）：表在 `docs/knowledge/coab-glossary.md`（68 詞條，含 `combatant_name_rules` 自動匯入的怪物名），閘在 `internal/glossary` ＋ `cmd/glossary-audit`，fail-closed 掃三份繁中目錄。建表時量到**九組同名異譯**並全數修正（Bane 貝恩／班恩、Zhentil Keep 散提爾堡／散塔林堡、Flamed One 三種寫法…），其中五組在手札長文裡。⚠ 閘擋不住「誤用的寫法同時是別的詞條的正確譯名」那一類（`Haptooth` 誤寫成哈普），只能逐句對照原文 |
-| `CHT-07` | **Journal 整合進遊戲** | ✅ **可讀的部分已完成**（spec 1108）：遊戲內閱讀器可用（`ModeJournal`，依字型 advance 分頁，spec 556）；全 corpus 窮舉普查出 **59 則裡有 44 則會被引用**，這 44 則全部收錄且全部有 producer，另加第 1 則（開場導言，掛在甦醒那一幕）＝ **45 則玩家讀得到**，只在劇情命中時解鎖，`TestEveryJournalEntryHasAProducer` 擋住死條目。手冊本文明寫「some tales are false」，所以逐則解鎖不是保守作法而是必要條件——一次全開等於強迫玩家讀到假情報。剩 14 則 corpus 沒有任何引用：第 8／39 則只有插圖、九則講菲蘭與匕首瀑布等別部作品的地點、三則（14／37／49）是本作風味但查無引用。缺：手札的圖（第 4／8／39／52／59 條）、逐則驗解鎖時機 |
+| `CHT-07` | **Journal 整合進遊戲** | ✅ **已完成**（spec 1108／1109）：遊戲內閱讀器可用（`ModeJournal`，依字型 advance 分頁，spec 556）；全 corpus 窮舉普查出 **59 則裡有 44 則會被引用**，這 44 則全部收錄且全部有 producer，另加第 1 則（開場導言，掛在甦醒那一幕）＝ **45 則玩家讀得到**，只在劇情命中時解鎖，`TestEveryJournalEntryHasAProducer` 擋住死條目。手冊本文明寫「some tales are false」，所以逐則解鎖是必要條件而非保守作法。**六張地圖與插圖也進遊戲了**：手札畫面按 `I` 彈窗，`Z` 切原尺寸、方向鍵平移（spec 1109）；條目本文那句「原始圖像保存於 Adventurer's Journal 第 N 頁」已刪。剩 14 則 corpus 沒有任何引用（第 8／39 則只有插圖、九則講別部作品的地點、三則查無引用），依手冊那句話判斷應為誘餌，不補 |
 | `CHT-08` | **字型** | 倚天點陣字（16×15 粗體）已接通；缺全形標點 fallback 與 24×24 的取捨判定 |
 
 ---

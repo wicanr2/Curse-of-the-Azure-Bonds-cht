@@ -4219,6 +4219,30 @@ func (s *State) JournalDisplayPageStatus(page, total int) string {
 	return fmt.Sprintf(s.catalog.Text("journal_display_page_status", "journal_display_page_status"), page, total)
 }
 
+// UnlockJournalEntryForPreview 供分段驗收的直入點使用：直接把一則手札加進已解鎖
+// 清單，不經過事件。正常遊玩一律由 `text_rule` 命中觸發（spec 1108），這支只給
+// `-journal-image` 這類 capture-only 入口用。
+func (s *State) UnlockJournalEntryForPreview(messageID string) error {
+	if s.dataPack == nil {
+		return fmt.Errorf("game pack is not loaded")
+	}
+	page, ok := s.dataPack.Text(messageID, s.catalog.Language)
+	if !ok || page == "" {
+		return fmt.Errorf("journal entry %q has no text in %s", messageID, s.catalog.Language)
+	}
+	s.appendJournalPage(messageID, page)
+	return nil
+}
+
+// JournalMessageID 回傳目前這一頁手札的來源條目 ID（例如 `journal.52`）。
+// 前端用它查有沒有對應的地圖或插圖；沒有開手札或索引越界時回空字串。
+func (s *State) JournalMessageID() string {
+	if s.JournalPage < 0 || s.JournalPage >= len(s.journalMessageIDs) {
+		return ""
+	}
+	return s.journalMessageIDs[s.JournalPage]
+}
+
 func (s *State) NextJournalPage() error {
 	if s.Mode != ModeJournal {
 		return fmt.Errorf("journal is not open")

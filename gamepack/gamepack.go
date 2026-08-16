@@ -118,13 +118,13 @@ type RaceRules struct {
 	// AbilityAdjustments 是種族屬性調整，依力、智、睿、敏、體、魅
 	// 六個位置（spec 1103 §三）。
 	AbilityAdjustments []int          `json:"ability_adjustments"`
-	StrengthMale   StrengthLimits `json:"strength_male"`
-	StrengthFemale StrengthLimits `json:"strength_female"`
-	Intelligence   AbilityRange   `json:"intelligence"`
-	Wisdom         AbilityRange   `json:"wisdom"`
-	Dexterity      AbilityRange   `json:"dexterity"`
-	Constitution   AbilityRange   `json:"constitution"`
-	Charisma       AbilityRange   `json:"charisma"`
+	StrengthMale       StrengthLimits `json:"strength_male"`
+	StrengthFemale     StrengthLimits `json:"strength_female"`
+	Intelligence       AbilityRange   `json:"intelligence"`
+	Wisdom             AbilityRange   `json:"wisdom"`
+	Dexterity          AbilityRange   `json:"dexterity"`
+	Constitution       AbilityRange   `json:"constitution"`
+	Charisma           AbilityRange   `json:"charisma"`
 	// ClassChoices 是「建角選單第 n 項 → 職業組合編號」的對照（spec 1093）。
 	ClassChoices []int         `json:"class_choices"`
 	StartingAges []StartingAge `json:"starting_ages"`
@@ -444,4 +444,62 @@ func (l HitDiceLookup) FighterConstitutionHPBonus(classCombo, constitution int) 
 		return 0
 	}
 	return l.tables.FighterConstitutionBonusFor(classCombo, constitution)
+}
+
+// JournalImage 把一則手札對應到 Adventurer's Journal 裡的地圖或插圖。
+//
+// 這份清單刻意留在 CoAB 這側，不進共用 engine 的 Pack：圖是本作手冊的掃描，
+// 檔名與裁切方式都只對這一個標題有意義，engine 沒有消費端。作法沿用
+// `rules/character-tables.json` 的先例。
+type JournalImage struct {
+	// MessageID 是手札條目的訊息 ID，例如 `journal.52`。多頁條目掛在第一頁。
+	MessageID string `json:"message_id"`
+	// File 是 `assets/journal/` 底下的檔名。
+	File string `json:"file"`
+	// CaptionID 是彈窗標題的訊息 ID。刻意不用 `journal.` 開頭——那個前綴的鍵
+	// 都必須有 producer（`TestEveryJournalEntryHasAProducer`），而圖說沒有。
+	CaptionID string `json:"caption_id"`
+}
+
+type journalImageFile struct {
+	SchemaVersion int            `json:"schema_version"`
+	Images        []JournalImage `json:"images"`
+}
+
+var (
+	journalImagesOnce sync.Once
+	journalImages     []JournalImage
+	journalImagesErr  error
+)
+
+// JournalImages 回傳嵌入的手札圖片清單。
+func JournalImages() ([]JournalImage, error) {
+	journalImagesOnce.Do(func() {
+		data, err := ruleFiles.ReadFile("rules/journal-images.json")
+		if err != nil {
+			journalImagesErr = fmt.Errorf("read embedded journal images: %w", err)
+			return
+		}
+		parsed := &journalImageFile{}
+		if err := json.Unmarshal(data, parsed); err != nil {
+			journalImagesErr = fmt.Errorf("parse embedded journal images: %w", err)
+			return
+		}
+		journalImages = parsed.Images
+	})
+	return journalImages, journalImagesErr
+}
+
+// JournalImageFor 回傳某則手札的圖，沒有圖時第二個回傳值為 false。
+func JournalImageFor(messageID string) (JournalImage, bool) {
+	images, err := JournalImages()
+	if err != nil {
+		return JournalImage{}, false
+	}
+	for _, image := range images {
+		if image.MessageID == messageID {
+			return image, true
+		}
+	}
+	return JournalImage{}, false
 }

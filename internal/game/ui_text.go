@@ -24,6 +24,9 @@ const (
 	PlayerUILabelFallen
 	PlayerUILabelDungeonDoorHelp
 	PlayerUILabelDungeonExploreHelp
+	PlayerUILabelJournalImageHint
+	PlayerUILabelJournalImageControls
+	PlayerUILabelJournalImageMissing
 )
 
 func (s *State) PlayerUILabel(label PlayerUILabel) string {
@@ -63,6 +66,12 @@ func (s *State) PlayerUILabel(label PlayerUILabel) string {
 		key = "dungeon_door_help"
 	case PlayerUILabelDungeonExploreHelp:
 		key = "dungeon_explore_help"
+	case PlayerUILabelJournalImageHint:
+		key = "journal_image_hint"
+	case PlayerUILabelJournalImageControls:
+		key = "journal_image_controls"
+	case PlayerUILabelJournalImageMissing:
+		key = "journal_image_missing"
 	}
 	return s.catalog.Text(key, key)
 }
