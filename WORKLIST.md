@@ -65,8 +65,10 @@ coverage 代替全系統閉合。
 
 第 557 輪權威規格：
 [`ECL 全事件靜態清冊與有序副作用稽核`](docs/spec/557-ecl-event-catalog-and-ordered-effects-audit.md)；
-第 558 輪勘誤：
+第 558 輪：
 [`PC-98 ECL TREASURE／COMBAT 邊界`](docs/spec/558-pc98-ecl-treasure-combat-boundary.md)；
+第 564 輪：
+[`ECL opcode 有序副作用相位`](docs/spec/1104-ecl-opcode-ordered-effect-phases.md)；
 生成物與審查台帳在 [`docs/audit/ecl-event-catalog.md`](docs/audit/ecl-event-catalog.md)、
 [`docs/audit/ecl-ordered-effect-reviews.json`](docs/audit/ecl-ordered-effect-reviews.json)。
 

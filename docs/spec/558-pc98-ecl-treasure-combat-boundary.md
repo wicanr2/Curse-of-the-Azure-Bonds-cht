@@ -115,5 +115,6 @@ ID 附加 status、confidence 與 spec refs。不存在的 ID 會使生成失敗
 漂移後把舊結論套到新候選。生成 JSON／Markdown 仍保留原始定位，不讓 review 覆蓋
 靜態證據。
 
-下一個 P0 改為：從剩餘 30 個未審查候選選取 `COMBAT → text`，閉合真正的戰後文字
-pause／resume，再擴充動態 edge／ordered-effect trace；不再重做這三組。
+候選層的審查已經做完（32 個中 31 個 `covered/exact`、1 個 `partial`）；
+逐 opcode 的 commit phase 見 [spec 1104](1104-ecl-opcode-ordered-effect-phases.md)，
+剩餘待辦是 21 支尚未讀的 handler。

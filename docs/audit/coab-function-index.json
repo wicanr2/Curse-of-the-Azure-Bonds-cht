@@ -4875,11 +4875,11 @@
    "note": "呼叫序列：依序執行 15 個呼叫，沒有其他動作：`call far ptr loc_104A`、`call sub_17E7`、`call far ptr sub_19A3`、`call loc_10B4`、`call far ptr loc_16BB+2`、`call loc_EB4+2`（body 共 82 bytes，已逐條讀完）",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-03.md",
-    "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/dos-overlay-05.md"
+    "audit/function-index/dos-overlay-04.md"
    ]
   },
   {
@@ -4899,11 +4899,11 @@
    "note": "與 pc98 overlay-02:0052h 助憶碼序列完全相同（49 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 00h(結束 script):清掉數個旗標、FillChar(DS:BDDAh,2,0)、ECL_PC++,然後 while 迴圈逐一 Dispose(6) 清空整個 GOSUB 堆疊,最後把 DS:9637h(訊息停留時間)重設為 11h。RETURN 在堆疊空時轉來這裡,理由就在這 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-04.md"
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -4923,11 +4923,11 @@
    "note": "ECL opcode 01h(GOTO)handler:READVAR(1) 後把 ADDFNC(high[1],low[1]) 直接寫進 ECL PC(DS:4FB4h)。跳躍目標是 script 內的絕對位移,不加 base",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/dos-overlay-28.md",
     "knowledge/gold-box-ecl-interpreter.md",
-    "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/585-ecl-goto-and-display-mode-pair.md"
+    "spec/1104-ecl-opcode-ordered-effect-phases.md",
+    "spec/559-full-module-re-sweep.md"
    ]
   },
   {
@@ -4947,11 +4947,11 @@
    "note": "ECL opcode 02h(GOSUB)的 handler:以參數 1 呼叫兩個 far routine",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/dos-overlay-07.md",
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/dos-overlay-29.md",
-    "audit/function-index/pc98-overlay-07.md",
-    "spec/559-full-module-re-sweep.md"
+    "audit/function-index/pc98-overlay-07.md"
    ]
   },
   {
@@ -4971,11 +4971,11 @@
    "note": "ECL 比較的分派:READVAR(2) 取兩個運算元,再看 DS:7685h[k] 的型別 byte——**只要其中一個 \u003e= 80h,兩個就都當字串**(不是各自依型別),走 overlay-07 entry#22(字串比較,RTL 逐段比)比較兩個 256 bytes 緩衝(DS:7748h 與 DS:7848h);否則 ADDRESSVALUE 取值兩次再 overlay-07 entry#23(數值比較)。兩支比較程序都把六個結果旗標(=、\u003c\u003e、\u003c、\u003e、\u003c=、\u003e=)寫進 DS:75F8h..75FDh,六個比較全是無號。⚠ 數值比較的參數順序是 (b, a),第二個運算元先傳",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md",
     "spec/559-full-module-re-sweep.md",
     "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/592-ecl-arithmetic-and-compare.md",
-    "spec/685-dos-ecl-compare-dispatch.md"
+    "spec/592-ecl-arithmetic-and-compare.md"
    ]
   },
   {
@@ -4995,11 +4995,11 @@
    "note": "腳本 VM 的四則運算(retf，無參數)：取兩個運算元 A、B 與目的(兩張表 DS:76C5h/7705h 的第 3 格)，依 DS:75FFh 的運算碼 — 4: A+B、5: B−A、6: A div B(無號，餘數存 DS:4F9Dh^[67Eh])、7: A*B。⚠ 減法是 B−A 而除法是 A div B，順序不一致；除法沒有除零檢查；運算碼不在 4..7 時結果 local 未指派",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-24.md",
-    "spec/602-ecl-party-power-score.md"
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -5018,7 +5018,8 @@
    "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
    "note": "與 pc98 overlay-02:025Ah 助憶碼序列完全相同（35 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 08h(RANDOM):READVAR(2);上界 n 先加一(除非已是 FFh)才呼叫 RTL 的 @Random,所以 ECL 的 RANDOM(6) 得到 0..6 含上界;結果經兩個 RTL 常式轉成 byte 後 STOREVALUE 到 operand 2 指定的位址 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -5037,7 +5038,8 @@
    "spec": "docs/spec/588-ecl-return-and-gosub-stack.md",
    "note": "與 pc98 overlay-02:02B8h 助憶碼序列完全相同（30 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 09h:READVAR(2) 後依 operand code[1](DS:A918h)是否 \u003e= 80h 分兩條路——小於 80h 傳 ADDRESSVALUE(1) 的值,否則傳 packed text 緩衝區 DS:A9DAh 的位址。同一 opcode 依 operand code 走不同路徑 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -5056,7 +5058,8 @@
    "spec": "docs/spec/599-ecl-select-member-and-0c.md",
    "note": "與 pc98 overlay-02:0306h 助憶碼序列完全相同（73 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 0Ah(選第 N 名隊員):READVAR(1);operand 低 7 位是 0-based 索引、最高位是額外動作的開關;沿角色鏈走 n 步後把 DS:9594h 設為該節點,超出範圍則不改目標、只把 DS:BDFFh 設為 1;最高位為 1 且 DS:BDE4h/BDE5h 都非 0 時另做一段重繪並清掉那兩個旗標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -5075,7 +5078,8 @@
    "spec": "599",
    "note": "同 PC-98 overlay-02:003E0h（ECL opcode 0Ch）。★PC-98 多兩塊：進場把 DS:0A2A8h 存進區域變數、收尾多呼叫 loc_167Ch+2 後再寫回——DOS 沒有這組存還原。其餘是位址：DS:7601h/7602h↔0A893h/0A894h、DS:720Fh/7210h/7211h↔0A2A9h/0A2AAh/0A2ABh、DS:4F9Dh↔7F09h",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -5095,6 +5099,7 @@
    "note": "同 PC-98 overlay-02:0049Ch（ECL opcode 0Bh 產生 N 個角色）。★PC-98 多印一句 '読み込み中です'（16 條指令），DOS 沒有。其餘是位址：DS:6506h↔9594h、名額上限全域 DS:47E6h↔789Ch，以及區域變數位移各差 1",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-strings.md"
    ]
   },
@@ -5251,11 +5256,11 @@
    "note": "與 pc98 overlay-02:08A7h 助憶碼序列完全相同（77 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 0Eh(顯示圖片):READVAR(1);operand 為 FFh 是「關閉」的哨兵值,會清掉一組旗標;否則依 bank1^[5C2h] 是否為 FFh 分兩條路,是的話再依編號是否 \u003e= 78h 分兩條——\u003c 78h 帶著函式前方的 'PIC' 字串常數(檔名前綴)呼叫 far 0176:0034/0025,\u003e= 78h 走 0176:004D。同一條 ECL 指令的效果隨狀態而異 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "project-status.md",
-    "spec/518-dos-start-ecl-call-address-space-audit.md"
+    "project-status.md"
    ]
   },
   {
@@ -5315,6 +5320,7 @@
    "note": "與 pc98 overlay-02:0A5Dh 助憶碼序列完全相同（69 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 11h/12h 共用的 handler(顯示文字):READVAR(1);operand code[1] \u003c 80h 才取字串並複製到共用文字緩衝區 DS:A9DAh(\u003e= 80h 表示 packed text 已在該緩衝區);之後重讀 DS:A891h 分辨——11h 與 12h 只差倒數第二個參數 0 vs 1,且 12h 會先把 DS:9637h 重設為 11h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md"
    ]
   },
@@ -5335,6 +5341,7 @@
    "note": "與 pc98 overlay-02:0AF9h 助憶碼序列完全相同（30 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 13h(RETURN):無 operand;GOSUB 堆疊鏈頭在 DS:A882h,節點 6 bytes(+0 返回 PC、+2 next far ptr),取回 PC 後 Dispose(6)。堆疊空時不是錯誤,而是轉去執行 opcode 00h 的 handler(sub_52) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/pc98-overlay-27.md",
     "audit/function-index/pc98-overlay-29.md"
    ]
@@ -5355,7 +5362,8 @@
    "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
    "note": "與 pc98 overlay-02:0B49h 助憶碼序列完全相同（40 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 14h(比較):先 FillChar(DS:A88Ah,6,0)清空六個旗標,READVAR(4)後比較 v1=v2 且 v3=v4——成立設 DS:A88Ah:=1,否則設 DS:A88Bh:=1。這正是 16h~1Bh 檢查的那六個旗標,兩者構成 ECL 的條件分支 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -5375,6 +5383,7 @@
    "note": "ECL 的條件分支:v := DS:75FFh,若 v 在 16h..1Bh 且 DS:[75F8h+(v-16h)] = 0(該比較不成立)則呼叫 overlay-07 entry#29 **跳過下一條 ECL 指令**(它查 opcode→arity 表再 READVAR 把運算元吃掉)。那六個旗標正是 entry#22/#23 兩支比較程序寫出的 =、\u003c\u003e、\u003c、\u003e、\u003c=、\u003e=。六個分支呼叫同一支且無參數,差別只在讀哪個旗標;v 在範圍外不跳也不執行。開頭 DS:4FB4h++",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "spec/686-dos-ecl-operand-tables-and-menu.md"
    ]
   },
@@ -5395,7 +5404,9 @@
    "note": "與 pc98 overlay-02:0C26h 助憶碼序列完全相同（33 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 20h:READVAR(1);先把 DS:BDF0h 的舊值存進 bank0^[1E4h],新值寫入 DS:BDF0h,呼叫 far 0062:0034(v)與 0062:002F,設 DS:7896h/7897h 為 1,最後 FillChar(DS:BDDAh,2,0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
-    "audit/embedded-strings.md"
+    "audit/ecl-opcode-effect-phases.md",
+    "audit/embedded-strings.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -5415,7 +5426,9 @@
    "note": "ECL 21h LOAD FILES 與 37h LOAD PIECES 共用一支，靠 DS:75FFh(目前指令碼)分流。LOAD FILES 設 DS:47E5h、載 3D 地圖(overlay-30 entry#9)或 bigpic；LOAD PIECES 設 DS:47E4h、叫 overlay-30 entry#8 載 WALLDEF，operand 為 0FFh 時把 DS:7210h/7212h + i*4 寫成 0FFFFh ⇒ ★這是 spec 1072/1074/1076 那三組牆面參數的寫入端。兩個旗標都亮才觸發最後重繪",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
-    "spec/1087-ecl-handlers-six.md"
+    "audit/ecl-opcode-effect-phases.md",
+    "spec/1087-ecl-handlers-six.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -5468,6 +5481,7 @@
    "citations": [
     "audit/duplicate-strings.md",
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md"
    ]
   },
@@ -5503,6 +5517,7 @@
    "note": "ECL 2Ah GETTABLE：READVAR(3) → 目的 := ECL記憶體[來源 + 偏移]，查表指令",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md",
     "spec/1087-ecl-handlers-six.md"
    ]
@@ -5523,7 +5538,8 @@
    "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
    "note": "與 pc98 overlay-02:0EDDh 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 35h(索引寫入):READVAR(3);第一個 operand 是值,第二個(ADDFNC)與第三個相加才是目的位址,即 ECL[base+index] := value ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -5583,8 +5599,10 @@
    "note": "ECL 2Bh(HORIZONTAL MENU) DOS 側，PC-98 對側見 spec 605。變長骨架與 PC-98 一致：READVAR(2)→ADDFNC(DS:76C6h,DS:7706h)→ADDRESSVALUE(2) 取選項數 n→dec DS:4FB4h(ECL_PC−1)→READVAR(n)。★★★ 選項行是執行期串出來的：for i:=1..n−1 選項行 += '~'+文字表[i]+' '，最後一個只接 '~'+文字表[n]，整行上限 32h=50 bytes ⇒ spec 1030 在營地選單看到的 '~Yes ~No' 波浪號標記，產生端就在這裡 —— 波浪號是 DOS 版水平選單的通用熱鍵標記，~ 後面第一個字元就是熱鍵。★★★ PC-98 把這套整個換掉，改成 DS:0A334h+i := i+40h('A','B','C'…) 的熱鍵表 ⇒ 中文化必須跟 PC-98，~ 後接 Big5 首位元組會把熱鍵判成亂碼。★ 文字表兩平台都是 stride 100h(256)、索引從 1 起算：DOS DS:7648h(shl di,8)、PC-98 DS:0A8DAh。★★ n=1 特例：樣式 (1,0Fh,0Fh)，且若 DS:7748h 不等於 'PRESS BUTTON OR RETURN TO CONTINUE.'(35) 就換成 'PRESS \u003cENTER\u003e/\u003cRETURN\u003e TO CONTINUE'(34) —— DOS 有兩句按鍵繼續，已經是前者就不動；n\u003e1 樣式 (0,0Fh,0Ah)。★★★ 關掉 spec 605 的未定項：var_3C := ord((DS:8B62h\u003c\u003e0) and (DS:8B63h\u003c\u003e0))，兩個旗標都非零才是 1。收尾 0542:0B4Ah(18h,27h,18h,0)，與 PC-98 的 0418:14C7h 四個參數完全相同",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-strings.md",
-    "spec/1039-ecl-horizontal-menu-dos.md"
+    "spec/1039-ecl-horizontal-menu-dos.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -5603,7 +5621,10 @@
    "spec": "docs/spec/596-ecl-party-item-sweep.md",
    "note": "與 pc98 overlay-02:1294h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 1Ch:無 operand;清掉 DS:789Ch/BDFBh、設 DS:A895h:=8、FillChar(DS:A00Ah,1Ch,0),然後 while 迴圈沿 DS:A026h 的鏈逐一 Dispose(67h)清空。節點 103 bytes、next 在 +52h,與角色 +14Eh 那條物品鏈是同一種節點 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
+    "context/50-log-2026-08-09-13.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -5622,7 +5643,8 @@
    "spec": "docs/spec/602-ecl-party-power-score.md",
    "note": "與 pc98 overlay-02:12F7h 助憶碼序列完全相同（120 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 1Dh(全隊戰力評分):沿角色鏈對每人算 (HP + max(0,[19Bh]-60)*5 + max(0,[19Ah]-39)*5 + c*8 + d*4) div 10,其中 c=lvl*[116h]+[10Eh]、d=lvl*[111h]+[109h],lvl 由 far 015D:0052 算(呼叫兩次)。每人各自除完才累加(不是先加總再除),除法是有號;累加變數是 byte,超過 255 會環繞。結果 STOREVALUE 到 operand 1 指定的位址 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -5740,7 +5762,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_5], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完）",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
-    "context/50-log-2026-08-09-13.md"
+    "context/50-log-2026-08-09-13.md",
+    "spec/1103-rolldice-and-ability-generation.md"
    ]
   },
   {
@@ -5814,7 +5837,9 @@
    "note": "場景切換的分派。GUARD 形狀:`if DS:5BECh\u003c\u003e0 then \u003c0713:0020h\u003e(DS:25AAh)` / f() / `if DS:5BECh=0 then \u003c0713:00D6h\u003e()`——**前後兩半用同一旗標的相反值當閘門**,只會執行其中一個,不是配對的存檔還原。依 [4F9Dh]^[6D8h]=1 / [4F9Dh]^[5C4h]=1 / 其他 分別走 overlay-06(entry#3+#1)、overlay-04(#2+#1)、overlay-05(#2+#1);再依 [4F99h]^[1CCh] 是否為零走 overlay-27 entry#6 或 overlay-30 entry#11。重載路徑(8B69h 或 8B56h 非零)另呼叫 ov08/10/09 e2、ov13 e34、ov32 e23、ov31 e7,並用 MAXRANGE(overlay-07 entry#6)算出的 n **往下夾** bank1^[582h](cmp+jnb,只在 n 較小時寫入)——就是 0801h 每走一步遞減的剩餘步數。⚠ 197Ah 的 `call sub_1953` 是 IDA 攤平造成的假名字,實為 overlay-32 entry#23",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/dos-overlay-02.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md",
     "spec/687-far-call-flattening-and-stack-leftover.md",
     "spec/688-dos-overlay-02-scene-opcodes.md"
    ]
@@ -6053,6 +6078,7 @@
    "note": "腳本流的選擇分派(retf，無參數)：取得 選擇 與 筆數，dec(DS:4FB4h) 後線性找到 選擇 = i 的那一筆；DS:75FFh 為 '%'(25h)時 DS:4FB4h := \u003c呼叫\u003e(byte[76C5h + i+1], byte[7705h + i+1])(等於跳躍)，否則叫 \u003c呼叫\u003e(i+1)。DS:75FFh/DS:4FB4h 就是 spec 759 的 overlay-02:3621h 那組流位置",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md"
    ]
   },
@@ -6073,6 +6099,7 @@
    "note": "ECL 27h TREASURE：READVAR(8)，operand 2..7 存進 DS:6F70h + i*4(32-bit)。operand8 分三段：\u003c80h 從 ITEM\u003c資料片\u003e.dax 讀第 n 塊，每 3Fh=63 bytes 一筆(物品節點)串進 DS:6F8Ch 鏈(next +2Ah)，讀不到就印 Unable to find item file 並結束程式；=0FFh 什麼都不做；\u003e=80h 隨機產生 n−80h 件(d100 巢狀分段 → 類型碼 → overlay-21 entry#18)。⚠隨機表 56h..5Ch 與 5Bh..62h 兩段重疊，後者實際只涵蓋 93..98",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-strings.md",
     "spec/1087-ecl-handlers-six.md"
    ]
@@ -6115,6 +6142,7 @@
    "note": "ECL 29h(PARLAY) DOS 側(2086h..2784h，649 條)，PC-98 對側見 spec 611。★★★ 更正 spec 611：五個結果碼(operand 5..9)對應的是遭遇選單的五個選項，不是交涉態度 —— 實際餵給選單的是 '~COMBAT ~WAIT ~FLEE ~PARLAY'(27，CS:2029h)或 '~COMBAT ~WAIT ~FLEE ~ADVANCE'(28，CS:2045h)，由 bank1^[582h]\u003c\u003e0 且 bank0^[1CCh]\u003c\u003e0 決定第四格顯示哪一個；顯示 PARLAY 那一側再把 choice=3 改派成 4，所以 choice 0..4 = COMBAT/WAIT/FLEE/ADVANCE/PARLAY 各對一個 operand。⚠ '~HAUGHTY ~SLY ~NICE ~MEEK ~ABUSIVE' 在 CS:2785h，落在本函式結束(2784h)之後，屬於下一支函式，spec 611 是相鄰字串的誤認。★★★ 關掉 spec 611 兩個未定項：①bank1^[582h] := \u003coverlay-07 entry#6\u003e(DS:720Fh,7210h,7211h 隊伍座標與朝向) 再被 operand 2(bank1^[580h]) 當上限夾住 ⇒ 是這一格的遭遇數量，結果碼 3/4 每次 dec 一個再重畫，減到 0 才寫回結果；②t1(operand 13)比 var_40B、t2(operand 14)比 var_40A，兩者是進門時 \u003coverlay-07 entry#30\u003e 的兩個輸出。★★ 結果碼與選項是二維分派：結果碼[choice] 決定外層、choice 決定內層(例如 結果碼 0＋FLEE 時 var_40B\u003ct1 ? 1 : 2；結果碼 2＋COMBAT 時 t2\u003evar_40A 才寫 0 並設 DS:65A0h:=1、DS:65A1h:=11h)。★ 四個選項的 ~ 就是 spec 1039 的波浪號熱鍵標記；選項行上限 28h=40 bytes。文字槽 DS:7648h+i*100h 與 spec 1039 的 2Bh 共用。'Both sides wait.'(16) = PC-98「お互いに様子を見ている」",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
@@ -6158,7 +6186,8 @@
    "spec": "docs/spec/599-ecl-select-member-and-0c.md",
    "note": "與 pc98 overlay-02:29FBh 助憶碼序列完全相同（61 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 32h(查全隊有沒有某物品):READVAR(1);先清空六個比較旗標並預設 DS:A88Bh:=1(沒有),再走角色鏈 + 每人的物品鏈(+14Eh,next 在 +52h),物品 +56h 命中就設 A88Ah:=1、A88Bh:=0 並讓兩層迴圈都提早結束。借用比較旗標,所以後面接 16h 是「有」、17h 是「沒有」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -6177,7 +6206,9 @@
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "與 PC-98 overlay-02:2AA7h 同形的 handler:把 DS:4FB4h 加一後 far call ⇒ 4FB4h 應為 DOS 的 ECL PC(strong inference,結構對應)",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -6216,7 +6247,8 @@
    "spec": "docs/spec/586-ecl-handlers-31-33-34.md",
    "note": "與 pc98 overlay-02:2E06h 助憶碼序列完全相同（12 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 31h 的 handler:無 operand(只 ECL_PC++);DS:BDF7h 非 0 時設 DS:A66Ch=1、呼叫 far 0172:0025、清 DS:BDF7h 與 DS:BDF4h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -6254,7 +6286,8 @@
    "spec": "docs/spec/586-ecl-handlers-31-33-34.md",
    "note": "與 pc98 overlay-02:2E61h 助憶碼序列完全相同（14 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 33h 的 handler:無 operand;DS:BDF3h 非 0 就清掉,兩個分支都設 DS:9636h=1 並把 DS:9637h 加一。DS:9637h 是 PUTDAMAGE 的訊息停留時間全域,所以效果是把後續訊息延長一格 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -6274,6 +6307,7 @@
    "note": "DS:4FB4h++;\u003cresident 01A0:0136\u003e();\u003coverlay-24 entry#2\u003e(DS:6506h 那個 far 指標);\u003coverlay-24 entry#38\u003e();\u003coverlay-29 entry#1\u003e(3, 3, 1, DS:7234h, DS:7232h);\u003coverlay-24 entry#38\u003e();DS:8B6Eh:=0;DS:8B60h:=1。DS:6506h(低)+DS:6508h(高)是一個 far 指標,由 3251h 的 les ax,ds:6506h 證實",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "spec/688-dos-overlay-02-scene-opcodes.md"
    ]
   },
@@ -6314,6 +6348,7 @@
    "note": "寫入 +0F7h(retf，無參數)：b := \u003c呼叫\u003e(2)；b := (b div 2) or 80h；DS:6506h^[0F7h] := b。與 PC-98 overlay-09:13A5h 的讀取端 ((x and 7Fh)*2) 構成閉環 — bit 7 是有效旗標、低 7 位存的是原值的一半",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "spec/758-morale-field-0f7h-round-trip.md"
    ]
   },
@@ -6354,6 +6389,8 @@
    "citations": [
     "audit/ecl-external-call-registry.md",
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md",
     "spec/561-ecl-external-call-registry.md"
    ]
   },
@@ -6394,6 +6431,7 @@
    "note": "ECL 38h PROGRAM：依 operand1 分派。★★★ 8 = 通關：跑結局過場(spec 1082) → DS:8B6Fh:=1(訓練免費)、bank0^[3FAh]:=0FFh(已通關)、bank1^[550h]:=0FFh(訓練所全開) → 全隊復活補滿(+1A4h:=+78h、+195h:=0、+196h:=1) → 主選單 → 問 You've won. Save before quitting? → 結束程式。0 = 重新初始化+主選單+重繪；9 = 存還 ECL PC 跑 overlay-15 entry#3；3 = DS:4FC7h:=1。⇒ 一次關掉 spec 1084/1085 的三個未定旗標",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-strings.md",
     "spec/1087-ecl-handlers-six.md"
    ]
@@ -6474,7 +6512,8 @@
    "spec": "docs/spec/596-ecl-party-item-sweep.md",
    "note": "與 pc98 overlay-02:369Fh 助憶碼序列完全相同（56 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 40h:READVAR(1);沿 DS:9598h 的角色鏈(next 在 +18Ah)逐一走訪,對每名角色再沿 +14Eh 的物品鏈(next 在 +52h)走訪,物品 +56h 等於該 id 就呼叫 far 014A:0075 移除,每名角色處理完呼叫 014A:0043 收尾。內層迴圈先取 next 再移除,所以鏈不會斷 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md"
    ]
   },
   {
@@ -6497,8 +6536,8 @@
     "audit/function-index/dos-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/gold-box-ecl-interpreter.md",
-    "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/1095-ecl-main-loop-and-combat-continuation.md",
+    "spec/559-full-module-re-sweep.md"
    ]
   },
   {
@@ -6519,6 +6558,7 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-02.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md",
     "spec/560-ecl-opcode-dispatch-table.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
     "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md"
@@ -6538,7 +6578,12 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/612-ecl-main-loop.md",
-   "note": "與 pc98 overlay-02:327Eh 助憶碼序列完全相同（70 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：場景主迴圈:每輪先初始化畫面、清 DS:A31Ch/設 DS:A326h=FFh/清 DS:7897h、由地圖座標算 DS:A2ADh、把目前目標存進 DS:789Dh,然後依序 RUN_ECL(DS:7F1Fh)→(DS:7F17h)→(DS:7F19h),每段之後檢查 DS:7897h 非 0 就跳過後續;全部走完才還原目標。DS:7897h 非 0 時整輪重來。加上 3237h 用的 7F1Bh/7F1Dh,ECL 進入點是 DS:7F17h 起的五格 word 表 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-02:327Eh 助憶碼序列完全相同（70 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：場景主迴圈:每輪先初始化畫面、清 DS:A31Ch/設 DS:A326h=FFh/清 DS:7897h、由地圖座標算 DS:A2ADh、把目前目標存進 DS:789Dh,然後依序 RUN_ECL(DS:7F1Fh)→(DS:7F17h)→(DS:7F19h),每段之後檢查 DS:7897h 非 0 就跳過後續;全部走完才還原目標。DS:7897h 非 0 時整輪重來。加上 3237h 用的 7F1Bh/7F1Dh,ECL 進入點是 DS:7F17h 起的五格 word 表 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "context/50-log-2026-08-09-13.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6556,7 +6601,10 @@
    "spec": "1045",
    "note": "地城探索主迴圈(DOS，整支沒有字串)。進場：DS:47E7h 記住目前角色、DS:4FBAh:=4(畫面模式，spec 1042 的門選單也要 4)、bank0^[1E4h] 非 0 就沿用狀態否則重新初始化並畫隊伍名單、bank0^[1CCh]=0 時模式降成 3。主迴圈：\u003coverlay-14 entry#2\u003e 走一步收鍵 → 當 bank1^[594h]\u003e1 或鍵='E' 時進內圈：'E' 走 \u003coverlay-15 entry#3\u003e；否則把 bank1^[594h] 暫存成 and 1、設 1、叫 ★★ \u003coverlay-28 entry#1\u003e(ECL 執行入口，全迴圈出現三次)、sub_3621、DS:47E1h\u003c\u003e0 時 sub_3691，再還原 bank1^[594h]。★★★ 座標比對：進 ECL 前把 DS:720Fh/7210h 存進 bank0^[1E0h]/[1E2h]，跑完比對，只有被 ECL 搬動過才叫 far 0713:0020h。DS:8B62h:=0、DS:8B63h:=1 就是 spec 1039/1041 決定選單樣式的那兩個旗標。DS:4FC7h 是離開旗標，出迴圈後清 0。另一條路：DS:4FBCh\u003c\u003e0 時，隊伍鏈頭為空就一直叫 \u003coverlay-17 entry#3\u003e(1,1) 直到有人",
    "citations": [
-    "spec/1045-dungeon-main-loop-dos.md"
+    "audit/ecl-opcode-effect-phases.md",
+    "context/50-log-2026-08-09-13.md",
+    "spec/1045-dungeon-main-loop-dos.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -6957,9 +7005,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-05.md",
-    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-05.md",
-    "audit/overlay-init-graph.md"
+    "audit/overlay-init-graph.md",
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
   {
@@ -6982,8 +7030,8 @@
     "audit/function-index/dos-overlay-05.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-26.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-05.md"
+    "audit/function-index/pc98-overlay-05.md",
+    "audit/function-index/pc98-overlay-26.md"
    ]
   },
   {
@@ -7028,7 +7076,6 @@
    "citations": [
     "audit/function-index/dos-overlay-05.md",
     "audit/function-index/pc98-overlay-05.md",
-    "audit/resident-data-tables.md",
     "spec/858-post-battle-xp-and-treasure-valuation.md",
     "spec/861-post-combat-cleanup.md",
     "spec/891-battle-teardown.md"
@@ -7277,6 +7324,7 @@
    "citations": [
     "audit/function-index/pc98-overlay-05.md",
     "audit/function-strings.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md",
     "spec/858-post-battle-xp-and-treasure-valuation.md",
     "spec/891-battle-teardown.md"
    ]
@@ -7403,9 +7451,11 @@
    "spec": "1031",
    "note": "商店版營地選單，與 spec 1030 的 overlay-04:00DD6h 同一支版面(逐條比對只差開頭一段與字串)：'Heal'→'Buy'(熱鍵 H→B)、'Exit' 的日文由「やめる」改「抜ける」、說話的人由 priest 改 Shopkeeper。★ 多出來的前置：走公用池第 8 格 DS:6F8Ch 的物品鏈，每個叫 overlay-24 entry#1(0,0,0,0,物品,0)，next 在 +2Ah(PC-98 +52h，差 28h) —— 第三次確認物品節點 DOS 63/PC-98 103 bytes；也確認 DS:6F70h 八格是『七種貨幣 longint ＋ 第八格物品鏈頭』。★★ 這支用 mov [bp+var_2B],0 在迴圈外把空字串的長度 byte 設 0，推入次數與被呼叫端 retf 16h 直接對得上 —— 獨立確認 spec 1030 那條『0A54:0634h 把目的指標留在堆疊當第一個參數』的產碼慣例，選單參數表 ＝ 兩行選項字串 ＋ 5 個 byte ＋ 1 個輸出旗標。字串：'Buy View Take Pool Share Appraise Exit'(38)／'Buy View Pool Appraise Exit'(27)／'~Yes ~No'(8)／'As you Leave the Shopkeeper says, \"Excuse me but you have Left Some Money here.\"  '(82，結尾兩個空白)／'Do you want to go back and get your Money?'(42)",
    "citations": [
+    "audit/ecl-shared-cells.md",
     "audit/function-index/pc98-overlay-06.md",
     "audit/function-strings.md",
-    "spec/1031-shop-camp-menu.md"
+    "spec/1031-shop-camp-menu.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md"
    ]
   },
   {
@@ -7441,11 +7491,11 @@
    "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_EB3+3`、`call far ptr unk_17E7`、`call loc_14AD`、`call far ptr sub_177A`、`call loc_1049+1`、`call loc_15D0+1`（body 共 52 bytes，已逐條讀完）",
    "citations": [
     "audit/ecl-handler-operand-audit.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/dos-overlay-25.md",
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -7488,6 +7538,8 @@
    "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
    "note": "ADDRESSVALUE(i)：陣列在 7685/76C5/7705，分支與 PC-98 相同",
    "citations": [
+    "spec/1098-ecl-read-path-and-character-projection.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md",
     "spec/562-ecl2-helper-api-and-operand-audit.md"
    ]
   },
@@ -7505,7 +7557,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "618",
-   "note": "同 PC-98 overlay-07:00317h（INITECL）。唯一序列差異是 PC-98 多一條 mov sp, bp（該側有區域變數、DOS 沒有），其餘 24 條全是位址：DS:8B62h/8B64h/8B52h/8B53h↔0BDF4h/0BDF6h/0BDE4h/0BDE5h、DS:75E8h↔0A87Ah、DS:4FB4h↔7F21h、DS:75F0h..75F8h↔0A882h..0A88Ah、DS:4F9Dh↔7F09h、DS:4F99h↔7F05h"
+   "note": "同 PC-98 overlay-07:00317h（INITECL）。唯一序列差異是 PC-98 多一條 mov sp, bp（該側有區域變數、DOS 沒有），其餘 24 條全是位址：DS:8B62h/8B64h/8B52h/8B53h↔0BDF4h/0BDF6h/0BDE4h/0BDE5h、DS:75E8h↔0A87Ah、DS:4FB4h↔7F21h、DS:75F0h..75F8h↔0A882h..0A88Ah、DS:4F9Dh↔7F09h、DS:4F99h↔7F05h",
+   "citations": [
+    "audit/ecl-shared-cells.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7524,6 +7580,7 @@
    "note": "同 PC-98 overlay-07:00499h（GETECL 載入 ECL script）。★三處真差異：(1) FillChar 長度 DOS 1E00h(7680)、PC-98 1E41h(7745)；(2) DOS 多一段字串接續與 0A54h:364h，緩衝 112h vs 1Ch；(3) PC-98 收尾多一條 out 0A6h, al（PC-98 專屬 I/O 埠），DOS 沒有。其餘是位址：DS:4FA5h↔7F12h、DS:5CF0h↔8CF6h、DS:5BEEh↔8BF4h",
    "citations": [
     "audit/function-strings.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md",
     "spec/687-far-call-flattening-and-stack-leftover.md"
    ]
   },
@@ -7559,6 +7616,7 @@
    "spec": "615",
    "note": "同 PC-98 overlay-07:005BDh（MAXRANGE）。唯一序列差異是 DOS 多一條 xor ah, ah，其餘是 DS:4F99h↔7F05h、DS:4F9Dh↔7F09h",
    "citations": [
+    "spec/1095-ecl-main-loop-and-combat-continuation.md",
     "spec/687-far-call-flattening-and-stack-leftover.md"
    ]
   },
@@ -7655,6 +7713,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "knowledge/gold-box-ecl-interpreter.md",
+    "spec/1096-ecl-address-space-bank-mapping.md",
     "spec/563-ecl-memory-model-and-operand-resolution.md",
     "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
    ]
@@ -7697,6 +7756,7 @@
    "citations": [
     "audit/function-index/dos-overlay-07.md",
     "spec/1040-checkspecials-dos.md",
+    "spec/1098-ecl-read-path-and-character-projection.md",
     "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
    ]
   },
@@ -7716,7 +7776,9 @@
    "spec": "624",
    "note": "同 PC-98 overlay-07:00C28h（以 module_align 重新對齊；overlay-07 的 entry index 有 23 對錯開）。★兩處號誌性差異：DOS 用有號 jl/jg，PC-98 用無號 jb/ja——ECL 位址空間的比較值若曾超過 7Fh 兩邊會不同，remake 要照 DOS 的有號版。其餘 31 條全是位址與 IDA 命名形式",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/1096-ecl-address-space-bank-mapping.md",
+    "spec/1098-ecl-read-path-and-character-projection.md"
    ]
   },
   {
@@ -7737,9 +7799,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-07.md",
+    "spec/1096-ecl-address-space-bank-mapping.md",
+    "spec/1098-ecl-read-path-and-character-projection.md",
     "spec/547-normal-beholder-cave-presentation-state.md",
-    "spec/562-ecl2-helper-api-and-operand-audit.md",
-    "spec/563-ecl-memory-model-and-operand-resolution.md"
+    "spec/562-ecl2-helper-api-and-operand-audit.md"
    ]
   },
   {
@@ -7777,6 +7840,7 @@
    "spec": "docs/spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md",
    "note": "ECL 記憶體讀取（DOS 側）：bank 0-4 與 PC-98 完全對稱；關掉 spec 565 的未宣稱項；033Dh 與 C04Dh 是同一 byte 的兩種刻度",
    "citations": [
+    "spec/1098-ecl-read-path-and-character-projection.md",
     "spec/565-ecl-memory-read-path-and-asymmetry.md",
     "spec/986-dos-ecl-read-path-and-pc98-sheet-fill.md"
    ]
@@ -7901,7 +7965,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add di, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md"
    ]
   },
   {
@@ -9471,14 +9536,14 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-   "note": "牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(x, y, 方向)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(x2, y2, 反向)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對。更正：本支的宣告順序是 (x, y, 方向)，先前寫成推入順序",
+   "note": "牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(x, y, 方向)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(x2, y2, 反向)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對。★ 宣告順序是 (x, y, 方向)；Pascal 由左至右壓棧，所以推入順序看起來相反，別把推入順序當宣告順序",
    "citations": [
+    "audit/ecl-shared-cells.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md",
-    "spec/784-cross-platform-pairs-second-batch.md",
-    "spec/898-dungeon-wall-tile-pick.md"
+    "spec/784-cross-platform-pairs-second-batch.md"
    ]
   },
   {
@@ -10122,7 +10187,7 @@
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/1074-global-init-pc98.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -13302,6 +13367,7 @@
    "spec": "docs/spec/795-combat-scene-resources-and-damage-roll.md",
    "note": "傷害擲骰：retf 0Ah，宣告順序 (角色遠指標, 參數4, 參數2, 武器索引 i)。傷 := \u003c1461h+1\u003e(角色^[19Dh+i], 角色^[19Fh+i]) + 有號(角色^[1A1h+i]) 存入 DS:6F94h（三個 byte 陣列相距 2，i 只能是 0/1；隨後的 cmp/jnb 讓「夾成 0」那句永遠執行不到，負加值會迴繞）；若 本模組 28C3h(參數2, 參數4, 角色) 成立，m := 有號(\u003cfar 1652h\u003e(角色))，倍 := ((有號(+117h)*m + 有號(+10Fh) − 1) div 4) + 2，DS:6F94h *= 倍（m=0 時即 AD\u0026D 背刺倍數表）。最後 DS:6F95h := 0、\u003c1442h+2\u003e(角色,4)、\u003c1442h+2\u003e(參數2,參數4,5)。spec 795",
    "citations": [
+    "audit/ecl-shared-cells.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/795-combat-scene-resources-and-damage-roll.md"
@@ -13912,8 +13978,7 @@
    "spec": "852",
    "note": "法術的目標選擇(retf 0Ah)：arg_6 = 0 走手動（sub_3B37h 開游標，法術 53h 用另一種模式）；否則自動——法術屬性 +0Eh（37E8h）為 0 的非敵對法術直接以自己為目標（法術 3 另過 sub_1DF6h），敵對法術叫 sub_3E56h（spec 852 的 AI 選目標）取一個，若 far 150Ah+4 成立且法術屬性 +0Ah 落在 {33h,34h,35h,1Fh}（表在 DS:27CAh）就拒絕。★成功時把目標座標寫進 DS:7559h/755Ah——那正是 spec 846/847 用到的兩個全域",
    "citations": [
-    "audit/function-index/pc98-overlay-13.md",
-    "audit/resident-data-tables.md"
+    "audit/function-index/pc98-overlay-13.md"
    ]
   },
   {
@@ -14529,6 +14594,7 @@
    "spec": "docs/spec/1026-open-doors-table.md",
    "note": "撞門判定：走隊伍鏈 DS:650Ah(next 在 +189h)，每個隊員各擲一次、任何一人成功就停；地形碼由 overlay-30 entry#5(DS:720Fh, DS:7210h, DS:7211h) 取得，= 3 走「上鎖」欄、其餘走「一般」欄。判定用角色的 +11h(力量，即 +10h + i×2 那組屬性的第 0 項)與 +1Ch(18/xx 百分位)。★★★ 一般門：力量 15→1d6=1(1/6)、16-17→1d6\u003c=2、18 且百分位\u003c=50→\u003c=3、18 且 51-99→\u003c=4、18 且 100→\u003c=5、19-20→1d8\u003c=7、21→1d10\u003c=9、22-23→1d12\u003c=11、24→1d20\u003c=19 —— AD\u0026D 1e PHB 力量表的 Open Doors 欄一格不差。★★★ 上鎖／頂住的門：18 且百分位 91-99→1d6=1、18 且 100→\u003c=2、18 其餘百分位→直接打不開(DS:7588h := 0，連骰都不骰)、19-20→1d6\u003c=3、21-22→\u003c=4、23→\u003c=5、24→1d8\u003c=7 —— 就是 1e 的括號欄(locked/barred/magically held)。⚠ 兩平台的門檻與骰子完全相同，差異只在位址(720Fh/7210h/7211h↔0A2A9h/0A2AAh/0A2ABh，同 spec 1022)。本支沒有字串",
    "citations": [
+    "audit/ecl-shared-cells.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/1026-open-doors-table.md",
@@ -14595,6 +14661,7 @@
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
    "note": "找持有某值的隊員(retf 2，回遠指標)：走隊伍鏈，對每個成員叫 06B1h 找格子(v, 成員)，回傳值不是 0FFh 就回傳該成員；走完沒找到回 NIL。spec 756 的 0749h 是其呼叫端",
    "citations": [
+    "audit/ecl-shared-cells.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-14.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
@@ -15995,6 +16062,7 @@
    "note": "套模板下限(retf 2 = 巢狀程序，參數是父 bp；角色在 ss:[父bp+0Ah]、模板在 ss:[父bp−1C4h])：七組屬性各自 if 角色 \u003c 模板 就抬上去，★每次都把相鄰兩格寫同一值 → 屬性是 +10h+j*2 與 +11h+j*2 兩個副本，spec 857 讀到的是後半格；模板側 +14h 力量、+15h 對應角色 +1Ch/+1Dh(形狀上是 18/xx 百分位力量)、+16h..+1Ah 智睿敏體魅。經驗值 +127h 抬到 模板^[2Eh]。★錢不夠(loc_1024h+3 折算 \u003c 模板^[28h])就把第 0..4 格全部扣光再發 模板^[28h] div 5——先破壞再補，且只推低位字。四個職業槽 +109h/+10Eh/+10Bh/+10Fh 寫成 模板^[0B7h..0BAh] \u003e 0 的布林。最後 +0E5h := 1、換 DS:6506h、+78h := 模板^[21h]、+12Ch := +78h − loc_F23h(角色)、+1A4h := 模板^[20h]",
    "citations": [
     "audit/function-index/pc98-overlay-16.md",
+    "spec/1098-ecl-read-path-and-character-projection.md",
     "spec/925-npc-template-floor.md"
    ]
   },
@@ -16270,6 +16338,7 @@
     "audit/function-index/dos-overlay-17.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
+    "context/50-log-2026-08-09-13.md",
     "spec/1086-modify-character-dos.md",
     "spec/1093-character-creation-dos.md"
    ]
@@ -16395,7 +16464,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 6`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 6`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "context/50-log-2026-08-09-13.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16594,7 +16666,6 @@
    "note": "體質的 HP 加值(retf 2，職業碼)：讀 遠指標(DS:6506h)^[19h](體質，spec 857)，3→−2、4..6→−1、7..14→0、15→+1、16→+2、17..19→戰士類(職業碼 2/3/4)給 體質−0Eh(即 +3/+4/+5)否則 +2。★與 AD\u0026D 一版逐格相符，同時是 +19h=體質 與那組職業編號的第二份佐證。⚠體質 ≥20 時所有分支都不成立，直接回傳未初始化的堆疊殘值",
    "citations": [
     "audit/function-index/pc98-overlay-17.md",
-    "audit/resident-data-tables.md",
     "spec/1086-modify-character-dos.md",
     "spec/866-constitution-hp-bonus.md",
     "spec/869-constitution-bonus-per-class-slot.md"
@@ -16781,6 +16852,7 @@
    "citations": [
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/pc98-overlay-17.md",
+    "context/50-log-2026-08-09-13.md",
     "spec/1084-training-hall-dos.md",
     "spec/850-hit-dice-and-effective-level.md",
     "spec/869-constitution-bonus-per-class-slot.md"
@@ -16803,6 +16875,7 @@
    "note": "有效等級(retf 4)：各職業等級總和（Ranger c=4 與 Monk c=7 各多算 1）加上 45E9h 的調整後除以職業數取平均。負調整時有下限保護。⚠ 職業數 = 0 會除以零",
    "citations": [
     "audit/function-index/pc98-overlay-17.md",
+    "context/50-log-2026-08-09-13.md",
     "spec/1086-modify-character-dos.md",
     "spec/1092-modify-character-pc98.md",
     "spec/850-hit-dice-and-effective-level.md"
@@ -17851,9 +17924,9 @@
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
-    "audit/resident-data-tables.md",
     "spec/812-coin-values-and-class-name-table.md",
-    "spec/814-rest-driver-and-pool-worth.md"
+    "spec/814-rest-driver-and-pool-worth.md",
+    "spec/903-identify-item.md"
    ]
   },
   {
@@ -18023,8 +18096,8 @@
     "audit/function-index/dos-overlay-20.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-20.md",
-    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-    "spec/790-attack-ally-confirm-and-counter-animation.md"
+    "knowledge/coab-remake-todo.md",
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
    ]
   },
   {
@@ -18972,7 +19045,6 @@
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
-    "audit/resident-data-tables.md",
     "spec/517-reverse-engineering-gap-inventory.md",
     "spec/848-scroll-list-widget.md"
    ]
@@ -21919,6 +21991,8 @@
    "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
    "note": "ROLLDICE(count,sides):與 PC-98 同構;亂數 far call 0A54:1105 = @Random$q4Word(image offset B645h)",
    "citations": [
+    "context/50-log-2026-08-09-13.md",
+    "spec/1103-rolldice-and-ability-generation.md",
     "spec/568-rolldice-and-original-rng-entry.md",
     "spec/864-cloud-tick-and-hd-field.md"
    ]
@@ -22099,6 +22173,7 @@
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
    "note": "與 pc98 overlay-23:15ECh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ROUTINGREMOVEFX:以 1..4 索引 DS:15B1h 起的位元組表逐一呼叫 SPELLOFF(char, id, 0, 0)。清單內容在 DS,未定位 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "spec/1103-rolldice-and-ability-generation.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
   },
@@ -22530,7 +22605,6 @@
    "spec": "docs/spec/804-bss-boundary-item-type-table-turn-reset.md",
    "note": "依物品類型累加：retf 10h，宣告順序 (角色, 物品, 記錄, 輸出) 四個遠指標。v := byte[5CFCh + 物品^[2Eh]*10h]（物品類型表 DS:5CF6h 每筆 16 bytes 的 +6），v \u003c= 7Fh（無號）直接離開；v := v and 7Fh；w := byte[5CF6h + 物品^[2Eh]*10h]（+0 類別碼）。w=1 → 記錄^[1] := 物品^[32h] + v；v=0 且 w=9 → 記錄^[3] 取 物品^[32h] 的最大值；v=0 且 w\u003c\u003e9 → 記錄^[2] 累加 物品^[32h] 並 角色^[186h] 累加 物品^[33h]；v\u003c\u003e0 → 記錄^[4] 取 物品^[32h]+v 的最大值，且 物品^[32h] \u003e 0 與 w=2 時 輸出^ := 1。DS:5CF6h 落在 BSS，dump 全 FFh，內容是執行時載入的。spec 804",
    "citations": [
-    "audit/resident-data-tables.md",
     "spec/1000-derived-stats-recalc.md",
     "spec/804-bss-boundary-item-type-table-turn-reset.md"
    ]
@@ -22663,7 +22737,6 @@
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
     "audit/function-strings.md",
-    "audit/resident-data-tables.md",
     "spec/825-round-end-bleeding-out.md"
    ]
   },
@@ -23079,7 +23152,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
-   "note": "畫角色名字(名字是紀錄 +0 起的 Pascal 字串)。顏色:+196h=0 → 0Ch;否則 +197h=1 → 0Eh;其餘 0Bh(0795h 對選中者不走這支,直接用 0Fh)。arg_0 非零時,在 arg_4 + 角色^[0](名字長度位元組)的欄位再畫 CS:18F0h = \"'s\"。⚠ 中文化:英文所有格是用「畫在名字後面」硬接的,中文沒有對應後綴,這條路徑要整段改;⚠ spec 726 更正:欄位偏移用長度位元組**對 Big5 是成立的**(全形字佔 2 位元組也佔 2 欄),先前寫「會少算一半」是錯的;真正的問題只剩 's 這個後綴中文沒有",
+   "note": "畫角色名字(名字是紀錄 +0 起的 Pascal 字串)。顏色:+196h=0 → 0Ch;否則 +197h=1 → 0Eh;其餘 0Bh(0795h 對選中者不走這支,直接用 0Fh)。arg_0 非零時,在 arg_4 + 角色^[0](名字長度位元組)的欄位再畫 CS:18F0h = \"'s\"。⚠ 中文化:英文所有格是用「畫在名字後面」硬接的,中文沒有對應後綴,這條路徑要整段改;⚠ 欄位偏移用長度位元組**對 Big5 是成立的**(全形字佔 2 位元組也佔 2 欄,spec 726);中文化真正的問題只剩 's 這個後綴中文沒有",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
@@ -23435,9 +23508,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
+    "spec/1098-ecl-read-path-and-character-projection.md",
     "spec/690-status-line-and-string-concat-idiom.md",
-    "spec/693-text-draw-signature-and-english-grammar.md",
-    "spec/876-screen-mode-dispatch.md"
+    "spec/693-text-draw-signature-and-english-grammar.md"
    ]
   },
   {
@@ -24531,7 +24604,7 @@
     "audit/function-index/dos-overlay-28.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -24952,6 +25025,8 @@
    "spec": "docs/spec/997-view-panel-draw-and-position-marker.md",
    "note": "同上的 DOS 側；DS:4FE6h \u003c\u003e 0 走四塊版本（PC-98 沒有這個分支）",
    "citations": [
+    "audit/ecl-shared-cells.md",
+    "spec/1098-ecl-read-path-and-character-projection.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
     "spec/687-far-call-flattening-and-stack-leftover.md",
     "spec/997-view-panel-draw-and-position-marker.md"
@@ -25091,7 +25166,7 @@
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/1006-first-person-view-geometry.md",
-    "spec/517-reverse-engineering-gap-inventory.md"
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -31250,11 +31325,11 @@
    "note": "呼叫序列：依序執行 15 個呼叫，沒有其他動作：`call far ptr loc_1019+1`、`call far ptr loc_17B6+1`、`call far ptr loc_197F+4`、`call far ptr loc_1083+1`、`call loc_1694+3`、`call far ptr loc_E26`（body 共 82 bytes，已逐條讀完）",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-03.md",
-    "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/dos-overlay-05.md"
+    "audit/function-index/dos-overlay-04.md"
    ]
   },
   {
@@ -31274,11 +31349,11 @@
    "note": "ECL opcode 00h(結束 script):清掉數個旗標、FillChar(DS:BDDAh,2,0)、ECL_PC++,然後 while 迴圈逐一 Dispose(6) 清空整個 GOSUB 堆疊,最後把 DS:9637h(訊息停留時間)重設為 11h。RETURN 在堆疊空時轉來這裡,理由就在這",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-04.md"
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -31298,11 +31373,11 @@
    "note": "同上,ECL PC 為 DS:7F21h、operand 陣列為 DS:A958h/A998h",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/dos-overlay-28.md",
     "knowledge/gold-box-ecl-interpreter.md",
-    "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/585-ecl-goto-and-display-mode-pair.md"
+    "spec/1104-ecl-opcode-ordered-effect-phases.md",
+    "spec/559-full-module-re-sweep.md"
    ]
   },
   {
@@ -31322,11 +31397,11 @@
    "note": "ECL opcode 02h(GOSUB):只有 READVAR(1) 加一次 far 0062:0098(1)——推堆疊的動作在 ECL2 的 SETUPGOSUBSTACK,不在 handler 裡。與 13h(RETURN)的彈出端分屬不同 unit",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/function-index/dos-overlay-07.md",
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/dos-overlay-29.md",
-    "audit/function-index/pc98-overlay-07.md",
-    "spec/559-full-module-re-sweep.md"
+    "audit/function-index/pc98-overlay-07.md"
    ]
   },
   {
@@ -31346,11 +31421,11 @@
    "note": "ECL opcode 03h(COMPARE):READVAR(2);任一 operand code \u003e= 80h 就走字串比較——先用 far 0418:044A 從 DS:A9DAh 與 DS:AADAh 兩個 packed text 緩衝區解出字串,再呼叫 far 0062:008E;否則取兩個值走數值比較 far 0062:0093",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md",
     "spec/559-full-module-re-sweep.md",
     "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/592-ecl-arithmetic-and-compare.md",
-    "spec/685-dos-ecl-compare-dispatch.md"
+    "spec/592-ecl-arithmetic-and-compare.md"
    ]
   },
   {
@@ -31391,6 +31466,7 @@
    "note": "ECL opcode 08h(RANDOM):READVAR(2);上界 n 先加一(除非已是 FFh)才呼叫 RTL 的 @Random,所以 ECL 的 RANDOM(6) 得到 0..6 含上界;結果經兩個 RTL 常式轉成 byte 後 STOREVALUE 到 operand 2 指定的位址",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/ecl-shared-cells.md",
     "audit/function-index/dos-overlay-02.md",
     "spec/594-ecl-random-and-indexed-store.md"
    ]
@@ -31457,6 +31533,7 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-02.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md",
     "spec/599-ecl-select-member-and-0c.md"
    ]
   },
@@ -31845,6 +31922,7 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-02.md",
+    "spec/1104-ecl-opcode-ordered-effect-phases.md",
     "spec/590-ecl-control-flow-if-and-branch.md"
    ]
   },
@@ -32326,6 +32404,7 @@
     "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md",
     "spec/558-pc98-ecl-treasure-combat-boundary.md",
     "spec/606-ecl-redraw-dispatch.md"
    ]
@@ -32853,7 +32932,7 @@
     "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/gold-box-ecl-interpreter.md",
-    "spec/559-full-module-re-sweep.md"
+    "spec/1095-ecl-main-loop-and-combat-continuation.md"
    ]
   },
   {
@@ -33278,7 +33357,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-strings.md",
-    "spec/1030-camp-menu.md"
+    "spec/1030-camp-menu.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md"
    ]
   },
   {
@@ -33452,9 +33532,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-05.md",
-    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-05.md",
-    "audit/overlay-init-graph.md"
+    "audit/overlay-init-graph.md",
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
   {
@@ -33477,8 +33557,8 @@
     "audit/function-index/dos-overlay-05.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-26.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-05.md"
+    "audit/function-index/pc98-overlay-05.md",
+    "audit/function-index/pc98-overlay-26.md"
    ]
   },
   {
@@ -33736,6 +33816,7 @@
    "note": "同 DOS overlay-05:01736h，但★PC-98 沒有 DOS 那三處 DS:4FBCh 分支，改成自己重算『戰鬥是不是真的結束』：走隊伍鏈，只要有人的 +196h 不在 {1 Animated, 2 tempgone, 6 Dead, 7 Stoned, 8 Gone} 就把 DS:7F34h(=DOS 4FC7h) 清 0。另多一段 893h:114h(DS:8BF3h) + DS:7F36h:=1。節點大小 3Fh↔67h",
    "citations": [
     "audit/function-strings.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md",
     "spec/558-pc98-ecl-treasure-combat-boundary.md",
     "spec/891-battle-teardown.md"
    ]
@@ -33838,7 +33919,8 @@
    "spec": "docs/spec/823-shop-price-multiplier.md",
    "note": "商店買東西的主迴圈：retf。repeat：選中 := NIL、清單 := DS:0A026h、旗標 := 0；\u003cfar 019Eh:0000h\u003e；DS:78A4h := 1；本模組 0050h(@鍵, @選中, @清單, @旗標)；鍵 \u003c\u003e 42h('B') 且 \u003c\u003e 0Dh(Enter) 就結束。否則依 word(DS:7F09h^[62h]) 算價：1→選中^[62h] div 10h、2→div 8、4→div 4、8→div 2、20h→shl 1、40h→shl 2、80h→shl 3——**10h 那一段與 else 都沒有程式碼，價是未初始化的區域變數（缺陷）**。有 := \u003c00FAh:0057h\u003e(DS:9594h)；價 \u003c= 有 → 本模組 0355h(@失敗, 選中)，失敗 = 0 才 \u003c010Dh:006Bh\u003e(有 − 價)；否則 池 := \u003c010Dh:0075h\u003e(@DS:0A00Ah)，價 \u003c= 池 → 同樣先 0355h 再 \u003c010Dh:0070h\u003e(低字(池 − 價))；都不夠則顯示 'お金が足りません' 並 \u003c014Ah:007Fh\u003e。付款模型與 spec 822 相同，但多一個回滾點：0355h 失敗就不扣錢。spec 823",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md"
    ]
   },
   {
@@ -33869,7 +33951,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `iret`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 22 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `iret`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 22 bytes，已逐條讀完）",
+   "citations": [
+    "audit/ecl-shared-cells.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33926,11 +34011,11 @@
    "note": "與 dos overlay-07:0000h 助憶碼序列完全相同（14 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_EB3+3`、`call far ptr unk_17E7`、`call loc_14AD`、`call far ptr sub_177A`、`call loc_1049+1`、`call loc_15D0+1`（body 共 52 bytes，已逐條讀完） ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-handler-operand-audit.md",
+    "audit/ecl-opcode-effect-phases.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/dos-overlay-25.md",
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/dos-overlay-25.md"
    ]
   },
   {
@@ -34063,6 +34148,7 @@
    "note": "MAXRANGE(dir,x,y):bank0^[1CCh]=0(非地城)時直接回 2 並把 bank1^[582h] 也設為 2;否則以 far 017C:0034 逐格檢查可通行,最多 2 格(上限寫死)。方向編碼是 0/2/4/6 間隔 2——0 與 6 動 y、2 與 4 動 x",
    "citations": [
     "audit/function-index/dos-overlay-07.md",
+    "knowledge/coab-remake-todo.md",
     "spec/615-ecl2-findguy-maxrange.md"
    ]
   },
@@ -34196,9 +34282,9 @@
     "audit/embedded-strings.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/1040-checkspecials-dos.md",
+    "spec/1098-ecl-read-path-and-character-projection.md",
     "spec/565-ecl-memory-read-path-and-asymmetry.md",
-    "spec/567-ecl-packed-text-and-bank1-field-map.md",
-    "spec/624-ecl-special-address-space.md"
+    "spec/567-ecl-packed-text-and-bank1-field-map.md"
    ]
   },
   {
@@ -34882,7 +34968,8 @@
    "citations": [
     "audit/function-index/dos-overlay-32.md",
     "audit/function-index/pc98-overlay-08.md",
-    "audit/function-index/pc98-overlay-32.md"
+    "audit/function-index/pc98-overlay-32.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md"
    ]
   },
   {
@@ -35999,14 +36086,14 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-   "note": "牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)。更正：本支的宣告順序是 (x, y, 方向)，先前寫成推入順序",
+   "note": "牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)。★ 宣告順序是 (x, y, 方向)；Pascal 由左至右壓棧，所以推入順序看起來相反，別把推入順序當宣告順序",
    "citations": [
+    "audit/ecl-shared-cells.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md",
-    "spec/784-cross-platform-pairs-second-batch.md",
-    "spec/898-dungeon-wall-tile-pick.md"
+    "spec/784-cross-platform-pairs-second-batch.md"
    ]
   },
   {
@@ -36556,7 +36643,7 @@
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/1074-global-init-pc98.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -39755,6 +39842,7 @@
    "spec": "docs/spec/795-combat-scene-resources-and-damage-roll.md",
    "note": "傷害擲骰：retf 0Ah，宣告順序 (角色遠指標, 參數4, 參數2, 武器索引 i)。傷 := \u003c1461h+1\u003e(角色^[19Dh+i], 角色^[19Fh+i]) + 有號(角色^[1A1h+i]) 存入 DS:0A02Eh（三個 byte 陣列相距 2，i 只能是 0/1；隨後的 cmp/jnb 讓「夾成 0」那句永遠執行不到，負加值會迴繞）；若 本模組 2915h(參數2, 參數4, 角色) 成立，m := 有號(\u003cfar 1622h\u003e(角色))，倍 := ((有號(+117h)*m + 有號(+10Fh) − 1) div 4) + 2，DS:0A02Eh *= 倍（m=0 時即 AD\u0026D 背刺倍數表）。最後 DS:0A02Fh := 0、\u003c1442h+2\u003e(角色,4)、\u003c1442h+2\u003e(參數2,參數4,5)。spec 795",
    "citations": [
+    "audit/ecl-shared-cells.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/795-combat-scene-resources-and-damage-roll.md"
@@ -42676,6 +42764,7 @@
    "spec": "925",
    "note": "同 DOS overlay-16:01F21h(相似度 0.922)。五個差異區塊全是同一件事：取角色遠指標時多一次 les di, es:[di]——ss:[父bp+0Ah] 存的是指向角色遠指標的遠指標；模板的父層位移 −1C4h → −1ECh。沒有任何邏輯差異",
    "citations": [
+    "spec/1098-ecl-read-path-and-character-projection.md",
     "spec/925-npc-template-floor.md"
    ]
   },
@@ -43213,7 +43302,8 @@
     "audit/function-strings.md",
     "spec/1085-party-menu-pc98.md",
     "spec/1093-character-creation-dos.md",
-    "spec/1094-character-creation-pc98.md"
+    "spec/1094-character-creation-pc98.md",
+    "spec/1101-creation-hit-points.md"
    ]
   },
   {
@@ -43326,10 +43416,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1691+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
-   "citations": [
-    "audit/resident-data-tables.md"
-   ]
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1691+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -45588,8 +45675,8 @@
     "audit/function-index/dos-overlay-20.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-20.md",
-    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-    "spec/790-attack-ally-confirm-and-counter-animation.md"
+    "knowledge/coab-remake-todo.md",
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
    ]
   },
   {
@@ -46860,8 +46947,8 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
-    "audit/resident-data-tables.md",
-    "spec/846-teleport-and-linked-effect-cleanup.md"
+    "spec/846-teleport-and-linked-effect-cleanup.md",
+    "spec/847-dragon-breath.md"
    ]
   },
   {
@@ -49964,7 +50051,6 @@
    "spec": "docs/spec/804-bss-boundary-item-type-table-turn-reset.md",
    "note": "依物品類型累加：retf 10h，宣告順序 (角色, 物品, 記錄, 輸出) 四個遠指標。v := byte[8D90h + 物品^[2Eh]*10h]（物品類型表 DS:8D8Ah 每筆 16 bytes 的 +6），v \u003c= 7Fh（無號）直接離開；v := v and 7Fh；w := byte[8D8Ah + 物品^[2Eh]*10h]（+0 類別碼）。w=1 → 記錄^[1] := 物品^[32h] + v；v=0 且 w=9 → 記錄^[3] 取 物品^[32h] 的最大值；v=0 且 w\u003c\u003e9 → 記錄^[2] 累加 物品^[32h] 並 角色^[186h] 累加 物品^[33h]；v\u003c\u003e0 → 記錄^[4] 取 物品^[32h]+v 的最大值，且 物品^[32h] \u003e 0 與 w=2 時 輸出^ := 1。DS:8D8Ah 落在 BSS，dump 全 FFh，內容是執行時載入的。spec 804",
    "citations": [
-    "audit/resident-data-tables.md",
     "spec/1000-derived-stats-recalc.md",
     "spec/804-bss-boundary-item-type-table-turn-reset.md"
    ]
@@ -51054,6 +51140,7 @@
    "citations": [
     "audit/function-index/dos-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
+    "spec/1095-ecl-main-loop-and-combat-continuation.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
    ]
   },
@@ -52010,7 +52097,7 @@
     "audit/function-index/dos-overlay-28.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/1104-ecl-opcode-ordered-effect-phases.md"
    ]
   },
   {
@@ -52373,6 +52460,8 @@
    "spec": "docs/spec/997-view-panel-draw-and-position-marker.md",
    "note": "視野面板三塊定點貼圖＋位置標記；PC-98 多一層 DS:169Ch 查表，第三參數 16h 是 DOS 0Bh 的兩倍",
    "citations": [
+    "audit/ecl-shared-cells.md",
+    "spec/1098-ecl-read-path-and-character-projection.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
     "spec/687-far-call-flattening-and-stack-leftover.md",
     "spec/997-view-panel-draw-and-position-marker.md"

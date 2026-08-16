@@ -16084,7 +16084,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
-   "note": "畫角色名字(名字是紀錄 +0 起的 Pascal 字串)。顏色:+196h=0 → 0Ch;否則 +197h=1 → 0Eh;其餘 0Bh(0795h 對選中者不走這支,直接用 0Fh)。arg_0 非零時,在 arg_4 + 角色^[0](名字長度位元組)的欄位再畫 CS:18F0h = \"'s\"。⚠ 中文化:英文所有格是用「畫在名字後面」硬接的,中文沒有對應後綴,這條路徑要整段改;⚠ spec 726 更正:欄位偏移用長度位元組**對 Big5 是成立的**(全形字佔 2 位元組也佔 2 欄),先前寫「會少算一半」是錯的;真正的問題只剩 's 這個後綴中文沒有",
+   "note": "畫角色名字(名字是紀錄 +0 起的 Pascal 字串)。顏色:+196h=0 → 0Ch;否則 +197h=1 → 0Eh;其餘 0Bh(0795h 對選中者不走這支,直接用 0Fh)。arg_0 非零時,在 arg_4 + 角色^[0](名字長度位元組)的欄位再畫 CS:18F0h = \"'s\"。⚠ 中文化:英文所有格是用「畫在名字後面」硬接的,中文沒有對應後綴,這條路徑要整段改;⚠ 欄位偏移用長度位元組**對 Big5 是成立的**(全形字佔 2 位元組也佔 2 欄,spec 726);中文化真正的問題只剩 's 這個後綴中文沒有",
    "bounds": "prologue"
   },
   {
@@ -18939,7 +18939,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-   "note": "牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(x, y, 方向)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(x2, y2, 反向)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對。更正：本支的宣告順序是 (x, y, 方向)，先前寫成推入順序"
+   "note": "牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(x, y, 方向)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(x2, y2, 反向)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對。★ 宣告順序是 (x, y, 方向)；Pascal 由左至右壓棧，所以推入順序看起來相反，別把推入順序當宣告順序"
   },
   {
    "platform": "pc98",
@@ -18948,7 +18948,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-   "note": "牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)。更正：本支的宣告順序是 (x, y, 方向)，先前寫成推入順序"
+   "note": "牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)。★ 宣告順序是 (x, y, 方向)；Pascal 由左至右壓棧，所以推入順序看起來相反，別把推入順序當宣告順序"
   },
   {
    "platform": "dos",
