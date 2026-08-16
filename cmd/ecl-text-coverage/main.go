@@ -75,7 +75,7 @@ func main() {
 		Schema: "coab-ecl-text-coverage/1",
 		Limitations: []string{
 			"只統計靜態可達的文字：TraceGraph 跟 GOTO／GOSUB、循序 fallthrough 與 IF 的兩條路（spec 1106），但**不跟** ON GOTO／ON GOSUB 的動態目的地與選單分支——分母只會再往上。",
-			"分母是原作的文字段落數，不是「玩家實際會看到幾段」——同一段可能永遠不會觸發。",
+			"一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。",
 			"『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。",
 		},
 		Summary: summary{ByBlock: map[string]int{}},
@@ -157,16 +157,21 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 	var current *group
 	for _, instruction := range instructions {
 		opcode := instruction.Command.Opcode
-		if opcode != 0x11 && opcode != 0x12 {
-			// 任何其他指令都結束目前這一段：原作的文字框在下一個 PRINTCLEAR
-			// 才會被清掉，但中間夾了別的 opcode 就不是同一次呈現了。
+		if endsTextRun(opcode) {
 			current = nil
+			continue
+		}
+		if opcode != 0x11 && opcode != 0x12 {
+			// 中間夾 SAVE、COMPARE、PICTURE、DELAY、IF 這類指令不會斷開一頁文字。
 			continue
 		}
 		text := instructionText(instruction)
 		if text == "" {
 			continue
 		}
+		// `12h PRINTCLEAR` 會把文字游標重設到左上（spec 1104：多寫 65A0h／65A1h），
+		// 也就是**開新的一頁**；`11h PRINT` 接在目前這一頁後面。所以一段 ＝ 一頁，
+		// 玩家看到的就是一頁。
 		if opcode == 0x12 || current == nil {
 			groups = append(groups, group{
 				Member: member, Block: blockID,
@@ -178,6 +183,32 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 		current.Text += " " + text
 	}
 	return groups, nil
+}
+
+// endsTextRun lists the opcodes that make the VM return from a run, which is
+// where the accumulated text is handed to MatchText. Everything else keeps
+// accumulating.
+//
+// 邊界取自 `internal/ecl/runtime.go` 裡會 `return result` 的那些 case：
+// 離開、換 block、戰鬥、寶物、三種選單、字串輸入、選人、終局。
+func endsTextRun(opcode byte) bool {
+	switch opcode {
+	case 0x00, // EXIT
+		0x20, // NEWECL
+		0x24, // COMBAT
+		0x27, // TREASURE
+		0x15, // VERTICAL MENU
+		0x29, // ENCOUNTER MENU
+		0x2B, // HORIZONTAL MENU
+		0x2C, // PARLAY
+		0x10, // INPUT STRING
+		0x0F, // INPUT NUMBER
+		0x39, // WHO
+		0x38: // PROGRAM
+		return true
+	default:
+		return false
+	}
 }
 
 func instructionText(instruction ecl.Instruction) string {

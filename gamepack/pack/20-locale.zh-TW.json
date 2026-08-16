@@ -607,7 +607,19 @@
    "combatant.moander-cultist": "摩安德教徒",
    "combatant.mogion": "摩貢",
    "combatant.shambling-mound": "蔓生怪",
-   "combatant.bit-of-moander": "摩安德殘軀"
+   "combatant.bit-of-moander": "摩安德殘軀",
+   "pit.backdoor-entry": "你們從坑底的後門進入。四周瀰漫著不祥的寂靜。",
+   "pit.alias-leaves": "「我們得走了。」愛麗雅絲感謝眾人的相助，祝你們好運，隨即離去。",
+   "pit.dragonbait-follows": "空氣中滿是忍冬的氣味。龍餌靜靜地逐一看過每位隊員，鞠了一躬，然後跟上愛麗雅絲。",
+   "pit.dragonbait-carries-alias": "龍餌抱起愛麗雅絲的遺體，悲傷地看了你們一眼，朝希爾斯法的方向奔去。",
+   "pit.vegepygmies-attack": "菌人向你們發動攻擊！",
+   "pit.vegepygmies-retreat": "你們遇上一群菌人。牠們一邊後退，一邊指著你們身後的那扇門。",
+   "pit.shambling-mounds-attack": "蔓生怪向你們發動攻擊！",
+   "pit.shambling-mounds-push": "幾隻蔓生怪正試圖把隊伍推回走廊。",
+   "pit.giant-slugs": "巨蛞蝓正橫越你們的去路。",
+   "pit.fanatics-attack": "摩安德的狂信者發動攻擊！",
+   "pit.mogion-image-summons": "一道幻影浮現在你們面前。她說：「不行喔，我的寵物們。現在還不能走。你們可是我們神聖儀式的貴賓——到下層來見我吧。」",
+   "pit.pushed-back": "一股強大的力量把隊伍推回房間裡。"
   }
  },
  "events": []

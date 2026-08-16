@@ -2,7 +2,7 @@
  "schema": "coab-ecl-text-coverage/1",
  "limitations": [
   "只統計靜態可達的文字：TraceGraph 跟 GOTO／GOSUB、循序 fallthrough 與 IF 的兩條路（spec 1106），但**不跟** ON GOTO／ON GOSUB 的動態目的地與選單分支——分母只會再往上。",
-  "分母是原作的文字段落數，不是「玩家實際會看到幾段」——同一段可能永遠不會觸發。",
+  "一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。",
   "『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。"
  ],
  "groups": [
@@ -16,31 +16,14 @@
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x01C4",
-   "text": "YOU ARE AT THE STANDING STONES."
-  },
-  {
-   "member": "ECL1.DAX",
-   "block": "0x50",
-   "offset": "0x01EA",
-   "text": "A GREY ROBED MAN SITS AGAINST A STONE, HIS FACE COVERED IN SHADOW."
+   "text": "YOU ARE AT THE STANDING STONES. A GREY ROBED MAN SITS AGAINST A STONE, HIS FACE COVERED IN SHADOW.",
+   "rule_id": "standing-stone.grey-man"
   },
   {
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x0226",
-   "text": "HE SPEAKS, '"
-  },
-  {
-   "member": "ECL1.DAX",
-   "block": "0x50",
-   "offset": "0x026C",
-   "text": "YOU PRESENTLY SERVE MASTER"
-  },
-  {
-   "member": "ECL1.DAX",
-   "block": "0x50",
-   "offset": "0x0296",
-   "text": "S. RETURN TO ME WHEN YOU HAVE SLAIN MORE. THEN YOU SHALL ACHIEVE YOUR DESTINY.'"
+   "text": "HE SPEAKS, ' YOU PRESENTLY SERVE MASTER S. RETURN TO ME WHEN YOU HAVE SLAIN MORE. THEN YOU SHALL ACHIEVE YOUR DESTINY.'"
   },
   {
    "member": "ECL1.DAX",
@@ -53,13 +36,7 @@
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1A30",
-   "text": "ONE MORNING, THE PARTY SPOTS A NOTE PINNED TO 'S CHEST. YOU READ IT,"
-  },
-  {
-   "member": "ECL1.DAX",
-   "block": "0x50",
-   "offset": "0x1A80",
-   "text": "."
+   "text": "ONE MORNING, THE PARTY SPOTS A NOTE PINNED TO 'S CHEST. YOU READ IT, ."
   },
   {
    "member": "ECL1.DAX",
@@ -95,13 +72,7 @@
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1BC5",
-   "text": "AND YOU RECORD IT IN JOURNAL ENTRY"
-  },
-  {
-   "member": "ECL1.DAX",
-   "block": "0x50",
-   "offset": "0x1BE4",
-   "text": "WHAT DO YOU DO?"
+   "text": "AND YOU RECORD IT IN JOURNAL ENTRY WHAT DO YOU DO?"
   },
   {
    "member": "ECL1.DAX",
@@ -181,25 +152,13 @@
    "member": "ECL2.DAX",
    "block": "0x01",
    "offset": "0x0193",
-   "text": "THE DOOR IS LOCKED."
-  },
-  {
-   "member": "ECL2.DAX",
-   "block": "0x01",
-   "offset": "0x01B1",
-   "text": "YOUR ATTEMPT TO ENTER HAS ATTRACTED A GROUP OF ROYAL GUARDS."
+   "text": "THE DOOR IS LOCKED. YOUR ATTEMPT TO ENTER HAS ATTRACTED A GROUP OF ROYAL GUARDS."
   },
   {
    "member": "ECL2.DAX",
    "block": "0x01",
    "offset": "0x024E",
-   "text": "A PATROL ARRIVES."
-  },
-  {
-   "member": "ECL2.DAX",
-   "block": "0x01",
-   "offset": "0x0263",
-   "text": "ROYAL GUARDS TELL YOU TO MOVE ALONG."
+   "text": "A PATROL ARRIVES. ROYAL GUARDS TELL YOU TO MOVE ALONG."
   },
   {
    "member": "ECL2.DAX",
@@ -276,15 +235,8 @@
    "member": "ECL2.DAX",
    "block": "0x02",
    "offset": "0x023A",
-   "text": "'OKAY, LET'S CONTINUE. THE FIRE KNIVES HAVE THE KING'S DAUGHTER IN THE HIDEOUT, HOPING TO LURE HIM INTO A TRAP. I CANNOT DIRECTLY INTERVENE, BUT I CAN OFFER INFORMATION.'",
+   "text": "'OKAY, LET'S CONTINUE. THE FIRE KNIVES HAVE THE KING'S DAUGHTER IN THE HIDEOUT, HOPING TO LURE HIM INTO A TRAP. I CANNOT DIRECTLY INTERVENE, BUT I CAN OFFER INFORMATION.' SUDDENLY, THE SIDE DOOR EXPLODES INWARD WITH A DEAFENING CRASH.",
    "rule_id": "tilverton.guildmaster-briefing"
-  },
-  {
-   "member": "ECL2.DAX",
-   "block": "0x02",
-   "offset": "0x02CB",
-   "text": "SUDDENLY, THE SIDE DOOR EXPLODES INWARD WITH A DEAFENING CRASH.",
-   "rule_id": "tilverton.guild-breach"
   },
   {
    "member": "ECL2.DAX",
@@ -350,13 +302,8 @@
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x0082",
-   "text": "SMOKE RISES FROM BEHIND THE RUINED WALLS OF YULASH. THE SOUND OF BATTLE RINGS OUT FROM INSIDE"
-  },
-  {
-   "member": "ECL3.DAX",
-   "block": "0x10",
-   "offset": "0x00D3",
-   "text": "HOW DO YOU ENTER?"
+   "text": "SMOKE RISES FROM BEHIND THE RUINED WALLS OF YULASH. THE SOUND OF BATTLE RINGS OUT FROM INSIDE HOW DO YOU ENTER?",
+   "rule_id": "yulash.entry"
   },
   {
    "member": "ECL3.DAX",
@@ -380,13 +327,7 @@
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x0910",
-   "text": "RED PLUME GUARDS RUSH AT YOU YELLING,"
-  },
-  {
-   "member": "ECL3.DAX",
-   "block": "0x10",
-   "offset": "0x0930",
-   "text": "'THAT'S THEM!  THEY'RE THE SCUM WHO KILLED THE COMMANDER!'"
+   "text": "RED PLUME GUARDS RUSH AT YOU YELLING, 'THAT'S THEM!  THEY'RE THE SCUM WHO KILLED THE COMMANDER!'"
   },
   {
    "member": "ECL3.DAX",
@@ -423,25 +364,15 @@
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x00CA",
-   "text": "THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC TRIUMPH. HE HOWLS,"
-  },
-  {
-   "member": "ECL3.DAX",
-   "block": "0x11",
-   "offset": "0x0100",
-   "text": "'THE CHOSEN ONES!'"
+   "text": "THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC TRIUMPH. HE HOWLS, 'THE CHOSEN ONES!'",
+   "rule_id": "pit.opening-chosen"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x0115",
-   "text": "THE CLERIC SLAMS HIS FIST AGAINST A PROTRUDING ROCK."
-  },
-  {
-   "member": "ECL3.DAX",
-   "block": "0x11",
-   "offset": "0x0143",
-   "text": "THE CEILING BEHIND YOU COLLAPSES. YOU ARE TRAPPED IN THE PIT OF MOANDER."
+   "text": "THE CLERIC SLAMS HIS FIST AGAINST A PROTRUDING ROCK. THE CEILING BEHIND YOU COLLAPSES. YOU ARE TRAPPED IN THE PIT OF MOANDER.",
+   "rule_id": "pit.trapped"
   },
   {
    "member": "ECL3.DAX",
@@ -461,37 +392,29 @@
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x0289",
-   "text": "YOU HAVE ENTERED THROUGH THE BACKDOOR OF THE PIT."
-  },
-  {
-   "member": "ECL3.DAX",
-   "block": "0x11",
-   "offset": "0x02B5",
-   "text": "AN OMINOUS SILENCE PERVADES THE ATMOSPHERE."
+   "text": "YOU HAVE ENTERED THROUGH THE BACKDOOR OF THE PIT. AN OMINOUS SILENCE PERVADES THE ATMOSPHERE.",
+   "rule_id": "pit.backdoor-entry"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x03B7",
-   "text": "WE MUST LEAVE YOU NOW."
-  },
-  {
-   "member": "ECL3.DAX",
-   "block": "0x11",
-   "offset": "0x03CD",
-   "text": "ALIAS THANKS YOU FOR YOUR HELP.  SHE WISHES YOU LUCK AND LEAVES."
+   "text": "WE MUST LEAVE YOU NOW. ALIAS THANKS YOU FOR YOUR HELP.  SHE WISHES YOU LUCK AND LEAVES.",
+   "rule_id": "pit.alias-leaves"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x0425",
-   "text": "THE SMELL OF HONEYSUCKLE FILLS THE AIR. DRAGONBAIT QUIETLY LOOKS AT EACH CHARACTER IN TURN, BOWS AND FOLLOWS ALIAS."
+   "text": "THE SMELL OF HONEYSUCKLE FILLS THE AIR. DRAGONBAIT QUIETLY LOOKS AT EACH CHARACTER IN TURN, BOWS AND FOLLOWS ALIAS.",
+   "rule_id": "pit.dragonbait-follows"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x0492",
-   "text": "DRAGONBAIT PICKS UP THE BODY OF ALIAS, TURNS TO YOU IN SORROW, AND STARTS RUNNING TOWARDS HILLSFAR."
+   "text": "DRAGONBAIT PICKS UP THE BODY OF ALIAS, TURNS TO YOU IN SORROW, AND STARTS RUNNING TOWARDS HILLSFAR.",
+   "rule_id": "pit.dragonbait-carries-alias"
   },
   {
    "member": "ECL3.DAX",
@@ -504,37 +427,43 @@
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x0E65",
-   "text": "YOU ARE ATTACKED BY VEGEPYGMIES!"
+   "text": "YOU ARE ATTACKED BY VEGEPYGMIES!",
+   "rule_id": "pit.vegepygmies-attack"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x0EC7",
-   "text": "YOU COME UPON SOME VEGEPYGMIES. THEY START TO BACK AWAY, POINTING TO THE DOOR BEHIND YOU."
+   "text": "YOU COME UPON SOME VEGEPYGMIES. THEY START TO BACK AWAY, POINTING TO THE DOOR BEHIND YOU.",
+   "rule_id": "pit.vegepygmies-retreat"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x0FB5",
-   "text": "YOU ARE ATTACKED BY SHAMBLING MOUNDS!"
+   "text": "YOU ARE ATTACKED BY SHAMBLING MOUNDS!",
+   "rule_id": "pit.shambling-mounds-attack"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x1004",
-   "text": "SOME SHAMBLING MOUNDS ARE ATTEMPTING TO PUSH YOU BACK INTO THE CORRIDOR."
+   "text": "SOME SHAMBLING MOUNDS ARE ATTEMPTING TO PUSH YOU BACK INTO THE CORRIDOR.",
+   "rule_id": "pit.shambling-mounds-push"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x10BA",
-   "text": "GIANT SLUGS ARE CROSSING YOUR PATH."
+   "text": "GIANT SLUGS ARE CROSSING YOUR PATH.",
+   "rule_id": "pit.giant-slugs"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x1161",
-   "text": "MOANDER FANATICS ATTACK!"
+   "text": "MOANDER FANATICS ATTACK!",
+   "rule_id": "pit.fanatics-attack"
   },
   {
    "member": "ECL3.DAX",
@@ -546,13 +475,15 @@
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x16F0",
-   "text": "AN IMAGE APPEARS BEFORE YOU. SHE SAYS, 'OH NO, MY PETS.  YOU MUST NOT LEAVE NOW.  YOU ARE THE GUESTS OF HONOR AT OUR SACRED RITES.  COME TO ME IN THE LOWER LEVEL.'"
+   "text": "AN IMAGE APPEARS BEFORE YOU. SHE SAYS, 'OH NO, MY PETS.  YOU MUST NOT LEAVE NOW.  YOU ARE THE GUESTS OF HONOR AT OUR SACRED RITES.  COME TO ME IN THE LOWER LEVEL.'",
+   "rule_id": "pit.mogion-image-summons"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x177C",
-   "text": "A STRONG FORCE PUSHES YOU BACK INTO THE ROOM."
+   "text": "A STRONG FORCE PUSHES YOU BACK INTO THE ROOM.",
+   "rule_id": "pit.pushed-back"
   },
   {
    "member": "ECL3.DAX",
@@ -565,13 +496,15 @@
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x0350",
-   "text": "YOU ARE ATTACKED BY VEGEPYGMIES!"
+   "text": "YOU ARE ATTACKED BY VEGEPYGMIES!",
+   "rule_id": "pit.vegepygmies-attack"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x04E3",
-   "text": "YOU ARE ATTACKED BY SHAMBLING MOUNDS!"
+   "text": "YOU ARE ATTACKED BY SHAMBLING MOUNDS!",
+   "rule_id": "pit.shambling-mounds-attack"
   },
   {
    "member": "ECL3.DAX",
@@ -583,7 +516,8 @@
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x06D2",
-   "text": "MOANDER FANATICS ATTACK!"
+   "text": "MOANDER FANATICS ATTACK!",
+   "rule_id": "pit.fanatics-attack"
   },
   {
    "member": "ECL3.DAX",
@@ -601,25 +535,15 @@
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x11A1",
-   "text": "YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY. SHE STANDS BEFORE AN ALTAR."
-  },
-  {
-   "member": "ECL3.DAX",
-   "block": "0x12",
-   "offset": "0x11E0",
-   "text": "YOU ARE SURROUNDED BY CULTISTS CHANTING IN A LOW DRONE."
+   "text": "YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY. SHE STANDS BEFORE AN ALTAR. YOU ARE SURROUNDED BY CULTISTS CHANTING IN A LOW DRONE.",
+   "rule_id": "pit.mogion-altar"
   },
   {
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x1235",
-   "text": "ALIAS MUTTERS, 'THAT'S THE PRIESTESS OF MOANDER.'"
-  },
-  {
-   "member": "ECL3.DAX",
-   "block": "0x12",
-   "offset": "0x1262",
-   "text": "SHE TURNS HER HEAD AND SPITS ON THE GROUND."
+   "text": "ALIAS MUTTERS, 'THAT'S THE PRIESTESS OF MOANDER.' SHE TURNS HER HEAD AND SPITS ON THE GROUND.",
+   "rule_id": "pit.alias-identifies-mogion"
   },
   {
    "member": "ECL3.DAX",
@@ -656,25 +580,15 @@
    "member": "ECL4.DAX",
    "block": "0x20",
    "offset": "0x00D0",
-   "text": "'STOP!  GET OVER HERE!  WE HAVE SOME QUESTIONS FOR YOU!'"
-  },
-  {
-   "member": "ECL4.DAX",
-   "block": "0x20",
-   "offset": "0x0102",
-   "text": "THE GUARDS TAKE YOU ASIDE FOR QUESTIONING. YOU RECORD THIS AS JOURNAL ENTRY 32."
+   "text": "'STOP!  GET OVER HERE!  WE HAVE SOME QUESTIONS FOR YOU!' THE GUARDS TAKE YOU ASIDE FOR QUESTIONING. YOU RECORD THIS AS JOURNAL ENTRY 32.",
+   "rule_id": "zhentil.guards_question"
   },
   {
    "member": "ECL4.DAX",
    "block": "0x20",
    "offset": "0x0148",
-   "text": "AS YOU LEAVE, YOU OVERHEAR A GUARD SAY, 'JUST AS THE LITTLE THIEF SAID.'"
-  },
-  {
-   "member": "ECL4.DAX",
-   "block": "0x20",
-   "offset": "0x0186",
-   "text": "THE COMMANDER REPLIES, 'DON'T WORRY.  THEY'LL GET THEIRS INSIDE.'"
+   "text": "AS YOU LEAVE, YOU OVERHEAR A GUARD SAY, 'JUST AS THE LITTLE THIEF SAID.' THE COMMANDER REPLIES, 'DON'T WORRY.  THEY'LL GET THEIRS INSIDE.'",
+   "rule_id": "zhentil.guards_warning"
   },
   {
    "member": "ECL4.DAX",
@@ -753,13 +667,8 @@
    "member": "ECL4.DAX",
    "block": "0x22",
    "offset": "0x0153",
-   "text": "YOU SEE BEFORE YOU, DEXAM THE BEHOLDER!"
-  },
-  {
-   "member": "ECL4.DAX",
-   "block": "0x22",
-   "offset": "0x0175",
-   "text": "THE HOODED WOMAN WALKS TO A MILLING GROUP OF ARMORED MINOTAURS. THEY IMMEDIATELY SNAP TO ATTENTION."
+   "text": "YOU SEE BEFORE YOU, DEXAM THE BEHOLDER! THE HOODED WOMAN WALKS TO A MILLING GROUP OF ARMORED MINOTAURS. THEY IMMEDIATELY SNAP TO ATTENTION.",
+   "rule_id": "dexam.arrival"
   },
   {
    "member": "ECL4.DAX",
@@ -772,13 +681,8 @@
    "member": "ECL4.DAX",
    "block": "0x22",
    "offset": "0x01FF",
-   "text": "DIMSWART THE SAGE WHISPERS, 'LOOK ON THE ALTAR. THAT'S THE AMULET OF LATHANDER.'"
-  },
-  {
-   "member": "ECL4.DAX",
-   "block": "0x22",
-   "offset": "0x0243",
-   "text": "WHAT DO YOU DO?"
+   "text": "DIMSWART THE SAGE WHISPERS, 'LOOK ON THE ALTAR. THAT'S THE AMULET OF LATHANDER.' WHAT DO YOU DO?",
+   "rule_id": "dexam.amulet_choice"
   },
   {
    "member": "ECL4.DAX",
@@ -804,13 +708,8 @@
    "member": "ECL4.DAX",
    "block": "0x22",
    "offset": "0x1362",
-   "text": "'DIMSWART, YOU COME WITH ME. A MAN FROM SHADOWDALE HAS SOME QUESTIONS FOR YOU.'"
-  },
-  {
-   "member": "ECL4.DAX",
-   "block": "0x22",
-   "offset": "0x13A6",
-   "text": "OLIVE AND DIMSWART LEAVE."
+   "text": "'DIMSWART, YOU COME WITH ME. A MAN FROM SHADOWDALE HAS SOME QUESTIONS FOR YOU.' OLIVE AND DIMSWART LEAVE.",
+   "rule_id": "dexam.departure.dimswart"
   },
   {
    "member": "ECL4.DAX",
@@ -842,19 +741,7 @@
    "member": "ECL4.DAX",
    "block": "0x23",
    "offset": "0x0130",
-   "text": "OYEZ, OYEZ.  THE COURT OF ZHENTIL IS NOW IN SESSION."
-  },
-  {
-   "member": "ECL4.DAX",
-   "block": "0x23",
-   "offset": "0x015B",
-   "text": "YOU ARE ON TRIAL FOR MALICIOUS CONDUCT AGAINST THE STATE."
-  },
-  {
-   "member": "ECL4.DAX",
-   "block": "0x23",
-   "offset": "0x018A",
-   "text": "HOW DO YOU PLEA?"
+   "text": "OYEZ, OYEZ.  THE COURT OF ZHENTIL IS NOW IN SESSION. YOU ARE ON TRIAL FOR MALICIOUS CONDUCT AGAINST THE STATE. HOW DO YOU PLEA?"
   },
   {
    "member": "ECL4.DAX",
@@ -1097,25 +984,13 @@
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x091F",
-   "text": "THE STAIRS LEAD"
-  },
-  {
-   "member": "ECL5.DAX",
-   "block": "0x33",
-   "offset": "0x0942",
-   "text": "HERE. DO YOU WANT TO TAKE THEM?"
+   "text": "THE STAIRS LEAD HERE. DO YOU WANT TO TAKE THEM?"
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x09B7",
-   "text": "UP"
-  },
-  {
-   "member": "ECL5.DAX",
-   "block": "0x33",
-   "offset": "0x09BD",
-   "text": "DOWN"
+   "text": "UP DOWN"
   },
   {
    "member": "ECL5.DAX",
@@ -1314,13 +1189,8 @@
    "member": "ECL6.DAX",
    "block": "0x43",
    "offset": "0x064A",
-   "text": "'HAND YOUR TOYS OVER TO MY PRIEST.'"
-  },
-  {
-   "member": "ECL6.DAX",
-   "block": "0x43",
-   "offset": "0x0677",
-   "text": "THE PARTY HANDS OVER THE THREE ARTIFACTS, THOUGH THEY RESIST WITH ALL THEIR MIGHT."
+   "text": "'HAND YOUR TOYS OVER TO MY PRIEST.' THE PARTY HANDS OVER THE THREE ARTIFACTS, THOUGH THEY RESIST WITH ALL THEIR MIGHT.",
+   "rule_id": "myth-drannor.inner.ritual.hand-over"
   },
   {
    "member": "ECL6.DAX",
@@ -1398,31 +1268,31 @@
   }
  ],
  "summary": {
-  "groups": 221,
-  "matched": 64,
-  "unmatched": 157,
+  "groups": 195,
+  "matched": 90,
+  "unmatched": 105,
   "unmatched_by_block": {
-   "ECL1.DAX/0x50": 15,
+   "ECL1.DAX/0x50": 9,
    "ECL1.DAX/0x51": 3,
    "ECL1.DAX/0x52": 7,
-   "ECL2.DAX/0x01": 10,
+   "ECL2.DAX/0x01": 8,
    "ECL2.DAX/0x03": 2,
    "ECL2.DAX/0x04": 1,
-   "ECL3.DAX/0x10": 11,
-   "ECL3.DAX/0x11": 19,
-   "ECL3.DAX/0x12": 12,
+   "ECL3.DAX/0x10": 8,
+   "ECL3.DAX/0x11": 1,
+   "ECL3.DAX/0x12": 5,
    "ECL3.DAX/0x15": 2,
-   "ECL4.DAX/0x20": 5,
+   "ECL4.DAX/0x20": 1,
    "ECL4.DAX/0x21": 1,
-   "ECL4.DAX/0x22": 9,
-   "ECL4.DAX/0x23": 6,
+   "ECL4.DAX/0x22": 3,
+   "ECL4.DAX/0x23": 4,
    "ECL4.DAX/0x25": 12,
    "ECL5.DAX/0x31": 1,
    "ECL5.DAX/0x32": 8,
-   "ECL5.DAX/0x33": 18,
+   "ECL5.DAX/0x33": 16,
    "ECL5.DAX/0x35": 6,
    "ECL6.DAX/0x40": 2,
-   "ECL6.DAX/0x43": 5,
+   "ECL6.DAX/0x43": 3,
    "ECL6.DAX/0x45": 2
   }
  }

@@ -607,7 +607,19 @@
    "combatant.moander-cultist": "Cultist",
    "combatant.mogion": "Mogion",
    "combatant.shambling-mound": "Shambling Mound",
-   "combatant.bit-of-moander": "Bit o' Moander"
+   "combatant.bit-of-moander": "Bit o' Moander",
+   "pit.backdoor-entry": "You have entered the pit through its back door. An ominous silence pervades the air.",
+   "pit.alias-leaves": "'We must leave you now.' Alias thanks you for your help, wishes you luck, and leaves.",
+   "pit.dragonbait-follows": "The smell of honeysuckle fills the air. Dragonbait looks quietly at each character in turn, bows, and follows Alias.",
+   "pit.dragonbait-carries-alias": "Dragonbait picks up the body of Alias, turns to you in sorrow, and starts running towards Hillsfar.",
+   "pit.vegepygmies-attack": "You are attacked by vegepygmies!",
+   "pit.vegepygmies-retreat": "You come upon some vegepygmies. They back away, pointing at the door behind you.",
+   "pit.shambling-mounds-attack": "You are attacked by shambling mounds!",
+   "pit.shambling-mounds-push": "Some shambling mounds are trying to push the party back into the corridor.",
+   "pit.giant-slugs": "Giant slugs are crossing your path.",
+   "pit.fanatics-attack": "Moander's fanatics attack!",
+   "pit.mogion-image-summons": "An image appears before you. She says, 'Oh no, my pets. You must not leave now. You are the guests of honour at our sacred rites. Come to me in the lower level.'",
+   "pit.pushed-back": "A strong force pushes the party back into the room."
   }
  },
  "events": []

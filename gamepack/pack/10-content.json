@@ -3089,6 +3089,98 @@
    "journal_message_ids": [
     "journal.29"
    ]
+  },
+  {
+   "id": "pit.backdoor-entry",
+   "all_contains": [
+    "YOU HAVE ENTERED THROUGH THE BACKDOOR OF THE PIT",
+    "AN OMINOUS SILENCE PERVADES"
+   ],
+   "message_id": "pit.backdoor-entry"
+  },
+  {
+   "id": "pit.alias-leaves",
+   "all_contains": [
+    "WE MUST LEAVE YOU NOW",
+    "ALIAS THANKS YOU FOR YOUR HELP",
+    "SHE WISHES YOU LUCK AND LEAVES"
+   ],
+   "message_id": "pit.alias-leaves"
+  },
+  {
+   "id": "pit.dragonbait-follows",
+   "all_contains": [
+    "THE SMELL OF HONEYSUCKLE FILLS THE AIR",
+    "BOWS AND FOLLOWS ALIAS"
+   ],
+   "message_id": "pit.dragonbait-follows"
+  },
+  {
+   "id": "pit.dragonbait-carries-alias",
+   "all_contains": [
+    "DRAGONBAIT PICKS UP THE BODY OF ALIAS",
+    "STARTS RUNNING TOWARDS HILLSFAR"
+   ],
+   "message_id": "pit.dragonbait-carries-alias"
+  },
+  {
+   "id": "pit.vegepygmies-attack",
+   "all_contains": [
+    "YOU ARE ATTACKED BY VEGEPYGMIES"
+   ],
+   "message_id": "pit.vegepygmies-attack"
+  },
+  {
+   "id": "pit.vegepygmies-retreat",
+   "all_contains": [
+    "YOU COME UPON SOME VEGEPYGMIES",
+    "POINTING TO THE DOOR BEHIND YOU"
+   ],
+   "message_id": "pit.vegepygmies-retreat"
+  },
+  {
+   "id": "pit.shambling-mounds-attack",
+   "all_contains": [
+    "YOU ARE ATTACKED BY SHAMBLING MOUNDS"
+   ],
+   "message_id": "pit.shambling-mounds-attack"
+  },
+  {
+   "id": "pit.shambling-mounds-push",
+   "all_contains": [
+    "SHAMBLING MOUNDS ARE ATTEMPTING TO PUSH YOU BACK INTO THE CORRIDOR"
+   ],
+   "message_id": "pit.shambling-mounds-push"
+  },
+  {
+   "id": "pit.giant-slugs",
+   "all_contains": [
+    "GIANT SLUGS ARE CROSSING YOUR PATH"
+   ],
+   "message_id": "pit.giant-slugs"
+  },
+  {
+   "id": "pit.fanatics-attack",
+   "all_contains": [
+    "MOANDER FANATICS ATTACK"
+   ],
+   "message_id": "pit.fanatics-attack"
+  },
+  {
+   "id": "pit.mogion-image-summons",
+   "all_contains": [
+    "AN IMAGE APPEARS BEFORE YOU",
+    "GUESTS OF HONOR AT OUR SACRED RITES",
+    "COME TO ME IN THE LOWER LEVEL"
+   ],
+   "message_id": "pit.mogion-image-summons"
+  },
+  {
+   "id": "pit.pushed-back",
+   "all_contains": [
+    "A STRONG FORCE PUSHES YOU BACK INTO THE ROOM"
+   ],
+   "message_id": "pit.pushed-back"
   }
  ],
  "option_rules": [

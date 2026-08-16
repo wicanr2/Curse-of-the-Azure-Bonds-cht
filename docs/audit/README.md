@@ -26,6 +26,18 @@ corpus 出現，兩邊由 `VerifyPhaseCoverage` fail-closed 擋住。所以「�
 沒讀」可以直接從表尾的計數讀出來，不必重新推導。逐支反組譯依據見
 [`spec 1104`](../spec/1104-ecl-opcode-ordered-effect-phases.md)。
 
+## ECL 文字覆蓋
+
+[`ecl-text-coverage.md`](ecl-text-coverage.md) 與同名 `.json` 由
+`cmd/ecl-text-coverage` 產生，逐頁列出原作的玩家可見文字與 game pack 的接線
+狀態。**一頁 ＝ 一個 `12h PRINTCLEAR`**（那條指令重設文字游標，就是開新頁；
+spec 1104）。
+
+這份是內容產出（`ENG-01`）的分母：先前只知道 remake 寫了幾條 `text_rules`，
+不知道原作有幾頁，所以看不出還剩多少。每寫一條規則，「未接上」就掉一。
+
+⚠ 分母只會再往上：`ON GOTO`／`ON GOSUB` 的動態目的地與選單分支仍未納入可達性。
+
 ## Go 漢字字串基線
 
 `go-han-literals-baseline.json` 由 `cmd/coab-audit` 使用 Go AST 產生，只掃正式
