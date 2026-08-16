@@ -1455,6 +1455,26 @@
    "message_id": "zhentil.inner_city"
   },
   {
+   "id": "zhentil.purse-note",
+   "all_contains": [
+    "YOU FIND A NOTE TUCKED INTO A SMALL POCKET OF THE"
+   ],
+   "message_id": "zhentil.purse-note",
+   "journal_message_ids": [
+    "journal.21"
+   ]
+  },
+  {
+   "id": "zhentil.arena-rules",
+   "all_contains": [
+    "THE RULES ARE EXPLAINED TO YOU"
+   ],
+   "message_id": "zhentil.arena-rules",
+   "journal_message_ids": [
+    "journal.23"
+   ]
+  },
+  {
    "id": "zhentil.fritz-accusation",
    "all_contains": [
     "YOU KILLED FRITZ",
@@ -2116,6 +2136,24 @@
    "message_id": "lava-tube.cask-heat-retreat"
   },
   {
+   "id": "lava-tube.silk-introduction",
+   "all_contains": [
+    "YOU MAY CALL ME SILK",
+    "STEP FORWARD AND RECEIVE OUR MARK"
+   ],
+   "message_id": "lava-tube.silk-introduction"
+  },
+  {
+   "id": "lava-tube.silk-mark-offer",
+   "all_contains": [
+    "SHE CONTINUES, AND YOU RECORD IT IN JOURNAL ENTRY 44"
+   ],
+   "message_id": "lava-tube.silk-mark-offer",
+   "journal_message_ids": [
+    "journal.44"
+   ]
+  },
+  {
    "id": "area5.depart-akabar",
    "all_contains": [
     "YOUR HELP WAS INVALUABLE TO ME",
@@ -2286,6 +2324,16 @@
     "YOU HAVE BEEN LED IN TO SEE THE RED PLUME COMMANDER"
    ],
    "message_id": "yulash.led-to-commander"
+  },
+  {
+   "id": "yulash.looters-tell",
+   "all_contains": [
+    "THE LOOTERS TELL WHAT THEY KNOW ABOUT THE CITY"
+   ],
+   "message_id": "yulash.looters-tell",
+   "journal_message_ids": [
+    "journal.34"
+   ]
   },
   {
    "id": "yulash.commander-business",
@@ -3018,6 +3066,16 @@
     "YOU QUICKLY HIDE THEIR BODIES"
    ],
    "message_id": "tilverton.sewers-hide-bodies"
+  },
+  {
+   "id": "tilverton.sewers.paper-scrap",
+   "all_contains": [
+    "A PIECE OF PAPER POKES ABOVE THE MUCK"
+   ],
+   "message_id": "tilverton.sewers.paper-scrap",
+   "journal_message_ids": [
+    "journal.41"
+   ]
   },
   {
    "id": "tilverton.sewers-knight-appears",

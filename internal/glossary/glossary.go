@@ -2,7 +2,7 @@
 // exactly one Traditional-Chinese rendering across every string the player can
 // see.
 //
-// 譯名先前散在三份 JSON 裡，沒有任何機制擋住漂移，實測結果是九組同名異譯
+// 譯名散在三份 JSON 裡，沒有任何機制擋住漂移；建表時實測到十三組同名異譯
 // （Bane 貝恩／班恩、Zhentil Keep 散提爾堡／散塔林堡、Flamed One 三種寫法…）。
 // 內容量還會再成長數倍，事後回頭校對比現在建表貴得多。
 //
@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -60,9 +61,19 @@ type scanned struct {
 	value string
 }
 
-// TablePath is the authored table; ScanPaths are every file whose values reach
-// the player in Traditional Chinese.
+// TablePath is the authored table.
 const TablePath = "docs/knowledge/coab-glossary.md"
+
+// exceptionHeading is the table whose rows waive missingRendering for one
+// message. The parser switches on the heading, so renaming it here and in the
+// document must happen together.
+const exceptionHeading = "例外：譯文可以不出現的名字"
+
+// exception waives one (message, term) pair.
+type exception struct {
+	MessageID string
+	Source    string
+}
 
 var scanTargets = []struct {
 	path string
@@ -78,7 +89,7 @@ var scanTargets = []struct {
 // Run parses the table, scans every Traditional-Chinese catalog and returns a
 // fail-closed report.
 func Run(root string) (Report, error) {
-	terms, err := parseTable(filepath.Join(root, TablePath))
+	terms, exceptions, err := parseTable(filepath.Join(root, TablePath))
 	if err != nil {
 		return Report{}, err
 	}
@@ -87,6 +98,16 @@ func Run(root string) (Report, error) {
 		return Report{}, err
 	}
 	items, catalogs, err := scan(root)
+	if err != nil {
+		return Report{}, err
+	}
+	english, err := readNested(filepath.Join(root, "gamepack", "pack", "20-locale.en.json"),
+		[]string{"locales", "en"})
+	if err != nil {
+		return Report{}, err
+	}
+	chinese, err := readNested(filepath.Join(root, "gamepack", "pack", "20-locale.zh-TW.json"),
+		[]string{"locales", "zh-TW"})
 	if err != nil {
 		return Report{}, err
 	}
@@ -99,7 +120,8 @@ func Run(root string) (Report, error) {
 			}
 		}
 	}
-	report.Issues = audit(report.Terms, items)
+	report.Issues = append(audit(report.Terms, items),
+		auditRenderings(report.Terms, english, chinese, exceptions)...)
 	sort.Slice(report.Issues, func(i, j int) bool {
 		if report.Issues[i].Code != report.Issues[j].Code {
 			return report.Issues[i].Code < report.Issues[j].Code
@@ -177,16 +199,18 @@ func audit(terms []Term, items []scanned) []Issue {
 	return issues
 }
 
-// parseTable reads the `| 原文 | 繁中 | 禁用寫法 | 備註 |` rows. The category is
-// the heading the row sits under, so the table never repeats it per row.
-func parseTable(path string) ([]Term, error) {
+// parseTable reads the `| 原文 | 繁中 | 禁用寫法 | 備註 |` rows plus the
+// exception table. The category is the heading the row sits under, so the table
+// never repeats it per row.
+func parseTable(path string) ([]Term, []exception, error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer file.Close()
 
 	var terms []Term
+	var exceptions []exception
 	category := ""
 	scanner := bufio.NewScanner(file)
 	scanner.Buffer(make([]byte, 0, 64*1024), 1024*1024)
@@ -200,16 +224,26 @@ func parseTable(path string) ([]Term, error) {
 			continue
 		}
 		fields := strings.Split(strings.Trim(line, "|"), "|")
-		if len(fields) < 4 {
+		if len(fields) < 3 {
 			continue
 		}
-		source := strings.TrimSpace(fields[0])
-		if !strings.HasPrefix(source, "`") || !strings.HasSuffix(source, "`") {
+		first := strings.TrimSpace(fields[0])
+		if !strings.HasPrefix(first, "`") || !strings.HasSuffix(first, "`") {
 			// 表頭、分隔列與「通用寫法」那張沒有原文欄的表都走這裡。
 			continue
 		}
+		if category == exceptionHeading {
+			exceptions = append(exceptions, exception{
+				MessageID: strings.Trim(first, "`"),
+				Source:    strings.Trim(strings.TrimSpace(fields[1]), "`"),
+			})
+			continue
+		}
+		if len(fields) < 4 {
+			continue
+		}
 		terms = append(terms, Term{
-			Source:    strings.Trim(source, "`"),
+			Source:    strings.Trim(first, "`"),
 			Chinese:   strings.TrimSpace(fields[1]),
 			Category:  category,
 			Forbidden: splitForbidden(fields[2]),
@@ -217,12 +251,65 @@ func parseTable(path string) ([]Term, error) {
 		})
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if len(terms) == 0 {
-		return nil, fmt.Errorf("%s produced no rows; the table format changed", path)
+		return nil, nil, fmt.Errorf("%s produced no rows; the table format changed", path)
 	}
-	return terms, nil
+	return terms, exceptions, nil
+}
+
+// auditRenderings catches the half that a forbidden-string list cannot: the
+// English gloss names a term and the Chinese simply does not carry it.
+//
+// 這一類是**誤譯**而不是變體，字串比對本身看不出來。實測 45 個詞條只有 6 筆
+// 命中，其中 4 筆是真的（Tyranthraxus 寫成泰蘭索斯、Fire Knives 寫成火焰匕首…），
+// 訊噪比夠高才把它做成閘；剩下兩筆合理的省略寫進例外表，而不是放寬規則。
+func auditRenderings(terms []Term, english, chinese map[string]string, exceptions []exception) []Issue {
+	waived := map[exception]bool{}
+	used := map[exception]bool{}
+	for _, item := range exceptions {
+		waived[item] = true
+	}
+	var issues []Issue
+	for _, term := range terms {
+		if term.Imported {
+			// 怪物名來自 MON record 的原始字串，英文釋義不一定會提到它。
+			continue
+		}
+		// 大小寫敏感是刻意的：英文釋義裡專名一律大寫開頭，普通名詞不是。
+		// `Silk` 若不分大小寫，會撞上巫師塔臥房的 `red silk tapestries`——
+		// 那是誤報，而把誤報寫進例外表會讓例外表失去意義。代價是漏檢，不是誤報。
+		pattern, err := regexp.Compile(`(?:^|[^A-Za-z])` + regexp.QuoteMeta(term.Source) + `(?:[^A-Za-z]|$)`)
+		if err != nil {
+			issues = append(issues, Issue{Code: "bad_term", Term: term.Source, Detail: err.Error()})
+			continue
+		}
+		for key, value := range english {
+			if !pattern.MatchString(value) {
+				continue
+			}
+			translated, ok := chinese[key]
+			if !ok || strings.Contains(translated, term.Chinese) {
+				continue
+			}
+			item := exception{MessageID: key, Source: term.Source}
+			if waived[item] {
+				used[item] = true
+				continue
+			}
+			issues = append(issues, Issue{Code: "missing_rendering", Term: term.Source,
+				Detail: fmt.Sprintf("%s 的英文釋義提到 %s，繁中卻沒有 %q",
+					key, term.Source, term.Chinese)})
+		}
+	}
+	for item := range waived {
+		if !used[item] {
+			issues = append(issues, Issue{Code: "stale_exception", Term: item.Source,
+				Detail: fmt.Sprintf("例外 %s／%s 已經不成立，從表裡刪掉", item.MessageID, item.Source)})
+		}
+	}
+	return issues
 }
 
 func splitForbidden(field string) []string {

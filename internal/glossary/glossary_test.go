@@ -25,7 +25,7 @@ func TestGlossaryHasNoDrift(t *testing.T) {
 // 表本身也要能被稽核：每個詞條都要有原文、繁中與類別，禁用寫法不可以是另一個
 // 詞條譯名的一部分（那種規則永遠無法滿足，而且會在無關的字串上誤報）。
 func TestGlossaryTableIsWellFormed(t *testing.T) {
-	terms, err := parseTable(filepath.Join(repoRoot, TablePath))
+	terms, _, err := parseTable(filepath.Join(repoRoot, TablePath))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -3,7 +3,7 @@
  "sources": [
   {
    "path": "gamepack/pack/20-locale.zh-TW.json",
-   "count": 645
+   "count": 656
   },
   {
    "path": "assets/locale/zh-TW.json",
@@ -19,8 +19,11 @@
    "source": "Tyranthraxus",
    "chinese": "提朗瑟克斯",
    "category": "人物",
+   "forbidden": [
+    "泰蘭索斯"
+   ],
    "note": "稱號見下一列",
-   "uses": 15
+   "uses": 16
   },
   {
    "source": "Flamed One",
@@ -41,7 +44,7 @@
     "德拉坎卓斯"
    ],
    "note": "塞爾紅袍法師",
-   "uses": 15
+   "uses": 16
   },
   {
    "source": "Fzoul Chembryl",
@@ -148,6 +151,41 @@
    "uses": 3
   },
   {
+   "source": "Silk",
+   "chinese": "絲綢",
+   "category": "人物",
+   "note": "熔岩洞的黑暗精靈首領，自稱的化名",
+   "uses": 2
+  },
+  {
+   "source": "Myrixelets",
+   "chinese": "米里塞勒特斯",
+   "category": "人物",
+   "note": "手札 21 那封家書的署名",
+   "uses": 1
+  },
+  {
+   "source": "Sis",
+   "chinese": "西絲",
+   "category": "人物",
+   "note": "米里塞勒特斯家中的人",
+   "uses": 1
+  },
+  {
+   "source": "Kith",
+   "chinese": "姬絲",
+   "category": "人物",
+   "note": "手札 44 失蹤的天鵝少女",
+   "uses": 1
+  },
+  {
+   "source": "Belinda",
+   "chinese": "貝琳達",
+   "category": "人物",
+   "note": "同上",
+   "uses": 1
+  },
+  {
    "source": "Imperceptor",
    "chinese": "總督察長",
    "category": "人物",
@@ -162,7 +200,7 @@
     "貝恩"
    ],
    "note": "`Banite` 併入本詞條",
-   "uses": 6
+   "uses": 7
   },
   {
    "source": "Moander",
@@ -180,8 +218,11 @@
    "source": "Fire Knives",
    "chinese": "火刀",
    "category": "組織",
+   "forbidden": [
+    "火焰匕首"
+   ],
    "note": "單複數同譯",
-   "uses": 25
+   "uses": 27
   },
   {
    "source": "Zhentarim",
@@ -195,11 +236,27 @@
    "chinese": "黑網",
    "category": "組織",
    "note": "散塔林會的別名，只在原文用別名時使用",
-   "uses": 1
+   "uses": 2
+  },
+  {
+   "source": "Red Plume",
+   "chinese": "紅羽衛",
+   "category": "組織",
+   "forbidden": [
+    "紅羽戰士"
+   ],
+   "note": "希爾斯法軍隊；尤拉什圍城的一方",
+   "uses": 11
   },
   {
    "source": "Red Wizards of Thay",
    "chinese": "塞爾紅袍法師",
+   "category": "組織",
+   "uses": 1
+  },
+  {
+   "source": "Swanmays",
+   "chinese": "天鵝少女團",
    "category": "組織",
    "uses": 1
   },
@@ -217,7 +274,7 @@
     "散塔林堡"
    ],
    "note": "城；與組織「散塔林會」是兩回事",
-   "uses": 17
+   "uses": 18
   },
   {
    "source": "Yulash",
@@ -229,7 +286,7 @@
    "source": "Myth Drannor",
    "chinese": "迷斯卓諾",
    "category": "地名",
-   "uses": 9
+   "uses": 10
   },
   {
    "source": "Shadowdale",
@@ -266,7 +323,7 @@
    "chinese": "哈普",
    "category": "地名",
    "note": "世界地圖的目的地名",
-   "uses": 9
+   "uses": 10
   },
   {
    "source": "Haptooth",
@@ -292,6 +349,12 @@
    "chinese": "立石群",
    "category": "地名",
    "uses": 3
+  },
+  {
+   "source": "Great Glacier",
+   "chinese": "大冰川",
+   "category": "地名",
+   "uses": 1
   },
   {
    "source": "Helm of Dragons",
@@ -324,8 +387,33 @@
    "source": "azure bonds",
    "chinese": "枷印",
    "category": "神器與關鍵物品",
-   "note": "完整敘述時作「蔚藍枷」",
-   "uses": 42
+   "forbidden": [
+    "蔚藍枷",
+    "青色印記"
+   ],
+   "note": "需要完整名稱時作「青色枷」，沿用原中文版譯名（《青色枷的詛咒》）",
+   "uses": 44
+  },
+  {
+   "source": "Otyugh",
+   "chinese": "奧提尤格",
+   "category": "敘述中出現的怪物",
+   "note": "世界地圖遭遇與手札 21",
+   "uses": 2
+  },
+  {
+   "source": "Thri-Kreen",
+   "chinese": "斯瑞克林",
+   "category": "敘述中出現的怪物",
+   "note": "手札 44",
+   "uses": 1
+  },
+  {
+   "source": "phase spider",
+   "chinese": "相位蜘蛛",
+   "category": "敘述中出現的怪物",
+   "note": "手札 44",
+   "uses": 1
   },
   {
    "source": "HIPPOGRIFF",
@@ -339,14 +427,14 @@
    "chinese": "戰士",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 29
+   "uses": 25
   },
   {
    "source": "BLACK DRAGON",
    "chinese": "黑龍",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 11
+   "uses": 13
   },
   {
    "source": "DK ELF FIGHTER",

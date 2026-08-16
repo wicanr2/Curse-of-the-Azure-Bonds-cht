@@ -1391,3 +1391,70 @@ func TestWildernessEncountersAreGamePackDriven(t *testing.T) {
 		}
 	}
 }
+
+// 五則新手札的解鎖點。原作在這些頁面明寫「YOU RECORD ... JOURNAL ENTRY N」，
+// 靜態清冊走不到它們（`ON GOTO` 的動態目的地），所以覆蓋報告上看不到——
+// 這一支用線性掃描取得的實機字串序列直接驗，不依賴那份報告。
+func TestJournalProducersUnlockTheirEntries(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id      string
+		texts   []string
+		journal string
+	}{
+		{"tilverton.sewers.paper-scrap", []string{
+			"A PIECE OF PAPER POKES ABOVE THE MUCK HERE. YOU",
+			"RECORD IT IN JOURNAL ENTRY 41."}, "journal.41"},
+		{"yulash.looters-tell", []string{
+			"THE LOOTERS TELL WHAT THEY KNOW ABOUT THE CITY.",
+			"YOU RECORD THIS AS JOURNAL ENTRY 34."}, "journal.34"},
+		{"zhentil.purse-note", []string{
+			"YOU FIND A NOTE TUCKED INTO A SMALL POCKET OF THE",
+			"PURSE.  YOU ENTER THIS AS JOURNAL ENTRY 21."}, "journal.21"},
+		{"zhentil.arena-rules", []string{
+			"THE RULES ARE EXPLAINED TO YOU, AND YOU NOTE THEM",
+			"DOWN AS JOURNAL ENTRY 23."}, "journal.23"},
+		// 「WILL <角色名> STEP FORWARD?」中間插著 81h 的角色名運算元，
+		// 所以片段只取得到它前面那一段。
+		{"lava-tube.silk-mark-offer", []string{
+			"SHE CONTINUES, AND YOU RECORD IT IN JOURNAL",
+			"ENTRY 44. WILL", "ALIAS", "STEP FORWARD?"}, "journal.44"},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.texts, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" {
+					t.Fatalf("result=%+v", result)
+				}
+				if len(result.JournalMessageIDs) != 1 || result.JournalMessageIDs[0] != test.journal {
+					t.Fatalf("journal ids=%v, want [%s]", result.JournalMessageIDs, test.journal)
+				}
+				if len(result.JournalPages) != 1 || result.JournalPages[0] == "" {
+					t.Fatalf("journal pages=%v", result.JournalPages)
+				}
+			})
+		}
+	}
+}
+
+// 絲綢的自我介紹是同一段劇情的前一頁，中間同樣插著角色名。
+func TestSilkIntroductionIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	texts := []string{
+		"'YOU MAY CALL ME SILK. I HAVE BEEN WAITING FOR",
+		"A GROUP SUCH AS YOU.", "ALIAS", ", STEP FORWARD AND RECEIVE OUR MARK.'",
+	}
+	for _, language := range []string{"en", "zh-TW"} {
+		result := pack.MatchText(texts, language)
+		if !result.Matched || result.RuleID != "lava-tube.silk-introduction" || result.Message == "" {
+			t.Fatalf("%s: result=%+v", language, result)
+		}
+	}
+}
