@@ -3057,7 +3057,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			character := s.partyRoster[value]
 			slots := make([]string, 0, len(character.SpellSlots))
 			for _, spellID := range character.SpellSlots {
-				slots = append(slots, campSpellLabel(s.catalog, character.Class, spellID))
+				slots = append(slots, campSpellLabel(s.catalog, spellID))
 			}
 			if len(slots) == 0 {
 				slots = append(slots, s.catalog.Text("camp_magic_none", "camp_magic_none"))
@@ -3912,7 +3912,7 @@ func (s *State) enterCampMagicCastSpellMenu(characterIndex int) {
 	s.Choices = make([]string, 0, len(character.SpellSlots)+1)
 	s.currentOriginalChoices = make([]string, 0, len(character.SpellSlots)+1)
 	for index, spellID := range character.SpellSlots {
-		s.Choices = append(s.Choices, campSpellLabel(s.catalog, character.Class, spellID))
+		s.Choices = append(s.Choices, campSpellLabel(s.catalog, spellID))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_SPELL_"+strconv.Itoa(index))
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "camp_magic_cast_exit"))
@@ -4052,7 +4052,7 @@ func (s *State) enterCampMagicMemorizeSpellMenu(characterIndex int) {
 				break
 			}
 		}
-		s.Choices = append(s.Choices, fmt.Sprintf("%s %s", mark, campSpellLabel(s.catalog, character.Class, spellID)))
+		s.Choices = append(s.Choices, fmt.Sprintf("%s %s", mark, campSpellLabel(s.catalog, spellID)))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEM_SPELL_"+strconv.Itoa(index))
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_mem_done", "camp_magic_mem_done"), s.catalog.Text("camp_magic_mem_cancel", "camp_magic_mem_cancel"))

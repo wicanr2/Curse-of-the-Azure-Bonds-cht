@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"strconv"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
@@ -358,28 +359,41 @@ type trainingSpell struct {
 	Key   string
 }
 
-var trainingSpells = []trainingSpell{
-	{9, 2, 1, "spell_magic_user_1"}, {10, 2, 1, "spell_magic_user_2"}, {11, 2, 1, "spell_magic_user_3"},
-	{12, 2, 1, "spell_magic_user_4"}, {13, 2, 1, "spell_magic_user_5"}, {14, 2, 1, "spell_magic_user_6"},
-	{15, 2, 1, "spell_magic_user_7"}, {16, 2, 1, "spell_magic_user_8"}, {17, 2, 1, "spell_magic_user_9"},
-	{18, 2, 1, "spell_magic_user_10"}, {19, 2, 1, "spell_magic_user_11"}, {20, 2, 1, "spell_magic_user_12"},
-	{21, 2, 1, "spell_magic_user_13"},
-	{29, 2, 2, "spell_magic_user_29"}, {30, 2, 2, "spell_magic_user_30"}, {31, 2, 2, "spell_magic_user_31"},
-	{32, 2, 2, "spell_magic_user_32"}, {33, 2, 2, "spell_magic_user_33"}, {34, 2, 2, "spell_magic_user_34"},
-	{35, 2, 2, "spell_magic_user_35"},
-	{45, 2, 3, "spell_magic_user_45"}, {46, 2, 3, "spell_magic_user_46"}, {47, 2, 3, "spell_magic_user_47"},
-	{48, 2, 3, "spell_magic_user_48"}, {49, 2, 3, "spell_magic_user_49"}, {50, 2, 3, "spell_magic_user_50"},
-	{51, 2, 3, "spell_magic_user_51"}, {52, 2, 3, "spell_magic_user_52"}, {53, 2, 3, "spell_magic_user_53"},
-	{54, 2, 3, "spell_magic_user_54"}, {55, 2, 3, "spell_magic_user_55"},
-	{81, 2, 4, "spell_magic_user_81"}, {82, 2, 4, "spell_magic_user_82"}, {83, 2, 4, "spell_magic_user_83"},
-	{84, 2, 4, "spell_magic_user_84"}, {85, 2, 4, "spell_magic_user_85"}, {86, 2, 4, "spell_magic_user_86"},
-	{87, 2, 4, "spell_magic_user_87"}, {88, 2, 4, "spell_magic_user_88"}, {89, 2, 4, "spell_magic_user_89"},
-	{100, 2, 4, "spell_magic_user_100"},
-	{91, 2, 5, "spell_magic_user_91"}, {92, 2, 5, "spell_magic_user_92"}, {93, 2, 5, "spell_magic_user_93"},
-	{94, 2, 5, "spell_magic_user_94"},
-	{77, 1, 1, "spell_druid_77"}, {78, 1, 1, "spell_druid_78"},
-	{79, 1, 1, "spell_druid_79"}, {80, 1, 1, "spell_druid_80"},
+// trainingSpells 是訓練所可以選的法術，直接由**原作法術表**過濾出來：
+// 施法職業是德魯伊（1）或法師（2）的每一支。牧師系（0）不在清單裡——
+// AD&D 的牧師不挑法術；職業碼 3 那 15 筆玩家取不到。
+//
+// ★ 這裡曾經是一份手打的 49 列表格（編號、職業、環數、locale 鍵各寫一次）。
+// 四欄原作全部都有值，手打的那份只會漂移：它的 locale 鍵用的是「法師第幾支」
+// 那套編號，而同一個前綴的其他鍵用全域編號，兩套在 1..13 這段會互相蓋掉。
+func trainingSpellCatalog() []trainingSpell {
+	table, err := gamepack.Spells()
+	if err != nil || table == nil {
+		return nil
+	}
+	spells := make([]trainingSpell, 0, len(table.Spells))
+	for _, spell := range table.Spells {
+		if spell.Placeholder || spell.Level < 1 || spell.Level > 5 {
+			continue
+		}
+		if spell.CasterClassID != 1 && spell.CasterClassID != 2 {
+			continue
+		}
+		key, ok := spellMessageID(uint8(spell.SpellID))
+		if !ok {
+			continue
+		}
+		spells = append(spells, trainingSpell{
+			ID:    uint8(spell.SpellID),
+			Class: spell.CasterClassID,
+			Level: spell.Level,
+			Key:   key,
+		})
+	}
+	return spells
 }
+
+var trainingSpells = trainingSpellCatalog()
 
 func trainingSpellCandidates(character party.Character) []uint8 {
 	known := make(map[uint8]bool, len(character.KnownSpells))

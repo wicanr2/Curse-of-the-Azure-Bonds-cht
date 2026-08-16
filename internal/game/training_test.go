@@ -209,7 +209,7 @@ func TestMagicUserTrainingChoosesOneNewKnownSpell(t *testing.T) {
 	}
 	magicMissile := -1
 	for index, choice := range state.Choices {
-		if choice == catalog.Text("spell_magic_user_7", "") {
+		if choice == catalog.Text("spell_magic_user_15", "") {
 			magicMissile = index
 			break
 		}

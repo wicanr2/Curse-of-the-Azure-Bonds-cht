@@ -248,7 +248,7 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	magicMissilePlayer, found := pack.FindCombatPlayerSpell(0x0F, "magic_user")
 	if !found || magicMissilePlayer.ID != "coab.spell.magic-missile" ||
 		magicMissilePlayer.TargetMode != "enemy" || magicMissilePlayer.Behavior != "magic_missile" ||
-		magicMissilePlayer.MessageID != "spell_magic_user_7" || magicMissilePlayer.CastingTime != 1 {
+		magicMissilePlayer.MessageID != "spell_magic_user_15" || magicMissilePlayer.CastingTime != 1 {
 		t.Fatalf("Magic Missile player contract=%+v found=%v", magicMissilePlayer, found)
 	}
 	arrow, found := pack.FindCombatVisual("missile", "travel")

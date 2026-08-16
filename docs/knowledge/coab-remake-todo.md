@@ -53,7 +53,7 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | ├ PC-98 | 1,488：已解讀 1,121 ／ 不阻塞 29 ／ 邊界碎片 338 | 同上 |
 | └ 台帳孤兒 | **0**（原有 48 列位址對不上任何函式起點，內容都是 spec 569 的樣板分類，2026-08-16 依決策六刪除） | 同上 |
 | └ 證據等級 | `exact` 1,955 ／ `strong inference` 223 | 同上 |
-| 規格文件 | **1,084** 份 `docs/spec/*.md` | `ls` |
+| 規格文件 | **1,085** 份 `docs/spec/*.md` | `ls` |
 | remake 程式（不含巢狀 repo） | **230 個 `.go`／77,123 行** | `find`／`wc` |
 | ├ `internal/game` 機制碼 | **16 檔／13,908 行**（非測試） | `wc` |
 | └ 檔名 | `state` `combat_state` `creation` `creation_guided` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
@@ -63,6 +63,7 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | └ 語系 | `en` **1,269** 條、`zh-TW` **1,269** 條，**一一對齊、沒有漏譯**；譯名一致性由 `internal/glossary` fail-closed 擋住（93 詞條、0 不一致） | `json` |
 | UI 詞條 | `assets/locale/zh-TW.json` **872** 條 | `json` |
 | 建角規則表 | `gamepack/rules/character-tables.json`：7 種族、17 職業組合、8 職業槽、擲點與體質加值 | `json` |
+| 法術主表 | `gamepack/rules/spell-table.json`：原作 100 筆，16 個位元組全部有出處（spec 1111）；占位 13、只能紮營 8、戰鬥可施放 **79** | `json` |
 | 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**4,222 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
 | ECL 靜態可達 instruction | **4,222**（spec 1106 補上 `IF` 的 else 路徑後，由 1,355 增為三倍） | `ecl-event-catalog.md` |
 | ECL 副作用候選 | **154** 個中 33 個已審（31 筆依效果序列沿用） | `ecl-ordered-effect-reviews.json` |
@@ -204,7 +205,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 | `ENG-06` | 訓練所升級 | spec 1084 ✅ | 亞人等級上限（比目前值）、經驗門檻、HP 保留受傷差額 |
 | `ENG-07` | 戰鬥回合生命週期 | `RE-06` | initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
 | `ENG-08` | 怪物 AI | `RE-07` | 移動、目標選擇、施法、逃跑、抗性與各種特殊能力 |
-| `ENG-09` | 全法術表 | 矩陣 `player-spell-matrix` | 目前 12 個 handler；缺 target、range/area、save、duration、stack/dispel |
+| `ENG-09` | 全法術表 | spec 1111 ✅（資料）| **資料半邊完成**：原作 100 筆全部在 `gamepack/rules/spell-table.json`，target／range／save／duration／施法時間／AI 分數逐欄有出處，`gamepack` 的測試逐條對回原作。分母改成原作表：占位 13、紮營 8 ⇒ 戰鬥可施放 **79** 支，已宣告 12 支。剩下 67 支缺的是**效果**（handler／visual／sound），逐支狀態見 `combat-spell-coverage-ledger.md` |
 | `ENG-10` | 存檔完整實作 | `RE-05`、spec 1072／1076 ✅ | remake 自己的存檔要能保存所有 pending ECL/combat/audio/UI transaction，並能匯入原版存檔。⚠ 決策四：不做原版 round-trip |
 | `ENG-11` | 通關路徑 | spec 1087 ✅ | `PROGRAM 8` 的完整序列接上結局與存檔 |
 
