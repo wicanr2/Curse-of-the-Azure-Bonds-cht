@@ -11,17 +11,16 @@
 
 | 狀態 | 指令數 | opcode 數 | 意思 |
 |---|---:|---:|---|
-| `done` | 13117 | 49 | 副作用已產生，且有回歸測試或實機路徑驗過 |
+| `done` | 13120 | 50 | 副作用已產生，且有回歸測試或實機路徑驗過 |
 | `partial` | 1057 | 11 | 只做了一部分，多半是把請求記進 result 讓上層處理 |
-| **`consumed`** | **3** | **1** | **只讀掉運算元——原作有效果，remake 沒有** |
+| **`consumed`** | **0** | **0** | **只讀掉運算元——原作有效果，remake 沒有** |
 | 合計（靜態可達指令）| 14177 | 61 | |
 
 ## 逐 opcode
 
 | opcode | 名稱 | 狀態 | 可達出現次數 | 出現在幾個 block | 還差什麼 |
 |---|---|---|---:|---:|---|
-| `0x31` | SPRITE OFF | `consumed` | 3 | 3 | SPRITE OFF：戰鬥圖示的顯示狀態未還原 |
-| `0x1C` | CLEARMONSTERS | `partial` | 206 | 24 | CLEARMONSTERS 清怪物鏈與已放置數；原作另清的四塊 bank1 區域未逐格對上 |
+| `0x1C` | CLEARMONSTERS | `partial` | 206 | 24 | ECL 看得到的部分已完整（怪物鏈與已放置數；原作另清的 47E6h／8B69h／7603h／6F8Ch 都不是 ECL 變數，見 ecl-shared-cells）。要收尾的是 remake 這側的怪物／圖示模型還有沒有該一起清的狀態 |
 | `0x0E` | PICTURE | `partial` | 199 | 23 | PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層 |
 | `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）；戰鬥本身的回合生命週期仍是 RE-06 |
 | `0x2D` | CALL | `partial` | 168 | 22 | CALL 是七路 switch；corpus 只用 2E10h 與 6803h，兩者的 consumer 尚未逐條驗（RE-03） |
@@ -75,6 +74,7 @@
 | `0x26` | ON GOSUB | `done` | 6 | 6 | 同上，返回位址進堆疊 |
 | `0x10` | INPUT STRING | `done` | 5 | 3 | 字串輸入，退格以 rune 為單位（CHT-02） |
 | `0x3E` | DUMP | `done` | 5 | 5 | DUMP |
+| `0x31` | SPRITE OFF | `done` | 3 | 3 | 關掉畫面上的怪物圖示；同一次執行又要求新畫面時以新的為準（原作也是先關再畫） |
 | `0x1D` | PARTYSTRENGTH | `done` | 2 | 2 | 隊伍強度 |
 | `0x34` | ECL CLOCK | `done` | 2 | 2 | ECL CLOCK |
 | `0x3B` | SPELL | `done` | 2 | 2 | 依行軍順序找持有者，slot 與隊員索引寫回兩個位址，找不到寫 0FFh；依據是呼叫端（COMPARE FFh ＋ LOAD CHARACTER），不是命令表 |
@@ -97,14 +97,14 @@
 | `ECL4.DAX/0x22` | 526 | 50 |
 | `ECL2.DAX/0x01` | 659 | 47 |
 | `ECL3.DAX/0x11` | 788 | 46 |
-| `ECL2.DAX/0x02` | 374 | 44 |
-| `ECL2.DAX/0x03` | 703 | 44 |
 | `ECL5.DAX/0x35` | 598 | 44 |
+| `ECL2.DAX/0x02` | 374 | 43 |
+| `ECL2.DAX/0x03` | 703 | 43 |
 | `ECL6.DAX/0x42` | 603 | 38 |
 | `ECL6.DAX/0x43` | 525 | 36 |
 | `ECL1.DAX/0x50` | 798 | 35 |
 | `ECL1.DAX/0x51` | 726 | 34 |
-| `ECL2.DAX/0x04` | 482 | 30 |
+| `ECL2.DAX/0x04` | 482 | 29 |
 | `ECL5.DAX/0x31` | 388 | 26 |
 | `ECL4.DAX/0x23` | 303 | 22 |
 | `ECL1.DAX/0x52` | 86 | 20 |

@@ -941,6 +941,12 @@ func (s *State) BeginAdventure() error {
 		// 有新文字的話它本來就會蓋掉舊的。原作用它在換畫面前把上一幕擦掉。
 		s.Message = ""
 	}
+	if result.SpriteOffRequested && !result.PictureRequested {
+		// `31h SPRITE OFF` 關掉畫面上的怪物圖示。同一次執行若又要求新畫面，
+		// 那張新的才算數——原作也是先關掉再畫。
+		s.PictureRequested = false
+		s.SceneCharacterRequested = false
+	}
 	if result.WaitingForString && len(result.StringInputRequests) > 0 {
 		s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
 		return nil
