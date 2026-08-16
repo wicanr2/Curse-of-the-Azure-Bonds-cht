@@ -38,9 +38,10 @@ type group struct {
 	Offset string `json:"offset"`
 	Text   string `json:"text"`
 	RuleID string `json:"rule_id,omitempty"`
-	// GosubInserts 記錄「這一頁的文字中間插進了一支子程式」的位置。子程式印的字
-	// 本工具不追（見 Limitations），所以 `Text` 少了那一段；寫 `all_contains` 的
-	// 片段**不可以跨過這些位置**，否則實機接不上。
+	// GosubInserts 記錄「這一頁的文字被一支子程式插了一段」的位置——可能在中間，
+	// 也可能整頁就是從子程式的 `PRINTCLEAR` 開始（那時它提供的是**前綴**）。
+	// 子程式印的字本工具不追（見 Limitations），所以 `Text` 少了那一段；
+	// 寫 `all_contains` 的片段**不可以跨過這些位置**，否則實機接不上。
 	GosubInserts []string `json:"gosub_inserts,omitempty"`
 }
 
@@ -80,7 +81,8 @@ func main() {
 		Limitations: []string{
 			"只統計靜態可達的文字：TraceGraph 跟 GOTO／GOSUB、循序 fallthrough 與 IF 的兩條路（spec 1106），但**不跟** ON GOTO／ON GOSUB 的動態目的地與選單分支——分母只會再往上。",
 			"一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。",
-			"`02h GOSUB` 進去印的文字不會併進這一段。例：`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」，中間那個字由 `89B2h` 印出。⇒ 寫 `all_contains` 時**片段不要跨越 GOSUB 的插入點**，否則實機接不上。",
+			"`02h GOSUB` 進去印的文字不會併進這一段，標 `gosub_inserts` 的頁實際文字比這裡多。插入點在中間（`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」）或在開頭當前綴（`ECL4.DAX/0x25` 的八個遭遇頁前面都有「YOU ARE ATTACKED BY」）。⇒ 寫 `all_contains` 時**片段不要跨越插入點**，否則實機接不上。",
+			"反過來，被 `GOSUB` 呼叫的純文字子程式會自成一段（如 `UP`／`DOWN`／`YOU ARE ATTACKED BY`）。它們在實機不會單獨出現，**不要**替它們寫規則——只有一兩個字的規則會攔截到別的文字。",
 			"『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。",
 		},
 		Summary: summary{ByBlock: map[string]int{}},
@@ -172,9 +174,9 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 			current, pendingGosub = nil, nil
 			continue
 		}
-		if opcode == 0x02 && current != nil {
-			// 先記著。只有後面還有 PRINT 接上來，它才算是**頁中**的插入點；
-			// 收尾的那個 GOSUB（翻頁提示、Yes/No）不算。
+		if opcode == 0x02 {
+			// 先記著。只有後面還有 `11h PRINT` 接上來，它才算是插入點；收尾的那個
+			// GOSUB（翻頁提示、Yes/No）不算，`12h PRINTCLEAR` 開新頁也把它作廢。
 			pendingGosub = append(pendingGosub, fmt.Sprintf("0x%04X", instruction.Offset))
 			continue
 		}
@@ -190,9 +192,17 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 		// 也就是**開新的一頁**；`11h PRINT` 接在目前這一頁後面。所以一段 ＝ 一頁，
 		// 玩家看到的就是一頁。
 		if opcode == 0x12 || current == nil {
+			// `11h PRINT` 開頭卻沒有自己的 `PRINTCLEAR` ⇒ 這一頁是從剛才那支
+			// 子程式裡開始的，前綴在裡面。`ECL4.DAX/0x25` 的八個遭遇頁都是這個
+			// 形狀：`GOSUB 9534h` 印「YOU ARE ATTACKED BY」，回來才印怪物名。
+			inserts := pendingGosub
+			if opcode == 0x12 {
+				inserts = nil
+			}
 			groups = append(groups, group{
 				Member: member, Block: blockID,
 				Offset: fmt.Sprintf("0x%04X", instruction.Offset), Text: text,
+				GosubInserts: inserts,
 			})
 			current, pendingGosub = &groups[len(groups)-1], nil
 			continue
@@ -316,7 +326,7 @@ func renderMarkdown(result report) []byte {
 			text = text[:160] + "…"
 		}
 		if len(item.GosubInserts) > 0 {
-			text += " ⚠ 文字中間有 `GOSUB " + strings.Join(item.GosubInserts, "`／`") + "`"
+			text += " ⚠ 另有 `GOSUB " + strings.Join(item.GosubInserts, "`／`") + "` 印出的一段"
 		}
 		fmt.Fprintf(&out, "| `%s/%s` | `%s` | %s | %s |\n",
 			item.Member, item.Block, item.Offset, rule, text)

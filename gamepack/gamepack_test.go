@@ -1354,3 +1354,40 @@ func TestWizardTowerInteriorIsGamePackDriven(t *testing.T) {
 		}
 	}
 }
+
+// 世界地圖的隨機遭遇（`ECL4.DAX/0x25`）。八個遭遇頁的開頭「YOU ARE ATTACKED BY」
+// 由 `02h GOSUB 9534h` 印出，怪物名才是這一頁自己的 `PRINT`——實機接起來是一句，
+// 靜態盤點工具看到的只有後半。所以這裡餵的一律是**實機的字串序列**。
+func TestWildernessEncountersAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id    string
+		texts []string
+	}{
+		{"world.magic-shop", []string{"YOU DISCOVER A SMALL MAGIC SHOP.", "WHAT TO YOU DO?"}},
+		{"world.drow-items-fade", []string{
+			"AFTER A FEW HOURS OUT IN THE SUN, YOUR DROW",
+			"ITEMS FADE TO USELESSNESS."}},
+		{"world.encounter.ogres", []string{"YOU ARE ATTACKED BY", "OGRES!"}},
+		{"world.encounter.otyughs", []string{"YOU ARE ATTACKED BY", "OTYUGHS!"}},
+		{"world.encounter.griffons", []string{"YOU ARE ATTACKED BY", "GRIFFONS!"}},
+		{"world.encounter.manticores", []string{"YOU ARE ATTACKED BY", "MANTICORES!"}},
+		{"world.encounter.minotaurs", []string{"YOU ARE ATTACKED BY", "MINOTAURS!"}},
+		{"world.encounter.fighter-band", []string{"YOU ARE ATTACKED BY", "A BAND OF FIGHTERS.!"}},
+		{"world.encounter.fighters-and-mages", []string{"YOU ARE ATTACKED BY", "FIGHTERS AND MAGES."}},
+		{"world.encounter.fighters-and-clerics", []string{"YOU ARE ATTACKED BY", "FIGHTERS AND CLERICS!"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.texts, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}

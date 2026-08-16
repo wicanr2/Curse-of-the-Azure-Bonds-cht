@@ -1805,6 +1805,77 @@
    "message_id": "world.shadowdale.edge"
   },
   {
+   "id": "world.magic-shop",
+   "all_contains": [
+    "YOU DISCOVER A SMALL MAGIC SHOP"
+   ],
+   "message_id": "world.magic-shop"
+  },
+  {
+   "id": "world.drow-items-fade",
+   "all_contains": [
+    "AFTER A FEW HOURS OUT IN THE SUN",
+    "ITEMS FADE TO USELESSNESS"
+   ],
+   "message_id": "world.drow-items-fade"
+  },
+  {
+   "id": "world.encounter.ogres",
+   "all_contains": [
+    "YOU ARE ATTACKED BY OGRES"
+   ],
+   "message_id": "world.encounter.ogres"
+  },
+  {
+   "id": "world.encounter.otyughs",
+   "all_contains": [
+    "YOU ARE ATTACKED BY OTYUGHS"
+   ],
+   "message_id": "world.encounter.otyughs"
+  },
+  {
+   "id": "world.encounter.griffons",
+   "all_contains": [
+    "YOU ARE ATTACKED BY GRIFFONS"
+   ],
+   "message_id": "world.encounter.griffons"
+  },
+  {
+   "id": "world.encounter.manticores",
+   "all_contains": [
+    "YOU ARE ATTACKED BY MANTICORES"
+   ],
+   "message_id": "world.encounter.manticores"
+  },
+  {
+   "id": "world.encounter.minotaurs",
+   "all_contains": [
+    "YOU ARE ATTACKED BY MINOTAURS"
+   ],
+   "message_id": "world.encounter.minotaurs"
+  },
+  {
+   "id": "world.encounter.fighter-band",
+   "all_contains": [
+    "YOU ARE ATTACKED BY A BAND OF FIGHTERS"
+   ],
+   "message_id": "world.encounter.fighter-band"
+  },
+  {
+   "id": "world.encounter.fighters-and-mages",
+   "all_contains": [
+    "YOU ARE ATTACKED BY FIGHTERS AND MAGES"
+   ],
+   "message_id": "world.encounter.fighters-and-mages"
+  },
+  {
+   "id": "world.encounter.fighters-and-clerics",
+   "all_contains": [
+    "YOU ARE ATTACKED BY FIGHTERS AND CLERICS"
+   ],
+   "message_id": "world.encounter.fighters-and-clerics"
+  },
+  {
    "id": "opening.curse-summary",
    "all_contains": [
     "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE",

@@ -3,7 +3,8 @@
  "limitations": [
   "只統計靜態可達的文字：TraceGraph 跟 GOTO／GOSUB、循序 fallthrough 與 IF 的兩條路（spec 1106），但**不跟** ON GOTO／ON GOSUB 的動態目的地與選單分支——分母只會再往上。",
   "一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。",
-  "`02h GOSUB` 進去印的文字不會併進這一段。例：`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」，中間那個字由 `89B2h` 印出。⇒ 寫 `all_contains` 時**片段不要跨越 GOSUB 的插入點**，否則實機接不上。",
+  "`02h GOSUB` 進去印的文字不會併進這一段，標 `gosub_inserts` 的頁實際文字比這裡多。插入點在中間（`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」）或在開頭當前綴（`ECL4.DAX/0x25` 的八個遭遇頁前面都有「YOU ARE ATTACKED BY」）。⇒ 寫 `all_contains` 時**片段不要跨越插入點**，否則實機接不上。",
+  "反過來，被 `GOSUB` 呼叫的純文字子程式會自成一段（如 `UP`／`DOWN`／`YOU ARE ATTACKED BY`）。它們在實機不會單獨出現，**不要**替它們寫規則——只有一兩個字的規則會攔截到別的文字。",
   "『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。"
  ],
  "groups": [
@@ -769,61 +770,87 @@
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x005D",
-   "text": "YOU DISCOVER A SMALL MAGIC SHOP."
+   "text": "YOU DISCOVER A SMALL MAGIC SHOP.",
+   "rule_id": "world.magic-shop"
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x01DF",
-   "text": "AFTER A FEW HOURS OUT IN THE SUN, YOUR DROW ITEMS FADE TO USELESSNESS."
+   "text": "AFTER A FEW HOURS OUT IN THE SUN, YOUR DROW ITEMS FADE TO USELESSNESS.",
+   "rule_id": "world.drow-items-fade"
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x1271",
-   "text": "OGRES!"
+   "text": "OGRES!",
+   "gosub_inserts": [
+    "0x126D"
+   ]
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x12B2",
-   "text": "OTYUGHS!"
+   "text": "OTYUGHS!",
+   "gosub_inserts": [
+    "0x12AE"
+   ]
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x12E3",
-   "text": "GRIFFONS!"
+   "text": "GRIFFONS!",
+   "gosub_inserts": [
+    "0x12DF"
+   ]
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x1326",
-   "text": "MANTICORES!"
+   "text": "MANTICORES!",
+   "gosub_inserts": [
+    "0x1322"
+   ]
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x1371",
-   "text": "MINOTAURS!"
+   "text": "MINOTAURS!",
+   "gosub_inserts": [
+    "0x136D"
+   ]
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x13C1",
-   "text": "A BAND OF FIGHTERS.!"
+   "text": "A BAND OF FIGHTERS.!",
+   "gosub_inserts": [
+    "0x13BD"
+   ]
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x140D",
-   "text": "FIGHTERS AND MAGES."
+   "text": "FIGHTERS AND MAGES.",
+   "gosub_inserts": [
+    "0x1409"
+   ]
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x1470",
-   "text": "FIGHTERS AND CLERICS!"
+   "text": "FIGHTERS AND CLERICS!",
+   "gosub_inserts": [
+    "0x146C"
+   ]
   },
   {
    "member": "ECL4.DAX",
@@ -1308,8 +1335,8 @@
  ],
  "summary": {
   "groups": 197,
-  "matched": 104,
-  "unmatched": 93,
+  "matched": 106,
+  "unmatched": 91,
   "unmatched_by_block": {
    "ECL1.DAX/0x50": 10,
    "ECL1.DAX/0x51": 3,
@@ -1325,7 +1352,7 @@
    "ECL4.DAX/0x21": 1,
    "ECL4.DAX/0x22": 3,
    "ECL4.DAX/0x23": 4,
-   "ECL4.DAX/0x25": 12,
+   "ECL4.DAX/0x25": 10,
    "ECL5.DAX/0x31": 1,
    "ECL5.DAX/0x32": 8,
    "ECL5.DAX/0x33": 3,
