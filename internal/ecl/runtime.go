@@ -1494,10 +1494,19 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				}
 			}
 			if instruction.Command.Opcode == 0x1C {
-				result.MonsterSetup = nil
+				// CLEARMONSTERS frees the monster chain and resets the placed
+				// count; it does not touch what SETUP MONSTER wrote. In DOS
+				// (overlay-02:120Eh) it clears 47E6h, 8B69h, 7603h, a 28-byte
+				// area and the 6F8Ch chain, while SETUP MONSTER's sprite and
+				// picture live in ds:7601h/7602h and bank1 580h/582h, all of
+				// which survive (spec 1104 §四).
+				//
+				// Four corpus sites depend on it: ECL3 0x11 +1154h, ECL3 0x12
+				// +06C5h, ECL4 0x21 +05BBh and ECL5 0x32 +077Ah all run
+				// SETUP MONSTER before CLEARMONSTERS and then fight. Clearing
+				// the setup here dropped the enemy sprite for all four.
 				result.MonsterSpawns = nil
 				if runtime != nil {
-					runtime.MonsterSetup = nil
 					runtime.MonsterSpawns = nil
 				}
 			}

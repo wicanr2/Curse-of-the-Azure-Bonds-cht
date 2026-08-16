@@ -49,7 +49,8 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | UI 詞條 | `assets/locale/zh-TW.json` **870** 條 | `json` |
 | 建角規則表 | `gamepack/rules/character-tables.json`：7 種族、17 職業組合、8 職業槽、擲點與體質加值 | `json` |
 | 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**1,355 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
-| ECL 副作用候選 | 33 個中 **4 個已審查**、29 個未審查 | `ecl-ordered-effect-reviews.json` |
+| ECL 副作用候選 | 32 個中 **31 個 `covered/exact`**、1 個 `partial` | `ecl-ordered-effect-reviews.json` |
+| ECL opcode commit phase | 46 個 corpus opcode 中 **25 支 handler 已讀**、21 支 `unknown` | `ecl-opcode-effect-phases.md` |
 | 正常玩家路徑 | 走到**眼魔洞穴東門 → 散提爾堡邊緣** | `go test` |
 | 全套 gate | `./tools/go.sh test ./...` 全綠 | 本輪實跑 |
 | 遊戲入口旗標 | **58** 個，其中 30 個是分段驗收的直入點 | `main.go` |
@@ -100,13 +101,13 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 
 | ID | 項目 | 現況 | 要做什麼 | 產物 |
 |---|---|---|---|---|
-| `RE-01` | **ECL 有序副作用與 exactly-once**（全域 P0-RE-1） | 33 個候選已審 4 個；主迴圈、`24h` handler 與**位址空間映射**已閉合（spec 1095／1096） | 續閉合其餘 29 個候選；建立 opcode 當下的 ordered effect record，標明 immediate／pause-before-commit／deferred／resume-only | `ecl-ordered-effects` READY spec ＋ trace corpus |
+| `RE-01` | **ECL 有序副作用與 exactly-once**（全域 P0-RE-1） | ✅ **主要成果已取得**（spec 1104）：ordered effect record 已產出（`ecl-opcode-effect-phases.md`，46 列）；32 個候選 31 個 `covered/exact`、1 個 `partial`。三條通則——PC 一律在效果之前推進、畫面提交點只有 `CALL 2E10h`、`20h NEWECL` 是終止指令 | 讀完剩餘 21 支 `unknown` handler；補動態 branch 與原版／remake trace diff。⚠ `resume_only` 這一類是空的：等本輪跑完才發生的效果都在 lifecycle 驅動器裡，不在 opcode handler 內 | `ecl-opcode-effect-phases` 已產出 |
 | `RE-14` | **ECL↔引擎共用格子清冊** | ✅ **已完成**（spec 1097、`docs/audit/ecl-shared-cells.md`）：81 個 ECL 變數位址中 **24 個是共用格子**，57 個 ECL 私有 | 逐格對上剩餘語意：`7ED2h`／`7ED3h`／`7ED5h` 的引擎側存取點（`overlay-07:01FC`／`overlay-20:0C9C`／`overlay-14:078E`）尚未逐條讀 | `ecl-shared-cells.md` 已產出 |
 | `RE-15` | **ECL 變數讀取端** | ✅ **已完成**（spec 1098）：分區表、`×2`、區 3 的 byte 寬度三項完全對稱 | — | spec 1098 |
 | `RE-17` | **角色欄位投影** | ✅ 機制已解：讀取側投影表 spec 624／1040 早有；spec 1098 補上**寫入側也有一張表且與讀取側不同** ⇒ 12 個位址是唯讀投影（寫了讀不到） | 寫入側表未逐條人工確認的部分（含 `7C80h`／`7C81h`） | 補進 spec 1098 |
 | `RE-16` | **`7ECAh` 還原方式的時機對應** | spec 1097 §三：原作跑完還原成 `and 1`，remake 一律寫 0 | 先確認 remake 的 `SearchLocation` 對應原作哪一段流程，再決定是否照抄 `and 1` | 補進 spec 1097 |
 | `RE-02` | **全遊戲事件清冊**（P0-RE-2） | 靜態層完成（6 DAX／25 block／125 entry／1,355 instruction） | 補動態 branch、座標／terrain、條件旗標、consumer、resume、R1–R5 回填 | `ecl-event-catalog` 動態層 |
-| `RE-03` | **External `CALL` 登記表** | `2E10／C01E／B200` 只有局部證據 | 23 個靜態可達 CALL 的 caller、operand、state projection、consumer、返回與未知 fallback；只追玩家可見副作用 | `external-call-registry` |
+| `RE-03` | **External `CALL` 登記表** | ✅ **靜態層已完成**（spec 1104 §七）：`2Dh` 是七路 switch（operand 值減 `7FFFh`），23 個靜態可達 CALL 只用到 `2E10h`（12 次）與 `6803h`（11 次），另五路 corpus 從未使用；未列入 switch 的目標**靜默 no-op** | 兩個實際使用目標的 consumer 逐條驗證與 remake adapter；`6803h` 的 `722Ah` 指標陣列版面未取 | `external-call-registry` |
 | `RE-04` | **劇情與全地圖事件** | 大量 fixture，缺逐格覆蓋 | 每區逐格／逐事件的 producer、條件、分支、副作用、重訪 | `area-event-coverage` |
 | `RE-05` | **DOS save bundle** | raw-preserving parser 與部分 sidecar | 已由 spec 1072／1075／1076 取得 16 塊固定版面與角色檔名表（`148h` ＝ 8×41）；仍缺 `.SAV/.GUY/.FX/.SWG` 全欄位、角色刪除重排、未知 byte consumer、round-trip gate | `dos-save-bundle-schema` |
 | `RE-06` | **戰鬥 scheduler／initiative** | 部分 typed core | round/segment、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff | `combat-turn-lifecycle` |
@@ -292,8 +293,9 @@ transaction）要自己列一段驗——這是 rulebook 65 來源案例的失�
 2. **`RE-14` 共用格子清冊 ✅ 已完成**——81 個 ECL 變數位址中 24 個是共用格子。
    風險面積從「69 個位址未校準」收斂成「24 個要逐格對上、57 個自洽即可」。
    剩下 `RE-15`（讀取端）與 `RE-16`（`7ECAh` 時機）兩個小尾巴，不擋路。
-3. **`RE-01` ECL 有序副作用**——矩陣列為全域 P0，也是「單點測試通過、正常流程仍卡住」的首要嫌疑。
-   **它決定 `ENG-01` 寫出來的事件資料是什麼形狀**；在它閉合前大量產出內容，等於押注在可能要重做的 schema 上。
+3. ✅ **`RE-01` ECL 有序副作用的擋路部分已解除**（spec 1104）——`ENG-01` 的事件資料形狀現在有依據了：
+   效果一律在 PC 推進之後發生（停下再續跑不會重播），畫面提交點只有 `CALL 2E10h`，
+   `NEWECL` 終止本次執行。剩下 21 支未讀 handler 不擋 `ENG-01`，可與內容產出平行。
 4. **`RE-12` 資料段表格取出**——多份規格卡在同一個原因，取出後 `ENG-04`／`ENG-05`／`ENG-06` 一起解鎖。
    可與第 2 項平行。
 5. **`CHT-01`／`CHT-02`／`CHT-09`**——雙位元組處理與譯名表是地基，愈晚改代價愈高。可與 2–4 平行。

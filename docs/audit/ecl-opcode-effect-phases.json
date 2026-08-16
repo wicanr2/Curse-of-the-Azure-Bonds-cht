@@ -1,0 +1,564 @@
+{
+ "format_version": 1,
+ "generator": "cmd/ecl-event-catalog",
+ "phase_vocabulary": [
+  "immediate",
+  "pause_before_commit",
+  "deferred",
+  "resume_only",
+  "commit_point",
+  "terminal",
+  "control_flow",
+  "unknown"
+ ],
+ "limitations": [
+  "本表的位址與結論來自 DOS `START.EXE`＋`GAME.OVR`。PC-98 對側位址見 `ecl-opcode-dispatch.md`；只有通則（operand 解碼推進 PC）與 `20h` 兩項逐條比對過，其餘未比對，不宣稱兩平台一致。",
+  "`unknown` 表示該 handler 本輪未讀，不是「沒有副作用」。它是預設值，所以漏列一個 opcode 會被覆蓋率測試擋下，不會靜默沿用鄰居的分類。",
+  "`remake_boundary` 描述 remake 怎麼建模，不是原作停在哪裡：原作同步巢狀呼叫的地方，remake 因為不可重入而做成可續跑交易。"
+ ],
+ "rows": [
+  {
+   "opcode": "0x00",
+   "name": "EXIT",
+   "dos_handler": "0052h",
+   "advance": "inc",
+   "phase": "terminal",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "設 `47E0h:=1` 結束迴圈，釋放整條 GOSUB 框架鏈，並消費 `47E2h` 還原角色指標。"
+  },
+  {
+   "opcode": "0x01",
+   "name": "GOTO",
+   "dos_handler": "00E8h",
+   "advance": "assign",
+   "phase": "control_flow",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "解 1 個 operand 後把 `high:low` 合成的位址寫進 `4FB4h`。"
+  },
+  {
+   "opcode": "0x02",
+   "name": "GOSUB",
+   "dos_handler": "0107h",
+   "advance": "assign",
+   "phase": "control_flow",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "解 1 個 operand 後交給 overlay-07 entry#24 推框架並跳轉。"
+  },
+  {
+   "opcode": "0x03",
+   "name": "COMPARE",
+   "dos_handler": "011Eh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x04",
+   "name": "ADD",
+   "dos_handler": "019Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x05",
+   "name": "SUBTRAT",
+   "dos_handler": "019Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（與 `04h` 同一支）。"
+  },
+  {
+   "opcode": "0x06",
+   "name": "DIVIDE",
+   "dos_handler": "019Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（與 `04h` 同一支）。"
+  },
+  {
+   "opcode": "0x07",
+   "name": "MULTIPLY",
+   "dos_handler": "019Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（與 `04h` 同一支）。"
+  },
+  {
+   "opcode": "0x08",
+   "name": "RANDOM",
+   "dos_handler": "0244h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x09",
+   "name": "SAVE",
+   "dos_handler": "02A2h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x0A",
+   "name": "LOAD CHARACTER",
+   "dos_handler": "02F0h",
+   "advance": "decode_operands",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104",
+    "1098"
+   ],
+   "note": "先寫 `47E2h:=1` 再推進 PC；走 `650Ah` 名冊鏈選定角色寫 `6506h`，`8B6Dh` 記錄有沒有找到。`47E2h` 由 `00h`／`38h`／驅動器消費，屬另一條 deferred 線。"
+  },
+  {
+   "opcode": "0x0B",
+   "name": "LOAD MONSTER",
+   "dos_handler": "0466h",
+   "advance": "decode_operands",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "配置怪物節點掛上 `650Ah` 鏈；`47E6h` 是本場已放置數，達 `3Fh` 就整支跳過。"
+  },
+  {
+   "opcode": "0x0C",
+   "name": "SETUP MONSTER",
+   "dos_handler": "03CAh",
+   "advance": "decode_operands",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "寫 bank1 `580h`／`582h`，`582h` 取兩者最大值。"
+  },
+  {
+   "opcode": "0x0E",
+   "name": "PICTURE",
+   "dos_handler": "0841h",
+   "advance": "decode_operands",
+   "phase": "deferred",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "operand `0FFh` 走關閉分支並就地 flush；其餘只設 `8B49h`／`8B62h`／`8B63h`，畫面提交點在 `2Dh` 的 `2E10h`。"
+  },
+  {
+   "opcode": "0x11",
+   "name": "PRINT",
+   "dos_handler": "09EAh",
+   "advance": "decode_operands",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "與 `12h` 同一支，靠重讀 `ds:75FFh` 分流；`4FC9h` 在輸出期間為 1。"
+  },
+  {
+   "opcode": "0x12",
+   "name": "PRINTCLEAR",
+   "dos_handler": "09EAh",
+   "advance": "decode_operands",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "比 `11h` 多寫 `65A1h:=11h`、`65A0h:=1`，且輸出常式最後一個引數是 1 不是 0。"
+  },
+  {
+   "opcode": "0x13",
+   "name": "RETURN",
+   "dos_handler": "0A86h",
+   "advance": "assign",
+   "phase": "control_flow",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "彈出 GOSUB 框架；框架鏈為空時直接呼叫 `00h` 的 handler。"
+  },
+  {
+   "opcode": "0x14",
+   "name": "COMPARE AND",
+   "dos_handler": "0AD6h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x16",
+   "name": "IF =",
+   "dos_handler": "0B3Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（`16h`..`1Bh` 同一支）。"
+  },
+  {
+   "opcode": "0x17",
+   "name": "IF \u003c\u003e",
+   "dos_handler": "0B3Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（`16h`..`1Bh` 同一支）。"
+  },
+  {
+   "opcode": "0x18",
+   "name": "IF \u003c",
+   "dos_handler": "0B3Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（`16h`..`1Bh` 同一支）。"
+  },
+  {
+   "opcode": "0x19",
+   "name": "IF \u003e",
+   "dos_handler": "0B3Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（`16h`..`1Bh` 同一支）。"
+  },
+  {
+   "opcode": "0x1A",
+   "name": "IF \u003c=",
+   "dos_handler": "0B3Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（`16h`..`1Bh` 同一支）。"
+  },
+  {
+   "opcode": "0x1B",
+   "name": "IF \u003e=",
+   "dos_handler": "0B3Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（`16h`..`1Bh` 同一支）。"
+  },
+  {
+   "opcode": "0x1C",
+   "name": "CLEARMONSTERS",
+   "dos_handler": "120Eh",
+   "advance": "inc",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "`47E6h:=0`、`8B69h:=0`、`7603h:=8`，並沿 `6F8Ch` 鏈逐節點釋放。"
+  },
+  {
+   "opcode": "0x1D",
+   "name": "PARTYSTRENGTH",
+   "dos_handler": "1271h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x20",
+   "name": "NEWECL",
+   "dos_handler": "0BBBh",
+   "advance": "decode_operands",
+   "phase": "terminal",
+   "remake_boundary": "resumable",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "把舊 ECL 編號存進 bank0 `1E4h`，載入新 block（overlay-07 entry#4）並初始化（entry#3，PC 重設為 `8000h`、重讀五個 lifecycle entry），最後 `47E0h:=1`、`47E1h:=1`；驅動器看到 `47E1h` 就從 lifecycle 頂端重跑。⇒ 後一個位元組永遠不會被執行。"
+  },
+  {
+   "opcode": "0x21",
+   "name": "LOAD FILES",
+   "dos_handler": "0C15h",
+   "advance": "decode_operands",
+   "phase": "deferred",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "與 `37h` 同一支，靠重讀 `ds:75FFh` 分流；設 `47E3h:=1`、`47E5h:=1`。重繪要等 `47E4h` 與 `47E5h` 都非零。"
+  },
+  {
+   "opcode": "0x24",
+   "name": "COMBAT",
+   "dos_handler": "179Ah",
+   "advance": "inc",
+   "phase": "pause_before_commit",
+   "remake_boundary": "resumable",
+   "confidence": "exact",
+   "spec_refs": [
+    "1095"
+   ],
+   "note": "原作是同步巢狀呼叫，也是商店／營地的服務分派點；remake 因為不可重入而做成可續跑交易。"
+  },
+  {
+   "opcode": "0x25",
+   "name": "ON GOTO",
+   "dos_handler": "1A9Bh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（與 `26h` 同一支）。"
+  },
+  {
+   "opcode": "0x27",
+   "name": "TREASURE",
+   "dos_handler": "1B53h",
+   "advance": "decode_operands",
+   "phase": "pause_before_commit",
+   "remake_boundary": "resumable",
+   "confidence": "exact",
+   "spec_refs": [
+    "255",
+    "257",
+    "258",
+    "558"
+   ],
+   "note": "寶物服務邊界，戰後 continuation 已閉合。"
+  },
+  {
+   "opcode": "0x29",
+   "name": "ENCOUNTER MENU",
+   "dos_handler": "2086h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "resumable",
+   "confidence": "unknown",
+   "spec_refs": [
+    "1083"
+   ],
+   "note": "handler 尚未讀；`29h` 是 ENCOUNTER MENU 不是 PARLAY。"
+  },
+  {
+   "opcode": "0x2A",
+   "name": "GETTABLE",
+   "dos_handler": "0E13h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x2B",
+   "name": "HORIZONTAL MENU",
+   "dos_handler": "1082h",
+   "advance": "decode_operands",
+   "phase": "pause_before_commit",
+   "remake_boundary": "resumable",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "先解 2 個固定 operand 取得目的位址與項數，`dec 4FB4h` 退一格後改以項數重解一次；選擇結果在 handler 內寫回目的位址。"
+  },
+  {
+   "opcode": "0x2D",
+   "name": "CALL",
+   "dos_handler": "2F02h",
+   "advance": "decode_operands",
+   "phase": "commit_point",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "operand 值減 `7FFFh` 後走七路 switch；`2E10h` 分支是 `8B62h`／`8B65h`／`8B67h`／`8B68h`／`8B6Ah` 五個髒旗標的唯一提交點。未列入 switch 的目標靜默 no-op。"
+  },
+  {
+   "opcode": "0x2F",
+   "name": "AND",
+   "dos_handler": "0DA4h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀（與 `30h` 同一支）。"
+  },
+  {
+   "opcode": "0x31",
+   "name": "SPRITE OFF",
+   "dos_handler": "2C8Fh",
+   "advance": "inc",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "只在 `8B65h` 非零時做事，做完把 `8B65h`、`8B62h` 清零——旗標自清就是 exactly-once。"
+  },
+  {
+   "opcode": "0x32",
+   "name": "FIND ITEM",
+   "dos_handler": "2847h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x33",
+   "name": "PRINT RETURN",
+   "dos_handler": "2CEAh",
+   "advance": "inc",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "兩條分支都寫 `65A0h:=1` 與 `inc 65A1h`，差別只在有沒有清 `8B61h`。"
+  },
+  {
+   "opcode": "0x35",
+   "name": "SAVE TABLE",
+   "dos_handler": "0E71h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x36",
+   "name": "ADD NPC",
+   "dos_handler": "2DA9h",
+   "advance": "decode_operands",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "第二個 operand 除以 2 後或上 `80h` 寫進角色 `+0F7h`，再重繪名冊。"
+  },
+  {
+   "opcode": "0x37",
+   "name": "LOAD PIECES",
+   "dos_handler": "0C15h",
+   "advance": "decode_operands",
+   "phase": "deferred",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "與 `21h` 同一支；設 `47E3h:=1`、`47E4h:=1`。兩個閂鎖都到齊才重繪，且兩者在進入新 block 時（overlay-02:3772h）一起被清掉。"
+  },
+  {
+   "opcode": "0x38",
+   "name": "PROGRAM",
+   "dos_handler": "30DDh",
+   "advance": "decode_operands",
+   "phase": "terminal",
+   "remake_boundary": "resumable",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104",
+    "1087"
+   ],
+   "note": "先消費 `47E2h` 才推進 PC。值 0 是即時重繪；值 8 是通關序列（問 Y／N，答 Y 才離開程式）；值 9 與值 3 都轉呼叫 `00h` 的 handler，值 3 另外設 `4FC7h:=1` 的全域停止。⇒ 只有值 3 與值 9 無條件終止。"
+  },
+  {
+   "opcode": "0x3A",
+   "name": "DELAY",
+   "dos_handler": "28F3h",
+   "advance": "inc",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "推進 PC 後呼叫 resident 的延遲常式，沒有 ECL 記憶體副作用。"
+  },
+  {
+   "opcode": "0x3D",
+   "name": "CLEAR BOX",
+   "dos_handler": "2D15h",
+   "advance": "inc",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "就地清框並重畫，收尾 `8B6Eh:=0`、`8B60h:=1`。"
+  },
+  {
+   "opcode": "0x40",
+   "name": "DESTROY ITEMS",
+   "dos_handler": "32D8h",
+   "advance": "decode_operands",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1104"
+   ],
+   "note": "逐角色走 `+14Dh` 物品鏈，`+2Eh` 等於 operand 就移除，最後重繪該角色。"
+  }
+ ]
+}

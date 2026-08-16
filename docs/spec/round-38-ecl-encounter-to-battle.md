@@ -4,7 +4,7 @@
 
 ## 本輪證據
 
-- `ecl.RunResult` 現在保留 `SETUP MONSTER` 與每個 `LOAD MONSTER` 的 descriptor；`CLEARMONSTERS` 會清除目前 encounter prefix。
+- `ecl.RunResult` 現在保留 `SETUP MONSTER` 與每個 `LOAD MONSTER` 的 descriptor；`CLEARMONSTERS` 會清除已累積的 `LOAD MONSTER` 清單，但**保留** `SETUP MONSTER` 寫下的 sprite／圖片／距離（原作 `1Ch` 只釋放怪物鏈與計數，不碰 `ds:7601h`／`7602h`；見 spec 1104 §九之二）。
 - `BlockSession.RunFrom` 會聚合跨 bounded result 的 setup／spawn 資料。
 - `game.State.StartEncounter` 以 `MonsterSpawn`、`MON*CHA` records 與外部 party roster 呼叫 `monster.BuildEnemies`，再建立 playable Battle。
 - `cmd/azure-bonds-game -encounter` 直接執行 ECL1 block `0x51` payload `+0x1293`，載入 `MON1CHA.DAX` 並進入戰鬥畫面。
