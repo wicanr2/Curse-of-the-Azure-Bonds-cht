@@ -775,7 +775,7 @@
    "opcode": "0x1C",
    "name": "CLEARMONSTERS",
    "status": "partial",
-   "note": "CLEARMONSTERS 清怪物鏈與已放置數；原作另清的四塊 bank1 區域未逐格對上",
+   "note": "ECL 看得到的部分已完整（怪物鏈與已放置數；原作另清的 47E6h／8B69h／7603h／6F8Ch 都不是 ECL 變數，見 ecl-shared-cells）。要收尾的是 remake 這側的怪物／圖示模型還有沒有該一起清的狀態",
    "occurrences": 206,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1211,8 +1211,8 @@
   {
    "opcode": "0x31",
    "name": "SPRITE OFF",
-   "status": "consumed",
-   "note": "SPRITE OFF：戰鬥圖示的顯示狀態未還原",
+   "status": "done",
+   "note": "關掉畫面上的怪物圖示；同一次執行又要求新畫面時以新的為準（原作也是先關再畫）",
    "occurrences": 3,
    "blocks": [
     "ECL2.DAX/0x02",
@@ -1457,13 +1457,11 @@
   }
  ],
  "instructions_by_status": {
-  "consumed": 3,
-  "done": 13117,
+  "done": 13120,
   "partial": 1057
  },
  "opcodes_by_status": {
-  "consumed": 1,
-  "done": 49,
+  "done": 50,
   "partial": 11
  },
  "reachable_instructions": 14177,
@@ -1499,9 +1497,9 @@
   "ECL1.DAX/0x51": 34,
   "ECL1.DAX/0x52": 20,
   "ECL2.DAX/0x01": 47,
-  "ECL2.DAX/0x02": 44,
-  "ECL2.DAX/0x03": 44,
-  "ECL2.DAX/0x04": 30,
+  "ECL2.DAX/0x02": 43,
+  "ECL2.DAX/0x03": 43,
+  "ECL2.DAX/0x04": 29,
   "ECL3.DAX/0x10": 57,
   "ECL3.DAX/0x11": 46,
   "ECL3.DAX/0x12": 53,

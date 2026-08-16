@@ -61,6 +61,8 @@ type RunResult struct {
 	SaveWrites             []MemoryWrite
 	// ClearBoxRequested 來自 `3Dh CLEAR BOX`：把文字框清空，且不印新文字。
 	ClearBoxRequested bool
+	// SpriteOffRequested 來自 `31h SPRITE OFF`：關掉畫面上的怪物圖示。
+	SpriteOffRequested bool
 	SessionStartBlockID    uint8
 	SessionEndBlockID      uint8
 	SessionBlockRangeSet   bool
@@ -1593,6 +1595,12 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 					}
 				}
 				result.SpellSearches = append(result.SpellSearches, search)
+			}
+			if instruction.Command.Opcode == 0x31 {
+				// `31h SPRITE OFF` 關掉第一人稱畫面上那隻怪物圖示。原作在
+				// `ECL2.DAX/0x02 +0CCBh` 用它接 `2Dh CALL 2E10h`（畫面提交點）
+				// 再開新頁：逃走之後那隻怪物不該還留在畫面上。
+				result.SpriteOffRequested = true
 			}
 			if instruction.Command.Opcode == 0x3D {
 				// `3Dh CLEAR BOX` 把文字框清空但**不印任何東西**。原作用它在
