@@ -290,8 +290,10 @@ func walkRuns(label string, data []byte) ([]runPath, map[string]string, error) {
 		case endsRun(opcode):
 			// 這裡就是 runtime `return result` 的地方：文字交出去，然後繼續。
 			emit(current)
-			if opcode == 0x15 || opcode == 0x2B {
-				end, err := ecl.MenuEnd(data, instruction.Offset)
+			if _, variable := ecl.VariableLengthCommands[opcode]; variable {
+				// ⚠ 這四個 opcode 的 `Next` 指向自己的第一個運算元，
+				// 真正的結尾要用 `ecl.RecordEnd` 算（spec 1110 §一）。
+				end, err := ecl.RecordEnd(data, instruction.Offset)
 				if err != nil {
 					continue
 				}
@@ -352,4 +354,153 @@ func branchTargetOf(instruction ecl.Instruction, payloadLength int) (int, bool) 
 		return 0, false
 	}
 	return ecl.CodeTarget(instruction.Operands[0], payloadLength)
+}
+
+// walkPages 只回答一個問題：**哪些位址會成為玩家看到的一頁**。
+//
+// ★ 為什麼不能沿用 `walkRuns` 的狀態。 帶文字的走訪把（位址, 呼叫堆疊, 已累積
+// 文字）當成狀態，`ECL1.DAX/0x50`／`0x51` 會爆掉。拿掉文字還是會爆——**呼叫堆疊
+// 本身就是乘數**：世界地圖那一頁尾的翻頁提示子程式有上百個呼叫點，每個返回位址
+// 都是一個不同的堆疊。
+//
+// ⇒ 這裡改用**子程式摘要**：`02h GOSUB` 進去走一次、記下它會產生哪些頁、
+// 回來從 `Next` 繼續，主走訪的狀態只剩（位址, 這一頁開著沒有）。狀態空間變成
+// 位址數×2，整份 corpus 一秒內走得完。
+//
+// ⚠ 這是**過近似**：子程式回來之後那一頁是開是關，取決於它印了什麼，
+// 分不清時兩種都推。過近似會多列頁（變成看得見的待辦），不會少列頁
+// ——方向與「寧可少標也不要多標」相反是刻意的：**分母寧可多，比對寧可少**。
+//
+// 回傳的是「頁起點 → 這一頁自己那條指令的文字」。完整的一頁文字（含同頁後續的
+// `PRINT`）由 `walkRuns` 提供，這裡只保證**頁不會漏**。
+func walkPages(data []byte) (map[string]string, error) {
+	if len(data) < 2 {
+		return nil, nil
+	}
+	payload := data[2:]
+	points, _, err := ecl.EntryPoints(data, 5)
+	if err != nil {
+		return nil, err
+	}
+	decode := decoder(data)
+	pageText := map[string]string{}
+
+	record := func(instruction ecl.Instruction, open bool) bool {
+		text := instructionText(instruction)
+		if text == "" {
+			return open
+		}
+		if !open {
+			pageText[fmt.Sprintf("0x%04X", instruction.Offset)] = text
+		}
+		return true
+	}
+
+	// walk 從一個位址走到這一條路的盡頭，回傳「離開時這一頁是開是關」的可能值。
+	// expanding 擋住子程式互相遞迴。
+	expanding := map[int]bool{}
+	var walk func(start int, open bool, insideSubroutine bool) (endsOpen map[bool]bool)
+	walk = func(start int, open bool, insideSubroutine bool) map[bool]bool {
+		ends := map[bool]bool{}
+		type node struct {
+			offset int
+			open   bool
+		}
+		seen := map[node]bool{}
+		queue := []node{{start, open}}
+		for len(queue) > 0 {
+			current := queue[len(queue)-1]
+			queue = queue[:len(queue)-1]
+			if current.offset < 0 || current.offset >= len(payload) || seen[current] {
+				continue
+			}
+			seen[current] = true
+			instruction, err := decode(current.offset)
+			if err != nil {
+				continue
+			}
+			opcode := instruction.Command.Opcode
+			push := func(offset int, open bool) { queue = append(queue, node{offset, open}) }
+
+			switch {
+			case opcode == 0x11 || opcode == 0x12:
+				open := current.open
+				if opcode == 0x12 {
+					open = false
+				}
+				push(instruction.Next, record(instruction, open))
+
+			case opcode == 0x01:
+				if target, ok := branchTargetOf(instruction, len(payload)); ok {
+					push(target, current.open)
+				}
+
+			case opcode == 0x02:
+				target, ok := branchTargetOf(instruction, len(payload))
+				if !ok {
+					continue
+				}
+				after := map[bool]bool{current.open: true}
+				if !expanding[target] {
+					expanding[target] = true
+					after = walk(target, current.open, true)
+					delete(expanding, target)
+				}
+				for open := range after {
+					push(instruction.Next, open)
+				}
+
+			case opcode == 0x13:
+				// 子程式的出口；主流程踩到堆疊空的 RETURN 就是結束。
+				ends[current.open] = true
+
+			case opcode == 0x00:
+				ends[current.open] = true
+
+			case opcode == 0x25 || opcode == 0x26:
+				targets, end, err := ecl.BranchTargets(data, instruction.Offset)
+				if err != nil {
+					continue
+				}
+				for _, target := range targets {
+					push(target, current.open)
+				}
+				push(end, current.open)
+
+			case opcode >= 0x16 && opcode <= 0x1B:
+				push(instruction.Next, current.open)
+				if skipped, err := decode(instruction.Next); err == nil {
+					push(skipped.Next, current.open)
+				}
+
+			case endsRun(opcode):
+				next := instruction.Next
+				if _, variable := ecl.VariableLengthCommands[opcode]; variable {
+					end, err := ecl.RecordEnd(data, instruction.Offset)
+					if err != nil {
+						continue
+					}
+					next = end
+				}
+				push(next, false)
+
+			default:
+				push(instruction.Next, current.open)
+			}
+		}
+		if len(ends) == 0 {
+			// 走到盡頭都沒有 RETURN／EXIT（例如整條都在迴圈裡）：兩種都可能。
+			ends[true], ends[false] = true, true
+		}
+		return ends
+	}
+
+	for _, point := range points {
+		offset := int(point) - ecl.CodeAddressBase
+		if offset < 0 || offset >= len(payload) {
+			continue
+		}
+		walk(offset, false, false)
+	}
+	return pageText, nil
 }

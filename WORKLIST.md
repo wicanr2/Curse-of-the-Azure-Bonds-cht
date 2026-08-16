@@ -1,33 +1,45 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-13（第 559 輪：轉向全模組反組譯盤點）
+更新日期：2026-08-16（第 566 輪：ECL 劇情串接的分母重算完成，轉入副作用與系統層）
 
-## 第 559 輪起的執行順序（優先於下方舊清單）
+## 目前執行順序（使用者 2026-08-16 指定，優先於下方所有舊清單）
 
-使用者指示先徹底完成反組譯分析，再繼續 remake。口徑見 `AGENTS.md` §2.5，
-基線與工具見 [`docs/spec/559-full-module-re-sweep.md`](docs/spec/559-full-module-re-sweep.md)。
+### 第 0 批：把上一輪留下的邊界收乾淨
 
-1. ~~ECL opcode → handler 全表~~ **第 560 輪已完成**：兩平台各 44 個 handler、
-   涵蓋 53 個 opcode、需人工讀 0 個，指令集與分組完全一致。表在
-   [`docs/audit/ecl-opcode-dispatch.md`](docs/audit/ecl-opcode-dispatch.md)。
-   handler 的語意仍全部 `待解讀`。
-2. **`INTERPET` 內部函式盤點**：85（PC-98）／90（DOS）個函式逐一標狀態，
-   優先處理 dispatcher 直接呼叫的那 52 個 handler。第 562 輪已把 helper 呼叫
-   解回 ECL2 原始函式名，並產出 arity 交叉稽核（64 個 opcode 中 35 個與
-   `KnownCommands` 一致）。**下一步是逐一讀那 29 筆不一致的 handler**，見
-   [`docs/audit/ecl-handler-operand-audit.md`](docs/audit/ecl-handler-operand-audit.md)。
-3. ~~external `CALL` registry~~ **第 561 輪已完成 selector 層**：engine 認得
-   7 個 external routine（兩平台相同），CoAB corpus 只靜態使用其中 2 個
-   （`2E10h`×12、`6803h`×11＝23 個 CALL）。表在
-   [`docs/audit/ecl-external-call-registry.md`](docs/audit/ecl-external-call-registry.md)。
-   **剩下的是每個 routine 的實際效果**（7 個分支主體全部 `待解讀`）。
-4. **`code = 80h`（packed text）長度規則與 bank 1 計算 routine**：第 563–565 輪
-   已閉合 ECL 的分派、operand 編碼、記憶體讀寫與 bank 圖，整理在
-   [`docs/knowledge/gold-box-ecl-interpreter.md`](docs/knowledge/gold-box-ecl-interpreter.md)。
-   剩下這兩條就補齊 VM 核心。
-5. **未定義區段判定**：DOS 16,044／PC-98 20,319 bytes，逐段判定是字串表、
-   常數表或未觸及的程式碼；是資料就要接回 DAX／GEO／文字來源。
-6. 之後才回到下方 P0/P1 的玩家路徑工作。
+這三項不是新功能，是**讓前一輪的結論站得住**。做完才往下走。
+
+| # | 項目 | 現況 | 要做什麼 |
+|---:|---|---|---|
+| 0-1 | **變長指令的長度守衛** | ✅ 長度公式已補（`ecl.BranchTargets`／`ecl.MenuEnd`，spec 1110） | 加**上限驗證與回歸測試**：`25h`／`26h`／`15h`／`2Bh` 的 arity 是 0，`Instruction.Next` 指向自己的第一個運算元；任何相信它的走訪器會把資料當程式解而**不報錯**。要有測試擋住「有人又拿 `Next` 去走這四個 opcode」 |
+| 0-2 | **`ECL1.DAX/0x51` 走訪截斷** | 碰到 400 萬狀態上限提早停，世界地圖那兩個 block 可能有頁沒進分母 | 收斂狀態空間或分段走訪，讓全 corpus 都走得完；走不完就要能說出**漏了哪些位址**，不能只說「可能有」 |
+| 0-3 | **16 頁 `variable-insert`** | 頁裡印的是執行期的值，靜態驗不到；其中 7 頁沒有任何規則 | 逐頁判定：按值列舉（同 `world.night-note.24/35/42`）、或確認 remake 不需要。**不准寫會把值吃掉的固定句** |
+
+### 第 1 批：使用者指定的主線（依序）
+
+| 順序 | ID | 內容 |
+|---:|---|---|
+| 1 | `ENG-01` | 事件內容——**文字層已接完**（spec 1110），剩副作用與第 0 批的尾巴 |
+| 2 | `RE-04` | 劇情與全地圖事件的**逐格盤點**：producer、條件、分支、副作用、重訪 |
+| 3 | `RE-06` → `ENG-07` | 戰鬥回合生命週期：initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
+| 4 | `RE-07` → `ENG-08` | 怪物 AI 與特殊能力：移動、目標優先、施法、逃跑、群體、抗性、免疫、毒素、凝視 |
+| 5 | `ENG-09` | 全法術表：target、range/area、save、duration、stack/dispel |
+| 6 | `RE-05` → `ENG-10` | 存檔：原版 bundle 全欄位讀取 ＋ remake 自己的存檔完整性（決策四：**不做寫回原版**） |
+
+條目的完整敘述與依賴見
+[`docs/knowledge/coab-remake-todo.md`](docs/knowledge/coab-remake-todo.md)，
+本檔只排順序。
+
+### 反組譯盤點（第 559 輪起）的殘項
+
+轉向 remake 主線之後仍未關的幾條，不擋第 1 批，可平行：
+
+1. ~~ECL opcode → handler 全表~~ ✅ 第 560 輪完成（`ecl-opcode-dispatch.md`）。
+2. **`INTERPET` 內部函式盤點**：29 筆 arity 與 `KnownCommands` 不一致的 handler
+   待逐一讀（`ecl-handler-operand-audit.md`）。⚠ **第 0-1 項與這裡同源**——
+   spec 1110 找到的四個變長指令就是「arity 表說 0、實際不是 0」的那一類。
+3. ~~external `CALL` registry selector 層~~ ✅ 第 561 輪完成；7 個分支主體仍 `待解讀`。
+4. **`code = 80h`（packed text）長度規則與 bank 1 計算 routine**——補齊 VM 核心的最後兩條。
+5. **未定義區段判定**：DOS 16,044／PC-98 20,319 bytes 逐段判定（`RE-11`）。
 
 每完成一批就更新 `docs/audit/re-function-ledger.json` 並重跑 `cmd/re-ledger`；
 台帳裡的 `待解讀` 數字是這個階段唯一的進度指標。

@@ -5409,6 +5409,15 @@
    "message_id": "standing-stone.seek-red"
   },
   {
+   "id": "standing-stone.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF",
+    "STANDING STONES",
+    "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"
+   ],
+   "message_id": "standing-stone.edge"
+  },
+  {
    "id": "world-route.essembra",
    "all_contains": [
     "HOW WILL YOU GET TO ESSEMBRA"
@@ -5421,6 +5430,102 @@
     "HOW WILL YOU GET TO HAP"
    ],
    "message_id": "world-route.hap"
+  },
+  {
+   "id": "world-route.tilverton",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "TILVERTON"
+   ],
+   "message_id": "world-route.tilverton"
+  },
+  {
+   "id": "world-route.shadowdale",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "SHADOWDALE"
+   ],
+   "message_id": "world-route.shadowdale"
+  },
+  {
+   "id": "world-route.ashabenford",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "ASHABENFORD"
+   ],
+   "message_id": "world-route.ashabenford"
+  },
+  {
+   "id": "world-route.dagger-falls",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "DAGGER FALLS"
+   ],
+   "message_id": "world-route.dagger-falls"
+  },
+  {
+   "id": "world-route.standing-stone",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "STANDING STONES"
+   ],
+   "message_id": "world-route.standing-stone"
+  },
+  {
+   "id": "world-route.voonlar",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "VOONLAR"
+   ],
+   "message_id": "world-route.voonlar"
+  },
+  {
+   "id": "world-route.teshwave",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "TESHWAVE"
+   ],
+   "message_id": "world-route.teshwave"
+  },
+  {
+   "id": "world-route.hillsfar",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "HILLSFAR"
+   ],
+   "message_id": "world-route.hillsfar"
+  },
+  {
+   "id": "world-route.myth-drannor",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "MYTH DRANNOR"
+   ],
+   "message_id": "world-route.myth-drannor"
+  },
+  {
+   "id": "world-route.phlan",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "PHLAN"
+   ],
+   "message_id": "world-route.phlan"
+  },
+  {
+   "id": "world-route.yulash",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "YULASH"
+   ],
+   "message_id": "world-route.yulash"
+  },
+  {
+   "id": "world-route.zhentil",
+   "all_contains": [
+    "HOW WILL YOU GET TO",
+    "ZHENTIL KEEP"
+   ],
+   "message_id": "world-route.zhentil"
   },
   {
    "id": "tilverton.guildmaster-greeting",
@@ -5828,6 +5933,38 @@
     "A WELL MUSCLED, MIDDLE AGED MAN"
    ],
    "message_id": "fire-knife.torture-chamber"
+  },
+  {
+   "id": "fire-knife.checkpoint-north",
+   "all_contains": [
+    "YOU SPOT A CHECKPOINT TO THE",
+    "NORTH."
+   ],
+   "message_id": "fire-knife.checkpoint-north"
+  },
+  {
+   "id": "fire-knife.checkpoint-east",
+   "all_contains": [
+    "YOU SPOT A CHECKPOINT TO THE",
+    "EAST."
+   ],
+   "message_id": "fire-knife.checkpoint-east"
+  },
+  {
+   "id": "fire-knife.checkpoint-south",
+   "all_contains": [
+    "YOU SPOT A CHECKPOINT TO THE",
+    "SOUTH."
+   ],
+   "message_id": "fire-knife.checkpoint-south"
+  },
+  {
+   "id": "fire-knife.checkpoint-west",
+   "all_contains": [
+    "YOU SPOT A CHECKPOINT TO THE",
+    "WEST."
+   ],
+   "message_id": "fire-knife.checkpoint-west"
   },
   {
    "id": "tilverton.carriage-gate-closed",
@@ -6854,6 +6991,94 @@
    "message_id": "tilverton.sewers.trolls-and-crocodiles"
   },
   {
+   "id": "tilverton.sign.general-store",
+   "all_contains": [
+    "YOU SEE A SIGN OVERHEAD",
+    "TILVERTON GENERAL STORE"
+   ],
+   "message_id": "tilverton.sign.general-store"
+  },
+  {
+   "id": "tilverton.sign.weaponers",
+   "all_contains": [
+    "YOU SEE A SIGN OVERHEAD",
+    "WEAPONERS OF CORMYR"
+   ],
+   "message_id": "tilverton.sign.weaponers"
+  },
+  {
+   "id": "tilverton.sign.windlords-inn",
+   "all_contains": [
+    "YOU SEE A SIGN OVERHEAD",
+    "WINDLORD'S INN"
+   ],
+   "message_id": "tilverton.sign.windlords-inn"
+  },
+  {
+   "id": "tilverton.sign.the-curse",
+   "all_contains": [
+    "YOU SEE A SIGN OVERHEAD",
+    "THE CURSE"
+   ],
+   "message_id": "tilverton.sign.the-curse"
+  },
+  {
+   "id": "tilverton.sign.sage-filani",
+   "all_contains": [
+    "YOU SEE A SIGN OVERHEAD",
+    "THE SAGE FILANI"
+   ],
+   "message_id": "tilverton.sign.sage-filani"
+  },
+  {
+   "id": "tilverton.sign.hall-of-training",
+   "all_contains": [
+    "YOU SEE A SIGN OVERHEAD",
+    "THE HALL OF TRAINING"
+   ],
+   "message_id": "tilverton.sign.hall-of-training"
+  },
+  {
+   "id": "tilverton.sign.temple-of-gond",
+   "all_contains": [
+    "YOU SEE A SIGN OVERHEAD",
+    "TEMPLE OF GOND"
+   ],
+   "message_id": "tilverton.sign.temple-of-gond"
+  },
+  {
+   "id": "tilverton.sewers.checkpoint-remains-north",
+   "all_contains": [
+    "YOU SPOT THE REMAINS OF A CHECKPOINT TO THE",
+    "NORTH."
+   ],
+   "message_id": "tilverton.sewers.checkpoint-remains-north"
+  },
+  {
+   "id": "tilverton.sewers.checkpoint-remains-east",
+   "all_contains": [
+    "YOU SPOT THE REMAINS OF A CHECKPOINT TO THE",
+    "EAST."
+   ],
+   "message_id": "tilverton.sewers.checkpoint-remains-east"
+  },
+  {
+   "id": "tilverton.sewers.checkpoint-remains-south",
+   "all_contains": [
+    "YOU SPOT THE REMAINS OF A CHECKPOINT TO THE",
+    "SOUTH."
+   ],
+   "message_id": "tilverton.sewers.checkpoint-remains-south"
+  },
+  {
+   "id": "tilverton.sewers.checkpoint-remains-west",
+   "all_contains": [
+    "YOU SPOT THE REMAINS OF A CHECKPOINT TO THE",
+    "WEST."
+   ],
+   "message_id": "tilverton.sewers.checkpoint-remains-west"
+  },
+  {
    "id": "bond-dream.first-night",
    "all_contains": [
     "FIRST NIGHT OUTSIDE THE CITY",
@@ -7876,6 +8101,42 @@
     "YOU MOVE AWAY."
    ],
    "message_id": "world.move-away"
+  },
+  {
+   "id": "world.dagger-falls.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF",
+    "DAGGER FALLS",
+    "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"
+   ],
+   "message_id": "world.dagger-falls.edge"
+  },
+  {
+   "id": "world.voonlar.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF",
+    "VOONLAR",
+    "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"
+   ],
+   "message_id": "world.voonlar.edge"
+  },
+  {
+   "id": "world.teshwave.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF",
+    "TESHWAVE",
+    "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"
+   ],
+   "message_id": "world.teshwave.edge"
+  },
+  {
+   "id": "world.phlan.edge",
+   "all_contains": [
+    "YOU ARE AT THE EDGE OF",
+    "PHLAN",
+    "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"
+   ],
+   "message_id": "world.phlan.edge"
   }
  ],
  "option_rules": [

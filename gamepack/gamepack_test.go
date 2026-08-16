@@ -1794,3 +1794,65 @@ func TestOpeningScrollAndFieldEventsAreGamePackDriven(t *testing.T) {
 		}
 	}
 }
+
+// ★ 靜態覆蓋工具驗不到的那 16 頁（`docs/audit/ecl-text-coverage.md` 的
+// `variable-insert`）：頁裡印的是執行期的值，靜態文字裡沒有那幾個字，
+// 所以 `unmatched=0` 對它們**什麼都沒說**。
+//
+// 這條測試把「靠實機路徑驗」換成可重跑的閘：依 `internal/ecl/runtime.go` 的
+// `result.Text` 形狀（每個 `PRINT` 運算元各是一個元素，值也是一個元素）重建
+// 實機會拿到的字串序列，再問 `MatchText` 接不接得上。
+//
+// ⚠ 下面的 `unhandled` 是**明確宣稱還沒接**的清單，不是待補的註解。
+// 哪天替它們加了機制，這條測試會紅並要求把該列搬到 handled——
+// 「已知沒接」與「忘了接」在報告裡長得一樣，只有把它寫死才分得開。
+func TestVariableInsertPagesAreWiredAtRuntime(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	handled := []struct {
+		name  string
+		texts []string
+	}{
+		{"世界地圖：城鎮邊緣（14 個目的地之一）", []string{
+			"YOU ARE AT THE EDGE OF", "DAGGER FALLS", ". WILL YOU ENTER OR CONTINUE YOUR JOURNEY?"}},
+		{"世界地圖：旅行目的地", []string{"HOW WILL YOU GET TO", "TESHWAVE", "?"}},
+		{"提爾佛頓：店家招牌（七塊之一）", []string{
+			"YOU SEE A SIGN OVERHEAD", "WEAPONERS OF CORMYR"}},
+		{"下水道：檢查哨殘骸的方向", []string{
+			"YOU SPOT THE REMAINS OF A CHECKPOINT TO THE", "SOUTH."}},
+		{"火刀據點：檢查哨的方向", []string{"YOU SPOT A CHECKPOINT TO THE", "WEST."}},
+		{"野外夜間：胸前紙條的手札編號", []string{
+			"ONE MORNING, THE PARTY SPOTS A NOTE PINNED TO", "ARIBETH",
+			"'S CHEST. YOU READ IT, AND YOU RECORD IT IN JOURNAL ENTRY", "24", "."}},
+	}
+	for _, test := range handled {
+		if result := pack.MatchText(test.texts, "zh-TW"); !result.Matched {
+			t.Fatalf("%s 在實機接不上：%v", test.name, test.texts)
+		}
+	}
+
+	// 還沒接的四類，各附上為什麼。
+	unhandled := []struct {
+		name   string
+		reason string
+		texts  []string
+	}{
+		{"酒館傳聞編號", "編號來自 7F79h，而那一格在 corpus 裡被許多不相干的流程寫過；" +
+			"要先追出這一頁的寫入來源（RANDOM 或 GETTABLE）才知道可能的編號集合",
+			[]string{"YOU OVERHEAR TAVERN TALE", "31", "."}},
+		{"競技場賭金", "金額是算出來的，無法列舉；要嘛規則支援佔位符，要嘛這一頁維持原文",
+			[]string{"CONGRATULATIONS, YOU HAVE WON", "250", "PLATINUM."}},
+		{"巫師塔光球距離", "距離逐回合遞減，同上",
+			[]string{"IT IS NOW ONLY", "20", "FEET FROM THE RED WIZARD."}},
+		{"隊員名字", "玩家自己取的名字，無法列舉",
+			[]string{"THE SPHERE MOVES TOWARD THE OPPOSING MAGE.", "KIVAN", ". IT IS NOW ONLY", "10", "FEET FROM", "KIVAN", "."}},
+	}
+	for _, test := range unhandled {
+		if result := pack.MatchText(test.texts, "zh-TW"); result.Matched {
+			t.Fatalf("%s 已經接上了（命中 %s），請把它從 unhandled 搬到 handled；理由欄寫的是：%s",
+				test.name, result.RuleID, test.reason)
+		}
+	}
+}

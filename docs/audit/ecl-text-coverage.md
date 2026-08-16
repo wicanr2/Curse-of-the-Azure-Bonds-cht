@@ -2,13 +2,14 @@
 
 由 `cmd/ecl-text-coverage` 產生，不要手改。
 
-- 分母是**控制流走訪**得到的頁，不是位址順序切出來的段：從五個 lifecycle entry 出發，跟循序、`GOTO`／`GOSUB`／`RETURN`、`IF` 的兩條路（spec 1106）、以及 `25h ON GOTO`／`26h ON GOSUB` 的每一個目的地。`15h`／`2Bh` 選單與 `25h`／`26h` 都是變長指令，長度自己算（`ecl.MenuEnd`／`ecl.BranchTargets`）——信 `Instruction.Next` 會走進運算元裡把資料當程式解。
+- 分母是**控制流走訪**得到的頁，不是位址順序切出來的段：從五個 lifecycle entry 出發，跟循序、`GOTO`／`GOSUB`／`RETURN`、`IF` 的兩條路（spec 1106）、以及 `25h ON GOTO`／`26h ON GOSUB` 的每一個目的地。`15h`／`2Bh` 選單與 `25h`／`26h` 是變長指令，長度一律用 `ecl.RecordEnd`——它們的 `Instruction.Next` 指向自己的第一個運算元，信它會把資料當程式解而且不報錯。
+- 分母與比對**走兩趟**：`walkPages` 不帶文字（狀態只有位址、子程式摘要與一個位元），整份 corpus 都走得完，所以「有哪些頁」是完整的；`walkRuns` 帶文字用來比對，碰到狀態上限只會**少判**，不會讓頁從分母裡消失。兩者的差額由 `TestPageWalkCoversEveryPageTheRunWalkFinds` 印出來（目前 0 頁）。
 - 比對以 **run** 為單位：runtime 把一次執行累積的文字**一次**交給 `MatchText`，所以一條規則可以橫跨好幾頁（開場捲軸就是七頁一條）。run 在會 `return result` 的指令處結束（選單、戰鬥、寶物、輸入、換 block、離開）。
 - 一條 run 命中，它經過的每一頁就都算接上了——規則命中的是那一整份文字，不是其中某一頁。反過來，同一份文字可能印在好幾個位址上，那些位址一律算進同一條 run。
 - `variable-insert` 是**唯一**還無法靜態驗證的一類：頁裡印的是執行期的值（城名、酒館傳聞編號、隊員名），靜態文字裡沒有那幾個字，規則要靠它才會命中。逐城的 `*.edge`、`*.tavern-tale-*`、`world-route.*`、`world.night-note.*` 都屬於這一類，要靠實機路徑驗。
 - `subroutine` 是共用子程式的片段（`WHAT DO YOU DO?`、`UP`／`DOWN`）。判準是「落在被 `GOSUB` 呼叫的範圍內」**且**「從來沒有和別的頁同屬一份 run」——實機它一定被併進呼叫端那一頁。**不要**替它們寫規則：只有一兩個字的 `all_contains` 會攔截到別的文字。
 - `gosub_inserts`／`dynamic_branch` 只是**註記**，不是狀態：那兩種插入已經在走訪時展開，展開後沒命中就照樣算 `unmatched`。兩個計數與 `matched`／`unmatched` 有重疊，加起來不等於 `groups`。
-- ⚠ `ECL1.DAX/0x51` 的走訪會碰到狀態數上限（4,000,000）而提早停：世界地圖那一段 `IF` 分岔多又長，狀態數隨之指數成長。碰到上限會在 stderr 印一行，**沒有靜默截斷**；代價是那個 block 可能有走不到的頁沒進分母。
+- ⚠ `ECL1.DAX/0x50`／`0x51` 的**比對**走訪會碰到狀態上限（4,000,000）而提早停：世界地圖那一段 `IF` 分岔多又長。碰到上限會在 stderr 印一行，**沒有靜默截斷**；分母不受影響（見上一條），代價只是那個 block 可能有頁比對不到而算成待辦。實測目前兩趟走訪找到的頁完全相同，代價為 0。
 - 『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。
 
 ## 摘要
