@@ -604,6 +604,195 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/far-call-map/main.go",
+      "function": "main",
+      "sha256": "7299c956bbb9d191164800d0ca854c4650b0db65a2ece5f9d9914af9c6a13833",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "main",
+      "sha256": "b0a80c708155ef4a6629db6ce6e7263eb7491197edfd479c5916633ca5e41a6a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "main",
+      "sha256": "e0a80a0db55c043f9abb925e3464b7f94bb912575b16e9c1d0a29d3e198cc0ac",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "main",
+      "sha256": "f7cbe32a3373a809ee410e16c8353f4e2cae3e31da6fc31c753fe43dbf6d33ce",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "main",
+      "sha256": "fff5cb9e9bc24edb28f07463425ce11f927f7bc7f2a2d6d86ce8f01d063baaa7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "13c83a8a875ec7e2062411851fe501ab53a525064bf5d4b7e53233fd2d729ac6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "19d06c7650bd26a4234b2179a99a79dfee601a81d74f440935df0acda5435188",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "28189a5481ffa036abf99c5e7e99c9bbd1ae94a1ba6df049eebb20a2f62615fb",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "2f7c1bfc04a4254a457c767d1072b1b56790b88a060444b043557f4b06562d4f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "356307303e238c4564edd5f81586cfec18d31add65b57cd1573bf1170688a21b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "40e2168246c1f34c888ffaf78a0c799ce6bc0f2144a0cc6758725a2750540f43",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "459d83222c4830019946ae314f8fc2a2d3d1a9518811ebaa253de05c47df6951",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "459f6021ab07dd1fa2c3e124e9ccd05efd1ab0a58d2524ae6153691b94037fa6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "6668473d970ddc3fbcfe7d7515afe02402fcc116b0a80ab2d5bbe94111da6015",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "692e2b57286c02aeaf469c9a43f41a63efd16a97e449053a262ca5e0072b2b4a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "76f00c64beb877c65082c1dbbb7f260c51c7375ac63fc3f908e7d896af49eabd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "788eb6848b9b59669a868064c40bab51259f94ca7748a7bb2569e4365460b8ca",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "7ef00e2f3772d9010304472663beac18158ec66b312d37a14bbdc3fb9297718d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "8144948a54365d09632fae377922aeb0046e790a3203a3257064386880c0ba18",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "875d85c8c66ef138100ec60b8f0e7f500e6ba81defbb66a7644a696380e14ca5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "a265411536898c17bad2fcc2cad63bf91259d21bdccd595580158039a9a28283",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "a30ac1014ceac3ba1b9b45468f572f7812ecdf4c8734e2700964fa0a818296e3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "aea4f359fd3a22ca153f16ab4fbe1bde1ff5ad758fed319d468f0b42605a26d6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "b198af74b85f24bf2359a96487093b6827a646d1a2b41fc525f1795b0ebc6166",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "c881c758a4ea0297718ac7ed7073062f260ceb068d9541339966c200861a0656",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "d281e7784702522ada7c279e210024e38058dd0646662957332f01146bfbe1db",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/far-call-map/main.go",
+      "function": "renderMarkdown",
+      "sha256": "ea44e542857c21a309df4f37859cd222d3baa4b300ec4ec030c8feac4d68ab44",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/glossary-audit/main.go",
       "function": "renderMarkdown",
       "sha256": "3ea6b930ce13474a79235e01a64dedba81a3f0064443d2d87bcc4e8a27311265",
