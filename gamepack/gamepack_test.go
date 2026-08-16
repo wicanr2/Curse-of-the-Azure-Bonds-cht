@@ -1631,3 +1631,89 @@ func TestJournalImagesMatchTheAssetDirectory(t *testing.T) {
 		}
 	}
 }
+
+// 規則是 first-match-wins，所以一條規則可能被前面更寬鬆的規則整個攔走，
+// 永遠不會生效。把每條規則自己的 `all_contains` 接起來餵回去，贏的必須是它自己。
+//
+// ⚠ 這只抓得到「片段互為子集」那一類。前面的規則若靠**別的**片段命中同一頁
+// （`tilverton.green-robes-rumor` 需要三個片段，其中只有一個與後來者重疊），
+// 這支看不出來——那要拿原作那一頁的完整文字比才行。
+func TestNoTextRuleIsShadowedByAnEarlierOne(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, rule := range pack.TextRules {
+		joined := strings.Join(rule.AllContains, " ")
+		result := pack.MatchText([]string{joined}, pack.DefaultLocale)
+		if result.RuleID != rule.ID {
+			t.Errorf("%s 永遠不會生效：同樣的文字被 %s 攔走", rule.ID, result.RuleID)
+		}
+	}
+}
+
+// 提爾佛頓街頭與熔岩洞這一批，餵的是原作逐條 PRINT 的字串序列。
+func TestTilvertonStreetsAndLavaTubeAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	crowd := func(rumor ...string) []string {
+		return append([]string{"AS YOU ARE PASSING THROUGH THE CROWDS, YOU HEAR, '"}, rumor...)
+	}
+	tests := []struct {
+		id    string
+		texts []string
+	}{
+		{"tilverton.door-locked-guards", []string{
+			"THE DOOR IS LOCKED.", "YOUR ATTEMPT TO ENTER HAS ATTRACTED A GROUP OF ROYAL GUARDS."}},
+		{"tilverton.door-locked", []string{"THE DOOR IS LOCKED."}},
+		{"tilverton.patrol-attacks", []string{"A PATROL ARRIVES.", "'THERE THEY ARE!'"}},
+		{"tilverton.patrol-move-along", []string{
+			"A PATROL ARRIVES.", "ROYAL GUARDS TELL YOU TO MOVE ALONG."}},
+		{"tilverton.guards-spot-party", []string{"'THERE THEY ARE!'"}},
+		{"tilverton.reinforcements-flee", []string{"REINFORCEMENTS ARE COMING.", "YOU MOVE AWAY."}},
+		{"tilverton.narrow-street", []string{
+			"THE STREET GROWS NARROW AND DIM HERE, WITH TRASH", "PILED IN THE CORNERS."}},
+		{"tilverton.patrol-surrender-demand", []string{
+			"A PATROL SPOTS YOU. ONE ASKS YOU TO SURRENDER. DO", "YOU?"}},
+		{"tilverton.rumor.sewer-scream", crowd("I SWEAR I HEARD A WOMAN SCREAMING IN THE SEWERS.'")},
+		{"tilverton.green-robes-rumor", crowd("THE WOMAN IN THE GREEN ROBES -- EYES OF A FANATIC.'")},
+		{"tilverton.rumor.dragon-flight", crowd(
+			"I'M CERTAIN IT WAS A DRAGON THAT PASSED OVER LAST NIGHT.",
+			"GOND HELP US IF THERE'S ANOTHER FLIGHT OF THE DRAGONS.'")},
+		{"tilverton.rumor.troops", crowd(
+			"THE TOWN WAS SAFER BEFORE THE TROOPS CAME. NOW STRANGE", "FOLK ARE ABOUT.'")},
+		{"tilverton.rumor.gharri-sighted", crowd(
+			"SOMEONE SAID THAT GHARRI WAS SEEN JUST OUTSIDE OF TOWN.'")},
+		{"tilverton.rumor.knives-bolder", crowd(
+			"THE KNIVES ARE GETTING BOLDER. SOMETHING'S GONNA BLOW.'")},
+		{"tilverton.alley.man-calls", []string{
+			"A MAN YELLS FROM A NEARBY ALLEYWAY, 'OVER HERE,", "BEFORE THE GUARDS FINISH YOU OFF!"}},
+		{"tilverton.alley.safer", []string{"THE DARK ALLEYWAYS LOOK SAFER THAN THE MAIN STREETS."}},
+		{"tilverton.alley.not-searched", []string{"THE GUARDS DO NOT APPEAR TO BE SEARCHING THE ALLEYS."}},
+		{"tilverton.alley.escape-route", []string{
+			"A MAN WAVES AT YOU FROM AN ALLEYWAY. IT LOOKS LIKE", "AN AVENUE OF ESCAPE."}},
+		{"lava-tube.cask-unhealthy", []string{"THAT ONE IS NOT HEALTHY ENOUGH."}},
+		{"lava-tube.cask-try-another", []string{"DO YOU WANT TO TRY FOR ANOTHER?"}},
+		{"lava-tube.casks-emptied", []string{"ALL THE CASKS HAVE BEEN EMPTIED."}},
+		{"lava-tube.exit-to-wilderness", []string{
+			"THIS WILL TAKE YOU TO THE WILDERNESS. DO YOU WANT", "TO CONTINUE?"}},
+		{"lava-tube.return-or-beyond", []string{
+			"DO YOU WANT TO RETURN TO HAPTOOTH VILLAGE OR HEAD", "BEYOND?"}},
+		{"lava-tube.blocked-rubble", []string{"THE WAY IS BLOCKED WITH RUBBLE."}},
+		{"lava-tube.patrol-attacks", []string{"A PATROL SPOTS YOU AND ATTACKS."}},
+		{"lava-tube.elves-see-mark", []string{
+			"A PARTY OF ELVES SPOTS YOU, BUT SEEING SILK'S MARK,", "THEY MOVE AWAY."}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.texts, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}

@@ -2236,6 +2236,63 @@
    ]
   },
   {
+   "id": "lava-tube.cask-unhealthy",
+   "all_contains": [
+    "THAT ONE IS NOT HEALTHY ENOUGH"
+   ],
+   "message_id": "lava-tube.cask-unhealthy"
+  },
+  {
+   "id": "lava-tube.cask-try-another",
+   "all_contains": [
+    "DO YOU WANT TO TRY FOR ANOTHER?"
+   ],
+   "message_id": "lava-tube.cask-try-another"
+  },
+  {
+   "id": "lava-tube.casks-emptied",
+   "all_contains": [
+    "ALL THE CASKS HAVE BEEN EMPTIED"
+   ],
+   "message_id": "lava-tube.casks-emptied"
+  },
+  {
+   "id": "lava-tube.exit-to-wilderness",
+   "all_contains": [
+    "THIS WILL TAKE YOU TO THE WILDERNESS"
+   ],
+   "message_id": "lava-tube.exit-to-wilderness"
+  },
+  {
+   "id": "lava-tube.return-or-beyond",
+   "all_contains": [
+    "DO YOU WANT TO RETURN TO HAPTOOTH VILLAGE OR HEAD"
+   ],
+   "message_id": "lava-tube.return-or-beyond"
+  },
+  {
+   "id": "lava-tube.blocked-rubble",
+   "all_contains": [
+    "THE WAY IS BLOCKED WITH RUBBLE"
+   ],
+   "message_id": "lava-tube.blocked-rubble"
+  },
+  {
+   "id": "lava-tube.patrol-attacks",
+   "all_contains": [
+    "A PATROL SPOTS YOU AND ATTACKS"
+   ],
+   "message_id": "lava-tube.patrol-attacks"
+  },
+  {
+   "id": "lava-tube.elves-see-mark",
+   "all_contains": [
+    "A PARTY OF ELVES SPOTS YOU",
+    "THEY MOVE AWAY"
+   ],
+   "message_id": "lava-tube.elves-see-mark"
+  },
+  {
    "id": "area5.depart-akabar",
    "all_contains": [
     "YOUR HELP WAS INVALUABLE TO ME",
@@ -3215,6 +3272,131 @@
     "GUARDS BAR YOUR WAY"
    ],
    "message_id": "tilverton.entry-barred"
+  },
+  {
+   "id": "tilverton.door-locked-guards",
+   "all_contains": [
+    "THE DOOR IS LOCKED",
+    "ATTRACTED A GROUP OF ROYAL GUARDS"
+   ],
+   "message_id": "tilverton.door-locked-guards"
+  },
+  {
+   "id": "tilverton.door-locked",
+   "all_contains": [
+    "THE DOOR IS LOCKED"
+   ],
+   "message_id": "tilverton.door-locked"
+  },
+  {
+   "id": "tilverton.patrol-attacks",
+   "all_contains": [
+    "A PATROL ARRIVES",
+    "'THERE THEY ARE!'"
+   ],
+   "message_id": "tilverton.patrol-attacks"
+  },
+  {
+   "id": "tilverton.patrol-move-along",
+   "all_contains": [
+    "A PATROL ARRIVES",
+    "TELL YOU TO MOVE ALONG"
+   ],
+   "message_id": "tilverton.patrol-move-along"
+  },
+  {
+   "id": "tilverton.guards-spot-party",
+   "all_contains": [
+    "'THERE THEY ARE!'"
+   ],
+   "message_id": "tilverton.guards-spot-party"
+  },
+  {
+   "id": "tilverton.reinforcements-flee",
+   "all_contains": [
+    "REINFORCEMENTS ARE COMING",
+    "YOU MOVE AWAY"
+   ],
+   "message_id": "tilverton.reinforcements-flee"
+  },
+  {
+   "id": "tilverton.narrow-street",
+   "all_contains": [
+    "THE STREET GROWS NARROW AND DIM HERE"
+   ],
+   "message_id": "tilverton.narrow-street"
+  },
+  {
+   "id": "tilverton.patrol-surrender-demand",
+   "all_contains": [
+    "A PATROL SPOTS YOU",
+    "ASKS YOU TO SURRENDER"
+   ],
+   "message_id": "tilverton.patrol-surrender-demand"
+  },
+  {
+   "id": "tilverton.rumor.sewer-scream",
+   "all_contains": [
+    "WOMAN SCREAMING IN THE SEWERS"
+   ],
+   "message_id": "tilverton.rumor.sewer-scream"
+  },
+  {
+   "id": "tilverton.rumor.dragon-flight",
+   "all_contains": [
+    "IT WAS A DRAGON THAT PASSED OVER LAST NIGHT"
+   ],
+   "message_id": "tilverton.rumor.dragon-flight"
+  },
+  {
+   "id": "tilverton.rumor.troops",
+   "all_contains": [
+    "THE TOWN WAS SAFER BEFORE THE TROOPS CAME"
+   ],
+   "message_id": "tilverton.rumor.troops"
+  },
+  {
+   "id": "tilverton.rumor.gharri-sighted",
+   "all_contains": [
+    "GHARRI WAS SEEN JUST OUTSIDE OF TOWN"
+   ],
+   "message_id": "tilverton.rumor.gharri-sighted"
+  },
+  {
+   "id": "tilverton.rumor.knives-bolder",
+   "all_contains": [
+    "THE KNIVES ARE GETTING BOLDER"
+   ],
+   "message_id": "tilverton.rumor.knives-bolder"
+  },
+  {
+   "id": "tilverton.alley.man-calls",
+   "all_contains": [
+    "A MAN YELLS FROM A NEARBY ALLEYWAY",
+    "BEFORE THE GUARDS FINISH YOU OFF"
+   ],
+   "message_id": "tilverton.alley.man-calls"
+  },
+  {
+   "id": "tilverton.alley.safer",
+   "all_contains": [
+    "THE DARK ALLEYWAYS LOOK SAFER THAN THE MAIN STREETS"
+   ],
+   "message_id": "tilverton.alley.safer"
+  },
+  {
+   "id": "tilverton.alley.not-searched",
+   "all_contains": [
+    "THE GUARDS DO NOT APPEAR TO BE SEARCHING THE ALLEYS"
+   ],
+   "message_id": "tilverton.alley.not-searched"
+  },
+  {
+   "id": "tilverton.alley.escape-route",
+   "all_contains": [
+    "A MAN WAVES AT YOU FROM AN ALLEYWAY"
+   ],
+   "message_id": "tilverton.alley.escape-route"
   },
   {
    "id": "bond-dream.first-night",

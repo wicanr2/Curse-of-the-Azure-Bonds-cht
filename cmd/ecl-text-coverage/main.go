@@ -43,6 +43,16 @@ type group struct {
 	// 子程式印的字本工具不追（見 Limitations），所以 `Text` 少了那一段；
 	// 寫 `all_contains` 的片段**不可以跨過這些位置**，否則實機接不上。
 	GosubInserts []string `json:"gosub_inserts,omitempty"`
+	// Status 是這一段在內容產出裡的處置：
+	//
+	//	matched      有規則命中，做完了
+	//	unmatched    還沒寫規則——這才是待辦
+	//	gosub-insert 文字被子程式插過，本工具比對不了；規則可能早就寫好了
+	//	subroutine   這一段本身就是某支子程式的內容，實機不會單獨出現
+	Status string `json:"status"`
+	// appended 記錄這一段是以 `11h PRINT` 起頭（true）還是 `12h PRINTCLEAR`（false）。
+	// 只有前者可能是「接在呼叫端那一頁後面」的片段——它自己不開新頁。
+	appended bool
 }
 
 type report struct {
@@ -53,10 +63,12 @@ type report struct {
 }
 
 type summary struct {
-	Groups    int            `json:"groups"`
-	Matched   int            `json:"matched"`
-	Unmatched int            `json:"unmatched"`
-	ByBlock   map[string]int `json:"unmatched_by_block"`
+	Groups      int            `json:"groups"`
+	Matched     int            `json:"matched"`
+	Unmatched   int            `json:"unmatched"`
+	GosubInsert int            `json:"gosub_insert"`
+	Subroutine  int            `json:"subroutine"`
+	ByBlock     map[string]int `json:"unmatched_by_block"`
 }
 
 func main() {
@@ -102,15 +114,28 @@ func main() {
 			if *block != "" && *block != member+"/"+blockID {
 				continue
 			}
-			groups, err := blockGroups(member, blockID, raw.Data)
+			groups, subroutines, err := blockGroups(member, blockID, raw.Data)
 			if err != nil {
 				log.Fatalf("%s block %s: %v", member, blockID, err)
 			}
 			for _, item := range groups {
-				if match := pack.MatchText([]string{item.Text}, pack.DefaultLocale); match.Matched {
+				match := pack.MatchText([]string{item.Text}, pack.DefaultLocale)
+				switch {
+				case match.Matched:
 					item.RuleID = match.RuleID
+					item.Status = "matched"
 					result.Summary.Matched++
-				} else {
+				// 只有「以 PRINT 起頭又落在子程式體內」才是片段。用 PRINTCLEAR 起頭的
+				// 子程式是**共用的一整頁**（`THE DOOR IS LOCKED` 就是），玩家看得到，
+				// 那是待辦不是雜訊。
+				case item.appended && subroutines[item.Offset]:
+					item.Status = "subroutine"
+					result.Summary.Subroutine++
+				case len(item.GosubInserts) > 0:
+					item.Status = "gosub-insert"
+					result.Summary.GosubInsert++
+				default:
+					item.Status = "unmatched"
 					result.Summary.Unmatched++
 					result.Summary.ByBlock[member+"/"+blockID]++
 				}
@@ -134,18 +159,20 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	fmt.Fprintf(os.Stderr, "text_groups=%d matched=%d unmatched=%d\n",
-		result.Summary.Groups, result.Summary.Matched, result.Summary.Unmatched)
+	fmt.Fprintf(os.Stderr, "text_groups=%d matched=%d unmatched=%d gosub-insert=%d subroutine=%d\n",
+		result.Summary.Groups, result.Summary.Matched, result.Summary.Unmatched,
+		result.Summary.GosubInsert, result.Summary.Subroutine)
 }
 
-// blockGroups collects the reachable PRINTCLEAR/PRINT runs of one block.
-func blockGroups(member, blockID string, data []byte) ([]group, error) {
+// blockGroups collects the reachable PRINTCLEAR/PRINT runs of one block, plus
+// the set of group offsets that live inside a GOSUB'd subroutine.
+func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool, error) {
 	if len(data) < 2 {
-		return nil, nil
+		return nil, nil, nil
 	}
 	points, _, err := ecl.EntryPoints(data, 5)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	starts := make([]int, 0, len(points))
 	for _, point := range points {
@@ -153,7 +180,7 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 	}
 	graph, err := ecl.TraceGraph(data, starts, len(data)*8)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	instructions := append([]ecl.Instruction(nil), graph.Instructions...)
 	sort.Slice(instructions, func(i, j int) bool {
@@ -164,6 +191,9 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 	var current *group
 	var pendingGosub []string
 	guarded := false
+	// cleared 記著「剛剛清過框」。沒有文字的 PRINTCLEAR 不會開出段落，但它確實
+	// 開了新頁，下一條 PRINT 因此不是接在別人後面的片段。
+	cleared := false
 	for _, instruction := range instructions {
 		opcode := instruction.Command.Opcode
 		wasGuarded := guarded
@@ -186,6 +216,12 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 		}
 		text := instructionText(instruction)
 		if text == "" {
+			// 沒有文字的 `PRINTCLEAR` 照樣清框開新頁（原作用它把上一頁擦掉）。
+			// 略過它會讓下一條 `PRINT` 看起來像「沒有自己的 PRINTCLEAR」，
+			// `ECL2.DAX/0x01 +024Eh` 就是這樣被誤判成子程式片段的。
+			if opcode == 0x12 {
+				current, pendingGosub, cleared = nil, nil, true
+			}
 			continue
 		}
 		// `12h PRINTCLEAR` 會把文字游標重設到左上（spec 1104：多寫 65A0h／65A1h），
@@ -203,15 +239,69 @@ func blockGroups(member, blockID string, data []byte) ([]group, error) {
 				Member: member, Block: blockID,
 				Offset: fmt.Sprintf("0x%04X", instruction.Offset), Text: text,
 				GosubInserts: inserts,
+				appended:     opcode == 0x11 && !cleared,
 			})
-			current, pendingGosub = &groups[len(groups)-1], nil
+			current, pendingGosub, cleared = &groups[len(groups)-1], nil, false
 			continue
 		}
 		current.Text += " " + text
 		current.GosubInserts = append(current.GosubInserts, pendingGosub...)
 		pendingGosub = nil
 	}
-	return groups, nil
+	return groups, subroutineOffsets(instructions), nil
+}
+
+// subroutineOffsets 標出「這一段其實是某支子程式的內容」。這種段落在實機不會
+// 單獨出現（它一定是被某一頁 GOSUB 進來的），所以既不算做完也不算待辦——
+// 替它們寫規則反而有害：只有一兩個字的 `all_contains` 會攔截到別的文字。
+//
+// 子程式的範圍：從呼叫目標往後走，遇到**沒被 IF 守衛**的 `RETURN`／`EXIT` 就結束。
+// 例外是 `IF; GOTO x` 的 else 分支——`UP`／`DOWN` 那種兩條分支的子程式，第一條
+// 印完就 `RETURN`，不把 x 納進來只會算到一半。
+//
+// ⚠ 這個延伸**只吃被守衛、且跳很近的 GOTO**（256 byte 內）。第一版對所有 GOTO
+// 都延伸，結果把 `THE DOOR IS LOCKED`、`RED PLUME GUARDS RUSH AT YOU` 這些真正的
+// 頁一起吞進來——**寧可少標也不要多標**：少標只是清單裡多幾筆看起來奇怪的短句，
+// 多標會讓真正的待辦從清單上消失。
+func subroutineOffsets(instructions []ecl.Instruction) map[string]bool {
+	targets := map[int]bool{}
+	for _, instruction := range instructions {
+		if instruction.Command.Opcode != 0x02 || len(instruction.Operands) != 1 {
+			continue
+		}
+		if operand := instruction.Operands[0]; operand.WordSet {
+			targets[int(operand.Word)-ecl.CodeAddressBase] = true
+		}
+	}
+	inside := map[string]bool{}
+	for target := range targets {
+		guarded := false
+		limit := target
+		for _, instruction := range instructions {
+			if instruction.Offset < target {
+				continue
+			}
+			wasGuarded := guarded
+			guarded = instruction.Command.Opcode >= 0x16 && instruction.Command.Opcode <= 0x1B
+			inside[fmt.Sprintf("0x%04X", instruction.Offset)] = true
+			if wasGuarded && instruction.Command.Opcode == 0x01 && len(instruction.Operands) == 1 &&
+				instruction.Operands[0].WordSet {
+				branch := int(instruction.Operands[0].Word) - ecl.CodeAddressBase
+				if branch > limit && branch-instruction.Offset <= 256 {
+					limit = branch
+				}
+			}
+			if wasGuarded {
+				continue
+			}
+			if instruction.Command.Opcode == 0x13 || instruction.Command.Opcode == 0x00 {
+				if instruction.Offset >= limit {
+					break
+				}
+			}
+		}
+	}
+	return inside
 }
 
 // endsTextGroup lists the opcodes after which the next instruction in offset
@@ -295,10 +385,15 @@ func renderMarkdown(result report) []byte {
 	for _, limitation := range result.Limitations {
 		fmt.Fprintf(&out, "- %s\n", limitation)
 	}
-	fmt.Fprintf(&out, "\n## 摘要\n\n| 項目 | 數量 |\n|---|---:|\n")
-	fmt.Fprintf(&out, "| 靜態可達的文字段落 | %d |\n", result.Summary.Groups)
-	fmt.Fprintf(&out, "| 已接上 `text_rule` | %d |\n", result.Summary.Matched)
-	fmt.Fprintf(&out, "| **未接上** | **%d** |\n", result.Summary.Unmatched)
+	fmt.Fprintf(&out, "\n## 摘要\n\n| 處置 | 數量 | 意思 |\n|---|---:|---|\n")
+	fmt.Fprintf(&out, "| 靜態可達的文字段落 | %d | — |\n", result.Summary.Groups)
+	fmt.Fprintf(&out, "| `matched` | %d | 有規則命中 |\n", result.Summary.Matched)
+	fmt.Fprintf(&out, "| **`unmatched`** | **%d** | **還沒寫規則——這才是待辦** |\n",
+		result.Summary.Unmatched)
+	fmt.Fprintf(&out, "| `gosub-insert` | %d | 文字被子程式插過，本工具比對不了；規則可能早就寫好了 |\n",
+		result.Summary.GosubInsert)
+	fmt.Fprintf(&out, "| `subroutine` | %d | 這一段本身是某支子程式的內容，實機不會單獨出現 |\n",
+		result.Summary.Subroutine)
 
 	blocks := make([]string, 0, len(result.Summary.ByBlock))
 	for key := range result.Summary.ByBlock {
@@ -315,7 +410,7 @@ func renderMarkdown(result report) []byte {
 		fmt.Fprintf(&out, "| `%s` | %d |\n", key, result.Summary.ByBlock[key])
 	}
 
-	out.WriteString("\n## 逐段\n\n| Block | offset | 已接上的規則 | 原作文字 |\n|---|---|---|---|\n")
+	out.WriteString("\n## 逐段\n\n| Block | offset | 處置 | 已接上的規則 | 原作文字 |\n|---|---|---|---|---|\n")
 	for _, item := range result.Groups {
 		rule := "—"
 		if item.RuleID != "" {
@@ -328,8 +423,8 @@ func renderMarkdown(result report) []byte {
 		if len(item.GosubInserts) > 0 {
 			text += " ⚠ 另有 `GOSUB " + strings.Join(item.GosubInserts, "`／`") + "` 印出的一段"
 		}
-		fmt.Fprintf(&out, "| `%s/%s` | `%s` | %s | %s |\n",
-			item.Member, item.Block, item.Offset, rule, text)
+		fmt.Fprintf(&out, "| `%s/%s` | `%s` | `%s` | %s | %s |\n",
+			item.Member, item.Block, item.Offset, item.Status, rule, text)
 	}
 	return []byte(out.String())
 }
