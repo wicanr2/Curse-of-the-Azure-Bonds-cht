@@ -119,3 +119,58 @@ func TestRecordEndRejectsUnknowableAndOutOfRangeLengths(t *testing.T) {
 		t.Fatal("選單選項個數 0 時 RecordEnd 應該回錯誤")
 	}
 }
+
+// 副作用還原狀態的表必須蓋住 corpus 裡每一個可達 opcode（`RE-04` 的分母）。
+// 少一列就會讓 `cmd/ecl-effect-coverage` 的統計默默漏掉那一類指令。
+func TestOpcodeEffectsCoversEveryReachableOpcode(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer archive.Close()
+
+	reachable := map[byte]int{}
+	for _, member := range []string{"ECL1.DAX", "ECL2.DAX", "ECL3.DAX", "ECL4.DAX", "ECL5.DAX", "ECL6.DAX"} {
+		blocks, err := dax.Parse(realZipMember(t, archive, member))
+		if err != nil {
+			t.Fatalf("%s: %v", member, err)
+		}
+		for _, block := range blocks {
+			points, _, err := EntryPoints(block.Data, 5)
+			if err != nil {
+				t.Fatalf("%s block 0x%02X: %v", member, block.Entry.ID, err)
+			}
+			starts := make([]int, 0, len(points))
+			for _, point := range points {
+				starts = append(starts, int(point)-CodeAddressBase)
+			}
+			graph, err := TraceGraph(block.Data, starts, len(block.Data)*8)
+			if err != nil {
+				t.Fatalf("%s block 0x%02X: %v", member, block.Entry.ID, err)
+			}
+			for _, instruction := range graph.Instructions {
+				reachable[instruction.Command.Opcode]++
+			}
+		}
+	}
+	for opcode := range reachable {
+		effect, ok := OpcodeEffects[opcode]
+		if !ok {
+			t.Fatalf("opcode 0x%02X 可達卻沒有登記在 OpcodeEffects", opcode)
+		}
+		switch effect.Status {
+		case EffectDone, EffectPartial, EffectConsumed:
+		default:
+			t.Fatalf("opcode 0x%02X 的狀態 %q 不是三種之一", opcode, effect.Status)
+		}
+		if effect.Note == "" {
+			t.Fatalf("opcode 0x%02X 沒寫 Note；狀態不附理由等於沒有判定", opcode)
+		}
+	}
+	// 表裡不該有 corpus 沒出現的 opcode 以外的東西——命令表以外的鍵是打錯字。
+	for opcode := range OpcodeEffects {
+		if _, ok := KnownCommands[opcode]; !ok {
+			t.Fatalf("OpcodeEffects 有 0x%02X，但 KnownCommands 沒有", opcode)
+		}
+	}
+}
