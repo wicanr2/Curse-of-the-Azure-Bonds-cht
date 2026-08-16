@@ -970,8 +970,8 @@
   {
    "opcode": "0x27",
    "name": "TREASURE",
-   "status": "consumed",
-   "note": "TREASURE：只讀掉八個運算元。寶物產生、隨機表與拾取流程都還沒接",
+   "status": "partial",
+   "note": "八個運算元解成 TreasureRequest，錢幣／寶石／首飾與 ITEM 區塊由 combat_state 的 ResolveTreasureRequests 實際入帳；ItemBlock 的隨機／特殊分支未驗",
    "occurrences": 63,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1146,8 +1146,8 @@
   {
    "opcode": "0x2E",
    "name": "DAMAGE",
-   "status": "done",
-   "note": "DAMAGE",
+   "status": "partial",
+   "note": "只有明確指定全隊的封包（旗標 0xC0）會在正式路徑結算；其餘要選定角色的形式仍留在 pending",
    "occurrences": 24,
    "blocks": [
     "ECL2.DAX/0x03",
@@ -1387,7 +1387,7 @@
    "opcode": "0x3B",
    "name": "SPELL",
    "status": "consumed",
-   "note": "SPELL：ECL 觸發的法術效果沒有接（ENG-09）",
+   "note": "解成 SpellSearch 並排隊，但 ConsumeSpellSearches 只有測試呼叫——實機沒有效果（ENG-09）",
    "occurrences": 2,
    "blocks": [
     "ECL4.DAX/0x21",
@@ -1398,7 +1398,7 @@
    "opcode": "0x3C",
    "name": "PROTECTION",
    "status": "consumed",
-   "note": "PROTECTION：防護狀態沒有接",
+   "note": "解成位址並排隊，但 ConsumeProtectionRequests 只有測試呼叫——實機沒有效果",
    "occurrences": 1,
    "blocks": [
     "ECL1.DAX/0x50"
@@ -1457,14 +1457,14 @@
   }
  ],
  "instructions_by_status": {
-  "consumed": 86,
-  "done": 13121,
-  "partial": 970
+  "consumed": 23,
+  "done": 13097,
+  "partial": 1057
  },
  "opcodes_by_status": {
-  "consumed": 5,
-  "done": 47,
-  "partial": 9
+  "consumed": 4,
+  "done": 46,
+  "partial": 11
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1500,24 +1500,24 @@
   "ECL1.DAX/0x52": 23,
   "ECL2.DAX/0x01": 47,
   "ECL2.DAX/0x02": 44,
-  "ECL2.DAX/0x03": 43,
-  "ECL2.DAX/0x04": 30,
-  "ECL3.DAX/0x10": 55,
+  "ECL2.DAX/0x03": 44,
+  "ECL2.DAX/0x04": 31,
+  "ECL3.DAX/0x10": 58,
   "ECL3.DAX/0x11": 46,
   "ECL3.DAX/0x12": 53,
   "ECL3.DAX/0x15": 20,
-  "ECL4.DAX/0x20": 69,
-  "ECL4.DAX/0x21": 60,
-  "ECL4.DAX/0x22": 48,
+  "ECL4.DAX/0x20": 70,
+  "ECL4.DAX/0x21": 61,
+  "ECL4.DAX/0x22": 51,
   "ECL4.DAX/0x23": 22,
-  "ECL4.DAX/0x25": 90,
+  "ECL4.DAX/0x25": 92,
   "ECL5.DAX/0x31": 26,
-  "ECL5.DAX/0x32": 53,
-  "ECL5.DAX/0x33": 59,
+  "ECL5.DAX/0x32": 55,
+  "ECL5.DAX/0x33": 63,
   "ECL5.DAX/0x35": 44,
-  "ECL6.DAX/0x40": 51,
-  "ECL6.DAX/0x42": 36,
-  "ECL6.DAX/0x43": 35,
+  "ECL6.DAX/0x40": 54,
+  "ECL6.DAX/0x42": 38,
+  "ECL6.DAX/0x43": 36,
   "ECL6.DAX/0x45": 20
  }
 }

@@ -4,7 +4,8 @@ package ecl
 //
 // ★ 為什麼要有這張表。 `runtime.go` 對每個 opcode 都有 `case`，所以「有沒有
 // handler」問不出東西——真正的差別在**那個 case 做了什麼**：有的完整執行，
-// 有的只把運算元讀掉再往下走（`0x27 TREASURE` 就是），兩者在程式碼裡長得很像，
+// 有的只把運算元讀掉再往下走（`3Bh SPELL`、`3Ch PROTECTION` 就是），
+// 兩者在程式碼裡長得很像，
 // 在測試裡也一樣綠。表把差別寫死，`cmd/ecl-effect-coverage` 再乘上 corpus 的
 // 出現次數，才知道「副作用還差多少」是多大的數字。
 type EffectStatus string
@@ -29,6 +30,19 @@ type OpcodeEffect struct {
 }
 
 // OpcodeEffects 逐個 opcode 的還原狀態。
+//
+// ★ 判準（三態的分界，寫死免得下次又憑印象填）：
+//
+//	done      ECL 看得到的效果（記憶體、比較旗標、控制流）由 VM 產生，
+//	          **而且**效果若在 VM 之外（隊伍、物品、畫面、資產），
+//	          有**正式路徑**的程式碼把它套用。
+//	partial   兩半只做了一半。
+//	consumed  兩半都沒有——含「解碼後排進 result，但取用的 API 只有測試呼叫」。
+//
+// ⚠ **`runtime.go` 有 `case` 不算數。** 本表第一版把 `27h TREASURE` 判成
+// `consumed`（其實 `combat_state.go` 有正式消費端）、把 `2Eh DAMAGE` 判成
+// `done`（其實只結算全隊封包）。兩個方向都錯過一次，判準才寫成上面這樣：
+// 要同時看「VM 產生了什麼」與「誰把它套用」。
 //
 // ⚠ 新增 opcode 沒有登記會讓 `cmd/ecl-effect-coverage` 的 fail-closed 檢查變紅，
 // 不會被靜靜略過。
@@ -72,14 +86,14 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x24: {EffectPartial, "COMBAT 是三選一的服務分派點（spec 1095）；戰鬥本身的回合生命週期仍是 RE-06"},
 	0x25: {EffectDone, "動態分支，目的地是字面位址（spec 1110）"},
 	0x26: {EffectDone, "同上，返回位址進堆疊"},
-	0x27: {EffectConsumed, "TREASURE：只讀掉八個運算元。寶物產生、隨機表與拾取流程都還沒接"},
+	0x27: {EffectPartial, "八個運算元解成 TreasureRequest，錢幣／寶石／首飾與 ITEM 區塊由 combat_state 的 ResolveTreasureRequests 實際入帳；ItemBlock 的隨機／特殊分支未驗"},
 	0x28: {EffectDone, "ROB 依比例取走金錢與物品"},
 	0x29: {EffectDone, "遭遇選單"},
 	0x2A: {EffectDone, "GETTABLE 讀表（手札編號就是靠它，spec 1108）"},
 	0x2B: {EffectDone, "水平選單"},
 	0x2C: {EffectDone, "PARLAY"},
 	0x2D: {EffectPartial, "CALL 是七路 switch；corpus 只用 2E10h 與 6803h，兩者的 consumer 尚未逐條驗（RE-03）"},
-	0x2E: {EffectDone, "DAMAGE"},
+	0x2E: {EffectPartial, "只有明確指定全隊的封包（旗標 0xC0）會在正式路徑結算；其餘要選定角色的形式仍留在 pending"},
 	0x2F: {EffectDone, "位元運算"},
 	0x30: {EffectDone, "位元運算"},
 	0x31: {EffectConsumed, "SPRITE OFF：戰鬥圖示的顯示狀態未還原"},
@@ -92,8 +106,8 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x38: {EffectPartial, "PROGRAM 記下 ID；PROGRAM 8 的通關序列（spec 1087）尚未接完"},
 	0x39: {EffectDone, "WHO 選人"},
 	0x3A: {EffectDone, "DELAY"},
-	0x3B: {EffectConsumed, "SPELL：ECL 觸發的法術效果沒有接（ENG-09）"},
-	0x3C: {EffectConsumed, "PROTECTION：防護狀態沒有接"},
+	0x3B: {EffectConsumed, "解成 SpellSearch 並排隊，但 ConsumeSpellSearches 只有測試呼叫——實機沒有效果（ENG-09）"},
+	0x3C: {EffectConsumed, "解成位址並排隊，但 ConsumeProtectionRequests 只有測試呼叫——實機沒有效果"},
 	0x3D: {EffectConsumed, "CLEAR BOX：文字框清除的畫面行為沒有接"},
 	0x3E: {EffectDone, "DUMP"},
 	0x3F: {EffectDone, "FIND SPECIAL"},

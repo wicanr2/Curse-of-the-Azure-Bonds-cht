@@ -11,25 +11,26 @@
 
 | 狀態 | 指令數 | opcode 數 | 意思 |
 |---|---:|---:|---|
-| `done` | 13121 | 47 | 副作用已產生，且有回歸測試或實機路徑驗過 |
-| `partial` | 970 | 9 | 只做了一部分，多半是把請求記進 result 讓上層處理 |
-| **`consumed`** | **86** | **5** | **只讀掉運算元——原作有效果，remake 沒有** |
+| `done` | 13097 | 46 | 副作用已產生，且有回歸測試或實機路徑驗過 |
+| `partial` | 1057 | 11 | 只做了一部分，多半是把請求記進 result 讓上層處理 |
+| **`consumed`** | **23** | **4** | **只讀掉運算元——原作有效果，remake 沒有** |
 | 合計（靜態可達指令）| 14177 | 61 | |
 
 ## 逐 opcode
 
 | opcode | 名稱 | 狀態 | 可達出現次數 | 出現在幾個 block | 還差什麼 |
 |---|---|---|---:|---:|---|
-| `0x27` | TREASURE | `consumed` | 63 | 22 | TREASURE：只讀掉八個運算元。寶物產生、隨機表與拾取流程都還沒接 |
 | `0x3D` | CLEAR BOX | `consumed` | 17 | 5 | CLEAR BOX：文字框清除的畫面行為沒有接 |
 | `0x31` | SPRITE OFF | `consumed` | 3 | 3 | SPRITE OFF：戰鬥圖示的顯示狀態未還原 |
-| `0x3B` | SPELL | `consumed` | 2 | 2 | SPELL：ECL 觸發的法術效果沒有接（ENG-09） |
-| `0x3C` | PROTECTION | `consumed` | 1 | 1 | PROTECTION：防護狀態沒有接 |
+| `0x3B` | SPELL | `consumed` | 2 | 2 | 解成 SpellSearch 並排隊，但 ConsumeSpellSearches 只有測試呼叫——實機沒有效果（ENG-09） |
+| `0x3C` | PROTECTION | `consumed` | 1 | 1 | 解成位址並排隊，但 ConsumeProtectionRequests 只有測試呼叫——實機沒有效果 |
 | `0x1C` | CLEARMONSTERS | `partial` | 206 | 24 | CLEARMONSTERS 清怪物鏈與已放置數；原作另清的四塊 bank1 區域未逐格對上 |
 | `0x0E` | PICTURE | `partial` | 199 | 23 | PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層 |
 | `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）；戰鬥本身的回合生命週期仍是 RE-06 |
 | `0x2D` | CALL | `partial` | 168 | 22 | CALL 是七路 switch；corpus 只用 2E10h 與 6803h，兩者的 consumer 尚未逐條驗（RE-03） |
 | `0x33` | PRINT RETURN | `partial` | 120 | 13 | PRINT RETURN 目前等同換行；原作的游標行為未逐格對上 |
+| `0x27` | TREASURE | `partial` | 63 | 22 | 八個運算元解成 TreasureRequest，錢幣／寶石／首飾與 ITEM 區塊由 combat_state 的 ResolveTreasureRequests 實際入帳；ItemBlock 的隨機／特殊分支未驗 |
+| `0x2E` | DAMAGE | `partial` | 24 | 12 | 只有明確指定全隊的封包（旗標 0xC0）會在正式路徑結算；其餘要選定角色的形式仍留在 pending |
 | `0x37` | LOAD PIECES | `partial` | 23 | 19 | LOAD PIECES 記下請求；資產載入由上層做 |
 | `0x21` | LOAD FILES | `partial` | 22 | 21 | LOAD FILES 記下請求；實際換檔由上層做 |
 | `0x0D` | APPROACH | `partial` | 20 | 8 | APPROACH 只記請求；原作的接近動畫與距離狀態未還原 |
@@ -62,7 +63,6 @@
 | `0x0A` | LOAD CHARACTER | `done` | 42 | 16 | 角色欄位投影，含 7CE4h 的 and 1 遮罩（ENG-13） |
 | `0x1A` | IF <= | `done` | 25 | 17 | 同上 |
 | `0x07` | MULTIPLY | `done` | 24 | 7 | 算術 |
-| `0x2E` | DAMAGE | `done` | 24 | 12 | DAMAGE |
 | `0x15` | VERTICAL MENU | `done` | 22 | 7 | 垂直選單，選項字串與選擇結果都回得去 |
 | `0x29` | ENCOUNTER MENU | `done` | 21 | 9 | 遭遇選單 |
 | `0x2C` | PARLAY | `done` | 15 | 10 | PARLAY |
@@ -86,25 +86,25 @@
 
 | Block | 可達指令 | 其中未完整還原 |
 |---|---:|---:|
-| `ECL4.DAX/0x25` | 745 | 90 |
-| `ECL4.DAX/0x20` | 722 | 69 |
-| `ECL4.DAX/0x21` | 563 | 60 |
-| `ECL5.DAX/0x33` | 709 | 59 |
-| `ECL3.DAX/0x10` | 913 | 55 |
+| `ECL4.DAX/0x25` | 745 | 92 |
+| `ECL4.DAX/0x20` | 722 | 70 |
+| `ECL5.DAX/0x33` | 709 | 63 |
+| `ECL4.DAX/0x21` | 563 | 61 |
+| `ECL3.DAX/0x10` | 913 | 58 |
+| `ECL5.DAX/0x32` | 634 | 55 |
+| `ECL6.DAX/0x40` | 766 | 54 |
 | `ECL3.DAX/0x12` | 840 | 53 |
-| `ECL5.DAX/0x32` | 634 | 53 |
-| `ECL6.DAX/0x40` | 766 | 51 |
-| `ECL4.DAX/0x22` | 526 | 48 |
+| `ECL4.DAX/0x22` | 526 | 51 |
 | `ECL2.DAX/0x01` | 659 | 47 |
 | `ECL3.DAX/0x11` | 788 | 46 |
 | `ECL2.DAX/0x02` | 374 | 44 |
+| `ECL2.DAX/0x03` | 703 | 44 |
 | `ECL5.DAX/0x35` | 598 | 44 |
-| `ECL2.DAX/0x03` | 703 | 43 |
 | `ECL1.DAX/0x50` | 798 | 42 |
 | `ECL1.DAX/0x51` | 726 | 40 |
-| `ECL6.DAX/0x42` | 603 | 36 |
-| `ECL6.DAX/0x43` | 525 | 35 |
-| `ECL2.DAX/0x04` | 482 | 30 |
+| `ECL6.DAX/0x42` | 603 | 38 |
+| `ECL6.DAX/0x43` | 525 | 36 |
+| `ECL2.DAX/0x04` | 482 | 31 |
 | `ECL5.DAX/0x31` | 388 | 26 |
 | `ECL1.DAX/0x52` | 86 | 23 |
 | `ECL4.DAX/0x23` | 303 | 22 |
