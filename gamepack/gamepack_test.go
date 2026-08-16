@@ -1458,3 +1458,85 @@ func TestSilkIntroductionIsGamePackDriven(t *testing.T) {
 		}
 	}
 }
+
+// 第二批手札解鎖點。三張「早上發現的紙條」是同一段程式碼，靠 `2Ah GETTABLE`
+// 從 block 位元組讀出編號再 `PRINT`，所以三次的實機文字只差那個數字——
+// 用數字分辨就能依序解鎖，不需要引擎支援有序解鎖。
+func TestSecondBatchJournalProducers(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	note := func(number string) []string {
+		return []string{
+			"ONE MORNING, THE PARTY SPOTS A NOTE PINNED TO", "ALIAS",
+			"'S CHEST. YOU READ IT,", "AND YOU RECORD IT IN JOURNAL ENTRY", number, ".",
+		}
+	}
+	tests := []struct {
+		id      string
+		texts   []string
+		journal string
+	}{
+		{"world.night-note.24", note("24"), "journal.24"},
+		{"world.night-note.35", note("35"), "journal.35"},
+		{"world.night-note.42", note("42"), "journal.42"},
+		{"fire-knife.wounded-mutterings", []string{
+			"YOU REALIZE THAT THE REST ARE HARMLESS.",
+			"PASSING THROUGH, YOU HEAR VARIOUS MUTTERINGS,",
+			"AND YOU RECORD IT IN JOURNAL ENTRY", "27."}, "journal.27"},
+		{"zhentil.mercenary-briefing", []string{
+			"ONE COMES UP AND SHAKES YOUR HAND. 'YOU MUST BE",
+			"THE MERCENARY GROUP.' HE GOES ON TO EXPLAIN THE", "SITUATION,",
+			"AND YOU RECORD IT IN JOURNAL ENTRY", "36."}, "journal.36"},
+		{"world.centaur-village", []string{
+			"THEY TAKE YOU TO THEIR VILLAGE AND EXCHANGE", "TALES WITH YOU,",
+			"AND YOU RECORD IT IN JOURNAL ENTRY", "45. THEN, YOU PART COMPANY."}, "journal.45"},
+		{"world.myth-drannor-scouts-camp", []string{
+			"IN THE EVENING, THEY INVITE YOU TO THEIR CAMP. THEY", "TALK,",
+			"AND YOU RECORD IT IN JOURNAL ENTRY", "55."}, "journal.55"},
+		{"world.inn-dark-elf-letter", []string{
+			"THE INNKEEPER TELLS YOU THAT THE ELF ARRIVED",
+			"SOME DAYS AGO. IN HIS ROOM IS A LETTER,",
+			"AND YOU RECORD IT IN JOURNAL ENTRY", "58."}, "journal.58"},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.texts, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" {
+					t.Fatalf("result=%+v", result)
+				}
+				if len(result.JournalMessageIDs) != 1 || result.JournalMessageIDs[0] != test.journal {
+					t.Fatalf("journal ids=%v, want [%s]", result.JournalMessageIDs, test.journal)
+				}
+				if len(result.JournalPages) != 1 || result.JournalPages[0] == "" {
+					t.Fatalf("journal pages=%v", result.JournalPages)
+				}
+			})
+		}
+	}
+}
+
+// 每一則進了 pack 的手札都必須有 producer。沒有 producer 的條目是死資料——
+// 玩家永遠讀不到，而數字上看起來像做完了。
+func TestEveryJournalEntryHasAProducer(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	produced := map[string]bool{}
+	for _, rule := range pack.TextRules {
+		for _, messageID := range rule.JournalMessageIDs {
+			produced[messageID] = true
+		}
+	}
+	for _, entries := range pack.Locales {
+		for key := range entries {
+			if !strings.HasPrefix(key, "journal.") || produced[key] {
+				continue
+			}
+			t.Errorf("%s 沒有任何 text_rule 會解鎖它", key)
+		}
+	}
+}
