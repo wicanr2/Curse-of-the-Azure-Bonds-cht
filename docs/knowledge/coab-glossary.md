@@ -1,6 +1,7 @@
 # 《青色枷的詛咒》譯名表
 
-一個原文專有名詞只有一種繁中寫法。這條規則由 `cmd/glossary-audit` 強制：
+一個原文專有名詞只有一種繁中寫法。少數詞條在不同語境下有兩種都對的寫法，
+用「／」列在同一格，第一個是正規寫法。這條規則由 `cmd/glossary-audit` 強制：
 禁用寫法出現在任何繁中字串裡就紅，表中的繁中寫法在資料裡一次都沒出現也紅
 （避免表變成沒人用的空殼）。掃描範圍是 `gamepack/pack/20-locale.zh-TW.json`、
 `assets/locale/zh-TW.json`、`internal/tooltext/messages/zh-TW.json`。
@@ -54,6 +55,7 @@
 | `Akabar Bel Akash` | 阿卡巴・貝爾・阿卡什 | — | `Akabar` 的全名，兩個詞條並存 |
 | `Alaterian` | 阿拉特里安 | — | 手札 21 那封信的收信人 |
 | `Lilian` | 莉莉安 | — | 阿拉特里安的妻子 |
+| `Tarsus` | 塔瑟斯 | — | 黑暗精靈洞穴裡承接傳送生意的人 |
 | `Imperceptor` | 總督察長 | — | 穆爾馬斯特的班恩教階職稱 |
 
 ## 神祇
@@ -109,7 +111,7 @@
 | `Gauntlet of Moander` | 摩安德護手 | — | |
 | `Amulet of Lathander` | 洛山達護符 | — | |
 | `Pool of Radiance` | 光芒之池 | — | |
-| `azure bonds` | 枷印 | 蔚藍枷、青色印記 | 需要完整名稱時作「青色枷」，沿用原中文版譯名（《青色枷的詛咒》） |
+| `azure bonds` | 枷印／青色枷 | 蔚藍枷、青色印記 | 平常寫「枷印」；需要完整名稱時寫「青色枷」，沿用原中文版譯名（《青色枷的詛咒》） |
 
 ## 敘述中出現的怪物
 

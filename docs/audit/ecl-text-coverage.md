@@ -6,6 +6,8 @@
 - 一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。
 - `02h GOSUB` 進去印的文字不會併進這一段，標 `gosub_inserts` 的頁實際文字比這裡多。插入點在中間（`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」）或在開頭當前綴（`ECL4.DAX/0x25` 的八個遭遇頁前面都有「YOU ARE ATTACKED BY」）。⇒ 寫 `all_contains` 時**片段不要跨越插入點**，否則實機接不上。
 - 反過來，被 `GOSUB` 呼叫的純文字子程式會自成一段（如 `UP`／`DOWN`／`YOU ARE ATTACKED BY`）。它們在實機不會單獨出現，**不要**替它們寫規則——只有一兩個字的規則會攔截到別的文字。
+- 頁裡若印了執行期的值（人名、城名、數字），靜態文字是空的，工具同樣比對不了——逐城的 `*.edge` 規則需要城名才會命中。這類標 `variable-insert`。
+- 比對以 **run** 為單位，不是以頁：runtime 把整個 run 的文字累積起來一次交給 `MatchText`，所以一條規則可以橫跨好幾頁（開場捲軸就是四頁一條）。run 在「交出文字」的指令或頁尾的 `GOSUB`（翻頁提示、Yes／No）處結束。
 - 『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。
 
 ## 摘要
@@ -13,61 +15,58 @@
 | 處置 | 數量 | 意思 |
 |---|---:|---|
 | 靜態可達的文字段落 | 197 | — |
-| `matched` | 119 | 有規則命中 |
-| **`unmatched`** | **59** | **還沒寫規則——這才是待辦** |
+| `matched` | 147 | 有規則命中 |
+| **`unmatched`** | **29** | **還沒寫規則——這才是待辦** |
 | `gosub-insert` | 11 | 文字被子程式插過，本工具比對不了；規則可能早就寫好了 |
+| `variable-insert` | 2 | 頁裡印了執行期的值（人名、城名），同樣比對不了 |
 | `subroutine` | 8 | 這一段本身是某支子程式的內容，實機不會單獨出現 |
 
 ## 未接上的段落，依 block
 
 | Block | 未接上 |
 |---|---:|
-| `ECL1.DAX/0x52` | 7 |
-| `ECL3.DAX/0x10` | 7 |
-| `ECL1.DAX/0x50` | 6 |
-| `ECL5.DAX/0x35` | 6 |
 | `ECL3.DAX/0x12` | 4 |
 | `ECL4.DAX/0x23` | 4 |
-| `ECL1.DAX/0x51` | 3 |
 | `ECL2.DAX/0x01` | 3 |
-| `ECL4.DAX/0x22` | 3 |
 | `ECL6.DAX/0x43` | 3 |
+| `ECL1.DAX/0x51` | 2 |
 | `ECL2.DAX/0x03` | 2 |
-| `ECL3.DAX/0x15` | 2 |
+| `ECL4.DAX/0x22` | 2 |
 | `ECL6.DAX/0x40` | 2 |
-| `ECL6.DAX/0x45` | 2 |
 | `ECL2.DAX/0x04` | 1 |
+| `ECL3.DAX/0x15` | 1 |
 | `ECL4.DAX/0x20` | 1 |
 | `ECL4.DAX/0x21` | 1 |
 | `ECL4.DAX/0x25` | 1 |
 | `ECL5.DAX/0x31` | 1 |
+| `ECL6.DAX/0x45` | 1 |
 
 ## 逐段
 
 | Block | offset | 處置 | 已接上的規則 | 原作文字 |
 |---|---|---|---|---|
-| `ECL1.DAX/0x50` | `0x00C8` | `unmatched` | — | YOU ARE AT THE EDGE OF . WILL YOU ENTER OR CONTINUE YOUR JOURNEY? |
+| `ECL1.DAX/0x50` | `0x00C8` | `variable-insert` | — | YOU ARE AT THE EDGE OF . WILL YOU ENTER OR CONTINUE YOUR JOURNEY? |
 | `ECL1.DAX/0x50` | `0x01C4` | `matched` | `standing-stone.grey-man` | YOU ARE AT THE STANDING STONES. A GREY ROBED MAN SITS AGAINST A STONE, HIS FACE COVERED IN SHADOW. |
 | `ECL1.DAX/0x50` | `0x0226` | `gosub-insert` | — | HE SPEAKS, ' YOU PRESENTLY SERVE MASTER S. RETURN TO ME WHEN YOU HAVE SLAIN MORE. THEN YOU SHALL ACHIEVE YOUR DESTINY.' ⚠ 另有 `GOSUB 0x0268` 印出的一段 |
 | `ECL1.DAX/0x50` | `0x03CF` | `matched` | `myth-drannor.tyranthraxus-reveal` | . AS HE RISES, THE ROBE FALLS AWAY, REVEALING TYRANTHRAXUS. 'YOU HAVE DONE WELL. MEET ME AT MYTH DRANNOR.' HE FADES AWAY. |
 | `ECL1.DAX/0x50` | `0x1A30` | `gosub-insert` | — | ONE MORNING, THE PARTY SPOTS A NOTE PINNED TO 'S CHEST. YOU READ IT, . ⚠ 另有 `GOSUB 0x1A6E` 印出的一段 |
-| `ECL1.DAX/0x50` | `0x1AAA` | `unmatched` | — | YOUR WAY IS BLOCKED BY AN IMPASSABLE CHASM. A NARROW BRIDGE IS GUARDED BY AN OLD MAN. HE CACKLES, ' YOU MUST ANSWER ME BEFORE THE OTHER SIDE YE SEE.' |
-| `ECL1.DAX/0x50` | `0x1B27` | `unmatched` | — | WHAT IS YOUR QUEST? |
-| `ECL1.DAX/0x50` | `0x1B3F` | `unmatched` | — | WHAT IS YOUR FAVORITE FRUIT? |
-| `ECL1.DAX/0x50` | `0x1B5D` | `unmatched` | — | WHAT DOES THIS MEAN? |
-| `ECL1.DAX/0x50` | `0x1B73` | `unmatched` | — | YOU MAY PASS. |
+| `ECL1.DAX/0x50` | `0x1AAA` | `matched` | `world.bridge-riddle.intro` | YOUR WAY IS BLOCKED BY AN IMPASSABLE CHASM. A NARROW BRIDGE IS GUARDED BY AN OLD MAN. HE CACKLES, ' YOU MUST ANSWER ME BEFORE THE OTHER SIDE YE SEE.' |
+| `ECL1.DAX/0x50` | `0x1B27` | `matched` | `world.bridge-riddle.quest` | WHAT IS YOUR QUEST? |
+| `ECL1.DAX/0x50` | `0x1B3F` | `matched` | `world.bridge-riddle.fruit` | WHAT IS YOUR FAVORITE FRUIT? |
+| `ECL1.DAX/0x50` | `0x1B5D` | `matched` | `world.bridge-riddle.pass` | WHAT DOES THIS MEAN? |
+| `ECL1.DAX/0x50` | `0x1B73` | `matched` | `world.bridge-riddle.pass` | YOU MAY PASS. |
 | `ECL1.DAX/0x50` | `0x1BC5` | `subroutine` | — | AND YOU RECORD IT IN JOURNAL ENTRY |
 | `ECL1.DAX/0x50` | `0x1BE4` | `subroutine` | — | WHAT DO YOU DO? |
 | `ECL1.DAX/0x51` | `0x0072` | `unmatched` | — | AS YOU DEPART, A HUGE FORCE OF ZHENTIL KEEP TROOPS INVADES THE CITY FROM THE NORTH. |
 | `ECL1.DAX/0x51` | `0x00C5` | `unmatched` | — | AS YOU LEAVE, YOU SEE THAT CIVIL WAR IS ERUPTING. MANY FACTIONS ARE USING THE HAVOC YOU'VE CAUSED TO EVEN OLD SCORES. THE CITY WILL BE UNSAFE FOR A WHILE. |
-| `ECL1.DAX/0x51` | `0x018B` | `unmatched` | — | YOU ARE AT THE EDGE OF . WILL YOU ENTER OR CONTINUE YOUR JOURNEY? |
-| `ECL1.DAX/0x52` | `0x002E` | `unmatched` | — | ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN YOU AWAKE YOUR PARTY HAS BEEN CURSED WITH FIVE AZURE SYMBOLS. |
-| `ECL1.DAX/0x52` | `0x00B4` | `unmatched` | — | THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS. AND WHEN THE BONDS GLOW YOU MUST DO AS THEY COMMAND. |
-| `ECL1.DAX/0x52` | `0x0112` | `unmatched` | — | YOUR ONLY HOPE IS TO SEARCH THE FORGOTTEN REALMS FOR THE MEMBERS OF THE ALLIANCE WHO CREATED THE BONDS AND REGAIN CONTROL OF YOUR OWN DESTINY. |
-| `ECL1.DAX/0x52` | `0x0195` | `unmatched` | — | NOWHERE IN THE REALMS IS COMPLETELY SAFE. EVEN THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE. |
-| `ECL1.DAX/0x52` | `0x0242` | `unmatched` | — | WHILE THE RISK OF ADVENTURE IS GREAT, THE REWARDS ARE GREATER. FAME AND FORTUNE COME TO THOSE WHO BRAVE THE WILDS. |
-| `ECL1.DAX/0x52` | `0x02A9` | `unmatched` | — | BUT THE ULTIMATE PRIZE IS NOT GOLD OR POWER, IT IS CONTROL OF YOUR OWN DESTINY. AND TO WIN CONTROL YOU MUST DEFEAT THE ULTIMATE ENEMY. |
-| `ECL1.DAX/0x52` | `0x031C` | `unmatched` | — | YOUR ENEMIES ARE PREPARED. THE FORGOTTEN REALMS AWAIT. GO FORWARD AND DEFEAT THE NEW ALLIANCE, TO BE FREE OF THE CURSE OF THE AZURE BONDS. |
+| `ECL1.DAX/0x51` | `0x018B` | `variable-insert` | — | YOU ARE AT THE EDGE OF . WILL YOU ENTER OR CONTINUE YOUR JOURNEY? |
+| `ECL1.DAX/0x52` | `0x002E` | `matched` | `opening.curse-summary` | ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN YOU AWAKE YOUR PARTY HAS BEEN CURSED WITH FIVE AZURE SYMBOLS. |
+| `ECL1.DAX/0x52` | `0x00B4` | `matched` | `opening.curse-summary` | THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS. AND WHEN THE BONDS GLOW YOU MUST DO AS THEY COMMAND. |
+| `ECL1.DAX/0x52` | `0x0112` | `matched` | `opening.curse-summary` | YOUR ONLY HOPE IS TO SEARCH THE FORGOTTEN REALMS FOR THE MEMBERS OF THE ALLIANCE WHO CREATED THE BONDS AND REGAIN CONTROL OF YOUR OWN DESTINY. |
+| `ECL1.DAX/0x52` | `0x0195` | `matched` | `opening.curse-summary` | NOWHERE IN THE REALMS IS COMPLETELY SAFE. EVEN THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE. |
+| `ECL1.DAX/0x52` | `0x0242` | `matched` | `opening.demo-closing` | WHILE THE RISK OF ADVENTURE IS GREAT, THE REWARDS ARE GREATER. FAME AND FORTUNE COME TO THOSE WHO BRAVE THE WILDS. |
+| `ECL1.DAX/0x52` | `0x02A9` | `matched` | `opening.demo-closing` | BUT THE ULTIMATE PRIZE IS NOT GOLD OR POWER, IT IS CONTROL OF YOUR OWN DESTINY. AND TO WIN CONTROL YOU MUST DEFEAT THE ULTIMATE ENEMY. |
+| `ECL1.DAX/0x52` | `0x031C` | `matched` | `opening.demo-closing` | YOUR ENEMIES ARE PREPARED. THE FORGOTTEN REALMS AWAIT. GO FORWARD AND DEFEAT THE NEW ALLIANCE, TO BE FREE OF THE CURSE OF THE AZURE BONDS. |
 | `ECL2.DAX/0x01` | `0x0050` | `matched` | `opening.new-game-awakening` | YOU AWAKEN IN A SMALL ROOM. LOOKING AROUND, YOU NOTICE THAT ALL YOUR GEAR IS GONE, AS IS YOUR MEMORY OF RECENT EVENTS. |
 | `ECL2.DAX/0x01` | `0x00B7` | `matched` | `opening.new-game-marks` | ADDING TO YOUR DISQUIET, YOU NOTICE THAT YOUR SWORD ARM HAS BEEN SOMEHOW IMPRINTED WITH STRANGE PATTERNS. THE REST OF YOUR PARTY ARE IDENTICALLY MARKED. |
 | `ECL2.DAX/0x01` | `0x0193` | `matched` | `tilverton.door-locked-guards` | THE DOOR IS LOCKED. YOUR ATTEMPT TO ENTER HAS ATTRACTED A GROUP OF ROYAL GUARDS. |
@@ -94,13 +93,13 @@
 | `ECL2.DAX/0x04` | `0x003A` | `matched` | `fire-knife.hideout-entry` | YOU ARE ENTERING THE HIDEOUT. |
 | `ECL2.DAX/0x04` | `0x15AF` | `unmatched` | — | YOU ARE SPOTTED BY A FIRE KNIFE PATROL, WHO CHARGE IMMEDIATELY. |
 | `ECL3.DAX/0x10` | `0x0082` | `matched` | `yulash.entry` | SMOKE RISES FROM BEHIND THE RUINED WALLS OF YULASH. THE SOUND OF BATTLE RINGS OUT FROM INSIDE HOW DO YOU ENTER? |
-| `ECL3.DAX/0x10` | `0x032D` | `unmatched` | — | HEY, NO SLEEPING HERE! |
-| `ECL3.DAX/0x10` | `0x086C` | `unmatched` | — | A BAND OF RED PLUME GUARDS SALUTE YOU AND PASS ON BY. |
-| `ECL3.DAX/0x10` | `0x08E2` | `unmatched` | — | THE RED PLUME GUARDS ATTACK! |
-| `ECL3.DAX/0x10` | `0x0910` | `unmatched` | — | RED PLUME GUARDS RUSH AT YOU YELLING, 'THAT'S THEM!  THEY'RE THE SCUM WHO KILLED THE COMMANDER!' |
-| `ECL3.DAX/0x10` | `0x0E6B` | `unmatched` | — | SHAMBLING MOUNDS RISE UP FROM THE DEBRIS AROUND YOU. |
-| `ECL3.DAX/0x10` | `0x0FAB` | `unmatched` | — | A BAND OF ZHENTIL KEEP MARAUDERS JUMP YOU. |
-| `ECL3.DAX/0x10` | `0x157F` | `unmatched` | — | YOU WAKE UP IN A RATHER DREARY ROOM. THE RATS EYE YOU EXPECTANTLY. |
+| `ECL3.DAX/0x10` | `0x032D` | `matched` | `yulash.no-sleeping` | HEY, NO SLEEPING HERE! |
+| `ECL3.DAX/0x10` | `0x086C` | `matched` | `yulash.red-plume-salute` | A BAND OF RED PLUME GUARDS SALUTE YOU AND PASS ON BY. |
+| `ECL3.DAX/0x10` | `0x08E2` | `matched` | `yulash.red-plume-attack` | THE RED PLUME GUARDS ATTACK! |
+| `ECL3.DAX/0x10` | `0x0910` | `matched` | `yulash.red-plume-avenge-commander` | RED PLUME GUARDS RUSH AT YOU YELLING, 'THAT'S THEM!  THEY'RE THE SCUM WHO KILLED THE COMMANDER!' |
+| `ECL3.DAX/0x10` | `0x0E6B` | `matched` | `yulash.shambling-mounds` | SHAMBLING MOUNDS RISE UP FROM THE DEBRIS AROUND YOU. |
+| `ECL3.DAX/0x10` | `0x0FAB` | `matched` | `yulash.zhentil-marauders` | A BAND OF ZHENTIL KEEP MARAUDERS JUMP YOU. |
+| `ECL3.DAX/0x10` | `0x157F` | `matched` | `yulash.captured-cell` | YOU WAKE UP IN A RATHER DREARY ROOM. THE RATS EYE YOU EXPECTANTLY. |
 | `ECL3.DAX/0x10` | `0x1D2C` | `subroutine` | — | WHAT DO YOU DO? |
 | `ECL3.DAX/0x11` | `0x0074` | `matched` | `pit.opening-dead-cultists` | YOU SEE THREE CULTISTS LYING DEAD ON THE FLOOR. JUST AHEAD OF YOU, ANOTHER CLERIC GASPS FOR BREATH. |
 | `ECL3.DAX/0x11` | `0x00CA` | `matched` | `pit.opening-chosen` | THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC TRIUMPH. HE HOWLS, 'THE CHOSEN ONES!' |
@@ -134,7 +133,7 @@
 | `ECL3.DAX/0x12` | `0x12C2` | `unmatched` | — | MOGION SAYS, 'I AM SO GLAD YOU ARRIVED.  IT IS SO HARD TO DO ANYTHING CONSTRUCTIVE WITHOUT THE PROPER TOOLS. DON'T YOU AGREE?' |
 | `ECL3.DAX/0x12` | `0x1AFC` | `subroutine` | — | WHAT DO YOU DO? |
 | `ECL3.DAX/0x15` | `0x0390` | `unmatched` | — | YOU LOCATE A PATH OUT. DO YOU WANT TO EXIT? |
-| `ECL3.DAX/0x15` | `0x04F5` | `unmatched` | — | YOU SPOT MONSTERS. |
+| `ECL3.DAX/0x15` | `0x04F5` | `matched` | `dark-elf-caves.monsters-spotted` | YOU SPOT MONSTERS. |
 | `ECL4.DAX/0x20` | `0x00D0` | `matched` | `zhentil.guards_question` | 'STOP!  GET OVER HERE!  WE HAVE SOME QUESTIONS FOR YOU!' THE GUARDS TAKE YOU ASIDE FOR QUESTIONING. YOU RECORD THIS AS JOURNAL ENTRY 32. |
 | `ECL4.DAX/0x20` | `0x0148` | `matched` | `zhentil.guards_warning` | AS YOU LEAVE, YOU OVERHEAR A GUARD SAY, 'JUST AS THE LITTLE THIEF SAID.' THE COMMANDER REPLIES, 'DON'T WORRY.  THEY'LL GET THEIRS INSIDE.' |
 | `ECL4.DAX/0x20` | `0x01C2` | `matched` | `zhentil.inner_city` | YOU JOIN THE TEEMING MASSES OF THE INNER CITY. |
@@ -147,7 +146,7 @@
 | `ECL4.DAX/0x21` | `0x0560` | `matched` | `zhentil.dimswart_join` | WILL YOU TAKE DIMSWART ALONG? |
 | `ECL4.DAX/0x21` | `0x05C8` | `unmatched` | — | YOU ARE ATTACKED BY THE PRIESTS OF BANE. |
 | `ECL4.DAX/0x22` | `0x0071` | `unmatched` | — | YOU WAKE UP IN A CONFUSION OF VOICES. THE OLD MAN INTRODUCES HIMSELF AS DIMSWART THE SAGE, AND YOU RECORD HIS HURRIED WHISPERS AS JOURNAL ENTRY 12. |
-| `ECL4.DAX/0x22` | `0x00ED` | `unmatched` | — | YOU ARE LED ALONG A DARK CORRIDOR. |
+| `ECL4.DAX/0x22` | `0x00ED` | `matched` | `dexam.arrival` | YOU ARE LED ALONG A DARK CORRIDOR. |
 | `ECL4.DAX/0x22` | `0x0153` | `matched` | `dexam.arrival` | YOU SEE BEFORE YOU, DEXAM THE BEHOLDER! THE HOODED WOMAN WALKS TO A MILLING GROUP OF ARMORED MINOTAURS. THEY IMMEDIATELY SNAP TO ATTENTION. |
 | `ECL4.DAX/0x22` | `0x01CA` | `matched` | `dexam.journal_30` | DEXAM SPEAKS.  YOU RECORD HIS SPEECH AS JOURNAL ENTRY 30. |
 | `ECL4.DAX/0x22` | `0x01FF` | `matched` | `dexam.amulet_choice` | DIMSWART THE SAGE WHISPERS, 'LOOK ON THE ALTAR. THAT'S THE AMULET OF LATHANDER.' WHAT DO YOU DO? |
@@ -214,12 +213,12 @@
 | `ECL5.DAX/0x33` | `0x18A1` | `matched` | `wizard-tower.bedroom` | YOU HAVE ENTERED A VERY ELEGANT BEDROOM, RED SILK TAPESTRIES ADORN THE WALLS. THE ROOM IS DISARRANGED AS IF SOMEONE HAD QUICKLY PACKED. DO YOU WANT TO TAKE THE … |
 | `ECL5.DAX/0x33` | `0x1968` | `matched` | `wizard-tower.library` | THE WALLS OF THIS ROOM ARE LINED WITH BOOKS ON MANY SUBJECTS. NONE RADIATE MAGIC. |
 | `ECL5.DAX/0x33` | `0x19C7` | `matched` | `wizard-tower.scroll-room` | THE WALLS ARE COVERED WITH RACKS FOR SCROLL CASES. THE SCROLLS LOOK TO HAVE BEEN RECENTLY REMOVED. |
-| `ECL5.DAX/0x35` | `0x0541` | `unmatched` | — | YOUR DARK ELF ITEMS FADE AWAY IN THE SUNLIGHT. |
-| `ECL5.DAX/0x35` | `0x078B` | `unmatched` | — | YOU FEEL A BREATH OF FRESH AIR. DO YOU WANT TO EXIT? |
-| `ECL5.DAX/0x35` | `0x08FF` | `unmatched` | — | YOU SPOT MONSTERS. |
-| `ECL5.DAX/0x35` | `0x0991` | `unmatched` | — | 'GREETINGS TRAVELLERS, AND WELCOME TO MY HUMBLE ABODE. I AM TARSUS AND, FOR A TITHE, I CAN TRANSPORT YOU BACK TO THE SURFACE. INTERESTED?' |
-| `ECL5.DAX/0x35` | `0x0A12` | `unmatched` | — | 'YOU WILL NOT REGRET THIS DESCISION.' |
-| `ECL5.DAX/0x35` | `0x0A3B` | `unmatched` | — | 'I TRAVEL RARELY, SO YOU SHOULD FIND ME HERE IF YOU CHANGE YOUR MIND.' |
+| `ECL5.DAX/0x35` | `0x0541` | `matched` | `dark-elf-caves.items-fade` | YOUR DARK ELF ITEMS FADE AWAY IN THE SUNLIGHT. |
+| `ECL5.DAX/0x35` | `0x078B` | `matched` | `dark-elf-caves.fresh-air-exit` | YOU FEEL A BREATH OF FRESH AIR. DO YOU WANT TO EXIT? |
+| `ECL5.DAX/0x35` | `0x08FF` | `matched` | `dark-elf-caves.monsters-spotted` | YOU SPOT MONSTERS. |
+| `ECL5.DAX/0x35` | `0x0991` | `matched` | `dark-elf-caves.tarsus-offer` | 'GREETINGS TRAVELLERS, AND WELCOME TO MY HUMBLE ABODE. I AM TARSUS AND, FOR A TITHE, I CAN TRANSPORT YOU BACK TO THE SURFACE. INTERESTED?' |
+| `ECL5.DAX/0x35` | `0x0A12` | `matched` | `dark-elf-caves.tarsus-accepted` | 'YOU WILL NOT REGRET THIS DESCISION.' |
+| `ECL5.DAX/0x35` | `0x0A3B` | `matched` | `dark-elf-caves.tarsus-declined` | 'I TRAVEL RARELY, SO YOU SHOULD FIND ME HERE IF YOU CHANGE YOUR MIND.' |
 | `ECL6.DAX/0x40` | `0x0077` | `matched` | `myth-drannor.helm-north` | THE HELM OF DRAGONS REPORTS TYRANTHRAXUS IS TO THE NORTH. |
 | `ECL6.DAX/0x40` | `0x01EC` | `unmatched` | — | RUBBLE HAS BLOCKED THE ENTRANCE. |
 | `ECL6.DAX/0x40` | `0x04F7` | `unmatched` | — | YOU SEE A GROUP OF KNIGHTS. |
@@ -242,4 +241,4 @@
 | `ECL6.DAX/0x43` | `0x09F1` | `matched` | `myth-drannor.inner.ritual.recover` | AS THE PARTY RETRIEVES THE ARTIFACTS, TYRANTHRAXUS LOOKS AFRAID. 'KILL THEM MY PETS!' HE THEN RUSHES OFF. |
 | `ECL6.DAX/0x43` | `0x0A77` | `unmatched` | — | A TREMENDOUS NOISE IS HEARD FROM OUTSIDE. SOME OF TYRANTHRAXUS' FORCE GOES TO PROTECT THE TEMPLE. |
 | `ECL6.DAX/0x45` | `0x0379` | `unmatched` | — | YOU LOCATE A PATH OUT. DO YOU WANT TO EXIT? |
-| `ECL6.DAX/0x45` | `0x04E1` | `unmatched` | — | YOU SPOT MONSTERS. |
+| `ECL6.DAX/0x45` | `0x04E1` | `matched` | `dark-elf-caves.monsters-spotted` | YOU SPOT MONSTERS. |

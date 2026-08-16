@@ -5,6 +5,8 @@
   "一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。",
   "`02h GOSUB` 進去印的文字不會併進這一段，標 `gosub_inserts` 的頁實際文字比這裡多。插入點在中間（`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」）或在開頭當前綴（`ECL4.DAX/0x25` 的八個遭遇頁前面都有「YOU ARE ATTACKED BY」）。⇒ 寫 `all_contains` 時**片段不要跨越插入點**，否則實機接不上。",
   "反過來，被 `GOSUB` 呼叫的純文字子程式會自成一段（如 `UP`／`DOWN`／`YOU ARE ATTACKED BY`）。它們在實機不會單獨出現，**不要**替它們寫規則——只有一兩個字的規則會攔截到別的文字。",
+  "頁裡若印了執行期的值（人名、城名、數字），靜態文字是空的，工具同樣比對不了——逐城的 `*.edge` 規則需要城名才會命中。這類標 `variable-insert`。",
+  "比對以 **run** 為單位，不是以頁：runtime 把整個 run 的文字累積起來一次交給 `MatchText`，所以一條規則可以橫跨好幾頁（開場捲軸就是四頁一條）。run 在「交出文字」的指令或頁尾的 `GOSUB`（翻頁提示、Yes／No）處結束。",
   "『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。"
  ],
  "groups": [
@@ -13,7 +15,11 @@
    "block": "0x50",
    "offset": "0x00C8",
    "text": "YOU ARE AT THE EDGE OF . WILL YOU ENTER OR CONTINUE YOUR JOURNEY?",
-   "status": "unmatched"
+   "variable_inserts": [
+    "0x00DD"
+   ],
+   "status": "variable-insert",
+   "run": 3
   },
   {
    "member": "ECL1.DAX",
@@ -21,7 +27,8 @@
    "offset": "0x01C4",
    "text": "YOU ARE AT THE STANDING STONES. A GREY ROBED MAN SITS AGAINST A STONE, HIS FACE COVERED IN SHADOW.",
    "rule_id": "standing-stone.grey-man",
-   "status": "matched"
+   "status": "matched",
+   "run": 7
   },
   {
    "member": "ECL1.DAX",
@@ -31,7 +38,12 @@
    "gosub_inserts": [
     "0x0268"
    ],
-   "status": "gosub-insert"
+   "variable_inserts": [
+    "0x027E",
+    "0x02B4"
+   ],
+   "status": "gosub-insert",
+   "run": 8
   },
   {
    "member": "ECL1.DAX",
@@ -39,7 +51,8 @@
    "offset": "0x03CF",
    "text": ". AS HE RISES, THE ROBE FALLS AWAY, REVEALING TYRANTHRAXUS. 'YOU HAVE DONE WELL. MEET ME AT MYTH DRANNOR.' HE FADES AWAY.",
    "rule_id": "myth-drannor.tyranthraxus-reveal",
-   "status": "matched"
+   "status": "matched",
+   "run": 10
   },
   {
    "member": "ECL1.DAX",
@@ -49,126 +62,163 @@
    "gosub_inserts": [
     "0x1A6E"
    ],
-   "status": "gosub-insert"
+   "variable_inserts": [
+    "0x1A56",
+    "0x1A7C"
+   ],
+   "status": "gosub-insert",
+   "run": 23
   },
   {
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1AAA",
    "text": "YOUR WAY IS BLOCKED BY AN IMPASSABLE CHASM. A NARROW BRIDGE IS GUARDED BY AN OLD MAN. HE CACKLES, ' YOU MUST ANSWER ME BEFORE THE OTHER SIDE YE SEE.'",
-   "status": "unmatched"
+   "rule_id": "world.bridge-riddle.intro",
+   "status": "matched",
+   "run": 24
   },
   {
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1B27",
    "text": "WHAT IS YOUR QUEST?",
-   "status": "unmatched"
+   "rule_id": "world.bridge-riddle.quest",
+   "status": "matched",
+   "run": 25
   },
   {
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1B3F",
    "text": "WHAT IS YOUR FAVORITE FRUIT?",
-   "status": "unmatched"
+   "rule_id": "world.bridge-riddle.fruit",
+   "status": "matched",
+   "run": 26
   },
   {
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1B5D",
    "text": "WHAT DOES THIS MEAN?",
-   "status": "unmatched"
+   "rule_id": "world.bridge-riddle.pass",
+   "status": "matched",
+   "run": 27
   },
   {
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1B73",
    "text": "YOU MAY PASS.",
-   "status": "unmatched"
+   "rule_id": "world.bridge-riddle.pass",
+   "status": "matched",
+   "run": 27
   },
   {
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1BC5",
    "text": "AND YOU RECORD IT IN JOURNAL ENTRY",
-   "status": "subroutine"
+   "status": "subroutine",
+   "run": 30
   },
   {
    "member": "ECL1.DAX",
    "block": "0x50",
    "offset": "0x1BE4",
    "text": "WHAT DO YOU DO?",
-   "status": "subroutine"
+   "status": "subroutine",
+   "run": 31
   },
   {
    "member": "ECL1.DAX",
    "block": "0x51",
    "offset": "0x0072",
    "text": "AS YOU DEPART, A HUGE FORCE OF ZHENTIL KEEP TROOPS INVADES THE CITY FROM THE NORTH.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 1
   },
   {
    "member": "ECL1.DAX",
    "block": "0x51",
    "offset": "0x00C5",
    "text": "AS YOU LEAVE, YOU SEE THAT CIVIL WAR IS ERUPTING. MANY FACTIONS ARE USING THE HAVOC YOU'VE CAUSED TO EVEN OLD SCORES. THE CITY WILL BE UNSAFE FOR A WHILE.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 2
   },
   {
    "member": "ECL1.DAX",
    "block": "0x51",
    "offset": "0x018B",
    "text": "YOU ARE AT THE EDGE OF . WILL YOU ENTER OR CONTINUE YOUR JOURNEY?",
-   "status": "unmatched"
+   "variable_inserts": [
+    "0x01A0"
+   ],
+   "status": "variable-insert",
+   "run": 5
   },
   {
    "member": "ECL1.DAX",
    "block": "0x52",
    "offset": "0x002E",
    "text": "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN YOU AWAKE YOUR PARTY HAS BEEN CURSED WITH FIVE AZURE SYMBOLS.",
-   "status": "unmatched"
+   "rule_id": "opening.curse-summary",
+   "status": "matched",
+   "run": 0
   },
   {
    "member": "ECL1.DAX",
    "block": "0x52",
    "offset": "0x00B4",
    "text": "THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS. AND WHEN THE BONDS GLOW YOU MUST DO AS THEY COMMAND.",
-   "status": "unmatched"
+   "rule_id": "opening.curse-summary",
+   "status": "matched",
+   "run": 0
   },
   {
    "member": "ECL1.DAX",
    "block": "0x52",
    "offset": "0x0112",
    "text": "YOUR ONLY HOPE IS TO SEARCH THE FORGOTTEN REALMS FOR THE MEMBERS OF THE ALLIANCE WHO CREATED THE BONDS AND REGAIN CONTROL OF YOUR OWN DESTINY.",
-   "status": "unmatched"
+   "rule_id": "opening.curse-summary",
+   "status": "matched",
+   "run": 0
   },
   {
    "member": "ECL1.DAX",
    "block": "0x52",
    "offset": "0x0195",
    "text": "NOWHERE IN THE REALMS IS COMPLETELY SAFE. EVEN THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE.",
-   "status": "unmatched"
+   "rule_id": "opening.curse-summary",
+   "status": "matched",
+   "run": 0
   },
   {
    "member": "ECL1.DAX",
    "block": "0x52",
    "offset": "0x0242",
    "text": "WHILE THE RISK OF ADVENTURE IS GREAT, THE REWARDS ARE GREATER. FAME AND FORTUNE COME TO THOSE WHO BRAVE THE WILDS.",
-   "status": "unmatched"
+   "rule_id": "opening.demo-closing",
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL1.DAX",
    "block": "0x52",
    "offset": "0x02A9",
    "text": "BUT THE ULTIMATE PRIZE IS NOT GOLD OR POWER, IT IS CONTROL OF YOUR OWN DESTINY. AND TO WIN CONTROL YOU MUST DEFEAT THE ULTIMATE ENEMY.",
-   "status": "unmatched"
+   "rule_id": "opening.demo-closing",
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL1.DAX",
    "block": "0x52",
    "offset": "0x031C",
    "text": "YOUR ENEMIES ARE PREPARED. THE FORGOTTEN REALMS AWAIT. GO FORWARD AND DEFEAT THE NEW ALLIANCE, TO BE FREE OF THE CURSE OF THE AZURE BONDS.",
-   "status": "unmatched"
+   "rule_id": "opening.demo-closing",
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL2.DAX",
@@ -176,7 +226,8 @@
    "offset": "0x0050",
    "text": "YOU AWAKEN IN A SMALL ROOM. LOOKING AROUND, YOU NOTICE THAT ALL YOUR GEAR IS GONE, AS IS YOUR MEMORY OF RECENT EVENTS.",
    "rule_id": "opening.new-game-awakening",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL2.DAX",
@@ -184,7 +235,8 @@
    "offset": "0x00B7",
    "text": "ADDING TO YOUR DISQUIET, YOU NOTICE THAT YOUR SWORD ARM HAS BEEN SOMEHOW IMPRINTED WITH STRANGE PATTERNS. THE REST OF YOUR PARTY ARE IDENTICALLY MARKED.",
    "rule_id": "opening.new-game-marks",
-   "status": "matched"
+   "status": "matched",
+   "run": 2
   },
   {
    "member": "ECL2.DAX",
@@ -192,7 +244,8 @@
    "offset": "0x0193",
    "text": "THE DOOR IS LOCKED. YOUR ATTEMPT TO ENTER HAS ATTRACTED A GROUP OF ROYAL GUARDS.",
    "rule_id": "tilverton.door-locked-guards",
-   "status": "matched"
+   "status": "matched",
+   "run": 4
   },
   {
    "member": "ECL2.DAX",
@@ -200,14 +253,16 @@
    "offset": "0x024E",
    "text": "A PATROL ARRIVES. ROYAL GUARDS TELL YOU TO MOVE ALONG.",
    "rule_id": "tilverton.patrol-move-along",
-   "status": "matched"
+   "status": "matched",
+   "run": 7
   },
   {
    "member": "ECL2.DAX",
    "block": "0x01",
    "offset": "0x142E",
    "text": "YOU MOVE AWAY.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 10
   },
   {
    "member": "ECL2.DAX",
@@ -215,14 +270,16 @@
    "offset": "0x145E",
    "text": "'THERE THEY ARE!'",
    "rule_id": "tilverton.guards-spot-party",
-   "status": "matched"
+   "status": "matched",
+   "run": 11
   },
   {
    "member": "ECL2.DAX",
    "block": "0x01",
    "offset": "0x14A1",
    "text": "REINFORCEMENTS ARE COMING.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 12
   },
   {
    "member": "ECL2.DAX",
@@ -230,7 +287,8 @@
    "offset": "0x1695",
    "text": "YOU SEE, BEYOND THE CHARGING GUARDS, TWO RED ROBED MEN JUMP THE CARRIAGE. THEY HAUL OUT A THIN MAN AND DRAG HIM INTO AN ALLEYWAY.",
    "rule_id": "tilverton.carriage-abduction",
-   "status": "matched"
+   "status": "matched",
+   "run": 13
   },
   {
    "member": "ECL2.DAX",
@@ -238,7 +296,8 @@
    "offset": "0x1717",
    "text": "ONE CALLS OUT, 'DO YOU SURRENDER?'",
    "rule_id": "tilverton.carriage-surrender",
-   "status": "matched"
+   "status": "matched",
+   "run": 14
   },
   {
    "member": "ECL2.DAX",
@@ -246,7 +305,8 @@
    "offset": "0x17D8",
    "text": "THE MAN LEADS YOU THROUGH HIDDEN PASSAGES, EMERGING IN A DARK UNDERGROUND AREA, THE THIEVES' GUILD.",
    "rule_id": "tilverton.carriage-guild-arrival",
-   "status": "matched"
+   "status": "matched",
+   "run": 15
   },
   {
    "member": "ECL2.DAX",
@@ -254,7 +314,8 @@
    "offset": "0x183C",
    "text": "THE STREET GROWS NARROW AND DIM HERE, WITH TRASH PILED IN THE CORNERS.",
    "rule_id": "tilverton.narrow-street",
-   "status": "matched"
+   "status": "matched",
+   "run": 16
   },
   {
    "member": "ECL2.DAX",
@@ -262,7 +323,8 @@
    "offset": "0x1881",
    "text": "YOU ARE THROWN IN JAIL.",
    "rule_id": "tilverton.carriage-jailed",
-   "status": "matched"
+   "status": "matched",
+   "run": 17
   },
   {
    "member": "ECL2.DAX",
@@ -270,7 +332,8 @@
    "offset": "0x18A9",
    "text": "AFTER A FEW HOURS, ONE WALL SLIDES OPEN AND A THIEF APPEARS. HE HANDS YOU YOUR EQUIPMENT AND SIGNALS YOU TO FOLLOW HIM.",
    "rule_id": "tilverton.carriage-thief-rescue",
-   "status": "matched"
+   "status": "matched",
+   "run": 18
   },
   {
    "member": "ECL2.DAX",
@@ -278,14 +341,16 @@
    "offset": "0x199E",
    "text": "A PATROL SPOTS YOU. ONE ASKS YOU TO SURRENDER. DO YOU?",
    "rule_id": "tilverton.patrol-surrender-demand",
-   "status": "matched"
+   "status": "matched",
+   "run": 19
   },
   {
    "member": "ECL2.DAX",
    "block": "0x01",
    "offset": "0x19F1",
    "text": "AS YOU ARE PASSING THROUGH THE CROWDS, YOU HEAR, '",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 20
   },
   {
    "member": "ECL2.DAX",
@@ -296,7 +361,8 @@
    "gosub_inserts": [
     "0x02C7"
    ],
-   "status": "matched"
+   "status": "matched",
+   "run": 10
   },
   {
    "member": "ECL2.DAX",
@@ -304,7 +370,8 @@
    "offset": "0x0325",
    "text": "'TRAITOROUS SCUM!' HISSES A FIRE KNIFE. 'SEIZE THEM ALL,' HE COMMANDS HIS SIZABLE BAND OF THIEVES.",
    "rule_id": "tilverton.guild-fire-knife-command",
-   "status": "matched"
+   "status": "matched",
+   "run": 11
   },
   {
    "member": "ECL2.DAX",
@@ -312,7 +379,8 @@
    "offset": "0x0379",
    "text": "AS HIS MEN SPREADOUT, THE GUILDMASTER HURLS A POISONED DAGGER, WHICH CATCHES THE FIRE KNIFE IN THE THROAT. HIS BODY SLUMPS TO THE FLOOR, TWITCHING VIOLENTLY.",
    "rule_id": "tilverton.guild-poisoned-dagger",
-   "status": "matched"
+   "status": "matched",
+   "run": 12
   },
   {
    "member": "ECL2.DAX",
@@ -320,7 +388,8 @@
    "offset": "0x03FE",
    "text": "AS YOU PREPARE TO MEET THE ONSLAUGHT, YOU SEE AN ARROW HIT THE GUILDMASTER IN THE CHEST. THEN, THE BATTLE IS JOINED.",
    "rule_id": "tilverton.guild-battle-joined",
-   "status": "matched"
+   "status": "matched",
+   "run": 13
   },
   {
    "member": "ECL2.DAX",
@@ -328,7 +397,8 @@
    "offset": "0x04BD",
    "text": "THE GUILDMASTER GASPS, 'ON BALANCE, I'D RATHER BE IN YULASH,' AND THEN HE DIES. YOU FIND INFORMATION ON HIS BODY AND LOG IT AS JOURNAL ENTRY 4.",
    "rule_id": "journal-trigger.guildmaster-map-4",
-   "status": "matched"
+   "status": "matched",
+   "run": 14
   },
   {
    "member": "ECL2.DAX",
@@ -336,21 +406,24 @@
    "offset": "0x004D",
    "text": "YOU ARE ENTERING THE FOUL SMELLING, SLIME COVERED SEWERS OF TILVERTON. BECAUSE OF THE SLIPPERY FOOTING AND LOW CEILING, IT IS APPARENT THAT FIGHTING WILL BE AWKWARD.",
    "rule_id": "tilverton.sewers-entry",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL2.DAX",
    "block": "0x03",
    "offset": "0x01C1",
    "text": "THE WAY IS BLOCKED. A PLACARD PROCLAIMS, 'SEALED BY ORDER OF HIS MAJESTY KING AZOUN IV.' DO YOU WISH EXIT TO THE WILDERNESS?",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 5
   },
   {
    "member": "ECL2.DAX",
    "block": "0x03",
    "offset": "0x1A09",
    "text": "A BAND OF ASSASINS HAS LOCATED YOUR CAMP.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 13
   },
   {
    "member": "ECL2.DAX",
@@ -358,14 +431,16 @@
    "offset": "0x003A",
    "text": "YOU ARE ENTERING THE HIDEOUT.",
    "rule_id": "fire-knife.hideout-entry",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL2.DAX",
    "block": "0x04",
    "offset": "0x15AF",
    "text": "YOU ARE SPOTTED BY A FIRE KNIFE PATROL, WHO CHARGE IMMEDIATELY.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 9
   },
   {
    "member": "ECL3.DAX",
@@ -373,63 +448,79 @@
    "offset": "0x0082",
    "text": "SMOKE RISES FROM BEHIND THE RUINED WALLS OF YULASH. THE SOUND OF BATTLE RINGS OUT FROM INSIDE HOW DO YOU ENTER?",
    "rule_id": "yulash.entry",
-   "status": "matched"
+   "status": "matched",
+   "run": 0
   },
   {
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x032D",
    "text": "HEY, NO SLEEPING HERE!",
-   "status": "unmatched"
+   "rule_id": "yulash.no-sleeping",
+   "status": "matched",
+   "run": 13
   },
   {
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x086C",
    "text": "A BAND OF RED PLUME GUARDS SALUTE YOU AND PASS ON BY.",
-   "status": "unmatched"
+   "rule_id": "yulash.red-plume-salute",
+   "status": "matched",
+   "run": 15
   },
   {
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x08E2",
    "text": "THE RED PLUME GUARDS ATTACK!",
-   "status": "unmatched"
+   "rule_id": "yulash.red-plume-attack",
+   "status": "matched",
+   "run": 17
   },
   {
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x0910",
    "text": "RED PLUME GUARDS RUSH AT YOU YELLING, 'THAT'S THEM!  THEY'RE THE SCUM WHO KILLED THE COMMANDER!'",
-   "status": "unmatched"
+   "rule_id": "yulash.red-plume-avenge-commander",
+   "status": "matched",
+   "run": 19
   },
   {
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x0E6B",
    "text": "SHAMBLING MOUNDS RISE UP FROM THE DEBRIS AROUND YOU.",
-   "status": "unmatched"
+   "rule_id": "yulash.shambling-mounds",
+   "status": "matched",
+   "run": 20
   },
   {
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x0FAB",
    "text": "A BAND OF ZHENTIL KEEP MARAUDERS JUMP YOU.",
-   "status": "unmatched"
+   "rule_id": "yulash.zhentil-marauders",
+   "status": "matched",
+   "run": 22
   },
   {
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x157F",
    "text": "YOU WAKE UP IN A RATHER DREARY ROOM. THE RATS EYE YOU EXPECTANTLY.",
-   "status": "unmatched"
+   "rule_id": "yulash.captured-cell",
+   "status": "matched",
+   "run": 28
   },
   {
    "member": "ECL3.DAX",
    "block": "0x10",
    "offset": "0x1D2C",
    "text": "WHAT DO YOU DO?",
-   "status": "subroutine"
+   "status": "subroutine",
+   "run": 35
   },
   {
    "member": "ECL3.DAX",
@@ -437,7 +528,8 @@
    "offset": "0x0074",
    "text": "YOU SEE THREE CULTISTS LYING DEAD ON THE FLOOR. JUST AHEAD OF YOU, ANOTHER CLERIC GASPS FOR BREATH.",
    "rule_id": "pit.opening-dead-cultists",
-   "status": "matched"
+   "status": "matched",
+   "run": 0
   },
   {
    "member": "ECL3.DAX",
@@ -445,7 +537,8 @@
    "offset": "0x00CA",
    "text": "THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC TRIUMPH. HE HOWLS, 'THE CHOSEN ONES!'",
    "rule_id": "pit.opening-chosen",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL3.DAX",
@@ -453,7 +546,8 @@
    "offset": "0x0115",
    "text": "THE CLERIC SLAMS HIS FIST AGAINST A PROTRUDING ROCK. THE CEILING BEHIND YOU COLLAPSES. YOU ARE TRAPPED IN THE PIT OF MOANDER.",
    "rule_id": "pit.trapped",
-   "status": "matched"
+   "status": "matched",
+   "run": 2
   },
   {
    "member": "ECL3.DAX",
@@ -461,7 +555,8 @@
    "offset": "0x0184",
    "text": "THE CLERIC GIVES YOU ONE LAST TRIUMPHANT GLARE, COUGHS BLOOD AND DIES AT YOUR FEET.",
    "rule_id": "pit.cleric-dies",
-   "status": "matched"
+   "status": "matched",
+   "run": 3
   },
   {
    "member": "ECL3.DAX",
@@ -469,7 +564,8 @@
    "offset": "0x01CD",
    "text": "YOU HEAR THE SOUNDS OF BATTLE IN THE DISTANCE. THERE IS A VAGUE SMELL OF BAKED BREAD.",
    "rule_id": "pit.ambience",
-   "status": "matched"
+   "status": "matched",
+   "run": 4
   },
   {
    "member": "ECL3.DAX",
@@ -477,7 +573,8 @@
    "offset": "0x0289",
    "text": "YOU HAVE ENTERED THROUGH THE BACKDOOR OF THE PIT. AN OMINOUS SILENCE PERVADES THE ATMOSPHERE.",
    "rule_id": "pit.backdoor-entry",
-   "status": "matched"
+   "status": "matched",
+   "run": 6
   },
   {
    "member": "ECL3.DAX",
@@ -485,7 +582,8 @@
    "offset": "0x03B7",
    "text": "WE MUST LEAVE YOU NOW. ALIAS THANKS YOU FOR YOUR HELP.  SHE WISHES YOU LUCK AND LEAVES.",
    "rule_id": "pit.alias-leaves",
-   "status": "matched"
+   "status": "matched",
+   "run": 11
   },
   {
    "member": "ECL3.DAX",
@@ -493,7 +591,8 @@
    "offset": "0x0425",
    "text": "THE SMELL OF HONEYSUCKLE FILLS THE AIR. DRAGONBAIT QUIETLY LOOKS AT EACH CHARACTER IN TURN, BOWS AND FOLLOWS ALIAS.",
    "rule_id": "pit.dragonbait-follows",
-   "status": "matched"
+   "status": "matched",
+   "run": 12
   },
   {
    "member": "ECL3.DAX",
@@ -501,7 +600,8 @@
    "offset": "0x0492",
    "text": "DRAGONBAIT PICKS UP THE BODY OF ALIAS, TURNS TO YOU IN SORROW, AND STARTS RUNNING TOWARDS HILLSFAR.",
    "rule_id": "pit.dragonbait-carries-alias",
-   "status": "matched"
+   "status": "matched",
+   "run": 13
   },
   {
    "member": "ECL3.DAX",
@@ -509,7 +609,8 @@
    "offset": "0x0D8D",
    "text": "YOU SEE STAIRS LEADING DOWN TO THE SOUTH. DO YOU WISH TO GO DOWN?",
    "rule_id": "pit.stairs-down",
-   "status": "matched"
+   "status": "matched",
+   "run": 24
   },
   {
    "member": "ECL3.DAX",
@@ -517,7 +618,8 @@
    "offset": "0x0E65",
    "text": "YOU ARE ATTACKED BY VEGEPYGMIES!",
    "rule_id": "pit.vegepygmies-attack",
-   "status": "matched"
+   "status": "matched",
+   "run": 27
   },
   {
    "member": "ECL3.DAX",
@@ -525,7 +627,8 @@
    "offset": "0x0EC7",
    "text": "YOU COME UPON SOME VEGEPYGMIES. THEY START TO BACK AWAY, POINTING TO THE DOOR BEHIND YOU.",
    "rule_id": "pit.vegepygmies-retreat",
-   "status": "matched"
+   "status": "matched",
+   "run": 29
   },
   {
    "member": "ECL3.DAX",
@@ -533,7 +636,8 @@
    "offset": "0x0FB5",
    "text": "YOU ARE ATTACKED BY SHAMBLING MOUNDS!",
    "rule_id": "pit.shambling-mounds-attack",
-   "status": "matched"
+   "status": "matched",
+   "run": 31
   },
   {
    "member": "ECL3.DAX",
@@ -541,7 +645,8 @@
    "offset": "0x1004",
    "text": "SOME SHAMBLING MOUNDS ARE ATTEMPTING TO PUSH YOU BACK INTO THE CORRIDOR.",
    "rule_id": "pit.shambling-mounds-push",
-   "status": "matched"
+   "status": "matched",
+   "run": 33
   },
   {
    "member": "ECL3.DAX",
@@ -549,7 +654,8 @@
    "offset": "0x10BA",
    "text": "GIANT SLUGS ARE CROSSING YOUR PATH.",
    "rule_id": "pit.giant-slugs",
-   "status": "matched"
+   "status": "matched",
+   "run": 35
   },
   {
    "member": "ECL3.DAX",
@@ -557,14 +663,16 @@
    "offset": "0x1161",
    "text": "MOANDER FANATICS ATTACK!",
    "rule_id": "pit.fanatics-attack",
-   "status": "matched"
+   "status": "matched",
+   "run": 37
   },
   {
    "member": "ECL3.DAX",
    "block": "0x11",
    "offset": "0x1697",
    "text": "WHAT DO YOU DO?",
-   "status": "subroutine"
+   "status": "subroutine",
+   "run": 44
   },
   {
    "member": "ECL3.DAX",
@@ -572,7 +680,8 @@
    "offset": "0x16F0",
    "text": "AN IMAGE APPEARS BEFORE YOU. SHE SAYS, 'OH NO, MY PETS.  YOU MUST NOT LEAVE NOW.  YOU ARE THE GUESTS OF HONOR AT OUR SACRED RITES.  COME TO ME IN THE LOWER LEVEL.'",
    "rule_id": "pit.mogion-image-summons",
-   "status": "matched"
+   "status": "matched",
+   "run": 49
   },
   {
    "member": "ECL3.DAX",
@@ -580,7 +689,8 @@
    "offset": "0x177C",
    "text": "A STRONG FORCE PUSHES YOU BACK INTO THE ROOM.",
    "rule_id": "pit.pushed-back",
-   "status": "matched"
+   "status": "matched",
+   "run": 50
   },
   {
    "member": "ECL3.DAX",
@@ -588,7 +698,8 @@
    "offset": "0x027A",
    "text": "YOU SEE STAIRS GOING UP IN THE NORTH WALL. DO YOU WISH TO GO UP?",
    "rule_id": "pit.stairs-up",
-   "status": "matched"
+   "status": "matched",
+   "run": 13
   },
   {
    "member": "ECL3.DAX",
@@ -596,7 +707,8 @@
    "offset": "0x0350",
    "text": "YOU ARE ATTACKED BY VEGEPYGMIES!",
    "rule_id": "pit.vegepygmies-attack",
-   "status": "matched"
+   "status": "matched",
+   "run": 15
   },
   {
    "member": "ECL3.DAX",
@@ -604,14 +716,16 @@
    "offset": "0x04E3",
    "text": "YOU ARE ATTACKED BY SHAMBLING MOUNDS!",
    "rule_id": "pit.shambling-mounds-attack",
-   "status": "matched"
+   "status": "matched",
+   "run": 17
   },
   {
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x0637",
    "text": "GIANT SLUGS APPEAR.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 19
   },
   {
    "member": "ECL3.DAX",
@@ -619,21 +733,24 @@
    "offset": "0x06D2",
    "text": "MOANDER FANATICS ATTACK!",
    "rule_id": "pit.fanatics-attack",
-   "status": "matched"
+   "status": "matched",
+   "run": 21
   },
   {
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x10FA",
    "text": "YOU AWAKE IN A FOG OF PAIN.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 23
   },
   {
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x1121",
    "text": "'I NEED TO HAVE MY VICTIMS HEALTHY.  SEND THEM TO A ROOM UNTIL THEY HAVE REGAINED THEIR STRENGTH.'",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 24
   },
   {
    "member": "ECL3.DAX",
@@ -641,7 +758,8 @@
    "offset": "0x11A1",
    "text": "YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY. SHE STANDS BEFORE AN ALTAR. YOU ARE SURROUNDED BY CULTISTS CHANTING IN A LOW DRONE.",
    "rule_id": "pit.mogion-altar",
-   "status": "matched"
+   "status": "matched",
+   "run": 26
   },
   {
    "member": "ECL3.DAX",
@@ -649,7 +767,8 @@
    "offset": "0x1235",
    "text": "ALIAS MUTTERS, 'THAT'S THE PRIESTESS OF MOANDER.' SHE TURNS HER HEAD AND SPITS ON THE GROUND.",
    "rule_id": "pit.alias-identifies-mogion",
-   "status": "matched"
+   "status": "matched",
+   "run": 27
   },
   {
    "member": "ECL3.DAX",
@@ -657,35 +776,41 @@
    "offset": "0x129D",
    "text": "'I AM MOGION.'",
    "rule_id": "pit.mogion-self-identifies",
-   "status": "matched"
+   "status": "matched",
+   "run": 28
   },
   {
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x12C2",
    "text": "MOGION SAYS, 'I AM SO GLAD YOU ARRIVED.  IT IS SO HARD TO DO ANYTHING CONSTRUCTIVE WITHOUT THE PROPER TOOLS. DON'T YOU AGREE?'",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 29
   },
   {
    "member": "ECL3.DAX",
    "block": "0x12",
    "offset": "0x1AFC",
    "text": "WHAT DO YOU DO?",
-   "status": "subroutine"
+   "status": "subroutine",
+   "run": 34
   },
   {
    "member": "ECL3.DAX",
    "block": "0x15",
    "offset": "0x0390",
    "text": "YOU LOCATE A PATH OUT. DO YOU WANT TO EXIT?",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 9
   },
   {
    "member": "ECL3.DAX",
    "block": "0x15",
    "offset": "0x04F5",
    "text": "YOU SPOT MONSTERS.",
-   "status": "unmatched"
+   "rule_id": "dark-elf-caves.monsters-spotted",
+   "status": "matched",
+   "run": 11
   },
   {
    "member": "ECL4.DAX",
@@ -693,7 +818,8 @@
    "offset": "0x00D0",
    "text": "'STOP!  GET OVER HERE!  WE HAVE SOME QUESTIONS FOR YOU!' THE GUARDS TAKE YOU ASIDE FOR QUESTIONING. YOU RECORD THIS AS JOURNAL ENTRY 32.",
    "rule_id": "zhentil.guards_question",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL4.DAX",
@@ -701,7 +827,8 @@
    "offset": "0x0148",
    "text": "AS YOU LEAVE, YOU OVERHEAR A GUARD SAY, 'JUST AS THE LITTLE THIEF SAID.' THE COMMANDER REPLIES, 'DON'T WORRY.  THEY'LL GET THEIRS INSIDE.'",
    "rule_id": "zhentil.guards_warning",
-   "status": "matched"
+   "status": "matched",
+   "run": 2
   },
   {
    "member": "ECL4.DAX",
@@ -709,14 +836,16 @@
    "offset": "0x01C2",
    "text": "YOU JOIN THE TEEMING MASSES OF THE INNER CITY.",
    "rule_id": "zhentil.inner_city",
-   "status": "matched"
+   "status": "matched",
+   "run": 3
   },
   {
    "member": "ECL4.DAX",
    "block": "0x20",
    "offset": "0x0223",
    "text": "DO YOU WISH TO ENTER?",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 5
   },
   {
    "member": "ECL4.DAX",
@@ -724,7 +853,8 @@
    "offset": "0x02C9",
    "text": "YOU HAVE ENTERED THE DARK SHRINE THROUGH A HOLE IN THE WALL CREATED BY A MAGICAL DEVICE CARRIED BY THE HALFLING.  AS THE WALLS CLOSE BEHIND YOU, YOU SEE THE DEVICE SMOKE AND DISAPPEAR.",
    "rule_id": "zhentil.dark_shrine_entry",
-   "status": "matched"
+   "status": "matched",
+   "run": 5
   },
   {
    "member": "ECL4.DAX",
@@ -732,7 +862,8 @@
    "offset": "0x0364",
    "text": "AS OLIVE LEADS YOU THROUGH THE DUNGEON SHE EXPLAINS ABOUT DIMSWART THE SAGE.  YOU NOTE THIS DOWN AS JOURNAL ENTRY 51.",
    "rule_id": "zhentil.olive_explains",
-   "status": "matched"
+   "status": "matched",
+   "run": 6
   },
   {
    "member": "ECL4.DAX",
@@ -740,7 +871,8 @@
    "offset": "0x03E6",
    "text": "DIMSWART IS JUST BEYOND THIS DOOR.",
    "rule_id": "zhentil.dimswart_door",
-   "status": "matched"
+   "status": "matched",
+   "run": 7
   },
   {
    "member": "ECL4.DAX",
@@ -748,7 +880,8 @@
    "offset": "0x0407",
    "text": "OLIVE SMILES AND DISAPPEARS.",
    "rule_id": "zhentil.olive_leaves",
-   "status": "matched"
+   "status": "matched",
+   "run": 8
   },
   {
    "member": "ECL4.DAX",
@@ -756,7 +889,8 @@
    "offset": "0x0508",
    "text": "YOU SEE AN OLD MAN IN THE CELL.  HE INTRODUCES HIMSELF AND YOU RECORD HIS REMARKS AS JOURNAL ENTRY 12.",
    "rule_id": "zhentil.dimswart_appears",
-   "status": "matched"
+   "status": "matched",
+   "run": 16
   },
   {
    "member": "ECL4.DAX",
@@ -764,28 +898,33 @@
    "offset": "0x0560",
    "text": "WILL YOU TAKE DIMSWART ALONG?",
    "rule_id": "zhentil.dimswart_join",
-   "status": "matched"
+   "status": "matched",
+   "run": 17
   },
   {
    "member": "ECL4.DAX",
    "block": "0x21",
    "offset": "0x05C8",
    "text": "YOU ARE ATTACKED BY THE PRIESTS OF BANE.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 18
   },
   {
    "member": "ECL4.DAX",
    "block": "0x22",
    "offset": "0x0071",
    "text": "YOU WAKE UP IN A CONFUSION OF VOICES. THE OLD MAN INTRODUCES HIMSELF AS DIMSWART THE SAGE, AND YOU RECORD HIS HURRIED WHISPERS AS JOURNAL ENTRY 12.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 1
   },
   {
    "member": "ECL4.DAX",
    "block": "0x22",
    "offset": "0x00ED",
    "text": "YOU ARE LED ALONG A DARK CORRIDOR.",
-   "status": "unmatched"
+   "rule_id": "dexam.arrival",
+   "status": "matched",
+   "run": 2
   },
   {
    "member": "ECL4.DAX",
@@ -793,7 +932,8 @@
    "offset": "0x0153",
    "text": "YOU SEE BEFORE YOU, DEXAM THE BEHOLDER! THE HOODED WOMAN WALKS TO A MILLING GROUP OF ARMORED MINOTAURS. THEY IMMEDIATELY SNAP TO ATTENTION.",
    "rule_id": "dexam.arrival",
-   "status": "matched"
+   "status": "matched",
+   "run": 2
   },
   {
    "member": "ECL4.DAX",
@@ -801,7 +941,8 @@
    "offset": "0x01CA",
    "text": "DEXAM SPEAKS.  YOU RECORD HIS SPEECH AS JOURNAL ENTRY 30.",
    "rule_id": "dexam.journal_30",
-   "status": "matched"
+   "status": "matched",
+   "run": 3
   },
   {
    "member": "ECL4.DAX",
@@ -809,14 +950,16 @@
    "offset": "0x01FF",
    "text": "DIMSWART THE SAGE WHISPERS, 'LOOK ON THE ALTAR. THAT'S THE AMULET OF LATHANDER.' WHAT DO YOU DO?",
    "rule_id": "dexam.amulet_choice",
-   "status": "matched"
+   "status": "matched",
+   "run": 4
   },
   {
    "member": "ECL4.DAX",
    "block": "0x22",
    "offset": "0x0A15",
    "text": "YOU ARE ATTACKED BY A BAND OF MINOTAURS AND PRIESTS.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 14
   },
   {
    "member": "ECL4.DAX",
@@ -824,7 +967,8 @@
    "offset": "0x0CBB",
    "text": "YOU ARE ATTACKED BY FORCES OF ZHENTIL KEEP!",
    "rule_id": "dexam.zhentil_attack",
-   "status": "matched"
+   "status": "matched",
+   "run": 15
   },
   {
    "member": "ECL4.DAX",
@@ -832,7 +976,8 @@
    "offset": "0x1314",
    "text": "OLIVE RUSKETTLE APPEARS JUST OUTSIDE THE DOOR. SHE SAYS, 'SO, YOU MADE IT.  I'M SURPRISED.'",
    "rule_id": "dexam.departure.olive",
-   "status": "matched"
+   "status": "matched",
+   "run": 19
   },
   {
    "member": "ECL4.DAX",
@@ -840,7 +985,8 @@
    "offset": "0x1362",
    "text": "'DIMSWART, YOU COME WITH ME. A MAN FROM SHADOWDALE HAS SOME QUESTIONS FOR YOU.' OLIVE AND DIMSWART LEAVE.",
    "rule_id": "dexam.departure.dimswart",
-   "status": "matched"
+   "status": "matched",
+   "run": 20
   },
   {
    "member": "ECL4.DAX",
@@ -848,7 +994,8 @@
    "offset": "0x13C0",
    "text": "YOU SEE A RIDER IN THE DISTANCE.  HE STOPS SUDDENLY AND A MOMENT LATER YOU HEAR WHAT SOUNDS LIKE 'GHARRIIII' COME WAFTING THROUGH THE AIR.",
    "rule_id": "dexam.departure.gharri",
-   "status": "matched"
+   "status": "matched",
+   "run": 21
   },
   {
    "member": "ECL4.DAX",
@@ -856,35 +1003,40 @@
    "offset": "0x143A",
    "text": "THE RIDER CHANGES DIRECTION AND GALLOPS OVER TO A WOMAN DRESSED IN PURPLE.  THEY EMBRACE, THE WOMAN CLIMBS ONTO THE BACK OF THE HORSE AND THEY RIDE AWAY.",
    "rule_id": "dexam.departure.riders",
-   "status": "matched"
+   "status": "matched",
+   "run": 22
   },
   {
    "member": "ECL4.DAX",
    "block": "0x23",
    "offset": "0x0080",
    "text": "IN YOUR FOGGY HAZE, YOU ARE DRAGGED INTO THE COURTROOM. YOU SEE THE MAGISTRATE LOOK UP AND SMILE WITH ANTICIPATION.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 5
   },
   {
    "member": "ECL4.DAX",
    "block": "0x23",
    "offset": "0x00E1",
    "text": "THE MAGISTRATE ORDERS YOU INTO A CELL TO REST UP FOR THE TRIAL.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 6
   },
   {
    "member": "ECL4.DAX",
    "block": "0x23",
    "offset": "0x0130",
    "text": "OYEZ, OYEZ.  THE COURT OF ZHENTIL IS NOW IN SESSION. YOU ARE ON TRIAL FOR MALICIOUS CONDUCT AGAINST THE STATE. HOW DO YOU PLEA?",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 7
   },
   {
    "member": "ECL4.DAX",
    "block": "0x23",
    "offset": "0x0566",
    "text": "'WHAT CAN I GET YOU TO DRINK?'",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 9
   },
   {
    "member": "ECL4.DAX",
@@ -892,7 +1044,8 @@
    "offset": "0x005D",
    "text": "YOU DISCOVER A SMALL MAGIC SHOP.",
    "rule_id": "world.magic-shop",
-   "status": "matched"
+   "status": "matched",
+   "run": 0
   },
   {
    "member": "ECL4.DAX",
@@ -900,7 +1053,8 @@
    "offset": "0x01DF",
    "text": "AFTER A FEW HOURS OUT IN THE SUN, YOUR DROW ITEMS FADE TO USELESSNESS.",
    "rule_id": "world.drow-items-fade",
-   "status": "matched"
+   "status": "matched",
+   "run": 6
   },
   {
    "member": "ECL4.DAX",
@@ -910,7 +1064,8 @@
    "gosub_inserts": [
     "0x126D"
    ],
-   "status": "gosub-insert"
+   "status": "gosub-insert",
+   "run": 12
   },
   {
    "member": "ECL4.DAX",
@@ -920,7 +1075,8 @@
    "gosub_inserts": [
     "0x12AE"
    ],
-   "status": "gosub-insert"
+   "status": "gosub-insert",
+   "run": 15
   },
   {
    "member": "ECL4.DAX",
@@ -930,7 +1086,8 @@
    "gosub_inserts": [
     "0x12DF"
    ],
-   "status": "gosub-insert"
+   "status": "gosub-insert",
+   "run": 17
   },
   {
    "member": "ECL4.DAX",
@@ -940,7 +1097,8 @@
    "gosub_inserts": [
     "0x1322"
    ],
-   "status": "gosub-insert"
+   "status": "gosub-insert",
+   "run": 19
   },
   {
    "member": "ECL4.DAX",
@@ -950,7 +1108,8 @@
    "gosub_inserts": [
     "0x136D"
    ],
-   "status": "gosub-insert"
+   "status": "gosub-insert",
+   "run": 21
   },
   {
    "member": "ECL4.DAX",
@@ -960,7 +1119,8 @@
    "gosub_inserts": [
     "0x13BD"
    ],
-   "status": "gosub-insert"
+   "status": "gosub-insert",
+   "run": 23
   },
   {
    "member": "ECL4.DAX",
@@ -970,7 +1130,8 @@
    "gosub_inserts": [
     "0x1409"
    ],
-   "status": "gosub-insert"
+   "status": "gosub-insert",
+   "run": 25
   },
   {
    "member": "ECL4.DAX",
@@ -980,21 +1141,24 @@
    "gosub_inserts": [
     "0x146C"
    ],
-   "status": "gosub-insert"
+   "status": "gosub-insert",
+   "run": 27
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x1534",
    "text": "YOU ARE ATTACKED BY",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 35
   },
   {
    "member": "ECL4.DAX",
    "block": "0x25",
    "offset": "0x15B7",
    "text": "WHAT TO YOU DO?",
-   "status": "subroutine"
+   "status": "subroutine",
+   "run": 38
   },
   {
    "member": "ECL5.DAX",
@@ -1002,7 +1166,8 @@
    "offset": "0x0034",
    "text": "AFTER A SHORT TIME IN THE SUNLIGHT, YOUR DARK ELF WEAPONS AND ARMOR DECAY TO USELESSNESS.",
    "rule_id": "area5.dark-elf-gear-decays",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL5.DAX",
@@ -1010,7 +1175,8 @@
    "offset": "0x0125",
    "text": "AKABAR SPEAKS, 'YOUR HELP WAS INVALUABLE TO ME. GOOD LUCK ON YOUR QUEST. I FEAR I HAVE BUSINESS TO ATTEND TO.' HE LEAVES.",
    "rule_id": "area5.depart-akabar",
-   "status": "matched"
+   "status": "matched",
+   "run": 4
   },
   {
    "member": "ECL5.DAX",
@@ -1018,7 +1184,8 @@
    "offset": "0x018A",
    "text": "AKABAR FROWNS AT YOU AND SAYS, 'I AM SURE YOU MUST HAVE YOUR REASONS TO LEAVE, BUT I MUST FREE THIS TOWN FROM THE WIZARD'S TYRANY. GOOD DAY.' HE STAMPS OFF.",
    "rule_id": "area5.depart-akabar-reluctant",
-   "status": "matched"
+   "status": "matched",
+   "run": 5
   },
   {
    "member": "ECL5.DAX",
@@ -1026,14 +1193,16 @@
    "offset": "0x005F",
    "text": "THIS RUN DOWN VILLAGE IS STRANGELY QUIET. THE WIND WHISTLES DOWN THE EMPTY STREET, PAST SHUTTERED WINDOWS. NO ONE IS ABOUT.",
    "rule_id": "hap.abandoned-village",
-   "status": "matched"
+   "status": "matched",
+   "run": 0
   },
   {
    "member": "ECL5.DAX",
    "block": "0x31",
    "offset": "0x034C",
    "text": "'PLEASE MOVE ON TO THE INN. YOU PUT US IN GRAVE DANGER.' THE PEASANTS THEN FLEE.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 5
   },
   {
    "member": "ECL5.DAX",
@@ -1041,7 +1210,8 @@
    "offset": "0x03F7",
    "text": "YOU ARE HEADING BACK TO THE WILDERNESS. DO YOU WANT TO CONTINUE?",
    "rule_id": "hap.leave",
-   "status": "matched"
+   "status": "matched",
+   "run": 6
   },
   {
    "member": "ECL5.DAX",
@@ -1049,7 +1219,8 @@
    "offset": "0x0442",
    "text": "DO YOU WANT TO FOLLOW THE MAP TO THE CAVES OR GO INTO THE WILDERNESS?",
    "rule_id": "hap.map-route",
-   "status": "matched"
+   "status": "matched",
+   "run": 7
   },
   {
    "member": "ECL5.DAX",
@@ -1057,7 +1228,8 @@
    "offset": "0x0072",
    "text": "YOU HAVE ENTERED AN ANCIENT LAVA TUBE. ASH COVERS THE FLOOR.",
    "rule_id": "lava-tube.entry",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL5.DAX",
@@ -1065,7 +1237,8 @@
    "offset": "0x00BC",
    "text": "FROM HIDDEN ALCOVES COMES A WAVE OF HEAT, FOLLOWED BY SALAMANDERS AND DARK ELVES.",
    "rule_id": "lava-tube.ambush",
-   "status": "matched"
+   "status": "matched",
+   "run": 2
   },
   {
    "member": "ECL5.DAX",
@@ -1073,7 +1246,8 @@
    "offset": "0x0165",
    "text": "THE ROOM IS FILLED WITH ACTIVE GEYSERS AND LAVA PITS. SALAMANDERS ARE SPORTING IN THE POOLS.",
    "rule_id": "lava-tube.salamander-pools",
-   "status": "matched"
+   "status": "matched",
+   "run": 3
   },
   {
    "member": "ECL5.DAX",
@@ -1081,7 +1255,8 @@
    "offset": "0x031B",
    "text": "AMONGST THE POOLS OF LAVA, ARE SIX FIREPROOF CASKS. DOES ANYONE WANT TO GO AND OPEN ONE?",
    "rule_id": "lava-tube.fireproof-casks",
-   "status": "matched"
+   "status": "matched",
+   "run": 6
   },
   {
    "member": "ECL5.DAX",
@@ -1089,7 +1264,8 @@
    "offset": "0x0384",
    "text": "THAT ONE IS NOT HEALTHY ENOUGH.",
    "rule_id": "lava-tube.cask-unhealthy",
-   "status": "matched"
+   "status": "matched",
+   "run": 7
   },
   {
    "member": "ECL5.DAX",
@@ -1097,7 +1273,8 @@
    "offset": "0x03C3",
    "text": "THE HEAT IS TOO INTENSE. YOU HAVE TO RETREAT. DOES ANYONE WANT TO TRY AGAIN?",
    "rule_id": "lava-tube.cask-heat-retreat",
-   "status": "matched"
+   "status": "matched",
+   "run": 8
   },
   {
    "member": "ECL5.DAX",
@@ -1105,7 +1282,8 @@
    "offset": "0x043A",
    "text": "DO YOU WANT TO TRY FOR ANOTHER?",
    "rule_id": "lava-tube.cask-try-another",
-   "status": "matched"
+   "status": "matched",
+   "run": 11
   },
   {
    "member": "ECL5.DAX",
@@ -1113,7 +1291,8 @@
    "offset": "0x0459",
    "text": "ALL THE CASKS HAVE BEEN EMPTIED.",
    "rule_id": "lava-tube.casks-emptied",
-   "status": "matched"
+   "status": "matched",
+   "run": 12
   },
   {
    "member": "ECL5.DAX",
@@ -1121,7 +1300,8 @@
    "offset": "0x047C",
    "text": "THIS WILL TAKE YOU TO THE WILDERNESS. DO YOU WANT TO CONTINUE?",
    "rule_id": "lava-tube.exit-to-wilderness",
-   "status": "matched"
+   "status": "matched",
+   "run": 13
   },
   {
    "member": "ECL5.DAX",
@@ -1129,7 +1309,8 @@
    "offset": "0x04BA",
    "text": "DO YOU WANT TO RETURN TO HAPTOOTH VILLAGE OR HEAD BEYOND?",
    "rule_id": "lava-tube.return-or-beyond",
-   "status": "matched"
+   "status": "matched",
+   "run": 14
   },
   {
    "member": "ECL5.DAX",
@@ -1137,7 +1318,8 @@
    "offset": "0x0513",
    "text": "YOU ARE HEADING UP INTO THE WIZARD'S TOWER.",
    "rule_id": "wizard-tower.courtyard.entering",
-   "status": "matched"
+   "status": "matched",
+   "run": 16
   },
   {
    "member": "ECL5.DAX",
@@ -1145,7 +1327,8 @@
    "offset": "0x055F",
    "text": "THE WAY IS BLOCKED WITH RUBBLE.",
    "rule_id": "lava-tube.blocked-rubble",
-   "status": "matched"
+   "status": "matched",
+   "run": 17
   },
   {
    "member": "ECL5.DAX",
@@ -1153,7 +1336,8 @@
    "offset": "0x0787",
    "text": "A PATROL SPOTS YOU AND ATTACKS.",
    "rule_id": "lava-tube.patrol-attacks",
-   "status": "matched"
+   "status": "matched",
+   "run": 25
   },
   {
    "member": "ECL5.DAX",
@@ -1161,7 +1345,8 @@
    "offset": "0x07DA",
    "text": "A PARTY OF ELVES SPOTS YOU, BUT SEEING SILK'S MARK, THEY MOVE AWAY.",
    "rule_id": "lava-tube.elves-see-mark",
-   "status": "matched"
+   "status": "matched",
+   "run": 27
   },
   {
    "member": "ECL5.DAX",
@@ -1169,7 +1354,8 @@
    "offset": "0x0068",
    "text": "YOU HAVE COME OUT INTO THE COURTYARD OF A FIVE STORY TOWER. THE STONEWORK HAS BEEN MYSTICLY PROTECTED , SO IS FLAWLESS AND BEAUTIFUL. SURROUNDING THE TOWER ARE HIGH MOUNTAINS.",
    "rule_id": "wizard-tower.courtyard.description",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL5.DAX",
@@ -1177,7 +1363,8 @@
    "offset": "0x0120",
    "text": "AN IMPRESSIVE ROBED FIGURE APPROACHES YOU. ' I AM DRACANDROS. I AM GLAD YOU HAVE FINALLY ARRIVED. TIME IS SHORT AND YOU MUST PLAY YOUR PART.'",
    "rule_id": "wizard-tower.dracandros.arrival",
-   "status": "matched"
+   "status": "matched",
+   "run": 2
   },
   {
    "member": "ECL5.DAX",
@@ -1185,7 +1372,8 @@
    "offset": "0x07EA",
    "text": "THIS IS THE WAY DOWN TO THE CAVES. HOWEVER, YOU ALSO NOTE A SECRET PASSAGE THAT WILL TAKE YOU DIRECTLY TO THE WILDERNESS. WHICH DO YOU TAKE?",
    "rule_id": "wizard-tower.roof-exit",
-   "status": "matched"
+   "status": "matched",
+   "run": 4
   },
   {
    "member": "ECL5.DAX",
@@ -1195,21 +1383,24 @@
    "gosub_inserts": [
     "0x093E"
    ],
-   "status": "gosub-insert"
+   "status": "gosub-insert",
+   "run": 6
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x09B7",
    "text": "UP",
-   "status": "subroutine"
+   "status": "subroutine",
+   "run": 8
   },
   {
    "member": "ECL5.DAX",
    "block": "0x33",
    "offset": "0x09BD",
    "text": "DOWN",
-   "status": "subroutine"
+   "status": "subroutine",
+   "run": 9
   },
   {
    "member": "ECL5.DAX",
@@ -1217,7 +1408,8 @@
    "offset": "0x0EEC",
    "text": "DRACANDROS IS DRAGGING A HEAVY BAG ACROSS THE COURTYARD. DROPPING THE BAG, HE SAYS, 'YOU HAVE DOGGED MY STEPS FOR TOO LONG. NOW YOU SHALL BE DESTROYED.'",
    "rule_id": "wizard-tower.dracandros.final-challenge",
-   "status": "matched"
+   "status": "matched",
+   "run": 12
   },
   {
    "member": "ECL5.DAX",
@@ -1225,7 +1417,8 @@
    "offset": "0x0F8E",
    "text": "AMONG HIS TREASURES YOU FIND THE HELM OF DRAGONS.",
    "rule_id": "wizard-tower.helm-of-dragons",
-   "status": "matched"
+   "status": "matched",
+   "run": 13
   },
   {
    "member": "ECL5.DAX",
@@ -1233,7 +1426,8 @@
    "offset": "0x0FE6",
    "text": "YOU HAVE FOUND A MYSTICAL LABORATORY. IN THE CENTER IS A MURKY, SHALLOW POOL WHICH SMELLS OF ROTTING VEGETATION. DO YOU GO FORWARD?",
    "rule_id": "wizard-tower.laboratory.pool",
-   "status": "matched"
+   "status": "matched",
+   "run": 16
   },
   {
    "member": "ECL5.DAX",
@@ -1241,7 +1435,8 @@
    "offset": "0x105C",
    "text": "THE POOL LOOKS TO BE SEVERAL FEET DEEP THOUGH YOU CANNOT SEE TO THE BOTTOM. DO YOU REACH INTO THE POOL?",
    "rule_id": "wizard-tower.laboratory.pool-depth",
-   "status": "matched"
+   "status": "matched",
+   "run": 17
   },
   {
    "member": "ECL5.DAX",
@@ -1249,7 +1444,8 @@
    "offset": "0x10B9",
    "text": "ROOTING AROUND IN THE MUCK, YOU FIND A LEATHERY ELLIPSOID ABOUT THE SIZE OF A HEAD. IT IS WARM AND PULSES FAINTLY. DO YOU TAKE IT?",
    "rule_id": "wizard-tower.laboratory.ellipsoid",
-   "status": "matched"
+   "status": "matched",
+   "run": 18
   },
   {
    "member": "ECL5.DAX",
@@ -1257,7 +1453,8 @@
    "offset": "0x1148",
    "text": "A SIGN OVER THIS EERIE BLACK DOOR SAYS, 'TRIAL OF THE SPHERE. ONE CHALLENGER ONLY.' DOES ANYONE WISH TO ENTER?",
    "rule_id": "wizard-tower.sphere-trial.sign",
-   "status": "matched"
+   "status": "matched",
+   "run": 19
   },
   {
    "member": "ECL5.DAX",
@@ -1265,7 +1462,8 @@
    "offset": "0x11D6",
    "text": "THAT ONE CANNOT ENTER.",
    "rule_id": "wizard-tower.sphere-trial.cannot-enter",
-   "status": "matched"
+   "status": "matched",
+   "run": 20
   },
   {
    "member": "ECL5.DAX",
@@ -1273,7 +1471,8 @@
    "offset": "0x121B",
    "text": "YOU PASS INTO A DIM ROOM OCCUPIED BY A YOUNG MAGE DRESSED IN RED AND HOLDING A SILVERY ROD. BETWEEN THE TWO OF YOU IS A FLOATING DEAD BLACK SPHERE.",
    "rule_id": "wizard-tower.sphere-trial.chamber",
-   "status": "matched"
+   "status": "matched",
+   "run": 21
   },
   {
    "member": "ECL5.DAX",
@@ -1281,7 +1480,8 @@
    "offset": "0x1298",
    "text": "THE WIZARD INTONES, 'THIS IS A SPHERE OF ANNIHILATION. ITS TOUCH MEANS UTTER DESTRUCTION. ONLY A MAGE CAN CONTROL ITS FLIGHT. YOU MAY SURRENDER AT ANY TIME.'",
    "rule_id": "wizard-tower.sphere-trial.rules",
-   "status": "matched"
+   "status": "matched",
+   "run": 22
   },
   {
    "member": "ECL5.DAX",
@@ -1289,7 +1489,8 @@
    "offset": "0x1782",
    "text": "THIS AREA IS GUARDED BY DARK ELVES WITH OWL BEARS.",
    "rule_id": "wizard-tower.dark-elf-owlbear-guard",
-   "status": "matched"
+   "status": "matched",
+   "run": 25
   },
   {
    "member": "ECL5.DAX",
@@ -1297,7 +1498,8 @@
    "offset": "0x1800",
    "text": "YOU ARE ASSAULTED BY A REPTILIAN STENCH. YOU SEE MASSIVE CHAINS ATTACHED TO THE WALLS WITH HUGE, BUT EMPTY COLLARS. ACROSS THE ROOM YOU HEAR A DEEP GROWL.",
    "rule_id": "wizard-tower.dragon-pen",
-   "status": "matched"
+   "status": "matched",
+   "run": 28
   },
   {
    "member": "ECL5.DAX",
@@ -1305,7 +1507,8 @@
    "offset": "0x18A1",
    "text": "YOU HAVE ENTERED A VERY ELEGANT BEDROOM, RED SILK TAPESTRIES ADORN THE WALLS. THE ROOM IS DISARRANGED AS IF SOMEONE HAD QUICKLY PACKED. DO YOU WANT TO TAKE THE TIME TO LOOT?",
    "rule_id": "wizard-tower.bedroom",
-   "status": "matched"
+   "status": "matched",
+   "run": 30
   },
   {
    "member": "ECL5.DAX",
@@ -1313,7 +1516,8 @@
    "offset": "0x1968",
    "text": "THE WALLS OF THIS ROOM ARE LINED WITH BOOKS ON MANY SUBJECTS. NONE RADIATE MAGIC.",
    "rule_id": "wizard-tower.library",
-   "status": "matched"
+   "status": "matched",
+   "run": 33
   },
   {
    "member": "ECL5.DAX",
@@ -1321,49 +1525,62 @@
    "offset": "0x19C7",
    "text": "THE WALLS ARE COVERED WITH RACKS FOR SCROLL CASES. THE SCROLLS LOOK TO HAVE BEEN RECENTLY REMOVED.",
    "rule_id": "wizard-tower.scroll-room",
-   "status": "matched"
+   "status": "matched",
+   "run": 34
   },
   {
    "member": "ECL5.DAX",
    "block": "0x35",
    "offset": "0x0541",
    "text": "YOUR DARK ELF ITEMS FADE AWAY IN THE SUNLIGHT.",
-   "status": "unmatched"
+   "rule_id": "dark-elf-caves.items-fade",
+   "status": "matched",
+   "run": 9
   },
   {
    "member": "ECL5.DAX",
    "block": "0x35",
    "offset": "0x078B",
    "text": "YOU FEEL A BREATH OF FRESH AIR. DO YOU WANT TO EXIT?",
-   "status": "unmatched"
+   "rule_id": "dark-elf-caves.fresh-air-exit",
+   "status": "matched",
+   "run": 14
   },
   {
    "member": "ECL5.DAX",
    "block": "0x35",
    "offset": "0x08FF",
    "text": "YOU SPOT MONSTERS.",
-   "status": "unmatched"
+   "rule_id": "dark-elf-caves.monsters-spotted",
+   "status": "matched",
+   "run": 17
   },
   {
    "member": "ECL5.DAX",
    "block": "0x35",
    "offset": "0x0991",
    "text": "'GREETINGS TRAVELLERS, AND WELCOME TO MY HUMBLE ABODE. I AM TARSUS AND, FOR A TITHE, I CAN TRANSPORT YOU BACK TO THE SURFACE. INTERESTED?'",
-   "status": "unmatched"
+   "rule_id": "dark-elf-caves.tarsus-offer",
+   "status": "matched",
+   "run": 19
   },
   {
    "member": "ECL5.DAX",
    "block": "0x35",
    "offset": "0x0A12",
    "text": "'YOU WILL NOT REGRET THIS DESCISION.'",
-   "status": "unmatched"
+   "rule_id": "dark-elf-caves.tarsus-accepted",
+   "status": "matched",
+   "run": 20
   },
   {
    "member": "ECL5.DAX",
    "block": "0x35",
    "offset": "0x0A3B",
    "text": "'I TRAVEL RARELY, SO YOU SHOULD FIND ME HERE IF YOU CHANGE YOUR MIND.'",
-   "status": "unmatched"
+   "rule_id": "dark-elf-caves.tarsus-declined",
+   "status": "matched",
+   "run": 21
   },
   {
    "member": "ECL6.DAX",
@@ -1371,21 +1588,24 @@
    "offset": "0x0077",
    "text": "THE HELM OF DRAGONS REPORTS TYRANTHRAXUS IS TO THE NORTH.",
    "rule_id": "myth-drannor.helm-north",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL6.DAX",
    "block": "0x40",
    "offset": "0x01EC",
    "text": "RUBBLE HAS BLOCKED THE ENTRANCE.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 4
   },
   {
    "member": "ECL6.DAX",
    "block": "0x40",
    "offset": "0x04F7",
    "text": "YOU SEE A GROUP OF KNIGHTS.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 16
   },
   {
    "member": "ECL6.DAX",
@@ -1393,7 +1613,8 @@
    "offset": "0x0051",
    "text": "THE HELM OF DRAGONS REPORTS TYRANTHRAXUS TO THE NORTH.",
    "rule_id": "myth-drannor.helm-north",
-   "status": "matched"
+   "status": "matched",
+   "run": 1
   },
   {
    "member": "ECL6.DAX",
@@ -1401,21 +1622,24 @@
    "offset": "0x00A1",
    "text": "THE SEWER ENDS IN A DARKENED KITCHEN. A RUMBLE AND A CLOUD OF DUST FORCE YOU FROM THE TUNNEL.",
    "rule_id": "myth-drannor.kitchen-arrival",
-   "status": "matched"
+   "status": "matched",
+   "run": 2
   },
   {
    "member": "ECL6.DAX",
    "block": "0x43",
    "offset": "0x0131",
    "text": "THIS DOOR RESISTS ALL ATTEMPTS TO BE OPENED.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 4
   },
   {
    "member": "ECL6.DAX",
    "block": "0x43",
    "offset": "0x018C",
    "text": "YOUR BANDS WILL NOT LET YOU REST.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 8
   },
   {
    "member": "ECL6.DAX",
@@ -1423,7 +1647,8 @@
    "offset": "0x03D8",
    "text": "MINIONS OF TYRANTHRAXUS RUSH TO ATTACK YOU.",
    "rule_id": "myth-drannor.inner.minions-attack",
-   "status": "matched"
+   "status": "matched",
+   "run": 12
   },
   {
    "member": "ECL6.DAX",
@@ -1431,7 +1656,8 @@
    "offset": "0x053D",
    "text": "AS YOU ENTER, YOU HEAR A VOICE. 'FINALLY YOU HAVE COME. STEP FORWARD.' UNABLE TO CONTROL YOURSELF, YOU STEP FORWARD INTO THE CENTER OF THE ROOM.",
    "rule_id": "myth-drannor.inner.ritual.arrival",
-   "status": "matched"
+   "status": "matched",
+   "run": 14
   },
   {
    "member": "ECL6.DAX",
@@ -1439,7 +1665,8 @@
    "offset": "0x05C6",
    "text": "'THROUGH THE BONDS, YOU ARE MINE TO CONTROL. FOLLOW ME!",
    "rule_id": "myth-drannor.inner.ritual.control",
-   "status": "matched"
+   "status": "matched",
+   "run": 15
   },
   {
    "member": "ECL6.DAX",
@@ -1447,7 +1674,8 @@
    "offset": "0x060D",
    "text": "TYRANTHRAXUS MAKES A SPEECH, AND YOU RECORD IT IN JOURNAL ENTRY 48.",
    "rule_id": "myth-drannor.inner.ritual.journal",
-   "status": "matched"
+   "status": "matched",
+   "run": 16
   },
   {
    "member": "ECL6.DAX",
@@ -1455,7 +1683,8 @@
    "offset": "0x064A",
    "text": "'HAND YOUR TOYS OVER TO MY PRIEST.' THE PARTY HANDS OVER THE THREE ARTIFACTS, THOUGH THEY RESIST WITH ALL THEIR MIGHT.",
    "rule_id": "myth-drannor.inner.ritual.hand-over",
-   "status": "matched"
+   "status": "matched",
+   "run": 17
   },
   {
    "member": "ECL6.DAX",
@@ -1463,7 +1692,8 @@
    "offset": "0x06C0",
    "text": "'NOW PRIEST, DISPOSE OF THESE UNPLEASANT ITEMS THROUGH THE POOL.'",
    "rule_id": "myth-drannor.inner.ritual.dispose-order",
-   "status": "matched"
+   "status": "matched",
+   "run": 18
   },
   {
    "member": "ECL6.DAX",
@@ -1471,7 +1701,8 @@
    "offset": "0x06FF",
    "text": "THE PRIEST MOVES WITH GREAT FLOURISH AND GRACEFULLY ARCS EACH ARTIFACT INTO THE POOL, WHICH SWIRLS FOR A MOMENT, AND THE ITEMS ARE GONE.",
    "rule_id": "myth-drannor.inner.ritual.pool",
-   "status": "matched"
+   "status": "matched",
+   "run": 19
   },
   {
    "member": "ECL6.DAX",
@@ -1479,7 +1710,8 @@
    "offset": "0x0776",
    "text": "'I EVEN HAVE A PARCHMENT WITH THE PHRASE TO RELEASE YOUR BONDS, IN CASE ANYTHING GOES WRONG.' HE HANDS THE PARCHMENT TO THE PRIEST. 'DISPOSE OF THIS THROUGH THE POOL!'",
    "rule_id": "myth-drannor.inner.ritual.parchment",
-   "status": "matched"
+   "status": "matched",
+   "run": 20
   },
   {
    "member": "ECL6.DAX",
@@ -1487,7 +1719,8 @@
    "offset": "0x0801",
    "text": "'YOU BONDED ONES COME WITH ME. IT IS TIME TO COMPLETE THE FINAL SPELL.'",
    "rule_id": "myth-drannor.inner.ritual.final-spell",
-   "status": "matched"
+   "status": "matched",
+   "run": 21
   },
   {
    "member": "ECL6.DAX",
@@ -1495,7 +1728,8 @@
    "offset": "0x0850",
    "text": "THE PRIEST THROWS BACK HIS HOOD, REVEALING HIMSELF AS NAMELESS. HE YELLS,'IT WON'T BE THAT EASY!' HE TOSSES THE ARTIFACTS BACK TO YOU.",
    "rule_id": "myth-drannor.inner.ritual.nameless-reveal",
-   "status": "matched"
+   "status": "matched",
+   "run": 22
   },
   {
    "member": "ECL6.DAX",
@@ -1503,7 +1737,8 @@
    "offset": "0x08C6",
    "text": "'A PITIFUL ATTEMPT, YOU HAVE GAINED NOTHING BUT A SWIFT DEATH!' HE STRIKES NAMELESS DOWN WITH A SINGLE BLOW. WITH HIS LAST BREATH, NAMELESS MOUTHS THE MEANINGLESS PHRASE ON THE PARCHMENT.",
    "rule_id": "myth-drannor.inner.ritual.nameless-falls",
-   "status": "matched"
+   "status": "matched",
+   "run": 23
   },
   {
    "member": "ECL6.DAX",
@@ -1511,7 +1746,8 @@
    "offset": "0x0963",
    "text": "THE PARTY FEELS THE BOND'S CONTROL FADE, BUT TYRANTHRAXUS' SIGIL DOES NOT GO AWAY. TYRANTHRAXUS SMILES. 'ONLY I CAN REMOVE THOSE BONDS. SOON YOU WILL BE MINE AGAIN.'",
    "rule_id": "myth-drannor.inner.ritual.bonds-fade",
-   "status": "matched"
+   "status": "matched",
+   "run": 24
   },
   {
    "member": "ECL6.DAX",
@@ -1519,56 +1755,58 @@
    "offset": "0x09F1",
    "text": "AS THE PARTY RETRIEVES THE ARTIFACTS, TYRANTHRAXUS LOOKS AFRAID. 'KILL THEM MY PETS!' HE THEN RUSHES OFF.",
    "rule_id": "myth-drannor.inner.ritual.recover",
-   "status": "matched"
+   "status": "matched",
+   "run": 25
   },
   {
    "member": "ECL6.DAX",
    "block": "0x43",
    "offset": "0x0A77",
    "text": "A TREMENDOUS NOISE IS HEARD FROM OUTSIDE. SOME OF TYRANTHRAXUS' FORCE GOES TO PROTECT THE TEMPLE.",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 26
   },
   {
    "member": "ECL6.DAX",
    "block": "0x45",
    "offset": "0x0379",
    "text": "YOU LOCATE A PATH OUT. DO YOU WANT TO EXIT?",
-   "status": "unmatched"
+   "status": "unmatched",
+   "run": 9
   },
   {
    "member": "ECL6.DAX",
    "block": "0x45",
    "offset": "0x04E1",
    "text": "YOU SPOT MONSTERS.",
-   "status": "unmatched"
+   "rule_id": "dark-elf-caves.monsters-spotted",
+   "status": "matched",
+   "run": 12
   }
  ],
  "summary": {
   "groups": 197,
-  "matched": 119,
-  "unmatched": 59,
+  "matched": 147,
+  "unmatched": 29,
   "gosub_insert": 11,
+  "variable_insert": 2,
   "subroutine": 8,
   "unmatched_by_block": {
-   "ECL1.DAX/0x50": 6,
-   "ECL1.DAX/0x51": 3,
-   "ECL1.DAX/0x52": 7,
+   "ECL1.DAX/0x51": 2,
    "ECL2.DAX/0x01": 3,
    "ECL2.DAX/0x03": 2,
    "ECL2.DAX/0x04": 1,
-   "ECL3.DAX/0x10": 7,
    "ECL3.DAX/0x12": 4,
-   "ECL3.DAX/0x15": 2,
+   "ECL3.DAX/0x15": 1,
    "ECL4.DAX/0x20": 1,
    "ECL4.DAX/0x21": 1,
-   "ECL4.DAX/0x22": 3,
+   "ECL4.DAX/0x22": 2,
    "ECL4.DAX/0x23": 4,
    "ECL4.DAX/0x25": 1,
    "ECL5.DAX/0x31": 1,
-   "ECL5.DAX/0x35": 6,
    "ECL6.DAX/0x40": 2,
    "ECL6.DAX/0x43": 3,
-   "ECL6.DAX/0x45": 2
+   "ECL6.DAX/0x45": 1
   }
  }
 }

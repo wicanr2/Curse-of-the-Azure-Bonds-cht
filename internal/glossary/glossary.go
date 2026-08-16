@@ -23,11 +23,16 @@ import (
 
 // Term is one row of the authored table.
 type Term struct {
-	Source    string   `json:"source"`
-	Chinese   string   `json:"chinese"`
-	Category  string   `json:"category"`
-	Forbidden []string `json:"forbidden,omitempty"`
-	Note      string   `json:"note,omitempty"`
+	Source string `json:"source"`
+	// Chinese 是正規寫法；表裡用「／」分隔時，第一個是正規寫法，其餘進 Alternates。
+	Chinese string `json:"chinese"`
+	// Alternates 是同一個詞條在特定語境下也接受的寫法。`azure bonds` 平常寫
+	// 「枷印」，需要完整名稱時寫「青色枷」——兩者都對，而不是其中一個是錯的。
+	// 有這一欄，這種一詞兩式就不必逐條寫進例外表（例外表會被稀釋成雜訊）。
+	Alternates []string `json:"alternates,omitempty"`
+	Category   string   `json:"category"`
+	Forbidden  []string `json:"forbidden,omitempty"`
+	Note       string   `json:"note,omitempty"`
 	// Imported marks rows taken from combatant_name_rules rather than the table.
 	Imported bool `json:"imported,omitempty"`
 	// Uses counts how many scanned strings contain Chinese.
@@ -242,12 +247,14 @@ func parseTable(path string) ([]Term, []exception, error) {
 		if len(fields) < 4 {
 			continue
 		}
+		renderings := strings.Split(strings.TrimSpace(fields[1]), "／")
 		terms = append(terms, Term{
-			Source:    strings.Trim(first, "`"),
-			Chinese:   strings.TrimSpace(fields[1]),
-			Category:  category,
-			Forbidden: splitForbidden(fields[2]),
-			Note:      strings.TrimSpace(fields[3]),
+			Source:     strings.Trim(first, "`"),
+			Chinese:    strings.TrimSpace(renderings[0]),
+			Alternates: trimAll(renderings[1:]),
+			Category:   category,
+			Forbidden:  splitForbidden(fields[2]),
+			Note:       strings.TrimSpace(fields[3]),
 		})
 	}
 	if err := scanner.Err(); err != nil {
@@ -265,6 +272,18 @@ func parseTable(path string) ([]Term, []exception, error) {
 // 這一類是**誤譯**而不是變體，字串比對本身看不出來。實測 45 個詞條只有 6 筆
 // 命中，其中 4 筆是真的（Tyranthraxus 寫成泰蘭索斯、Fire Knives 寫成火焰匕首…），
 // 訊噪比夠高才把它做成閘；剩下兩筆合理的省略寫進例外表，而不是放寬規則。
+func containsAny(text, canonical string, alternates []string) bool {
+	if strings.Contains(text, canonical) {
+		return true
+	}
+	for _, alternate := range alternates {
+		if strings.Contains(text, alternate) {
+			return true
+		}
+	}
+	return false
+}
+
 func auditRenderings(terms []Term, english, chinese map[string]string, exceptions []exception) []Issue {
 	waived := map[exception]bool{}
 	used := map[exception]bool{}
@@ -292,7 +311,7 @@ func auditRenderings(terms []Term, english, chinese map[string]string, exception
 				continue
 			}
 			translated, ok := chinese[key]
-			if !ok || strings.Contains(translated, term.Chinese) {
+			if !ok || containsAny(translated, term.Chinese, term.Alternates) {
 				continue
 			}
 			item := exception{MessageID: key, Source: term.Source}
@@ -312,6 +331,16 @@ func auditRenderings(terms []Term, english, chinese map[string]string, exception
 		}
 	}
 	return issues
+}
+
+func trimAll(values []string) []string {
+	var out []string
+	for _, value := range values {
+		if trimmed := strings.TrimSpace(value); trimmed != "" {
+			out = append(out, trimmed)
+		}
+	}
+	return out
 }
 
 func splitForbidden(field string) []string {
