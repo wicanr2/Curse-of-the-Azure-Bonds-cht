@@ -277,6 +277,7 @@ func TraceGraph(block []byte, starts []int, limit int) (Graph, error) {
 		if seen[offset] {
 			continue
 		}
+		guarded := false
 		for offset >= 0 && offset < len(payload) && !seen[offset] && len(graph.Instructions) < limit {
 			instruction, err := decodeInstruction(payload, offset)
 			if err != nil {
@@ -284,6 +285,15 @@ func TraceGraph(block []byte, starts []int, limit int) (Graph, error) {
 			}
 			seen[offset] = true
 			graph.Instructions = append(graph.Instructions, instruction)
+			// `IF`（16h..1Bh）條件不成立時會**跳過下一條指令**：handler 讀六個
+			// 比較旗標之一，為 0 就呼叫 overlay-07 entry#29，那一支照 opcode 的
+			// 操作元個數把 PC 推過整條指令（spec 1106）。所以被 IF 守衛的那條
+			// 指令之後的位址也是可達的——即使那條是 GOTO 而線性走訪會在此中斷。
+			// 漏掉這條路等於漏掉所有 else 分支，而那是大部分的劇情文字。
+			if guarded {
+				queue = append(queue, instruction.Next)
+			}
+			guarded = instruction.Command.Opcode >= 0x16 && instruction.Command.Opcode <= 0x1B
 			if instruction.Command.Opcode == 0x01 || instruction.Command.Opcode == 0x02 {
 				if len(instruction.Operands) == 1 {
 					if target, ok := CodeTarget(instruction.Operands[0], len(payload)); ok {

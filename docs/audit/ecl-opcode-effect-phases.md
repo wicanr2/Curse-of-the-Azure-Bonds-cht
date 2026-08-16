@@ -27,11 +27,14 @@
 | `0x0A` | LOAD CHARACTER | `02F0h` | `decode_operands` | `immediate` | `exact` | `1104`、`1098` | 先寫 `47E2h:=1` 再推進 PC；走 `650Ah` 名冊鏈選定角色寫 `6506h`，`8B6Dh` 記錄有沒有找到。`47E2h` 由 `00h`／`38h`／驅動器消費，屬另一條 deferred 線。 |
 | `0x0B` | LOAD MONSTER | `0466h` | `decode_operands` | `immediate` | `exact` | `1104` | 配置怪物節點掛上 `650Ah` 鏈；`47E6h` 是本場已放置數，達 `3Fh` 就整支跳過。 |
 | `0x0C` | SETUP MONSTER | `03CAh` | `decode_operands` | `immediate` | `exact` | `1104` | 寫 bank1 `580h`／`582h`，`582h` 取兩者最大值。 |
+| `0x0D` | APPROACH | `0801h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
 | `0x0E` | PICTURE | `0841h` | `decode_operands` | `deferred` | `exact` | `1104` | operand `0FFh` 走關閉分支並就地 flush；其餘只設 `8B49h`／`8B62h`／`8B63h`，畫面提交點在 `2Dh` 的 `2E10h`。 |
+| `0x10` | INPUT STRING | `0972h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀；`INPUT STRING` 是可輸入、可退格、可確認的互動，不是預先列出答案的選單。 |
 | `0x11` | PRINT | `09EAh` | `decode_operands` | `immediate` | `exact` | `1104` | 與 `12h` 同一支，靠重讀 `ds:75FFh` 分流；`4FC9h` 在輸出期間為 1。 |
 | `0x12` | PRINTCLEAR | `09EAh` | `decode_operands` | `immediate` | `exact` | `1104` | 比 `11h` 多寫 `65A1h:=11h`、`65A0h:=1`，且輸出常式最後一個引數是 1 不是 0。 |
 | `0x13` | RETURN | `0A86h` | `assign` | `control_flow` | `exact` | `1104` | 彈出 GOSUB 框架；框架鏈為空時直接呼叫 `00h` 的 handler。 |
 | `0x14` | COMPARE AND | `0AD6h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
+| `0x15` | VERTICAL MENU | `0EBDh` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
 | `0x16` | IF = | `0B3Bh` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀（`16h`..`1Bh` 同一支）。 |
 | `0x17` | IF <> | `0B3Bh` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀（`16h`..`1Bh` 同一支）。 |
 | `0x18` | IF < | `0B3Bh` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀（`16h`..`1Bh` 同一支）。 |
@@ -45,10 +48,12 @@
 | `0x24` | COMBAT | `179Ah` | `inc` | `pause_before_commit` | `exact` | `1095` | 原作是同步巢狀呼叫，也是商店／營地的服務分派點；remake 因為不可重入而做成可續跑交易。 |
 | `0x25` | ON GOTO | `1A9Bh` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀（與 `26h` 同一支）。 |
 | `0x27` | TREASURE | `1B53h` | `decode_operands` | `pause_before_commit` | `exact` | `255`、`257`、`258`、`558` | 寶物服務邊界，戰後 continuation 已閉合。 |
+| `0x28` | ROB | `1F46h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
 | `0x29` | ENCOUNTER MENU | `2086h` | `decode_operands` | `unknown` | `unknown` | `1083` | handler 尚未讀；`29h` 是 ENCOUNTER MENU 不是 PARLAY。 |
 | `0x2A` | GETTABLE | `0E13h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
 | `0x2B` | HORIZONTAL MENU | `1082h` | `decode_operands` | `pause_before_commit` | `exact` | `1104` | 先解 2 個固定 operand 取得目的位址與項數，`dec 4FB4h` 退一格後改以項數重解一次；選擇結果在 handler 內寫回目的位址。 |
 | `0x2D` | CALL | `2F02h` | `decode_operands` | `commit_point` | `exact` | `1104` | operand 值減 `7FFFh` 後走七路 switch；`2E10h` 分支是 `8B62h`／`8B65h`／`8B67h`／`8B68h`／`8B6Ah` 五個髒旗標的唯一提交點。未列入 switch 的目標靜默 no-op。 |
+| `0x2E` | DAMAGE | `2942h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀；運算元順序（旗標, 骰數, 面數, 加值, 豁免旗標）由公開參考支持，尚未逐條反組譯。 |
 | `0x2F` | AND | `0DA4h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀（與 `30h` 同一支）。 |
 | `0x31` | SPRITE OFF | `2C8Fh` | `inc` | `immediate` | `exact` | `1104` | 只在 `8B65h` 非零時做事，做完把 `8B65h`、`8B62h` 清零——旗標自清就是 exactly-once。 |
 | `0x32` | FIND ITEM | `2847h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
@@ -57,8 +62,12 @@
 | `0x36` | ADD NPC | `2DA9h` | `decode_operands` | `immediate` | `exact` | `1104` | 第二個 operand 除以 2 後或上 `80h` 寫進角色 `+0F7h`，再重繪名冊。 |
 | `0x37` | LOAD PIECES | `0C15h` | `decode_operands` | `deferred` | `exact` | `1104` | 與 `21h` 同一支；設 `47E3h:=1`、`47E4h:=1`。兩個閂鎖都到齊才重繪，且兩者在進入新 block 時（overlay-02:3772h）一起被清掉。 |
 | `0x38` | PROGRAM | `30DDh` | `decode_operands` | `terminal` | `exact` | `1104`、`1087` | 先消費 `47E2h` 才推進 PC。值 0 是即時重繪；值 8 是通關序列（問 Y／N，答 Y 才離開程式）；值 9 與值 3 都轉呼叫 `00h` 的 handler，值 3 另外設 `4FC7h:=1` 的全域停止。⇒ 只有值 3 與值 9 無條件終止。 |
+| `0x39` | WHO | `2D5Eh` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
 | `0x3A` | DELAY | `28F3h` | `inc` | `immediate` | `exact` | `1104` | 推進 PC 後呼叫 resident 的延遲常式，沒有 ECL 記憶體副作用。 |
+| `0x3C` | PROTECTION | `321Fh` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
 | `0x3D` | CLEAR BOX | `2D15h` | `inc` | `immediate` | `exact` | `1104` | 就地清框並重畫，收尾 `8B6Eh:=0`、`8B60h:=1`。 |
+| `0x3E` | DUMP | `3251h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
+| `0x3F` | FIND SPECIAL | `3284h` | `decode_operands` | `unknown` | `unknown` | — | handler 尚未讀。 |
 | `0x40` | DESTROY ITEMS | `32D8h` | `decode_operands` | `immediate` | `exact` | `1104` | 逐角色走 `+14Dh` 物品鏈，`+2Eh` 等於 operand 就移除，最後重繪該角色。 |
 
-已讀 25／46 支，尚未讀 21 支。
+已讀 25／55 支，尚未讀 30 支。

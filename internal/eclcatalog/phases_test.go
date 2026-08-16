@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 )
 
 // The phase ledger anchors every conclusion to a DOS handler address. That
@@ -105,7 +107,8 @@ func TestNewEclIsTerminalAndEndsStraightLine(t *testing.T) {
 	if row.Phase != PhaseTerminal {
 		t.Fatalf("NEWECL phase %s, want %s", row.Phase, PhaseTerminal)
 	}
-	if !endsStraightLine(0x20) {
+	newecl := ecl.Instruction{Command: ecl.Command{Opcode: 0x20}}
+	if !endsStraightLine(newecl) {
 		t.Fatal("NEWECL must end a straight-line candidate region")
 	}
 }
@@ -121,5 +124,30 @@ func TestExactlyOneCommitPointOpcode(t *testing.T) {
 	}
 	if len(found) != 1 || found[0] != "0x2D" {
 		t.Fatalf("commit-point opcodes %v, want exactly [0x2D]", found)
+	}
+}
+
+// PROGRAM 的終止性依運算元值而定。corpus 裡三個 PROGRAM 全是立即值 3 或 9，
+// 兩者都轉呼叫 00h 的 handler，所以它們後面的位元組不是同一次執行的一部分。
+// 值 0 與值 8 會回到迴圈，運算元若不是立即值則靜態上判不出來——兩者都不切。
+func TestProgramEndsStraightLineOnlyForTerminalImmediates(t *testing.T) {
+	program := func(code byte, low byte) ecl.Instruction {
+		return ecl.Instruction{
+			Command:  ecl.Command{Opcode: 0x38},
+			Operands: []ecl.Operand{{Code: code, Low: low}},
+		}
+	}
+	for _, value := range []byte{3, 9} {
+		if !endsStraightLine(program(0x00, value)) {
+			t.Fatalf("PROGRAM %d must end a straight-line region", value)
+		}
+	}
+	for _, value := range []byte{0, 8} {
+		if endsStraightLine(program(0x00, value)) {
+			t.Fatalf("PROGRAM %d returns to the loop; it must not end the region", value)
+		}
+	}
+	if endsStraightLine(program(0x01, 9)) {
+		t.Fatal("a non-immediate PROGRAM operand is not statically known")
 	}
 }

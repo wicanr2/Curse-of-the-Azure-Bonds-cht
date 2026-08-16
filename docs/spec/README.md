@@ -511,3 +511,4 @@
 - [第四百九十九輪 PC-98 alignment 與條件式 effect `08h／09h`](./499-pc98-alignment-conditional-effects.md)（`READY`：`RACETYPE／ALIGNMENT／MONSTERTYPE` 欄位修正、互動 alignment 條件與 `SAVEROLL／ROLLTOHIT` 資料驅動規則；完整 effect 生命週期與全作通關仍未完成）
 - [1104 ECL opcode 有序副作用相位](./1104-ecl-opcode-ordered-effect-phases.md)（`READY`：DOS 23 支 handler ＋ operand 解碼器 ＋ lifecycle 驅動器；PC 先推進的通則、`20h NEWECL` 終止、`CALL 2E10h` 是畫面唯一提交點、`21h`＋`37h` 配對閂鎖、`2Dh` 七路登記表；21 支 handler 仍未讀，PC-98 只比對兩項）
 - [1105 game pack 分檔與 stable ID](./1105-game-pack-file-split-and-stable-ids.md)（`READY`：依種類切成四檔、`LoadPackParts` 合併契約（重複即失敗、合併後才驗證）、ID 命名規範與 155 筆既有基線；依區域再切與熱鍵表留待後續）
+- [1106 ECL `IF` 跳過與操作元個數表](./1106-ecl-if-skip-and-operand-arity.md)（`READY`：`IF` 條件不成立跳過下一條、`overlay-07 entry#29` 的 arity 表、原作跳過表少算 `34h`／`36h`；靜態可達 instruction 1,355→4,222、文字段落 43→221）

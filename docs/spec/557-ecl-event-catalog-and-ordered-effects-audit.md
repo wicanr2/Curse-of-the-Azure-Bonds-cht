@@ -16,7 +16,7 @@
 2. 人類可讀 block／entry 摘要。
 3. 需要回到 bytes、IDA 與 runtime 驗證的跨 effect-kind 直線候選。
 
-本輪不實作 ordered event runtime，不判定 IF／選單的真實分支，也不宣稱 32 個候選
+本輪不實作 ordered event runtime，不判定 IF／選單的真實分支，也不宣稱 154 個候選
 就是完整動態事件集合。
 
 ## R1：原始定位
@@ -41,24 +41,25 @@
 因此以下內容可標為 `exact`：
 
 - 六個 DAX、25 個 block、125 個 lifecycle entry 身分。
-- 1,355 個以 member／block／payload offset 去重的靜態可達 instruction。
+- 4,222 個以 member／block／payload offset 去重的靜態可達 instruction。
 - command framing、operand bytes、code address 與直接 graph edge。
 
 以下只標為 `hypothesis／audit candidate`：
 
 - effect kind 是為稽核建立的類別，不是原版資料欄位。
-- 32 個候選只表示同一個靜態連續區段出現至少兩種 effect kind。
+- 154 個候選只表示同一個靜態連續區段出現至少兩種 effect kind。
 - `TraceGraph` discovery order 不是 runtime order；IF、`ON GOTO／ON GOSUB`、menu、
   CALL consumer、memory predicate、戰鬥結果與 resume 都沒有在這份清冊中執行。
 
 ## P0 ordered-effects 候選
 
-> 候選的優先序已經用完：32 個候選中 31 個 `covered/exact`、1 個 `partial`，
+> 候選層的審查結論有 33 筆（spec 1106 擴大可達性後，31 筆依效果序列沿用、
+> 其中一組同時對到兩個候選）。目前 154 個候選中大多數尚未審查，
 > 逐筆結論在 [`ecl-ordered-effect-reviews.json`](../audit/ecl-ordered-effect-reviews.json)。
 > 閉合的方式不是逐候選，而是逐 opcode——次序是 dispatcher 與各 handler 的性質，
 > 見 [spec 1104](1104-ecl-opcode-ordered-effect-phases.md)。
 
-現在的待辦不在候選層，而在 opcode 層：46 個 corpus opcode 中 21 支 handler 尚未讀，
+現在的待辦不在候選層，而在 opcode 層：55 個 corpus opcode 中 30 支 handler 尚未讀，
 逐支狀態在 [`ecl-opcode-effect-phases.md`](../audit/ecl-opcode-effect-phases.md)。
 
 
@@ -98,8 +99,9 @@ Docker 內以 Go 1.24.13、暫存 `modfile` 將鎖版 private engine dependency 
 
 - `go test ./internal/eclcatalog ./internal/ecl ./cmd/ecl-event-catalog`
 - 連續生成與 `-check／-check-summary` byte-for-byte 相符。
-- 統計固定為：6 members、25 blocks、125 entries、1,355 instructions、32 candidates。
-  （`20h NEWECL` 是終止指令，不切在它後面會併出假候選；見 spec 1104 §九。）
+- 統計固定為：6 members、25 blocks、125 entries、**4,222** instructions、**154** candidates。
+  （`20h NEWECL` 與立即值 3／9 的 `38h PROGRAM` 是終止指令，不切在它們後面會併出假候選；
+  `IF` 條件不成立時跳過下一條，不走那條路會漏掉三分之二的程式碼——見 spec 1104 §九與 spec 1106。）
 
 ## 尚未閉合
 
