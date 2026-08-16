@@ -1,0 +1,680 @@
+{
+ "schema": "coab-dos-save-field-coverage/1",
+ "record_size": 422,
+ "baselines": 5,
+ "bytes_by_status": {
+  "decoded": 294,
+  "documented": 99,
+  "unknown": 29
+ },
+ "consumed_bytes": 286,
+ "fields": [
+  {
+   "offset": "+000h",
+   "size": 1,
+   "name": "名字長度",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+001h",
+   "size": 15,
+   "name": "名字（Pascal 短字串本體）",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 7
+  },
+  {
+   "offset": "+010h",
+   "size": 1,
+   "name": "力量 基準",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+011h",
+   "size": 1,
+   "name": "力量 現值",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+012h",
+   "size": 1,
+   "name": "智力 基準",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+013h",
+   "size": 1,
+   "name": "智力 現值",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+014h",
+   "size": 1,
+   "name": "睿智 基準",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+015h",
+   "size": 1,
+   "name": "睿智 現值",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+016h",
+   "size": 1,
+   "name": "敏捷 基準",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+017h",
+   "size": 1,
+   "name": "敏捷 現值",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+018h",
+   "size": 1,
+   "name": "體質 基準",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+019h",
+   "size": 1,
+   "name": "體質 現值",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+01Ah",
+   "size": 1,
+   "name": "魅力 基準",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+01Bh",
+   "size": 1,
+   "name": "魅力 現值",
+   "status": "decoded",
+   "spec": "1079",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+01Ch",
+   "size": 1,
+   "name": "特殊力量 現值（18/xx 的百分位）",
+   "status": "decoded",
+   "spec": "1086",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+01Dh",
+   "size": 1,
+   "name": "特殊力量 基準",
+   "status": "decoded",
+   "spec": "1086",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+01Eh",
+   "size": 84,
+   "name": "記憶法術清單 84 格（最高位 ＝ 還在記憶中）",
+   "status": "decoded",
+   "spec": "1016／792",
+   "consumed_bytes": 84
+  },
+  {
+   "offset": "+072h",
+   "size": 1,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+073h",
+   "size": 1,
+   "name": "重算時抄進 +199h 的來源",
+   "status": "documented",
+   "spec": "1000",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+074h",
+   "size": 1,
+   "name": "種族編號 1..7",
+   "status": "decoded",
+   "spec": "998／1084",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+075h",
+   "size": 1,
+   "name": "職業組合編號 0..10h",
+   "status": "decoded",
+   "spec": "1093",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+076h",
+   "size": 2,
+   "name": "年齡（word）",
+   "status": "decoded",
+   "spec": "1099",
+   "consumed_bytes": 2
+  },
+  {
+   "offset": "+078h",
+   "size": 1,
+   "name": "最大 HP",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+079h",
+   "size": 100,
+   "name": "每法術旗標 100 格（法術編號 1..100）",
+   "status": "decoded",
+   "spec": "815",
+   "consumed_bytes": 100
+  },
+  {
+   "offset": "+0DDh",
+   "size": 1,
+   "name": "橫掃上限的來源（回合初始化抄進戰鬥狀態 +5）",
+   "status": "documented",
+   "spec": "806／833",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+0DEh",
+   "size": 1,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+0DFh",
+   "size": 5,
+   "name": "五個豁免門檻（毒／石化／法杖／噴吐／法術）",
+   "status": "decoded",
+   "spec": "1111",
+   "consumed_bytes": 5
+  },
+  {
+   "offset": "+0E4h",
+   "size": 1,
+   "name": "移動力基準（重算時抄進 +1A5h）",
+   "status": "documented",
+   "spec": "1000／683",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+0E5h",
+   "size": 1,
+   "name": "最高職業等級（0 ＝ 零級生物）",
+   "status": "decoded",
+   "spec": "811／815",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+0E6h",
+   "size": 1,
+   "name": "多職角色的現行等級",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+0E7h",
+   "size": 2,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+0E9h",
+   "size": 1,
+   "name": "不死生物種類 1..10（轉化矩陣的列索引）",
+   "status": "documented",
+   "spec": "834",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+0EAh",
+   "size": 8,
+   "name": "盜賊技能八項",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 8
+  },
+  {
+   "offset": "+0F2h",
+   "size": 4,
+   "name": "效果鏈頭（遠指標）",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 4
+  },
+  {
+   "offset": "+0F6h",
+   "size": 1,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+0F7h",
+   "size": 1,
+   "name": "控制／士氣（\u003e= 80h 是 NPC）",
+   "status": "decoded",
+   "spec": "758",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+0F8h",
+   "size": 3,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+0FBh",
+   "size": 14,
+   "name": "七種貨幣（銅銀琥珀金白金寶石首飾，各一個 word）",
+   "status": "decoded",
+   "spec": "1000",
+   "consumed_bytes": 14
+  },
+  {
+   "offset": "+109h",
+   "size": 8,
+   "name": "第一職業的八個欄位（等級在前）",
+   "status": "decoded",
+   "spec": "728",
+   "consumed_bytes": 8
+  },
+  {
+   "offset": "+111h",
+   "size": 8,
+   "name": "第二職業的八個平行欄位（雙職角色才看）",
+   "status": "documented",
+   "spec": "728",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+119h",
+   "size": 1,
+   "name": "性別",
+   "status": "decoded",
+   "spec": "1086",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+11Ah",
+   "size": 1,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+11Bh",
+   "size": 1,
+   "name": "陣營",
+   "status": "decoded",
+   "spec": "1102",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+11Ch",
+   "size": 1,
+   "name": "武器槽選擇（0 時回落到槽 2）",
+   "status": "documented",
+   "spec": "1010",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+11Dh",
+   "size": 2,
+   "name": "攻擊骰數 基準（兩個武器槽）",
+   "status": "documented",
+   "spec": "1000／795",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+11Fh",
+   "size": 2,
+   "name": "攻擊面數 基準",
+   "status": "documented",
+   "spec": "1000／795",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+121h",
+   "size": 2,
+   "name": "傷害加值 基準（有號）",
+   "status": "documented",
+   "spec": "1000／795",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+123h",
+   "size": 1,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+124h",
+   "size": 1,
+   "name": "重算時抄進 +19Ah 的來源",
+   "status": "documented",
+   "spec": "1000",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+125h",
+   "size": 2,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+127h",
+   "size": 4,
+   "name": "經驗值（dword）",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 4
+  },
+  {
+   "offset": "+12Bh",
+   "size": 1,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+12Ch",
+   "size": 1,
+   "name": "基準最大 HP（不含裝備加成）",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+12Dh",
+   "size": 15,
+   "name": "每環可施放次數：牧師／德魯伊／法師各五環",
+   "status": "decoded",
+   "spec": "1016",
+   "consumed_bytes": 15
+  },
+  {
+   "offset": "+13Ch",
+   "size": 5,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+141h",
+   "size": 1,
+   "name": "頭像 block",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+142h",
+   "size": 1,
+   "name": "武器圖示 block",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+143h",
+   "size": 1,
+   "name": "圖示 ID",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+144h",
+   "size": 1,
+   "name": "體型 1 小／2 中",
+   "status": "decoded",
+   "spec": "1093",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+145h",
+   "size": 7,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+14Ch",
+   "size": 1,
+   "name": "物品件數（重算時數出來）",
+   "status": "documented",
+   "spec": "1000",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+14Dh",
+   "size": 4,
+   "name": "物品鏈頭（遠指標）",
+   "status": "decoded",
+   "spec": "1000",
+   "consumed_bytes": 4
+  },
+  {
+   "offset": "+151h",
+   "size": 52,
+   "name": "13 個裝備槽遠指標（槽 9 雙持佔兩格）",
+   "status": "documented",
+   "spec": "1000",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+185h",
+   "size": 1,
+   "name": "已裝備物品佔用的手數（上限 2）",
+   "status": "documented",
+   "spec": "1000／1004",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+186h",
+   "size": 1,
+   "name": "豁免加值（派生欄位，重算時先歸零）",
+   "status": "decoded",
+   "spec": "1000",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+187h",
+   "size": 2,
+   "name": "總重（含硬幣枚數）",
+   "status": "documented",
+   "spec": "1000／974",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+189h",
+   "size": 4,
+   "name": "隊伍／戰鬥員鏈的 next（遠指標）",
+   "status": "documented",
+   "spec": "689／815",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+18Dh",
+   "size": 4,
+   "name": "戰鬥狀態記錄的遠指標（22 bytes 的那一份）",
+   "status": "documented",
+   "spec": "806",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+191h",
+   "size": 1,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+192h",
+   "size": 1,
+   "name": "ECL 旗標（投影位址 7CE4h）",
+   "status": "decoded",
+   "spec": "1098",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+193h",
+   "size": 2,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+195h",
+   "size": 1,
+   "name": "狀態碼（8 ＝ 被摧毀）",
+   "status": "documented",
+   "spec": "833／1010",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+196h",
+   "size": 1,
+   "name": "站著且能行動（1 ＝ 可以）",
+   "status": "documented",
+   "spec": "1010",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+197h",
+   "size": 1,
+   "name": "隊號（0 是一邊，非 0 是另一邊）",
+   "status": "documented",
+   "spec": "777／1112",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+198h",
+   "size": 1,
+   "name": "畫圖示時用的旗標（決定圖號 3 或 1）",
+   "status": "documented",
+   "spec": "837",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+199h",
+   "size": 1,
+   "name": "重算時由 +73h 抄過來",
+   "status": "documented",
+   "spec": "1000",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+19Ah",
+   "size": 1,
+   "name": "重算時由 +124h 抄過來",
+   "status": "documented",
+   "spec": "1000",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+19Bh",
+   "size": 1,
+   "name": "本回合選用的武器槽",
+   "status": "documented",
+   "spec": "1010",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+19Ch",
+   "size": 1,
+   "name": "本回合的攻擊次數（每回合重算）",
+   "status": "documented",
+   "spec": "808",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+19Dh",
+   "size": 2,
+   "name": "攻擊骰數 現值（兩個武器槽）",
+   "status": "documented",
+   "spec": "1000／795",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+19Fh",
+   "size": 2,
+   "name": "攻擊面數 現值",
+   "status": "documented",
+   "spec": "1000／795",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+1A1h",
+   "size": 2,
+   "name": "傷害加值 現值（有號）",
+   "status": "documented",
+   "spec": "1000／795",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+1A3h",
+   "size": 1,
+   "name": "（未定）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+1A4h",
+   "size": 1,
+   "name": "目前 HP",
+   "status": "decoded",
+   "spec": "185",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+1A5h",
+   "size": 1,
+   "name": "目前移動力（重算時由 +0E4h 抄過來）",
+   "status": "documented",
+   "spec": "1000／683",
+   "consumed_bytes": 0
+  }
+ ],
+ "mismatches": null
+}

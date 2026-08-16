@@ -1122,6 +1122,181 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "analyze",
+      "sha256": "37066a8f88d75faf82a2365d3ea9829707e14fb91bd7b4eac5a0913a02fbcc80",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "analyze",
+      "sha256": "86de433776c8b00d0ed327f60ffd6f4eb744f6c9c86f6fce9d9fd6d5d470f385",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "analyze",
+      "sha256": "af0c63659919d0c0fdb0250353e7aab3f2b0319398888c1024ed5d44726ed0ce",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "analyze",
+      "sha256": "dcb099c34d2bd8a9fcdc05717b5e44aa72c3c126eb0598691bb19356e3c7ae99",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "main",
+      "sha256": "7299c956bbb9d191164800d0ca854c4650b0db65a2ece5f9d9914af9c6a13833",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "main",
+      "sha256": "7a01b550fd799fb0c77e1e555ec1838cf1844725ef10ee1e21ea5f5accd2583d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "main",
+      "sha256": "fff5cb9e9bc24edb28f07463425ce11f927f7bc7f2a2d6d86ce8f01d063baaa7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "03dfffb541b0c0bb67235abc59c93a5a4877d7f94e63438433fefac9da8894e9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "0805f40e9349300ef6b7c7b27fb33f14160894f757366e61f1429521ea1c4676",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "10ec9931c77e50118f1e26db66e86f5c2386a068e3eb1dc69a746ef8ef3a129e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "3a22d28bbf51a46f30a93e0478f18ae88adcef123a93f1176baa3292f11ac6b7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "4dadea83e94bd36a9c2300a311d72626de2f24fde6a1ffb32475c1bc4a319622",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "5341046d862438319c7e648b5576db791ef70ea616b746787182891019525603",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "5a9885a1c455d3e30fca729d209f5ab563870f598e5f5949815957d7efd11b71",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "663d2c28008af80340542d79c8d204599b3d0d7c0bf168d51d93c3b97620bf46",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "7482263f1fa2421cb97da741e3fc0ce5571b5e4322b0c26db64dda9e12839d8a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "900e8e3d36e1c97b99d34ea77bfb7d36614a4aae125c5afb469612cf40359b63",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "961a46bf1039510d259401cb93e700bf1b18d195dec791eadb0887323f30e1d1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "ae311b79f57aa0a070edcbbdd654619d25e8335948eadb68dd3b0b5cf731d21a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "b4046823dbc77f83c8a298f3783983507c09597d23df6c35d5b50490b269ddfb",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "b5885c5b17e21b68b1908cef5f8f2cd2cfea0533a3ed4e115ddcb41c3a145558",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "c2027ef6bbb65a09f77ec580175c72c14887cc96071c6726a216f0c2226900e2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "d43ef8c034136107b767ac534152da6923aa747f7e2dd830330706c2d3ab8c86",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "d4697a03be549ea51ceb74d99d9e696bbe592808cb6834c5d47ab1191802d06d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "d5e41bb036a6e4faf456072f185f8449b448747f9472d9abd6dda119f942f68b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/screenshot-audit/main.go",
       "function": "fail",
       "sha256": "2ae6e26c8170f589a34b970cce4e4ddae38924d005dfa35b8528ca91bbb536d7",
@@ -1510,6 +1685,487 @@
       "path": "internal/localeaudit/audit.go",
       "function": "referencedMessageIDs",
       "sha256": "c7a03000c80032da7f100d96e9fae2347189c30c3f9daece62ab0f28685ab5c0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "072b5650b7f93d69fc9d7461761b185ad3bbc5535537405c26cd14cf2e807257",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "09d6a87d4c6cb8360f129534b264c3cec7ca2139d02b1aaf896defa08f7d1f0c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "0a4636557ab87122cba3741aafd650417db5ce34d43306a03bdfb5a6d74ba9ed",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "0ad20698c452b98fd6078a8559e035e3d9a58a08631779635830823645d82365",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "0f12b114d1563077d76e7809f9101e13e424de1a5016cd0ef64a6dffa69c38f2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "0f2cc6f829c8fcec6d55cbe07af8b9cd8f669067bcb1e1f975b1f92b577ad2e6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "123b5d1e3f2319b200806dc27a49c7ab56605edfb5c1f0b36129eb31521d9bf1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "153f959a23b2530002b7981fa5219a1606eb8f851c2649a30b855a3cf6dba51c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "1bbc36beacd63abe34687aed8d4e732ed7e42353d032b691fa14084947d01dd4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "1c6e11d52069318aa4fbd160a2655d0dcc89ee324d5ab316fdc5db08c96fb4c4",
+      "occurrences": 14,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "2699d5f5f54ee286b19151f391e592a14a43f2fa1929f54d8fa7e3d4cb4c7da9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "297256db5435795aabb1bee358a988d37d49f62d905a81e0d6097417e746ec83",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "2a465a0924f708bb1622e7a099efc9de4033718499949a1ae97a7a794cfae9a5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "2e69a502b8e67595b0767375d5c5be6fb2ebd91a3cf60974972a25742ae4d5f6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "32931fb2e2eaee307ee7d2d0507803285f29cbfeeb3d9b985ff75fb2c3ce2978",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "32b611b924d604badcb5ffa3f55076f0f1465c6fde4c9b09383b3cc7e8cf5ddc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "35a45173039d1eb6d84ef8c8f7e9ecc774742233b9db35e8d7ef1d658ef55612",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "390d9cc5a973b8950f5e98bf443a167eed55b7653db7adb3b151899deb443739",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "3abe5d68a83d851864d1faf58d7ae8fbea6767001b2e9fb649f4a5c603162a4c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "523ebe70981ba0e90c152109ffdd86df81c9b469b6c193ff9fc54c26472c268d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "56e5ec26629fee7716ee39343764f03a963df9e1a74da0ec6b9513fc7ad8c38a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "58adf2d5ce12d7232f8dd527275849928e1f73bc8f0c59097be88c2c0a94f7f8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "5a09e30ae71a0691814461923eae04208a38ccdf3a43d6ef2055e33326014319",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "5f276e7a9b0aedf762671405104a7f72747c14c60801f98e8a9bf699e09b7645",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "60f33c31115aeeea02b6dc0e047147ace2e42817145570871a3dfddbc7301da4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "64f76db77fff503b26aa4d544fea2c7856c390d0372bd8ba1ffeba71f1a6b20b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "655e442d40f0230718972402e08fb72948a4e26931b5dbf931a8581d00b7ebfe",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "68b7af260181d8f33f23bef8c1f3e9ef7a9f196da9003824fddd1a4e206950c2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "6ec628b291608cc0d825d19e69ec339c1eb61a1c5ce011a82da7dad22de949d8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "7516d9f135ec6c723d2e3fb3ceffda11d6cc7761f2d583da1eede752c5ec6636",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "770a30f9a5f30fd9ba3315243974b43ebb568ae8d2579c9c746906d4b49ad7ec",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "7a81780969b998d1929533dbb29b6cbc4e65c6e527e8845c980a04c74e141f2b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "7f4d48012e1374bb87e8846f9263ec60a68c18838598941a259f72bf3b24a301",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "80ede011ff3f3e393345105a2ecaab0a959ae668ad8479936a614149c9ea73d4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "87640e5aaae639d007a67617da94d58025903b537608c70de17b5160c0a4bac5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "87eb78bfed12ad8e20af9fe68ffbcc5acba50273b0401e29687ecd936c1faef8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "881a17e66affb61291d3a8967f97118ecba182d6da4c0928aa87fac7ec064cd9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "881e685108f82bce8bc25783307dc09d3a4846956707371f876a9399dc2354ea",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "8a4458b23f2f852d006a2bbf15411d2a75cc28bfe66e69ebc204190f9e512bb9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "8ac9643659a9890636c72afb860a9b0d3f22cae1a642c52b4db916717ba40149",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "93d86d9e3c4dbebe5771cc83d212b44fb3d11c44c674d8f021f6dfd1a2695bd8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "961fa5f18fe0c9547b77ffd7cfc2cc5f4cf22f54e0dece33b20e33353364c00f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "995bcdf667d424abc40c3af247b53cff217d2a4debeaf03719ca098db3f69af9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "9973fefaf915b57634992b089d94ed20698498693ac7f1d2fd2e2685b106f34f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "a0d9d995215478b5e7b26cd25d0684d34d9a9270638f99cf2082ab622ab5fe46",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "a380affc11836df4831bef889933b6a8d838952f7b2bde5e066babc2fac6d39b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "aaa493f24fdffdcdc1dada294b675535588960e55350795444088d2cb3c7568a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "aaacaaa1b530a94539ae87ab304fd04177f27e9240359b0734a054a039de460c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "ab1f8140b600557186482524ad76a9df4c3643352433fe975d59ceebd0becdc0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "b1567be44efe2fb528ddeca9752aacad534f05628797bb8a4a22b72c26a5f91c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "b237b8869e457a6ad57895560cf5f267662178ab9a94c8c319e670c261b5e6b1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "b463ad2a025d8ff9677c15bd1b06830a73e19d9039bf30b5bd96ff897ba53a8b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "c2ded79d8588cbe396789b1fec25da34d10a1ae17ca12da7080750e9283f84e2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "c566305039c387bead7bdffa1ffdd9867c2178f1ebf777d411eb71929291d67c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "c75066a5b3b060207e99eb3100c676b32ad3a023530904bc98ddc3a520a517c3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "ca1a942ce3fe7cc8e6ddfbf8b60fc47ec8b1b3d2a7836719e1e1d9ce5e4b7640",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "ca508efc3c7f6e0ba22a0f093931ee8e41e52943381c159a96e28384b10a51ee",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "d1250b53804aefdc60e1937ed66ade6a1aa738531c2bea83835b7673418f6426",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "d295951be8e245bb5e84e06fc23c1888ea8eb343d3e52b55dff34b2127aa6fb9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "d31e392699924070abe76711f6999aa5c512462440efe9b3d8dd2e12f2ed5d28",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "d5130220c57512af530f43c7495060feae6be55fc87adfcffaeacf253f58e557",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "d9db0aaf3a573dcb94309ff33238379e11b5cd4c306c10396efb69615633ff3e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "deae298a72f5a40c8d6ecf3c1f601a301480c8ec75b006d53c3ebde3952c867b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "df9e6f38aa25d696068f2291a1a3904cb8d072d47c76e79f48d2cb20576fefb1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "e1190769655a6659ce23286f8d7b7b03eeb625d2eb5383bd95c739b41f89eac1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "e134154c0699ca5ad0dc4d22b15b62e16138fdecc858496feba737909071fef9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "e7635cfb8d9fab8a274376260b08edb3314f497e00c5c81e7158246f0b99b615",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "ebd46e349ff699e00c0a20d71acd0a36d56c83c34c0eee4672d78e66ddfbcd1f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "f8036258fa4fb7a4f1571d13ef72b1108b2a7901e984063d1da0d1e0b265245a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "fbc7bbd0bb4ea1d1860a72ba213d694ed214f812359e7823e30575f9f504f29a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "fda2e58708a6a166fb16967592598d6c86ccb8cdbe4eda06fb7cd18a393c9580",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "ffacb7d658a11fccb823f3b6ada96a2c4d9a74d677124aa6b12fb7a32fb3f150",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "function": "ValidateDOSPlayerRecordFields",
+      "sha256": "16f47dbab5744da925fbde2cf0539d60b69b3ceb952e513a72e86517584bc18a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "function": "ValidateDOSPlayerRecordFields",
+      "sha256": "1cb01188f6956e5cced668338212cdd514b42a598188105858679685aa853645",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "function": "ValidateDOSPlayerRecordFields",
+      "sha256": "318d402ef9feef4eb9838659447208963fcf9190d204268b19c006885cf66e99",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "function": "ValidateDOSPlayerRecordFields",
+      "sha256": "b91921c0176b1130f6b958ca242aaac65a46d9977203f3db3acefec863c89038",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "function": "ValidateDOSPlayerRecordFields",
+      "sha256": "e13070aaee20c8e4cefed81f525238ea94504d844c3042d64540eb30565ec403",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "function": "ValidateDOSPlayerRecordFields",
+      "sha256": "e71b1f46af1c2c20801ac94926432b72a77ec2b28d46dfa45f28752106da7954",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "function": "ValidateDOSPlayerRecordFields",
+      "sha256": "eeef2792bdd5e4eedd4b6125acfc0617958d0809c65042bcfc32e917a3617b37",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

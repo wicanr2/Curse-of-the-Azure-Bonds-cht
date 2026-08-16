@@ -66,7 +66,9 @@ func RestoreBattle(snapshot BattleSnapshot) (*Battle, error) {
 	if snapshot.Round < 0 {
 		return nil, fmt.Errorf("battle round %d is negative", snapshot.Round)
 	}
-	if snapshot.Status > StatusDraw {
+	// ⚠ 上限要跟著 Status 的最後一個值走。新增狀態卻沒改這裡，症狀是
+	// 「某一種結局的存檔讀不回來」——存檔當下沒事，讀的時候才炸。
+	if snapshot.Status > StatusPartyFled {
 		return nil, fmt.Errorf("unsupported battle status %d", snapshot.Status)
 	}
 	battle, err := NewBattle(snapshot.Fighters, snapshot.Random.Seed)
