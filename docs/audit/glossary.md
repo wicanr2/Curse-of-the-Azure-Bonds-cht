@@ -6,7 +6,7 @@
 
 | 檔案 | 字串數 |
 |---|---:|
-| `gamepack/pack/20-locale.zh-TW.json` | 672 |
+| `gamepack/pack/20-locale.zh-TW.json` | 675 |
 | `assets/locale/zh-TW.json` | 870 |
 | `internal/tooltext/messages/zh-TW.json` | 170 |
 
@@ -14,7 +14,7 @@
 
 | 項目 | 數量 |
 |---|---:|
-| 詞條 | 89 |
+| 詞條 | 92 |
 | **不一致** | **0** |
 
 ## 逐詞條
@@ -27,7 +27,7 @@
 | `Akabar Bel Akash` | 阿卡巴・貝爾・阿卡什 | 3 | — |
 | `Alaterian` | 阿拉特里安 | 1 | — |
 | `Alias` | 愛麗雅絲 | 16 | — |
-| `Azoun` | 阿祖恩 | 1 | — |
+| `Azoun` | 阿祖恩 | 2 | — |
 | `Belinda` | 貝琳達 | 1 | — |
 | `Daemir` | 黛米爾 | 2 | — |
 | `Dexam` | 德克薩姆 | 11 | — |
@@ -38,12 +38,13 @@
 | `Filani` | 菲拉妮 | 5 | — |
 | `Flamed One` | 烈焰之主 | 9 | 烈焰者、燃燒者 |
 | `Fzoul Chembryl` | 弗佐爾・錢布瑞爾 | 5 | 弗佐爾．錢布瑞爾 |
+| `Gharri` | 加里 | 3 | 嘉莉 |
 | `Imperceptor` | 總督察長 | 3 | — |
 | `Kith` | 姬絲 | 1 | — |
 | `Lilian` | 莉莉安 | 1 | — |
 | `Mogion` | 摩貢 | 10 | — |
 | `Myrixelets` | 米里塞勒特斯 | 1 | — |
-| `Nacacia` | 娜卡西亞 | 4 | — |
+| `Nacacia` | 娜卡西亞 | 5 | — |
 | `Nameless One` | 無名者 | 3 | — |
 | `Olive Ruskettle` | 奧莉芙・魯斯克特爾 | 3 | 拉斯凱托 |
 | `Silk` | 絲綢 | 2 | — |
@@ -56,8 +57,9 @@
 | 原文 | 繁中 | 出現次數 | 禁用寫法 |
 |---|---|---:|---|
 | `Ashabenford` | 阿沙本福德 | 6 | — |
+| `Cormyr` | 科米爾 | 3 | — |
 | `Dagger Falls` | 匕首瀑布 | 4 | — |
-| `Dalelands` | 谷地諸邦 | 1 | — |
+| `Dalelands` | 谷地諸邦 | 2 | — |
 | `Dark Shrine` | 幽暗神殿 | 2 | — |
 | `Essembra` | 艾森布拉 | 7 | — |
 | `Great Glacier` | 大冰川 | 1 | — |
@@ -70,7 +72,7 @@
 | `Shadowdale` | 暗影谷 | 11 | — |
 | `Standing Stones` | 立石群 | 4 | — |
 | `Teshwave` | 特什維夫 | 2 | — |
-| `Tilverton` | 提爾佛頓 | 13 | — |
+| `Tilverton` | 提爾佛頓 | 16 | — |
 | `Yulash` | 尤拉什 | 14 | — |
 | `Zhentil Keep` | 散提爾堡 | 20 | 散塔林堡 |
 
@@ -128,6 +130,7 @@
 | 原文 | 繁中 | 出現次數 | 禁用寫法 |
 |---|---|---:|---|
 | `Bane` | 班恩 | 7 | 貝恩 |
+| `Gond` | 剛德 | 5 | — |
 | `Lathander` | 洛山達 | 5 | — |
 | `Moander` | 摩安德 | 25 | — |
 
