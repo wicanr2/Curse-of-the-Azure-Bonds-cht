@@ -167,6 +167,16 @@
    "note": "寫 bank1 `580h`／`582h`，`582h` 取兩者最大值。"
   },
   {
+   "opcode": "0x0D",
+   "name": "APPROACH",
+   "dos_handler": "0801h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
    "opcode": "0x0E",
    "name": "PICTURE",
    "dos_handler": "0841h",
@@ -178,6 +188,16 @@
     "1104"
    ],
    "note": "operand `0FFh` 走關閉分支並就地 flush；其餘只設 `8B49h`／`8B62h`／`8B63h`，畫面提交點在 `2Dh` 的 `2E10h`。"
+  },
+  {
+   "opcode": "0x10",
+   "name": "INPUT STRING",
+   "dos_handler": "0972h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "resumable",
+   "confidence": "unknown",
+   "note": "handler 尚未讀；`INPUT STRING` 是可輸入、可退格、可確認的互動，不是預先列出答案的選單。"
   },
   {
    "opcode": "0x11",
@@ -225,6 +245,16 @@
    "advance": "decode_operands",
    "phase": "unknown",
    "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x15",
+   "name": "VERTICAL MENU",
+   "dos_handler": "0EBDh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "resumable",
    "confidence": "unknown",
    "note": "handler 尚未讀。"
   },
@@ -377,6 +407,16 @@
    "note": "寶物服務邊界，戰後 continuation 已閉合。"
   },
   {
+   "opcode": "0x28",
+   "name": "ROB",
+   "dos_handler": "1F46h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "resumable",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
    "opcode": "0x29",
    "name": "ENCOUNTER MENU",
    "dos_handler": "2086h",
@@ -424,6 +464,16 @@
     "1104"
    ],
    "note": "operand 值減 `7FFFh` 後走七路 switch；`2E10h` 分支是 `8B62h`／`8B65h`／`8B67h`／`8B68h`／`8B6Ah` 五個髒旗標的唯一提交點。未列入 switch 的目標靜默 no-op。"
+  },
+  {
+   "opcode": "0x2E",
+   "name": "DAMAGE",
+   "dos_handler": "2942h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀；運算元順序（旗標, 骰數, 面數, 加值, 豁免旗標）由公開參考支持，尚未逐條反組譯。"
   },
   {
    "opcode": "0x2F",
@@ -522,6 +572,16 @@
    "note": "先消費 `47E2h` 才推進 PC。值 0 是即時重繪；值 8 是通關序列（問 Y／N，答 Y 才離開程式）；值 9 與值 3 都轉呼叫 `00h` 的 handler，值 3 另外設 `4FC7h:=1` 的全域停止。⇒ 只有值 3 與值 9 無條件終止。"
   },
   {
+   "opcode": "0x39",
+   "name": "WHO",
+   "dos_handler": "2D5Eh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
    "opcode": "0x3A",
    "name": "DELAY",
    "dos_handler": "28F3h",
@@ -535,6 +595,16 @@
    "note": "推進 PC 後呼叫 resident 的延遲常式，沒有 ECL 記憶體副作用。"
   },
   {
+   "opcode": "0x3C",
+   "name": "PROTECTION",
+   "dos_handler": "321Fh",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
    "opcode": "0x3D",
    "name": "CLEAR BOX",
    "dos_handler": "2D15h",
@@ -546,6 +616,26 @@
     "1104"
    ],
    "note": "就地清框並重畫，收尾 `8B6Eh:=0`、`8B60h:=1`。"
+  },
+  {
+   "opcode": "0x3E",
+   "name": "DUMP",
+   "dos_handler": "3251h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
+  },
+  {
+   "opcode": "0x3F",
+   "name": "FIND SPECIAL",
+   "dos_handler": "3284h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "note": "handler 尚未讀。"
   },
   {
    "opcode": "0x40",

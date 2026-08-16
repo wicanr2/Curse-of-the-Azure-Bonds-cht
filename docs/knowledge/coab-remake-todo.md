@@ -63,9 +63,11 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | └ 語系 | `en` **607** 條、`zh-TW` **607** 條，**一一對齊、沒有漏譯** | `json` |
 | UI 詞條 | `assets/locale/zh-TW.json` **870** 條 | `json` |
 | 建角規則表 | `gamepack/rules/character-tables.json`：7 種族、17 職業組合、8 職業槽、擲點與體質加值 | `json` |
-| 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**1,355 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
-| ECL 副作用候選 | 32 個中 **31 個 `covered/exact`**、1 個 `partial` | `ecl-ordered-effect-reviews.json` |
-| ECL opcode commit phase | 46 個 corpus opcode 中 **25 支 handler 已讀**、21 支 `unknown` | `ecl-opcode-effect-phases.md` |
+| 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**4,222 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
+| ECL 靜態可達 instruction | **4,222**（spec 1106 補上 `IF` 的 else 路徑後，由 1,355 增為三倍） | `ecl-event-catalog.md` |
+| ECL 副作用候選 | **154** 個中 33 個已審（31 筆依效果序列沿用） | `ecl-ordered-effect-reviews.json` |
+| ECL opcode commit phase | **55** 個 corpus opcode 中 25 支 handler 已讀、**30 支 `unknown`** | `ecl-opcode-effect-phases.md` |
+| **原作文字段落覆蓋** | **221** 段靜態可達，已接上 `text_rule` **64**、**未接上 157** | `ecl-text-coverage.md` |
 | 正常玩家路徑 | 走到**眼魔洞穴東門 → 散提爾堡邊緣** | `go test` |
 | 全套 gate | `./tools/go.sh test ./...` 全綠 | 本輪實跑 |
 | 遊戲入口旗標 | **58** 個，其中 30 個是分段驗收的直入點 | `main.go` |

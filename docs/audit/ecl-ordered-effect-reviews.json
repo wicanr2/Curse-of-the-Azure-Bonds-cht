@@ -17,7 +17,7 @@
       ],
       "note": "LOAD FILES 只設 47E5h 閂鎖，LOAD PIECES 沒出現前不會重繪；PICTURE 只設髒旗標，提交點在後面的 CALL 2E10h。本段沒有可見效果的次序問題。"
     },
-    "ECL1.DAX/0x52/0x0014-0x0395": {
+    "ECL1.DAX/0x52/0x0014-0x0394": {
       "status": "partial",
       "confidence": "strong inference",
       "spec_refs": [
@@ -102,6 +102,14 @@
       ],
       "note": "CALL 2E10h 先提交先前累積的髒旗標，之後的文字才輸出；兩者之間沒有其他邊界。"
     },
+    "ECL3.DAX/0x11/0x0589-0x05A3": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "PICTURE 設髒旗標、文字即時輸出、CALL 2E10h 是五個髒旗標的唯一提交點 ⇒ 玩家看到換圖是在 CALL 那一步，不是 PICTURE。"
+    },
     "ECL3.DAX/0x11/0x0597-0x05A3": {
       "status": "covered",
       "confidence": "exact",
@@ -152,7 +160,7 @@
       ],
       "note": "全部是 immediate：文字在 handler 內就輸出完，下一條指令看得到結果，中間沒有提交邊界。"
     },
-    "ECL3.DAX/0x15/0x04CC-0x050A": {
+    "ECL3.DAX/0x15/0x04BB-0x050A": {
       "status": "covered",
       "confidence": "exact",
       "spec_refs": [
@@ -256,7 +264,7 @@
       ],
       "note": "同 0x42：兩個資源載入閂鎖到齊後由 CALL 2E10h 提交。"
     },
-    "ECL6.DAX/0x45/0x04C5-0x04F6": {
+    "ECL6.DAX/0x45/0x04B4-0x04F6": {
       "status": "covered",
       "confidence": "exact",
       "spec_refs": [

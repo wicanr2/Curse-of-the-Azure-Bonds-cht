@@ -451,7 +451,7 @@ func straightLineCandidates(input []ecl.Instruction, entryName string) []Ordered
 	for start := 0; start < len(instructions); {
 		end := start + 1
 		for end < len(instructions) && instructions[end-1].Next == instructions[end].Offset &&
-			!endsStraightLine(instructions[end-1].Command.Opcode) {
+			!endsStraightLine(instructions[end-1]) {
 			end++
 		}
 		var effects []CandidateEffect
@@ -555,10 +555,19 @@ func effectKinds(opcode byte) []string {
 // original handler loads the replacement block, resets the interpreter PC to
 // the code base and raises both stop flags, so control never reaches the
 // following byte (spec 1104; DOS overlay-02:0BBBh + 3691h, PC-98 0C26h).
-func endsStraightLine(opcode byte) bool {
-	switch opcode {
+func endsStraightLine(instruction ecl.Instruction) bool {
+	switch instruction.Command.Opcode {
 	case 0x00, 0x01, 0x02, 0x13, 0x20, 0x25, 0x26:
 		return true
+	case 0x38:
+		// PROGRAM 的終止性依運算元值而定：值 3 與值 9 都轉呼叫 00h 的 handler
+		// （值 3 另外設全域停止 4FC7h），值 0 與值 8 會正常回到迴圈
+		// （spec 1104 §九）。只有立即值才判得準——運算元若是記憶體讀取，
+		// 靜態上不知道會是哪個值，保守不終止。
+		if len(instruction.Operands) == 1 && instruction.Operands[0].Code == 0x00 {
+			return instruction.Operands[0].Low == 3 || instruction.Operands[0].Low == 9
+		}
+		return false
 	default:
 		return false
 	}
