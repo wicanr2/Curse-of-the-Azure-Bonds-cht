@@ -43,13 +43,22 @@ type group struct {
 	// 子程式印的字本工具不追（見 Limitations），所以 `Text` 少了那一段；
 	// 寫 `all_contains` 的片段**不可以跨過這些位置**，否則實機接不上。
 	GosubInserts []string `json:"gosub_inserts,omitempty"`
+	// VariableInserts 記錄這一頁印過**執行期的值**（角色名、城名、數字）。
+	// 那些值只有跑起來才知道，靜態文字裡是空的，所以工具比對不了——
+	// 逐城的 `*.edge` 規則需要城名，就是這一類。
+	VariableInserts []string `json:"variable_inserts,omitempty"`
 	// Status 是這一段在內容產出裡的處置：
 	//
 	//	matched      有規則命中，做完了
 	//	unmatched    還沒寫規則——這才是待辦
 	//	gosub-insert 文字被子程式插過，本工具比對不了；規則可能早就寫好了
+	//	variable-insert 頁裡印了執行期的值（人名、城名），同樣比對不了
 	//	subroutine   這一段本身就是某支子程式的內容，實機不會單獨出現
 	Status string `json:"status"`
+	// Run 是這一頁所屬的「一次執行」。runtime 把整個 run 的文字累積起來**一次**
+	// 交給 MatchText，所以比對必須以 run 為單位——一條規則可以橫跨好幾頁。
+	// 開場捲軸就是七頁一個 run。
+	Run int `json:"run"`
 	// appended 記錄這一段是以 `11h PRINT` 起頭（true）還是 `12h PRINTCLEAR`（false）。
 	// 只有前者可能是「接在呼叫端那一頁後面」的片段——它自己不開新頁。
 	appended bool
@@ -63,12 +72,13 @@ type report struct {
 }
 
 type summary struct {
-	Groups      int            `json:"groups"`
-	Matched     int            `json:"matched"`
-	Unmatched   int            `json:"unmatched"`
-	GosubInsert int            `json:"gosub_insert"`
-	Subroutine  int            `json:"subroutine"`
-	ByBlock     map[string]int `json:"unmatched_by_block"`
+	Groups         int            `json:"groups"`
+	Matched        int            `json:"matched"`
+	Unmatched      int            `json:"unmatched"`
+	GosubInsert    int            `json:"gosub_insert"`
+	VariableInsert int            `json:"variable_insert"`
+	Subroutine     int            `json:"subroutine"`
+	ByBlock        map[string]int `json:"unmatched_by_block"`
 }
 
 func main() {
@@ -95,6 +105,8 @@ func main() {
 			"一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。",
 			"`02h GOSUB` 進去印的文字不會併進這一段，標 `gosub_inserts` 的頁實際文字比這裡多。插入點在中間（`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」）或在開頭當前綴（`ECL4.DAX/0x25` 的八個遭遇頁前面都有「YOU ARE ATTACKED BY」）。⇒ 寫 `all_contains` 時**片段不要跨越插入點**，否則實機接不上。",
 			"反過來，被 `GOSUB` 呼叫的純文字子程式會自成一段（如 `UP`／`DOWN`／`YOU ARE ATTACKED BY`）。它們在實機不會單獨出現，**不要**替它們寫規則——只有一兩個字的規則會攔截到別的文字。",
+			"頁裡若印了執行期的值（人名、城名、數字），靜態文字是空的，工具同樣比對不了——逐城的 `*.edge` 規則需要城名才會命中。這類標 `variable-insert`。",
+			"比對以 **run** 為單位，不是以頁：runtime 把整個 run 的文字累積起來一次交給 `MatchText`，所以一條規則可以橫跨好幾頁（開場捲軸就是四頁一條）。run 在「交出文字」的指令或頁尾的 `GOSUB`（翻頁提示、Yes／No）處結束。",
 			"『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。",
 		},
 		Summary: summary{ByBlock: map[string]int{}},
@@ -118,8 +130,23 @@ func main() {
 			if err != nil {
 				log.Fatalf("%s block %s: %v", member, blockID, err)
 			}
+			// runtime 累積整個 run 才比對一次，工具也要這樣做。
+			runText := map[int][]string{}
 			for _, item := range groups {
-				match := pack.MatchText([]string{item.Text}, pack.DefaultLocale)
+				runText[item.Run] = append(runText[item.Run], item.Text)
+			}
+			runMatch := map[int]string{}
+			for run, texts := range runText {
+				if result := pack.MatchText(texts, pack.DefaultLocale); result.Matched {
+					runMatch[run] = result.RuleID
+				}
+			}
+			for _, item := range groups {
+				matchedRule, matched := runMatch[item.Run]
+				match := struct {
+					Matched bool
+					RuleID  string
+				}{matched, matchedRule}
 				switch {
 				case match.Matched:
 					item.RuleID = match.RuleID
@@ -134,6 +161,9 @@ func main() {
 				case len(item.GosubInserts) > 0:
 					item.Status = "gosub-insert"
 					result.Summary.GosubInsert++
+				case len(item.VariableInserts) > 0:
+					item.Status = "variable-insert"
+					result.Summary.VariableInsert++
 				default:
 					item.Status = "unmatched"
 					result.Summary.Unmatched++
@@ -159,9 +189,10 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	fmt.Fprintf(os.Stderr, "text_groups=%d matched=%d unmatched=%d gosub-insert=%d subroutine=%d\n",
+	fmt.Fprintf(os.Stderr,
+		"text_groups=%d matched=%d unmatched=%d gosub-insert=%d variable-insert=%d subroutine=%d\n",
 		result.Summary.Groups, result.Summary.Matched, result.Summary.Unmatched,
-		result.Summary.GosubInsert, result.Summary.Subroutine)
+		result.Summary.GosubInsert, result.Summary.VariableInsert, result.Summary.Subroutine)
 }
 
 // blockGroups collects the reachable PRINTCLEAR/PRINT runs of one block, plus
@@ -191,6 +222,10 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 	var current *group
 	var pendingGosub []string
 	guarded := false
+	// run 只在「交出文字」時才換：`PRINTCLEAR` 開新頁但**不**結束 run。
+	// 頁尾的 `GOSUB`（翻頁提示、Yes／No）會讓 VM 停下等玩家，那才是 run 邊界；
+	// 頁中的 `GOSUB`（插一段文字進來）不是。兩者的差別在於後面還有沒有 PRINT。
+	run := 0
 	// cleared 記著「剛剛清過框」。沒有文字的 PRINTCLEAR 不會開出段落，但它確實
 	// 開了新頁，下一條 PRINT 因此不是接在別人後面的片段。
 	cleared := false
@@ -202,6 +237,7 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 		// 所以下一條在 offset 順序上仍然是同一頁的延續。
 		if !wasGuarded && endsTextGroup(opcode) {
 			current, pendingGosub = nil, nil
+			run++
 			continue
 		}
 		if opcode == 0x02 {
@@ -213,6 +249,12 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 		if opcode != 0x11 && opcode != 0x12 {
 			// 中間夾 SAVE、COMPARE、PICTURE、DELAY、IF 這類指令不會斷開一頁文字。
 			continue
+		}
+		variables := instructionVariables(instruction)
+		if len(variables) > 0 && current != nil {
+			// 印執行期的值那一條沒有靜態文字，會走下面的 `text == ""`，
+			// 所以要先記起來——不然「城名」這一類插入永遠偵測不到。
+			current.VariableInserts = append(current.VariableInserts, variables...)
 		}
 		text := instructionText(instruction)
 		if text == "" {
@@ -233,18 +275,26 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 			// 形狀：`GOSUB 9534h` 印「YOU ARE ATTACKED BY」，回來才印怪物名。
 			inserts := pendingGosub
 			if opcode == 0x12 {
+				// 上一頁尾巴那個 GOSUB 多半是翻頁提示或 Yes／No，VM 會在那裡停住，
+				// 所以新的一頁屬於下一個 run。
+				if len(pendingGosub) > 0 {
+					run++
+				}
 				inserts = nil
 			}
 			groups = append(groups, group{
 				Member: member, Block: blockID,
 				Offset: fmt.Sprintf("0x%04X", instruction.Offset), Text: text,
+				Run:          run,
 				GosubInserts: inserts,
 				appended:     opcode == 0x11 && !cleared,
 			})
 			current, pendingGosub, cleared = &groups[len(groups)-1], nil, false
+			current.VariableInserts = append(current.VariableInserts, variables...)
 			continue
 		}
 		current.Text += " " + text
+		current.VariableInserts = append(current.VariableInserts, variables...)
 		current.GosubInserts = append(current.GosubInserts, pendingGosub...)
 		pendingGosub = nil
 	}
@@ -349,6 +399,21 @@ func endsTextGroup(opcode byte) bool {
 	}
 }
 
+// instructionVariables 回報這一條 PRINT 印了哪些執行期的值。`80h` 是打包好的
+// 靜態文字，其餘（`81h` 字串記憶體、`01h` 變數、立即值）都要跑起來才知道。
+func instructionVariables(instruction ecl.Instruction) []string {
+	if instruction.Command.Opcode != 0x11 && instruction.Command.Opcode != 0x12 {
+		return nil
+	}
+	var out []string
+	for _, operand := range instruction.Operands {
+		if operand.Code != 0x80 {
+			out = append(out, fmt.Sprintf("0x%04X", instruction.Offset))
+		}
+	}
+	return out
+}
+
 func instructionText(instruction ecl.Instruction) string {
 	var parts []string
 	for _, operand := range instruction.Operands {
@@ -392,6 +457,8 @@ func renderMarkdown(result report) []byte {
 		result.Summary.Unmatched)
 	fmt.Fprintf(&out, "| `gosub-insert` | %d | 文字被子程式插過，本工具比對不了；規則可能早就寫好了 |\n",
 		result.Summary.GosubInsert)
+	fmt.Fprintf(&out, "| `variable-insert` | %d | 頁裡印了執行期的值（人名、城名），同樣比對不了 |\n",
+		result.Summary.VariableInsert)
 	fmt.Fprintf(&out, "| `subroutine` | %d | 這一段本身是某支子程式的內容，實機不會單獨出現 |\n",
 		result.Summary.Subroutine)
 

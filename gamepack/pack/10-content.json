@@ -1973,6 +1973,36 @@
    ]
   },
   {
+   "id": "world.bridge-riddle.intro",
+   "all_contains": [
+    "YOUR WAY IS BLOCKED BY AN IMPASSABLE CHASM",
+    "YOU MUST ANSWER ME BEFORE THE OTHER SIDE YE SEE"
+   ],
+   "message_id": "world.bridge-riddle.intro"
+  },
+  {
+   "id": "world.bridge-riddle.quest",
+   "all_contains": [
+    "WHAT IS YOUR QUEST?"
+   ],
+   "message_id": "world.bridge-riddle.quest"
+  },
+  {
+   "id": "world.bridge-riddle.fruit",
+   "all_contains": [
+    "WHAT IS YOUR FAVORITE FRUIT?"
+   ],
+   "message_id": "world.bridge-riddle.fruit"
+  },
+  {
+   "id": "world.bridge-riddle.pass",
+   "all_contains": [
+    "WHAT DOES THIS MEAN?",
+    "YOU MAY PASS"
+   ],
+   "message_id": "world.bridge-riddle.pass"
+  },
+  {
    "id": "opening.curse-summary",
    "all_contains": [
     "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE",
@@ -2003,6 +2033,15 @@
     "IDENTICALLY MARKED"
    ],
    "message_id": "opening.new-game-marks"
+  },
+  {
+   "id": "opening.demo-closing",
+   "all_contains": [
+    "WHILE THE RISK OF ADVENTURE IS GREAT",
+    "BUT THE ULTIMATE PRIZE IS NOT GOLD OR POWER",
+    "GO FORWARD AND DEFEAT THE NEW ALLIANCE"
+   ],
+   "message_id": "opening.demo-closing"
   },
   {
    "id": "hap.black-dragons",
@@ -2496,6 +2535,56 @@
     "STEP FORWARD TO ENTER THE DARK DEMESNE"
    ],
    "message_id": "yulash.pit-entrance"
+  },
+  {
+   "id": "yulash.no-sleeping",
+   "all_contains": [
+    "HEY, NO SLEEPING HERE!"
+   ],
+   "message_id": "yulash.no-sleeping"
+  },
+  {
+   "id": "yulash.red-plume-salute",
+   "all_contains": [
+    "A BAND OF RED PLUME GUARDS SALUTE YOU AND PASS ON BY"
+   ],
+   "message_id": "yulash.red-plume-salute"
+  },
+  {
+   "id": "yulash.red-plume-attack",
+   "all_contains": [
+    "THE RED PLUME GUARDS ATTACK!"
+   ],
+   "message_id": "yulash.red-plume-attack"
+  },
+  {
+   "id": "yulash.red-plume-avenge-commander",
+   "all_contains": [
+    "THE SCUM WHO KILLED THE COMMANDER"
+   ],
+   "message_id": "yulash.red-plume-avenge-commander"
+  },
+  {
+   "id": "yulash.shambling-mounds",
+   "all_contains": [
+    "SHAMBLING MOUNDS RISE UP FROM THE DEBRIS"
+   ],
+   "message_id": "yulash.shambling-mounds"
+  },
+  {
+   "id": "yulash.zhentil-marauders",
+   "all_contains": [
+    "A BAND OF ZHENTIL KEEP MARAUDERS JUMP YOU"
+   ],
+   "message_id": "yulash.zhentil-marauders"
+  },
+  {
+   "id": "yulash.captured-cell",
+   "all_contains": [
+    "YOU WAKE UP IN A RATHER DREARY ROOM",
+    "THE RATS EYE YOU EXPECTANTLY"
+   ],
+   "message_id": "yulash.captured-cell"
   },
   {
    "id": "pit.opening-dead-cultists",
@@ -3708,6 +3797,48 @@
     "A STRONG FORCE PUSHES YOU BACK INTO THE ROOM"
    ],
    "message_id": "pit.pushed-back"
+  },
+  {
+   "id": "dark-elf-caves.items-fade",
+   "all_contains": [
+    "YOUR DARK ELF ITEMS FADE AWAY IN THE SUNLIGHT"
+   ],
+   "message_id": "dark-elf-caves.items-fade"
+  },
+  {
+   "id": "dark-elf-caves.fresh-air-exit",
+   "all_contains": [
+    "YOU FEEL A BREATH OF FRESH AIR"
+   ],
+   "message_id": "dark-elf-caves.fresh-air-exit"
+  },
+  {
+   "id": "dark-elf-caves.monsters-spotted",
+   "all_contains": [
+    "YOU SPOT MONSTERS"
+   ],
+   "message_id": "dark-elf-caves.monsters-spotted"
+  },
+  {
+   "id": "dark-elf-caves.tarsus-offer",
+   "all_contains": [
+    "I AM TARSUS AND, FOR A TITHE"
+   ],
+   "message_id": "dark-elf-caves.tarsus-offer"
+  },
+  {
+   "id": "dark-elf-caves.tarsus-accepted",
+   "all_contains": [
+    "YOU WILL NOT REGRET THIS DESCISION"
+   ],
+   "message_id": "dark-elf-caves.tarsus-accepted"
+  },
+  {
+   "id": "dark-elf-caves.tarsus-declined",
+   "all_contains": [
+    "I TRAVEL RARELY, SO YOU SHOULD FIND ME HERE"
+   ],
+   "message_id": "dark-elf-caves.tarsus-declined"
   }
  ],
  "option_rules": [

@@ -1717,3 +1717,80 @@ func TestTilvertonStreetsAndLavaTubeAreGamePackDriven(t *testing.T) {
 		}
 	}
 }
+
+// 開場捲軸、尤拉什街頭、黑暗精靈洞穴與橋上謎題。
+//
+// ★ 開場那兩條餵的是**整個 run**：七頁之間只有 `3Ah DELAY`，沒有任何交出文字的
+// 指令，所以 runtime 是一次累積後整段比對。中間唯一的邊界是示範戰鬥
+// （`24h COMBAT`），把捲軸切成四頁 ＋ 三頁兩個 run。
+func TestOpeningScrollAndFieldEventsAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id    string
+		texts []string
+	}{
+		{"opening.curse-summary", []string{
+			"ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE",
+			"AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN",
+			"YOU AWAKE YOUR PARTY HAS BEEN CURSED WITH FIVE AZURE", "SYMBOLS.",
+			"THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS.",
+			"AND WHEN THE BONDS GLOW YOU MUST DO AS THEY COMMAND.",
+			"YOUR ONLY HOPE IS TO SEARCH THE FORGOTTEN REALMS",
+			"FOR THE MEMBERS OF THE ALLIANCE WHO CREATED THE BONDS",
+			"AND REGAIN CONTROL OF YOUR OWN DESTINY.",
+			"NOWHERE IN THE REALMS IS COMPLETELY SAFE. EVEN",
+			"THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE."}},
+		{"opening.demo-closing", []string{
+			"WHILE THE RISK OF ADVENTURE IS GREAT, THE REWARDS",
+			"ARE GREATER. FAME AND FORTUNE COME TO THOSE WHO BRAVE", "THE WILDS.",
+			"BUT THE ULTIMATE PRIZE IS NOT GOLD OR POWER, IT",
+			"IS CONTROL OF YOUR OWN DESTINY. AND TO WIN CONTROL YOU",
+			"MUST DEFEAT THE ULTIMATE ENEMY.",
+			"YOUR ENEMIES ARE PREPARED. THE FORGOTTEN REALMS",
+			"AWAIT. GO FORWARD AND DEFEAT THE NEW ALLIANCE, TO BE",
+			"FREE OF THE CURSE OF THE AZURE BONDS."}},
+		{"yulash.no-sleeping", []string{"HEY, NO SLEEPING HERE!"}},
+		{"yulash.red-plume-salute", []string{"A BAND OF RED PLUME GUARDS SALUTE YOU AND PASS ON BY."}},
+		{"yulash.red-plume-attack", []string{"THE RED PLUME GUARDS ATTACK!"}},
+		{"yulash.red-plume-avenge-commander", []string{
+			"RED PLUME GUARDS RUSH AT YOU YELLING, 'THAT'S THEM!  THEY'RE THE SCUM WHO KILLED THE COMMANDER!'"}},
+		{"yulash.shambling-mounds", []string{"SHAMBLING MOUNDS RISE UP FROM THE DEBRIS AROUND YOU."}},
+		{"yulash.zhentil-marauders", []string{"A BAND OF ZHENTIL KEEP MARAUDERS JUMP YOU."}},
+		{"yulash.captured-cell", []string{
+			"YOU WAKE UP IN A RATHER DREARY ROOM. THE RATS EYE YOU EXPECTANTLY."}},
+		{"dark-elf-caves.items-fade", []string{"YOUR DARK ELF ITEMS FADE AWAY IN THE SUNLIGHT."}},
+		{"dark-elf-caves.fresh-air-exit", []string{"YOU FEEL A BREATH OF FRESH AIR. DO YOU WANT TO EXIT?"}},
+		{"dark-elf-caves.monsters-spotted", []string{"YOU SPOT MONSTERS."}},
+		{"dark-elf-caves.tarsus-offer", []string{
+			"'GREETINGS TRAVELLERS, AND WELCOME TO MY HUMBLE ABODE. I AM TARSUS AND, FOR A TITHE, I CAN TRANSPORT YOU BACK TO THE SURFACE. INTERESTED?'"}},
+		{"dark-elf-caves.tarsus-accepted", []string{"'YOU WILL NOT REGRET THIS DESCISION.'"}},
+		{"dark-elf-caves.tarsus-declined", []string{
+			"'I TRAVEL RARELY, SO YOU SHOULD FIND ME HERE IF YOU CHANGE YOUR MIND.'"}},
+		// 城名由 `81h` 運算元帶進來，所以每座城各有一條規則——**不要**為了讓報告
+		// 好看而加一條通用的，那會把逐城的規則全部攔走。
+		{"yulash.edge", []string{
+			"YOU ARE AT THE EDGE OF", "YULASH", ". WILL YOU ENTER OR CONTINUE YOUR JOURNEY?"}},
+		{"world.shadowdale.edge", []string{
+			"YOU ARE AT THE EDGE OF", "SHADOWDALE", ". WILL YOU ENTER OR CONTINUE YOUR JOURNEY?"}},
+		{"world.bridge-riddle.intro", []string{
+			"YOUR WAY IS BLOCKED BY AN IMPASSABLE CHASM. A",
+			"NARROW BRIDGE IS GUARDED BY AN OLD MAN. HE CACKLES, '",
+			"YOU MUST ANSWER ME BEFORE THE OTHER SIDE YE SEE.'"}},
+		{"world.bridge-riddle.quest", []string{"WHAT IS YOUR QUEST?"}},
+		{"world.bridge-riddle.fruit", []string{"WHAT IS YOUR FAVORITE FRUIT?"}},
+		{"world.bridge-riddle.pass", []string{"WHAT DOES THIS MEAN?", "YOU MAY PASS."}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.texts, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
