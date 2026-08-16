@@ -39,6 +39,10 @@ const (
 	StatusPartyWon
 	StatusEnemyWon
 	StatusDraw
+	// StatusPartyFled ＝ 還活著的隊員全部走出戰場邊界（spec 799／1112）。
+	// 與 StatusEnemyWon 分開是因為結果不同：沒有經驗值、沒有寶物，
+	// 但隊伍也沒有全滅。
+	StatusPartyFled
 )
 
 type Fighter struct {
@@ -128,6 +132,10 @@ type Fighter struct {
 	Dexterity uint8
 	// CombatTeam preserves the Action scheduler team number. The current CoAB
 	// adapter uses Side while the area surprise-mask writer remains unresolved.
+	// ⚠ 「未解」的範圍已經縮小了（spec 1113）：36 個 overlay 裡對區域記錄
+	// `+596h`（突襲遮罩）只有兩次存取——先攻擲骰**讀**它，`overlay-08:sub_F3`
+	// 把它**清成 0**。沒有任何 overlay 設它。所以目前傳 0 是有證據的預設值，
+	// 缺的是常駐段那一側的掃描。
 	CombatTeam           uint8
 	ArmorClass           int
 	AttackBonus          int
@@ -157,6 +165,9 @@ type Fighter struct {
 	// poison, petrification, rod/staff/wand, breath weapon and spell.
 	SavingThrows     []uint8
 	SavingThrowBonus int
+	// Escaped 是「走出戰場邊界離開這一場」（spec 799／1112）。與死亡不同：
+	// 人還活著，只是不在戰場上，所以不算敵方戰果、也不再是任何效果的目標。
+	Escaped bool `json:"escaped,omitempty"`
 	// CoughingTurns and HelplessTurns are action-counted combat effects.
 	// Persistent-area rules set them; the game adapter consumes one turn only
 	// when the affected combatant actually reaches its initiative.
@@ -2242,9 +2253,17 @@ func (b *Battle) advanceProtectionDurations() {
 }
 
 func (b *Battle) updateStatus() {
-	partyAlive, enemyAlive := false, false
+	partyAlive, enemyAlive, partyFled := false, false, false
 	for _, fighter := range b.fighters {
 		if fighter.HitPoints <= 0 {
+			continue
+		}
+		// 離場的人還活著，但不在戰場上——判勝負時當成不在，
+		// 判「隊伍是不是被打光」時仍要算進去。
+		if fighter.Escaped {
+			if fighter.Side == SideParty {
+				partyFled = true
+			}
 			continue
 		}
 		if fighter.Side == SideParty {
@@ -2258,8 +2277,13 @@ func (b *Battle) updateStatus() {
 		b.status = StatusActive
 	case partyAlive:
 		b.status = StatusPartyWon
+	case partyFled && enemyAlive:
+		// 場上沒有隊員了，但至少一個是走出去的 ⇒ 逃離，不是被打光。
+		b.status = StatusPartyFled
 	case enemyAlive:
 		b.status = StatusEnemyWon
+	case partyFled:
+		b.status = StatusPartyFled
 	default:
 		b.status = StatusDraw
 	}

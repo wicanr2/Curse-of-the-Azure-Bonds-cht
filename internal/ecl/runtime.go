@@ -1254,6 +1254,10 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				if workingPartyContext.hasRanger() {
 					request.RangerValue = 1
 				}
+				// OtherValue 保持 0：原作 `overlay-02:1636h` 的第二個目的地寫的是
+				// 一個從頭到尾都是 0 的區域變數（spec 1113）。遊俠那一支把 1 寫進
+				// **另一個**區域變數，而那個變數沒有讀者。
+				// ⚠ 不要「補上」第二個突襲值——原作沒有算過它。
 				request.Resolved = true
 				memory[request.RangerDestination] = request.RangerValue
 				memory[request.OtherDestination] = request.OtherValue

@@ -1144,3 +1144,33 @@ func TestRunSubsetLoadCharacterProjectsFlag192MaskedToLowBit(t *testing.T) {
 		})
 	}
 }
+
+// `22h PARTY SURPRISE` 的第二個目的地永遠是 0（spec 1113）。
+//
+// ★ 原作 `overlay-02:1636h` 把兩個區域變數都初始化成 0，走訪隊伍鏈時在
+// 「有遊俠」那一支寫 `[bp-5] := 1` 與 `[bp-7] := 1`，最後兩次寫回分別取
+// `[bp-5]`（遊俠旗標）與 **`[bp-6]`**——那一格從頭到尾沒被指定過。
+// `[bp-7]` 沒有任何讀者。
+//
+// 這條測試存在的理由是**擋住「補上」它**：第二個值看起來應該是某種突襲判定，
+// 而寫一個算出來的值進去會讓劇情走進原作走不到的分支。
+func TestPartySurpriseSecondDestinationIsAlwaysZero(t *testing.T) {
+	block := []byte{0, 0,
+		0x22, 0x01, 0x01, 0x90, 0x01, 0x04, 0x90,
+		0x00,
+	}
+	for _, party := range []PartyContext{
+		{Members: []PartyMemberContext{{HitPoints: 20, HasRangerClass: true}}},
+		{Members: []PartyMemberContext{{HitPoints: 20}}},
+	} {
+		result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 10, nil, 1, party)
+		if err != nil {
+			t.Fatal(err)
+		}
+		request := result.PartySurpriseRequests[0]
+		if request.OtherValue != 0 {
+			t.Fatalf("第二個目的地寫了 %d，原作寫的是 0（request=%#v）",
+				request.OtherValue, request)
+		}
+	}
+}

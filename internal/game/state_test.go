@@ -5443,3 +5443,63 @@ func TestECLLineCatalogCoversEveryDisplayedStableID(t *testing.T) {
 		}
 	}
 }
+
+// 走出戰場邊界就是原作的逃跑（spec 799／1112）：Gold Box 沒有 FLEE 指令，
+// 邊界那一步本身就是嘗試脫離。這一條同時擋住「角色走到地圖外面」——
+// 在有這個判定之前，往左走出 x = 0 是合法的一步。
+func TestWalkingOffTheCombatMapEdgeAttemptsEscape(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20,
+		MovementAllowance: 12, HasCombatPosition: true, CombatX: 0, CombatY: 3}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, MovementAllowance: 6,
+		HasCombatPosition: true, CombatX: 1, CombatY: 3}}
+	if err := state.StartCombat(party, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatMove(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatMove(-1, 0); err != nil {
+		t.Fatal(err)
+	}
+	// 敵人比較慢 ⇒ 逃得掉；場上沒有隊員了 ⇒ 戰鬥以「逃離」收場，不是全滅。
+	if !strings.Contains(state.CombatMessage(), "逃離") {
+		t.Fatalf("逃跑訊息=%q", state.CombatMessage())
+	}
+	if state.Mode != ModeEvent {
+		t.Fatalf("逃離之後 mode=%v", state.Mode)
+	}
+	if got := state.Message; got != trainingTestCatalog(t).Text("combat_party_fled", "") {
+		t.Fatalf("結果訊息=%q", got)
+	}
+}
+
+// 逃不掉時角色留在原地，回合也還沒結束——原作的 'Escape is blocked' 就是這樣。
+func TestBlockedEscapeKeepsTheFighterInPlace(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20,
+		MovementAllowance: 6, HasCombatPosition: true, CombatX: 0, CombatY: 3}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, MovementAllowance: 12,
+		HasCombatPosition: true, CombatX: 1, CombatY: 3}}
+	if err := state.StartCombat(party, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatMove(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatMove(-1, 0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatMoveMode() {
+		t.Fatalf("擋住之後 mode=%v moveMode=%v", state.Mode, state.CombatMoveMode())
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "hero" && (fighter.CombatX != 0 || fighter.Escaped) {
+			t.Fatalf("被擋住的角色=%+v", fighter)
+		}
+	}
+}

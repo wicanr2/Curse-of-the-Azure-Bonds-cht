@@ -575,6 +575,11 @@ func (s *State) CombatMoveWithTerrain(dx, dy int, terrain combat.MovementTerrain
 	if !ok {
 		return fmt.Errorf("it is not a living party turn")
 	}
+	// 走出戰場邊界就是原作的逃跑（spec 799／1112）：Gold Box 沒有 FLEE 指令，
+	// 邊界那一步本身就是嘗試脫離。
+	if leavesCombatMap(caster, dx, dy) {
+		return s.attemptCombatEscape(caster)
+	}
 	moveResult, err := s.battle.MoveWithTerrainAndFreeAttacks(caster.ID, dx, dy, s.combatMoveRemaining, terrain)
 	if err != nil {
 		return err
@@ -607,6 +612,47 @@ func (s *State) CombatMoveWithTerrain(dx, dy int, terrain combat.MovementTerrain
 	}
 	if s.combatMoveMode {
 		return nil
+	}
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+// combatMapWidth／combatMapHeight 是原作戰鬥地圖的格數。走出這個範圍就是離場。
+const (
+	combatMapWidth  = 32
+	combatMapHeight = 16
+)
+
+// leavesCombatMap 判斷這一步會不會踏出戰場。腳印大於一格的戰鬥員以左上角
+// 計算——與 `MoveWithTerrainAndFreeAttacks` 的地形檢查同一個約定。
+func leavesCombatMap(fighter combat.Fighter, dx, dy int) bool {
+	if !fighter.HasCombatPosition {
+		return false
+	}
+	x, y := fighter.CombatX+dx, fighter.CombatY+dy
+	return x < 0 || x >= combatMapWidth || y < 0 || y >= combatMapHeight
+}
+
+// attemptCombatEscape 跑原作的逃跑判定並把結果講給玩家。
+//
+// ⚠ 只處理**隊伍**這一側。怪物逃跑是 `RE-07`／`ENG-08`：它們的決策在 AI 那一層，
+// 不是玩家按方向鍵走出去。
+func (s *State) attemptCombatEscape(fighter combat.Fighter) error {
+	attempt, err := s.battle.AttemptEscape(fighter.ID)
+	if err != nil {
+		return err
+	}
+	if !attempt.Escaped {
+		// 原作的 'Escape is blocked' 不接名字，訊息也不結束回合——
+		// 擋住之後角色還站在原地，移動力沒有扣。
+		s.combatMessage = s.catalog.Text("combat_escape_blocked", "combat_escape_blocked")
+		return nil
+	}
+	s.combatMessage = fmt.Sprintf(
+		s.catalog.Text("combat_got_away", "combat_got_away"), fighter.Name)
+	s.CancelCombatMove()
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
 	}
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
@@ -1585,7 +1631,7 @@ func (s *State) CombatMoveSpellTarget(dx, dy int) error {
 		return fmt.Errorf("no area spell target is being selected")
 	}
 	next := combat.TilePoint{X: s.combatSpellTargetPoint.X + dx, Y: s.combatSpellTargetPoint.Y + dy}
-	if next.X < 0 || next.X >= 32 || next.Y < 0 || next.Y >= 16 {
+	if next.X < 0 || next.X >= combatMapWidth || next.Y < 0 || next.Y >= combatMapHeight {
 		return fmt.Errorf("spell target (%d,%d) is outside the combat map", next.X, next.Y)
 	}
 	s.combatSpellTargetPoint = next
@@ -4096,6 +4142,8 @@ func combatResultMessage(catalog interface{ Text(string, string) string }, statu
 		return catalog.Text("combat_victory", "combat_victory")
 	case combat.StatusEnemyWon:
 		return catalog.Text("combat_defeat", "combat_defeat")
+	case combat.StatusPartyFled:
+		return catalog.Text("combat_party_fled", "combat_party_fled")
 	default:
 		return catalog.Text("combat_draw", "combat_draw")
 	}
