@@ -59,15 +59,15 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | └ 檔名 | `state` `combat_state` `creation` `creation_guided` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
 | 共用 engine | 獨立 repo，69 個 `.go` | `golden-box-remake-engine/` |
 | 內容資料 | `gamepack/pack/` **四檔**：core 46 KB／content 86 KB／locale.en 66 KB／locale.zh-TW 72 KB | `ls -la` |
-| ├ 事件 | 4 個 `events`、113 條 `option_rules`、**464 條 `text_rules`** | `json` |
-| └ 語系 | `en` **724** 條、`zh-TW` **724** 條，**一一對齊、沒有漏譯**；譯名一致性由 `internal/glossary` fail-closed 擋住（93 詞條、0 不一致） | `json` |
+| ├ 事件 | 4 個 `events`、113 條 `option_rules`、**1,009 條 `text_rules`** | `json` |
+| └ 語系 | `en` **1,269** 條、`zh-TW` **1,269** 條，**一一對齊、沒有漏譯**；譯名一致性由 `internal/glossary` fail-closed 擋住（93 詞條、0 不一致） | `json` |
 | UI 詞條 | `assets/locale/zh-TW.json` **872** 條 | `json` |
 | 建角規則表 | `gamepack/rules/character-tables.json`：7 種族、17 職業組合、8 職業槽、擲點與體質加值 | `json` |
 | 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**4,222 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
 | ECL 靜態可達 instruction | **4,222**（spec 1106 補上 `IF` 的 else 路徑後，由 1,355 增為三倍） | `ecl-event-catalog.md` |
 | ECL 副作用候選 | **154** 個中 33 個已審（31 筆依效果序列沿用） | `ecl-ordered-effect-reviews.json` |
 | ECL opcode commit phase | **55** 個 corpus opcode 中 25 支 handler 已讀、**30 支 `unknown`** | `ecl-opcode-effect-phases.md` |
-| **原作文字段落覆蓋** | **197** 頁靜態可達，`matched` **147**／`unmatched` **29**／`gosub-insert` **11** ＋ `variable-insert` **2**（規則可能早寫好，工具比對不了）／`subroutine` **8**（子程式片段，實機不會單獨出現）。**待辦只看 `unmatched`**；比對以 run 為單位（開場捲軸四頁一條規則）| `ecl-text-coverage.md` |
+| **原作文字段落覆蓋** | **1,022** 頁**控制流可達**，`matched` **999**／**`unmatched` 0**／`variable-insert` **16**（頁裡印的是執行期的值，靜態驗不到）／`subroutine` **7**（共用子程式片段，實機不會單獨出現）。⚠ 分母的算法在 spec 1110 換過：上一版用 offset 順序切頁、又沒走訪 `ON GOTO`，197 頁只佔兩成 | `ecl-text-coverage.md` |
 | 正常玩家路徑 | 走到**眼魔洞穴東門 → 散提爾堡邊緣** | `go test` |
 | 全套 gate | `./tools/go.sh test ./...` 全綠 | 本輪實跑 |
 | 遊戲入口旗標 | **60** 個，其中 32 個是分段驗收的直入點 | `main.go` |
@@ -82,35 +82,38 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 文字都在 game pack JSON 裡，符合 `AGENTS.md` §2 的界線。翻譯管線同樣到位——
 game pack 內 `en` 與 `zh-TW` 各 724 條，一一對齊沒有漏。
 
-所以剩下的**不是重構程式碼，是產出資料**：把原作 25 個 block／4,222 個可達
-instruction 的事件，逐條寫成 game pack JSON。目前 464 條 `text_rules` 的區域分佈
-顯示缺口集中在哪裡：
+所以剩下的**不是重構程式碼，是產出資料**：把原作 25 個 block 的事件逐條寫成
+game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可達的 1,022 頁全部有規則命中，
+`text_rules` 由 464 條成長到 1,009 條。目前的區域分佈：
 
-| 區域前綴 | `text_rules` 條數 | 對照矩陣判定 |
-|---|---|---|
-| `myth-drannor` | 132 | 待逆向（條數多是因為做過 vertical slice，不是主線已通） |
-| `tilverton` | 57 | 局部 |
-| `pit`（摩安德之坑） | 45 | 待逆向 |
-| `wizard-tower`（巫師塔） | 36 | 局部 |
-| `zhentil` | 25 | 局部 |
-| `dexam` | 23 | 局部 |
-| `world`（世界地圖、隨機遭遇、野外夜間事件與橋上謎題） | 21 | 局部 |
-| `lava-tube` | 20 | 局部 |
-| `yulash` | 20 | **待逆向** |
-| `hap` | 17 | 局部 |
-| `journal-trigger` | 15 | 局部 |
-| `fire-knife` | 13 | 局部 |
-| `essembra`（艾森布拉） | **6** | **待逆向** |
-| `dark-elf-caves`（黑暗精靈洞穴） | 6 | 局部 |
-| `hillsfar`（希爾斯法） | **5** | **待逆向** |
-| `ashabenford` | 5 | 局部 |
-| 其餘 7 個前綴 | 各 1–4 | — |
+| 區域前綴 | `text_rules` 條數 |
+|---|---:|
+| `myth-drannor` | 179 |
+| `tilverton` | 158 |
+| `zhentil` | 128 |
+| `pit` | 99 |
+| `dexam` | 75 |
+| `yulash` | 60 |
+| `wizard-tower` | 56 |
+| `world` | 51 |
+| `lava-tube` | 48 |
+| `fire-knife` | 32 |
+| `dark-elf-caves` | 32 |
+| `hap` | 26 |
+| `journal-trigger` | 15 |
+| `hillsfar` | 10 |
+| `teshwave` | 8 |
+| `ashabenford` | 7 |
+| `essembra` | 6 |
+| 其餘 7 個前綴 | 各 1–5，合計 19 |
 
-⚠ 條數少的區域（艾森布拉 6、希爾斯法 5、尤拉什 12）就是矩陣標 `待逆向` 的那幾個
-——目前只有 fixture 級的內容，沒有正常進出城的完整事件。
+⚠ **條數不再是缺口的指標**，`unmatched` 才是，而它已經是 0。條數少的區域
+（艾森布拉 6、阿沙本福德 7、希爾斯法 10）在報告裡沒有未接上的頁。
+⚠ 但**世界地圖那兩個 block 有保留**：`ECL1.DAX/0x51` 的走訪會碰到狀態數上限而提早停
+（spec 1110 §五），那個 block 可能有走不到的頁沒進分母，而艾森布拉／希爾斯法就在那裡。
 
-⚠ 條數多也不代表閉合：`myth-drannor` 有 132 條卻仍是 `待逆向`，因為那是
-Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三區逐房間串接。
+**接下來的缺口在文字以外**：事件副作用（旗標、解鎖、戰鬥編成、座標條件）有沒有接對，
+那是 `RE-04` 的逐格盤點與 `VER-04`／`VER-05` 的分段驗收要回答的，`ecl-text-coverage` 驗不到。
 
 ---
 
@@ -214,7 +217,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 
 ## C. 繁體中文化
 
-目前 `assets/locale/zh-TW.json` 872 條；game pack 內建雙語 `en` 724 ＝ `zh-TW` 724，key 完全對齊。
+目前 `assets/locale/zh-TW.json` 872 條；game pack 內建雙語 `en` 1,269 ＝ `zh-TW` 1,269，key 完全對齊。
 
 **擋路的不是雙位元組處理（那在 remake 不存在），是 `CHT-04` 的熱鍵欄位；`CHT-09` 的譯名表已於 spec 1107 立完。**
 
@@ -323,8 +326,10 @@ transaction）要自己列一段驗——這是 rulebook 65 來源案例的失�
    可與第 2 項平行。
 5. **`CHT-04`（熱鍵欄位）**——剩下的地基：熱鍵是 schema 缺口，必須在分檔定案前補。`CHT-09`（譯名表）已於 spec 1107 完成，大量產出的前提解除。`CHT-01`／`CHT-02` 已確認 remake 不受原作 byte 管線影響。
 6. **`ENG-02`／`ENG-03`**——game pack 分檔與 stable ID 定案。必須在大量產出內容之前，否則後期分檔會動到每一條資料。
-7. **`RE-04` ＋ `ENG-01` ＋ `CHT-06`**——**主要工作量**。事件盤點、寫成 game pack、同步兩語系是同一輪的三個動作，不分階段。
-   依矩陣區域表的順序推進：艾森布拉 → 希爾斯法 → 尤拉什／摩安德之坑 → Myth Drannor 正常入口 → 各區補完。
+7. ✅ **`ENG-01` 的文字層已接完**（spec 1110）——控制流可達的 1,022 頁 `unmatched` 為 0，
+   `CHT-06` 隨之同步（兩語系各 1,269 條、key 對齊）。**剩下的是 `RE-04`**：
+   事件的**副作用**（旗標、解鎖、戰鬥編成、座標與重訪條件）逐格盤點並接上，
+   以及 `ECL1.DAX/0x51` 走訪截斷的那一塊要換方法補齊。文字已經不是這一項的瓶頸。
 8. **`RE-06`／`RE-07` ＋ `ENG-07`／`ENG-08`**——戰鬥系統。可與第 7 項平行（不同人／不同輪）。
 9. **`RE-05` ＋ `ENG-10` ＋ `VER-07`**——存檔。
 10. **`UI-01`／`UI-02`／`AUD-01`**——表現層，需要原版 runtime 當 oracle。
