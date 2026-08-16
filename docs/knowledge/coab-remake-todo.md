@@ -28,16 +28,30 @@ PC-98 的作用是**降低 DOS 側的推論成本**，不是交付目標。已�
 物品節點 `3Fh` vs `67h`、選單節點 `2Eh` vs `56h`、存檔第 5 塊 `1E00h` vs `1E41h`、
 DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 
+## 已定案的範圍決策（使用者 2026-08-16）
+
+這五項不是從程式碼推得的，是使用者的取捨。它們直接縮小或改變了下面的條目，
+不要再依舊描述執行：
+
+| # | 決策 | 影響 |
+|---|---|---|
+| 一 | **完成內容產出** | `ENG-01` 是主要工作量，照矩陣的區域順序推進 |
+| 二 | **game pack 以分檔方式處理** | `ENG-02` 的方式已定案，只剩「依 DAX 或依區域」與 schema 邊界要決 |
+| 三 | **補完戰鬥所缺** | `RE-06`／`RE-07`／`ENG-07`／`ENG-08`／`ENG-09` 全部在範圍內 |
+| 四 | **remake 讀舊版 DAT、存成自己的格式，不必互通** | `ENG-10`／`VER-07` **移除雙向 round-trip 與寫回原版的要求**；只保留「讀得進來」與 remake 自己的存檔完整性 |
+| 五 | **繁中化地基優先** | 見下方 C 區的重新界定 |
+| 六 | **讀完 21 支未讀 ECL handler、清掉台帳孤兒；PC-98 與 remake engine 無關的部份不必解讀** | PC-98 的角色從「語意骨幹」收斂成「只讀 remake 需要的部分」，不再追求全模組語意閉合 |
+
 ## 現況量測（2026-08-16 實測）
 
 數字一律現場量，不沿用上一輪的文件行。
 
 | 指標 | 數字 | 來源 |
 |---|---|---|
-| 函式覆蓋台帳 | 2,874 個函式，**已解讀 2,137／不阻塞 162／邊界碎片 575／待解讀 0** | `coab-function-index.md`（可重生） |
+| 函式覆蓋台帳 | 2,874 個函式，**已解讀 2,137／不阻塞 162／邊界碎片 575／待解讀 0／孤兒 0** | `coab-function-index.md`（可重生） |
 | ├ DOS | 1,386：已解讀 1,016 ／ 不阻塞 133 ／ 邊界碎片 237 | 同上 |
 | ├ PC-98 | 1,488：已解讀 1,121 ／ 不阻塞 29 ／ 邊界碎片 338 | 同上 |
-| └ ⚠ 台帳孤兒 | **48 列**（38 列掛「已解讀」）位址對不上目前任何函式起點，不計入上列 | 同上「台帳孤兒」節 |
+| └ 台帳孤兒 | **0**（原有 48 列位址對不上任何函式起點，內容都是 spec 569 的樣板分類，2026-08-16 依決策六刪除） | 同上 |
 | └ 證據等級 | `exact` 1,955 ／ `strong inference` 223 | 同上 |
 | 規格文件 | **1,084** 份 `docs/spec/*.md` | `ls` |
 | remake 程式（不含巢狀 repo） | **230 個 `.go`／77,123 行** | `find`／`wc` |
@@ -110,7 +124,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | `RE-02` | **全遊戲事件清冊**（P0-RE-2） | 靜態層完成（6 DAX／25 block／125 entry／1,355 instruction） | 補動態 branch、座標／terrain、條件旗標、consumer、resume、R1–R5 回填 | `ecl-event-catalog` 動態層 |
 | `RE-03` | **External `CALL` 登記表** | ✅ **靜態層已完成**（spec 1104 §七）：`2Dh` 是七路 switch（operand 值減 `7FFFh`），23 個靜態可達 CALL 只用到 `2E10h`（12 次）與 `6803h`（11 次），另五路 corpus 從未使用；未列入 switch 的目標**靜默 no-op** | 兩個實際使用目標的 consumer 逐條驗證與 remake adapter；`6803h` 的 `722Ah` 指標陣列版面未取 | `external-call-registry` |
 | `RE-04` | **劇情與全地圖事件** | 大量 fixture，缺逐格覆蓋 | 每區逐格／逐事件的 producer、條件、分支、副作用、重訪 | `area-event-coverage` |
-| `RE-05` | **DOS save bundle** | raw-preserving parser 與部分 sidecar | 已由 spec 1072／1075／1076 取得 16 塊固定版面與角色檔名表（`148h` ＝ 8×41）；仍缺 `.SAV/.GUY/.FX/.SWG` 全欄位、角色刪除重排、未知 byte consumer、round-trip gate | `dos-save-bundle-schema` |
+| `RE-05` | **DOS save bundle（只讀）** | raw-preserving parser 與部分 sidecar | 已由 spec 1072／1075／1076 取得 16 塊固定版面與角色檔名表（`148h` ＝ 8×41）；仍缺 `.SAV/.GUY/.FX/.SWG` 全欄位與未知 byte 的讀取語意。⚠ 決策四：**不需要寫回原版、不需要 round-trip gate**，只要讀得進來 | `dos-save-bundle-schema` |
 | `RE-06` | **戰鬥 scheduler／initiative** | 部分 typed core | round/segment、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff | `combat-turn-lifecycle` |
 | `RE-07` | **敵方 AI／怪物特殊能力** | 只有選敵與少量特殊能力 | 移動、目標優先、施法、逃跑、群體、抗性、免疫、毒素、凝視，逐種能力 | `monster-ai-and-specials-matrix` |
 | `RE-08` | **AREA map** | 有資料與局部畫面 | player marker、探索狀態、秘密區、Journal 59 圖、縮放／色盤、save state | `area-map-contract` |
@@ -184,7 +198,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | `ENG-07` | 戰鬥回合生命週期 | `RE-06` | initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
 | `ENG-08` | 怪物 AI | `RE-07` | 移動、目標選擇、施法、逃跑、抗性與各種特殊能力 |
 | `ENG-09` | 全法術表 | 矩陣 `player-spell-matrix` | 目前 12 個 handler；缺 target、range/area、save、duration、stack/dispel |
-| `ENG-10` | 存檔完整實作 | `RE-05`、spec 1072／1076 ✅ | 16 塊版面 round-trip；remake save 要能保存所有 pending ECL/combat/audio/UI transaction |
+| `ENG-10` | 存檔完整實作 | `RE-05`、spec 1072／1076 ✅ | remake 自己的存檔要能保存所有 pending ECL/combat/audio/UI transaction，並能匯入原版存檔。⚠ 決策四：不做原版 round-trip |
 | `ENG-11` | 通關路徑 | spec 1087 ✅ | `PROGRAM 8` 的完整序列接上結局與存檔 |
 
 ⚠ **原作瑕疵要決定照抄或修正**，並在規格裡記錄決定：
@@ -196,17 +210,20 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 
 ## C. 繁體中文化
 
-目前 `zh-TW.json` 847 條。矩陣判定 `待實作`。
+目前 `assets/locale/zh-TW.json` 870 條；game pack 內建雙語 `en` 607 ＝ `zh-TW` 607，key 完全對齊。
+
+**擋路的不是雙位元組處理（那在 remake 不存在），是 `CHT-04` 的熱鍵欄位與 `CHT-09` 的譯名表。**
 
 | ID | 項目 | 要做什麼 |
 |---|---|---|
-| `CHT-01` | **雙位元組字串處理**（**擋路項**） | spec 1091 證明原作的字串層以 byte 為單位。三個必改點：① 首位元組判定要換成 Big5 `A1h`..`F9h`；② 半形カタカナ段 `A1h`..`DFh` 與 Big5 首位元組**正面衝突，必須整段拿掉**；③ 輸出緩衝 `0FFh`，半形轉全形會讓長度翻倍而溢位——繁中方案是中文原樣通過、半形英數維持半形 |
-| `CHT-02` | **名字編輯以字元為單位** | spec 1086 的名字編輯是逐 byte 搬移，按一次刪除會切掉半個中文字；游標左右移同一個問題。**remake 不能照抄這一段** |
+| `CHT-01` | ~~雙位元組字串處理~~ | ✅ **remake 不受此限**：`internal/etenfont` 以 rune 為單位，只在查字模時才轉 Big5，原作那條 byte 管線沒有被沿用。spec 1091 記的三個必改點（Big5 首位元組判定、半形カタカナ段衝突、`0FFh` 緩衝溢位）都只適用原版程式碼 |
+| `CHT-02` | ~~名字編輯以字元為單位~~ | ✅ **已滿足**：`BackspaceGuidedName`／`BackspaceCreationName` 用 `[]rune` 退格，`BackspaceECLString` 用 `utf8.DecodeLastRuneInString`，長度上限用 `utf8.RuneCountInString`。原作逐 byte 搬移的作法沒有被照抄 |
+| `CHT-10` | **原版位元組的解碼邊界** | ✅ **機制已建立**：`internal/origtext` 以 Big5 解原版位元組（ASCII 相容，英文原版逐位元組不變）；`party.ParseOriginalDOSPlayerRecord` 是角色記錄的匯入入口，`monster.ParseRecord` 直接套用（MON*CHA 唯讀）。<br>⚠ **界線是「位元組從哪來」，不是「版面長什麼樣」**：角色記錄與物品記錄的版面同時被原版與 remake 自己的存檔使用，而 remake 寫入端寫的是 UTF-8——在共用解析函式裡一律當 Big5 會把 remake 自己的存檔讀壞（兩次都被測試擋下）。<br>剩：`ENG-10` 做原版存檔匯入器時要走匯入入口，並在載入原版 ITEM 資料時同樣分流 |
 | `CHT-03` | **名字長度上限** | DOS 名字欄位長度上限要重新確認（PC-98 是 `0Fh` ＝ 15 bytes ＝ 全形 7 字）；PC-98 另有 `0723:05BDh` 名字驗證，判定規則未取出，很可能擋掉 Big5 |
-| `CHT-04` | **熱鍵與文字綁定** | DOS 大量選單靠**文字裡的字母**當熱鍵（`'Keep Exit'`、`'Modify: '`），中文化後熱鍵必須另外保留（spec 1060） |
+| `CHT-04` | **熱鍵與文字綁定**（**擋路項**） | DOS 大量選單靠**文字裡的字母**當熱鍵（`'Keep Exit'`、`'Modify: '`），中文化後熱鍵必須另外保留（spec 1060）。⚠ 實測：game pack 的 `option_rule` 只有 `id`／`source`／`message_id`，**沒有熱鍵欄位**。這是 schema 缺口，必須在 `ENG-02` 分檔定案前補上，否則後期要動每一條選項 |
 | `CHT-05` | **固定欄寬排版** | PC-98 是 40 bytes 固定欄位、機能鍵列每格 7 欄（spec 1077／1092）；DOS 是靠熱鍵字母。兩者中文化做法不同，繁中版採 DOS 的做法但要處理全形寬度 |
 | `CHT-06` | **翻譯隨內容同步** | 目前 game pack 的 `en`／`zh-TW` 各 607 條**一一對齊、沒有漏譯**。翻譯不是獨立階段，是 `ENG-01` 每寫一條事件就同時寫兩個語系。把「兩語系條數與 key 完全一致」設成 CI gate（`cmd/locale-drift-audit` 已有基礎），漏一條就紅 |
-| `CHT-09` | **統一譯名表** | 內容量會成長數倍，人名／地名／物品／法術譯名要先定表再展開，否則後期回頭校對成本高 |
+| `CHT-09` | **統一譯名表**（**擋路項**） | 內容量會成長數倍，人名／地名／物品／法術譯名要先定表再展開，否則後期回頭校對成本高。目前尚未開始，是 `ENG-01` 大量產出的前提 |
 | `CHT-07` | **Journal 整合進遊戲** | 59 則手冊條目已重建、31 則有資料綁定；缺剩餘 producer、解鎖條件、原圖、重讀與不提前劇透 |
 | `CHT-08` | **字型** | 倚天點陣字（16×15 粗體）已接通；缺全形標點 fallback 與 24×24 的取捨判定 |
 
@@ -266,7 +283,7 @@ transaction）要自己列一段驗——這是 rulebook 65 來源案例的失�
 | `VER-04` | 建立**分段驗收矩陣**：每一段列出進入點旗標、正常結束狀態、用什麼 oracle 驗、驗過沒有；另外把段與段的接縫列成獨立條目（建角→開場、提爾佛頓→世界地圖、各戰後 continuation、存檔→重開） |
 | `VER-05` | 對 reference 實測：DOSBox 原版與 remake 逐段對照，標明 `exact`／`reconstructed`／未完成 |
 | `VER-06` | 每個遠程／法術能力記錄影片 URL、平台、絕對時間碼、逐幀順序與對應 sprite block（`AGENTS.md` §8） |
-| `VER-07` | 存檔互通測試：原版 `SAVGAM?.DAT` 讀進 remake、remake 寫回原版可讀（spec 1072／1076 的 16 塊版面）。⚠ DOS 13,149 與 PC-98 13,214 bytes **不能互換** |
+| `VER-07` | 存檔**匯入**測試：原版 `SAVGAM?.DAT` 讀進 remake 後隊伍、角色、旗標正確（spec 1072／1076 的 16 塊版面）。⚠ 決策四：不驗「寫回原版可讀」。DOS 13,149 與 PC-98 13,214 bytes 仍不能互換 |
 
 ---
 
@@ -300,7 +317,7 @@ transaction）要自己列一段驗——這是 rulebook 65 來源案例的失�
    `NEWECL` 終止本次執行。剩下 21 支未讀 handler 不擋 `ENG-01`，可與內容產出平行。
 4. **`RE-12` 資料段表格取出**——多份規格卡在同一個原因，取出後 `ENG-04`／`ENG-05`／`ENG-06` 一起解鎖。
    可與第 2 項平行。
-5. **`CHT-01`／`CHT-02`／`CHT-09`**——雙位元組處理與譯名表是地基，愈晚改代價愈高。可與 2–4 平行。
+5. **`CHT-04`（熱鍵欄位）／`CHT-09`（譯名表）**——這兩個才是地基：熱鍵是 schema 缺口，必須在分檔定案前補；譯名表是大量產出的前提。`CHT-01`／`CHT-02` 已確認 remake 不受原作 byte 管線影響。
 6. **`ENG-02`／`ENG-03`**——game pack 分檔與 stable ID 定案。必須在大量產出內容之前，否則後期分檔會動到每一條資料。
 7. **`RE-04` ＋ `ENG-01` ＋ `CHT-06`**——**主要工作量**。事件盤點、寫成 game pack、同步兩語系是同一輪的三個動作，不分階段。
    依矩陣區域表的順序推進：艾森布拉 → 希爾斯法 → 尤拉什／摩安德之坑 → Myth Drannor 正常入口 → 各區補完。

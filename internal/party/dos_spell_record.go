@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/origtext"
 )
 
 // DOS player/creature records use a shared spell layout. These constants are
@@ -217,6 +218,22 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 	return parseDOSPlayerRecord(data, id, false)
 }
 
+// ParseOriginalDOSPlayerRecord 匯入**原版**的角色記錄：與 ParseDOSPlayerRecord
+// 相同，但名字以原版編碼解讀（Big5，ASCII 相容）。
+//
+// 使用者 2026-08-16 決定 remake 讀舊版 DAT、存成自己的格式、不必互通，所以
+// 「讀進來」與「remake 自己的存檔」是兩條路：後者的名字是 UTF-8，用這一支讀
+// 反而會讀壞。⚠ 兩者的版面完全相同，分不出來的是位元組的來源，不是格式。
+func ParseOriginalDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
+	record, err := ParseDOSPlayerRecord(data, id)
+	if err != nil {
+		return DOSPlayerRecord{}, err
+	}
+	// Go 的 string 保留無效 UTF-8 位元組，所以轉回 []byte 拿得到原始位元組。
+	record.Name = origtext.Decode([]byte(record.Name))
+	return record, nil
+}
+
 // ParseDOSNPCRecord accepts MON*CHA Player records whose class_id can be
 // stale while exactly one ClassLevel slot identifies the class used by
 // ReclacClassBonuses. Ordinary player save imports remain strict.
@@ -235,6 +252,9 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 	if nameLength < 1 || nameLength > 15 {
 		return DOSPlayerRecord{}, fmt.Errorf("DOS player name length %d is outside 1..15", nameLength)
 	}
+	// 位元組原樣保留。這個版面同時被原版存檔與 remake 自己的 SAVGAM 槽使用
+	// （`PatchDOSPlayerRecord` 寫的是 UTF-8），所以編碼由**來源**決定：
+	// 匯入原版資料要走 `ParseOriginalDOSPlayerRecord`。
 	name := string(data[1 : 1+nameLength])
 	var rawRace Race
 	var err error

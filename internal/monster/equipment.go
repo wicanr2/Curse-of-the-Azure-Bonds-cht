@@ -350,6 +350,10 @@ func EncodeItems(items []ItemRecord) ([]byte, error) {
 }
 
 func parseItem(data []byte) ItemRecord {
+	// ⚠ 這裡刻意不走 origtext：`EncodeItems` 是 remake 自己的寫入端，寫的是
+	// UTF-8（`internal/game/creation.go`）。這個版面同時被原版 ITEM DAX 與
+	// remake sidecar 使用，編碼由**來源**決定而不是版面決定；讀原版中文資料
+	// 要在載入原版檔的那一層解碼，不能在這裡一律當 Big5。
 	name := strings.TrimRight(string(data[:0x2A]), "\x00 ")
 	return ItemRecord{
 		Name: name, Type: data[0x2E],

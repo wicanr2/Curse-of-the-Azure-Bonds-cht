@@ -5,9 +5,9 @@ package monster
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/origtext"
 )
 
 const RecordSize = 0x1A6
@@ -73,9 +73,9 @@ func Parse(data []byte) (Record, error) {
 	if nameLength > 15 {
 		nameLength = 15
 	}
-	name := string(data[1 : 1+nameLength])
+	name := origtext.Decode(data[1 : 1+nameLength])
 	if nameLength == 0 {
-		name = strings.TrimRight(string(data[:15]), "\x00 ")
+		name = origtext.DecodeField(data[:15])
 	}
 	maxHP := int(data[0x78])
 	currentHP := int(data[0x1A4])
