@@ -40,16 +40,21 @@ spec 1104）。
 
 ⚠ 分頁另有兩種結構性誤差，寫規則前要知道：
 
-- **頁中夾 `GOSUB` 的頁**（報告裡標 ⚠，全 corpus 4 頁）真實文字比報告多一段，
-  子程式印的字本工具不追。⇒ `all_contains` 的片段**不可以跨過插入點**。
-- **被 `GOSUB` 呼叫的純文字子程式會自成一頁**（如巫師塔的 `UP`／`DOWN`），
-  實機不會單獨出現。⇒ **不要**替它們寫規則；那種只有一兩個字的「頁」寫成規則
-  會攔截到別的文字。
+- **文字被 `GOSUB` 插入的頁**（報告裡標 ⚠，全 corpus 12 頁）真實文字比報告多一段，
+  子程式印的字本工具不追。插入點可能在中間（巫師塔的樓梯），也可能在開頭當前綴
+  （`ECL4.DAX/0x25` 八個遭遇頁的「YOU ARE ATTACKED BY」）。
+  ⇒ `all_contains` 的片段**不可以跨過插入點**。這些頁的規則寫了也不會讓報告的
+  「已接上」加一，**實際覆蓋比報告的數字高**。
+- **被 `GOSUB` 呼叫的純文字子程式會自成一頁**（`UP`／`DOWN`／`YOU ARE ATTACKED BY`
+  ／`WHAT TO YOU DO?`），實機不會單獨出現。⇒ **不要**替它們寫規則；那種只有
+  一兩個字的「頁」寫成規則會攔截到別的文字。
 
-兩者的實例都在 `ECL5.DAX/0x33`：`THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE.` 的中間那個字
-由 `02h GOSUB 89B2h` 印出，所以那一頁在報告裡永遠是「未接上」，而規則
-（`wizard-tower.stairs.up`／`.down`）其實已經寫好，由
-`gamepack.TestWizardTowerInteriorIsGamePackDriven` 用實機的字串序列釘住。
+實例：`ECL5.DAX/0x33` 的 `THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE.` 中間那個字由
+`02h GOSUB 89B2h` 印出；`ECL4.DAX/0x25` 的八個遭遇頁前面都有 `GOSUB 9534h` 印的
+「YOU ARE ATTACKED BY」。兩處的規則都已寫好，由
+`gamepack.TestWizardTowerInteriorIsGamePackDriven` 與
+`TestWildernessEncountersAreGamePackDriven` 用**實機的字串序列**釘住——
+那兩支測試餵的不是規則自己的 `all_contains`，所以片段跨越插入點會紅。
 
 ## Go 漢字字串基線
 
