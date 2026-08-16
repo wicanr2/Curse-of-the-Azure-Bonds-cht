@@ -599,16 +599,20 @@ func TestOpeningNarrativesAreGamePackDriven(t *testing.T) {
 	tests := []struct {
 		id        string
 		fragments []string
+		// journalPages 是這條規則預期解鎖的手札頁數。甦醒那一幕會帶出手札 1，
+		// 見 TestOpeningAwakeningUnlocksJournalEntryOne。
+		journalPages int
 	}{
-		{"opening.curse-summary", []string{"ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE", "THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS", "AND REGAIN CONTROL OF YOUR OWN DESTINY", "THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE"}},
-		{"opening.new-game-awakening", []string{"YOU AWAKEN IN A SMALL ROOM", "ALL YOUR GEAR IS GONE"}},
-		{"opening.new-game-marks", []string{"ADDING TO YOUR DISQUIET", "IMPRINTED WITH STRANGE PATTERNS", "IDENTICALLY MARKED"}},
+		{"opening.curse-summary", []string{"ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE", "THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS", "AND REGAIN CONTROL OF YOUR OWN DESTINY", "THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE"}, 0},
+		{"opening.new-game-awakening", []string{"YOU AWAKEN IN A SMALL ROOM", "ALL YOUR GEAR IS GONE"}, 3},
+		{"opening.new-game-marks", []string{"ADDING TO YOUR DISQUIET", "IMPRINTED WITH STRANGE PATTERNS", "IDENTICALLY MARKED"}, 0},
 	}
 	for _, test := range tests {
 		for _, language := range []string{"en", "zh-TW"} {
 			t.Run(test.id+"/"+language, func(t *testing.T) {
 				result := pack.MatchText(test.fragments, language)
-				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+				if !result.Matched || result.RuleID != test.id || result.Message == "" ||
+					len(result.JournalPages) != test.journalPages {
 					t.Fatalf("result=%+v", result)
 				}
 			})
@@ -1537,6 +1541,38 @@ func TestEveryJournalEntryHasAProducer(t *testing.T) {
 				continue
 			}
 			t.Errorf("%s 沒有任何 text_rule 會解鎖它", key)
+		}
+	}
+}
+
+// 手札 1 是開場導言，原作不由任何事件觸發——它解釋的正是「舊手札連同裝備一起
+// 不見了」，也就是甦醒那一幕。所以掛在 `opening.new-game-awakening` 上，
+// remake 玩家一開場就讀得到，不必回頭翻紙本手冊。
+func TestOpeningAwakeningUnlocksJournalEntryOne(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	texts := []string{
+		"YOU AWAKEN IN A SMALL ROOM.", "ALL YOUR GEAR IS GONE.",
+	}
+	want := []string{"journal.1.1", "journal.1.2", "journal.1.3"}
+	for _, language := range []string{"en", "zh-TW"} {
+		result := pack.MatchText(texts, language)
+		if !result.Matched || result.RuleID != "opening.new-game-awakening" {
+			t.Fatalf("%s: result=%+v", language, result)
+		}
+		if len(result.JournalMessageIDs) != len(want) {
+			t.Fatalf("%s: journal ids=%v, want %v", language, result.JournalMessageIDs, want)
+		}
+		for index, messageID := range want {
+			if result.JournalMessageIDs[index] != messageID {
+				t.Fatalf("%s: journal id %d = %q, want %q",
+					language, index, result.JournalMessageIDs[index], messageID)
+			}
+			if result.JournalPages[index] == "" {
+				t.Fatalf("%s: journal page %d is empty", language, index)
+			}
 		}
 	}
 }

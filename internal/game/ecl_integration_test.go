@@ -357,9 +357,22 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		!strings.Contains(state.Message, wantInnJournalTrigger) {
 		t.Fatalf("Windlord's Inn journal pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
 	}
-	wantJournal31 := requireGamePackText(t, &state, "journal.31")
-	if len(state.JournalPages) != 1 || state.JournalPages[0] != wantJournal31 {
-		t.Fatalf("Journal Entry 31 was not unlocked in-game: pages=%v", state.JournalPages)
+	// 開場甦醒帶出手札 1 的三頁（spec 1108 §二之二），所以旅店那一則是第四頁。
+	// 這裡連順序一起釘：玩家一進遊戲手上就有導言，之後才依劇情逐則追加。
+	wantPages := []string{
+		requireGamePackText(t, &state, "journal.1.1"),
+		requireGamePackText(t, &state, "journal.1.2"),
+		requireGamePackText(t, &state, "journal.1.3"),
+		requireGamePackText(t, &state, "journal.31"),
+	}
+	if len(state.JournalPages) != len(wantPages) {
+		t.Fatalf("Journal pages=%v, want %d pages ending with Entry 31",
+			state.JournalPages, len(wantPages))
+	}
+	for index, want := range wantPages {
+		if state.JournalPages[index] != want {
+			t.Fatalf("journal page %d = %q, want %q", index, state.JournalPages[index], want)
+		}
 	}
 	if err := state.OpenJournal(); err != nil {
 		t.Fatal(err)
@@ -369,7 +382,8 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			t.Fatal(err)
 		}
 	}
-	if state.JournalPage != 0 || state.JournalText != wantJournal31 {
+	last := len(wantPages) - 1
+	if state.JournalPage != last || state.JournalText != wantPages[last] {
 		t.Fatalf("unlocked Journal Entry 31 is not reachable in journal UI: page=%d text=%q",
 			state.JournalPage, state.JournalText)
 	}
@@ -542,10 +556,11 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		!strings.Contains(state.Message, "冒險手札") || !strings.Contains(state.Message, "38") {
 		t.Fatalf("Filani journal pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
 	}
-	if len(state.JournalPages) != 4 ||
-		state.JournalPages[1] != requireGamePackText(t, &state, "journal.38.1") ||
-		state.JournalPages[2] != requireGamePackText(t, &state, "journal.38.2") ||
-		state.JournalPages[3] != requireGamePackText(t, &state, "journal.38.3") {
+	// 手札 1 的三頁（開場）＋ 旅店的 31 ＋ 菲拉妮的 38 三頁 ＝ 7 頁。
+	if len(state.JournalPages) != 7 ||
+		state.JournalPages[4] != requireGamePackText(t, &state, "journal.38.1") ||
+		state.JournalPages[5] != requireGamePackText(t, &state, "journal.38.2") ||
+		state.JournalPages[6] != requireGamePackText(t, &state, "journal.38.3") {
 		t.Fatalf("Journal Entry 38 was not unlocked as three readable pages: pages=%v", state.JournalPages)
 	}
 	if err := state.Select(0); err != nil {

@@ -3,7 +3,7 @@
  "sources": [
   {
    "path": "gamepack/pack/20-locale.zh-TW.json",
-   "count": 672
+   "count": 675
   },
   {
    "path": "assets/locale/zh-TW.json",
@@ -115,7 +115,17 @@
    "chinese": "娜卡西亞",
    "category": "人物",
    "note": "公主",
-   "uses": 4
+   "uses": 5
+  },
+  {
+   "source": "Gharri",
+   "chinese": "加里",
+   "category": "人物",
+   "forbidden": [
+    "嘉莉"
+   ],
+   "note": "剛德的祭司",
+   "uses": 3
   },
   {
    "source": "Akabar",
@@ -128,7 +138,7 @@
    "chinese": "阿祖恩",
    "category": "人物",
    "note": "國王",
-   "uses": 1
+   "uses": 2
   },
   {
    "source": "Vangerdahast",
@@ -236,6 +246,12 @@
    "uses": 5
   },
   {
+   "source": "Gond",
+   "chinese": "剛德",
+   "category": "神祇",
+   "uses": 5
+  },
+  {
    "source": "Fire Knives",
    "chinese": "火刀",
    "category": "組織",
@@ -292,7 +308,7 @@
    "source": "Tilverton",
    "chinese": "提爾佛頓",
    "category": "地名",
-   "uses": 13
+   "uses": 16
   },
   {
    "source": "Zhentil Keep",
@@ -401,7 +417,13 @@
    "source": "Dalelands",
    "chinese": "谷地諸邦",
    "category": "地名",
-   "uses": 1
+   "uses": 2
+  },
+  {
+   "source": "Cormyr",
+   "chinese": "科米爾",
+   "category": "地名",
+   "uses": 3
   },
   {
    "source": "Helm of Dragons",

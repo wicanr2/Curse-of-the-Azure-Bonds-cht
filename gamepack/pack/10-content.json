@@ -1988,7 +1988,12 @@
     "YOU AWAKEN IN A SMALL ROOM",
     "ALL YOUR GEAR IS GONE"
    ],
-   "message_id": "opening.new-game-awakening"
+   "message_id": "opening.new-game-awakening",
+   "journal_message_ids": [
+    "journal.1.1",
+    "journal.1.2",
+    "journal.1.3"
+   ]
   },
   {
    "id": "opening.new-game-marks",
