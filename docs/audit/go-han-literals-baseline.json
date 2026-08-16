@@ -1138,6 +1138,20 @@
     {
       "path": "cmd/save-field-coverage/main.go",
       "function": "analyze",
+      "sha256": "9a96e67a7e7b978d75823a042a91f94be7d763792c731bce7f17df64423f6459",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "analyze",
+      "sha256": "aa095065b9d926c9bcc7fa42448e378356aafbb3327703def00a67e123a89e2a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "analyze",
       "sha256": "af0c63659919d0c0fdb0250353e7aab3f2b0319398888c1024ed5d44726ed0ce",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1187,6 +1201,20 @@
     {
       "path": "cmd/save-field-coverage/main.go",
       "function": "renderMarkdown",
+      "sha256": "08ba5269af2759fabf853c2e4262cae90d83ae5294325a7db0235e3b5e02f0d6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "0d1a8dd925d86cfef0f22e4615dd74fdfa1bddea12dccc6b1a932b9fbde89cfa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
       "sha256": "10ec9931c77e50118f1e26db66e86f5c2386a068e3eb1dc69a746ef8ef3a129e",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1229,6 +1257,13 @@
     {
       "path": "cmd/save-field-coverage/main.go",
       "function": "renderMarkdown",
+      "sha256": "693b6853416c56a1e25a9559668fe9b74c1fa159580fea7bf18244b92c1bdd70",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
       "sha256": "7482263f1fa2421cb97da741e3fc0ce5571b5e4322b0c26db64dda9e12839d8a",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1264,13 +1299,6 @@
     {
       "path": "cmd/save-field-coverage/main.go",
       "function": "renderMarkdown",
-      "sha256": "b5885c5b17e21b68b1908cef5f8f2cd2cfea0533a3ed4e115ddcb41c3a145558",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/save-field-coverage/main.go",
-      "function": "renderMarkdown",
       "sha256": "c2027ef6bbb65a09f77ec580175c72c14887cc96071c6726a216f0c2226900e2",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1293,6 +1321,20 @@
       "path": "cmd/save-field-coverage/main.go",
       "function": "renderMarkdown",
       "sha256": "d5e41bb036a6e4faf456072f185f8449b448747f9472d9abd6dda119f942f68b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "e0eb54a1c9ccbec556495a76791f158e414df84ea748a931a511a4a17afc041e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/save-field-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "fc0d0475192c97581056f1dc32e4001ee1d2e9aa883c5c331542f4de65fd84e9",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1685,6 +1727,163 @@
       "path": "internal/localeaudit/audit.go",
       "function": "referencedMessageIDs",
       "sha256": "c7a03000c80032da7f100d96e9fae2347189c30c3f9daece62ab0f28685ab5c0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "14bee912d86e60484a2be99dda775d8acf83a89cf7c4b7f9c81e0da7350bbd48",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "1d0354d6f39a8471446fefd101d80363d120fa9bc942e1bc090f33a7f18299ec",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "27794e84662285f359aa0d5162dae6660fa4bc8936d96de3adc3eb572afdc113",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "2a3794c49c49a8b62e3ff5ddd513da6be36939aa6bc308eb776b118327e1508a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "32fa0d3a77dd562a66f2692189015894425716592e8fda2c1795dc0552aae328",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "380fa5ca2a35651bc132ed70748ae5dbc1314718d6bfecc9e9353f63b13668ad",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "3dadfe1ee0d13241702f34855f557acf058d80a6d396f9588d5c01b95205f226",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "485f910dcc6e311d7c7b78dc34da082f6d87cb27f64fa245582a75d5dfec8fa3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "4f193483483209ffeb88f204e9e422c2776d5586ccfa291b5a724693e0bd310f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "5f6892fb39a4ebdfebca8e86c9a5c8c03e51862587c4377835116cf16691e5fa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "6e94a17d9094f166e005219079de70e72392c1acc2f30f60438f4fca2a79a2d7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "93809b52d273f17c498a022076d427803b7267837e2468886f4b1fd4fa49c81c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "95572517da9a6630f3afe236cba1be67d340b53f864c7a9dfc11c9c894d717d5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "b84e308f9183f25e259316e2db95e2adf1889aab65c0ffde7f4079b2689e2227",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "ced0d6b66234aa301571cb646a4e911827b1c6ce73e4af9aada7f0f5b369d001",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "e752239597a0193c0b9768efd603b2432e7fb9e16e26275dafe76ab93f1a5f0d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "ee66982654f70dc6b28cac9d7094078cebee571ddf6a342cf0e39697ad4695ec",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "sha256": "fd71761e01626f864b93f00e4f47045f32bc1f81f96816b8c596a713e56b673d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "function": "ValidateRecordFields",
+      "sha256": "4982a6c18f8d45f0a41f41227dce51bccd945b969bf63ca4f76684f032bc060b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "function": "ValidateRecordFields",
+      "sha256": "8c523dae00603157cfa2e660201cb83fb369c820d018977f983d611d7a814d40",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "function": "ValidateRecordFields",
+      "sha256": "9078bac3e49aabe4574d9dbd2731a2c8accee220964e74b154ff07b0e6aee577",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "function": "ValidateRecordFields",
+      "sha256": "9b4f49eed35b96903a853226918d6e5ed0f054a80b8f4105dbabfbd60ad1d1e1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "function": "ValidateRecordFields",
+      "sha256": "9e926c0d48d4553a10c9dbc27804bba20c54b378fb0e54dac555f6062415ddad",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "function": "ValidateRecordFields",
+      "sha256": "b99176242db234894fc0ba9c0308110d0d416e03212667ce3d6bf9ef0dd735e9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/monster/record_fields.go",
+      "function": "ValidateRecordFields",
+      "sha256": "c91599ffd9ae61be2fe67d222f88e5d944fb7b40e730e45e47a39dbd0cbbc5bc",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

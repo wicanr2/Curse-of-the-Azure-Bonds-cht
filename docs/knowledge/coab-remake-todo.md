@@ -132,7 +132,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 | `RE-02` | **全遊戲事件清冊**（P0-RE-2） | 靜態層完成（6 DAX／25 block／125 entry／1,355 instruction） | 補動態 branch、座標／terrain、條件旗標、consumer、resume、R1–R5 回填 | `ecl-event-catalog` 動態層 |
 | `RE-03` | **External `CALL` 登記表** | ✅ **靜態層已完成**（spec 1104 §七）：`2Dh` 是七路 switch（operand 值減 `7FFFh`），23 個靜態可達 CALL 只用到 `2E10h`（12 次）與 `6803h`（11 次），另五路 corpus 從未使用；未列入 switch 的目標**靜默 no-op** | 兩個實際使用目標的 consumer 逐條驗證與 remake adapter；`6803h` 的 `722Ah` 指標陣列版面未取 | `external-call-registry` |
 | `RE-04` | **劇情與全地圖事件** | 大量 fixture，缺逐格覆蓋 | 每區逐格／逐事件的 producer、條件、分支、副作用、重訪 | `area-event-coverage` |
-| `RE-05` | **DOS save bundle（只讀）** | **角色記錄逐位元組有台帳**（spec 1115）：422 bytes 中 `decoded` 294／`documented` 99／`unknown` 29，`decoded` 用位元組突變量測驗證，雙向對帳跑在 `go test` 裡 | 剩 `.SWG`／`.FX` 的台帳與 PC-98 `CHARREC`（`1A7h`，多一 byte）。⚠ 決策四：**不需要寫回原版、不需要 round-trip gate**，只要讀得進來 | `dos-save-bundle-schema` |
+| `RE-05` | **DOS save bundle（只讀）** | **角色記錄逐位元組有台帳**（spec 1115）：422 bytes 中 `decoded` 294／`documented` 99／`unknown` 29，`decoded` 用位元組突變量測驗證，雙向對帳跑在 `go test` 裡 ；`.SWG`（63 bytes）與 `.FX`（9 bytes）也蓋滿，`unknown` 都是 0 | 剩 PC-98 `CHARREC`（`1A7h`，多一 byte）。⚠ 決策四：**不需要寫回原版、不需要 round-trip gate**，只要讀得進來 | `dos-save-bundle-schema` |
 | `RE-06` | **戰鬥 scheduler／initiative** | 部分 typed core | round/segment、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff | `combat-turn-lifecycle` |
 | `RE-07` | **敵方 AI／怪物特殊能力** | **COMPTACT（overlay-09）38 個函式裡 16 個已解讀，大的全部在內**：AI 一回合（830）、攻擊／移動主迴圈（838）、試方向（837）、走一步（839）、用道具（835）、選法術（836）、施法目標閘門（802）、友軍誤傷掃描（777）、自動換裝（1004）、士氣（758）。其餘 22 筆是 IDA 的邊界碎片 | 缺的是**實作**（`ENG-08`）與怪物特殊能力逐種（群體、抗性、免疫、毒素、凝視）| `monster-ai-and-specials-matrix` |
 | `RE-08` | **AREA map** | 有資料與局部畫面 | player marker、探索狀態、秘密區、Journal 59 圖、縮放／色盤、save state | `area-map-contract` |

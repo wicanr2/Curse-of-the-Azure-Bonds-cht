@@ -26,6 +26,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
@@ -42,6 +43,15 @@ type fieldRow struct {
 	Consumed int    `json:"consumed_bytes"`
 }
 
+// sidecarReport 是 `.SWG`／`.FX` 兩份 sidecar 的台帳摘要。它們沒有突變探針
+// ——兩者的解析器是逐欄直讀，沒有算出來的索引，台帳蓋滿就足以說明覆蓋。
+type sidecarReport struct {
+	Name     string         `json:"name"`
+	Size     int            `json:"size"`
+	ByStatus map[string]int `json:"bytes_by_status"`
+	Fields   []fieldRow     `json:"fields"`
+}
+
 type report struct {
 	Schema      string         `json:"schema"`
 	RecordSize  int            `json:"record_size"`
@@ -50,6 +60,7 @@ type report struct {
 	ConsumedAll int            `json:"consumed_bytes"`
 	Fields      []fieldRow     `json:"fields"`
 	Mismatches  []string       `json:"mismatches"`
+	Sidecars    []sidecarReport `json:"sidecars"`
 }
 
 func main() {
@@ -153,6 +164,28 @@ func analyze() (report, error) {
 		result.Fields = append(result.Fields, row)
 	}
 	sort.Strings(result.Mismatches)
+
+	for _, sidecar := range []struct {
+		name   string
+		fields []monster.RecordField
+		size   int
+	}{
+		{".SWG 物品記錄", monster.ItemRecordFields, monster.ItemRecordSize},
+		{".FX 效果記錄", monster.AffectRecordFields, monster.AffectRecordSize},
+	} {
+		if err := monster.ValidateRecordFields(sidecar.name, sidecar.fields, sidecar.size); err != nil {
+			return report{}, err
+		}
+		entry := sidecarReport{Name: sidecar.name, Size: sidecar.size, ByStatus: map[string]int{}}
+		for _, field := range sidecar.fields {
+			entry.ByStatus[string(field.Status)] += field.Size
+			entry.Fields = append(entry.Fields, fieldRow{
+				Offset: fmt.Sprintf("+%02Xh", field.Offset), Size: field.Size,
+				Name: field.Name, Status: string(field.Status), Spec: field.Spec,
+			})
+		}
+		result.Sidecars = append(result.Sidecars, entry)
+	}
 	return result, nil
 }
 
@@ -242,7 +275,22 @@ func renderMarkdown(result report) []byte {
 	fmt.Fprintf(&out, "\n解析器實際讀到的位元組（%d 份基準記錄的聯集）：**%d／%d**。\n\n",
 		result.Baselines, result.ConsumedAll, result.RecordSize)
 
-	out.WriteString("## 逐段\n\n| 位移 | 長度 | 欄位 | 狀態 | 出處 | 量到有讀 |\n|---|---:|---|---|---|---:|\n")
+	out.WriteString("## Sidecar 記錄\n\n")
+	out.WriteString("`.SWG`（物品）與 `.FX`（效果）沒有突變探針：兩者的解析器逐欄直讀、" +
+		"沒有算出來的索引，台帳蓋滿就足以說明覆蓋。\n\n")
+	for _, sidecar := range result.Sidecars {
+		fmt.Fprintf(&out, "### %s（%d bytes）\n\n", sidecar.Name, sidecar.Size)
+		fmt.Fprintf(&out, "`decoded` %d／`documented` %d／`unknown` %d\n\n",
+			sidecar.ByStatus["decoded"], sidecar.ByStatus["documented"], sidecar.ByStatus["unknown"])
+		out.WriteString("| 位移 | 長度 | 欄位 | 狀態 | 出處 |\n|---|---:|---|---|---|\n")
+		for _, row := range sidecar.Fields {
+			fmt.Fprintf(&out, "| `%s` | %d | %s | `%s` | spec %s |\n",
+				row.Offset, row.Size, row.Name, row.Status, row.Spec)
+		}
+		out.WriteString("\n")
+	}
+
+	out.WriteString("## 角色記錄逐段\n\n| 位移 | 長度 | 欄位 | 狀態 | 出處 | 量到有讀 |\n|---|---:|---|---|---|---:|\n")
 	for _, row := range result.Fields {
 		spec := row.Spec
 		if spec != "" {
