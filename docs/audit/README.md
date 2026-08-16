@@ -56,6 +56,21 @@ spec 1104）。
 `TestWildernessEncountersAreGamePackDriven` 用**實機的字串序列**釘住——
 那兩支測試餵的不是規則自己的 `all_contains`，所以片段跨越插入點會紅。
 
+## 譯名一致性
+
+[`glossary.md`](glossary.md) 與同名 `.json` 由 `cmd/glossary-audit` 產生，把
+[`../knowledge/coab-glossary.md`](../knowledge/coab-glossary.md) 的詞條、
+`combatant_name_rules` 自動匯入的怪物名，與三份繁中目錄（game pack locale、
+UI locale、工具訊息）比對。規則與九組已修正的不一致見
+[`spec 1107`](../spec/1107-translation-glossary.md)。
+
+閘是 fail-closed 的：禁用寫法出現、詞條在資料裡完全沒出現、同一原文有兩種譯名、
+同一譯名對到兩個原文，都會讓 `internal/glossary` 的測試紅。
+
+⚠ 閘擋不住的那一半：誤用的寫法若同時是**別的詞條的正確譯名**（`Haptooth` 誤寫成
+`哈普`，而哈普正是 `Hap`），沒有任何字串比對能分辨，只能逐句對照原文。表的
+〈通用寫法〉一節把這類判準寫成規則。
+
 ## Go 漢字字串基線
 
 `go-han-literals-baseline.json` 由 `cmd/coab-audit` 使用 Go AST 產生，只掃正式

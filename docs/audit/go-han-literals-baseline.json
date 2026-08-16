@@ -142,6 +142,69 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/glossary-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "3ea6b930ce13474a79235e01a64dedba81a3f0064443d2d87bcc4e8a27311265",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/glossary-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "81ed26c4db2f71c6f629a1f4ed8a083ffe92d628df9a61a6fce896f68d1587fe",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/glossary-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "830b313707a0c28d8c0960a825dad921096e8a7cda7cada46c87df31714637ad",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/glossary-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "8c0ccd9edadad53a9c4a094c8611957972cf8862153f633626b62cecec1cc6ab",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/glossary-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "9137082673f560bb10b2654f7a3273245687295b21aa24490e0ecfbe07d5ef37",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/glossary-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "a2e3db92cbe41296b57a116b60d50f361d5e1d72e66e4496d8e921483a42a815",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/glossary-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "a55b2834f9a53eb6ba3f3134cadf882f473d6853e4cc3c184d155c41f97a038f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/glossary-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "e91815f54eec7b2045a221a8a65b989c2879822024463df2169ecf33c7f227ad",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/glossary-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "fdbec7290a7fa65a4b04f57550280761bccb9e95ebe4e48ed189facf062266e0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/locale-drift-audit/main.go",
       "function": "main",
       "sha256": "5f5ebcca8586b6b6edda024a534b95501d4bc1997517af85cd73923391f5b72e",
@@ -418,6 +481,48 @@
       "path": "cmd/screenshot-audit/main.go",
       "function": "main",
       "sha256": "a91cf8eb75e4f84f311eb70c4f9f4697bd0656f1cffd893edef50cbc7ed5d2f2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
+      "function": "audit",
+      "sha256": "09262ec458d1f3d8ea61f8e05ece173a5dc20897c89ca2f436f9344b5fb33703",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
+      "function": "audit",
+      "sha256": "44656795e39cc5e476f1cf16ba923180540a9989dd39ef18f35337f48b537ce6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
+      "function": "audit",
+      "sha256": "a1fa5ebfc87e2f3367f0797d7c87e30386cde172ad4da546b349ce0dd13e0d50",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
+      "function": "audit",
+      "sha256": "f1cdf9508bdf5d583be0f0aae2c59abac33a196d58dbcb899fa76577c58c8005",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
+      "function": "audit",
+      "sha256": "fa70698379fb3e039c4718c51ca21e01a33cf9737ae94854db24f4ea2e292a79",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
+      "function": "importCombatantNames",
+      "sha256": "1544fa8410f53251550ec74c670983556a873f2ea60d9dca2b2009a0297da8d5",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
