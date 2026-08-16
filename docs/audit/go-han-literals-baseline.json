@@ -486,6 +486,12 @@
     },
     {
       "path": "internal/glossary/glossary.go",
+      "sha256": "13f6c30c2ea2d611505de219d92dced91135f5d9bb21264600680376d20d452a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
       "function": "audit",
       "sha256": "09262ec458d1f3d8ea61f8e05ece173a5dc20897c89ca2f436f9344b5fb33703",
       "occurrences": 1,
@@ -516,6 +522,20 @@
       "path": "internal/glossary/glossary.go",
       "function": "audit",
       "sha256": "fa70698379fb3e039c4718c51ca21e01a33cf9737ae94854db24f4ea2e292a79",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
+      "function": "auditRenderings",
+      "sha256": "3f24dea9fd1cc93e22a09de22db63b2500eb0d502b06282e6aa074a37c78bc88",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
+      "function": "auditRenderings",
+      "sha256": "dd902f50f5bf9536b9fd6e1de6fa2df9396fb5222b59f5e1d118f67f8daf8455",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

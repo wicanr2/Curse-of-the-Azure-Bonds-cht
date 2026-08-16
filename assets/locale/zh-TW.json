@@ -1,875 +1,875 @@
 {
-  "language": "zh-TW",
-  "strings": {
-    "title": "青色枷的詛咒",
-    "program_main_menu": "主選單",
-    "program_party_killed_prompt": "隊伍全滅",
-    "program_return_title": "返回標題",
-    "program_party_killed_message": "隊伍已全滅。",
-    "program_victory_prompt": "你們解除了青色枷鎖的詛咒！",
-    "program_victory_save": "保存勝利進度並結束",
-    "program_end_without_save": "不保存並結束",
-    "program_victory_message": "全隊已恢復，是否在結束前保存？",
-    "program_victory_save_requested": "勝利進度已要求保存。",
-    "program_adventure_ended": "冒險告一段落。",
-    "ecl_smoke_rises": "煙霧從殘破的牆後升起",
-    "ecl_yulash_sound": "尤拉什。聲音",
-    "ecl_battle_rings": "從裡面傳來戰鬥聲",
-    "ecl_war_blasted_city": "你們找到城市中一片遭戰火摧毀的區域。",
-    "ecl_training_prompt": "你們要接受訓練嗎？",
-    "ecl_training_progress": "你們的進步很大。準備好時再回來，",
-    "ecl_training_exit": "你們離開了訓練場。",
-    "ecl_weaponers_intro": "「我們備有最上等的科米爾精鋼武器。",
-    "ecl_weaponers_interested": "有興趣嗎？」",
-    "ecl_weaponers_farewell": "「願你每次出手都準確命中。」",
-    "ecl_weaponers_decline": "「那麼，祝你今日愉快。」",
-    "ecl_general_store_intro": "「各位貴客，日安。你們想要",
-    "ecl_general_store_purchase": "買些東西嗎？」",
-    "ecl_general_store_farewell": "「多謝惠顧，歡迎再來。」",
-    "ecl_small_magic_shop": "你們發現一間小型魔法商店。",
-    "tilverton": "提爾佛頓",
-    "dungeon_prompt": "↑：前進　K／M：轉向　S：搜尋　L：查看　E：紮營",
-    "ecl_tilverton_patrol_arrives": "一支皇家巡邏隊抵達。",
-    "ecl_tilverton_guards_move": "皇家衛兵命令你們立刻離開。",
-    "camp_rest_interrupted": "你們的休息突然中斷！",
-    "continue": "繼續",
-    "new_game": "新的遊戲",
-    "load_game": "載入遊戲",
-    "save_game": "儲存遊戲",
-    "save_succeeded": "隊伍已儲存：%s",
-    "save_failed": "儲存失敗：%s",
-    "load_succeeded": "隊伍已載入：%s",
-    "load_failed": "載入失敗：%s",
-    "audio_restore_failed": "音訊續跑失敗：%s",
-    "file_operation_unknown": "未知檔案操作：%s",
-    "player_ui_unknown": "未知介面文字",
-    "player_select_help": "Enter：選擇",
-    "player_save_load_help": "F5：儲存隊伍　F9：載入隊伍",
-    "player_continue_help": "Enter：繼續",
-    "shadowdale_map_title": "暗影谷荒野",
-    "area_map_position": "位置：(%d, %d)",
-    "area_navigation_help": "Enter：場所　方向鍵：移動　Esc：離開",
-    "overland_map_title": "月海諸地・世界地圖",
-    "overland_current_location": "目前位置：%s",
-    "overland_map_help": "方向鍵選擇　Enter 確認",
-    "scene_character_missing": "人物圖層素材尚未載入",
-    "big_picture_continue": "大幅事件畫面　Enter：繼續",
-    "big_picture_missing": "大幅事件圖片素材尚未載入",
-    "event_picture_missing": "事件圖片素材尚未載入",
-    "character_name_header": "姓名",
-    "combat_view_title": "角色檢視",
-    "combat_view_return": "Enter／Esc：返回戰鬥",
-    "combat_fallen": "倒下",
-    "dungeon_door_help": "上鎖的門：B 撞門　P 撬鎖　N 敲擊　Esc 離開",
-    "dungeon_explore_help": "↑前進　K/M轉向　S搜尋　L查看　E紮營　P撬鎖　N敲擊　B撞門",
-    "dungeon_message_unknown": "未知地城操作",
-    "dungeon_door_locked_prompt": "門已上鎖，請選擇 Bash／Pick／Knock／Exit",
-    "dungeon_lifecycle_failed": "地城事件執行失敗：%s",
-    "dungeon_pick_unavailable": "目前門面不可撬鎖（只有 detail 2 可撬鎖）",
-    "dungeon_pick_succeeded": "撬鎖成功，門已雙側解鎖",
-    "dungeon_pick_failed": "撬鎖失敗，本次撬鎖機會已消耗",
-    "dungeon_knock_surface_unavailable": "目前沒有可施放 Knock 的上鎖門面",
-    "dungeon_knock_spell_unavailable": "沒有可用的 Knock（0x%02X）",
-    "dungeon_knock_succeeded": "Knock 成功，門已雙側解鎖",
-    "dungeon_bash_unavailable": "目前沒有可撞擊的上鎖門面",
-    "dungeon_bash_succeeded": "撞門成功，門已雙側解鎖",
-    "dungeon_bash_failed": "撞門失敗",
-    "preview_unknown": "未知預覽文字",
-    "preview_pieces_failed": "LOAD PIECES 未載入：%s",
-    "preview_pieces_loaded": "LOAD PIECES [%d,%d,%d]：WALLDEF／8X8D 已載入",
-    "preview_geo_map_missing": "找不到 GEO%d block 0x%02X",
-    "preview_area_geo_missing": "尚未載入 GEO 區域資料",
-    "preview_area_symbols_missing": "AREA 原始符號資料無法使用",
-    "preview_area_title": "區域地圖",
-    "preview_area_source": "GEO%d／%02X　8X8D／CA",
-    "preview_area_position": "位置 (%d,%d)",
-    "preview_area_direction": "方向 %s",
-    "preview_area_original_viewport": "原版 11×11 AREA 視窗",
-    "preview_area_party_marker": "方向標記：隊伍位置",
-    "preview_area_description": "AREA 顯示目前區域的牆面與隊伍方向。",
-    "preview_area_return": "A／Esc：返回探索",
-    "preview_tile_title": "原始圖塊預覽（T／Esc：返回）",
-    "preview_geo_title": "%s 原始幾何預覽（G／Esc：返回）",
-    "preview_geo_missing": "沒有載入 GEO geometry",
-    "preview_geo_cursor_help": "黃點：GEO wall 可通行游標；方向鍵移動　（不是完整 tile collision）",
-    "preview_dungeon_title": "地城結構預覽",
-    "preview_dungeon_floor_missing": "沒有載入 dungeon floor",
-    "preview_dungeon_status": "位置：(%d,%d)　方向：%s　地圖：GEO%d/%02X",
-    "preview_dungeon_wall": "牆面：%02X　地形／屋頂：%02X",
-    "preview_dungeon_door_status": "門狀態：%d",
-    "preview_dungeon_door_bash": "上鎖的門：B Bash　Esc Exit",
-    "preview_dungeon_door_pick": "上鎖的門：B Bash　P Pick　Esc Exit",
-    "preview_dungeon_door_knock": "上鎖的門：B Bash　K Knock　Esc Exit",
-    "preview_dungeon_door_pick_knock": "上鎖的門：B Bash　P Pick　K Knock　Esc Exit",
-    "preview_dungeon_pieces": "地城牆面素材已載入：%d／%d／%d",
-    "preview_dungeon_controls": "方向鍵：移動　Q／R：轉向　P：撬鎖　K：敲擊術　B：撞門　D／Esc：返回",
-    "overland_date": "日期：第%d日／第%d月／第%d年",
-    "demo_name_unknown": "未知示範角色",
-    "demo_name_archer_erin": "弓手艾琳",
-    "demo_name_orc": "半獸人",
-    "demo_name_fighter_erin": "戰士艾琳",
-    "demo_name_zhent_mage": "散提爾法師",
-    "demo_name_mage_erin": "法師艾琳",
-    "demo_name_fighter_bran": "戰士布蘭",
-    "demo_name_orc_captain": "半獸人隊長",
-    "demo_name_party_fighter": "戰士",
-    "demo_name_party_ranger": "遊俠",
-    "demo_name_party_cleric": "牧師",
-    "demo_name_party_wizard": "法師",
-    "quit": "離開",
-    "press_enter": "請按 Enter 繼續",
-    "you_are_at_the_edge_of": "你已抵達邊界。",
-    "enter_city": "進入城市",
-    "journey_on": "繼續旅程",
-    "camp": "紮營",
-    "inn": "客棧",
-    "store": "商店",
-    "bar": "酒館",
-    "leave": "離開",
-    "inn_event": "你來到這座城市的客棧。",
-    "inn_restored": "你們在客棧安全休息，隊伍恢復體力。",
-    "selected_character": "已選擇角色：%s",
-    "select_character": "請選擇角色",
-    "character_hp_choice": "%s（HP %d/%d）",
-    "game_time": "時間：%02d:%02d　日期：第%d日／第%d月／第%d年",
-    "store_event": "你來到這座城市的商店。原版商店功能尚待接入。",
-    "shop_menu_prompt": "商店選單",
-    "shop_buy": "購買",
-    "shop_view": "查看",
-    "shop_take": "取出金幣",
-    "shop_pool": "集中金幣",
-    "shop_share": "分配金幣",
-    "shop_appraise": "估價",
-    "shop_sell": "販售",
-    "shop_identify": "鑑定",
-    "shop_exit": "離開商店",
-    "shop_buy_unavailable": "商店庫存尚未載入。",
-    "shop_buy_ready": "商店庫存已載入，購買操作尚待接入。",
-    "shop_stock_prompt": "選擇要購買的物品",
-    "shop_purchase_done": "已購買%s。",
-    "shop_sell_prompt": "選擇要販售物品的角色",
-    "shop_sell_item_prompt": "選擇%s要販售的物品",
-    "shop_sell_exit": "返回商店",
-    "shop_sale_done": "已販售%s，取得 %d GP。",
-    "shop_sell_unavailable": "目前沒有可販售物品的角色。",
-    "shop_identify_prompt": "選擇要鑑定物品的角色",
-    "shop_identify_item_prompt": "選擇%s要鑑定的物品",
-    "shop_identify_exit": "返回商店",
-    "shop_identify_done": "已支付 %d GP 鑑定%s；完整辨識資料仍待載入。",
-    "shop_identify_unavailable": "目前沒有可鑑定物品的角色。",
-    "shop_view_prompt": "選擇要查看的角色",
-    "shop_view_exit": "返回商店",
-    "shop_view_summary": "%s　HP %d/%d　金幣 %d　裝備：%s",
-    "shop_take_prompt": "選擇要取出金幣的角色",
-    "shop_take_amount_prompt": "選擇要取出的金額",
-    "shop_take_exit": "返回商店",
-    "shop_take_done": "已取出 %d GP 給%s。",
-    "shop_appraise_prompt": "選擇要估價的角色",
-    "shop_appraise_treasure_prompt": "選擇要估價的財寶",
-    "shop_appraise_exit": "返回商店",
-    "shop_appraise_done": "店家支付 %d GP。",
-    "shop_appraise_confirm_prompt": "接受店家的報價嗎？",
-    "shop_appraise_accept": "接受",
-    "shop_appraise_reject": "拒絕",
-    "shop_appraise_cancel": "返回",
-    "shop_appraise_rejected": "你拒絕了報價，財寶仍由隊伍保留。",
-    "shop_appraise_failed": "估價失敗：%s",
-    "shop_sell_failed": "販售失敗：%s",
-    "shop_identify_failed": "鑑定失敗：%s",
-    "shop_take_failed": "取出金幣失敗：%s",
-    "shop_purchase_failed": "購買失敗：%s",
-    "shop_pool_failed": "集中金幣失敗：%s",
-    "shop_share_failed": "分配金幣失敗：%s",
-    "shop_take_unavailable": "目前沒有可提取的隊伍金幣。",
-    "shop_pool_done": "已集中金幣：%d GP。",
-    "shop_share_done": "已分配金幣：%d GP。",
-    "shop_item_price": "%s（%d GP）",
-    "shop_view_character": "%s（HP %d/%d，%d GP）",
-    "shop_take_character": "%s（目前 %d GP）",
-    "shop_gold_amount": "%d GP",
-    "treasure_prompt": "選擇要收下的財寶",
-    "treasure_exit": "暫不收下／繼續",
-    "treasure_ready": "發現財寶。",
-    "treasure_take_prompt": "選擇由哪位角色收下",
-    "treasure_cancel": "返回財寶列表",
-    "treasure_taken": "財寶已加入隊伍裝備。",
-    "treasure_skipped": "隊伍繼續前進，未收下剩餘財寶。",
-    "treasure_assets_pending": "財寶等待素材載入：%v",
-    "shop_character_items": "%s（%d 件物品）",
-    "shop_identify_character": "%s（%d 件物品，%d GP）",
-    "shop_appraise_character": "%s（寶石 %d、珠寶 %d）",
-    "shop_gems_offer_unavailable": "寶石（報價未載入）",
-    "shop_gems_offer": "寶石（報價 %d GP）",
-    "shop_jewelry_offer_unavailable": "珠寶（報價未載入）",
-    "shop_jewelry_offer": "珠寶（報價 %d GP）",
-    "list_separator": "、",
-    "shop_view_unavailable": "目前沒有可查看的角色。",
-    "shop_money_unavailable": "隊伍金幣池功能尚待接入。",
-    "shop_appraise_unavailable": "目前沒有可估價的角色。",
-    "bar_event": "你來到這座城市的酒館。",
-    "bar_menu_prompt": "酒館裡，你想做什麼？",
-    "bar_listen": "聽酒館傳聞",
-    "bar_exit": "離開酒館",
-    "bar_exit_message": "你離開酒館，回到城市場所選單。",
-    "bar_no_tales": "目前沒有新的酒館傳聞。",
-    "bar_tale": "酒客傳聞 %d：%s",
-    "bar_tale_1": "酒客低聲說：公主與國王都喬裝在城中。",
-    "bar_tale_2": "有人說火焰巨人只怕三件古老神器，其中一件可能在北方瀑布下。",
-    "bar_tale_3": "許多士兵覺得深坑不祥，有人寧可逃亡也不願去守衛。",
-    "bar_tale_4": "這座城市的下水道，是達倫地區最危險的地方之一。",
-    "bar_tale_5": "有人看見紅袍刺客在森林小徑巡邏。",
-    "bar_tale_6": "商人冒險者 Akabar 已南下調查 Hap，另有一支女冒險者隊伍同行。",
-    "press_button": "請按任意鍵或 Enter 繼續",
-    "ecl_string_input_prompt": "請輸入回答",
-    "ecl_string_input_value": "回答：%s_",
-    "ecl_string_input_help": "Enter：確認　Backspace：刪除　最多 %d 字",
-    "enter_it": "走進去",
-    "speak": "說話",
-    "hack_it": "砍斷它",
-    "shadowdale": "暗影谷",
-    "shadowdale_map_prompt": "暗影谷荒野",
-    "world_travel_map_prompt": "荒野旅程　方向鍵：移動　Enter：抵達目的地　Esc：返回",
-    "what_place": "你在暗影谷。要去哪裡？",
-    "ashabenford": "阿沙本福德",
-    "dagger_falls": "匕首瀑布",
-    "wilderness": "荒野",
-    "trail": "小徑",
-    "route_prompt": "要如何前往%s？",
-    "training_hall": "訓練場",
-    "training_select_character": "訓練哪一位角色？",
-    "training_character_summary": "%s（%s %d 級／%d XP）",
-    "training_exit": "離開訓練場",
-    "training_requires_healthy": "訓練場只接受神智清醒的人。",
-    "training_insufficient_gold": "訓練費用是 1000 GP。",
-    "training_insufficient_experience": "經驗值不足，現在還不能升級。",
-    "training_confirm_prompt": "%s將成為 %d 級%s。要支付 1000 GP 訓練嗎？",
-    "training_confirm": "確定",
-    "training_cancel": "取消",
-    "training_success": "恭喜！%s成為 %d 級%s",
-    "training_hp_increase": "，最大 HP 增加 %d。",
-    "training_dual_class_no_hp": "；超過原職業等級前不增加 HP。",
-    "training_select_spell": "選擇一個新法術",
-    "training_learned_spell_suffix": " 並學會%s。",
-    "class_cleric": "牧師",
-    "class_fighter": "戰士",
-    "class_ranger": "遊俠",
-    "class_paladin": "聖武士",
-    "class_magic_user": "魔法師",
-    "class_thief": "盜賊",
-    "class_unknown": "未知職業",
-    "temple": "神殿",
-    "temple_prompt": "剛德神殿",
-    "temple_heal": "治療",
-    "temple_view": "查看",
-    "temple_pool": "集中金幣",
-    "temple_share": "分配金幣",
-    "temple_appraise": "估價",
-    "temple_exit": "離開神殿",
-    "temple_heal_prompt": "%s，需要什麼幫助？",
-    "temple_cure_choice": "%s（%d GP）",
-    "temple_cure_exit": "返回神殿",
-    "temple_confirm_prompt": "%s需要 %d GP。確定施術？",
-    "temple_confirm": "確定",
-    "temple_cancel": "取消",
-    "temple_view_summary": "%s　HP %d/%d　金幣價值 %d GP　狀態效果 %d",
-    "temple_pool_done": "已集中隊伍金幣；目前共有 %d GP。",
-    "temple_share_done": "已將集中金幣平均分配給隊伍。",
-    "temple_appraise_empty": "神殿目前沒有可估價的寶石或珠寶。",
-    "temple_insufficient_gold": "金幣不足。",
-    "temple_cure_done": "%s已接受%s。",
-    "temple_cure_blindness": "治療目盲",
-    "temple_cure_disease": "治療疾病",
-    "temple_cure_light_wounds": "治療輕傷",
-    "temple_cure_serious_wounds": "治療重傷",
-    "temple_cure_critical_wounds": "治療致命傷",
-    "temple_cure_heal": "完全治療",
-    "temple_cure_neutralize_poison": "中和毒素",
-    "temple_cure_raise_dead": "死者復生",
-    "temple_cure_remove_curse": "解除詛咒",
-    "temple_cure_stone_to_flesh": "石化復原",
-    "relax": "休息並聽取傳聞",
-    "standing_stone": "立石群",
-    "journey_destination_prompt": "從這裡可以前往",
-    "thank_him": "向他道謝",
-    "attack": "攻擊",
-    "essembra": "艾森布拉",
-    "hap": "哈普",
-    "hillsfar": "希爾斯法",
-    "voonlar": "沃恩拉",
-    "phlan": "弗蘭",
-    "teshwave": "泰什浪",
-    "yulash": "尤拉什",
-    "zhentil_keep": "散提爾堡",
-    "myth_drannor": "迷斯卓諾",
-    "patrol_forest": "巡查森林",
-    "go_with_guards": "跟衛兵走",
-    "run_away": "逃走",
-    "fight": "戰鬥",
-    "sneak_in": "潛入",
-    "ask_permission": "請求許可",
-    "tavern_drink_prompt": "要喝什麼？",
-    "tavern_punch": "揍酒保",
-    "tavern_drink": "喝一杯",
-    "tavern_dragon_breath": "龍息酒",
-    "tavern_basilisk": "石化蜥蜴酒",
-    "tavern_lemonade": "檸檬水",
-    "tavern_whiskey": "威士忌",
-    "tavern_beer": "啤酒",
-    "tavern_ale": "愛爾啤酒",
-    "tavern_port": "波特酒",
-    "tavern_mead": "蜂蜜酒",
-    "ecl_tavern_pleasure": "「幾位想來點什麼？」",
-    "ecl_tavern_special_1": "「有位特別的客人到了。你們得暫時",
-    "ecl_tavern_special_2": "到外面等一下。」你們要出去嗎？",
-    "ecl_tavern_purple_1": "你們正要走出門時，看見一名",
-    "ecl_tavern_purple_2": "繫著紫色腰帶的年輕女子溜進側門。",
-    "ecl_tavern_purple_3": "另有幾名酒客刻意留下，似乎正等著與她會面。",
-    "ecl_tavern_commotion_1": "你們正盤算下一步時，聽見",
-    "ecl_tavern_commotion_2": "建築側邊傳來騷動。要前去",
-    "ecl_tavern_commotion_3": "調查嗎？",
-    "ecl_hap_dark_elf_patrol": "一隊黑暗精靈巡邏兵出現了",
-    "caves": "洞穴",
-    "stay_here": "留在這裡",
-    "village": "村莊",
-    "depart": "離開此區",
-    "npc_akabar": "阿卡巴・貝爾・阿卡什",
-    "npc_alias": "愛麗雅絲",
-    "npc_dragonbait": "龍餌",
-    "place_prompt": "你在%s。要去哪裡？",
-    "hap_dungeon_prompt": "哈普村　↑：前進　K／M：轉向　S：搜尋　L：查看　E：紮營",
-    "try_talk_further": "繼續交談",
-    "exit": "離開",
-    "ambushed": "你們遭到伏擊！",
-    "captured": "你們被俘虜了。",
-    "combat_started": "戰鬥開始！",
-    "combat_view_name": "角色：%s",
-    "combat_view_hp": "生命：%d/%d",
-    "combat_view_ac": "護甲等級：%d",
-    "combat_view_attack": "攻擊加值：%d",
-    "combat_miss": "%s 攻擊 %s 未命中。",
-    "combat_hit": "%s 攻擊 %s，造成 %d 點傷害。",
-    "combat_victory": "戰鬥勝利！",
-    "combat_defeat": "戰鬥失敗。",
-    "combat_draw": "戰鬥結束。",
-    "combat_monster_held": "%s 無法行動。",
-    "combat_monster_magic_missile": "%s 施放魔法飛彈攻擊 %s，造成 %d 點傷害。",
-    "combat_cloudkill": "%s 製造一片致命毒雲，影響 %d 名目標。",
-    "event_picture": "事件畫面",
-    "combat_done": "%s 結束回合。",
-    "combat_delay": "%s 延後至本輪稍後行動。",
-    "combat_menu_main": "移動　查看　瞄準　使用　施法　快速　結束",
-    "combat_menu_done": "防守　延後　結束回合　包紮　速度　返回",
-    "combat_menu_guard": "防守",
-    "combat_menu_delay": "延後",
-    "combat_menu_quit": "結束回合",
-    "combat_menu_bandage": "包紮",
-    "combat_menu_speed": "速度",
-    "combat_menu_exit": "返回",
-    "combat_guard": "%s 進入防守。",
-    "combat_guard_reaction": "踏入防守範圍，受到 %d 點傷害。",
-    "combat_bandage": "%s 包紮了 %s；傷者已止血並陷入昏迷。",
-    "combat_manual_control": "玩家角色恢復手動控制。",
-    "combat_quick_all": "全隊進入快速戰鬥；按空白鍵可收回玩家角色控制。",
-    "combat_quick_magic_on": "快速戰鬥施法已開啟。",
-    "combat_quick_magic_off": "快速戰鬥施法已關閉。",
-    "combat_quick_magic_metadata_missing": "快速戰鬥缺少法術資料，已收回玩家角色控制：%s",
-    "combat_quick_magic_unsupported": "快速戰鬥選到尚未接通的法術 0x%02X，已收回玩家角色控制。",
+ "language": "zh-TW",
+ "strings": {
+  "title": "青色枷的詛咒",
+  "program_main_menu": "主選單",
+  "program_party_killed_prompt": "隊伍全滅",
+  "program_return_title": "返回標題",
+  "program_party_killed_message": "隊伍已全滅。",
+  "program_victory_prompt": "你們解除了青色枷鎖的詛咒！",
+  "program_victory_save": "保存勝利進度並結束",
+  "program_end_without_save": "不保存並結束",
+  "program_victory_message": "全隊已恢復，是否在結束前保存？",
+  "program_victory_save_requested": "勝利進度已要求保存。",
+  "program_adventure_ended": "冒險告一段落。",
+  "ecl_smoke_rises": "煙霧從殘破的牆後升起",
+  "ecl_yulash_sound": "尤拉什。聲音",
+  "ecl_battle_rings": "從裡面傳來戰鬥聲",
+  "ecl_war_blasted_city": "你們找到城市中一片遭戰火摧毀的區域。",
+  "ecl_training_prompt": "你們要接受訓練嗎？",
+  "ecl_training_progress": "你們的進步很大。準備好時再回來，",
+  "ecl_training_exit": "你們離開了訓練場。",
+  "ecl_weaponers_intro": "「我們備有最上等的科米爾精鋼武器。",
+  "ecl_weaponers_interested": "有興趣嗎？」",
+  "ecl_weaponers_farewell": "「願你每次出手都準確命中。」",
+  "ecl_weaponers_decline": "「那麼，祝你今日愉快。」",
+  "ecl_general_store_intro": "「各位貴客，日安。你們想要",
+  "ecl_general_store_purchase": "買些東西嗎？」",
+  "ecl_general_store_farewell": "「多謝惠顧，歡迎再來。」",
+  "ecl_small_magic_shop": "你們發現一間小型魔法商店。",
+  "tilverton": "提爾佛頓",
+  "dungeon_prompt": "↑：前進　K／M：轉向　S：搜尋　L：查看　E：紮營",
+  "ecl_tilverton_patrol_arrives": "一支皇家巡邏隊抵達。",
+  "ecl_tilverton_guards_move": "皇家衛兵命令你們立刻離開。",
+  "camp_rest_interrupted": "你們的休息突然中斷！",
+  "continue": "繼續",
+  "new_game": "新的遊戲",
+  "load_game": "載入遊戲",
+  "save_game": "儲存遊戲",
+  "save_succeeded": "隊伍已儲存：%s",
+  "save_failed": "儲存失敗：%s",
+  "load_succeeded": "隊伍已載入：%s",
+  "load_failed": "載入失敗：%s",
+  "audio_restore_failed": "音訊續跑失敗：%s",
+  "file_operation_unknown": "未知檔案操作：%s",
+  "player_ui_unknown": "未知介面文字",
+  "player_select_help": "Enter：選擇",
+  "player_save_load_help": "F5：儲存隊伍　F9：載入隊伍",
+  "player_continue_help": "Enter：繼續",
+  "shadowdale_map_title": "暗影谷荒野",
+  "area_map_position": "位置：(%d, %d)",
+  "area_navigation_help": "Enter：場所　方向鍵：移動　Esc：離開",
+  "overland_map_title": "月海諸地・世界地圖",
+  "overland_current_location": "目前位置：%s",
+  "overland_map_help": "方向鍵選擇　Enter 確認",
+  "scene_character_missing": "人物圖層素材尚未載入",
+  "big_picture_continue": "大幅事件畫面　Enter：繼續",
+  "big_picture_missing": "大幅事件圖片素材尚未載入",
+  "event_picture_missing": "事件圖片素材尚未載入",
+  "character_name_header": "姓名",
+  "combat_view_title": "角色檢視",
+  "combat_view_return": "Enter／Esc：返回戰鬥",
+  "combat_fallen": "倒下",
+  "dungeon_door_help": "上鎖的門：B 撞門　P 撬鎖　N 敲擊　Esc 離開",
+  "dungeon_explore_help": "↑前進　K/M轉向　S搜尋　L查看　E紮營　P撬鎖　N敲擊　B撞門",
+  "dungeon_message_unknown": "未知地城操作",
+  "dungeon_door_locked_prompt": "門已上鎖，請選擇 Bash／Pick／Knock／Exit",
+  "dungeon_lifecycle_failed": "地城事件執行失敗：%s",
+  "dungeon_pick_unavailable": "目前門面不可撬鎖（只有 detail 2 可撬鎖）",
+  "dungeon_pick_succeeded": "撬鎖成功，門已雙側解鎖",
+  "dungeon_pick_failed": "撬鎖失敗，本次撬鎖機會已消耗",
+  "dungeon_knock_surface_unavailable": "目前沒有可施放 Knock 的上鎖門面",
+  "dungeon_knock_spell_unavailable": "沒有可用的 Knock（0x%02X）",
+  "dungeon_knock_succeeded": "Knock 成功，門已雙側解鎖",
+  "dungeon_bash_unavailable": "目前沒有可撞擊的上鎖門面",
+  "dungeon_bash_succeeded": "撞門成功，門已雙側解鎖",
+  "dungeon_bash_failed": "撞門失敗",
+  "preview_unknown": "未知預覽文字",
+  "preview_pieces_failed": "LOAD PIECES 未載入：%s",
+  "preview_pieces_loaded": "LOAD PIECES [%d,%d,%d]：WALLDEF／8X8D 已載入",
+  "preview_geo_map_missing": "找不到 GEO%d block 0x%02X",
+  "preview_area_geo_missing": "尚未載入 GEO 區域資料",
+  "preview_area_symbols_missing": "AREA 原始符號資料無法使用",
+  "preview_area_title": "區域地圖",
+  "preview_area_source": "GEO%d／%02X　8X8D／CA",
+  "preview_area_position": "位置 (%d,%d)",
+  "preview_area_direction": "方向 %s",
+  "preview_area_original_viewport": "原版 11×11 AREA 視窗",
+  "preview_area_party_marker": "方向標記：隊伍位置",
+  "preview_area_description": "AREA 顯示目前區域的牆面與隊伍方向。",
+  "preview_area_return": "A／Esc：返回探索",
+  "preview_tile_title": "原始圖塊預覽（T／Esc：返回）",
+  "preview_geo_title": "%s 原始幾何預覽（G／Esc：返回）",
+  "preview_geo_missing": "沒有載入 GEO geometry",
+  "preview_geo_cursor_help": "黃點：GEO wall 可通行游標；方向鍵移動　（不是完整 tile collision）",
+  "preview_dungeon_title": "地城結構預覽",
+  "preview_dungeon_floor_missing": "沒有載入 dungeon floor",
+  "preview_dungeon_status": "位置：(%d,%d)　方向：%s　地圖：GEO%d/%02X",
+  "preview_dungeon_wall": "牆面：%02X　地形／屋頂：%02X",
+  "preview_dungeon_door_status": "門狀態：%d",
+  "preview_dungeon_door_bash": "上鎖的門：B Bash　Esc Exit",
+  "preview_dungeon_door_pick": "上鎖的門：B Bash　P Pick　Esc Exit",
+  "preview_dungeon_door_knock": "上鎖的門：B Bash　K Knock　Esc Exit",
+  "preview_dungeon_door_pick_knock": "上鎖的門：B Bash　P Pick　K Knock　Esc Exit",
+  "preview_dungeon_pieces": "地城牆面素材已載入：%d／%d／%d",
+  "preview_dungeon_controls": "方向鍵：移動　Q／R：轉向　P：撬鎖　K：敲擊術　B：撞門　D／Esc：返回",
+  "overland_date": "日期：第%d日／第%d月／第%d年",
+  "demo_name_unknown": "未知示範角色",
+  "demo_name_archer_erin": "弓手艾琳",
+  "demo_name_orc": "半獸人",
+  "demo_name_fighter_erin": "戰士艾琳",
+  "demo_name_zhent_mage": "散提爾法師",
+  "demo_name_mage_erin": "法師艾琳",
+  "demo_name_fighter_bran": "戰士布蘭",
+  "demo_name_orc_captain": "半獸人隊長",
+  "demo_name_party_fighter": "戰士",
+  "demo_name_party_ranger": "遊俠",
+  "demo_name_party_cleric": "牧師",
+  "demo_name_party_wizard": "法師",
+  "quit": "離開",
+  "press_enter": "請按 Enter 繼續",
+  "you_are_at_the_edge_of": "你已抵達邊界。",
+  "enter_city": "進入城市",
+  "journey_on": "繼續旅程",
+  "camp": "紮營",
+  "inn": "客棧",
+  "store": "商店",
+  "bar": "酒館",
+  "leave": "離開",
+  "inn_event": "你來到這座城市的客棧。",
+  "inn_restored": "你們在客棧安全休息，隊伍恢復體力。",
+  "selected_character": "已選擇角色：%s",
+  "select_character": "請選擇角色",
+  "character_hp_choice": "%s（HP %d/%d）",
+  "game_time": "時間：%02d:%02d　日期：第%d日／第%d月／第%d年",
+  "store_event": "你來到這座城市的商店。原版商店功能尚待接入。",
+  "shop_menu_prompt": "商店選單",
+  "shop_buy": "購買",
+  "shop_view": "查看",
+  "shop_take": "取出金幣",
+  "shop_pool": "集中金幣",
+  "shop_share": "分配金幣",
+  "shop_appraise": "估價",
+  "shop_sell": "販售",
+  "shop_identify": "鑑定",
+  "shop_exit": "離開商店",
+  "shop_buy_unavailable": "商店庫存尚未載入。",
+  "shop_buy_ready": "商店庫存已載入，購買操作尚待接入。",
+  "shop_stock_prompt": "選擇要購買的物品",
+  "shop_purchase_done": "已購買%s。",
+  "shop_sell_prompt": "選擇要販售物品的角色",
+  "shop_sell_item_prompt": "選擇%s要販售的物品",
+  "shop_sell_exit": "返回商店",
+  "shop_sale_done": "已販售%s，取得 %d GP。",
+  "shop_sell_unavailable": "目前沒有可販售物品的角色。",
+  "shop_identify_prompt": "選擇要鑑定物品的角色",
+  "shop_identify_item_prompt": "選擇%s要鑑定的物品",
+  "shop_identify_exit": "返回商店",
+  "shop_identify_done": "已支付 %d GP 鑑定%s；完整辨識資料仍待載入。",
+  "shop_identify_unavailable": "目前沒有可鑑定物品的角色。",
+  "shop_view_prompt": "選擇要查看的角色",
+  "shop_view_exit": "返回商店",
+  "shop_view_summary": "%s　HP %d/%d　金幣 %d　裝備：%s",
+  "shop_take_prompt": "選擇要取出金幣的角色",
+  "shop_take_amount_prompt": "選擇要取出的金額",
+  "shop_take_exit": "返回商店",
+  "shop_take_done": "已取出 %d GP 給%s。",
+  "shop_appraise_prompt": "選擇要估價的角色",
+  "shop_appraise_treasure_prompt": "選擇要估價的財寶",
+  "shop_appraise_exit": "返回商店",
+  "shop_appraise_done": "店家支付 %d GP。",
+  "shop_appraise_confirm_prompt": "接受店家的報價嗎？",
+  "shop_appraise_accept": "接受",
+  "shop_appraise_reject": "拒絕",
+  "shop_appraise_cancel": "返回",
+  "shop_appraise_rejected": "你拒絕了報價，財寶仍由隊伍保留。",
+  "shop_appraise_failed": "估價失敗：%s",
+  "shop_sell_failed": "販售失敗：%s",
+  "shop_identify_failed": "鑑定失敗：%s",
+  "shop_take_failed": "取出金幣失敗：%s",
+  "shop_purchase_failed": "購買失敗：%s",
+  "shop_pool_failed": "集中金幣失敗：%s",
+  "shop_share_failed": "分配金幣失敗：%s",
+  "shop_take_unavailable": "目前沒有可提取的隊伍金幣。",
+  "shop_pool_done": "已集中金幣：%d GP。",
+  "shop_share_done": "已分配金幣：%d GP。",
+  "shop_item_price": "%s（%d GP）",
+  "shop_view_character": "%s（HP %d/%d，%d GP）",
+  "shop_take_character": "%s（目前 %d GP）",
+  "shop_gold_amount": "%d GP",
+  "treasure_prompt": "選擇要收下的財寶",
+  "treasure_exit": "暫不收下／繼續",
+  "treasure_ready": "發現財寶。",
+  "treasure_take_prompt": "選擇由哪位角色收下",
+  "treasure_cancel": "返回財寶列表",
+  "treasure_taken": "財寶已加入隊伍裝備。",
+  "treasure_skipped": "隊伍繼續前進，未收下剩餘財寶。",
+  "treasure_assets_pending": "財寶等待素材載入：%v",
+  "shop_character_items": "%s（%d 件物品）",
+  "shop_identify_character": "%s（%d 件物品，%d GP）",
+  "shop_appraise_character": "%s（寶石 %d、珠寶 %d）",
+  "shop_gems_offer_unavailable": "寶石（報價未載入）",
+  "shop_gems_offer": "寶石（報價 %d GP）",
+  "shop_jewelry_offer_unavailable": "珠寶（報價未載入）",
+  "shop_jewelry_offer": "珠寶（報價 %d GP）",
+  "list_separator": "、",
+  "shop_view_unavailable": "目前沒有可查看的角色。",
+  "shop_money_unavailable": "隊伍金幣池功能尚待接入。",
+  "shop_appraise_unavailable": "目前沒有可估價的角色。",
+  "bar_event": "你來到這座城市的酒館。",
+  "bar_menu_prompt": "酒館裡，你想做什麼？",
+  "bar_listen": "聽酒館傳聞",
+  "bar_exit": "離開酒館",
+  "bar_exit_message": "你離開酒館，回到城市場所選單。",
+  "bar_no_tales": "目前沒有新的酒館傳聞。",
+  "bar_tale": "酒客傳聞 %d：%s",
+  "bar_tale_1": "酒客低聲說：公主與國王都喬裝在城中。",
+  "bar_tale_2": "有人說火焰巨人只怕三件古老神器，其中一件可能在北方瀑布下。",
+  "bar_tale_3": "許多士兵覺得深坑不祥，有人寧可逃亡也不願去守衛。",
+  "bar_tale_4": "這座城市的下水道，是達倫地區最危險的地方之一。",
+  "bar_tale_5": "有人看見紅袍刺客在森林小徑巡邏。",
+  "bar_tale_6": "商人冒險者 Akabar 已南下調查 Hap，另有一支女冒險者隊伍同行。",
+  "press_button": "請按任意鍵或 Enter 繼續",
+  "ecl_string_input_prompt": "請輸入回答",
+  "ecl_string_input_value": "回答：%s_",
+  "ecl_string_input_help": "Enter：確認　Backspace：刪除　最多 %d 字",
+  "enter_it": "走進去",
+  "speak": "說話",
+  "hack_it": "砍斷它",
+  "shadowdale": "暗影谷",
+  "shadowdale_map_prompt": "暗影谷荒野",
+  "world_travel_map_prompt": "荒野旅程　方向鍵：移動　Enter：抵達目的地　Esc：返回",
+  "what_place": "你在暗影谷。要去哪裡？",
+  "ashabenford": "阿沙本福德",
+  "dagger_falls": "匕首瀑布",
+  "wilderness": "荒野",
+  "trail": "小徑",
+  "route_prompt": "要如何前往%s？",
+  "training_hall": "訓練場",
+  "training_select_character": "訓練哪一位角色？",
+  "training_character_summary": "%s（%s %d 級／%d XP）",
+  "training_exit": "離開訓練場",
+  "training_requires_healthy": "訓練場只接受神智清醒的人。",
+  "training_insufficient_gold": "訓練費用是 1000 GP。",
+  "training_insufficient_experience": "經驗值不足，現在還不能升級。",
+  "training_confirm_prompt": "%s將成為 %d 級%s。要支付 1000 GP 訓練嗎？",
+  "training_confirm": "確定",
+  "training_cancel": "取消",
+  "training_success": "恭喜！%s成為 %d 級%s",
+  "training_hp_increase": "，最大 HP 增加 %d。",
+  "training_dual_class_no_hp": "；超過原職業等級前不增加 HP。",
+  "training_select_spell": "選擇一個新法術",
+  "training_learned_spell_suffix": " 並學會%s。",
+  "class_cleric": "牧師",
+  "class_fighter": "戰士",
+  "class_ranger": "遊俠",
+  "class_paladin": "聖武士",
+  "class_magic_user": "魔法師",
+  "class_thief": "盜賊",
+  "class_unknown": "未知職業",
+  "temple": "神殿",
+  "temple_prompt": "剛德神殿",
+  "temple_heal": "治療",
+  "temple_view": "查看",
+  "temple_pool": "集中金幣",
+  "temple_share": "分配金幣",
+  "temple_appraise": "估價",
+  "temple_exit": "離開神殿",
+  "temple_heal_prompt": "%s，需要什麼幫助？",
+  "temple_cure_choice": "%s（%d GP）",
+  "temple_cure_exit": "返回神殿",
+  "temple_confirm_prompt": "%s需要 %d GP。確定施術？",
+  "temple_confirm": "確定",
+  "temple_cancel": "取消",
+  "temple_view_summary": "%s　HP %d/%d　金幣價值 %d GP　狀態效果 %d",
+  "temple_pool_done": "已集中隊伍金幣；目前共有 %d GP。",
+  "temple_share_done": "已將集中金幣平均分配給隊伍。",
+  "temple_appraise_empty": "神殿目前沒有可估價的寶石或珠寶。",
+  "temple_insufficient_gold": "金幣不足。",
+  "temple_cure_done": "%s已接受%s。",
+  "temple_cure_blindness": "治療目盲",
+  "temple_cure_disease": "治療疾病",
+  "temple_cure_light_wounds": "治療輕傷",
+  "temple_cure_serious_wounds": "治療重傷",
+  "temple_cure_critical_wounds": "治療致命傷",
+  "temple_cure_heal": "完全治療",
+  "temple_cure_neutralize_poison": "中和毒素",
+  "temple_cure_raise_dead": "死者復生",
+  "temple_cure_remove_curse": "解除詛咒",
+  "temple_cure_stone_to_flesh": "石化復原",
+  "relax": "休息並聽取傳聞",
+  "standing_stone": "立石群",
+  "journey_destination_prompt": "從這裡可以前往",
+  "thank_him": "向他道謝",
+  "attack": "攻擊",
+  "essembra": "艾森布拉",
+  "hap": "哈普",
+  "hillsfar": "希爾斯法",
+  "voonlar": "沃恩拉",
+  "phlan": "弗蘭",
+  "teshwave": "泰什浪",
+  "yulash": "尤拉什",
+  "zhentil_keep": "散提爾堡",
+  "myth_drannor": "迷斯卓諾",
+  "patrol_forest": "巡查森林",
+  "go_with_guards": "跟衛兵走",
+  "run_away": "逃走",
+  "fight": "戰鬥",
+  "sneak_in": "潛入",
+  "ask_permission": "請求許可",
+  "tavern_drink_prompt": "要喝什麼？",
+  "tavern_punch": "揍酒保",
+  "tavern_drink": "喝一杯",
+  "tavern_dragon_breath": "龍息酒",
+  "tavern_basilisk": "石化蜥蜴酒",
+  "tavern_lemonade": "檸檬水",
+  "tavern_whiskey": "威士忌",
+  "tavern_beer": "啤酒",
+  "tavern_ale": "愛爾啤酒",
+  "tavern_port": "波特酒",
+  "tavern_mead": "蜂蜜酒",
+  "ecl_tavern_pleasure": "「幾位想來點什麼？」",
+  "ecl_tavern_special_1": "「有位特別的客人到了。你們得暫時",
+  "ecl_tavern_special_2": "到外面等一下。」你們要出去嗎？",
+  "ecl_tavern_purple_1": "你們正要走出門時，看見一名",
+  "ecl_tavern_purple_2": "繫著紫色腰帶的年輕女子溜進側門。",
+  "ecl_tavern_purple_3": "另有幾名酒客刻意留下，似乎正等著與她會面。",
+  "ecl_tavern_commotion_1": "你們正盤算下一步時，聽見",
+  "ecl_tavern_commotion_2": "建築側邊傳來騷動。要前去",
+  "ecl_tavern_commotion_3": "調查嗎？",
+  "ecl_hap_dark_elf_patrol": "一隊黑暗精靈巡邏兵出現了",
+  "caves": "洞穴",
+  "stay_here": "留在這裡",
+  "village": "村莊",
+  "depart": "離開此區",
+  "npc_akabar": "阿卡巴・貝爾・阿卡什",
+  "npc_alias": "愛麗雅絲",
+  "npc_dragonbait": "龍餌",
+  "place_prompt": "你在%s。要去哪裡？",
+  "hap_dungeon_prompt": "哈普村　↑：前進　K／M：轉向　S：搜尋　L：查看　E：紮營",
+  "try_talk_further": "繼續交談",
+  "exit": "離開",
+  "ambushed": "你們遭到伏擊！",
+  "captured": "你們被俘虜了。",
+  "combat_started": "戰鬥開始！",
+  "combat_view_name": "角色：%s",
+  "combat_view_hp": "生命：%d/%d",
+  "combat_view_ac": "護甲等級：%d",
+  "combat_view_attack": "攻擊加值：%d",
+  "combat_miss": "%s 攻擊 %s 未命中。",
+  "combat_hit": "%s 攻擊 %s，造成 %d 點傷害。",
+  "combat_victory": "戰鬥勝利！",
+  "combat_defeat": "戰鬥失敗。",
+  "combat_draw": "戰鬥結束。",
+  "combat_monster_held": "%s 無法行動。",
+  "combat_monster_magic_missile": "%s 施放魔法飛彈攻擊 %s，造成 %d 點傷害。",
+  "combat_cloudkill": "%s 製造一片致命毒雲，影響 %d 名目標。",
+  "event_picture": "事件畫面",
+  "combat_done": "%s 結束回合。",
+  "combat_delay": "%s 延後至本輪稍後行動。",
+  "combat_menu_main": "移動　查看　瞄準　使用　施法　快速　結束",
+  "combat_menu_done": "防守　延後　結束回合　包紮　速度　返回",
+  "combat_menu_guard": "防守",
+  "combat_menu_delay": "延後",
+  "combat_menu_quit": "結束回合",
+  "combat_menu_bandage": "包紮",
+  "combat_menu_speed": "速度",
+  "combat_menu_exit": "返回",
+  "combat_guard": "%s 進入防守。",
+  "combat_guard_reaction": "踏入防守範圍，受到 %d 點傷害。",
+  "combat_bandage": "%s 包紮了 %s；傷者已止血並陷入昏迷。",
+  "combat_manual_control": "玩家角色恢復手動控制。",
+  "combat_quick_all": "全隊進入快速戰鬥；按空白鍵可收回玩家角色控制。",
+  "combat_quick_magic_on": "快速戰鬥施法已開啟。",
+  "combat_quick_magic_off": "快速戰鬥施法已關閉。",
+  "combat_quick_magic_metadata_missing": "快速戰鬥缺少法術資料，已收回玩家角色控制：%s",
+  "combat_quick_magic_unsupported": "快速戰鬥選到尚未接通的法術 0x%02X，已收回玩家角色控制。",
   "combat_quick_magic_casting": "%s 開始吟唱%s。",
   "combat_spell_interrupted": "%s 受傷，已無法繼續吟唱法術。",
-    "combat_speed_slower": "更慢",
-    "combat_speed_faster": "更快",
-    "combat_speed_value": "遊戲速度（%d）：%s",
-	"combat_hud_hit_points": "生命值",
-	"combat_hud_armor_class": "防護等級",
-	"combat_prompt_confirm_spell": "確認施法：Enter　取消：Esc",
-	"combat_prompt_select_fighter_target": "選擇施法目標：左右切換　Enter：確認　Esc：取消",
-	"combat_prompt_select_fireball_center": "選擇火球中心：方向鍵移動　Enter：確認　Esc：取消",
-	"combat_prompt_select_sleep_center": "選擇睡眠術中心：方向鍵移動　Enter：確認　Esc：取消",
-	"combat_prompt_select_lightning_direction": "選擇閃電方向格：方向鍵移動　Enter：確認　Esc：取消",
-	"combat_prompt_select_stinking_cloud_corner": "選擇惡臭雲霧西北角：方向鍵移動　Enter：確認　Esc：取消",
-	"combat_prompt_select_cloudkill_center": "選擇致命毒雲中心：方向鍵移動　Enter：確認　Esc：取消",
-	"combat_prompt_move": "移動方向：方向鍵　剩餘 %d 格　取消：Esc",
-	"combat_hint_magic_missile": "S飛彈",
-	"combat_hint_sleep": "Z睡眠",
-	"combat_hint_fireball": "F火球",
-	"combat_hint_lightning_bolt": "L閃電",
-	"combat_hint_stinking_cloud": "N臭雲",
-	"combat_hint_cloudkill": "K毒雲",
-	"combat_hint_cure_light_wounds": "H治療",
-	"combat_hint_bless": "B祝福",
-	"combat_hint_curse": "C詛咒",
-	"combat_hint_cause_light_wounds": "W傷害",
-	"combat_hint_protection_from_evil": "P防邪",
-	"combat_hint_protection_from_good": "G防善",
-	"combat_target_status": "目標：%s",
-	"combat_quick_status": "快捷：%s",
-	"combat_visual_cloudkill_saved": "%s 抵抗了致命毒氣。",
-	"combat_visual_cloudkill_killed": "%s 中毒身亡。",
-	"combat_visual_stinking_cloud_saved": "%s 開始咳嗽。",
-	"combat_visual_stinking_cloud_failed": "%s 因噁心而窒息乾嘔，將有 %d 回合無法行動。",
-	"combat_visual_line_damage": "%s 受到 %d 點電擊傷害。",
-	"combat_visual_line_resisted": "%s 的魔法抗性抵消了閃電束。",
-	"combat_visual_fireball_resisted": "%s 的魔法抗性抵消了火球術。",
-	"combat_visual_line_save_succeeded": "%s 的法術豁免成功，傷害減半。",
-	"combat_visual_line_save_failed": "%s 的法術豁免失敗。",
-    "combat_magic_missile": "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。",
-    "combat_sleep": "%s 施放睡眠術，影響 %d 名目標；%d 名抵抗成功。",
-    "combat_magic_resisted": "%s 對 %s 施放的 %d 枚魔法飛彈遭魔法抗性抵消。",
-    "combat_fireball": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害。",
-    "combat_fireball_protected": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名受元素防護而未受傷。",
-    "combat_fireball_resisted": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名以魔法抗性抵消。",
-    "combat_fireball_protected_resisted": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名受元素防護、%d 名以魔法抗性抵消。",
-    "combat_lightning_bolt": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害。",
-    "combat_lightning_bolt_protected": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。",
-    "combat_lightning_bolt_resisted": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭魔法抗性抵消。",
-    "combat_lightning_bolt_protected_resisted": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護、%d 次遭魔法抗性抵消。",
-    "combat_monster_lightning_bolt": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害。",
-    "combat_monster_lightning_bolt_protected": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。",
-    "combat_monster_lightning_bolt_resisted": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭魔法抗性抵消。",
-    "combat_monster_lightning_bolt_protected_resisted": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護、%d 次遭魔法抗性抵消。",
-    "combat_monster_lightning_bolt_no_target": "%s 放出閃電，但沒有找到可用目標。",
-    "combat_stinking_cloud": "%s 製造一片惡臭雲霧，籠罩 %d 名目標。",
-    "combat_cloud_coughing": "%s 不斷咳嗽，無法行動。",
-    "combat_cloud_helpless": "%s 因噁心而動彈不得。",
-	"combat_cure_light_wounds": "%s 對 %s 施放治療輕傷，恢復 %d HP。",
-	"combat_bless": "%s 施放祝福，隊伍攻擊加值提高 1。",
-	"combat_curse": "%s 對 %s 施放詛咒，敵方攻擊加值降低 1。",
-	"combat_curse_immune": "%s 對 %s 施放詛咒，但目標與我方相鄰，法術未生效。",
-	"combat_cause_light_wounds": "%s 對 %s 施放造成輕傷，造成 %d 點傷害。",
-	"combat_protection_from_evil": "%s 對 %s 施放防護邪惡，效果持續 %d 回合。",
-	"combat_protection_from_good": "%s 對 %s 施放防護善良，效果持續 %d 回合。",
-	"combat_moved": "%s 移動到 (%d,%d)。",
-	"combat_free_attack": "移動時遭受免費反擊，受到 %d 點傷害。",
-	"combat_multi_attack": "%s 連續攻擊 %d 次，命中 %d 次，造成 %d 點傷害。",
-	"combat_hit_with_fire": "%s 攻擊 %s，造成 %d 點傷害；火焰再造成 %d 點傷害。",
-	"combat_hit_fire_protected": "%s 攻擊 %s，造成 %d 點傷害；追加火焰遭元素防護抵消。",
-	"combat_multi_attack_with_fire": "%s 連續攻擊 %d 次，命中 %d 次，造成 %d 點傷害；火焰追加 %d 點傷害。",
-	"combat_missile_adjacent_error": "飛彈武器不能攻擊相鄰目標。",
-	"combat_action_error": "無法執行戰鬥行動：%s",
-    "encounter_combat": "戰鬥",
-    "encounter_wait": "等待",
-    "encounter_flee": "撤退",
-    "encounter_advance": "接近",
-    "encounter_parlay": "談判"
-	,"encounter_flee_done": "你們成功撤退，返回荒野。"
-	,"parlay_menu_prompt": "選擇談判策略"
-	,"parlay_haughty": "傲慢"
-	,"parlay_sly": "狡猾"
-	,"parlay_meek": "謙卑"
-	,"parlay_nice": "友善"
-	,"parlay_abusive": "威嚇"
-	,"encounter_parlay_done": "你選擇以%s與怪物交涉；對方的反應仍待 encounter script。"
-    ,"journal_title": "冒險手札"
-	,"journal_empty": "目前尚未記錄任何手札條目。"
-	,"journal_page_status": "第 %d / %d 頁　左右：翻頁"
-	,"journal_display_page_status": "第 %d / %d 頁　左右：翻頁"
-    ,"journal_intro": "你們在提爾佛頓醒來，裝備全失，右臂下卻留下五枚蔚藍枷印。找出施術者，解除枷鎖。"
-    ,"journal_objective": "目前目標：補充裝備、查訪城中線索，追查蔚藍枷的來源。"
-    ,"journal_close": "Esc：返回"
-	,"camp_resting": "你們紮營休息。請保持警戒，旅途中的危險不會消失。"
-	,"camp_restored": "隊伍休息後恢復體力。"
-	,"camp_rest_menu_prompt": "休息設定"
-	,"camp_rest_start": "開始休息（%d 小時）"
-	,"camp_rest_add": "增加 24 小時"
-	,"camp_rest_subtract": "減少 24 小時"
-	,"camp_rest_exit": "返回紮營選單"
-	,"camp_rest_done": "休息 %d 小時完成，隊伍自然恢復 %d HP，完成 %d 名角色的法術記憶。"
-	,"camp_rest_insufficient": "休息 %d 小時不足以完成法術記憶（至少需要 %d 小時）；法術選擇仍保留。"
-    ,"camp_continue": "Enter：返回荒野"
-    ,"camp_menu_prompt": "紮營選單"
-    ,"camp_save": "儲存"
-    ,"camp_view": "查看"
-    ,"camp_magic": "法術"
-    ,"camp_rest": "休息"
-    ,"camp_alter": "修改"
-    ,"camp_fix": "修理"
-    ,"camp_exit": "離開"
-	,"camp_save_unavailable": "目前沒有可儲存的角色隊伍。"
-	,"camp_save_requested": "已要求儲存目前隊伍。"
-	,"camp_view_unavailable": "目前沒有可查看的角色。"
-	,"camp_view_prompt": "選擇要查看的角色"
-	,"camp_view_exit": "返回紮營選單"
-	,"camp_view_summary": "%s　%s　HP %d/%d　金幣 %d　寶石 %d　珠寶 %d　裝備：%s"
-	,"camp_magic_unavailable": "目前沒有可查看法術的角色。"
-	,"camp_magic_prompt": "選擇要查看法術的角色"
-	,"camp_magic_menu_prompt": "法術選單"
-	,"camp_magic_cast": "施法"
-	,"camp_magic_memorize": "記憶法術"
-	,"camp_magic_scribe": "抄錄"
-	,"camp_magic_display": "查看已記憶法術"
-	,"camp_magic_rest": "休息"
-	,"camp_magic_exit": "返回紮營選單"
-	,"camp_magic_view_exit": "返回法術選單"
-	,"camp_magic_pending": "此法術功能已進入資料邊界，完整規則仍待接入。"
-	,"camp_magic_memorize_prompt": "選擇要準備法術的角色"
-	,"camp_magic_memorize_character": "%s（已選 %d/%d）"
-	,"camp_magic_memorize_spell_prompt": "%s 的可用法術"
-	,"camp_magic_mem_done": "完成選擇"
-	,"camp_magic_mem_cancel": "取消此角色"
-	,"camp_magic_memorize_exit": "返回法術選單"
-	,"camp_magic_memorize_selected": "法術選擇已暫存，請在 REST 後完成記憶。"
-	,"camp_magic_memorize_full": "最多可選 %d 個法術。"
-	,"camp_magic_none": "目前沒有已記憶法術"
-	,"camp_magic_character": "%s（已記憶 %d 個法術／可用 %d 個）"
-	,"camp_magic_summary": "%s　法術欄位：%s　可用法術：%d 個"
-	,"camp_magic_cast_unknown": "目前只能在紮營施放 Cure Light Wounds；法術 0x%02X 尚待接入。"
-	,"camp_magic_cast_character_prompt": "選擇施法者"
-	,"camp_magic_cast_character": "%s（已記憶 %d 個法術）"
-	,"camp_magic_cast_exit": "返回法術選單"
-	,"camp_magic_cast_spell_prompt": "%s 要施放哪個法術？"
-	,"camp_magic_cast_target_prompt": "選擇 Cure Light Wounds 目標"
-	,"camp_magic_cast_no_target": "沒有需要治療的隊員，法術未消耗。"
-	,"camp_magic_cast_done": "%s 對 %s 施放 Cure Light Wounds，恢復 %d HP。"
-	,"spell_unknown": "未知法術 0x%02X"
-	,"spell_cleric_1": "祝福"
-	,"spell_cleric_2": "詛咒"
-	,"spell_cleric_3": "治療輕傷"
-	,"spell_cleric_4": "造成輕傷"
-	,"spell_cleric_5": "偵測魔法"
-	,"spell_cleric_6": "防護邪惡"
-	,"spell_cleric_7": "防護善良"
-	,"spell_cleric_8": "抵抗寒冷"
-	,"spell_magic_user_1": "燃燒之手"
-	,"spell_magic_user_2": "魅惑人類"
-	,"spell_magic_user_3": "偵測魔法"
-	,"spell_magic_user_4": "變巨術"
-	,"spell_magic_user_5": "縮小術"
-	,"spell_magic_user_6": "交友術"
-	,"spell_magic_user_7": "魔法飛彈"
-	,"spell_magic_user_8": "防護邪惡"
-	,"spell_magic_user_9": "防護善良"
-	,"spell_magic_user_10": "閱讀魔法"
-	,"spell_magic_user_11": "護盾術"
-	,"spell_magic_user_12": "電爪"
-	,"spell_magic_user_13": "睡眠術"
-	,"spell_magic_user_29": "偵測隱形"
-	,"spell_magic_user_30": "隱形術"
-	,"spell_magic_user_31": "敲擊術"
-	,"spell_magic_user_32": "鏡影術"
-	,"spell_magic_user_33": "衰弱射線"
-	,"spell_magic_user_34": "惡臭之雲"
-	,"spell_magic_user_35": "力量術"
-	,"spell_magic_user_45": "閃現術"
-	,"spell_magic_user_46": "解除魔法"
-	,"spell_magic_user_47": "火球術"
-	,"spell_magic_user_48": "加速術"
-	,"spell_magic_user_49": "人類定身術"
-	,"spell_magic_user_50": "十呎隱形術"
-	,"spell_magic_user_51": "閃電束"
-	,"spell_magic_user_52": "十呎防護邪惡"
-	,"spell_magic_user_53": "十呎防護善良"
-	,"spell_magic_user_54": "防護普通飛彈"
-	,"spell_magic_user_55": "緩慢術"
-	,"spell_magic_user_81": "魅惑怪物"
-	,"spell_magic_user_82": "困惑術"
-	,"spell_magic_user_83": "次元門"
-	,"spell_magic_user_84": "恐懼術"
-	,"spell_magic_user_85": "火焰護盾"
-	,"spell_magic_user_86": "笨拙術"
-	,"spell_magic_user_87": "冰風暴"
-	,"spell_magic_user_88": "次級法術無效結界"
-	,"spell_magic_user_89": "移除詛咒"
-	,"spell_magic_user_91": "死雲術"
-	,"spell_magic_user_92": "冰錐術"
-	,"spell_magic_user_93": "弱智術"
-	,"spell_magic_user_94": "怪物定身術"
-	,"spell_magic_user_100": "降咒術"
-	,"spell_druid_77": "德魯伊偵測魔法"
-	,"spell_druid_78": "糾纏術"
-	,"spell_druid_79": "妖火術"
-	,"spell_druid_80": "動物隱形術"
-    ,"camp_alter_unavailable": "角色修改功能尚待接入。"
-	,"camp_fix_unavailable": "沒有已記憶的 Cure Light Wounds，隊伍未改變。"
-	,"alter_prompt": "修改隊伍與遊戲設定"
-	,"alter_order": "順序"
-	,"alter_drop": "移除"
-	,"alter_speed": "速度"
-	,"alter_icon": "小人"
-	,"alter_pics": "圖片"
-	,"alter_exit": "離開"
-	,"alter_order_prompt": "選擇要移動的角色"
-	,"alter_order_destination_prompt": "選擇新的位置"
-	,"alter_order_destination": "第%d位：%s"
-	,"alter_order_exit": "返回修改選單"
-	,"alter_order_cancel": "取消"
-	,"alter_order_selected": "已選取角色，請選擇新的位置。"
-	,"alter_order_done": "隊伍順序已更新。"
-	,"alter_order_unavailable": "至少需要兩名角色才能調整順序。"
-	,"alter_drop_unavailable": "至少需要兩名角色才能移除角色。"
-	,"alter_drop_prompt": "選擇要移除的角色"
-	,"alter_drop_exit": "返回修改選單"
-	,"alter_drop_confirm_prompt": "確定要永久移除%s？"
-	,"alter_drop_confirm": "確認移除"
-	,"alter_drop_cancel": "取消"
-	,"alter_drop_warning": "移除後角色將從隊伍與存檔中刪除，無法復原。"
-	,"alter_drop_done": "角色已從隊伍移除。此操作無法復原。"
-	,"alter_drop_failed": "移除失敗：%v"
-	,"alter_drop_character": "%s（HP %d/%d）"
-	,"alter_speed_unavailable": "遊戲速度設定功能尚待接入。"
-	,"alter_speed_prompt": "訊息速度：第%d級"
-	,"alter_speed_slower": "較慢"
-	,"alter_speed_faster": "較快"
-	,"alter_speed_exit": "返回修改選單"
-	,"alter_icon_unavailable": "目前沒有可設定小人的角色。"
-	,"alter_icon_prompt": "選擇要設定小人的角色"
-	,"alter_icon_exit": "返回修改選單"
-	,"alter_icon_edit_prompt": "設定%s的小人"
-	,"alter_icon_head": "頭部：%02X"
-	,"alter_icon_head_prev": "頭部上一個"
-	,"alter_icon_head_next": "頭部下一個"
-	,"alter_icon_body": "身體：%02X"
-	,"alter_icon_body_prev": "身體上一個"
-	,"alter_icon_body_next": "身體下一個"
-	,"alter_icon_done": "完成"
-	,"alter_icon_character": "%s（頭部 %02X／身體 %02X）"
-	,"fix_no_cure": "沒有已記憶的 Cure Light Wounds，隊伍未改變。"
-	,"fix_done": "FIX 完成：施放 %d 次 Cure Light Wounds，共恢復 %d HP。"
-	,"alter_pics_unavailable": "遭遇圖片設定功能尚待接入。"
-	,"alter_pics_prompt": "遭遇圖片設定"
-	,"alter_pics_on": "開啟"
-	,"alter_pics_off": "關閉"
-	,"alter_pics_monsters": "怪物圖片：%s"
-	,"alter_pics_animations": "動畫：%s"
-	,"alter_pics_exit": "返回修改選單"
-	,"alter_rename": "改名"
-	,"alter_rename_prompt": "選擇要改名的角色"
-	,"alter_rename_character": "%s（%s）"
-	,"alter_rename_exit": "返回修改選單"
-	,"alter_rename_edit_prompt": "輸入 %s 的新名稱"
-	,"alter_rename_done": "%s 已改名為 %s。"
-	,"rename_input_value": "名稱：%s_"
-	,"rename_input_help": "Enter：確認　Backspace：刪除　Esc：取消"
-	,"pics_monsters_off_message": "遭遇圖片已關閉。"
-	,"item_unknown": "未翻譯物品(0x%02X)"
-	,"item_plus": "+%d %s"
-	,"item_cursed_suffix": "（詛咒）"
-	,"item_count": "%s ×%d"
-	,"item_type_01": "戰斧"
-	,"item_type_02": "手斧"
-	,"item_type_03": "巴迪什"
-	,"item_type_04": "科比爾德斧"
-	,"item_type_05": "比爾鉤斧"
-	,"item_type_06": "木棒"
-	,"item_type_07": "棍棒"
-	,"item_type_08": "匕首"
-	,"item_type_09": "飛鏢"
-	,"item_type_0A": "長柄彎刀"
-	,"item_type_0B": "叉刃長柄斧"
-	,"item_type_0C": "連枷"
-	,"item_type_0D": "軍用叉"
-	,"item_type_0E": "長柄刀"
-	,"item_type_0F": "長柄鉤刀"
-	,"item_type_10": "鉤刀"
-	,"item_type_11": "鉤鐮斧"
-	,"item_type_12": "長戟"
-	,"item_type_13": "鹿角錘"
-	,"item_type_14": "錘"
-	,"item_type_15": "標槍"
-	,"item_type_16": "喬棒"
-	,"item_type_17": "釘頭錘"
-	,"item_type_18": "晨星"
-	,"item_type_19": "帕提讚"
-	,"item_type_1A": "軍用鎬"
-	,"item_type_1B": "錐槍"
-	,"item_type_1C": "弩矢"
-	,"item_type_1D": "蘭瑟"
-	,"item_type_1E": "彎刀"
-	,"item_type_1F": "矛"
-	,"item_type_20": "斯佩特姆"
-	,"item_type_21": "四尺杖"
-	,"item_type_22": "闊刃大劍"
-	,"item_type_23": "闊劍"
-	,"item_type_24": "長劍"
-	,"item_type_25": "短劍"
-	,"item_type_26": "雙手劍"
-	,"item_type_27": "三叉戟"
-	,"item_type_28": "沃爾吉"
-	,"item_type_29": "複合長弓"
-	,"item_type_2A": "複合短弓"
-	,"item_type_2B": "長弓"
-	,"item_type_2C": "短弓"
-	,"item_type_2E": "輕弩"
-	,"item_type_2F": "投石索"
-	,"item_type_32": "皮甲"
-	,"item_type_33": "軟甲"
-	,"item_type_34": "鑲釘皮甲"
-	,"item_type_35": "環甲"
-	,"item_type_36": "鱗甲"
-	,"item_type_37": "鏈甲"
-	,"item_type_38": "板條甲"
-	,"item_type_39": "帶甲"
-	,"item_type_3A": "板甲"
-	,"item_type_3B": "盾牌"
-	,"item_type_3C": "防護卷軸"
-	,"item_type_3D": "魔法師卷軸"
-	,"item_type_3E": "牧師卷軸"
-	,"item_type_3F": "護手／手套"
-	,"item_type_40": "帽子"
-	,"item_type_41": "腰帶"
-	,"item_type_42": "長袍"
-	,"item_type_45": "隱形戒指"
-	,"item_type_46": "塵埃／伊奧恩石／項鍊"
-	,"item_type_47": "藥水／銀鏡"
-	,"item_type_49": "箭"
-	,"item_type_4D": "護腕"
-	,"item_type_4E": "魔法師魔杖"
-	,"item_type_4F": "魔杖"
-	,"item_type_54": "巨力藥水"
-	,"item_type_56": "油瓶"
-	,"item_type_5C": "偏移斗篷"
-	,"item_type_5D": "防護戒指"
-	,"item_type_5E": "卓爾釘頭錘"
-	,"item_type_5F": "精靈鏈甲"
-	,"item_type_60": "卓爾鏈甲"
-	,"item_type_61": "卓爾長劍"
-	,"item_type_62": "脊刺"
-	,"item_type_63": "魔法師戒指"
-	,"item_type_64": "黃蜂巢飛鏢"
-	,"item_type_65": "杖投石索"
-	,"item_name_24": "長劍"
-	,"item_name_25": "短劍"
-	,"item_name_26": "雙手劍"
-	,"item_name_37": "鏈甲"
-	,"item_name_3B": "盾牌"
-	,"item_name_3C": "防護卷軸"
-	,"item_name_3D": "魔法師卷軸"
-	,"item_name_3E": "牧師卷軸"
-	,"item_name_49": "箭"
-	,"item_name_4D": "護腕"
-	,"item_name_4F": "魔杖"
-	,"item_name_51": "魔法"
-	,"item_name_7D": "屠龍者"
-	,"item_name_80": "霜寒"
-	,"item_name_9F": "+1"
-	,"item_name_A0": "+2"
-	,"item_name_A1": "+3"
-	,"item_name_A2": "+4"
-	,"item_name_A3": "+5"
-	,"item_name_A4": "的"
-	,"item_name_A7": "偏移"
-	,"item_name_B5": "力量"
-	,"item_name_B6": "治療"
-	,"item_name_C5": "尋找"
-	,"item_name_C6": "-1"
-	,"item_name_C7": "-2"
-	,"item_name_C8": "-3"
-	,"item_name_CB": "魔法飛彈"
-	,"item_name_CC": "豁免"
-	,"item_name_CD": "牧師卷軸"
-	,"item_name_CE": "魔法師卷軸"
-	,"item_name_D2": "防護卷軸"
-	,"item_name_D3": "珠寶"
-	,"item_name_D4": "精製"
-	,"item_name_D5": "巨大"
-	,"item_name_D6": "骨製"
-	,"item_name_D7": "黃銅"
-	,"item_name_D9": "AC 2"
-	,"item_name_DA": "AC 6"
-	,"item_name_DB": "AC 4"
-	,"item_name_DC": "AC 3"
-	,"item_name_DD": "防護"
-	,"item_name_DE": "麻痺"
-	,"item_name_DF": "食人魔力量"
-	,"item_name_E0": "隱形"
-	,"item_name_E2": "精靈之力"
-	,"item_name_E8": "馬格魯比耶特"
-	,"item_name_EC": "巨人力量"
-	,"item_name_EE": "火焰舌"
-	,"item_name_F6": "泰爾"
-	,"item_name_F7": "坦帕斯"
-	,"item_name_F8": "蘇恩"
-	,"item_name_FA": "對不死生物 +3"
-	,"item_name_FC": "詛咒"
-	,"affect_unknown": "未翻譯效果(0x%02X)"
-	,"affect_kind_01": "祝福"
-	,"affect_kind_02": "詛咒"
-	,"affect_kind_08": "防護邪惡"
-	,"affect_kind_09": "防護善良"
-	,"affect_kind_0A": "抵抗寒冷"
-	,"affect_kind_18": "偵測隱形"
-	,"affect_kind_19": "隱形"
-	,"affect_kind_1C": "鏡像"
-	,"affect_kind_21": "目盲"
-	,"affect_kind_23": "困惑"
-	,"affect_kind_27": "加速"
-	,"affect_kind_28": "在臭雲中"
-	,"affect_kind_2A": "緩慢"
-	,"affect_kind_31": "祈禱"
-	,"affect_kind_34": "定身"
-	,"affect_kind_35": "沉睡"
-	,"affect_kind_37": "中毒"
-	,"affect_kind_3F": "小型無敵法球"
-	,"affect_kind_44": "智力衰退"
-	,"affect_kind_5A": "酸液吐息"
-    ,"creation_prompt": "選擇角色模板，Enter 加入隊伍；D 完成建立。"
-    ,"creation_added": "已加入：%s（目前 %d 人）"
-    ,"party_ready": "隊伍已建立。準備開始冒險。"
-    ,"creation_named": "角色名稱：%s"
-    ,"creation_ability_prompt": "左右選能力，上下調整數值。"
-    ,"creation_ability_updated": "能力值已調整為 %d。"
-    ,"creation_rerolled": "能力值已重擲，請確認職業最低值。"
-	,"creation_title": "建立冒險隊伍"
-	,"creation_name_input": "姓名：%s_"
-	,"creation_name_help": "輸入文字　Enter：確定　Esc：取消"
-	,"creation_ability_title": "編輯：%s（左右選能力，上下調整）"
-	,"creation_ability_row": "%s：%d"
-	,"creation_ability_help": "A／Esc：返回　Enter：加入隊伍"
-	,"creation_option_label": "%s（%s／%s）"
-	,"creation_progress": "選項 %d／%d　已加入：%d 人"
-	,"creation_help": "N：改名　A：能力值　R：重擲　Enter：加入　D：完成　Esc：取消"
-	,"ability_strength": "力量"
-	,"ability_intelligence": "智力"
-	,"ability_wisdom": "智慧"
-	,"ability_dexterity": "敏捷"
-	,"ability_constitution": "體質"
-	,"ability_charisma": "魅力"
-	,"race_dwarf": "矮人"
-	,"race_elf": "精靈"
-	,"race_gnome": "侏儒"
-	,"race_half_elf": "半精靈"
-	,"race_halfling": "半身人"
-	,"race_human": "人類"
-	,"race_half_orc": "半獸人"
-	,"race_unknown": "未知種族"
-	,"gender_male": "男性"
-	,"gender_female": "女性"
-	,"alignment_lawful_good": "守序善良"
-	,"alignment_lawful_neutral": "守序中立"
-	,"alignment_lawful_evil": "守序邪惡"
-	,"alignment_neutral_good": "中立善良"
-	,"alignment_true_neutral": "絕對中立"
-	,"alignment_neutral_evil": "中立邪惡"
-	,"alignment_chaotic_good": "混亂善良"
-	,"alignment_chaotic_neutral": "混亂中立"
-	,"alignment_chaotic_evil": "混亂邪惡"
-	,"creation_pick_race": "選擇種族"
-	,"creation_pick_gender": "選擇性別"
-	,"creation_pick_class": "選擇職業"
-	,"creation_pick_alignment": "選擇陣營"
-	,"creation_reroll_prompt": "重擲能力值？"
-	,"creation_name_prompt": "角色名稱："
-	,"creation_summary_age": "年齡：%d"
-	,"creation_summary_hp": "生命值：%d／%d"
-	,"creation_save_prompt": "要儲存 %s 嗎？"
-	,"creation_discarded": "已放棄這個角色。"
-	,"creation_name_hint": "輸入名字後按 Enter，Esc 放棄"
-	,"creation_save_hint": "Y 儲存　N 放棄"
-    ,"ecl_tilverton_inn_welcome": "「歡迎來到美麗的提爾佛頓！」"
-    ,"ecl_tilverton_inn_scowls": "旅店老闆娘笑容滿面地說，接著才注意到你們全都沉著臉。"
-    ,"ecl_tilverton_inn_calm": "「請先冷靜，讓我解釋。」"
-    ,"ecl_tilverton_inn_listen": "你們聽她說明，"
-    ,"ecl_tilverton_temple_sign": "你們看見上方招牌：剛德神殿。"
-    ,"ecl_tilverton_sewer_rumor": "穿過人群時，你們聽見：「我發誓，剛才聽到有女人在下水道尖叫。」"
-    ,"yes": "是"
-    ,"no": "否"
-    ,"tell_truth": "如實相告"
-    ,"lie": "說謊"
-    ,"ecl_filani_intro": "「我是賢者菲拉妮。你們是為了那些印記而來，"
-    ,"ecl_filani_correct": "對吧？」"
-    ,"ecl_filani_price": "「這個案例很有意思。我可以替你們研究，代價是你們"
-    ,"ecl_filani_funds": "一半的財物。你們身上有多少？」"
-    ,"ecl_filani_lie": "「別把賢者當成傻瓜。」她把你們趕了出去。"
-    ,"ecl_filani_no": "「那我們就沒什麼好談的了。」"
-    ,"ecl_move_away": "你們離開此處。"
-  }
+  "combat_speed_slower": "更慢",
+  "combat_speed_faster": "更快",
+  "combat_speed_value": "遊戲速度（%d）：%s",
+  "combat_hud_hit_points": "生命值",
+  "combat_hud_armor_class": "防護等級",
+  "combat_prompt_confirm_spell": "確認施法：Enter　取消：Esc",
+  "combat_prompt_select_fighter_target": "選擇施法目標：左右切換　Enter：確認　Esc：取消",
+  "combat_prompt_select_fireball_center": "選擇火球中心：方向鍵移動　Enter：確認　Esc：取消",
+  "combat_prompt_select_sleep_center": "選擇睡眠術中心：方向鍵移動　Enter：確認　Esc：取消",
+  "combat_prompt_select_lightning_direction": "選擇閃電方向格：方向鍵移動　Enter：確認　Esc：取消",
+  "combat_prompt_select_stinking_cloud_corner": "選擇惡臭雲霧西北角：方向鍵移動　Enter：確認　Esc：取消",
+  "combat_prompt_select_cloudkill_center": "選擇致命毒雲中心：方向鍵移動　Enter：確認　Esc：取消",
+  "combat_prompt_move": "移動方向：方向鍵　剩餘 %d 格　取消：Esc",
+  "combat_hint_magic_missile": "S飛彈",
+  "combat_hint_sleep": "Z睡眠",
+  "combat_hint_fireball": "F火球",
+  "combat_hint_lightning_bolt": "L閃電",
+  "combat_hint_stinking_cloud": "N臭雲",
+  "combat_hint_cloudkill": "K毒雲",
+  "combat_hint_cure_light_wounds": "H治療",
+  "combat_hint_bless": "B祝福",
+  "combat_hint_curse": "C詛咒",
+  "combat_hint_cause_light_wounds": "W傷害",
+  "combat_hint_protection_from_evil": "P防邪",
+  "combat_hint_protection_from_good": "G防善",
+  "combat_target_status": "目標：%s",
+  "combat_quick_status": "快捷：%s",
+  "combat_visual_cloudkill_saved": "%s 抵抗了致命毒氣。",
+  "combat_visual_cloudkill_killed": "%s 中毒身亡。",
+  "combat_visual_stinking_cloud_saved": "%s 開始咳嗽。",
+  "combat_visual_stinking_cloud_failed": "%s 因噁心而窒息乾嘔，將有 %d 回合無法行動。",
+  "combat_visual_line_damage": "%s 受到 %d 點電擊傷害。",
+  "combat_visual_line_resisted": "%s 的魔法抗性抵消了閃電束。",
+  "combat_visual_fireball_resisted": "%s 的魔法抗性抵消了火球術。",
+  "combat_visual_line_save_succeeded": "%s 的法術豁免成功，傷害減半。",
+  "combat_visual_line_save_failed": "%s 的法術豁免失敗。",
+  "combat_magic_missile": "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。",
+  "combat_sleep": "%s 施放睡眠術，影響 %d 名目標；%d 名抵抗成功。",
+  "combat_magic_resisted": "%s 對 %s 施放的 %d 枚魔法飛彈遭魔法抗性抵消。",
+  "combat_fireball": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害。",
+  "combat_fireball_protected": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名受元素防護而未受傷。",
+  "combat_fireball_resisted": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名以魔法抗性抵消。",
+  "combat_fireball_protected_resisted": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名受元素防護、%d 名以魔法抗性抵消。",
+  "combat_lightning_bolt": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害。",
+  "combat_lightning_bolt_protected": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。",
+  "combat_lightning_bolt_resisted": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭魔法抗性抵消。",
+  "combat_lightning_bolt_protected_resisted": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護、%d 次遭魔法抗性抵消。",
+  "combat_monster_lightning_bolt": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害。",
+  "combat_monster_lightning_bolt_protected": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。",
+  "combat_monster_lightning_bolt_resisted": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭魔法抗性抵消。",
+  "combat_monster_lightning_bolt_protected_resisted": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護、%d 次遭魔法抗性抵消。",
+  "combat_monster_lightning_bolt_no_target": "%s 放出閃電，但沒有找到可用目標。",
+  "combat_stinking_cloud": "%s 製造一片惡臭雲霧，籠罩 %d 名目標。",
+  "combat_cloud_coughing": "%s 不斷咳嗽，無法行動。",
+  "combat_cloud_helpless": "%s 因噁心而動彈不得。",
+  "combat_cure_light_wounds": "%s 對 %s 施放治療輕傷，恢復 %d HP。",
+  "combat_bless": "%s 施放祝福，隊伍攻擊加值提高 1。",
+  "combat_curse": "%s 對 %s 施放詛咒，敵方攻擊加值降低 1。",
+  "combat_curse_immune": "%s 對 %s 施放詛咒，但目標與我方相鄰，法術未生效。",
+  "combat_cause_light_wounds": "%s 對 %s 施放造成輕傷，造成 %d 點傷害。",
+  "combat_protection_from_evil": "%s 對 %s 施放防護邪惡，效果持續 %d 回合。",
+  "combat_protection_from_good": "%s 對 %s 施放防護善良，效果持續 %d 回合。",
+  "combat_moved": "%s 移動到 (%d,%d)。",
+  "combat_free_attack": "移動時遭受免費反擊，受到 %d 點傷害。",
+  "combat_multi_attack": "%s 連續攻擊 %d 次，命中 %d 次，造成 %d 點傷害。",
+  "combat_hit_with_fire": "%s 攻擊 %s，造成 %d 點傷害；火焰再造成 %d 點傷害。",
+  "combat_hit_fire_protected": "%s 攻擊 %s，造成 %d 點傷害；追加火焰遭元素防護抵消。",
+  "combat_multi_attack_with_fire": "%s 連續攻擊 %d 次，命中 %d 次，造成 %d 點傷害；火焰追加 %d 點傷害。",
+  "combat_missile_adjacent_error": "飛彈武器不能攻擊相鄰目標。",
+  "combat_action_error": "無法執行戰鬥行動：%s",
+  "encounter_combat": "戰鬥",
+  "encounter_wait": "等待",
+  "encounter_flee": "撤退",
+  "encounter_advance": "接近",
+  "encounter_parlay": "談判",
+  "encounter_flee_done": "你們成功撤退，返回荒野。",
+  "parlay_menu_prompt": "選擇談判策略",
+  "parlay_haughty": "傲慢",
+  "parlay_sly": "狡猾",
+  "parlay_meek": "謙卑",
+  "parlay_nice": "友善",
+  "parlay_abusive": "威嚇",
+  "encounter_parlay_done": "你選擇以%s與怪物交涉；對方的反應仍待 encounter script。",
+  "journal_title": "冒險手札",
+  "journal_empty": "目前尚未記錄任何手札條目。",
+  "journal_page_status": "第 %d / %d 頁　左右：翻頁",
+  "journal_display_page_status": "第 %d / %d 頁　左右：翻頁",
+  "journal_intro": "你們在提爾佛頓醒來，裝備全失，右臂下卻留下五枚青色枷印。找出施術者，解除枷鎖。",
+  "journal_objective": "目前目標：補充裝備、查訪城中線索，追查青色枷的來源。",
+  "journal_close": "Esc：返回",
+  "camp_resting": "你們紮營休息。請保持警戒，旅途中的危險不會消失。",
+  "camp_restored": "隊伍休息後恢復體力。",
+  "camp_rest_menu_prompt": "休息設定",
+  "camp_rest_start": "開始休息（%d 小時）",
+  "camp_rest_add": "增加 24 小時",
+  "camp_rest_subtract": "減少 24 小時",
+  "camp_rest_exit": "返回紮營選單",
+  "camp_rest_done": "休息 %d 小時完成，隊伍自然恢復 %d HP，完成 %d 名角色的法術記憶。",
+  "camp_rest_insufficient": "休息 %d 小時不足以完成法術記憶（至少需要 %d 小時）；法術選擇仍保留。",
+  "camp_continue": "Enter：返回荒野",
+  "camp_menu_prompt": "紮營選單",
+  "camp_save": "儲存",
+  "camp_view": "查看",
+  "camp_magic": "法術",
+  "camp_rest": "休息",
+  "camp_alter": "修改",
+  "camp_fix": "修理",
+  "camp_exit": "離開",
+  "camp_save_unavailable": "目前沒有可儲存的角色隊伍。",
+  "camp_save_requested": "已要求儲存目前隊伍。",
+  "camp_view_unavailable": "目前沒有可查看的角色。",
+  "camp_view_prompt": "選擇要查看的角色",
+  "camp_view_exit": "返回紮營選單",
+  "camp_view_summary": "%s　%s　HP %d/%d　金幣 %d　寶石 %d　珠寶 %d　裝備：%s",
+  "camp_magic_unavailable": "目前沒有可查看法術的角色。",
+  "camp_magic_prompt": "選擇要查看法術的角色",
+  "camp_magic_menu_prompt": "法術選單",
+  "camp_magic_cast": "施法",
+  "camp_magic_memorize": "記憶法術",
+  "camp_magic_scribe": "抄錄",
+  "camp_magic_display": "查看已記憶法術",
+  "camp_magic_rest": "休息",
+  "camp_magic_exit": "返回紮營選單",
+  "camp_magic_view_exit": "返回法術選單",
+  "camp_magic_pending": "此法術功能已進入資料邊界，完整規則仍待接入。",
+  "camp_magic_memorize_prompt": "選擇要準備法術的角色",
+  "camp_magic_memorize_character": "%s（已選 %d/%d）",
+  "camp_magic_memorize_spell_prompt": "%s 的可用法術",
+  "camp_magic_mem_done": "完成選擇",
+  "camp_magic_mem_cancel": "取消此角色",
+  "camp_magic_memorize_exit": "返回法術選單",
+  "camp_magic_memorize_selected": "法術選擇已暫存，請在 REST 後完成記憶。",
+  "camp_magic_memorize_full": "最多可選 %d 個法術。",
+  "camp_magic_none": "目前沒有已記憶法術",
+  "camp_magic_character": "%s（已記憶 %d 個法術／可用 %d 個）",
+  "camp_magic_summary": "%s　法術欄位：%s　可用法術：%d 個",
+  "camp_magic_cast_unknown": "目前只能在紮營施放 Cure Light Wounds；法術 0x%02X 尚待接入。",
+  "camp_magic_cast_character_prompt": "選擇施法者",
+  "camp_magic_cast_character": "%s（已記憶 %d 個法術）",
+  "camp_magic_cast_exit": "返回法術選單",
+  "camp_magic_cast_spell_prompt": "%s 要施放哪個法術？",
+  "camp_magic_cast_target_prompt": "選擇 Cure Light Wounds 目標",
+  "camp_magic_cast_no_target": "沒有需要治療的隊員，法術未消耗。",
+  "camp_magic_cast_done": "%s 對 %s 施放 Cure Light Wounds，恢復 %d HP。",
+  "spell_unknown": "未知法術 0x%02X",
+  "spell_cleric_1": "祝福",
+  "spell_cleric_2": "詛咒",
+  "spell_cleric_3": "治療輕傷",
+  "spell_cleric_4": "造成輕傷",
+  "spell_cleric_5": "偵測魔法",
+  "spell_cleric_6": "防護邪惡",
+  "spell_cleric_7": "防護善良",
+  "spell_cleric_8": "抵抗寒冷",
+  "spell_magic_user_1": "燃燒之手",
+  "spell_magic_user_2": "魅惑人類",
+  "spell_magic_user_3": "偵測魔法",
+  "spell_magic_user_4": "變巨術",
+  "spell_magic_user_5": "縮小術",
+  "spell_magic_user_6": "交友術",
+  "spell_magic_user_7": "魔法飛彈",
+  "spell_magic_user_8": "防護邪惡",
+  "spell_magic_user_9": "防護善良",
+  "spell_magic_user_10": "閱讀魔法",
+  "spell_magic_user_11": "護盾術",
+  "spell_magic_user_12": "電爪",
+  "spell_magic_user_13": "睡眠術",
+  "spell_magic_user_29": "偵測隱形",
+  "spell_magic_user_30": "隱形術",
+  "spell_magic_user_31": "敲擊術",
+  "spell_magic_user_32": "鏡影術",
+  "spell_magic_user_33": "衰弱射線",
+  "spell_magic_user_34": "惡臭之雲",
+  "spell_magic_user_35": "力量術",
+  "spell_magic_user_45": "閃現術",
+  "spell_magic_user_46": "解除魔法",
+  "spell_magic_user_47": "火球術",
+  "spell_magic_user_48": "加速術",
+  "spell_magic_user_49": "人類定身術",
+  "spell_magic_user_50": "十呎隱形術",
+  "spell_magic_user_51": "閃電束",
+  "spell_magic_user_52": "十呎防護邪惡",
+  "spell_magic_user_53": "十呎防護善良",
+  "spell_magic_user_54": "防護普通飛彈",
+  "spell_magic_user_55": "緩慢術",
+  "spell_magic_user_81": "魅惑怪物",
+  "spell_magic_user_82": "困惑術",
+  "spell_magic_user_83": "次元門",
+  "spell_magic_user_84": "恐懼術",
+  "spell_magic_user_85": "火焰護盾",
+  "spell_magic_user_86": "笨拙術",
+  "spell_magic_user_87": "冰風暴",
+  "spell_magic_user_88": "次級法術無效結界",
+  "spell_magic_user_89": "移除詛咒",
+  "spell_magic_user_91": "死雲術",
+  "spell_magic_user_92": "冰錐術",
+  "spell_magic_user_93": "弱智術",
+  "spell_magic_user_94": "怪物定身術",
+  "spell_magic_user_100": "降咒術",
+  "spell_druid_77": "德魯伊偵測魔法",
+  "spell_druid_78": "糾纏術",
+  "spell_druid_79": "妖火術",
+  "spell_druid_80": "動物隱形術",
+  "camp_alter_unavailable": "角色修改功能尚待接入。",
+  "camp_fix_unavailable": "沒有已記憶的 Cure Light Wounds，隊伍未改變。",
+  "alter_prompt": "修改隊伍與遊戲設定",
+  "alter_order": "順序",
+  "alter_drop": "移除",
+  "alter_speed": "速度",
+  "alter_icon": "小人",
+  "alter_pics": "圖片",
+  "alter_exit": "離開",
+  "alter_order_prompt": "選擇要移動的角色",
+  "alter_order_destination_prompt": "選擇新的位置",
+  "alter_order_destination": "第%d位：%s",
+  "alter_order_exit": "返回修改選單",
+  "alter_order_cancel": "取消",
+  "alter_order_selected": "已選取角色，請選擇新的位置。",
+  "alter_order_done": "隊伍順序已更新。",
+  "alter_order_unavailable": "至少需要兩名角色才能調整順序。",
+  "alter_drop_unavailable": "至少需要兩名角色才能移除角色。",
+  "alter_drop_prompt": "選擇要移除的角色",
+  "alter_drop_exit": "返回修改選單",
+  "alter_drop_confirm_prompt": "確定要永久移除%s？",
+  "alter_drop_confirm": "確認移除",
+  "alter_drop_cancel": "取消",
+  "alter_drop_warning": "移除後角色將從隊伍與存檔中刪除，無法復原。",
+  "alter_drop_done": "角色已從隊伍移除。此操作無法復原。",
+  "alter_drop_failed": "移除失敗：%v",
+  "alter_drop_character": "%s（HP %d/%d）",
+  "alter_speed_unavailable": "遊戲速度設定功能尚待接入。",
+  "alter_speed_prompt": "訊息速度：第%d級",
+  "alter_speed_slower": "較慢",
+  "alter_speed_faster": "較快",
+  "alter_speed_exit": "返回修改選單",
+  "alter_icon_unavailable": "目前沒有可設定小人的角色。",
+  "alter_icon_prompt": "選擇要設定小人的角色",
+  "alter_icon_exit": "返回修改選單",
+  "alter_icon_edit_prompt": "設定%s的小人",
+  "alter_icon_head": "頭部：%02X",
+  "alter_icon_head_prev": "頭部上一個",
+  "alter_icon_head_next": "頭部下一個",
+  "alter_icon_body": "身體：%02X",
+  "alter_icon_body_prev": "身體上一個",
+  "alter_icon_body_next": "身體下一個",
+  "alter_icon_done": "完成",
+  "alter_icon_character": "%s（頭部 %02X／身體 %02X）",
+  "fix_no_cure": "沒有已記憶的 Cure Light Wounds，隊伍未改變。",
+  "fix_done": "FIX 完成：施放 %d 次 Cure Light Wounds，共恢復 %d HP。",
+  "alter_pics_unavailable": "遭遇圖片設定功能尚待接入。",
+  "alter_pics_prompt": "遭遇圖片設定",
+  "alter_pics_on": "開啟",
+  "alter_pics_off": "關閉",
+  "alter_pics_monsters": "怪物圖片：%s",
+  "alter_pics_animations": "動畫：%s",
+  "alter_pics_exit": "返回修改選單",
+  "alter_rename": "改名",
+  "alter_rename_prompt": "選擇要改名的角色",
+  "alter_rename_character": "%s（%s）",
+  "alter_rename_exit": "返回修改選單",
+  "alter_rename_edit_prompt": "輸入 %s 的新名稱",
+  "alter_rename_done": "%s 已改名為 %s。",
+  "rename_input_value": "名稱：%s_",
+  "rename_input_help": "Enter：確認　Backspace：刪除　Esc：取消",
+  "pics_monsters_off_message": "遭遇圖片已關閉。",
+  "item_unknown": "未翻譯物品(0x%02X)",
+  "item_plus": "+%d %s",
+  "item_cursed_suffix": "（詛咒）",
+  "item_count": "%s ×%d",
+  "item_type_01": "戰斧",
+  "item_type_02": "手斧",
+  "item_type_03": "巴迪什",
+  "item_type_04": "科比爾德斧",
+  "item_type_05": "比爾鉤斧",
+  "item_type_06": "木棒",
+  "item_type_07": "棍棒",
+  "item_type_08": "匕首",
+  "item_type_09": "飛鏢",
+  "item_type_0A": "長柄彎刀",
+  "item_type_0B": "叉刃長柄斧",
+  "item_type_0C": "連枷",
+  "item_type_0D": "軍用叉",
+  "item_type_0E": "長柄刀",
+  "item_type_0F": "長柄鉤刀",
+  "item_type_10": "鉤刀",
+  "item_type_11": "鉤鐮斧",
+  "item_type_12": "長戟",
+  "item_type_13": "鹿角錘",
+  "item_type_14": "錘",
+  "item_type_15": "標槍",
+  "item_type_16": "喬棒",
+  "item_type_17": "釘頭錘",
+  "item_type_18": "晨星",
+  "item_type_19": "帕提讚",
+  "item_type_1A": "軍用鎬",
+  "item_type_1B": "錐槍",
+  "item_type_1C": "弩矢",
+  "item_type_1D": "蘭瑟",
+  "item_type_1E": "彎刀",
+  "item_type_1F": "矛",
+  "item_type_20": "斯佩特姆",
+  "item_type_21": "四尺杖",
+  "item_type_22": "闊刃大劍",
+  "item_type_23": "闊劍",
+  "item_type_24": "長劍",
+  "item_type_25": "短劍",
+  "item_type_26": "雙手劍",
+  "item_type_27": "三叉戟",
+  "item_type_28": "沃爾吉",
+  "item_type_29": "複合長弓",
+  "item_type_2A": "複合短弓",
+  "item_type_2B": "長弓",
+  "item_type_2C": "短弓",
+  "item_type_2E": "輕弩",
+  "item_type_2F": "投石索",
+  "item_type_32": "皮甲",
+  "item_type_33": "軟甲",
+  "item_type_34": "鑲釘皮甲",
+  "item_type_35": "環甲",
+  "item_type_36": "鱗甲",
+  "item_type_37": "鏈甲",
+  "item_type_38": "板條甲",
+  "item_type_39": "帶甲",
+  "item_type_3A": "板甲",
+  "item_type_3B": "盾牌",
+  "item_type_3C": "防護卷軸",
+  "item_type_3D": "魔法師卷軸",
+  "item_type_3E": "牧師卷軸",
+  "item_type_3F": "護手／手套",
+  "item_type_40": "帽子",
+  "item_type_41": "腰帶",
+  "item_type_42": "長袍",
+  "item_type_45": "隱形戒指",
+  "item_type_46": "塵埃／伊奧恩石／項鍊",
+  "item_type_47": "藥水／銀鏡",
+  "item_type_49": "箭",
+  "item_type_4D": "護腕",
+  "item_type_4E": "魔法師魔杖",
+  "item_type_4F": "魔杖",
+  "item_type_54": "巨力藥水",
+  "item_type_56": "油瓶",
+  "item_type_5C": "偏移斗篷",
+  "item_type_5D": "防護戒指",
+  "item_type_5E": "卓爾釘頭錘",
+  "item_type_5F": "精靈鏈甲",
+  "item_type_60": "卓爾鏈甲",
+  "item_type_61": "卓爾長劍",
+  "item_type_62": "脊刺",
+  "item_type_63": "魔法師戒指",
+  "item_type_64": "黃蜂巢飛鏢",
+  "item_type_65": "杖投石索",
+  "item_name_24": "長劍",
+  "item_name_25": "短劍",
+  "item_name_26": "雙手劍",
+  "item_name_37": "鏈甲",
+  "item_name_3B": "盾牌",
+  "item_name_3C": "防護卷軸",
+  "item_name_3D": "魔法師卷軸",
+  "item_name_3E": "牧師卷軸",
+  "item_name_49": "箭",
+  "item_name_4D": "護腕",
+  "item_name_4F": "魔杖",
+  "item_name_51": "魔法",
+  "item_name_7D": "屠龍者",
+  "item_name_80": "霜寒",
+  "item_name_9F": "+1",
+  "item_name_A0": "+2",
+  "item_name_A1": "+3",
+  "item_name_A2": "+4",
+  "item_name_A3": "+5",
+  "item_name_A4": "的",
+  "item_name_A7": "偏移",
+  "item_name_B5": "力量",
+  "item_name_B6": "治療",
+  "item_name_C5": "尋找",
+  "item_name_C6": "-1",
+  "item_name_C7": "-2",
+  "item_name_C8": "-3",
+  "item_name_CB": "魔法飛彈",
+  "item_name_CC": "豁免",
+  "item_name_CD": "牧師卷軸",
+  "item_name_CE": "魔法師卷軸",
+  "item_name_D2": "防護卷軸",
+  "item_name_D3": "珠寶",
+  "item_name_D4": "精製",
+  "item_name_D5": "巨大",
+  "item_name_D6": "骨製",
+  "item_name_D7": "黃銅",
+  "item_name_D9": "AC 2",
+  "item_name_DA": "AC 6",
+  "item_name_DB": "AC 4",
+  "item_name_DC": "AC 3",
+  "item_name_DD": "防護",
+  "item_name_DE": "麻痺",
+  "item_name_DF": "食人魔力量",
+  "item_name_E0": "隱形",
+  "item_name_E2": "精靈之力",
+  "item_name_E8": "馬格魯比耶特",
+  "item_name_EC": "巨人力量",
+  "item_name_EE": "火焰舌",
+  "item_name_F6": "泰爾",
+  "item_name_F7": "坦帕斯",
+  "item_name_F8": "蘇恩",
+  "item_name_FA": "對不死生物 +3",
+  "item_name_FC": "詛咒",
+  "affect_unknown": "未翻譯效果(0x%02X)",
+  "affect_kind_01": "祝福",
+  "affect_kind_02": "詛咒",
+  "affect_kind_08": "防護邪惡",
+  "affect_kind_09": "防護善良",
+  "affect_kind_0A": "抵抗寒冷",
+  "affect_kind_18": "偵測隱形",
+  "affect_kind_19": "隱形",
+  "affect_kind_1C": "鏡像",
+  "affect_kind_21": "目盲",
+  "affect_kind_23": "困惑",
+  "affect_kind_27": "加速",
+  "affect_kind_28": "在臭雲中",
+  "affect_kind_2A": "緩慢",
+  "affect_kind_31": "祈禱",
+  "affect_kind_34": "定身",
+  "affect_kind_35": "沉睡",
+  "affect_kind_37": "中毒",
+  "affect_kind_3F": "小型無敵法球",
+  "affect_kind_44": "智力衰退",
+  "affect_kind_5A": "酸液吐息",
+  "creation_prompt": "選擇角色模板，Enter 加入隊伍；D 完成建立。",
+  "creation_added": "已加入：%s（目前 %d 人）",
+  "party_ready": "隊伍已建立。準備開始冒險。",
+  "creation_named": "角色名稱：%s",
+  "creation_ability_prompt": "左右選能力，上下調整數值。",
+  "creation_ability_updated": "能力值已調整為 %d。",
+  "creation_rerolled": "能力值已重擲，請確認職業最低值。",
+  "creation_title": "建立冒險隊伍",
+  "creation_name_input": "姓名：%s_",
+  "creation_name_help": "輸入文字　Enter：確定　Esc：取消",
+  "creation_ability_title": "編輯：%s（左右選能力，上下調整）",
+  "creation_ability_row": "%s：%d",
+  "creation_ability_help": "A／Esc：返回　Enter：加入隊伍",
+  "creation_option_label": "%s（%s／%s）",
+  "creation_progress": "選項 %d／%d　已加入：%d 人",
+  "creation_help": "N：改名　A：能力值　R：重擲　Enter：加入　D：完成　Esc：取消",
+  "ability_strength": "力量",
+  "ability_intelligence": "智力",
+  "ability_wisdom": "智慧",
+  "ability_dexterity": "敏捷",
+  "ability_constitution": "體質",
+  "ability_charisma": "魅力",
+  "race_dwarf": "矮人",
+  "race_elf": "精靈",
+  "race_gnome": "侏儒",
+  "race_half_elf": "半精靈",
+  "race_halfling": "半身人",
+  "race_human": "人類",
+  "race_half_orc": "半獸人",
+  "race_unknown": "未知種族",
+  "gender_male": "男性",
+  "gender_female": "女性",
+  "alignment_lawful_good": "守序善良",
+  "alignment_lawful_neutral": "守序中立",
+  "alignment_lawful_evil": "守序邪惡",
+  "alignment_neutral_good": "中立善良",
+  "alignment_true_neutral": "絕對中立",
+  "alignment_neutral_evil": "中立邪惡",
+  "alignment_chaotic_good": "混亂善良",
+  "alignment_chaotic_neutral": "混亂中立",
+  "alignment_chaotic_evil": "混亂邪惡",
+  "creation_pick_race": "選擇種族",
+  "creation_pick_gender": "選擇性別",
+  "creation_pick_class": "選擇職業",
+  "creation_pick_alignment": "選擇陣營",
+  "creation_reroll_prompt": "重擲能力值？",
+  "creation_name_prompt": "角色名稱：",
+  "creation_summary_age": "年齡：%d",
+  "creation_summary_hp": "生命值：%d／%d",
+  "creation_save_prompt": "要儲存 %s 嗎？",
+  "creation_discarded": "已放棄這個角色。",
+  "creation_name_hint": "輸入名字後按 Enter，Esc 放棄",
+  "creation_save_hint": "Y 儲存　N 放棄",
+  "ecl_tilverton_inn_welcome": "「歡迎來到美麗的提爾佛頓！」",
+  "ecl_tilverton_inn_scowls": "旅店老闆娘笑容滿面地說，接著才注意到你們全都沉著臉。",
+  "ecl_tilverton_inn_calm": "「請先冷靜，讓我解釋。」",
+  "ecl_tilverton_inn_listen": "你們聽她說明，",
+  "ecl_tilverton_temple_sign": "你們看見上方招牌：剛德神殿。",
+  "ecl_tilverton_sewer_rumor": "穿過人群時，你們聽見：「我發誓，剛才聽到有女人在下水道尖叫。」",
+  "yes": "是",
+  "no": "否",
+  "tell_truth": "如實相告",
+  "lie": "說謊",
+  "ecl_filani_intro": "「我是賢者菲拉妮。你們是為了那些印記而來，",
+  "ecl_filani_correct": "對吧？」",
+  "ecl_filani_price": "「這個案例很有意思。我可以替你們研究，代價是你們",
+  "ecl_filani_funds": "一半的財物。你們身上有多少？」",
+  "ecl_filani_lie": "「別把賢者當成傻瓜。」她把你們趕了出去。",
+  "ecl_filani_no": "「那我們就沒什麼好談的了。」",
+  "ecl_move_away": "你們離開此處。"
+ }
 }
