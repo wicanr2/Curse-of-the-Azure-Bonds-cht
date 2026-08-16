@@ -323,12 +323,13 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		t.Fatalf("normal west step state=(%d,%d,%d) roof=%#x, want (6,13,6) roof=0x86",
 			state.DungeonX, state.DungeonY, state.DungeonDirection, state.DungeonWallRoof)
 	}
-	wantInnWelcome := state.catalog.Text("ecl_tilverton_inn_welcome", "ecl_tilverton_inn_welcome")
-	wantInnScowls := state.catalog.Text("ecl_tilverton_inn_scowls", "ecl_tilverton_inn_scowls")
+	// 這一頁原本靠 `localizeECLLine` 逐行翻，現在由 game pack 的整頁規則接手
+	// （`ENG-01`）。整頁規則排在逐行表前面，所以斷言要對著 game pack；
+	// 逐行表仍留著給還沒寫規則的行，兩者不是二選一。
+	wantInnWelcome := requireGamePackText(t, &state, "tilverton.inn.innkeeper-welcome")
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 3 ||
 		!state.SceneCharacterRequested || state.SceneHeadBlock != 3 || state.SceneBodyBlock != 3 ||
-		!strings.Contains(state.Message, wantInnWelcome) ||
-		!strings.Contains(state.Message, wantInnScowls) {
+		!strings.Contains(state.Message, wantInnWelcome) {
 		registers := make([]uint16, 0, 5)
 		for address := uint16(0xC04B); address <= 0xC04F; address++ {
 			value, _ := state.session.MemoryValue(address)
@@ -527,7 +528,8 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 5 ||
 		!state.SceneCharacterRequested || state.SceneHeadBlock != 5 || state.SceneBodyBlock != 5 ||
-		!strings.Contains(state.Message, "賢者菲拉妮") || !strings.Contains(state.Message, "印記") {
+		!strings.Contains(state.Message,
+			requireGamePackText(t, &state, "tilverton.filani.introduces")) {
 		t.Fatalf("Filani introduction mode=%v picture=%v:%d head/body=%d/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock,
 			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
@@ -544,7 +546,8 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	}
 	if state.Mode != ModeWilderness || len(state.Choices) != 3 ||
 		state.Choices[0] != "如實相告" || state.Choices[1] != "說謊" ||
-		!strings.Contains(state.Message, "一半的財物") {
+		!strings.Contains(state.Message,
+			requireGamePackText(t, &state, "tilverton.filani.half-your-funds")) {
 		t.Fatalf("Filani truth menu mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -567,8 +570,11 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
+	// 這一頁的原作文字就只有 `YOU MOVE AWAY.`，由 game pack 的 `world.move-away`
+	// 接。⚠ 那條規則排在 text_rules **最後一條**：它的片段短到會命中任何含這句話
+	// 的 run，排前面就會把商店、賢者、神殿的道別頁全部攔走。
 	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, "離開此處") {
+		!strings.Contains(state.Message, requireGamePackText(t, &state, "world.move-away")) {
 		t.Fatalf("Filani departure pause mode=%v choices=%v message=%q",
 			state.Mode, state.Choices, state.Message)
 	}
@@ -885,7 +891,8 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 4 ||
 		!state.SceneCharacterRequested || state.SceneHeadBlock != 4 || state.SceneBodyBlock != 4 ||
-		state.Message != facilityCatalog.Text("ecl_tavern_pleasure", "") {
+		!strings.Contains(state.Message,
+			requireGamePackText(t, &state, "tilverton.tavern.whats-your-pleasure")) {
 		t.Fatalf("tavern picture mode=%v picture=%v:%d head/body=%d/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock,
 			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
@@ -914,14 +921,14 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	}
 	if len(state.Choices) != 2 || state.Choices[0] != facilityCatalog.Text("yes", "") ||
 		state.Choices[1] != facilityCatalog.Text("no", "") ||
-		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_special_1", "")) {
+		!strings.Contains(state.Message, requireGamePackText(t, &state, "tilverton.tavern.special-customer")) {
 		t.Fatalf("tavern special-customer prompt choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
 	if len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_purple_2", "")) {
+		!strings.Contains(state.Message, requireGamePackText(t, &state, "tilverton.tavern.purple-sash-slips-in")) {
 		t.Fatalf("tavern purple-sash pause choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -929,8 +936,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	}
 	if len(state.Choices) != 2 || state.Choices[0] != facilityCatalog.Text("yes", "") ||
 		state.Choices[1] != facilityCatalog.Text("no", "") ||
-		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_commotion_2", "")) ||
-		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_commotion_3", "")) {
+		!strings.Contains(state.Message, requireGamePackText(t, &state, "tilverton.tavern.commotion-outside")) {
 		t.Fatalf("tavern investigate prompt choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -1043,7 +1049,8 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		t.Fatal(err)
 	}
 	if highPriest.Mode != ModeWilderness || len(highPriest.Choices) != 1 ||
-		!strings.Contains(highPriest.Message, "離開此處") {
+		!strings.Contains(highPriest.Message,
+			requireGamePackText(t, &highPriest, "world.move-away")) {
 		t.Fatalf("high priest departure pause mode=%v choices=%v message=%q",
 			highPriest.Mode, highPriest.Choices, highPriest.Message)
 	}

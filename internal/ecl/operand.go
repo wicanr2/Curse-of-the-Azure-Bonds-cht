@@ -210,6 +210,115 @@ func FindSaveDestinationCandidates(block []byte, destination uint16) ([]Instruct
 	return output, nil
 }
 
+// BranchTargets decodes the variable-length 25h ON GOTO / 26h ON GOSUB record
+// at a payload offset: the branch index, the target count and the target list,
+// followed by the offset of the next instruction. The command table gives both
+// opcodes arity 0 because their length is only known after the count operand is
+// read, so Instruction.Next points one byte past the opcode — into the operand
+// bytes. Any caller that walks control flow must use this instead of Next, or
+// it decodes the target list as if it were code.
+func BranchTargets(block []byte, offset int) (targets []int, after int, err error) {
+	if len(block) < 2 {
+		return nil, 0, fmt.Errorf("ECL block is shorter than two-byte prefix")
+	}
+	return branchTargets(block[2:], offset)
+}
+
+func branchTargets(payload []byte, offset int) ([]int, int, error) {
+	if offset < 0 || offset >= len(payload) {
+		return nil, 0, fmt.Errorf("ON branch offset %d is outside payload", offset)
+	}
+	opcode := payload[offset]
+	if opcode != 0x25 && opcode != 0x26 {
+		return nil, 0, fmt.Errorf("opcode 0x%02X at %d is not an ON branch", opcode, offset)
+	}
+	head, headNext, err := ParseOperands(payload, offset, 2)
+	if err != nil {
+		return nil, 0, fmt.Errorf("ON branch at %d: %w", offset, err)
+	}
+	// 目標個數必須是常數，否則表的長度是執行期才知道的，靜態走訪無從跟起。
+	// 實測 corpus 裡每一處都是 code 0x00 的立即值（`00 0E` ＝ 14）。
+	count, err := literalOperand(head[1])
+	if err != nil {
+		return nil, 0, fmt.Errorf("ON branch at %d: %w", offset, err)
+	}
+	if count < 0 || count > 256 {
+		return nil, 0, fmt.Errorf("ON branch at %d has unreasonable target count %d", offset, count)
+	}
+	// The original decrements the cursor once before loading the target list,
+	// so the list starts at headNext (see the runtime's 0x25/0x26 handler).
+	list, after, err := ParseOperands(payload, headNext-1, count)
+	if err != nil {
+		return nil, 0, fmt.Errorf("ON branch targets at %d: %w", offset, err)
+	}
+	targets := make([]int, 0, count)
+	for _, operand := range list {
+		if target, ok := CodeTarget(operand, len(payload)); ok {
+			targets = append(targets, target)
+		}
+	}
+	return targets, after, nil
+}
+
+// MenuEnd returns the offset just past a 15h VERTICAL MENU or 2Bh HORIZONTAL
+// MENU record. Both carry a variable-length option-string list, so — like the
+// ON branches above — their command-table arity is 0 and Instruction.Next lands
+// inside the operand bytes. The layout matches the runtime's 0x15/0x2B cases:
+// a two- (horizontal) or three-operand (vertical) header, then `count` option
+// strings starting at headNext.
+func MenuEnd(block []byte, offset int) (int, error) {
+	if len(block) < 2 {
+		return 0, fmt.Errorf("ECL block is shorter than two-byte prefix")
+	}
+	return menuEnd(block[2:], offset)
+}
+
+func menuEnd(payload []byte, offset int) (int, error) {
+	if offset < 0 || offset >= len(payload) {
+		return 0, fmt.Errorf("menu offset %d is outside payload", offset)
+	}
+	opcode := payload[offset]
+	headerArity, countIndex := 2, 1
+	switch opcode {
+	case 0x2B:
+	case 0x15:
+		headerArity, countIndex = 3, 2
+	default:
+		return 0, fmt.Errorf("opcode 0x%02X at %d is not a menu", opcode, offset)
+	}
+	header, headNext, err := ParseOperands(payload, offset, headerArity)
+	if err != nil {
+		return 0, fmt.Errorf("menu header at %d: %w", offset, err)
+	}
+	count, err := literalOperand(header[countIndex])
+	if err != nil {
+		return 0, fmt.Errorf("menu at %d: %w", offset, err)
+	}
+	if count == 0 || count > 64 {
+		return 0, fmt.Errorf("menu at %d has invalid option count %d", offset, count)
+	}
+	_, stringsEnd, err := ParseOperands(payload, headNext-1, count)
+	if err != nil {
+		return 0, fmt.Errorf("menu strings at %d: %w", offset, err)
+	}
+	return stringsEnd, nil
+}
+
+// literalOperand reads a count that must be knowable without running the game:
+// code 0x00 carries the value in the low byte, code 0x02 in the word. A memory
+// reference (0x01/0x03) is only known at runtime, so static walkers must stop
+// rather than guess a record length.
+func literalOperand(operand Operand) (int, error) {
+	switch {
+	case operand.Code == 0x00:
+		return int(operand.Low), nil
+	case operand.Code == 0x02 && operand.WordSet:
+		return int(operand.Word), nil
+	default:
+		return 0, fmt.Errorf("operand code 0x%02X is not a literal count", operand.Code)
+	}
+}
+
 func decodeInstruction(payload []byte, offset int) (Instruction, error) {
 	if offset < 0 || offset >= len(payload) {
 		return Instruction{}, fmt.Errorf("instruction offset %d is outside payload", offset)
@@ -311,6 +420,35 @@ func TraceGraph(block []byte, starts []int, limit int) (Graph, error) {
 			}
 			if instruction.Command.Opcode == 0x00 || instruction.Command.Opcode == 0x13 {
 				break
+			}
+			// `15h`／`2Bh` 選單的選項字串接在後面，長度同樣要自己算。
+			if instruction.Command.Opcode == 0x15 || instruction.Command.Opcode == 0x2B {
+				end, err := menuEnd(payload, instruction.Offset)
+				if err != nil {
+					break
+				}
+				offset = end
+				continue
+			}
+			// `ON GOTO`／`ON GOSUB` 的目的地是靜態的字面位址，只有選哪一個才是動態
+			// 的——所以每一個目的地都要進佇列。同時這條指令的長度必須自己算：
+			// 相信 `Next` 會走進目標表的位元組裡，把資料當成程式解。
+			if instruction.Command.Opcode == 0x25 || instruction.Command.Opcode == 0x26 {
+				targets, after, err := branchTargets(payload, instruction.Offset)
+				if err != nil {
+					return graph, err
+				}
+				kind := "ON GOTO"
+				if instruction.Command.Opcode == 0x26 {
+					kind = "ON GOSUB"
+				}
+				for _, target := range targets {
+					graph.Edges = append(graph.Edges, Edge{From: instruction.Offset, To: target, Kind: kind})
+					queue = append(queue, target)
+				}
+				// index 超出 count 時原作直接落到表後面，`ON GOSUB` 回來也在那裡。
+				offset = after
+				continue
 			}
 			offset = instruction.Next
 		}
