@@ -2402,7 +2402,7 @@
    "caster_class": "magic_user",
    "target_mode": "enemy",
    "behavior": "magic_missile",
-   "message_id": "spell_magic_user_7",
+   "message_id": "spell_magic_user_15",
    "casting_time": 1
   },
   {
@@ -2411,7 +2411,7 @@
    "caster_class": "magic_user",
    "target_mode": "area_point",
    "behavior": "sleep",
-   "message_id": "spell_magic_user_13",
+   "message_id": "spell_magic_user_21",
    "casting_time": 1
   },
   {

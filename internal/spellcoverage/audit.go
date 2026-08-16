@@ -13,6 +13,7 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
@@ -23,6 +24,35 @@ type Report struct {
 	CoveredCount int           `json:"covered_count"`
 	MissingCount int           `json:"missing_count"`
 	Spells       []SpellReport `json:"spells"`
+	// Original 是**原作那 100 筆**的分母。`SpellCount` 只數 game pack 宣告過的
+	// 那幾支，用它當分母會得到「12 支裡 3 支完成」這種與玩家無關的比例。
+	Original OriginalCoverage `json:"original_table"`
+}
+
+// OriginalCoverage 把 remake 的實作對回原作法術表（`gamepack.Spells`）。
+//
+// ★ 分母的定義要能講清楚哪一支不算、為什麼：占位那 13 筆玩家取不到，
+// 只能紮營施放的 8 支不會出現在戰鬥選單。剩下的才是「戰鬥中玩家可能想施放，
+// 但 remake 還沒有」的缺口。
+type OriginalCoverage struct {
+	// TableSpells 是表的筆數（量測值，spec 815）。
+	TableSpells int `json:"table_spells"`
+	// Placeholders 是沒有名字的占位項，玩家取不到。
+	Placeholders int `json:"placeholders"`
+	// Playable ＝ TableSpells − Placeholders。
+	Playable int `json:"playable"`
+	// CampOnly 是 `+0Bh = 0`（spec 827），不會出現在戰鬥選單。
+	CampOnly int `json:"camp_only"`
+	// CombatCastable ＝ Playable − CampOnly，戰鬥法術的真正分母。
+	CombatCastable int `json:"combat_castable"`
+	// Declared 是 game pack 宣告過的戰鬥法術數。
+	Declared int `json:"declared"`
+	// HandlerObserved 是宣告且 runtime handler 已被觀察到的數量。
+	HandlerObserved int `json:"handler_observed"`
+	// MissingByLevel 是還沒宣告的戰鬥法術，依環數分。
+	MissingByLevel map[int]int `json:"missing_by_level"`
+	// MissingNames 是還沒宣告的戰鬥法術名（依編號）。
+	MissingNames []string `json:"missing_names"`
 }
 
 type SpellReport struct {
@@ -149,7 +179,52 @@ func Build(pack *goldenbox.Pack, sourceFile string) (Report, error) {
 			report.MissingCount++
 		}
 	}
+	original, err := buildOriginalCoverage(report.Spells)
+	if err != nil {
+		return Report{}, err
+	}
+	report.Original = original
 	return report, nil
+}
+
+// buildOriginalCoverage 把已宣告的法術對回原作表。找不到表就回錯誤——
+// 靜靜回一組 0 會讓報告看起來像「原作只有 0 支法術」。
+func buildOriginalCoverage(declared []SpellReport) (OriginalCoverage, error) {
+	table, err := gamepack.Spells()
+	if err != nil {
+		return OriginalCoverage{}, err
+	}
+	handled := map[int]string{}
+	for _, item := range declared {
+		handled[int(item.SpellID)] = item.Handler.Status
+	}
+	coverage := OriginalCoverage{
+		TableSpells:    len(table.Spells),
+		MissingByLevel: map[int]int{},
+	}
+	for _, spell := range table.Spells {
+		if spell.Placeholder {
+			coverage.Placeholders++
+			continue
+		}
+		coverage.Playable++
+		if spell.CampOnly {
+			coverage.CampOnly++
+			continue
+		}
+		coverage.CombatCastable++
+		status, ok := handled[spell.SpellID]
+		if !ok {
+			coverage.MissingByLevel[spell.Level]++
+			coverage.MissingNames = append(coverage.MissingNames, spell.Name)
+			continue
+		}
+		coverage.Declared++
+		if status == "observed" {
+			coverage.HandlerObserved++
+		}
+	}
+	return coverage, nil
 }
 
 func scanRuntime(path string) (map[string]runtimeEvidence, map[string]bool, bool, error) {

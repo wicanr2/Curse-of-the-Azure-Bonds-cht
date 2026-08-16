@@ -1228,7 +1228,7 @@ func (s *State) combatPlayerSpellLabel(spellID uint8) string {
 			return localized
 		}
 	}
-	return campSpellLabel(s.catalog, party.ClassCleric, spellID)
+	return campSpellLabel(s.catalog, spellID)
 }
 
 func (s *State) quickSpellPriority(spellID uint8) (uint8, error) {

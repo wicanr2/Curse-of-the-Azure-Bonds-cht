@@ -4609,7 +4609,10 @@ func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.OriginalEvent != "MAGIC" || !strings.Contains(state.Message, "0x12") || !strings.Contains(state.Message, "0x24") || !strings.Contains(state.Message, "可用法術：2") {
+	// 0x12 是全域編號 18（Read Magic），有譯名 ⇒ 顯示名字；
+	// 0x24 是 36（Animate Dead），職業碼 3、沒有法術名鍵 ⇒ 保留編號，
+	// 這樣匯入的存檔裡出現沒認識的編號時看得出來。
+	if state.Mode != ModeEvent || state.OriginalEvent != "MAGIC" || !strings.Contains(state.Message, "閱讀魔法") || !strings.Contains(state.Message, "0x24") || !strings.Contains(state.Message, "可用法術：2") {
 		t.Fatalf("camp magic summary state=%#v", state)
 	}
 	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.campMagicViewMenu {

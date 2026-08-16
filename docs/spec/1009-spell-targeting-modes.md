@@ -25,15 +25,16 @@ procedure 選目標(法術: byte;      { bp+0Ch }
 同一張表的 `+0` 是施法職業、`+1` 是法術環數（spec 1016）。
 
 法術名稱表在 `DS:27BDh`，**筆距 41、編號從 1 起算**
-（`DS:27BDh ＋ 法術 × 41` 是 Pascal 短字串）。把兩張表對起來：
+（`DS:27BDh ＋ 法術 × 41` 是 Pascal 短字串）。把兩張表對起來
+（支數是表的 **100 筆**，量測依據見 spec 1111）：
 
 | 模式 | 做法 | 法術數 | 例子 |
 |---|---|---|---|
-| `0` | **只打自己** | 31 | Detect Magic、Read Magic、Shield、Find Traps、Burning Hands |
-| `2`／`3`／`4`／`6`／`7` | **固定 `(模式 and 3) ＋ 1` 個目標** | 50 | Cure Light Wounds(1)、Charm Person(1)、Hold Person(3)、Hold Monsters(4) |
-| `5` | **逐一點選，累計等級權重到擲骰上限** | 4 | Faerie Fire、Charm Monsters |
-| `8`..`0Eh` | **範圍效果，半徑 ＝ 模式 `and 7`** | 32 | Lightning Bolt(0)、Sleep(1)、Bless(2)、Fireball(3) |
-| `0Fh` | **打已鎖定的目標，沒有就取整片** | 2 | Silence, 15' Radius |
+| `0` | **只打自己** | 29 | Detect Magic、Read Magic、Shield、Find Traps、Burning Hands |
+| `2`／`3`／`4`／`6`／`7` | **固定 `(模式 and 3) ＋ 1` 個目標** | 47 | Cure Light Wounds(1)、Charm Person(1)、Hold Person(3)、Hold Monsters(4) |
+| `5` | **逐一點選，累計等級權重到擲骰上限** | 2 | Faerie Fire、Charm Monsters |
+| `8`..`0Eh` | **範圍效果，半徑 ＝ 模式 `and 7`** | 21 | Lightning Bolt(0)、Sleep(1)、Bless(2)、Fireball(3) |
+| `0Fh` | **打已鎖定的目標，沒有就取整片** | 1 | Silence, 15' Radius |
 
 ★★★ **與 AD&D 1e 完全對得上**：
 
@@ -84,9 +85,8 @@ push ax              ; 當半徑傳給 overlay-31 entry#6
 | 法術 | 名稱 | `+6` | 高 nibble |
 |---|---|---|---|
 | 25 | **Silence, 15' Radius** | `1Fh` | **1** |
-| 113 | （未命名） | `2Fh` | **2** |
 
-> **模式 `0Fh` 的兩支法術在資料裡各自帶了半徑 1 與 2，
+> **模式 `0Fh` 的那一支法術在資料裡帶了半徑 1，
 > 程式卻因為先 `and 0Fh` 再 `shr 4` 而永遠拿到 0。**
 > 對照組：模式 `8..0Eh` 那條路徑寫的是 `and 7`，**沒有多餘的右移**，
 > 半徑正確地取到 0..7。
@@ -202,5 +202,6 @@ PC-98 另外多兩條：`ds:0BE2Dh := 法術編號`（DOS 沒有這個全域）�
 - 沒有宣稱 `overlay-31 entry#6` 的前三個參數（`1`、`0FFh`）代表什麼。
 - 沒有宣稱 `+0E5h`／`+0DEh` 這兩個等級欄位的完整定義。
 - 沒有宣稱 `overlay-24 entry#36(4Fh)` 回什麼（Faerie Fire 的上限）。
-- 沒有宣稱法術屬性表 `DS:37DAh` 其餘 13 個 byte 是什麼（`+0`／`+1` 見 spec 1016）。
+- 法術屬性表 `DS:37DAh` 其餘欄位不在本輪範圍；十六個位元組的完整版面
+  與 100 筆的量測依據見 spec 1111。
 - 沒有宣稱 `DS:0BE2Dh`（PC-98 才有）給誰用。

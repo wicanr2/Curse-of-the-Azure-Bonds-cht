@@ -3,7 +3,9 @@ package game
 import (
 	"fmt"
 	"sort"
+	"strings"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
@@ -22,41 +24,36 @@ const (
 	CloudkillSpellID          uint8 = 0x5B
 )
 
-// firstLevelSpellKeys contains the bounded spell names whose table order is
-// verified in the supplied RuleBook. Player records store global spell-table
-// IDs: cleric level-one entries begin at 0x01, while the currently translated
-// magic-user entries begin at 0x09. IDs outside this catalog remain visible as
-// hex so imported DOS/PC-98 slot data is never silently relabeled.
-var firstLevelSpellKeys = map[party.Class]struct {
-	base uint8
-	keys []string
-}{
-	party.ClassCleric: {
-		base: 0x01,
-		keys: []string{
-			"spell_cleric_1", "spell_cleric_2", "spell_cleric_3", "spell_cleric_4",
-			"spell_cleric_5", "spell_cleric_6", "spell_cleric_7", "spell_cleric_8",
-		},
-	},
-	party.ClassMagicUser: {
-		base: 0x09,
-		keys: []string{
-			"spell_magic_user_1", "spell_magic_user_2", "spell_magic_user_3", "spell_magic_user_4",
-			"spell_magic_user_5", "spell_magic_user_6", "spell_magic_user_7", "spell_magic_user_8",
-		},
-	},
+// spellMessageID 是法術名的 locale 鍵：`spell_<施法職業>_<原作編號>`。
+//
+// ★ 職業與編號都來自**原作法術表**（`gamepack.SpellByID`），不是呼叫端傳進來的
+// 角色職業——同一個編號只屬於一個施法職業，而雙職角色的法術槽兩邊都有。
+// 靠角色職業去選鍵，多職角色就會拿到另一個職業的名字。
+//
+// ⚠ 編號一律是**全域編號**。這個前綴曾經同時存在兩套編號（法師的 1..13 是
+// 「法師第幾支」而 29 以上是全域編號），兩套在 1..13 這一段會互相蓋掉。
+// `TestSpellNameKeysFollowTheOriginalTable` 擋住這種漂移。
+func spellMessageID(spellID uint8) (string, bool) {
+	spell, ok := gamepack.SpellByID(int(spellID))
+	if !ok || spell.Placeholder || spell.CasterClass == "" {
+		return "", false
+	}
+	return fmt.Sprintf("spell_%s_%d", strings.ReplaceAll(spell.CasterClass, "-", "_"), spell.SpellID), true
 }
 
-func campSpellLabel(catalog locale.Catalog, class party.Class, spellID uint8) string {
-	table, ok := firstLevelSpellKeys[class]
-	if !ok || spellID < table.base || int(spellID-table.base) >= len(table.keys) {
-		return fmt.Sprintf(catalog.Text("spell_unknown", "spell_unknown 0x%02X"), spellID)
+// campSpellLabel 把法術槽裡的原作編號翻成玩家看得到的名字。
+// 沒有譯名時**保留十六進位編號**，不要退回一個看起來像法術名的字串——
+// 匯入的 DOS／PC-98 存檔裡可能有 remake 還沒認識的編號，蓋掉就查不出來了。
+func campSpellLabel(catalog locale.Catalog, spellID uint8) string {
+	unknown := fmt.Sprintf(catalog.Text("spell_unknown", "spell_unknown 0x%02X"), spellID)
+	key, ok := spellMessageID(spellID)
+	if !ok {
+		return unknown
 	}
-	key := table.keys[spellID-table.base]
 	if translated := catalog.Text(key, ""); translated != "" {
 		return translated
 	}
-	return fmt.Sprintf(catalog.Text("spell_unknown", "spell_unknown 0x%02X"), spellID)
+	return unknown
 }
 
 // firstLevelMemorizedCapacity is the bounded preparation adapter used by the
