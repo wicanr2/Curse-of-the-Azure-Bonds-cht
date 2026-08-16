@@ -59,6 +59,8 @@ type RunResult struct {
 	CallAddresses          []uint16
 	CallRequests           []CallRequest
 	SaveWrites             []MemoryWrite
+	// ClearBoxRequested 來自 `3Dh CLEAR BOX`：把文字框清空，且不印新文字。
+	ClearBoxRequested bool
 	SessionStartBlockID    uint8
 	SessionEndBlockID      uint8
 	SessionBlockRangeSet   bool
@@ -1591,6 +1593,13 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 					}
 				}
 				result.SpellSearches = append(result.SpellSearches, search)
+			}
+			if instruction.Command.Opcode == 0x3D {
+				// `3Dh CLEAR BOX` 把文字框清空但**不印任何東西**。原作用它在
+				// 換畫面之前把上一段訊息擦掉（`ECL1.DAX/0x52 +001Bh` 就是
+				// CLEAR BOX → PICTURE → ADD NPC → PRINTCLEAR）。
+				// 沒有它的話，玩家會在新畫面底下看到上一幕殘留的文字。
+				result.ClearBoxRequested = true
 			}
 			if instruction.Command.Opcode == 0x3C {
 				address, err := operandAddress(instruction.Operands[0])
