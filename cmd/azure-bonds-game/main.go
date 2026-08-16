@@ -104,6 +104,11 @@ type app struct {
 	combatVisualBase       time.Duration
 	combatVisualElapsed    time.Duration
 	journalDisplayPage     int
+	journalImages          map[string]*ebiten.Image
+	journalImageOpen       bool
+	journalImageZoom       bool
+	journalImageOffsetX    int
+	journalImageOffsetY    int
 	combatDoneMenu         bool
 	combatSpeedMenu        bool
 	messageSnapshot        string
@@ -671,6 +676,15 @@ func (a *app) Update() error {
 		return nil
 	}
 	if a.state.Mode == game.ModeJournal {
+		if a.journalImageOpen {
+			return a.updateJournalImage()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyI) && a.currentJournalImage() != nil {
+			a.journalImageOpen = true
+			a.journalImageZoom = false
+			a.journalImageOffsetX, a.journalImageOffsetY = 0, 0
+			return nil
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyJ) {
 			return a.state.CloseJournal()
 		}
@@ -1297,7 +1311,14 @@ func (a *app) Draw(screen *ebiten.Image) {
 		drawFittedText(screen, a.state.JournalTitle, a.face, 32, 52, 576, cyan)
 		drawWrappedText(screen, pageText, a.face, 32, 100, 22, 32, 7, white)
 		drawFittedText(screen, a.state.JournalDisplayPageStatus(a.journalDisplayPage+1, len(pages)), a.face, 32, 350, 576, white)
-		drawFittedText(screen, a.state.JournalCloseText, a.face, 32, 390, 576, cyan)
+		closeHint := a.state.JournalCloseText
+		if a.currentJournalImage() != nil {
+			closeHint += "　" + a.state.PlayerUILabel(game.PlayerUILabelJournalImageHint)
+		}
+		drawFittedText(screen, closeHint, a.face, 32, 390, 576, cyan)
+		if a.journalImageOpen {
+			a.drawJournalImage(screen, white, cyan)
+		}
 		return
 	}
 	if a.state.Mode == game.ModeMap {
@@ -3197,6 +3218,8 @@ func main() {
 	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
 	dosCharacterInventory := flag.String("dos-character-inventory", "", "optional DOS .SWG path for direct character import")
 	screenshotPath := flag.String("screenshot", "", "write one deterministic 640x480 frame to PNG and exit")
+	journalImageEntry := flag.String("journal-image", "", "開手札並直接彈出某則的圖，例如 journal.52（分段驗收用）")
+	journalImageZoom := flag.Bool("journal-image-zoom", false, "彈窗直接以原尺寸開啟（分段驗收用）")
 	flag.Parse()
 	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
@@ -3789,6 +3812,16 @@ func main() {
 		// Capture-only boss observation camera. Formal play keeps the RuleBook
 		// active-fighter camera established above.
 		gameApp.combatPreviewFocus = 0x47
+	}
+	if *journalImageEntry != "" {
+		if err := gameApp.state.UnlockJournalEntryForPreview(*journalImageEntry); err != nil {
+			log.Fatal(err)
+		}
+		if err := gameApp.state.OpenJournal(); err != nil {
+			log.Fatal(err)
+		}
+		gameApp.journalImageOpen = true
+		gameApp.journalImageZoom = *journalImageZoom
 	}
 	gameApp.state.SetCombatLineTerrain(gameApp.combatLineTerrain())
 	gameApp.state.SetCombatScanMapProvider(gameApp.combatScanTacticalMap)

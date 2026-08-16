@@ -1,0 +1,35 @@
+{
+ "schema_version": 1,
+ "images": [
+  {
+   "message_id": "journal.4",
+   "file": "entry-04.png",
+   "caption_id": "journal-image.4"
+  },
+  {
+   "message_id": "journal.9",
+   "file": "entry-09.png",
+   "caption_id": "journal-image.9"
+  },
+  {
+   "message_id": "journal.17",
+   "file": "entry-17.png",
+   "caption_id": "journal-image.17"
+  },
+  {
+   "message_id": "journal.20",
+   "file": "entry-20.png",
+   "caption_id": "journal-image.20"
+  },
+  {
+   "message_id": "journal.52",
+   "file": "entry-52.png",
+   "caption_id": "journal-image.52"
+  },
+  {
+   "message_id": "journal.59",
+   "file": "entry-59.png",
+   "caption_id": "journal-image.59"
+  }
+ ]
+}

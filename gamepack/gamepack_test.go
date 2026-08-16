@@ -1235,13 +1235,13 @@ func TestRaceAbilityAdjustmentsMatchReference(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := map[int][6]int{
-		1: {0, 0, 0, 0, 1, -1},  // 矮人：體質 +1、魅力 −1
-		2: {0, 0, 0, 1, -1, 0},  // 精靈：敏捷 +1、體質 −1
-		3: {},                   // 地精：無
-		4: {},                   // 半精靈：無
-		5: {-1, 0, 0, 1, 0, 0},  // 半身人：力量 −1、敏捷 +1
-		6: {1, 0, 0, 0, 1, -2},  // 半獸人：力量 +1、體質 +1、魅力 −2
-		7: {},                   // 人類：無
+		1: {0, 0, 0, 0, 1, -1}, // 矮人：體質 +1、魅力 −1
+		2: {0, 0, 0, 1, -1, 0}, // 精靈：敏捷 +1、體質 −1
+		3: {},                  // 地精：無
+		4: {},                  // 半精靈：無
+		5: {-1, 0, 0, 1, 0, 0}, // 半身人：力量 −1、敏捷 +1
+		6: {1, 0, 0, 0, 1, -2}, // 半獸人：力量 +1、體質 +1、魅力 −2
+		7: {},                  // 人類：無
 	}
 	lookup, err := AbilityRoll()
 	if err != nil {
@@ -1573,6 +1573,61 @@ func TestOpeningAwakeningUnlocksJournalEntryOne(t *testing.T) {
 			if result.JournalPages[index] == "" {
 				t.Fatalf("%s: journal page %d is empty", language, index)
 			}
+		}
+	}
+}
+
+// 手札的圖與 `assets/journal/` 必須互為子集：清單列了檔案就要在、目錄裡的檔案
+// 也要有人引用。單向檢查會讓「圖放進去卻沒人看得到」與「清單指向不存在的檔」
+// 兩種錯都變成靜默失敗。
+func TestJournalImagesMatchTheAssetDirectory(t *testing.T) {
+	images, err := JournalImages()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(images) == 0 {
+		t.Fatal("journal image manifest is empty")
+	}
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	listed := map[string]bool{}
+	for _, image := range images {
+		if listed[image.File] {
+			t.Errorf("%s is listed twice", image.File)
+		}
+		listed[image.File] = true
+
+		path := filepath.Join("..", "assets", "journal", image.File)
+		if _, err := os.Stat(path); err != nil {
+			t.Errorf("%s: %v", image.MessageID, err)
+		}
+		// 圖掛的條目必須真的存在於 pack，否則玩家解鎖不到那一頁，圖也永遠不會出現。
+		for _, locale := range []string{"en", "zh-TW"} {
+			if _, ok := pack.Text(image.MessageID, locale); !ok {
+				t.Errorf("%s 沒有 %s 的手札內文", image.MessageID, locale)
+			}
+			if caption, ok := pack.Text(image.CaptionID, locale); !ok || caption == "" {
+				t.Errorf("%s 沒有 %s 的圖說", image.CaptionID, locale)
+			}
+		}
+		// 圖說的鍵刻意不用 `journal.` 開頭：那個前綴的鍵都要有 producer。
+		if strings.HasPrefix(image.CaptionID, "journal.") {
+			t.Errorf("caption %s must not use the journal. prefix", image.CaptionID)
+		}
+	}
+	entries, err := os.ReadDir(filepath.Join("..", "assets", "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range entries {
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".png") {
+			continue
+		}
+		if !listed[name] {
+			t.Errorf("assets/journal/%s 沒有任何手札引用它", name)
 		}
 	}
 }
