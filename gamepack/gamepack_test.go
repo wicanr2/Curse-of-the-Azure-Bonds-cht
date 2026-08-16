@@ -1272,3 +1272,85 @@ func TestAbilityRollSpecMatchesReference(t *testing.T) {
 			count, size, bonus, attempts)
 	}
 }
+
+// 巫師塔內部（`ECL5.DAX/0x33`）。這裡餵的是**原作逐條 `PRINT` 的字串**，不是規則
+// 自己的 `all_contains`——`MatchText` 用單一空白把它們接起來，所以片段跨越換行處
+// 才會被真的驗到。
+//
+// ★ 前兩筆是本輪唯一需要注意的形狀：「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE.」中間那個
+// 字由 `02h GOSUB 89B2h` 印出。靜態盤點工具不追進子程式，所以
+// `docs/audit/ecl-text-coverage.md` 會把這一頁列成未接上——**那是工具的極限，
+// 不是規則沒寫**。反過來說，任何橫跨那個插入點的 `all_contains` 在實機都接不上。
+func TestWizardTowerInteriorIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id    string
+		texts []string
+	}{
+		{"wizard-tower.stairs.up", []string{
+			"THE STAIRS LEAD", "UP", "HERE. DO YOU WANT TO TAKE THEM?"}},
+		{"wizard-tower.stairs.down", []string{
+			"THE STAIRS LEAD", "DOWN", "HERE. DO YOU WANT TO TAKE THEM?"}},
+		{"wizard-tower.dracandros.final-challenge", []string{
+			"DRACANDROS IS DRAGGING A HEAVY BAG ACROSS",
+			"THE COURTYARD. DROPPING THE BAG, HE SAYS, 'YOU HAVE DOGGED MY",
+			"STEPS FOR TOO LONG. NOW YOU SHALL BE DESTROYED.'"}},
+		{"wizard-tower.helm-of-dragons", []string{
+			"AMONG HIS TREASURES YOU FIND THE HELM OF DRAGONS."}},
+		{"wizard-tower.laboratory.pool", []string{
+			"YOU HAVE FOUND A MYSTICAL LABORATORY. IN THE CENTER",
+			"IS A MURKY, SHALLOW POOL WHICH SMELLS OF ROTTING",
+			"VEGETATION. DO YOU GO FORWARD?"}},
+		{"wizard-tower.laboratory.pool-depth", []string{
+			"THE POOL LOOKS TO BE SEVERAL FEET DEEP THOUGH YOU",
+			"CANNOT SEE TO THE BOTTOM. DO YOU REACH INTO THE POOL?"}},
+		{"wizard-tower.laboratory.ellipsoid", []string{
+			"ROOTING AROUND IN THE MUCK, YOU FIND A LEATHERY",
+			"ELLIPSOID ABOUT THE SIZE OF A HEAD. IT IS WARM AND",
+			"PULSES FAINTLY. DO YOU TAKE IT?"}},
+		{"wizard-tower.sphere-trial.sign", []string{
+			"A SIGN OVER THIS EERIE BLACK DOOR SAYS, 'TRIAL",
+			"OF THE SPHERE. ONE CHALLENGER ONLY.' DOES ANYONE WISH",
+			"TO ENTER?"}},
+		{"wizard-tower.sphere-trial.cannot-enter", []string{
+			"THAT ONE CANNOT ENTER."}},
+		{"wizard-tower.sphere-trial.chamber", []string{
+			"YOU PASS INTO A DIM ROOM OCCUPIED BY A YOUNG MAGE",
+			"DRESSED IN RED AND HOLDING A SILVERY ROD. BETWEEN THE",
+			"TWO OF YOU IS A FLOATING DEAD BLACK SPHERE."}},
+		{"wizard-tower.sphere-trial.rules", []string{
+			"THE WIZARD INTONES, 'THIS IS A SPHERE OF ANNIHILATION.",
+			"ITS TOUCH MEANS UTTER DESTRUCTION. ONLY A MAGE CAN",
+			"CONTROL ITS FLIGHT. YOU MAY SURRENDER AT ANY TIME.'"}},
+		{"wizard-tower.dark-elf-owlbear-guard", []string{
+			"THIS AREA IS GUARDED BY DARK ELVES WITH OWL BEARS."}},
+		{"wizard-tower.dragon-pen", []string{
+			"YOU ARE ASSAULTED BY A REPTILIAN STENCH. YOU SEE",
+			"MASSIVE CHAINS ATTACHED TO THE WALLS WITH HUGE, BUT",
+			"EMPTY COLLARS. ACROSS THE ROOM YOU HEAR A DEEP GROWL."}},
+		{"wizard-tower.bedroom", []string{
+			"YOU HAVE ENTERED A VERY ELEGANT BEDROOM, RED SILK",
+			"TAPESTRIES ADORN THE WALLS. THE ROOM IS DISARRANGED AS",
+			"IF SOMEONE HAD QUICKLY PACKED. DO YOU WANT TO TAKE THE",
+			"TIME TO LOOT?"}},
+		{"wizard-tower.library", []string{
+			"THE WALLS OF THIS ROOM ARE LINED WITH BOOKS ON",
+			"MANY SUBJECTS. NONE RADIATE MAGIC."}},
+		{"wizard-tower.scroll-room", []string{
+			"THE WALLS ARE COVERED WITH RACKS FOR SCROLL CASES.",
+			"THE SCROLLS LOOK TO HAVE BEEN RECENTLY REMOVED."}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.texts, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}

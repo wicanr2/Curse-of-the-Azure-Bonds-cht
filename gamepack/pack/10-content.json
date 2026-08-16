@@ -167,6 +167,129 @@
    "message_id": "wizard-tower.roof-exit"
   },
   {
+   "id": "wizard-tower.stairs.up",
+   "all_contains": [
+    "THE STAIRS LEAD UP HERE"
+   ],
+   "message_id": "wizard-tower.stairs.up"
+  },
+  {
+   "id": "wizard-tower.stairs.down",
+   "all_contains": [
+    "THE STAIRS LEAD DOWN HERE"
+   ],
+   "message_id": "wizard-tower.stairs.down"
+  },
+  {
+   "id": "wizard-tower.dracandros.final-challenge",
+   "all_contains": [
+    "DRACANDROS IS DRAGGING A HEAVY BAG",
+    "YOU HAVE DOGGED MY STEPS FOR TOO LONG"
+   ],
+   "message_id": "wizard-tower.dracandros.final-challenge"
+  },
+  {
+   "id": "wizard-tower.helm-of-dragons",
+   "all_contains": [
+    "AMONG HIS TREASURES YOU FIND THE HELM OF DRAGONS"
+   ],
+   "message_id": "wizard-tower.helm-of-dragons"
+  },
+  {
+   "id": "wizard-tower.laboratory.pool",
+   "all_contains": [
+    "YOU HAVE FOUND A MYSTICAL LABORATORY",
+    "SMELLS OF ROTTING VEGETATION"
+   ],
+   "message_id": "wizard-tower.laboratory.pool"
+  },
+  {
+   "id": "wizard-tower.laboratory.pool-depth",
+   "all_contains": [
+    "THE POOL LOOKS TO BE SEVERAL FEET DEEP",
+    "DO YOU REACH INTO THE POOL"
+   ],
+   "message_id": "wizard-tower.laboratory.pool-depth"
+  },
+  {
+   "id": "wizard-tower.laboratory.ellipsoid",
+   "all_contains": [
+    "ROOTING AROUND IN THE MUCK",
+    "LEATHERY ELLIPSOID"
+   ],
+   "message_id": "wizard-tower.laboratory.ellipsoid"
+  },
+  {
+   "id": "wizard-tower.sphere-trial.sign",
+   "all_contains": [
+    "TRIAL OF THE SPHERE",
+    "ONE CHALLENGER ONLY"
+   ],
+   "message_id": "wizard-tower.sphere-trial.sign"
+  },
+  {
+   "id": "wizard-tower.sphere-trial.cannot-enter",
+   "all_contains": [
+    "THAT ONE CANNOT ENTER"
+   ],
+   "message_id": "wizard-tower.sphere-trial.cannot-enter"
+  },
+  {
+   "id": "wizard-tower.sphere-trial.chamber",
+   "all_contains": [
+    "YOU PASS INTO A DIM ROOM OCCUPIED BY A YOUNG MAGE",
+    "FLOATING DEAD BLACK SPHERE"
+   ],
+   "message_id": "wizard-tower.sphere-trial.chamber"
+  },
+  {
+   "id": "wizard-tower.sphere-trial.rules",
+   "all_contains": [
+    "THIS IS A SPHERE OF ANNIHILATION",
+    "YOU MAY SURRENDER AT ANY TIME"
+   ],
+   "message_id": "wizard-tower.sphere-trial.rules"
+  },
+  {
+   "id": "wizard-tower.dark-elf-owlbear-guard",
+   "all_contains": [
+    "THIS AREA IS GUARDED BY DARK ELVES WITH OWL BEARS"
+   ],
+   "message_id": "wizard-tower.dark-elf-owlbear-guard"
+  },
+  {
+   "id": "wizard-tower.dragon-pen",
+   "all_contains": [
+    "ASSAULTED BY A REPTILIAN STENCH",
+    "EMPTY COLLARS"
+   ],
+   "message_id": "wizard-tower.dragon-pen"
+  },
+  {
+   "id": "wizard-tower.bedroom",
+   "all_contains": [
+    "YOU HAVE ENTERED A VERY ELEGANT BEDROOM",
+    "DO YOU WANT TO TAKE THE TIME TO LOOT"
+   ],
+   "message_id": "wizard-tower.bedroom"
+  },
+  {
+   "id": "wizard-tower.library",
+   "all_contains": [
+    "THE WALLS OF THIS ROOM ARE LINED WITH BOOKS",
+    "NONE RADIATE MAGIC"
+   ],
+   "message_id": "wizard-tower.library"
+  },
+  {
+   "id": "wizard-tower.scroll-room",
+   "all_contains": [
+    "RACKS FOR SCROLL CASES",
+    "RECENTLY REMOVED"
+   ],
+   "message_id": "wizard-tower.scroll-room"
+  },
+  {
    "id": "myth-drannor.tyranthraxus-reveal",
    "all_contains": [
     "REVEALING TYRANTHRAXUS",
