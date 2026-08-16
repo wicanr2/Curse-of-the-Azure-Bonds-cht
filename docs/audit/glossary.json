@@ -1,0 +1,493 @@
+{
+ "schema": "coab-glossary/1",
+ "sources": [
+  {
+   "path": "gamepack/pack/20-locale.zh-TW.json",
+   "count": 645
+  },
+  {
+   "path": "assets/locale/zh-TW.json",
+   "count": 870
+  },
+  {
+   "path": "internal/tooltext/messages/zh-TW.json",
+   "count": 170
+  }
+ ],
+ "terms": [
+  {
+   "source": "Tyranthraxus",
+   "chinese": "提朗瑟克斯",
+   "category": "人物",
+   "note": "稱號見下一列",
+   "uses": 15
+  },
+  {
+   "source": "Flamed One",
+   "chinese": "烈焰之主",
+   "category": "人物",
+   "forbidden": [
+    "烈焰者",
+    "燃燒者"
+   ],
+   "note": "提朗瑟克斯的稱號",
+   "uses": 7
+  },
+  {
+   "source": "Dracandros",
+   "chinese": "德拉坎德羅斯",
+   "category": "人物",
+   "forbidden": [
+    "德拉坎卓斯"
+   ],
+   "note": "塞爾紅袍法師",
+   "uses": 15
+  },
+  {
+   "source": "Fzoul Chembryl",
+   "chinese": "弗佐爾・錢布瑞爾",
+   "category": "人物",
+   "forbidden": [
+    "弗佐爾．錢布瑞爾"
+   ],
+   "uses": 5
+  },
+  {
+   "source": "Mogion",
+   "chinese": "摩貢",
+   "category": "人物",
+   "note": "摩安德大祭司",
+   "uses": 10
+  },
+  {
+   "source": "Dexam",
+   "chinese": "德克薩姆",
+   "category": "人物",
+   "uses": 11
+  },
+  {
+   "source": "Alias",
+   "chinese": "愛麗雅絲",
+   "category": "人物",
+   "uses": 16
+  },
+  {
+   "source": "Dragonbait",
+   "chinese": "龍餌",
+   "category": "人物",
+   "note": "蜥蜴人聖武士",
+   "uses": 12
+  },
+  {
+   "source": "Olive Ruskettle",
+   "chinese": "奧莉芙・魯斯克特爾",
+   "category": "人物",
+   "forbidden": [
+    "拉斯凱托"
+   ],
+   "uses": 3
+  },
+  {
+   "source": "Dimswart",
+   "chinese": "迪姆斯沃特",
+   "category": "人物",
+   "note": "賢者",
+   "uses": 10
+  },
+  {
+   "source": "Elminster",
+   "chinese": "伊爾明斯特",
+   "category": "人物",
+   "uses": 3
+  },
+  {
+   "source": "Filani",
+   "chinese": "菲拉妮",
+   "category": "人物",
+   "note": "提爾佛頓賢者",
+   "uses": 5
+  },
+  {
+   "source": "Nacacia",
+   "chinese": "娜卡西亞",
+   "category": "人物",
+   "note": "公主",
+   "uses": 4
+  },
+  {
+   "source": "Akabar",
+   "chinese": "阿卡巴",
+   "category": "人物",
+   "uses": 5
+  },
+  {
+   "source": "Azoun",
+   "chinese": "阿祖恩",
+   "category": "人物",
+   "note": "國王",
+   "uses": 1
+  },
+  {
+   "source": "Vangerdahast",
+   "chinese": "凡格達海斯",
+   "category": "人物",
+   "note": "宮廷法師",
+   "uses": 1
+  },
+  {
+   "source": "Daemir",
+   "chinese": "黛米爾",
+   "category": "人物",
+   "note": "葬林幽魂公主",
+   "uses": 2
+  },
+  {
+   "source": "Nameless One",
+   "chinese": "無名者",
+   "category": "人物",
+   "uses": 3
+  },
+  {
+   "source": "Imperceptor",
+   "chinese": "總督察長",
+   "category": "人物",
+   "note": "穆爾馬斯特的班恩教階職稱",
+   "uses": 3
+  },
+  {
+   "source": "Bane",
+   "chinese": "班恩",
+   "category": "神祇",
+   "forbidden": [
+    "貝恩"
+   ],
+   "note": "`Banite` 併入本詞條",
+   "uses": 6
+  },
+  {
+   "source": "Moander",
+   "chinese": "摩安德",
+   "category": "神祇",
+   "uses": 23
+  },
+  {
+   "source": "Lathander",
+   "chinese": "洛山達",
+   "category": "神祇",
+   "uses": 4
+  },
+  {
+   "source": "Fire Knives",
+   "chinese": "火刀",
+   "category": "組織",
+   "note": "單複數同譯",
+   "uses": 25
+  },
+  {
+   "source": "Zhentarim",
+   "chinese": "散塔林會",
+   "category": "組織",
+   "note": "原文另作 `Zhentrim`",
+   "uses": 3
+  },
+  {
+   "source": "Black Network",
+   "chinese": "黑網",
+   "category": "組織",
+   "note": "散塔林會的別名，只在原文用別名時使用",
+   "uses": 1
+  },
+  {
+   "source": "Red Wizards of Thay",
+   "chinese": "塞爾紅袍法師",
+   "category": "組織",
+   "uses": 1
+  },
+  {
+   "source": "Tilverton",
+   "chinese": "提爾佛頓",
+   "category": "地名",
+   "uses": 11
+  },
+  {
+   "source": "Zhentil Keep",
+   "chinese": "散提爾堡",
+   "category": "地名",
+   "forbidden": [
+    "散塔林堡"
+   ],
+   "note": "城；與組織「散塔林會」是兩回事",
+   "uses": 17
+  },
+  {
+   "source": "Yulash",
+   "chinese": "尤拉什",
+   "category": "地名",
+   "uses": 14
+  },
+  {
+   "source": "Myth Drannor",
+   "chinese": "迷斯卓諾",
+   "category": "地名",
+   "uses": 9
+  },
+  {
+   "source": "Shadowdale",
+   "chinese": "暗影谷",
+   "category": "地名",
+   "uses": 11
+  },
+  {
+   "source": "Hillsfar",
+   "chinese": "希爾斯法",
+   "category": "地名",
+   "uses": 7
+  },
+  {
+   "source": "Essembra",
+   "chinese": "艾森布拉",
+   "category": "地名",
+   "uses": 6
+  },
+  {
+   "source": "Ashabenford",
+   "chinese": "阿沙本福德",
+   "category": "地名",
+   "uses": 6
+  },
+  {
+   "source": "Mulmaster",
+   "chinese": "穆爾馬斯特",
+   "category": "地名",
+   "uses": 2
+  },
+  {
+   "source": "Hap",
+   "chinese": "哈普",
+   "category": "地名",
+   "note": "世界地圖的目的地名",
+   "uses": 9
+  },
+  {
+   "source": "Haptooth",
+   "chinese": "哈普圖斯",
+   "category": "地名",
+   "note": "巫師塔下的村莊",
+   "uses": 3
+  },
+  {
+   "source": "Pit of Moander",
+   "chinese": "摩安德之坑",
+   "category": "地名",
+   "uses": 4
+  },
+  {
+   "source": "Dark Shrine",
+   "chinese": "幽暗神殿",
+   "category": "地名",
+   "uses": 2
+  },
+  {
+   "source": "Standing Stones",
+   "chinese": "立石群",
+   "category": "地名",
+   "uses": 3
+  },
+  {
+   "source": "Helm of Dragons",
+   "chinese": "龍盔",
+   "category": "神器與關鍵物品",
+   "forbidden": [
+    "龍之頭盔"
+   ],
+   "uses": 4
+  },
+  {
+   "source": "Gauntlet of Moander",
+   "chinese": "摩安德護手",
+   "category": "神器與關鍵物品",
+   "uses": 2
+  },
+  {
+   "source": "Amulet of Lathander",
+   "chinese": "洛山達護符",
+   "category": "神器與關鍵物品",
+   "uses": 4
+  },
+  {
+   "source": "Pool of Radiance",
+   "chinese": "光芒之池",
+   "category": "神器與關鍵物品",
+   "uses": 7
+  },
+  {
+   "source": "azure bonds",
+   "chinese": "枷印",
+   "category": "神器與關鍵物品",
+   "note": "完整敘述時作「蔚藍枷」",
+   "uses": 42
+  },
+  {
+   "source": "HIPPOGRIFF",
+   "chinese": "鷹馬",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "FIGHTER",
+   "chinese": "戰士",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 29
+  },
+  {
+   "source": "BLACK DRAGON",
+   "chinese": "黑龍",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 11
+  },
+  {
+   "source": "DK ELF FIGHTER",
+   "chinese": "黑暗精靈戰士",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "DARK ELF MAGE",
+   "chinese": "黑暗精靈法師",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "DARK ELF CLERIC",
+   "chinese": "黑暗精靈牧師",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "EFREETI",
+   "chinese": "伊弗利特",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "SALAMANDER",
+   "chinese": "火蜥蜴",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "DRACOLICH",
+   "chinese": "龍巫妖",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "HOODED MEDUSA",
+   "chinese": "兜帽梅杜莎",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "BEHOLDER",
+   "chinese": "眼魔",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 3
+  },
+  {
+   "source": "MINOTAUR",
+   "chinese": "牛頭人",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "ZHENTIL FIGHTER",
+   "chinese": "散提爾堡戰士",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "ZHENTIL MAGE",
+   "chinese": "散提爾堡法師",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "ZHENTIL CLERIC",
+   "chinese": "散提爾堡牧師",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "HIGH PRIEST",
+   "chinese": "大祭司",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "ZHENTRIM CLERIC",
+   "chinese": "散塔林牧師",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "ZHENTRIM FGHTR",
+   "chinese": "散塔林戰士",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 2
+  },
+  {
+   "source": "ZHENTRIM MAGE",
+   "chinese": "散塔林法師",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "CULTIST",
+   "chinese": "摩安德教徒",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "MOGION",
+   "chinese": "摩貢",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 10
+  },
+  {
+   "source": "SHAMBLING MOUND",
+   "chinese": "蔓生怪",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "BIT O' MOANDER",
+   "chinese": "摩安德殘軀",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 2
+  }
+ ],
+ "issues": null
+}
