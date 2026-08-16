@@ -6239,9 +6239,10 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 	case strings.Contains(joined, "YOU SEE A SIGN OVERHEAD") &&
 		strings.Contains(joined, "TEMPLE OF GOND"):
 		return catalog.Text("ecl_tilverton_temple_sign", "ecl_tilverton_temple_sign")
-	case strings.Contains(joined, "WOMAN SCREAMING IN THE SEWERS"):
-		return catalog.Text("ecl_tilverton_sewer_rumor", "ecl_tilverton_sewer_rumor")
 	}
+	// ⚠ 這張逐行對照表還在用：`YOU MOVE AWAY.` 之類的短句會出現在好幾個不同事件裡
+	// （菲拉妮離場也有），**不能**為它寫 page-level 的 text_rule——那會把別的事件
+	// 一起攔走。要退役它得逐句確認沒有共用，不是把字串搬進 game pack 就好。
 	localized := make([]string, 0, len(texts))
 	for _, text := range texts {
 		localized = append(localized, localizeECLLine(catalog, text))

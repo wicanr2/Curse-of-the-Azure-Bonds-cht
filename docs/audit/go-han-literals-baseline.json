@@ -95,14 +95,28 @@
     {
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "renderMarkdown",
-      "sha256": "0f3bafe218f9ac98db621a7288c6a2d654cf26db2eff5de9e3b48ae69ccdd40e",
+      "sha256": "10af87ec2e4bcbe43e66e526940f837e620411f70035fb57f7860a61a01ef903",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "renderMarkdown",
-      "sha256": "499e23f070b5529c7fab342ab7d695910b6b5b82f27381bfb742019961458362",
+      "sha256": "21cb729595f274a03b5a74f3525c0387ba436afb5e12ad49fdced268018bc2d7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-text-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "3683b87494bdf075ed1bf824abc76d32bab81ea48b1efedfa1c9d09f78a74d12",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-text-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "548ba7abceabe230e303f38398934d742aafe57ebf1294fb8e1bc4494ea7f84c",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -123,7 +137,14 @@
     {
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "renderMarkdown",
-      "sha256": "7a1df05c1013e3d22f8ca0967f86a80dba75160f9f49c4e6f5a375fd72f00a39",
+      "sha256": "6055427a9377d38cf7b1b08c3586a66a84ffe3ba2b809eeb3030da547119658c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-text-coverage/main.go",
+      "function": "renderMarkdown",
+      "sha256": "72fe3c288bded8500ff9517e1fd41170d789fffe88eb5d86effd3d5a66dfab87",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -137,7 +158,7 @@
     {
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "renderMarkdown",
-      "sha256": "cbde4f0a0065aab17652c6f39efaf0ed6eae03f3593c619612bc147ffdeb364a",
+      "sha256": "a6b7b0aa62568501a71cd153701e3c38472a53bedee51d6b2c2476bcc1ad765e",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -145,13 +166,6 @@
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "renderMarkdown",
       "sha256": "e33806e5d28a49fa19cdce8b8496379dc7c7703cfceb7378f0aa6c717283ce92",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/ecl-text-coverage/main.go",
-      "function": "renderMarkdown",
-      "sha256": "e752169c9d378085b1c1297d8e5f932dd30c03ca73368a610104a9bd7c2d8a25",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

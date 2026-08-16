@@ -479,7 +479,8 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			return
 		}
 		wantSign := state.catalog.Text("ecl_tilverton_temple_sign", "ecl_tilverton_temple_sign")
-		wantRumor := state.catalog.Text("ecl_tilverton_sewer_rumor", "ecl_tilverton_sewer_rumor")
+		// 下水道尖叫的傳聞先前只有 Go 的 fallback，本輪改由 game pack 供應。
+		wantRumor := requireGamePackText(t, &state, "tilverton.rumor.sewer-scream")
 		wantGreenRobesRumor := requireGamePackText(t, &state, "tilverton.green-robes-rumor")
 		if (state.Message != wantSign && state.Message != wantRumor && state.Message != wantGreenRobesRumor) || len(state.Choices) != 1 {
 			t.Fatalf("unexpected normal-path pause mode=%v position=(%d,%d,%d) choices=%v message=%q", state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection, state.Choices, state.Message)
