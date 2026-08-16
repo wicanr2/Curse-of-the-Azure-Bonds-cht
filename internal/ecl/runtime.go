@@ -236,6 +236,8 @@ type PartyMemberContext struct {
 	ThiefSkills       [8]uint8
 	MovementAllowance int
 	Effects           []uint8
+	// SpellSlots 是這名隊員依序記憶的法術 ID，供 `3Bh SPELL` 搜尋。
+	SpellSlots []uint8
 }
 
 type PartyContext struct {
@@ -247,6 +249,7 @@ func (c PartyContext) clone() PartyContext {
 	for index := range owned.Members {
 		owned.Members[index].ItemTypes = append([]uint8(nil), owned.Members[index].ItemTypes...)
 		owned.Members[index].Effects = append([]uint8(nil), owned.Members[index].Effects...)
+		owned.Members[index].SpellSlots = append([]uint8(nil), owned.Members[index].SpellSlots...)
 	}
 	return owned
 }
@@ -344,6 +347,26 @@ type TreasureRequest struct {
 	ItemBlock uint16
 }
 
+// spellNotFound 是 `3Bh SPELL` 在找不到時寫進 slot 位址的值。
+// 依據是呼叫端：`COMPARE [slot], imm FFh` ＋ `IF <>` ＋ `GOTO 找到了`。
+const spellNotFound = 0xFF
+
+// findSpell 依行軍順序、再依該角色的法術槽順序找第一個持有者，
+// 與 `party.Roster.FindSpell` 的合約一致。
+func (c PartyContext) findSpell(spellID uint16) (slot, member uint16, found bool) {
+	if spellID > 0xFF {
+		return 0, 0, false
+	}
+	for memberIndex, m := range c.Members {
+		for slotIndex, known := range m.SpellSlots {
+			if uint16(known) == spellID {
+				return uint16(slotIndex), uint16(memberIndex), true
+			}
+		}
+	}
+	return 0, 0, false
+}
+
 // RobRequest preserves ROB's party scope, percentage removed and per-item
 // theft chance. SelectedPlayerIndex is meaningful only when AllParty is false.
 type RobRequest struct {
@@ -380,6 +403,12 @@ type SpellSearch struct {
 	SpellID          uint16
 	SpellSlotAddress uint16
 	CharacterAddress uint16
+	// Resolved 表示這次搜尋有隊伍資料可查；沒有 party context 時 VM 不寫回，
+	// 因為「找不到」與「不知道」在 ECL 那一側長得一樣（都會走進錯誤分支）。
+	Resolved    bool
+	Found       bool
+	SlotIndex   uint16
+	MemberIndex uint16
 }
 
 type Menu struct {
@@ -1538,9 +1567,30 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				if err != nil {
 					return result, fmt.Errorf("spell character address at %d: %w", pc, err)
 				}
-				result.SpellSearches = append(result.SpellSearches, SpellSearch{
+				search := SpellSearch{
 					SpellID: spellID, SpellSlotAddress: slotAddress, CharacterAddress: characterAddress,
-				})
+				}
+				// ★ 原作把結果寫回這兩格，而**呼叫端只看得懂那兩格**：
+				// `ECL4.DAX/0x22 +079Fh` 之後就是
+				//   `03 COMPARE [7F79h], imm FFh` ／ `17 IF <>` ／ `01 GOTO`，
+				// 接著在 found 那一條路上 `0Ah LOAD CHARACTER [7F7Ah]`。
+				// ⇒ slot 那一格的 **0FFh 代表找不到**，character 那一格是
+				// `LOAD CHARACTER` 直接吃的隊員索引（`value & 0x7F`，0 起算）。
+				// 只排隊不寫回，ECL 會走進「找到了」的分支去 LOAD 一個沒選過的
+				// 角色——比沒有效果更糟。
+				if workingPartyContext != nil {
+					search.Resolved = true
+					if slot, member, found := workingPartyContext.findSpell(spellID); found {
+						search.Found = true
+						search.SlotIndex = slot
+						search.MemberIndex = member
+						memory[slotAddress] = slot
+						memory[characterAddress] = member
+					} else {
+						memory[slotAddress] = spellNotFound
+					}
+				}
+				result.SpellSearches = append(result.SpellSearches, search)
 			}
 			if instruction.Command.Opcode == 0x3C {
 				address, err := operandAddress(instruction.Operands[0])
