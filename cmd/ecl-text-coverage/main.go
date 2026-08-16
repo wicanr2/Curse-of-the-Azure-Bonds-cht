@@ -43,25 +43,39 @@ type group struct {
 	// 子程式印的字本工具不追（見 Limitations），所以 `Text` 少了那一段；
 	// 寫 `all_contains` 的片段**不可以跨過這些位置**，否則實機接不上。
 	GosubInserts []string `json:"gosub_inserts,omitempty"`
+	// DynamicBranch 表示這一頁所在的 run 有 `ON GOTO`／`ON GOSUB`。分支的文字會接
+	// 在同一個 run 後面（街頭傳聞就是這樣），但目的地是動態的，本工具跟不到，
+	// 所以拿不到完整的 run 文字。
+	DynamicBranch bool `json:"dynamic_branch,omitempty"`
 	// VariableInserts 記錄這一頁印過**執行期的值**（角色名、城名、數字）。
 	// 那些值只有跑起來才知道，靜態文字裡是空的，所以工具比對不了——
 	// 逐城的 `*.edge` 規則需要城名，就是這一類。
 	VariableInserts []string `json:"variable_inserts,omitempty"`
+	// BranchTail 表示這一段是「被 IF 守衛的 GOTO」跳進來的另一條續寫（`WEST.`／
+	// `EAST.`），實機會把它接在同一頁後面，不會單獨出現。
+	BranchTail bool `json:"branch_tail,omitempty"`
 	// Status 是這一段在內容產出裡的處置：
 	//
 	//	matched      有規則命中，做完了
 	//	unmatched    還沒寫規則——這才是待辦
-	//	gosub-insert 文字被子程式插過，本工具比對不了；規則可能早就寫好了
-	//	variable-insert 頁裡印了執行期的值（人名、城名），同樣比對不了
-	//	subroutine   這一段本身就是某支子程式的內容，實機不會單獨出現
+	//	variable-insert 頁裡印了執行期的值（人名、城名），靜態文字裡沒有，比對不了
+	//	subroutine   共用子程式的片段，實機一定被併進呼叫端那一頁
+	//
+	// `gosub_inserts`／`dynamic_branch` 只是**註記**，不是 status：那兩種插入
+	// 已經在 runVariants 展開，展開後沒命中就照樣算 unmatched。
 	Status string `json:"status"`
-	// Run 是這一頁所屬的「一次執行」。runtime 把整個 run 的文字累積起來**一次**
-	// 交給 MatchText，所以比對必須以 run 為單位——一條規則可以橫跨好幾頁。
-	// 開場捲軸就是七頁一個 run。
-	Run int `json:"run"`
+	// RunText 是「這一頁所在的某一份 run 的完整文字」，只在沒接上時填。
+	// 寫規則要看的是它，不是單獨一頁——`all_contains` 比對的就是這一份。
+	RunText string `json:"run_text,omitempty"`
+	// Run 是 offset 線性切法留下的頁序號，只用來排序與比對舊報告。
+	Run int `json:"run,omitempty"`
 	// appended 記錄這一段是以 `11h PRINT` 起頭（true）還是 `12h PRINTCLEAR`（false）。
 	// 只有前者可能是「接在呼叫端那一頁後面」的片段——它自己不開新頁。
 	appended bool
+	// fragment 表示這一段落在「會被插進別頁的子程式」裡，不管它用什麼起頭。
+	fragment bool
+	// gosubTargets 是這一頁插入點跳去的 payload offset，展開時要進去取文字。
+	gosubTargets []int
 }
 
 type report struct {
@@ -75,8 +89,12 @@ type summary struct {
 	Groups         int            `json:"groups"`
 	Matched        int            `json:"matched"`
 	Unmatched      int            `json:"unmatched"`
-	GosubInsert    int            `json:"gosub_insert"`
+	// GosubInsert／BranchInsert 是**註記的計數**（有多少頁帶著插入點），
+	// 不是狀態桶。它們與 Matched／Unmatched 有重疊，加起來不等於 Groups。
+	GosubInsert    int            `json:"gosub_insert_notes"`
 	VariableInsert int            `json:"variable_insert"`
+	BranchInsert   int            `json:"branch_insert_notes"`
+	BranchTail     int            `json:"branch_tail"`
 	Subroutine     int            `json:"subroutine"`
 	ByBlock        map[string]int `json:"unmatched_by_block"`
 }
@@ -86,6 +104,7 @@ func main() {
 	output := flag.String("output", "", "write the Markdown report to this path")
 	outputJSON := flag.String("json", "", "write the machine-readable report to this path")
 	block := flag.String("block", "", "limit to one block, e.g. ECL3.DAX/0x10")
+	debugPages := flag.Bool("debug-pages", false, "列出 offset 線性切法有、控制流走訪沒走到的頁")
 	flag.Parse()
 
 	pack, err := gamepack.Default()
@@ -101,12 +120,13 @@ func main() {
 	result := report{
 		Schema: "coab-ecl-text-coverage/1",
 		Limitations: []string{
-			"只統計靜態可達的文字：TraceGraph 跟 GOTO／GOSUB、循序 fallthrough 與 IF 的兩條路（spec 1106），但**不跟** ON GOTO／ON GOSUB 的動態目的地與選單分支——分母只會再往上。",
-			"一段 ＝ 一頁：`12h PRINTCLEAR` 重設文字游標就是開新頁（spec 1104）。原作的翻頁提示放在 `02h GOSUB` 進去的子程式裡，本工具不追進去，所以看不到 run 的邊界——不要用相鄰段落去推論它們是不是同一次 run。",
-			"`02h GOSUB` 進去印的文字不會併進這一段，標 `gosub_inserts` 的頁實際文字比這裡多。插入點在中間（`ECL5.DAX/0x33 +091Fh` 實際是「THE STAIRS LEAD ⟨UP｜DOWN⟩ HERE. DO YOU WANT TO TAKE THEM?」）或在開頭當前綴（`ECL4.DAX/0x25` 的八個遭遇頁前面都有「YOU ARE ATTACKED BY」）。⇒ 寫 `all_contains` 時**片段不要跨越插入點**，否則實機接不上。",
-			"反過來，被 `GOSUB` 呼叫的純文字子程式會自成一段（如 `UP`／`DOWN`／`YOU ARE ATTACKED BY`）。它們在實機不會單獨出現，**不要**替它們寫規則——只有一兩個字的規則會攔截到別的文字。",
-			"頁裡若印了執行期的值（人名、城名、數字），靜態文字是空的，工具同樣比對不了——逐城的 `*.edge` 規則需要城名才會命中。這類標 `variable-insert`。",
-			"比對以 **run** 為單位，不是以頁：runtime 把整個 run 的文字累積起來一次交給 `MatchText`，所以一條規則可以橫跨好幾頁（開場捲軸就是四頁一條）。run 在「交出文字」的指令或頁尾的 `GOSUB`（翻頁提示、Yes／No）處結束。",
+			"分母是**控制流走訪**得到的頁，不是位址順序切出來的段：從五個 lifecycle entry 出發，跟循序、`GOTO`／`GOSUB`／`RETURN`、`IF` 的兩條路（spec 1106）、以及 `25h ON GOTO`／`26h ON GOSUB` 的每一個目的地。`15h`／`2Bh` 選單與 `25h`／`26h` 都是變長指令，長度自己算（`ecl.MenuEnd`／`ecl.BranchTargets`）——信 `Instruction.Next` 會走進運算元裡把資料當程式解。",
+			"比對以 **run** 為單位：runtime 把一次執行累積的文字**一次**交給 `MatchText`，所以一條規則可以橫跨好幾頁（開場捲軸就是七頁一條）。run 在會 `return result` 的指令處結束（選單、戰鬥、寶物、輸入、換 block、離開）。",
+			"一條 run 命中，它經過的每一頁就都算接上了——規則命中的是那一整份文字，不是其中某一頁。反過來，同一份文字可能印在好幾個位址上，那些位址一律算進同一條 run。",
+			"`variable-insert` 是**唯一**還無法靜態驗證的一類：頁裡印的是執行期的值（城名、酒館傳聞編號、隊員名），靜態文字裡沒有那幾個字，規則要靠它才會命中。逐城的 `*.edge`、`*.tavern-tale-*`、`world-route.*`、`world.night-note.*` 都屬於這一類，要靠實機路徑驗。",
+			"`subroutine` 是共用子程式的片段（`WHAT DO YOU DO?`、`UP`／`DOWN`）。判準是「落在被 `GOSUB` 呼叫的範圍內」**且**「從來沒有和別的頁同屬一份 run」——實機它一定被併進呼叫端那一頁。**不要**替它們寫規則：只有一兩個字的 `all_contains` 會攔截到別的文字。",
+			"`gosub_inserts`／`dynamic_branch` 只是**註記**，不是狀態：那兩種插入已經在走訪時展開，展開後沒命中就照樣算 `unmatched`。兩個計數與 `matched`／`unmatched` 有重疊，加起來不等於 `groups`。",
+			"⚠ `ECL1.DAX/0x51` 的走訪會碰到狀態數上限（4,000,000）而提早停：世界地圖那一段 `IF` 分岔多又長，狀態數隨之指數成長。碰到上限會在 stderr 印一行，**沒有靜默截斷**；代價是那個 block 可能有走不到的頁沒進分母。",
 			"『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。",
 		},
 		Summary: summary{ByBlock: map[string]int{}},
@@ -126,48 +146,105 @@ func main() {
 			if *block != "" && *block != member+"/"+blockID {
 				continue
 			}
-			groups, subroutines, err := blockGroups(member, blockID, raw.Data)
+			annotations, err := blockGroups(member, blockID, raw.Data)
 			if err != nil {
 				log.Fatalf("%s block %s: %v", member, blockID, err)
 			}
-			// runtime 累積整個 run 才比對一次，工具也要這樣做。
-			runText := map[int][]string{}
-			for _, item := range groups {
-				runText[item.Run] = append(runText[item.Run], item.Text)
+			paths, pageText, err := walkRuns(member+"/"+blockID, raw.Data)
+			if err != nil {
+				log.Fatalf("%s block %s walk: %v", member, blockID, err)
 			}
-			runMatch := map[int]string{}
-			for run, texts := range runText {
-				if result := pack.MatchText(texts, pack.DefaultLocale); result.Matched {
-					runMatch[run] = result.RuleID
+			// 一條 run 命中，它經過的每一頁就都接上了：runtime 是把整份文字
+			// **一次**交給 MatchText，規則命中的是那一份，不是其中某一頁。
+			covered := map[string]string{}
+			runOf := map[string]string{}
+			// aloneOnly 記著「這一頁只曾經自己成為一整份 run」。共用子程式
+			// （`WHAT DO YOU DO?`、`UP`／`DOWN`）在實機一定被併進呼叫端那一頁，
+			// 走訪器卻會從某些路徑上單獨吐出它們。
+			aloneOnly := map[string]bool{}
+			for _, path := range paths {
+				joined := strings.Join(path.Texts, " ")
+				matched := pack.MatchText(path.Texts, pack.DefaultLocale)
+				for _, page := range path.Pages {
+					if len(path.Pages) > 1 {
+						aloneOnly[page] = false
+					} else if _, seen := aloneOnly[page]; !seen {
+						aloneOnly[page] = true
+					}
+					if matched.Matched {
+						if _, done := covered[page]; !done {
+							covered[page] = matched.RuleID
+						}
+						continue
+					}
+					// 沒命中的那一份留一個代表，寫規則時要看的是整份 run 文字，
+					// 不是單獨一頁——片段跨不過去的地方就在這裡看得出來。
+					if existing, ok := runOf[page]; !ok || len(joined) > len(existing) {
+						runOf[page] = joined
+					}
 				}
 			}
-			for _, item := range groups {
-				matchedRule, matched := runMatch[item.Run]
-				match := struct {
-					Matched bool
-					RuleID  string
-				}{matched, matchedRule}
-				switch {
-				case match.Matched:
-					item.RuleID = match.RuleID
+			if *debugPages {
+				for _, item := range annotations.groups {
+					if _, ok := pageText[item.Offset]; !ok {
+						fmt.Fprintf(os.Stderr, "unreached %s/%s %s | %.70s\n",
+							member, blockID, item.Offset, item.Text)
+					}
+				}
+			}
+			notes := map[string]group{}
+			for _, item := range annotations.groups {
+				notes[item.Offset] = item
+			}
+			offsets := make([]string, 0, len(pageText))
+			for offset := range pageText {
+				offsets = append(offsets, offset)
+			}
+			sort.Strings(offsets)
+			for _, offset := range offsets {
+				item := group{
+					Member: member, Block: blockID, Offset: offset,
+					Text:            pageText[offset],
+					GosubInserts:    notes[offset].GosubInserts,
+					VariableInserts: notes[offset].VariableInserts,
+					DynamicBranch:   notes[offset].DynamicBranch,
+				}
+				switch rule, matched := covered[offset]; {
+				case matched:
+					item.RuleID = rule
 					item.Status = "matched"
 					result.Summary.Matched++
-				// 只有「以 PRINT 起頭又落在子程式體內」才是片段。用 PRINTCLEAR 起頭的
-				// 子程式是**共用的一整頁**（`THE DOOR IS LOCKED` 就是），玩家看得到，
-				// 那是待辦不是雜訊。
-				case item.appended && subroutines[item.Offset]:
-					item.Status = "subroutine"
-					result.Summary.Subroutine++
-				case len(item.GosubInserts) > 0:
-					item.Status = "gosub-insert"
-					result.Summary.GosubInsert++
+				// ⚠ 只有這一桶是真的「比對不了」：頁裡印的是執行期的值（城名、
+				// 人名、數字），靜態文字裡根本沒有那幾個字，規則要靠它才會命中。
+				// 子程式插入與 `ON GOTO` 分支都已經由 walkRuns 走過，走完還是
+				// 沒命中就是**沒接上**——待辦躲進看起來已處理的桶子，
+				// 就是誤判做完的那個形狀。
 				case len(item.VariableInserts) > 0:
 					item.Status = "variable-insert"
 					result.Summary.VariableInsert++
+				// 這一頁落在某支被 `GOSUB` 呼叫的子程式裡，而且**從來沒有和別的頁
+				// 同屬一份 run**——也就是走訪器只在「從半路進入子程式」那種路徑上
+				// 單獨吐出過它。實機它一定是被併進呼叫端那一頁的（`THE STAIRS
+				// LEAD ⟨UP｜DOWN⟩ HERE.`），所以既不算做完也不算待辦。
+				//
+				// ⚠ 兩個條件缺一不可。只看「在子程式裡」會把 `THE DOOR IS LOCKED`
+				// 這種共用的**整頁**也吞掉；只看「單獨成 run」會把真正的單句事件
+				// 吞掉。**寧可少標也不要多標**：少標只是清單裡多幾筆看起來奇怪的
+				// 短句，多標會讓真正的待辦從清單上消失。
+				case annotations.subroutines[offset] && aloneOnly[offset]:
+					item.Status = "subroutine"
+					result.Summary.Subroutine++
 				default:
 					item.Status = "unmatched"
+					item.RunText = runOf[offset]
 					result.Summary.Unmatched++
 					result.Summary.ByBlock[member+"/"+blockID]++
+				}
+				if len(item.GosubInserts) > 0 {
+					result.Summary.GosubInsert++
+				}
+				if item.DynamicBranch {
+					result.Summary.BranchInsert++
 				}
 				result.Summary.Groups++
 				result.Groups = append(result.Groups, item)
@@ -190,20 +267,21 @@ func main() {
 		}
 	}
 	fmt.Fprintf(os.Stderr,
-		"text_groups=%d matched=%d unmatched=%d gosub-insert=%d variable-insert=%d subroutine=%d\n",
+		"text_groups=%d matched=%d unmatched=%d variable-insert=%d subroutine=%d（註記：gosub-insert=%d branch-insert=%d）\n",
 		result.Summary.Groups, result.Summary.Matched, result.Summary.Unmatched,
-		result.Summary.GosubInsert, result.Summary.VariableInsert, result.Summary.Subroutine)
+		result.Summary.VariableInsert, result.Summary.Subroutine,
+		result.Summary.GosubInsert, result.Summary.BranchInsert)
 }
 
 // blockGroups collects the reachable PRINTCLEAR/PRINT runs of one block, plus
 // the set of group offsets that live inside a GOSUB'd subroutine.
-func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool, error) {
+func blockGroups(member, blockID string, data []byte) (blockText, error) {
 	if len(data) < 2 {
-		return nil, nil, nil
+		return blockText{}, nil
 	}
 	points, _, err := ecl.EntryPoints(data, 5)
 	if err != nil {
-		return nil, nil, err
+		return blockText{}, err
 	}
 	starts := make([]int, 0, len(points))
 	for _, point := range points {
@@ -211,7 +289,7 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 	}
 	graph, err := ecl.TraceGraph(data, starts, len(data)*8)
 	if err != nil {
-		return nil, nil, err
+		return blockText{}, err
 	}
 	instructions := append([]ecl.Instruction(nil), graph.Instructions...)
 	sort.Slice(instructions, func(i, j int) bool {
@@ -222,6 +300,15 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 	var current *group
 	var pendingGosub []string
 	guarded := false
+	// branching 記著哪些 run 裡有 `ON GOTO`／`ON GOSUB`：那些分支的文字接在同一個
+	// run 後面，但目的地是動態的，本工具跟不到。
+	branching := map[int]bool{}
+	// branchTargets 記著每個 run 的 `ON GOTO`／`ON GOSUB` 會跳到哪些 payload
+	// offset。展開比對時要把那邊的文字接到這個 run 後面。
+	branchTargets := map[int][]int{}
+	// branchRuns 反過來記：這個 run 是從哪一個分支目的地開始的。展開時要把
+	// 跳進來之前累積的文字接在前面。
+	branchRuns := map[int]int{}
 	// run 只在「交出文字」時才換：`PRINTCLEAR` 開新頁但**不**結束 run。
 	// 頁尾的 `GOSUB`（翻頁提示、Yes／No）會讓 VM 停下等玩家，那才是 run 邊界；
 	// 頁中的 `GOSUB`（插一段文字進來）不是。兩者的差別在於後面還有沒有 PRINT。
@@ -237,7 +324,21 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 		// 所以下一條在 offset 順序上仍然是同一頁的延續。
 		if !wasGuarded && endsTextGroup(opcode) {
 			current, pendingGosub = nil, nil
-			run++
+			// ⚠ 只有「交出文字」才換 run。`GOTO`／`RETURN`／`ON GOTO` 是控制流，
+			// 它們讓**頁**在 offset 順序上斷開，但不會把累積的文字交給 MatchText。
+			if endsRun(opcode) {
+				run++
+			}
+			if opcode == 0x25 || opcode == 0x26 {
+				// 選哪一條是動態的，但**目的地是靜態的字面位址**。那邊印的文字
+				// 接在同一個 run 後面，所以要把每個目的地都記下來展開比對。
+				branching[run] = true
+				targets, _, err := ecl.BranchTargets(data, instruction.Offset)
+				if err != nil {
+					return blockText{}, err
+				}
+				branchTargets[run] = append(branchTargets[run], targets...)
+			}
 			continue
 		}
 		if opcode == 0x02 {
@@ -288,6 +389,7 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 				Run:          run,
 				GosubInserts: inserts,
 				appended:     opcode == 0x11 && !cleared,
+				gosubTargets: gosubTargetsOf(instructions, inserts),
 			})
 			current, pendingGosub, cleared = &groups[len(groups)-1], nil, false
 			current.VariableInserts = append(current.VariableInserts, variables...)
@@ -296,9 +398,287 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 		current.Text += " " + text
 		current.VariableInserts = append(current.VariableInserts, variables...)
 		current.GosubInserts = append(current.GosubInserts, pendingGosub...)
+		current.gosubTargets = append(current.gosubTargets, gosubTargetsOf(instructions, pendingGosub)...)
 		pendingGosub = nil
 	}
-	return groups, subroutineOffsets(instructions), nil
+	for index := range groups {
+		if branching[groups[index].Run] {
+			groups[index].DynamicBranch = true
+		}
+	}
+	// 被記成「插入點」的那些 GOSUB，它們的目標整支都是片段——`YOU ARE ATTACKED BY`
+	// 用 `PRINTCLEAR` 起頭卻仍然是前綴，靠 `appended` 判不出來，靠呼叫端判得出來。
+	inserting := map[uint16]bool{}
+	for _, item := range groups {
+		for _, insert := range item.GosubInserts {
+			var offset int
+			fmt.Sscanf(insert, "0x%04X", &offset)
+			for _, instruction := range instructions {
+				if instruction.Offset == offset && len(instruction.Operands) == 1 &&
+					instruction.Operands[0].WordSet {
+					inserting[instruction.Operands[0].Word] = true
+				}
+			}
+		}
+	}
+	fragments := subroutineOffsets(instructions, inserting)
+	tails := guardedGotoTargets(instructions)
+	for index := range groups {
+		if fragments[groups[index].Offset] {
+			groups[index].fragment = true
+		}
+		if groups[index].appended && tails[groups[index].Offset] {
+			groups[index].BranchTail = true
+		}
+	}
+	return blockText{
+		groups:        groups,
+		subroutines:   subroutineOffsets(instructions, nil),
+		branchTargets: branchTargets,
+		branchRuns:    branchRuns,
+		instructions:  instructions,
+	}, nil
+}
+
+// blockText 是一個 block 的完整文字模型：切好的頁、子程式範圍、以及每個 run 的
+// `ON GOTO` 目的地。後兩者讓 main 有辦法把「插進來的文字」展開成完整的 run。
+type blockText struct {
+	groups        []group
+	subroutines   map[string]bool
+	branchTargets map[int][]int
+	branchRuns    map[int]int
+	instructions  []ecl.Instruction
+}
+
+// runOrder 依 run 編號由小到大列出這個 block 的所有 run。
+func (b blockText) runOrder() []int {
+	seen := map[int]bool{}
+	var order []int
+	for _, item := range b.groups {
+		if !seen[item.Run] {
+			seen[item.Run] = true
+			order = append(order, item.Run)
+		}
+	}
+	sort.Ints(order)
+	return order
+}
+
+// maxRunVariants 擋住組合爆炸。一個 run 同時有兩個插入點、每個插入點又有兩條
+// 分支就已經四種；`ON GOTO` 的目的地可以有十幾個。上限到了就不再展開——
+// 代價是可能少判一個命中，方向與「寧可少標也不要多標」相反但同樣安全：
+// 少判會讓那一頁留在待辦裡被人看到，多判才會讓待辦悄悄消失。
+const maxRunVariants = 48
+
+// runVariants 把一個 run 在實機可能印出的文字序列列出來。
+//
+// 工具依 offset 順序切頁，切出來的是「這一段位址上寫了什麼」；玩家看到的卻是
+// **一次執行**累積的文字，而那份文字有兩個來源不在這一段位址上：
+//
+//   - `02h GOSUB` 進去的子程式（翻頁提示不算，會印字的那種：`YOU ARE ATTACKED BY`、
+//     `UP`／`DOWN`）。
+//   - `25h ON GOTO`／`26h ON GOSUB` 跳進來之前，前面那一段已經累積的文字。
+//
+// 兩者都會讓 `MatchText` 拿到的字比這一段多。不展開就只能把那些頁標成
+// 「比對不了」，而那正是**誤判做完的地方**：待辦被歸進一個看起來已處理的桶子。
+func (b blockText) runVariants(run int) [][]string {
+	variants := b.ownVariants(run)
+	if prefix, ok := b.prefixRunOf(run); ok {
+		variants = crossVariants(b.ownVariants(prefix), variants)
+	}
+	return variants
+}
+
+// ownVariants 只展開這個 run 自己的頁與它們的 GOSUB 插入點。
+func (b blockText) ownVariants(run int) [][]string {
+	variants := [][]string{{}}
+	for _, item := range b.groups {
+		if item.Run != run {
+			continue
+		}
+		variants = appendToAll(variants, item.Text)
+		if len(item.gosubTargets) > 0 {
+			var inserted [][]string
+			for _, target := range item.gosubTargets {
+				inserted = append(inserted, b.subroutineTexts(target)...)
+			}
+			variants = crossVariants(variants, inserted)
+		}
+	}
+	return variants
+}
+
+// prefixRunOf 找出「跳進這個 run 的那張 ON GOTO 表」屬於哪一個 run。
+// 只往回找一層：分支的分支再往上追會指數成長，而 `all_contains` 是子字串比對，
+// 多接一層通常不會多命中什麼。
+func (b blockText) prefixRunOf(run int) (int, bool) {
+	start, ok := b.branchRuns[run]
+	if !ok {
+		return 0, false
+	}
+	for owner, targets := range b.branchTargets {
+		for _, target := range targets {
+			if target == start && owner != run {
+				return owner, true
+			}
+		}
+	}
+	return 0, false
+}
+
+// runAt 找出某個 payload offset 落在哪一個 run：取第一個 offset 不小於它的頁。
+// 分支目的地常常先做幾條 SAVE／COMPARE 才 `PRINTCLEAR`，所以不能要求剛好相等。
+func (b blockText) runAt(offset int) (int, bool) {
+	best, bestOffset := 0, -1
+	for _, item := range b.groups {
+		var at int
+		fmt.Sscanf(item.Offset, "0x%04X", &at)
+		if at < offset {
+			continue
+		}
+		if bestOffset < 0 || at < bestOffset {
+			best, bestOffset = item.Run, at
+		}
+	}
+	return best, bestOffset >= 0
+}
+
+// subroutineTexts 走一支子程式，列出它可能印出的文字序列。`IF` 的兩條路都要走
+// （spec 1106：條件不成立時整條下一個指令被跳過），`UP`／`DOWN` 就是靠這個
+// 分成兩種變體——把兩條併成一條會得到現實中不存在的「UP DOWN」。
+func (b blockText) subroutineTexts(target int) [][]string {
+	index := map[int]ecl.Instruction{}
+	for _, instruction := range b.instructions {
+		index[instruction.Offset] = instruction
+	}
+	var walk func(offset int, acc []string, budget int) [][]string
+	walk = func(offset int, acc []string, budget int) [][]string {
+		if budget <= 0 {
+			return [][]string{acc}
+		}
+		instruction, ok := index[offset]
+		if !ok {
+			return [][]string{acc}
+		}
+		opcode := instruction.Command.Opcode
+		switch {
+		case opcode == 0x11 || opcode == 0x12:
+			if printed := instructionText(instruction); printed != "" {
+				acc = append(append([]string(nil), acc...), printed)
+			}
+			return walk(instruction.Next, acc, budget-1)
+		case opcode == 0x13 || opcode == 0x00:
+			return [][]string{acc}
+		case opcode == 0x01:
+			if len(instruction.Operands) == 1 {
+				if next, ok := ecl.CodeTarget(instruction.Operands[0], 1<<20); ok {
+					return walk(next, acc, budget-1)
+				}
+			}
+			return [][]string{acc}
+		case opcode >= 0x16 && opcode <= 0x1B:
+			// 條件成立：執行下一條。條件不成立：跳過它，從再下一條繼續。
+			taken := walk(instruction.Next, acc, budget-1)
+			skipped := [][]string{acc}
+			if guardedInstruction, ok := index[instruction.Next]; ok {
+				skipped = walk(guardedInstruction.Next, acc, budget-1)
+			}
+			return append(taken, skipped...)
+		default:
+			return walk(instruction.Next, acc, budget-1)
+		}
+	}
+	return walk(target, nil, 64)
+}
+
+func appendToAll(variants [][]string, text string) [][]string {
+	for index := range variants {
+		variants[index] = append(append([]string(nil), variants[index]...), text)
+	}
+	return variants
+}
+
+// crossVariants 把「這一頁的文字」與「插進來的每一種文字」相乘。
+// `all_contains` 是子字串比對，順序不影響結果，所以插入的字接在後面就夠了
+// ——前提是規則的片段不跨越插入點（Limitations 已寫明）。
+func crossVariants(variants, inserted [][]string) [][]string {
+	if len(inserted) == 0 {
+		return variants
+	}
+	var out [][]string
+	for _, base := range variants {
+		for _, extra := range inserted {
+			if len(out) >= maxRunVariants {
+				return out
+			}
+			out = append(out, append(append([]string(nil), base...), extra...))
+		}
+	}
+	return out
+}
+
+// gosubTargetsOf 把「GOSUB 指令的 offset」換成「它跳去的 payload offset」。
+func gosubTargetsOf(instructions []ecl.Instruction, inserts []string) []int {
+	if len(inserts) == 0 {
+		return nil
+	}
+	wanted := map[int]bool{}
+	for _, insert := range inserts {
+		var offset int
+		fmt.Sscanf(insert, "0x%04X", &offset)
+		wanted[offset] = true
+	}
+	var targets []int
+	for _, instruction := range instructions {
+		if !wanted[instruction.Offset] || len(instruction.Operands) != 1 {
+			continue
+		}
+		if operand := instruction.Operands[0]; operand.WordSet &&
+			int(operand.Word) >= ecl.CodeAddressBase {
+			targets = append(targets, int(operand.Word)-ecl.CodeAddressBase)
+		}
+	}
+	return targets
+}
+
+// guardedGotoTargets 收集「被 IF 守衛的 GOTO」跳過去的位址。那種 GOTO 是
+// if／else 的分叉，目標若又以 `11h PRINT` 起頭（沒有自己的 PRINTCLEAR），
+// 它就是**同一頁的另一條續寫**，不是獨立的一頁：
+//
+//	PRINTCLEAR «YOU FIND A SECRET DOOR TO THE »
+//	IF =; GOTO east
+//	PRINT «WEST.»   ; GOTO after
+//	east: PRINT «EAST.»
+//
+// 實機只會印出其中一條，玩家看到的是完整的一句。工具依 offset 順序切頁，
+// 必然把後面那條切成獨立的一段，而那一段的文字（`EAST.`）短到不能寫規則。
+// ⇒ 標成 branch-tail：不是待辦，但**它的譯文要跟著主分支一起手寫**，
+// 這一點工具驗不到（見 report 的 limitations）。
+func guardedGotoTargets(instructions []ecl.Instruction) map[string]bool {
+	targets := map[string]bool{}
+	guarded := false
+	for _, instruction := range instructions {
+		if guarded && instruction.Command.Opcode == 0x01 && len(instruction.Operands) == 1 {
+			if operand := instruction.Operands[0]; operand.WordSet &&
+				int(operand.Word) >= ecl.CodeAddressBase {
+				targets[fmt.Sprintf("0x%04X", int(operand.Word)-ecl.CodeAddressBase)] = true
+			}
+		}
+		guarded = instruction.Command.Opcode >= 0x16 && instruction.Command.Opcode <= 0x1B
+	}
+	return targets
+}
+
+// endsRun 是真正把累積文字交給 `MatchText` 的那些指令，取自
+// `internal/ecl/runtime.go` 裡會 `return result` 的 case。控制流（`GOTO`、
+// `RETURN`、`ON GOTO`）不在此列——那是 `endsTextGroup` 的事。
+func endsRun(opcode byte) bool {
+	switch opcode {
+	case 0x00, 0x20, 0x24, 0x27, 0x15, 0x29, 0x2B, 0x2C, 0x10, 0x0F, 0x39, 0x38:
+		return true
+	default:
+		return false
+	}
 }
 
 // subroutineOffsets 標出「這一段其實是某支子程式的內容」。這種段落在實機不會
@@ -313,15 +693,20 @@ func blockGroups(member, blockID string, data []byte) ([]group, map[string]bool,
 // 都延伸，結果把 `THE DOOR IS LOCKED`、`RED PLUME GUARDS RUSH AT YOU` 這些真正的
 // 頁一起吞進來——**寧可少標也不要多標**：少標只是清單裡多幾筆看起來奇怪的短句，
 // 多標會讓真正的待辦從清單上消失。
-func subroutineOffsets(instructions []ecl.Instruction) map[string]bool {
+func subroutineOffsets(instructions []ecl.Instruction, only map[uint16]bool) map[string]bool {
 	targets := map[int]bool{}
 	for _, instruction := range instructions {
 		if instruction.Command.Opcode != 0x02 || len(instruction.Operands) != 1 {
 			continue
 		}
-		if operand := instruction.Operands[0]; operand.WordSet {
-			targets[int(operand.Word)-ecl.CodeAddressBase] = true
+		operand := instruction.Operands[0]
+		if !operand.WordSet {
+			continue
 		}
+		if only != nil && !only[operand.Word] {
+			continue
+		}
+		targets[int(operand.Word)-ecl.CodeAddressBase] = true
 	}
 	inside := map[string]bool{}
 	for target := range targets {
@@ -451,16 +836,20 @@ func renderMarkdown(result report) []byte {
 		fmt.Fprintf(&out, "- %s\n", limitation)
 	}
 	fmt.Fprintf(&out, "\n## 摘要\n\n| 處置 | 數量 | 意思 |\n|---|---:|---|\n")
-	fmt.Fprintf(&out, "| 靜態可達的文字段落 | %d | — |\n", result.Summary.Groups)
-	fmt.Fprintf(&out, "| `matched` | %d | 有規則命中 |\n", result.Summary.Matched)
+	fmt.Fprintf(&out, "| 控制流可達的頁 | %d | 分母 |\n", result.Summary.Groups)
+	fmt.Fprintf(&out, "| `matched` | %d | 有規則命中它所在的 run |\n", result.Summary.Matched)
 	fmt.Fprintf(&out, "| **`unmatched`** | **%d** | **還沒寫規則——這才是待辦** |\n",
 		result.Summary.Unmatched)
-	fmt.Fprintf(&out, "| `gosub-insert` | %d | 文字被子程式插過，本工具比對不了；規則可能早就寫好了 |\n",
-		result.Summary.GosubInsert)
-	fmt.Fprintf(&out, "| `variable-insert` | %d | 頁裡印了執行期的值（人名、城名），同樣比對不了 |\n",
+	fmt.Fprintf(&out, "| `variable-insert` | %d | 頁裡印的是執行期的值（城名、傳聞編號、隊員名），靜態驗不到 |\n",
 		result.Summary.VariableInsert)
-	fmt.Fprintf(&out, "| `subroutine` | %d | 這一段本身是某支子程式的內容，實機不會單獨出現 |\n",
+	fmt.Fprintf(&out, "| `subroutine` | %d | 共用子程式的片段，實機一定被併進呼叫端那一頁 |\n",
 		result.Summary.Subroutine)
+	out.WriteString("\n下面兩欄是**註記**不是狀態：它們與上表重疊，不要加總。\n\n")
+	fmt.Fprintf(&out, "| 註記 | 數量 | 意思 |\n|---|---:|---|\n")
+	fmt.Fprintf(&out, "| `gosub_inserts` | %d | 這一頁的文字被 `GOSUB` 進去的子程式插過一段（走訪時已展開） |\n",
+		result.Summary.GosubInsert)
+	fmt.Fprintf(&out, "| `dynamic_branch` | %d | 這一頁所在的 run 有 `ON GOTO`／`ON GOSUB`（走訪時已展開每個目的地） |\n",
+		result.Summary.BranchInsert)
 
 	blocks := make([]string, 0, len(result.Summary.ByBlock))
 	for key := range result.Summary.ByBlock {
