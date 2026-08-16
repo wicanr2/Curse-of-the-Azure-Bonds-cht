@@ -617,6 +617,44 @@ func (s *State) CombatMoveWithTerrain(dx, dy int, terrain combat.MovementTerrain
 	return s.advanceCombatToParty()
 }
 
+// SetCombatMovementTerrain 裝上繪製端擁有的戰鬥地圖投影，供 **AI 移動**使用。
+//
+// ★ 玩家移動的地形是每一步由前端傳進來的（`CombatMoveWithTerrain`），
+// 但 AI 的一步不是玩家按出來的，沒有那個傳入點。兩者必須是**同一份地形**，
+// 否則怪物會走玩家走不了的格子。
+func (s *State) SetCombatMovementTerrain(terrain combat.MovementTerrain) {
+	s.combatMovementTerrain = terrain
+}
+
+// approachMonsterTarget 跑 AI 的移動階段。回傳「走完之後打不打得到」與
+// 「有沒有真的移動」。
+//
+// ⚠ 地形沒裝上時走空曠地形。那會讓怪物穿過牆——所以前端一定要叫
+// `SetCombatMovementTerrain`；這裡不假裝有地形，也不因為沒有地形就不動，
+// 後者會讓怪物永遠站著不動而看起來像「AI 還沒接」。
+func (s *State) approachMonsterTarget(fighter, target combat.Fighter) (bool, bool, error) {
+	if !fighter.HasCombatPosition || !target.HasCombatPosition {
+		// 沒有座標的遭遇（合成 fixture、純劇情戰鬥）不走移動階段。
+		return true, false, nil
+	}
+	if fighter.MovementAllowance <= 0 {
+		// **這場遭遇沒有提供移動資料**，不是「這隻怪不會動」——原作的怪物記錄
+		// 一律有移動率（`internal/monster` 從 MON 記錄帶進來）。合成 fixture
+		// 沒填，所以在這裡直接讓它打。⚠ 真的遇到移動率 0 的正式怪物，
+		// 這一行會讓它隔空攻擊；那時要修的是資料來源，不是這個條件。
+		return true, false, nil
+	}
+	mode, err := s.battle.BeginMonsterTurn(fighter.ID)
+	if err != nil {
+		return false, false, err
+	}
+	approach, err := s.battle.MonsterApproach(fighter.ID, target.ID, mode, s.combatMovementTerrain)
+	if err != nil {
+		return false, false, err
+	}
+	return approach.InWeaponRange, len(approach.Steps) > 0, nil
+}
+
 // combatMapWidth／combatMapHeight 是原作戰鬥地圖的格數。走出這個範圍就是離場。
 const (
 	combatMapWidth  = 32
@@ -3243,6 +3281,25 @@ func (s *State) advanceCombatToParty() error {
 		}
 		if !found {
 			return fmt.Errorf("enemy %q has no reachable target", fighter.ID)
+		}
+		if fighter.Side == combat.SideEnemy {
+			// 原作的 AI 回合是「先走到打得到，再打」（spec 830／838）。
+			// 走不到就這一回合只移動——不是站在原地隔空攻擊。
+			reached, moved, err := s.approachMonsterTarget(fighter, target)
+			if err != nil {
+				return err
+			}
+			if !reached {
+				if moved {
+					fighter, _ = s.fighter(fighter.ID)
+					s.combatMessage = fmt.Sprintf(
+						s.catalog.Text("combat_moved", "combat_moved"),
+						fighter.Name, fighter.CombatX, fighter.CombatY)
+				}
+				s.combatTurnIndex++
+				continue
+			}
+			fighter, _ = s.fighter(fighter.ID)
 		}
 		if hasMonsterMagicMissile(fighter) {
 			result, spellErr := s.battle.CastMonsterMagicMissile(fighter.ID, target.ID)

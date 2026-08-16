@@ -208,6 +208,7 @@ type State struct {
 	combatQuickMagic        bool
 	combatReferenceCoords   bool
 	combatLineTerrain       combat.LineTerrain
+	combatMovementTerrain   combat.MovementTerrain
 	combatScanMapProvider   func() (enginescan.TacticalMap, error)
 	combatView              bool
 	combatViewFighterID     string
