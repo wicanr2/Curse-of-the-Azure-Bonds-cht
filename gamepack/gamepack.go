@@ -4,6 +4,8 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
+	"sort"
+	"strings"
 	"sync"
 
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
@@ -11,7 +13,7 @@ import (
 
 // Files is kept title-local: the reusable engine never imports CoAB data.
 //
-//go:embed events/*.json
+//go:embed pack/*.json
 var Files embed.FS
 
 var (
@@ -20,14 +22,38 @@ var (
 	defaultErr  error
 )
 
+// PackDir is the directory holding the split game pack. The parts are merged in
+// file-name order, so the numeric prefixes fix the merge order (spec 1105).
+const PackDir = "pack"
+
+// PartNames lists the committed pack parts in merge order.
+func PartNames() ([]string, error) {
+	entries, err := Files.ReadDir(PackDir)
+	if err != nil {
+		return nil, fmt.Errorf("list CoAB game pack parts: %w", err)
+	}
+	names := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".json") {
+			continue
+		}
+		names = append(names, PackDir+"/"+entry.Name())
+	}
+	sort.Strings(names)
+	if len(names) == 0 {
+		return nil, fmt.Errorf("CoAB game pack has no parts under %s", PackDir)
+	}
+	return names, nil
+}
+
 func Default() (*goldenbox.Pack, error) {
 	defaultOnce.Do(func() {
-		data, err := Files.ReadFile("events/pit-of-moander.json")
+		names, err := PartNames()
 		if err != nil {
-			defaultErr = fmt.Errorf("read embedded CoAB game pack: %w", err)
+			defaultErr = err
 			return
 		}
-		defaultPack, defaultErr = goldenbox.LoadPackBytes(data)
+		defaultPack, defaultErr = goldenbox.LoadPackPartsFS(Files.ReadFile, names)
 	})
 	return defaultPack, defaultErr
 }

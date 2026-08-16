@@ -1,0 +1,627 @@
+{
+ "schema": "coab-gamepack-id-baseline/1",
+ "說明": "不符合 spec 1105 §四 命名規範的既有 ID。新增一律要合規；這份基線只讓既有的不變紅，不是豁免額度。收斂一個就從這裡刪一個。",
+ "pattern": "^[a-z0-9]+(-[a-z0-9]+)*(\\.[a-z0-9]+(-[a-z0-9]+)*)+$",
+ "entries": [
+  {
+   "kind": "locale",
+   "id": "ashabenford"
+  },
+  {
+   "kind": "locale",
+   "id": "ask_permission"
+  },
+  {
+   "kind": "locale",
+   "id": "attack"
+  },
+  {
+   "kind": "locale",
+   "id": "bar"
+  },
+  {
+   "kind": "locale",
+   "id": "camp"
+  },
+  {
+   "kind": "locale",
+   "id": "caves"
+  },
+  {
+   "kind": "locale",
+   "id": "dagger_falls"
+  },
+  {
+   "kind": "locale",
+   "id": "depart"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.altar_melee"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.amulet_choice"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.amulet_retrieved"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.amulet_rises"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.final_reveal"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.fzoul_bond_fades"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.fzoul_journal_7"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.journal_30"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.kill_order"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.kills_fzoul"
+  },
+  {
+   "kind": "locale",
+   "id": "dexam.zhentil_attack"
+  },
+  {
+   "kind": "locale",
+   "id": "encounter_advance"
+  },
+  {
+   "kind": "locale",
+   "id": "encounter_combat"
+  },
+  {
+   "kind": "locale",
+   "id": "encounter_parlay"
+  },
+  {
+   "kind": "locale",
+   "id": "encounter_wait"
+  },
+  {
+   "kind": "locale",
+   "id": "enter_blades"
+  },
+  {
+   "kind": "locale",
+   "id": "enter_city"
+  },
+  {
+   "kind": "locale",
+   "id": "enter_it"
+  },
+  {
+   "kind": "locale",
+   "id": "essembra"
+  },
+  {
+   "kind": "locale",
+   "id": "evade"
+  },
+  {
+   "kind": "locale",
+   "id": "examine_corpse"
+  },
+  {
+   "kind": "locale",
+   "id": "exit"
+  },
+  {
+   "kind": "locale",
+   "id": "fight"
+  },
+  {
+   "kind": "locale",
+   "id": "fight_the_men"
+  },
+  {
+   "kind": "locale",
+   "id": "fire_knives"
+  },
+  {
+   "kind": "locale",
+   "id": "go_with_guards"
+  },
+  {
+   "kind": "locale",
+   "id": "greet"
+  },
+  {
+   "kind": "locale",
+   "id": "hack_it"
+  },
+  {
+   "kind": "locale",
+   "id": "hap"
+  },
+  {
+   "kind": "locale",
+   "id": "hillsfar"
+  },
+  {
+   "kind": "locale",
+   "id": "inn"
+  },
+  {
+   "kind": "locale",
+   "id": "interrogate"
+  },
+  {
+   "kind": "locale",
+   "id": "journey_on"
+  },
+  {
+   "kind": "locale",
+   "id": "kill_him"
+  },
+  {
+   "kind": "locale",
+   "id": "leave"
+  },
+  {
+   "kind": "locale",
+   "id": "let_him_go"
+  },
+  {
+   "kind": "locale",
+   "id": "let_them_go"
+  },
+  {
+   "kind": "locale",
+   "id": "lie"
+  },
+  {
+   "kind": "locale",
+   "id": "myth_drannor"
+  },
+  {
+   "kind": "locale",
+   "id": "no_one"
+  },
+  {
+   "kind": "locale",
+   "id": "parlay_abusive"
+  },
+  {
+   "kind": "locale",
+   "id": "parlay_haughty"
+  },
+  {
+   "kind": "locale",
+   "id": "parlay_meek"
+  },
+  {
+   "kind": "locale",
+   "id": "parlay_nice"
+  },
+  {
+   "kind": "locale",
+   "id": "parlay_sly"
+  },
+  {
+   "kind": "locale",
+   "id": "patrol_forest"
+  },
+  {
+   "kind": "locale",
+   "id": "phlan"
+  },
+  {
+   "kind": "locale",
+   "id": "pit.departure.alias_alive"
+  },
+  {
+   "kind": "locale",
+   "id": "pit.departure.alias_dead"
+  },
+  {
+   "kind": "locale",
+   "id": "press_button"
+  },
+  {
+   "kind": "locale",
+   "id": "princess_nacacia"
+  },
+  {
+   "kind": "locale",
+   "id": "relax"
+  },
+  {
+   "kind": "locale",
+   "id": "remain_calm"
+  },
+  {
+   "kind": "locale",
+   "id": "retreat"
+  },
+  {
+   "kind": "locale",
+   "id": "run_away"
+  },
+  {
+   "kind": "locale",
+   "id": "search_area"
+  },
+  {
+   "kind": "locale",
+   "id": "shadowdale"
+  },
+  {
+   "kind": "locale",
+   "id": "sneak_in"
+  },
+  {
+   "kind": "locale",
+   "id": "speak"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_1"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_2"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_3"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_4"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_6"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_7"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_13"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_34"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_47"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_51"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_7"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_91"
+  },
+  {
+   "kind": "locale",
+   "id": "standing_stone"
+  },
+  {
+   "kind": "locale",
+   "id": "stay_here"
+  },
+  {
+   "kind": "locale",
+   "id": "store"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_ale"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_basilisk"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_beer"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_dragon_breath"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_drink"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_lemonade"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_mead"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_port"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_punch"
+  },
+  {
+   "kind": "locale",
+   "id": "tavern_whiskey"
+  },
+  {
+   "kind": "locale",
+   "id": "tell_her_hunting_cultists"
+  },
+  {
+   "kind": "locale",
+   "id": "tell_her_none_of_affair"
+  },
+  {
+   "kind": "locale",
+   "id": "tell_her_your_story"
+  },
+  {
+   "kind": "locale",
+   "id": "tell_truth"
+  },
+  {
+   "kind": "locale",
+   "id": "temple"
+  },
+  {
+   "kind": "locale",
+   "id": "teshwave"
+  },
+  {
+   "kind": "locale",
+   "id": "thank_him"
+  },
+  {
+   "kind": "locale",
+   "id": "tilverton"
+  },
+  {
+   "kind": "locale",
+   "id": "trail"
+  },
+  {
+   "kind": "locale",
+   "id": "training_hall"
+  },
+  {
+   "kind": "locale",
+   "id": "try_talk_further"
+  },
+  {
+   "kind": "locale",
+   "id": "village"
+  },
+  {
+   "kind": "locale",
+   "id": "voonlar"
+  },
+  {
+   "kind": "locale",
+   "id": "wilderness"
+  },
+  {
+   "kind": "locale",
+   "id": "yulash"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.dark_shrine_entry"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.dimswart_appears"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.dimswart_door"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.dimswart_join"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.fzoul_interrupts"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.fzoul_retreats"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.guards_question"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.guards_warning"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.hooded_follow"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.hooded_offer"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.inner_city"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.olive_appears"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.olive_cell_hint"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.olive_explains"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.olive_follow"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.olive_leaves"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.olive_repeats_dimswart"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil.patrol_pass"
+  },
+  {
+   "kind": "locale",
+   "id": "zhentil_keep"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.altar_melee"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.amulet_choice"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.amulet_retrieved"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.amulet_rises"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.final_reveal"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.fzoul_bond_fades"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.fzoul_journal_7"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.journal_30"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.kill_order"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.kills_fzoul"
+  },
+  {
+   "kind": "text_rules",
+   "id": "dexam.zhentil_attack"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.dark_shrine_entry"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.dimswart_appears"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.dimswart_door"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.dimswart_join"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.fzoul_interrupts"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.fzoul_retreats"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.guards_question"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.guards_warning"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.hooded_follow"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.hooded_offer"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.inner_city"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.olive_appears"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.olive_cell_hint"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.olive_explains"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.olive_follow"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.olive_leaves"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.olive_repeats_dimswart"
+  },
+  {
+   "kind": "text_rules",
+   "id": "zhentil.patrol_pass"
+  }
+ ]
+}

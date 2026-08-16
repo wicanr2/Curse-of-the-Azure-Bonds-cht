@@ -1,0 +1,2924 @@
+{
+ "$schema": "https://raw.githubusercontent.com/wicanr2/golden-box-remake-engine/main/schema/game-pack.schema.json",
+ "schema_version": 1,
+ "id": "curse-of-the-azure-bonds.pit-of-moander",
+ "default_locale": "en",
+ "presentation": {
+  "native_width": 320,
+  "native_height": 200,
+  "native_scale": 2,
+  "scene_character": {
+   "sprite_x": 28,
+   "sprite_y": 24,
+   "clip": {
+    "x": 27,
+    "y": 22,
+    "width": 90,
+    "height": 90
+   }
+  }
+ },
+ "search": {
+  "move_minutes_off": 1,
+  "move_minutes_on": 10,
+  "look_uses_search": true
+ },
+ "character_creation": {
+  "templates": [
+   {
+    "id": "human.fighter",
+    "display_id": "creation.class.fighter",
+    "race_id": 5,
+    "primary_class_id": 1,
+    "raw_class_id": 2,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "human.cleric",
+    "display_id": "creation.class.cleric",
+    "race_id": 5,
+    "primary_class_id": 0,
+    "raw_class_id": 0,
+    "level": 1,
+    "class_levels": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     10,
+     10,
+     16,
+     10,
+     14,
+     10
+    ],
+    "saving_throws": [
+     10,
+     14,
+     13,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "human.magic-user",
+    "display_id": "creation.class.magic-user",
+    "race_id": 5,
+    "primary_class_id": 4,
+    "raw_class_id": 5,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    "base_abilities": [
+     8,
+     16,
+     10,
+     14,
+     10,
+     12
+    ],
+    "saving_throws": [
+     14,
+     11,
+     13,
+     15,
+     12
+    ]
+   },
+   {
+    "id": "human.ranger",
+    "display_id": "creation.class.ranger",
+    "race_id": 5,
+    "primary_class_id": 2,
+    "raw_class_id": 4,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     14,
+     13,
+     15,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "human.paladin",
+    "display_id": "creation.class.paladin",
+    "race_id": 5,
+    "primary_class_id": 3,
+    "raw_class_id": 3,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     14,
+     12,
+     14,
+     17
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "human.thief",
+    "display_id": "creation.class.thief",
+    "race_id": 5,
+    "primary_class_id": 5,
+    "raw_class_id": 6,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     10,
+     12,
+     10,
+     16,
+     12,
+     10
+    ],
+    "saving_throws": [
+     13,
+     14,
+     12,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "dwarf.fighter",
+    "display_id": "creation.class.fighter",
+    "race_id": 0,
+    "primary_class_id": 1,
+    "raw_class_id": 2,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "dwarf.thief",
+    "display_id": "creation.class.thief",
+    "race_id": 0,
+    "primary_class_id": 5,
+    "raw_class_id": 6,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     10,
+     12,
+     10,
+     16,
+     12,
+     10
+    ],
+    "saving_throws": [
+     13,
+     14,
+     12,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "elf.fighter",
+    "display_id": "creation.class.fighter",
+    "race_id": 1,
+    "primary_class_id": 1,
+    "raw_class_id": 2,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "elf.magic-user",
+    "display_id": "creation.class.magic-user",
+    "race_id": 1,
+    "primary_class_id": 4,
+    "raw_class_id": 5,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    "base_abilities": [
+     8,
+     16,
+     10,
+     14,
+     10,
+     12
+    ],
+    "saving_throws": [
+     14,
+     11,
+     13,
+     15,
+     12
+    ]
+   },
+   {
+    "id": "elf.thief",
+    "display_id": "creation.class.thief",
+    "race_id": 1,
+    "primary_class_id": 5,
+    "raw_class_id": 6,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     10,
+     12,
+     10,
+     16,
+     12,
+     10
+    ],
+    "saving_throws": [
+     13,
+     14,
+     12,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "gnome.fighter",
+    "display_id": "creation.class.fighter",
+    "race_id": 2,
+    "primary_class_id": 1,
+    "raw_class_id": 2,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "gnome.thief",
+    "display_id": "creation.class.thief",
+    "race_id": 2,
+    "primary_class_id": 5,
+    "raw_class_id": 6,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     10,
+     12,
+     10,
+     16,
+     12,
+     10
+    ],
+    "saving_throws": [
+     13,
+     14,
+     12,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-elf.cleric",
+    "display_id": "creation.class.cleric",
+    "race_id": 3,
+    "primary_class_id": 0,
+    "raw_class_id": 0,
+    "level": 1,
+    "class_levels": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     10,
+     10,
+     16,
+     10,
+     14,
+     10
+    ],
+    "saving_throws": [
+     10,
+     14,
+     13,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-elf.fighter",
+    "display_id": "creation.class.fighter",
+    "race_id": 3,
+    "primary_class_id": 1,
+    "raw_class_id": 2,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "half-elf.magic-user",
+    "display_id": "creation.class.magic-user",
+    "race_id": 3,
+    "primary_class_id": 4,
+    "raw_class_id": 5,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    "base_abilities": [
+     8,
+     16,
+     10,
+     14,
+     10,
+     12
+    ],
+    "saving_throws": [
+     14,
+     11,
+     13,
+     15,
+     12
+    ]
+   },
+   {
+    "id": "half-elf.thief",
+    "display_id": "creation.class.thief",
+    "race_id": 3,
+    "primary_class_id": 5,
+    "raw_class_id": 6,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     10,
+     12,
+     10,
+     16,
+     12,
+     10
+    ],
+    "saving_throws": [
+     13,
+     14,
+     12,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "halfling.fighter",
+    "display_id": "creation.class.fighter",
+    "race_id": 4,
+    "primary_class_id": 1,
+    "raw_class_id": 2,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "halfling.thief",
+    "display_id": "creation.class.thief",
+    "race_id": 4,
+    "primary_class_id": 5,
+    "raw_class_id": 6,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     10,
+     12,
+     10,
+     16,
+     12,
+     10
+    ],
+    "saving_throws": [
+     13,
+     14,
+     12,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-orc.cleric",
+    "display_id": "creation.class.cleric",
+    "race_id": 6,
+    "primary_class_id": 0,
+    "raw_class_id": 0,
+    "level": 1,
+    "class_levels": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     10,
+     10,
+     16,
+     10,
+     14,
+     10
+    ],
+    "saving_throws": [
+     10,
+     14,
+     13,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-orc.fighter",
+    "display_id": "creation.class.fighter",
+    "race_id": 6,
+    "primary_class_id": 1,
+    "raw_class_id": 2,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "half-orc.thief",
+    "display_id": "creation.class.thief",
+    "race_id": 6,
+    "primary_class_id": 5,
+    "raw_class_id": 6,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     10,
+     12,
+     10,
+     16,
+     12,
+     10
+    ],
+    "saving_throws": [
+     13,
+     14,
+     12,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "dwarf.fighter-thief",
+    "display_id": "creation.class.fighter-thief",
+    "race_id": 0,
+    "primary_class_id": 1,
+    "raw_class_id": 14,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "elf.fighter-magic-user",
+    "display_id": "creation.class.fighter-magic-user",
+    "race_id": 1,
+    "primary_class_id": 1,
+    "raw_class_id": 13,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "elf.fighter-thief",
+    "display_id": "creation.class.fighter-thief",
+    "race_id": 1,
+    "primary_class_id": 1,
+    "raw_class_id": 14,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "elf.fighter-magic-user-thief",
+    "display_id": "creation.class.fighter-magic-user-thief",
+    "race_id": 1,
+    "primary_class_id": 1,
+    "raw_class_id": 15,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "elf.magic-user-thief",
+    "display_id": "creation.class.magic-user-thief",
+    "race_id": 1,
+    "primary_class_id": 4,
+    "raw_class_id": 16,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     0
+    ],
+    "base_abilities": [
+     8,
+     16,
+     10,
+     14,
+     10,
+     12
+    ],
+    "saving_throws": [
+     14,
+     11,
+     13,
+     15,
+     12
+    ]
+   },
+   {
+    "id": "gnome.fighter-thief",
+    "display_id": "creation.class.fighter-thief",
+    "race_id": 2,
+    "primary_class_id": 1,
+    "raw_class_id": 14,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "half-elf.cleric-fighter",
+    "display_id": "creation.class.cleric-fighter",
+    "race_id": 3,
+    "primary_class_id": 0,
+    "raw_class_id": 8,
+    "level": 1,
+    "class_levels": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     10,
+     10,
+     16,
+     10,
+     14,
+     10
+    ],
+    "saving_throws": [
+     10,
+     14,
+     13,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-elf.cleric-ranger",
+    "display_id": "creation.class.cleric-ranger",
+    "race_id": 3,
+    "primary_class_id": 0,
+    "raw_class_id": 10,
+    "level": 1,
+    "class_levels": [
+     1,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     10,
+     10,
+     16,
+     10,
+     14,
+     10
+    ],
+    "saving_throws": [
+     10,
+     14,
+     13,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-elf.cleric-fighter-magic-user",
+    "display_id": "creation.class.cleric-fighter-magic-user",
+    "race_id": 3,
+    "primary_class_id": 0,
+    "raw_class_id": 9,
+    "level": 1,
+    "class_levels": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    "base_abilities": [
+     10,
+     10,
+     16,
+     10,
+     14,
+     10
+    ],
+    "saving_throws": [
+     10,
+     14,
+     13,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-elf.cleric-magic-user",
+    "display_id": "creation.class.cleric-magic-user",
+    "race_id": 3,
+    "primary_class_id": 0,
+    "raw_class_id": 11,
+    "level": 1,
+    "class_levels": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    "base_abilities": [
+     10,
+     10,
+     16,
+     10,
+     14,
+     10
+    ],
+    "saving_throws": [
+     10,
+     14,
+     13,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-elf.fighter-magic-user",
+    "display_id": "creation.class.fighter-magic-user",
+    "race_id": 3,
+    "primary_class_id": 1,
+    "raw_class_id": 13,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "half-elf.fighter-thief",
+    "display_id": "creation.class.fighter-thief",
+    "race_id": 3,
+    "primary_class_id": 1,
+    "raw_class_id": 14,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "half-elf.fighter-magic-user-thief",
+    "display_id": "creation.class.fighter-magic-user-thief",
+    "race_id": 3,
+    "primary_class_id": 1,
+    "raw_class_id": 15,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "half-elf.magic-user-thief",
+    "display_id": "creation.class.magic-user-thief",
+    "race_id": 3,
+    "primary_class_id": 4,
+    "raw_class_id": 16,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     0
+    ],
+    "base_abilities": [
+     8,
+     16,
+     10,
+     14,
+     10,
+     12
+    ],
+    "saving_throws": [
+     14,
+     11,
+     13,
+     15,
+     12
+    ]
+   },
+   {
+    "id": "halfling.fighter-thief",
+    "display_id": "creation.class.fighter-thief",
+    "race_id": 4,
+    "primary_class_id": 1,
+    "raw_class_id": 14,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   },
+   {
+    "id": "half-orc.cleric-fighter",
+    "display_id": "creation.class.cleric-fighter",
+    "race_id": 6,
+    "primary_class_id": 0,
+    "raw_class_id": 8,
+    "level": 1,
+    "class_levels": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "base_abilities": [
+     10,
+     10,
+     16,
+     10,
+     14,
+     10
+    ],
+    "saving_throws": [
+     10,
+     14,
+     13,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-orc.cleric-thief",
+    "display_id": "creation.class.cleric-thief",
+    "race_id": 6,
+    "primary_class_id": 0,
+    "raw_class_id": 12,
+    "level": 1,
+    "class_levels": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     10,
+     10,
+     16,
+     10,
+     14,
+     10
+    ],
+    "saving_throws": [
+     10,
+     14,
+     13,
+     16,
+     15
+    ]
+   },
+   {
+    "id": "half-orc.fighter-thief",
+    "display_id": "creation.class.fighter-thief",
+    "race_id": 6,
+    "primary_class_id": 1,
+    "raw_class_id": 14,
+    "level": 1,
+    "class_levels": [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "base_abilities": [
+     16,
+     10,
+     10,
+     12,
+     14,
+     10
+    ],
+    "saving_throws": [
+     14,
+     16,
+     15,
+     17,
+     17
+    ]
+   }
+  ]
+ },
+ "maps": [
+  {
+   "id": "tilverton.first-person",
+   "kind": "first_person",
+   "area_id": 2,
+   "geometry_block": 1,
+   "geometry_file": "GEO2.DAX",
+   "wall_file": "WALLDEF2.DAX",
+   "symbol_file": "8X8D2.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "outdoor_sky_color": 3,
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2,
+   "spawn": {
+    "x": 7,
+    "y": 13,
+    "direction": 0
+   }
+  },
+  {
+   "id": "tilverton.sewers.first-person",
+   "kind": "first_person",
+   "area_id": 2,
+   "script_block": 3,
+   "geometry_block": 3,
+   "geometry_file": "GEO2.DAX",
+   "wall_file": "WALLDEF2.DAX",
+   "symbol_file": "8X8D2.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2,
+   "search_edges": [
+    {
+     "id": "tilverton.sewers.wall-09-west",
+     "x": 10,
+     "y": 12,
+     "direction": 6,
+     "wall_type": 9,
+     "discovery": "search_or_look",
+     "confidence": "strong inference"
+    }
+   ],
+   "external_exits": [
+    {
+     "id": "tilverton.sewers.e2-south-boundary",
+     "x": 8,
+     "y": 15,
+     "direction": 4,
+     "wall_type": 12,
+     "event_id": "ecl-boundary",
+     "confidence": "strong inference"
+    }
+   ]
+  },
+  {
+   "id": "tilverton.fire-knife-hideout.first-person",
+   "kind": "first_person",
+   "area_id": 2,
+   "script_block": 4,
+   "geometry_block": 4,
+   "geometry_file": "GEO2.DAX",
+   "wall_file": "WALLDEF2.DAX",
+   "symbol_file": "8X8D2.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2,
+   "external_exits": [
+    {
+     "id": "tilverton.fire-knife-hideout.e1-north-west",
+     "x": 8,
+     "y": 0,
+     "direction": 0,
+     "wall_type": 7,
+     "event_id": "ecl-boundary",
+     "confidence": "strong inference"
+    },
+    {
+     "id": "tilverton.fire-knife-hideout.e1-north-centre",
+     "x": 11,
+     "y": 0,
+     "direction": 0,
+     "wall_type": 7,
+     "event_id": "ecl-boundary",
+     "confidence": "strong inference"
+    },
+    {
+     "id": "tilverton.fire-knife-hideout.e1-north-east",
+     "x": 13,
+     "y": 0,
+     "direction": 0,
+     "wall_type": 6,
+     "event_id": "ecl-boundary",
+     "confidence": "strong inference"
+    }
+   ]
+  },
+  {
+   "id": "tilverton.area-map",
+   "kind": "area",
+   "area_id": 2,
+   "geometry_block": 1,
+   "geometry_file": "GEO2.DAX",
+   "symbol_file": "8X8D1.DAX",
+   "symbol_block": 202,
+   "scale": 2
+  },
+  {
+   "id": "moonsea.overland",
+   "kind": "overland",
+   "area_id": 1,
+   "image_file": "BIGPIC1.DAX",
+   "geometry_block": 121,
+   "scale": 2,
+   "locations": [
+    {
+     "value": 0,
+     "id": "tilverton",
+     "message_id": "world.tilverton",
+     "x": 27,
+     "y": 103,
+     "destinations": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "value": 1,
+     "id": "shadowdale",
+     "message_id": "world.shadowdale",
+     "x": 88,
+     "y": 65,
+     "destinations": [
+      0,
+      2,
+      3,
+      5
+     ]
+    },
+    {
+     "value": 2,
+     "id": "ashabenford",
+     "message_id": "world.ashabenford",
+     "x": 151,
+     "y": 83,
+     "destinations": [
+      0,
+      1,
+      4
+     ]
+    },
+    {
+     "value": 3,
+     "id": "dagger-falls",
+     "message_id": "world.dagger-falls",
+     "x": 78,
+     "y": 37,
+     "destinations": [
+      1,
+      7
+     ]
+    },
+    {
+     "value": 4,
+     "id": "standing-stone",
+     "message_id": "world.standing-stone",
+     "x": 203,
+     "y": 80,
+     "destinations": [
+      2,
+      8,
+      11,
+      13
+     ]
+    },
+    {
+     "value": 5,
+     "id": "voonlar",
+     "message_id": "world.voonlar",
+     "x": 136,
+     "y": 43,
+     "destinations": [
+      1,
+      7,
+      10
+     ]
+    },
+    {
+     "value": 6,
+     "id": "phlan",
+     "message_id": "world.phlan",
+     "x": 299,
+     "y": 7,
+     "destinations": [
+      12,
+      11
+     ]
+    },
+    {
+     "value": 7,
+     "id": "teshwave",
+     "message_id": "world.teshwave",
+     "x": 145,
+     "y": 26,
+     "destinations": [
+      3,
+      5,
+      10,
+      12
+     ]
+    },
+    {
+     "value": 8,
+     "id": "essembra",
+     "message_id": "world.essembra",
+     "x": 207,
+     "y": 96,
+     "destinations": [
+      9,
+      4
+     ]
+    },
+    {
+     "value": 9,
+     "id": "hap",
+     "message_id": "world.hap",
+     "x": 218,
+     "y": 113,
+     "destinations": [
+      8
+     ]
+    },
+    {
+     "value": 10,
+     "id": "yulash",
+     "message_id": "world.yulash",
+     "x": 175,
+     "y": 35,
+     "destinations": [
+      5,
+      7,
+      12,
+      11
+     ]
+    },
+    {
+     "value": 11,
+     "id": "hillsfar",
+     "message_id": "world.hillsfar",
+     "x": 253,
+     "y": 47,
+     "destinations": [
+      10,
+      4,
+      6
+     ]
+    },
+    {
+     "value": 12,
+     "id": "zhentil-keep",
+     "message_id": "world.zhentil-keep",
+     "x": 195,
+     "y": 19,
+     "destinations": [
+      7,
+      10,
+      6
+     ]
+    },
+    {
+     "value": 13,
+     "id": "myth-drannor",
+     "message_id": "world.myth-drannor",
+     "x": 204,
+     "y": 65,
+     "destinations": [
+      4
+     ]
+    }
+   ]
+  },
+  {
+   "id": "zhentil-keep.inner-city",
+   "kind": "first_person",
+   "area_id": 4,
+   "geometry_block": 32,
+   "geometry_file": "GEO4.DAX",
+   "wall_file": "WALLDEF4.DAX",
+   "symbol_file": "8X8D4.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "wrap": true,
+   "scale": 2,
+   "spawn": {
+    "x": 2,
+    "y": 0,
+    "direction": 4
+   }
+  },
+  {
+   "id": "myth-drannor.burial-glen",
+   "kind": "first_person",
+   "area_id": 6,
+   "script_block": 64,
+   "geometry_block": 64,
+   "geometry_file": "GEO6.DAX",
+   "wall_file": "WALLDEF6.DAX",
+   "symbol_file": "8X8D6.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "wrap": true,
+   "scale": 2
+  },
+  {
+   "id": "myth-drannor.outer-ruins",
+   "kind": "first_person",
+   "area_id": 6,
+   "script_block": 66,
+   "geometry_block": 66,
+   "geometry_file": "GEO6.DAX",
+   "wall_file": "WALLDEF6.DAX",
+   "symbol_file": "8X8D6.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "wrap": true,
+   "scale": 2
+  },
+  {
+   "id": "myth-drannor.inner-ruins",
+   "kind": "first_person",
+   "area_id": 6,
+   "script_block": 67,
+   "geometry_block": 67,
+   "geometry_file": "GEO6.DAX",
+   "wall_file": "WALLDEF6.DAX",
+   "symbol_file": "8X8D6.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "wrap": true,
+   "scale": 2
+  },
+  {
+   "id": "zhentil-keep.dark-shrine",
+   "kind": "first_person",
+   "area_id": 4,
+   "geometry_block": 33,
+   "geometry_file": "GEO4.DAX",
+   "wall_file": "WALLDEF4.DAX",
+   "symbol_file": "8X8D4.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "wrap": true,
+   "scale": 2,
+   "spawn": {
+    "x": 10,
+    "y": 6,
+    "direction": 0
+   }
+  },
+  {
+   "id": "zhentil-keep.beholder-cave",
+   "kind": "first_person",
+   "area_id": 4,
+   "script_block": 34,
+   "geometry_block": 37,
+   "geometry_file": "GEO4.DAX",
+   "wall_file": "WALLDEF4.DAX",
+   "symbol_file": "8X8D4.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "wrap": true,
+   "scale": 2,
+   "search_edges": [
+    {
+     "id": "zhentil-keep.beholder-cave.dexam-east",
+     "x": 14,
+     "y": 1,
+     "direction": 2,
+     "wall_type": 9,
+     "discovery": "search_or_look",
+     "confidence": "strong inference"
+    },
+    {
+     "id": "zhentil-keep.beholder-cave.dexam-shrine-east",
+     "x": 15,
+     "y": 1,
+     "direction": 2,
+     "wall_type": 9,
+     "discovery": "search_or_look",
+     "confidence": "strong inference"
+    }
+   ],
+   "spawn": {
+    "x": 5,
+    "y": 7,
+    "direction": 6
+   }
+  },
+  {
+   "id": "original.geo3.block-10",
+   "kind": "first_person",
+   "area_id": 3,
+   "script_block": 16,
+   "geometry_block": 16,
+   "geometry_file": "GEO3.DAX",
+   "wall_file": "WALLDEF3.DAX",
+   "symbol_file": "8X8D3.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2,
+   "spawn": {
+    "x": 0,
+    "y": 3,
+    "direction": 2
+   }
+  },
+  {
+   "id": "original.geo3.block-11-level-1",
+   "kind": "first_person",
+   "area_id": 3,
+   "script_block": 17,
+   "geometry_block": 17,
+   "geometry_file": "GEO3.DAX",
+   "wall_file": "WALLDEF3.DAX",
+   "symbol_file": "8X8D3.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2
+  },
+  {
+   "id": "original.geo3.block-11-level-2",
+   "kind": "first_person",
+   "area_id": 3,
+   "script_block": 18,
+   "geometry_block": 17,
+   "geometry_file": "GEO3.DAX",
+   "wall_file": "WALLDEF3.DAX",
+   "symbol_file": "8X8D3.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2,
+   "spawn": {
+    "x": 15,
+    "y": 14,
+    "direction": 4
+   }
+  },
+  {
+   "id": "original.geo3.block-15",
+   "kind": "first_person",
+   "area_id": 3,
+   "script_block": 21,
+   "geometry_block": 21,
+   "geometry_file": "GEO3.DAX",
+   "wall_file": "WALLDEF3.DAX",
+   "symbol_file": "8X8D3.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2
+  },
+  {
+   "id": "original.geo5.block-31",
+   "kind": "first_person",
+   "area_id": 5,
+   "script_block": 49,
+   "geometry_block": 50,
+   "geometry_file": "GEO5.DAX",
+   "wall_file": "WALLDEF5.DAX",
+   "symbol_file": "8X8D5.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "wrap": true,
+   "scale": 2,
+   "external_exits": [
+    {
+     "id": "hap.village.east-to-dracolich-cave",
+     "x": 15,
+     "y": 5,
+     "direction": 2,
+     "wall_type": 7,
+     "roof_type": 2,
+     "event_id": "ecl-boundary",
+     "confidence": "strong inference"
+    }
+   ]
+  },
+  {
+   "id": "original.geo5.block-32",
+   "kind": "first_person",
+   "area_id": 5,
+   "script_block": 50,
+   "geometry_block": 50,
+   "geometry_file": "GEO5.DAX",
+   "wall_file": "WALLDEF5.DAX",
+   "symbol_file": "8X8D5.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2
+  },
+  {
+   "id": "original.geo5.block-33",
+   "kind": "first_person",
+   "area_id": 5,
+   "script_block": 51,
+   "geometry_block": 51,
+   "geometry_file": "GEO5.DAX",
+   "wall_file": "WALLDEF5.DAX",
+   "symbol_file": "8X8D5.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2,
+   "spawn": {
+    "x": 7,
+    "y": 15,
+    "direction": 6
+   }
+  },
+  {
+   "id": "original.geo5.block-35",
+   "kind": "first_person",
+   "area_id": 5,
+   "script_block": 53,
+   "geometry_block": 53,
+   "geometry_file": "GEO5.DAX",
+   "wall_file": "WALLDEF5.DAX",
+   "symbol_file": "8X8D5.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2
+  },
+  {
+   "id": "original.geo6.block-45",
+   "kind": "first_person",
+   "area_id": 6,
+   "script_block": 69,
+   "geometry_block": 69,
+   "geometry_file": "GEO6.DAX",
+   "wall_file": "WALLDEF6.DAX",
+   "symbol_file": "8X8D6.DAX",
+   "sky_file": "SKY.DAX",
+   "sky_blocks": [
+    250,
+    251,
+    252
+   ],
+   "indoor_sky_color": 0,
+   "wrap": true,
+   "scale": 2
+  }
+ ],
+ "music_tracks": [
+  {
+   "id": "pc98-bgm-selector-01",
+   "title_id": "music.pc98.00.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 1,
+   "driver_index": 0
+  },
+  {
+   "id": "pc98-bgm-selector-02",
+   "title_id": "music.pc98.01.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 2,
+   "driver_index": 1
+  },
+  {
+   "id": "pc98-bgm-selector-03",
+   "title_id": "music.pc98.02.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 3,
+   "driver_index": 2
+  },
+  {
+   "id": "pc98-bgm-selector-04",
+   "title_id": "music.pc98.03.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 4,
+   "driver_index": 3
+  },
+  {
+   "id": "pc98-bgm-selector-05",
+   "title_id": "music.pc98.04.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 5,
+   "driver_index": 4
+  },
+  {
+   "id": "pc98-bgm-selector-06",
+   "title_id": "music.pc98.05.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 6,
+   "driver_index": 5
+  },
+  {
+   "id": "pc98-bgm-selector-07",
+   "title_id": "music.pc98.06.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 7,
+   "driver_index": 6
+  },
+  {
+   "id": "pc98-bgm-selector-08",
+   "title_id": "music.pc98.07.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 8,
+   "driver_index": 7
+  },
+  {
+   "id": "pc98-bgm-selector-09",
+   "title_id": "music.pc98.08.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 9,
+   "driver_index": 8
+  },
+  {
+   "id": "pc98-bgm-selector-0a",
+   "title_id": "music.pc98.09.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 10,
+   "driver_index": 9
+  },
+  {
+   "id": "pc98-bgm-selector-0b",
+   "title_id": "music.pc98.0a.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 11,
+   "driver_index": 10
+  },
+  {
+   "id": "pc98-bgm-selector-0c",
+   "title_id": "music.pc98.0b.title",
+   "source_platform": "pc-9801",
+   "reference_selector": 12,
+   "driver_index": 11
+  }
+ ],
+ "music_bindings": [
+  {
+   "ecl_blocks": [
+    1,
+    49
+   ],
+   "track_id": "pc98-bgm-selector-03"
+  },
+  {
+   "ecl_blocks": [
+    17,
+    18,
+    33,
+    34,
+    35,
+    21,
+    67,
+    69
+   ],
+   "track_id": "pc98-bgm-selector-04"
+  },
+  {
+   "ecl_blocks": [
+    80,
+    81
+   ],
+   "track_id": "pc98-bgm-selector-05"
+  },
+  {
+   "ecl_blocks": [
+    80,
+    81
+   ],
+   "context": "pc98-town-services-menu",
+   "track_id": "pc98-bgm-selector-06"
+  },
+  {
+   "ecl_blocks": [
+    32,
+    64,
+    66
+   ],
+   "track_id": "pc98-bgm-selector-08"
+  },
+  {
+   "ecl_blocks": [
+    2,
+    16,
+    5,
+    53
+   ],
+   "track_id": "pc98-bgm-selector-09"
+  },
+  {
+   "ecl_blocks": [
+    3,
+    4,
+    37,
+    50,
+    51
+   ],
+   "track_id": "pc98-bgm-selector-0c"
+  }
+ ],
+ "music_cues": [
+  {
+   "ecl_blocks": [
+    80,
+    81
+   ],
+   "signal": "picture",
+   "value": 80,
+   "context": "pc98-town-services-menu"
+  },
+  {
+   "ecl_blocks": [
+    80,
+    81
+   ],
+   "signal": "picture",
+   "value": 121,
+   "context": "pc98-world-navigation"
+  }
+ ],
+ "combat_modifiers": [
+  {
+   "id": "coab.ecl.enemy-attack-roll",
+   "source_namespace": "ecl_work",
+   "source_address": 32624,
+   "value_encoding": "signed_low_byte",
+   "target": "attack_roll",
+   "side": "enemy"
+  },
+  {
+   "id": "coab.ecl.party-attack-roll",
+   "source_namespace": "ecl_work",
+   "source_address": 32625,
+   "value_encoding": "signed_low_byte",
+   "target": "attack_roll",
+   "side": "party"
+  }
+ ],
+ "combat_affect_rules": [
+  {
+   "id": "coab.monster_affect_0a.resist_cold",
+   "effect_kind": 10,
+   "damage_mask": 2,
+   "mode": "half"
+  },
+  {
+   "id": "coab.monster_affect_70.fire_immunity",
+   "effect_kind": 112,
+   "damage_mask": 1,
+   "mode": "immune"
+  },
+  {
+   "id": "coab.monster_affect_87.electricity_immunity",
+   "effect_kind": 135,
+   "damage_mask": 4,
+   "mode": "immune"
+  }
+ ],
+ "combat_conditional_modifiers": [
+  {
+   "id": "coab.monster_affect_08.protection-from-good",
+   "effect_kind": 8,
+   "predicate": "value_in",
+   "values": [
+    2,
+    5,
+    8
+   ],
+   "attack_roll_delta": -2,
+   "saving_throw_delta": 2
+  },
+  {
+   "id": "coab.monster_affect_09.protection-from-evil",
+   "effect_kind": 9,
+   "predicate": "value_in",
+   "values": [
+    0,
+    3,
+    6
+   ],
+   "attack_roll_delta": -2,
+   "saving_throw_delta": 2
+  }
+ ],
+ "combat_magic_resistance_rules": [
+  {
+   "id": "coab.monster_affect_6a.magic-resistance-15",
+   "effect_kind": 106,
+   "formula": "level_adjusted_d100",
+   "base": 15
+  }
+ ],
+ "combat_post_hit_rules": [
+  {
+   "id": "coab.monster_affect_4f.fire-magic-2d10-slots-1-2",
+   "effect_kind": 79,
+   "min_attack_slot": 1,
+   "max_attack_slot": 2,
+   "damage_dice_count": 2,
+   "damage_dice_sides": 10,
+   "damage_mask": 9
+  }
+ ],
+ "combat_monster_spell_rules": [
+  {
+   "id": "coab.monster_affect_84.lightning-bolt-rounds-1-3",
+   "effect_kind": 132,
+   "spell_id": 51,
+   "max_round": 3,
+   "caster_level": 1,
+   "target_range": 10,
+   "line_budget": 10,
+   "initial_damage_dice": 16,
+   "path_damage_dice": 16,
+   "damage_dice_sides": 6,
+   "damage_mask": 12,
+   "first_reflection_origin_threshold": 8,
+   "first_reflection_penalty": 8
+  }
+ ],
+ "combat_ai_spells": [
+  {
+   "spell_id": 1,
+   "priority": 1,
+   "cast_on": 0,
+   "min_range": 0,
+   "casting_time": 10
+  },
+  {
+   "spell_id": 2,
+   "priority": 3,
+   "cast_on": 1,
+   "min_range": 0,
+   "casting_time": 10
+  },
+  {
+   "spell_id": 3,
+   "priority": 1,
+   "cast_on": 0,
+   "min_range": 0,
+   "casting_time": 5
+  },
+  {
+   "spell_id": 4,
+   "priority": 2,
+   "cast_on": 1,
+   "min_range": 0,
+   "casting_time": 5
+  },
+  {
+   "spell_id": 6,
+   "priority": 1,
+   "cast_on": 0,
+   "min_range": 0,
+   "casting_time": 4
+  },
+  {
+   "spell_id": 7,
+   "priority": 1,
+   "cast_on": 0,
+   "min_range": 0,
+   "casting_time": 4
+  },
+  {
+   "spell_id": 15,
+   "priority": 4,
+   "cast_on": 1,
+   "min_range": 0,
+   "casting_time": 1
+  },
+  {
+   "spell_id": 21,
+   "priority": 2,
+   "cast_on": 1,
+   "min_range": 1,
+   "casting_time": 1
+  },
+  {
+   "spell_id": 34,
+   "priority": 5,
+   "cast_on": 1,
+   "min_range": 1,
+   "casting_time": 2
+  },
+  {
+   "spell_id": 47,
+   "priority": 7,
+   "cast_on": 1,
+   "min_range": 3,
+   "casting_time": 3
+  },
+  {
+   "spell_id": 51,
+   "priority": 6,
+   "cast_on": 1,
+   "min_range": 0,
+   "casting_time": 3
+  },
+  {
+   "spell_id": 91,
+   "priority": 5,
+   "cast_on": 1,
+   "min_range": 0,
+   "casting_time": 5
+  }
+ ],
+ "combat_player_spells": [
+  {
+   "id": "coab.spell.bless",
+   "spell_id": 1,
+   "caster_class": "cleric",
+   "target_mode": "none",
+   "behavior": "bless",
+   "message_id": "spell_cleric_1",
+   "casting_time": 10
+  },
+  {
+   "id": "coab.spell.curse",
+   "spell_id": 2,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "curse",
+   "message_id": "spell_cleric_2",
+   "casting_time": 10
+  },
+  {
+   "id": "coab.spell.cure-light-wounds",
+   "spell_id": 3,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "cure_light_wounds",
+   "message_id": "spell_cleric_3",
+   "casting_time": 5
+  },
+  {
+   "id": "coab.spell.cause-light-wounds",
+   "spell_id": 4,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "cause_light_wounds",
+   "message_id": "spell_cleric_4",
+   "casting_time": 5
+  },
+  {
+   "id": "coab.spell.protection-from-evil",
+   "spell_id": 6,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "protection_from_evil",
+   "message_id": "spell_cleric_6",
+   "casting_time": 4
+  },
+  {
+   "id": "coab.spell.protection-from-good",
+   "spell_id": 7,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "protection_from_good",
+   "message_id": "spell_cleric_7",
+   "casting_time": 4
+  },
+  {
+   "id": "coab.spell.magic-missile",
+   "spell_id": 15,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "magic_missile",
+   "message_id": "spell_magic_user_7",
+   "casting_time": 1
+  },
+  {
+   "id": "coab.spell.sleep",
+   "spell_id": 21,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "sleep",
+   "message_id": "spell_magic_user_13",
+   "casting_time": 1
+  },
+  {
+   "id": "coab.spell.stinking-cloud",
+   "spell_id": 34,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "stinking_cloud",
+   "message_id": "spell_magic_user_34",
+   "casting_time": 2
+  },
+  {
+   "id": "coab.spell.fireball",
+   "spell_id": 47,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "fireball",
+   "message_id": "spell_magic_user_47",
+   "casting_time": 3
+  },
+  {
+   "id": "coab.spell.lightning-bolt",
+   "spell_id": 51,
+   "caster_class": "magic_user",
+   "target_mode": "line",
+   "behavior": "lightning_bolt",
+   "message_id": "spell_magic_user_51",
+   "casting_time": 3
+  },
+  {
+   "id": "coab.spell.cloudkill",
+   "spell_id": 91,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "cloudkill",
+   "message_id": "spell_magic_user_91",
+   "casting_time": 5
+  }
+ ],
+ "combat_ai_target_rules": [
+  {
+   "id": "coab.pc98.quick-target-candidate-chain",
+   "candidate_order": "legacy_object_id",
+   "retry_roll_sides": 7,
+   "minimum_priority_start": 7
+  }
+ ],
+ "combat_target_rules": [
+  {
+   "id": "coab.pc98.enemy-physical-target",
+   "candidate_order": "legacy_scan",
+   "max_range": 255,
+   "arc": 255,
+   "retry_attempts": 20,
+   "retry_with_xray": true
+  }
+ ],
+ "combat_action_rules": [
+  {
+   "id": "coab.pc98.combat-action",
+   "clear_same_team_on_quick": true
+  }
+ ],
+ "combat_visuals": [
+  {
+   "id": "coab.arrow",
+   "trigger": "missile",
+   "phase": "travel",
+   "scale": 2,
+   "reference_delay": 10,
+   "frames": [
+    {
+     "direction": 0,
+     "source_file": "COMSPR.DAX",
+     "block": 0
+    },
+    {
+     "direction": 1,
+     "source_file": "COMSPR.DAX",
+     "block": 1
+    },
+    {
+     "direction": 2,
+     "source_file": "COMSPR.DAX",
+     "block": 2
+    },
+    {
+     "direction": 3,
+     "source_file": "COMSPR.DAX",
+     "block": 129
+    },
+    {
+     "direction": 4,
+     "source_file": "COMSPR.DAX",
+     "block": 128
+    },
+    {
+     "direction": 5,
+     "source_file": "COMSPR.DAX",
+     "block": 129,
+     "flip_x": true
+    },
+    {
+     "direction": 6,
+     "source_file": "COMSPR.DAX",
+     "block": 130
+    },
+    {
+     "direction": 7,
+     "source_file": "COMSPR.DAX",
+     "block": 1,
+     "flip_x": true
+    }
+   ]
+  },
+  {
+   "id": "coab.sleep-twinkle",
+   "trigger": "sleep",
+   "phase": "impact",
+   "duration_ms": 1440,
+   "generator": "pc98.twinkle"
+  },
+  {
+   "id": "coab.generic-spell-missile",
+   "trigger": "magic_missile",
+   "phase": "travel",
+   "scale": 2,
+   "reference_delay": 30,
+   "frames": [
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133
+    }
+   ]
+  },
+  {
+   "id": "coab.magic-damage-impact",
+   "trigger": "magic_missile",
+   "phase": "impact",
+   "scale": 2,
+   "reference_delay": 70,
+   "frames": [
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 10
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 10,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 138,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 138
+    }
+   ]
+  },
+  {
+   "id": "coab.fireball-travel",
+   "trigger": "fireball",
+   "phase": "travel",
+   "scale": 2,
+   "reference_delay": 30,
+   "frames": [
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133
+    }
+   ]
+  },
+  {
+   "id": "coab.fireball-target-impact",
+   "trigger": "fireball",
+   "phase": "impact",
+   "scale": 2,
+   "reference_delay": 70,
+   "frames": [
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 10
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 10,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 138,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 138
+    }
+   ]
+  },
+  {
+   "id": "coab.lightning-bolt-travel",
+   "trigger": "lightning_bolt",
+   "phase": "travel",
+   "scale": 2,
+   "reference_delay": 30,
+   "frames": [
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133
+    }
+   ]
+  },
+  {
+   "id": "coab.lightning-bolt-line",
+   "trigger": "lightning_bolt",
+   "phase": "line",
+   "scale": 2,
+   "reference_delay": 0,
+   "frames": [
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 6
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 6,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 134,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 134
+    }
+   ]
+  },
+  {
+   "id": "coab.lightning-bolt-impact",
+   "trigger": "lightning_bolt",
+   "phase": "impact",
+   "scale": 2,
+   "reference_delay": 70,
+   "frames": [
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 10
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 10,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 138,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 138
+    }
+   ]
+  },
+  {
+   "id": "coab.stinking-cloud-travel",
+   "trigger": "stinking_cloud",
+   "phase": "travel",
+   "scale": 2,
+   "reference_delay": 30,
+   "frames": [
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133
+    }
+   ]
+  },
+  {
+   "id": "coab.stinking-cloud-area",
+   "trigger": "stinking_cloud",
+   "phase": "area",
+   "scale": 2,
+   "reference_delay": 0,
+   "frames": [
+    {
+     "source_file": "RANDCOM.DAX",
+     "block": 4
+    }
+   ]
+  },
+  {
+   "id": "coab.cloudkill-travel",
+   "trigger": "cloudkill",
+   "phase": "travel",
+   "scale": 2,
+   "reference_delay": 30,
+   "frames": [
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 5,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133,
+     "flip_x": true
+    },
+    {
+     "source_file": "COMSPR.DAX",
+     "block": 133
+    }
+   ]
+  },
+  {
+   "id": "coab.cloudkill-area",
+   "trigger": "cloudkill",
+   "phase": "area",
+   "scale": 2,
+   "reference_delay": 0,
+   "frames": [
+    {
+     "source_file": "RANDCOM.DAX",
+     "block": 2
+    }
+   ]
+  }
+ ],
+ "combatant_name_rules": [
+  {
+   "id": "hippogriff",
+   "source": "HIPPOGRIFF",
+   "message_id": "combatant.hippogriff"
+  },
+  {
+   "id": "fighter",
+   "source": "FIGHTER",
+   "message_id": "combatant.fighter"
+  },
+  {
+   "id": "black-dragon",
+   "source": "BLACK DRAGON",
+   "message_id": "combatant.black-dragon"
+  },
+  {
+   "id": "dark-elf-fighter",
+   "source": "DK ELF FIGHTER",
+   "message_id": "combatant.dark-elf-fighter"
+  },
+  {
+   "id": "dark-elf-mage",
+   "source": "DARK ELF MAGE",
+   "message_id": "combatant.dark-elf-mage"
+  },
+  {
+   "id": "dark-elf-cleric",
+   "source": "DARK ELF CLERIC",
+   "message_id": "combatant.dark-elf-cleric"
+  },
+  {
+   "id": "efreeti",
+   "source": "EFREETI",
+   "message_id": "combatant.efreeti"
+  },
+  {
+   "id": "salamander",
+   "source": "SALAMANDER",
+   "message_id": "combatant.salamander"
+  },
+  {
+   "id": "dracolich",
+   "source": "DRACOLICH",
+   "message_id": "combatant.dracolich"
+  },
+  {
+   "id": "hooded-medusa",
+   "source": "HOODED MEDUSA",
+   "message_id": "combatant.hooded-medusa"
+  },
+  {
+   "id": "beholder",
+   "source": "BEHOLDER",
+   "message_id": "combatant.beholder"
+  },
+  {
+   "id": "minotaur",
+   "source": "MINOTAUR",
+   "message_id": "combatant.minotaur"
+  },
+  {
+   "id": "zhentil-fighter",
+   "source": "ZHENTIL FIGHTER",
+   "message_id": "combatant.zhentil-fighter"
+  },
+  {
+   "id": "zhentil-mage",
+   "source": "ZHENTIL MAGE",
+   "message_id": "combatant.zhentil-mage"
+  },
+  {
+   "id": "zhentil-cleric",
+   "source": "ZHENTIL CLERIC",
+   "message_id": "combatant.zhentil-cleric"
+  },
+  {
+   "id": "high-priest",
+   "source": "HIGH PRIEST",
+   "message_id": "combatant.high-priest"
+  },
+  {
+   "id": "zhentrim-cleric",
+   "source": "ZHENTRIM CLERIC",
+   "message_id": "combatant.zhentrim-cleric"
+  },
+  {
+   "id": "zhentrim-fighter",
+   "source": "ZHENTRIM FGHTR",
+   "message_id": "combatant.zhentrim-fighter"
+  },
+  {
+   "id": "zhentrim-mage",
+   "source": "ZHENTRIM MAGE",
+   "message_id": "combatant.zhentrim-mage"
+  },
+  {
+   "id": "moander-cultist",
+   "source": "CULTIST",
+   "message_id": "combatant.moander-cultist"
+  },
+  {
+   "id": "mogion",
+   "source": "MOGION",
+   "message_id": "combatant.mogion"
+  },
+  {
+   "id": "shambling-mound",
+   "source": "SHAMBLING MOUND",
+   "message_id": "combatant.shambling-mound"
+  },
+  {
+   "id": "bit-of-moander",
+   "source": "BIT O' MOANDER",
+   "message_id": "combatant.bit-of-moander"
+  }
+ ]
+}

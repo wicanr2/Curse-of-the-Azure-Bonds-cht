@@ -58,7 +58,7 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | ├ `internal/game` 機制碼 | **16 檔／13,908 行**（非測試） | `wc` |
 | └ 檔名 | `state` `combat_state` `creation` `creation_guided` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
 | 共用 engine | 獨立 repo，69 個 `.go` | `golden-box-remake-engine/` |
-| 內容資料 | `gamepack/events/pit-of-moander.json` **261 KB 單一 game pack** | `wc -c` |
+| 內容資料 | `gamepack/pack/` **四檔**：core 46 KB／content 86 KB／locale.en 66 KB／locale.zh-TW 72 KB | `ls -la` |
 | ├ 事件 | 4 個 `events`、113 條 `option_rules`、**369 條 `text_rules`** | `json` |
 | └ 語系 | `en` **607** 條、`zh-TW` **607** 條，**一一對齊、沒有漏譯** | `json` |
 | UI 詞條 | `assets/locale/zh-TW.json` **870** 條 | `json` |
@@ -166,10 +166,10 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | ID | 項目 | 要做什麼 |
 |---|---|---|
 | `ENG-01` | **事件內容補齊** | 依 `RE-04` 的逐格盤點結果，把每個區域的事件寫成 `text_rules`／`option_rules`／`events`；優先序照矩陣的區域表，`待逆向` 的四個區域（艾森布拉、希爾斯法、尤拉什／摩安德之坑、Myth Drannor 正常入口）先補 |
-| `ENG-02` | **game pack 分檔** | 目前是單一 261 KB JSON。區域內容補齊後量會成長數倍，需要先決定分檔方式（依 DAX／依區域）與 schema 邊界，否則後期難以維護與 review |
+| `ENG-02` | **game pack 分檔** | ✅ **第一步已完成**（spec 1105）：切成 `gamepack/pack/` 四檔——`00-core`（機制資料）、`10-content`（`text_rules`／`option_rules`／`events`）、`20-locale.en`／`20-locale.zh-TW`。引擎新增 `LoadPackParts`，合併後才驗證，重複一律失敗不做後蓋前。⚠ **依區域再切留給命名收斂之後**：實測 ID 命名空間不一致（83 條 `ecl-option.*`、約 100 個沒有命名空間的扁平 locale 鍵），現在依區域切會夾帶一次大改名 |
 | `ENG-13` | **補 `7CE4h` 的角色欄位投影** | ✅ **已完成**：`Character.ECLFlag192`／`DOSPlayerRecord.ECLFlag192`／`PartyMemberContext.ECLFlag192` 三處加欄位，DOS 記錄 `0x192` 讀寫 round-trip，`LOAD CHARACTER` 時投影並套 `and 1` 遮罩；回歸測試 `TestRunSubsetLoadCharacterProjectsFlag192MaskedToLowBit` |
 | `ENG-14` | **原版資料表一律走 JSON** | 使用者要求：原版取出的資料表全部轉成 game pack JSON，Go 只留機制，不再 hardcode。已完成起始年齡（`gamepack/rules/character-tables.json`）。⚠ 仍 hardcode 在 `internal/party/character.go` 的：`WithAgeEffects` 的年齡分期門檻與效果表、`raceAllowsClass`；`internal/party/dos_spell_record.go` 的 `parseDOSRace`／`parseDOSClass` 對應表也應改由 JSON 提供 |
-| `ENG-03` | **stable ID 與 schema 版本** | 事件、物品、法術、怪物、地圖的穩定 ID；schema 變更要有遷移路徑。分檔（`ENG-02`）之前先定案 |
+| `ENG-03` | **stable ID 與 schema 版本** | ✅ **規範已立**（spec 1105 §四）：`<群組>.<地點或子系統>.<東西>`，全小寫、`.` 分隔、群組內用 `-`、不用底線。既有 **155 個**不合規範的 ID 進 `docs/audit/gamepack-id-baseline.json`，新增不合規範會紅（`TestGamePackIDNamingBaselineIsExact`）。剩：逐條收斂那 155 個（126 個 locale 鍵 ＋ 29 條 `text_rules`），收斂完才能依區域分檔 |
 | `ENG-12` | **engine／遊戲切分複查** | `internal/` 29 個套件對 `golden-box-remake-engine` 69 個 `.go` 的比例偏低；逐套件判定哪些機制該上移。⚠ 這是既有機制的整理，不阻塞內容產出，排在後面 |
 
 ### B-2 規則系統
@@ -220,7 +220,7 @@ Burial Glen 等 vertical slice 加終戰 fixture，缺正常世界入口與三�
 | `CHT-02` | ~~名字編輯以字元為單位~~ | ✅ **已滿足**：`BackspaceGuidedName`／`BackspaceCreationName` 用 `[]rune` 退格，`BackspaceECLString` 用 `utf8.DecodeLastRuneInString`，長度上限用 `utf8.RuneCountInString`。原作逐 byte 搬移的作法沒有被照抄 |
 | `CHT-10` | **原版位元組的解碼邊界** | ✅ **機制已建立**：`internal/origtext` 以 Big5 解原版位元組（ASCII 相容，英文原版逐位元組不變）；`party.ParseOriginalDOSPlayerRecord` 是角色記錄的匯入入口，`monster.ParseRecord` 直接套用（MON*CHA 唯讀）。<br>⚠ **界線是「位元組從哪來」，不是「版面長什麼樣」**：角色記錄與物品記錄的版面同時被原版與 remake 自己的存檔使用，而 remake 寫入端寫的是 UTF-8——在共用解析函式裡一律當 Big5 會把 remake 自己的存檔讀壞（兩次都被測試擋下）。<br>剩：`ENG-10` 做原版存檔匯入器時要走匯入入口，並在載入原版 ITEM 資料時同樣分流 |
 | `CHT-03` | **名字長度上限** | DOS 名字欄位長度上限要重新確認（PC-98 是 `0Fh` ＝ 15 bytes ＝ 全形 7 字）；PC-98 另有 `0723:05BDh` 名字驗證，判定規則未取出，很可能擋掉 Big5 |
-| `CHT-04` | **熱鍵與文字綁定**（**擋路項**） | DOS 大量選單靠**文字裡的字母**當熱鍵（`'Keep Exit'`、`'Modify: '`），中文化後熱鍵必須另外保留（spec 1060）。⚠ 實測：game pack 的 `option_rule` 只有 `id`／`source`／`message_id`，**沒有熱鍵欄位**。這是 schema 缺口，必須在 `ENG-02` 分檔定案前補上，否則後期要動每一條選項 |
+| `CHT-04` | **指令列的按鍵與標籤沒有對應** | 缺口不在 `option_rule`——ECL 選單是**按索引**選的，沒有字母熱鍵（spec 1105 §六）。真正的問題在指令列：畫面用 locale 字串顯示中文（`combat_menu_main` ＝「移動　查看　瞄準　施法…」），按鍵卻是散在前端的英文首字母常數（`ebiten.KeyM`／`KeyL`／`KeyC`／`KeyQ`），**翻譯後玩家看不出要按哪個鍵**，而且標籤與繫結沒有任何地方對得起來。處置方向：把「指令 ID → 按鍵 → `message_id`」做成一張表，繪製端與輸入端讀同一張。⚠ 在有消費端之前不要先往引擎 schema 加欄位 |
 | `CHT-05` | **固定欄寬排版** | PC-98 是 40 bytes 固定欄位、機能鍵列每格 7 欄（spec 1077／1092）；DOS 是靠熱鍵字母。兩者中文化做法不同，繁中版採 DOS 的做法但要處理全形寬度 |
 | `CHT-06` | **翻譯隨內容同步** | 目前 game pack 的 `en`／`zh-TW` 各 607 條**一一對齊、沒有漏譯**。翻譯不是獨立階段，是 `ENG-01` 每寫一條事件就同時寫兩個語系。把「兩語系條數與 key 完全一致」設成 CI gate（`cmd/locale-drift-audit` 已有基礎），漏一條就紅 |
 | `CHT-09` | **統一譯名表**（**擋路項**） | 內容量會成長數倍，人名／地名／物品／法術譯名要先定表再展開，否則後期回頭校對成本高。目前尚未開始，是 `ENG-01` 大量產出的前提 |
