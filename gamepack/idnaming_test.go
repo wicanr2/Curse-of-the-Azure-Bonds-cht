@@ -110,8 +110,8 @@ func TestDefaultPackMergesAllCommittedParts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got := len(pack.TextRules); got != 413 {
-		t.Fatalf("text_rules=%d, want 413", got)
+	if got := len(pack.TextRules); got != 421 {
+		t.Fatalf("text_rules=%d, want 421", got)
 	}
 	if got := len(pack.OptionRules); got != 113 {
 		t.Fatalf("option_rules=%d, want 113", got)
@@ -126,8 +126,8 @@ func TestDefaultPackMergesAllCommittedParts(t *testing.T) {
 		t.Fatal("core sections did not survive the merge")
 	}
 	en, zh := len(pack.Locales["en"]), len(pack.Locales["zh-TW"])
-	if en != 656 || zh != 656 {
-		t.Fatalf("locales en=%d zh-TW=%d, want 656/656", en, zh)
+	if en != 672 || zh != 672 {
+		t.Fatalf("locales en=%d zh-TW=%d, want 672/672", en, zh)
 	}
 	// 兩語系的 key 必須完全對齊——這是分成兩個檔之後最容易漂掉的東西。
 	for key := range pack.Locales["en"] {

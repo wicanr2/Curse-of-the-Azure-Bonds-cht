@@ -1475,6 +1475,17 @@
    ]
   },
   {
+   "id": "zhentil.mercenary-briefing",
+   "all_contains": [
+    "YOU MUST BE THE MERCENARY GROUP",
+    "JOURNAL ENTRY 36"
+   ],
+   "message_id": "zhentil.mercenary-briefing",
+   "journal_message_ids": [
+    "journal.36"
+   ]
+  },
+  {
    "id": "zhentil.fritz-accusation",
    "all_contains": [
     "YOU KILLED FRITZ",
@@ -1894,6 +1905,72 @@
     "YOU ARE ATTACKED BY FIGHTERS AND CLERICS"
    ],
    "message_id": "world.encounter.fighters-and-clerics"
+  },
+  {
+   "id": "world.night-note.24",
+   "all_contains": [
+    "A NOTE PINNED TO",
+    "JOURNAL ENTRY 24"
+   ],
+   "message_id": "world.night-note.24",
+   "journal_message_ids": [
+    "journal.24"
+   ]
+  },
+  {
+   "id": "world.night-note.35",
+   "all_contains": [
+    "A NOTE PINNED TO",
+    "JOURNAL ENTRY 35"
+   ],
+   "message_id": "world.night-note.35",
+   "journal_message_ids": [
+    "journal.35"
+   ]
+  },
+  {
+   "id": "world.night-note.42",
+   "all_contains": [
+    "A NOTE PINNED TO",
+    "JOURNAL ENTRY 42"
+   ],
+   "message_id": "world.night-note.42",
+   "journal_message_ids": [
+    "journal.42"
+   ]
+  },
+  {
+   "id": "world.centaur-village",
+   "all_contains": [
+    "THEY TAKE YOU TO THEIR VILLAGE",
+    "JOURNAL ENTRY 45"
+   ],
+   "message_id": "world.centaur-village",
+   "journal_message_ids": [
+    "journal.45"
+   ]
+  },
+  {
+   "id": "world.myth-drannor-scouts-camp",
+   "all_contains": [
+    "THEY INVITE YOU TO THEIR CAMP",
+    "JOURNAL ENTRY 55"
+   ],
+   "message_id": "world.myth-drannor-scouts-camp",
+   "journal_message_ids": [
+    "journal.55"
+   ]
+  },
+  {
+   "id": "world.inn-dark-elf-letter",
+   "all_contains": [
+    "IN HIS ROOM IS A LETTER",
+    "JOURNAL ENTRY 58"
+   ],
+   "message_id": "world.inn-dark-elf-letter",
+   "journal_message_ids": [
+    "journal.58"
+   ]
   },
   {
    "id": "opening.curse-summary",
@@ -2926,6 +3003,17 @@
     "HIGH UP IN THE FIRE KNIVES"
    ],
    "message_id": "fire-knife.office"
+  },
+  {
+   "id": "fire-knife.wounded-mutterings",
+   "all_contains": [
+    "YOU HEAR VARIOUS MUTTERINGS",
+    "JOURNAL ENTRY 27"
+   ],
+   "message_id": "fire-knife.wounded-mutterings",
+   "journal_message_ids": [
+    "journal.27"
+   ]
   },
   {
    "id": "fire-knife.smoky-hall",

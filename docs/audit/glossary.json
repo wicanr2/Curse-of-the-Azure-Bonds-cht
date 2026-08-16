@@ -3,7 +3,7 @@
  "sources": [
   {
    "path": "gamepack/pack/20-locale.zh-TW.json",
-   "count": 656
+   "count": 672
   },
   {
    "path": "assets/locale/zh-TW.json",
@@ -34,7 +34,7 @@
     "燃燒者"
    ],
    "note": "提朗瑟克斯的稱號",
-   "uses": 7
+   "uses": 9
   },
   {
    "source": "Dracandros",
@@ -44,7 +44,7 @@
     "德拉坎卓斯"
    ],
    "note": "塞爾紅袍法師",
-   "uses": 16
+   "uses": 18
   },
   {
    "source": "Fzoul Chembryl",
@@ -121,7 +121,7 @@
    "source": "Akabar",
    "chinese": "阿卡巴",
    "category": "人物",
-   "uses": 5
+   "uses": 6
   },
   {
    "source": "Azoun",
@@ -186,6 +186,27 @@
    "uses": 1
   },
   {
+   "source": "Akabar Bel Akash",
+   "chinese": "阿卡巴・貝爾・阿卡什",
+   "category": "人物",
+   "note": "`Akabar` 的全名，兩個詞條並存",
+   "uses": 3
+  },
+  {
+   "source": "Alaterian",
+   "chinese": "阿拉特里安",
+   "category": "人物",
+   "note": "手札 21 那封信的收信人",
+   "uses": 1
+  },
+  {
+   "source": "Lilian",
+   "chinese": "莉莉安",
+   "category": "人物",
+   "note": "阿拉特里安的妻子",
+   "uses": 1
+  },
+  {
    "source": "Imperceptor",
    "chinese": "總督察長",
    "category": "人物",
@@ -206,13 +227,13 @@
    "source": "Moander",
    "chinese": "摩安德",
    "category": "神祇",
-   "uses": 23
+   "uses": 25
   },
   {
    "source": "Lathander",
    "chinese": "洛山達",
    "category": "神祇",
-   "uses": 4
+   "uses": 5
   },
   {
    "source": "Fire Knives",
@@ -222,14 +243,14 @@
     "火焰匕首"
    ],
    "note": "單複數同譯",
-   "uses": 27
+   "uses": 28
   },
   {
    "source": "Zhentarim",
    "chinese": "散塔林會",
    "category": "組織",
    "note": "原文另作 `Zhentrim`",
-   "uses": 3
+   "uses": 4
   },
   {
    "source": "Black Network",
@@ -261,10 +282,17 @@
    "uses": 1
   },
   {
+   "source": "Harper",
+   "chinese": "豎琴手",
+   "category": "組織",
+   "note": "英文單複數同譯",
+   "uses": 3
+  },
+  {
    "source": "Tilverton",
    "chinese": "提爾佛頓",
    "category": "地名",
-   "uses": 11
+   "uses": 13
   },
   {
    "source": "Zhentil Keep",
@@ -274,7 +302,7 @@
     "散塔林堡"
    ],
    "note": "城；與組織「散塔林會」是兩回事",
-   "uses": 18
+   "uses": 20
   },
   {
    "source": "Yulash",
@@ -286,7 +314,7 @@
    "source": "Myth Drannor",
    "chinese": "迷斯卓諾",
    "category": "地名",
-   "uses": 10
+   "uses": 12
   },
   {
    "source": "Shadowdale",
@@ -304,7 +332,7 @@
    "source": "Essembra",
    "chinese": "艾森布拉",
    "category": "地名",
-   "uses": 6
+   "uses": 7
   },
   {
    "source": "Ashabenford",
@@ -323,7 +351,7 @@
    "chinese": "哈普",
    "category": "地名",
    "note": "世界地圖的目的地名",
-   "uses": 10
+   "uses": 11
   },
   {
    "source": "Haptooth",
@@ -336,7 +364,7 @@
    "source": "Pit of Moander",
    "chinese": "摩安德之坑",
    "category": "地名",
-   "uses": 4
+   "uses": 5
   },
   {
    "source": "Dark Shrine",
@@ -348,11 +376,30 @@
    "source": "Standing Stones",
    "chinese": "立石群",
    "category": "地名",
-   "uses": 3
+   "uses": 4
   },
   {
    "source": "Great Glacier",
    "chinese": "大冰川",
+   "category": "地名",
+   "uses": 1
+  },
+  {
+   "source": "Dagger Falls",
+   "chinese": "匕首瀑布",
+   "category": "地名",
+   "uses": 4
+  },
+  {
+   "source": "Teshwave",
+   "chinese": "特什維夫",
+   "category": "地名",
+   "note": "以世界地圖的地名標籤為準",
+   "uses": 2
+  },
+  {
+   "source": "Dalelands",
+   "chinese": "谷地諸邦",
    "category": "地名",
    "uses": 1
   },
@@ -363,19 +410,19 @@
    "forbidden": [
     "龍之頭盔"
    ],
-   "uses": 4
+   "uses": 5
   },
   {
    "source": "Gauntlet of Moander",
    "chinese": "摩安德護手",
    "category": "神器與關鍵物品",
-   "uses": 2
+   "uses": 3
   },
   {
    "source": "Amulet of Lathander",
    "chinese": "洛山達護符",
    "category": "神器與關鍵物品",
-   "uses": 4
+   "uses": 5
   },
   {
    "source": "Pool of Radiance",
@@ -392,7 +439,7 @@
     "青色印記"
    ],
    "note": "需要完整名稱時作「青色枷」，沿用原中文版譯名（《青色枷的詛咒》）",
-   "uses": 44
+   "uses": 46
   },
   {
    "source": "Otyugh",
@@ -405,14 +452,35 @@
    "source": "Thri-Kreen",
    "chinese": "斯瑞克林",
    "category": "敘述中出現的怪物",
-   "note": "手札 44",
+   "note": "手札 45",
    "uses": 1
   },
   {
    "source": "phase spider",
    "chinese": "相位蜘蛛",
    "category": "敘述中出現的怪物",
-   "note": "手札 44",
+   "note": "手札 45",
+   "uses": 1
+  },
+  {
+   "source": "Displacer Beast",
+   "chinese": "移位獸",
+   "category": "敘述中出現的怪物",
+   "note": "手札 58",
+   "uses": 1
+  },
+  {
+   "source": "bugbear",
+   "chinese": "熊地精",
+   "category": "敘述中出現的怪物",
+   "note": "手札 36",
+   "uses": 1
+  },
+  {
+   "source": "warg",
+   "chinese": "座狼",
+   "category": "敘述中出現的怪物",
+   "note": "手札 36",
    "uses": 1
   },
   {
@@ -427,7 +495,7 @@
    "chinese": "戰士",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 25
+   "uses": 26
   },
   {
    "source": "BLACK DRAGON",

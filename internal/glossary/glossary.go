@@ -280,7 +280,9 @@ func auditRenderings(terms []Term, english, chinese map[string]string, exception
 		// 大小寫敏感是刻意的：英文釋義裡專名一律大寫開頭，普通名詞不是。
 		// `Silk` 若不分大小寫，會撞上巫師塔臥房的 `red silk tapestries`——
 		// 那是誤報，而把誤報寫進例外表會讓例外表失去意義。代價是漏檢，不是誤報。
-		pattern, err := regexp.Compile(`(?:^|[^A-Za-z])` + regexp.QuoteMeta(term.Source) + `(?:[^A-Za-z]|$)`)
+		// 尾巴容許一個複數 `s`：英文釋義會寫 `Red Plumes`、`the Harpers`，
+		// 而繁中沒有單複數之分，同一個詞條要蓋住兩者。
+		pattern, err := regexp.Compile(`(?:^|[^A-Za-z])` + regexp.QuoteMeta(term.Source) + `s?(?:[^A-Za-z]|$)`)
 		if err != nil {
 			issues = append(issues, Issue{Code: "bad_term", Term: term.Source, Detail: err.Error()})
 			continue

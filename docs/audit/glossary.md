@@ -6,7 +6,7 @@
 
 | 檔案 | 字串數 |
 |---|---:|
-| `gamepack/pack/20-locale.zh-TW.json` | 656 |
+| `gamepack/pack/20-locale.zh-TW.json` | 672 |
 | `assets/locale/zh-TW.json` | 870 |
 | `internal/tooltext/messages/zh-TW.json` | 170 |
 
@@ -14,7 +14,7 @@
 
 | 項目 | 數量 |
 |---|---:|
-| 詞條 | 79 |
+| 詞條 | 89 |
 | **不一致** | **0** |
 
 ## 逐詞條
@@ -23,21 +23,24 @@
 
 | 原文 | 繁中 | 出現次數 | 禁用寫法 |
 |---|---|---:|---|
-| `Akabar` | 阿卡巴 | 5 | — |
+| `Akabar` | 阿卡巴 | 6 | — |
+| `Akabar Bel Akash` | 阿卡巴・貝爾・阿卡什 | 3 | — |
+| `Alaterian` | 阿拉特里安 | 1 | — |
 | `Alias` | 愛麗雅絲 | 16 | — |
 | `Azoun` | 阿祖恩 | 1 | — |
 | `Belinda` | 貝琳達 | 1 | — |
 | `Daemir` | 黛米爾 | 2 | — |
 | `Dexam` | 德克薩姆 | 11 | — |
 | `Dimswart` | 迪姆斯沃特 | 10 | — |
-| `Dracandros` | 德拉坎德羅斯 | 16 | 德拉坎卓斯 |
+| `Dracandros` | 德拉坎德羅斯 | 18 | 德拉坎卓斯 |
 | `Dragonbait` | 龍餌 | 12 | — |
 | `Elminster` | 伊爾明斯特 | 3 | — |
 | `Filani` | 菲拉妮 | 5 | — |
-| `Flamed One` | 烈焰之主 | 7 | 烈焰者、燃燒者 |
+| `Flamed One` | 烈焰之主 | 9 | 烈焰者、燃燒者 |
 | `Fzoul Chembryl` | 弗佐爾・錢布瑞爾 | 5 | 弗佐爾．錢布瑞爾 |
 | `Imperceptor` | 總督察長 | 3 | — |
 | `Kith` | 姬絲 | 1 | — |
+| `Lilian` | 莉莉安 | 1 | — |
 | `Mogion` | 摩貢 | 10 | — |
 | `Myrixelets` | 米里塞勒特斯 | 1 | — |
 | `Nacacia` | 娜卡西亞 | 4 | — |
@@ -53,20 +56,23 @@
 | 原文 | 繁中 | 出現次數 | 禁用寫法 |
 |---|---|---:|---|
 | `Ashabenford` | 阿沙本福德 | 6 | — |
+| `Dagger Falls` | 匕首瀑布 | 4 | — |
+| `Dalelands` | 谷地諸邦 | 1 | — |
 | `Dark Shrine` | 幽暗神殿 | 2 | — |
-| `Essembra` | 艾森布拉 | 6 | — |
+| `Essembra` | 艾森布拉 | 7 | — |
 | `Great Glacier` | 大冰川 | 1 | — |
-| `Hap` | 哈普 | 10 | — |
+| `Hap` | 哈普 | 11 | — |
 | `Haptooth` | 哈普圖斯 | 3 | — |
 | `Hillsfar` | 希爾斯法 | 7 | — |
 | `Mulmaster` | 穆爾馬斯特 | 2 | — |
-| `Myth Drannor` | 迷斯卓諾 | 10 | — |
-| `Pit of Moander` | 摩安德之坑 | 4 | — |
+| `Myth Drannor` | 迷斯卓諾 | 12 | — |
+| `Pit of Moander` | 摩安德之坑 | 5 | — |
 | `Shadowdale` | 暗影谷 | 11 | — |
-| `Standing Stones` | 立石群 | 3 | — |
-| `Tilverton` | 提爾佛頓 | 11 | — |
+| `Standing Stones` | 立石群 | 4 | — |
+| `Teshwave` | 特什維夫 | 2 | — |
+| `Tilverton` | 提爾佛頓 | 13 | — |
 | `Yulash` | 尤拉什 | 14 | — |
-| `Zhentil Keep` | 散提爾堡 | 18 | 散塔林堡 |
+| `Zhentil Keep` | 散提爾堡 | 20 | 散塔林堡 |
 
 ### 怪物（由 combatant_name_rules 匯入）
 
@@ -81,7 +87,7 @@
 | `DK ELF FIGHTER` | 黑暗精靈戰士 | 1 | — |
 | `DRACOLICH` | 龍巫妖 | 1 | — |
 | `EFREETI` | 伊弗利特 | 4 | — |
-| `FIGHTER` | 戰士 | 25 | — |
+| `FIGHTER` | 戰士 | 26 | — |
 | `HIGH PRIEST` | 大祭司 | 4 | — |
 | `HIPPOGRIFF` | 鷹馬 | 1 | — |
 | `HOODED MEDUSA` | 兜帽梅杜莎 | 1 | — |
@@ -100,35 +106,39 @@
 
 | 原文 | 繁中 | 出現次數 | 禁用寫法 |
 |---|---|---:|---|
+| `Displacer Beast` | 移位獸 | 1 | — |
 | `Otyugh` | 奧提尤格 | 2 | — |
 | `Thri-Kreen` | 斯瑞克林 | 1 | — |
+| `bugbear` | 熊地精 | 1 | — |
 | `phase spider` | 相位蜘蛛 | 1 | — |
+| `warg` | 座狼 | 1 | — |
 
 ### 神器與關鍵物品
 
 | 原文 | 繁中 | 出現次數 | 禁用寫法 |
 |---|---|---:|---|
-| `Amulet of Lathander` | 洛山達護符 | 4 | — |
-| `Gauntlet of Moander` | 摩安德護手 | 2 | — |
-| `Helm of Dragons` | 龍盔 | 4 | 龍之頭盔 |
+| `Amulet of Lathander` | 洛山達護符 | 5 | — |
+| `Gauntlet of Moander` | 摩安德護手 | 3 | — |
+| `Helm of Dragons` | 龍盔 | 5 | 龍之頭盔 |
 | `Pool of Radiance` | 光芒之池 | 7 | — |
-| `azure bonds` | 枷印 | 44 | 蔚藍枷、青色印記 |
+| `azure bonds` | 枷印 | 46 | 蔚藍枷、青色印記 |
 
 ### 神祇
 
 | 原文 | 繁中 | 出現次數 | 禁用寫法 |
 |---|---|---:|---|
 | `Bane` | 班恩 | 7 | 貝恩 |
-| `Lathander` | 洛山達 | 4 | — |
-| `Moander` | 摩安德 | 23 | — |
+| `Lathander` | 洛山達 | 5 | — |
+| `Moander` | 摩安德 | 25 | — |
 
 ### 組織
 
 | 原文 | 繁中 | 出現次數 | 禁用寫法 |
 |---|---|---:|---|
 | `Black Network` | 黑網 | 2 | — |
-| `Fire Knives` | 火刀 | 27 | 火焰匕首 |
+| `Fire Knives` | 火刀 | 28 | 火焰匕首 |
+| `Harper` | 豎琴手 | 3 | — |
 | `Red Plume` | 紅羽衛 | 11 | 紅羽戰士 |
 | `Red Wizards of Thay` | 塞爾紅袍法師 | 1 | — |
 | `Swanmays` | 天鵝少女團 | 1 | — |
-| `Zhentarim` | 散塔林會 | 3 | — |
+| `Zhentarim` | 散塔林會 | 4 | — |
