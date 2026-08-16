@@ -106,7 +106,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x38: {EffectPartial, "PROGRAM 記下 ID；PROGRAM 8 的通關序列（spec 1087）尚未接完"},
 	0x39: {EffectDone, "WHO 選人"},
 	0x3A: {EffectDone, "DELAY"},
-	0x3B: {EffectConsumed, "解成 SpellSearch 並排隊，但 ConsumeSpellSearches 只有測試呼叫——實機沒有效果（ENG-09）"},
+	0x3B: {EffectDone, "依行軍順序找持有者，slot 與隊員索引寫回兩個位址，找不到寫 0FFh；依據是呼叫端（COMPARE FFh ＋ LOAD CHARACTER），不是命令表"},
 	0x3C: {EffectConsumed, "解成位址並排隊，但 ConsumeProtectionRequests 只有測試呼叫——實機沒有效果"},
 	0x3D: {EffectConsumed, "CLEAR BOX：文字框清除的畫面行為沒有接"},
 	0x3E: {EffectDone, "DUMP"},

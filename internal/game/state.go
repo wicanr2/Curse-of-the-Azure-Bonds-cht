@@ -485,6 +485,7 @@ func (s *State) eclPartyContext() ecl.PartyContext {
 			member.ItemTypes = append(member.ItemTypes, item.Type)
 		}
 		copy(member.ThiefSkills[:], character.ThiefSkills)
+		member.SpellSlots = append([]uint8(nil), character.SpellSlots...)
 		for _, fighter := range s.party {
 			if fighter.ID == character.ID {
 				member.HitPoints = fighter.HitPoints

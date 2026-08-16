@@ -1386,8 +1386,8 @@
   {
    "opcode": "0x3B",
    "name": "SPELL",
-   "status": "consumed",
-   "note": "解成 SpellSearch 並排隊，但 ConsumeSpellSearches 只有測試呼叫——實機沒有效果（ENG-09）",
+   "status": "done",
+   "note": "依行軍順序找持有者，slot 與隊員索引寫回兩個位址，找不到寫 0FFh；依據是呼叫端（COMPARE FFh ＋ LOAD CHARACTER），不是命令表",
    "occurrences": 2,
    "blocks": [
     "ECL4.DAX/0x21",
@@ -1457,13 +1457,13 @@
   }
  ],
  "instructions_by_status": {
-  "consumed": 23,
-  "done": 13097,
+  "consumed": 21,
+  "done": 13099,
   "partial": 1057
  },
  "opcodes_by_status": {
-  "consumed": 4,
-  "done": 46,
+  "consumed": 3,
+  "done": 47,
   "partial": 11
  },
  "reachable_instructions": 14177,
@@ -1507,8 +1507,8 @@
   "ECL3.DAX/0x12": 53,
   "ECL3.DAX/0x15": 20,
   "ECL4.DAX/0x20": 70,
-  "ECL4.DAX/0x21": 61,
-  "ECL4.DAX/0x22": 51,
+  "ECL4.DAX/0x21": 60,
+  "ECL4.DAX/0x22": 50,
   "ECL4.DAX/0x23": 22,
   "ECL4.DAX/0x25": 92,
   "ECL5.DAX/0x31": 26,

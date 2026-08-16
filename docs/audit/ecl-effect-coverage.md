@@ -11,9 +11,9 @@
 
 | 狀態 | 指令數 | opcode 數 | 意思 |
 |---|---:|---:|---|
-| `done` | 13097 | 46 | 副作用已產生，且有回歸測試或實機路徑驗過 |
+| `done` | 13099 | 47 | 副作用已產生，且有回歸測試或實機路徑驗過 |
 | `partial` | 1057 | 11 | 只做了一部分，多半是把請求記進 result 讓上層處理 |
-| **`consumed`** | **23** | **4** | **只讀掉運算元——原作有效果，remake 沒有** |
+| **`consumed`** | **21** | **3** | **只讀掉運算元——原作有效果，remake 沒有** |
 | 合計（靜態可達指令）| 14177 | 61 | |
 
 ## 逐 opcode
@@ -22,7 +22,6 @@
 |---|---|---|---:|---:|---|
 | `0x3D` | CLEAR BOX | `consumed` | 17 | 5 | CLEAR BOX：文字框清除的畫面行為沒有接 |
 | `0x31` | SPRITE OFF | `consumed` | 3 | 3 | SPRITE OFF：戰鬥圖示的顯示狀態未還原 |
-| `0x3B` | SPELL | `consumed` | 2 | 2 | 解成 SpellSearch 並排隊，但 ConsumeSpellSearches 只有測試呼叫——實機沒有效果（ENG-09） |
 | `0x3C` | PROTECTION | `consumed` | 1 | 1 | 解成位址並排隊，但 ConsumeProtectionRequests 只有測試呼叫——實機沒有效果 |
 | `0x1C` | CLEARMONSTERS | `partial` | 206 | 24 | CLEARMONSTERS 清怪物鏈與已放置數；原作另清的四塊 bank1 區域未逐格對上 |
 | `0x0E` | PICTURE | `partial` | 199 | 23 | PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層 |
@@ -79,6 +78,7 @@
 | `0x3E` | DUMP | `done` | 5 | 5 | DUMP |
 | `0x1D` | PARTYSTRENGTH | `done` | 2 | 2 | 隊伍強度 |
 | `0x34` | ECL CLOCK | `done` | 2 | 2 | ECL CLOCK |
+| `0x3B` | SPELL | `done` | 2 | 2 | 依行軍順序找持有者，slot 與隊員索引寫回兩個位址，找不到寫 0FFh；依據是呼叫端（COMPARE FFh ＋ LOAD CHARACTER），不是命令表 |
 | `0x3F` | FIND SPECIAL | `done` | 2 | 1 | FIND SPECIAL |
 | `0x1E` | CHECKPARTY | `done` | 1 | 1 | CHECKPARTY 六個條件 |
 
@@ -89,12 +89,12 @@
 | `ECL4.DAX/0x25` | 745 | 92 |
 | `ECL4.DAX/0x20` | 722 | 70 |
 | `ECL5.DAX/0x33` | 709 | 63 |
-| `ECL4.DAX/0x21` | 563 | 61 |
+| `ECL4.DAX/0x21` | 563 | 60 |
 | `ECL3.DAX/0x10` | 913 | 58 |
 | `ECL5.DAX/0x32` | 634 | 55 |
 | `ECL6.DAX/0x40` | 766 | 54 |
 | `ECL3.DAX/0x12` | 840 | 53 |
-| `ECL4.DAX/0x22` | 526 | 51 |
+| `ECL4.DAX/0x22` | 526 | 50 |
 | `ECL2.DAX/0x01` | 659 | 47 |
 | `ECL3.DAX/0x11` | 788 | 46 |
 | `ECL2.DAX/0x02` | 374 | 44 |
