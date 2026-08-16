@@ -82,7 +82,7 @@
       "path": "cmd/re-ledger/main.go",
       "function": "main",
       "sha256": "4e0bb7d0bf17bfb0ac0b536c78b87673e597a40a8c6eff045d0dd9d6ca401ee2",
-      "occurrences": 1,
+      "occurrences": 2,
       "category": "runtime_ui_debt"
     },
     {
@@ -110,6 +110,13 @@
       "path": "cmd/re-ledger/main.go",
       "function": "main",
       "sha256": "8692b60fe460fb82c411494e607ab5cbebb123d42c74ee2c0b48b5e1437de83a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "main",
+      "sha256": "8cb28ebf91358b665a8d4f4ac3a2db6ce6370533bd335e139432adcd1740c68e",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -165,7 +172,35 @@
     {
       "path": "cmd/re-ledger/main.go",
       "function": "writeMarkdown",
+      "sha256": "4b2a4d9681d5d8243339f39627db5a31f59bee0b318c5d497754f1c8f318bcfb",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "writeMarkdown",
       "sha256": "4ceffa855ba3128974a398c1162f72f8796ecc526b4a0f8422694c60318a57ab",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "writeMarkdown",
+      "sha256": "4e0bb7d0bf17bfb0ac0b536c78b87673e597a40a8c6eff045d0dd9d6ca401ee2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "writeMarkdown",
+      "sha256": "5f724c4e4ddf1128dd39ef3b8c1d11b1aa4f0e9ab49e522eb7f7242dc35cd9bd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "writeMarkdown",
+      "sha256": "68acfa2b6d4bcb93027ec9b0845cd1ba4d9aca79e9fdf72b877ec09cfba413f4",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -228,7 +263,42 @@
     {
       "path": "cmd/re-ledger/main.go",
       "function": "writeMarkdown",
+      "sha256": "d5413c310ba644501ac67f19b4b2bcc3e970b99a593f92a3e2fe0786d02308e5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "writeMarkdown",
       "sha256": "d5ada40132b19755fcb489e7d18cb6595f494ada2a5b8f23f54bd59216465713",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "writeMarkdown",
+      "sha256": "dbe52443817150c5acb02989aee736ed013e0e997cda2f1dfeb9de8f01e29e8b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "writeMarkdown",
+      "sha256": "df8e06ebd4ae5cbca456964a74c984d036f492e2c41f24e40d6ffcd1999f914f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "writeMarkdown",
+      "sha256": "f871566c85fbe4b93cd48554e1f564f7ccc1d2dbddca62ce68298d4920748ca8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/re-ledger/main.go",
+      "function": "writeMarkdown",
+      "sha256": "ff1c78f63d397ee6354696389e8b8b5ca406956077dcfdac414ee3362f524f01",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

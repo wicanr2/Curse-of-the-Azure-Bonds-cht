@@ -94,3 +94,62 @@
 | overlay-33 | SQRPAK24 | 7 | 7 | 0 | 0 | 0 | 2106 | 146 | [明細](function-index/pc98-overlay-33.md) |
 | overlay-34 | BUG | 2 | 2 | 0 | 0 | 0 | 14 | 0 | [明細](function-index/pc98-overlay-34.md) |
 | overlay-35 | SQRPAK8 | 4 | 3 | 0 | 1 | 0 | 1048 | 79 | [明細](function-index/pc98-overlay-35.md) |
+
+## 台帳孤兒
+
+人工台帳有 48 列的位址對不上目前任何函式起點，其中 38 列掛著「已解讀」。
+上面的統計**不包含**它們——這些列不會出現在任何模組明細裡，
+所以它們宣告的解讀成果目前沒有對應的函式。成因通常是 IDA 重掃後
+函式邊界改變；處置是逐列判定「搬到新的起點」或「刪除」，
+不要靠改統計數字掩蓋。
+
+| 平台 | 模組 | 位址 | 狀態 | 規格／理由 |
+|---|---|---|---|---|
+| dos | overlay-00 | `0000` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `100FA` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10300` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10330` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10370` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `104C0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10500` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10570` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `105E0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10620` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `106F0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10760` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `107D0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10870` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `108B0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10B80` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10C90` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10D00` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10DC0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10E90` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10F30` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `10FA0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `11050` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `110D0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `11170` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `113E0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `114A0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `115D0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `11640` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `116D0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `11720` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `11760` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `117C0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `11840` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `11890` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `11940` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `119A0` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `12320` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `12360` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `13E12` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `17CCA` | 已解讀 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `17E30` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `181F0` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `18BA0` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `1A197` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `1C290` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | PC98-GAME.EXE | `28360` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |
+| pc98 | overlay-00 | `0000` | 邊界碎片 | docs/spec/569-small-function-batch-reading.md |

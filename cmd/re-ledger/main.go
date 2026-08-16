@@ -228,6 +228,10 @@ func main() {
 	for _, entry := range ledger.Entries {
 		manualByKey[fmt.Sprintf("%s/%s/%d", entry.Platform, entry.Module, entry.EA)] = entry
 	}
+	// 人工台帳是按 (平台, 模組, 位址) 對上函式的。IDA 重掃後函式邊界會變，
+	// 對不上的那幾列就再也不會被讀到——而它們掛的「已解讀」仍留在 JSON 裡，
+	// 於是完成度被高估，且完全靜默。逐列記錄有沒有被用到，收尾時報出來。
+	manualUsed := map[string]bool{}
 	rulesByKey := map[string]ledgerRule{}
 	for _, rule := range ledger.Rules {
 		rulesByKey[rule.Platform+"/"+rule.Module] = rule
@@ -313,9 +317,11 @@ func main() {
 				} else if rule, ok := rulesByKey["/"+name]; ok {
 					record.State, record.Note = rule.State, rule.Reason
 				}
-				if manual, ok := manualByKey[fmt.Sprintf("%s/%s/%d", platform, name, function.EA)]; ok {
+				manualKey := fmt.Sprintf("%s/%s/%d", platform, name, function.EA)
+				if manual, ok := manualByKey[manualKey]; ok {
 					record.State, record.Level = manual.State, manual.Level
 					record.Spec, record.Note = manual.Spec, manual.Note
+					manualUsed[manualKey] = true
 				}
 				if hits := citations[name][function.EA]; len(hits) > 0 {
 					sort.Strings(hits)
@@ -352,8 +358,25 @@ func main() {
 	die(err)
 	die(os.WriteFile(*outJSON, append(encoded, '\n'), 0o644))
 
+	orphans := make([]ledgerEntry, 0)
+	for _, entry := range ledger.Entries {
+		key := fmt.Sprintf("%s/%s/%d", entry.Platform, entry.Module, entry.EA)
+		if !manualUsed[key] {
+			orphans = append(orphans, entry)
+		}
+	}
+	sort.Slice(orphans, func(i, j int) bool {
+		if orphans[i].Platform != orphans[j].Platform {
+			return orphans[i].Platform < orphans[j].Platform
+		}
+		if orphans[i].Module != orphans[j].Module {
+			return orphans[i].Module < orphans[j].Module
+		}
+		return orphans[i].EA < orphans[j].EA
+	})
+
 	die(os.MkdirAll(*outDetail, 0o755))
-	writeMarkdown(*outMD, *outDetail, stats, functions)
+	writeMarkdown(*outMD, *outDetail, stats, functions, orphans)
 
 	var total, read, notBlocking, todo, fragment int
 	for _, stat := range stats {
@@ -363,8 +386,16 @@ func main() {
 		todo += stat.Todo
 		fragment += stat.Fragment
 	}
+	orphanRead := 0
+	for _, entry := range orphans {
+		if entry.State == "已解讀" {
+			orphanRead++
+		}
+	}
 	fmt.Fprintf(os.Stderr, "functions=%d 已解讀=%d 不阻塞=%d 邊界碎片=%d 待解讀=%d → %s\n",
 		total, read, notBlocking, fragment, todo, *outMD)
+	fmt.Fprintf(os.Stderr, "台帳孤兒=%d（其中掛「已解讀」=%d）：位址對不上目前的函式起點，不計入上面的數字\n",
+		len(orphans), orphanRead)
 }
 
 func uniqueStrings(values []string) []string {
@@ -383,7 +414,7 @@ func uniqueStrings(values []string) []string {
 	return out
 }
 
-func writeMarkdown(indexPath, detailDir string, stats []moduleStat, functions []outFunction) {
+func writeMarkdown(indexPath, detailDir string, stats []moduleStat, functions []outFunction, orphans []ledgerEntry) {
 	var builder strings.Builder
 	builder.WriteString("# CoAB 全函式覆蓋台帳\n\n")
 	builder.WriteString("本檔由 `cmd/re-ledger` 產生，不要手改。狀態來源是\n")
@@ -427,6 +458,29 @@ func writeMarkdown(indexPath, detailDir string, stats []moduleStat, functions []
 		}
 		builder.WriteString("\n")
 	}
+	if len(orphans) > 0 {
+		orphanRead := 0
+		for _, entry := range orphans {
+			if entry.State == "已解讀" {
+				orphanRead++
+			}
+		}
+		builder.WriteString("## 台帳孤兒\n\n")
+		fmt.Fprintf(&builder, "人工台帳有 %d 列的位址對不上目前任何函式起點，"+
+			"其中 %d 列掛著「已解讀」。\n", len(orphans), orphanRead)
+		builder.WriteString("上面的統計**不包含**它們——這些列不會出現在任何模組明細裡，\n")
+		builder.WriteString("所以它們宣告的解讀成果目前沒有對應的函式。成因通常是 IDA 重掃後\n")
+		builder.WriteString("函式邊界改變；處置是逐列判定「搬到新的起點」或「刪除」，\n")
+		builder.WriteString("不要靠改統計數字掩蓋。\n\n")
+		builder.WriteString("| 平台 | 模組 | 位址 | 狀態 | 規格／理由 |\n")
+		builder.WriteString("|---|---|---|---|---|\n")
+		for _, entry := range orphans {
+			fmt.Fprintf(&builder, "| %s | %s | `%04X` | %s | %s |\n",
+				entry.Platform, entry.Module, entry.EA, entry.State, orDash(entry.Spec))
+		}
+		builder.WriteString("\n")
+	}
+
 	// 檔尾固定一個換行，重跑才會得到位元組相同的產物。
 	die(os.WriteFile(indexPath,
 		[]byte(strings.TrimRight(builder.String(), "\n")+"\n"), 0o644))

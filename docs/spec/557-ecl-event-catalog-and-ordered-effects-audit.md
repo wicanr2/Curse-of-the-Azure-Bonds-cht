@@ -16,7 +16,7 @@
 2. 人類可讀 block／entry 摘要。
 3. 需要回到 bytes、IDA 與 runtime 驗證的跨 effect-kind 直線候選。
 
-本輪不實作 ordered event runtime，不判定 IF／選單的真實分支，也不宣稱 33 個候選
+本輪不實作 ordered event runtime，不判定 IF／選單的真實分支，也不宣稱 32 個候選
 就是完整動態事件集合。
 
 ## R1：原始定位
@@ -47,29 +47,20 @@
 以下只標為 `hypothesis／audit candidate`：
 
 - effect kind 是為稽核建立的類別，不是原版資料欄位。
-- 33 個候選只表示同一個靜態連續區段出現至少兩種 effect kind。
+- 32 個候選只表示同一個靜態連續區段出現至少兩種 effect kind。
 - `TraceGraph` discovery order 不是 runtime order；IF、`ON GOTO／ON GOSUB`、menu、
   CALL consumer、memory predicate、戰鬥結果與 resume 都沒有在這份清冊中執行。
 
 ## P0 ordered-effects 候選
 
-> 第 558 輪勘誤：原列 P0-A 的三組 `TREASURE → COMBAT` 已由第 255／257／258
-> 輪 READY contract 覆蓋，並補上 PC-98 IDA 與真實 DAX continuation 回歸；它們
-> 現在由 review ledger 標成 `covered/exact`，不再是 blocker。下表保留原始排序
-> 形成原因，但目前執行從 P0-B 開始。
+> 候選的優先序已經用完：32 個候選中 31 個 `covered/exact`、1 個 `partial`，
+> 逐筆結論在 [`ecl-ordered-effect-reviews.json`](../audit/ecl-ordered-effect-reviews.json)。
+> 閉合的方式不是逐候選，而是逐 opcode——次序是 dispatcher 與各 handler 的性質，
+> 見 [spec 1104](1104-ecl-opcode-ordered-effect-phases.md)。
 
-33 個候選中，先依玩家結果風險分成下列工作類別：
+現在的待辦不在候選層，而在 opcode 層：46 個 corpus opcode 中 21 支 handler 尚未讀，
+逐支狀態在 [`ecl-opcode-effect-phases.md`](../audit/ecl-opcode-effect-phases.md)。
 
-| 優先級 | 代表候選 | 為何先驗證 |
-|---|---|---|
-| P0-A（已覆蓋） | ECL3 block `0x15 +050A..+0578`、ECL4 block `0x25 +1271..+12A7`、ECL6 block `0x45 +04F6..+0575` | 第 558 輪證明 pending treasure／battle／victory／resume 已由現行 transaction 閉合；不是新增 ordered runtime 的理由。 |
-| P0-B | ECL2 block `0x02 +04BC..+053A` | 靜態上是 `COMBAT → text`，可檢查戰後文字是否依同一 runtime resume，而不是戰前一次套用。 |
-| P0-C | ECL2 block `0x02 +02CB..+0325` | `text → PICTURE → CALL → combat setup`，可驗證畫面 snapshot、外部 routine 與戰鬥資料的 commit phase。 |
-| P0-D | ECL4 block `0x25 +021F..+023B`、ECL5 block `0x30 +0086..+00B0` | `inventory → NEWECL` 與 `NEWECL → LOAD CHARACTER`，可檢查跨 block transaction 是否遺失前後副作用。 |
-| P1 | ECL6 block `0x42／0x43` initial | `LOAD FILES／LOAD PIECES → CALL／text`，適合閉合 resource load、map adapter 與外部 routine 次序。 |
-| P1 | ECL1 block `0x52` initial | 含人物加入、文字、CALL、戰鬥與 `PROGRAM` 的長序列；價值高但分支與篇幅大，應在小候選 contract 成熟後處理。 |
-
-這些排序只決定下一個 probe，不把候選升格成正式語意。
 
 ## R3：清冊契約
 
@@ -107,13 +98,14 @@ Docker 內以 Go 1.24.13、暫存 `modfile` 將鎖版 private engine dependency 
 
 - `go test ./internal/eclcatalog ./internal/ecl ./cmd/ecl-event-catalog`
 - 連續生成與 `-check／-check-summary` byte-for-byte 相符。
-- 統計固定為：6 members、25 blocks、125 entries、1,355 instructions、33 candidates。
+- 統計固定為：6 members、25 blocks、125 entries、1,355 instructions、32 candidates。
+  （`20h NEWECL` 是終止指令，不切在它後面會併出假候選；見 spec 1104 §九。）
 
 ## 尚未閉合
 
 | 缺口 | 類型 | 是否阻塞玩家 | 下一步 |
 |---|---|---:|---|
-| effect 的全域有序 transaction model | 待逆向／待規格 | 是 | 三組 `TREASURE → COMBAT` 已由第 558 輪覆蓋；下一步閉合 P0-B `COMBAT → text` 與其餘未審查候選。 |
+| effect 的全域有序 transaction model | 局部 | 否 | 逐 opcode 的 commit phase 已由 spec 1104 閉合（DOS 25／46 支）；剩下 21 支未讀 handler 與原版／remake trace diff。 |
 | 動態 `ON GOTO／ON GOSUB` 與 menu branches | 待逆向 | 是 | 把 runtime branch trace 合併回 catalog 的動態 edge 層，不覆寫靜態證據。 |
 | external CALL registry | 待逆向 | 是 | 從 23 個靜態可達 CALL instruction 擷取 operand，逐址閉合 consumer。 |
 | cell／terrain／劇情名稱對應 | 待研究／資料整合 | 視事件而定 | 由 GEO、ECL predicate 與正常路徑回填，不從攻略直接命名。 |

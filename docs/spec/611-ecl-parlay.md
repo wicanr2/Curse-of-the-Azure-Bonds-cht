@@ -42,9 +42,9 @@ DS:7F36h := 0 ; DS:BDFDh := 0 ; DS:A2A8h := saved
 1. **五個結果碼**（operand 5..9）對應遭遇選單的五個選項
    `~COMBAT ~WAIT ~FLEE ~PARLAY` ／ `~COMBAT ~WAIT ~FLEE ~ADVANCE`
    （DOS `overlay-02:2029h`／`2045h`）。
-   ⚠ **這一條在 spec 1041 被更正**：先前寫的
-   `~HAUGHTY ~SLY ~NICE ~MEEK ~ABUSIVE`（`overlay-02:2785h`）
-   落在本函式結束之後，屬於下一支函式，是相鄰字串的誤認。
+   ⚠ `~HAUGHTY ~SLY ~NICE ~MEEK ~ABUSIVE`（`overlay-02:2785h`）**不屬於這一支**
+   ——它落在本函式結束之後，是下一支函式的字串（spec 1041）。
+   位址相近不代表同一支，取字串前要先確認函式邊界。
 2. 分支裡的訊息是「**相手は逃げた**」（對方逃走了，`unk_221Fh`）與
    「**お互いに様子を見ている**」（雙方互相觀望，`unk_2208h`）。
 

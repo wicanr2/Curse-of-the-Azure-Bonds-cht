@@ -90,12 +90,10 @@ overlay14:0x0D65  call far 014A:00DE     ; common tail
 call」。不能把 `0x0807` 命名成移動、開門、更新座標，也不能把 `014A:00DE`
 命名成重繪、事件續跑或地圖服務；這些要由 consumer／runtime trace 閉合。
 
-## 第 527 輪勘誤
-
-第 527 輪規格的 set-writer table 曾把 B helper 第二個 caller 寫成 `0x05A5`。
-連續 raw bytes 與既有 audit 均顯示 near call opcode 位於 `0x05A4`；`0x05A5`
-是 displacement 的下一個 byte。第 527 輪現已修正為 `0x05A4`，不是新的
-語意結論。
+> ★ **記 call site 位址時要指向 opcode，不是 displacement。**
+> near call 是 `E8 <disp16>`：`0x05A4` 是那條指令，`0x05A5` 只是 displacement
+> 的第一個 byte。從反組譯輸出裡抄行號很容易差這一格，而差一格之後
+> xref 查不到、consumer 也對不上。
 
 ## 對 remake 的限制
 

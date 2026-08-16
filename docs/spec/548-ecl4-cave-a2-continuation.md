@@ -63,14 +63,11 @@ go test ./gamepack \
 - `(15,1)` 的資料驅動搜尋邊仍只是 `strong inference`；它不是這條正常玩家
   路徑的證據，也不能被當作 Dexam 或出口的 direct-entry 驗收捷徑。
 
-## 第 550 輪勘誤
+## 本規格的後續
 
-第 548 輪一度把死精靈後的搜尋邊寫入同一條 normal-path 敘述。那條邊沒有原始
-GEO movement／runtime 閉合，只能保留為後續研究候選。第 550 輪的正常 session
-改為在死精靈的皮袋、氣體陷阱、手札 59 與後續戰利品服務結束後，回到同一洞穴
-座標；詳細 bytes、game-pack 資料契約與範圍見
-[`spec 550`](550-ecl4-dead-elf-journal59-treasure-continuation.md)。本規格其餘 A2
-map-register 與 continuation 證據仍然有效。
+死精靈之後的正常 session 由 [`spec 550`](550-ecl4-dead-elf-journal59-treasure-continuation.md)
+接手：皮袋、氣體陷阱、手札 59 與戰利品服務結束後回到同一洞穴座標。
+本規格其餘 A2 map-register 與 continuation 證據仍然有效。
 
 第 547 輪的 raw map-register 證據仍有效，但洞穴 route 時序與完成敘述由本規格
 取代。
