@@ -53,7 +53,7 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | ├ PC-98 | 1,488：已解讀 1,121 ／ 不阻塞 29 ／ 邊界碎片 338 | 同上 |
 | └ 台帳孤兒 | **0**（原有 48 列位址對不上任何函式起點，內容都是 spec 569 的樣板分類，2026-08-16 依決策六刪除） | 同上 |
 | └ 證據等級 | `exact` 1,955 ／ `strong inference` 223 | 同上 |
-| 規格文件 | **1,095** 份 `docs/spec/*.md` | `ls` |
+| 規格文件 | **1,096** 份 `docs/spec/*.md` | `ls` |
 | remake 程式（不含巢狀 repo） | **230 個 `.go`／77,123 行** | `find`／`wc` |
 | ├ `internal/game` 機制碼 | **16 檔／13,908 行**（非測試） | `wc` |
 | └ 檔名 | `state` `combat_state` `creation` `creation_guided` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
@@ -132,7 +132,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 | `RE-02` | **全遊戲事件清冊**（P0-RE-2） | 靜態層完成（6 DAX／25 block／125 entry／1,355 instruction） | 補動態 branch、座標／terrain、條件旗標、consumer、resume、R1–R5 回填 | `ecl-event-catalog` 動態層 |
 | `RE-03` | **External `CALL` 登記表** | ✅ **靜態層已完成**（spec 1104 §七）：`2Dh` 是七路 switch（operand 值減 `7FFFh`），23 個靜態可達 CALL 只用到 `2E10h`（12 次）與 `6803h`（11 次），另五路 corpus 從未使用；未列入 switch 的目標**靜默 no-op** | 兩個實際使用目標的 consumer 逐條驗證與 remake adapter；`6803h` 的 `722Ah` 指標陣列版面未取 | `external-call-registry` |
 | `RE-04` | **劇情與全地圖事件** | 大量 fixture，缺逐格覆蓋 | 每區逐格／逐事件的 producer、條件、分支、副作用、重訪 | `area-event-coverage` |
-| `RE-05` | **DOS save bundle（只讀）** | raw-preserving parser 與部分 sidecar | 已由 spec 1072／1075／1076 取得 16 塊固定版面與角色檔名表（`148h` ＝ 8×41）；仍缺 `.SAV/.GUY/.FX/.SWG` 全欄位與未知 byte 的讀取語意。⚠ 決策四：**不需要寫回原版、不需要 round-trip gate**，只要讀得進來 | `dos-save-bundle-schema` |
+| `RE-05` | **DOS save bundle（只讀）** | **角色記錄逐位元組有台帳**（spec 1115）：422 bytes 中 `decoded` 294／`documented` 99／`unknown` 29，`decoded` 用位元組突變量測驗證，雙向對帳跑在 `go test` 裡 | 剩 `.SWG`／`.FX` 的台帳與 PC-98 `CHARREC`（`1A7h`，多一 byte）。⚠ 決策四：**不需要寫回原版、不需要 round-trip gate**，只要讀得進來 | `dos-save-bundle-schema` |
 | `RE-06` | **戰鬥 scheduler／initiative** | 部分 typed core | round/segment、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff | `combat-turn-lifecycle` |
 | `RE-07` | **敵方 AI／怪物特殊能力** | **COMPTACT（overlay-09）38 個函式裡 16 個已解讀，大的全部在內**：AI 一回合（830）、攻擊／移動主迴圈（838）、試方向（837）、走一步（839）、用道具（835）、選法術（836）、施法目標閘門（802）、友軍誤傷掃描（777）、自動換裝（1004）、士氣（758）。其餘 22 筆是 IDA 的邊界碎片 | 缺的是**實作**（`ENG-08`）與怪物特殊能力逐種（群體、抗性、免疫、毒素、凝視）| `monster-ai-and-specials-matrix` |
 | `RE-08` | **AREA map** | 有資料與局部畫面 | player marker、探索狀態、秘密區、Journal 59 圖、縮放／色盤、save state | `area-map-contract` |
@@ -206,7 +206,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 | `ENG-07` | 戰鬥回合生命週期 | `RE-06` | initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
 | `ENG-08` | 怪物 AI | `RE-07` ✅（COMPTACT 已解讀）| **移動已接**（spec 1114）：每回合抽行為模式 1..6、模式決定五個候選方向、正向 ×2 斜向 ×3 半格成本、走到射程內才攻擊、20 次上限；方向表逐 byte 對回資料段。剩：目標選擇照原作挑法、AI 用道具（835）、AI 選法術（836）、士氣與恐慌逃走（758／830）、自動換裝（1004）、兩種障礙的豁免效果（837）|
 | `ENG-09` | 全法術表 | spec 1111 ✅（資料）| **資料半邊完成**：原作 100 筆全部在 `gamepack/rules/spell-table.json`，target／range／save／duration／施法時間／AI 分數逐欄有出處，`gamepack` 的測試逐條對回原作。分母改成原作表：占位 13、紮營 8 ⇒ 戰鬥可施放 **79** 支，已宣告 12 支。剩下 67 支缺的是**效果**（handler／visual／sound），逐支狀態見 `combat-spell-coverage-ledger.md` |
-| `ENG-10` | 存檔完整實作 | `RE-05`、spec 1072／1076 ✅ | remake 自己的存檔要能保存所有 pending ECL/combat/audio/UI transaction，並能匯入原版存檔。⚠ 決策四：不做原版 round-trip |
+| `ENG-10` | 存檔完整實作 | `RE-05`、spec 1072／1076／1115 ✅ | **存檔完整性的閘已建**：`Fighter` 每個匯出欄位都要能存進快照再讀回（反射掃描，新增欄位當場變紅），五個 pack 衍生的規則表以「讀檔時重新注入」為由豁免，而豁免本身也被測試釘住。這條閘當場抓到 `StatusPartyFled` 沒進 `RestoreBattle` 上限檢查的 bug。剩：遊戲層快照的同等閘。⚠ 決策四：不做原版 round-trip |
 | `ENG-11` | 通關路徑 | spec 1087 ✅ | `PROGRAM 8` 的完整序列接上結局與存檔 |
 
 ⚠ **原作瑕疵要決定照抄或修正**，並在規格裡記錄決定：

@@ -1,0 +1,173 @@
+package party
+
+import "fmt"
+
+// DOSRecordFieldStatus 是一段位元組在 remake 這側的狀態。
+//
+// ★ 三態的分界寫死，免得下次憑印象填：
+//
+//	decoded     remake 的解析器**真的讀它**，值會影響匯入結果。
+//	            `cmd/save-field-coverage` 用位元組突變逐格量測，對不上會紅。
+//	documented  有規格說得出它是什麼，但解析器沒讀。匯入時原樣保留。
+//	unknown     沒有任何出處。**不是「沒有用」**——只是還沒查到。
+type DOSRecordFieldStatus string
+
+const (
+	DOSFieldDecoded    DOSRecordFieldStatus = "decoded"
+	DOSFieldDocumented DOSRecordFieldStatus = "documented"
+	DOSFieldUnknown    DOSRecordFieldStatus = "unknown"
+)
+
+// DOSRecordField 是角色記錄裡的一段位元組。
+type DOSRecordField struct {
+	Offset int
+	Size   int
+	Name   string
+	Status DOSRecordFieldStatus
+	// Spec 是出處。`decoded` 與 `documented` 都必須有；`unknown` 一定沒有。
+	Spec string
+}
+
+// DOSPlayerRecordFields 是 DOS 角色記錄（`CHARREC`，`1A6h` bytes）的逐段台帳。
+//
+// ★ 為什麼要逐段而不是只列已知欄位。 「已知欄位清單」回答不了 `RE-05` 的問題
+// ——「還有多少不知道」。把**每一個位元組**都放進表裡、用 fail-closed 測試擋住
+// 洞與重疊之後，`unknown` 的總數才是可以引用的數字。
+//
+// ⚠ 匯入不會因為 `unknown` 而遺失資料：`State.LoadSAVGAMSlot` 保留整份原始
+// 記錄，`PatchDOSPlayerRecord` 只寫已知位移（spec 185）。這張表衡量的是
+// **理解程度**，不是保真度。
+var DOSPlayerRecordFields = []DOSRecordField{
+	{0x000, 1, "名字長度", DOSFieldDecoded, "185"},
+	{0x001, 15, "名字（Pascal 短字串本體）", DOSFieldDecoded, "185"},
+	{0x010, 1, "力量 基準", DOSFieldDecoded, "1079"},
+	{0x011, 1, "力量 現值", DOSFieldDecoded, "1079"},
+	{0x012, 1, "智力 基準", DOSFieldDecoded, "1079"},
+	{0x013, 1, "智力 現值", DOSFieldDecoded, "1079"},
+	{0x014, 1, "睿智 基準", DOSFieldDecoded, "1079"},
+	{0x015, 1, "睿智 現值", DOSFieldDecoded, "1079"},
+	{0x016, 1, "敏捷 基準", DOSFieldDecoded, "1079"},
+	{0x017, 1, "敏捷 現值", DOSFieldDecoded, "1079"},
+	{0x018, 1, "體質 基準", DOSFieldDecoded, "1079"},
+	{0x019, 1, "體質 現值", DOSFieldDecoded, "1079"},
+	{0x01A, 1, "魅力 基準", DOSFieldDecoded, "1079"},
+	{0x01B, 1, "魅力 現值", DOSFieldDecoded, "1079"},
+	{0x01C, 1, "特殊力量 現值（18/xx 的百分位）", DOSFieldDecoded, "1086"},
+	{0x01D, 1, "特殊力量 基準", DOSFieldDecoded, "1086"},
+	{0x01E, 84, "記憶法術清單 84 格（最高位 ＝ 還在記憶中）", DOSFieldDecoded, "1016／792"},
+	{0x072, 1, "（未定）", DOSFieldUnknown, ""},
+	{0x073, 1, "重算時抄進 +199h 的來源", DOSFieldDocumented, "1000"},
+	{0x074, 1, "種族編號 1..7", DOSFieldDecoded, "998／1084"},
+	{0x075, 1, "職業組合編號 0..10h", DOSFieldDecoded, "1093"},
+	{0x076, 2, "年齡（word）", DOSFieldDecoded, "1099"},
+	{0x078, 1, "最大 HP", DOSFieldDecoded, "185"},
+	{0x079, 100, "每法術旗標 100 格（法術編號 1..100）", DOSFieldDecoded, "815"},
+	{0x0DD, 1, "橫掃上限的來源（回合初始化抄進戰鬥狀態 +5）", DOSFieldDocumented, "806／833"},
+	{0x0DE, 1, "（未定）", DOSFieldUnknown, ""},
+	{0x0DF, 5, "五個豁免門檻（毒／石化／法杖／噴吐／法術）", DOSFieldDecoded, "1111"},
+	{0x0E4, 1, "移動力基準（重算時抄進 +1A5h）", DOSFieldDocumented, "1000／683"},
+	{0x0E5, 1, "最高職業等級（0 ＝ 零級生物）", DOSFieldDecoded, "811／815"},
+	{0x0E6, 1, "多職角色的現行等級", DOSFieldDecoded, "185"},
+	{0x0E7, 2, "（未定）", DOSFieldUnknown, ""},
+	{0x0E9, 1, "不死生物種類 1..10（轉化矩陣的列索引）", DOSFieldDocumented, "834"},
+	{0x0EA, 8, "盜賊技能八項", DOSFieldDecoded, "185"},
+	{0x0F2, 4, "效果鏈頭（遠指標）", DOSFieldDecoded, "185"},
+	{0x0F6, 1, "（未定）", DOSFieldUnknown, ""},
+	{0x0F7, 1, "控制／士氣（>= 80h 是 NPC）", DOSFieldDecoded, "758"},
+	{0x0F8, 3, "（未定）", DOSFieldUnknown, ""},
+	{0x0FB, 14, "七種貨幣（銅銀琥珀金白金寶石首飾，各一個 word）", DOSFieldDecoded, "1000"},
+	{0x109, 8, "第一職業的八個欄位（等級在前）", DOSFieldDecoded, "728"},
+	{0x111, 8, "第二職業的八個平行欄位（雙職角色才看）", DOSFieldDocumented, "728"},
+	{0x119, 1, "性別", DOSFieldDecoded, "1086"},
+	{0x11A, 1, "（未定）", DOSFieldUnknown, ""},
+	{0x11B, 1, "陣營", DOSFieldDecoded, "1102"},
+	{0x11C, 1, "武器槽選擇（0 時回落到槽 2）", DOSFieldDocumented, "1010"},
+	{0x11D, 2, "攻擊骰數 基準（兩個武器槽）", DOSFieldDocumented, "1000／795"},
+	{0x11F, 2, "攻擊面數 基準", DOSFieldDocumented, "1000／795"},
+	{0x121, 2, "傷害加值 基準（有號）", DOSFieldDocumented, "1000／795"},
+	{0x123, 1, "（未定）", DOSFieldUnknown, ""},
+	{0x124, 1, "重算時抄進 +19Ah 的來源", DOSFieldDocumented, "1000"},
+	{0x125, 2, "（未定）", DOSFieldUnknown, ""},
+	{0x127, 4, "經驗值（dword）", DOSFieldDecoded, "185"},
+	{0x12B, 1, "（未定）", DOSFieldUnknown, ""},
+	{0x12C, 1, "基準最大 HP（不含裝備加成）", DOSFieldDecoded, "185"},
+	{0x12D, 15, "每環可施放次數：牧師／德魯伊／法師各五環", DOSFieldDecoded, "1016"},
+	{0x13C, 5, "（未定）", DOSFieldUnknown, ""},
+	{0x141, 1, "頭像 block", DOSFieldDecoded, "185"},
+	{0x142, 1, "武器圖示 block", DOSFieldDecoded, "185"},
+	{0x143, 1, "圖示 ID", DOSFieldDecoded, "185"},
+	{0x144, 1, "體型 1 小／2 中", DOSFieldDecoded, "1093"},
+	{0x145, 7, "（未定）", DOSFieldUnknown, ""},
+	{0x14C, 1, "物品件數（重算時數出來）", DOSFieldDocumented, "1000"},
+	{0x14D, 4, "物品鏈頭（遠指標）", DOSFieldDecoded, "1000"},
+	{0x151, 52, "13 個裝備槽遠指標（槽 9 雙持佔兩格）", DOSFieldDocumented, "1000"},
+	{0x185, 1, "已裝備物品佔用的手數（上限 2）", DOSFieldDocumented, "1000／1004"},
+	{0x186, 1, "豁免加值（派生欄位，重算時先歸零）", DOSFieldDecoded, "1000"},
+	{0x187, 2, "總重（含硬幣枚數）", DOSFieldDocumented, "1000／974"},
+	{0x189, 4, "隊伍／戰鬥員鏈的 next（遠指標）", DOSFieldDocumented, "689／815"},
+	{0x18D, 4, "戰鬥狀態記錄的遠指標（22 bytes 的那一份）", DOSFieldDocumented, "806"},
+	{0x191, 1, "（未定）", DOSFieldUnknown, ""},
+	{0x192, 1, "ECL 旗標（投影位址 7CE4h）", DOSFieldDecoded, "1098"},
+	{0x193, 2, "（未定）", DOSFieldUnknown, ""},
+	{0x195, 1, "狀態碼（8 ＝ 被摧毀）", DOSFieldDocumented, "833／1010"},
+	{0x196, 1, "站著且能行動（1 ＝ 可以）", DOSFieldDocumented, "1010"},
+	{0x197, 1, "隊號（0 是一邊，非 0 是另一邊）", DOSFieldDocumented, "777／1112"},
+	{0x198, 1, "畫圖示時用的旗標（決定圖號 3 或 1）", DOSFieldDocumented, "837"},
+	{0x199, 1, "重算時由 +73h 抄過來", DOSFieldDocumented, "1000"},
+	{0x19A, 1, "重算時由 +124h 抄過來", DOSFieldDocumented, "1000"},
+	{0x19B, 1, "本回合選用的武器槽", DOSFieldDocumented, "1010"},
+	{0x19C, 1, "本回合的攻擊次數（每回合重算）", DOSFieldDocumented, "808"},
+	{0x19D, 2, "攻擊骰數 現值（兩個武器槽）", DOSFieldDocumented, "1000／795"},
+	{0x19F, 2, "攻擊面數 現值", DOSFieldDocumented, "1000／795"},
+	{0x1A1, 2, "傷害加值 現值（有號）", DOSFieldDocumented, "1000／795"},
+	{0x1A3, 1, "（未定）", DOSFieldUnknown, ""},
+	{0x1A4, 1, "目前 HP", DOSFieldDecoded, "185"},
+	{0x1A5, 1, "目前移動力（重算時由 +0E4h 抄過來）", DOSFieldDocumented, "1000／683"},
+}
+
+// ValidateDOSPlayerRecordFields 檢查台帳蓋滿整份記錄、沒有洞也沒有重疊。
+//
+// ★ 這是整張表的價值所在。 少一段就會讓 `unknown` 的數字偏低，而那個數字正是
+// 「還剩多少不知道」的答案；重疊則會讓同一個位元組被算兩次。
+func ValidateDOSPlayerRecordFields() error {
+	next := 0
+	for index, field := range DOSPlayerRecordFields {
+		if field.Size < 1 {
+			return fmt.Errorf("第 %d 段 +%03Xh 的長度是 %d", index, field.Offset, field.Size)
+		}
+		if field.Offset != next {
+			return fmt.Errorf("第 %d 段從 +%03Xh 開始，前一段結束於 +%03Xh：中間有洞或重疊",
+				index, field.Offset, next)
+		}
+		if field.Name == "" {
+			return fmt.Errorf("第 %d 段 +%03Xh 沒有名字", index, field.Offset)
+		}
+		switch field.Status {
+		case DOSFieldDecoded, DOSFieldDocumented:
+			if field.Spec == "" {
+				return fmt.Errorf("+%03Xh 是 %s 卻沒有出處", field.Offset, field.Status)
+			}
+		case DOSFieldUnknown:
+			if field.Spec != "" {
+				return fmt.Errorf("+%03Xh 是 unknown 卻附了出處 %q", field.Offset, field.Spec)
+			}
+		default:
+			return fmt.Errorf("+%03Xh 的狀態 %q 不是三種之一", field.Offset, field.Status)
+		}
+		next = field.Offset + field.Size
+	}
+	if next != DOSPlayerRecordSize {
+		return fmt.Errorf("台帳只蓋到 +%03Xh，記錄是 %#X bytes", next, DOSPlayerRecordSize)
+	}
+	return nil
+}
+
+// DOSPlayerRecordFieldAt 回傳涵蓋某個位移的那一段。
+func DOSPlayerRecordFieldAt(offset int) (DOSRecordField, bool) {
+	for _, field := range DOSPlayerRecordFields {
+		if offset >= field.Offset && offset < field.Offset+field.Size {
+			return field, true
+		}
+	}
+	return DOSRecordField{}, false
+}
