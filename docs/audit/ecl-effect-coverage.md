@@ -11,18 +11,16 @@
 
 | 狀態 | 指令數 | opcode 數 | 意思 |
 |---|---:|---:|---|
-| `done` | 13099 | 47 | 副作用已產生，且有回歸測試或實機路徑驗過 |
+| `done` | 13117 | 49 | 副作用已產生，且有回歸測試或實機路徑驗過 |
 | `partial` | 1057 | 11 | 只做了一部分，多半是把請求記進 result 讓上層處理 |
-| **`consumed`** | **21** | **3** | **只讀掉運算元——原作有效果，remake 沒有** |
+| **`consumed`** | **3** | **1** | **只讀掉運算元——原作有效果，remake 沒有** |
 | 合計（靜態可達指令）| 14177 | 61 | |
 
 ## 逐 opcode
 
 | opcode | 名稱 | 狀態 | 可達出現次數 | 出現在幾個 block | 還差什麼 |
 |---|---|---|---:|---:|---|
-| `0x3D` | CLEAR BOX | `consumed` | 17 | 5 | CLEAR BOX：文字框清除的畫面行為沒有接 |
 | `0x31` | SPRITE OFF | `consumed` | 3 | 3 | SPRITE OFF：戰鬥圖示的顯示狀態未還原 |
-| `0x3C` | PROTECTION | `consumed` | 1 | 1 | 解成位址並排隊，但 ConsumeProtectionRequests 只有測試呼叫——實機沒有效果 |
 | `0x1C` | CLEARMONSTERS | `partial` | 206 | 24 | CLEARMONSTERS 清怪物鏈與已放置數；原作另清的四塊 bank1 區域未逐格對上 |
 | `0x0E` | PICTURE | `partial` | 199 | 23 | PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層 |
 | `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）；戰鬥本身的回合生命週期仍是 RE-06 |
@@ -64,6 +62,7 @@
 | `0x07` | MULTIPLY | `done` | 24 | 7 | 算術 |
 | `0x15` | VERTICAL MENU | `done` | 22 | 7 | 垂直選單，選項字串與選擇結果都回得去 |
 | `0x29` | ENCOUNTER MENU | `done` | 21 | 9 | 遭遇選單 |
+| `0x3D` | CLEAR BOX | `done` | 17 | 5 | 清空文字框且不印新文字；只有在該次執行沒有新文字時才看得出來，遊戲層據此清掉 Message |
 | `0x2C` | PARLAY | `done` | 15 | 10 | PARLAY |
 | `0x30` | OR | `done` | 13 | 6 | 位元運算 |
 | `0x40` | DESTROY ITEMS | `done` | 13 | 4 | DESTROY ITEMS |
@@ -81,6 +80,7 @@
 | `0x3B` | SPELL | `done` | 2 | 2 | 依行軍順序找持有者，slot 與隊員索引寫回兩個位址，找不到寫 0FFh；依據是呼叫端（COMPARE FFh ＋ LOAD CHARACTER），不是命令表 |
 | `0x3F` | FIND SPECIAL | `done` | 2 | 1 | FIND SPECIAL |
 | `0x1E` | CHECKPARTY | `done` | 1 | 1 | CHECKPARTY 六個條件 |
+| `0x3C` | PROTECTION | `done` | 1 | 1 | 原作是翻手冊的防拷問答（橋上謎題，ECL1 0x50 +1B6Fh）。呼叫端拿到控制權後直接印「YOU MAY PASS.」再 RETURN，沒有分支 ⇒ remake 不附那份對照表，一律通過就是正確行為，不是缺口 |
 
 ## 尚未還原的指令，依 block
 
@@ -90,7 +90,7 @@
 | `ECL4.DAX/0x20` | 722 | 70 |
 | `ECL5.DAX/0x33` | 709 | 63 |
 | `ECL4.DAX/0x21` | 563 | 60 |
-| `ECL3.DAX/0x10` | 913 | 58 |
+| `ECL3.DAX/0x10` | 913 | 57 |
 | `ECL5.DAX/0x32` | 634 | 55 |
 | `ECL6.DAX/0x40` | 766 | 54 |
 | `ECL3.DAX/0x12` | 840 | 53 |
@@ -100,14 +100,14 @@
 | `ECL2.DAX/0x02` | 374 | 44 |
 | `ECL2.DAX/0x03` | 703 | 44 |
 | `ECL5.DAX/0x35` | 598 | 44 |
-| `ECL1.DAX/0x50` | 798 | 42 |
-| `ECL1.DAX/0x51` | 726 | 40 |
 | `ECL6.DAX/0x42` | 603 | 38 |
 | `ECL6.DAX/0x43` | 525 | 36 |
-| `ECL2.DAX/0x04` | 482 | 31 |
+| `ECL1.DAX/0x50` | 798 | 35 |
+| `ECL1.DAX/0x51` | 726 | 34 |
+| `ECL2.DAX/0x04` | 482 | 30 |
 | `ECL5.DAX/0x31` | 388 | 26 |
-| `ECL1.DAX/0x52` | 86 | 23 |
 | `ECL4.DAX/0x23` | 303 | 22 |
+| `ECL1.DAX/0x52` | 86 | 20 |
 | `ECL3.DAX/0x15` | 334 | 20 |
 | `ECL6.DAX/0x45` | 320 | 20 |
 | `ECL5.DAX/0x30` | 72 | 0 |

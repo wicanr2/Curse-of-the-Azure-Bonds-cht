@@ -1397,8 +1397,8 @@
   {
    "opcode": "0x3C",
    "name": "PROTECTION",
-   "status": "consumed",
-   "note": "解成位址並排隊，但 ConsumeProtectionRequests 只有測試呼叫——實機沒有效果",
+   "status": "done",
+   "note": "原作是翻手冊的防拷問答（橋上謎題，ECL1 0x50 +1B6Fh）。呼叫端拿到控制權後直接印「YOU MAY PASS.」再 RETURN，沒有分支 ⇒ remake 不附那份對照表，一律通過就是正確行為，不是缺口",
    "occurrences": 1,
    "blocks": [
     "ECL1.DAX/0x50"
@@ -1407,8 +1407,8 @@
   {
    "opcode": "0x3D",
    "name": "CLEAR BOX",
-   "status": "consumed",
-   "note": "CLEAR BOX：文字框清除的畫面行為沒有接",
+   "status": "done",
+   "note": "清空文字框且不印新文字；只有在該次執行沒有新文字時才看得出來，遊戲層據此清掉 Message",
    "occurrences": 17,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1457,13 +1457,13 @@
   }
  ],
  "instructions_by_status": {
-  "consumed": 21,
-  "done": 13099,
+  "consumed": 3,
+  "done": 13117,
   "partial": 1057
  },
  "opcodes_by_status": {
-  "consumed": 3,
-  "done": 47,
+  "consumed": 1,
+  "done": 49,
   "partial": 11
  },
  "reachable_instructions": 14177,
@@ -1495,14 +1495,14 @@
   "ECL6.DAX/0x45": 320
  },
  "unreproduced_by_block": {
-  "ECL1.DAX/0x50": 42,
-  "ECL1.DAX/0x51": 40,
-  "ECL1.DAX/0x52": 23,
+  "ECL1.DAX/0x50": 35,
+  "ECL1.DAX/0x51": 34,
+  "ECL1.DAX/0x52": 20,
   "ECL2.DAX/0x01": 47,
   "ECL2.DAX/0x02": 44,
   "ECL2.DAX/0x03": 44,
-  "ECL2.DAX/0x04": 31,
-  "ECL3.DAX/0x10": 58,
+  "ECL2.DAX/0x04": 30,
+  "ECL3.DAX/0x10": 57,
   "ECL3.DAX/0x11": 46,
   "ECL3.DAX/0x12": 53,
   "ECL3.DAX/0x15": 20,

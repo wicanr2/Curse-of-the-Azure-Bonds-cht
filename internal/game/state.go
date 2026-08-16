@@ -936,6 +936,10 @@ func (s *State) BeginAdventure() error {
 	if len(result.Text) > 0 {
 		s.unlockJournalEntries(result.Text)
 		s.Message = s.localizeECLText(result.Text)
+	} else if result.ClearBoxRequested {
+		// `3Dh CLEAR BOX` 只有在這一次執行**沒有印出新文字**時才看得出來：
+		// 有新文字的話它本來就會蓋掉舊的。原作用它在換畫面前把上一幕擦掉。
+		s.Message = ""
 	}
 	if result.WaitingForString && len(result.StringInputRequests) > 0 {
 		s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
