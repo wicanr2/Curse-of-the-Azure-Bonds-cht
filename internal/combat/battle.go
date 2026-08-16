@@ -165,6 +165,10 @@ type Fighter struct {
 	// poison, petrification, rod/staff/wand, breath weapon and spell.
 	SavingThrows     []uint8
 	SavingThrowBonus int
+	// AIMode 是原作戰鬥狀態 `+15h` 的行為模式 1..6（spec 830／837）：
+	// 它決定移動時「試方向的順序」。每回合由 `BeginMonsterTurn` 重骰，
+	// 0 代表還沒骰過（原作的初值也是 0，第一回合必骰）。
+	AIMode int `json:"ai_mode,omitempty"`
 	// Escaped 是「走出戰場邊界離開這一場」（spec 799／1112）。與死亡不同：
 	// 人還活著，只是不在戰場上，所以不算敵方戰果、也不再是任何效果的目標。
 	Escaped bool `json:"escaped,omitempty"`

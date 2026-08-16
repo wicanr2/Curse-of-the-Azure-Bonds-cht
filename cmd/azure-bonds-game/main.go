@@ -163,6 +163,29 @@ func (a *app) combatMove(dx, dy int) error {
 	return a.state.CombatMoveWithTerrain(dx, dy, terrain)
 }
 
+// combatMovementTerrain 是 AI 移動用的地形投影。**與玩家移動同一份**：
+// `combatMove` 每一步都現組一個一樣的閉包，AI 那一步沒有玩家按鍵當入口，
+// 所以要事先裝上去（spec 830／838 的移動階段）。
+func (a *app) combatMovementTerrain() combat.MovementTerrain {
+	return func(x, y int) (int, bool) {
+		mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
+		entry, ok := combatMovementTerrainEntry(
+			mode,
+			a.dungeonFloor,
+			a.state.WildernessFloor,
+			a.state.MapX,
+			a.state.MapY,
+			a.state.CombatUsesReferenceCoordinates(),
+			x,
+			y,
+		)
+		if !ok || !entry.Passable() || entry.MoveCost == 0 {
+			return 0, false
+		}
+		return int(entry.MoveCost), true
+	}
+}
+
 func (a *app) combatLineTerrain() combat.LineTerrain {
 	mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
 	referenceCoordinates := a.state.CombatUsesReferenceCoordinates()
@@ -3824,6 +3847,7 @@ func main() {
 		gameApp.journalImageZoom = *journalImageZoom
 	}
 	gameApp.state.SetCombatLineTerrain(gameApp.combatLineTerrain())
+	gameApp.state.SetCombatMovementTerrain(gameApp.combatMovementTerrain())
 	gameApp.state.SetCombatScanMapProvider(gameApp.combatScanTacticalMap)
 	if *partyLoadPath != "" {
 		if err := gameApp.restoreAudioSnapshot(); err != nil {

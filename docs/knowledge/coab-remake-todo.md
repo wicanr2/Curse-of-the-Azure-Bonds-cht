@@ -53,7 +53,7 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | ├ PC-98 | 1,488：已解讀 1,121 ／ 不阻塞 29 ／ 邊界碎片 338 | 同上 |
 | └ 台帳孤兒 | **0**（原有 48 列位址對不上任何函式起點，內容都是 spec 569 的樣板分類，2026-08-16 依決策六刪除） | 同上 |
 | └ 證據等級 | `exact` 1,955 ／ `strong inference` 223 | 同上 |
-| 規格文件 | **1,085** 份 `docs/spec/*.md` | `ls` |
+| 規格文件 | **1,095** 份 `docs/spec/*.md` | `ls` |
 | remake 程式（不含巢狀 repo） | **230 個 `.go`／77,123 行** | `find`／`wc` |
 | ├ `internal/game` 機制碼 | **16 檔／13,908 行**（非測試） | `wc` |
 | └ 檔名 | `state` `combat_state` `creation` `creation_guided` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
@@ -134,7 +134,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 | `RE-04` | **劇情與全地圖事件** | 大量 fixture，缺逐格覆蓋 | 每區逐格／逐事件的 producer、條件、分支、副作用、重訪 | `area-event-coverage` |
 | `RE-05` | **DOS save bundle（只讀）** | raw-preserving parser 與部分 sidecar | 已由 spec 1072／1075／1076 取得 16 塊固定版面與角色檔名表（`148h` ＝ 8×41）；仍缺 `.SAV/.GUY/.FX/.SWG` 全欄位與未知 byte 的讀取語意。⚠ 決策四：**不需要寫回原版、不需要 round-trip gate**，只要讀得進來 | `dos-save-bundle-schema` |
 | `RE-06` | **戰鬥 scheduler／initiative** | 部分 typed core | round/segment、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff | `combat-turn-lifecycle` |
-| `RE-07` | **敵方 AI／怪物特殊能力** | 只有選敵與少量特殊能力 | 移動、目標優先、施法、逃跑、群體、抗性、免疫、毒素、凝視，逐種能力 | `monster-ai-and-specials-matrix` |
+| `RE-07` | **敵方 AI／怪物特殊能力** | **COMPTACT（overlay-09）38 個函式裡 16 個已解讀，大的全部在內**：AI 一回合（830）、攻擊／移動主迴圈（838）、試方向（837）、走一步（839）、用道具（835）、選法術（836）、施法目標閘門（802）、友軍誤傷掃描（777）、自動換裝（1004）、士氣（758）。其餘 22 筆是 IDA 的邊界碎片 | 缺的是**實作**（`ENG-08`）與怪物特殊能力逐種（群體、抗性、免疫、毒素、凝視）| `monster-ai-and-specials-matrix` |
 | `RE-08` | **AREA map** | 有資料與局部畫面 | player marker、探索狀態、秘密區、Journal 59 圖、縮放／色盤、save state | `area-map-contract` |
 | `RE-09` | **近戰／弓箭／投射物** | 命中核心與基本箭矢 | 武器速度／射程／彈藥／多攻、逐幀 projectile、sound、impact、death、continuation | `physical-attack-matrix` |
 | `RE-10` | **跨遊戲角色轉移** | 手冊證明功能存在 | source selector、record conversion、裝備／法術／等級限制、round-trip | `move-party-transfer-contract`（不阻塞單作通關） |
@@ -204,7 +204,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 範本流程保留給快速開局）|
 | `ENG-06` | 訓練所升級 | spec 1084 ✅ | 亞人等級上限（比目前值）、經驗門檻、HP 保留受傷差額 |
 | `ENG-07` | 戰鬥回合生命週期 | `RE-06` | initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
-| `ENG-08` | 怪物 AI | `RE-07` | 移動、目標選擇、施法、逃跑、抗性與各種特殊能力 |
+| `ENG-08` | 怪物 AI | `RE-07` ✅（COMPTACT 已解讀）| **移動已接**（spec 1114）：每回合抽行為模式 1..6、模式決定五個候選方向、正向 ×2 斜向 ×3 半格成本、走到射程內才攻擊、20 次上限；方向表逐 byte 對回資料段。剩：目標選擇照原作挑法、AI 用道具（835）、AI 選法術（836）、士氣與恐慌逃走（758／830）、自動換裝（1004）、兩種障礙的豁免效果（837）|
 | `ENG-09` | 全法術表 | spec 1111 ✅（資料）| **資料半邊完成**：原作 100 筆全部在 `gamepack/rules/spell-table.json`，target／range／save／duration／施法時間／AI 分數逐欄有出處，`gamepack` 的測試逐條對回原作。分母改成原作表：占位 13、紮營 8 ⇒ 戰鬥可施放 **79** 支，已宣告 12 支。剩下 67 支缺的是**效果**（handler／visual／sound），逐支狀態見 `combat-spell-coverage-ledger.md` |
 | `ENG-10` | 存檔完整實作 | `RE-05`、spec 1072／1076 ✅ | remake 自己的存檔要能保存所有 pending ECL/combat/audio/UI transaction，並能匯入原版存檔。⚠ 決策四：不做原版 round-trip |
 | `ENG-11` | 通關路徑 | spec 1087 ✅ | `PROGRAM 8` 的完整序列接上結局與存檔 |

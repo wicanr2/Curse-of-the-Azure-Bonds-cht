@@ -5503,3 +5503,71 @@ func TestBlockedEscapeKeepsTheFighterInPlace(t *testing.T) {
 		}
 	}
 }
+
+// AI 的一回合是「先走到打得到，再打」（spec 830／838）。在這之前怪物會站在
+// 出生點隔空攻擊——距離、移動力與武器射程都沒有進到判斷裡。
+func TestEnemyTurnWalksTowardTheTargetBeforeAttacking(t *testing.T) {
+	state := NewState(testCatalog())
+	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 10,
+		HasCombatPosition: true, CombatX: 2, CombatY: 5}}
+	enemies := []combat.Fighter{{ID: "ogre", Name: "食人魔", Side: combat.SideEnemy,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20,
+		DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 100,
+		MovementAllowance: 2, WeaponRange: 1,
+		HasCombatPosition: true, CombatX: 12, CombatY: 5}}
+	if err := state.StartCombat(party, enemies, 1); err != nil {
+		t.Fatal(err)
+	}
+	ogre := func() combat.Fighter {
+		for _, fighter := range state.CombatFighters() {
+			if fighter.ID == "ogre" {
+				return fighter
+			}
+		}
+		t.Fatal("食人魔不見了")
+		return combat.Fighter{}
+	}
+	// 移動力 2 ＝ 4 個半格 ⇒ 一回合走兩格，走不到就不會攻擊。
+	if got := ogre(); got.CombatX != 10 {
+		t.Fatalf("第一回合走到 x=%d，移動力 2 應該走兩格到 x=10", got.CombatX)
+	}
+	if state.partyRoster != nil && len(state.partyRoster) > 0 && state.partyRoster[0].HitPoints < 30 {
+		t.Fatal("還沒走到就攻擊了")
+	}
+}
+
+// 地形要與玩家共用：怪物不能走玩家走不了的格子。
+func TestEnemyApproachHonoursTheInstalledMovementTerrain(t *testing.T) {
+	state := NewState(testCatalog())
+	// x = 8 那一整行不能走 ⇒ 怪物只能停在 x = 9。
+	state.SetCombatMovementTerrain(func(x, y int) (int, bool) {
+		if x == 8 {
+			return 0, false
+		}
+		return 1, true
+	})
+	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 10,
+		HasCombatPosition: true, CombatX: 2, CombatY: 5}}
+	enemies := []combat.Fighter{{ID: "ogre", Name: "食人魔", Side: combat.SideEnemy,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20,
+		DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 100,
+		MovementAllowance: 8, WeaponRange: 1,
+		HasCombatPosition: true, CombatX: 12, CombatY: 5}}
+	if err := state.StartCombat(party, enemies, 1); err != nil {
+		t.Fatal(err)
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID != "ogre" {
+			continue
+		}
+		if fighter.CombatX == 8 {
+			t.Fatal("怪物站在不可通行的格子上")
+		}
+		// 模式的候選方向可能繞開，但一定不會穿過 x = 8。
+		if fighter.CombatX < 8 {
+			t.Fatalf("怪物穿過了牆：x=%d", fighter.CombatX)
+		}
+	}
+}
