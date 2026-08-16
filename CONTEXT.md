@@ -1,6 +1,6 @@
 # 專案現況
 
-更新日期：2026-08-13（第 559 輪：轉向全模組反組譯盤點）
+更新日期：2026-08-16（第 564 輪：ECL 逐 opcode 有序副作用閉合）
 
 本檔只保留**目前有效的現況與入口**。歷史敘述已分冊到
 [`docs/context/`](docs/context/)，逐行保留原文，不再放在這裡。
@@ -71,6 +71,9 @@ entry point，自動分析無從開始。真正的 entry point 全在 resident e
 | 2026-08-16 | spec 1087 的 `ROLLDICE(6, 1)`／`ROLLDICE(100, 1)` | 參數是（骰數, 面數）⇒ 實際是 `ROLLDICE(1, 6)`／`ROLLDICE(1, 100)`（spec 1103）。該規格的文字描述本來就對，只有引數轉寫錯 | 同上 |
 | 2026-08-16 | 覆蓋矩陣「33 個候選中 3 個已審查／其餘 30 個」 | 4 個已審查／29 個未審查（以 `ecl-ordered-effect-reviews.json` 為準） | 同上 |
 | 2026-08-16 | README「反組譯只做到支撐一項可玩功能所需的最小證據」 | 2026-08-13 起改為**先盤點後語意**：兩平台全模組先建庫，每個函式都要進覆蓋台帳（`AGENTS.md` §2.5） | 同上 |
+| 2026-08-16 | 清冊把 `20h NEWECL` 當成 fallthrough，於是 `NEWECL` 後面的位元組被併進同一段直線區域 | `NEWECL` 是終止指令：載入新 block、把 PC 重設為 `8000h`、設 `47E0h`／`47E1h`，驅動器據此從 lifecycle 頂端重跑（spec 1104 §三）。候選 33→32，指令數不變 | [`50-log`](docs/context/50-log-2026-08-09-13.md) |
+| 2026-08-16 | round-38 規格「`CLEARMONSTERS` 會清除目前 encounter prefix」，remake 據此在 `1Ch` 連 `MonsterSetup` 一起清掉 | 原作 `1Ch`（`overlay-02:120Eh`）只釋放怪物鏈與計數，不碰 `SETUP MONSTER` 寫的 `ds:7601h`／`7602h` 與 bank1 `580h`／`582h`。corpus 有四個站點因此掉敵人圖（spec 1104 §九之二） | 同上 |
+| 2026-08-16 | far call `006Bh:002Ah` 是 overlay 本地位址 `0x6DA` | 那是未套用重定位的 addend，落點在 resident 映像；正確換算是 `seg×16+off＋MZ header`，再對 overlay 控制記錄的 entry stub 表查表（`scripts/resolve_far_calls.py`） | 同上 |
 
 ## 尚未完成（摘要）
 

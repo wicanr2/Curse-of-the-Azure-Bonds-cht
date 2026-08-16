@@ -1,6 +1,56 @@
 {
   "format_version": 1,
   "reviews": {
+    "ECL1.DAX/0x50/0x0014-0x006A": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "LOAD FILES 只設 47E5h 閂鎖，LOAD PIECES 沒出現前不會重繪；PICTURE 只設髒旗標，提交點在後面的 CALL 2E10h。本段沒有可見效果的次序問題。"
+    },
+    "ECL1.DAX/0x51/0x0014-0x0050": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "LOAD FILES 只設 47E5h 閂鎖，LOAD PIECES 沒出現前不會重繪；PICTURE 只設髒旗標，提交點在後面的 CALL 2E10h。本段沒有可見效果的次序問題。"
+    },
+    "ECL1.DAX/0x52/0x0014-0x0395": {
+      "status": "partial",
+      "confidence": "strong inference",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md",
+        "1095-ecl-main-loop-and-combat-continuation.md",
+        "1083-ecl-opcode-mnemonics.md"
+      ],
+      "note": "開場過場：11 個 CALL 都是 6803h 逐格動畫（1104 §七）。仍缺三項——PROGRAM 的 operand 值未讀（值 3／9 會終止）、這一場 COMBAT 的戰後續跑未逐條驗、722Ah 指標陣列版面未宣稱。"
+    },
+    "ECL2.DAX/0x02/0x021C-0x02CB": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "PICTURE 設髒旗標、文字即時輸出、CALL 2E10h 是五個髒旗標的唯一提交點 ⇒ 玩家看到換圖是在 CALL 那一步，不是 PICTURE。"
+    },
+    "ECL2.DAX/0x02/0x02CB-0x0325": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "P0-C。PICTURE 的 operand 是 0FFh ⇒ 關閉圖框並就地 flush，接著 CALL 2E10h 提交，SETUP MONSTER 才寫 bank1 580h/582h。回歸：TestRealPictureCommitCallPrecedesCombatSetup。"
+    },
+    "ECL2.DAX/0x02/0x03FE-0x0486": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "文字、CLEARMONSTERS、兩個 LOAD MONSTER 與 LOAD CHARACTER 全部 immediate。⚠ LOAD CHARACTER 另外設 47E2h，那是由 EXIT／PROGRAM／驅動器消費的另一條 deferred 線，不屬本段次序。"
+    },
     "ECL2.DAX/0x02/0x04BC-0x053A": {
       "status": "covered",
       "confidence": "exact",
@@ -10,6 +60,105 @@
         "1045-dungeon-main-loop-dos.md"
       ],
       "note": "ECL 主迴圈、dispatcher 與 24h handler 兩平台逐條讀完：COMBAT 是同步巢狀呼叫，PC 在戰鬥前已推進，戰後由同一個 while 迴圈續跑 PRINTCLEAR／PRINT，中間沒有 pause／commit／resume 邊界。"
+    },
+    "ECL2.DAX/0x02/0x0CCB-0x0CD4": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "SPRITE OFF 只在 8B65h 非零時動作並自清該旗標，接著 CALL 2E10h 提交其餘髒旗標，最後文字即時輸出。"
+    },
+    "ECL3.DAX/0x10/0x018C-0x0198": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "PICTURE 設髒旗標、文字即時輸出、CALL 2E10h 是五個髒旗標的唯一提交點 ⇒ 玩家看到換圖是在 CALL 那一步，不是 PICTURE。"
+    },
+    "ECL3.DAX/0x10/0x08D3-0x090F": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md",
+        "1095-ecl-main-loop-and-combat-continuation.md"
+      ],
+      "note": "戰前四種寫入（SETUP MONSTER、CLEARMONSTERS、LOAD MONSTER）全部 immediate；CLEARMONSTERS 只釋放怪物鏈與計數，不會撤銷 SETUP MONSTER（四站點有回歸測試）。COMBAT 的續跑見 1095。"
+    },
+    "ECL3.DAX/0x10/0x0910-0x0967": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "全部是 immediate：文字在 handler 內就輸出完，下一條指令看得到結果，中間沒有提交邊界。"
+    },
+    "ECL3.DAX/0x10/0x1560-0x15BC": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "CALL 2E10h 先提交先前累積的髒旗標，之後的文字才輸出；兩者之間沒有其他邊界。"
+    },
+    "ECL3.DAX/0x11/0x0597-0x05A3": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "PICTURE 設髒旗標、文字即時輸出、CALL 2E10h 是五個髒旗標的唯一提交點 ⇒ 玩家看到換圖是在 CALL 那一步，不是 PICTURE。"
+    },
+    "ECL3.DAX/0x11/0x114E-0x1193": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md",
+        "1095-ecl-main-loop-and-combat-continuation.md"
+      ],
+      "note": "戰前四種寫入（SETUP MONSTER、CLEARMONSTERS、LOAD MONSTER）全部 immediate；CLEARMONSTERS 只釋放怪物鏈與計數，不會撤銷 SETUP MONSTER（四站點有回歸測試）。COMBAT 的續跑見 1095。"
+    },
+    "ECL3.DAX/0x12/0x026E-0x027A": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "PICTURE 設髒旗標、文字即時輸出、CALL 2E10h 是五個髒旗標的唯一提交點 ⇒ 玩家看到換圖是在 CALL 那一步，不是 PICTURE。"
+    },
+    "ECL3.DAX/0x12/0x06BF-0x0704": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md",
+        "1095-ecl-main-loop-and-combat-continuation.md"
+      ],
+      "note": "戰前四種寫入（SETUP MONSTER、CLEARMONSTERS、LOAD MONSTER）全部 immediate；CLEARMONSTERS 只釋放怪物鏈與計數，不會撤銷 SETUP MONSTER（四站點有回歸測試）。COMBAT 的續跑見 1095。"
+    },
+    "ECL3.DAX/0x12/0x128E-0x12AF": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "PICTURE 設髒旗標、文字即時輸出、CALL 2E10h 是五個髒旗標的唯一提交點 ⇒ 玩家看到換圖是在 CALL 那一步，不是 PICTURE。"
+    },
+    "ECL3.DAX/0x12/0x1AFB-0x1B0C": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "全部是 immediate：文字在 handler 內就輸出完，下一條指令看得到結果，中間沒有提交邊界。"
+    },
+    "ECL3.DAX/0x15/0x04CC-0x050A": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "SETUP MONSTER 寫 ds:7601h／7602h 與 bank1 580h／582h 後即時完成，文字接著輸出，中間沒有提交邊界。"
     },
     "ECL3.DAX/0x15/0x050A-0x0578": {
       "status": "covered",
@@ -22,6 +171,31 @@
       ],
       "note": "raw ECL、PC-98 interpreter、VM continuation 與 State 戰後 transaction 已閉合。"
     },
+    "ECL4.DAX/0x21/0x05B5-0x0637": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md",
+        "1095-ecl-main-loop-and-combat-continuation.md"
+      ],
+      "note": "戰前四種寫入（SETUP MONSTER、CLEARMONSTERS、LOAD MONSTER）全部 immediate；CLEARMONSTERS 只釋放怪物鏈與計數，不會撤銷 SETUP MONSTER（四站點有回歸測試）。COMBAT 的續跑見 1095。"
+    },
+    "ECL4.DAX/0x23/0x0130-0x019D": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "文字全部 immediate；HORIZONTAL MENU 是 pause-before-commit，PC 在阻塞前已越過整條變長指令（1104 §六）。"
+    },
+    "ECL4.DAX/0x25/0x021F-0x022E": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "兩個 DESTROY ITEMS 即時改名冊，NEWECL 終止本次執行並讓驅動器重跑 lifecycle ⇒ 後續位元組（pre_camp entry）不屬同一次交易。回歸：TestRealNewEclStopsBeforeTheFollowingLifecycleEntry。"
+    },
     "ECL4.DAX/0x25/0x1271-0x12A7": {
       "status": "covered",
       "confidence": "exact",
@@ -32,6 +206,63 @@
         "558-pc98-ecl-treasure-combat-boundary.md"
       ],
       "note": "raw ECL、PC-98 interpreter、VM continuation 與 State 戰後 transaction 已閉合。"
+    },
+    "ECL4.DAX/0x25/0x1529-0x1534": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "PICTURE 設髒旗標、文字即時輸出、CALL 2E10h 是五個髒旗標的唯一提交點 ⇒ 玩家看到換圖是在 CALL 那一步，不是 PICTURE。"
+    },
+    "ECL5.DAX/0x32/0x0774-0x07BA": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md",
+        "1095-ecl-main-loop-and-combat-continuation.md"
+      ],
+      "note": "戰前四種寫入（SETUP MONSTER、CLEARMONSTERS、LOAD MONSTER）全部 immediate；CLEARMONSTERS 只釋放怪物鏈與計數，不會撤銷 SETUP MONSTER（四站點有回歸測試）。COMBAT 的續跑見 1095。"
+    },
+    "ECL5.DAX/0x33/0x0045-0x00FD": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "LOAD FILES 與 LOAD PIECES 兩個閂鎖到齊才重繪（1104 §五）；PICTURE 設髒旗標，文字即時輸出。"
+    },
+    "ECL5.DAX/0x35/0x0982-0x0A06": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "PICTURE 設髒旗標、文字即時輸出、CALL 2E10h 是五個髒旗標的唯一提交點 ⇒ 玩家看到換圖是在 CALL 那一步，不是 PICTURE。"
+    },
+    "ECL6.DAX/0x42/0x003F-0x0081": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "兩個資源載入閂鎖到齊，CALL 2E10h 提交，之後文字才輸出——三者缺一都看不到中間狀態。"
+    },
+    "ECL6.DAX/0x43/0x004D-0x008B": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "同 0x42：兩個資源載入閂鎖到齊後由 CALL 2E10h 提交。"
+    },
+    "ECL6.DAX/0x45/0x04C5-0x04F6": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "1104-ecl-opcode-ordered-effect-phases.md"
+      ],
+      "note": "SETUP MONSTER 即時寫入後文字輸出，中間沒有提交邊界。"
     },
     "ECL6.DAX/0x45/0x04F6-0x0575": {
       "status": "covered",

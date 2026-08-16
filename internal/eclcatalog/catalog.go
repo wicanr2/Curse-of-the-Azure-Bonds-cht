@@ -547,9 +547,17 @@ func effectKinds(opcode byte) []string {
 	}
 }
 
+// endsStraightLine marks the opcodes after which the next decoded instruction
+// is not the next executed instruction. It bounds ordered-effect candidates so
+// that a candidate never spans two unrelated runs.
+//
+// 0x20 NEWECL belongs here even though the decoder can fall through it: the
+// original handler loads the replacement block, resets the interpreter PC to
+// the code base and raises both stop flags, so control never reaches the
+// following byte (spec 1104; DOS overlay-02:0BBBh + 3691h, PC-98 0C26h).
 func endsStraightLine(opcode byte) bool {
 	switch opcode {
-	case 0x00, 0x01, 0x02, 0x13, 0x25, 0x26:
+	case 0x00, 0x01, 0x02, 0x13, 0x20, 0x25, 0x26:
 		return true
 	default:
 		return false

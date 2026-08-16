@@ -14,6 +14,18 @@ entry、靜態可達 instruction／edge 與跨 effect-kind 候選。這是 parse
 
 JSON 對 packed text operand 只保存長度與 SHA-256，不複製原文 payload。
 
+## ECL opcode 有序副作用記錄
+
+[`ecl-opcode-effect-phases.md`](ecl-opcode-effect-phases.md) 與同名 `.json` 由同一支
+`cmd/ecl-event-catalog` 從 `internal/eclcatalog/phases.go` 的表產生，逐 opcode 記錄
+DOS handler 位址、PC 推進方式與 commit phase（`immediate`／`pause_before_commit`／
+`deferred`／`commit_point`／`terminal`／`control_flow`／`unknown`）。
+
+`unknown` 是預設值：corpus 出現的 opcode 一定要有一列，台帳有的 opcode 也一定要在
+corpus 出現，兩邊由 `VerifyPhaseCoverage` fail-closed 擋住。所以「還有幾支 handler
+沒讀」可以直接從表尾的計數讀出來，不必重新推導。逐支反組譯依據見
+[`spec 1104`](../spec/1104-ecl-opcode-ordered-effect-phases.md)。
+
 ## Go 漢字字串基線
 
 `go-han-literals-baseline.json` 由 `cmd/coab-audit` 使用 Go AST 產生，只掃正式

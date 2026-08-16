@@ -67,8 +67,15 @@ State 再按固定類別順序套用。這不能保證重建原始 opcode 的跨
 第 558 輪已排除一個錯誤 blocker：三組 `TREASURE → COMBAT` 早已有 pending
 treasure→combat／service→victory→loot→resume 的第 255／257／258 輪 READY
 transaction，本輪以 PC-98 IDA 與三段 DOS 真實 DAX continuation 補強並在清冊標成
-`covered/exact`。這不消除全域缺口；只是下一個 probe 應改查真正未審查的
-`COMBAT → text`，而不是為已閉合案例重寫 State。
+`covered/exact`。
+
+第 564 輪把問題換了個問法：33 個候選只由 20 個不同的 opcode 組成，而**次序是
+dispatcher 與各 handler 的性質，不是某段直線區域的性質**。逐 opcode 讀完 DOS
+的 23 支 handler ＋ operand 解碼器 ＋ lifecycle 驅動器（spec 1104）後得到三條
+通則：PC 一律在效果之前推進；畫面的提交點只有 `CALL 2E10h` 一個；
+`20h NEWECL` 是終止指令。32 個候選中 31 個 `covered/exact`、1 個 `partial`。
+剩下的缺口是 21 支尚未讀的 handler，逐支狀態在
+[`ecl-opcode-effect-phases.md`](../audit/ecl-opcode-effect-phases.md)。
 
 閉合要求：
 
@@ -109,8 +116,8 @@ gate 只能作輸入，不等於此清冊已完成。
 |---|---|---|---|---|
 | 原始檔與平台 inventory | DOS 主檔多有 hash；PC-98 VFD 有缺 sector | 局部 | 建立 DOS／PC-98 executable、overlay、DAX、GEO、save、音訊與手冊的單一 manifest；標示 pristine／derived | `coab-source-manifest` |
 | DAX container／壓縮 | 多種真實資產已可抽取 | 局部 | 對所有實際成員補 record count、bounds、round-trip 與 malformed gate；區分不同 DAX payload | `dax-corpus-matrix` |
-| ECL framing／控制流 | 第 557／558 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊與穩定 candidate ID | 局部 | 33 個候選中 4 個已審查（來源：`docs/audit/ecl-ordered-effect-reviews.json`）；其餘 29 個與動態 branch、間接 dispatch、外部 boundary、錯誤路徑仍缺；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
-| ECL 副作用／時序 | 主迴圈、dispatcher、`24h` handler 與**位址空間五區映射**已閉合（spec 1095／1096）；4 個候選 `covered/exact` | **待逆向／待規格** | **先建 ECL↔引擎共用格子清冊**（82 個變數位址中 69 個在 remake 無明確處理，錯了是靜默的），再續閉合其餘 29 個候選與全域 ordered event log、commit phase、exactly-once | `ecl-shared-cell-registry` → `ecl-ordered-effects` |
+| ECL framing／控制流 | 第 557／558 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊與穩定 candidate ID；第 564 輪修正 `NEWECL` 的直線切分（候選 33→32，指令數不變） | 局部 | 32 個候選中 31 個 `covered/exact`、1 個 `partial`（來源：`docs/audit/ecl-ordered-effect-reviews.json`）；動態 branch、間接 dispatch、錯誤路徑仍缺；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
+| ECL 副作用／時序 | 主迴圈、dispatcher、`24h` handler、位址空間五區映射（spec 1095／1096）與**逐 opcode commit phase**（spec 1104：DOS 25／46 支已讀）已閉合；31 個候選 `covered/exact` | **局部** | 21 支 handler 未讀（`03h`..`09h`、`14h`、`16h`..`1Bh`、`1Dh`、`25h`、`29h`、`2Ah`、`2Fh`、`32h`、`35h`）；`47E2h` 的「執行結束還原目前角色」在 remake 尚未實作；動態 branch 與原版 trace diff 仍缺 | `ecl-opcode-effect-phases` 已產出；續讀剩餘 handler ＋ 動態層 |
 | External `CALL` | `2E10／C01E／B200` 等有局部證據 | 待逆向 | 實際使用地址全集；每址的 caller、operand、state projection、consumer、返回與未知 fallback | `external-call-registry` |
 | `NEWECL／PROGRAM` | boundary ID 與部分 context 已知 | 局部 | 全 context 的 area/resource/map/save/ending 副作用與 resume ownership | `program-newecl-context-matrix` |
 | GEO 幾何／四平面 | 16 個原始 block 已宣告；loader／部分 plane consumer 有證據 | 局部 | 所有 plane 欄位、wall/door/roof/terrain interaction、wrapped edge、視覺 consumer | `geo-block-and-cell-schema` |
@@ -182,17 +189,17 @@ IDAPython 並放 `tools/ida/`。
 
 ## 第一批執行順序
 
-1. 靜態 `ecl-event-catalog` 已完成。三組 `TREASURE → COMBAT`（第 558 輪）與
-   ECL2 block `0x02` 的 `COMBAT → text`（第 560 輪，spec 1095）已閉合並寫入
-   fail-closed review ledger，未審查候選 29 個。spec 1095 同時釘住了主迴圈本身：
-   PC 由各 handler 自行推進、戰鬥是同步巢狀呼叫、`COMBAT` 與其後的文字指令之間
-   沒有 pause／commit／resume 邊界。下一個 probe 是同一 block 的
-   `PRINT → PICTURE → CALL → SETUP MONSTER`（`0x02CB-0x0325`），
-   它同時是 `external-call-registry` 的入口。
+1. 靜態 `ecl-event-catalog` 已完成，逐 opcode 的 commit phase 台帳（spec 1104）
+   也已完成：32 個候選 31 個 `covered/exact`、1 個 `partial`（ECL1 block `0x52`
+   的開場過場，卡在 `PROGRAM` 的 operand 值與該場戰後續跑）。下一個 probe 不再是
+   某個候選，而是**剩下 21 支未讀的 handler**——逐支狀態在
+   `docs/audit/ecl-opcode-effect-phases.md`，`unknown` 的每一列就是一項待辦。
 2. 將已驗證的動態 edge、條件與 continuation 回填 catalog，逐步完成
    `ecl-ordered-effects` 規格；未審查候選維持 unknown，不因相似序列批次升格。
-3. 建立 `external-call-registry`，從 23 個靜態可達 CALL 只追玩家可見副作用的
-   producer→consumer。
+3. `external-call-registry` 的靜態層已由 spec 1104 §七 取得：`2Dh CALL` 是七路
+   switch，23 個靜態可達 CALL 只用到 `2E10h`（12 次，畫面提交點）與 `6803h`
+   （11 次，逐格動畫）；不在 switch 內的目標靜默 no-op。仍缺的是那兩個目標的
+   consumer 逐條驗證與 remake adapter。
 4. 建立 `area-event-coverage`，把清冊與 GEO cell／terrain／正常路徑合併；先盤點，
    不立刻補 Go 特判。
 5. 再依矩陣順序閉合戰鬥、存檔、音訊與畫面；只有 R1–R3 足夠的項目才交給
