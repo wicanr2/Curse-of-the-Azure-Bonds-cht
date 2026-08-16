@@ -7,6 +7,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"golang.org/x/text/encoding/traditionalchinese"
 )
 
 func validCharacter() Character {
@@ -1013,5 +1014,69 @@ func TestCurrentValueFallsBackToBaseAndSyncRestores(t *testing.T) {
 	}
 	if value, _ := abilities.CurrentValue(0); value != 12 {
 		t.Fatalf("卸下裝備後力量=%d, want 回到基準 12", value)
+	}
+}
+
+// 使用者 2026-08-16 決定：remake 要能讀舊版的 DAT，存成自己的格式，不必互通。
+// 中文版原版存檔的名字是 Big5，先前直接把位元組當 UTF-8，會讓一個中文字裂成
+// 兩個無效位元組——之後不論比對、換行或查字模都會壞。
+func TestParseDOSPlayerRecordDecodesBig5Name(t *testing.T) {
+	const want = "冒險者"
+	encoded, err := traditionalchinese.Big5.NewEncoder().Bytes([]byte(want))
+	if err != nil {
+		t.Fatal(err)
+	}
+	data := make([]byte, DOSPlayerRecordSize)
+	data[0] = byte(len(encoded))
+	copy(data[1:], encoded)
+	data[0x74], data[0x75] = 7, 5 // human magic-user
+	data[0x10E] = 1               // 職業槽 5 ＝ 法師，等級 1
+
+	record, err := ParseOriginalDOSPlayerRecord(data, "big5-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if record.Name != want {
+		t.Fatalf("name=%q (% x), want %q", record.Name, []byte(record.Name), want)
+	}
+	if got := len([]rune(record.Name)); got != 3 {
+		t.Fatalf("name 解出 %d 個字元，want 3", got)
+	}
+}
+
+// 英文原版的名字必須完全不受影響。
+func TestParseDOSPlayerRecordKeepsASCIIName(t *testing.T) {
+	data := make([]byte, DOSPlayerRecordSize)
+	data[0] = 10
+	copy(data[1:], []byte("DRAGONBAIT"))
+	data[0x74], data[0x75] = 7, 5
+	data[0x10E] = 1
+
+	record, err := ParseOriginalDOSPlayerRecord(data, "ascii-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if record.Name != "DRAGONBAIT" {
+		t.Fatalf("name=%q, want DRAGONBAIT", record.Name)
+	}
+}
+
+// remake 自己的 SAVGAM 槽寫的是 UTF-8，用一般入口讀必須原樣讀回；
+// 把它誤走匯入路徑會讀壞，所以兩條路要分得開。
+func TestParseDOSPlayerRecordKeepsRemakeWrittenUTF8Name(t *testing.T) {
+	const want = "新名"
+	data := make([]byte, DOSPlayerRecordSize)
+	utf8Name := []byte(want)
+	data[0] = byte(len(utf8Name))
+	copy(data[1:], utf8Name)
+	data[0x74], data[0x75] = 7, 5
+	data[0x10E] = 1
+
+	record, err := ParseDOSPlayerRecord(data, "utf8-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if record.Name != want {
+		t.Fatalf("name=%q, want %q", record.Name, want)
 	}
 }
