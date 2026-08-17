@@ -18,18 +18,18 @@
 | 　└ **戰鬥可施放（真正的分母）** | **79** |
 | 　　├ 職業模型不支援（德魯伊／表裡沒有職業）| 6 |
 | 　　├ **可宣告（能收斂到 0 的分母）** | **73** |
-| 　　├ game pack 已宣告 | 48 |
-| 　　├ 其中 runtime handler 已觀察到 | 48 |
-| 　　└ **尚未宣告** | **25** |
+| 　　├ game pack 已宣告 | 50 |
+| 　　├ 其中 runtime handler 已觀察到 | 50 |
+| 　　└ **尚未宣告** | **23** |
 | 　　　├ 效果碼 remake 已判讀（只差宣告） | 0 |
 | 　　　├ 效果碼 remake 還看不懂 | 12 |
-| 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | 13 |
+| 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | 11 |
 
 全表用到 50 個相異效果碼，remake 判讀得了其中 19 個。
 ★ **記得上去不等於解讀得了**：`CastEffectSpell` 可以把任何碼寫進效果串列，
 但只有已判讀的那幾個會改變戰鬥規則。上面兩列就是這條界線。
 
-未宣告的戰鬥法術，依環數：1 環 2 支、2 環 4 支、3 環 6 支、4 環 8 支、5 環 4 支、7 環 1 支。
+未宣告的戰鬥法術，依環數：1 環 2 支、2 環 4 支、3 環 5 支、4 環 8 支、5 環 3 支、7 環 1 支。
 
 ## 逐支
 
@@ -71,7 +71,7 @@
 | 34 | Stinking Cloud | magic-user | 2 | 2 節／半徑 1／豁免 paralysis-poison-death／效果 30 | observed | observed | observed_shared |
 | 35 | Strength | magic-user | 2 | 10 節／自己／效果 38 | 紮營法術 | — | — |
 | 36 | Animate Dead |  | 7 | 0 節／半徑 0／豁免 spell | 未宣告 | — | — |
-| 37 | Cure Blindness | cleric | 3 | 10 節／1 個目標 | 未宣告 | — | — |
+| 37 | Cure Blindness | cleric | 3 | 10 節／1 個目標 | observed | missing | missing |
 | 38 | Cause Blindness | cleric | 3 | 10 節／1 個目標／豁免 spell／效果 33 | observed | missing | missing |
 | 39 | Cure Disease | cleric | 3 | 100 節／自己 | 紮營法術 | — | — |
 | 40 | Cause Disease | cleric | 3 | 100 節／1 個目標／豁免 spell／效果 34 | 未宣告 | — | — |
@@ -110,7 +110,7 @@
 | 73 | Dispel Evil | cleric | 5 | 8 節／自己／效果 145 | 未宣告 | — | — |
 | 74 | Flame Strike | cleric | 5 | 8 節／1 個目標／豁免 spell | observed | missing | missing |
 | 75 | Raise Dead | cleric | 5 | 10 節／自己 | 紮營法術 | — | — |
-| 76 | Slay Living | cleric | 5 | 10 節／1 個目標／豁免 spell | 未宣告 | — | — |
+| 76 | Slay Living | cleric | 5 | 10 節／1 個目標／豁免 spell | observed | missing | missing |
 | 77 | Detect Magic | druid | 1 | 3 節／自己／效果 5 | 未宣告 | — | — |
 | 78 | Entangle | druid | 1 | 3 節／半徑 3／豁免 spell／效果 136 | 未宣告 | — | — |
 | 79 | Faerie Fire | druid | 1 | 3 節／逐一點選／豁免 spell／效果 7 | 未宣告 | — | — |

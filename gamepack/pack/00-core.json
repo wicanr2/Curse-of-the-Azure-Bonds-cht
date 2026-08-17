@@ -2559,6 +2559,15 @@
    "casting_time": 2
   },
   {
+   "id": "coab.spell.cure-blindness",
+   "spell_id": 37,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "cure_blindness",
+   "message_id": "spell_cleric_37",
+   "casting_time": 10
+  },
+  {
    "id": "coab.spell.cause-blindness",
    "spell_id": 38,
    "caster_class": "cleric",
@@ -2719,6 +2728,15 @@
    "behavior": "damage_dice",
    "message_id": "spell_cleric_74",
    "casting_time": 8
+  },
+  {
+   "id": "coab.spell.slay-living",
+   "spell_id": 76,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "slay_living",
+   "message_id": "spell_cleric_76",
+   "casting_time": 10
   },
   {
    "id": "coab.spell.invisibility-to-animals",

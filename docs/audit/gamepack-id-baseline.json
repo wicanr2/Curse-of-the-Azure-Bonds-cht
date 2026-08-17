@@ -301,6 +301,10 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_37"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_38"
   },
   {
@@ -350,6 +354,10 @@
   {
    "kind": "locale",
    "id": "spell_cleric_74"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_76"
   },
   {
    "kind": "locale",

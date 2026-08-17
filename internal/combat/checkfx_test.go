@@ -355,3 +355,82 @@ func TestResistanceAlsoGivesThreeOnSaves(t *testing.T) {
 		t.Fatalf("豁免修正 %d，want ＋3", detail.Applied[scratchSavingThrow])
 	}
 }
+
+// ★ 屠殺活物的 `2d8` 是**豁免成功**那一支。把它接成「單純 2d8 傷害」會少掉
+// 主要效果——沒過豁免是直接死。
+func TestSlayLivingKillsOnAFailedSaveAndOnlyHurtsOnASuccess(t *testing.T) {
+	build := func(threshold uint8, seed int64) *Battle {
+		battle, err := NewBattle([]Fighter{
+			{ID: "cleric", Side: SideParty, HitPoints: 20, MaxHitPoints: 20},
+			{ID: "orc", Side: SideEnemy, HitPoints: 60, MaxHitPoints: 60,
+				SavingThrows: []uint8{threshold, threshold, threshold, threshold, threshold}},
+		}, seed)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return battle
+	}
+	slain, hurt := 0, 0
+	for seed := int64(1); seed <= 40; seed++ {
+		battle := build(99, seed)
+		result, err := battle.CastSlayLiving("cleric", "orc")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if result.Slain {
+			slain++
+			if battle.fighters["orc"].HitPoints != 0 {
+				t.Fatalf("宣告殺掉了卻還有 %d 點生命", battle.fighters["orc"].HitPoints)
+			}
+		}
+		saved := build(1, seed)
+		survivor, err := saved.CastSlayLiving("cleric", "orc")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if survivor.Saved {
+			hurt++
+			if survivor.Slain {
+				t.Fatal("豁免過了卻還是死了")
+			}
+			if survivor.Damage < 3 || survivor.Damage > 17 {
+				t.Fatalf("豁免成功吃了 %d 點，2d8 ＋ 1 的範圍是 3..17", survivor.Damage)
+			}
+		}
+	}
+	if slain == 0 {
+		t.Fatal("門檻 99 卻一次都沒殺掉——豁免那一側有問題")
+	}
+	if hurt == 0 {
+		t.Fatal("門檻 1 卻一次都沒過豁免")
+	}
+}
+
+// 治療失明只拿掉致盲，不動其他效果。
+func TestCureBlindnessRemovesOnlyTheBlindnessAffect(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "hero", Side: SideParty, HitPoints: 20, MaxHitPoints: 20,
+			MonsterAffects: []MonsterAffect{
+				{Kind: 0x21, Active: true}, {Kind: 0x01, Active: true}}},
+		{ID: "orc", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10},
+	}, 3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	removed, err := battle.CureBlindness("hero")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !removed {
+		t.Fatal("目標有致盲卻回報沒拿掉")
+	}
+	after := battle.fighters["hero"]
+	if len(after.MonsterAffects) != 1 || after.MonsterAffects[0].Kind != 0x01 {
+		t.Fatalf("效果串列變成 %+v，只該少掉 21h", after.MonsterAffects)
+	}
+	if again, err := battle.CureBlindness("hero"); err != nil {
+		t.Fatal(err)
+	} else if again {
+		t.Fatal("沒有致盲了卻回報拿掉了")
+	}
+}
