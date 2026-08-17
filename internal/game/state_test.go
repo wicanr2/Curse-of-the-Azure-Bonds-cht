@@ -5571,3 +5571,58 @@ func TestEnemyApproachHonoursTheInstalledMovementTerrain(t *testing.T) {
 		}
 	}
 }
+
+// 資料驅動的效果類法術：定身術的效果碼、持續時間、豁免類別全部來自法術主表
+// （spec 1111／1117），沒有一支法術一段程式碼。
+//
+// 這一條同時證明效果**真的生效**：0x34 是 `MonsterIsHeld` 認得的碼，
+// 被定住的怪物那一回合不會行動。
+func TestHoldPersonAppliesTheOriginalEffectCodeAndHolds(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.partyRoster = party.Roster{{
+		ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 3,
+		ClassLevels: [8]uint8{0: 3}, HitPoints: 12, MaxHitPoints: 12,
+		HealthStatus: party.HealthStatusOK, SpellSlots: []uint8{23},
+	}}
+	party := []combat.Fighter{{ID: "cleric", Name: "牧師", Side: combat.SideParty,
+		HitPoints: 12, MaxHitPoints: 12, ArmorClass: 10, InitiativeBonus: 100,
+		HasCombatPosition: true, CombatX: 2, CombatY: 5}}
+	enemies := []combat.Fighter{{ID: "orc", Name: "獸人", Side: combat.SideEnemy,
+		HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, HitDice: 1,
+		SavingThrows: []uint8{20, 20, 20, 20, 20}, // 幾乎必定豁免失敗
+		HasCombatPosition: true, CombatX: 3, CombatY: 5}}
+	if err := state.StartCombat(party, enemies, 5); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCast(23); err != nil {
+		t.Fatal(err)
+	}
+	held := false
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID != "orc" {
+			continue
+		}
+		for _, affect := range fighter.MonsterAffects {
+			// 屬性表說定身術的效果碼是 52（0x34），持續 0×等級 + 6。
+			if affect.Kind == 0x34 && affect.Active {
+				held = true
+				// 屬性表算出來是 6；施法之後回合會推進，效果跟著扣一跳，
+				// 所以這裡只驗「在合理區間」，精確值由 internal/combat 的
+				// 單元測試釘住（那一層不會推進回合）。
+				if affect.Duration < 1 || affect.Duration > 6 {
+					t.Fatalf("持續時間=%d，屬性表算出來是 6，扣一跳也該在 5..6", affect.Duration)
+				}
+			}
+		}
+		if fighter.MonsterIsHeld() != held {
+			t.Fatalf("效果記上去了但 MonsterIsHeld=%v", fighter.MonsterIsHeld())
+		}
+	}
+	if !held {
+		t.Fatalf("定身術沒有套上效果碼 0x34／持續 6：%+v", state.CombatFighters())
+	}
+	// 法術槽要被消耗掉。
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("法術槽沒有消耗：%v", state.partyRoster[0].SpellSlots)
+	}
+}

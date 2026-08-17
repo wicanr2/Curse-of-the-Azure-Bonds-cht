@@ -1301,7 +1301,18 @@
    "world.dagger-falls.edge": "The party is at the edge of Dagger Falls. Will they enter or continue their journey?",
    "world.voonlar.edge": "The party is at the edge of Voonlar. Will they enter or continue their journey?",
    "world.teshwave.edge": "The party is at the edge of Teshwave. Will they enter or continue their journey?",
-   "world.phlan.edge": "The party is at the edge of Phlan. Will they enter or continue their journey?"
+   "world.phlan.edge": "The party is at the edge of Phlan. Will they enter or continue their journey?",
+   "spell_cleric_23": "Hold Person",
+   "spell_cleric_27": "Snake Charm",
+   "spell_magic_user_29": "Detect Invisibility",
+   "spell_magic_user_30": "Invisibility",
+   "spell_magic_user_45": "Blink",
+   "spell_magic_user_48": "Haste",
+   "spell_magic_user_49": "Hold Person",
+   "spell_magic_user_50": "Invisibility, 10' Radius",
+   "spell_magic_user_55": "Slow",
+   "spell_druid_80": "Invisibility to Animals",
+   "spell_magic_user_94": "Hold Monsters"
   }
  },
  "events": []

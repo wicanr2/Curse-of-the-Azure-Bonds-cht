@@ -1777,6 +1777,8 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 		return s.combatCastStinkingCloud(terrain)
 	case "cloudkill":
 		return s.combatCastCloudkill(terrain)
+	case "effect":
+		return s.combatCastEffectSpell(spellID)
 	case "magic_missile":
 		// The effect helper below still consumes the original spell-table ID;
 		// the game-pack behavior token only selects this verified path.
@@ -2631,6 +2633,115 @@ func (s *State) combatCastCurse() error {
 	}
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
+}
+
+// combatCastEffectSpell 是**資料驅動**的施法路：效果碼、持續時間、豁免類別
+// 全部來自法術主表（spec 1111），一支法術不需要一段程式碼（spec 1117）。
+//
+// ⚠ 它只負責「把效果記上去」。效果碼本身的語意由 `internal/combat` 的
+// `MonsterAffect*` 判讀——記得上去不等於解讀得了，覆蓋報告要分開講。
+func (s *State) combatCastEffectSpell(spellID uint8) error {
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if !found {
+		return fmt.Errorf("spell 0x%02X is not declared in combat_player_spells", spellID)
+	}
+	spell, ok := gamepack.SpellByID(int(spellID))
+	if !ok || spell.EffectID == 0 {
+		return fmt.Errorf("spell 0x%02X has no effect in the original table", spellID)
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex, spellIndex := s.memorizedSpellSlot(caster.ID, spellID)
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized spell 0x%02X", caster.ID, spellID)
+	}
+	targets := s.effectSpellTargets(caster, definition.TargetMode)
+	if len(targets) == 0 {
+		return fmt.Errorf("spell 0x%02X has no living target", spellID)
+	}
+	level := casterLevel(s.partyRoster[characterIndex])
+	s.partyRoster[characterIndex].SpellSlots = append(
+		s.partyRoster[characterIndex].SpellSlots[:spellIndex],
+		s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	result, err := s.battle.CastEffectSpell(caster.ID, targets, combat.EffectSpellRequest{
+		SpellID:      spellID,
+		EffectKind:   uint8(spell.EffectID),
+		Duration:     spell.PrimaryDuration(level, false),
+		SaveKind:     spell.SaveKind,
+		SaveCategory: spell.SaveCategory,
+	})
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, spellID)
+		return err
+	}
+	applied := 0
+	for _, impact := range result.Impacts {
+		if impact.Applied {
+			applied++
+		}
+	}
+	s.CancelCombatCast()
+	s.requestSound(SoundCast)
+	if applied > 0 {
+		s.requestSound(SoundSpellHit)
+	}
+	s.combatMessage = fmt.Sprintf(
+		s.catalog.Text("combat_effect_spell", "combat_effect_spell"),
+		caster.Name, s.combatPlayerSpellLabel(spellID), applied)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+// memorizedSpellSlot 找出誰記了這支法術、記在第幾格。
+func (s *State) memorizedSpellSlot(casterID string, spellID uint8) (int, int) {
+	for index, character := range s.partyRoster {
+		if character.ID != casterID {
+			continue
+		}
+		for slot, memorized := range character.SpellSlots {
+			if memorized == spellID {
+				return index, slot
+			}
+		}
+		return -1, -1
+	}
+	return -1, -1
+}
+
+// effectSpellTargets 依 game pack 宣告的目標模式取目標。
+//
+// ⚠ 目標模式由 pack **手寫宣告**，不是從屬性表的 `+0Bh`（1／2）推出來的：
+// 那兩個值的差別原作沒讀出來（spec 827），拿沒讀出來的欄位推「敵方／友方」
+// 會得到一個自洽但沒有依據的規則。
+func (s *State) effectSpellTargets(caster combat.Fighter, mode string) []string {
+	switch mode {
+	case "none":
+		return []string{caster.ID}
+	case "party_member":
+		living := s.livingBySide(combat.SideParty)
+		targets := make([]string, 0, len(living))
+		for _, fighter := range living {
+			targets = append(targets, fighter.ID)
+		}
+		return targets
+	case "enemy":
+		enemies := s.livingBySide(combat.SideEnemy)
+		if len(enemies) == 0 {
+			return nil
+		}
+		index := s.combatTargetIndex
+		if index >= len(enemies) {
+			index = 0
+		}
+		return []string{enemies[index].ID}
+	default:
+		return nil
+	}
 }
 
 func (s *State) combatCastBless() error {

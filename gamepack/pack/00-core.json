@@ -2415,6 +2415,42 @@
    "casting_time": 1
   },
   {
+   "id": "coab.spell.hold-person-cleric",
+   "spell_id": 23,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_cleric_23",
+   "casting_time": 5
+  },
+  {
+   "id": "coab.spell.snake-charm",
+   "spell_id": 27,
+   "caster_class": "cleric",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_cleric_27",
+   "casting_time": 5
+  },
+  {
+   "id": "coab.spell.detect-invisibility",
+   "spell_id": 29,
+   "caster_class": "magic_user",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_29",
+   "casting_time": 2
+  },
+  {
+   "id": "coab.spell.invisibility",
+   "spell_id": 30,
+   "caster_class": "magic_user",
+   "target_mode": "party_member",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_30",
+   "casting_time": 2
+  },
+  {
    "id": "coab.spell.stinking-cloud",
    "spell_id": 34,
    "caster_class": "magic_user",
@@ -2424,12 +2460,48 @@
    "casting_time": 2
   },
   {
+   "id": "coab.spell.blink",
+   "spell_id": 45,
+   "caster_class": "magic_user",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_45",
+   "casting_time": 1
+  },
+  {
    "id": "coab.spell.fireball",
    "spell_id": 47,
    "caster_class": "magic_user",
    "target_mode": "area_point",
    "behavior": "fireball",
    "message_id": "spell_magic_user_47",
+   "casting_time": 3
+  },
+  {
+   "id": "coab.spell.haste",
+   "spell_id": 48,
+   "caster_class": "magic_user",
+   "target_mode": "party_member",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_48",
+   "casting_time": 3
+  },
+  {
+   "id": "coab.spell.hold-person-magic-user",
+   "spell_id": 49,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_49",
+   "casting_time": 3
+  },
+  {
+   "id": "coab.spell.invisibility-10-radius",
+   "spell_id": 50,
+   "caster_class": "magic_user",
+   "target_mode": "party_member",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_50",
    "casting_time": 3
   },
   {
@@ -2442,12 +2514,39 @@
    "casting_time": 3
   },
   {
+   "id": "coab.spell.slow",
+   "spell_id": 55,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_55",
+   "casting_time": 3
+  },
+  {
+   "id": "coab.spell.invisibility-to-animals",
+   "spell_id": 80,
+   "caster_class": "druid",
+   "target_mode": "party_member",
+   "behavior": "effect",
+   "message_id": "spell_druid_80",
+   "casting_time": 4
+  },
+  {
    "id": "coab.spell.cloudkill",
    "spell_id": 91,
    "caster_class": "magic_user",
    "target_mode": "area_point",
    "behavior": "cloudkill",
    "message_id": "spell_magic_user_91",
+   "casting_time": 5
+  },
+  {
+   "id": "coab.spell.hold-monsters",
+   "spell_id": 94,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_94",
    "casting_time": 5
   }
  ],

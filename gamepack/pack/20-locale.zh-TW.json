@@ -1301,7 +1301,18 @@
    "world.dagger-falls.edge": "你們來到匕首瀑布邊緣。要進去，還是繼續趕路？",
    "world.voonlar.edge": "你們來到溫拉爾邊緣。要進去，還是繼續趕路？",
    "world.teshwave.edge": "你們來到特什維夫邊緣。要進去，還是繼續趕路？",
-   "world.phlan.edge": "你們來到弗蘭邊緣。要進去，還是繼續趕路？"
+   "world.phlan.edge": "你們來到弗蘭邊緣。要進去，還是繼續趕路？",
+   "spell_cleric_23": "人類定身術",
+   "spell_cleric_27": "魅蛇術",
+   "spell_magic_user_29": "偵測隱形",
+   "spell_magic_user_30": "隱形術",
+   "spell_magic_user_45": "閃現術",
+   "spell_magic_user_48": "加速術",
+   "spell_magic_user_49": "人類定身術",
+   "spell_magic_user_50": "十呎隱形術",
+   "spell_magic_user_55": "緩慢術",
+   "spell_druid_80": "動物隱形術",
+   "spell_magic_user_94": "怪物定身術"
   }
  },
  "events": []
