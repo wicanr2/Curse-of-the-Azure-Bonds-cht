@@ -2613,6 +2613,42 @@
    "casting_time": 3
   },
   {
+   "id": "coab.spell.cure-serious-wounds",
+   "spell_id": 58,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "heal_dice",
+   "message_id": "spell_cleric_58",
+   "casting_time": 7
+  },
+  {
+   "id": "coab.spell.cause-serious-wounds",
+   "spell_id": 66,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "damage_dice",
+   "message_id": "spell_cleric_66",
+   "casting_time": 7
+  },
+  {
+   "id": "coab.spell.cure-critical-wounds",
+   "spell_id": 71,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "heal_dice",
+   "message_id": "spell_cleric_71",
+   "casting_time": 8
+  },
+  {
+   "id": "coab.spell.cause-critical-wounds",
+   "spell_id": 72,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "damage_dice",
+   "message_id": "spell_cleric_72",
+   "casting_time": 8
+  },
+  {
    "id": "coab.spell.invisibility-to-animals",
    "spell_id": 80,
    "caster_class": "druid",

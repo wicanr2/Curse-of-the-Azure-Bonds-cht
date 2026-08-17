@@ -317,11 +317,27 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_58"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_6"
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_66"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_7"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_71"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_72"
   },
   {
    "kind": "locale",
