@@ -1061,6 +1061,12 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 		if !item.Readied {
 			continue
 		}
+		// AI 用道具只看第二個效果槽（spec 835 的過濾：裝備中、`+3Dh > 0`、
+		// `+3Eh < 80h`）。這裡把符合條件的效果碼投影出來，戰鬥層才不必認識
+		// 整條物品鏈。⚠ `Affects` 的三格依序是 `+3Ch`／`+3Dh`／`+3Eh`。
+		if item.Affects[1] > 0 && item.Affects[2] < 0x80 {
+			fighter.ReadiedItemEffects = append(fighter.ReadiedItemEffects, item.Affects[1])
+		}
 		effect, effectErr := item.Effect(catalog, false)
 		if effectErr != nil {
 			return combat.Fighter{}, effectErr

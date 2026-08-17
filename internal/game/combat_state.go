@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
@@ -3301,7 +3302,7 @@ func (s *State) advanceCombatToParty() error {
 			}
 			fighter, _ = s.fighter(fighter.ID)
 		}
-		if hasMonsterMagicMissile(fighter) {
+		if hasMonsterMagicMissile(fighter) && s.monsterWantsToCast(fighter, combat.MonsterMagicMissileSpellID) {
 			result, spellErr := s.battle.CastMonsterMagicMissile(fighter.ID, target.ID)
 			if spellErr == nil {
 				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_magic_missile", "combat_monster_magic_missile"), fighter.Name, target.Name, result.Damage)
@@ -3767,6 +3768,32 @@ func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoi
 		return s.finishCombat()
 	}
 	return s.advanceCombatToParty()
+}
+
+// monsterWantsToCast 跑原作的施法決策（spec 836）並回答「這一回合它想不想放
+// 這一支法術」。
+//
+// ★ 在這之前只要身上有魔法飛彈就一定放。原作不是這樣：AI 每回合擲 1d7 決定
+// 「肯將就到什麼程度」，門檻從 7 往下降，法術要靠屬性表 `+0Dh` 的分數過門檻
+// （spec 802／1111）。分數低的法術在運氣好的回合根本不會被考慮。
+//
+// ⚠ 決策選到 remake 還沒實作的法術時，這裡回 false，回合就退回物理攻擊——
+// **不是把回合丟掉**。缺的是那支法術的效果（`ENG-09`），不是決策。
+func (s *State) monsterWantsToCast(fighter combat.Fighter, spellID uint8) bool {
+	if s.battle == nil {
+		return false
+	}
+	choice, found, err := s.battle.AIChooseSpell(fighter.ID, func(id uint8) (int, bool) {
+		spell, ok := gamepack.SpellByID(int(id))
+		if !ok || spell.Placeholder {
+			return 0, false
+		}
+		return spell.AIPriority, true
+	})
+	if err != nil || !found {
+		return false
+	}
+	return choice == spellID
 }
 
 func hasMonsterMagicMissile(fighter combat.Fighter) bool {
