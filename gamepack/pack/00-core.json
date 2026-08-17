@@ -2640,6 +2640,24 @@
    "casting_time": 3
   },
   {
+   "id": "coab.spell.protection-from-evil-10ft-magic-user",
+   "spell_id": 52,
+   "caster_class": "magic_user",
+   "target_mode": "none",
+   "behavior": "protection_from_evil_10ft",
+   "message_id": "spell_magic_user_52",
+   "casting_time": 3
+  },
+  {
+   "id": "coab.spell.protection-from-good-10ft-magic-user",
+   "spell_id": 53,
+   "caster_class": "magic_user",
+   "target_mode": "none",
+   "behavior": "protection_from_good_10ft",
+   "message_id": "spell_magic_user_53",
+   "casting_time": 3
+  },
+  {
    "id": "coab.spell.slow",
    "spell_id": 55,
    "caster_class": "magic_user",
@@ -2664,6 +2682,15 @@
    "target_mode": "enemy",
    "behavior": "damage_dice",
    "message_id": "spell_cleric_66",
+   "casting_time": 7
+  },
+  {
+   "id": "coab.spell.protection-from-evil-10ft-cleric",
+   "spell_id": 69,
+   "caster_class": "cleric",
+   "target_mode": "none",
+   "behavior": "protection_from_evil_10ft",
+   "message_id": "spell_cleric_69",
    "casting_time": 7
   },
   {
@@ -2709,6 +2736,15 @@
    "target_mode": "enemy",
    "behavior": "effect",
    "message_id": "spell_magic_user_81",
+   "casting_time": 4
+  },
+  {
+   "id": "coab.spell.fumble",
+   "spell_id": 86,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_86",
    "casting_time": 4
   },
   {

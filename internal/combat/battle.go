@@ -580,9 +580,15 @@ func (f Fighter) MonsterAffectAttacksPerTurn() int {
 }
 
 // MonsterIsHeld mirrors the reference Player.IsHeld affect set.
+//
+// ★ 這一組不是憑語意挑的，是**同一支 handler**：效果分派表裡 `1Bh`、`1Fh`、
+// `33h`、`34h`、`35h` 五個碼的處理常式都是 `overlay-12:0075h`（spec 1005 的
+// 對照表），那一支呼叫 `CLEARACTION`。`1Bh`（笨拙術）先前漏了——
+// 漏掉的症狀是那支法術掛得上去卻沒有任何效果。
 func (f Fighter) MonsterIsHeld() bool {
 	for _, affect := range f.MonsterAffects {
-		if affect.operational() && (affect.Kind == 0x1F || affect.Kind == 0x33 || affect.Kind == 0x34 || affect.Kind == 0x35) {
+		if affect.operational() && (affect.Kind == 0x1B || affect.Kind == 0x1F ||
+			affect.Kind == 0x33 || affect.Kind == 0x34 || affect.Kind == 0x35) {
 			return true
 		}
 	}

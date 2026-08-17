@@ -16,18 +16,18 @@
 | └ 玩家取得到 | 87 |
 | 　├ 只能紮營施放 | 8 |
 | 　└ **戰鬥可施放（真正的分母）** | **79** |
-| 　　├ game pack 已宣告 | 43 |
-| 　　├ 其中 runtime handler 已觀察到 | 43 |
-| 　　└ **尚未宣告** | **36** |
+| 　　├ game pack 已宣告 | 47 |
+| 　　├ 其中 runtime handler 已觀察到 | 47 |
+| 　　└ **尚未宣告** | **32** |
 | 　　　├ 效果碼 remake 已判讀（只差宣告） | 0 |
-| 　　　├ 效果碼 remake 還看不懂 | 21 |
+| 　　　├ 效果碼 remake 還看不懂 | 17 |
 | 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | 15 |
 
-全表用到 50 個相異效果碼，remake 判讀得了其中 19 個。
+全表用到 50 個相異效果碼，remake 判讀得了其中 20 個。
 ★ **記得上去不等於解讀得了**：`CastEffectSpell` 可以把任何碼寫進效果串列，
 但只有已判讀的那幾個會改變戰鬥規則。上面兩列就是這條界線。
 
-未宣告的戰鬥法術，依環數：1 環 5 支、2 環 4 支、3 環 8 支、4 環 12 支、5 環 5 支、7 環 2 支。
+未宣告的戰鬥法術，依環數：1 環 5 支、2 環 4 支、3 環 6 支、4 環 10 支、5 環 5 支、7 環 2 支。
 
 ## 逐支
 
@@ -84,8 +84,8 @@
 | 49 | Hold Person | magic-user | 3 | 3 節／4 個目標／豁免 spell／效果 52 | observed | missing | missing |
 | 50 | Invisibility, 10' Radius | magic-user | 3 | 3 節／半徑 1／效果 25 | observed | missing | missing |
 | 51 | Lightning Bolt | magic-user | 3 | 3 節／半徑 0／豁免 spell | observed | observed | observed |
-| 52 | Protection From Evil, 10' Radius | magic-user | 3 | 3 節／1 個目標／效果 45 | 未宣告 | — | — |
-| 53 | Protection From Good, 10' Radius | magic-user | 3 | 3 節／1 個目標／效果 46 | 未宣告 | — | — |
+| 52 | Protection From Evil, 10' Radius | magic-user | 3 | 3 節／1 個目標／效果 45 | observed | missing | missing |
+| 53 | Protection From Good, 10' Radius | magic-user | 3 | 3 節／1 個目標／效果 46 | observed | missing | missing |
 | 54 | Protection From Normal Missiles | magic-user | 3 | 3 節／1 個目標／效果 41 | 未宣告 | — | — |
 | 55 | Slow | magic-user | 3 | 3 節／半徑 2／效果 42 | observed | missing | missing |
 | 56 | Restoration | cleric | 7 | 6 節／1 個目標 | 未宣告 | — | — |
@@ -101,7 +101,7 @@
 | 66 | Cause Serious Wounds | cleric | 4 | 7 節／1 個目標 | observed | missing | missing |
 | 67 | Neutralize Poison | cleric | 4 | 7 節／自己 | 紮營法術 | — | — |
 | 68 | Poison | cleric | 4 | 7 節／1 個目標／豁免 paralysis-poison-death | 未宣告 | — | — |
-| 69 | Protection Evil, 10' Radius | cleric | 4 | 7 節／1 個目標／效果 45 | 未宣告 | — | — |
+| 69 | Protection Evil, 10' Radius | cleric | 4 | 7 節／1 個目標／效果 45 | observed | missing | missing |
 | 70 | Sticks to Snakes | cleric | 4 | 7 節／1 個目標／效果 3 | 未宣告 | — | — |
 | 71 | Cure Critical Wounds | cleric | 5 | 8 節／1 個目標 | observed | missing | missing |
 | 72 | Cause Critical Wounds | cleric | 5 | 8 節／1 個目標／豁免 spell | observed | missing | missing |
@@ -118,7 +118,7 @@
 | 83 | Dimension Door | magic-user | 4 | 1 節／半徑 0 | 未宣告 | — | — |
 | 84 | Fear | magic-user | 4 | 4 節／半徑 0／豁免 spell／效果 142 | 未宣告 | — | — |
 | 85 | Fire Shield | magic-user | 4 | 4 節／自己 | 未宣告 | — | — |
-| 86 | Fumble | magic-user | 4 | 4 節／1 個目標／豁免 spell／效果 27 | 未宣告 | — | — |
+| 86 | Fumble | magic-user | 4 | 4 節／1 個目標／豁免 spell／效果 27 | observed | missing | missing |
 | 87 | Ice Storm | magic-user | 4 | 4 節／半徑 2 | 未宣告 | — | — |
 | 88 | Minor Globe Of Invulnerability | magic-user | 4 | 4 節／自己／效果 63 | 未宣告 | — | — |
 | 89 | Remove Curse | magic-user | 4 | 4 節／1 個目標 | 未宣告 | — | — |
