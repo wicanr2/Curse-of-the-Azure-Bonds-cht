@@ -115,6 +115,9 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	if err := s.applyDataPackCombatModifiers(battle); err != nil {
 		return err
 	}
+	if err := applyHouseRules(battle); err != nil {
+		return err
+	}
 	if err := battle.BeginScheduledRound(); err != nil {
 		return err
 	}
@@ -3647,6 +3650,9 @@ func (s *State) advanceCombatToParty() error {
 			}
 			s.combatMessage = formatAttackMessage(s.catalog, fighter, resolvedTarget, result)
 			resolvedResults = []combat.AttackResult{result}
+		}
+		if drained := s.applyLevelDrain(fighter, resolvedResults); drained != "" {
+			s.combatMessage = drained
 		}
 		if s.queueAttackVisual(fighter, target, resolvedResults) {
 			return nil

@@ -1,0 +1,14 @@
+{
+ "schema_version": 1,
+ "source": "本檔是 CoAB 專屬的偏離規則，不是原作行為，也不進共用 engine 的 schema",
+ "spec": "docs/spec/1129-house-rule-level-drain.md",
+ "level_drain": [
+  {
+   "id": "coab.house-rule.dracolich-energy-drain",
+   "monster": "DRACOLICH",
+   "effect_kind": 126,
+   "levels": 1,
+   "reason": "使用者 2026-08-17 指定。CoAB 原作沒有等級吸取（spec 1127）；載體選 7Eh 是因為它是龍巫妖獨有的天生效果碼。"
+  }
+ ]
+}

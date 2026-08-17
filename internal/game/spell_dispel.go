@@ -372,3 +372,133 @@ func (s *State) combatCanCastRestoration(spellID uint8) bool {
 	}
 	return len(s.livingBySide(combat.SideParty)) > 0
 }
+
+// drainCharacterLevel 是 `restoreDrainedLevel` 的反向（spec 1129）。
+//
+// ★★ **這是刻意偏離原作的規則。** CoAB 沒有等級吸取（spec 1127），這一段是
+// 使用者指定加給龍巫妖的。資料形狀完全沿用原作復原術讀的那兩格，所以
+// **復原術與訓練升級不必改一行**就能把它還回去。
+//
+// 掉的 HP 用「平均每級」估：原作沒有逐級 HP 紀錄，而復原術還的量是
+// `+0E8h ÷ +0E7h`，所以只要吸的時候按同一個尺度記，一來一回就對得上。
+func drainCharacterLevel(character *party.Character, levels int) int {
+	if character == nil || levels <= 0 {
+		return 0
+	}
+	drained := 0
+	for count := 0; count < levels; count++ {
+		slot, level := highestClassLevel(*character)
+		if slot < 0 || level <= 1 {
+			// 只剩一級的職業不再往下吸：原作的等級陣列沒有 0 級的合法狀態。
+			break
+		}
+		total := totalClassLevels(*character)
+		perLevel := 0
+		if total > 0 {
+			perLevel = character.MaxHitPoints / total
+		}
+		if perLevel < 1 {
+			perLevel = 1
+		}
+		character.ClassLevels[slot]--
+		character.MaxHitPoints -= perLevel
+		character.BaseMaxHitPoints -= perLevel
+		character.HitPoints -= perLevel
+		if character.MaxHitPoints < 1 {
+			character.MaxHitPoints = 1
+		}
+		if character.BaseMaxHitPoints < 1 {
+			character.BaseMaxHitPoints = 1
+		}
+		if character.HitPoints < 1 {
+			character.HitPoints = 1
+		}
+		character.DrainedLevels++
+		character.DrainedHitPoints += perLevel
+		drained++
+	}
+	return drained
+}
+
+// highestClassLevel 找等級最高的職業（AD&D 的等級吸取吸最高的那一個）。
+func highestClassLevel(character party.Character) (int, int) {
+	slot, best := -1, 0
+	for index, level := range character.ClassLevels {
+		if int(level) > best {
+			slot, best = index, int(level)
+		}
+	}
+	return slot, best
+}
+
+// totalClassLevels 是所有職業等級的總和，用來估每級的 HP。
+func totalClassLevels(character party.Character) int {
+	total := 0
+	for _, level := range character.ClassLevels {
+		total += int(level)
+	}
+	return total
+}
+
+// applyLevelDrain 把 game pack 宣告的等級吸取套到被打中的隊員身上（spec 1129）。
+//
+// ★★ **這是刻意偏離原作的規則**，由 `gamepack/rules/house-rules.json` 宣告；
+// 沒有宣告就完全不會走到這裡。回傳非空字串代表要換一句戰鬥訊息。
+func (s *State) applyLevelDrain(attacker combat.Fighter, results []combat.AttackResult) string {
+	if s.battle == nil {
+		return ""
+	}
+	levels := s.battle.LevelDrainOnHit(attacker.ID)
+	if levels <= 0 {
+		return ""
+	}
+	message := ""
+	for _, result := range results {
+		if !result.Hit || result.TargetHP <= 0 {
+			continue
+		}
+		index := -1
+		for position := range s.partyRoster {
+			if s.partyRoster[position].ID == result.TargetID {
+				index = position
+				break
+			}
+		}
+		if index < 0 {
+			continue
+		}
+		drained := drainCharacterLevel(&s.partyRoster[index], levels)
+		if drained <= 0 {
+			continue
+		}
+		if err := s.syncTempleCharacter(index); err != nil {
+			return ""
+		}
+		message = fmt.Sprintf(
+			s.catalog.Text("combat_level_drained", "combat_level_drained"),
+			attacker.Name, s.partyRoster[index].Name, drained)
+	}
+	return message
+}
+
+// applyHouseRules 把 CoAB 專屬的偏離規則掛上戰鬥（spec 1129）。
+//
+// ⚠ 宣告檔缺了或空的都不是錯誤——**沒有偏離規則是正常狀態**，這條路要能安靜
+// 地什麼都不做，否則以後想拿掉 house rule 就得改程式。
+func applyHouseRules(battle *combat.Battle) error {
+	rules, err := gamepack.LoadHouseRules()
+	if err != nil {
+		return err
+	}
+	if rules == nil || len(rules.LevelDrain) == 0 {
+		return nil
+	}
+	drain := make([]combat.LevelDrainRule, 0, len(rules.LevelDrain))
+	for _, rule := range rules.LevelDrain {
+		drain = append(drain, combat.LevelDrainRule{
+			EffectKind: rule.EffectKind, Levels: rule.Levels,
+		})
+	}
+	battle.SetLevelDrainRules(drain)
+	return nil
+}

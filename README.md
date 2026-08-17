@@ -8,15 +8,18 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 [golden-box-remake-engine](https://github.com/wicanr2/golden-box-remake-engine)。
 劇情、座標、物品與翻譯資料不寫死在共用 engine。
 
-## 目前狀態（2026-08-16 實測）
+## 目前狀態（2026-08-17 實測）
 
 | | |
 |---|---|
-| 反組譯覆蓋 | 2,922 個函式全部進台帳，**待解讀 0**（已解讀 2,175／不阻塞 162／邊界碎片 585） |
-| 規格 | 1,084 份 `docs/spec/*.md`，各自標證據等級與「明確不宣稱」邊界 |
-| 程式 | 230 個 `.go`／77,123 行；`internal/game` 16 個機制檔，**沒有區域或劇情專屬檔** |
-| 內容 | 單一 game pack 261 KB：369 條 `text_rules`、113 條 `option_rules`；`en`／`zh-TW` 各 607 條一一對齊 |
-| UI 詞條 | `assets/locale/zh-TW.json` 870 條 |
+| 反組譯覆蓋 | 2,874 個函式全部進台帳，**待解讀 0**（已解讀 2,137／不阻塞 162／邊界碎片 575）|
+| 規格 | 1,110 份 `docs/spec/*.md`，各自標證據等級與「明確不宣稱」邊界 |
+| 程式 | 303 個 `.go`／93,874 行；`internal/game` 沒有區域或劇情專屬檔 |
+| ECL 文字 | 控制流可達 1,022 頁，**未接上 0** |
+| ECL 副作用 | 可達 14,177 條指令，**只讀掉運算元 0**、部分完成 1,057 |
+| 戰鬥法術 | 可宣告 **73／73** 全部有 handler、視覺與音效 |
+| 存檔 | 角色記錄 422 bytes：decoded 294／documented 99／unknown 29 |
+| UI 詞條 | game pack `zh-TW` 1,363 條、`assets/locale/zh-TW.json` 917 條 |
 | 全套測試 | `./tools/go.sh test ./...` 全綠 |
 
 ### 已接通的正常玩家路徑
@@ -57,6 +60,26 @@ Hap／熔岩洞／巫師塔 → 散提爾堡 → **眼魔洞穴（手札 59、De
 ![提爾佛頓第一人稱：原版 88×88 場景內框與右側隊伍欄](docs/screenshots/tilverton-first-person-remake.png)
 
 ![Burial Glen 紅網戰鬥：原版地城素材與戰鬥 footer](docs/screenshots/burial-glen-red-web-spiders.png)
+
+### 法術演出的四種通道
+
+原作不是「一支法術一套圖」。下面每一格都是從遊戲檔案直接取出來的原始素材，
+由左到右是四種通道：
+
+![法術演出的四種通道：共用投射物、閃電電弧、魔法命中、兩種雲、睡眠、弓箭](docs/reference/spell-visual-channels.png)
+
+| 通道 | 圖 | 說明 |
+|---|---|---|
+| 共用施法投射物 | `COMSPR 05`／`85` | 在分派到各支 handler **之前**就播，所以每一支法術都有 |
+| 閃電電弧 | `COMSPR 06`／`86` | 沿線逐格播，全表唯一 |
+| 魔法傷害命中 | `COMSPR 0A`／`8A` | 對每個受傷的目標各播一次 |
+| 持續區域格 | `RANDCOM 04`（綠＝惡臭之雲）／`02`（藍白＝致命毒雲）| 寫進地圖格，效果活著就一直畫 |
+| 產生器／投射物 | `COMSPR 09`（睡眠）／`00`（弓箭）| 睡眠由參數合成；弓箭有八個方向 |
+
+判讀見 [spec 1126](docs/spec/1126-spell-visual-slots.md) 與
+[spec 1128](docs/spec/1128-cloud-areas-are-the-obstacle-terrain.md)。
+兩種雲同時是戰術地圖的**障礙格**（地形碼 `1Eh`／`1Ch`）——低階角色繞開毒雲、
+七級以上的老手硬闖。
 
 更多地圖、人物舞台、戰鬥時間軸與素材圖在[截圖目錄](docs/screenshots/)；原版忠實
 theme 與日後美化 theme 分開維護。
@@ -100,16 +123,16 @@ theme 與日後美化 theme 分開維護。
 
 ## 目前明確未完成
 
-- **事件內容**是最大的一塊：原作 25 個 block／1,355 個靜態可達 instruction，
-  目前只有 369 條 `text_rules`。艾森布拉、希爾斯法、尤拉什／摩安德之坑、
-  Myth Drannor 的正常入口都還只有 fixture 級內容。
-- **ECL 有序副作用**：候選層已審完（32 個中 31 個 `covered/exact`），事件資料的
-  schema 形狀因此有了依據；剩下 46 個 opcode 中 21 支 handler 尚未讀。
-- **戰鬥系統**：回合生命週期、怪物 AI 與特殊能力、完整法術表（目前 12 個 handler）。
-- **存檔**：16 塊版面的完整 round-trip 與原版存檔互通。
-- **繁中化基礎**：雙位元組字串處理（Big5 首位元組與原作的半形カタカナ段衝突）、
-  統一譯名表。
-- **表現層與音訊**：戰鬥演出逐幀對照、DOS 音效全 caller。
+- **開場到結局的主線串接**是最大的一塊：目前走到眼魔洞穴與散提爾堡世界選單，
+  後續章節、最終戰與結局序列尚未串完。
+- **戰鬥回合生命週期**：ECL 的 `24h COMBAT` 有 199 處只做了分派，回合本身的
+  initiative／held／delayed／guard／quick 逐項對照仍開著。
+  （法術那一半已經收斂：可宣告 73 支全部有 handler、視覺與音效。）
+- **ECL 的 11 個部分完成 opcode**，共 1,057 條指令：`CLEARMONSTERS`、`PICTURE`、
+  `COMBAT`、`CALL`、`PRINT RETURN`、`TREASURE`、`DAMAGE` 等。
+- **手札**：45 則有中英文，只有 15 則接上 ECL 觸發來源；手札 59 的地圖尚未繪製。
+- **存檔**：角色記錄還有 29 bytes 未解讀；跨遊戲角色轉移未做。
+- **表現層與音訊**：畫面逐張對照、每個場景與戰鬥 phase 的音效綁定。
 - 三平台發行包。因此目前不製作正式 release 或宣傳片。
 
 逐項狀態與建議順序見[剩餘工作盤點](docs/knowledge/coab-remake-todo.md)。

@@ -456,6 +456,7 @@
   "combat_fire_shield_cold": "%s 身上凝起寒冰護盾。",
   "combat_restoration": "%s 為 %s 恢復失去的一級。",
   "combat_restoration_none": "%s 為 %s 施放復原術，但沒有可恢復的等級。",
+  "combat_level_drained": "%s 的觸碰吸走了 %s 的 %d 級。",
   "combat_protection_from_evil": "%s 對 %s 施放防護邪惡，效果持續 %d 回合。",
   "combat_protection_from_good": "%s 對 %s 施放防護善良，效果持續 %d 回合。",
   "combat_moved": "%s 移動到 (%d,%d)。",

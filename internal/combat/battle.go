@@ -719,6 +719,8 @@ type Battle struct {
 	// terrainCode 是戰術地圖的地形碼查詢（`overlay-32 entry#19` 的第四個回填值）。
 	// 為 nil 時沒有障礙格——與加這一層之前的行為相同。
 	terrainCode CombatTerrainCode
+	// levelDrainRules 是刻意偏離原作的等級吸取宣告（spec 1129）。
+	levelDrainRules []LevelDrainRule
 }
 
 // CombatTerrainCode 回傳戰術地圖上一格的地形碼；`onMap` 為 false 代表出界。

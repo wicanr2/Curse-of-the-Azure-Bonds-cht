@@ -208,3 +208,81 @@ func TestDrainedLevelsSurviveTheDOSRecordRoundTrip(t *testing.T) {
 			record.DrainedLevels, record.DrainedHitPoints)
 	}
 }
+
+// 等級吸取是**刻意偏離原作**的規則（spec 1129）：CoAB 沒有這回事，是使用者
+// 指定給龍巫妖的。這一組測試守住三件事——宣告載體是龍巫妖獨有的碼、吸下去
+// 的形狀與原作復原術讀的兩格對得上、以及還得回來。
+func TestHouseRuleLevelDrainRoundTripsWithRestoration(t *testing.T) {
+	rules, err := gamepack.LoadHouseRules()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rules.LevelDrain) != 1 || rules.LevelDrain[0].EffectKind != 0x7E {
+		t.Fatalf("偏離規則是 %+v，want 只有一條、載體 7Eh", rules.LevelDrain)
+	}
+	character := party.Character{Class: party.ClassFighter,
+		ClassLevels: [8]uint8{2: 6}, Level: 6,
+		HitPoints: 48, MaxHitPoints: 48, BaseMaxHitPoints: 42}
+	if drained := drainCharacterLevel(&character, 1); drained != 1 {
+		t.Fatalf("吸了 %d 級，want 1", drained)
+	}
+	if character.ClassLevels[2] != 5 {
+		t.Fatalf("戰士等級是 %d，want 5", character.ClassLevels[2])
+	}
+	if character.DrainedLevels != 1 || character.DrainedHitPoints != 8 {
+		t.Fatalf("記了 %d 級／%d HP，want 1／8（48 ÷ 6）",
+			character.DrainedLevels, character.DrainedHitPoints)
+	}
+	if character.MaxHitPoints != 40 || character.HitPoints != 40 {
+		t.Fatalf("HP 是 %d／%d，want 40／40", character.MaxHitPoints, character.HitPoints)
+	}
+	// ★ 原作的復原術完全沒有為了這條偏離規則改過，照樣還得回來。
+	if !restoreDrainedLevel(&character) {
+		t.Fatal("復原術應該還得回來")
+	}
+	if character.DrainedLevels != 0 || character.DrainedHitPoints != 0 {
+		t.Fatalf("還完剩 %d 級／%d HP，want 0／0",
+			character.DrainedLevels, character.DrainedHitPoints)
+	}
+	if character.MaxHitPoints != 48 || character.HitPoints != 48 {
+		t.Fatalf("還完 HP 是 %d／%d，want 48／48",
+			character.MaxHitPoints, character.HitPoints)
+	}
+}
+
+// 只剩一級的職業不再往下吸——等級陣列沒有 0 級的合法狀態。
+func TestLevelDrainStopsAtLevelOne(t *testing.T) {
+	character := party.Character{Class: party.ClassFighter,
+		ClassLevels: [8]uint8{2: 1}, HitPoints: 8, MaxHitPoints: 8, BaseMaxHitPoints: 8}
+	if drained := drainCharacterLevel(&character, 3); drained != 0 {
+		t.Fatalf("吸了 %d 級，want 0", drained)
+	}
+	if character.ClassLevels[2] != 1 || character.DrainedLevels != 0 {
+		t.Fatal("一級的職業不該被吸")
+	}
+}
+
+// 沒有帶那個天生效果碼的怪物不會吸等級。
+func TestLevelDrainOnlyAppliesToDeclaredCarriers(t *testing.T) {
+	battle, err := combat.NewBattle([]combat.Fighter{
+		{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20,
+			ArmorClass: 10, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+		{ID: "plain", Name: "雜兵", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20,
+			ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 1},
+		{ID: "lich", Name: "龍巫妖", Side: combat.SideEnemy, HitPoints: 60, MaxHitPoints: 60,
+			ArmorClass: 2, HasCombatPosition: true, CombatX: 3, CombatY: 1,
+			MonsterAffects: []combat.MonsterAffect{{Kind: 0x7E, Innate: true}}},
+	}, 7)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := applyHouseRules(battle); err != nil {
+		t.Fatal(err)
+	}
+	if got := battle.LevelDrainOnHit("plain"); got != 0 {
+		t.Fatalf("雜兵吸 %d 級，want 0", got)
+	}
+	if got := battle.LevelDrainOnHit("lich"); got != 1 {
+		t.Fatalf("龍巫妖吸 %d 級，want 1", got)
+	}
+}
