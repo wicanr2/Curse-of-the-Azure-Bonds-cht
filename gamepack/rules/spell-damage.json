@@ -1,0 +1,525 @@
+{
+ "schema_version": 1,
+ "source": "DOS overlay-22 的法術 handler（位址取自 DS:72A0h 的分派表）",
+ "spec": "docs/spec/1124-spell-damage-dice.md",
+ "spells": {
+  "3": {
+   "name": "Cure Light Wounds",
+   "level": 1,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 24,
+   "overlay": 22,
+   "entry": 27,
+   "offset": 7509,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "dice_count": 1,
+     "dice_sides": 8
+    }
+   ],
+   "shape": "entry9",
+   "dice_count": 1,
+   "dice_sides": 8,
+   "scales_with_caster_level": false
+  },
+  "4": {
+   "name": "Cause Light Wounds",
+   "level": 1,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 29,
+   "overlay": 22,
+   "entry": 28,
+   "offset": 7571,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "dice_count": 1,
+     "dice_sides": 8
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 1,
+   "dice_sides": 8,
+   "scales_with_caster_level": false
+  },
+  "9": {
+   "name": "Burning Hands",
+   "level": 1,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 27,
+   "overlay": 22,
+   "entry": 32,
+   "offset": 7804,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "15": {
+   "name": "Magic Missile",
+   "level": 1,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 47,
+   "overlay": 22,
+   "entry": 37,
+   "offset": 8647,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "dice_count": 0,
+     "dice_sides": 4
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 0,
+   "dice_sides": 4,
+   "scales_with_caster_level": true
+  },
+  "20": {
+   "name": "Shocking Grasp",
+   "level": 1,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 37,
+   "overlay": 22,
+   "entry": 39,
+   "offset": 8800,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "dice_count": 1,
+     "dice_sides": 8
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 1,
+   "dice_sides": 8,
+   "scales_with_caster_level": false
+  },
+  "31": {
+   "name": "Knock",
+   "level": 2,
+   "caster_class": "magic-user",
+   "camp_only": true,
+   "instructions": 25,
+   "overlay": 22,
+   "entry": 48,
+   "offset": 9915,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "36": {
+   "name": "Animate Dead",
+   "level": 7,
+   "caster_class": "",
+   "camp_only": false,
+   "instructions": 137,
+   "overlay": 22,
+   "entry": 53,
+   "offset": 11702,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "37": {
+   "name": "Cure Blindness",
+   "level": 3,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 25,
+   "overlay": 22,
+   "entry": 54,
+   "offset": 12126,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "39": {
+   "name": "Cure Disease",
+   "level": 3,
+   "caster_class": "cleric",
+   "camp_only": true,
+   "instructions": 9,
+   "overlay": 22,
+   "entry": 57,
+   "offset": 12406,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "41": {
+   "name": "Dispel Magic",
+   "level": 3,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 291,
+   "overlay": 22,
+   "entry": 59,
+   "offset": 12670,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "dice_count": 1,
+     "dice_sides": 100
+    }
+   ],
+   "shape": "entry9",
+   "dice_count": 1,
+   "dice_sides": 100,
+   "scales_with_caster_level": false
+  },
+  "43": {
+   "name": "Remove Curse",
+   "level": 3,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 87,
+   "overlay": 22,
+   "entry": 9,
+   "offset": 13721,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "46": {
+   "name": "Dispel Magic",
+   "level": 3,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 291,
+   "overlay": 22,
+   "entry": 59,
+   "offset": 12670,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "dice_count": 1,
+     "dice_sides": 100
+    }
+   ],
+   "shape": "entry9",
+   "dice_count": 1,
+   "dice_sides": 100,
+   "scales_with_caster_level": false
+  },
+  "47": {
+   "name": "Fireball",
+   "level": 3,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 103,
+   "overlay": 22,
+   "entry": 64,
+   "offset": 14094,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "dice_count": 1,
+     "dice_sides": 3
+    },
+    {
+     "shape": "entry10",
+     "dice_count": 0,
+     "dice_sides": 6
+    }
+   ],
+   "shape": "ambiguous"
+  },
+  "51": {
+   "name": "Lightning Bolt",
+   "level": 3,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 39,
+   "overlay": 22,
+   "entry": 69,
+   "offset": 15512,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "56": {
+   "name": "Restoration",
+   "level": 7,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 158,
+   "overlay": 22,
+   "entry": 71,
+   "offset": 15655,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "58": {
+   "name": "Cure Serious Wounds",
+   "level": 4,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 26,
+   "overlay": 22,
+   "entry": 73,
+   "offset": 16163,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "dice_count": 2,
+     "dice_sides": 8
+    }
+   ],
+   "shape": "entry9",
+   "dice_count": 2,
+   "dice_sides": 8,
+   "scales_with_caster_level": false
+  },
+  "66": {
+   "name": "Cause Serious Wounds",
+   "level": 4,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 31,
+   "overlay": 22,
+   "entry": 80,
+   "offset": 16703,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "dice_count": 2,
+     "dice_sides": 8
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 2,
+   "dice_sides": 8,
+   "scales_with_caster_level": false
+  },
+  "67": {
+   "name": "Neutralize Poison",
+   "level": 4,
+   "caster_class": "cleric",
+   "camp_only": true,
+   "instructions": 95,
+   "overlay": 22,
+   "entry": 81,
+   "offset": 16788,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "68": {
+   "name": "Poison",
+   "level": 4,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 48,
+   "overlay": 22,
+   "entry": 82,
+   "offset": 17033,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "71": {
+   "name": "Cure Critical Wounds",
+   "level": 5,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 26,
+   "overlay": 22,
+   "entry": 84,
+   "offset": 17319,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "dice_count": 3,
+     "dice_sides": 8
+    }
+   ],
+   "shape": "entry9",
+   "dice_count": 3,
+   "dice_sides": 8,
+   "scales_with_caster_level": false
+  },
+  "72": {
+   "name": "Cause Critical Wounds",
+   "level": 5,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 31,
+   "overlay": 22,
+   "entry": 85,
+   "offset": 17386,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "dice_count": 3,
+     "dice_sides": 8
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 3,
+   "dice_sides": 8,
+   "scales_with_caster_level": false
+  },
+  "74": {
+   "name": "Flame Strike",
+   "level": 5,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 29,
+   "overlay": 22,
+   "entry": 87,
+   "offset": 17555,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "dice_count": 6,
+     "dice_sides": 8
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 6,
+   "dice_sides": 8,
+   "scales_with_caster_level": false
+  },
+  "75": {
+   "name": "Raise Dead",
+   "level": 5,
+   "caster_class": "cleric",
+   "camp_only": true,
+   "instructions": 72,
+   "overlay": 22,
+   "entry": 88,
+   "offset": 17619,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "76": {
+   "name": "Slay Living",
+   "level": 5,
+   "caster_class": "cleric",
+   "camp_only": false,
+   "instructions": 72,
+   "overlay": 22,
+   "entry": 89,
+   "offset": 17845,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "dice_count": 2,
+     "dice_sides": 8
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 2,
+   "dice_sides": 8,
+   "scales_with_caster_level": false
+  },
+  "83": {
+   "name": "Dimension Door",
+   "level": 4,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 161,
+   "overlay": 22,
+   "entry": 95,
+   "offset": 18660,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "85": {
+   "name": "Fire Shield",
+   "level": 4,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 194,
+   "overlay": 22,
+   "entry": 97,
+   "offset": 19436,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "dice_count": 1,
+     "dice_sides": 10
+    }
+   ],
+   "shape": "entry9",
+   "dice_count": 1,
+   "dice_sides": 10,
+   "scales_with_caster_level": false
+  },
+  "87": {
+   "name": "Ice Storm",
+   "level": 4,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 29,
+   "overlay": 22,
+   "entry": 99,
+   "offset": 20148,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "dice_count": 3,
+     "dice_sides": 10
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 3,
+   "dice_sides": 10,
+   "scales_with_caster_level": false
+  },
+  "89": {
+   "name": "Remove Curse",
+   "level": 4,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 87,
+   "overlay": 22,
+   "entry": 9,
+   "offset": 13721,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "91": {
+   "name": "Cloud Kill",
+   "level": 5,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 289,
+   "overlay": 22,
+   "entry": 101,
+   "offset": 20286,
+   "dice_calls": [],
+   "shape": "unread"
+  },
+  "92": {
+   "name": "Cone of Cold",
+   "level": 5,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 72,
+   "overlay": 22,
+   "entry": 102,
+   "offset": 21739,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "dice_count": 0,
+     "dice_sides": 4
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 0,
+   "dice_sides": 4,
+   "scales_with_caster_level": true
+  },
+  "100": {
+   "name": "Bestow Curse",
+   "level": 4,
+   "caster_class": "magic-user",
+   "camp_only": false,
+   "instructions": 25,
+   "overlay": 22,
+   "entry": 62,
+   "offset": 13991,
+   "dice_calls": [],
+   "shape": "unread"
+  }
+ }
+}

@@ -16,18 +16,18 @@
 | └ 玩家取得到 | 87 |
 | 　├ 只能紮營施放 | 8 |
 | 　└ **戰鬥可施放（真正的分母）** | **79** |
-| 　　├ game pack 已宣告 | 34 |
-| 　　├ 其中 runtime handler 已觀察到 | 34 |
-| 　　└ **尚未宣告** | **45** |
+| 　　├ game pack 已宣告 | 38 |
+| 　　├ 其中 runtime handler 已觀察到 | 38 |
+| 　　└ **尚未宣告** | **41** |
 | 　　　├ 效果碼 remake 已判讀（只差宣告） | 0 |
 | 　　　├ 效果碼 remake 還看不懂 | 24 |
-| 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | 21 |
+| 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | 17 |
 
 全表用到 50 個相異效果碼，remake 判讀得了其中 20 個。
 ★ **記得上去不等於解讀得了**：`CastEffectSpell` 可以把任何碼寫進效果串列，
 但只有已判讀的那幾個會改變戰鬥規則。上面兩列就是這條界線。
 
-未宣告的戰鬥法術，依環數：1 環 9 支、2 環 4 支、3 環 8 支、4 環 14 支、5 環 8 支、7 環 2 支。
+未宣告的戰鬥法術，依環數：1 環 9 支、2 環 4 支、3 環 8 支、4 環 12 支、5 環 6 支、7 環 2 支。
 
 ## 逐支
 
@@ -90,7 +90,7 @@
 | 55 | Slow | magic-user | 3 | 3 節／半徑 2／效果 42 | observed | missing | missing |
 | 56 | Restoration | cleric | 7 | 6 節／1 個目標 | 未宣告 | — | — |
 | 57 | （占位） | — | 6 | 0 節／自己／效果 39 | 取不到 | — | — |
-| 58 | Cure Serious Wounds | cleric | 4 | 7 節／1 個目標 | 未宣告 | — | — |
+| 58 | Cure Serious Wounds | cleric | 4 | 7 節／1 個目標 | observed | missing | missing |
 | 59 | （占位） | — | 6 | 0 節／自己／效果 38 | 取不到 | — | — |
 | 60 | （占位） | — | 6 | 0 節／1 個目標／豁免 spell | 取不到 | — | — |
 | 61 | （占位） | — | 6 | 0 節／1 個目標／豁免 paralysis-poison-death／效果 52 | 取不到 | — | — |
@@ -98,13 +98,13 @@
 | 63 | （占位） | — | 6 | 0 節／4 個目標／效果 71 | 取不到 | — | — |
 | 64 | （占位） | — | 6 | 0 節／半徑 3／豁免 spell | 取不到 | — | — |
 | 65 | （占位） | — | 6 | 0 節／1 個目標 | 取不到 | — | — |
-| 66 | Cause Serious Wounds | cleric | 4 | 7 節／1 個目標 | 未宣告 | — | — |
+| 66 | Cause Serious Wounds | cleric | 4 | 7 節／1 個目標 | observed | missing | missing |
 | 67 | Neutralize Poison | cleric | 4 | 7 節／自己 | 紮營法術 | — | — |
 | 68 | Poison | cleric | 4 | 7 節／1 個目標／豁免 paralysis-poison-death | 未宣告 | — | — |
 | 69 | Protection Evil, 10' Radius | cleric | 4 | 7 節／1 個目標／效果 45 | 未宣告 | — | — |
 | 70 | Sticks to Snakes | cleric | 4 | 7 節／1 個目標／效果 3 | 未宣告 | — | — |
-| 71 | Cure Critical Wounds | cleric | 5 | 8 節／1 個目標 | 未宣告 | — | — |
-| 72 | Cause Critical Wounds | cleric | 5 | 8 節／1 個目標／豁免 spell | 未宣告 | — | — |
+| 71 | Cure Critical Wounds | cleric | 5 | 8 節／1 個目標 | observed | missing | missing |
+| 72 | Cause Critical Wounds | cleric | 5 | 8 節／1 個目標／豁免 spell | observed | missing | missing |
 | 73 | Dispel Evil | cleric | 5 | 8 節／自己／效果 145 | 未宣告 | — | — |
 | 74 | Flame Strike | cleric | 5 | 8 節／1 個目標／豁免 spell | 未宣告 | — | — |
 | 75 | Raise Dead | cleric | 5 | 10 節／自己 | 紮營法術 | — | — |

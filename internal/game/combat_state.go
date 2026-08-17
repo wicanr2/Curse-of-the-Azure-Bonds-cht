@@ -1568,6 +1568,10 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		if !s.CombatCanCastCureLightWounds() {
 			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
 		}
+	case "heal_dice", "damage_dice":
+		if !s.combatCanCastSpellDice(spellID, definition.Behavior == "heal_dice") {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
 	default:
 		return fmt.Errorf("spell 0x%02X uses unsupported combat behavior %q", spellID, definition.Behavior)
 	}
@@ -1793,6 +1797,10 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 		return s.combatCastCloudkill(terrain)
 	case "effect":
 		return s.combatCastEffectSpell(spellID)
+	case "heal_dice":
+		return s.combatCastSpellDice(spellID, true)
+	case "damage_dice":
+		return s.combatCastSpellDice(spellID, false)
 	case "magic_missile":
 		// The effect helper below still consumes the original spell-table ID;
 		// the game-pack behavior token only selects this verified path.

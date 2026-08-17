@@ -2345,3 +2345,72 @@ func (b *Battle) ReplaceFighterEquipment(fighterID string, projected Fighter) er
 	b.fighters[fighterID] = fighter
 	return nil
 }
+
+// CastHealingDice 是「擲 NdM 治療一個目標」，上限是掉的血。
+// 骰子來自 spec 1124 的表，不寫死在這裡——治療輕傷、中傷、重傷差別只有骰數。
+func (b *Battle) CastHealingDice(casterID, targetID string, count, sides int) (SpellResult, error) {
+	_, target, err := b.spellDiceEndpoints(casterID, targetID, count, sides)
+	if err != nil {
+		return SpellResult{}, err
+	}
+	healing := 0
+	for roll := 0; roll < count; roll++ {
+		healing += b.rng.Intn(sides) + 1
+	}
+	if healing > target.MaxHitPoints-target.HitPoints {
+		healing = target.MaxHitPoints - target.HitPoints
+	}
+	if healing < 0 {
+		healing = 0
+	}
+	target.HitPoints += healing
+	if target.HitPoints > 0 {
+		target.DeathOverlay = false
+	}
+	b.fighters[targetID] = target
+	b.updateStatus()
+	return SpellResult{CasterID: casterID, TargetID: targetID,
+		Healing: healing, TargetHP: target.HitPoints}, nil
+}
+
+// CastDamageDice 是「擲 NdM 打一個目標」。
+func (b *Battle) CastDamageDice(casterID, targetID string, count, sides int) (SpellResult, error) {
+	_, target, err := b.spellDiceEndpoints(casterID, targetID, count, sides)
+	if err != nil {
+		return SpellResult{}, err
+	}
+	damage := 0
+	for roll := 0; roll < count; roll++ {
+		damage += b.rng.Intn(sides) + 1
+	}
+	applied := b.applyPositiveDamage(&target, damage)
+	b.fighters[targetID] = target
+	b.updateStatus()
+	return SpellResult{CasterID: casterID, TargetID: targetID,
+		Damage: applied, TargetHP: target.HitPoints}, nil
+}
+
+// spellDiceEndpoints 收攏兩支共用的前置檢查。
+func (b *Battle) spellDiceEndpoints(casterID, targetID string, count, sides int) (Fighter, Fighter, error) {
+	if b == nil || b.rng == nil {
+		return Fighter{}, Fighter{}, errNoPRNG
+	}
+	if count <= 0 || sides <= 0 {
+		return Fighter{}, Fighter{}, fmt.Errorf("dice %dd%d is not rollable", count, sides)
+	}
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return Fighter{}, Fighter{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	target, ok := b.fighters[targetID]
+	if !ok {
+		return Fighter{}, Fighter{}, fmt.Errorf("unknown target %q", targetID)
+	}
+	if b.status != StatusActive {
+		return Fighter{}, Fighter{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 {
+		return Fighter{}, Fighter{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	return caster, target, nil
+}
