@@ -89,7 +89,7 @@ var DOSPlayerRecordFields = []DOSRecordField{
 	{0x124, 1, "重算時抄進 +19Ah 的來源", DOSFieldDocumented, "1000"},
 	{0x125, 2, "（未定）", DOSFieldUnknown, ""},
 	{0x127, 4, "經驗值（dword）", DOSFieldDecoded, "185"},
-	{0x12B, 1, "（未定）", DOSFieldUnknown, ""},
+	{0x12B, 1, "職業可用性遮罩（與物品類別表 `+0Dh` 做 and）", DOSFieldDocumented, "1120"},
 	{0x12C, 1, "基準最大 HP（不含裝備加成）", DOSFieldDecoded, "185"},
 	{0x12D, 15, "每環可施放次數：牧師／德魯伊／法師各五環", DOSFieldDecoded, "1016"},
 	{0x13C, 5, "（未定）", DOSFieldUnknown, ""},

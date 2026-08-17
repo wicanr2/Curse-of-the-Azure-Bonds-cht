@@ -104,7 +104,15 @@ func (b *Battle) MonsterApproach(fighterID, targetID string, mode int, terrain M
 		return ApproachResult{}, fmt.Errorf("approach needs both combatants placed")
 	}
 	result := ApproachResult{FighterID: fighterID, Mode: mode}
-	budget := fighter.MovementAllowance * 2
+	// 移動率的效果修正走 `CHECKFX(12h)`（spec 1123）：緩速折半、加速…
+	allowance, err := CheckFXValue(fighter, CheckFXMovement, scratchMovement, fighter.MovementAllowance)
+	if err != nil {
+		return ApproachResult{}, err
+	}
+	if allowance < 0 {
+		allowance = 0
+	}
+	budget := allowance * 2
 	weaponRange := fighter.WeaponRange
 	if weaponRange < 1 {
 		// 沒有裝備武器時射程 1（spec 838：表填 0 或減 1 溢位都當 1）。

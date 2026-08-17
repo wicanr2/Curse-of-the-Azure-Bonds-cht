@@ -3370,6 +3370,19 @@ func (s *State) advanceCombatToParty() error {
 		if fighter.Side == combat.SideParty && !fighter.QuickFight {
 			return nil
 		}
+		if fighter.Side == combat.SideEnemy {
+			// 士氣檢定在 AI 回合開頭（spec 1122）：門檻跟著受傷程度走，
+			// 過不了而且跑得掉就撤退，並印「驚慌逃竄」。
+			if _, err := s.battle.CheckMorale(fighter.ID); err != nil {
+				return err
+			}
+			fighter, _ = s.fighter(fighter.ID)
+			if messageID, show := fighter.PanicMessageID(); show {
+				s.combatMessage = fmt.Sprintf(s.catalog.Text(messageID, messageID), fighter.Name)
+				s.combatTurnIndex++
+				continue
+			}
+		}
 		if fighter.QuickFight {
 			if err := s.battle.BeginQuickFightAction(fighter.ID); err != nil {
 				return err

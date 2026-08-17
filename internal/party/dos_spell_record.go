@@ -572,6 +572,10 @@ func (c *Character) ApplyDOSSpellRecord(data []byte) error {
 // ApplyDOSInventory replaces the remake equipment list with a decoded .SWG
 // item stream. It is separate from the player pointer because .SAV/.GUY and
 // .SWG are different files/regions in the original format.
+//
+// ⚠ 這一支用 remake 的編碼（UTF-8）。**匯入原版 `.SWG` 不要用它**，
+// 走 `DOSPlayerRecord.ApplyOriginalInventory` 或 `ParseOriginalDOSPlayerFiles`
+// （spec 1121）。目前沒有正式呼叫點，只有測試在用。
 func (c *Character) ApplyDOSInventory(data []byte) error {
 	if c == nil {
 		return fmt.Errorf("cannot apply inventory to nil character")

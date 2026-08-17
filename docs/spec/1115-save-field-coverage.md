@@ -12,8 +12,8 @@ DOS 的 `CHARREC` 是 `1A6h` ＝ 422 bytes。先前的說法是「仍缺全欄�
 | 狀態 | 位元組 | 意思 |
 |---|---:|---|
 | `decoded` | 294（69%）| remake 的解析器真的讀它，值會影響匯入結果 |
-| `documented` | 99（23%）| 有規格說得出它是什麼，但解析器沒讀 |
-| `unknown` | 29（7%）| 沒有任何出處。**不是「沒有用」**，只是還沒查到 |
+| `documented` | 100（24%）| 有規格說得出它是什麼，但解析器沒讀 |
+| `unknown` | 28（7%）| 沒有任何出處。**不是「沒有用」**，只是還沒查到 |
 
 台帳在 `internal/party.DOSPlayerRecordFields`，`ValidateDOSPlayerRecordFields`
 擋住洞與重疊——**少一段就會讓 `unknown` 的數字偏低**，而那個數字正是這一項的

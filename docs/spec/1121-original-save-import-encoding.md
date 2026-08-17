@@ -44,6 +44,18 @@ CLI 這一側是 `-savgam-import`：**匯入之後不寫回同一個槽**。原�
 （決策四：remake 讀舊版 DAT、存成自己的格式，不必互通），寫回去只會把原版資料
 換成 UTF-8 的混合體。
 
+## `ITEM*.DAX` 也走同一條線
+
+`ParseTreasureItemBlocks` 與兩個 `cmd/` 的 ITEM 區塊載入都改走
+`ParseOriginalItems`——那些位元組全部來自原版。
+
+`TestEveryDAXItemLoadUsesTheOriginalDecoder` 掃 `internal/` 與 `cmd/` 的原始碼，
+只要有人拿 DAX 區塊去餵 `monster.ParseItems` 就當場紅，並附一條正對照確認掃描
+真的看得到檔案。**這種錯不會 panic 也不會被既有測試碰到**，它只是把中文名字讀成
+亂碼，所以只能用「每次都把載入點列出來比對」的方式守。
+
+`ParseBaseItems`（ITEMS 成員）不受影響：那筆記錄裡沒有字串。
+
 ## 為什麼不自動偵測
 
 「無效 UTF-8 就當 Big5」這種啟發式在這裡剛好最危險：Big5 的雙位元組序列有相當
@@ -55,6 +67,4 @@ CLI 這一側是 `-savgam-import`：**匯入之後不寫回同一個槽**。原�
 
 - 沒有宣稱原版中文版用的一定是 Big5 全字集；`origtext.Decode` 解不出來時原樣
   回傳位元組，不假裝解碼成功。
-- 沒有宣稱 `.SWG` 以外的原版資料檔（ITEM DAX 等）已經走上分流；那些的載入層
-  各自要做同樣的選擇。
 - 沒有宣稱 remake 寫出來的槽能被原版遊戲讀回去——決策四已經移除這個要求。

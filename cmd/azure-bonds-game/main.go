@@ -4547,7 +4547,7 @@ func loadMonsterItems(data []byte) (map[uint8][]monster.ItemRecord, error) {
 	}
 	items := make(map[uint8][]monster.ItemRecord, len(blocks))
 	for _, block := range blocks {
-		records, parseErr := monster.ParseItems(block.Data)
+		records, parseErr := monster.ParseOriginalItems(block.Data)
 		if parseErr != nil {
 			return nil, fmt.Errorf("MON*ITM block 0x%02X: %w", block.Entry.ID, parseErr)
 		}

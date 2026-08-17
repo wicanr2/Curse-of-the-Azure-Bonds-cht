@@ -10,6 +10,10 @@ import (
 // ParseTreasureItemBlocks decodes ITEM1.DAX through ITEM6.DAX members. The
 // returned key is (area << 8) | DAX block ID, matching TREASURE's area-local
 // item-block operand while allowing all six chapters to share one map.
+//
+// ⚠ 走 `ParseOriginalItems`：`ITEM*.DAX` 的位元組全部來自原版，物品名要以原版
+// 編碼解讀（spec 1121）。remake 自己的 sidecar 走 `ParseItems`，兩者版面相同、
+// 編碼不同，分不出來的是來源不是格式。
 func ParseTreasureItemBlocks(areaData map[uint8][]byte) (map[uint16][]monster.ItemRecord, error) {
 	all := make(map[uint16][]monster.ItemRecord)
 	for area, data := range areaData {
@@ -18,7 +22,7 @@ func ParseTreasureItemBlocks(areaData map[uint8][]byte) (map[uint16][]monster.It
 			return nil, fmt.Errorf("parse ITEM%d.DAX: %w", area, err)
 		}
 		for _, block := range blocks {
-			items, err := monster.ParseItems(block.Data)
+			items, err := monster.ParseOriginalItems(block.Data)
 			if err != nil {
 				return nil, fmt.Errorf("parse ITEM%d.DAX block 0x%02X: %w", area, block.Entry.ID, err)
 			}

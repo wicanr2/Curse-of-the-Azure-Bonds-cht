@@ -310,7 +310,7 @@ func main() {
 			}
 		}
 		if *monsterItems {
-			items, itemErr := monster.ParseItems(block.Data)
+			items, itemErr := monster.ParseOriginalItems(block.Data)
 			if itemErr != nil {
 				fmt.Printf("  item records stopped safely: %v\n", itemErr)
 			} else {

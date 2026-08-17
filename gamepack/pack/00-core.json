@@ -2397,6 +2397,33 @@
    "casting_time": 4
   },
   {
+   "id": "coab.spell.resist-cold",
+   "spell_id": 8,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "effect",
+   "message_id": "spell_cleric_8",
+   "casting_time": 10
+  },
+  {
+   "id": "coab.spell.charm-person",
+   "spell_id": 10,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_10",
+   "casting_time": 1
+  },
+  {
+   "id": "coab.spell.magic-missile",
+   "spell_id": 15,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "magic_missile",
+   "message_id": "spell_magic_user_15",
+   "casting_time": 1
+  },
+  {
    "id": "coab.spell.protection-from-evil-magic-user",
    "spell_id": 16,
    "caster_class": "magic_user",
@@ -2415,12 +2442,12 @@
    "casting_time": 1
   },
   {
-   "id": "coab.spell.magic-missile",
-   "spell_id": 15,
+   "id": "coab.spell.shield",
+   "spell_id": 19,
    "caster_class": "magic_user",
-   "target_mode": "enemy",
-   "behavior": "magic_missile",
-   "message_id": "spell_magic_user_15",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_19",
    "casting_time": 1
   },
   {
@@ -2440,6 +2467,24 @@
    "behavior": "effect",
    "message_id": "spell_cleric_23",
    "casting_time": 5
+  },
+  {
+   "id": "coab.spell.resist-fire",
+   "spell_id": 24,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "effect",
+   "message_id": "spell_cleric_24",
+   "casting_time": 5
+  },
+  {
+   "id": "coab.spell.slow-poison",
+   "spell_id": 26,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "effect",
+   "message_id": "spell_cleric_26",
+   "casting_time": 1
   },
   {
    "id": "coab.spell.snake-charm",
@@ -2476,6 +2521,33 @@
    "behavior": "stinking_cloud",
    "message_id": "spell_magic_user_34",
    "casting_time": 2
+  },
+  {
+   "id": "coab.spell.cause-blindness",
+   "spell_id": 38,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_cleric_38",
+   "casting_time": 10
+  },
+  {
+   "id": "coab.spell.prayer",
+   "spell_id": 42,
+   "caster_class": "cleric",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_cleric_42",
+   "casting_time": 6
+  },
+  {
+   "id": "coab.spell.bestow-curse",
+   "spell_id": 44,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_cleric_44",
+   "casting_time": 6
   },
   {
    "id": "coab.spell.blink",
@@ -2547,6 +2619,15 @@
    "target_mode": "party_member",
    "behavior": "effect",
    "message_id": "spell_druid_80",
+   "casting_time": 4
+  },
+  {
+   "id": "coab.spell.charm-monsters",
+   "spell_id": 81,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_81",
    "casting_time": 4
   },
   {

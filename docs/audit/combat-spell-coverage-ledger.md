@@ -16,18 +16,18 @@
 | └ 玩家取得到 | 87 |
 | 　├ 只能紮營施放 | 8 |
 | 　└ **戰鬥可施放（真正的分母）** | **79** |
-| 　　├ game pack 已宣告 | 25 |
-| 　　├ 其中 runtime handler 已觀察到 | 25 |
-| 　　└ **尚未宣告** | **54** |
+| 　　├ game pack 已宣告 | 34 |
+| 　　├ 其中 runtime handler 已觀察到 | 34 |
+| 　　└ **尚未宣告** | **45** |
 | 　　　├ 效果碼 remake 已判讀（只差宣告） | 0 |
-| 　　　├ 效果碼 remake 還看不懂 | 33 |
+| 　　　├ 效果碼 remake 還看不懂 | 24 |
 | 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | 21 |
 
-全表用到 50 個相異效果碼，remake 判讀得了其中 10 個。
+全表用到 50 個相異效果碼，remake 判讀得了其中 20 個。
 ★ **記得上去不等於解讀得了**：`CastEffectSpell` 可以把任何碼寫進效果串列，
 但只有已判讀的那幾個會改變戰鬥規則。上面兩列就是這條界線。
 
-未宣告的戰鬥法術，依環數：1 環 12 支、2 環 6 支、3 環 11 支、4 環 15 支、5 環 8 支、7 環 2 支。
+未宣告的戰鬥法術，依環數：1 環 9 支、2 環 4 支、3 環 8 支、4 環 14 支、5 環 8 支、7 環 2 支。
 
 ## 逐支
 
@@ -40,9 +40,9 @@
 | 5 | Detect Magic | cleric | 1 | 1 節／自己／效果 5 | 未宣告 | — | — |
 | 6 | Protection From Evil | cleric | 1 | 4 節／1 個目標／效果 8 | observed | missing | missing |
 | 7 | Protection from Good | cleric | 1 | 4 節／1 個目標／效果 9 | observed | missing | missing |
-| 8 | Resist Cold | cleric | 1 | 10 節／1 個目標／效果 10 | 未宣告 | — | — |
+| 8 | Resist Cold | cleric | 1 | 10 節／1 個目標／效果 10 | observed | missing | missing |
 | 9 | Burning Hands | magic-user | 1 | 1 節／1 個目標 | 未宣告 | — | — |
-| 10 | Charm Person | magic-user | 1 | 1 節／1 個目標／豁免 spell／效果 11 | 未宣告 | — | — |
+| 10 | Charm Person | magic-user | 1 | 1 節／1 個目標／豁免 spell／效果 11 | observed | missing | missing |
 | 11 | Detect Magic | magic-user | 1 | 1 節／自己／效果 5 | 未宣告 | — | — |
 | 12 | Enlarge | magic-user | 1 | 1 節／1 個目標／效果 12 | 未宣告 | — | — |
 | 13 | Reduce | magic-user | 1 | 1 節／1 個目標／豁免 spell／效果 13 | 未宣告 | — | — |
@@ -51,14 +51,14 @@
 | 16 | Protection From Evil | magic-user | 1 | 1 節／1 個目標／效果 8 | observed | missing | missing |
 | 17 | Protection From Good | magic-user | 1 | 1 節／1 個目標／效果 9 | observed | missing | missing |
 | 18 | Read Magic | magic-user | 1 | 10 節／自己／效果 16 | 紮營法術 | — | — |
-| 19 | Shield | magic-user | 1 | 1 節／自己／效果 17 | 未宣告 | — | — |
+| 19 | Shield | magic-user | 1 | 1 節／自己／效果 17 | observed | missing | missing |
 | 20 | Shocking Grasp | magic-user | 1 | 1 節／1 個目標 | 未宣告 | — | — |
 | 21 | Sleep | magic-user | 1 | 1 節／半徑 1／效果 53 | observed | observed | observed |
 | 22 | Find Traps | cleric | 2 | 5 節／自己／效果 19 | 紮營法術 | — | — |
 | 23 | Hold Person | cleric | 2 | 5 節／3 個目標／豁免 spell／效果 52 | observed | missing | missing |
-| 24 | Resist Fire | cleric | 2 | 5 節／1 個目標／效果 20 | 未宣告 | — | — |
+| 24 | Resist Fire | cleric | 2 | 5 節／1 個目標／效果 20 | observed | missing | missing |
 | 25 | Silence, 15' Radius | cleric | 2 | 5 節／鎖定目標／豁免 spell／效果 21 | 未宣告 | — | — |
-| 26 | Slow Poison | cleric | 2 | 1 節／1 個目標／效果 22 | 未宣告 | — | — |
+| 26 | Slow Poison | cleric | 2 | 1 節／1 個目標／效果 22 | observed | missing | missing |
 | 27 | Snake Charm | cleric | 2 | 5 節／自己／效果 51 | observed | missing | missing |
 | 28 | Spiritual Hammer | cleric | 2 | 5 節／自己／效果 23 | 未宣告 | — | — |
 | 29 | Detect Invisibility | magic-user | 2 | 2 節／自己／效果 24 | observed | missing | missing |
@@ -70,13 +70,13 @@
 | 35 | Strength | magic-user | 2 | 10 節／自己／效果 38 | 紮營法術 | — | — |
 | 36 | Animate Dead |  | 7 | 0 節／半徑 0／豁免 spell | 未宣告 | — | — |
 | 37 | Cure Blindness | cleric | 3 | 10 節／1 個目標 | 未宣告 | — | — |
-| 38 | Cause Blindness | cleric | 3 | 10 節／1 個目標／豁免 spell／效果 33 | 未宣告 | — | — |
+| 38 | Cause Blindness | cleric | 3 | 10 節／1 個目標／豁免 spell／效果 33 | observed | missing | missing |
 | 39 | Cure Disease | cleric | 3 | 100 節／自己 | 紮營法術 | — | — |
 | 40 | Cause Disease | cleric | 3 | 100 節／1 個目標／豁免 spell／效果 34 | 未宣告 | — | — |
 | 41 | Dispel Magic | cleric | 3 | 4 節／半徑 1 | 未宣告 | — | — |
-| 42 | Prayer | cleric | 3 | 6 節／自己／效果 49 | 未宣告 | — | — |
+| 42 | Prayer | cleric | 3 | 6 節／自己／效果 49 | observed | missing | missing |
 | 43 | Remove Curse | cleric | 3 | 6 節／1 個目標 | 未宣告 | — | — |
-| 44 | Bestow Curse | cleric | 3 | 6 節／1 個目標／豁免 spell／效果 36 | 未宣告 | — | — |
+| 44 | Bestow Curse | cleric | 3 | 6 節／1 個目標／豁免 spell／效果 36 | observed | missing | missing |
 | 45 | Blink | magic-user | 3 | 1 節／自己／效果 37 | observed | missing | missing |
 | 46 | Dispel Magic | magic-user | 3 | 3 節／半徑 1 | 未宣告 | — | — |
 | 47 | Fireball | magic-user | 3 | 3 節／半徑 3／豁免 spell | observed | observed | observed |
@@ -113,7 +113,7 @@
 | 78 | Entangle | druid | 1 | 3 節／半徑 3／豁免 spell／效果 136 | 未宣告 | — | — |
 | 79 | Faerie Fire | druid | 1 | 3 節／逐一點選／豁免 spell／效果 7 | 未宣告 | — | — |
 | 80 | Invisibility to Animals | druid | 1 | 4 節／1 個目標／效果 69 | observed | missing | missing |
-| 81 | Charm Monsters | magic-user | 4 | 4 節／逐一點選／豁免 spell／效果 11 | 未宣告 | — | — |
+| 81 | Charm Monsters | magic-user | 4 | 4 節／逐一點選／豁免 spell／效果 11 | observed | missing | missing |
 | 82 | Confusion | magic-user | 4 | 4 節／半徑 3／豁免 spell／效果 35 | 未宣告 | — | — |
 | 83 | Dimension Door | magic-user | 4 | 1 節／半徑 0 | 未宣告 | — | — |
 | 84 | Fear | magic-user | 4 | 4 節／半徑 0／豁免 spell／效果 142 | 未宣告 | — | — |

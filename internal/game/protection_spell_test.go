@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -92,5 +93,33 @@ func TestProtectionSpellsStillRejectTheWrongClass(t *testing.T) {
 				t.Fatal("職業不符卻施成功了")
 			}
 		})
+	}
+}
+
+// 士氣崩了而且跑得掉的怪物，在自己的回合會印「驚慌逃竄」而不是攻擊。
+//
+// ★ 這條測試釘的是**接線**，不是規則本身（規則在 `internal/combat` 的單元測試）。
+// 少了接線，士氣那一整套會躺在那裡沒有任何呼叫點，而覆蓋報告看不出來。
+func TestBrokenMoraleMonsterFleesInsteadOfAttacking(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄",
+		Class: party.ClassFighter, Level: 3, HitPoints: 20, MaxHitPoints: 20}}
+	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, MovementAllowance: 2,
+		HasCombatPosition: true, CombatX: 1, CombatY: 1}}
+	// 士氣 32（90h）、剩一成血 ⇒ 門檻 90，過不了；移動率 12 對上 2 ⇒ 跑得掉。
+	enemies := []combat.Fighter{{ID: "orc", Name: "獸人", Side: combat.SideEnemy,
+		HitPoints: 2, MaxHitPoints: 20, ArmorClass: 10, ControlMorale: 0x90,
+		MovementAllowance: 12, InitiativeBonus: 20,
+		HasCombatPosition: true, CombatX: 2, CombatY: 1}}
+	if err := state.StartCombat(partyFighters, enemies, 5); err != nil {
+		t.Fatal(err)
+	}
+	// 測試用的 catalog 只有幾個鍵，查不到就退回鍵名——鍵名不含 `%s`，
+	// 所以格式化之後會多出 `%!(EXTRA...)`。這裡直接比對格式化後的結果，
+	// 不論 catalog 有沒有翻譯都測得到「有沒有走這條路」。
+	want := fmt.Sprintf(state.catalog.Text("combat_flees_in_panic", "combat_flees_in_panic"), "獸人")
+	if got := state.CombatMessage(); got != want {
+		t.Fatalf("訊息 %q，want %q（士氣崩了的怪物該印驚慌逃竄，不是攻擊）", got, want)
 	}
 }

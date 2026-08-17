@@ -88,15 +88,22 @@ func (item BaseItem) MovementAllowance() int {
 	}
 }
 
-// IsMissileWeapon identifies the observed bow, crossbow and sling item group.
-// The group is explicit because Range alone also covers thrown weapons.
+// IsMissileWeapon 用**原作自己的判斷**：類別表 `+0Eh` 的 bit 3（spec 1120）。
+//
+// ★ 這裡原本寫的是「類別 41..47」——那是照觀察到的弓／弩／投石索列舉出來的。
+// 自動換裝那一支讀出來之後才知道原作查的是旗標位元，而設了 bit 3 的類別有 18 個：
+// 除了 41..47 還有飛鏢（9）、21、28、85..88、98、100、101、127。
+// 列舉法漏掉的那 11 個在戰鬥中會被當成近戰武器。
 func (item BaseItem) IsMissileWeapon() bool {
-	return item.Type >= 41 && item.Type <= 47
+	return item.AmmunitionType&baseItemFlagFired != 0
 }
 
-// IsThrownWeapon currently records only the RuleBook-confirmed dart
-// exception. Other thrown weapon profiles remain data-layer work.
-func (item BaseItem) IsThrownWeapon() bool { return item.Type == 9 }
+// IsThrownWeapon 同理用 bit 4。原本只認飛鏢（類別 9），實際有 13 個類別設了這個位元。
+//
+// ⚠ 兩者**不互斥**：飛鏢兩個位元都有（丟出去、而且有射速）。
+func (item BaseItem) IsThrownWeapon() bool {
+	return item.AmmunitionType&baseItemFlagThrown != 0
+}
 
 // UsableByMask reports whether the supplied reference class bit is allowed:
 // magic-user=1, cleric=2, thief=4, fighter=8, druid=16, monk=32,
