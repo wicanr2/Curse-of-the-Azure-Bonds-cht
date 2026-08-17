@@ -99,6 +99,22 @@ func (t *EffectModifierTable) Handler(code uint8) (EffectHandler, bool) {
 	return handler, ok
 }
 
+// HasTiming 回答「有沒有任何時機會問到這個效果碼」。沒有的話它的 handler
+// 永遠不會被 `CHECKFX` 走到——**有數字不等於套得上**。
+func (t *EffectModifierTable) HasTiming(code uint8) bool {
+	if t == nil {
+		return false
+	}
+	for _, codes := range t.Timings {
+		for _, listed := range codes {
+			if listed == int(code) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // ScratchName 把全域位址翻成名字；沒有名字時回傳原位址。
 func (t *EffectModifierTable) ScratchName(global string) string {
 	if t == nil {

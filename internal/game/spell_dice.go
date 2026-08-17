@@ -65,16 +65,39 @@ func (s *State) combatCastSpellDice(spellID uint8, healing bool) error {
 	if err != nil {
 		return err
 	}
+	// 豁免只對傷害那一側有意義：`+8h = 2` 是「過了減半」，`= 1` 是「過了沒事」
+	// （spec 1111／1117）。`= 0` 連擲都不擲——原作在那一支之前就跳過了。
+	halved, negated := false, false
+	if !healing {
+		entry, ok := gamepack.SpellByID(int(spellID))
+		if ok && entry.RequiresSave() {
+			targetFighter, _ := s.fighter(target)
+			save, saveErr := s.battle.RollSavingThrow(targetFighter, entry.SaveCategory, 0)
+			if saveErr != nil {
+				return saveErr
+			}
+			if save.Saved {
+				halved = entry.SaveHalvesDamage()
+				negated = !halved
+			}
+		}
+	}
 	s.partyRoster[characterIndex].SpellSlots = append(
 		s.partyRoster[characterIndex].SpellSlots[:spellIndex],
 		s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
-	cast := s.battle.CastDamageDice
 	messageKey := "combat_cause_light_wounds"
 	if healing {
-		cast = s.battle.CastHealingDice
 		messageKey = "combat_cure_light_wounds"
 	}
-	result, err := cast(caster.ID, target, count, sides)
+	var result combat.SpellResult
+	switch {
+	case healing:
+		result, err = s.battle.CastHealingDice(caster.ID, target, count, sides)
+	case negated:
+		// 豁免過了而且這支是「過了沒事」：法術位照樣消耗，傷害不套。
+	default:
+		result, err = s.battle.CastDamageDice(caster.ID, target, count, sides, halved)
+	}
 	if err != nil {
 		s.partyRoster[characterIndex].SpellSlots = append(
 			s.partyRoster[characterIndex].SpellSlots, spellID)

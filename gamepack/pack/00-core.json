@@ -2379,6 +2379,15 @@
    "casting_time": 5
   },
   {
+   "id": "coab.spell.detect-magic-cleric",
+   "spell_id": 5,
+   "caster_class": "cleric",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_cleric_5",
+   "casting_time": 1
+  },
+  {
    "id": "coab.spell.protection-from-evil",
    "spell_id": 6,
    "caster_class": "cleric",
@@ -2415,6 +2424,24 @@
    "casting_time": 1
   },
   {
+   "id": "coab.spell.detect-magic-magic-user",
+   "spell_id": 11,
+   "caster_class": "magic_user",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_11",
+   "casting_time": 1
+  },
+  {
+   "id": "coab.spell.enlarge",
+   "spell_id": 12,
+   "caster_class": "magic_user",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_12",
+   "casting_time": 1
+  },
+  {
    "id": "coab.spell.magic-missile",
    "spell_id": 15,
    "caster_class": "magic_user",
@@ -2448,6 +2475,15 @@
    "target_mode": "none",
    "behavior": "effect",
    "message_id": "spell_magic_user_19",
+   "casting_time": 1
+  },
+  {
+   "id": "coab.spell.shocking-grasp",
+   "spell_id": 20,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "damage_dice",
+   "message_id": "spell_magic_user_20",
    "casting_time": 1
   },
   {
@@ -2646,6 +2682,15 @@
    "target_mode": "enemy",
    "behavior": "damage_dice",
    "message_id": "spell_cleric_72",
+   "casting_time": 8
+  },
+  {
+   "id": "coab.spell.flame-strike",
+   "spell_id": 74,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "damage_dice",
+   "message_id": "spell_cleric_74",
    "casting_time": 8
   },
   {
