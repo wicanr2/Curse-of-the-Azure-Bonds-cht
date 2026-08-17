@@ -20849,6 +20849,7 @@
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
     "spec/1124-spell-damage-dice.md",
+    "spec/1126-spell-visual-slots.md",
     "spec/717-area-target-selection.md"
    ]
   },
@@ -20870,10 +20871,10 @@
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
+    "spec/1126-spell-visual-slots.md",
     "spec/628-spell-effect-wrappers.md",
     "spec/629-spell-pack-idiom-and-uninit.md",
-    "spec/631-strength-spell-exceptional.md",
-    "spec/716-nil-slot-hazard.md"
+    "spec/631-strength-spell-exceptional.md"
    ]
   },
   {
@@ -20910,10 +20911,10 @@
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
+    "spec/1126-spell-visual-slots.md",
     "spec/707-raise-dead-and-area-effect.md",
     "spec/729-beam-walk-and-target-collect.md",
-    "spec/847-dragon-breath.md",
-    "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md"
+    "spec/847-dragon-breath.md"
    ]
   },
   {
@@ -20933,6 +20934,7 @@
    "note": "會反彈的直線投射物走訪器(retf 8)，四個呼叫端共用(03C98h/03FF4h 已解讀 spec 759/628、057E3h、05F2Fh 帶 'throws lightning')。射程 = arg_6 × 2；每段用 24 bytes 的直線記錄(+0 起y +2 起x +4 終y +6 終x +0Eh 目前y +10h 目前x +16h 步數)從起點往『遠離施法者』畫線，逐格查地形與佔用者：byte[26A2h + 地形×4] = 1 清命中旗標、\u003e 1 停、= 0 射程歸零；佔用者 \u003e 0 且不同於上一個就停下結算(sub_3947 = spec 707)。★結算判定命中時把起點搬到撞擊格、方向變號 → 投射物沿原路彈回。上一個佔用者初值是起點那格的佔用者 → 不打自己、不連打同一目標。arg_0 = 1 時撞擊點離施法者 ≤ 8 格額外扣 8 步(只生效一次)",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
+    "spec/1126-spell-visual-slots.md",
     "spec/847-dragon-breath.md",
     "spec/918-bouncing-line-projectile.md",
     "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md"
@@ -20956,6 +20958,7 @@
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "spec/1124-spell-damage-dice.md",
+    "spec/1126-spell-visual-slots.md",
     "spec/702-more-overlay22-spell-handlers.md",
     "spec/918-bouncing-line-projectile.md"
    ]
@@ -48620,10 +48623,10 @@
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
+    "spec/1126-spell-visual-slots.md",
     "spec/628-spell-effect-wrappers.md",
     "spec/629-spell-pack-idiom-and-uninit.md",
-    "spec/631-strength-spell-exceptional.md",
-    "spec/716-nil-slot-hazard.md"
+    "spec/631-strength-spell-exceptional.md"
    ]
   },
   {
