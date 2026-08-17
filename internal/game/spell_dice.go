@@ -201,3 +201,117 @@ func (s *State) combatCanCastSpellDice(spellID uint8, healing bool) bool {
 	_, err = s.combatSpellDiceTarget(healing)
 	return err == nil
 }
+
+// combatCastAreaDamageDice 是範圍版的傷害法術（spec 1124）：骰子與傷害屬性
+// 旗標讀表，半徑讀法術主表的宣告半徑。
+func (s *State) combatCastAreaDamageDice(spellID uint8) error {
+	if s.combatCastingSpell != 0 && s.combatCastingSpell != spellID {
+		return fmt.Errorf("a different spell target is being selected")
+	}
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if !found {
+		return fmt.Errorf("spell 0x%02X is not declared in combat_player_spells", spellID)
+	}
+	required, ok := combatSpellCasterClasses[definition.CasterClass]
+	if !ok {
+		return fmt.Errorf("spell 0x%02X declares unknown caster class %q", spellID, definition.CasterClass)
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.HasClass(required) {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q cannot cast spell 0x%02X", caster.ID, spellID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == spellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized spell 0x%02X", caster.ID, spellID)
+	}
+	entry, ok := gamepack.SpellByID(int(spellID))
+	if !ok || entry.AreaRadius <= 0 {
+		return fmt.Errorf("spell 0x%02X has no declared area radius", spellID)
+	}
+	table, err := gamepack.SpellDamage()
+	if err != nil {
+		return err
+	}
+	count, sides, ok := table.Dice(spellID, casterLevel(s.partyRoster[characterIndex]))
+	if !ok {
+		return fmt.Errorf("spell 0x%02X has no usable dice in the damage table", spellID)
+	}
+	s.partyRoster[characterIndex].SpellSlots = append(
+		s.partyRoster[characterIndex].SpellSlots[:spellIndex],
+		s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	result, err := s.battle.CastAreaDamageDice(caster.ID, s.combatSpellTargetPoint,
+		count, sides, entry.AreaRadius, table.Element(spellID),
+		entry.RequiresSave(), entry.SaveCategory, entry.SaveHalvesDamage())
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(
+			s.partyRoster[characterIndex].SpellSlots, spellID)
+		return err
+	}
+	s.CancelCombatCast()
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_fireball", "combat_fireball"),
+		caster.Name, result.BaseDamage, len(result.Impacts))
+	s.requestSound(SoundCast)
+	s.requestSound(SoundSpellHit)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+// combatCanCastAreaDamageDice 判斷範圍傷害法術現在施得出來嗎。
+func (s *State) combatCanCastAreaDamageDice(spellID uint8) bool {
+	if !s.CombatActive() {
+		return false
+	}
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if !found {
+		return false
+	}
+	required, ok := combatSpellCasterClasses[definition.CasterClass]
+	if !ok {
+		return false
+	}
+	entry, ok := gamepack.SpellByID(int(spellID))
+	if !ok || entry.AreaRadius <= 0 {
+		return false
+	}
+	table, err := gamepack.SpellDamage()
+	if err != nil {
+		return false
+	}
+	if _, _, ok := table.Dice(spellID, 1); !ok {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok || len(s.livingBySide(combat.SideEnemy)) == 0 {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || !character.HasClass(required) {
+			continue
+		}
+		for _, slot := range character.SpellSlots {
+			if slot == spellID {
+				return true
+			}
+		}
+	}
+	return false
+}

@@ -198,3 +198,102 @@ func TestFlameStrikeHalvesOnASuccessfulSave(t *testing.T) {
 		t.Fatalf("傷害總和超出 6d8 的合理範圍：過 %d／沒過 %d", alwaysSaves, neverSaves)
 	}
 }
+
+// 範圍傷害只擲**一次**骰，套給半徑內的每一個人；每人各自擲豁免。
+// 每個目標各擲一次傷害會讓方差與原版不同。
+func TestIceStormRollsDamageOnceForTheWholeArea(t *testing.T) {
+	value := NewState(testCatalog())
+	state := &value
+	state.partyRoster = party.Roster{{ID: "mage", Name: "法師",
+		Class: party.ClassMagicUser, Level: 8, HitPoints: 20, MaxHitPoints: 20,
+		ClassLevels:  [8]uint8{5: 8},
+		HealthStatus: party.HealthStatusOK,
+		Abilities: party.Abilities{Strength: 10, Intelligence: 17, Wisdom: 10,
+			Dexterity: 12, Constitution: 12, Charisma: 10},
+		SpellSlots: []uint8{87}}}
+	partyFighters := []combat.Fighter{{ID: "mage", Name: "法師", Side: combat.SideParty,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, InitiativeBonus: 20,
+		HasCombatPosition: true, CombatX: 1, CombatY: 1}}
+	enemies := []combat.Fighter{
+		{ID: "orc-a", Name: "獸人甲", Side: combat.SideEnemy, HitPoints: 60, MaxHitPoints: 60,
+			ArmorClass: 10, SavingThrows: []uint8{99, 99, 99, 99, 99},
+			HasCombatPosition: true, CombatX: 8, CombatY: 8},
+		{ID: "orc-b", Name: "獸人乙", Side: combat.SideEnemy, HitPoints: 60, MaxHitPoints: 60,
+			ArmorClass: 10, SavingThrows: []uint8{99, 99, 99, 99, 99},
+			HasCombatPosition: true, CombatX: 9, CombatY: 8},
+		{ID: "orc-far", Name: "獸人丙", Side: combat.SideEnemy, HitPoints: 60, MaxHitPoints: 60,
+			ArmorClass: 10, SavingThrows: []uint8{99, 99, 99, 99, 99},
+			HasCombatPosition: true, CombatX: 20, CombatY: 2},
+	}
+	if err := state.StartCombat(partyFighters, enemies, 13); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatCast(87); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCast(87); err != nil {
+		t.Fatal(err)
+	}
+	damage := map[string]int{}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideEnemy {
+			damage[fighter.ID] = 60 - fighter.HitPoints
+		}
+	}
+	if damage["orc-a"] == 0 || damage["orc-a"] != damage["orc-b"] {
+		t.Fatalf("同一次冰風暴打出不同傷害：%v（骰只擲一次）", damage)
+	}
+	if damage["orc-a"] < 3 || damage["orc-a"] > 30 {
+		t.Fatalf("傷害 %d 不在 3d10 的範圍 3..30", damage["orc-a"])
+	}
+	if damage["orc-far"] != 0 {
+		t.Fatalf("半徑外的人也被打了 %d 點", damage["orc-far"])
+	}
+}
+
+// 抗寒的人在冰風暴裡只吃一半——傷害屬性旗標接上了才會這樣。
+func TestResistColdHalvesIceStorm(t *testing.T) {
+	build := func(resist bool) *State {
+		value := NewState(testCatalog())
+		state := &value
+		state.partyRoster = party.Roster{{ID: "mage", Name: "法師",
+			Class: party.ClassMagicUser, Level: 8, HitPoints: 20, MaxHitPoints: 20,
+			ClassLevels:  [8]uint8{5: 8},
+			HealthStatus: party.HealthStatusOK,
+			Abilities: party.Abilities{Strength: 10, Intelligence: 17, Wisdom: 10,
+				Dexterity: 12, Constitution: 12, Charisma: 10},
+			SpellSlots: []uint8{87}}}
+		orc := combat.Fighter{ID: "orc", Name: "獸人", Side: combat.SideEnemy,
+			HitPoints: 60, MaxHitPoints: 60, ArmorClass: 10,
+			SavingThrows:      []uint8{99, 99, 99, 99, 99},
+			HasCombatPosition: true, CombatX: 8, CombatY: 8}
+		if resist {
+			orc.MonsterAffects = []combat.MonsterAffect{{Kind: 0x0A, Active: true}}
+		}
+		partyFighters := []combat.Fighter{{ID: "mage", Name: "法師", Side: combat.SideParty,
+			HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, InitiativeBonus: 20,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1}}
+		if err := state.StartCombat(partyFighters, []combat.Fighter{orc}, 13); err != nil {
+			t.Fatal(err)
+		}
+		if err := state.BeginCombatCast(87); err != nil {
+			t.Fatal(err)
+		}
+		if err := state.CombatCast(87); err != nil {
+			t.Fatal(err)
+		}
+		return state
+	}
+	damageOf := func(state *State) int {
+		for _, fighter := range state.CombatFighters() {
+			if fighter.ID == "orc" {
+				return 60 - fighter.HitPoints
+			}
+		}
+		return -1
+	}
+	plain, resisted := damageOf(build(false)), damageOf(build(true))
+	if resisted != plain/2 {
+		t.Fatalf("抗寒吃了 %d 點、沒抗寒 %d 點，應該剛好一半", resisted, plain)
+	}
+}
