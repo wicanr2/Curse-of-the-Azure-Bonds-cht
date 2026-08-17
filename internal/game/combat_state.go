@@ -1572,6 +1572,10 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		if !s.combatCanCastAreaDamageDice(spellID) {
 			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
 		}
+	case "morale_break_area":
+		if !s.combatCanCastAreaMoraleBreak(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
 	case "heal_dice", "damage_dice":
 		if !s.combatCanCastSpellDice(spellID, definition.Behavior == "heal_dice") {
 			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
@@ -1823,6 +1827,8 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 		return s.combatCastSpellDice(spellID, false)
 	case "damage_dice_area":
 		return s.combatCastAreaDamageDice(spellID)
+	case "morale_break_area":
+		return s.combatCastAreaMoraleBreak(spellID)
 	case "magic_missile":
 		// The effect helper below still consumes the original spell-table ID;
 		// the game-pack behavior token only selects this verified path.

@@ -270,3 +270,58 @@ func TestPanicMessageNeedsBothConditions(t *testing.T) {
 		}
 	}
 }
+
+// 混亂術（效果碼 `23h`）走的就是士氣崩潰那張四段表——這支法術不需要新規則。
+func TestAreaMoraleBreakRunsTheFourWayTableOnFailedSaves(t *testing.T) {
+	build := func(threshold uint8) *Battle {
+		battle, err := NewBattle([]Fighter{
+			{ID: "mage", Side: SideParty, HitPoints: 20, MaxHitPoints: 20,
+				HasCombatPosition: true, CombatX: 1, CombatY: 1},
+			{ID: "orc-a", Side: SideEnemy, HitPoints: 12, MaxHitPoints: 12,
+				ControlMorale:     0x33,
+				SavingThrows:      []uint8{threshold, threshold, threshold, threshold, threshold},
+				HasCombatPosition: true, CombatX: 8, CombatY: 8},
+			{ID: "orc-b", Side: SideEnemy, HitPoints: 12, MaxHitPoints: 12,
+				ControlMorale:     0x33,
+				SavingThrows:      []uint8{threshold, threshold, threshold, threshold, threshold},
+				HasCombatPosition: true, CombatX: 9, CombatY: 9},
+			{ID: "orc-far", Side: SideEnemy, HitPoints: 12, MaxHitPoints: 12,
+				ControlMorale:     0x33,
+				SavingThrows:      []uint8{threshold, threshold, threshold, threshold, threshold},
+				HasCombatPosition: true, CombatX: 25, CombatY: 2},
+		}, 21)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return battle
+	}
+	// 門檻 99 ⇒ 幾乎一定沒過（天然 20 除外）。
+	failing, err := build(99).CastAreaMoraleBreak("mage", TilePoint{X: 8, Y: 8}, 3, 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(failing.Impacts) != 2 {
+		t.Fatalf("命中 %d 個目標，半徑 3 應該只蓋到貼近的兩個", len(failing.Impacts))
+	}
+	for _, impact := range failing.Impacts {
+		if impact.Saved {
+			continue
+		}
+		if impact.Outcome < MoraleRunsAway || impact.Outcome > MoraleEnraged {
+			t.Fatalf("%s 沒過豁免卻沒有四段表的結果：%+v", impact.TargetID, impact)
+		}
+		if impact.MessageID == "" {
+			t.Fatalf("%s 沒有訊息鍵", impact.TargetID)
+		}
+	}
+	// 門檻 1 ⇒ 幾乎一定過，過了就不跑那張表。
+	saving, err := build(1).CastAreaMoraleBreak("mage", TilePoint{X: 8, Y: 8}, 3, 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, impact := range saving.Impacts {
+		if impact.Saved && impact.MessageID != "" {
+			t.Fatalf("%s 過了豁免卻還是跑了四段表", impact.TargetID)
+		}
+	}
+}

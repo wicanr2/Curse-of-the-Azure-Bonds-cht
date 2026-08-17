@@ -204,3 +204,60 @@ func (b *Battle) ResolveMoraleFailure(fighterID string) (MoraleFailureResult, er
 	b.updateStatus()
 	return result, nil
 }
+
+// AreaMoraleBreakResult 是一次範圍士氣崩潰（混亂術，效果碼 `23h`）。
+type AreaMoraleBreakResult struct {
+	CasterID string                `json:"caster_id"`
+	Center   TilePoint             `json:"center"`
+	Impacts  []AreaMoraleBreakHit  `json:"impacts"`
+}
+
+// AreaMoraleBreakHit 是一個目標的結果。
+type AreaMoraleBreakHit struct {
+	TargetID string `json:"target_id"`
+	SaveRoll int    `json:"save_roll,omitempty"`
+	Saved    bool   `json:"saved,omitempty"`
+	// Outcome 只在沒過豁免時有值。
+	Outcome   MoraleOutcome `json:"outcome,omitempty"`
+	MessageID string        `json:"message_id,omitempty"`
+}
+
+// CastAreaMoraleBreak 讓半徑內每個沒過豁免的目標跑一次士氣崩潰的四段表。
+//
+// ★ 混亂術（法術 82）的效果碼就是 `23h`，而 `23h` 的處理常式正是那張四段表
+// （spec 831／1122）。所以這支法術不需要新的規則，只需要接上既有的那一張表。
+func (b *Battle) CastAreaMoraleBreak(casterID string, center TilePoint, radius,
+	saveCategory int) (AreaMoraleBreakResult, error) {
+	if b == nil || b.rng == nil {
+		return AreaMoraleBreakResult{}, errNoPRNG
+	}
+	if _, ok := b.fighters[casterID]; !ok {
+		return AreaMoraleBreakResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	if b.status != StatusActive {
+		return AreaMoraleBreakResult{}, fmt.Errorf("battle is already over")
+	}
+	result := AreaMoraleBreakResult{CasterID: casterID, Center: center}
+	for _, id := range b.fighterOrder {
+		target := b.fighters[id]
+		if target.HitPoints <= 0 || target.Escaped || !target.HasCombatPosition ||
+			!fighterFootprintWithinRadius(target, center, radius) {
+			continue
+		}
+		save, err := b.RollSavingThrow(target, saveCategory, 0)
+		if err != nil {
+			return AreaMoraleBreakResult{}, err
+		}
+		hit := AreaMoraleBreakHit{TargetID: id, SaveRoll: save.Roll, Saved: save.Saved}
+		if !save.Saved {
+			broken, err := b.ResolveMoraleFailure(id)
+			if err != nil {
+				return AreaMoraleBreakResult{}, err
+			}
+			hit.Outcome, hit.MessageID = broken.Outcome, broken.MessageID
+		}
+		result.Impacts = append(result.Impacts, hit)
+	}
+	b.updateStatus()
+	return result, nil
+}
