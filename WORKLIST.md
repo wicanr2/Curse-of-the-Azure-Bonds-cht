@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-17（第 568 輪：第 2 批三項完成——沒有等級吸取、視覺演出只有三個槽、音效獨立驗證）
+更新日期：2026-08-17（第 568 輪：第 2 批完成 ＋ 重新盤點剩餘工作）
 
 ## 目前執行順序（使用者 2026-08-16 指定，優先於下方所有舊清單）
 
@@ -45,6 +45,38 @@
 
 **覆蓋台帳現況：可宣告 73 支全部 `handler`／`visual`／`sound` 三欄 observed。**
 剩下的不是接線缺口：13 筆占位玩家取不到、8 支只能紮營、6 支職業模型不支援。
+
+### 盤點（2026-08-17）：目前真正還開著的工作
+
+第 2 批收完之後重新對了一次帳。**下面每個數字都有產生它的工具**，不是印象。
+
+先講已經收斂到 0 的分母——這幾條不用再排工作：
+
+| 分母 | 現況 | 工具 |
+|---|---|---|
+| ECL 文字 | 控制流可達 1,022 頁，`unmatched` **0**（另 16 頁 `variable-insert`、7 頁 `subroutine` 靜態驗不到）| `cmd/ecl-text-coverage` |
+| ECL 副作用 | 可達 14,177 條指令，`consumed` **0** | `cmd/ecl-effect-coverage` |
+| 反組譯台帳 | `待解讀` **0**（2,874 支：已解讀 2,137／不阻塞 162／邊界碎片 575）| `cmd/re-ledger` |
+| 戰鬥法術 | 可宣告 73 支全部 `handler`／`visual`／`sound` observed | `cmd/combat-spell-coverage-audit` |
+
+還開著的，依「擋不擋得住一次完整通關」排：
+
+| 級 | 工作 | 量到的缺口 | 下一個可驗收成果 |
+|---|---|---|---|
+| **P0** | **開場→結局的正常主線** | 目前走到眼魔洞穴手札 59 與散提爾堡世界選單；後續章節、最終戰與 `PROGRAM 8` 結局未串完 | 沿同一 session 續接下一章，最後閉合結局與 save／reload |
+| **P0** | **戰鬥回合生命週期**（`RE-06` → `ENG-07`）| ECL `24h COMBAT` 199 處標 `partial`——分派點已接、回合生命週期未接；initiative／held／delayed／guard／quick 的逐項對照仍開著 | 每一項各一條回歸測試 ＋ 一條正常戰鬥路徑 |
+| **P1** | **ECL 的 11 個 `partial` opcode** | 1,057 條指令：`CLEARMONSTERS` 206、`PICTURE` 199、`COMBAT` 199、`CALL` 168、`PRINT RETURN` 120、`TREASURE` 63、`DAMAGE` 24、`LOAD PIECES` 23、`LOAD FILES` 22、`APPROACH` 20、`PROGRAM` 13 | 依出現次數往下做；每一個都要 producer→state→consumer 三段齊全 |
+| **P1** | **手札 producer** | locale 有 45 則手札，只有 **15 則**接上 ECL producer ⇒ 30 則還沒有觸發來源；手札 59 的地圖 renderer 未做 | 逐則從 ECL producer 接入，不因手冊有內容就提早揭露 |
+| **P1** | **存檔剩餘欄位** | 角色記錄 422 bytes 裡 `unknown` 還有 **29**（decoded 294／documented 99）；`MOVEPARTY` 跨遊戲轉移未做 | 突變量測逐段收斂 `unknown`；轉移另開 |
+| **P1** | **怪物側的自動換裝** | 規則已實作但只對隊伍側生效——怪物的物品鏈還沒進 `Fighter`。**這是資料來源的缺口，不是規則的** | 把 `MON*ITM` 接進 `Fighter`，換裝規則不動 |
+| **P1** | **音樂／音效的 cue 綁定** | 戰鬥開始／全滅的語意已接；每個場景與戰鬥 phase 的 cue、播放生命週期未完成 | 先資料綁定 ＋ 可重播，再對 runtime phase |
+| **P1** | **UI 與原版 fidelity** | 冒險／戰鬥／地圖／對話／頭像的所有狀態尚未逐張比對 | 每張標平台／狀態／seed／theme 與 `exact`／`nearby`／`layout-only` |
+| **P2** | 三平台打包、README／截圖／推廣片 | 等 P0／P1 收斂 | — |
+
+⚠ 兩個**不列為工作**的項目，理由已經查證過：
+
+- **等級吸取**：spec 1127 證明這個遊戲沒有（兩個消費者、零個生產者，怪物名單裡也沒有那一族）。復原術一定回「沒有可恢復的等級」是**原作行為**，不是 remake 缺口。
+- **逐法術視覺資產**：spec 1126 證明原作只有一段共用演出加兩個例外，不存在「七十幾筆待補的視覺資料」。
 
 ### 反組譯盤點（第 559 輪起）的殘項
 
@@ -273,7 +305,7 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
 |---|---|---|
 | 全 ECL 與外部 routine | 25 個 block／125 個 entry 的 parser／控制流 corpus gate 已完成；`C04B..C04F` virtual-map adapter 已閉合，但 `CALL`、`NEWECL`、剩餘地圖服務、劇情旗標、NPC 離隊、輸入與 continuation 的完整 consumer 仍未閉合。與玩家結果無關的 raw work address（目前如 `0x4C00`）不列為 blocker。 | 只逆向會改變玩家結果的 producer→state→consumer；每個完成事件都要有 raw bytes／runtime trace、JSON contract、stable ID 測試與正常輸入路徑。 |
 | 全地圖與世界旅行 | 16 個原始 GEO block 已在 game-pack 宣告；14 個世界點位的 ECL1 到達、Tilverton→全點 directed adjacency，以及新遊戲→阿沙本福德→立石群→艾森布拉的正常主線已通過 Docker gate。仍缺所有城市／地城房間 coverage、TRAIL／WILDERNESS／EXIT 全分支、隨機遭遇、所有入口出口、持久 map state 與原版 fidelity。 | 建立每座城市／每個 GEO block 的正常事件 coverage matrix，保存 flag／座標／資源 handoff，並補全世界旅行與重訪回歸；不把攻略座標直接寫成規則。 |
-| 戰鬥規則、AI、法術效果與動畫 | 已有部分 AD&D 數值、敵方選敵、延後施法與 12 個玩家法術入口。第 556 輪把睡眠術 PC-98 `TWINKLE` 改為正式 generated-visual JSON binding；現況 audit 為 12/12 handler、5/12 有完整 visual binding、12/12 有音效呼叫，但只有 Fireball、Lightning Bolt 與資料化後的 Sleep 接近完整門檻。仍缺六個牧師法術畫面、三個共用音效時間軸、弓箭原版時序矩陣與完整敵我 AI。 | 先閉合六個牧師法術的原版可證視覺，再把 Magic Missile／Stinking Cloud／Cloudkill 音效 phase 資料化；建立 12 法術與弓箭的 save、death、continuation 驗收矩陣。影片只能證明演出，數值要回 bytes／DOSBox。 |
+| 戰鬥規則、AI、法術效果與動畫 | 法術那一半**已收斂**：可宣告的 73 支全部宣告，`handler`／`visual`／`sound` 三欄 observed（spec 1111／1117／1123／1124／1125／1126）。視覺不是七十幾筆待補資產——原作只有一段共用施法投射物（COMSPR 區塊 5）加閃電電弧（6）與魔法命中（10）。仍缺的是**回合生命週期**（initiative／held／delayed／guard／quick 逐項對照，`RE-06`）、怪物側物品鏈進 `Fighter`，以及弓箭原版時序矩陣。 | 回合生命週期每項一條回歸測試 ＋ 正常戰鬥路徑；影片只能證明演出，數值要回 bytes／DOSBox。 |
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
 | 全量繁體中文化與遊戲內手札 | 第 556 輪修正七行裁切：長手札依真實字寬自動分頁，來源 stable ID 與 save 不變；摩安德之坑真實 producer 已接通手札 46。目前 59 則中 31 則有 en／zh-TW stable ID 與事件解鎖，另 28 則尚缺 producer 接線；手札 1 來源仍為 `unknown`。全 ECL／物品／法術／怪物／地名／UI 校對與手札 59 地圖 renderer 仍未完成。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；逐條從 ECL producer 接入剩餘 28 則，不因手冊存在就提早揭露；手札 59 原圖依來源與版面規格加入 renderer。 |
 | 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；戰鬥開始／隊伍全滅 semantic intent 已接通，但完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥 phase 同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
