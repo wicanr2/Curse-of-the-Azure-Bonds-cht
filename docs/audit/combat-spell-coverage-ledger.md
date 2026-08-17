@@ -16,11 +16,11 @@
 | └ 玩家取得到 | 87 |
 | 　├ 只能紮營施放 | 8 |
 | 　└ **戰鬥可施放（真正的分母）** | **79** |
-| 　　├ game pack 已宣告 | 12 |
-| 　　├ 其中 runtime handler 已觀察到 | 12 |
-| 　　└ **尚未宣告** | **67** |
+| 　　├ game pack 已宣告 | 23 |
+| 　　├ 其中 runtime handler 已觀察到 | 23 |
+| 　　└ **尚未宣告** | **56** |
 
-未宣告的戰鬥法術，依環數：1 環 15 支、2 環 10 支、3 環 16 支、4 環 15 支、5 環 9 支、7 環 2 支。
+未宣告的戰鬥法術，依環數：1 環 14 支、2 環 6 支、3 環 11 支、4 環 15 支、5 環 8 支、7 環 2 支。
 
 ## 逐支
 
@@ -48,14 +48,14 @@
 | 20 | Shocking Grasp | magic-user | 1 | 1 節／1 個目標 | 未宣告 | — | — |
 | 21 | Sleep | magic-user | 1 | 1 節／半徑 1／效果 53 | observed | observed | observed |
 | 22 | Find Traps | cleric | 2 | 5 節／自己／效果 19 | 紮營法術 | — | — |
-| 23 | Hold Person | cleric | 2 | 5 節／3 個目標／豁免 spell／效果 52 | 未宣告 | — | — |
+| 23 | Hold Person | cleric | 2 | 5 節／3 個目標／豁免 spell／效果 52 | observed | missing | missing |
 | 24 | Resist Fire | cleric | 2 | 5 節／1 個目標／效果 20 | 未宣告 | — | — |
 | 25 | Silence, 15' Radius | cleric | 2 | 5 節／鎖定目標／豁免 spell／效果 21 | 未宣告 | — | — |
 | 26 | Slow Poison | cleric | 2 | 1 節／1 個目標／效果 22 | 未宣告 | — | — |
-| 27 | Snake Charm | cleric | 2 | 5 節／自己／效果 51 | 未宣告 | — | — |
+| 27 | Snake Charm | cleric | 2 | 5 節／自己／效果 51 | observed | missing | missing |
 | 28 | Spiritual Hammer | cleric | 2 | 5 節／自己／效果 23 | 未宣告 | — | — |
-| 29 | Detect Invisibility | magic-user | 2 | 2 節／自己／效果 24 | 未宣告 | — | — |
-| 30 | Invisibility | magic-user | 2 | 2 節／1 個目標／效果 25 | 未宣告 | — | — |
+| 29 | Detect Invisibility | magic-user | 2 | 2 節／自己／效果 24 | observed | missing | missing |
+| 30 | Invisibility | magic-user | 2 | 2 節／1 個目標／效果 25 | observed | missing | missing |
 | 31 | Knock | magic-user | 2 | 1 節／自己 | 紮營法術 | — | — |
 | 32 | Mirror Image | magic-user | 2 | 2 節／自己／效果 28 | 未宣告 | — | — |
 | 33 | Ray of Enfeeblement | magic-user | 2 | 2 節／1 個目標／豁免 spell／效果 29 | 未宣告 | — | — |
@@ -70,17 +70,17 @@
 | 42 | Prayer | cleric | 3 | 6 節／自己／效果 49 | 未宣告 | — | — |
 | 43 | Remove Curse | cleric | 3 | 6 節／1 個目標 | 未宣告 | — | — |
 | 44 | Bestow Curse | cleric | 3 | 6 節／1 個目標／豁免 spell／效果 36 | 未宣告 | — | — |
-| 45 | Blink | magic-user | 3 | 1 節／自己／效果 37 | 未宣告 | — | — |
+| 45 | Blink | magic-user | 3 | 1 節／自己／效果 37 | observed | missing | missing |
 | 46 | Dispel Magic | magic-user | 3 | 3 節／半徑 1 | 未宣告 | — | — |
 | 47 | Fireball | magic-user | 3 | 3 節／半徑 3／豁免 spell | observed | observed | observed |
-| 48 | Haste | magic-user | 3 | 3 節／半徑 2／效果 39 | 未宣告 | — | — |
-| 49 | Hold Person | magic-user | 3 | 3 節／4 個目標／豁免 spell／效果 52 | 未宣告 | — | — |
-| 50 | Invisibility, 10' Radius | magic-user | 3 | 3 節／半徑 1／效果 25 | 未宣告 | — | — |
+| 48 | Haste | magic-user | 3 | 3 節／半徑 2／效果 39 | observed | missing | missing |
+| 49 | Hold Person | magic-user | 3 | 3 節／4 個目標／豁免 spell／效果 52 | observed | missing | missing |
+| 50 | Invisibility, 10' Radius | magic-user | 3 | 3 節／半徑 1／效果 25 | observed | missing | missing |
 | 51 | Lightning Bolt | magic-user | 3 | 3 節／半徑 0／豁免 spell | observed | observed | observed |
 | 52 | Protection From Evil, 10' Radius | magic-user | 3 | 3 節／1 個目標／效果 45 | 未宣告 | — | — |
 | 53 | Protection From Good, 10' Radius | magic-user | 3 | 3 節／1 個目標／效果 46 | 未宣告 | — | — |
 | 54 | Protection From Normal Missiles | magic-user | 3 | 3 節／1 個目標／效果 41 | 未宣告 | — | — |
-| 55 | Slow | magic-user | 3 | 3 節／半徑 2／效果 42 | 未宣告 | — | — |
+| 55 | Slow | magic-user | 3 | 3 節／半徑 2／效果 42 | observed | missing | missing |
 | 56 | Restoration | cleric | 7 | 6 節／1 個目標 | 未宣告 | — | — |
 | 57 | （占位） | — | 6 | 0 節／自己／效果 39 | 取不到 | — | — |
 | 58 | Cure Serious Wounds | cleric | 4 | 7 節／1 個目標 | 未宣告 | — | — |
@@ -105,7 +105,7 @@
 | 77 | Detect Magic | druid | 1 | 3 節／自己／效果 5 | 未宣告 | — | — |
 | 78 | Entangle | druid | 1 | 3 節／半徑 3／豁免 spell／效果 136 | 未宣告 | — | — |
 | 79 | Faerie Fire | druid | 1 | 3 節／逐一點選／豁免 spell／效果 7 | 未宣告 | — | — |
-| 80 | Invisibility to Animals | druid | 1 | 4 節／1 個目標／效果 69 | 未宣告 | — | — |
+| 80 | Invisibility to Animals | druid | 1 | 4 節／1 個目標／效果 69 | observed | missing | missing |
 | 81 | Charm Monsters | magic-user | 4 | 4 節／逐一點選／豁免 spell／效果 11 | 未宣告 | — | — |
 | 82 | Confusion | magic-user | 4 | 4 節／半徑 3／豁免 spell／效果 35 | 未宣告 | — | — |
 | 83 | Dimension Door | magic-user | 4 | 1 節／半徑 0 | 未宣告 | — | — |
@@ -119,7 +119,7 @@
 | 91 | Cloud Kill | magic-user | 5 | 5 節／半徑 1 | observed | observed | observed_shared |
 | 92 | Cone of Cold | magic-user | 5 | 5 節／半徑 0／豁免 spell | 未宣告 | — | — |
 | 93 | Feeblemind | magic-user | 5 | 5 節／1 個目標／豁免 spell／效果 68 | 未宣告 | — | — |
-| 94 | Hold Monsters | magic-user | 5 | 5 節／4 個目標／豁免 spell／效果 52 | 未宣告 | — | — |
+| 94 | Hold Monsters | magic-user | 5 | 5 節／4 個目標／豁免 spell／效果 52 | observed | missing | missing |
 | 95 | （占位） | — | 6 | 10 節／自己／效果 73 | 取不到 | — | — |
 | 96 | （占位） | — | 6 | 10 節／自己／效果 109 | 取不到 | — | — |
 | 97 | （占位） | — | 6 | 0 節／自己／效果 25 | 取不到 | — | — |

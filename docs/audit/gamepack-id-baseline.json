@@ -622,6 +622,50 @@
   {
    "kind": "text_rules",
    "id": "zhentil.patrol_pass"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_23"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_27"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_druid_80"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_29"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_30"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_45"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_48"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_49"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_50"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_55"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_94"
   }
  ]
 }
