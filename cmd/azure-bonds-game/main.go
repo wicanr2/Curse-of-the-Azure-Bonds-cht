@@ -3236,6 +3236,8 @@ func main() {
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
 	savgamDir := flag.String("savgam-dir", "", "directory containing reference savgam?.dat and CHRDAT player bundles")
 	savgamSlot := flag.String("savgam-slot", "", "reference SAVGAM slot key A..J to load and save with -savgam-dir")
+	savgamImport := flag.Bool("savgam-import", false,
+		"treat the -savgam-slot files as pristine original saves: names decode as Big5 and the slot is never written back")
 	dosCharacterID := flag.String("dos-character-id", "dos-character", "ID for a direct DOS character import")
 	dosCharacterRecord := flag.String("dos-character-record", "", "DOS .SAV/.GUY path to load directly into the remake")
 	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
@@ -3393,7 +3395,14 @@ func main() {
 		if loadedSAVGAMSlot < 'A' || loadedSAVGAMSlot > 'J' {
 			log.Fatal("-savgam-slot must be one letter A..J")
 		}
-		if err := state.LoadSAVGAMSlot(*savgamDir, loadedSAVGAMSlot); err != nil {
+		// 匯入原版與載入 remake 自己的槽是兩條路，因為**光看檔案分不出來源**：
+		// 兩者版面相同，而名字的編碼不同（原版 Big5、remake UTF-8）。由旗標明講，
+		// 不猜。匯入之後不寫回同一個槽——原版檔案是唯讀輸入。
+		load := state.LoadSAVGAMSlot
+		if *savgamImport {
+			load = state.LoadOriginalSAVGAMSlot
+		}
+		if err := load(*savgamDir, loadedSAVGAMSlot); err != nil {
 			log.Fatal(err)
 		}
 	} else if *partyLoadPath != "" {
@@ -3830,7 +3839,7 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	gameApp := &app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
+	gameApp := &app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
 	if *innerFinalBattle && *screenshotPath != "" {
 		// Capture-only boss observation camera. Formal play keeps the RuleBook
 		// active-fighter camera established above.

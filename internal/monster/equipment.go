@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strings"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/origtext"
 )
 
 const (
@@ -303,6 +305,25 @@ func LocalizedAffectName(affect AffectRecord, resolver TextResolver) string {
 	}
 	format := resolver.Text("affect_unknown", "effect 0x%02X")
 	return fmt.Sprintf(format, affect.Kind)
+}
+
+// ParseOriginalItems 讀**原版**的 `.SWG`／ITEM 位元組：版面與 ParseItems 完全
+// 相同，差別只有名字以原版編碼（Big5，ASCII 相容）解讀。
+//
+// ★ 為什麼要兩支。 這個版面同時被原版資料與 remake 自己的 sidecar 使用，而
+// remake 的寫入端寫的是 UTF-8。編碼由**來源**決定不是版面決定——在
+// `parseItem` 裡一律當 Big5 會把 remake 自己的存檔讀壞（英文原版看不出來，
+// 因為 ASCII 相容；中文版才會炸）。
+func ParseOriginalItems(data []byte) ([]ItemRecord, error) {
+	items, err := ParseItems(data)
+	if err != nil {
+		return nil, err
+	}
+	for index := range items {
+		// Go 的 string 保留無效 UTF-8 位元組，所以轉回 []byte 拿得到原始位元組。
+		items[index].Name = origtext.Decode([]byte(items[index].Name))
+	}
+	return items, nil
 }
 
 func ParseItems(data []byte) ([]ItemRecord, error) {

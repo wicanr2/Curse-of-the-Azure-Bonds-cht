@@ -425,6 +425,23 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 // This loader intentionally does not infer unsupported multi-class fields or
 // rewrite the original files.
 func (s *State) LoadSAVGAMSlot(directory string, key byte) error {
+	return s.loadSAVGAMSlot(directory, key, party.ParseDOSPlayerFiles)
+}
+
+// LoadOriginalSAVGAMSlot 匯入**原版**的 SAVGAM 槽：版面與 LoadSAVGAMSlot 完全
+// 相同，差別在角色名與物品名以原版編碼（Big5，ASCII 相容）解讀。
+//
+// ★ 為什麼要由呼叫端指定，不能自動判斷。 remake 自己寫出來的槽用的是同一個
+// 版面（`SaveSAVGAMSlot` 保留原始位元組再用 UTF-8 覆寫名字），所以**光看檔案
+// 分不出來源**。猜錯的代價是不對稱的：把 remake 的存檔當原版讀會把 UTF-8 名字
+// 當 Big5 解成亂碼，而英文原版兩條路結果一樣（ASCII 相容）——也就是說猜錯在
+// 英文資料上完全看不出來，中文版才會炸。所以由呼叫端明講。
+func (s *State) LoadOriginalSAVGAMSlot(directory string, key byte) error {
+	return s.loadSAVGAMSlot(directory, key, party.ParseOriginalDOSPlayerFiles)
+}
+
+func (s *State) loadSAVGAMSlot(directory string, key byte,
+	parse func(string, party.DOSPlayerFiles) (party.Character, error)) error {
 	if key < 'A' || key > 'J' {
 		return fmt.Errorf("SAVGAM slot key %q is outside A..J", key)
 	}
@@ -452,7 +469,7 @@ func (s *State) LoadSAVGAMSlot(directory string, key byte) error {
 		if err != nil {
 			return err
 		}
-		character, err := party.ParseDOSPlayerFiles(base, party.DOSPlayerFiles{Record: record, Effects: effects, Inventory: inventory})
+		character, err := parse(base, party.DOSPlayerFiles{Record: record, Effects: effects, Inventory: inventory})
 		if err != nil {
 			return fmt.Errorf("SAVGAM player %s: %w", base, err)
 		}

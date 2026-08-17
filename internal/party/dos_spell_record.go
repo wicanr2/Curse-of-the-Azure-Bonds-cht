@@ -210,6 +210,28 @@ func ParseDOSPlayerFiles(id string, files DOSPlayerFiles) (Character, error) {
 	return record.Character()
 }
 
+// ParseOriginalDOSPlayerFiles 匯入**一整份原版**的角色檔（`.SAV` ＋ `.FX` ＋
+// `.SWG`）：角色名與物品名都以原版編碼解讀。
+//
+// ⚠ 效果記錄（`.FX`）沒有字串，所以那一份兩條路共用。
+func ParseOriginalDOSPlayerFiles(id string, files DOSPlayerFiles) (Character, error) {
+	record, err := ParseOriginalDOSPlayerRecord(files.Record, id)
+	if err != nil {
+		return Character{}, err
+	}
+	if files.Effects != nil {
+		if err := record.ApplyEffects(files.Effects); err != nil {
+			return Character{}, err
+		}
+	}
+	if files.Inventory != nil {
+		if err := record.ApplyOriginalInventory(files.Inventory); err != nil {
+			return Character{}, err
+		}
+	}
+	return record.Character()
+}
+
 // ParseDOSPlayerRecord decodes the documented fixed portion of a decompressed
 // .SAV/.GUY player record. Only single-class races/classes represented by the
 // current remake Character model are accepted; raw offsets for inventory and
@@ -405,6 +427,20 @@ func (r *DOSPlayerRecord) ApplyInventory(data []byte) error {
 		return fmt.Errorf("cannot apply inventory to nil DOS player record")
 	}
 	items, err := monster.ParseItems(data)
+	if err != nil {
+		return err
+	}
+	r.Inventory = append(r.Inventory[:0], items...)
+	return nil
+}
+
+// ApplyOriginalInventory 讀**原版**的 `.SWG`：與 ApplyInventory 相同，
+// 但物品名以原版編碼解讀。理由同 ParseOriginalDOSPlayerRecord。
+func (r *DOSPlayerRecord) ApplyOriginalInventory(data []byte) error {
+	if r == nil {
+		return fmt.Errorf("cannot apply inventory to nil DOS player record")
+	}
+	items, err := monster.ParseOriginalItems(data)
 	if err != nil {
 		return err
 	}
