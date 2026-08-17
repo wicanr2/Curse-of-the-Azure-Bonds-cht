@@ -45,18 +45,53 @@ func AffectKindIsInterpreted(kind uint8) bool {
 	if !ok || len(handler.Modifiers) == 0 {
 		return false
 	}
-	// ⚠ 有數字還不夠，**還要有人問它**。`CHECKFX` 是唯一會走 handler 的路，
-	// 所以不在任何 timing 清單裡的碼，那些數字永遠套不上。
-	// （`16h` 與 `93h` 就是這種：handler 寫全域，但沒有 timing 指到它們。）
-	if !table.HasTiming(kind) {
-		return false
-	}
-	// ⚠ 還要 remake **搬得動**。寫進記錄的那一類，只有對應得上 `Fighter` 欄位
-	// 的格子算數；抄了個位移卻不知道是什麼，不能算成判讀得了。
-	for _, modifier := range handler.Modifiers {
-		if modifier.Record == "" || recordWriteIsMapped(modifier.Record, modifier.Field) {
-			return true
+	// ⚠ 有數字還不夠。三個條件都要成立才算「戰鬥規則會理它」：
+	//
+	//   1. 這個碼出現在某個 timing 的清單裡（`CHECKFX` 才問得到它）；
+	//   2. 那個 timing remake **真的有查**；
+	//   3. 它動的那一格 remake **真的有讀**（全域要對得上已接的暫存值，
+	//      記錄要對得上 `Fighter` 的欄位）。
+	//
+	// 少了第 2 或第 3 條，數字會躺在表裡永遠套不上，而覆蓋報告會把它算成完成。
+	for _, timing := range wiredTimings {
+		listed := false
+		for _, code := range table.TimingEffects(timing.timing) {
+			if code == int(kind) {
+				listed = true
+				break
+			}
+		}
+		if !listed {
+			continue
+		}
+		for _, modifier := range handler.Modifiers {
+			if modifier.Record != "" {
+				if timing.records && recordWriteIsMapped(modifier.Record, modifier.Field) {
+					return true
+				}
+				continue
+			}
+			if table.ScratchName(modifier.Global) == timing.scratch {
+				return true
+			}
 		}
 	}
 	return false
+}
+
+// wiredTimings 是 remake **真的會查**的時機，以及那一次查詢讀的是哪一格。
+// 新接一條路就在這裡加一列——沒加的話覆蓋報告不會把它算進去，
+// 那比反過來（算進去但其實沒接）安全。
+var wiredTimings = []struct {
+	timing  uint8
+	scratch string
+	// records 為 true 代表這一次查詢會套用記錄寫入。
+	records bool
+}{
+	{timing: CheckFXSavingThrow, scratch: scratchSavingThrow},
+	{timing: CheckFXMorale, scratch: scratchMorale},
+	{timing: CheckFXMovement, scratch: scratchMovement},
+	{timing: checkFXDamage, scratch: scratchDamage},
+	{timing: checkFXDamage, scratch: scratchSavingThrow},
+	{timing: CheckFXCanAct, records: true},
 }

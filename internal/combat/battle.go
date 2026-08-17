@@ -2439,3 +2439,78 @@ func (b *Battle) spellDiceEndpoints(casterID, targetID string, count, sides int)
 	}
 	return caster, target, nil
 }
+
+// CastAreaDamageDice 是「擲一次 NdM，套給中心半徑內的每一個人」。
+//
+// ★ 傷害只擲**一次**，每個目標各自擲豁免——與火球那一支同一個形狀（spec 731）。
+// 每個目標擲一次傷害會讓範圍法術的方差大到與原版不同。
+//
+// 傷害屬性旗標一起傳進 `CHECKFX(06h)`，所以抗寒／抗火在這裡自然生效。
+//
+// ⚠ `requiresSave` 為 false 時**完全不擲豁免**（`+8h = 0`，spec 1111）。
+// 照擲會多消耗亂數，而且「豁免過了就沒事」的分支會讓不該有豁免的法術漏傷害。
+func (b *Battle) CastAreaDamageDice(casterID string, center TilePoint,
+	count, sides, radius int, element uint8,
+	requiresSave bool, saveCategory int, saveHalves bool) (AreaSpellResult, error) {
+	if b == nil || b.rng == nil {
+		return AreaSpellResult{}, errNoPRNG
+	}
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return AreaSpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	if b.status != StatusActive {
+		return AreaSpellResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 {
+		return AreaSpellResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	if count <= 0 || sides <= 0 || radius < 0 {
+		return AreaSpellResult{}, fmt.Errorf("area spell %dd%d radius %d is not castable", count, sides, radius)
+	}
+	base := 0
+	for roll := 0; roll < count; roll++ {
+		base += b.rng.Intn(sides) + 1
+	}
+	result := AreaSpellResult{CasterID: casterID, Center: center, BaseDamage: base}
+	for _, id := range b.fighterOrder {
+		target := b.fighters[id]
+		if target.HitPoints <= 0 || target.Escaped || !target.HasCombatPosition ||
+			!fighterFootprintWithinRadius(target, center, radius) {
+			continue
+		}
+		damage := base
+		saved := false
+		if requiresSave {
+			save, err := b.RollSavingThrow(target, saveCategory, 0)
+			if err != nil {
+				return AreaSpellResult{}, err
+			}
+			saved = save.Saved
+		}
+		if saved {
+			if !saveHalves {
+				result.Impacts = append(result.Impacts, AreaSpellImpact{
+					TargetID: id, Saved: true})
+				continue
+			}
+			damage /= 2
+		}
+		adjusted, err := CheckFX(target, checkFXDamage, map[string]int{
+			scratchDamage: damage, scratchDamageElement: int(element)})
+		if err != nil {
+			return AreaSpellResult{}, err
+		}
+		damage = adjusted.Applied[scratchDamage]
+		if damage < 0 {
+			damage = 0
+		}
+		applied := b.applyPositiveDamage(&target, damage)
+		b.fighters[id] = target
+		result.Impacts = append(result.Impacts, AreaSpellImpact{
+			TargetID: id, Saved: saved,
+			Damage: applied, TargetHP: target.HitPoints})
+	}
+	b.updateStatus()
+	return result, nil
+}

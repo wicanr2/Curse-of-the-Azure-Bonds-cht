@@ -2748,6 +2748,15 @@
    "casting_time": 4
   },
   {
+   "id": "coab.spell.ice-storm",
+   "spell_id": 87,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "damage_dice_area",
+   "message_id": "spell_magic_user_87",
+   "casting_time": 4
+  },
+  {
    "id": "coab.spell.cloudkill",
    "spell_id": 91,
    "caster_class": "magic_user",
