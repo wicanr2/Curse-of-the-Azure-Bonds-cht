@@ -2594,6 +2594,14 @@ func (s *State) combatCastProtectionSpell(plan protectionSpellPlan) error {
 			s.partyRoster[characterIndex].SpellSlots, plan.spellID)
 		return err
 	}
+	// 共用的施法投射物（spec 1126）：保護法術沒有走 `combatFinishSpell`，
+	// 所以這一段要自己排，否則這四支會是全表唯一沒有演出的法術。
+	if casterID, from, to, ok := s.sharedSpellCastGeometry(); ok {
+		s.queueCombatVisual(combat.VisualEvent{
+			Kind: combat.VisualMagicMissile, Effect: "spell_cast_shared",
+			ActorID: casterID, From: from, To: to,
+		})
+	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text(plan.messageKey, plan.messageKey),
 		caster.Name, target.Name, duration)

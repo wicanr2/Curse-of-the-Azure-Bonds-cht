@@ -52,7 +52,17 @@ func (s *State) combatSpellPrologue(spellID uint8) (int, int, combat.Fighter, er
 }
 
 // combatFinishSpell 收攏施法之後的共用收尾。
+//
+// ★ 原作的施法演出是**共用**的：`CASTSPELL` 在分派到 handler 之前就播一段
+// 投射物（`<overlay-24 entry#24>(槽 18)` ＝ COMSPR `05h`／`85h`，spec 1126）。
+// 所以每一支法術都有演出，不是只有火球、閃電那幾支有。
 func (s *State) combatFinishSpell(message string) error {
+	if caster, from, to, ok := s.sharedSpellCastGeometry(); ok {
+		s.queueCombatVisual(combat.VisualEvent{
+			Kind: combat.VisualMagicMissile, Effect: "spell_cast_shared",
+			ActorID: caster, From: from, To: to,
+		})
+	}
 	s.CancelCombatCast()
 	s.combatMessage = message
 	s.requestSound(SoundCast)
@@ -279,4 +289,24 @@ func (s *State) combatCanCastEffectSpell(spellID uint8) bool {
 		return len(s.livingBySide(combat.SideEnemy)) > 0
 	}
 	return len(s.effectSpellTargets(caster, spellID, definition.TargetMode)) > 0
+}
+
+// sharedSpellCastGeometry 給共用施法演出的起終點（spec 1126）。
+//
+// ⚠ 已經有別的演出排隊時回 false：火球、閃電那幾支有自己的演出，
+// 蓋掉它們會讓專屬畫面消失。
+func (s *State) sharedSpellCastGeometry() (string, combat.TilePoint, combat.TilePoint, bool) {
+	if s.battle == nil || s.CombatVisualPending() {
+		return "", combat.TilePoint{}, combat.TilePoint{}, false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok || !caster.HasCombatPosition {
+		return "", combat.TilePoint{}, combat.TilePoint{}, false
+	}
+	from := combat.TilePoint{X: caster.CombatX, Y: caster.CombatY}
+	to := from
+	if s.combatSpellTargetsPoint {
+		to = s.combatSpellTargetPoint
+	}
+	return caster.ID, from, to, true
 }

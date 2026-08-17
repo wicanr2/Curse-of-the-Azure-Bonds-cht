@@ -140,7 +140,12 @@ func Build(pack *goldenbox.Pack, sourceFile string) (Report, error) {
 			item.Sound.Events = append([]string(nil), found.SoundEvents...)
 		}
 		for _, visual := range pack.CombatVisuals {
-			if visual.Trigger != definition.Behavior {
+			// `spell_cast_shared` 是原作那一段**每支法術都會播**的施法投射物
+			// （`CASTSPELL` 裡的 `<overlay-24 entry#24>(槽 18)`，spec 1126）。
+			// 它不對應任何單一 behavior，所以對每一支宣告過的法術都算數——
+			// 這不是放寬標準，是原作真的只有一段共用演出。
+			if visual.Trigger != definition.Behavior &&
+				visual.Trigger != sharedSpellCastTrigger {
 				continue
 			}
 			item.Visual.PackPhases = append(item.Visual.PackPhases, visual.Phase)
@@ -319,6 +324,9 @@ func runtimeFunctions(path string) ([]*ast.File, error) {
 	}
 	return files, nil
 }
+
+// sharedSpellCastTrigger 是共用施法演出的 trigger 名稱（spec 1126）。
+const sharedSpellCastTrigger = "spell_cast_shared"
 
 func scanRuntime(path string) (map[string]runtimeEvidence, map[string]bool, bool, error) {
 	files, err := runtimeFunctions(path)

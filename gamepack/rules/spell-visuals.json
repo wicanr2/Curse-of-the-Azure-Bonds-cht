@@ -1,0 +1,144 @@
+{
+ "schema_version": 1,
+ "source": "DOS overlay-22／overlay-12 的 <overlay-24 entry#24> 呼叫點",
+ "spec": "docs/spec/1126-spell-visual-slots.md",
+ "slot_base": 13,
+ "shared": [
+  {
+   "address": 5173,
+   "slot": 18,
+   "comspr_block": 5
+  }
+ ],
+ "unattributed": [
+  {
+   "address": 22720,
+   "slot": 19,
+   "comspr_block": 6,
+   "entry": 109
+  },
+  {
+   "address": 23038,
+   "slot": 23,
+   "comspr_block": 10,
+   "entry": 110
+  },
+  {
+   "address": 23454,
+   "slot": 18,
+   "comspr_block": 5,
+   "entry": 111
+  },
+  {
+   "address": 23849,
+   "slot": 18,
+   "comspr_block": 5,
+   "entry": 112
+  },
+  {
+   "address": 24233,
+   "slot": 23,
+   "comspr_block": 10,
+   "entry": 113
+  },
+  {
+   "address": 24472,
+   "slot": 19,
+   "comspr_block": 6,
+   "entry": 114
+  },
+  {
+   "address": 24717,
+   "slot": 18,
+   "comspr_block": 5,
+   "entry": 115
+  }
+ ],
+ "effects": [
+  {
+   "address": 6819,
+   "slot": 18,
+   "comspr_block": 5
+  },
+  {
+   "address": 9935,
+   "slot": 23,
+   "comspr_block": 10
+  },
+  {
+   "address": 10458,
+   "slot": 18,
+   "comspr_block": 5
+  }
+ ],
+ "spells": {
+  "23": [
+   {
+    "address": 6958,
+    "slot": 18,
+    "comspr_block": 5,
+    "via": 23
+   }
+  ],
+  "49": [
+   {
+    "address": 6958,
+    "slot": 18,
+    "comspr_block": 5,
+    "via": 23
+   }
+  ],
+  "51": [
+   {
+    "address": 14835,
+    "slot": 19,
+    "comspr_block": 6,
+    "via": 67
+   },
+   {
+    "address": 14864,
+    "slot": 19,
+    "comspr_block": 6,
+    "via": 68
+   }
+  ],
+  "60": [
+   {
+    "address": 14835,
+    "slot": 19,
+    "comspr_block": 6,
+    "via": 67
+   },
+   {
+    "address": 14864,
+    "slot": 19,
+    "comspr_block": 6,
+    "via": 68
+   }
+  ],
+  "79": [
+   {
+    "address": 6958,
+    "slot": 18,
+    "comspr_block": 5,
+    "via": 23
+   }
+  ],
+  "81": [
+   {
+    "address": 6958,
+    "slot": 18,
+    "comspr_block": 5,
+    "via": 23
+   }
+  ],
+  "94": [
+   {
+    "address": 6958,
+    "slot": 18,
+    "comspr_block": 5,
+    "via": 23
+   }
+  ]
+ }
+}
