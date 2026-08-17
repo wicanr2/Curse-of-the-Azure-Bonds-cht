@@ -169,6 +169,9 @@ type Fighter struct {
 	// 它決定移動時「試方向的順序」。每回合由 `BeginMonsterTurn` 重骰，
 	// 0 代表還沒骰過（原作的初值也是 0，第一回合必骰）。
 	AIMode int `json:"ai_mode,omitempty"`
+	// RetreatedThisRound 是原作戰鬥狀態 `+18Dh^[14h]`：本回合士氣檢定沒過而且
+	// 跑得掉。每回合開頭由 `CheckMorale` 清掉，所以它只描述當下這一回合。
+	RetreatedThisRound bool `json:"retreated_this_round,omitempty"`
 	// RawCombatState10 是原作戰鬥狀態記錄 `+18Dh^[10h]` 那一個位元組。
 	// 語意未解讀，但它同時是兩種障礙地形的通行豁免（spec 1119），所以照原樣
 	// 留著：日後解出語意時只要有東西寫它，移動那一側就自動生效。

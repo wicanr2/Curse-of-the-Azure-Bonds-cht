@@ -1,5 +1,7 @@
 package combat
 
+import "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
+
 // InterpretedAffectKinds 是 remake **真的看得懂**的效果碼。
 //
 // ★ 為什麼要有這一張表。 `CastEffectSpell` 可以把任何效果碼記到戰鬥員身上，
@@ -23,11 +25,21 @@ var InterpretedAffectKinds = []uint8{
 }
 
 // AffectKindIsInterpreted 回答「戰鬥規則會不會理這個碼」。
+//
+// 兩條路都算：上面那張手寫的清單（`battle.go` 裡逐個比對的），以及修正表裡
+// **有數字**的那些（`CheckFX` 會照著套，spec 1123）。表裡標 `unread`／`inert`
+// 的不算——`unread` 是還沒解讀，`inert` 是原作那一支什麼都沒做，兩者都不會
+// 改變任何規則。
 func AffectKindIsInterpreted(kind uint8) bool {
 	for _, known := range InterpretedAffectKinds {
 		if known == kind {
 			return true
 		}
 	}
-	return false
+	table, err := gamepack.EffectModifiers()
+	if err != nil {
+		return false
+	}
+	handler, ok := table.Handler(kind)
+	return ok && len(handler.Modifiers) > 0
 }

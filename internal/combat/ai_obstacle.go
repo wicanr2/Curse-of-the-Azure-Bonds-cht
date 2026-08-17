@@ -107,7 +107,13 @@ func (b *Battle) RollSavingThrow(target Fighter, category, modifier int) (Saving
 		result.Natural, result.Saved = true, true
 		return result, nil
 	}
-	result.Total = result.Roll + target.SavingThrowBonus + modifier
+	// 效果的豁免修正走原作那一層（`CHECKFX(0Ch)`，spec 1123）：防護邪惡 ＋2、
+	// 致盲 −4… 都在同一張表裡，這裡不逐個 if。
+	effects, err := CheckFXValue(target, CheckFXSavingThrow, scratchSavingThrow, 0)
+	if err != nil {
+		return SavingThrowResult{}, err
+	}
+	result.Total = result.Roll + target.SavingThrowBonus + modifier + effects
 	// 表比類別短時當成 0 ＝ 沒有資料 ＝ 失敗，理由同上。**骰還是要擲**，
 	// 少擲一次會讓後面每一擲都偏掉。
 	threshold := 0

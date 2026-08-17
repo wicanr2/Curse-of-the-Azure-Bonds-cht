@@ -147,3 +147,126 @@ func TestBattleEndsWhenEveryEnemyRunsAway(t *testing.T) {
 		t.Fatalf("status=%v，敵人跑光了該算隊伍勝利", battle.Status())
 	}
 }
+
+func moraleCheckBattle(t *testing.T, morale uint8, hp, maxHP, speed, enemySpeed int) *Battle {
+	t.Helper()
+	battle, err := NewBattle([]Fighter{
+		{ID: "orc", Side: SideEnemy, HitPoints: hp, MaxHitPoints: maxHP,
+			ControlMorale: morale, MovementAllowance: speed},
+		{ID: "hero", Side: SideParty, HitPoints: 12, MaxHitPoints: 12,
+			MovementAllowance: enemySpeed},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return battle
+}
+
+// 門檻是 `100 − HP%`：滿血幾乎一定過，重傷才會崩。
+func TestMoraleThresholdTracksHowHurtTheFighterIs(t *testing.T) {
+	for _, item := range []struct {
+		name      string
+		hp        int
+		threshold int
+		passed    bool
+	}{
+		{"滿血", 20, 0, true},
+		{"半血", 10, 50, true},   // 士氣 102 ≥ 50
+		{"剩一成", 2, 90, true},  // 102 ≥ 90
+	} {
+		battle := moraleCheckBattle(t, 0xB3, item.hp, 20, 6, 6)
+		result, err := battle.CheckMorale("orc")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !result.Checked || result.Threshold != item.threshold || result.Passed != item.passed {
+			t.Errorf("%s：%+v，want 門檻 %d、過關 %v", item.name, result, item.threshold, item.passed)
+		}
+	}
+	// 士氣 32（90h）在剩一成血時過不了。
+	battle := moraleCheckBattle(t, 0x90, 2, 20, 6, 6)
+	result, err := battle.CheckMorale("orc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Passed {
+		t.Fatalf("士氣 %d、門檻 %d 卻過關了", result.Morale, result.Threshold)
+	}
+}
+
+// 沒有士氣資料（最高位沒設）就不檢定——**不是當成 0**。
+func TestMissingMoraleDataSkipsTheCheckInsteadOfFailingIt(t *testing.T) {
+	battle := moraleCheckBattle(t, 0x33, 1, 20, 6, 6)
+	result, err := battle.CheckMorale("orc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Checked || result.Withdrew {
+		t.Fatalf("沒有士氣資料卻做了檢定：%+v", result)
+	}
+}
+
+// 崩了之後跑不跑得掉看移動率，而且是**折半之後**比。
+func TestBrokenMoraleWithdrawsOnlyWhenFastEnough(t *testing.T) {
+	slow := moraleCheckBattle(t, 0x90, 2, 20, 4, 12)
+	slowResult, err := slow.CheckMorale("orc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if slowResult.Withdrew {
+		t.Fatal("移動率 4 對上 12，跑不掉才對")
+	}
+	fast := moraleCheckBattle(t, 0x90, 2, 20, 12, 4)
+	fastResult, err := fast.CheckMorale("orc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !fastResult.Withdrew {
+		t.Fatal("移動率 12 對上 4，該跑得掉")
+	}
+	if !fast.fighters["orc"].RetreatedThisRound {
+		t.Fatal("`+14h` 沒有被設起來")
+	}
+	// 整數除法：5 與 4 折半之後都是 2，算跑得掉。
+	tie := moraleCheckBattle(t, 0x90, 2, 20, 4, 5)
+	tieResult, err := tie.CheckMorale("orc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !tieResult.Withdrew {
+		t.Fatal("4 與 5 折半之後都是 2，原作的整數除法算跑得掉")
+	}
+}
+
+// 每回合開頭要清掉上一回合的 `+14h`。
+func TestMoraleCheckClearsLastRoundsRetreatFlag(t *testing.T) {
+	battle := moraleCheckBattle(t, 0xB3, 20, 20, 6, 6)
+	fighter := battle.fighters["orc"]
+	fighter.RetreatedThisRound = true
+	battle.fighters["orc"] = fighter
+	if _, err := battle.CheckMorale("orc"); err != nil {
+		t.Fatal(err)
+	}
+	if battle.fighters["orc"].RetreatedThisRound {
+		t.Fatal("上一回合的撤退旗標沒清掉，訊息會每回合重印")
+	}
+}
+
+// 恐慌訊息只在「本回合撤退」而且「還沒正式逃走」時印。
+func TestPanicMessageNeedsBothConditions(t *testing.T) {
+	for _, item := range []struct {
+		name      string
+		retreated bool
+		fled      uint8
+		want      bool
+	}{
+		{"本回合撤退、還沒逃走", true, 0, true},
+		{"本回合撤退、但已經逃走了", true, 1, false},
+		{"沒有撤退", false, 0, false},
+	} {
+		_, got := Fighter{RetreatedThisRound: item.retreated, RawCombatState10: item.fled}.PanicMessageID()
+		if got != item.want {
+			t.Errorf("%s：got %v，want %v", item.name, got, item.want)
+		}
+	}
+}

@@ -1,0 +1,1570 @@
+{
+ "schema_version": 1,
+ "source": "DOS overlay handler 本體（位址取自 docs/audit/effect-dispatch-table.md）",
+ "spec": "docs/spec/1123-effect-modifier-table.md",
+ "scratch_globals": {
+  "6f92": {
+   "name": "saving_throw",
+   "note": "豁免總和（`overlay-23 entry#8` 寫它，spec 1119）"
+  },
+  "6f94": {
+   "name": "scratch_6f94",
+   "note": "（未定）"
+  },
+  "6f95": {
+   "name": "scratch_6f95",
+   "note": "（未定）"
+  },
+  "6f96": {
+   "name": "movement",
+   "note": "移動率（`overlay-13 entry#2` 寫它，spec 1122）"
+  },
+  "6f9b": {
+   "name": "attack_forced_miss",
+   "note": "攻擊必失手旗標"
+  },
+  "6f9c": {
+   "name": "scratch_6f9c",
+   "note": "（未定）"
+  },
+  "6f9f": {
+   "name": "modifier",
+   "note": "共用修正暫存；語意由讀它的 timing 決定"
+  },
+  "6fa2": {
+   "name": "morale",
+   "note": "士氣（`overlay-09:01388h` 寫它，spec 1122）"
+  }
+ },
+ "timings": {
+  "00": [],
+  "01": [
+   37,
+   25,
+   71,
+   69
+  ],
+  "02": [
+   79,
+   80,
+   145,
+   57,
+   96,
+   122,
+   123
+  ],
+  "03": [
+   64,
+   65,
+   66,
+   67,
+   70,
+   79,
+   87
+  ],
+  "04": [
+   29,
+   6,
+   103,
+   75,
+   76,
+   134
+  ],
+  "05": [
+   28,
+   41,
+   104,
+   120,
+   101,
+   115,
+   116,
+   119,
+   94,
+   117,
+   60,
+   81,
+   82,
+   85,
+   130,
+   143
+  ],
+  "06": [
+   113,
+   61,
+   10,
+   20,
+   105,
+   106,
+   112,
+   114,
+   118,
+   17,
+   93,
+   101,
+   28,
+   110,
+   73,
+   82,
+   84,
+   129,
+   133,
+   135,
+   63
+  ],
+  "07": [
+   51,
+   52,
+   53,
+   31,
+   3,
+   27,
+   136
+  ],
+  "08": [
+   99,
+   82,
+   89,
+   72,
+   56
+  ],
+  "09": [
+   105,
+   106,
+   107,
+   108,
+   109,
+   110,
+   111,
+   112,
+   124,
+   125,
+   63,
+   129
+  ],
+  "0A": [
+   1,
+   2,
+   33,
+   36,
+   49,
+   6,
+   18,
+   26,
+   75,
+   76
+  ],
+  "0B": [
+   33,
+   17,
+   8,
+   9,
+   45,
+   46,
+   30,
+   7
+  ],
+  "0C": [
+   8,
+   9,
+   10,
+   17,
+   20,
+   33,
+   36,
+   45,
+   46,
+   49,
+   61,
+   111,
+   125,
+   97,
+   50,
+   54
+  ],
+  "0D": [
+   99,
+   100,
+   75
+  ],
+  "0E": [
+   83,
+   88,
+   121,
+   86,
+   87,
+   90,
+   126,
+   128,
+   131,
+   132,
+   139
+  ],
+  "0F": [
+   21,
+   30,
+   11,
+   13,
+   77
+  ],
+  "10": [
+   25,
+   71,
+   37,
+   47,
+   48,
+   89,
+   4
+  ],
+  "11": [
+   1,
+   2,
+   11
+  ],
+  "12": [
+   39,
+   42,
+   58
+  ],
+  "13": [
+   98,
+   23,
+   72,
+   56,
+   11
+  ],
+  "14": [
+   50,
+   54
+  ],
+  "15": [
+   35
+  ],
+  "16": [
+   138
+  ],
+  "17": [
+   74
+  ]
+ },
+ "effects": {
+  "01": {
+   "overlay": 12,
+   "offset": 158,
+   "instructions": 7,
+   "modifiers": [
+    {
+     "global": "6fa2",
+     "op": "add",
+     "value": 5
+    },
+    {
+     "global": "6f9f",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "unparsed": 0,
+   "status": "decoded"
+  },
+  "02": {
+   "overlay": 12,
+   "offset": 176,
+   "instructions": 11,
+   "modifiers": [
+    {
+     "global": "6fa2",
+     "op": "sub_clamped",
+     "value": 5
+    },
+    {
+     "global": "6f9f",
+     "op": "sub",
+     "value": 1
+    }
+   ],
+   "unparsed": 0,
+   "status": "decoded"
+  },
+  "03": {
+   "overlay": 12,
+   "offset": 232,
+   "instructions": 49,
+   "modifiers": [],
+   "unparsed": 43,
+   "status": "unread"
+  },
+  "04": {
+   "overlay": 12,
+   "offset": 363,
+   "instructions": 11,
+   "modifiers": [],
+   "unparsed": 6,
+   "status": "unread"
+  },
+  "05": {
+   "overlay": 12,
+   "offset": 11827,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "06": {
+   "overlay": 12,
+   "offset": 392,
+   "instructions": 35,
+   "modifiers": [
+    {
+     "global": "6f95",
+     "op": "set",
+     "value": 9
+    }
+   ],
+   "unparsed": 28,
+   "status": "partial"
+  },
+  "07": {
+   "overlay": 12,
+   "offset": 497,
+   "instructions": 21,
+   "modifiers": [],
+   "unparsed": 16,
+   "status": "unread"
+  },
+  "08": {
+   "overlay": 12,
+   "offset": 568,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "09": {
+   "overlay": 12,
+   "offset": 623,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "0A": {
+   "overlay": 12,
+   "offset": 678,
+   "instructions": 16,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 5,
+   "status": "partial"
+  },
+  "0B": {
+   "overlay": 12,
+   "offset": 715,
+   "instructions": 62,
+   "modifiers": [
+    {
+     "global": "6fa2",
+     "op": "set",
+     "value": 100
+    }
+   ],
+   "unparsed": 56,
+   "status": "partial"
+  },
+  "0C": {
+   "overlay": 12,
+   "offset": 908,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "0D": {
+   "overlay": 12,
+   "offset": 928,
+   "instructions": 24,
+   "modifiers": [],
+   "unparsed": 18,
+   "status": "unread"
+  },
+  "0E": {
+   "overlay": 12,
+   "offset": 988,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "0F": {
+   "overlay": 12,
+   "offset": 997,
+   "instructions": 36,
+   "modifiers": [],
+   "unparsed": 31,
+   "status": "unread"
+  },
+  "10": {
+   "overlay": 12,
+   "offset": 1091,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "11": {
+   "overlay": 12,
+   "offset": 1100,
+   "instructions": 14,
+   "modifiers": [
+    {
+     "global": "6f92",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "unparsed": 8,
+   "status": "partial"
+  },
+  "12": {
+   "overlay": 12,
+   "offset": 1145,
+   "instructions": 18,
+   "modifiers": [],
+   "unparsed": 12,
+   "status": "unread"
+  },
+  "13": {
+   "overlay": 12,
+   "offset": 11827,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "14": {
+   "overlay": 12,
+   "offset": 1197,
+   "instructions": 18,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 7,
+   "status": "partial"
+  },
+  "15": {
+   "overlay": 12,
+   "offset": 1252,
+   "instructions": 30,
+   "modifiers": [],
+   "unparsed": 24,
+   "status": "unread"
+  },
+  "16": {
+   "overlay": 12,
+   "offset": 1354,
+   "instructions": 39,
+   "modifiers": [
+    {
+     "global": "6f9c",
+     "op": "set",
+     "value": 1
+    },
+    {
+     "global": "6f9c",
+     "op": "set",
+     "value": 0
+    }
+   ],
+   "unparsed": 31,
+   "status": "partial"
+  },
+  "17": {
+   "overlay": 12,
+   "offset": 1462,
+   "instructions": 108,
+   "modifiers": [],
+   "unparsed": 102,
+   "status": "unread"
+  },
+  "18": {
+   "overlay": 12,
+   "offset": 11827,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "19": {
+   "overlay": 12,
+   "offset": 1778,
+   "instructions": 20,
+   "modifiers": [],
+   "unparsed": 14,
+   "status": "unread"
+  },
+  "1A": {
+   "overlay": 12,
+   "offset": 1831,
+   "instructions": 18,
+   "modifiers": [],
+   "unparsed": 12,
+   "status": "unread"
+  },
+  "1B": {
+   "overlay": 12,
+   "offset": 117,
+   "instructions": 10,
+   "modifiers": [],
+   "unparsed": 5,
+   "status": "unread"
+  },
+  "1C": {
+   "overlay": 12,
+   "offset": 1897,
+   "instructions": 55,
+   "modifiers": [],
+   "unparsed": 49,
+   "status": "unread"
+  },
+  "1D": {
+   "overlay": 12,
+   "offset": 2028,
+   "instructions": 15,
+   "modifiers": [],
+   "unparsed": 10,
+   "status": "unread"
+  },
+  "1E": {
+   "overlay": 12,
+   "offset": 2072,
+   "instructions": 54,
+   "modifiers": [],
+   "unparsed": 48,
+   "status": "unread"
+  },
+  "1F": {
+   "overlay": 12,
+   "offset": 117,
+   "instructions": 10,
+   "modifiers": [],
+   "unparsed": 5,
+   "status": "unread"
+  },
+  "20": {
+   "overlay": 12,
+   "offset": 2253,
+   "instructions": 59,
+   "modifiers": [],
+   "unparsed": 53,
+   "status": "unread"
+  },
+  "21": {
+   "overlay": 12,
+   "offset": 2434,
+   "instructions": 11,
+   "modifiers": [
+    {
+     "global": "6f9f",
+     "op": "sub",
+     "value": 4
+    },
+    {
+     "global": "6f92",
+     "op": "sub",
+     "value": 4
+    }
+   ],
+   "unparsed": 4,
+   "status": "partial"
+  },
+  "22": {
+   "overlay": 12,
+   "offset": 2471,
+   "instructions": 23,
+   "modifiers": [],
+   "unparsed": 18,
+   "status": "unread"
+  },
+  "23": {
+   "overlay": 12,
+   "offset": 2574,
+   "instructions": 129,
+   "modifiers": [],
+   "unparsed": 126,
+   "status": "unread"
+  },
+  "24": {
+   "overlay": 12,
+   "offset": 2991,
+   "instructions": 7,
+   "modifiers": [
+    {
+     "global": "6f9f",
+     "op": "sub",
+     "value": 4
+    },
+    {
+     "global": "6f92",
+     "op": "sub",
+     "value": 4
+    }
+   ],
+   "unparsed": 0,
+   "status": "decoded"
+  },
+  "25": {
+   "overlay": 12,
+   "offset": 3010,
+   "instructions": 11,
+   "modifiers": [],
+   "unparsed": 6,
+   "status": "unread"
+  },
+  "26": {
+   "overlay": 12,
+   "offset": 908,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "27": {
+   "overlay": 12,
+   "offset": 3049,
+   "instructions": 37,
+   "modifiers": [],
+   "unparsed": 31,
+   "status": "unread"
+  },
+  "28": {
+   "overlay": 12,
+   "offset": 3169,
+   "instructions": 121,
+   "modifiers": [],
+   "unparsed": 118,
+   "status": "unread"
+  },
+  "29": {
+   "overlay": 12,
+   "offset": 4111,
+   "instructions": 25,
+   "modifiers": [],
+   "unparsed": 20,
+   "status": "unread"
+  },
+  "2A": {
+   "overlay": 12,
+   "offset": 4172,
+   "instructions": 11,
+   "modifiers": [
+    {
+     "global": "6f96",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 0,
+   "status": "decoded"
+  },
+  "2B": {
+   "overlay": 12,
+   "offset": 4207,
+   "instructions": 60,
+   "modifiers": [],
+   "unparsed": 54,
+   "status": "unread"
+  },
+  "2C": {
+   "overlay": 12,
+   "offset": 4345,
+   "instructions": 59,
+   "modifiers": [],
+   "unparsed": 53,
+   "status": "unread"
+  },
+  "2D": {
+   "overlay": 12,
+   "offset": 568,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "2E": {
+   "overlay": 12,
+   "offset": 623,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "2F": {
+   "overlay": 12,
+   "offset": 4490,
+   "instructions": 24,
+   "modifiers": [],
+   "unparsed": 18,
+   "status": "unread"
+  },
+  "30": {
+   "overlay": 12,
+   "offset": 4567,
+   "instructions": 14,
+   "modifiers": [],
+   "unparsed": 9,
+   "status": "unread"
+  },
+  "31": {
+   "overlay": 12,
+   "offset": 4608,
+   "instructions": 29,
+   "modifiers": [
+    {
+     "global": "6f9f",
+     "op": "sub",
+     "value": 1
+    },
+    {
+     "global": "6f92",
+     "op": "sub",
+     "value": 1
+    }
+   ],
+   "unparsed": 21,
+   "status": "partial"
+  },
+  "32": {
+   "overlay": 12,
+   "offset": 4683,
+   "instructions": 21,
+   "modifiers": [],
+   "unparsed": 16,
+   "status": "unread"
+  },
+  "33": {
+   "overlay": 12,
+   "offset": 117,
+   "instructions": 10,
+   "modifiers": [],
+   "unparsed": 5,
+   "status": "unread"
+  },
+  "34": {
+   "overlay": 12,
+   "offset": 117,
+   "instructions": 10,
+   "modifiers": [],
+   "unparsed": 5,
+   "status": "unread"
+  },
+  "35": {
+   "overlay": 12,
+   "offset": 117,
+   "instructions": 10,
+   "modifiers": [],
+   "unparsed": 5,
+   "status": "unread"
+  },
+  "36": {
+   "overlay": 12,
+   "offset": 4734,
+   "instructions": 21,
+   "modifiers": [],
+   "unparsed": 16,
+   "status": "unread"
+  },
+  "37": {
+   "overlay": 12,
+   "offset": 4785,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "38": {
+   "overlay": 12,
+   "offset": 4794,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "39": {
+   "overlay": 13,
+   "offset": 16447,
+   "instructions": 117,
+   "modifiers": [],
+   "unparsed": 111,
+   "status": "unread"
+  },
+  "3A": {
+   "overlay": 12,
+   "offset": 4827,
+   "instructions": 11,
+   "modifiers": [],
+   "unparsed": 6,
+   "status": "unread"
+  },
+  "3B": {
+   "overlay": 12,
+   "offset": 4861,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "3C": {
+   "overlay": 12,
+   "offset": 4893,
+   "instructions": 32,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 20,
+   "status": "partial"
+  },
+  "3D": {
+   "overlay": 12,
+   "offset": 4980,
+   "instructions": 36,
+   "modifiers": [],
+   "unparsed": 30,
+   "status": "unread"
+  },
+  "3E": {
+   "overlay": 12,
+   "offset": 5071,
+   "instructions": 30,
+   "modifiers": [],
+   "unparsed": 25,
+   "status": "unread"
+  },
+  "3F": {
+   "overlay": 12,
+   "offset": 5141,
+   "instructions": 18,
+   "modifiers": [],
+   "unparsed": 13,
+   "status": "unread"
+  },
+  "40": {
+   "overlay": 12,
+   "offset": 5481,
+   "instructions": 11,
+   "modifiers": [],
+   "unparsed": 6,
+   "status": "unread"
+  },
+  "41": {
+   "overlay": 12,
+   "offset": 5503,
+   "instructions": 11,
+   "modifiers": [],
+   "unparsed": 6,
+   "status": "unread"
+  },
+  "42": {
+   "overlay": 12,
+   "offset": 5525,
+   "instructions": 11,
+   "modifiers": [],
+   "unparsed": 6,
+   "status": "unread"
+  },
+  "43": {
+   "overlay": 12,
+   "offset": 5547,
+   "instructions": 18,
+   "modifiers": [],
+   "unparsed": 13,
+   "status": "unread"
+  },
+  "44": {
+   "overlay": 12,
+   "offset": 5606,
+   "instructions": 57,
+   "modifiers": [],
+   "unparsed": 51,
+   "status": "unread"
+  },
+  "45": {
+   "overlay": 12,
+   "offset": 5767,
+   "instructions": 21,
+   "modifiers": [],
+   "unparsed": 15,
+   "status": "unread"
+  },
+  "46": {
+   "overlay": 12,
+   "offset": 5826,
+   "instructions": 11,
+   "modifiers": [],
+   "unparsed": 6,
+   "status": "unread"
+  },
+  "47": {
+   "overlay": 12,
+   "offset": 5848,
+   "instructions": 7,
+   "modifiers": [
+    {
+     "global": "6f9b",
+     "op": "set",
+     "value": 1
+    },
+    {
+     "global": "6f9f",
+     "op": "sub",
+     "value": 4
+    }
+   ],
+   "unparsed": 0,
+   "status": "decoded"
+  },
+  "48": {
+   "overlay": 12,
+   "offset": 5867,
+   "instructions": 23,
+   "modifiers": [],
+   "unparsed": 18,
+   "status": "unread"
+  },
+  "49": {
+   "overlay": 12,
+   "offset": 5929,
+   "instructions": 28,
+   "modifiers": [],
+   "unparsed": 22,
+   "status": "unread"
+  },
+  "4A": {
+   "overlay": 12,
+   "offset": 5989,
+   "instructions": 6,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "unread"
+  },
+  "4B": {
+   "overlay": 12,
+   "offset": 6001,
+   "instructions": 32,
+   "modifiers": [],
+   "unparsed": 27,
+   "status": "unread"
+  },
+  "4C": {
+   "overlay": 12,
+   "offset": 6088,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "4D": {
+   "overlay": 12,
+   "offset": 6153,
+   "instructions": 92,
+   "modifiers": [],
+   "unparsed": 86,
+   "status": "unread"
+  },
+  "4E": {
+   "overlay": 12,
+   "offset": 6445,
+   "instructions": 26,
+   "modifiers": [],
+   "unparsed": 20,
+   "status": "unread"
+  },
+  "4F": {
+   "overlay": 12,
+   "offset": 6509,
+   "instructions": 21,
+   "modifiers": [
+    {
+     "global": "6f95",
+     "op": "set",
+     "value": 9
+    }
+   ],
+   "unparsed": 15,
+   "status": "partial"
+  },
+  "50": {
+   "overlay": 12,
+   "offset": 6562,
+   "instructions": 21,
+   "modifiers": [
+    {
+     "global": "6f95",
+     "op": "set",
+     "value": 16
+    }
+   ],
+   "unparsed": 15,
+   "status": "partial"
+  },
+  "51": {
+   "overlay": 12,
+   "offset": 6615,
+   "instructions": 11,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 0,
+   "status": "decoded"
+  },
+  "52": {
+   "overlay": 12,
+   "offset": 6638,
+   "instructions": 37,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 26,
+   "status": "partial"
+  },
+  "53": {
+   "overlay": 12,
+   "offset": 6757,
+   "instructions": 116,
+   "modifiers": [],
+   "unparsed": 113,
+   "status": "unread"
+  },
+  "54": {
+   "overlay": 12,
+   "offset": 7196,
+   "instructions": 22,
+   "modifiers": [],
+   "unparsed": 16,
+   "status": "unread"
+  },
+  "55": {
+   "overlay": 12,
+   "offset": 7247,
+   "instructions": 24,
+   "modifiers": [],
+   "unparsed": 18,
+   "status": "unread"
+  },
+  "57": {
+   "overlay": 13,
+   "offset": 17149,
+   "instructions": 131,
+   "modifiers": [],
+   "unparsed": 124,
+   "status": "unread"
+  },
+  "59": {
+   "overlay": 12,
+   "offset": 7312,
+   "instructions": 26,
+   "modifiers": [],
+   "unparsed": 21,
+   "status": "unread"
+  },
+  "5B": {
+   "overlay": 12,
+   "offset": 7414,
+   "instructions": 121,
+   "modifiers": [],
+   "unparsed": 118,
+   "status": "unread"
+  },
+  "5C": {
+   "overlay": 12,
+   "offset": 11827,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "5D": {
+   "overlay": 12,
+   "offset": 8132,
+   "instructions": 15,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 4,
+   "status": "partial"
+  },
+  "5E": {
+   "overlay": 12,
+   "offset": 8164,
+   "instructions": 31,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 19,
+   "status": "partial"
+  },
+  "5F": {
+   "overlay": 12,
+   "offset": 8252,
+   "instructions": 23,
+   "modifiers": [],
+   "unparsed": 17,
+   "status": "unread"
+  },
+  "60": {
+   "overlay": 13,
+   "offset": 18449,
+   "instructions": 70,
+   "modifiers": [],
+   "unparsed": 64,
+   "status": "unread"
+  },
+  "61": {
+   "overlay": 12,
+   "offset": 8312,
+   "instructions": 49,
+   "modifiers": [],
+   "unparsed": 43,
+   "status": "unread"
+  },
+  "62": {
+   "overlay": 12,
+   "offset": 8442,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "63": {
+   "overlay": 12,
+   "offset": 8492,
+   "instructions": 61,
+   "modifiers": [],
+   "unparsed": 55,
+   "status": "unread"
+  },
+  "64": {
+   "overlay": 12,
+   "offset": 8661,
+   "instructions": 29,
+   "modifiers": [],
+   "unparsed": 24,
+   "status": "unread"
+  },
+  "65": {
+   "overlay": 12,
+   "offset": 8722,
+   "instructions": 37,
+   "modifiers": [],
+   "unparsed": 31,
+   "status": "unread"
+  },
+  "66": {
+   "overlay": 12,
+   "offset": 8804,
+   "instructions": 26,
+   "modifiers": [],
+   "unparsed": 20,
+   "status": "unread"
+  },
+  "67": {
+   "overlay": 12,
+   "offset": 8867,
+   "instructions": 48,
+   "modifiers": [],
+   "unparsed": 42,
+   "status": "unread"
+  },
+  "68": {
+   "overlay": 12,
+   "offset": 8990,
+   "instructions": 11,
+   "modifiers": [],
+   "unparsed": 6,
+   "status": "unread"
+  },
+  "69": {
+   "overlay": 12,
+   "offset": 9106,
+   "instructions": 9,
+   "modifiers": [],
+   "unparsed": 4,
+   "status": "unread"
+  },
+  "6A": {
+   "overlay": 12,
+   "offset": 9122,
+   "instructions": 9,
+   "modifiers": [],
+   "unparsed": 4,
+   "status": "unread"
+  },
+  "6B": {
+   "overlay": 12,
+   "offset": 9138,
+   "instructions": 20,
+   "modifiers": [],
+   "unparsed": 15,
+   "status": "unread"
+  },
+  "6C": {
+   "overlay": 12,
+   "offset": 9176,
+   "instructions": 13,
+   "modifiers": [],
+   "unparsed": 8,
+   "status": "unread"
+  },
+  "6D": {
+   "overlay": 12,
+   "offset": 9199,
+   "instructions": 9,
+   "modifiers": [],
+   "unparsed": 4,
+   "status": "unread"
+  },
+  "6E": {
+   "overlay": 12,
+   "offset": 9215,
+   "instructions": 13,
+   "modifiers": [],
+   "unparsed": 8,
+   "status": "unread"
+  },
+  "6F": {
+   "overlay": 12,
+   "offset": 9240,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "70": {
+   "overlay": 12,
+   "offset": 9275,
+   "instructions": 13,
+   "modifiers": [],
+   "unparsed": 8,
+   "status": "unread"
+  },
+  "71": {
+   "overlay": 12,
+   "offset": 9300,
+   "instructions": 27,
+   "modifiers": [],
+   "unparsed": 21,
+   "status": "unread"
+  },
+  "72": {
+   "overlay": 12,
+   "offset": 9369,
+   "instructions": 15,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 4,
+   "status": "partial"
+  },
+  "73": {
+   "overlay": 12,
+   "offset": 9401,
+   "instructions": 39,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 27,
+   "status": "partial"
+  },
+  "74": {
+   "overlay": 12,
+   "offset": 9500,
+   "instructions": 24,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 12,
+   "status": "partial"
+  },
+  "75": {
+   "overlay": 12,
+   "offset": 9562,
+   "instructions": 25,
+   "modifiers": [],
+   "unparsed": 19,
+   "status": "unread"
+  },
+  "76": {
+   "overlay": 12,
+   "offset": 9626,
+   "instructions": 15,
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "div",
+     "value": 2
+    }
+   ],
+   "unparsed": 4,
+   "status": "partial"
+  },
+  "77": {
+   "overlay": 12,
+   "offset": 9658,
+   "instructions": 25,
+   "modifiers": [],
+   "unparsed": 19,
+   "status": "unread"
+  },
+  "78": {
+   "overlay": 12,
+   "offset": 9734,
+   "instructions": 26,
+   "modifiers": [],
+   "unparsed": 20,
+   "status": "unread"
+  },
+  "79": {
+   "overlay": 12,
+   "offset": 9815,
+   "instructions": 109,
+   "modifiers": [],
+   "unparsed": 103,
+   "status": "unread"
+  },
+  "7A": {
+   "overlay": 12,
+   "offset": 10114,
+   "instructions": 47,
+   "modifiers": [],
+   "unparsed": 41,
+   "status": "unread"
+  },
+  "7B": {
+   "overlay": 12,
+   "offset": 10234,
+   "instructions": 21,
+   "modifiers": [
+    {
+     "global": "6f95",
+     "op": "set",
+     "value": 10
+    }
+   ],
+   "unparsed": 15,
+   "status": "partial"
+  },
+  "7C": {
+   "overlay": 12,
+   "offset": 10287,
+   "instructions": 20,
+   "modifiers": [],
+   "unparsed": 15,
+   "status": "unread"
+  },
+  "7D": {
+   "overlay": 12,
+   "offset": 10325,
+   "instructions": 24,
+   "modifiers": [],
+   "unparsed": 19,
+   "status": "unread"
+  },
+  "7E": {
+   "overlay": 12,
+   "offset": 10396,
+   "instructions": 88,
+   "modifiers": [],
+   "unparsed": 82,
+   "status": "unread"
+  },
+  "7F": {
+   "overlay": 12,
+   "offset": 11827,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "81": {
+   "overlay": 12,
+   "offset": 10618,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "82": {
+   "overlay": 12,
+   "offset": 10652,
+   "instructions": 46,
+   "modifiers": [],
+   "unparsed": 40,
+   "status": "unread"
+  },
+  "85": {
+   "overlay": 12,
+   "offset": 10920,
+   "instructions": 25,
+   "modifiers": [],
+   "unparsed": 20,
+   "status": "unread"
+  },
+  "86": {
+   "overlay": 12,
+   "offset": 10966,
+   "instructions": 19,
+   "modifiers": [],
+   "unparsed": 14,
+   "status": "unread"
+  },
+  "87": {
+   "overlay": 12,
+   "offset": 11023,
+   "instructions": 13,
+   "modifiers": [],
+   "unparsed": 8,
+   "status": "unread"
+  },
+  "88": {
+   "overlay": 12,
+   "offset": 11048,
+   "instructions": 8,
+   "modifiers": [],
+   "unparsed": 3,
+   "status": "unread"
+  },
+  "89": {
+   "overlay": 12,
+   "offset": 11070,
+   "instructions": 73,
+   "modifiers": [],
+   "unparsed": 68,
+   "status": "unread"
+  },
+  "8A": {
+   "overlay": 12,
+   "offset": 11310,
+   "instructions": 16,
+   "modifiers": [],
+   "unparsed": 11,
+   "status": "unread"
+  },
+  "8B": {
+   "overlay": 13,
+   "offset": 17871,
+   "instructions": 111,
+   "modifiers": [],
+   "unparsed": 105,
+   "status": "unread"
+  },
+  "8C": {
+   "overlay": 12,
+   "offset": 11827,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "8D": {
+   "overlay": 12,
+   "offset": 11343,
+   "instructions": 28,
+   "modifiers": [],
+   "unparsed": 23,
+   "status": "unread"
+  },
+  "8E": {
+   "overlay": 12,
+   "offset": 11412,
+   "instructions": 17,
+   "modifiers": [],
+   "unparsed": 12,
+   "status": "unread"
+  },
+  "8F": {
+   "overlay": 12,
+   "offset": 11481,
+   "instructions": 49,
+   "modifiers": [],
+   "unparsed": 43,
+   "status": "unread"
+  },
+  "90": {
+   "overlay": 13,
+   "offset": 18179,
+   "instructions": 93,
+   "modifiers": [],
+   "unparsed": 87,
+   "status": "unread"
+  },
+  "91": {
+   "overlay": 12,
+   "offset": 11645,
+   "instructions": 71,
+   "modifiers": [],
+   "unparsed": 65,
+   "status": "unread"
+  },
+  "92": {
+   "overlay": 12,
+   "offset": 11827,
+   "instructions": 5,
+   "modifiers": [],
+   "unparsed": 0,
+   "status": "inert"
+  },
+  "93": {
+   "overlay": 12,
+   "offset": 10796,
+   "instructions": 50,
+   "modifiers": [
+    {
+     "global": "7582",
+     "op": "set",
+     "value": 0
+    }
+   ],
+   "unparsed": 43,
+   "status": "partial"
+  }
+ }
+}

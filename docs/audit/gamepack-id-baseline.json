@@ -285,6 +285,14 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_24"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_26"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_27"
   },
   {
@@ -293,7 +301,19 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_38"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_4"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_42"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_44"
   },
   {
    "kind": "locale",
@@ -305,7 +325,15 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_8"
+  },
+  {
+   "kind": "locale",
    "id": "spell_druid_80"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_10"
   },
   {
    "kind": "locale",
@@ -318,6 +346,10 @@
   {
    "kind": "locale",
    "id": "spell_magic_user_17"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_19"
   },
   {
    "kind": "locale",
@@ -362,6 +394,10 @@
   {
    "kind": "locale",
    "id": "spell_magic_user_55"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_81"
   },
   {
    "kind": "locale",
