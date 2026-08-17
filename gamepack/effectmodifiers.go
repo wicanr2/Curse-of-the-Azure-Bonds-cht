@@ -21,9 +21,14 @@ import (
 type EffectModifier struct {
 	// Global 是原作的全域位址（小寫十六進位，如 `6f9f`）。
 	Global string `json:"global"`
-	// Op 是 `add`／`sub`／`set`。
+	// Op 是 `add`／`sub`／`set`／`sub_clamped`（夾底減法）／`div`。
 	Op    string `json:"op"`
 	Value int    `json:"value"`
+	// GuardGlobal／GuardMask 是「這個修正有條件」：只有當呼叫端提供的旗標
+	// `GuardGlobal` 與 `GuardMask` 有交集時才套。抗寒只減半**冷**傷害，
+	// 抗火只減半火傷害——少了這一層，它們會減半所有傷害。
+	GuardGlobal string `json:"guard_global,omitempty"`
+	GuardMask   int    `json:"guard_mask,omitempty"`
 }
 
 // EffectHandler 是一個效果碼的 handler 摘要。

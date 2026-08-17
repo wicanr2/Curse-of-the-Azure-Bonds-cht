@@ -26,8 +26,11 @@ type SpellDamageEntry struct {
 	// Shape 是 `entry9`／`entry10`／`ambiguous`（handler 裡擲了不只一次）／
 	// `unread`（沒有可辨識的擲骰）。
 	Shape      string `json:"shape"`
-	DiceCount  int    `json:"dice_count,omitempty"`
-	DiceSides  int    `json:"dice_sides,omitempty"`
+	DiceCount int `json:"dice_count,omitempty"`
+	DiceSides int `json:"dice_sides,omitempty"`
+	// Element 是推進 `sub_F06` 的傷害屬性旗標：bit 0 火、bit 1 冷、bit 2 電。
+	// 抗性效果就是看這幾個位元決定要不要介入（spec 1124）。
+	Element int `json:"element,omitempty"`
 	// ScalesWithCasterLevel 是「骰數 0」＝ 用施法者等級當骰數。
 	ScalesWithCasterLevel bool `json:"scales_with_caster_level,omitempty"`
 }
@@ -66,6 +69,18 @@ func SpellDamage() (*SpellDamageTable, error) {
 		spellDamage = parsed
 	})
 	return spellDamage, spellDamageErr
+}
+
+// Element 回傳一支法術的傷害屬性旗標。
+func (t *SpellDamageTable) Element(spellID uint8) uint8 {
+	if t == nil {
+		return 0
+	}
+	entry, found := t.Spells[fmt.Sprintf("%d", spellID)]
+	if !found {
+		return 0
+	}
+	return uint8(entry.Element)
 }
 
 // Dice 回傳一支法術的骰數與面數。`shape` 不是 `entry9`／`entry10` 時回 false

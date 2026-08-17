@@ -96,7 +96,8 @@ func (s *State) combatCastSpellDice(spellID uint8, healing bool) error {
 	case negated:
 		// 豁免過了而且這支是「過了沒事」：法術位照樣消耗，傷害不套。
 	default:
-		result, err = s.battle.CastDamageDice(caster.ID, target, count, sides, halved)
+		result, err = s.battle.CastDamageDice(caster.ID, target, count, sides,
+			table.Element(spellID), halved)
 	}
 	if err != nil {
 		s.partyRoster[characterIndex].SpellSlots = append(

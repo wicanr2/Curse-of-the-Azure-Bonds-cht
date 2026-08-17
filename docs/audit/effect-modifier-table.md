@@ -11,15 +11,15 @@
 | `inert` | 只有序幕與 `retf`，什麼都不做 |
 | `unread` | 有內容但沒有可辨識的加減 |
 
-統計：decoded 6、inert 12、partial 20、unread 103
+統計：decoded 6、inert 12、partial 18、unread 105
 
 ## 暫存全域
 
 | 位址 | 名稱 | 佐證 |
 |---|---|---|
 | `DS:6F92h` | `saving_throw` | 豁免總和（`overlay-23 entry#8` 寫它，spec 1119） |
-| `DS:6F94h` | `scratch_6f94` | （未定） |
-| `DS:6F95h` | `scratch_6f95` | （未定） |
+| `DS:6F94h` | `damage` | 傷害值（抗寒／抗火在傷害時機把它折半） |
+| `DS:6F95h` | `damage_element` | 傷害屬性旗標：bit 0 火、bit 1 冷 |
 | `DS:6F96h` | `movement` | 移動率（`overlay-13 entry#2` 寫它，spec 1122） |
 | `DS:6F9Bh` | `attack_forced_miss` | 攻擊必失手旗標 |
 | `DS:6F9Ch` | `scratch_6f9c` | （未定） |
@@ -35,11 +35,11 @@
 | `03h` | `overlay-12:00E8h` | unread | — | `07h` |
 | `04h` | `overlay-12:016Bh` | unread | — | `10h` |
 | `05h` | `overlay-12:2E33h` | inert | — | — |
-| `06h` | `overlay-12:0188h` | partial | `scratch_6f95` ＝ 9 | `04h`、`0Ah` |
+| `06h` | `overlay-12:0188h` | partial | `damage_element` ＝ 9 | `04h`、`0Ah` |
 | `07h` | `overlay-12:01F1h` | unread | — | `0Bh` |
 | `08h` | `overlay-12:0238h` | unread | — | `0Bh`、`0Ch` |
 | `09h` | `overlay-12:026Fh` | unread | — | `0Bh`、`0Ch` |
-| `0Ah` | `overlay-12:02A6h` | partial | `scratch_6f94` ÷ 2 | `06h`、`0Ch` |
+| `0Ah` | `overlay-12:02A6h` | partial | `damage` ÷ 2、`saving_throw` ＋ 3 | `06h`、`0Ch` |
 | `0Bh` | `overlay-12:02CBh` | partial | `morale` ＝ 100 | `0Fh`、`11h`、`13h` |
 | `0Ch` | `overlay-12:038Ch` | inert | — | — |
 | `0Dh` | `overlay-12:03A0h` | unread | — | `0Fh` |
@@ -49,9 +49,9 @@
 | `11h` | `overlay-12:044Ch` | partial | `saving_throw` ＋ 1 | `06h`、`0Bh`、`0Ch` |
 | `12h` | `overlay-12:0479h` | unread | — | `0Ah` |
 | `13h` | `overlay-12:2E33h` | inert | — | — |
-| `14h` | `overlay-12:04ADh` | partial | `scratch_6f94` ÷ 2 | `06h`、`0Ch` |
+| `14h` | `overlay-12:04ADh` | partial | `damage` ÷ 2、`saving_throw` ＋ 3 | `06h`、`0Ch` |
 | `15h` | `overlay-12:04E4h` | unread | — | `0Fh` |
-| `16h` | `overlay-12:054Ah` | partial | `scratch_6f9c` ＝ 1、`scratch_6f9c` ＝ 0 | — |
+| `16h` | `overlay-12:054Ah` | unread | — | — |
 | `17h` | `overlay-12:05B6h` | unread | — | `13h` |
 | `18h` | `overlay-12:2E33h` | inert | — | — |
 | `19h` | `overlay-12:06F2h` | unread | — | `01h`、`10h` |
@@ -79,18 +79,18 @@
 | `2Fh` | `overlay-12:118Ah` | unread | — | `10h` |
 | `30h` | `overlay-12:11D7h` | unread | — | `10h` |
 | `31h` | `overlay-12:1200h` | partial | `modifier` − 1、`saving_throw` − 1 | `0Ah`、`0Ch` |
-| `32h` | `overlay-12:124Bh` | unread | — | `0Ch`、`14h` |
+| `32h` | `overlay-12:124Bh` | partial | `saving_throw` ＋ 2 | `0Ch`、`14h` |
 | `33h` | `overlay-12:0075h` | unread | — | `07h` |
 | `34h` | `overlay-12:0075h` | unread | — | `07h` |
 | `35h` | `overlay-12:0075h` | unread | — | `07h` |
-| `36h` | `overlay-12:127Eh` | unread | — | `0Ch`、`14h` |
+| `36h` | `overlay-12:127Eh` | partial | `saving_throw` ＋ 2 | `0Ch`、`14h` |
 | `37h` | `overlay-12:12B1h` | inert | — | — |
 | `38h` | `overlay-12:12BAh` | unread | — | `08h`、`13h` |
 | `39h` | `overlay-13:403Fh` | unread | — | `02h` |
 | `3Ah` | `overlay-12:12DBh` | unread | — | `12h` |
 | `3Bh` | `overlay-12:12FDh` | unread | — | — |
-| `3Ch` | `overlay-12:131Dh` | partial | `scratch_6f94` ÷ 2 | `05h` |
-| `3Dh` | `overlay-12:1374h` | unread | — | `06h`、`0Ch` |
+| `3Ch` | `overlay-12:131Dh` | unread | — | `05h` |
+| `3Dh` | `overlay-12:1374h` | partial | `damage` − 2、`saving_throw` ＋ 4 | `06h`、`0Ch` |
 | `3Eh` | `overlay-12:13CFh` | unread | — | — |
 | `3Fh` | `overlay-12:1415h` | unread | — | `06h`、`09h` |
 | `40h` | `overlay-12:1569h` | unread | — | `03h` |
@@ -108,10 +108,10 @@
 | `4Ch` | `overlay-12:17C8h` | unread | — | `04h`、`0Ah` |
 | `4Dh` | `overlay-12:1809h` | unread | — | `0Fh` |
 | `4Eh` | `overlay-12:192Dh` | unread | — | — |
-| `4Fh` | `overlay-12:196Dh` | partial | `scratch_6f95` ＝ 9 | `02h`、`03h` |
-| `50h` | `overlay-12:19A2h` | partial | `scratch_6f95` ＝ 16 | `02h` |
-| `51h` | `overlay-12:19D7h` | decoded | `scratch_6f94` ÷ 2 | `05h` |
-| `52h` | `overlay-12:19EEh` | partial | `scratch_6f94` ÷ 2 | `05h`、`06h`、`08h` |
+| `4Fh` | `overlay-12:196Dh` | partial | `damage_element` ＝ 9 | `02h`、`03h` |
+| `50h` | `overlay-12:19A2h` | partial | `damage_element` ＝ 16 | `02h` |
+| `51h` | `overlay-12:19D7h` | decoded | `damage` ÷ 2 | `05h` |
+| `52h` | `overlay-12:19EEh` | unread | — | `05h`、`06h`、`08h` |
 | `53h` | `overlay-12:1A65h` | unread | — | `0Eh` |
 | `54h` | `overlay-12:1C1Ch` | unread | — | `06h` |
 | `55h` | `overlay-12:1C4Fh` | unread | — | `05h` |
@@ -119,8 +119,8 @@
 | `59h` | `overlay-12:1C90h` | unread | — | `08h`、`10h` |
 | `5Bh` | `overlay-12:1CF6h` | unread | — | — |
 | `5Ch` | `overlay-12:2E33h` | inert | — | — |
-| `5Dh` | `overlay-12:1FC4h` | partial | `scratch_6f94` ÷ 2 | `06h` |
-| `5Eh` | `overlay-12:1FE4h` | partial | `scratch_6f94` ÷ 2 | `05h` |
+| `5Dh` | `overlay-12:1FC4h` | partial | `damage` ÷ 2 | `06h` |
+| `5Eh` | `overlay-12:1FE4h` | unread | — | `05h` |
 | `5Fh` | `overlay-12:203Ch` | unread | — | — |
 | `60h` | `overlay-13:4811h` | unread | — | `02h` |
 | `61h` | `overlay-12:2078h` | unread | — | `0Ch` |
@@ -139,17 +139,17 @@
 | `6Eh` | `overlay-12:23FFh` | unread | — | `06h`、`09h` |
 | `6Fh` | `overlay-12:2418h` | unread | — | `09h`、`0Ch` |
 | `70h` | `overlay-12:243Bh` | unread | — | `06h`、`09h` |
-| `71h` | `overlay-12:2454h` | unread | — | `06h` |
-| `72h` | `overlay-12:2499h` | partial | `scratch_6f94` ÷ 2 | `06h` |
-| `73h` | `overlay-12:24B9h` | partial | `scratch_6f94` ÷ 2 | `05h` |
-| `74h` | `overlay-12:251Ch` | partial | `scratch_6f94` ÷ 2 | `05h` |
+| `71h` | `overlay-12:2454h` | partial | `damage` − 1 | `06h` |
+| `72h` | `overlay-12:2499h` | partial | `damage` ÷ 2 | `06h` |
+| `73h` | `overlay-12:24B9h` | unread | — | `05h` |
+| `74h` | `overlay-12:251Ch` | unread | — | `05h` |
 | `75h` | `overlay-12:255Ah` | unread | — | `05h` |
-| `76h` | `overlay-12:259Ah` | partial | `scratch_6f94` ÷ 2 | `06h` |
+| `76h` | `overlay-12:259Ah` | partial | `damage` ÷ 2 | `06h` |
 | `77h` | `overlay-12:25BAh` | unread | — | `05h` |
 | `78h` | `overlay-12:2606h` | unread | — | `05h` |
 | `79h` | `overlay-12:2657h` | unread | — | `0Eh` |
 | `7Ah` | `overlay-12:2782h` | unread | — | `02h` |
-| `7Bh` | `overlay-12:27FAh` | partial | `scratch_6f95` ＝ 10 | `02h` |
+| `7Bh` | `overlay-12:27FAh` | partial | `damage_element` ＝ 10 | `02h` |
 | `7Ch` | `overlay-12:282Fh` | unread | — | `09h` |
 | `7Dh` | `overlay-12:2855h` | unread | — | `09h`、`0Ch` |
 | `7Eh` | `overlay-12:289Ch` | unread | — | `0Eh` |
