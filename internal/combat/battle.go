@@ -2317,3 +2317,31 @@ func (b *Battle) updateStatus() {
 		b.status = StatusDraw
 	}
 }
+
+// ReplaceFighterEquipment 把重新投影過的裝備衍生值換到場上的戰鬥員身上。
+//
+// ★ 只換裝備算得出來的那幾格。 位置、生命、效果串列、行動狀態都留著——
+// 換武器不該讓人瞬移或回血。原作的換裝也是「動裝備槽再叫派生數值重算」，
+// 不是重建整個戰鬥員。
+func (b *Battle) ReplaceFighterEquipment(fighterID string, projected Fighter) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	fighter.ArmorClass = projected.ArmorClass
+	fighter.AttackBonus = projected.AttackBonus
+	fighter.DamageDiceCount = projected.DamageDiceCount
+	fighter.DamageDiceSides = projected.DamageDiceSides
+	fighter.DamageBonus = projected.DamageBonus
+	fighter.WeaponRange = projected.WeaponRange
+	fighter.MissileWeapon = projected.MissileWeapon
+	fighter.ThrownWeapon = projected.ThrownWeapon
+	fighter.AmmunitionType = projected.AmmunitionType
+	fighter.MovementAllowance = projected.MovementAllowance
+	fighter.ReadiedItemEffects = append([]uint8(nil), projected.ReadiedItemEffects...)
+	b.fighters[fighterID] = fighter
+	return nil
+}

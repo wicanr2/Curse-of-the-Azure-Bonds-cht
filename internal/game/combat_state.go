@@ -3370,6 +3370,12 @@ func (s *State) advanceCombatToParty() error {
 		if fighter.Side == combat.SideParty && !fighter.QuickFight {
 			return nil
 		}
+		// 自動換裝在 AI 回合開頭（spec 1120）。原作的換裝屬於 AI 模組，
+		// 所以管的是「這一回合由電腦操作的人」——包含開了快速戰鬥的隊員。
+		if _, err := s.autoEquipBeforeAITurn(fighter.ID); err != nil {
+			return err
+		}
+		fighter, _ = s.fighter(fighter.ID)
 		if fighter.Side == combat.SideEnemy {
 			// 士氣檢定在 AI 回合開頭（spec 1122）：門檻跟著受傷程度走，
 			// 過不了而且跑得掉就撤退，並印「驚慌逃竄」。
