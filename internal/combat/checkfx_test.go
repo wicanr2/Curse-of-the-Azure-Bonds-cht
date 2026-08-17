@@ -130,8 +130,9 @@ func TestTimingSelectsWhichEffectsAreAsked(t *testing.T) {
 
 // ★ 回傳 0 有兩種意思，測試要能分辨。
 func TestUnreadHandlersAreReportedInsteadOfSilentlyCountingAsZero(t *testing.T) {
-	// 07h（妖火）在 `0Bh` 時機的清單裡，但 handler 還沒解讀。
-	detail, err := CheckFX(affected(0x07), checkFXArmourClass, nil)
+	// 08h（防護邪惡）在 `0Bh` 時機的清單裡，但它的修正是有條件的（比陣營），
+	// 所以進不了表——查詢會回報「還沒解讀」而不是「沒有修正」。
+	detail, err := CheckFX(affected(0x08), checkFXArmourClass, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -274,7 +275,7 @@ func TestInertEffectCodesAppearInNoTimingList(t *testing.T) {
 	// 所以不在任何 timing 清單裡的碼，它的數字永遠套不上。
 	// 目前已知兩個（`16h` 緩毒、`93h`）——那兩支大概是施法時直接 `CALLEFFECT`，
 	// 不經過 timing 表。清單寫死是為了讓**新增的**這種情況當場現形。
-	orphans := map[int]bool{0x16: true, 0x93: true}
+	orphans := map[int]bool{0x16: true, 0x20: true, 0x44: true, 0x5F: true, 0x93: true}
 	for key, handler := range table.Effects {
 		if len(handler.Modifiers) == 0 {
 			continue

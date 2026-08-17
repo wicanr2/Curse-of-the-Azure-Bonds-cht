@@ -69,6 +69,12 @@ type OriginalCoverage struct {
 	EffectKindsUsed int `json:"effect_kinds_used"`
 	// EffectKindsInterpreted 是其中 remake 判讀得了的。
 	EffectKindsInterpreted int `json:"effect_kinds_interpreted"`
+	// UnsupportedClass 是**職業模型還不支援**的法術：德魯伊（remake 沒有這個
+	// 職業）與表裡沒有職業的那幾筆。它們不是「還沒做」，是宣告不了——
+	// 混在「尚未宣告」裡會讓那個數字永遠降不到 0 而看不出原因。
+	UnsupportedClass int `json:"unsupported_class"`
+	// Declarable ＝ CombatCastable − UnsupportedClass，才是能收斂到 0 的分母。
+	Declarable int `json:"declarable"`
 }
 
 type SpellReport struct {
@@ -241,6 +247,11 @@ func buildOriginalCoverage(declared []SpellReport) (OriginalCoverage, error) {
 			continue
 		}
 		coverage.CombatCastable++
+		if spell.CasterClass != "cleric" && spell.CasterClass != "magic-user" {
+			coverage.UnsupportedClass++
+			continue
+		}
+		coverage.Declarable++
 		status, ok := handled[spell.SpellID]
 		if !ok {
 			coverage.MissingByLevel[spell.Level]++

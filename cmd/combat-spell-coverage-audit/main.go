@@ -45,9 +45,11 @@ func main() {
 		}
 	}
 	fmt.Fprintf(os.Stderr,
-		"declared=%d covered=%d incomplete=%d｜原作可戰鬥施放 %d 支中已宣告 %d 支\n",
+		"declared=%d covered=%d incomplete=%d｜可宣告 %d 支中已宣告 %d 支"+
+			"（戰鬥可施放 %d，其中 %d 支職業模型不支援）\n",
 		report.SpellCount, report.CoveredCount, report.MissingCount,
-		report.Original.CombatCastable, report.Original.Declared)
+		report.Original.Declarable, report.Original.Declared,
+		report.Original.CombatCastable, report.Original.UnsupportedClass)
 	if *strict && report.MissingCount != 0 {
 		os.Exit(2)
 	}
@@ -84,9 +86,12 @@ func renderMarkdown(report spellcoverage.Report) ([]byte, error) {
 	fmt.Fprintf(&out, "| └ 玩家取得到 | %d |\n", original.Playable)
 	fmt.Fprintf(&out, "| 　├ 只能紮營施放 | %d |\n", original.CampOnly)
 	fmt.Fprintf(&out, "| 　└ **戰鬥可施放（真正的分母）** | **%d** |\n", original.CombatCastable)
+	fmt.Fprintf(&out, "| 　　├ 職業模型不支援（德魯伊／表裡沒有職業）| %d |\n",
+		original.UnsupportedClass)
+	fmt.Fprintf(&out, "| 　　├ **可宣告（能收斂到 0 的分母）** | **%d** |\n", original.Declarable)
 	fmt.Fprintf(&out, "| 　　├ game pack 已宣告 | %d |\n", original.Declared)
 	fmt.Fprintf(&out, "| 　　├ 其中 runtime handler 已觀察到 | %d |\n", original.HandlerObserved)
-	fmt.Fprintf(&out, "| 　　└ **尚未宣告** | **%d** |\n", original.CombatCastable-original.Declared)
+	fmt.Fprintf(&out, "| 　　└ **尚未宣告** | **%d** |\n", original.Declarable-original.Declared)
 
 	fmt.Fprintf(&out, "| 　　　├ 效果碼 remake 已判讀（只差宣告） | %d |\n", original.MissingEffectReady)
 	fmt.Fprintf(&out, "| 　　　├ 效果碼 remake 還看不懂 | %d |\n", original.MissingEffectUnhandled)

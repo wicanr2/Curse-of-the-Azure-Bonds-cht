@@ -30,6 +30,9 @@ const (
 	CheckFXMovement uint8 = 0x12
 	// checkFXDamage 是 `PUTDAMAGE` 進入時（`06h`，spec 581）：抗性在這裡介入。
 	checkFXDamage uint8 = 0x06
+	// CheckFXCanAct 是「這個人這一回合動得了嗎」（`07h`）：定身家族、纏繞術
+	// 都在這張清單裡。
+	CheckFXCanAct uint8 = 0x07
 	// checkFXArmourClass 是護甲那一組（`0Bh`）：防護邪惡／善良、護盾、
 	// 妖火、致盲都在這張清單裡。呼叫點還沒對回原作，所以不匯出。
 	checkFXArmourClass uint8 = 0x0B
@@ -60,6 +63,20 @@ type CheckFXDetail struct {
 	// Unread 是「這個人有這個效果、這個時機也要問它，但 handler 還沒解讀」。
 	// **不是 0 修正**——是不知道。
 	Unread []uint8
+	// Records 是寫進角色／戰鬥狀態記錄的那一類修正。
+	Records []CheckFXRecordWrite
+}
+
+// CheckFXRecordWrite 是一次對記錄的寫入。
+type CheckFXRecordWrite struct {
+	// Record 是 `player`（角色記錄）或 `combat_state`（`+18Dh` 的 22 bytes）。
+	Record string
+	Field  int
+	Op     string
+	Value  int
+	// Cap／CapThreshold 只有 `add_capped` 用得到。
+	Cap          int
+	CapThreshold int
 }
 
 // CheckFX 對一個戰鬥員跑一次時機查詢。`base` 是各全域的起始值（通常只填一個）。
@@ -97,6 +114,14 @@ func CheckFX(fighter Fighter, timing uint8, base map[string]int) (CheckFXDetail,
 		}
 		applied := false
 		for _, modifier := range handler.Modifiers {
+			if modifier.Record != "" {
+				detail.Records = append(detail.Records, CheckFXRecordWrite{
+					Record: modifier.Record, Field: modifier.Field,
+					Op: modifier.Op, Value: modifier.Value,
+					Cap: modifier.Cap, CapThreshold: modifier.CapThreshold})
+				applied = true
+				continue
+			}
 			if modifier.GuardGlobal != "" {
 				guard := table.ScratchName(modifier.GuardGlobal)
 				if detail.Applied[guard]&modifier.GuardMask == 0 {
