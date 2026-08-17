@@ -1305,6 +1305,8 @@
    "spell_cleric_23": "Hold Person",
    "spell_cleric_27": "Snake Charm",
    "spell_magic_user_29": "Detect Invisibility",
+   "spell_magic_user_16": "Protection from Evil",
+   "spell_magic_user_17": "Protection from Good",
    "spell_magic_user_30": "Invisibility",
    "spell_magic_user_45": "Blink",
    "spell_magic_user_48": "Haste",

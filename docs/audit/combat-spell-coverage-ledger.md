@@ -16,11 +16,18 @@
 | └ 玩家取得到 | 87 |
 | 　├ 只能紮營施放 | 8 |
 | 　└ **戰鬥可施放（真正的分母）** | **79** |
-| 　　├ game pack 已宣告 | 23 |
-| 　　├ 其中 runtime handler 已觀察到 | 23 |
-| 　　└ **尚未宣告** | **56** |
+| 　　├ game pack 已宣告 | 25 |
+| 　　├ 其中 runtime handler 已觀察到 | 25 |
+| 　　└ **尚未宣告** | **54** |
+| 　　　├ 效果碼 remake 已判讀（只差宣告） | 0 |
+| 　　　├ 效果碼 remake 還看不懂 | 33 |
+| 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | 21 |
 
-未宣告的戰鬥法術，依環數：1 環 14 支、2 環 6 支、3 環 11 支、4 環 15 支、5 環 8 支、7 環 2 支。
+全表用到 50 個相異效果碼，remake 判讀得了其中 10 個。
+★ **記得上去不等於解讀得了**：`CastEffectSpell` 可以把任何碼寫進效果串列，
+但只有已判讀的那幾個會改變戰鬥規則。上面兩列就是這條界線。
+
+未宣告的戰鬥法術，依環數：1 環 12 支、2 環 6 支、3 環 11 支、4 環 15 支、5 環 8 支、7 環 2 支。
 
 ## 逐支
 
@@ -31,8 +38,8 @@
 | 3 | Cure Light Wounds | cleric | 1 | 5 節／1 個目標 | observed | missing | observed |
 | 4 | Cause Light Wounds | cleric | 1 | 5 節／1 個目標 | observed | missing | observed |
 | 5 | Detect Magic | cleric | 1 | 1 節／自己／效果 5 | 未宣告 | — | — |
-| 6 | Protection From Evil | cleric | 1 | 4 節／1 個目標／效果 8 | observed | missing | observed |
-| 7 | Protection from Good | cleric | 1 | 4 節／1 個目標／效果 9 | observed | missing | observed |
+| 6 | Protection From Evil | cleric | 1 | 4 節／1 個目標／效果 8 | observed | missing | missing |
+| 7 | Protection from Good | cleric | 1 | 4 節／1 個目標／效果 9 | observed | missing | missing |
 | 8 | Resist Cold | cleric | 1 | 10 節／1 個目標／效果 10 | 未宣告 | — | — |
 | 9 | Burning Hands | magic-user | 1 | 1 節／1 個目標 | 未宣告 | — | — |
 | 10 | Charm Person | magic-user | 1 | 1 節／1 個目標／豁免 spell／效果 11 | 未宣告 | — | — |
@@ -41,8 +48,8 @@
 | 13 | Reduce | magic-user | 1 | 1 節／1 個目標／豁免 spell／效果 13 | 未宣告 | — | — |
 | 14 | Friends | magic-user | 1 | 1 節／自己／效果 14 | 紮營法術 | — | — |
 | 15 | Magic Missile | magic-user | 1 | 1 節／1 個目標 | observed | observed | observed_shared |
-| 16 | Protection From Evil | magic-user | 1 | 1 節／1 個目標／效果 8 | 未宣告 | — | — |
-| 17 | Protection From Good | magic-user | 1 | 1 節／1 個目標／效果 9 | 未宣告 | — | — |
+| 16 | Protection From Evil | magic-user | 1 | 1 節／1 個目標／效果 8 | observed | missing | missing |
+| 17 | Protection From Good | magic-user | 1 | 1 節／1 個目標／效果 9 | observed | missing | missing |
 | 18 | Read Magic | magic-user | 1 | 10 節／自己／效果 16 | 紮營法術 | — | — |
 | 19 | Shield | magic-user | 1 | 1 節／自己／效果 17 | 未宣告 | — | — |
 | 20 | Shocking Grasp | magic-user | 1 | 1 節／1 個目標 | 未宣告 | — | — |

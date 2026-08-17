@@ -1,0 +1,96 @@
+package game
+
+import (
+	"testing"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+)
+
+// 法術主表裡「防護邪惡」有兩支：6 是牧師、16 是法師，效果碼同樣是 `08h`；
+// 「防護善良」是 7 與 17。這條測試施的是**法師版**。
+//
+// ★ 為什麼要單獨釘。 這兩支的實作原本寫死法術編號與職業，所以宣告法師版之後
+// game pack 看起來已經接好，一施卻報「a different spell target is being selected」。
+// 覆蓋報告只看得到 behavior 的分派 case 存在，看不出這種寫死。
+func TestMagicUserProtectionSpellsCastLikeTheClericVersions(t *testing.T) {
+	for _, item := range []struct {
+		name     string
+		spellID  uint8
+		enemy    combat.Fighter
+		affected func(combat.Fighter) bool
+	}{
+		{
+			name:    "防護邪惡（法師版，法術 16）",
+			spellID: 16,
+			enemy: combat.Fighter{ID: "orc", Name: "獸人", Side: combat.SideEnemy, Evil: true,
+				HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 4, CombatY: 4},
+			affected: func(f combat.Fighter) bool { return f.ProtectedFromEvil && f.ProtectionEvilRounds == 5 },
+		},
+		{
+			name:    "防護善良（法師版，法術 17）",
+			spellID: 17,
+			enemy: combat.Fighter{ID: "paladin", Name: "聖騎士", Side: combat.SideEnemy, Good: true,
+				HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 4, CombatY: 4},
+			affected: func(f combat.Fighter) bool { return f.ProtectedFromGood && f.ProtectionGoodRounds == 5 },
+		},
+	} {
+		t.Run(item.name, func(t *testing.T) {
+			state := NewState(testCatalog())
+			state.partyRoster = party.Roster{{ID: "mage", Name: "法師",
+				Class: party.ClassMagicUser, Level: 2, SpellSlots: []uint8{item.spellID}}}
+			partyFighters := []combat.Fighter{{ID: "mage", Name: "法師", Side: combat.SideParty,
+				HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20,
+				HasCombatPosition: true, CombatX: 1, CombatY: 1}}
+			if err := state.StartCombat(partyFighters, []combat.Fighter{item.enemy}, 7); err != nil {
+				t.Fatal(err)
+			}
+			if err := state.BeginCombatCast(item.spellID); err != nil {
+				t.Fatal(err)
+			}
+			if err := state.CombatCast(item.spellID); err != nil {
+				t.Fatal(err)
+			}
+			if len(state.partyRoster[0].SpellSlots) != 0 {
+				t.Fatalf("法術位沒被消耗：%#v", state.partyRoster[0].SpellSlots)
+			}
+			for _, fighter := range state.CombatFighters() {
+				if fighter.ID == "mage" && !item.affected(fighter) {
+					t.Fatalf("保護沒生效：%+v", fighter)
+				}
+			}
+		})
+	}
+}
+
+// 牧師版仍然擋法師、法師版仍然擋牧師——參數化不能把職業限制一起弄丟。
+func TestProtectionSpellsStillRejectTheWrongClass(t *testing.T) {
+	for _, item := range []struct {
+		name    string
+		spellID uint8
+		class   party.Class
+	}{
+		{"牧師施法師版 16", 16, party.ClassCleric},
+		{"牧師施法師版 17", 17, party.ClassCleric},
+		{"法師施牧師版 6", ProtectionFromEvilSpellID, party.ClassMagicUser},
+		{"法師施牧師版 7", ProtectionFromGoodSpellID, party.ClassMagicUser},
+	} {
+		t.Run(item.name, func(t *testing.T) {
+			state := NewState(testCatalog())
+			state.partyRoster = party.Roster{{ID: "caster", Name: "施法者",
+				Class: item.class, Level: 2, SpellSlots: []uint8{item.spellID}}}
+			partyFighters := []combat.Fighter{{ID: "caster", Name: "施法者", Side: combat.SideParty,
+				HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20,
+				HasCombatPosition: true, CombatX: 1, CombatY: 1}}
+			enemies := []combat.Fighter{{ID: "orc", Name: "獸人", Side: combat.SideEnemy, Evil: true,
+				HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 4, CombatY: 4}}
+			if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+				t.Fatal(err)
+			}
+			_ = state.BeginCombatCast(item.spellID)
+			if err := state.CombatCast(item.spellID); err == nil {
+				t.Fatal("職業不符卻施成功了")
+			}
+		})
+	}
+}

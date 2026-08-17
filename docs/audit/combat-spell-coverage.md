@@ -38,5 +38,16 @@ stdout 是機器可讀 JSON（`-quiet` 關掉），`-output` 產生逐支法術�
   產生，會標為 `observed_shared`，不冒稱是該法術專屬 cue。
 - `limitations`：不完整時的明確限制，避免誤宣稱完整法術。
 
+摘要另外把「尚未宣告」那一堆拆成三類，因為它們缺的東西完全不同：
+
+- **效果碼 remake 已判讀**：只差一行 pack 宣告，不需要新的規則程式碼。
+- **效果碼 remake 還看不懂**：`CastEffectSpell` 記得上去，但戰鬥規則不會理它。
+  這一類**不能算成已完成**——記得上去不等於解讀得了。判讀範圍由
+  `combat.InterpretedAffectKinds` 定義，而那張表由
+  `TestInterpretedAffectKindsMatchTheSource` 逐條對回 `battle.go` 的比對常數，
+  漏登記會當場紅。
+- **傷害類（`+0Ah = 0`）**：骰數不在法術屬性表裡，在各自的 overlay-22 handler，
+  所以資料驅動這條路走不到它們。
+
 此工具刻意放在獨立 `cmd/` 目錄，不加入 `scripts/`，避免觸發既有兩個
 `main` 的 gate 問題。
