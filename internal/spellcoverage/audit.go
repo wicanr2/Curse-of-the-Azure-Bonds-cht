@@ -14,6 +14,7 @@ import (
 	"unicode"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
@@ -53,6 +54,21 @@ type OriginalCoverage struct {
 	MissingByLevel map[int]int `json:"missing_by_level"`
 	// MissingNames 是還沒宣告的戰鬥法術名（依編號）。
 	MissingNames []string `json:"missing_names"`
+	// MissingEffectReady 是還沒宣告、但效果碼 `+0Ah` 已經在 remake 判讀範圍內的
+	// 那幾支——它們只差一行 pack 宣告，不需要新的規則程式碼。
+	MissingEffectReady int `json:"missing_effect_ready"`
+	// MissingEffectReadyNames 同上，列名字，讓下一輪直接照著宣告。
+	MissingEffectReadyNames []string `json:"missing_effect_ready_names"`
+	// MissingEffectUnhandled 是效果碼有值、但 remake 還看不懂那個碼。
+	// **記得上去不等於解讀得了**，這個數字就是那條界線。
+	MissingEffectUnhandled int `json:"missing_effect_unhandled"`
+	// MissingDamageClass 是 `+0Ah = 0` 的傷害類：骰數不在屬性表裡，
+	// 在各自的 overlay-22 handler，所以資料驅動這條路走不到它們。
+	MissingDamageClass int `json:"missing_damage_class"`
+	// EffectKindsUsed 是全表用到的相異效果碼數（不含 0）。
+	EffectKindsUsed int `json:"effect_kinds_used"`
+	// EffectKindsInterpreted 是其中 remake 判讀得了的。
+	EffectKindsInterpreted int `json:"effect_kinds_interpreted"`
 }
 
 type SpellReport struct {
@@ -202,6 +218,18 @@ func buildOriginalCoverage(declared []SpellReport) (OriginalCoverage, error) {
 		TableSpells:    len(table.Spells),
 		MissingByLevel: map[int]int{},
 	}
+	effectKinds := map[uint8]bool{}
+	for _, spell := range table.Spells {
+		if spell.EffectID != 0 {
+			effectKinds[uint8(spell.EffectID)] = true
+		}
+	}
+	coverage.EffectKindsUsed = len(effectKinds)
+	for kind := range effectKinds {
+		if combat.AffectKindIsInterpreted(kind) {
+			coverage.EffectKindsInterpreted++
+		}
+	}
 	for _, spell := range table.Spells {
 		if spell.Placeholder {
 			coverage.Placeholders++
@@ -217,6 +245,16 @@ func buildOriginalCoverage(declared []SpellReport) (OriginalCoverage, error) {
 		if !ok {
 			coverage.MissingByLevel[spell.Level]++
 			coverage.MissingNames = append(coverage.MissingNames, spell.Name)
+			switch {
+			case spell.EffectID == 0:
+				coverage.MissingDamageClass++
+			case combat.AffectKindIsInterpreted(uint8(spell.EffectID)):
+				coverage.MissingEffectReady++
+				coverage.MissingEffectReadyNames = append(
+					coverage.MissingEffectReadyNames, spell.Name)
+			default:
+				coverage.MissingEffectUnhandled++
+			}
 			continue
 		}
 		coverage.Declared++

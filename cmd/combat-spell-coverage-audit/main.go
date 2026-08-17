@@ -88,6 +88,18 @@ func renderMarkdown(report spellcoverage.Report) ([]byte, error) {
 	fmt.Fprintf(&out, "| 　　├ 其中 runtime handler 已觀察到 | %d |\n", original.HandlerObserved)
 	fmt.Fprintf(&out, "| 　　└ **尚未宣告** | **%d** |\n", original.CombatCastable-original.Declared)
 
+	fmt.Fprintf(&out, "| 　　　├ 效果碼 remake 已判讀（只差宣告） | %d |\n", original.MissingEffectReady)
+	fmt.Fprintf(&out, "| 　　　├ 效果碼 remake 還看不懂 | %d |\n", original.MissingEffectUnhandled)
+	fmt.Fprintf(&out, "| 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | %d |\n", original.MissingDamageClass)
+	fmt.Fprintf(&out, "\n全表用到 %d 個相異效果碼，remake 判讀得了其中 %d 個。\n",
+		original.EffectKindsUsed, original.EffectKindsInterpreted)
+	out.WriteString("★ **記得上去不等於解讀得了**：`CastEffectSpell` 可以把任何碼寫進效果串列，\n")
+	out.WriteString("但只有已判讀的那幾個會改變戰鬥規則。上面兩列就是這條界線。\n")
+	if len(original.MissingEffectReadyNames) > 0 {
+		fmt.Fprintf(&out, "\n只差宣告的：%s。\n",
+			strings.Join(original.MissingEffectReadyNames, "、"))
+	}
+
 	levels := make([]int, 0, len(original.MissingByLevel))
 	for level := range original.MissingByLevel {
 		levels = append(levels, level)

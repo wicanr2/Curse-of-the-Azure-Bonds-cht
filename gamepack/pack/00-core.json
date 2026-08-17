@@ -2397,6 +2397,24 @@
    "casting_time": 4
   },
   {
+   "id": "coab.spell.protection-from-evil-magic-user",
+   "spell_id": 16,
+   "caster_class": "magic_user",
+   "target_mode": "party_member",
+   "behavior": "protection_from_evil",
+   "message_id": "spell_magic_user_16",
+   "casting_time": 1
+  },
+  {
+   "id": "coab.spell.protection-from-good-magic-user",
+   "spell_id": 17,
+   "caster_class": "magic_user",
+   "target_mode": "party_member",
+   "behavior": "protection_from_good",
+   "message_id": "spell_magic_user_17",
+   "casting_time": 1
+  },
+  {
    "id": "coab.spell.magic-missile",
    "spell_id": 15,
    "caster_class": "magic_user",

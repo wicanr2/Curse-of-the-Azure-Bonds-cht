@@ -956,20 +956,31 @@ func (s *State) CombatCanCastCauseLightWounds() bool {
 	return false
 }
 
-func (s *State) CombatCanCastProtectionFromEvil() bool {
+// combatCanCastProtectionSpell 是「這個編號的保護法術現在施得出來嗎」。
+// 職業與編號都從 game pack 的宣告讀——寫死就會讓法師版（16／17）永遠是灰的。
+func (s *State) combatCanCastProtectionSpell(spellID uint8,
+	targets func(combat.Fighter) []combat.Fighter) bool {
 	if !s.CombatActive() {
 		return false
 	}
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if !found {
+		return false
+	}
+	required, ok := combatSpellCasterClasses[definition.CasterClass]
+	if !ok {
+		return false
+	}
 	caster, ok := s.combatPartyTurn()
-	if !ok || len(s.protectionFromEvilTargets(caster)) == 0 {
+	if !ok || len(targets(caster)) == 0 {
 		return false
 	}
 	for _, character := range s.partyRoster {
-		if character.ID != caster.ID || !character.HasClass(party.ClassCleric) {
+		if character.ID != caster.ID || !character.HasClass(required) {
 			continue
 		}
-		for _, spellID := range character.SpellSlots {
-			if spellID == ProtectionFromEvilSpellID {
+		for _, memorized := range character.SpellSlots {
+			if memorized == spellID {
 				return true
 			}
 		}
@@ -977,25 +988,14 @@ func (s *State) CombatCanCastProtectionFromEvil() bool {
 	return false
 }
 
+// CombatCanCastProtectionFromEvil 保留牧師版（法術 6）的既有介面。
+func (s *State) CombatCanCastProtectionFromEvil() bool {
+	return s.combatCanCastProtectionSpell(ProtectionFromEvilSpellID, s.protectionFromEvilTargets)
+}
+
+// CombatCanCastProtectionFromGood 保留牧師版（法術 7）的既有介面。
 func (s *State) CombatCanCastProtectionFromGood() bool {
-	if !s.CombatActive() {
-		return false
-	}
-	caster, ok := s.combatPartyTurn()
-	if !ok || len(s.protectionFromGoodTargets(caster)) == 0 {
-		return false
-	}
-	for _, character := range s.partyRoster {
-		if character.ID != caster.ID || !character.HasClass(party.ClassCleric) {
-			continue
-		}
-		for _, spellID := range character.SpellSlots {
-			if spellID == ProtectionFromGoodSpellID {
-				return true
-			}
-		}
-	}
-	return false
+	return s.combatCanCastProtectionSpell(ProtectionFromGoodSpellID, s.protectionFromGoodTargets)
 }
 
 func (s *State) CombatCastingSpell() uint8 { return s.combatCastingSpell }
@@ -1533,11 +1533,11 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
 		}
 	case "protection_from_evil":
-		if !s.CombatCanCastProtectionFromEvil() {
+		if !s.combatCanCastProtectionSpell(spellID, s.protectionFromEvilTargets) {
 			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
 		}
 	case "protection_from_good":
-		if !s.CombatCanCastProtectionFromGood() {
+		if !s.combatCanCastProtectionSpell(spellID, s.protectionFromGoodTargets) {
 			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
 		}
 	case "magic_missile":
@@ -1578,7 +1578,14 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		if !ok {
 			return fmt.Errorf("it is not a living party turn")
 		}
-		s.combatCastingClass, s.combatCastingClassSet = party.ClassCleric, true
+		// 職業取自宣告：法術 7 是牧師、17 是法師。寫死牧師會讓法師版在
+		// `CombatCast` 那一關被自己剛設的值擋下來。
+		required, ok := combatSpellCasterClasses[definition.CasterClass]
+		if !ok {
+			return fmt.Errorf("spell 0x%02X declares unknown caster class %q",
+				spellID, definition.CasterClass)
+		}
+		s.combatCastingClass, s.combatCastingClassSet = required, true
 		s.combatSpellTargetIndex = 0
 		return nil
 	}
@@ -1758,13 +1765,20 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 		return s.combatCastCurse()
 	case "cause_light_wounds":
 		return s.combatCastCauseLightWounds()
-	case "protection_from_evil":
-		return s.combatCastProtectionFromEvil()
-	case "protection_from_good":
-		if !s.combatSpellIsProtectionFromGood() {
-			return fmt.Errorf("%s requires a cleric caster", s.combatPlayerSpellLabel(spellID))
+	case "protection_from_evil", "protection_from_good":
+		required, ok := combatSpellCasterClasses[definition.CasterClass]
+		if !ok {
+			return fmt.Errorf("spell 0x%02X declares unknown caster class %q",
+				spellID, definition.CasterClass)
 		}
-		return s.combatCastProtectionFromGood()
+		if !s.combatSpellCasterClassMatches(spellID) {
+			return fmt.Errorf("%s requires a %s caster",
+				s.combatPlayerSpellLabel(spellID), definition.CasterClass)
+		}
+		if definition.Behavior == "protection_from_evil" {
+			return s.combatCastProtectionFromEvil(spellID, required)
+		}
+		return s.combatCastProtectionFromGood(spellID, required)
 	case "cure_light_wounds":
 		return s.combatCastCureLightWounds()
 	case "fireball":
@@ -2388,20 +2402,55 @@ func (s *State) combatCasterHasClass(casterID string, class party.Class) bool {
 	return false
 }
 
-func (s *State) combatSpellIsProtectionFromGood() bool {
+// combatSpellCasterClassMatches 檢查施法者是不是這支法術宣告的職業。
+//
+// ★ 這一條原本寫死「必須是牧師」，因為當時只宣告了法術 7（牧師版）。
+// 法術主表（spec 1111）裡防護善良有兩支：7 是牧師、17 是法師，效果碼同樣是
+// `09h`。職業改成從宣告讀，7 的限制原封不動，17 也能宣告。
+func (s *State) combatSpellCasterClassMatches(spellID uint8) bool {
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if !found {
+		return false
+	}
+	required, ok := combatSpellCasterClasses[definition.CasterClass]
+	if !ok {
+		// 宣告了看不懂的職業就擋下來——放行等於讓任何人都能施。
+		return false
+	}
 	if s.combatCastingClassSet {
-		return s.combatCastingClass == party.ClassCleric
+		return s.combatCastingClass == required
 	}
 	caster, ok := s.combatPartyTurn()
 	if !ok {
 		return false
 	}
 	_, ok = s.combatCasterClass(caster.ID)
-	return ok && s.combatCasterHasClass(caster.ID, party.ClassCleric)
+	return ok && s.combatCasterHasClass(caster.ID, required)
 }
 
-func (s *State) combatCastProtectionFromGood() error {
-	if s.combatCastingSpell != 0 && s.combatCastingSpell != ProtectionFromGoodSpellID {
+// combatSpellCasterClasses 是 game pack 的 `caster_class` 字串對到職業。
+var combatSpellCasterClasses = map[string]party.Class{
+	"cleric":     party.ClassCleric,
+	"magic_user": party.ClassMagicUser,
+}
+
+// 防護邪惡／防護善良共用一條路。
+//
+// ★ 原本是兩份幾乎一樣的程式碼，各自寫死法術編號（6／7）與職業（牧師）。
+// 法術主表（spec 1111）裡這兩個效果各有兩支：6／7 是牧師版，16／17 是法師版，
+// 效果碼同樣是 `08h`／`09h`。寫死編號等於宣告了法師版也施不出來——
+// game pack 上看起來已經接好，實際一施就報錯。
+type protectionSpellPlan struct {
+	spellID      uint8
+	requiredClass party.Class
+	targets      func(combat.Fighter) []combat.Fighter
+	cast         func(casterID, targetID string, casterLevel int) error
+	messageKey   string
+	missingLabel string
+}
+
+func (s *State) combatCastProtectionSpell(plan protectionSpellPlan) error {
+	if s.combatCastingSpell != 0 && s.combatCastingSpell != plan.spellID {
 		return fmt.Errorf("a different spell target is being selected")
 	}
 	caster, ok := s.combatPartyTurn()
@@ -2410,38 +2459,42 @@ func (s *State) combatCastProtectionFromGood() error {
 	}
 	characterIndex := -1
 	for index, character := range s.partyRoster {
-		if character.ID == caster.ID && character.HasClass(party.ClassCleric) {
+		if character.ID == caster.ID && character.HasClass(plan.requiredClass) {
 			characterIndex = index
 			break
 		}
 	}
 	if characterIndex < 0 {
-		return fmt.Errorf("caster %q is not a cleric in the party roster", caster.ID)
+		return fmt.Errorf("caster %q cannot cast %s", caster.ID, plan.missingLabel)
 	}
 	spellIndex := -1
 	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
-		if memorized == ProtectionFromGoodSpellID {
+		if memorized == plan.spellID {
 			spellIndex = index
 			break
 		}
 	}
 	if spellIndex < 0 {
-		return fmt.Errorf("caster %q has no memorized Protection from Good", caster.ID)
+		return fmt.Errorf("caster %q has no memorized %s", caster.ID, plan.missingLabel)
 	}
-	targets := s.protectionFromGoodTargets(caster)
+	targets := plan.targets(caster)
 	if s.combatSpellTargetIndex < 0 || s.combatSpellTargetIndex >= len(targets) {
-		return fmt.Errorf("no adjacent party member can receive Protection from Good")
+		return fmt.Errorf("no adjacent party member can receive %s", plan.missingLabel)
 	}
 	target := targets[s.combatSpellTargetIndex]
-	s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots[:spellIndex], s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
-	duration := 3 * casterLevel(s.partyRoster[characterIndex])
-	_, err := s.battle.CastProtectionFromGood(caster.ID, target.ID, casterLevel(s.partyRoster[characterIndex]))
-	if err != nil {
-		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, ProtectionFromGoodSpellID)
+	s.partyRoster[characterIndex].SpellSlots = append(
+		s.partyRoster[characterIndex].SpellSlots[:spellIndex],
+		s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	level := casterLevel(s.partyRoster[characterIndex])
+	duration := 3 * level
+	if err := plan.cast(caster.ID, target.ID, level); err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(
+			s.partyRoster[characterIndex].SpellSlots, plan.spellID)
 		return err
 	}
 	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_good", "combat_protection_from_good"), caster.Name, target.Name, duration)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text(plan.messageKey, plan.messageKey),
+		caster.Name, target.Name, duration)
 	s.requestSound(SoundCast)
 	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
@@ -2451,55 +2504,30 @@ func (s *State) combatCastProtectionFromGood() error {
 	return s.advanceCombatToParty()
 }
 
-func (s *State) combatCastProtectionFromEvil() error {
-	if s.combatCastingSpell != 0 && s.combatCastingSpell != ProtectionFromEvilSpellID {
-		return fmt.Errorf("a different spell target is being selected")
-	}
-	caster, ok := s.combatPartyTurn()
-	if !ok {
-		return fmt.Errorf("it is not a living party turn")
-	}
-	characterIndex := -1
-	for index, character := range s.partyRoster {
-		if character.ID == caster.ID && character.HasClass(party.ClassCleric) {
-			characterIndex = index
-			break
-		}
-	}
-	if characterIndex < 0 {
-		return fmt.Errorf("caster %q is not a cleric in the party roster", caster.ID)
-	}
-	spellIndex := -1
-	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
-		if memorized == ProtectionFromEvilSpellID {
-			spellIndex = index
-			break
-		}
-	}
-	if spellIndex < 0 {
-		return fmt.Errorf("caster %q has no memorized Protection from Evil", caster.ID)
-	}
-	targets := s.protectionFromEvilTargets(caster)
-	if s.combatSpellTargetIndex < 0 || s.combatSpellTargetIndex >= len(targets) {
-		return fmt.Errorf("no adjacent party member can receive Protection from Evil")
-	}
-	target := targets[s.combatSpellTargetIndex]
-	s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots[:spellIndex], s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
-	duration := 3 * casterLevel(s.partyRoster[characterIndex])
-	_, err := s.battle.CastProtectionFromEvil(caster.ID, target.ID, casterLevel(s.partyRoster[characterIndex]))
-	if err != nil {
-		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, ProtectionFromEvilSpellID)
-		return err
-	}
-	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_evil", "combat_protection_from_evil"), caster.Name, target.Name, duration)
-	s.requestSound(SoundCast)
-	s.requestSound(SoundSpellHit)
-	if s.battle.Status() != combat.StatusActive {
-		return s.finishCombat()
-	}
-	s.combatTurnIndex++
-	return s.advanceCombatToParty()
+func (s *State) combatCastProtectionFromGood(spellID uint8, requiredClass party.Class) error {
+	return s.combatCastProtectionSpell(protectionSpellPlan{
+		spellID: spellID, requiredClass: requiredClass,
+		targets: s.protectionFromGoodTargets,
+		cast: func(casterID, targetID string, level int) error {
+			_, err := s.battle.CastProtectionFromGood(casterID, targetID, level)
+			return err
+		},
+		messageKey:   "combat_protection_from_good",
+		missingLabel: "Protection from Good",
+	})
+}
+
+func (s *State) combatCastProtectionFromEvil(spellID uint8, requiredClass party.Class) error {
+	return s.combatCastProtectionSpell(protectionSpellPlan{
+		spellID: spellID, requiredClass: requiredClass,
+		targets: s.protectionFromEvilTargets,
+		cast: func(casterID, targetID string, level int) error {
+			_, err := s.battle.CastProtectionFromEvil(casterID, targetID, level)
+			return err
+		},
+		messageKey:   "combat_protection_from_evil",
+		missingLabel: "Protection from Evil",
+	})
 }
 
 func (s *State) causeLightWoundsTargets(caster combat.Fighter) []combat.Fighter {
