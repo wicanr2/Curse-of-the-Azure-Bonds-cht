@@ -2378,7 +2378,8 @@ func (b *Battle) CastHealingDice(casterID, targetID string, count, sides int) (S
 //
 // ⚠ 折半要在**套上去之前**做。先打滿再補回一半會讓「打死了又活過來」這種
 // 情況出現，而且回報的數字對不上實際掉的血。
-func (b *Battle) CastDamageDice(casterID, targetID string, count, sides int, halve bool) (SpellResult, error) {
+func (b *Battle) CastDamageDice(casterID, targetID string, count, sides int,
+	element uint8, halve bool) (SpellResult, error) {
 	_, target, err := b.spellDiceEndpoints(casterID, targetID, count, sides)
 	if err != nil {
 		return SpellResult{}, err
@@ -2389,6 +2390,17 @@ func (b *Battle) CastDamageDice(casterID, targetID string, count, sides int, hal
 	}
 	if halve {
 		damage /= 2
+	}
+	// 傷害時機（`CHECKFX(06h)`，spec 1123）：抗寒／抗火在這裡折半，而它們各自
+	// 只認傷害屬性旗標的一個位元——所以旗標要一起傳進去。
+	adjusted, err := CheckFX(target, checkFXDamage, map[string]int{
+		scratchDamage: damage, scratchDamageElement: int(element)})
+	if err != nil {
+		return SpellResult{}, err
+	}
+	damage = adjusted.Applied[scratchDamage]
+	if damage < 0 {
+		damage = 0
 	}
 	applied := b.applyPositiveDamage(&target, damage)
 	b.fighters[targetID] = target

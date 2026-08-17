@@ -28,6 +28,8 @@ const (
 	CheckFXMorale uint8 = 0x11
 	// CheckFXMovement 是移動率換算（`12h`，spec 1122）。
 	CheckFXMovement uint8 = 0x12
+	// checkFXDamage 是 `PUTDAMAGE` 進入時（`06h`，spec 581）：抗性在這裡介入。
+	checkFXDamage uint8 = 0x06
 	// checkFXArmourClass 是護甲那一組（`0Bh`）：防護邪惡／善良、護盾、
 	// 妖火、致盲都在這張清單裡。呼叫點還沒對回原作，所以不匯出。
 	checkFXArmourClass uint8 = 0x0B
@@ -42,6 +44,11 @@ const (
 	scratchSavingThrow    = "saving_throw"
 	scratchMorale         = "morale"
 	scratchMovement       = "movement"
+	scratchDamage         = "damage"
+	// scratchDamageElement 是傷害屬性旗標：bit 0 火、bit 1 冷、bit 2 電。
+	// 三個位元各有兩個獨立證人——抗性法術的守衛遮罩，與傷害法術推進
+	// `sub_F06` 的那個值（spec 1124）。
+	scratchDamageElement = "damage_element"
 )
 
 // CheckFXDetail 是一次 CHECKFX 的完整結果。
@@ -56,6 +63,9 @@ type CheckFXDetail struct {
 }
 
 // CheckFX 對一個戰鬥員跑一次時機查詢。`base` 是各全域的起始值（通常只填一個）。
+//
+// 有條件的修正（`guard_global`／`guard_mask`）只有在 `base` 裡那個旗標與遮罩
+// 有交集時才套用。所以要讓抗寒生效，呼叫端必須把傷害屬性旗標一起放進 `base`。
 func CheckFX(fighter Fighter, timing uint8, base map[string]int) (CheckFXDetail, error) {
 	table, err := gamepack.EffectModifiers()
 	if err != nil {
@@ -85,7 +95,16 @@ func CheckFX(fighter Fighter, timing uint8, base map[string]int) (CheckFXDetail,
 			}
 			continue
 		}
+		applied := false
 		for _, modifier := range handler.Modifiers {
+			if modifier.GuardGlobal != "" {
+				guard := table.ScratchName(modifier.GuardGlobal)
+				if detail.Applied[guard]&modifier.GuardMask == 0 {
+					// 旗標不符：這個修正這一次不套。**不是 0，是不適用。**
+					continue
+				}
+			}
+			applied = true
 			name := table.ScratchName(modifier.Global)
 			switch modifier.Op {
 			case "add":
@@ -109,6 +128,9 @@ func CheckFX(fighter Fighter, timing uint8, base map[string]int) (CheckFXDetail,
 			default:
 				return CheckFXDetail{}, fmt.Errorf("effect %02Xh uses unknown operation %q", kind, modifier.Op)
 			}
+		}
+		if !applied {
+			continue
 		}
 		detail.Contributed = append(detail.Contributed, kind)
 		if handler.Status == "partial" {

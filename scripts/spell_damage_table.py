@@ -112,19 +112,25 @@ def read_dice(offset):
     第一次擲骰不是傷害；只取第一次會產生「看起來有答案但是錯的」那一列。
     """
     body = instructions(disassemble(offset, offset + 0x300))
-    immediates, calls = [], []
+    # 兩趟：先收完所有立即數，才找得到**擲骰之後**推的那個屬性旗標。
+    # 一趟邊走邊看的話，`index > position` 那一段永遠是空的。
+    immediates = [(position, int(found.group(1), 16))
+                  for position, (_, text) in enumerate(body)
+                  if (found := re.match(r"^mov\s+al,0x([0-9a-f]+)$", text))]
+    calls = []
     for position, (_, text) in enumerate(body):
-        found = re.match(r"^mov\s+al,0x([0-9a-f]+)$", text)
-        if found:
-            immediates.append((position, int(found.group(1), 16)))
-            continue
         shape = DICE_CALLS.get(text)
         if not shape:
             continue
         previous = [value for index, value in immediates if index < position][-2:]
         if len(previous) == 2:
+            # 擲骰之後推的第一個立即數是**傷害屬性旗標**：`sub_F06` 把它寫進
+            # `DS:6F95h`，抗寒（bit 1）與抗火（bit 0）就是看那一格決定要不要
+            # 折半。少了它，那兩支抗性法術對誰都沒有效果。
+            following = [value for index, value in immediates if index > position]
+            element = following[0] if following else None
             calls.append({"shape": shape, "dice_count": previous[0],
-                          "dice_sides": previous[1]})
+                          "dice_sides": previous[1], "element": element})
     return calls, len(body)
 
 
@@ -149,6 +155,7 @@ def main():
             record.update({"shape": calls[0]["shape"],
                            "dice_count": calls[0]["dice_count"],
                            "dice_sides": calls[0]["dice_sides"],
+                           "element": calls[0]["element"],
                            "scales_with_caster_level": calls[0]["dice_count"] == 0})
         elif calls:
             # 多次擲骰要人去讀那一支才知道哪一次是傷害。
@@ -181,8 +188,8 @@ def main():
              "**骰數 0 代表用施法者等級當骰數**（魔法飛彈 `等級d4`）。", "",
              "`ambiguous` 是 handler 裡擲了不只一次骰——**第一次不一定是傷害**，"
              "要人去讀那一支才知道哪一次是。只取第一次會產生看起來有答案但是錯的列。", "",
-             "| 編號 | 名稱 | 環 | 職業 | 形狀 | 骰 | handler |",
-             "|---:|---|---:|---|---|---|---|"]
+             "| 編號 | 名稱 | 環 | 職業 | 形狀 | 骰 | 屬性旗標 | handler |",
+             "|---:|---|---:|---|---|---|---|---|"]
     for key in sorted(records):
         item = records[key]
         if item["shape"] == "unread":
@@ -195,9 +202,11 @@ def main():
             dice = "`等級d%d`" % item["dice_sides"]
         else:
             dice = "`%dd%d`" % (item["dice_count"], item["dice_sides"])
-        lines.append("| %d | %s%s | %d | %s | %s | %s | `overlay-%d entry#%d` |" % (
+        element = item.get("element")
+        lines.append("| %d | %s%s | %d | %s | %s | %s | %s | `overlay-%d entry#%d` |" % (
             key, item["name"], "（紮營）" if item["camp_only"] else "",
             item["level"], item["caster_class"], item["shape"], dice,
+            "`%02Xh`" % element if element is not None else "—",
             item["overlay"], item["entry"]))
     open(OUT_MD, "w", encoding="utf-8").write("\n".join(lines) + "\n")
     print("寫出 %s 與 %s" % (OUT_MD, OUT_JSON))

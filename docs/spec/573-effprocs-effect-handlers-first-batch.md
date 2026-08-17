@@ -21,8 +21,10 @@
 | `2461h` | `DS:A02Fh and 2` | bit 1 |
 | `2B87h` | `DS:A02Fh and 4` | bit 2 |
 
-依 spec 412 的效果對應，bit 0 是 Fire、bit 2 是 Electricity；**bit 1 尚未有
-對應效果證據，不命名**。三者命中時都以參數 `0` 呼叫同一個 routine
+依 spec 412 的效果對應，bit 0 是 Fire、bit 2 是 Electricity。
+**bit 1 是 Cold**（spec 1123／1124）：抗寒的 handler 守衛就是 `and al, 2`，
+而冰風暴與寒冰錐推進 `sub_F06` 的屬性旗標是 `0Ah` ＝ bit 1 ＋ bit 3——
+兩個獨立的證人。三者命中時都以參數 `0` 呼叫同一個 routine
 （overlay-12 local `1Bh`）。
 
 **三、`DS:A02Eh` 是傷害值（`strong inference`）。** 同一組傷害旗標位元有兩種

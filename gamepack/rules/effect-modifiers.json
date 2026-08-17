@@ -8,12 +8,12 @@
    "note": "豁免總和（`overlay-23 entry#8` 寫它，spec 1119）"
   },
   "6f94": {
-   "name": "scratch_6f94",
-   "note": "（未定）"
+   "name": "damage",
+   "note": "傷害值（抗寒／抗火在傷害時機把它折半）"
   },
   "6f95": {
-   "name": "scratch_6f95",
-   "note": "（未定）"
+   "name": "damage_element",
+   "note": "傷害屬性旗標：bit 0 火、bit 1 冷"
   },
   "6f96": {
    "name": "movement",
@@ -355,10 +355,19 @@
     {
      "global": "6f94",
      "op": "div",
-     "value": 2
+     "value": 2,
+     "guard_global": "6f95",
+     "guard_mask": 2
+    },
+    {
+     "global": "6f92",
+     "op": "add",
+     "value": 3,
+     "guard_global": "6f95",
+     "guard_mask": 2
     }
    ],
-   "unparsed": 5,
+   "unparsed": 4,
    "status": "partial"
   },
   "0B": {
@@ -453,10 +462,19 @@
     {
      "global": "6f94",
      "op": "div",
-     "value": 2
+     "value": 2,
+     "guard_global": "6f95",
+     "guard_mask": 1
+    },
+    {
+     "global": "6f92",
+     "op": "add",
+     "value": 3,
+     "guard_global": "6f95",
+     "guard_mask": 1
     }
    ],
-   "unparsed": 7,
+   "unparsed": 6,
    "status": "partial"
   },
   "15": {
@@ -471,20 +489,9 @@
    "overlay": 12,
    "offset": 1354,
    "instructions": 39,
-   "modifiers": [
-    {
-     "global": "6f9c",
-     "op": "set",
-     "value": 1
-    },
-    {
-     "global": "6f9c",
-     "op": "set",
-     "value": 0
-    }
-   ],
-   "unparsed": 31,
-   "status": "partial"
+   "modifiers": [],
+   "unparsed": 33,
+   "status": "unread"
   },
   "17": {
    "overlay": 12,
@@ -745,9 +752,17 @@
    "overlay": 12,
    "offset": 4683,
    "instructions": 21,
-   "modifiers": [],
-   "unparsed": 16,
-   "status": "unread"
+   "modifiers": [
+    {
+     "global": "6f92",
+     "op": "add",
+     "value": 2,
+     "guard_global": "6f95",
+     "guard_mask": 2
+    }
+   ],
+   "unparsed": 15,
+   "status": "partial"
   },
   "33": {
    "overlay": 12,
@@ -777,9 +792,17 @@
    "overlay": 12,
    "offset": 4734,
    "instructions": 21,
-   "modifiers": [],
-   "unparsed": 16,
-   "status": "unread"
+   "modifiers": [
+    {
+     "global": "6f92",
+     "op": "add",
+     "value": 2,
+     "guard_global": "6f95",
+     "guard_mask": 1
+    }
+   ],
+   "unparsed": 15,
+   "status": "partial"
   },
   "37": {
    "overlay": 12,
@@ -825,23 +848,32 @@
    "overlay": 12,
    "offset": 4893,
    "instructions": 32,
-   "modifiers": [
-    {
-     "global": "6f94",
-     "op": "div",
-     "value": 2
-    }
-   ],
-   "unparsed": 20,
-   "status": "partial"
+   "modifiers": [],
+   "unparsed": 26,
+   "status": "unread"
   },
   "3D": {
    "overlay": 12,
    "offset": 4980,
    "instructions": 36,
-   "modifiers": [],
-   "unparsed": 30,
-   "status": "unread"
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "sub",
+     "value": 2,
+     "guard_global": "6f95",
+     "guard_mask": 1
+    },
+    {
+     "global": "6f92",
+     "op": "add",
+     "value": 4,
+     "guard_global": "6f95",
+     "guard_mask": 1
+    }
+   ],
+   "unparsed": 28,
+   "status": "partial"
   },
   "3E": {
    "overlay": 12,
@@ -1036,15 +1068,9 @@
    "overlay": 12,
    "offset": 6638,
    "instructions": 37,
-   "modifiers": [
-    {
-     "global": "6f94",
-     "op": "div",
-     "value": 2
-    }
-   ],
-   "unparsed": 26,
-   "status": "partial"
+   "modifiers": [],
+   "unparsed": 27,
+   "status": "unread"
   },
   "53": {
    "overlay": 12,
@@ -1110,7 +1136,9 @@
     {
      "global": "6f94",
      "op": "div",
-     "value": 2
+     "value": 2,
+     "guard_global": "6f95",
+     "guard_mask": 1
     }
    ],
    "unparsed": 4,
@@ -1120,15 +1148,9 @@
    "overlay": 12,
    "offset": 8164,
    "instructions": 31,
-   "modifiers": [
-    {
-     "global": "6f94",
-     "op": "div",
-     "value": 2
-    }
-   ],
-   "unparsed": 19,
-   "status": "partial"
+   "modifiers": [],
+   "unparsed": 25,
+   "status": "unread"
   },
   "5F": {
    "overlay": 12,
@@ -1278,9 +1300,17 @@
    "overlay": 12,
    "offset": 9300,
    "instructions": 27,
-   "modifiers": [],
-   "unparsed": 21,
-   "status": "unread"
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "sub",
+     "value": 1,
+     "guard_global": "6f95",
+     "guard_mask": 1
+    }
+   ],
+   "unparsed": 20,
+   "status": "partial"
   },
   "72": {
    "overlay": 12,
@@ -1290,7 +1320,9 @@
     {
      "global": "6f94",
      "op": "div",
-     "value": 2
+     "value": 2,
+     "guard_global": "6f95",
+     "guard_mask": 4
     }
    ],
    "unparsed": 4,
@@ -1300,29 +1332,17 @@
    "overlay": 12,
    "offset": 9401,
    "instructions": 39,
-   "modifiers": [
-    {
-     "global": "6f94",
-     "op": "div",
-     "value": 2
-    }
-   ],
-   "unparsed": 27,
-   "status": "partial"
+   "modifiers": [],
+   "unparsed": 33,
+   "status": "unread"
   },
   "74": {
    "overlay": 12,
    "offset": 9500,
    "instructions": 24,
-   "modifiers": [
-    {
-     "global": "6f94",
-     "op": "div",
-     "value": 2
-    }
-   ],
-   "unparsed": 12,
-   "status": "partial"
+   "modifiers": [],
+   "unparsed": 18,
+   "status": "unread"
   },
   "75": {
    "overlay": 12,
@@ -1340,7 +1360,9 @@
     {
      "global": "6f94",
      "op": "div",
-     "value": 2
+     "value": 2,
+     "guard_global": "6f95",
+     "guard_mask": 2
     }
    ],
    "unparsed": 4,

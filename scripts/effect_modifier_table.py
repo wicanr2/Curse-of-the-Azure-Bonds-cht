@@ -43,8 +43,10 @@ SCRATCH = {
     "6fa2": ("morale", "士氣（`overlay-09:01388h` 寫它，spec 1122）"),
     "6f96": ("movement", "移動率（`overlay-13 entry#2` 寫它，spec 1122）"),
     "6f9b": ("attack_forced_miss", "攻擊必失手旗標"),
-    "6f94": ("scratch_6f94", "（未定）"),
-    "6f95": ("scratch_6f95", "（未定）"),
+    # 抗寒（`0Ah`）與抗火（`14h`）兩支都把 `6F94h` 折半，而且各自先檢查
+    # `6F95h` 的不同位元——兩個獨立的證人指向同一組語意。
+    "6f94": ("damage", "傷害值（抗寒／抗火在傷害時機把它折半）"),
+    "6f95": ("damage_element", "傷害屬性旗標：bit 0 火、bit 1 冷"),
     "6f9c": ("scratch_6f9c", "（未定）"),
 }
 
@@ -129,6 +131,31 @@ def conditional_addresses(body):
     return inside
 
 
+# 旗標守衛：`mov al, ds:G / and al, K / or al,al / je L`——L 之前的指令只有在
+# `G and K <> 0` 時才會跑。抗寒與抗火就是這個形狀（各自看傷害屬性旗標的一個位元）。
+GUARD_LOAD = re.compile(r"^mov\s+al,ds:0x([0-9a-f]{4})$")
+GUARD_MASK = re.compile(r"^and\s+al,0x([0-9a-f]+)$")
+
+
+def flag_guards(body):
+    """回傳 位址 → (守衛的全域, 位元遮罩)。只認得出一層守衛。"""
+    guards = {}
+    for index in range(len(body) - 3):
+        load = GUARD_LOAD.match(body[index][1])
+        mask = GUARD_MASK.match(body[index + 1][1])
+        if not load or not mask or body[index + 2][1] != "or     al,al":
+            continue
+        branch = BRANCH.match(body[index + 3][1])
+        if not branch or not body[index + 3][1].startswith("je"):
+            continue
+        target = int(branch.group(1), 16)
+        for address, _ in body[index + 4:]:
+            if address >= target:
+                break
+            guards[address] = (load.group(1), int(mask.group(1), 16))
+    return guards
+
+
 def match_clamped_sub(body, index):
     """認出夾底減法，回傳 (運算, 用掉幾條指令) 或 None。"""
     found = CLAMP_CMP.match(body[index][1])
@@ -178,6 +205,7 @@ def classify(body):
     照字面收下來會產生「看起來完整但語意錯」的表，比空表更糟。
     """
     conditional = conditional_addresses(body)
+    guards = flag_guards(body)
     operations, unparsed = [], 0
     index = 0
     while index < len(body):
@@ -185,38 +213,68 @@ def classify(body):
         if text in PROLOGUE or text.startswith("retf") or text.startswith("sub    sp,"):
             index += 1
             continue
-        for matcher in (match_clamped_sub, match_halve):
-            matched = matcher(body, index)
-            if matched:
-                operations.append(matched[0])
-                index += matched[1]
-                break
+        # ⚠ 慣用法的比對也要吃條件判斷。少了這一行，抗寒／抗火的「傷害折半」
+        # 會被當成無條件——那兩支其實先檢查傷害屬性旗標（`ds:6F95h`），
+        # 只對冷／火生效。無條件套用等於讓它們減半**所有**傷害。
+        guard = guards.get(address)
+        # 被旗標守衛包住的指令仍然收，但把守衛記在運算上——套用端要先確認
+        # 那個旗標。少了 `guard`，抗寒會減半**所有**傷害而不只是冷傷害。
+        matched = None
+        if address not in conditional or guard:
+            for matcher in (match_clamped_sub, match_halve):
+                matched = matcher(body, index)
+                if matched:
+                    break
+        if matched:
+            operation = matched[0]
+            if guard:
+                operation["guard_global"], operation["guard_mask"] = guard
+            operations.append(operation)
+            index += matched[1]
         else:
-            if address in conditional:
+            if address in conditional and not guard:
                 unparsed += 1
                 index += 1
                 continue
             found = ADD.match(text)
             if found:
-                operations.append({"global": found.group(2), "op": found.group(1),
-                                   "value": int(found.group(3), 16)})
+                operation = {"global": found.group(2), "op": found.group(1),
+                             "value": int(found.group(3), 16)}
+                if guard:
+                    operation["guard_global"], operation["guard_mask"] = guard
+                operations.append(operation)
                 index += 1
                 continue
             found = STEP.match(text)
             if found:
-                operations.append({"global": found.group(2),
-                                   "op": "add" if found.group(1) == "inc" else "sub",
-                                   "value": 1})
+                operation = {"global": found.group(2),
+                             "op": "add" if found.group(1) == "inc" else "sub",
+                             "value": 1}
+                if guard:
+                    operation["guard_global"], operation["guard_mask"] = guard
+                operations.append(operation)
                 index += 1
                 continue
             found = SET.match(text)
             if found:
-                operations.append({"global": found.group(1), "op": "set",
-                                   "value": int(found.group(2), 16)})
+                operation = {"global": found.group(1), "op": "set",
+                             "value": int(found.group(2), 16)}
+                if guard:
+                    operation["guard_global"], operation["guard_mask"] = guard
+                operations.append(operation)
                 index += 1
                 continue
             unparsed += 1
             index += 1
+    # ⚠ 同一個全域同時被「設定」與別的運算動到，代表那是兩條分支而不是兩個
+    # 依序執行的動作（`if 不足 then 0 else 折半`）。照順序套會先歸零再折半，
+    # 結果永遠是 0。認不出那個形狀就整組退回沒解析——**不猜**。
+    touched = collections.Counter(item["global"] for item in operations)
+    conflicted = {item["global"] for item in operations
+                  if item["op"] == "set" and touched[item["global"]] > 1}
+    if conflicted:
+        unparsed += sum(1 for item in operations if item["global"] in conflicted)
+        operations = [item for item in operations if item["global"] not in conflicted]
     return operations, unparsed
 
 

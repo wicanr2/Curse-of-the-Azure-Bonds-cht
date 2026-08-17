@@ -16,12 +16,14 @@
     {
      "shape": "entry9",
      "dice_count": 1,
-     "dice_sides": 8
+     "dice_sides": 8,
+     "element": 0
     }
    ],
    "shape": "entry9",
    "dice_count": 1,
    "dice_sides": 8,
+   "element": 0,
    "scales_with_caster_level": false
   },
   "4": {
@@ -37,12 +39,14 @@
     {
      "shape": "entry10",
      "dice_count": 1,
-     "dice_sides": 8
+     "dice_sides": 8,
+     "element": 8
     }
    ],
    "shape": "entry10",
    "dice_count": 1,
    "dice_sides": 8,
+   "element": 8,
    "scales_with_caster_level": false
   },
   "9": {
@@ -70,12 +74,14 @@
     {
      "shape": "entry10",
      "dice_count": 0,
-     "dice_sides": 4
+     "dice_sides": 4,
+     "element": 8
     }
    ],
    "shape": "entry10",
    "dice_count": 0,
    "dice_sides": 4,
+   "element": 8,
    "scales_with_caster_level": true
   },
   "20": {
@@ -91,12 +97,14 @@
     {
      "shape": "entry10",
      "dice_count": 1,
-     "dice_sides": 8
+     "dice_sides": 8,
+     "element": 12
     }
    ],
    "shape": "entry10",
    "dice_count": 1,
    "dice_sides": 8,
+   "element": 12,
    "scales_with_caster_level": false
   },
   "31": {
@@ -160,12 +168,14 @@
     {
      "shape": "entry9",
      "dice_count": 1,
-     "dice_sides": 100
+     "dice_sides": 100,
+     "element": 1
     }
    ],
    "shape": "entry9",
    "dice_count": 1,
    "dice_sides": 100,
+   "element": 1,
    "scales_with_caster_level": false
   },
   "43": {
@@ -193,12 +203,14 @@
     {
      "shape": "entry9",
      "dice_count": 1,
-     "dice_sides": 100
+     "dice_sides": 100,
+     "element": 1
     }
    ],
    "shape": "entry9",
    "dice_count": 1,
    "dice_sides": 100,
+   "element": 1,
    "scales_with_caster_level": false
   },
   "47": {
@@ -214,12 +226,14 @@
     {
      "shape": "entry9",
      "dice_count": 1,
-     "dice_sides": 3
+     "dice_sides": 3,
+     "element": 255
     },
     {
      "shape": "entry10",
      "dice_count": 0,
-     "dice_sides": 6
+     "dice_sides": 6,
+     "element": 9
     }
    ],
    "shape": "ambiguous"
@@ -261,12 +275,14 @@
     {
      "shape": "entry9",
      "dice_count": 2,
-     "dice_sides": 8
+     "dice_sides": 8,
+     "element": 0
     }
    ],
    "shape": "entry9",
    "dice_count": 2,
    "dice_sides": 8,
+   "element": 0,
    "scales_with_caster_level": false
   },
   "66": {
@@ -282,12 +298,14 @@
     {
      "shape": "entry10",
      "dice_count": 2,
-     "dice_sides": 8
+     "dice_sides": 8,
+     "element": 8
     }
    ],
    "shape": "entry10",
    "dice_count": 2,
    "dice_sides": 8,
+   "element": 8,
    "scales_with_caster_level": false
   },
   "67": {
@@ -327,12 +345,14 @@
     {
      "shape": "entry9",
      "dice_count": 3,
-     "dice_sides": 8
+     "dice_sides": 8,
+     "element": 0
     }
    ],
    "shape": "entry9",
    "dice_count": 3,
    "dice_sides": 8,
+   "element": 0,
    "scales_with_caster_level": false
   },
   "72": {
@@ -348,12 +368,14 @@
     {
      "shape": "entry10",
      "dice_count": 3,
-     "dice_sides": 8
+     "dice_sides": 8,
+     "element": 8
     }
    ],
    "shape": "entry10",
    "dice_count": 3,
    "dice_sides": 8,
+   "element": 8,
    "scales_with_caster_level": false
   },
   "74": {
@@ -369,12 +391,14 @@
     {
      "shape": "entry10",
      "dice_count": 6,
-     "dice_sides": 8
+     "dice_sides": 8,
+     "element": 9
     }
    ],
    "shape": "entry10",
    "dice_count": 6,
    "dice_sides": 8,
+   "element": 9,
    "scales_with_caster_level": false
   },
   "75": {
@@ -402,12 +426,14 @@
     {
      "shape": "entry10",
      "dice_count": 2,
-     "dice_sides": 8
+     "dice_sides": 8,
+     "element": 0
     }
    ],
    "shape": "entry10",
    "dice_count": 2,
    "dice_sides": 8,
+   "element": 0,
    "scales_with_caster_level": false
   },
   "83": {
@@ -435,12 +461,14 @@
     {
      "shape": "entry9",
      "dice_count": 1,
-     "dice_sides": 10
+     "dice_sides": 10,
+     "element": 13
     }
    ],
    "shape": "entry9",
    "dice_count": 1,
    "dice_sides": 10,
+   "element": 13,
    "scales_with_caster_level": false
   },
   "87": {
@@ -456,12 +484,14 @@
     {
      "shape": "entry10",
      "dice_count": 3,
-     "dice_sides": 10
+     "dice_sides": 10,
+     "element": 10
     }
    ],
    "shape": "entry10",
    "dice_count": 3,
    "dice_sides": 10,
+   "element": 10,
    "scales_with_caster_level": false
   },
   "89": {
@@ -501,12 +531,14 @@
     {
      "shape": "entry10",
      "dice_count": 0,
-     "dice_sides": 4
+     "dice_sides": 4,
+     "element": 10
     }
    ],
    "shape": "entry10",
    "dice_count": 0,
    "dice_sides": 4,
+   "element": 10,
    "scales_with_caster_level": true
   },
   "100": {

@@ -294,3 +294,63 @@ func TestInertEffectCodesAppearInNoTimingList(t *testing.T) {
 		}
 	}
 }
+
+// ★ 抗寒只減半**冷**傷害。旗標守衛少了的話它會減半所有傷害。
+//
+// 傷害屬性旗標的三個位元各有兩個獨立證人：抗性 handler 的守衛遮罩
+// （抗火看 bit 0、抗寒看 bit 1），與傷害法術推進 `sub_F06` 的那個值
+// （火焰打擊 `09h`、冰風暴 `0Ah`、電擊觸手 `0Ch`）。
+func TestResistColdOnlyHalvesColdDamage(t *testing.T) {
+	const (
+		fire = 0x09
+		cold = 0x0A
+	)
+	resistCold := affected(0x0A)
+	chilled, err := CheckFX(resistCold, checkFXDamage,
+		map[string]int{scratchDamage: 20, scratchDamageElement: cold})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if chilled.Applied[scratchDamage] != 10 {
+		t.Fatalf("冷傷害 %d，want 10（20 折半）", chilled.Applied[scratchDamage])
+	}
+	burned, err := CheckFX(resistCold, checkFXDamage,
+		map[string]int{scratchDamage: 20, scratchDamageElement: fire})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if burned.Applied[scratchDamage] != 20 {
+		t.Fatalf("火傷害 %d，want 20：抗寒不該擋火", burned.Applied[scratchDamage])
+	}
+	// 抗火反過來。
+	resistFire := affected(0x14)
+	scorched, err := CheckFX(resistFire, checkFXDamage,
+		map[string]int{scratchDamage: 20, scratchDamageElement: fire})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if scorched.Applied[scratchDamage] != 10 {
+		t.Fatalf("抗火對火傷害 %d，want 10", scorched.Applied[scratchDamage])
+	}
+	frozen, err := CheckFX(resistFire, checkFXDamage,
+		map[string]int{scratchDamage: 20, scratchDamageElement: cold})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if frozen.Applied[scratchDamage] != 20 {
+		t.Fatalf("抗火對冷傷害 %d，want 20", frozen.Applied[scratchDamage])
+	}
+}
+
+// 抗性同時給豁免 ＋3——同一支 handler 的第二個修正，同一個守衛。
+func TestResistanceAlsoGivesThreeOnSaves(t *testing.T) {
+	detail, err := CheckFX(affected(0x0A), checkFXDamage,
+		map[string]int{scratchDamage: 20, scratchDamageElement: 0x0A,
+			scratchSavingThrow: 0})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if detail.Applied[scratchSavingThrow] != 3 {
+		t.Fatalf("豁免修正 %d，want ＋3", detail.Applied[scratchSavingThrow])
+	}
+}
