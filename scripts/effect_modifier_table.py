@@ -253,6 +253,33 @@ def match_clamped_sub(body, index):
     return {"global": glob, "op": "sub_clamped", "value": amount}, 5
 
 
+def match_subtract_fraction(body, index):
+    """認出「減掉自己的 1/K」：`mov al,ds:G / … / idiv K / mov dx,ax /
+    mov al,ds:G / … / sub ax,dx / mov ds:G,al`。
+
+    衰弱射線就是這個形狀（傷害減 25%）。它與單純折半不同——`match_halve` 要求
+    `idiv` 之後緊接著寫回，這裡中間還把商存進 dx 再拿原值去減。
+    """
+    found = HALF_LOAD.match(body[index][1])
+    if not found:
+        return None
+    glob = found.group(1)
+    divisor = None
+    for offset in range(index + 1, min(index + 14, len(body))):
+        text = body[offset][1]
+        divisor_found = re.match(r"^mov\s+cx,0x([0-9a-f]+)$", text)
+        if divisor_found:
+            divisor = int(divisor_found.group(1), 16)
+            continue
+        if text == "sub    ax,dx" and divisor and offset + 1 < len(body):
+            store = HALF_STORE.match(body[offset + 1][1])
+            if store and store.group(1) == glob:
+                return ({"global": glob, "op": "sub_fraction", "value": divisor},
+                        offset + 2 - index)
+            return None
+    return None
+
+
 def match_halve(body, index):
     """認出「除以常數再寫回同一個全域」。"""
     found = HALF_LOAD.match(body[index][1])
@@ -296,7 +323,8 @@ def classify(body):
         # 那個旗標。少了 `guard`，抗寒會減半**所有**傷害而不只是冷傷害。
         matched = None
         if address not in conditional or guard:
-            for matcher in (match_capped_add, match_clamped_sub, match_halve,
+            for matcher in (match_capped_add, match_clamped_sub,
+                            match_subtract_fraction, match_halve,
                             match_record_write):
                 matched = matcher(body, index)
                 if matched:
@@ -416,7 +444,8 @@ def main():
                                    entry["value"])
              if "record" in entry else
              "`%s` %s %d" % (SCRATCH.get(entry["global"], (entry["global"],))[0],
-                            {"add": "＋", "sub": "−", "set": "＝", "sub_clamped": "−（夾底）", "div": "÷"}[entry["op"]],
+                            {"add": "＋", "sub": "−", "set": "＝", "sub_clamped": "−（夾底）",
+                             "div": "÷", "sub_fraction": "−1/"}[entry["op"]],
                             entry["value"]))
             for entry in item["modifiers"]) or "—"
         appears = "、".join("`%02Xh`" % timing for timing in sorted(timings)

@@ -1584,8 +1584,46 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		if !s.combatCanCastCureBlindness(spellID) {
 			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
 		}
+	case "apply_effect_codes":
+		if !s.combatCanCastApplyEffectCodes(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "message_only":
+		if !s.combatCanCastMessageOnly(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "dispel_magic":
+		if !s.combatCanCastDispelMagic(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "remove_curse":
+		if !s.combatCanCastRemoveCurse(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "dimension_door":
+		if !s.combatCanCastDimensionDoor(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "fire_shield":
+		if !s.combatCanCastFireShield(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "cone_of_cold":
+		if !s.combatCanCastConeOfCold(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "restoration":
+		if !s.combatCanCastRestoration(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
 	case "heal_dice", "damage_dice":
 		if !s.combatCanCastSpellDice(spellID, definition.Behavior == "heal_dice") {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "effect":
+		// 資料驅動那一批也要能走選目標這條路，否則三十幾支效果類法術
+		// 只能從 `CombatCast` 直接施放，玩家挑不了目標。
+		if !s.combatCanCastEffectSpell(spellID) {
 			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
 		}
 	case "protection_from_evil_10ft", "protection_from_good_10ft":
@@ -1841,6 +1879,22 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 		return s.combatCastSlayLiving(spellID)
 	case "cure_blindness":
 		return s.combatCastCureBlindness(spellID)
+	case "apply_effect_codes":
+		return s.combatCastApplyEffectCodes(spellID)
+	case "message_only":
+		return s.combatCastMessageOnly(spellID)
+	case "dispel_magic":
+		return s.combatCastDispelMagic(spellID)
+	case "remove_curse":
+		return s.combatCastRemoveCurse(spellID)
+	case "dimension_door":
+		return s.combatCastDimensionDoor(spellID)
+	case "fire_shield":
+		return s.combatCastFireShield(spellID)
+	case "cone_of_cold":
+		return s.combatCastConeOfCold(spellID)
+	case "restoration":
+		return s.combatCastRestoration(spellID)
 	case "magic_missile":
 		// The effect helper below still consumes the original spell-table ID;
 		// the game-pack behavior token only selects this verified path.
@@ -2733,7 +2787,7 @@ func (s *State) combatCastEffectSpell(spellID uint8) error {
 	if characterIndex < 0 {
 		return fmt.Errorf("caster %q has no memorized spell 0x%02X", caster.ID, spellID)
 	}
-	targets := s.effectSpellTargets(caster, definition.TargetMode)
+	targets := s.effectSpellTargets(caster, spellID, definition.TargetMode)
 	if len(targets) == 0 {
 		return fmt.Errorf("spell 0x%02X has no living target", spellID)
 	}
@@ -2747,6 +2801,7 @@ func (s *State) combatCastEffectSpell(spellID uint8) error {
 		Duration:     spell.PrimaryDuration(level, false),
 		SaveKind:     spell.SaveKind,
 		SaveCategory: spell.SaveCategory,
+		CasterLevel:  level,
 	})
 	if err != nil {
 		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, spellID)
@@ -2794,7 +2849,7 @@ func (s *State) memorizedSpellSlot(casterID string, spellID uint8) (int, int) {
 // ⚠ 目標模式由 pack **手寫宣告**，不是從屬性表的 `+0Bh`（1／2）推出來的：
 // 那兩個值的差別原作沒讀出來（spec 827），拿沒讀出來的欄位推「敵方／友方」
 // 會得到一個自洽但沒有依據的規則。
-func (s *State) effectSpellTargets(caster combat.Fighter, mode string) []string {
+func (s *State) effectSpellTargets(caster combat.Fighter, spellID uint8, mode string) []string {
 	switch mode {
 	case "none":
 		return []string{caster.ID}
@@ -2815,6 +2870,24 @@ func (s *State) effectSpellTargets(caster combat.Fighter, mode string) []string 
 			index = 0
 		}
 		return []string{enemies[index].ID}
+	case "area_point":
+		// 半徑取自法術主表；表裡沒寫就是 0，也就是**只有那一格**。
+		// 恐懼術（84）與沉默術（25）就是這一類。
+		radius := 0
+		if entry, ok := gamepack.SpellByID(int(spellID)); ok {
+			radius = entry.AreaRadius
+		}
+		targets := make([]string, 0)
+		for _, fighter := range s.battle.Fighters() {
+			if fighter.HitPoints <= 0 || fighter.Escaped || !fighter.HasCombatPosition {
+				continue
+			}
+			if !combat.FighterWithinRadius(fighter, s.combatSpellTargetPoint, radius) {
+				continue
+			}
+			targets = append(targets, fighter.ID)
+		}
+		return targets
 	default:
 		return nil
 	}

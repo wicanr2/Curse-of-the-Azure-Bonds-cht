@@ -52,11 +52,7 @@ func (s *State) combatCastSpellDice(spellID uint8, healing bool) error {
 	if spellIndex < 0 {
 		return fmt.Errorf("caster %q has no memorized spell 0x%02X", caster.ID, spellID)
 	}
-	table, err := gamepack.SpellDamage()
-	if err != nil {
-		return err
-	}
-	count, sides, ok := table.Dice(spellID, casterLevel(s.partyRoster[characterIndex]))
+	dice, ok := combat.SpellDamageRoll(spellID, casterLevel(s.partyRoster[characterIndex]))
 	if !ok {
 		return fmt.Errorf("spell 0x%02X has no usable dice in the damage table", spellID)
 	}
@@ -92,12 +88,12 @@ func (s *State) combatCastSpellDice(spellID uint8, healing bool) error {
 	var result combat.SpellResult
 	switch {
 	case healing:
-		result, err = s.battle.CastHealingDice(caster.ID, target, count, sides)
+		result, err = s.battle.CastHealingDice(caster.ID, target, dice)
 	case negated:
 		// 豁免過了而且這支是「過了沒事」：法術位照樣消耗，傷害不套。
 	default:
-		result, err = s.battle.CastDamageDice(caster.ID, target, count, sides,
-			table.Element(spellID), halved)
+		result, err = s.battle.CastDamageDice(caster.ID, target, dice,
+			combat.SpellDamageElement(spellID), halved)
 	}
 	if err != nil {
 		s.partyRoster[characterIndex].SpellSlots = append(
@@ -191,14 +187,10 @@ func (s *State) combatCanCastSpellDice(spellID uint8, healing bool) bool {
 	if !memorized {
 		return false
 	}
-	table, err := gamepack.SpellDamage()
-	if err != nil {
+	if _, ok := combat.SpellDamageRoll(spellID, 1); !ok {
 		return false
 	}
-	if _, _, ok := table.Dice(spellID, 1); !ok {
-		return false
-	}
-	_, err = s.combatSpellDiceTarget(healing)
+	_, err := s.combatSpellDiceTarget(healing)
 	return err == nil
 }
 
@@ -244,11 +236,7 @@ func (s *State) combatCastAreaDamageDice(spellID uint8) error {
 	if !ok || entry.AreaRadius <= 0 {
 		return fmt.Errorf("spell 0x%02X has no declared area radius", spellID)
 	}
-	table, err := gamepack.SpellDamage()
-	if err != nil {
-		return err
-	}
-	count, sides, ok := table.Dice(spellID, casterLevel(s.partyRoster[characterIndex]))
+	dice, ok := combat.SpellDamageRoll(spellID, casterLevel(s.partyRoster[characterIndex]))
 	if !ok {
 		return fmt.Errorf("spell 0x%02X has no usable dice in the damage table", spellID)
 	}
@@ -256,7 +244,7 @@ func (s *State) combatCastAreaDamageDice(spellID uint8) error {
 		s.partyRoster[characterIndex].SpellSlots[:spellIndex],
 		s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
 	result, err := s.battle.CastAreaDamageDice(caster.ID, s.combatSpellTargetPoint,
-		count, sides, entry.AreaRadius, table.Element(spellID),
+		dice, entry.AreaRadius, combat.SpellDamageElement(spellID),
 		entry.RequiresSave(), entry.SaveCategory, entry.SaveHalvesDamage())
 	if err != nil {
 		s.partyRoster[characterIndex].SpellSlots = append(
@@ -264,8 +252,11 @@ func (s *State) combatCastAreaDamageDice(spellID uint8) error {
 		return err
 	}
 	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_fireball", "combat_fireball"),
-		caster.Name, result.BaseDamage, len(result.Impacts))
+	// ⚠ 參數順序是「目標數、傷害」——`combat_fireball` 那一支也是這個順序，
+	// 反過來會印出「波及 12 名目標，共造成 3 點傷害」這種對調的句子。
+	s.combatMessage = fmt.Sprintf(
+		s.catalog.Text("combat_area_damage_spell", "combat_area_damage_spell"),
+		caster.Name, len(result.Impacts), result.BaseDamage)
 	s.requestSound(SoundCast)
 	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
@@ -292,11 +283,7 @@ func (s *State) combatCanCastAreaDamageDice(spellID uint8) bool {
 	if !ok || entry.AreaRadius <= 0 {
 		return false
 	}
-	table, err := gamepack.SpellDamage()
-	if err != nil {
-		return false
-	}
-	if _, _, ok := table.Dice(spellID, 1); !ok {
+	if _, ok := combat.SpellDamageRoll(spellID, 1); !ok {
 		return false
 	}
 	caster, ok := s.combatPartyTurn()

@@ -1,5 +1,5 @@
 {
- "schema_version": 1,
+ "schema_version": 2,
  "source": "DOS overlay-22 的法術 handler（位址取自 DS:72A0h 的分派表）",
  "spec": "docs/spec/1124-spell-damage-dice.md",
  "spells": {
@@ -12,19 +12,26 @@
    "overlay": 22,
    "entry": 27,
    "offset": 7509,
+   "outcome": "heal",
+   "value_source": "dice",
+   "element": null,
    "dice_calls": [
     {
      "shape": "entry9",
-     "dice_count": 1,
-     "dice_sides": 8,
-     "element": 0
+     "count": {
+      "kind": "literal",
+      "value": 1
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 8
+     }
     }
    ],
    "shape": "entry9",
    "dice_count": 1,
    "dice_sides": 8,
-   "element": 0,
-   "scales_with_caster_level": false
+   "bonus": 0
   },
   "4": {
    "name": "Cause Light Wounds",
@@ -35,19 +42,26 @@
    "overlay": 22,
    "entry": 28,
    "offset": 7571,
+   "outcome": "damage",
+   "value_source": "dice",
+   "element": 8,
    "dice_calls": [
     {
      "shape": "entry10",
-     "dice_count": 1,
-     "dice_sides": 8,
-     "element": 8
+     "count": {
+      "kind": "literal",
+      "value": 1
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 8
+     }
     }
    ],
    "shape": "entry10",
    "dice_count": 1,
    "dice_sides": 8,
-   "element": 8,
-   "scales_with_caster_level": false
+   "bonus": 0
   },
   "9": {
    "name": "Burning Hands",
@@ -58,8 +72,12 @@
    "overlay": 22,
    "entry": 32,
    "offset": 7804,
+   "outcome": "damage",
+   "value_source": "computed",
+   "element": 9,
    "dice_calls": [],
-   "shape": "unread"
+   "value_via": "call   0x14d:0xd4",
+   "shape": "computed"
   },
   "15": {
    "name": "Magic Missile",
@@ -70,19 +88,24 @@
    "overlay": 22,
    "entry": 37,
    "offset": 8647,
+   "outcome": "damage",
+   "value_source": "computed",
+   "element": 8,
    "dice_calls": [
     {
      "shape": "entry10",
-     "dice_count": 0,
-     "dice_sides": 4,
-     "element": 8
+     "count": {
+      "kind": "computed",
+      "via": "idiv   cx"
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 4
+     }
     }
    ],
-   "shape": "entry10",
-   "dice_count": 0,
-   "dice_sides": 4,
-   "element": 8,
-   "scales_with_caster_level": true
+   "value_via": "idiv   cx",
+   "shape": "computed"
   },
   "20": {
    "name": "Shocking Grasp",
@@ -93,19 +116,23 @@
    "overlay": 22,
    "entry": 39,
    "offset": 8800,
+   "outcome": "damage",
+   "value_source": "dice",
+   "element": 12,
    "dice_calls": [
     {
      "shape": "entry10",
-     "dice_count": 1,
-     "dice_sides": 8,
-     "element": 12
+     "count": {
+      "kind": "literal",
+      "value": 1
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 8
+     }
     }
    ],
-   "shape": "entry10",
-   "dice_count": 1,
-   "dice_sides": 8,
-   "element": 12,
-   "scales_with_caster_level": false
+   "shape": "computed"
   },
   "31": {
    "name": "Knock",
@@ -116,8 +143,12 @@
    "overlay": 22,
    "entry": 48,
    "offset": 9915,
+   "outcome": "damage",
+   "value_source": "literal",
+   "element": 0,
    "dice_calls": [],
-   "shape": "unread"
+   "flat_value": 0,
+   "shape": "flat"
   },
   "36": {
    "name": "Animate Dead",
@@ -128,8 +159,11 @@
    "overlay": 22,
    "entry": 53,
    "offset": 11702,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "37": {
    "name": "Cure Blindness",
@@ -140,8 +174,11 @@
    "overlay": 22,
    "entry": 54,
    "offset": 12126,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "39": {
    "name": "Cure Disease",
@@ -152,8 +189,11 @@
    "overlay": 22,
    "entry": 57,
    "offset": 12406,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "41": {
    "name": "Dispel Magic",
@@ -164,19 +204,23 @@
    "overlay": 22,
    "entry": 59,
    "offset": 12670,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [
     {
      "shape": "entry9",
-     "dice_count": 1,
-     "dice_sides": 100,
-     "element": 1
+     "count": {
+      "kind": "literal",
+      "value": 1
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 100
+     }
     }
    ],
-   "shape": "entry9",
-   "dice_count": 1,
-   "dice_sides": 100,
-   "element": 1,
-   "scales_with_caster_level": false
+   "shape": "other_finish"
   },
   "43": {
    "name": "Remove Curse",
@@ -187,8 +231,11 @@
    "overlay": 22,
    "entry": 9,
    "offset": 13721,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "46": {
    "name": "Dispel Magic",
@@ -199,19 +246,23 @@
    "overlay": 22,
    "entry": 59,
    "offset": 12670,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [
     {
      "shape": "entry9",
-     "dice_count": 1,
-     "dice_sides": 100,
-     "element": 1
+     "count": {
+      "kind": "literal",
+      "value": 1
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 100
+     }
     }
    ],
-   "shape": "entry9",
-   "dice_count": 1,
-   "dice_sides": 100,
-   "element": 1,
-   "scales_with_caster_level": false
+   "shape": "other_finish"
   },
   "47": {
    "name": "Fireball",
@@ -222,21 +273,34 @@
    "overlay": 22,
    "entry": 64,
    "offset": 14094,
+   "outcome": "damage",
+   "value_source": "dice",
+   "element": 9,
    "dice_calls": [
     {
      "shape": "entry9",
-     "dice_count": 1,
-     "dice_sides": 3,
-     "element": 255
+     "count": {
+      "kind": "literal",
+      "value": 1
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 3
+     }
     },
     {
      "shape": "entry10",
-     "dice_count": 0,
-     "dice_sides": 6,
-     "element": 9
+     "count": {
+      "kind": "computed",
+      "via": "mov    al,BYTE PTR [bp-0x1]"
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 6
+     }
     }
    ],
-   "shape": "ambiguous"
+   "shape": "computed"
   },
   "51": {
    "name": "Lightning Bolt",
@@ -247,8 +311,23 @@
    "overlay": 22,
    "entry": 69,
    "offset": 15512,
-   "dice_calls": [],
-   "shape": "unread"
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "count": {
+      "kind": "computed",
+      "via": "call   0x14d:0xd4"
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 6
+     }
+    }
+   ],
+   "shape": "other_finish"
   },
   "56": {
    "name": "Restoration",
@@ -259,8 +338,11 @@
    "overlay": 22,
    "entry": 71,
    "offset": 15655,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "58": {
    "name": "Cure Serious Wounds",
@@ -271,19 +353,26 @@
    "overlay": 22,
    "entry": 73,
    "offset": 16163,
+   "outcome": "heal",
+   "value_source": "dice",
+   "element": null,
    "dice_calls": [
     {
      "shape": "entry9",
-     "dice_count": 2,
-     "dice_sides": 8,
-     "element": 0
+     "count": {
+      "kind": "literal",
+      "value": 2
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 8
+     }
     }
    ],
    "shape": "entry9",
    "dice_count": 2,
    "dice_sides": 8,
-   "element": 0,
-   "scales_with_caster_level": false
+   "bonus": 1
   },
   "66": {
    "name": "Cause Serious Wounds",
@@ -294,19 +383,26 @@
    "overlay": 22,
    "entry": 80,
    "offset": 16703,
+   "outcome": "damage",
+   "value_source": "dice",
+   "element": 8,
    "dice_calls": [
     {
      "shape": "entry10",
-     "dice_count": 2,
-     "dice_sides": 8,
-     "element": 8
+     "count": {
+      "kind": "literal",
+      "value": 2
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 8
+     }
     }
    ],
    "shape": "entry10",
    "dice_count": 2,
    "dice_sides": 8,
-   "element": 8,
-   "scales_with_caster_level": false
+   "bonus": 1
   },
   "67": {
    "name": "Neutralize Poison",
@@ -317,8 +413,11 @@
    "overlay": 22,
    "entry": 81,
    "offset": 16788,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "68": {
    "name": "Poison",
@@ -329,8 +428,12 @@
    "overlay": 22,
    "entry": 82,
    "offset": 17033,
+   "outcome": "damage",
+   "value_source": "literal",
+   "element": 8,
    "dice_calls": [],
-   "shape": "unread"
+   "flat_value": 0,
+   "shape": "flat"
   },
   "71": {
    "name": "Cure Critical Wounds",
@@ -341,19 +444,26 @@
    "overlay": 22,
    "entry": 84,
    "offset": 17319,
+   "outcome": "heal",
+   "value_source": "dice",
+   "element": null,
    "dice_calls": [
     {
      "shape": "entry9",
-     "dice_count": 3,
-     "dice_sides": 8,
-     "element": 0
+     "count": {
+      "kind": "literal",
+      "value": 3
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 8
+     }
     }
    ],
    "shape": "entry9",
    "dice_count": 3,
    "dice_sides": 8,
-   "element": 0,
-   "scales_with_caster_level": false
+   "bonus": 3
   },
   "72": {
    "name": "Cause Critical Wounds",
@@ -364,19 +474,26 @@
    "overlay": 22,
    "entry": 85,
    "offset": 17386,
+   "outcome": "damage",
+   "value_source": "dice",
+   "element": 8,
    "dice_calls": [
     {
      "shape": "entry10",
-     "dice_count": 3,
-     "dice_sides": 8,
-     "element": 8
+     "count": {
+      "kind": "literal",
+      "value": 3
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 8
+     }
     }
    ],
    "shape": "entry10",
    "dice_count": 3,
    "dice_sides": 8,
-   "element": 8,
-   "scales_with_caster_level": false
+   "bonus": 3
   },
   "74": {
    "name": "Flame Strike",
@@ -387,19 +504,26 @@
    "overlay": 22,
    "entry": 87,
    "offset": 17555,
+   "outcome": "damage",
+   "value_source": "dice",
+   "element": 9,
    "dice_calls": [
     {
      "shape": "entry10",
-     "dice_count": 6,
-     "dice_sides": 8,
-     "element": 9
+     "count": {
+      "kind": "literal",
+      "value": 6
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 8
+     }
     }
    ],
    "shape": "entry10",
    "dice_count": 6,
    "dice_sides": 8,
-   "element": 9,
-   "scales_with_caster_level": false
+   "bonus": 0
   },
   "75": {
    "name": "Raise Dead",
@@ -410,8 +534,11 @@
    "overlay": 22,
    "entry": 88,
    "offset": 17619,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "76": {
    "name": "Slay Living",
@@ -422,19 +549,23 @@
    "overlay": 22,
    "entry": 89,
    "offset": 17845,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [
     {
      "shape": "entry10",
-     "dice_count": 2,
-     "dice_sides": 8,
-     "element": 0
+     "count": {
+      "kind": "literal",
+      "value": 2
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 8
+     }
     }
    ],
-   "shape": "entry10",
-   "dice_count": 2,
-   "dice_sides": 8,
-   "element": 0,
-   "scales_with_caster_level": false
+   "shape": "other_finish"
   },
   "83": {
    "name": "Dimension Door",
@@ -445,8 +576,11 @@
    "overlay": 22,
    "entry": 95,
    "offset": 18660,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "85": {
    "name": "Fire Shield",
@@ -457,19 +591,23 @@
    "overlay": 22,
    "entry": 97,
    "offset": 19436,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [
     {
      "shape": "entry9",
-     "dice_count": 1,
-     "dice_sides": 10,
-     "element": 13
+     "count": {
+      "kind": "literal",
+      "value": 1
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 10
+     }
     }
    ],
-   "shape": "entry9",
-   "dice_count": 1,
-   "dice_sides": 10,
-   "element": 13,
-   "scales_with_caster_level": false
+   "shape": "other_finish"
   },
   "87": {
    "name": "Ice Storm",
@@ -480,19 +618,26 @@
    "overlay": 22,
    "entry": 99,
    "offset": 20148,
+   "outcome": "damage",
+   "value_source": "dice",
+   "element": 10,
    "dice_calls": [
     {
      "shape": "entry10",
-     "dice_count": 3,
-     "dice_sides": 10,
-     "element": 10
+     "count": {
+      "kind": "literal",
+      "value": 3
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 10
+     }
     }
    ],
    "shape": "entry10",
    "dice_count": 3,
    "dice_sides": 10,
-   "element": 10,
-   "scales_with_caster_level": false
+   "bonus": 0
   },
   "89": {
    "name": "Remove Curse",
@@ -503,8 +648,11 @@
    "overlay": 22,
    "entry": 9,
    "offset": 13721,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "91": {
    "name": "Cloud Kill",
@@ -515,8 +663,11 @@
    "overlay": 22,
    "entry": 101,
    "offset": 20286,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
    "dice_calls": [],
-   "shape": "unread"
+   "shape": "other_finish"
   },
   "92": {
    "name": "Cone of Cold",
@@ -527,19 +678,24 @@
    "overlay": 22,
    "entry": 102,
    "offset": 21739,
+   "outcome": "damage",
+   "value_source": "computed",
+   "element": 10,
    "dice_calls": [
     {
      "shape": "entry10",
-     "dice_count": 0,
-     "dice_sides": 4,
-     "element": 10
+     "count": {
+      "kind": "computed",
+      "via": "mov    al,BYTE PTR [bp-0x6]"
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 4
+     }
     }
    ],
-   "shape": "entry10",
-   "dice_count": 0,
-   "dice_sides": 4,
-   "element": 10,
-   "scales_with_caster_level": true
+   "value_via": "mov    al,BYTE PTR [bp-0x6]",
+   "shape": "computed"
   },
   "100": {
    "name": "Bestow Curse",
@@ -550,8 +706,12 @@
    "overlay": 22,
    "entry": 62,
    "offset": 13991,
+   "outcome": "damage",
+   "value_source": "literal",
+   "element": 0,
    "dice_calls": [],
-   "shape": "unread"
+   "flat_value": 0,
+   "shape": "flat"
   }
  }
 }

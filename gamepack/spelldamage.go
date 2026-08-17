@@ -9,7 +9,8 @@ import (
 // 傷害／治療類法術的骰子（spec 1124）。
 //
 // ★ 屬性表的 `+0Ah` 為 0 的那一批，骰子不在表裡而在各自的 handler。
-// 這份 JSON 由 `scripts/spell_damage_table.py` 從 handler 本體抽出來。
+// 這份 JSON 由 `scripts/spell_damage_table.py` 從 handler 本體抽出來，
+// 數字取自**收尾的呼叫點**——燃燒之手根本沒擲骰，治療中傷擲完還加 1。
 //
 // ⚠ `shape` 記的是**呼叫了哪一支擲骰入口**，不是用途：`entry9` 既被治療輕傷用，
 // 也被解除魔法拿去擲 `1d100`。用途要看該支法術自己。
@@ -25,14 +26,17 @@ type SpellDamageEntry struct {
 	Offset      int    `json:"offset"`
 	// Shape 是 `entry9`／`entry10`／`ambiguous`（handler 裡擲了不只一次）／
 	// `unread`（沒有可辨識的擲骰）。
-	Shape      string `json:"shape"`
-	DiceCount int `json:"dice_count,omitempty"`
-	DiceSides int `json:"dice_sides,omitempty"`
+	Shape string `json:"shape"`
+	// Outcome 是收尾走哪一支：`damage`、`heal`，或 `none`（另有出路）。
+	Outcome   string `json:"outcome"`
+	DiceCount int    `json:"dice_count,omitempty"`
+	DiceSides int    `json:"dice_sides,omitempty"`
+	// Bonus 是擲完之後加的固定值：致中傷 `2d8 ＋ 1`、致重傷 `3d8 ＋ 3`。
+	// ★ 少了它三支致傷／治療的數字全部偏低，而且低得像是合理的數字。
+	Bonus int `json:"bonus,omitempty"`
 	// Element 是推進 `sub_F06` 的傷害屬性旗標：bit 0 火、bit 1 冷、bit 2 電。
 	// 抗性效果就是看這幾個位元決定要不要介入（spec 1124）。
 	Element int `json:"element,omitempty"`
-	// ScalesWithCasterLevel 是「骰數 0」＝ 用施法者等級當骰數。
-	ScalesWithCasterLevel bool `json:"scales_with_caster_level,omitempty"`
 }
 
 // SpellDamageTable 是整份表。
@@ -83,22 +87,19 @@ func (t *SpellDamageTable) Element(spellID uint8) uint8 {
 	return uint8(entry.Element)
 }
 
-// Dice 回傳一支法術的骰數與面數。`shape` 不是 `entry9`／`entry10` 時回 false
-// ——那代表 handler 裡沒有唯一一次擲骰，數字不能拿來用。
-func (t *SpellDamageTable) Dice(spellID uint8, casterLevel int) (count, sides int, ok bool) {
+// Dice 回傳一支法術的骰數、面數與加值。`shape` 不是 `entry9`／`entry10` 時回
+// false——那代表這支的數字不是三個立即數湊得出來的（骰數含施法者等級、收尾
+// 不是標準那兩支），拿表裡的殘值來用會得到自洽但錯的傷害。
+func (t *SpellDamageTable) Dice(spellID uint8) (count, sides, bonus int, ok bool) {
 	if t == nil {
-		return 0, 0, false
+		return 0, 0, 0, false
 	}
 	entry, found := t.Spells[fmt.Sprintf("%d", spellID)]
 	if !found || (entry.Shape != "entry9" && entry.Shape != "entry10") {
-		return 0, 0, false
+		return 0, 0, 0, false
 	}
-	count = entry.DiceCount
-	if entry.ScalesWithCasterLevel {
-		count = casterLevel
+	if entry.DiceCount <= 0 || entry.DiceSides <= 0 {
+		return 0, 0, 0, false
 	}
-	if count <= 0 || entry.DiceSides <= 0 {
-		return 0, 0, false
-	}
-	return count, entry.DiceSides, true
+	return entry.DiceCount, entry.DiceSides, entry.Bonus, true
 }

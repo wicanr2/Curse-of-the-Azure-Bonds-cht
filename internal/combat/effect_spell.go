@@ -46,6 +46,9 @@ type EffectSpellRequest struct {
 	SaveKind int
 	// SaveCategory 是 `+9h`，直接當 `SavingThrows` 的索引（0..4）。
 	SaveCategory int
+	// CasterLevel 寫進效果記錄的施法者等級那一格（`EFFECTREC +4`，spec 434）。
+	// 解除魔法用它算對抗機率（spec 1125），所以這一格不能空著。
+	CasterLevel int
 }
 
 // saveNegatesKind 是 `+8h = 1` 那一組。spec 1111 只把它記成觀察（那一組全是
@@ -100,11 +103,22 @@ func (b *Battle) CastEffectSpell(casterID string, targetIDs []string, request Ef
 		// （`AdvanceMonsterAffects`）。**Strength 不是持續時間**——`0FFh` 是
 		// 「永久」的標記（spec 441／758），拿它裝時間會讓效果變成不會過期。
 		target.MonsterAffects = append(target.MonsterAffects, MonsterAffect{
-			Kind:   request.EffectKind,
-			Value:  uint16(request.Duration),
+			Kind:     request.EffectKind,
+			Value:    uint16(request.Duration),
 			Duration: uint16(request.Duration),
-			Active: true,
+			Raw4:     uint8(request.CasterLevel),
+			Active:   true,
 		})
+		// 有些效果的 handler 自己再掛別的碼（疾病的 `22h` 連掛 `2Bh`／`2Ch`）。
+		for _, chained := range EffectChainCodes(request.EffectKind) {
+			target.MonsterAffects = append(target.MonsterAffects, MonsterAffect{
+				Kind:     chained,
+				Value:    uint16(request.Duration),
+				Duration: uint16(request.Duration),
+				Raw4:     uint8(request.CasterLevel),
+				Active:   true,
+			})
+		}
 		b.fighters[targetID] = target
 		impact.Applied = true
 		result.Impacts = append(result.Impacts, impact)

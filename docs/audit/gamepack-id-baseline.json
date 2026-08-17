@@ -289,11 +289,19 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_25"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_26"
   },
   {
    "kind": "locale",
    "id": "spell_cleric_27"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_28"
   },
   {
    "kind": "locale",
@@ -313,7 +321,19 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_40"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_41"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_42"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_43"
   },
   {
    "kind": "locale",
@@ -322,6 +342,10 @@
   {
    "kind": "locale",
    "id": "spell_cleric_5"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_56"
   },
   {
    "kind": "locale",
@@ -337,6 +361,10 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_68"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_69"
   },
   {
@@ -345,11 +373,19 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_70"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_71"
   },
   {
    "kind": "locale",
    "id": "spell_cleric_72"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_cleric_73"
   },
   {
    "kind": "locale",
@@ -373,11 +409,19 @@
   },
   {
    "kind": "locale",
+   "id": "spell_magic_user_100"
+  },
+  {
+   "kind": "locale",
    "id": "spell_magic_user_11"
   },
   {
    "kind": "locale",
    "id": "spell_magic_user_12"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_13"
   },
   {
    "kind": "locale",
@@ -413,11 +457,23 @@
   },
   {
    "kind": "locale",
+   "id": "spell_magic_user_32"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_33"
+  },
+  {
+   "kind": "locale",
    "id": "spell_magic_user_34"
   },
   {
    "kind": "locale",
    "id": "spell_magic_user_45"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_46"
   },
   {
    "kind": "locale",
@@ -449,6 +505,10 @@
   },
   {
    "kind": "locale",
+   "id": "spell_magic_user_54"
+  },
+  {
+   "kind": "locale",
    "id": "spell_magic_user_55"
   },
   {
@@ -461,6 +521,18 @@
   },
   {
    "kind": "locale",
+   "id": "spell_magic_user_83"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_84"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_85"
+  },
+  {
+   "kind": "locale",
    "id": "spell_magic_user_86"
   },
   {
@@ -469,7 +541,27 @@
   },
   {
    "kind": "locale",
+   "id": "spell_magic_user_88"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_89"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_9"
+  },
+  {
+   "kind": "locale",
    "id": "spell_magic_user_91"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_92"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_93"
   },
   {
    "kind": "locale",

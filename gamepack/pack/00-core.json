@@ -2415,6 +2415,15 @@
    "casting_time": 10
   },
   {
+   "id": "coab.spell.burning-hands",
+   "spell_id": 9,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "damage_dice",
+   "message_id": "spell_magic_user_9",
+   "casting_time": 1
+  },
+  {
    "id": "coab.spell.charm-person",
    "spell_id": 10,
    "caster_class": "magic_user",
@@ -2439,6 +2448,15 @@
    "target_mode": "none",
    "behavior": "effect",
    "message_id": "spell_magic_user_12",
+   "casting_time": 1
+  },
+  {
+   "id": "coab.spell.reduce",
+   "spell_id": 13,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_13",
    "casting_time": 1
   },
   {
@@ -2514,6 +2532,15 @@
    "casting_time": 5
   },
   {
+   "id": "coab.spell.silence-15-radius",
+   "spell_id": 25,
+   "caster_class": "cleric",
+   "target_mode": "area_point",
+   "behavior": "effect",
+   "message_id": "spell_cleric_25",
+   "casting_time": 5
+  },
+  {
    "id": "coab.spell.slow-poison",
    "spell_id": 26,
    "caster_class": "cleric",
@@ -2532,6 +2559,15 @@
    "casting_time": 5
   },
   {
+   "id": "coab.spell.spiritual-hammer",
+   "spell_id": 28,
+   "caster_class": "cleric",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_cleric_28",
+   "casting_time": 5
+  },
+  {
    "id": "coab.spell.detect-invisibility",
    "spell_id": 29,
    "caster_class": "magic_user",
@@ -2547,6 +2583,24 @@
    "target_mode": "party_member",
    "behavior": "effect",
    "message_id": "spell_magic_user_30",
+   "casting_time": 2
+  },
+  {
+   "id": "coab.spell.mirror-image",
+   "spell_id": 32,
+   "caster_class": "magic_user",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_32",
+   "casting_time": 2
+  },
+  {
+   "id": "coab.spell.ray-of-enfeeblement",
+   "spell_id": 33,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_33",
    "casting_time": 2
   },
   {
@@ -2577,12 +2631,39 @@
    "casting_time": 10
   },
   {
+   "id": "coab.spell.cause-disease",
+   "spell_id": 40,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_cleric_40",
+   "casting_time": 100
+  },
+  {
+   "id": "coab.spell.dispel-magic-cleric",
+   "spell_id": 41,
+   "caster_class": "cleric",
+   "target_mode": "area_point",
+   "behavior": "dispel_magic",
+   "message_id": "spell_cleric_41",
+   "casting_time": 4
+  },
+  {
    "id": "coab.spell.prayer",
    "spell_id": 42,
    "caster_class": "cleric",
    "target_mode": "none",
    "behavior": "effect",
    "message_id": "spell_cleric_42",
+   "casting_time": 6
+  },
+  {
+   "id": "coab.spell.remove-curse-cleric",
+   "spell_id": 43,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "remove_curse",
+   "message_id": "spell_cleric_43",
    "casting_time": 6
   },
   {
@@ -2602,6 +2683,15 @@
    "behavior": "effect",
    "message_id": "spell_magic_user_45",
    "casting_time": 1
+  },
+  {
+   "id": "coab.spell.dispel-magic",
+   "spell_id": 46,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "dispel_magic",
+   "message_id": "spell_magic_user_46",
+   "casting_time": 3
   },
   {
    "id": "coab.spell.fireball",
@@ -2667,6 +2757,15 @@
    "casting_time": 3
   },
   {
+   "id": "coab.spell.protection-from-normal-missiles",
+   "spell_id": 54,
+   "caster_class": "magic_user",
+   "target_mode": "party_member",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_54",
+   "casting_time": 3
+  },
+  {
    "id": "coab.spell.slow",
    "spell_id": 55,
    "caster_class": "magic_user",
@@ -2674,6 +2773,15 @@
    "behavior": "effect",
    "message_id": "spell_magic_user_55",
    "casting_time": 3
+  },
+  {
+   "id": "coab.spell.restoration",
+   "spell_id": 56,
+   "caster_class": "cleric",
+   "target_mode": "party_member",
+   "behavior": "restoration",
+   "message_id": "spell_cleric_56",
+   "casting_time": 6
   },
   {
    "id": "coab.spell.cure-serious-wounds",
@@ -2694,12 +2802,30 @@
    "casting_time": 7
   },
   {
+   "id": "coab.spell.poison",
+   "spell_id": 68,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "apply_effect_codes",
+   "message_id": "spell_cleric_68",
+   "casting_time": 7
+  },
+  {
    "id": "coab.spell.protection-from-evil-10ft-cleric",
    "spell_id": 69,
    "caster_class": "cleric",
    "target_mode": "none",
    "behavior": "protection_from_evil_10ft",
    "message_id": "spell_cleric_69",
+   "casting_time": 7
+  },
+  {
+   "id": "coab.spell.sticks-to-snakes",
+   "spell_id": 70,
+   "caster_class": "cleric",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_cleric_70",
    "casting_time": 7
   },
   {
@@ -2721,6 +2847,15 @@
    "casting_time": 8
   },
   {
+   "id": "coab.spell.dispel-evil",
+   "spell_id": 73,
+   "caster_class": "cleric",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_cleric_73",
+   "casting_time": 8
+  },
+  {
    "id": "coab.spell.flame-strike",
    "spell_id": 74,
    "caster_class": "cleric",
@@ -2739,15 +2874,6 @@
    "casting_time": 10
   },
   {
-   "id": "coab.spell.invisibility-to-animals",
-   "spell_id": 80,
-   "caster_class": "druid",
-   "target_mode": "party_member",
-   "behavior": "effect",
-   "message_id": "spell_druid_80",
-   "casting_time": 4
-  },
-  {
    "id": "coab.spell.charm-monsters",
    "spell_id": 81,
    "caster_class": "magic_user",
@@ -2763,6 +2889,33 @@
    "target_mode": "area_point",
    "behavior": "morale_break_area",
    "message_id": "spell_magic_user_82",
+   "casting_time": 4
+  },
+  {
+   "id": "coab.spell.dimension-door",
+   "spell_id": 83,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "dimension_door",
+   "message_id": "spell_magic_user_83",
+   "casting_time": 1
+  },
+  {
+   "id": "coab.spell.fear",
+   "spell_id": 84,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_84",
+   "casting_time": 4
+  },
+  {
+   "id": "coab.spell.fire-shield",
+   "spell_id": 85,
+   "caster_class": "magic_user",
+   "target_mode": "none",
+   "behavior": "fire_shield",
+   "message_id": "spell_magic_user_85",
    "casting_time": 4
   },
   {
@@ -2784,12 +2937,48 @@
    "casting_time": 4
   },
   {
+   "id": "coab.spell.minor-globe-of-invulnerability",
+   "spell_id": 88,
+   "caster_class": "magic_user",
+   "target_mode": "none",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_88",
+   "casting_time": 4
+  },
+  {
+   "id": "coab.spell.remove-curse",
+   "spell_id": 89,
+   "caster_class": "magic_user",
+   "target_mode": "party_member",
+   "behavior": "remove_curse",
+   "message_id": "spell_magic_user_89",
+   "casting_time": 4
+  },
+  {
    "id": "coab.spell.cloudkill",
    "spell_id": 91,
    "caster_class": "magic_user",
    "target_mode": "area_point",
    "behavior": "cloudkill",
    "message_id": "spell_magic_user_91",
+   "casting_time": 5
+  },
+  {
+   "id": "coab.spell.cone-of-cold",
+   "spell_id": 92,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "cone_of_cold",
+   "message_id": "spell_magic_user_92",
+   "casting_time": 5
+  },
+  {
+   "id": "coab.spell.feeblemind",
+   "spell_id": 93,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "effect",
+   "message_id": "spell_magic_user_93",
    "casting_time": 5
   },
   {
@@ -2800,6 +2989,15 @@
    "behavior": "effect",
    "message_id": "spell_magic_user_94",
    "casting_time": 5
+  },
+  {
+   "id": "coab.spell.bestow-curse-magic-user",
+   "spell_id": 100,
+   "caster_class": "magic_user",
+   "target_mode": "enemy",
+   "behavior": "message_only",
+   "message_id": "spell_magic_user_100",
+   "casting_time": 4
   }
  ],
  "combat_ai_target_rules": [
