@@ -187,3 +187,50 @@ func TestRemoveCurseAffectReportsWhetherItFired(t *testing.T) {
 		t.Fatal("目標身上有 24h，應該拿得掉")
 	}
 }
+
+// 兩種雲就是 spec 1119 那兩種障礙格的來源（spec 1128）：惡臭之雲寫地形碼
+// `1Eh`、致命毒雲寫 `1Ch`。
+//
+// ★ 這條同時守住「規則有生產者」：先前 `ObstacleTerrainBlocks` 有完整規則，
+// 但地形碼查詢**從來沒有人掛上**，所以那段規則實際上一次都沒跑過。
+func TestCloudsProduceTheObstacleTerrainCodes(t *testing.T) {
+	for _, item := range []struct {
+		kind PersistentAreaKind
+		want uint8
+	}{
+		{PersistentAreaStinkingCloud, ObstacleTerrainSaveable},
+		{PersistentAreaCloudkill, ObstacleTerrainVeteran},
+	} {
+		code, ok := item.kind.ObstacleTerrainCode()
+		if !ok || code != item.want {
+			t.Fatalf("區域種類 %d 的地形碼是 %02Xh（ok=%v），want %02Xh",
+				item.kind, code, ok, item.want)
+		}
+	}
+	if _, ok := PersistentAreaKind(0).ObstacleTerrainCode(); ok {
+		t.Fatal("未知的區域種類不該回報地形碼")
+	}
+}
+
+// 沒有外部地形碼來源時，戰鬥自己鋪出來的雲要能被查到——而且**不能**因此
+// 把整張圖報成出界。
+func TestPersistentAreaTerrainLookupDoesNotClaimOutOfBounds(t *testing.T) {
+	battle := newDispelBattle(t)
+	if code, ok := battle.PersistentAreaTerrainCode(3, 3); ok || code != 0 {
+		t.Fatalf("沒有雲的格子回 %02Xh（ok=%v），want 0／false", code, ok)
+	}
+	result, err := battle.CastStinkingCloud("caster", TilePoint{X: 4, Y: 1}, 5,
+		func(x, y int) bool { return true })
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Area.Cells) == 0 {
+		t.Fatal("惡臭之雲沒有鋪出任何格子")
+	}
+	cell := result.Area.Cells[0]
+	code, ok := battle.PersistentAreaTerrainCode(cell.X, cell.Y)
+	if !ok || code != ObstacleTerrainSaveable {
+		t.Fatalf("雲格的地形碼是 %02Xh（ok=%v），want %02Xh",
+			code, ok, ObstacleTerrainSaveable)
+	}
+}

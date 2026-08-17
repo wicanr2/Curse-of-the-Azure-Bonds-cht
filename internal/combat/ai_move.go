@@ -259,14 +259,26 @@ func (b *Battle) SelectInRangeTarget(fighterID string, side Side) (Fighter, bool
 // ⚠ 豁免只在真的擋到時才擲：把 `RollSavingThrow` 提到迴圈外會多擲好幾次骰，
 // 亂數序列就跟原版分家了。
 func (b *Battle) obstacleBlocks(fighter Fighter, next TilePoint) bool {
-	if b == nil || b.terrainCode == nil {
+	if b == nil {
 		return false
+	}
+	lookup := b.terrainCode
+	if lookup == nil {
+		// 沒有外部地形碼來源時，退回**戰鬥中自己鋪出來的**那兩種雲
+		// （spec 1128：惡臭之雲寫 `1Eh`、致命毒雲寫 `1Ch`）。
+		//
+		// ⚠ 這條路一律回報 `onMap = true`：它不知道地圖邊界，而呼叫端把
+		// `onMap = false` 當成「擋住」——謊報出界會讓所有移動全部卡死。
+		lookup = func(x, y int) (uint8, bool) {
+			code, _ := b.PersistentAreaTerrainCode(x, y)
+			return code, true
+		}
 	}
 	footprint := FootprintForSize(fighter.CombatSize)
 	waiver := fighter.RawCombatState10 != 0
 	for y := next.Y; y < next.Y+footprint.Height; y++ {
 		for x := next.X; x < next.X+footprint.Width; x++ {
-			code, onMap := b.terrainCode(x, y)
+			code, onMap := lookup(x, y)
 			if !onMap {
 				return true
 			}

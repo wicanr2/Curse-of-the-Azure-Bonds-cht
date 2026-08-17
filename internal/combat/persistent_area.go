@@ -282,3 +282,47 @@ func (b *Battle) cloudkillIntersectsAt(fighter Fighter, x, y int) bool {
 	}
 	return false
 }
+
+// 兩種雲寫上去的地形碼（spec 1128）。
+//
+// ★★ 這兩個碼就是 spec 1119 那兩種「障礙格」的來源。原作的雲霧 handler 在
+// 鋪完格子之後把地形碼寫進地圖格的 `+7`：
+//
+//	惡臭之雲（`ov22@2B21h`）  地形碼 `1Eh` ⇒ 豁免過得了就照走
+//	致命毒雲（`ov22@53FDh`／`5464h`）地形碼 `1Ch` ⇒ 等級夠高（`≥ 7`）就照走
+//
+// 先前 `ObstacleTerrainBlocks` 有規則卻**沒有任何生產者**——地形碼查詢從來沒被
+// 掛上。兩種雲就是那個缺掉的生產者。
+func (kind PersistentAreaKind) ObstacleTerrainCode() (uint8, bool) {
+	switch kind {
+	case PersistentAreaStinkingCloud:
+		return ObstacleTerrainSaveable, true
+	case PersistentAreaCloudkill:
+		return ObstacleTerrainVeteran, true
+	default:
+		return 0, false
+	}
+}
+
+// PersistentAreaTerrainCode 回答「這一格現在是不是障礙格」。
+//
+// 兩種雲疊在同一格時取**先鋪的那一個**：原作把地形碼直接寫進地圖格，後寫的會
+// 蓋掉先寫的，但兩份物件清單是分開的（`ds:755Bh`／`ds:755Fh`），本函式照
+// 建立順序回答，不猜覆蓋規則。
+func (b *Battle) PersistentAreaTerrainCode(x, y int) (uint8, bool) {
+	if b == nil {
+		return 0, false
+	}
+	for _, area := range b.areas {
+		code, ok := area.Kind.ObstacleTerrainCode()
+		if !ok {
+			continue
+		}
+		for _, cell := range area.Cells {
+			if cell.X == x && cell.Y == y {
+				return code, true
+			}
+		}
+	}
+	return 0, false
+}
