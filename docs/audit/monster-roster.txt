@@ -1,0 +1,123 @@
+# roster (68 distinct)
+AKABAR BEL AKAS              5:59
+ALIAS                        3:22
+ANHKHEG                      5:56
+BAR PATRON                   2:4
+BEHOLDER                     4:40
+BIT O' MOANDER               3:26
+BLACK DRAGON                 1:53 5:53
+BUGBEAR                      1:86
+CENTAUR                      1:84
+CROCODILE                    1:8 2:8
+CULTIST                      1:17 3:17
+CYNTHIA                      1:88
+DARK ELF CLERIC              5:51
+DARK ELF LORD                4:43 5:48
+DARK ELF MAGE                5:50
+DISPLACER BEAST              1:80
+DK ELF FIGHTER               5:49
+DRACANDROS                   5:58
+DRACOLICH                    1:60 5:60
+DRAGONBAIT                   3:23
+EFREETI                      5:52
+ETTIN                        1:82
+FIGHTER                      1:89 6:89
+FIGHTING DOG                 2:5
+FIRE KNIFE                   1:1 2:1
+GIANT SLUG                   3:30
+GIANT SPIDER                 6:66
+GRENDEL                      1:90
+GRIFFON                      4:37
+HELL HOUND                   6:68
+HIGH PRIEST                  4:72 6:72
+HIPPOGRIFF                   1:81
+HOODED MEDUSA                4:39
+KNIGHT                       2:11
+LG VEGEPYGMY                 3:28
+LIZARD MAN                   1:83
+LOOTER                       3:18
+MAGE                         2:3
+MANTICORE                    4:38
+MARGOYLE                     6:69
+MINOTAUR                     4:41
+MOGION                       3:24
+MONKEY                       2:6
+NEO-OTYUGH                   2:10
+OGRE                         4:35
+OTYUGH                       2:9 4:9
+OWL BEAR                     5:55
+PHASE SPIDER                 6:65
+PRIEST OF BANE               6:70
+RAKSHASA                     4:67 6:67 6:73
+RED PLUME                    1:16 3:16
+ROYAL GUARD                  2:0
+RUSTLE                       1:85
+SALAMANDER                   5:57
+SHAMBLING MOUND              3:25
+SM VEGEPYGMY                 3:27
+THIEF                        2:2
+THRI-KREEN                   6:64
+TROLL                        2:7
+TYRANTHRAXUS                 6:71
+WORG                         1:87
+WYVERN                       5:54
+ZHENTIL CLERIC               4:34
+ZHENTIL FIGHTER              1:32 4:32
+ZHENTIL MAGE                 4:33
+ZHENTRIM CLERIC              3:19
+ZHENTRIM FGHTR               3:20
+ZHENTRIM MAGE                3:21
+
+# innate effect codes (52 distinct)
+09h  HIGH PRIEST
+0Ah  HIGH PRIEST, MOGION
+14h  ZHENTRIM CLERIC
+18h  BLACK DRAGON, DARK ELF LORD, DRACANDROS, HELL HOUND, RAKSHASA, TYRANTHRAXUS, ZHENTRIM CLERIC, ZHENTRIM MAGE
+25h  PHASE SPIDER
+27h  DARK ELF LORD
+29h  DRACANDROS, ZHENTRIM MAGE
+2Dh  DRAGONBAIT
+39h  BIT O' MOANDER, SHAMBLING MOUND
+3Ch  RAKSHASA
+3Fh  DRACANDROS, ZHENTRIM MAGE
+40h  GIANT SPIDER, HOODED MEDUSA, WYVERN
+43h  THRI-KREEN
+46h  PHASE SPIDER
+4Fh  TYRANTHRAXUS
+50h  ANHKHEG
+51h  ALIAS, BIT O' MOANDER, DRAGONBAIT, SHAMBLING MOUND
+52h  BIT O' MOANDER, SHAMBLING MOUND
+53h  HOODED MEDUSA
+54h  BIT O' MOANDER, SHAMBLING MOUND
+55h  LG VEGEPYGMY, SM VEGEPYGMY
+56h  GIANT SLUG
+57h  BEHOLDER
+5Ah  BLACK DRAGON
+60h  OWL BEAR
+64h  TROLL
+65h  TROLL
+67h  SALAMANDER
+68h  THRI-KREEN
+69h  DARK ELF CLERIC, DARK ELF LORD, DARK ELF MAGE, DK ELF FIGHTER
+6Ah  TYRANTHRAXUS
+6Bh  DARK ELF CLERIC, DARK ELF LORD, DARK ELF MAGE, DK ELF FIGHTER
+6Ch  LG VEGEPYGMY, SALAMANDER, SM VEGEPYGMY
+6Dh  LG VEGEPYGMY, SALAMANDER, SM VEGEPYGMY
+6Eh  DRACOLICH
+70h  BIT O' MOANDER, SALAMANDER, SHAMBLING MOUND, TYRANTHRAXUS
+71h  EFREETI
+77h  DRACOLICH, MARGOYLE, SALAMANDER
+79h  ANHKHEG
+7Ah  DRACOLICH
+7Bh  DRACOLICH
+7Dh  ALIAS, DRACOLICH, DRAGONBAIT
+7Eh  DRACOLICH
+7Fh  HOODED MEDUSA
+80h  DRACOLICH
+81h  BEHOLDER, RAKSHASA
+82h  RAKSHASA
+83h  HELL HOUND
+84h  TYRANTHRAXUS
+85h  DRACOLICH
+87h  DRACOLICH, LG VEGEPYGMY, SM VEGEPYGMY, TYRANTHRAXUS
+8Ah  ALIAS, DRACANDROS, DRAGONBAIT

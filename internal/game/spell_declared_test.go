@@ -2,7 +2,9 @@ package game
 
 import (
 	"bytes"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -43,6 +45,58 @@ func TestEveryDeclaredCombatSpellIsCastable(t *testing.T) {
 		}
 	}
 }
+
+// 每一支宣告過的法術施放時都要真的發得出聲音。
+//
+// ★ 這條**不靠** `cmd/combat-spell-coverage-audit`。那支稽核工具與被稽核的
+// 施法路在同一輪一起改過（掃描範圍從單一檔案變成整包、behavior 對應從猜名字
+// 變成跟分派表），**工具自己把數字從 26／73 改成 73／73 不構成證據**。
+// 這裡直接跑一次施法、把 `ConsumeSoundEvents` 收到的東西攤開來看。
+func TestEveryDeclaredCombatSpellEmitsSound(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, definition := range pack.CombatPlayerSpells {
+		entry, _ := gamepack.SpellByID(int(definition.SpellID))
+		state := declaredSpellState(t, definition.SpellID, definition.CasterClass)
+		if err := state.BeginCombatCast(definition.SpellID); err != nil {
+			t.Fatalf("%s（0x%02X）開始施法失敗：%v", entry.Name, definition.SpellID, err)
+		}
+		state.ConsumeSoundEvents() // 先清掉開場與選目標留下的
+		terrain := func(x, y int) combat.LineCell {
+			return combat.LineCell{Valid: x >= 0 && x < 8 && y >= 0 && y < 4}
+		}
+		if err := state.CombatCastWithTerrain(definition.SpellID, terrain); err != nil {
+			t.Fatalf("%s（0x%02X）施放失敗：%v", entry.Name, definition.SpellID, err)
+		}
+		events := state.ConsumeSoundEvents()
+		// 有視覺演出的法術（雲霧、睡眠、火球…）把聲音留給時間軸發，
+		// 所以要把演出推到結束再收一次。少了這一步會把「聲音在後面」
+		// 誤判成「沒有聲音」。
+		if _, playing := state.CombatVisualEvent(); playing {
+			if err := state.AdvanceCombatVisual(visualTimelineEnd); err != nil {
+				t.Fatalf("%s（0x%02X）推進視覺演出失敗：%v",
+					entry.Name, definition.SpellID, err)
+			}
+			events = append(events, state.ConsumeSoundEvents()...)
+		}
+		if len(events) == 0 {
+			t.Fatalf("%s（0x%02X，%s）施放時一個音效事件都沒有",
+				entry.Name, definition.SpellID, definition.Behavior)
+		}
+		// ⚠ 不要求一定是 `SoundCast`：火球有自己的爆炸聲、閃電有雷聲、
+		// 飛箭有弓弦聲。要求特定音效會把「有自己的聲音」判成錯的。
+		for _, event := range events {
+			if strings.TrimSpace(string(event)) == "" {
+				t.Fatalf("%s（0x%02X）排了一個空的音效事件", entry.Name, definition.SpellID)
+			}
+		}
+	}
+}
+
+// visualTimelineEnd 大於任何一段演出的長度，用來一次推到底。
+const visualTimelineEnd = 10 * time.Second
 
 // declaredSpellState 起一場只有一個施法者與一個敵人的戰鬥。
 //
@@ -85,6 +139,9 @@ func declaredSpellState(t *testing.T, spellID uint8, casterClass string) *State 
 		HitPoints: 40, MaxHitPoints: 40, ArmorClass: 10,
 		HasCombatPosition: true, CombatX: 2, CombatY: 1,
 		SavingThrows: []uint8{14, 14, 14, 14, 14}}}
+	// 出貨的那條路（`cmd/azure-bonds-game`）會開視覺時間軸，雲霧那一類的
+	// 聲音就是由時間軸發的。關著測會把「聲音在時間軸裡」誤判成沒有聲音。
+	state.EnableCombatVisualTimeline(true)
 	if err := state.StartCombat(partyFighters, enemies, 11); err != nil {
 		t.Fatal(err)
 	}
