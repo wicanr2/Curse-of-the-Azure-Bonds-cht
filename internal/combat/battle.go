@@ -181,6 +181,10 @@ type Fighter struct {
 	// monster-turn adapter currently consumes only Magic Missile (0x0F).
 	MonsterSpellIDs  []uint8
 	MonsterSpellUses [3]uint8
+	// ReadiedItemEffects 是**裝備中**物品的效果槽（物品記錄 `+3Dh`），
+	// 已經過 spec 835 的過濾：`+34h ≠ 0`（裝備中）、`+3Dh > 0`、`+3Eh < 80h`。
+	// AI 用道具的決策只需要這一欄，不需要整條物品鏈。
+	ReadiedItemEffects []uint8 `json:"readied_item_effects,omitempty"`
 	// DamageRules are immutable title-pack capabilities. They are deliberately
 	// excluded from save JSON and reattached by the game adapter after load.
 	DamageRules []enginedamage.Rule `json:"-"`
