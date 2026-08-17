@@ -2739,6 +2739,15 @@
    "casting_time": 4
   },
   {
+   "id": "coab.spell.confusion",
+   "spell_id": 82,
+   "caster_class": "magic_user",
+   "target_mode": "area_point",
+   "behavior": "morale_break_area",
+   "message_id": "spell_magic_user_82",
+   "casting_time": 4
+  },
+  {
    "id": "coab.spell.fumble",
    "spell_id": 86,
    "caster_class": "magic_user",

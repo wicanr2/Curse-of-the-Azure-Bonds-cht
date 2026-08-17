@@ -18,18 +18,18 @@
 | 　└ **戰鬥可施放（真正的分母）** | **79** |
 | 　　├ 職業模型不支援（德魯伊／表裡沒有職業）| 6 |
 | 　　├ **可宣告（能收斂到 0 的分母）** | **73** |
-| 　　├ game pack 已宣告 | 47 |
-| 　　├ 其中 runtime handler 已觀察到 | 47 |
-| 　　└ **尚未宣告** | **26** |
+| 　　├ game pack 已宣告 | 48 |
+| 　　├ 其中 runtime handler 已觀察到 | 48 |
+| 　　└ **尚未宣告** | **25** |
 | 　　　├ 效果碼 remake 已判讀（只差宣告） | 0 |
-| 　　　├ 效果碼 remake 還看不懂 | 13 |
+| 　　　├ 效果碼 remake 還看不懂 | 12 |
 | 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | 13 |
 
 全表用到 50 個相異效果碼，remake 判讀得了其中 19 個。
 ★ **記得上去不等於解讀得了**：`CastEffectSpell` 可以把任何碼寫進效果串列，
 但只有已判讀的那幾個會改變戰鬥規則。上面兩列就是這條界線。
 
-未宣告的戰鬥法術，依環數：1 環 2 支、2 環 4 支、3 環 6 支、4 環 9 支、5 環 4 支、7 環 1 支。
+未宣告的戰鬥法術，依環數：1 環 2 支、2 環 4 支、3 環 6 支、4 環 8 支、5 環 4 支、7 環 1 支。
 
 ## 逐支
 
@@ -116,7 +116,7 @@
 | 79 | Faerie Fire | druid | 1 | 3 節／逐一點選／豁免 spell／效果 7 | 未宣告 | — | — |
 | 80 | Invisibility to Animals | druid | 1 | 4 節／1 個目標／效果 69 | observed | missing | missing |
 | 81 | Charm Monsters | magic-user | 4 | 4 節／逐一點選／豁免 spell／效果 11 | observed | missing | missing |
-| 82 | Confusion | magic-user | 4 | 4 節／半徑 3／豁免 spell／效果 35 | 未宣告 | — | — |
+| 82 | Confusion | magic-user | 4 | 4 節／半徑 3／豁免 spell／效果 35 | observed | missing | missing |
 | 83 | Dimension Door | magic-user | 4 | 1 節／半徑 0 | 未宣告 | — | — |
 | 84 | Fear | magic-user | 4 | 4 節／半徑 0／豁免 spell／效果 142 | 未宣告 | — | — |
 | 85 | Fire Shield | magic-user | 4 | 4 節／自己 | 未宣告 | — | — |

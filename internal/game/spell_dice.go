@@ -315,3 +315,107 @@ func (s *State) combatCanCastAreaDamageDice(spellID uint8) bool {
 	}
 	return false
 }
+
+// combatCastAreaMoraleBreak 是混亂術（法術 82）：效果碼 `23h` 的處理常式就是
+// 士氣崩潰的四段表（spec 831／1122），所以這支法術不需要新的規則。
+func (s *State) combatCastAreaMoraleBreak(spellID uint8) error {
+	if s.combatCastingSpell != 0 && s.combatCastingSpell != spellID {
+		return fmt.Errorf("a different spell target is being selected")
+	}
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if !found {
+		return fmt.Errorf("spell 0x%02X is not declared in combat_player_spells", spellID)
+	}
+	required, ok := combatSpellCasterClasses[definition.CasterClass]
+	if !ok {
+		return fmt.Errorf("spell 0x%02X declares unknown caster class %q", spellID, definition.CasterClass)
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.HasClass(required) {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q cannot cast spell 0x%02X", caster.ID, spellID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == spellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized spell 0x%02X", caster.ID, spellID)
+	}
+	entry, ok := gamepack.SpellByID(int(spellID))
+	if !ok || entry.AreaRadius <= 0 {
+		return fmt.Errorf("spell 0x%02X has no declared area radius", spellID)
+	}
+	s.partyRoster[characterIndex].SpellSlots = append(
+		s.partyRoster[characterIndex].SpellSlots[:spellIndex],
+		s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	result, err := s.battle.CastAreaMoraleBreak(caster.ID, s.combatSpellTargetPoint,
+		entry.AreaRadius, entry.SaveCategory)
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(
+			s.partyRoster[characterIndex].SpellSlots, spellID)
+		return err
+	}
+	broken := 0
+	for _, impact := range result.Impacts {
+		if !impact.Saved {
+			broken++
+		}
+	}
+	s.CancelCombatCast()
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_morale_confused", "combat_morale_confused"),
+		fmt.Sprintf("%s（%d）", caster.Name, broken))
+	s.requestSound(SoundCast)
+	s.requestSound(SoundSpellHit)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+// combatCanCastAreaMoraleBreak 判斷混亂術現在施得出來嗎。
+func (s *State) combatCanCastAreaMoraleBreak(spellID uint8) bool {
+	if !s.CombatActive() {
+		return false
+	}
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if !found {
+		return false
+	}
+	required, ok := combatSpellCasterClasses[definition.CasterClass]
+	if !ok {
+		return false
+	}
+	entry, ok := gamepack.SpellByID(int(spellID))
+	if !ok || entry.AreaRadius <= 0 {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok || len(s.livingBySide(combat.SideEnemy)) == 0 {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || !character.HasClass(required) {
+			continue
+		}
+		for _, slot := range character.SpellSlots {
+			if slot == spellID {
+				return true
+			}
+		}
+	}
+	return false
+}

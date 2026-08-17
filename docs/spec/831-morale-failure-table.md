@@ -91,6 +91,9 @@ PC-98 用無號（`jnb` / `jbe` / `jb` / `ja`）**，而且 DOS 多一條 `xor a
 士氣**檢定**（門檻怎麼算、跑不跑得掉）是另一支，見
 [spec 1122](1122-morale-check-and-panic-flight.md)。
 
+remake 這一側：`Battle.ResolveMoraleFailure` 是那張表本身，
+`Battle.CastAreaMoraleBreak` 是混亂術的入口（半徑內每個沒過豁免的目標各跑一次）。
+
 ## 明確不宣稱
 
 - 沒有宣稱效果碼 `23h` / `89h` / `8Eh` 的名稱。
