@@ -23,7 +23,7 @@
 | 3 | `RE-06` → `ENG-07` | 戰鬥回合生命週期。**逃跑已接**（spec 1112／1113）：走出邊界即脫離，比「我的移動率」與「敵方最快移動率」，平手擲 1d2；新增 `StatusPartyFled`。**突襲量到「沒有人設遮罩」**：36 個 overlay 裡對 `+596h` 只有先攻讀它與一處清 0，常駐段那一側還沒掃（正對照失敗，見 spec 1113）。剩 initiative/held/delayed/guard/quick 的逐項對照 |
 | 4 | `RE-07` → `ENG-08` | 怪物 AI。**RE-07 其實大半已解讀**（COMPTACT 16/38，大的全在內）。**移動已接**（spec 1114）：模式 1..6、五個候選方向、半格成本、走到射程才攻擊、20 次上限。**決策已接**（spec 1116）：門檻 7 起／1d7 輪的掃描、施法每輪抽 3 個、用道具全掃、效果碼重映射、`+0F7h` 士氣編碼；分數取自 `ENG-09` 匯出的法術表 `+0Dh`。剩：目標挑法（838 §五）、恐慌逃走訊息與自動換裝（需要 22 bytes 戰鬥狀態記錄）、移動的障礙豁免效果（837）|
 | 5 | `ENG-09` | 全法術表。**資料半邊完成**（spec 1111）：100 筆匯出，16 個位元組逐欄有出處。**實作改成資料驅動**（spec 1117）：效果碼／持續時間／豁免類別直接讀表，一支法術不需要一段程式碼——一次接上 11 支（定身、加速、緩慢、隱形…），宣告數 12 → **23**／79。剩：`+0Ah = 0` 的 21 支傷害類（要資料驅動的傷害路徑）、其餘 35 支的效果碼語意（spec 1005 的分派表）、新接 11 支的 visual／sound |
-| 6 | `RE-05` → `ENG-10` | 存檔（spec 1115）。**角色記錄 422 bytes 逐位元組有狀態**：`decoded` 294／`documented` 99／`unknown` 29，`decoded` 由位元組突變逐段量測驗證，對帳跑在 `go test` 裡。**存檔完整性的閘**：`Fighter` 每個匯出欄位都要能存進讀回（反射掃描），當場抓到「新增 `StatusPartyFled` 後逃離結局的存檔讀不回來」。`.SWG`（63 bytes）與 `.FX`（9 bytes）也逐位元組蓋滿，`unknown` 都是 0。剩：PC-98 `CHARREC`（多一 byte）、遊戲層快照的同等閘 |
+| 6 | `RE-05` → `ENG-10` | 存檔（spec 1115／1118）。**三份記錄逐位元組有台帳**：角色記錄 422 bytes（decoded 294／documented 99／unknown 29，`decoded` 由突變量測驗證）、`.SWG` 63 bytes 與 `.FX` 9 bytes 都蓋滿且 `unknown` 為 0。**兩道存檔完整性的閘**：`Fighter` 每個欄位（反射）＋ 整局存檔的存→State→存往返，前者當場抓到 `StatusPartyFled` 讀不回來，後者守住 `SavePartyFile` 那 20 個位置參數。⚠ PC-98 `CHARREC`（`1A7h`）不做——決策六：PC-98 只解讀 remake 需要的部分，而 remake 匯入的是 DOS 存檔 |
 
 條目的完整敘述與依賴見
 [`docs/knowledge/coab-remake-todo.md`](docs/knowledge/coab-remake-todo.md)，

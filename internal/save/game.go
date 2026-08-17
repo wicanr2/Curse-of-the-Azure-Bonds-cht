@@ -143,6 +143,26 @@ func EncodeGameWithJournalState(roster party.Roster, areaState area.State, mode,
 // the stable-ID save. The edge IDs come from the loaded game pack; this save
 // layer does not know whether an edge is a secret passage, a door, or another
 // title-owned map mutation.
+// EncodeGameFile 直接序列化一份組好的存檔。
+//
+// ★ 它存在的理由是**測試要能組出一份「每個欄位都有值」的存檔**：
+// `EncodeGameWithAdventureState` 收 20 個位置參數，測試照著填一次等於把同一個
+// 容易出錯的地方再抄一遍。正式流程仍走那一支（它帶著驗證），這一支只補
+// `Version` 並做同樣的驗證。
+func EncodeGameFile(file GameFile) ([]byte, error) {
+	file.Version = CurrentGameVersion
+	if err := file.Characters.Validate(); err != nil {
+		return nil, err
+	}
+	if err := validateJournalMessageIDs(file.JournalMessageIDs); err != nil {
+		return nil, err
+	}
+	if err := validateDungeonSearchEdges(file.DungeonSearchEdges); err != nil {
+		return nil, err
+	}
+	return json.MarshalIndent(file, "", "  ")
+}
+
 func EncodeGameWithAdventureState(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32, session *ecl.SessionSnapshot, activeCombat *CombatSnapshot, music *MusicSnapshot, oneShots *audiostate.Snapshot, journalMessageIDs []string, dungeonSearch bool, dungeonSearchEdges []string) ([]byte, error) {
 	if err := roster.Validate(); err != nil {
 		return nil, err
