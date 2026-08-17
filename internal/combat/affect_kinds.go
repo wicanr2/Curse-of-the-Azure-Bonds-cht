@@ -48,5 +48,15 @@ func AffectKindIsInterpreted(kind uint8) bool {
 	// ⚠ 有數字還不夠，**還要有人問它**。`CHECKFX` 是唯一會走 handler 的路，
 	// 所以不在任何 timing 清單裡的碼，那些數字永遠套不上。
 	// （`16h` 與 `93h` 就是這種：handler 寫全域，但沒有 timing 指到它們。）
-	return table.HasTiming(kind)
+	if !table.HasTiming(kind) {
+		return false
+	}
+	// ⚠ 還要 remake **搬得動**。寫進記錄的那一類，只有對應得上 `Fighter` 欄位
+	// 的格子算數；抄了個位移卻不知道是什麼，不能算成判讀得了。
+	for _, modifier := range handler.Modifiers {
+		if modifier.Record == "" || recordWriteIsMapped(modifier.Record, modifier.Field) {
+			return true
+		}
+	}
+	return false
 }

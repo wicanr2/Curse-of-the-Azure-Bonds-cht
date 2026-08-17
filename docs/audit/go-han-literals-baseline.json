@@ -88,7 +88,14 @@
     {
       "path": "cmd/combat-spell-coverage-audit/main.go",
       "function": "main",
-      "sha256": "38eacc331740b05e2f1ea08f30a2bf3423e3105ec1c946418b08ed37118870d5",
+      "sha256": "773f451f2f1ff04eb348ebe3246bb6ac4e5d509ea96679ec56d258dd7c5fd371",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combat-spell-coverage-audit/main.go",
+      "function": "main",
+      "sha256": "96329173ba490d5306d997ddb734d027422aab061a2e4990b338fb0938312ac0",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -298,7 +305,21 @@
     {
       "path": "cmd/combat-spell-coverage-audit/main.go",
       "function": "renderMarkdown",
+      "sha256": "dd58c83eb108f24ca99b279c059bbba5b4e1d67c3a018e998aa47f64afc00850",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combat-spell-coverage-audit/main.go",
+      "function": "renderMarkdown",
       "sha256": "e1e1197664323b9be1351bb3a3da893a99cf3cc3bda1b9d7d1630766595c0c9f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combat-spell-coverage-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "e43f0dbc53ffe216e97d25976d5ca5feb0d559d2df4f0ef10808e257a88f5654",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

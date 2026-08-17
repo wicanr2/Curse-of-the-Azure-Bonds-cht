@@ -11,7 +11,7 @@
 | `inert` | 只有序幕與 `retf`，什麼都不做 |
 | `unread` | 有內容但沒有可辨識的加減 |
 
-統計：decoded 6、inert 12、partial 18、unread 105
+統計：decoded 8、inert 12、partial 31、unread 90
 
 ## 暫存全域
 
@@ -36,7 +36,7 @@
 | `04h` | `overlay-12:016Bh` | unread | — | `10h` |
 | `05h` | `overlay-12:2E33h` | inert | — | — |
 | `06h` | `overlay-12:0188h` | partial | `damage_element` ＝ 9 | `04h`、`0Ah` |
-| `07h` | `overlay-12:01F1h` | unread | — | `0Bh` |
+| `07h` | `overlay-12:01F1h` | partial | `player+19Ah` ＝ 60、`player+19Bh` ＝ 60 | `0Bh` |
 | `08h` | `overlay-12:0238h` | unread | — | `0Bh`、`0Ch` |
 | `09h` | `overlay-12:026Fh` | unread | — | `0Bh`、`0Ch` |
 | `0Ah` | `overlay-12:02A6h` | partial | `damage` ÷ 2、`saving_throw` ＋ 3 | `06h`、`0Ch` |
@@ -50,7 +50,7 @@
 | `12h` | `overlay-12:0479h` | unread | — | `0Ah` |
 | `13h` | `overlay-12:2E33h` | inert | — | — |
 | `14h` | `overlay-12:04ADh` | partial | `damage` ÷ 2、`saving_throw` ＋ 3 | `06h`、`0Ch` |
-| `15h` | `overlay-12:04E4h` | unread | — | `0Fh` |
+| `15h` | `overlay-12:04E4h` | partial | `combat_state+02h` ＝ 0、`combat_state+01h` ＝ 0 | `0Fh` |
 | `16h` | `overlay-12:054Ah` | unread | — | — |
 | `17h` | `overlay-12:05B6h` | unread | — | `13h` |
 | `18h` | `overlay-12:2E33h` | inert | — | — |
@@ -59,12 +59,12 @@
 | `1Bh` | `overlay-12:0075h` | unread | — | `07h` |
 | `1Ch` | `overlay-12:0769h` | unread | — | `05h`、`06h` |
 | `1Dh` | `overlay-12:07ECh` | unread | — | `04h` |
-| `1Eh` | `overlay-12:0818h` | unread | — | `0Bh`、`0Fh` |
+| `1Eh` | `overlay-12:0818h` | partial | `combat_state+02h` ＝ 0、`combat_state+01h` ＝ 0、`player+19Bh` ＝ 50 | `0Bh`、`0Fh` |
 | `1Fh` | `overlay-12:0075h` | unread | — | `07h` |
-| `20h` | `overlay-12:08CDh` | unread | — | — |
-| `21h` | `overlay-12:0982h` | partial | `modifier` − 4、`saving_throw` − 4 | `0Ah`、`0Bh`、`0Ch` |
+| `20h` | `overlay-12:08CDh` | partial | `player+04h` ＝ 0、`player+198h` ＝ 1、`player+E9h` ＝ 0、`player+E4h` ＝ 12、`player+11Ah` ＝ 0 | — |
+| `21h` | `overlay-12:0982h` | decoded | `modifier` − 4、`player+19Ah` − 4、`player+19Bh` − 4、`saving_throw` − 4 | `0Ah`、`0Bh`、`0Ch` |
 | `22h` | `overlay-12:09A7h` | unread | — | — |
-| `23h` | `overlay-12:0A0Eh` | unread | — | `15h` |
+| `23h` | `overlay-12:0A0Eh` | partial | `combat_state+10h` ＝ 1、`player+198h` ＝ 1 | `15h` |
 | `24h` | `overlay-12:0BAFh` | decoded | `modifier` − 4、`saving_throw` − 4 | `0Ah`、`0Ch` |
 | `25h` | `overlay-12:0BC2h` | unread | — | `01h`、`10h` |
 | `26h` | `overlay-12:038Ch` | inert | — | — |
@@ -87,7 +87,7 @@
 | `37h` | `overlay-12:12B1h` | inert | — | — |
 | `38h` | `overlay-12:12BAh` | unread | — | `08h`、`13h` |
 | `39h` | `overlay-13:403Fh` | unread | — | `02h` |
-| `3Ah` | `overlay-12:12DBh` | unread | — | `12h` |
+| `3Ah` | `overlay-12:12DBh` | partial | `combat_state+06h` ＝ 0 | `12h` |
 | `3Bh` | `overlay-12:12FDh` | unread | — | — |
 | `3Ch` | `overlay-12:131Dh` | unread | — | `05h` |
 | `3Dh` | `overlay-12:1374h` | partial | `damage` − 2、`saving_throw` ＋ 4 | `06h`、`0Ch` |
@@ -97,7 +97,7 @@
 | `41h` | `overlay-12:157Fh` | unread | — | `03h` |
 | `42h` | `overlay-12:1595h` | unread | — | `03h` |
 | `43h` | `overlay-12:15ABh` | unread | — | `03h` |
-| `44h` | `overlay-12:15E6h` | unread | — | — |
+| `44h` | `overlay-12:15E6h` | partial | `player+13h` ＝ 7、`player+15h` ＝ 7 | — |
 | `45h` | `overlay-12:1687h` | unread | — | `01h` |
 | `46h` | `overlay-12:16C2h` | unread | — | `03h` |
 | `47h` | `overlay-12:16D8h` | decoded | `attack_forced_miss` ＝ 1、`modifier` − 4 | `01h`、`10h` |
@@ -106,14 +106,14 @@
 | `4Ah` | `overlay-12:1765h` | unread | — | `17h` |
 | `4Bh` | `overlay-12:1771h` | unread | — | `04h`、`0Ah`、`0Dh` |
 | `4Ch` | `overlay-12:17C8h` | unread | — | `04h`、`0Ah` |
-| `4Dh` | `overlay-12:1809h` | unread | — | `0Fh` |
+| `4Dh` | `overlay-12:1809h` | partial | `player+198h` ＝ 1、`player+F7h` ＝ 178、`combat_state+01h` ＝ 0、`player+197h` ＝ 0 | `0Fh` |
 | `4Eh` | `overlay-12:192Dh` | unread | — | — |
 | `4Fh` | `overlay-12:196Dh` | partial | `damage_element` ＝ 9 | `02h`、`03h` |
 | `50h` | `overlay-12:19A2h` | partial | `damage_element` ＝ 16 | `02h` |
 | `51h` | `overlay-12:19D7h` | decoded | `damage` ÷ 2 | `05h` |
 | `52h` | `overlay-12:19EEh` | unread | — | `05h`、`06h`、`08h` |
 | `53h` | `overlay-12:1A65h` | unread | — | `0Eh` |
-| `54h` | `overlay-12:1C1Ch` | unread | — | `06h` |
+| `54h` | `overlay-12:1C1Ch` | partial | `player+1A4h` ＋ 8 | `06h` |
 | `55h` | `overlay-12:1C4Fh` | unread | — | `05h` |
 | `57h` | `overlay-13:42FDh` | unread | — | `03h`、`0Eh` |
 | `59h` | `overlay-12:1C90h` | unread | — | `08h`、`10h` |
@@ -121,10 +121,10 @@
 | `5Ch` | `overlay-12:2E33h` | inert | — | — |
 | `5Dh` | `overlay-12:1FC4h` | partial | `damage` ÷ 2 | `06h` |
 | `5Eh` | `overlay-12:1FE4h` | unread | — | `05h` |
-| `5Fh` | `overlay-12:203Ch` | unread | — | — |
+| `5Fh` | `overlay-12:203Ch` | partial | `player+04h` ＝ 0 | — |
 | `60h` | `overlay-13:4811h` | unread | — | `02h` |
 | `61h` | `overlay-12:2078h` | unread | — | `0Ch` |
-| `62h` | `overlay-12:20FAh` | unread | — | `13h` |
+| `62h` | `overlay-12:20FAh` | partial | `player+1A4h` ＋ 3 | `13h` |
 | `63h` | `overlay-12:212Ch` | unread | — | `08h`、`0Dh` |
 | `64h` | `overlay-12:21D5h` | unread | — | `0Dh` |
 | `65h` | `overlay-12:2212h` | unread | — | `05h`、`06h` |
@@ -159,15 +159,15 @@
 | `85h` | `overlay-12:2AA8h` | unread | — | `06h` |
 | `86h` | `overlay-12:2AD6h` | unread | — | `04h` |
 | `87h` | `overlay-12:2B0Fh` | unread | — | `06h` |
-| `88h` | `overlay-12:2B28h` | unread | — | `07h` |
-| `89h` | `overlay-12:2B3Eh` | unread | — | — |
+| `88h` | `overlay-12:2B28h` | decoded | `combat_state+06h` ＝ 0 | `07h` |
+| `89h` | `overlay-12:2B3Eh` | partial | `player+198h` ＝ 1、`player+F7h` ＝ 178 | — |
 | `8Ah` | `overlay-12:2C2Eh` | unread | — | `16h` |
-| `8Bh` | `overlay-13:45CFh` | unread | — | `0Eh` |
+| `8Bh` | `overlay-13:45CFh` | partial | `player+19Ch` ＝ 2、`player+19Dh` ＝ 0、`player+19Eh` ＝ 2、`player+1A0h` ＝ 8 | `0Eh` |
 | `8Ch` | `overlay-12:2E33h` | inert | — | — |
 | `8Dh` | `overlay-12:2C4Fh` | unread | — | — |
 | `8Eh` | `overlay-12:2C94h` | unread | — | — |
 | `8Fh` | `overlay-12:2CD9h` | unread | — | `05h` |
-| `90h` | `overlay-13:4703h` | unread | — | — |
+| `90h` | `overlay-13:4703h` | partial | `player+19Ch` ＝ 1、`player+19Dh` ＝ 0、`player+19Eh` ＝ 2、`player+1A0h` ＝ 8 | — |
 | `91h` | `overlay-12:2D7Dh` | unread | — | `02h` |
 | `92h` | `overlay-12:2E33h` | inert | — | — |
 | `93h` | `overlay-12:2A2Ch` | partial | `7582` ＝ 0 | — |

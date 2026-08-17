@@ -118,10 +118,16 @@ HALF_STORE = re.compile(r"^mov\s+ds:0x([0-9a-f]{4}),al$")
 
 
 def conditional_addresses(body):
-    """在條件分支與它的目標之間的指令位址。這些指令**不是無條件執行的**。"""
+    """不是無條件執行的指令位址。
+
+    兩種來源都要看：**條件跳躍**之後到目標之前（那一段只在條件成立時跑），
+    以及**無條件跳躍**之後到目標之前（那一段是被跳過的另一條分支）。
+    ⚠ 少了 `jmp` 那一半，`if 未達上限 then +2 else := 上限` 的 else 分支會被當成
+    無條件執行——妖火就會變成「把護甲直接設成上限」而不是「加 2」。
+    """
     inside = set()
     for index, (address, text) in enumerate(body):
-        found = BRANCH.match(text)
+        found = BRANCH.match(text) or JUMP.match(text)
         if not found:
             continue
         target = int(found.group(1), 16)
@@ -129,6 +135,36 @@ def conditional_addresses(body):
             if address < other < target:
                 inside.add(other)
     return inside
+
+
+# 封頂的加法：`cmp F,C / jae L1 / add F,K / jmp L2 / L1: mov F,CAP`。
+CAP_CMP_RECORD = re.compile(r"^cmp\s+BYTE PTR es:\[di\+0x([0-9a-f]+)\],0x([0-9a-f]+)$")
+
+
+def match_capped_add(body, index):
+    """認出「未達上限就加 K，否則設成上限」。回傳 (運算, 用掉幾條指令) 或 None。"""
+    load = RECORD_LOAD.match(body[index][1])
+    if not load or index + 6 >= len(body):
+        return None
+    compare = CAP_CMP_RECORD.match(body[index + 1][1])
+    if not compare or not body[index + 2][1].startswith("jae"):
+        return None
+    field, threshold = int(compare.group(1), 16), int(compare.group(2), 16)
+    if not RECORD_LOAD.match(body[index + 3][1]):
+        return None
+    added = RECORD_ADD.match(body[index + 4][1])
+    if not added or added.group(1) != "add" or int(added.group(2), 16) != field:
+        return None
+    if not body[index + 5][1].startswith("jmp"):
+        return None
+    if not RECORD_LOAD.match(body[index + 6][1]):
+        return None
+    capped = RECORD_SET.match(body[index + 7][1]) if index + 7 < len(body) else None
+    if not capped or int(capped.group(1), 16) != field:
+        return None
+    return {"record": "player", "field": field, "op": "add_capped",
+            "value": int(added.group(3), 16),
+            "cap": int(capped.group(2), 16), "cap_threshold": threshold}, 8
 
 
 # 旗標守衛：`mov al, ds:G / and al, K / or al,al / je L`——L 之前的指令只有在
@@ -154,6 +190,45 @@ def flag_guards(body):
                 break
             guards[address] = (load.group(1), int(mask.group(1), 16))
     return guards
+
+
+# 寫進**記錄**而不是全域的那一類：
+#
+#     les di, [bp+0Ch]                 { 對象 }
+#     les di, es:[di+18Dh]             { → 戰鬥狀態記錄，可省略 }
+#     mov byte ptr es:[di+K], V        { 或 add／sub }
+#
+# 纏繞術（`88h`）把戰鬥狀態的 `+06h`（移動率）設成 0、妖火（`07h`）把角色的
+# `+19Ah`／`+19Bh`（護甲兩格）各加 2。這些不是全域修正，但同樣是規則。
+RECORD_LOAD = re.compile(r"^les\s+di,DWORD PTR \[bp\+0x([0-9a-f]+)\]$")
+RECORD_DEREF = re.compile(r"^les\s+di,DWORD PTR es:\[di\+0x([0-9a-f]+)\]$")
+RECORD_SET = re.compile(r"^mov\s+BYTE PTR es:\[di\+0x([0-9a-f]+)\],0x([0-9a-f]+)$")
+RECORD_ADD = re.compile(r"^(add|sub)\s+BYTE PTR es:\[di\+0x([0-9a-f]+)\],0x([0-9a-f]+)$")
+
+
+def match_record_write(body, index):
+    """認出「載入對象記錄再寫一格」。回傳 (運算, 用掉幾條指令) 或 None。"""
+    found = RECORD_LOAD.match(body[index][1])
+    if not found or index + 1 >= len(body):
+        return None
+    used, record = 1, "player"
+    deref = RECORD_DEREF.match(body[index + 1][1])
+    if deref:
+        if int(deref.group(1), 16) != 0x18D:
+            return None
+        record, used = "combat_state", 2
+    if index + used >= len(body):
+        return None
+    text = body[index + used][1]
+    written = RECORD_SET.match(text)
+    if written:
+        return {"record": record, "field": int(written.group(1), 16), "op": "set",
+                "value": int(written.group(2), 16)}, used + 1
+    written = RECORD_ADD.match(text)
+    if written:
+        return {"record": record, "field": int(written.group(2), 16),
+                "op": written.group(1), "value": int(written.group(3), 16)}, used + 1
+    return None
 
 
 def match_clamped_sub(body, index):
@@ -221,7 +296,8 @@ def classify(body):
         # 那個旗標。少了 `guard`，抗寒會減半**所有**傷害而不只是冷傷害。
         matched = None
         if address not in conditional or guard:
-            for matcher in (match_clamped_sub, match_halve):
+            for matcher in (match_capped_add, match_clamped_sub, match_halve,
+                            match_record_write):
                 matched = matcher(body, index)
                 if matched:
                     break
@@ -269,12 +345,14 @@ def classify(body):
     # ⚠ 同一個全域同時被「設定」與別的運算動到，代表那是兩條分支而不是兩個
     # 依序執行的動作（`if 不足 then 0 else 折半`）。照順序套會先歸零再折半，
     # 結果永遠是 0。認不出那個形狀就整組退回沒解析——**不猜**。
-    touched = collections.Counter(item["global"] for item in operations)
-    conflicted = {item["global"] for item in operations
-                  if item["op"] == "set" and touched[item["global"]] > 1}
+    touched = collections.Counter(item.get("global") for item in operations)
+    conflicted = {item.get("global") for item in operations
+                  if item["op"] == "set" and item.get("global")
+                  and touched[item.get("global")] > 1}
     if conflicted:
-        unparsed += sum(1 for item in operations if item["global"] in conflicted)
-        operations = [item for item in operations if item["global"] not in conflicted]
+        unparsed += sum(1 for item in operations if item.get("global") in conflicted)
+        operations = [item for item in operations
+                      if item.get("global") not in conflicted]
     return operations, unparsed
 
 
@@ -333,9 +411,13 @@ def main():
     for code in sorted(records):
         item = records[code]
         modifiers = "、".join(
-            "`%s` %s %d" % (SCRATCH.get(entry["global"], (entry["global"],))[0],
+            ("`%s+%02Xh` %s %d" % (entry["record"], entry["field"],
+                                   {"add": "＋", "sub": "−", "set": "＝"}[entry["op"]],
+                                   entry["value"])
+             if "record" in entry else
+             "`%s` %s %d" % (SCRATCH.get(entry["global"], (entry["global"],))[0],
                             {"add": "＋", "sub": "−", "set": "＝", "sub_clamped": "−（夾底）", "div": "÷"}[entry["op"]],
-                            entry["value"])
+                            entry["value"]))
             for entry in item["modifiers"]) or "—"
         appears = "、".join("`%02Xh`" % timing for timing in sorted(timings)
                             if code in timings[timing]) or "—"

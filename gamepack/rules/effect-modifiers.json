@@ -327,9 +327,26 @@
    "overlay": 12,
    "offset": 497,
    "instructions": 21,
-   "modifiers": [],
-   "unparsed": 16,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "player",
+     "field": 410,
+     "op": "add_capped",
+     "value": 2,
+     "cap": 60,
+     "cap_threshold": 58
+    },
+    {
+     "record": "player",
+     "field": 411,
+     "op": "add_capped",
+     "value": 2,
+     "cap": 60,
+     "cap_threshold": 58
+    }
+   ],
+   "unparsed": 0,
+   "status": "decoded"
   },
   "08": {
    "overlay": 12,
@@ -374,15 +391,9 @@
    "overlay": 12,
    "offset": 715,
    "instructions": 62,
-   "modifiers": [
-    {
-     "global": "6fa2",
-     "op": "set",
-     "value": 100
-    }
-   ],
-   "unparsed": 56,
-   "status": "partial"
+   "modifiers": [],
+   "unparsed": 57,
+   "status": "unread"
   },
   "0C": {
    "overlay": 12,
@@ -481,9 +492,22 @@
    "overlay": 12,
    "offset": 1252,
    "instructions": 30,
-   "modifiers": [],
-   "unparsed": 24,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "combat_state",
+     "field": 2,
+     "op": "set",
+     "value": 0
+    },
+    {
+     "record": "combat_state",
+     "field": 1,
+     "op": "set",
+     "value": 0
+    }
+   ],
+   "unparsed": 18,
+   "status": "partial"
   },
   "16": {
    "overlay": 12,
@@ -553,9 +577,22 @@
    "overlay": 12,
    "offset": 2072,
    "instructions": 54,
-   "modifiers": [],
-   "unparsed": 48,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "combat_state",
+     "field": 2,
+     "op": "set",
+     "value": 0
+    },
+    {
+     "record": "combat_state",
+     "field": 1,
+     "op": "set",
+     "value": 0
+    }
+   ],
+   "unparsed": 42,
+   "status": "partial"
   },
   "1F": {
    "overlay": 12,
@@ -569,9 +606,40 @@
    "overlay": 12,
    "offset": 2253,
    "instructions": 59,
-   "modifiers": [],
-   "unparsed": 53,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "player",
+     "field": 4,
+     "op": "set",
+     "value": 0
+    },
+    {
+     "record": "player",
+     "field": 408,
+     "op": "set",
+     "value": 1
+    },
+    {
+     "record": "player",
+     "field": 233,
+     "op": "set",
+     "value": 0
+    },
+    {
+     "record": "player",
+     "field": 228,
+     "op": "set",
+     "value": 12
+    },
+    {
+     "record": "player",
+     "field": 282,
+     "op": "set",
+     "value": 0
+    }
+   ],
+   "unparsed": 43,
+   "status": "partial"
   },
   "21": {
    "overlay": 12,
@@ -584,13 +652,25 @@
      "value": 4
     },
     {
+     "record": "player",
+     "field": 410,
+     "op": "sub",
+     "value": 4
+    },
+    {
+     "record": "player",
+     "field": 411,
+     "op": "sub",
+     "value": 4
+    },
+    {
      "global": "6f92",
      "op": "sub",
      "value": 4
     }
    ],
-   "unparsed": 4,
-   "status": "partial"
+   "unparsed": 0,
+   "status": "decoded"
   },
   "22": {
    "overlay": 12,
@@ -733,20 +813,9 @@
    "overlay": 12,
    "offset": 4608,
    "instructions": 29,
-   "modifiers": [
-    {
-     "global": "6f9f",
-     "op": "sub",
-     "value": 1
-    },
-    {
-     "global": "6f92",
-     "op": "sub",
-     "value": 1
-    }
-   ],
-   "unparsed": 21,
-   "status": "partial"
+   "modifiers": [],
+   "unparsed": 23,
+   "status": "unread"
   },
   "32": {
    "overlay": 12,
@@ -832,9 +901,16 @@
    "overlay": 12,
    "offset": 4827,
    "instructions": 11,
-   "modifiers": [],
-   "unparsed": 6,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "combat_state",
+     "field": 6,
+     "op": "set",
+     "value": 0
+    }
+   ],
+   "unparsed": 3,
+   "status": "partial"
   },
   "3B": {
    "overlay": 12,
@@ -927,9 +1003,22 @@
    "overlay": 12,
    "offset": 5606,
    "instructions": 57,
-   "modifiers": [],
-   "unparsed": 51,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "player",
+     "field": 19,
+     "op": "set",
+     "value": 7
+    },
+    {
+     "record": "player",
+     "field": 21,
+     "op": "set",
+     "value": 7
+    }
+   ],
+   "unparsed": 47,
+   "status": "partial"
   },
   "45": {
    "overlay": 12,
@@ -1084,9 +1173,18 @@
    "overlay": 12,
    "offset": 7196,
    "instructions": 22,
-   "modifiers": [],
-   "unparsed": 16,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "player",
+     "field": 420,
+     "op": "add",
+     "value": 8,
+     "guard_global": "6f95",
+     "guard_mask": 4
+    }
+   ],
+   "unparsed": 14,
+   "status": "partial"
   },
   "55": {
    "overlay": 12,
@@ -1156,9 +1254,16 @@
    "overlay": 12,
    "offset": 8252,
    "instructions": 23,
-   "modifiers": [],
-   "unparsed": 17,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "player",
+     "field": 4,
+     "op": "set",
+     "value": 0
+    }
+   ],
+   "unparsed": 15,
+   "status": "partial"
   },
   "60": {
    "overlay": 13,
@@ -1180,9 +1285,16 @@
    "overlay": 12,
    "offset": 8442,
    "instructions": 16,
-   "modifiers": [],
-   "unparsed": 11,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "player",
+     "field": 420,
+     "op": "add",
+     "value": 3
+    }
+   ],
+   "unparsed": 9,
+   "status": "partial"
   },
   "63": {
    "overlay": 12,
@@ -1490,9 +1602,16 @@
    "overlay": 12,
    "offset": 11048,
    "instructions": 8,
-   "modifiers": [],
-   "unparsed": 3,
-   "status": "unread"
+   "modifiers": [
+    {
+     "record": "combat_state",
+     "field": 6,
+     "op": "set",
+     "value": 0
+    }
+   ],
+   "unparsed": 0,
+   "status": "decoded"
   },
   "89": {
    "overlay": 12,

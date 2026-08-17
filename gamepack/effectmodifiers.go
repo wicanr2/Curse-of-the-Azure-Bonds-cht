@@ -29,6 +29,13 @@ type EffectModifier struct {
 	// 抗火只減半火傷害——少了這一層，它們會減半所有傷害。
 	GuardGlobal string `json:"guard_global,omitempty"`
 	GuardMask   int    `json:"guard_mask,omitempty"`
+	// Record／Field 是「寫進記錄而不是全域」：`player` 是角色記錄，
+	// `combat_state` 是 `+18Dh` 指到的 22 bytes 戰鬥狀態（spec 806）。
+	Record string `json:"record,omitempty"`
+	Field  int    `json:"field,omitempty"`
+	// Cap 與 CapThreshold 是封頂加法：未達門檻就加 Value，否則設成 Cap。
+	Cap          int `json:"cap,omitempty"`
+	CapThreshold int `json:"cap_threshold,omitempty"`
 }
 
 // EffectHandler 是一個效果碼的 handler 摘要。

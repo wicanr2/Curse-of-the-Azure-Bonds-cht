@@ -3394,6 +3394,12 @@ func (s *State) advanceCombatToParty() error {
 		if fighter.Side == combat.SideParty && !fighter.QuickFight {
 			return nil
 		}
+		// 回合開頭的效果記錄寫入（`CHECKFX(07h)`，spec 1123）：纏繞術把移動率
+		// 設成 0、妖火讓護甲變差。這些不是暫存修正，是直接改記錄。
+		if _, err := s.battle.ApplyEffectRecordWrites(fighter.ID, combat.CheckFXCanAct); err != nil {
+			return err
+		}
+		fighter, _ = s.fighter(fighter.ID)
 		// 自動換裝在 AI 回合開頭（spec 1120）。原作的換裝屬於 AI 模組，
 		// 所以管的是「這一回合由電腦操作的人」——包含開了快速戰鬥的隊員。
 		if _, err := s.autoEquipBeforeAITurn(fighter.ID); err != nil {
