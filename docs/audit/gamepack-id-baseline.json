@@ -333,6 +333,10 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_69"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_7"
   },
   {
@@ -429,11 +433,23 @@
   },
   {
    "kind": "locale",
+   "id": "spell_magic_user_52"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_53"
+  },
+  {
+   "kind": "locale",
    "id": "spell_magic_user_55"
   },
   {
    "kind": "locale",
    "id": "spell_magic_user_81"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_86"
   },
   {
    "kind": "locale",

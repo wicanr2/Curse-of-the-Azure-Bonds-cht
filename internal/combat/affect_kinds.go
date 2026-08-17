@@ -13,6 +13,7 @@ import "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 var InterpretedAffectKinds = []uint8{
 	0x18, // 偵測隱形：MonsterCanDetectInvisible
 	0x19, // 隱形：攻擊修正與被攻擊修正
+	0x1B, // 定身家族之一（笨拙術）：與 1Fh／33h／34h／35h 同一支 handler
 	0x1F, // 定身家族之一：MonsterIsHeld
 	0x25, // 使攻擊必失手：MonsterAffectForcesAttackMiss
 	0x27, // 加速：MonsterAffectAttacksPerTurn

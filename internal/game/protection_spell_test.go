@@ -123,3 +123,59 @@ func TestBrokenMoraleMonsterFleesInsteadOfAttacking(t *testing.T) {
 		t.Fatalf("訊息 %q，want %q（士氣崩了的怪物該印驚慌逃竄，不是攻擊）", got, want)
 	}
 }
+
+// 十呎半徑版套給**整支隊伍**，單目標版只套一個人。
+func TestTenFootProtectionCoversTheWholeParty(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{
+		{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 4,
+			HitPoints: 20, MaxHitPoints: 20, SpellSlots: []uint8{69}},
+		{ID: "fighter", Name: "戰士", Class: party.ClassFighter, Level: 4,
+			HitPoints: 25, MaxHitPoints: 25},
+	}
+	partyFighters := []combat.Fighter{
+		{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 20,
+			MaxHitPoints: 20, ArmorClass: 10, InitiativeBonus: 20,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1},
+		{ID: "fighter", Name: "戰士", Side: combat.SideParty, HitPoints: 25,
+			MaxHitPoints: 25, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 5, CombatY: 5},
+	}
+	enemies := []combat.Fighter{{ID: "orc", Name: "獸人", Side: combat.SideEnemy, Evil: true,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10,
+		HasCombatPosition: true, CombatX: 9, CombatY: 9}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatCast(69); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCast(69); err != nil {
+		t.Fatal(err)
+	}
+	protected := 0
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideParty && fighter.ProtectedFromEvil {
+			protected++
+		}
+	}
+	if protected != 2 {
+		t.Fatalf("只有 %d 個人受到防護，十呎半徑該蓋整隊", protected)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("法術位沒被消耗：%#v", state.partyRoster[0].SpellSlots)
+	}
+}
+
+// 笨拙術（`1Bh`）與定身家族共用同一支 handler，所以中了就不能行動。
+func TestFumbleSharesTheHoldHandler(t *testing.T) {
+	fumbled := combat.Fighter{MonsterAffects: []combat.MonsterAffect{
+		{Kind: 0x1B, Value: 3, Duration: 3, Active: true}}}
+	if !fumbled.MonsterIsHeld() {
+		t.Fatal("笨拙術中了卻還能行動——`1Bh` 與 1Fh／33h／34h／35h 是同一支 handler")
+	}
+	clean := combat.Fighter{}
+	if clean.MonsterIsHeld() {
+		t.Fatal("沒有效果卻被當成定身")
+	}
+}

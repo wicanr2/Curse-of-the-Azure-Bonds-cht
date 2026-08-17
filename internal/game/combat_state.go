@@ -1572,6 +1572,10 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		if !s.combatCanCastSpellDice(spellID, definition.Behavior == "heal_dice") {
 			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
 		}
+	case "protection_from_evil_10ft", "protection_from_good_10ft":
+		if !s.combatCanCastProtectionRadius(spellID) {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
 	default:
 		return fmt.Errorf("spell 0x%02X uses unsupported combat behavior %q", spellID, definition.Behavior)
 	}
@@ -1769,6 +1773,18 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 		return s.combatCastCurse()
 	case "cause_light_wounds":
 		return s.combatCastCauseLightWounds()
+	case "protection_from_evil_10ft", "protection_from_good_10ft":
+		required, ok := combatSpellCasterClasses[definition.CasterClass]
+		if !ok {
+			return fmt.Errorf("spell 0x%02X declares unknown caster class %q",
+				spellID, definition.CasterClass)
+		}
+		if !s.combatSpellCasterClassMatches(spellID) {
+			return fmt.Errorf("%s requires a %s caster",
+				s.combatPlayerSpellLabel(spellID), definition.CasterClass)
+		}
+		return s.combatCastProtectionRadius(spellID, required,
+			definition.Behavior == "protection_from_evil_10ft")
 	case "protection_from_evil", "protection_from_good":
 		required, ok := combatSpellCasterClasses[definition.CasterClass]
 		if !ok {
