@@ -2373,8 +2373,12 @@ func (b *Battle) CastHealingDice(casterID, targetID string, count, sides int) (S
 		Healing: healing, TargetHP: target.HitPoints}, nil
 }
 
-// CastDamageDice 是「擲 NdM 打一個目標」。
-func (b *Battle) CastDamageDice(casterID, targetID string, count, sides int) (SpellResult, error) {
+// CastDamageDice 是「擲 NdM 打一個目標」。`halve` 是豁免過關而且這支法術屬於
+// 「過了減半」那一類（`+8h = 2`）。
+//
+// ⚠ 折半要在**套上去之前**做。先打滿再補回一半會讓「打死了又活過來」這種
+// 情況出現，而且回報的數字對不上實際掉的血。
+func (b *Battle) CastDamageDice(casterID, targetID string, count, sides int, halve bool) (SpellResult, error) {
 	_, target, err := b.spellDiceEndpoints(casterID, targetID, count, sides)
 	if err != nil {
 		return SpellResult{}, err
@@ -2382,6 +2386,9 @@ func (b *Battle) CastDamageDice(casterID, targetID string, count, sides int) (Sp
 	damage := 0
 	for roll := 0; roll < count; roll++ {
 		damage += b.rng.Intn(sides) + 1
+	}
+	if halve {
+		damage /= 2
 	}
 	applied := b.applyPositiveDamage(&target, damage)
 	b.fighters[targetID] = target

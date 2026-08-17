@@ -135,3 +135,66 @@ func TestHealDiceIsUnavailableWithAFullHealthParty(t *testing.T) {
 		t.Fatal("全隊滿血卻開始施法了")
 	}
 }
+
+// 火焰打擊有「豁免過了減半」（`+8h = 2`）。折半要在套上去之前，
+// 否則「打死了又活過來」會出現，而且回報的數字對不上實際掉的血。
+func TestFlameStrikeHalvesOnASuccessfulSave(t *testing.T) {
+	build := func(threshold uint8, seed int64) *State {
+		value := NewState(testCatalog())
+		state := &value
+		state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師",
+			Class: party.ClassCleric, Level: 9, HitPoints: 30, MaxHitPoints: 30,
+			ClassLevels:  [8]uint8{0: 9},
+			HealthStatus: party.HealthStatusOK,
+			Abilities: party.Abilities{Strength: 12, Intelligence: 10, Wisdom: 16,
+				Dexterity: 12, Constitution: 14, Charisma: 10},
+			SpellSlots: []uint8{74}}}
+		partyFighters := []combat.Fighter{{ID: "cleric", Name: "牧師", Side: combat.SideParty,
+			HitPoints: 30, MaxHitPoints: 30, ArmorClass: 10, InitiativeBonus: 20,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1}}
+		enemies := []combat.Fighter{{ID: "orc", Name: "獸人", Side: combat.SideEnemy,
+			HitPoints: 200, MaxHitPoints: 200, ArmorClass: 10,
+			SavingThrows:      []uint8{threshold, threshold, threshold, threshold, threshold},
+			HasCombatPosition: true, CombatX: 2, CombatY: 1}}
+		if err := state.StartCombat(partyFighters, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		return state
+	}
+	damageOf := func(state *State) int {
+		for _, fighter := range state.CombatFighters() {
+			if fighter.ID == "orc" {
+				return 200 - fighter.HitPoints
+			}
+		}
+		return -1
+	}
+	// 門檻 1 ＝ 幾乎一定過；門檻 99 ＝ 幾乎一定不過（天然 20 除外）。
+	alwaysSaves, neverSaves := 0, 0
+	for seed := int64(1); seed <= 30; seed++ {
+		saved := build(1, seed)
+		if err := saved.BeginCombatCast(74); err != nil {
+			t.Fatal(err)
+		}
+		if err := saved.CombatCast(74); err != nil {
+			t.Fatal(err)
+		}
+		alwaysSaves += damageOf(saved)
+
+		failed := build(99, seed)
+		if err := failed.BeginCombatCast(74); err != nil {
+			t.Fatal(err)
+		}
+		if err := failed.CombatCast(74); err != nil {
+			t.Fatal(err)
+		}
+		neverSaves += damageOf(failed)
+	}
+	if alwaysSaves >= neverSaves {
+		t.Fatalf("過豁免共 %d 點、沒過共 %d 點——減半沒有生效", alwaysSaves, neverSaves)
+	}
+	// 6d8 的範圍是 6..48，折半後 3..24。30 次的總和不該超過上界太多。
+	if neverSaves > 30*48 || alwaysSaves < 30*3 {
+		t.Fatalf("傷害總和超出 6d8 的合理範圍：過 %d／沒過 %d", alwaysSaves, neverSaves)
+	}
+}

@@ -41,5 +41,11 @@ func AffectKindIsInterpreted(kind uint8) bool {
 		return false
 	}
 	handler, ok := table.Handler(kind)
-	return ok && len(handler.Modifiers) > 0
+	if !ok || len(handler.Modifiers) == 0 {
+		return false
+	}
+	// ⚠ 有數字還不夠，**還要有人問它**。`CHECKFX` 是唯一會走 handler 的路，
+	// 所以不在任何 timing 清單裡的碼，那些數字永遠套不上。
+	// （`16h` 與 `93h` 就是這種：handler 寫全域，但沒有 timing 指到它們。）
+	return table.HasTiming(kind)
 }

@@ -1,6 +1,20 @@
 package combat
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
+)
+
+func gamepackEffectModifiers() (*gamepack.EffectModifierTable, error) {
+	return gamepack.EffectModifiers()
+}
+
+// fmtSscanf 把兩位十六進位的鍵轉回整數。
+func fmtSscanf(key string, out *int) (int, error) {
+	return fmt.Sscanf(key, "%X", out)
+}
 
 func affected(kinds ...uint8) Fighter {
 	fighter := Fighter{ID: "x", HitPoints: 10, MaxHitPoints: 10}
@@ -223,5 +237,60 @@ func TestBlindnessShiftsTheSavingThrow(t *testing.T) {
 	}
 	if blindSaves >= plainSaves {
 		t.Fatalf("致盲 %d 次過、正常 %d 次過——−4 沒有生效", blindSaves, plainSaves)
+	}
+}
+
+// ★ `inert` 是「原作那一支什麼都沒做」，不是「還沒讀」。
+// 兩個獨立的證據：handler 本體只有序幕與 `retf`，而且那個碼**不在任何 timing 的
+// 清單裡**——所以連問都不會問到它。宣告這種法術是忠實的：玩家施得出來、
+// 法術位會消耗，戰鬥規則不變。
+func TestInertEffectCodesAppearInNoTimingList(t *testing.T) {
+	table, err := gamepackEffectModifiers()
+	if err != nil {
+		t.Fatal(err)
+	}
+	inert := 0
+	for key, handler := range table.Effects {
+		if handler.Status != "inert" {
+			continue
+		}
+		inert++
+		var code int
+		if _, err := fmtSscanf(key, &code); err != nil {
+			t.Fatal(err)
+		}
+		for timing, codes := range table.Timings {
+			for _, listed := range codes {
+				if listed == code {
+					t.Errorf("效果 %sh 標成 inert，卻出現在 timing %s 的清單裡", key, timing)
+				}
+			}
+		}
+	}
+	if inert == 0 {
+		t.Fatal("一個 inert 都沒有——這條測試等於沒跑")
+	}
+	// ★ 反向也要看：**有數字不等於套得上**。`CHECKFX` 是唯一會走 handler 的路，
+	// 所以不在任何 timing 清單裡的碼，它的數字永遠套不上。
+	// 目前已知兩個（`16h` 緩毒、`93h`）——那兩支大概是施法時直接 `CALLEFFECT`，
+	// 不經過 timing 表。清單寫死是為了讓**新增的**這種情況當場現形。
+	orphans := map[int]bool{0x16: true, 0x93: true}
+	for key, handler := range table.Effects {
+		if len(handler.Modifiers) == 0 {
+			continue
+		}
+		var code int
+		if _, err := fmtSscanf(key, &code); err != nil {
+			t.Fatal(err)
+		}
+		if table.HasTiming(uint8(code)) {
+			if orphans[code] {
+				t.Errorf("效果 %sh 被列成「沒有 timing」，但它其實有——清單該更新", key)
+			}
+			continue
+		}
+		if !orphans[code] {
+			t.Errorf("效果 %sh 有修正卻不在任何 timing 裡，那些數字永遠套不上", key)
+		}
 	}
 }

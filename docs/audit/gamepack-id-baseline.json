@@ -317,6 +317,10 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_5"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_58"
   },
   {
@@ -341,6 +345,10 @@
   },
   {
    "kind": "locale",
+   "id": "spell_cleric_74"
+  },
+  {
+   "kind": "locale",
    "id": "spell_cleric_8"
   },
   {
@@ -350,6 +358,14 @@
   {
    "kind": "locale",
    "id": "spell_magic_user_10"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_11"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_12"
   },
   {
    "kind": "locale",
@@ -366,6 +382,10 @@
   {
    "kind": "locale",
    "id": "spell_magic_user_19"
+  },
+  {
+   "kind": "locale",
+   "id": "spell_magic_user_20"
   },
   {
    "kind": "locale",
