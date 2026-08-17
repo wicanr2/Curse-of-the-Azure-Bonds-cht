@@ -30,6 +30,13 @@ const (
 	CheckFXMovement uint8 = 0x12
 	// checkFXDamage 是 `PUTDAMAGE` 進入時（`06h`，spec 581）：抗性在這裡介入。
 	checkFXDamage uint8 = 0x06
+	// checkFXPutEffect 是 `PUTEFFECT`（`09h`，spec 581）：掛效果之前的閘。
+	checkFXPutEffect uint8 = 0x09
+	// CheckFXMeleeAttacker／CheckFXMeleeTarget 是近戰傷害算完之後的兩次查詢
+	// （`04h` 對攻擊者、`05h` 對目標，呼叫點在 `overlay-13:01F0h`）。
+	// 衰弱射線就是掛在攻擊者那一次：傷害減 25%。
+	CheckFXMeleeAttacker uint8 = 0x04
+	CheckFXMeleeTarget   uint8 = 0x05
 	// CheckFXCanAct 是「這個人這一回合動得了嗎」（`07h`）：定身家族、纏繞術
 	// 都在這張清單裡。
 	CheckFXCanAct uint8 = 0x07
@@ -150,6 +157,12 @@ func CheckFX(fighter Fighter, timing uint8, base map[string]int) (CheckFXDetail,
 					return CheckFXDetail{}, fmt.Errorf("effect %02Xh divides by zero", kind)
 				}
 				detail.Applied[name] /= modifier.Value
+			case "sub_fraction":
+				// 減掉自己的 1/K（衰弱射線是傷害減 25%）。
+				if modifier.Value == 0 {
+					return CheckFXDetail{}, fmt.Errorf("effect %02Xh divides by zero", kind)
+				}
+				detail.Applied[name] -= detail.Applied[name] / modifier.Value
 			default:
 				return CheckFXDetail{}, fmt.Errorf("effect %02Xh uses unknown operation %q", kind, modifier.Op)
 			}

@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	source := flag.String("source", "internal/game/combat_state.go", "runtime source to audit")
+	source := flag.String("source", "internal/game", "runtime source file or package directory to audit")
 	strict := flag.Bool("strict", false, "return failure when any row is incomplete")
 	output := flag.String("output", "", "write the Markdown ledger to this path")
 	quiet := flag.Bool("quiet", false, "skip the JSON dump on stdout")
@@ -110,14 +110,19 @@ func renderMarkdown(report spellcoverage.Report) ([]byte, error) {
 		levels = append(levels, level)
 	}
 	sort.Ints(levels)
-	out.WriteString("\n未宣告的戰鬥法術，依環數：")
-	for index, level := range levels {
-		if index > 0 {
-			out.WriteString("、")
+	if len(levels) == 0 {
+		out.WriteString("\n可宣告的分母已經歸零：戰鬥可施放而職業模型支援的法術全部宣告了。\n")
+	} else {
+		out.WriteString("\n未宣告的戰鬥法術，依環數：")
+		for index, level := range levels {
+			if index > 0 {
+				out.WriteString("、")
+			}
+			fmt.Fprintf(&out, "%d 環 %d 支", level, original.MissingByLevel[level])
 		}
-		fmt.Fprintf(&out, "%d 環 %d 支", level, original.MissingByLevel[level])
+		out.WriteString("。\n")
 	}
-	out.WriteString("。\n\n## 逐支\n\n")
+	out.WriteString("\n## 逐支\n\n")
 	out.WriteString("| 編號 | 名稱 | 職業 | 環 | 資料 | handler | visual | sound |\n")
 	out.WriteString("|---:|---|---|---:|---|---|---|---|\n")
 	for _, spell := range table.Spells {

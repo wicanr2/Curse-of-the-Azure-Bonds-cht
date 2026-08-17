@@ -263,7 +263,21 @@
     {
       "path": "cmd/combat-spell-coverage-audit/main.go",
       "function": "renderMarkdown",
+      "sha256": "acf1c15ce9c15d25b2986a81127f963f982045e60efa21ac6711d2eb627f21aa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combat-spell-coverage-audit/main.go",
+      "function": "renderMarkdown",
       "sha256": "b6fb04f4914a122b5cb90f8111e9d59f163a557e205b39c05b97cb028d251c11",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combat-spell-coverage-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "b844f287874ccf0e8f6506097e509cf05acc1711713bd56d36f1857e922d5cf7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -334,13 +348,6 @@
       "path": "cmd/combat-spell-coverage-audit/main.go",
       "function": "renderMarkdown",
       "sha256": "e8b3da3bc1765073727a610279cc6564fbb700b7e34ab73e98a8080350f9f397",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/combat-spell-coverage-audit/main.go",
-      "function": "renderMarkdown",
-      "sha256": "eb1066181cd0db5d58cf5a7f4f5ac600f47346601f80a75d5023e21574940799",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1959,6 +1966,12 @@
     },
     {
       "path": "internal/party/dos_record_fields.go",
+      "sha256": "059ba5bdae57257f1118e3358a2d9ded767fbccc31a36a881caa8171897460b0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
       "sha256": "072b5650b7f93d69fc9d7461761b185ad3bbc5535537405c26cd14cf2e807257",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -2014,7 +2027,7 @@
     {
       "path": "internal/party/dos_record_fields.go",
       "sha256": "1c6e11d52069318aa4fbd160a2655d0dcc89ee324d5ab316fdc5db08c96fb4c4",
-      "occurrences": 13,
+      "occurrences": 12,
       "category": "runtime_ui_debt"
     },
     {
@@ -2134,6 +2147,12 @@
     {
       "path": "internal/party/dos_record_fields.go",
       "sha256": "6ec628b291608cc0d825d19e69ec339c1eb61a1c5ce011a82da7dad22de949d8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
+      "sha256": "6ffa0b3e4b7841fd7a661332b24bcbbf6132fba721017048c50c2b781878cd11",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

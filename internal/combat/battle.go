@@ -1627,6 +1627,26 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 		if damage < 0 {
 			damage = 0
 		}
+		// 近戰傷害算完之後，原作對**攻擊者**問 `CHECKFX(04h)`、對**目標**問
+		// `05h`（呼叫點在 `overlay-13:01F0h`，spec 1123）。衰弱射線就是掛在
+		// 攻擊者那一次：傷害減 25%。
+		//
+		// ⚠ 兩次查詢共用同一個傷害暫存，順序是先攻擊者再目標——反過來會讓
+		// 「先減 25% 再折半」變成「先折半再減 25%」，結果不同。
+		adjusted, fxErr := CheckFX(attacker, CheckFXMeleeAttacker,
+			map[string]int{scratchDamage: damage})
+		if fxErr != nil {
+			return AttackResult{}, fxErr
+		}
+		adjusted, fxErr = CheckFX(target, CheckFXMeleeTarget,
+			map[string]int{scratchDamage: adjusted.Applied[scratchDamage]})
+		if fxErr != nil {
+			return AttackResult{}, fxErr
+		}
+		damage = adjusted.Applied[scratchDamage]
+		if damage < 0 {
+			damage = 0
+		}
 		damage = b.applyPositiveDamage(&target, damage)
 		b.fighters[targetID] = target
 		b.updateStatus()
@@ -2352,16 +2372,18 @@ func (b *Battle) ReplaceFighterEquipment(fighterID string, projected Fighter) er
 	return nil
 }
 
-// CastHealingDice 是「擲 NdM 治療一個目標」，上限是掉的血。
-// 骰子來自 spec 1124 的表，不寫死在這裡——治療輕傷、中傷、重傷差別只有骰數。
-func (b *Battle) CastHealingDice(casterID, targetID string, count, sides int) (SpellResult, error) {
-	_, target, err := b.spellDiceEndpoints(casterID, targetID, count, sides)
+// CastHealingDice 是「擲 NdM ＋ K 治療一個目標」，上限是掉的血。
+// 骰子來自 spec 1124 的表，不寫死在這裡——治療輕／中／重傷差別只有骰數與加值
+// （`1d8`、`2d8 ＋ 1`、`3d8 ＋ 3`）。
+func (b *Battle) CastHealingDice(casterID, targetID string,
+	dice SpellDamageFormula) (SpellResult, error) {
+	_, target, err := b.spellDiceEndpoints(casterID, targetID, dice)
 	if err != nil {
 		return SpellResult{}, err
 	}
-	healing := 0
-	for roll := 0; roll < count; roll++ {
-		healing += b.rng.Intn(sides) + 1
+	healing := dice.Bonus
+	for roll := 0; roll < dice.Count; roll++ {
+		healing += b.rng.Intn(dice.Sides) + 1
 	}
 	if healing > target.MaxHitPoints-target.HitPoints {
 		healing = target.MaxHitPoints - target.HitPoints
@@ -2384,15 +2406,15 @@ func (b *Battle) CastHealingDice(casterID, targetID string, count, sides int) (S
 //
 // ⚠ 折半要在**套上去之前**做。先打滿再補回一半會讓「打死了又活過來」這種
 // 情況出現，而且回報的數字對不上實際掉的血。
-func (b *Battle) CastDamageDice(casterID, targetID string, count, sides int,
+func (b *Battle) CastDamageDice(casterID, targetID string, dice SpellDamageFormula,
 	element uint8, halve bool) (SpellResult, error) {
-	_, target, err := b.spellDiceEndpoints(casterID, targetID, count, sides)
+	_, target, err := b.spellDiceEndpoints(casterID, targetID, dice)
 	if err != nil {
 		return SpellResult{}, err
 	}
-	damage := 0
-	for roll := 0; roll < count; roll++ {
-		damage += b.rng.Intn(sides) + 1
+	damage := dice.Bonus
+	for roll := 0; roll < dice.Count; roll++ {
+		damage += b.rng.Intn(dice.Sides) + 1
 	}
 	if halve {
 		damage /= 2
@@ -2416,12 +2438,19 @@ func (b *Battle) CastDamageDice(casterID, targetID string, count, sides int,
 }
 
 // spellDiceEndpoints 收攏兩支共用的前置檢查。
-func (b *Battle) spellDiceEndpoints(casterID, targetID string, count, sides int) (Fighter, Fighter, error) {
+func (b *Battle) spellDiceEndpoints(casterID, targetID string,
+	dice SpellDamageFormula) (Fighter, Fighter, error) {
 	if b == nil || b.rng == nil {
 		return Fighter{}, Fighter{}, errNoPRNG
 	}
-	if count <= 0 || sides <= 0 {
-		return Fighter{}, Fighter{}, fmt.Errorf("dice %dd%d is not rollable", count, sides)
+	// ★ 骰數 0 是合法的：燃燒之手不擲骰，傷害就是施法者等級（走 Bonus）。
+	// 這裡擋的是「整個算式加起來是 0」，不是「沒擲骰」。
+	if dice.Count < 0 || dice.Sides < 0 || dice.Total() <= 0 {
+		return Fighter{}, Fighter{}, fmt.Errorf("dice %dd%d+%d is not rollable",
+			dice.Count, dice.Sides, dice.Bonus)
+	}
+	if dice.Count > 0 && dice.Sides <= 0 {
+		return Fighter{}, Fighter{}, fmt.Errorf("dice %dd%d has no sides", dice.Count, dice.Sides)
 	}
 	caster, ok := b.fighters[casterID]
 	if !ok {
@@ -2450,7 +2479,7 @@ func (b *Battle) spellDiceEndpoints(casterID, targetID string, count, sides int)
 // ⚠ `requiresSave` 為 false 時**完全不擲豁免**（`+8h = 0`，spec 1111）。
 // 照擲會多消耗亂數，而且「豁免過了就沒事」的分支會讓不該有豁免的法術漏傷害。
 func (b *Battle) CastAreaDamageDice(casterID string, center TilePoint,
-	count, sides, radius int, element uint8,
+	dice SpellDamageFormula, radius int, element uint8,
 	requiresSave bool, saveCategory int, saveHalves bool) (AreaSpellResult, error) {
 	if b == nil || b.rng == nil {
 		return AreaSpellResult{}, errNoPRNG
@@ -2465,12 +2494,13 @@ func (b *Battle) CastAreaDamageDice(casterID string, center TilePoint,
 	if caster.HitPoints <= 0 {
 		return AreaSpellResult{}, fmt.Errorf("dead fighter cannot cast")
 	}
-	if count <= 0 || sides <= 0 || radius < 0 {
-		return AreaSpellResult{}, fmt.Errorf("area spell %dd%d radius %d is not castable", count, sides, radius)
+	if dice.Count < 0 || dice.Sides < 0 || dice.Total() <= 0 || radius < 0 {
+		return AreaSpellResult{}, fmt.Errorf("area spell %dd%d+%d radius %d is not castable",
+			dice.Count, dice.Sides, dice.Bonus, radius)
 	}
-	base := 0
-	for roll := 0; roll < count; roll++ {
-		base += b.rng.Intn(sides) + 1
+	base := dice.Bonus
+	for roll := 0; roll < dice.Count; roll++ {
+		base += b.rng.Intn(dice.Sides) + 1
 	}
 	result := AreaSpellResult{CasterID: casterID, Center: center, BaseDamage: base}
 	for _, id := range b.fighterOrder {

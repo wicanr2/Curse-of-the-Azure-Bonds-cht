@@ -8,9 +8,10 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
-// 骰子表釘住三支同族法術的差別**只有骰數**：`1d8`／`2d8`／`3d8`。
-// 這是「一支法術一段程式碼」被換成資料的直接證據。
-func TestCureFamilyDiffersOnlyInDiceCount(t *testing.T) {
+// 骰子表釘住三支同族法術的差別**只有骰數與加值**：`1d8`／`2d8 ＋ 1`／`3d8 ＋ 3`。
+// 這是「一支法術一段程式碼」被換成資料的直接證據，也守住加值不能漏——
+// 少了加值三支的治療量全部偏低，而且低得像是合理的數字。
+func TestCureFamilyDiffersOnlyInDiceAndBonus(t *testing.T) {
 	table, err := gamepack.SpellDamage()
 	if err != nil {
 		t.Fatal(err)
@@ -18,29 +19,44 @@ func TestCureFamilyDiffersOnlyInDiceCount(t *testing.T) {
 	for _, item := range []struct {
 		spell uint8
 		count int
-	}{{3, 1}, {58, 2}, {71, 3}} {
-		count, sides, ok := table.Dice(item.spell, 5)
+		bonus int
+	}{{3, 1, 0}, {58, 2, 1}, {71, 3, 3}} {
+		count, sides, bonus, ok := table.Dice(item.spell)
 		if !ok {
 			t.Fatalf("法術 %d 在骰子表裡沒有可用的骰", item.spell)
 		}
-		if count != item.count || sides != 8 {
-			t.Fatalf("法術 %d 是 %dd%d，want %dd8", item.spell, count, sides, item.count)
+		if count != item.count || sides != 8 || bonus != item.bonus {
+			t.Fatalf("法術 %d 是 %dd%d ＋ %d，want %dd8 ＋ %d",
+				item.spell, count, sides, bonus, item.count, item.bonus)
 		}
 	}
 }
 
-// 骰數 0 代表用施法者等級（魔法飛彈）。
-func TestZeroDiceCountMeansCasterLevel(t *testing.T) {
+// 骰數由施法者等級算出來的那幾支不在機械表裡，走逐支讀完的算式
+// （spec 1124）。寒冰錐是 `等級d4 ＋ 等級`、電擊觸手是 `1d8 ＋ 等級`、
+// 燃燒之手根本不擲骰。
+func TestCasterLevelFormulasComeFromHandlers(t *testing.T) {
 	table, err := gamepack.SpellDamage()
 	if err != nil {
 		t.Fatal(err)
 	}
-	count, sides, ok := table.Dice(15, 7)
-	if !ok {
-		t.Fatal("魔法飛彈在骰子表裡沒有可用的骰")
+	for _, spellID := range []uint8{9, 20, 92} {
+		if _, _, _, ok := table.Dice(spellID); ok {
+			t.Fatalf("法術 %d 的骰數含施法者等級，機械表不該給數字", spellID)
+		}
 	}
-	if count != 7 || sides != 4 {
-		t.Fatalf("7 級的魔法飛彈是 %dd%d，want 7d4", count, sides)
+	for _, item := range []struct {
+		spell uint8
+		want  combat.SpellDamageFormula
+	}{
+		{9, combat.SpellDamageFormula{Bonus: 7}},
+		{20, combat.SpellDamageFormula{Count: 1, Sides: 8, Bonus: 7}},
+		{92, combat.SpellDamageFormula{Count: 7, Sides: 4, Bonus: 7}},
+	} {
+		got, ok := combat.SpellDamageRoll(item.spell, 7)
+		if !ok || got != item.want {
+			t.Fatalf("法術 %d 在 7 級是 %+v（ok=%v），want %+v", item.spell, got, ok, item.want)
+		}
 	}
 }
 
@@ -50,7 +66,7 @@ func TestAmbiguousHandlersDoNotHandOutDice(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, _, ok := table.Dice(47, 5); ok {
+	if _, _, _, ok := table.Dice(47); ok {
 		t.Fatal("火球的 handler 擲了不只一次骰，不該給數字")
 	}
 }

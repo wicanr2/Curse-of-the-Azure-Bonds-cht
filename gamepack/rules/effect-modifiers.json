@@ -569,9 +569,15 @@
    "overlay": 12,
    "offset": 2028,
    "instructions": 15,
-   "modifiers": [],
-   "unparsed": 10,
-   "status": "unread"
+   "modifiers": [
+    {
+     "global": "6f94",
+     "op": "sub_fraction",
+     "value": 4
+    }
+   ],
+   "unparsed": 0,
+   "status": "decoded"
   },
   "1E": {
    "overlay": 12,

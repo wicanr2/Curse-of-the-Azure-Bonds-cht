@@ -463,6 +463,13 @@ type Character struct {
 	// BaseMaxHitPoints 是原作的 +12Ch：**不含**體質加值的最大 HP。
 	// 屬性重算時 +78h 會先回到這一格再重新加上加值（spec 1079）。
 	BaseMaxHitPoints int `json:"base_max_hit_points,omitempty"`
+	// DrainedLevels／DrainedHitPoints 是原作的 +0E7h／+0E8h：被吸掉幾級、
+	// 連帶少了多少 HP（spec 1125，由復原術的 handler 讀出來）。
+	//
+	// ★ 兩格要一起看。復原術每次還一級，還的 HP 是 **`少的 HP ÷ 少的級數`**——
+	// 只記級數的話還不出正確的 HP，只記 HP 的話不知道要還幾次。
+	DrainedLevels    int `json:"drained_levels,omitempty"`
+	DrainedHitPoints int `json:"drained_hit_points,omitempty"`
 	HealthStatus    HealthStatus           `json:"health_status,omitempty"`
 	Bleeding        int                    `json:"bleeding,omitempty"`
 	Copper          uint16                 `json:"copper,omitempty"`

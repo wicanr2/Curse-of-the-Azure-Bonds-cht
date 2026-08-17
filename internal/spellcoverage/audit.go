@@ -9,6 +9,7 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"unicode"
@@ -276,36 +277,107 @@ func buildOriginalCoverage(declared []SpellReport) (OriginalCoverage, error) {
 	return coverage, nil
 }
 
+// runtimeFunctions 讀進要稽核的來源。`path` 是目錄時整包都讀。
+//
+// ★ 一定要整包讀。施法路後來拆成好幾個檔（`spell_dice.go`、`spell_special.go`、
+// `spell_dispel.go`），只讀 `combat_state.go` 會讓那些法術的 visual／sound
+// 一律報成沒有——**那是量測的洞，不是覆蓋的洞**，而兩者長得一模一樣。
+func runtimeFunctions(path string) ([]*ast.File, error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+	paths := []string{path}
+	if info.IsDir() {
+		entries, err := os.ReadDir(path)
+		if err != nil {
+			return nil, err
+		}
+		paths = paths[:0]
+		for _, entry := range entries {
+			name := entry.Name()
+			if entry.IsDir() || !strings.HasSuffix(name, ".go") ||
+				strings.HasSuffix(name, "_test.go") {
+				continue
+			}
+			paths = append(paths, filepath.Join(path, name))
+		}
+		sort.Strings(paths)
+	}
+	fileSet := token.NewFileSet()
+	files := make([]*ast.File, 0, len(paths))
+	for _, item := range paths {
+		source, err := os.ReadFile(item)
+		if err != nil {
+			return nil, err
+		}
+		parsed, err := parser.ParseFile(fileSet, item, source, 0)
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, parsed)
+	}
+	return files, nil
+}
+
 func scanRuntime(path string) (map[string]runtimeEvidence, map[string]bool, bool, error) {
-	source, err := os.ReadFile(path)
+	files, err := runtimeFunctions(path)
 	if err != nil {
 		return nil, nil, false, err
 	}
-	file, err := parser.ParseFile(token.NewFileSet(), path, source, 0)
-	if err != nil {
-		return nil, nil, false, err
+	declarations := make([]*ast.FuncDecl, 0)
+	bodies := make(map[string]*ast.BlockStmt)
+	for _, file := range files {
+		for _, declaration := range file.Decls {
+			function, ok := declaration.(*ast.FuncDecl)
+			if !ok || function.Body == nil {
+				continue
+			}
+			declarations = append(declarations, function)
+			bodies[function.Name.Name] = function.Body
+		}
 	}
 	evidence := make(map[string]runtimeEvidence)
 	dispatch := make(map[string]bool)
 	dispatchFunctions := make(map[string][]string)
+	behaviorFunctions := make(map[string][]string)
+	byFunction := make(map[string]runtimeEvidence)
 	sharedVisualSoundEvents := false
-	for _, declaration := range file.Decls {
-		function, ok := declaration.(*ast.FuncDecl)
-		if !ok || function.Body == nil {
-			continue
-		}
+	for _, function := range declarations {
 		name := function.Name.Name
 		if name == "BeginCombatCast" || name == "CombatCast" || name == "CombatCastWithTerrain" {
 			ast.Inspect(function.Body, func(node ast.Node) bool {
-				switch value := node.(type) {
-				case *ast.CaseClause:
-					for _, expression := range value.List {
-						if literal, ok := expression.(*ast.BasicLit); ok && literal.Kind.String() == "STRING" {
-							behavior := strings.Trim(literal.Value, "\"")
-							dispatch[behavior] = true
-							dispatchFunctions[behavior] = append(dispatchFunctions[behavior], name)
+				clause, ok := node.(*ast.CaseClause)
+				if !ok {
+					return true
+				}
+				// 這個 case 實際呼叫哪一支施法函式。名字對不上 behavior 是常態
+				// （`effect` 走 `combatCastEffectSpell`、`damage_dice` 走
+				// `combatCastSpellDice`），靠名字猜會把那幾支的 visual／sound
+				// 全部讀成沒有。
+				called := make([]string, 0, 1)
+				for _, statement := range clause.Body {
+					ast.Inspect(statement, func(child ast.Node) bool {
+						call, ok := child.(*ast.CallExpr)
+						if !ok {
+							return true
 						}
+						if selector, ok := call.Fun.(*ast.SelectorExpr); ok &&
+							strings.HasPrefix(selector.Sel.Name, "combatCast") {
+							called = append(called, selector.Sel.Name)
+						}
+						return true
+					})
+				}
+				for _, expression := range clause.List {
+					literal, ok := expression.(*ast.BasicLit)
+					if !ok || literal.Kind.String() != "STRING" {
+						continue
 					}
+					behavior := strings.Trim(literal.Value, "\"")
+					dispatch[behavior] = true
+					dispatchFunctions[behavior] = append(dispatchFunctions[behavior], name)
+					behaviorFunctions[behavior] = append(behaviorFunctions[behavior], called...)
 				}
 				return true
 			})
@@ -334,7 +406,24 @@ func scanRuntime(path string) (map[string]runtimeEvidence, map[string]bool, bool
 			continue
 		}
 		item := runtimeEvidence{Function: name}
+		// 施法收尾抽成共用函式之後，聲音是在那一支發的。只看施法函式本體
+		// 會把「有發聲音」讀成「沒有」，所以同套件的呼叫要往下追一層。
+		scanned := []*ast.BlockStmt{function.Body}
 		ast.Inspect(function.Body, func(node ast.Node) bool {
+			call, ok := node.(*ast.CallExpr)
+			if !ok {
+				return true
+			}
+			selector, ok := call.Fun.(*ast.SelectorExpr)
+			if !ok {
+				return true
+			}
+			if body, found := bodies[selector.Sel.Name]; found && body != function.Body {
+				scanned = append(scanned, body)
+			}
+			return true
+		})
+		inspect := func(node ast.Node) bool {
 			call, ok := node.(*ast.CallExpr)
 			if !ok {
 				return true
@@ -379,8 +468,30 @@ func scanRuntime(path string) (map[string]runtimeEvidence, map[string]bool, bool
 				}
 			}
 			return true
-		})
+		}
+		for _, body := range scanned {
+			ast.Inspect(body, inspect)
+		}
+		byFunction[name] = item
 		evidence[behavior] = item
+	}
+	// 分派表指到的那一支才是這個 behavior 真正跑的程式。
+	for behavior, functions := range behaviorFunctions {
+		merged := runtimeEvidence{}
+		names := uniqueSorted(functions)
+		for _, function := range names {
+			item, found := byFunction[function]
+			if !found {
+				continue
+			}
+			merged.VisualKinds = append(merged.VisualKinds, item.VisualKinds...)
+			merged.SoundEvents = append(merged.SoundEvents, item.SoundEvents...)
+		}
+		if len(names) == 0 {
+			continue
+		}
+		merged.Function = strings.Join(names, ",")
+		evidence[behavior] = merged
 	}
 	for behavior, functions := range dispatchFunctions {
 		if _, found := evidence[behavior]; found {

@@ -92,6 +92,8 @@ var wiredTimings = []struct {
 	{timing: CheckFXMorale, scratch: scratchMorale},
 	{timing: CheckFXMovement, scratch: scratchMovement},
 	{timing: checkFXDamage, scratch: scratchDamage},
+	{timing: CheckFXMeleeAttacker, scratch: scratchDamage},
+	{timing: CheckFXMeleeTarget, scratch: scratchDamage},
 	{timing: checkFXDamage, scratch: scratchSavingThrow},
 	{timing: CheckFXCanAct, records: true},
 }
