@@ -134,6 +134,9 @@ func (b *Battle) MonsterApproach(fighterID, targetID string, mode int, terrain M
 			if b.occupiedAt(fighter, next) {
 				continue
 			}
+			if b.obstacleBlocks(fighter, next) {
+				continue
+			}
 			fighter.CombatX, fighter.CombatY = next.X, next.Y
 			b.fighters[fighterID] = fighter
 			budget -= cost
@@ -197,6 +200,79 @@ func (b *Battle) occupiedAt(mover Fighter, next TilePoint) bool {
 		}
 		if FootprintsOverlapAt(mover, next.X, next.Y, other) {
 			return true
+		}
+	}
+	return false
+}
+
+// SelectInRangeTarget 是 spec 838 §五的目標挑法：**先看射程內有沒有人**，
+// 有就從候選裡**均勻隨機**挑一個（原作是 `1d n`），沒有才輪到移動。
+//
+// ★ 這不是「挑最近的」也不是「挑最弱的」。原作把射程內的候選編號填進
+// `DS:758Eh`，再擲一次 `1d n` 取其中一個——所以同一個場面每回合的目標會變。
+// 挑最近的會讓 AI 顯得比原版聰明且可預測。
+func (b *Battle) SelectInRangeTarget(fighterID string, side Side) (Fighter, bool, error) {
+	if b == nil || b.rng == nil {
+		return Fighter{}, false, fmt.Errorf("battle PRNG is unavailable")
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return Fighter{}, false, fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	if !fighter.HasCombatPosition {
+		return Fighter{}, false, nil
+	}
+	weaponRange := fighter.WeaponRange
+	if weaponRange < 1 {
+		weaponRange = 1
+	}
+	candidates := make([]Fighter, 0, len(b.fighterOrder))
+	for _, id := range b.fighterOrder {
+		other := b.fighters[id]
+		if other.Side != side || other.HitPoints <= 0 || other.Escaped || !other.HasCombatPosition {
+			continue
+		}
+		distance := weightedTileDistance(
+			TilePoint{X: fighter.CombatX, Y: fighter.CombatY},
+			TilePoint{X: other.CombatX, Y: other.CombatY})
+		if distance <= weaponRange*2+1 {
+			candidates = append(candidates, other)
+		}
+	}
+	if len(candidates) == 0 {
+		return Fighter{}, false, nil
+	}
+	return candidates[b.rng.Intn(len(candidates))], true, nil
+}
+
+// obstacleBlocks 是 spec 1119 的兩種障礙格。腳印大於一格時**每一格都要能過**
+// ——原作查的就是四個腳印格。
+//
+// ⚠ 豁免只在真的擋到時才擲：把 `RollSavingThrow` 提到迴圈外會多擲好幾次骰，
+// 亂數序列就跟原版分家了。
+func (b *Battle) obstacleBlocks(fighter Fighter, next TilePoint) bool {
+	if b == nil || b.terrainCode == nil {
+		return false
+	}
+	footprint := FootprintForSize(fighter.CombatSize)
+	waiver := fighter.RawCombatState10 != 0
+	for y := next.Y; y < next.Y+footprint.Height; y++ {
+		for x := next.X; x < next.X+footprint.Width; x++ {
+			code, onMap := b.terrainCode(x, y)
+			if !onMap {
+				return true
+			}
+			if code != ObstacleTerrainSaveable && code != ObstacleTerrainVeteran {
+				continue
+			}
+			save := func() bool {
+				// 類別 0 ＝ 五張豁免表的第一張，修正 0（原作 `far 1458h(角色, 0, 0)`）。
+				result, err := b.RollSavingThrow(fighter, 0, 0)
+				return err == nil && result.Saved
+			}
+			if ObstacleTerrainBlocks(fighter, code, waiver, save) {
+				return true
+			}
 		}
 	}
 	return false

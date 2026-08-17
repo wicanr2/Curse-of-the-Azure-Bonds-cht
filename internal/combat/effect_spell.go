@@ -84,9 +84,13 @@ func (b *Battle) CastEffectSpell(casterID string, targetIDs []string, request Ef
 		}
 		impact := EffectSpellImpact{TargetID: targetID}
 		if request.SaveKind != 0 {
+			save, err := b.RollSavingThrow(target, request.SaveCategory, 0)
+			if err != nil {
+				return EffectSpellResult{}, err
+			}
 			impact.Rolled = true
-			impact.SaveRoll = b.rng.Intn(20) + 1
-			impact.Saved = b.savingThrowSucceeds(target, request.SaveCategory, impact.SaveRoll)
+			impact.SaveRoll = save.Roll
+			impact.Saved = save.Saved
 		}
 		if impact.Saved && request.SaveKind == saveNegatesKind {
 			result.Impacts = append(result.Impacts, impact)
@@ -107,17 +111,4 @@ func (b *Battle) CastEffectSpell(casterID string, targetIDs []string, request Ef
 	}
 	b.updateStatus()
 	return result, nil
-}
-
-// savingThrowSucceeds 用角色記錄的第 category 個豁免門檻。門檻缺席時**算失敗**
-// ——不要當成 0（那會變成「一定成功」），怪物記錄沒有豁免值時該是弱點不是免疫。
-func (b *Battle) savingThrowSucceeds(target Fighter, category, roll int) bool {
-	if category >= len(target.SavingThrows) {
-		return false
-	}
-	threshold := int(target.SavingThrows[category])
-	if threshold == 0 {
-		return false
-	}
-	return roll+target.SavingThrowBonus >= threshold
 }

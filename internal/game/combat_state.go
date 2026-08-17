@@ -3387,14 +3387,23 @@ func (s *State) advanceCombatToParty() error {
 			}
 			return nil
 		}
-		target, found, err := s.selectEnemyPhysicalTarget(fighter.ID, targetSide)
+		// 原作先看射程內有沒有人（spec 838 §五）：有就從候選裡均勻隨機挑一個，
+		// 不必移動；沒有才輪到既有的 SCAN 規則挑一個遠目標再走過去。
+		target, found, err := s.battle.SelectInRangeTarget(fighter.ID, targetSide)
 		if err != nil {
 			return err
+		}
+		inRange := found
+		if !found {
+			target, found, err = s.selectEnemyPhysicalTarget(fighter.ID, targetSide)
+			if err != nil {
+				return err
+			}
 		}
 		if !found {
 			return fmt.Errorf("enemy %q has no reachable target", fighter.ID)
 		}
-		if fighter.Side == combat.SideEnemy {
+		if fighter.Side == combat.SideEnemy && !inRange {
 			// 原作的 AI 回合是「先走到打得到，再打」（spec 830／838）。
 			// 走不到就這一回合只移動——不是站在原地隔空攻擊。
 			reached, moved, err := s.approachMonsterTarget(fighter, target)

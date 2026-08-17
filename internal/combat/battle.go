@@ -169,6 +169,10 @@ type Fighter struct {
 	// 它決定移動時「試方向的順序」。每回合由 `BeginMonsterTurn` 重骰，
 	// 0 代表還沒骰過（原作的初值也是 0，第一回合必骰）。
 	AIMode int `json:"ai_mode,omitempty"`
+	// RawCombatState10 是原作戰鬥狀態記錄 `+18Dh^[10h]` 那一個位元組。
+	// 語意未解讀，但它同時是兩種障礙地形的通行豁免（spec 1119），所以照原樣
+	// 留著：日後解出語意時只要有東西寫它，移動那一側就自動生效。
+	RawCombatState10 uint8 `json:"raw_combat_state_10,omitempty"`
 	// Escaped 是「走出戰場邊界離開這一場」（spec 799／1112）。與死亡不同：
 	// 人還活著，只是不在戰場上，所以不算敵方戰果、也不再是任何效果的目標。
 	Escaped bool `json:"escaped,omitempty"`
@@ -703,6 +707,20 @@ type Battle struct {
 	initiativeSelection engineinitiative.Selection
 	initiativeSelected  bool
 	spellInterruptions  []SpellInterruption
+	// terrainCode 是戰術地圖的地形碼查詢（`overlay-32 entry#19` 的第四個回填值）。
+	// 為 nil 時沒有障礙格——與加這一層之前的行為相同。
+	terrainCode CombatTerrainCode
+}
+
+// CombatTerrainCode 回傳戰術地圖上一格的地形碼；`onMap` 為 false 代表出界。
+type CombatTerrainCode func(x, y int) (code uint8, onMap bool)
+
+// SetCombatTerrainCodes 掛上地形碼查詢。與 `MovementTerrain`（成本）分開兩支，
+// 因為原作也分開回傳：成本查 `26A2h` 那張表，障礙走的是另一條路。
+func (b *Battle) SetCombatTerrainCodes(lookup CombatTerrainCode) {
+	if b != nil {
+		b.terrainCode = lookup
+	}
 }
 
 func (b *Battle) applyPositiveDamage(target *Fighter, damage int) int {
