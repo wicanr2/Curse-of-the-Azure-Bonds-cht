@@ -1870,6 +1870,16 @@ func (b *Battle) MoveWithTerrainAndFreeAttacks(fighterID string, dx, dy, maxCost
 				continue
 			}
 			if adjacent(old, enemy) && !adjacent(fighter, enemy) {
+				// 原作動手前先過面向：朝向 −2..＋2 五個方向有一個把移動者
+				// 圈進 90° 扇形才打得到（spec 1010）。先攻還沒歸零或這一輪
+				// 還沒動過的人跳過這道檢查，無條件打。
+				allows, facingErr := b.opportunityAttackFacingAllows(enemy.ID, fighter.ID)
+				if facingErr != nil {
+					return MoveResult{}, facingErr
+				}
+				if !allows {
+					continue
+				}
 				attack, err := b.Attack(enemy.ID, fighter.ID)
 				if err != nil {
 					return MoveResult{}, err
