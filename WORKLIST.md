@@ -136,7 +136,16 @@ python3 tools/fp-oracle-compare.py docs/reference/original-dos/first-person/inde
 - `(1,7)` 面西、原生 `(88,70)` 那一格：原版 EGA 8、remake 0。落在 `SKY` 地面
   overlay 的第 `(64,6)` 格，成因未查。
 - `outdoor_sky_color`／`indoor_sky_color` 只改了提爾佛頓那一張地圖的宣告，
-  其餘 17 張 `first_person` 地圖的值還是舊的。
+  其餘 17 張 `first_person` 地圖的值還是舊的（多半是 0 ＝ 黑天花板）。
+  **正確的收法不是逐張填常數，是找出原作在哪裡寫這兩個欄位**——查到之後
+  remake 自己就會算出來，pack 的宣告可以整批刪掉。目前查到的：
+  - 進地圖時 `Area1` 整塊被清成 0（`overlay-11` `0318h`：`FillChar(Area1, 800h, 0)`，
+    緊接著寫 `[di+1CCh] := 1`、`720Fh` 那五格 `:= 7,13,0`），所以兩個欄位的起點是 0。
+  - 全 36 段 overlay ＋ 常駐段裡，對 `Area1 + 1FAh`／`1FCh` 只找得到**兩處讀**
+    （`overlay-28` `010Eh`／`0120h`，讀出來當索引查 `DS:0A88h` 的調色盤表），
+    **一處寫都沒有**（掃過 `mov`／`add`／`cmp` 的所有 disp16 定址）。
+  - ⇒ 假設待驗：由 ECL 透過某個記憶體寫入指令設定（`overlay-07` 對 Area1 指標
+    的存取都帶 `+6A00h` 之類的大位移，ECL 的位址模型還沒對上）。
 - 示範模式走的是**示範專用地圖**（地名 `NOWHERE IN THE REALMS`），
   而且那一幕是 **PIC（夜營畫面）不是第一人稱視野**。
   `docs/reference/original-dos/tilverton-first-person-demo.png` 的檔名雙重誤導。
