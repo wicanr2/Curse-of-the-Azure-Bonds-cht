@@ -242,6 +242,21 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 允許使用 Docker 內 DOSBox／Xvfb 取得原版與 remake runtime 截圖。原版
 executable 是行為 oracle；網路資料不能取代可取得的本機實機驗證。
 
+### 原版 runtime oracle 的固定入口（第 572 輪起）
+
+| 工具 | 用途 |
+|---|---|
+| `tools/dos-oracle-session.sh` | 容器常駐的互動式驅動：`start`／`key`／`type`／`shot`／`text`／`stop`（容器名固定 `coab-dos-oracle`）|
+| `tools/dos_screen.py` | 把畫面上的 8×8 文字格解成字串，用來**看畫面決定下一鍵** |
+| `tools/dos-oracle-capture-cell.sh` | 目前這一格拍四個朝向，順手消掉 `PRESS <ENTER>` 提示 |
+| `tools/fp-oracle-compare.py` | 原版擷取與 remake 同格畫面逐格比對（EGA 量化後） |
+| `cmd/dos-save-export -base` | 以原版自己寫的存檔為底，只覆寫座標與朝向，把隊伍放到任意格 |
+| `cmd/geo-probe` | 印出一張 `GEO` 地圖每格的可走方向數，挑取樣格用 |
+
+**定時送鍵的序列不要再加長延遲**：任何一步的載入時間漂移都會讓後面每一個鍵
+錯位，而錯位的鍵可能剛好按到 `EXIT TO DOS`。走完整條選單路徑一律用互動式
+session ＋ 讀畫面。詳見 [`docs/spec/1134-original-first-person-oracle.md`](docs/spec/1134-original-first-person-oracle.md)。
+
 凡有反組譯（reverse engineering）需求，優先在 Docker 隔離環境內使用
 `/home/anr2/ida_94_official/dist` 的 IDA Pro。其他反組譯器、反編譯器或
 自製掃描工具只能作補充與交叉驗證，不得在 IDA Pro 可用時逕自取代主要分析

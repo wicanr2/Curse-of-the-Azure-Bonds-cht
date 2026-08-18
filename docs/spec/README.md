@@ -515,4 +515,5 @@
 - [1130 README 截圖的四個對齊錯誤](./1130-screenshot-layer-alignment.md)（`READY`：sub-image 目的地座標只裁切不平移、戰鬥地形要跟戰鬥員走同一條相機＋鏡像路徑、佈陣的地面檢查與敵方縱帶落在視野內、戰場圖示是 CPIC 不是 SPRIT；第一人稱幾何與 spec 1006 逐項相符，不含 `WALLDEF` 美術對應）
 - [1131 第一人稱牆面的第 0 段符號與洋紅透明鍵](./1131-wall-symbol-group-zero.md)（`READY`：`Put8x8Symbol` 五段分界、第 0 段是 `8X8D1.DAX` 區塊 `0CBh` 的 45 項共用資源、EGA index 13 是牆面素材的透明鍵；不含載入端的反組譯與逐格美術對照）
 - [1132 戰鬥地圖與地城座標同步、編制帶列起點](./1132-combat-floor-sync-and-formation-band.md)（`READY`：戰鬥地圖由地城座標生成，查詢前先同步，佈陣與畫面不再讀到兩份；編制帶改從第 2 列起算；仍是 fallback，不宣稱與原作逐格相同）
-- [1133 原版存檔樣本與 `CHRDAT` 檔名欄](./1133-original-save-samples-and-character-ref.md)（`READY`：第一份原版產生的 `.GUY`／`.FX` 樣本並用它驗解碼器、41 bytes 檔名欄是 Pascal `string[40]`；DOS 前綴長度的兩份證據落差只記錄不裁決，合成存檔原版仍不讀）
+- [1133 原版存檔樣本與 `CHRDAT` 檔名欄](./1133-original-save-samples-and-character-ref.md)（`READY`：第一份原版產生的 `.GUY`／`.FX` 樣本並用它驗解碼器、41 bytes 檔名欄是 Pascal `string[40]`；DOS 前綴 13,149 與 PC-98 13,214 是平台差異；合成存檔原版讀得進去，檔名欄指到不存在的檔案時會靜靜跳過那名角色）
+- [1134 原版第一人稱 oracle](./1134-original-first-person-oracle.md)（`READY`：提爾佛頓五格 × 四個朝向逐格比對 19/20 完全相同；`indoor_sky_color` 9／`outdoor_sky_color` 11 修好天花板；`CURSE.CFG` 四行純文字、互動式 session 取代定時按鍵、存檔裡的角色檔是 `.SAV`＋`.FX`；不宣稱其他 `GEO` 地圖、不宣稱剩下那一格的成因）
