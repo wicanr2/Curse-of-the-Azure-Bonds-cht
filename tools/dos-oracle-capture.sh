@@ -8,7 +8,7 @@ Xvfb :82 -screen 0 1280x960x24 -nolisten tcp >/tmp/xvfb.log 2>&1 &
 export DISPLAY=:82
 for i in $(seq 1 50); do xset q >/dev/null 2>&1 && break; sleep 0.2; done
 dosbox -noconsole -machine vgaonly \
-  -c "mount c /game" -c "c:" -c "START.EXE STING Wooden" >/tmp/dosbox.log 2>&1 &
+  -c "mount c /game" -c "c:" -c "${COMMAND:-START.EXE STING Wooden}" >/tmp/dosbox.log 2>&1 &
 dosbox_pid=$!
 # 顯示介面卡的提示只活約兩秒，所以不能用固定 sleep 等視窗——要一出現就搶焦點。
 win=""
@@ -25,6 +25,11 @@ if [ -n "$win" ]; then
   xdotool windowraise "$win" 2>/dev/null || true
 fi
 sleep "$boot"
+# frames=0：每按一個鍵就拍一張（逐鍵軌跡）。找選單路徑時比「跑一輪只看結尾」
+# 快一個數量級——一輪就看得到整條路徑上每一步的畫面。
+trace=0
+[ "${4:-1}" = "0" ] && trace=1
+step_index=0
 for step in $seq; do
   key="${step%%:*}"; delay="${step##*:}"
   if [ "$key" = "-" ]; then sleep "$delay"; continue; fi
@@ -35,11 +40,21 @@ for step in $seq; do
   # 但按鍵會整批掉光。
   cur=$(xdotool search --onlyvisible --name DOSBox 2>/dev/null | tail -n 1)
   [ -n "$cur" ] && xdotool windowfocus "$cur" 2>/dev/null
-  xdotool key --clearmodifiers "$key" 2>/dev/null || true
+  # 按住再放開，不要用瞬時的 key：DOSBox 一幀才取一次 SDL 事件佇列，
+  # 太短的按壓在某些階段會被吃掉。
+  xdotool keydown --clearmodifiers "$key" 2>/dev/null || true
+  sleep 0.25
+  xdotool keyup --clearmodifiers "$key" 2>/dev/null || true
   sleep "$delay"
+  if [ "$trace" = "1" ]; then
+    import -window root /tmp/shot.xwd >/dev/null 2>&1
+    convert /tmp/shot.xwd -crop 640x400+0+0 +repage "${out%.png}-$(printf %02d "$step_index").png" >/dev/null 2>&1
+  fi
+  step_index=$((step_index + 1))
 done
 # 連拍：$4 張、每張間隔 $5 秒。示範模式是自動播放的，逐輪只拍一張太貴。
 frames="${4:-1}"; interval="${5:-3}"
+[ "$frames" = "0" ] && exit 0
 i=0
 while [ "$i" -lt "$frames" ]; do
   import -window root /tmp/shot.xwd >/dev/null 2>&1
