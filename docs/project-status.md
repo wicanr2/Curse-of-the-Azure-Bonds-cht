@@ -1,6 +1,6 @@
 # 專案成果盤點
 
-更新日期：2026-08-13
+更新日期：2026-08-13（本檔只作追溯；現況看根目錄 `CONTEXT.md`）
 
 目前執行順序入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；全遊戲 RE／重建
 完整度以
@@ -1310,10 +1310,7 @@ marker 為 `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；文件、README／�
 ## 可重現驗證
 
 - 共用 engine：`go test ./...`
-- CoAB 正式程式：在 Docker／Xvfb 執行
-  `go test ./cmd/... ./gamepack ./internal/...`。目前 `go test ./...` 另會因
-  `scripts/` 保存兩個可各自 `go run` 的獨立 `main()` 而 build failed；這是
-  script 目錄結構 gate，不可誤報成正式套件測試失敗或全綠。
+- CoAB 正式程式：`./tools/go.sh test ./...`（Docker／Xvfb），目前全綠。
 - 原版畫面：Docker 內以 DOSBox 啟動本地原始發行檔，oracle 保存在
   `docs/reference/original-dos/`。
 - 最新公開畫面保存在 `docs/screenshots/`，README 只引用實際產生的 PNG。

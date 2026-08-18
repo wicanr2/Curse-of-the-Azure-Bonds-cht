@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-18（第 569–572 輪：README 五張圖的圖層對齊、第一人稱牆面符號、戰鬥地圖同步、原版第一人稱 oracle 逐格比對；第 568 輪：第 2 批完成、雲格驗證、龍巫妖等級吸取）
+更新日期：2026-08-18（第 572 輪：第一人稱畫面與原版逐格比對 19／20；第 569–571 輪：README 五張圖的圖層對齊、第一人稱牆面第 0 段符號、戰鬥地圖同步；第 568 輪：第 2 批完成、雲格驗證、龍巫妖等級吸取）
 
 ## 目前執行順序（使用者 2026-08-16 指定，優先於下方所有舊清單）
 
@@ -83,7 +83,7 @@ overlay 與某個十六進位值」的檔案，而**它自己的輸出就在 `do
 
 | 缺口 | 現況 | 為什麼還沒排 |
 |---|---|---|
-| **第一人稱牆磚的逐格美術對照** | 幾何與 spec 1006 逐項相符、五段符號與透明鍵補齊（spec 1131），但沒有跟原版畫面逐格比過 | 缺原版 oracle。取法已知（spec 530 的測試模式），成本在「把鍵盤序列走到某一格」的迭代，不在環境 |
+| **第一人稱牆磚的逐格美術對照** | ✅ 提爾佛頓五格 × 四個朝向與原版逐格比對，19／20 完全相同（spec 1134）。其餘 17 張 `first_person` 地圖沒比過 | 原版 oracle 已建：容器常駐、逐步送鍵、讀畫面文字決定下一鍵。每張地圖約 20 次擷取 ＋ 20 次 remake 截圖 |
 | **SPRIT 畫布相對於戰場格的錨點** | 戰場圖示改回 CPIC 之後，SPRIT 只在「沒有 CPIC」時才會走到。二十個 checkpoint 的素材普查是**零筆退回** ⇒ 目前跑不到那條路 | 跑不到的路徑先不投資；等真的有怪物沒有 CPIC 再量 |
 | **第一人稱的天空層** | game pack 宣告提爾佛頓 `outdoor_sky_color = 3`（淺青）、`indoor_sky_color = 0`（黑），由地形位元選；目前畫面上方是黑的 | 沒有原版 oracle 就無法判斷「黑」是對是錯。與上面第一項同一個前置 |
 
@@ -494,7 +494,7 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
 | 全量繁體中文化與遊戲內手札 | 第 556 輪修正七行裁切：長手札依真實字寬自動分頁，來源 stable ID 與 save 不變；摩安德之坑真實 producer 已接通手札 46。目前 59 則中 31 則有 en／zh-TW stable ID 與事件解鎖，另 28 則尚缺 producer 接線；手札 1 來源仍為 `unknown`。全 ECL／物品／法術／怪物／地名／UI 校對與手札 59 地圖 renderer 仍未完成。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；逐條從 ECL producer 接入剩餘 28 則，不因手冊存在就提早揭露；手札 59 原圖依來源與版面規格加入 renderer。 |
 | 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；戰鬥開始／隊伍全滅 semantic intent 已接通，但完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥 phase 同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
-| UI、素材與原版 fidelity | 第 549 輪已校正 README 圖、原版裂紋石框、單一角色建立面板、640×480 第一人稱／右側 party/status 與 88×88 PIC stage；冒險／戰鬥／地圖／對話／頭像的所有狀態仍未逐張比對，palette cycle、sprite timing、完整戰鬥地形與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。 |
+| UI、素材與原版 fidelity | **第一人稱已有逐格數字**：提爾佛頓五格 × 四朝向 19／20 與原版完全相同（spec 1134）。冒險／戰鬥／地圖／對話／頭像的其餘狀態仍未逐張比對；palette cycle、sprite timing、完整戰鬥地形與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。逐格比對走 `tools/fp-oracle-compare.py`。 |
 
 第 551–552 輪新增的工作分派基線：
 

@@ -142,7 +142,7 @@ gate 只能作輸入，不等於此清冊已完成。
 | DOS 音效 | 9 WAV 與部分 selector intent | 局部 | 全 caller、缺 selector、場景、優先權、重疊、停止、存檔與原版時序 | `dos-sound-cue-matrix` |
 | PC-98 音樂／音效 | YM2203/S98/driver 研究深入 | 待動態驗證／待實作 | 缺 sector 的合法來源、真實 SFX caller、save/resume、reload phase、gain 與全場景 cue | `pc98-audio-lifecycle-matrix` |
 | 圖像 asset codec | PIC/BIGPIC/HEAD/BODY/CPIC/SPRIT 多數可解 | 局部 | 全資產 manifest、selector producer、palette cycle、動畫 identity 與 malformed gate | `visual-asset-corpus` |
-| UI／renderer fidelity | 640×480、石框、16×15、部分舞台已完成 | 待實作／待動態驗證 | 所有 adventure/combat/map/dialog/roster/shop/spell/save/ending 狀態逐張 contract | `screen-state-fidelity-matrix` |
+| UI／renderer fidelity | 640×480、石框、16×15、部分舞台已完成；**第一人稱逐格對照 19／20**（提爾佛頓五格 × 四朝向，spec 1134）| 待實作／待動態驗證 | 其餘 17 張 `first_person` 地圖，以及所有 adventure/combat/map/dialog/roster/shop/spell/save/ending 狀態逐張 contract | `screen-state-fidelity-matrix` |
 | 繁體中文 | 字型與部分 stable locale 已接通 | 待實作 | 全 ECL、UI、物品、法術、怪物、場所、Journal、攻略與詞彙校對 coverage | `zh-tw-content-coverage` |
 | 開場到結局 | 正常新遊戲 session 已到散提爾堡世界選單；另有終戰 fixture | **待逆向／待驗證** | 後續章節、所有必要事件、最終戰、`PROGRAM 8`、結局、存檔與重開 | `campaign-spine-to-ending` |
 

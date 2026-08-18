@@ -53,8 +53,8 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | ├ PC-98 | 1,488：已解讀 1,121 ／ 不阻塞 29 ／ 邊界碎片 338 | 同上 |
 | └ 台帳孤兒 | **0**（原有 48 列位址對不上任何函式起點，內容都是 spec 569 的樣板分類，2026-08-16 依決策六刪除） | 同上 |
 | └ 證據等級 | `exact` 1,955 ／ `strong inference` 223 | 同上 |
-| 規格文件 | **1,099** 份 `docs/spec/*.md` | `ls` |
-| remake 程式（不含巢狀 repo） | **230 個 `.go`／77,123 行** | `find`／`wc` |
+| 規格文件 | **1,115** 份 `docs/spec/*.md`（2026-08-18 重量） | `ls` |
+| remake 程式（不含巢狀 repo） | **309 個 `.go`／94,951 行**（2026-08-18 重量） | `find`／`wc` |
 | ├ `internal/game` 機制碼 | **16 檔／13,908 行**（非測試） | `wc` |
 | └ 檔名 | `state` `combat_state` `creation` `creation_guided` `training` `shop` `temple` `time` `spells` … **沒有區域／劇情專屬檔** | `ls` |
 | 共用 engine | 獨立 repo，69 個 `.go` | `golden-box-remake-engine/` |
@@ -241,7 +241,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 
 | ID | 項目 | 現況 | 要做什麼 |
 |---|---|---|---|
-| `UI-01` | 畫面狀態逐張 contract | 640×480、石框、部分舞台完成 | adventure／combat／map／dialog／roster／shop／spell／save／ending 每個狀態一份對照 |
+| `UI-01` | 畫面狀態逐張 contract | 640×480、石框、部分舞台完成；**第一人稱已有逐格數字**——提爾佛頓五格 × 四朝向與原版 19／20 完全相同（spec 1134） | adventure／combat／map／dialog／roster／shop／spell／save／ending 每個狀態一份對照。第一人稱剩其餘 17 張 `first_person` 地圖（天空色仍是宣告值，多半 0 ＝ 黑天花板）|
 | `UI-02` | 戰鬥演出 | SPRIT／CPIC 解碼與部分 timeline | 近戰、弓箭、12 個法術、死亡、area persistent effect 的逐幀 oracle。`AGENTS.md` §8 要求分開追蹤 caster windup／travel／impact／damage text／saving throw／death／area effect／sound cue／handoff，**不得因共用 projectile 素材而省略後續效果** |
 | `UI-03` | AREA map 畫面 | 資料有、畫面局部 | 依 `RE-08` 實作 |
 | `AUD-01` | DOS 音效 | 9 個 WAV ＋ 部分 selector | 全 caller、缺的 selector、場景、優先權、重疊、停止、存檔與原版時序 |
@@ -334,6 +334,10 @@ transaction）要自己列一段驗——這是 rulebook 65 來源案例的失�
 8. **`RE-06`／`RE-07` ＋ `ENG-07`／`ENG-08`**——戰鬥系統。可與第 7 項平行（不同人／不同輪）。
 9. **`RE-05` ＋ `ENG-10` ＋ `VER-07`**——存檔。
 10. **`UI-01`／`UI-02`／`AUD-01`**——表現層，需要原版 runtime 當 oracle。
+    ⚠ oracle 的取法已經不是瓶頸了：`tools/dos-oracle-session.sh` 容器常駐、
+    逐步送鍵、每一步讀回畫面文字再決定下一鍵（spec 1134），一步約一秒。
+    **不要再寫「一整串定時按鍵」的擷取腳本**——載入時間會漂，漂掉的那一鍵
+    會讓後面每一步錯位，而錯位的鍵可能剛好按到 `EXIT TO DOS`。
 11. **`RE-11`（未定義區段判定）／`RE-13`／`ENG-12`**——盤點與整理的收尾，不阻塞玩家路徑。
 12. **`VER-04`／`VER-05`／`VER-06`**——最終驗收：分段驗收矩陣（含接縫）＋ 對 DOSBox 原版實測。
 13. **`RE-10`／`AUD-02`**——不阻塞 DOS 單作通關，最後補。
