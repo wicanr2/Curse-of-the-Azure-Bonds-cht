@@ -57,7 +57,7 @@ Hap／熔岩洞／巫師塔 → 散提爾堡 → **眼魔洞穴（手札 59、De
 
 ![繁中戰鬥：兩隊各在視野一側，地形與戰鬥員走同一條相機座標](docs/screenshots/gold-box-layout-combat.png)
 
-![提爾佛頓第一人稱：朝北的走廊，原版 88×88 場景內框與右側隊伍欄](docs/screenshots/tilverton-first-person-remake.png)
+![提爾佛頓第一人稱：木板牆、石牆與逐格收斂的側牆，原版 88×88 場景內框](docs/screenshots/tilverton-first-person-remake.png)
 
 ![Burial Glen 紅網戰鬥：四隻巨蛛的 CPIC 圖示、原版地城素材與戰鬥 footer](docs/screenshots/burial-glen-red-web-spiders.png)
 
@@ -83,8 +83,9 @@ Hap／熔岩洞／巫師塔 → 散提爾堡 → **眼魔洞穴（手札 59、De
 
 這五張的產生指令與雜湊在
 [`docs/screenshots/manifest.json`](docs/screenshots/manifest.json)，由
-`cmd/screenshot-audit` 驗；上一輪修掉的四個圖層對齊錯誤見
-[spec 1130](docs/spec/1130-screenshot-layer-alignment.md)。
+`cmd/screenshot-audit` 驗；近期修掉的圖層對齊錯誤見
+[spec 1130](docs/spec/1130-screenshot-layer-alignment.md)，第一人稱牆面的
+第 0 段符號與洋紅透明鍵見 [spec 1131](docs/spec/1131-wall-symbol-group-zero.md)。
 
 更多地圖、人物舞台、戰鬥時間軸與素材圖在[截圖目錄](docs/screenshots/)；原版忠實
 theme 與日後美化 theme 分開維護。
@@ -139,8 +140,8 @@ theme 與日後美化 theme 分開維護。
 - **存檔**：角色記錄還有 29 bytes 未解讀；跨遊戲角色轉移未做。
 - **表現層與音訊**：畫面逐張對照、每個場景與戰鬥 phase 的音效綁定。
   已知兩處未量的錨點：SPRIT 畫布相對於戰場格的位置（現在只在沒有 CPIC 時才會
-  走到那條路），以及第一人稱每一塊牆磚的 `WALLDEF` 美術對應——
-  幾何已與 spec 1006 對齊，選圖還沒比。
+  走到那條路），以及第一人稱牆磚**逐格**與原版畫面的對照——幾何與 spec 1006
+  對齊、五段符號與洋紅透明鍵已補齊（spec 1131），但沒有逐格比過原版截圖。
 - **戰鬥佈陣**：`SETUP MONSTER` 的距離與 occupancy 表還沒解，兩隊的編制格位置
   仍是本作自訂的 fallback（現在至少會避開站不上去的格）。
 - 三平台發行包。因此目前不製作正式 release 或宣傳片。

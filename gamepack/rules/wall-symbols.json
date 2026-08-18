@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "source": "curseoftheazurebonds.zip",
+  "spec": "docs/spec/1131-wall-symbol-group-zero.md",
+  "note": "Put8x8Symbol 把符號編號切成五段（1..45／46..115／116..185／186..255／256..295）。第 2..4 段由 LOAD PIECES 的三個 8X8D 區塊供應，第 1 段是全遊戲共用的一份，宣告在這裡。",
+  "shared_group": {
+    "file": "8X8D1.DAX",
+    "block": 203,
+    "first_id": 1,
+    "item_count": 45
+  }
+}

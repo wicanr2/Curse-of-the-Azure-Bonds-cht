@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gfx"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
@@ -510,5 +511,52 @@ func TestCombatPreviewFocusFindsOriginalBossSpriteWithoutMovingIt(t *testing.T) 
 	}
 	if _, ok := combatPreviewFocus(fighters, 0); ok {
 		t.Fatal("disabled preview camera unexpectedly selected a fighter")
+	}
+}
+
+// 牆面素材的 EGA index 13 是透明鍵不是顏色（spec 1131）：不遮罩就會在天空與
+// 牆角畫出桃紅色塊。
+func TestMaskWallSymbolsReplacesMagentaWithTransparentIndex(t *testing.T) {
+	piece := gfx.PieceSet{
+		SetID:   1,
+		Symbols: map[uint8]gfx.Picture{7: {ItemCount: 1, Pixels: []uint8{13, 4, 13, 0}}},
+	}
+	maskWallSymbols(piece)
+	got := piece.Symbols[7].Pixels
+	want := []uint8{wallSymbolTransparentIndex, 4, wallSymbolTransparentIndex, 0}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("masked pixels=%v, want %v", got, want)
+	}
+}
+
+// 第 0 段（編號 1..45）先前整段沒有載入，牆頂的天空格與側牆的斜邊因此全部
+// 消失。這一支釘住「影子展開只回低編號，且格子位置與正規展開同一套」。
+func TestSharedWallGroupStampsReturnsOnlyGroupZeroCells(t *testing.T) {
+	piece := gfx.PieceSet{
+		SetID:          1,
+		WallDefs:       make([]gfx.WallDef, 1),
+		SymbolSetIDs:   []uint8{1},
+		SymbolBlockIDs: []uint8{1},
+		Symbols:        map[uint8]gfx.Picture{1: {ItemCount: 70}},
+	}
+	// 牆位 0 是 1 欄 × 2 列，資料落在 156 bytes 的第 0..1 格。
+	piece.WallDefs[0].Rows[0][0] = 1  // 天空格，第 0 段
+	piece.WallDefs[0].Rows[0][1] = 76 // 一般牆磚，第 1 段
+	call := gfx.WallLayoutCall{WallType: 1, Layout: 0, RowStart: 4, ColStart: 5}
+
+	shared := sharedWallGroupStamps(piece, call)
+	if len(shared) != 1 {
+		t.Fatalf("shared stamps=%d, want 1 (%+v)", len(shared), shared)
+	}
+	if shared[0].SymbolID != 1 || shared[0].Row != 4 || shared[0].Column != 5 {
+		t.Fatalf("shared stamp=%+v, want symbol 1 at (row 4, column 5)", shared[0])
+	}
+
+	normal, err := gfx.BuildWallLayout(piece, call.WallType, call.Layout, call.RowStart, call.ColStart)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(normal) != 1 || normal[0].SymbolID != 76 || normal[0].Row != 5 {
+		t.Fatalf("normal stamps=%+v, want only symbol 76 on the second row", normal)
 	}
 }
