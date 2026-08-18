@@ -17,11 +17,9 @@ const (
 	combatStateMovement = 0x06
 	// playerArmourClassPrimary 是角色 `+19Ah`，兩格護甲的第一格。
 	playerArmourClassPrimary = 0x19A
-	// playerArmourClassSecondary 是 `+19Bh`。
-	//
-	// ⚠ remake 的 `Fighter` 只有**一個** `ArmorClass`，所以第二格**不再套一次**
-	// ——原作兩格各加 2，照搬會變成加 4。第二格的語意（對遠程？基準值？）
-	// 沒有讀過，所以這裡只搬第一格並在覆蓋報告上記著。
+	// playerArmourClassSecondary 是 `+19Bh`：背後攻擊用的第二個護甲欄位
+	// （spec 1000 §七）。原作兩格各套一次同樣的修正，所以 remake 也要兩格
+	// 都套——只套第一格會讓「正面與背後的差」隨效果漂移。
 	playerArmourClassSecondary = 0x19B
 )
 
@@ -32,6 +30,8 @@ func recordWriteIsMapped(record string, field int) bool {
 	case record == "combat_state" && field == combatStateMovement:
 		return true
 	case record == "player" && field == playerArmourClassPrimary:
+		return true
+	case record == "player" && field == playerArmourClassSecondary:
 		return true
 	}
 	return false
@@ -61,7 +61,12 @@ func (b *Battle) ApplyEffectRecordWrites(fighterID string, timing uint8) (bool, 
 			fighter.ArmorClass = applyRecordOp(write, fighter.ArmorClass)
 			changed = true
 		case write.Record == "player" && write.Field == playerArmourClassSecondary:
-			// 第二格刻意不套，理由見常數上的說明。
+			// 沒有第二個 AC 的戰鬥員（隊員、合成記錄）不套——那一格是 0，
+			// 套下去會憑空生出一個「比正面好打很多」的背後 AC。
+			if fighter.ArmorClassFacingKnown {
+				fighter.ArmorClassFacing = applyRecordOp(write, fighter.ArmorClassFacing)
+				changed = true
+			}
 		}
 	}
 	if changed {

@@ -66,16 +66,20 @@
 
 remake 的 `RearAttackApplies` 是這三道的字面移植。
 
-### ★ 第二個 AC 的值沒有被發明
+### ★ 第二個 AC 的值
 
-`+19Bh` 的算法**還沒解讀**（spec 1000 明寫「仍沒有宣稱 `+19Ah`／`+19Bh`」，
-它是 `var_9 + var_B + var_A − 2`，三個累加器的來源要讀完整支派生數值重算才知道）。
+`+19Bh ＝ +19Ah − 敏捷防禦調整 − 盾牌那一槽 − 2`（算式與資料驗證在
+spec 1000 §七）。儲存值**越大越難打**，所以減掉那三項就是「背後比較好打」。
 
-所以 `Fighter` 多的是**兩個**欄位：`ArmorClassFacing` 與 `ArmorClassFacingKnown`。
-沒有標成已知時，攻擊結算**不會**改用它——機制接上了、條件測得到，數值留白。
-`TestSecondArmorClassIsIgnoredUntilItIsDecoded` 擋住「先填一個看起來合理的值」。
-
+`Fighter` 多的是**兩個**欄位：`ArmorClassFacing` 與 `ArmorClassFacingKnown`。
+沒有標成已知時，攻擊結算**不會**改用它——隊員那一側目前還沒有第二個 AC。
 ⚠ 零值不能當「沒有」：0 是合法的 AC，所以要一個獨立的 known 旗標。
+
+★ **投影搬的是差值，不是絕對值**。`monster.CombatArmorClass` 會把儲存值
+反轉成顯示值（`60 − 儲存值`），而 `ResolveAttack` 的判定是
+`attackTotal >= AC`（數字小才好打）。直接搬 `+19Bh` 的絕對值會讓背後攻擊
+變成**更難**打，而且兩種寫法在「有沒有換到第二個 AC」上看起來一樣。
+`TestRearAttackIsEasierThanFacingTheAttacker` 就是擋這個符號。
 
 ## 五、接上的呼叫點
 
@@ -90,7 +94,8 @@ remake 的 `RearAttackApplies` 是這三道的字面移植。
 ## 明確不宣稱
 
 - 沒有宣稱 `+09h` 指的是「角色看向哪裡」還是別的東西（§二）。
-- 沒有宣稱 `+19Ah`／`+19Bh` 的語意，也沒有給 `+19Bh` 任何數值。
+- 隊員那一側沒有第二個 AC：`internal/party` 的 `Fighter()` 不算 `+19Bh`，
+  所以只有從 `MON*CHA` 匯入的戰鬥員會走到背後那一格。
 - 沒有宣稱 `sub_194A` 的**全部**呼叫點都接上了；本輪接的是 spec 817 那一處，
   移動指令那一側還沒對回原作。
 - 沒有宣稱 `overlay-32 entry#14`（一般轉向）在 remake 有對應的呼叫點。
