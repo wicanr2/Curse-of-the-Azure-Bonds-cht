@@ -139,8 +139,9 @@ theme 與日後美化 theme 分開維護。
 
 - **開場到結局的主線串接**是最大的一塊：目前走到眼魔洞穴與散提爾堡世界選單，
   後續章節、最終戰與結局序列尚未串完。
-- **戰鬥回合生命週期**：ECL 的 `24h COMBAT` 有 199 處只做了分派，回合本身的
-  initiative／held／delayed／guard／quick 逐項對照仍開著。
+- **戰鬥回合生命週期**：回合開始那一段的逐項對照已完成（spec 1135）——先攻算式、
+  選誰動、DELAY／GUARD／QUICK 與定身都與原作相符。剩下的是突襲遮罩沒有人寫
+  （spec 1113），以及 ECL 的 `24h COMBAT` 那 199 處仍只做了分派。
   （法術那一半已經收斂：可宣告 73 支全部有 handler、視覺與音效。）
 - **ECL 的 11 個部分完成 opcode**，共 1,057 條指令：`CLEARMONSTERS`、`PICTURE`、
   `COMBAT`、`CALL`、`PRINT RETURN`、`TREASURE`、`DAMAGE` 等。
