@@ -69,13 +69,18 @@ func IconDirectionForTeam(mapDirection uint8, side Side) (uint8, bool) {
 // FormationTile is the temporary deterministic placement used until ECL /
 // combat-map records provide real positions. It keeps party and enemy rows
 // on distinct halves of the current combat viewport.
+//
+// ★ 敵方縱帶是 4..6，不是 7..9。視野只有 7 欄（0..6），放在 7..9 表示**兩隊
+// 永遠不可能同時入鏡**：相機必然被迫開啟，然後對準哪一隊，另一隊就被推出
+// 畫面。這與本函式自己寫的「distinct halves of the current combat viewport」
+// 相矛盾，Burial Glen 的戰鬥截圖也因此只剩一個人、四隻蜘蛛全在畫面外。
 func FormationTile(side Side, ordinal int) TilePoint {
 	if ordinal < 0 {
 		ordinal = 0
 	}
 	column, row := ordinal%3, ordinal/3
 	if side == SideEnemy {
-		return TilePoint{X: 7 + column, Y: row}
+		return TilePoint{X: 4 + column, Y: row}
 	}
 	return TilePoint{X: column, Y: row}
 }

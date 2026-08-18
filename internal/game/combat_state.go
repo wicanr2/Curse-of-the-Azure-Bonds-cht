@@ -39,13 +39,23 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			break
 		}
 	}
+	// 佈陣要避開站不上去的格：原作 `try_place_combatant` 是在候選格通過
+	// occupancy 與 ground 檢查之後才寫座標（spec 88）。先前的 fallback 只算
+	// 格號不看地面，開場就會有人站在牆裡或樹叢上。
+	taken := map[combat.TilePoint]bool{}
+	for _, fighter := range append(append([]combat.Fighter(nil), party...), enemies...) {
+		if fighter.HasCombatPosition {
+			taken[combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}] = true
+		}
+	}
 	partyIndex := 0
 	for _, fighter := range party {
 		if fighter.Side != combat.SideParty {
 			return fmt.Errorf("fighter %q is not marked as party", fighter.ID)
 		}
 		if !fighter.HasCombatPosition {
-			tile := combat.FormationTile(fighter.Side, partyIndex)
+			tile := s.combatFormationTile(fighter.Side, partyIndex, taken)
+			taken[tile] = true
 			fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, tile.X, tile.Y
 		}
 		if fighter.CombatSize == 0 {
@@ -63,7 +73,8 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			return fmt.Errorf("fighter %q is not marked as enemy", fighter.ID)
 		}
 		if !fighter.HasCombatPosition {
-			tile := combat.FormationTile(fighter.Side, enemyIndex)
+			tile := s.combatFormationTile(fighter.Side, enemyIndex, taken)
+			taken[tile] = true
 			fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, tile.X, tile.Y
 		}
 		if fighter.CombatSize == 0 {
@@ -135,6 +146,34 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.combatMessage = s.catalog.Text("combat_started", "combat_started")
 	s.Mode = ModeCombat
 	return s.advanceCombatToParty()
+}
+
+
+// combatPlacementProbeLimit 是佈陣時最多往後試幾個編制格。3 欄 × 16 列是
+// DUNGCOM fallback 戰鬥地圖的高度，足以讓整隊在一條縱帶裡找到落腳點。
+const combatPlacementProbeLimit = 3 * 16
+
+// combatFormationTile 回傳「真的站得上去」的編制格。順序是從自己的編制號
+// 往後試，第一個**沒被佔用且地面可通行**的就用；一路試不到才退回原本那格。
+//
+// ⚠ 只補「候選格要能站」這一條。沒有 SETUP MONSTER 的距離與 occupancy 表
+// 之前，掃描順序仍是本作自訂的 fallback，不宣稱與原作逐格相同。
+// 沒裝地形投影時（例如單元測試自己組 Battle）行為與先前完全一樣。
+func (s *State) combatFormationTile(side combat.Side, ordinal int, taken map[combat.TilePoint]bool) combat.TilePoint {
+	tile := combat.FormationTile(side, ordinal)
+	if s.combatMovementTerrain == nil {
+		return tile
+	}
+	for probe := ordinal; probe < ordinal+combatPlacementProbeLimit; probe++ {
+		candidate := combat.FormationTile(side, probe)
+		if taken[candidate] {
+			continue
+		}
+		if cost, ok := s.combatMovementTerrain(candidate.X, candidate.Y); ok && cost > 0 {
+			return candidate
+		}
+	}
+	return tile
 }
 
 // SetCombatLineTerrain installs the renderer-owned combat map projection used
