@@ -533,7 +533,11 @@ func (s *State) SaveSAVGAMSlot(directory string, key byte) error {
 		container.CharacterRefs[index] = nil
 	}
 	for index := range s.partyRoster {
-		container.CharacterRefs[index] = []byte(fmt.Sprintf("CHRDAT%c%d", key, index+1))
+		ref, err := partySave.SAVGAMCharacterRef(fmt.Sprintf("CHRDAT%c%d", key, index+1))
+		if err != nil {
+			return err
+		}
+		container.CharacterRefs[index] = ref
 	}
 	prefix, err := partySave.EncodeSAVGAM(container)
 	if err != nil {
@@ -680,7 +684,11 @@ func (s *State) savgamContainerForSave() (partySave.SAVGAMContainer, error) {
 		if index >= len(container.CharacterRefs) {
 			break
 		}
-		container.CharacterRefs[index] = []byte(character.Name)
+		ref, err := partySave.SAVGAMCharacterRef(character.Name)
+		if err != nil {
+			return partySave.SAVGAMContainer{}, err
+		}
+		container.CharacterRefs[index] = ref
 	}
 	return container, nil
 }

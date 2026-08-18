@@ -54,6 +54,26 @@ type SAVGAMContainer struct {
 	CharacterRefs [SAVGAMCharacterRefCount][]byte
 }
 
+// SAVGAMCharacterRef 把角色檔名包成存檔裡的那 41 bytes。
+//
+// ★ 它是 Turbo Pascal 的 `string[40]`：**第一個位元組是長度**，之後才是字元
+// （spec 1072 從原版逐條讀出 `148h ÷ 29h = 8` 筆、每筆 `1 + 40`）。原版寫出來的
+// 角色檔也是同一個形狀——`BOB.GUY` 的開頭就是 `03 'B' 'O' 'B'`
+// （`docs/reference/original-dos/save-samples/`）。
+//
+// ⚠ 少了長度位元組，原版會把第一個字元當成長度去組檔名。remake 自己讀自己的槽
+// 不會察覺（它是照 `CHRDAT{槽}{n}` 算出檔名，根本沒讀這一欄），所以這種錯只有
+// 拿原版當 oracle 才驗得出來。
+func SAVGAMCharacterRef(name string) ([]byte, error) {
+	if len(name) < 1 || len(name) > SAVGAMCharacterRefSize-1 {
+		return nil, fmt.Errorf("SAVGAM character ref %q is %d bytes, want 1..%d", name, len(name), SAVGAMCharacterRefSize-1)
+	}
+	ref := make([]byte, SAVGAMCharacterRefSize)
+	ref[0] = byte(len(name))
+	copy(ref[1:], name)
+	return ref, nil
+}
+
 // EncodeSAVGAM serializes the fixed prefix in the exact reference order.
 func EncodeSAVGAM(c SAVGAMContainer) ([]byte, error) {
 	if err := validateSAVGAM(c); err != nil {

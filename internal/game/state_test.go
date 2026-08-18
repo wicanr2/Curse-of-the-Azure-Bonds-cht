@@ -1,6 +1,7 @@
 package game
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
@@ -690,7 +691,12 @@ func TestSAVGAMPrefixStateAdapterRestoresKnownFieldsAndRawRecords(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	if container.PartyCount != 1 || string(container.CharacterRefs[0][:len("阿勇")]) != "阿勇" {
+	// 角色檔名那一欄是 Pascal 短字串：長度位元組在前（spec 1072）。
+	want, err := partySave.SAVGAMCharacterRef("阿勇")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if container.PartyCount != 1 || !bytes.Equal(container.CharacterRefs[0], want) {
 		t.Fatalf("SAVGAM party refs=%#v", container.CharacterRefs[0])
 	}
 }
@@ -776,7 +782,7 @@ func TestLoadSAVGAMSlotLoadsPlayerRecordAndOptionalSidecars(t *testing.T) {
 		t.Fatal(err)
 	}
 	savedContainer, err := partySave.DecodeSAVGAM(savedPrefix)
-	if err != nil || !strings.HasPrefix(string(savedContainer.CharacterRefs[0]), "CHRDATC1") {
+	if err != nil || !strings.HasPrefix(string(savedContainer.CharacterRefs[0]), "\x08CHRDATC1") {
 		t.Fatalf("saved prefix ref=%q err=%v", savedContainer.CharacterRefs[0], err)
 	}
 }

@@ -55,3 +55,30 @@ func filledBytes(size int, value byte) []byte {
 	}
 	return data
 }
+
+// 角色檔名那 41 bytes 是 Turbo Pascal 的 string[40]：第一個位元組是長度。
+// 少了它，原版會把第一個字元當成長度去組檔名（spec 1072；原版自己寫的
+// BOB.GUY 開頭也是 03 'BOB'）。
+func TestSAVGAMCharacterRefIsPascalString(t *testing.T) {
+	ref, err := SAVGAMCharacterRef("CHRDATA1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(ref) != SAVGAMCharacterRefSize {
+		t.Fatalf("ref 是 %d bytes，want %d", len(ref), SAVGAMCharacterRefSize)
+	}
+	if ref[0] != 8 || string(ref[1:9]) != "CHRDATA1" {
+		t.Fatalf("ref 開頭是 %v，want 08 CHRDATA1", ref[:9])
+	}
+	for _, tail := range ref[9:] {
+		if tail != 0 {
+			t.Fatalf("長度之外的位元組沒有清零：%v", ref)
+		}
+	}
+	if _, err := SAVGAMCharacterRef(""); err == nil {
+		t.Fatal("空名字應該被擋下來")
+	}
+	if _, err := SAVGAMCharacterRef(string(make([]byte, SAVGAMCharacterRefSize))); err == nil {
+		t.Fatal("超過 40 字元應該被擋下來")
+	}
+}
