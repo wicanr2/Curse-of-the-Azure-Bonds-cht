@@ -70,6 +70,35 @@ PY
     ex bash -c 'import -window root /tmp/s.xwd && convert /tmp/s.xwd -crop 640x400+0+0 +repage "/out/'"$2"'"' >/dev/null 2>&1
     echo "$WORK/out/$2"
     ;;
+  wait)
+    # 等畫面上出現某段文字；固定延遲會被載入時間漂移打爆，一律用這一支。
+    want="$2"; deadline=$(( $(date +%s) + ${3:-25} ))
+    while :; do
+      ex bash -c 'import -window root /tmp/s.xwd && convert /tmp/s.xwd -crop 640x400+0+0 +repage /out/_wait.png' >/dev/null 2>&1
+      if python3 "$ROOT/tools/dos_screen.py" "$WORK/out/_wait.png" | grep -qF "$want"; then
+        exit 0
+      fi
+      [ "$(date +%s)" -ge "$deadline" ] && { echo "wait 逾時：等不到 \"$want\"" >&2; exit 1; }
+      sleep 0.5
+    done
+    ;;
+  keyuntil)
+    # 送鍵直到畫面出現某段文字（每送一次等一輪）。開機那一下最需要它。
+    key="$2"; want="$3"; tries="${4:-10}"
+    for _ in $(seq 1 "$tries"); do
+      ex bash -c 'import -window root /tmp/s.xwd && convert /tmp/s.xwd -crop 640x400+0+0 +repage /out/_wait.png' >/dev/null 2>&1
+      if python3 "$ROOT/tools/dos_screen.py" "$WORK/out/_wait.png" | grep -qF "$want"; then
+        exit 0
+      fi
+      focus
+      ex xdotool keydown --clearmodifiers "$key" >/dev/null 2>&1 || true
+      sleep "$HOLD"
+      ex xdotool keyup --clearmodifiers "$key" >/dev/null 2>&1 || true
+      sleep 1.2
+    done
+    echo "keyuntil 逾時：送了 $tries 次 $key 仍等不到 \"$want\"" >&2
+    exit 1
+    ;;
   text)
     name="${2:-_live.png}"
     ex bash -c 'import -window root /tmp/s.xwd && convert /tmp/s.xwd -crop 640x400+0+0 +repage "/out/'"$name"'"' >/dev/null 2>&1

@@ -41,9 +41,18 @@ import (
 const (
 	mapPosOffset = 1 + partySave.SAVGAMArea1Size + partySave.SAVGAMArea2Size +
 		partySave.SAVGAMRuntimeStateSize + partySave.SAVGAMECLMemorySize
-	area1LastXOffset = 1 + 0x1E0
-	area1LastYOffset = 1 + 0x1E2
+	area1MapBlockOffset = 1 + 0x18A
+	area1LastXOffset    = 1 + 0x1E0
+	area1LastYOffset    = 1 + 0x1E2
 )
+
+// setFlags 回報使用者實際打了哪些旗標。`-base` 模式只覆寫打過的欄位，
+// 沒打的一律沿用底檔——底檔是原版自己寫出來的，猜它的值只會弄壞它。
+func setFlags() map[string]bool {
+	seen := make(map[string]bool)
+	flag.Visit(func(f *flag.Flag) { seen[f.Name] = true })
+	return seen
+}
 
 func main() {
 	out := flag.String("out", "", "輸出目錄（原版的存檔路徑，預設是 C:\\SAVE）")
@@ -92,6 +101,13 @@ func main() {
 			log.Fatalf("-base %s 長度 %d，不是原版的 %d", *base, len(prefix), partySave.SAVGAMFixedPrefixSize)
 		}
 		patched := append([]byte(nil), prefix...)
+		given := setFlags()
+		if given["area"] {
+			patched[0] = byte(*gameArea)
+		}
+		if given["map-block"] {
+			patched[area1MapBlockOffset] = byte(*mapBlock)
+		}
 		// Area1 的 LastX／LastY 與地圖那五格都要改：前者是「上一個座標」，
 		// 後者才是載入之後站的位置，只改一邊會在畫面與地圖標記之間打架。
 		patched[area1LastXOffset] = byte(*posX)
@@ -110,9 +126,9 @@ func main() {
 		if err := os.WriteFile(filepath.Join(*out, prefixName), patched, 0o644); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%s（%d bytes，以 %s 為底）位置=(%d,%d) 朝向=%d wallType=0x%02X wallRoof=0x%02X\n",
-			prefixName, len(patched), *base, *posX, *posY, *facing,
-			patched[mapPosOffset+3], patched[mapPosOffset+4])
+		fmt.Printf("%s（%d bytes，以 %s 為底）area=%d block=0x%02X 位置=(%d,%d) 朝向=%d wallType=0x%02X wallRoof=0x%02X\n",
+			prefixName, len(patched), *base, patched[0], patched[area1MapBlockOffset],
+			*posX, *posY, *facing, patched[mapPosOffset+3], patched[mapPosOffset+4])
 		return
 	}
 
