@@ -3538,15 +3538,21 @@ func (s *State) advanceCombatToParty() error {
 		if fighter.CombatAction.SpellID != 0 {
 			return s.resolvePendingSpell(fighter)
 		}
-		if fighter.Side == combat.SideParty && !fighter.QuickFight {
-			return nil
-		}
 		// 回合開頭的效果記錄寫入（`CHECKFX(07h)`，spec 1123）：纏繞術把移動率
 		// 設成 0、妖火讓護甲變差。這些不是暫存修正，是直接改記錄。
+		// ★ 原作在**分派到 AI 或玩家選單之前**就呼叫它（`overlay-08 entry#4`＝
+		// COMBAT 單元的回合開始重設，spec 804：`CHECKFX(7)` 在 `p^[198h]` 那個
+		// 二選一之前）。擺在「交還 UI」之後等於玩家操作的隊員永遠不會被套。
+		// ⚠ 這一段在玩家還在選的期間會被重新走到（移動、選目標都會回到這裡），
+		// 所以這個時機的修正必須是冪等的；`TestCanActTimingModifiersAreIdempotent`
+		// 擋住之後有人在這個時機加上加減型修正。
 		if _, err := s.battle.ApplyEffectRecordWrites(fighter.ID, combat.CheckFXCanAct); err != nil {
 			return err
 		}
 		fighter, _ = s.fighter(fighter.ID)
+		if fighter.Side == combat.SideParty && !fighter.QuickFight {
+			return nil
+		}
 		// 自動換裝在 AI 回合開頭（spec 1120）。原作的換裝屬於 AI 模組，
 		// 所以管的是「這一回合由電腦操作的人」——包含開了快速戰鬥的隊員。
 		if _, err := s.autoEquipBeforeAITurn(fighter.ID); err != nil {

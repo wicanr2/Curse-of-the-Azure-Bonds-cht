@@ -517,3 +517,4 @@
 - [1132 戰鬥地圖與地城座標同步、編制帶列起點](./1132-combat-floor-sync-and-formation-band.md)（`READY`：戰鬥地圖由地城座標生成，查詢前先同步，佈陣與畫面不再讀到兩份；編制帶改從第 2 列起算；仍是 fallback，不宣稱與原作逐格相同）
 - [1133 原版存檔樣本與 `CHRDAT` 檔名欄](./1133-original-save-samples-and-character-ref.md)（`READY`：第一份原版產生的 `.GUY`／`.FX` 樣本並用它驗解碼器、41 bytes 檔名欄是 Pascal `string[40]`；DOS 前綴 13,149 與 PC-98 13,214 是平台差異；合成存檔原版讀得進去，檔名欄指到不存在的檔案時會靜靜跳過那名角色）
 - [1134 原版第一人稱 oracle](./1134-original-first-person-oracle.md)（`READY`：提爾佛頓五格 × 四個朝向逐格比對 19/20 完全相同；`indoor_sky_color` 9／`outdoor_sky_color` 11 修好天花板；`CURSE.CFG` 四行純文字、互動式 session 取代定時按鍵、存檔裡的角色檔是 `.SAV`＋`.FX`；不宣稱其他 `GEO` 地圖、不宣稱剩下那一格的成因）
+- [1135 回合開始的生命週期](./1135-combat-turn-start-lifecycle.md)（`READY`：先攻基底＝敏捷遠程命中調整（`overlay-24 entry#11`）＋1d6，20 是快速戰鬥的哨兵值；`CHECKFX(07h)` 要在 AI／玩家選單分派之前，先前玩家控制的隊員完全套不到；不宣稱突襲遮罩由誰寫、不宣稱回合開始那三個歸零有對應欄位）
