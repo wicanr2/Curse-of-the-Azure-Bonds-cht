@@ -519,3 +519,4 @@
 - [1134 原版第一人稱 oracle](./1134-original-first-person-oracle.md)（`READY`：提爾佛頓五格 × 四個朝向逐格比對 19/20 完全相同；`indoor_sky_color` 9／`outdoor_sky_color` 11 修好天花板；`CURSE.CFG` 四行純文字、互動式 session 取代定時按鍵、存檔裡的角色檔是 `.SAV`＋`.FX`；不宣稱其他 `GEO` 地圖、不宣稱剩下那一格的成因）
 - [1135 回合開始的生命週期](./1135-combat-turn-start-lifecycle.md)（`READY`：先攻基底＝敏捷遠程命中調整（`overlay-24 entry#11`）＋1d6，20 是快速戰鬥的哨兵值；`CHECKFX(07h)` 要在 AI／玩家選單分派之前，先前玩家控制的隊員完全套不到；不宣稱突襲遮罩由誰寫、不宣稱回合開始那三個歸零有對應欄位）
 - [1136 突襲遮罩是死碼；保留的機會攻擊就是 GUARD 設的](./1136-surprise-mask-dead-and-guard-reservation.md)（`READY`：`Area2+596h` 全 build 只有一讀一清 0（含正對照、指標間接與 PC-98 第二證人），先攻的 −6 走不到；`+18Dh^[7]` 的設定端是 GUARD（字串 `Guarding`），設定／消費／清除三段接起來；順帶量到 `+0Fh`／`+12h` 有讀者，那是另一格開著的工作）
+- [1137 動作計數與累計轉向擋住什麼](./1137-action-count-and-turn-gates.md)（`READY`：`es:[暫存器+位移]` 認不出記錄種類，普查要先看到 `les …, es:[…+18Dh]`；`+0Fh` 四個讀者、`+12h` 一個真閘；`sub_14E8` 的三段 AC ＝ 一般／背後／白名單武器 −4，背後要「動作計數 > 1 ＋ 背對 ＋ 累計轉向 > 4」；不宣稱 `+19Ah`／`+19Bh` 的語意）
