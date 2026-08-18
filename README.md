@@ -8,16 +8,17 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 [golden-box-remake-engine](https://github.com/wicanr2/golden-box-remake-engine)。
 劇情、座標、物品與翻譯資料不寫死在共用 engine。
 
-## 目前狀態（2026-08-17 實測）
+## 目前狀態（2026-08-18 實測）
 
 | | |
 |---|---|
 | 反組譯覆蓋 | 2,874 個函式全部進台帳，**待解讀 0**（已解讀 2,137／不阻塞 162／邊界碎片 575）|
-| 規格 | 1,110 份 `docs/spec/*.md`，各自標證據等級與「明確不宣稱」邊界 |
-| 程式 | 303 個 `.go`／93,874 行；`internal/game` 沒有區域或劇情專屬檔 |
+| 規格 | 1,115 份 `docs/spec/*.md`，各自標證據等級與「明確不宣稱」邊界 |
+| 程式 | 309 個 `.go`／94,951 行；`internal/game` 沒有區域或劇情專屬檔 |
 | ECL 文字 | 控制流可達 1,022 頁，**未接上 0** |
 | ECL 副作用 | 可達 14,177 條指令，**只讀掉運算元 0**、部分完成 1,057 |
 | 戰鬥法術 | 可宣告 **73／73** 全部有 handler、視覺與音效 |
+| 第一人稱畫面 | 提爾佛頓五格 × 四個朝向與原版**逐格比對**：20 張裡 19 張完全相同、1 張差一格 |
 | 存檔 | 角色記錄 422 bytes：decoded 294／documented 99／unknown 29 |
 | UI 詞條 | game pack `zh-TW` 1,363 條、`assets/locale/zh-TW.json` 917 條 |
 | 全套測試 | `./tools/go.sh test ./...` 全綠 |
@@ -87,6 +88,13 @@ Hap／熔岩洞／巫師塔 → 散提爾堡 → **眼魔洞穴（手札 59、De
 [spec 1130](docs/spec/1130-screenshot-layer-alignment.md)，第一人稱牆面的
 第 0 段符號與洋紅透明鍵見 [spec 1131](docs/spec/1131-wall-symbol-group-zero.md)。
 
+第一人稱那一張是**與原版逐格比對過的**：同一格、同一個朝向，把原版 DOS 版
+在 DOSBox 裡跑出來的畫面與 remake 的畫面各取 88×88 可見區，EGA 量化之後比
+16 色索引。提爾佛頓五格 × 四個朝向共二十張，十九張完全相同。原版擷取與
+索引收在 [`docs/reference/original-dos/first-person/`](docs/reference/original-dos/first-person/)，
+重跑比對是一行 `python3 tools/fp-oracle-compare.py …/index.tsv`；
+方法與剩下那一格見 [spec 1134](docs/spec/1134-original-first-person-oracle.md)。
+
 更多地圖、人物舞台、戰鬥時間軸與素材圖在[截圖目錄](docs/screenshots/)；原版忠實
 theme 與日後美化 theme 分開維護。
 
@@ -139,9 +147,10 @@ theme 與日後美化 theme 分開維護。
 - **手札**：45 則有中英文，只有 15 則接上 ECL 觸發來源；手札 59 的地圖尚未繪製。
 - **存檔**：角色記錄還有 29 bytes 未解讀；跨遊戲角色轉移未做。
 - **表現層與音訊**：畫面逐張對照、每個場景與戰鬥 phase 的音效綁定。
-  已知兩處未量的錨點：SPRIT 畫布相對於戰場格的位置（現在只在沒有 CPIC 時才會
-  走到那條路），以及第一人稱牆磚**逐格**與原版畫面的對照——幾何與 spec 1006
-  對齊、五段符號與洋紅透明鍵已補齊（spec 1131），但沒有逐格比過原版截圖。
+  第一人稱已有逐格對照（提爾佛頓五格 × 四朝向 19／20 相同，spec 1134），
+  但只驗過那一張地圖；其餘 17 張 `first_person` 地圖的天空色仍是宣告值，
+  多半是 0（黑天花板）。SPRIT 畫布相對於戰場格的錨點仍未量（現在只在沒有
+  CPIC 時才會走到那條路）。
 - **戰鬥佈陣**：`SETUP MONSTER` 的距離與 occupancy 表還沒解，兩隊的編制格位置
   仍是本作自訂的 fallback（現在至少會避開站不上去的格）。
 - 三平台發行包。因此目前不製作正式 release 或宣傳片。
