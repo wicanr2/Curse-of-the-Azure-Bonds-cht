@@ -514,3 +514,4 @@
 - [1106 ECL `IF` 跳過與操作元個數表](./1106-ecl-if-skip-and-operand-arity.md)（`READY`：`IF` 條件不成立跳過下一條、`overlay-07 entry#29` 的 arity 表、原作跳過表少算 `34h`／`36h`；靜態可達 instruction 1,355→4,222、文字段落 43→221）
 - [1130 README 截圖的四個對齊錯誤](./1130-screenshot-layer-alignment.md)（`READY`：sub-image 目的地座標只裁切不平移、戰鬥地形要跟戰鬥員走同一條相機＋鏡像路徑、佈陣的地面檢查與敵方縱帶落在視野內、戰場圖示是 CPIC 不是 SPRIT；第一人稱幾何與 spec 1006 逐項相符，不含 `WALLDEF` 美術對應）
 - [1131 第一人稱牆面的第 0 段符號與洋紅透明鍵](./1131-wall-symbol-group-zero.md)（`READY`：`Put8x8Symbol` 五段分界、第 0 段是 `8X8D1.DAX` 區塊 `0CBh` 的 45 項共用資源、EGA index 13 是牆面素材的透明鍵；不含載入端的反組譯與逐格美術對照）
+- [1132 戰鬥地圖與地城座標同步、編制帶列起點](./1132-combat-floor-sync-and-formation-band.md)（`READY`：戰鬥地圖由地城座標生成，查詢前先同步，佈陣與畫面不再讀到兩份；編制帶改從第 2 列起算；仍是 fallback，不宣稱與原作逐格相同）

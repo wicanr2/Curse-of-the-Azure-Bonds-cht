@@ -54,10 +54,10 @@ func TestIconDirectionForTeamUsesReferenceHalfDirToIso(t *testing.T) {
 }
 
 func TestFormationTileSeparatesPartyAndEnemyRows(t *testing.T) {
-	if got := FormationTile(SideParty, 2); got != (TilePoint{X: 2, Y: 0}) {
+	if got := FormationTile(SideParty, 2); got != (TilePoint{X: 2, Y: 2}) {
 		t.Fatalf("party tile=%#v", got)
 	}
-	if got := FormationTile(SideEnemy, 2); got != (TilePoint{X: 6, Y: 0}) {
+	if got := FormationTile(SideEnemy, 2); got != (TilePoint{X: 6, Y: 2}) {
 		t.Fatalf("enemy tile=%#v", got)
 	}
 }
