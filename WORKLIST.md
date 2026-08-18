@@ -133,8 +133,10 @@ python3 tools/fp-oracle-compare.py docs/reference/original-dos/first-person/inde
 還開著的：
 
 - 其餘 `GEO` 地圖沒有逐格比過（本輪只驗提爾佛頓五格）。
-- `(1,7)` 面西、原生 `(88,70)` 那一格：原版 EGA 8、remake 0。落在 `SKY` 地面
-  overlay 的第 `(64,6)` 格，成因未查。
+- `(1,7)` 面西、原生 `(88,70)` 那一格：原版 EGA 8、remake 0。
+  **背景那一層是對的**（`SKY.DAX` `0FCh` 的 `(64,6)` 讀出來就是 8，
+  `cmd/picture-probe`），蓋掉它的是牆面 stamp——對應牆格 (列 5, 欄 8) 的
+  局部像素 `(0,6)`。還沒查那一格的符號編號與它走哪一段。
 - `outdoor_sky_color`／`indoor_sky_color` 只改了提爾佛頓那一張地圖的宣告，
   其餘 17 張 `first_person` 地圖的值還是舊的（多半是 0 ＝ 黑天花板）。
   **正確的收法不是逐張填常數，是找出原作在哪裡寫 `Area1` 的 `1FAh`／`1FCh`**——
