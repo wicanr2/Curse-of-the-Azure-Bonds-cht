@@ -17,3 +17,36 @@ __pycache__/
 
 # IDA／Go／DOSBox 的本地工作產物；.git 目錄本身也在這裡
 /workplace/
+
+# `tools/go.sh build ./cmd/x` 會把執行檔丟到 repo 根目錄；那是產物不是原始碼
+/azure-bonds
+/azure-bonds-game
+/borland-symbols
+/coab-audit
+/combat-spell-coverage-audit
+/combat-tile-export
+/dos-save-export
+/dseg-export
+/ecl-effect-coverage
+/ecl-event-catalog
+/ecl-text-coverage
+/far-call-map
+/geo-probe
+/glossary-audit
+/locale-drift-audit
+/monster-roster
+/ovr-manifest
+/pc98-music-audit
+/pc98-ovr-audit
+/pc98-render-sfx
+/pc98-render-track
+/pc98-s98-audit
+/pc98-sfx-audit
+/pc98-symbol-audit
+/pc98-vfd-audit
+/re-ledger
+/save-field-coverage
+/screenshot-audit
+/spell-table-export
+/symbol-export
+/tmp-pc98-tone-events
