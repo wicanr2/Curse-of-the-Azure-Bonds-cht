@@ -163,6 +163,8 @@ func TestSecondArmorClassIsIgnoredUntilItIsDecoded(t *testing.T) {
 		battle := facingBattle(t)
 		defender, _ := battle.Fighter("orc")
 		defender.CombatFacing, defender.CombatActionCount, defender.CombatTurnTotal = 6, 2, 5
+		// 30 是**探針值**，不是原作會算出來的第二個 AC（那一定比正面那格小）。
+		// 這裡要量的是「這一格到底有沒有被讀」，所以刻意挑一個好分辨的值。
 		defender.ArmorClassFacing, defender.ArmorClassFacingKnown = 30, known
 		battle.fighters["orc"] = defender
 		hits := 0
@@ -250,5 +252,42 @@ func TestRoundStartClearsCountersButKeepsFacing(t *testing.T) {
 	}
 	if hero.CombatFacing != 5 {
 		t.Fatalf("面向被清掉了，變成 %d；原作只清 +0Fh 與 +12h", hero.CombatFacing)
+	}
+}
+
+// 原作的第二個 AC 一定比第一個小（`+19Bh ＝ +19Ah − 敏捷 − 盾牌 − 2`，
+// spec 1000 §七），而命中判定是 `attackTotal >= AC`——**數字小才好打**。
+// 所以背後攻擊必須比正面攻擊容易命中。
+//
+// ⚠ 這條擋的是符號錯誤：`monster.CombatArmorClass` 會把儲存值反轉，
+// 直接搬 `+19Bh` 的絕對值會讓背後攻擊變成更難打，而那個錯誤在單看數字時
+// 完全看不出來——兩邊都是「有換到第二個 AC」。
+func TestRearAttackIsEasierThanFacingTheAttacker(t *testing.T) {
+	count := func(rearPenalty int) int {
+		battle := facingBattle(t)
+		defender, _ := battle.Fighter("orc")
+		defender.CombatFacing, defender.CombatActionCount, defender.CombatTurnTotal = 6, 2, 5
+		defender.ArmorClass = 15
+		defender.ArmorClassFacing = defender.ArmorClass - rearPenalty
+		defender.ArmorClassFacingKnown = rearPenalty > 0
+		battle.fighters["orc"] = defender
+		hits := 0
+		for i := 0; i < 400; i++ {
+			attack, err := battle.Attack("hero", "orc")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if attack.Hit {
+				hits++
+			}
+			healed, _ := battle.Fighter("orc")
+			healed.HitPoints = healed.MaxHitPoints
+			battle.fighters["orc"] = healed
+		}
+		return hits
+	}
+	front, rear := count(0), count(6)
+	if rear <= front {
+		t.Fatalf("背後攻擊命中 %d 次、正面 %d 次——第二個 AC 的符號反了", rear, front)
 	}
 }

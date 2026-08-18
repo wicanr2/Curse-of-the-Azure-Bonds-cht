@@ -35,6 +35,14 @@ type Record struct {
 	Dexterity       uint8
 	BaseArmorClass  int
 	ArmorClass      int
+	// ArmorClassFacing 是角色記錄的第二個護甲欄位 `+19Bh`：派生數值重算
+	// （`overlay-24:0C28h`，spec 1000）算的是
+	// `+19Bh := +19Ah − 敏捷防禦調整 − 盾牌那一槽 − 2`，攻擊結算
+	// （`overlay-13:14E8h`）在背後攻擊成立時改用它。
+	//
+	// ⚠ 兩個欄位的**絕對值**刻度與 `Fighter.ArmorClass` 不同（見
+	// `CombatArmorClass`），所以投影時搬的是**差值**，不是 `+19Bh` 本身。
+	ArmorClassFacing int
 	AttackBonus     int
 	DamageDiceCount int
 	DamageDiceSides int
@@ -108,8 +116,9 @@ func Parse(data []byte) (Record, error) {
 		THAC0:          int(int8(data[0x73])),
 		MaxHitPoints:   maxHP,
 		HitPoints:      currentHP,
-		BaseArmorClass: int(data[0x124]),
-		ArmorClass:     int(data[0x19A]),
+		BaseArmorClass:   int(data[0x124]),
+		ArmorClass:       int(data[0x19A]),
+		ArmorClassFacing: int(data[0x19B]),
 		// The reference marks hitBonus/ac as IByte (unsigned byte), unlike
 		// the signed damage and THAC0 fields.
 		AttackBonus:      int(data[0x199]),
@@ -150,6 +159,12 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		Dexterity:      r.Dexterity,
 		CombatTeam:     r.CombatTeam,
 		ArmorClass:     CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
+		// 背後攻擊用的第二個 AC。原作 `+19Ah` 與 `+19Bh` 同域，差值就是
+		// 「不算敏捷、不算盾牌，再 −2」那筆減免（spec 1000 §七）。
+		// `ResolveAttack` 的判定是 `attackTotal >= AC`——數字小才好打——
+		// 所以背後那一格是**減掉**差值，不是直接搬 `+19Bh` 的絕對值。
+		ArmorClassFacing:      CombatArmorClass(r.ArmorClass) - (r.ArmorClass - r.ArmorClassFacing),
+		ArmorClassFacingKnown: r.ArmorClass != 0 && r.ArmorClassFacing != 0,
 		DamageDiceCount: r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
 		DamageBonus:    r.DamageBonus,
 		AttacksPerTurn: r.AttacksPerTurn,
