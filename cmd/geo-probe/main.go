@@ -17,6 +17,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 )
 
@@ -25,6 +26,7 @@ func main() {
 	set := flag.Int("set", 2, "GEO 檔號（2..6）")
 	block := flag.Int("block", 1, "GEO 區塊編號")
 	minOpen := flag.Int("open", 2, "只列出至少有這麼多個可走方向的格子")
+	prefix := flag.Bool("prefix", false, "只列出每個 GEO 區塊被 Parse 丟掉的兩個標頭位元組")
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*imagePath)
@@ -51,6 +53,21 @@ func main() {
 	}
 	if payload == nil {
 		log.Fatalf("%s 不在 %s 裡", name, *imagePath)
+	}
+	if *prefix {
+		blocks, parseErr := dax.Parse(payload)
+		if parseErr != nil {
+			log.Fatal(parseErr)
+		}
+		for _, block := range blocks {
+			if len(block.Data) < 2 {
+				continue
+			}
+			fmt.Printf("GEO%d 區塊 0x%02X（%3d）標頭 = %02X %02X（%d, %d）長度 %d\n",
+				*set, block.Entry.ID, block.Entry.ID,
+				block.Data[0], block.Data[1], block.Data[0], block.Data[1], len(block.Data))
+		}
+		return
 	}
 	catalog := geo.NewCatalog()
 	if err := catalog.AddDAX(uint8(*set), payload); err != nil {

@@ -137,15 +137,26 @@ python3 tools/fp-oracle-compare.py docs/reference/original-dos/first-person/inde
   overlay 的第 `(64,6)` 格，成因未查。
 - `outdoor_sky_color`／`indoor_sky_color` 只改了提爾佛頓那一張地圖的宣告，
   其餘 17 張 `first_person` 地圖的值還是舊的（多半是 0 ＝ 黑天花板）。
-  **正確的收法不是逐張填常數，是找出原作在哪裡寫這兩個欄位**——查到之後
-  remake 自己就會算出來，pack 的宣告可以整批刪掉。目前查到的：
-  - 進地圖時 `Area1` 整塊被清成 0（`overlay-11` `0318h`：`FillChar(Area1, 800h, 0)`，
-    緊接著寫 `[di+1CCh] := 1`、`720Fh` 那五格 `:= 7,13,0`），所以兩個欄位的起點是 0。
-  - 全 36 段 overlay ＋ 常駐段裡，對 `Area1 + 1FAh`／`1FCh` 只找得到**兩處讀**
-    （`overlay-28` `010Eh`／`0120h`，讀出來當索引查 `DS:0A88h` 的調色盤表），
-    **一處寫都沒有**（掃過 `mov`／`add`／`cmp` 的所有 disp16 定址）。
-  - ⇒ 假設待驗：由 ECL 透過某個記憶體寫入指令設定（`overlay-07` 對 Area1 指標
-    的存取都帶 `+6A00h` 之類的大位移，ECL 的位址模型還沒對上）。
+  **正確的收法不是逐張填常數，是找出原作在哪裡寫 `Area1` 的 `1FAh`／`1FCh`**——
+  查到之後 remake 自己就會算出來，pack 的宣告可以整批刪掉。已經確定的：
+  - **那兩個欄位不是純存檔狀態**：把存檔裡的它們清成 0，載入、進地圖、
+    紮營存回來，值會變回 11／9。原版每次進地圖都會重算。
+  - **改存檔的欄位到不了別的地圖**：`Current3DMapBlockID` patch 成 3／4 之後
+    存回來還是 1（同樣被重算），改 `GameArea` 則會讓載入整個失敗。
+    ⇒ 要拿別張地圖的值就得**真的把劇情推到那裡**，沒有捷徑。
+  - `GEO` 區塊被 `Parse` 丟掉的兩個標頭位元組是 `00 04`（＝ payload 長度），
+    十六個區塊全部一樣，**不是**天空色（`cmd/geo-probe -prefix`）。
+  - ECL 的記憶體寫入指令寫不到那兩個欄位：`overlay-07` `0DCB`–`0DD9` 是
+    `Area1 指標 + 索引×2 + 6A00h`，選擇子 0 走 Area1、1 走 Area2（`0DEE`）。
+    九個「指標算術型」的 Area1 存取站點全部是 `+6A00h` 那一族。
+  - ⚠ **「全 overlay 找不到寫入」只能當弱證據**：disp16 的靜態掃描結構上
+    抓不到指標間接寫入。下一步要用 **runtime watchpoint**（DOSBox debugger）
+    看誰寫那兩個位元組，不是再掃一次靜態。
+- 取值的自動化已經做好，缺的只是「怎麼走到那張地圖」：
+  `tools/harvest-sky.sh <底檔> <area> <block>` 會載入→進遊戲→紮營存檔→
+  把 `1FAh`／`1FCh` 讀回來；提爾佛頓的正對照回 11／9。
+  ⚠ 它用 `tools/dos-oracle-session.sh wait`／`keyuntil` 等畫面文字，
+  **不要改回固定延遲**——開機時間會漂，漂掉的那一鍵會讓後面每一步錯位。
 - 示範模式走的是**示範專用地圖**（地名 `NOWHERE IN THE REALMS`），
   而且那一幕是 **PIC（夜營畫面）不是第一人稱視野**。
   `docs/reference/original-dos/tilverton-first-person-demo.png` 的檔名雙重誤導。
