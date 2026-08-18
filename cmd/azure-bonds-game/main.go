@@ -55,7 +55,7 @@ const (
 )
 
 type app struct {
-	state                  game.State
+	state                  *game.State
 	imagePath              string
 	face                   font.Face
 	compactFace            font.Face
@@ -187,16 +187,18 @@ func (a *app) combatMovementTerrain() combat.MovementTerrain {
 }
 
 func (a *app) combatLineTerrain() combat.LineTerrain {
-	mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
-	referenceCoordinates := a.state.CombatUsesReferenceCoordinates()
+	// 模式與座標命名空間要在**每次查詢時**取，不能在安裝時凍結：這三支投影
+	// 現在於任何 checkpoint 開戰之前就裝上，那時 `InDungeon` 與戰鬥座標
+	// 都還沒定案。
 	return func(x, y int) combat.LineCell {
+		mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
 		entry, ok := combatMovementTerrainEntry(
 			mode,
 			a.dungeonFloor,
 			a.state.WildernessFloor,
 			a.state.MapX,
 			a.state.MapY,
-			referenceCoordinates,
+			a.state.CombatUsesReferenceCoordinates(),
 			x,
 			y,
 		)
@@ -1685,13 +1687,19 @@ func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
 		(layout.Clip.X+layout.Clip.Width)*scale,
 		(layout.Clip.Y+layout.Clip.Height)*scale,
 	)
+	// A sub-image render target only clips; the draw coordinates stay in the
+	// parent image's space (Ebiten: "If a sub-image is used as a rendering
+	// destination, the region being rendered is clipped"). Subtracting the clip
+	// origin here pushed the HEAD/BODY sprite up to the screen corner, so only
+	// the fragment that happened to overlap the stage showed and the rest of the
+	// yellow inset stayed black.
 	target := screen.SubImage(clip).(*ebiten.Image)
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 	op.GeoM.Scale(float64(scale), float64(scale))
 	op.GeoM.Translate(
-		float64(layout.SpriteX*scale-clip.Min.X),
-		float64(layout.SpriteY*scale-clip.Min.Y),
+		float64(layout.SpriteX*scale),
+		float64(layout.SpriteY*scale),
 	)
 	target.DrawImage(sprite, op)
 	if a.characterStageFrame != nil {
@@ -1720,12 +1728,14 @@ func drawImageCover(screen, source *ebiten.Image, destination image.Rectangle) {
 	scale, translateX, translateY := imageCoverTransform(sourceWidth, sourceHeight, destination)
 	// A cover transform deliberately exceeds one axis. Draw through the exact
 	// stage rectangle so a cropped PIC cannot overwrite roster or narrative
-	// pixels outside its original inset.
+	// pixels outside its original inset. The sub-image only clips — the
+	// translation stays in screen coordinates, which is why
+	// imageCoverTransform already carries the destination origin.
 	target := screen.SubImage(destination).(*ebiten.Image)
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 	op.GeoM.Scale(scale, scale)
-	op.GeoM.Translate(translateX-float64(destination.Min.X), translateY-float64(destination.Min.Y))
+	op.GeoM.Translate(translateX, translateY)
 	target.DrawImage(source, op)
 }
 
@@ -2241,36 +2251,6 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	)
 	battlefield := ebiten.NewImage(battlefieldSize, battlefieldSize)
 	battlefield.Fill(color.RGBA{R: 82, G: 82, B: 82, A: 255})
-	terrainName := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
-	if len(a.combatTerrain[terrainName]) > 0 {
-		for row := 0; row < 7; row++ {
-			for column := 0; column < 7; column++ {
-				entry, ok := combatTerrainEntry(
-					terrainName,
-					a.dungeonFloor,
-					a.state.WildernessFloor,
-					a.state.MapX,
-					a.state.MapY,
-					column,
-					row,
-				)
-				if !ok {
-					continue
-				}
-				for _, layer := range combatTerrainLayers(terrainName, entry) {
-					tiles := a.combatTerrain[layer.Atlas]
-					if layer.Index < 0 || layer.Index >= len(tiles) {
-						continue
-					}
-					op := &ebiten.DrawImageOptions{}
-					op.Filter = ebiten.FilterNearest
-					op.GeoM.Scale(2, 2)
-					op.GeoM.Translate(float64(column*48), float64(row*48))
-					battlefield.DrawImage(tiles[layer.Index], op)
-				}
-			}
-		}
-	}
 	battlefieldOp := &ebiten.DrawImageOptions{}
 	battlefieldOp.GeoM.Translate(battlefieldX, battlefieldY)
 	screen.DrawImage(battlefield, battlefieldOp)
@@ -2324,6 +2304,42 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		combat.TilePoint{X: 3, Y: 3},
 		useCamera,
 	)
+	// ★ 地形要走**和戰鬥員同一條座標路徑**：先過相機、再過 `6−x` 水平鏡像
+	// （spec 326 的 CPIC 錨點）。先前這一圈直接拿畫面欄列當地圖座標，
+	// 兩層於是各畫各的——人明明站在空地，腳下卻畫出牆或灌木。
+	terrainName := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
+	if len(a.combatTerrain[terrainName]) > 0 {
+		referenceCoordinates := a.state.CombatUsesReferenceCoordinates()
+		for row := 0; row < 7; row++ {
+			for column := 0; column < 7; column++ {
+				point := combatMapTileForScreen(camera, column, row)
+				entry, ok := combatMovementTerrainEntry(
+					terrainName,
+					a.dungeonFloor,
+					a.state.WildernessFloor,
+					a.state.MapX,
+					a.state.MapY,
+					referenceCoordinates,
+					point.X,
+					point.Y,
+				)
+				if !ok {
+					continue
+				}
+				for _, layer := range combatTerrainLayers(terrainName, entry) {
+					tiles := a.combatTerrain[layer.Atlas]
+					if layer.Index < 0 || layer.Index >= len(tiles) {
+						continue
+					}
+					op := &ebiten.DrawImageOptions{}
+					op.Filter = ebiten.FilterNearest
+					op.GeoM.Scale(2, 2)
+					op.GeoM.Translate(float64(column*48), float64(row*48))
+					battlefield.DrawImage(tiles[layer.Index], op)
+				}
+			}
+		}
+	}
 	a.drawCombatPersistentAreas(battlefield, camera)
 	partyIndex, enemyIndex := 0, 0
 	targets := a.state.CombatTargets()
@@ -2553,20 +2569,11 @@ func combatTerrainLayers(mode string, entry mapdata.BackgroundTile) []combatTerr
 	return nil
 }
 
-func combatTerrainEntry(mode string, dungeon *mapdata.DungeonFloor, wilderness mapdata.WildernessFloor, mapX, mapY, column, row int) (mapdata.BackgroundTile, bool) {
-	switch mode {
-	case "DUNGCOM":
-		if dungeon == nil {
-			return mapdata.BackgroundTile{}, false
-		}
-		return dungeon.Entry(18+column, 7+row)
-	case "WILDCOM":
-		return wilderness.Entry(mapX+column-3, mapY+row-3)
-	default:
-		// RANDCOM is an overlay/decor atlas, not a complete floor. Its
-		// placement routine remains a separate reverse-engineering boundary.
-		return mapdata.BackgroundTile{}, false
-	}
+// combatMapTileForScreen 是戰鬥員畫面錨點的反函式：戰鬥員的畫面格是
+// `鏡像(相機(地圖格))` ＝ `(6 − (x − 原點x), y − 原點y)`，所以由畫面格回推
+// 地圖格就是 `(原點x + 6 − 欄, 原點y + 列)`。地形層用它查自己該畫哪一格。
+func combatMapTileForScreen(camera combat.CombatCamera, column, row int) combat.TilePoint {
+	return combat.TilePoint{X: camera.Origin.X + 6 - column, Y: camera.Origin.Y + row}
 }
 
 func (a *app) drawCombatSpriteMarker(screen *ebiten.Image, fighter combat.Fighter, active, selected bool, x, y int) {
@@ -3096,17 +3103,6 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		key = fmt.Sprintf("%s-head-%02X-body-%02X.png", prefix, headBlock, bodyBlock)
 		sprite = a.combatSprites[key]
 	}
-	if sprite == nil && fighter.HasAnimation {
-		key = fmt.Sprintf("sprit%d-block-%02X", fighter.SpriteSet, fighter.AnimationBlock)
-		if animation := a.combatAnimations[key]; len(animation) > 0 {
-			frame := animation[0]
-			if a.state.AnimationsEnabled() {
-				frame = animationFrame(animation, time.Since(a.animationStart))
-			}
-			sprite = frame.image
-			frameX, frameY = frame.x, frame.y
-		}
-	}
 	if sprite == nil && fighter.Side == combat.SideParty && fighter.HasPartyIcon {
 		headBlock, bodyBlock := fighter.PartyHeadBlock, fighter.PartyBodyBlock
 		if fighter.IconAttack {
@@ -3124,9 +3120,27 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 			sprite = composite
 		}
 	}
+	// ★ 戰場格上的圖示是 **CPIC**，不是 SPRIT。第 75 輪的規格早就寫明分工
+	// （「CPIC 負責靜態／攻擊 icon，SPRIT 負責 encounter animation」），但這支
+	// 先前把 SPRIT 動畫排在 CPIC 前面。兩者的畫布大小就已經說明了差別：
+	// CPIC 恰好是格子尺寸（24／48，對得上 footprint），SPRIT 的畫布高達 73..80
+	// 像素、圖案貼在畫布底部——當成格子圖示畫出來，怪物會落在自己那格下方
+	// 一格半，選取白框裡因此空無一物。
 	if sprite == nil && fighter.SpriteBlock != 0 {
 		key = fmt.Sprintf("cpic%d-block-%02X-item-00.png", fighter.SpriteSet, fighter.SpriteBlock)
 		sprite = a.combatSprites[key]
+	}
+	// 沒有 CPIC 時才退回 SPRIT，至少讓怪物有東西可畫。
+	if sprite == nil && fighter.HasAnimation {
+		key = fmt.Sprintf("sprit%d-block-%02X", fighter.SpriteSet, fighter.AnimationBlock)
+		if animation := a.combatAnimations[key]; len(animation) > 0 {
+			frame := animation[0]
+			if a.state.AnimationsEnabled() {
+				frame = animationFrame(animation, time.Since(a.animationStart))
+			}
+			sprite = frame.image
+			frameX, frameY = frame.x, frame.y
+		}
 	}
 	if sprite == nil {
 		if len(a.combatSpriteIDs) == 0 {
@@ -3192,6 +3206,7 @@ func main() {
 	geoBlock := flag.Int("geo-block", 1, "original GEO block ID used by the map preview")
 	dungeonXOverride := flag.Int("dungeon-x", -1, "override dungeon X (0..15) for deterministic visual verification")
 	dungeonYOverride := flag.Int("dungeon-y", -1, "override dungeon Y (0..15) for deterministic visual verification")
+	dungeonFacingOverride := flag.Int("dungeon-facing", -1, "override dungeon facing (0..7, 0=N) for deterministic visual verification")
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	characterCreation := flag.Bool("character-creation", false, "show the opening character-creation command as a deterministic renderer checkpoint")
@@ -3264,6 +3279,9 @@ func main() {
 		*combatVisualDemo != "cloudkill-persistent" &&
 		*combatVisualDemo != "kill" {
 		log.Fatal("-combat-visual-demo has an unknown value")
+	}
+	if *dungeonFacingOverride < -1 || *dungeonFacingOverride > 7 {
+		log.Fatal("-dungeon-facing must be 0..7 (0=N) or -1 to keep the flow's facing")
 	}
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
@@ -3483,17 +3501,32 @@ func main() {
 	geoGrid := &geoGridValue
 	dungeonFloorValue := mapdata.GenerateDungeon(*geoGrid, state.DungeonX, state.DungeonY)
 	dungeonFloor := &dungeonFloorValue
+	// ★ 三支戰鬥地形投影要在**任何 checkpoint 開戰之前**裝上。它們原本裝在
+	// `RunGame` 前一行，而 `-encounter`／`-burial-red-web-battle` 這類確定性
+	// checkpoint 在那之前就已經 `StartCombat`——於是那場戰鬥完全沒有地形：
+	// 佈陣不看地面、AI 移動不算成本、閃電也不會撞牆反彈。README 的戰鬥圖是
+	// 這條路拍的，所以圖上的人才會站在牆裡與灌木上。
+	// `app.state` 是指標，所以底下 checkpoint 對 `state` 的改動與這裡裝上的
+	// 投影看到的是同一個物件。
+	gameApp := &app{state: &state, dungeonFloor: dungeonFloor, combatTerrainMode: *combatTerrainMode}
+	gameApp.state.SetCombatLineTerrain(gameApp.combatLineTerrain())
+	gameApp.state.SetCombatMovementTerrain(gameApp.combatMovementTerrain())
+	gameApp.state.SetCombatScanMapProvider(gameApp.combatScanTacticalMap)
 	if *encounter {
 		if *encounterArea < 1 || *encounterArea > 6 {
 			log.Fatal("-encounter-area must be 1..6")
 		}
 		state.Area.GameArea = uint8(*encounterArea)
-		if *combatTerrainMode == "WILDCOM" {
+		if *combatTerrainMode == "DUNGCOM" {
+			state.SetInDungeon(true)
+		} else {
+			// 沒有指定圖集時 `selectCombatTerrainName` 會選 WILDCOM，
+			// 但荒野座標預設是 (0,0)，查表有一半落在地圖外——戰場於是
+			// 大半沒有地形。checkpoint 要能當畫面證據就得站在真的有資料的
+			// 位置上，所以這裡與 `-combat-terrain WILDCOM` 用同一組座標。
 			state.SetInDungeon(false)
 			state.MapX, state.MapY = 25, 12
 			state.WildernessFloor = mapdata.GenerateWilderness(0x20, 1)
-		} else if *combatTerrainMode == "DUNGCOM" {
-			state.SetInDungeon(true)
 		}
 		block, ok := eclBlocks[uint8(*encounterBlock)]
 		if !ok {
@@ -3839,7 +3872,7 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	gameApp := &app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
+	*gameApp = app{state: &state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
 	if *innerFinalBattle && *screenshotPath != "" {
 		// Capture-only boss observation camera. Formal play keeps the RuleBook
 		// active-fighter camera established above.
@@ -3855,13 +3888,18 @@ func main() {
 		gameApp.journalImageOpen = true
 		gameApp.journalImageZoom = *journalImageZoom
 	}
-	gameApp.state.SetCombatLineTerrain(gameApp.combatLineTerrain())
-	gameApp.state.SetCombatMovementTerrain(gameApp.combatMovementTerrain())
-	gameApp.state.SetCombatScanMapProvider(gameApp.combatScanTacticalMap)
 	if *partyLoadPath != "" {
 		if err := gameApp.restoreAudioSnapshot(); err != nil {
 			log.Fatal(err)
 		}
+	}
+	// 朝向覆寫要在 checkpoint 流程之後才套用：`-dungeon-x`／`-dungeon-y` 是在
+	// 流程之前設的，而故事流程會自己決定站在哪、面向哪。
+	if *dungeonFacingOverride >= 0 {
+		x, y, _ := gameApp.state.DungeonGeometryView()
+		gameApp.state.SetDungeonGeometryView(x, y, uint8(*dungeonFacingOverride))
+		gameApp.state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, *dungeonFacingOverride)
+		gameApp.state.DungeonWallRoof = geoGrid.CellWrapped(x, y).Terrain
 	}
 	if err := ebiten.RunGame(gameApp); err != nil {
 		log.Fatal(err)

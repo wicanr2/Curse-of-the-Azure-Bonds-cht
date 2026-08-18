@@ -49,11 +49,14 @@ remake `(48,48)..(223,223)`，嚴格 2× nearest-neighbour；周圍灰色 stage 
 
 | 圖片 | checkpoint | SHA-256 |
 |---|---|---|
-| `gold-box-layout-adventure.png` | `-inn` | `9c297fc2606979ac9914ff69ae8f921be62c068efdad22f11d3fc39b560cffa9` |
+| `gold-box-layout-adventure.png` | `-inn` | `285191cddba9e61de6280575daed5a14f6adcf6ad06b3cce67bdda474cf21215` |
 | `character-creation-remake-640.png` | `-character-creation` | `0251c1ff34c8c2cd25042151fdce577dbfb5cb046acc26912be2c8df37018c8e` |
-| `gold-box-layout-combat.png` | `-encounter` | `ae203560cec1bd1d5beefca1533b7a2f4349df73deb2bc9e2bf982498c32c8b6` |
-| `tilverton-first-person-remake.png` | `-tilverton-dungeon` | `0139ed5a368798c305b84b732b689b4c4cbc5eedcd20cef9cc3b6d514b2bb019` |
-| `burial-glen-red-web-spiders.png` | `-burial-red-web-battle` | `58f3458e75f581b0df4902ac2516c2bd835dba2337e106dfebd56b96d1f283af` |
+| `gold-box-layout-combat.png` | `-encounter` | `2568fdbd18fce3e8ea9f4c117443a84d6d2952903ae6ece8684be2bea635ec56` |
+| `tilverton-first-person-remake.png` | `-tilverton-dungeon -dungeon-facing 0` | `088aaae2c59f4937f8832349c14f688fec287b79ab0d0c17eca1d61167902808` |
+| `burial-glen-red-web-spiders.png` | `-burial-red-web-battle` | `8a4fa89bc7b40169c9f0489742219bc753f8fdc2ba4f68fc1c5cd7888c556eb8` |
+
+雜湊由 [第 1130 輪](1130-screenshot-layer-alignment.md)重拍：那一輪修掉
+sub-image 座標、戰鬥地形與戰鬥員的座標路徑、佈陣的地面檢查與戰場圖示來源。
 
 這組畫面可證明目前文字留在各自的可用區、角色建立沒有錯誤分欄、原版 stone
 chrome 與 16×15 倚天基線已接通。它們是 `material-exact/layout-reconstructed` 的

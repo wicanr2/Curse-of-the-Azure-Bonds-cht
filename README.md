@@ -55,11 +55,11 @@ Hap／熔岩洞／巫師塔 → 散提爾堡 → **眼魔洞穴（手札 59、De
 
 ![原版四段建角的名字輸入段](docs/screenshots/guided-creation-name.png)
 
-![繁中戰鬥：原版石框、CPIC 小人與分離的訊息／命令列](docs/screenshots/gold-box-layout-combat.png)
+![繁中戰鬥：兩隊各在視野一側，地形與戰鬥員走同一條相機座標](docs/screenshots/gold-box-layout-combat.png)
 
-![提爾佛頓第一人稱：原版 88×88 場景內框與右側隊伍欄](docs/screenshots/tilverton-first-person-remake.png)
+![提爾佛頓第一人稱：朝北的走廊，原版 88×88 場景內框與右側隊伍欄](docs/screenshots/tilverton-first-person-remake.png)
 
-![Burial Glen 紅網戰鬥：原版地城素材與戰鬥 footer](docs/screenshots/burial-glen-red-web-spiders.png)
+![Burial Glen 紅網戰鬥：四隻巨蛛的 CPIC 圖示、原版地城素材與戰鬥 footer](docs/screenshots/burial-glen-red-web-spiders.png)
 
 ### 法術演出的四種通道
 
@@ -80,6 +80,11 @@ Hap／熔岩洞／巫師塔 → 散提爾堡 → **眼魔洞穴（手札 59、De
 [spec 1128](docs/spec/1128-cloud-areas-are-the-obstacle-terrain.md)。
 兩種雲同時是戰術地圖的**障礙格**（地形碼 `1Eh`／`1Ch`）——低階角色繞開毒雲、
 七級以上的老手硬闖。
+
+這五張的產生指令與雜湊在
+[`docs/screenshots/manifest.json`](docs/screenshots/manifest.json)，由
+`cmd/screenshot-audit` 驗；上一輪修掉的四個圖層對齊錯誤見
+[spec 1130](docs/spec/1130-screenshot-layer-alignment.md)。
 
 更多地圖、人物舞台、戰鬥時間軸與素材圖在[截圖目錄](docs/screenshots/)；原版忠實
 theme 與日後美化 theme 分開維護。
@@ -133,6 +138,11 @@ theme 與日後美化 theme 分開維護。
 - **手札**：45 則有中英文，只有 15 則接上 ECL 觸發來源；手札 59 的地圖尚未繪製。
 - **存檔**：角色記錄還有 29 bytes 未解讀；跨遊戲角色轉移未做。
 - **表現層與音訊**：畫面逐張對照、每個場景與戰鬥 phase 的音效綁定。
+  已知兩處未量的錨點：SPRIT 畫布相對於戰場格的位置（現在只在沒有 CPIC 時才會
+  走到那條路），以及第一人稱每一塊牆磚的 `WALLDEF` 美術對應——
+  幾何已與 spec 1006 對齊，選圖還沒比。
+- **戰鬥佈陣**：`SETUP MONSTER` 的距離與 occupancy 表還沒解，兩隊的編制格位置
+  仍是本作自訂的 fallback（現在至少會避開站不上去的格）。
 - 三平台發行包。因此目前不製作正式 release 或宣傳片。
 
 逐項狀態與建議順序見[剩餘工作盤點](docs/knowledge/coab-remake-todo.md)。

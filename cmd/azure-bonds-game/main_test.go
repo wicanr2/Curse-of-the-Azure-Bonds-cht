@@ -10,6 +10,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
@@ -327,7 +328,7 @@ func TestFitTextToWidthKeepsSingleLineInsideDeclaredRegion(t *testing.T) {
 
 func TestCombatTerrainEntryUsesWildernessCameraCenter(t *testing.T) {
 	floor := mapdata.GenerateWilderness(0, 1)
-	got, ok := combatTerrainEntry("WILDCOM", nil, floor, 25, 12, 3, 3)
+	got, ok := combatMovementTerrainEntry("WILDCOM", nil, floor, 25, 12, false, 3, 3)
 	want, wantOK := floor.Entry(25, 12)
 	if ok != wantOK || got != want {
 		t.Fatalf("center entry=(%#v,%v), want (%#v,%v)", got, ok, want, wantOK)
@@ -335,8 +336,25 @@ func TestCombatTerrainEntryUsesWildernessCameraCenter(t *testing.T) {
 }
 
 func TestCombatTerrainEntryDoesNotTreatRANDCOMAsFloor(t *testing.T) {
-	if _, ok := combatTerrainEntry("RANDCOM", nil, mapdata.WildernessFloor{}, 0, 0, 0, 0); ok {
+	if _, ok := combatMovementTerrainEntry("RANDCOM", nil, mapdata.WildernessFloor{}, 0, 0, false, 0, 0); ok {
 		t.Fatal("RANDCOM unexpectedly returned a full-floor entry")
+	}
+}
+
+// 地形層與戰鬥員層必須是同一條座標路徑的兩端。先前地形直接拿畫面欄列當
+// 地圖座標，於是人站在空地、腳下卻畫出牆。
+func TestCombatMapTileForScreenInvertsFighterAnchor(t *testing.T) {
+	for _, camera := range []combat.CombatCamera{
+		combat.NewCombatCamera(combat.TilePoint{}, combat.TilePoint{X: 3, Y: 3}, false),
+		combat.NewCombatCamera(combat.TilePoint{X: 0, Y: 0}, combat.TilePoint{X: 3, Y: 3}, true),
+		combat.NewCombatCamera(combat.TilePoint{X: 9, Y: 4}, combat.TilePoint{X: 3, Y: 3}, true),
+	} {
+		for _, tile := range []combat.TilePoint{{X: 0, Y: 0}, {X: 5, Y: 2}, {X: 9, Y: 6}} {
+			anchor := mirroredCombatAnchor(camera.Apply(tile))
+			if got := combatMapTileForScreen(camera, anchor.X, anchor.Y); got != tile {
+				t.Fatalf("camera=%+v tile=%+v anchor=%+v round trip=%+v", camera, tile, anchor, got)
+			}
+		}
 	}
 }
 
@@ -394,7 +412,7 @@ func TestCombatScanTacticalMapPreservesRawTDAndTDEFBytes(t *testing.T) {
 			dungeon.Tiles[y][x] = 22
 		}
 	}
-	app := app{dungeonFloor: dungeon, combatTerrainMode: "DUNGCOM"}
+	app := app{state: &game.State{}, dungeonFloor: dungeon, combatTerrainMode: "DUNGCOM"}
 
 	got, err := app.combatScanTacticalMap()
 	if err != nil {
@@ -421,7 +439,7 @@ func TestCombatScanTacticalMapFailsClosedOnUnknownTD(t *testing.T) {
 		}
 	}
 	dungeon.Tiles[7][18] = 66
-	app := app{dungeonFloor: dungeon, combatTerrainMode: "DUNGCOM"}
+	app := app{state: &game.State{}, dungeonFloor: dungeon, combatTerrainMode: "DUNGCOM"}
 	if _, err := app.combatScanTacticalMap(); err == nil {
 		t.Fatal("unknown TD unexpectedly accepted")
 	}
