@@ -170,6 +170,7 @@ func (a *app) combatMove(dx, dy int) error {
 // 所以要事先裝上去（spec 830／838 的移動階段）。
 func (a *app) combatMovementTerrain() combat.MovementTerrain {
 	return func(x, y int) (int, bool) {
+		a.ensureDungeonFloor()
 		mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
 		entry, ok := combatMovementTerrainEntry(
 			mode,
@@ -193,6 +194,7 @@ func (a *app) combatLineTerrain() combat.LineTerrain {
 	// 現在於任何 checkpoint 開戰之前就裝上，那時 `InDungeon` 與戰鬥座標
 	// 都還沒定案。
 	return func(x, y int) combat.LineCell {
+		a.ensureDungeonFloor()
 		mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
 		entry, ok := combatMovementTerrainEntry(
 			mode,
@@ -216,6 +218,7 @@ func (a *app) combatLineTerrain() combat.LineTerrain {
 // already one-based TDEF IDs; they must not be translated through TileIndex,
 // which belongs to the separate renderer-atlas namespace.
 func (a *app) combatScanTacticalMap() (enginescan.TacticalMap, error) {
+	a.ensureDungeonFloor()
 	mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
 	referenceCoordinates := a.state.CombatUsesReferenceCoordinates()
 	width, height := mapdata.WildernessWidth, mapdata.WildernessHeight
@@ -1040,6 +1043,29 @@ func (a *app) syncGeoMapRequest() {
 	a.refreshDungeonPreview()
 	a.geoSet, a.geoBlock = set, block
 	a.geoLabel = fmt.Sprintf("GEO%d block 0x%02X", set, block)
+}
+
+// ensureDungeonFloor 讓戰鬥地形與**目前**的地城座標一致。
+//
+// ★ 戰鬥地圖是由地城座標生出來的（`GenerateDungeon`），而 checkpoint 的劇情
+// 流程會在開戰之前把隊伍移到別的格。不同步的話，佈陣拿舊地圖檢查地面、畫面
+// 卻用新地圖畫——又回到「人站在牆裡」那一類的兩層不一致，只是換一種來源。
+//
+// 座標沒變時只做兩次整數比較，所以放在逐格查詢的入口是安全的。
+func (a *app) ensureDungeonFloor() {
+	if a.geoGrid == nil {
+		return
+	}
+	x, y, _ := a.state.DungeonGeometryView()
+	if x < 0 || x >= geo.Width || y < 0 || y >= geo.Height {
+		x, y = 7, 13
+	}
+	if a.dungeonFloor != nil && a.dungeonX == x && a.dungeonY == y {
+		return
+	}
+	a.dungeonX, a.dungeonY = x, y
+	floor := mapdata.GenerateDungeon(*a.geoGrid, x, y)
+	a.dungeonFloor = &floor
 }
 
 func (a *app) refreshDungeonPreview() {

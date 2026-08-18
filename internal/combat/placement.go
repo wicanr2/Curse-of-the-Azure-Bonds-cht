@@ -74,16 +74,22 @@ func IconDirectionForTeam(mapDirection uint8, side Side) (uint8, bool) {
 // 永遠不可能同時入鏡**：相機必然被迫開啟，然後對準哪一隊，另一隊就被推出
 // 畫面。這與本函式自己寫的「distinct halves of the current combat viewport」
 // 相矛盾，Burial Glen 的戰鬥截圖也因此只剩一個人、四隻蜘蛛全在畫面外。
+//
+// 列從第 2 列起算，讓兩條縱帶落在七列視野的**中段**而不是貼著上緣。人數多到
+// 排不下時往下延伸，相機自然接手。
 func FormationTile(side Side, ordinal int) TilePoint {
 	if ordinal < 0 {
 		ordinal = 0
 	}
-	column, row := ordinal%3, ordinal/3
+	column, row := ordinal%3, formationFirstRow+ordinal/3
 	if side == SideEnemy {
 		return TilePoint{X: 4 + column, Y: row}
 	}
 	return TilePoint{X: column, Y: row}
 }
+
+// formationFirstRow 是編制帶的起始列。
+const formationFirstRow = 2
 
 // ReferencePlacement applies the coordinate formula used by the reference
 // try_place_combatant routine. candidateRow/Column are the free cells in the
