@@ -32,7 +32,10 @@ trace=0
 step_index=0
 for step in $seq; do
   key="${step%%:*}"; delay="${step##*:}"
-  if [ "$key" = "-" ]; then sleep "$delay"; continue; fi
+  # `-` 是純等待（不送鍵）；逐鍵軌跡模式下它一樣要拍，否則看不到自動推進的畫面。
+  if [ "$key" = "-" ]; then
+    sleep "$delay"
+  else
   # 每次送鍵前重設焦點：DOSBox 的 SDL 視窗剛映射時還吃不到 XTEST，
   # 只在啟動時設一次焦點會讓最早的幾個按鍵整個掉光。
   # ⚠ 視窗要**每次重新找**：DOSBox 切換顯示模式時會重建 SDL 視窗，
@@ -42,10 +45,11 @@ for step in $seq; do
   [ -n "$cur" ] && xdotool windowfocus "$cur" 2>/dev/null
   # 按住再放開，不要用瞬時的 key：DOSBox 一幀才取一次 SDL 事件佇列，
   # 太短的按壓在某些階段會被吃掉。
-  xdotool keydown --clearmodifiers "$key" 2>/dev/null || true
-  sleep 0.25
-  xdotool keyup --clearmodifiers "$key" 2>/dev/null || true
-  sleep "$delay"
+    xdotool keydown --clearmodifiers "$key" 2>/dev/null || true
+    sleep 0.25
+    xdotool keyup --clearmodifiers "$key" 2>/dev/null || true
+    sleep "$delay"
+  fi
   if [ "$trace" = "1" ]; then
     import -window root /tmp/shot.xwd >/dev/null 2>&1
     convert /tmp/shot.xwd -crop 640x400+0+0 +repage "${out%.png}-$(printf %02d "$step_index").png" >/dev/null 2>&1

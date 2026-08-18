@@ -3972,12 +3972,20 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	// 朝向覆寫要在 checkpoint 流程之後才套用：`-dungeon-x`／`-dungeon-y` 是在
-	// 流程之前設的，而故事流程會自己決定站在哪、面向哪。
-	if *dungeonFacingOverride >= 0 {
-		x, y, _ := gameApp.state.DungeonGeometryView()
-		gameApp.state.SetDungeonGeometryView(x, y, uint8(*dungeonFacingOverride))
-		gameApp.state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, *dungeonFacingOverride)
+	// 座標與朝向的覆寫都要在 checkpoint 流程之後再套一次：兩者在流程之前也設過，
+	// 但故事流程會自己決定站在哪、面向哪。這兩個旗標的用途就是「把畫面釘在指定的
+	// 格子」，所以最後一次寫入必須是它們——否則拿 `-tilverton-dungeon` 取畫面時，
+	// 不論給哪一格都只會得到流程自己的起點。
+	if *dungeonXOverride >= 0 || *dungeonFacingOverride >= 0 {
+		x, y, facing := gameApp.state.DungeonGeometryView()
+		if *dungeonXOverride >= 0 {
+			x, y = *dungeonXOverride, *dungeonYOverride
+		}
+		if *dungeonFacingOverride >= 0 {
+			facing = uint8(*dungeonFacingOverride)
+		}
+		gameApp.state.SetDungeonGeometryView(x, y, facing)
+		gameApp.state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(facing))
 		gameApp.state.DungeonWallRoof = geoGrid.CellWrapped(x, y).Terrain
 	}
 	if err := ebiten.RunGame(gameApp); err != nil {

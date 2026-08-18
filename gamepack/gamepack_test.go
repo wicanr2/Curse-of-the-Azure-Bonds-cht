@@ -316,7 +316,8 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	tilverton, found := pack.FindMapByKindLocation("first_person", 2, 1)
 	if !found || tilverton.ID != "tilverton.first-person" ||
 		tilverton.GeometryFile != "GEO2.DAX" ||
-		tilverton.OutdoorSkyColor == nil || *tilverton.OutdoorSkyColor != 3 ||
+		tilverton.OutdoorSkyColor == nil || *tilverton.OutdoorSkyColor != 11 ||
+		tilverton.IndoorSkyColor == nil || *tilverton.IndoorSkyColor != 9 ||
 		tilverton.Spawn == nil || tilverton.Spawn.X != 7 ||
 		tilverton.Spawn.Y != 13 || tilverton.Spawn.Direction != 0 {
 		t.Fatalf("Tilverton first-person definition=%+v found=%v", tilverton, found)

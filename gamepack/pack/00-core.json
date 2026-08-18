@@ -1362,8 +1362,8 @@
     251,
     252
    ],
-   "outdoor_sky_color": 3,
-   "indoor_sky_color": 0,
+   "outdoor_sky_color": 11,
+   "indoor_sky_color": 9,
    "wrap": true,
    "scale": 2,
    "spawn": {
