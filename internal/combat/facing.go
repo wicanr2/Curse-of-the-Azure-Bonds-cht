@@ -171,3 +171,143 @@ func (b *Battle) ApplyInitialFacing(partyDirection uint8) {
 		b.fighters[id] = fighter
 	}
 }
+
+// combatMapMaxX／combatMapMaxY 是原作扇形判斷的座標上下界（`31h` 欄、`18h` 列），
+// 也就是 50×25 的戰場（spec 1002）。四個座標任一個出界就直接否，不是夾到邊界。
+const (
+	combatMapMaxX = 0x31
+	combatMapMaxY = 0x18
+)
+
+// nineCellOffsetX／nineCellOffsetY 是原作 `DS:2694h`／`DS:269Dh` 的九格方向表
+// （spec 999）。索引 0..7 是八方向，索引 8 是「原地」。
+var (
+	nineCellOffsetX = [9]int{0, 1, 1, 1, 0, -1, -1, -1, 0}
+	nineCellOffsetY = [9]int{-1, -1, 0, 1, 1, 1, 0, -1, 0}
+)
+
+// InFacingCone 是原作 `overlay-31:054Ah`（`retf 0Ah`，spec 1002）：
+// 目標在不在「起點往 direction 前進一格」為頂點、半角 45° 的扇形內。
+//
+// ⚠ 頂點是 `(px, py) = 起點 + 位移[direction]`，**不是起點本身**；起點自己與
+// 正前方那一格另外由前置判斷放行，所以正後方一格不算在內。
+//
+// direction 為 0FFh 時當成 8（原地），而 8 一律成立。0..8 與 0FFh 以外的值在
+// 原作會讀到未初始化的區域變數，這裡回 false——沒有呼叫端會傳那種值。
+func InFacingCone(startX, startY, targetX, targetY int, direction uint8) bool {
+	if startX < 0 || startX > combatMapMaxX || startY < 0 || startY > combatMapMaxY ||
+		targetX < 0 || targetX > combatMapMaxX || targetY < 0 || targetY > combatMapMaxY {
+		return false
+	}
+	if direction == 0xFF {
+		direction = 8
+	}
+	if direction > 8 {
+		return false
+	}
+	px := startX + nineCellOffsetX[direction]
+	py := startY + nineCellOffsetY[direction]
+	if (startX == targetX && startY == targetY) || (px == targetX && py == targetY) {
+		return true
+	}
+	// 八段各是兩支半平面判斷，字面照抄。正交四向的兩支互為鏡像，合起來是
+	// 「沿軸的投影 ≥ 垂直方向的絕對值」；斜向四向的兩支則是分割線兩側的
+	// 兩個 45° 楔形，合起來同樣是 90°。兩者的程式形狀完全相同。
+	switch direction {
+	case 0: // 上
+		if targetX >= px && targetY <= py+px-targetX {
+			return true
+		}
+		if targetX > px {
+			return false
+		}
+		return targetY <= py+targetX-px
+	case 1: // 右上
+		if targetX >= px && targetY <= py+px-targetX {
+			return true
+		}
+		if targetX < px+py-targetY {
+			return false
+		}
+		return targetY <= py
+	case 2: // 右
+		if targetX >= px+py-targetY && targetY <= py {
+			return true
+		}
+		if targetX < px+targetY-py {
+			return false
+		}
+		return targetY >= py
+	case 3: // 右下
+		if targetX >= px+targetY-py && targetY >= py {
+			return true
+		}
+		if targetX < px {
+			return false
+		}
+		return targetY >= py+targetX-px
+	case 4: // 下
+		if targetX >= px && targetY >= py+targetX-px {
+			return true
+		}
+		if targetX > px {
+			return false
+		}
+		return targetY >= py+px-targetX
+	case 5: // 左下
+		if targetX <= px && targetY >= py+px-targetX {
+			return true
+		}
+		if targetX > px+py-targetY {
+			return false
+		}
+		return targetY >= py
+	case 6: // 左
+		if targetX <= px+py-targetY && targetY >= py {
+			return true
+		}
+		if targetX > px+targetY-py {
+			return false
+		}
+		return targetY <= py
+	case 7: // 左上
+		if targetX <= px+targetY-py && targetY <= py {
+			return true
+		}
+		if targetX > px {
+			return false
+		}
+		return targetY <= py+targetX-px
+	}
+	return true // direction 8：原地，無條件成立
+}
+
+// opportunityAttackFacingAllows 是原作「離開接觸就被打」（`overlay-13:095Ah`，
+// spec 1010）動手前的最後一道閘：打手的**朝向 −2 .. ＋2** 這五個方向裡，
+// 只要有一個讓移動者落在扇形內就打得到——正面加左右各 90°，合起來 180°。
+//
+// ⚠ 打手的先攻 `+3` 還沒歸零（這一輪還沒輪到他），或這一輪一次都還沒動
+// （動作計數 `+0Fh = 0`）時，**整個面向檢查被跳過，無條件打**。
+func (b *Battle) opportunityAttackFacingAllows(attackerID, moverID string) (bool, error) {
+	if b == nil {
+		return false, fmt.Errorf("battle is nil")
+	}
+	attacker, ok := b.fighters[attackerID]
+	if !ok {
+		return false, fmt.Errorf("unknown fighter %q", attackerID)
+	}
+	mover, ok := b.fighters[moverID]
+	if !ok {
+		return false, fmt.Errorf("unknown fighter %q", moverID)
+	}
+	if attacker.CombatAction.Delay > 0 || attacker.CombatActionCount == 0 {
+		return true, nil
+	}
+	for offset := uint8(6); offset <= 0x0A; offset++ {
+		direction := (attacker.CombatFacing + offset) % 8
+		if InFacingCone(attacker.CombatX, attacker.CombatY, mover.CombatX, mover.CombatY, direction) {
+			return true, nil
+		}
+	}
+	return false, nil
+}

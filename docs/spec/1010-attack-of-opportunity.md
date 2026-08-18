@@ -13,6 +13,9 @@ procedure 離開接觸(角色: 遠指標;   { bp+08h..0Bh }
                    方向: byte);    { bp+06h }
 ```
 
+★ PC-98 的 Borland 除錯符號把這支叫 **`CHECKPARTINGBLOWS`**（parting blow ＝
+離場時挨的那一下），與扇形判斷的 `INARC` 一樣是原作者的命名。
+
 ## ★★ 用「移動前後的相鄰名單取差集」判斷誰失去接觸
 
 ```pascal
@@ -152,11 +155,24 @@ if <overlay-24 entry#41>(打手) <> 0 then
 
 本支沒有字串。
 
+## remake 對照
+
+| remake | 原作 |
+|---|---|
+| `(*Battle).opportunityAttackFacingAllows` | 五方向迴圈 ＋ 兩個旁路 |
+| `combat.InFacingCone` | `overlay-31 entry#4`（spec 1002） |
+| `Fighter.CombatFacing`／`CombatActionCount`／`CombatAction.Delay` | `+18Dh` 的 `+09h`／`+0Fh`／`+03` |
+
+`MoveWithTerrainAndFreeAttacks` 的「離開接觸就被打」那一段現在先過這道閘才動手。
+⚠ 前面四道（`entry#6`、`sub_1144`、效果碼 `4Ah`／`4Bh`）還沒解讀，remake 沒有對應物，
+所以現在的閘比原作**鬆**。
+
 ## 明確不宣稱
 
 - 沒有宣稱 `overlay-24 entry#32`、`entry#6`、`entry#5`、`entry#27` 的內部行為。
 - 沒有宣稱效果碼 `4Ah`／`4Bh` 是什麼（要查 spec 1005 的分派表才知道處理常式）。
 - 沒有宣稱 `sub_1144`（同模組）判斷什麼，也沒有宣稱 `sub_19D8` 怎麼算攻擊。
 - 沒有宣稱 `DS:75E5h`／`75E6h` 這兩個旗標給誰看。
-- 沒有宣稱 `打手^[18Dh]^[3]`／`^[0Fh]` 是什麼，只知道它們會跳過面向檢查。
+- `打手^[18Dh]^[3]` 是先攻、`^[0Fh]` 是這一輪的動作計數（spec 1137 的四道閘），
+  但沒有宣稱「先攻還沒歸零就無條件打」在遊戲設計上是什麼意思。
 - 沒有宣稱 PC-98 多出來的 `overlay-24 entry#41`／`entry#42` 判斷什麼。
