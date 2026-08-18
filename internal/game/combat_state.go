@@ -129,6 +129,10 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	if err := applyHouseRules(battle); err != nil {
 		return err
 	}
+	// 開場面向（spec 805）：`+09h := 表{7,2,3,6}[隊伍朝向 div 2]`，敵方再轉 180 度。
+	// 索引取地城裡的隊伍朝向；在沒有地城座標的 checkpoint 上它是 0，
+	// 與原作「面向表只有四筆」的粗度一致。
+	battle.ApplyInitialFacing(s.DungeonDirection)
 	if err := battle.BeginScheduledRound(); err != nil {
 		return err
 	}
@@ -147,7 +151,6 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.Mode = ModeCombat
 	return s.advanceCombatToParty()
 }
-
 
 // combatPlacementProbeLimit 是佈陣時最多往後試幾個編制格。3 欄 × 16 列是
 // DUNGCOM fallback 戰鬥地圖的高度，足以讓整隊在一條縱帶裡找到落腳點。

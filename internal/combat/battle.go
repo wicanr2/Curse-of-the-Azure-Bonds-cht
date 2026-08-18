@@ -104,8 +104,21 @@ type Fighter struct {
 	// clear this marker separately.
 	DownedCorpse bool
 	CombatAction ActionState
-	HitPoints    int
-	MaxHitPoints int
+	// 原作戰鬥狀態記錄（`+18Dh` 指到的 22 bytes）的三格，spec 1137：
+	// `+09h` 面向、`+0Fh` 這一回合轉向過幾次、`+12h` 累計轉向（0..7 環狀）。
+	// 後兩格在回合開始清 0；`+09h` 跨回合保留。
+	CombatFacing      uint8
+	CombatActionCount uint8
+	CombatTurnTotal   uint8
+	// ArmorClassFacing 是原作角色記錄的第二個 AC 欄位（`+19Bh`）。攻擊結算依
+	// `RearAttackApplies` 在它與 `ArmorClass`（`+19Ah`）之間挑一個。
+	// ⚠ 原作怎麼算出這一格**還沒解讀**（spec 1000 明寫「不宣稱 +19Ah／+19Bh」），
+	// 所以 `ArmorClassFacingKnown` 為 false 時攻擊結算**不會**改用它——
+	// 機制接上了，數值沒有被發明。0 是合法的 AC，不能拿零值當「沒有」。
+	ArmorClassFacing      int
+	ArmorClassFacingKnown bool
+	HitPoints             int
+	MaxHitPoints          int
 	// HitDice preserves the original Player/MON*CHA byte at offset 0xE5.
 	// Poisonous-cloud rules consume it directly.
 	HitDice uint8
@@ -1100,6 +1113,10 @@ func (b *Battle) initializeRoundDelays() []engineinitiative.Entry {
 			entries = append(entries, engineinitiative.Entry{
 				ID: fighter.ID, Dexterity: fighter.Dexterity, CombatTeam: combatTeam,
 			})
+			// 回合開始清掉動作計數與累計轉向（原作 `overlay-08 entry#4`，spec 804）。
+			// 面向不清——它跨回合保留。
+			fighter.CombatActionCount, fighter.CombatTurnTotal = 0, 0
+			b.fighters[id] = fighter
 		}
 	}
 	initialized := engineinitiative.InitializeDelays(b.rng, entries, 0)
@@ -1612,7 +1629,18 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	}
 	forcedMiss := target.MonsterAffectForcesAttackMiss()
 	critical := attackRoll == 20 && !forcedMiss
+	// 原作攻擊動作在結算之前先轉向面對目標（`overlay-13:19D8h`，spec 1019）；
+	// 動作計數已經到 2 就不再轉。轉完要重讀，後面的判定吃的是新面向。
+	if _, faceErr := b.FaceTarget(attacker.ID, target.ID); faceErr == nil {
+		attacker = b.fighters[attacker.ID]
+	}
 	targetArmorClass := target.ArmorClass
+	// 原作攻擊結算（`overlay-13:14E8h`）在三道條件成立時改用第二個 AC 欄位。
+	if target.ArmorClassFacingKnown {
+		if rear, rearErr := b.RearAttackApplies(attacker.ID, target.ID); rearErr == nil && rear {
+			targetArmorClass = target.ArmorClassFacing
+		}
+	}
 	targetArmorClass += target.MonsterAffectArmorClassBonusAgainst(attacker)
 	if attacker.isEvil() && target.ProtectedFromEvil {
 		targetArmorClass += 2
@@ -1820,6 +1848,11 @@ func (b *Battle) MoveWithTerrainAndFreeAttacks(fighterID string, dx, dy, maxCost
 		}
 		guarder.CombatAction.Guarding = false
 		b.fighters[guardID] = guarder
+		// 原作在機會攻擊動手之前先對**被打的那個人**記一次轉向
+		// （`194Ah(角色, q)`，spec 817）：動作計數加一、累計轉向加上最短轉法。
+		if turnErr := b.AccountTurn(fighterID, guardID); turnErr != nil {
+			return MoveResult{}, turnErr
+		}
 		attack, err := b.Attack(guardID, fighterID)
 		if err != nil {
 			return MoveResult{}, err
