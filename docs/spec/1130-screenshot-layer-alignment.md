@@ -14,7 +14,7 @@
 | `gold-box-layout-adventure` | 黃框裡的人像沒佔滿 | sub-image 目的地座標被扣了兩次 |
 | `gold-box-layout-combat` | 人站在綠色灌木上 | 地形層沒過相機與鏡像 |
 | `burial-glen-red-web-spiders` | 人站在牆裡、四隻蜘蛛全不見 | 同上 ＋ 編制格在視野外 ＋ 佈陣不看地面 |
-| `tilverton-first-person-remake` | 像沒有外框、3D 組成可疑 | 兩者都沒錯，見下 |
+| `tilverton-first-person-remake` | 像沒有外框、3D 組成可疑 | 框與幾何都沒錯；但一大半牆磚沒畫出來（spec 1131）|
 
 ## 一、sub-image 只裁切，座標仍是母圖的
 
@@ -90,8 +90,10 @@ round-75 早就寫明分工：「CPIC 負責靜態／攻擊 icon，SPRIT 負責 
   spec 406 的 `(24,24)..(111,111)`。
 
 新增 `-dungeon-facing`（0..7，0 為北），與既有的 `-dungeon-x`／`-dungeon-y` 同一族，
-用來拍有縱深的走廊視角。README 那張改成朝北：地板、兩側牆的收斂與遠處牆面
-都看得見，比一片平牆有資訊量。
+用來從任一朝向檢查視野。
+
+★ 幾何對了不等於畫面對了：**該畫的格子有一大半根本沒畫出來**（天空格與側牆的
+斜邊全部落在沒有載入的第 0 段符號），見 [spec 1131](1131-wall-symbol-group-zero.md)。
 
 ⚠ `docs/reference/original-dos/tilverton-first-person-demo.png` **不能**當這個
 位置的 oracle。它的位置列印是 `7,13 N`，畫面卻是洋紅天空的戶外林地與帳篷，

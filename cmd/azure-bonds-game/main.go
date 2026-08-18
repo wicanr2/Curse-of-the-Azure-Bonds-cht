@@ -69,6 +69,8 @@ type app struct {
 	geoPreview             bool
 	areaMapPreview         bool
 	areaMapSymbols         []*ebiten.Image
+	wallSharedSymbols      []*ebiten.Image
+	wallSharedFirstID      uint8
 	skyImages              [3]*ebiten.Image
 	geoGrid                *geo.Grid
 	geoX                   int
@@ -1177,7 +1179,47 @@ func (a *app) prepareWallPreview() {
 				column: stamp.Column,
 			})
 		}
+		for _, stamp := range sharedWallGroupStamps(piece, call) {
+			if _, _, ok := wallStampNativePosition(stamp.Row, stamp.Column); !ok {
+				continue
+			}
+			item := int(stamp.SymbolID) - int(a.wallSharedFirstID)
+			if item < 0 || item >= len(a.wallSharedSymbols) {
+				continue
+			}
+			a.wallPreview = append(a.wallPreview, wallPreviewStamp{
+				image:  a.wallSharedSymbols[item],
+				row:    stamp.Row,
+				column: stamp.Column,
+			})
+		}
 	}
+}
+
+// sharedWallGroupStamps 取回同一次呼叫裡**編號落在第 0 段**（`1..45`）的磚。
+//
+// ★ 作法是拿一份「影子 PieceSet」再跑一次引擎的版面展開：把符號集基準改成 0、
+// 假 Picture 的項目數放到 256，於是每一個非零編號都解得開，`SymbolID` 就是
+// WALLDEF 的原始編號。這樣**牆位版面表只有引擎那一份**，遊戲這一側不必再抄
+// 一份 10 個牆位的欄／列／位移（spec 1006）。
+func sharedWallGroupStamps(piece gfx.PieceSet, call gfx.WallLayoutCall) []gfx.WallStamp {
+	shadow := piece
+	shadow.SymbolSetIDs = make([]uint8, len(piece.WallDefs))
+	shadow.SymbolBlockIDs = make([]uint8, len(piece.WallDefs))
+	shadow.Symbols = map[uint8]gfx.Picture{0: {ItemCount: 0xFF}}
+	stamps, err := gfx.BuildWallLayout(shadow, call.WallType, call.Layout, call.RowStart, call.ColStart)
+	if err != nil {
+		return nil
+	}
+	shared := stamps[:0]
+	for _, stamp := range stamps {
+		// 第 1..3 段由上面那一圈負責；這裡只補第 0 段。
+		if stamp.SymbolID >= uint8(gfx.SymbolSetBase[1]) {
+			continue
+		}
+		shared = append(shared, stamp)
+	}
+	return shared
 }
 
 func (a *app) syncDungeonWallState() {
@@ -3467,6 +3509,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// 第一人稱牆面符號的第 0 段（spec 1131）：全遊戲共用一份，載一次就好。
+	wallSymbolDeclaration, err := gamepack.LoadWallSymbols()
+	if err != nil {
+		log.Fatal(err)
+	}
+	wallSharedSymbols, err := loadSymbolBlock(*imagePath,
+		wallSymbolDeclaration.SharedGroup.File, wallSymbolDeclaration.SharedGroup.Block,
+		wallSymbolDeclaration.SharedGroup.ItemCount)
+	if err != nil {
+		log.Fatal(err)
+	}
 	firstPersonDefinition, exactFirstPerson := pack.FindMapByKindLocation(
 		"first_person", uint8(*geoSet), uint8(*geoBlock),
 	)
@@ -3872,7 +3925,7 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	*gameApp = app{state: &state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
+	*gameApp = app{state: &state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
 	if *innerFinalBattle && *screenshotPath != "" {
 		// Capture-only boss observation camera. Formal play keeps the RuleBook
 		// active-fighter camera established above.
@@ -4367,6 +4420,42 @@ func loadCombatTerrainImages(imagePath string) (map[string][]*ebiten.Image, erro
 	return result, nil
 }
 
+// loadSymbolBlock 載入一個 8×8 符號區塊的所有項目。與 loadAreaMapSymbols 分開
+// 是因為那一支綁著 AREA 的下限檢查（至少 20 項），而這裡的項目數由宣告給定。
+func loadSymbolBlock(imagePath, symbolFile string, blockID uint8, wantItems int) ([]*ebiten.Image, error) {
+	data, err := zipMember(imagePath, symbolFile)
+	if err != nil {
+		return nil, err
+	}
+	blocks, err := dax.Parse(data)
+	if err != nil {
+		return nil, fmt.Errorf("parse %s: %w", symbolFile, err)
+	}
+	for _, block := range blocks {
+		if block.Entry.ID != blockID {
+			continue
+		}
+		picture, err := gfx.ParsePicture(block.Data, true, 13)
+		if err != nil {
+			return nil, fmt.Errorf("%s block 0x%02X: %w", symbolFile, blockID, err)
+		}
+		if picture.Width() != 8 || picture.Height() != 8 || int(picture.ItemCount) != wantItems {
+			return nil, fmt.Errorf("%s block 0x%02X is %dx%d items=%d, want 8x8 items=%d",
+				symbolFile, blockID, picture.Width(), picture.Height(), picture.ItemCount, wantItems)
+		}
+		images := make([]*ebiten.Image, 0, wantItems)
+		for item := 0; item < wantItems; item++ {
+			rgba, err := picture.RGBA(item, gfx.EGA16)
+			if err != nil {
+				return nil, err
+			}
+			images = append(images, ebiten.NewImageFromImage(rgba))
+		}
+		return images, nil
+	}
+	return nil, fmt.Errorf("%s has no block 0x%02X", symbolFile, blockID)
+}
+
 func loadAreaMapSymbols(imagePath, symbolFile string, blockID uint8) ([]*ebiten.Image, error) {
 	if symbolFile == "" {
 		return nil, fmt.Errorf("AREA symbol file is empty")
@@ -4479,10 +4568,37 @@ func loadMapPieceSets(imagePath string, areaID uint8, wallFile, symbolFile strin
 		if err != nil {
 			return nil, fmt.Errorf("piece set %d: %w", setID, err)
 		}
+		maskWallSymbols(pieceSet)
 		result[setID] = pieceSet
 	}
 	return result, nil
 }
+
+// maskWallSymbols 把牆面符號的 EGA index 13（洋紅）改成透明索引。
+//
+// ★ 洋紅是這批素材的**透明鍵**，不是顏色：共用符號段（8X8D1 區塊 0CBh）的
+// 第 0 項是一整格洋紅——那是牆頂上方的天空格，`WALLDEF` 每個牆位的第一列
+// 幾乎都用它；其餘洋紅則在斜角磚裡切出乾淨的三角形，也就是牆在透視下的
+// 輪廓。不遮罩就會在天空與牆角畫出一片片桃紅色。
+//
+// ⚠ 遮罩要在**索引**上做，不是比對 RGB：同一個 EGA 顏色在別處是合法顏色，
+// 只有這批素材的 13 號索引是鍵。
+func maskWallSymbols(piece gfx.PieceSet) {
+	for _, picture := range piece.Symbols {
+		for index, value := range picture.Pixels {
+			if value == wallSymbolMaskIndex {
+				picture.Pixels[index] = wallSymbolTransparentIndex
+			}
+		}
+	}
+}
+
+// wallSymbolMaskIndex 是牆面符號的透明鍵（EGA 洋紅）；
+// wallSymbolTransparentIndex 是 `ParsePicture` 用的透明索引。
+const (
+	wallSymbolMaskIndex        = 13
+	wallSymbolTransparentIndex = 16
+)
 
 func loadGEOPreview(imagePath string, set, blockID uint8) (*geo.Grid, error) {
 	if set < 2 || set > 6 {

@@ -513,3 +513,4 @@
 - [1105 game pack 分檔與 stable ID](./1105-game-pack-file-split-and-stable-ids.md)（`READY`：依種類切成四檔、`LoadPackParts` 合併契約（重複即失敗、合併後才驗證）、ID 命名規範與 155 筆既有基線；依區域再切與熱鍵表留待後續）
 - [1106 ECL `IF` 跳過與操作元個數表](./1106-ecl-if-skip-and-operand-arity.md)（`READY`：`IF` 條件不成立跳過下一條、`overlay-07 entry#29` 的 arity 表、原作跳過表少算 `34h`／`36h`；靜態可達 instruction 1,355→4,222、文字段落 43→221）
 - [1130 README 截圖的四個對齊錯誤](./1130-screenshot-layer-alignment.md)（`READY`：sub-image 目的地座標只裁切不平移、戰鬥地形要跟戰鬥員走同一條相機＋鏡像路徑、佈陣的地面檢查與敵方縱帶落在視野內、戰場圖示是 CPIC 不是 SPRIT；第一人稱幾何與 spec 1006 逐項相符，不含 `WALLDEF` 美術對應）
+- [1131 第一人稱牆面的第 0 段符號與洋紅透明鍵](./1131-wall-symbol-group-zero.md)（`READY`：`Put8x8Symbol` 五段分界、第 0 段是 `8X8D1.DAX` 區塊 `0CBh` 的 45 項共用資源、EGA index 13 是牆面素材的透明鍵；不含載入端的反組譯與逐格美術對照）
