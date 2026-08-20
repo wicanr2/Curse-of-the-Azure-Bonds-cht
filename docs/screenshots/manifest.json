@@ -1,17 +1,113 @@
 {
   "version": 1,
-  "canvas": {"width": 640, "height": 480},
+  "canvas": {
+    "width": 640,
+    "height": 480
+  },
   "screenshots": [
-    {"id": "adventure-inn", "file": "docs/screenshots/gold-box-layout-adventure.png", "width": 640, "height": 480, "sha256": "285191cddba9e61de6280575daed5a14f6adcf6ad06b3cce67bdda474cf21215", "generation_mode": "Docker/Xvfb -inn；正常角色建立→序幕→旅店事件", "evidence_level": "material-exact/layout-reconstructed", "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"},
-    {"id": "character-creation", "file": "docs/screenshots/character-creation-remake-640.png", "width": 640, "height": 480, "sha256": "0251c1ff34c8c2cd25042151fdce577dbfb5cb046acc26912be2c8df37018c8e", "generation_mode": "Docker/Xvfb -character-creation；角色建立 renderer checkpoint", "evidence_level": "material-exact/layout-reconstructed", "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"},
-    {"id": "combat-encounter", "file": "docs/screenshots/gold-box-layout-combat.png", "width": 640, "height": 480, "sha256": "0d172fc5a03d34c24cb5992412bfd5ff0f87f50f1dd35faa57519b41a42b3f37", "generation_mode": "Docker/Xvfb -encounter；戰鬥 vertical slice checkpoint", "evidence_level": "material-exact/layout-reconstructed", "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"},
-    {"id": "tilverton-first-person", "file": "docs/screenshots/tilverton-first-person-remake.png", "width": 640, "height": 480, "sha256": "c06a07134cec8c6ab539f52c2eabb1cfb5cd732d60792979d349202f8f7744f7", "generation_mode": "Docker/Xvfb -tilverton-dungeon；正常地城入口→第一人稱畫面", "evidence_level": "material-exact/layout-reconstructed", "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"},
-    {"id": "burial-glen-red-web", "file": "docs/screenshots/burial-glen-red-web-spiders.png", "width": 640, "height": 480, "sha256": "aae04c208ba9f1fd95bbaea1dc2364f77c091ef722bea9ca483a074e4d65701b", "generation_mode": "Docker/Xvfb -burial-red-web-battle；Burial Glen 正常戰鬥切片", "evidence_level": "material-exact/layout-reconstructed", "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"}
+    {
+      "id": "adventure-inn",
+      "file": "docs/screenshots/gold-box-layout-adventure.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "285191cddba9e61de6280575daed5a14f6adcf6ad06b3cce67bdda474cf21215",
+      "generation_mode": "Docker/Xvfb -inn；正常角色建立→序幕→旅店事件",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
+    },
+    {
+      "id": "character-creation",
+      "file": "docs/screenshots/character-creation-remake-640.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "0251c1ff34c8c2cd25042151fdce577dbfb5cb046acc26912be2c8df37018c8e",
+      "generation_mode": "Docker/Xvfb -character-creation；角色建立 renderer checkpoint",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
+    },
+    {
+      "id": "combat-encounter",
+      "file": "docs/screenshots/gold-box-layout-combat.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "0d172fc5a03d34c24cb5992412bfd5ff0f87f50f1dd35faa57519b41a42b3f37",
+      "generation_mode": "Docker/Xvfb -encounter；戰鬥 vertical slice checkpoint",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
+    },
+    {
+      "id": "tilverton-first-person",
+      "file": "docs/screenshots/tilverton-first-person-remake.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "c06a07134cec8c6ab539f52c2eabb1cfb5cd732d60792979d349202f8f7744f7",
+      "generation_mode": "Docker/Xvfb -tilverton-dungeon；正常地城入口→第一人稱畫面",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
+    },
+    {
+      "id": "burial-glen-red-web",
+      "file": "docs/screenshots/burial-glen-red-web-spiders.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "aae04c208ba9f1fd95bbaea1dc2364f77c091ef722bea9ca483a074e4d65701b",
+      "generation_mode": "Docker/Xvfb -burial-red-web-battle；Burial Glen 正常戰鬥切片",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
+    },
+    {
+      "id": "opening-prologue",
+      "file": "docs/screenshots/opening-prologue-remake.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "5ee10e84eaf30ab85d7fcd46407c76ba21998bf30caa37a4dfe8c1c0fdb300b3",
+      "generation_mode": "Docker/Xvfb -segment ECL1/0x52；原作開場 block 的序幕",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/plan/seg-04-verification-report.md"
+    }
   ],
   "planned": [
-    {"id": "normal-view-character-info", "status": "planned", "description": "正常 VIEW 角色資訊頁，驗證 HEAD／BODY、右側 roster 與下方長文分區", "normal_path": "新遊戲 → CAMP → VIEW", "evidence_level": "unknown", "specs": ["docs/spec/406-dos-gui-draw-contract.md", "docs/spec/391-dos-head-body-character-stage.md"]},
-    {"id": "normal-area-map", "status": "planned", "description": "正常 AREA 地圖畫面，驗證地圖 panel 與原版石框", "normal_path": "新遊戲 → 地城移動 → AREA", "evidence_level": "unknown", "specs": ["docs/spec/322-original-gui-layout-fidelity.md"]},
-    {"id": "normal-overland-map", "status": "planned", "description": "正常世界旅行 overland map，驗證位置標記、日期與中文選項", "normal_path": "火刀據點戰後 → 世界旅行", "evidence_level": "unknown", "specs": ["docs/spec/322-original-gui-layout-fidelity.md"]},
-    {"id": "spell-impact-keyframe", "status": "planned", "description": "正常法術關鍵幀，分開記錄施法、飛行、命中／傷害與後續效果", "normal_path": "正常戰鬥 → CAST → Magic Missile／Fireball／Lightning Bolt", "evidence_level": "unknown", "specs": ["docs/spec/323-dos-combat-screen-measurement.md", "docs/spec/round-75-sprit-playback.md"]}
+    {
+      "id": "normal-view-character-info",
+      "status": "planned",
+      "description": "正常 VIEW 角色資訊頁，驗證 HEAD／BODY、右側 roster 與下方長文分區",
+      "normal_path": "新遊戲 → CAMP → VIEW",
+      "evidence_level": "unknown",
+      "specs": [
+        "docs/spec/406-dos-gui-draw-contract.md",
+        "docs/spec/391-dos-head-body-character-stage.md"
+      ]
+    },
+    {
+      "id": "normal-area-map",
+      "status": "planned",
+      "description": "正常 AREA 地圖畫面，驗證地圖 panel 與原版石框",
+      "normal_path": "新遊戲 → 地城移動 → AREA",
+      "evidence_level": "unknown",
+      "specs": [
+        "docs/spec/322-original-gui-layout-fidelity.md"
+      ]
+    },
+    {
+      "id": "normal-overland-map",
+      "status": "planned",
+      "description": "正常世界旅行 overland map，驗證位置標記、日期與中文選項",
+      "normal_path": "火刀據點戰後 → 世界旅行",
+      "evidence_level": "unknown",
+      "specs": [
+        "docs/spec/322-original-gui-layout-fidelity.md"
+      ]
+    },
+    {
+      "id": "spell-impact-keyframe",
+      "status": "planned",
+      "description": "正常法術關鍵幀，分開記錄施法、飛行、命中／傷害與後續效果",
+      "normal_path": "正常戰鬥 → CAST → Magic Missile／Fireball／Lightning Bolt",
+      "evidence_level": "unknown",
+      "specs": [
+        "docs/spec/323-dos-combat-screen-measurement.md",
+        "docs/spec/round-75-sprit-playback.md"
+      ]
+    }
   ]
 }

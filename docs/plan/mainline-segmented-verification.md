@@ -58,7 +58,7 @@
 | `SEG-01` | ✅ **完成**：轉移機制查清楚了（spec 1141）——主迴圈讀 `LastECL`、`NEWECL` 改它；圖由 `cmd/ecl-block-graph` 產生 | `docs/audit/ecl-block-graph.md` ＋ spec 1141 ＋ 形狀回歸測試 | 25 個 block 每一個都說得出怎麼進去、怎麼出來 ✓ | 已完成 |
 | `SEG-02` | ✅ **完成**：`LOAD FILES` 第一個運算元 ＝ 那一段載的地圖區塊；`area_id`／`script_block` 與 block 編號 join 得起來 | `docs/audit/ecl-block-graph.md` 的段落清單 ＋ 三條回歸測試 | 25 個 block 的地圖歸屬都算得出來 ✓；剩三張地圖缺 `script_block`、一組宣告不一致（見報告）| 已完成 |
 | `SEG-03` | ✅ **前半完成**：段的 id 一律 `ECL{成員}/0x{block}`（機械、與 game pack 命名無關），標籤放 `docs/plan/segment-labels.json` | 段落清單的標籤欄 ＋ 報告 | 25 段的標籤逐條有原作敘述為證 ✓；進入方式／結束條件／快照三欄要等 `SEG-04`／`SEG-11` | 已完成前半 |
-| `SEG-04` | **統一直入旗標**：`-segment <id>` 取代目前散在 25 個 flag 的作法（舊 flag 保留為別名） | `cmd/azure-bonds-game` | 註冊表裡每一段都進得去 | 接線 |
+| `SEG-04` | ✅ **完成**：`-segment <id>` ＋ 註冊表 `internal/segment`；收完整 id、只給 block 編號、或既有旗標名 | `internal/segment` ＋ `State.StartStorySegment`／`EnterSegment` ＋ 五條測試 | 25 段逐段進得去 ✓；順手修掉兩個讓段入口畫面落空的素材鍵錯誤，剩一個真的缺口（見報告）| 已完成 |
 
 ### 階段 1：把既有的整條跑拆成段（行為不變）
 

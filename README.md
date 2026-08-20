@@ -22,6 +22,7 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 | 第一人稱畫面 | 提爾佛頓五格 × 四個朝向與原版**逐格比對**：20 張裡 19 張完全相同、1 張差一格 |
 | 存檔 | 角色記錄 422 bytes：decoded 299／documented 99／unknown 24 |
 | UI 詞條 | game pack `zh-TW` 1,363 條、`assets/locale/zh-TW.json` 917 條 |
+| 主線分段 | 25 段全部可直入（`-segment ECL{成員}/0x{block}`），逐段一條測試 |
 | 全套測試 | `./tools/go.sh test ./...` 全綠 |
 
 ### 已接通的正常玩家路徑
@@ -52,6 +53,8 @@ Hap／熔岩洞／巫師塔 → 散提爾堡 → **眼魔洞穴（手札 59、De
 以下是目前 remake 的代表畫面，皆在 Docker／Xvfb 產生並逐張檢視。石框與 88×88
 場景是原始素材證據；640×480 的中文延伸與完整戰鬥畫面仍是 `layout-reconstructed`，
 不能據此宣稱整作完成。
+
+![原作開場序幕：營火伏擊、三名 NPC 入隊與五枚青色符印的緣起](docs/screenshots/opening-prologue-remake.png)
 
 ![旅店人物事件：DOS 石框、HEAD／BODY 舞台與繁中敘事](docs/screenshots/gold-box-layout-adventure.png)
 
@@ -149,8 +152,9 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
    口徑見 [`AGENTS.md`](AGENTS.md) §2.5。
 4. 每份結論都要能回指到哪個模組、哪個位址、哪幾個 byte；IDA／decompiler 的輸出
    本身不是證明。規格要寫明「明確不宣稱」的邊界。
-5. 驗收採分段：每段可用直入旗標進入，但每段都要走到該段的正常結束狀態，
-   而且**段與段之間的狀態交接本身也要列成一段驗**。
+5. 驗收採分段：每段用 `-segment <id>` 直接進入（`-segment list` 列出全部），
+   但每段都要走到該段的正常結束狀態，而且**段與段之間的狀態交接本身也要
+   列成一段驗**。
 6. 每個重大、可展示的里程碑才集中 commit／push；兩個 repository 分開提交。
 
 ## 目前明確未完成
@@ -160,6 +164,8 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   一段、一條 `NEWECL` 邊一段交接，計畫見
   [`docs/plan/mainline-segmented-verification.md`](docs/plan/mainline-segmented-verification.md)。
   轉移機制已查清（spec 1141）：25 個 block、47 條出邊，只有開場與結局沒有出邊。
+  25 段現在都能用 `-segment <id>` 直接進入，逐段一條測試；剩下的是段與段之間
+  的快照交接（`SEG-11`）與未接線的段（`SEG-20`）。
 - **戰鬥回合生命週期**：回合開始那一段已收完（spec 1135／1136）——先攻算式、
   選誰動、DELAY／GUARD／QUICK、定身與機會攻擊都與原作相符，突襲遮罩判定為死碼。
   面向、動作計數與累計轉向三個欄位也接上了（spec 1138），背後攻擊的三道條件

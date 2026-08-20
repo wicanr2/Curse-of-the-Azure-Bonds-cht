@@ -5149,8 +5149,16 @@ func (s *State) RunDungeonExitLifecycle() error {
 // previousBlockID supplies the same source-block context that NEWECL would
 // leave in the DOS dispatcher.
 func (s *State) StartDungeonStoryPreview(blockID, previousBlockID, gameArea uint8) error {
+	return s.StartStorySegment(blockID, previousBlockID, gameArea, true)
+}
+
+// StartStorySegment 是主線分段的直接入口：切到指定 block、把 LastECL
+// （`4BF2h`）設成指定的前一段，然後跑那一段的 initial lifecycle。
+// inDungeon 為假時這一段在世界地圖上（`LOAD FILES` 是 `7F/7F/7F`，不載 GEO），
+// 呼叫端要自己決定玩家站在世界地圖的哪個點。
+func (s *State) StartStorySegment(blockID, previousBlockID, gameArea uint8, inDungeon bool) error {
 	if s.session == nil {
-		return fmt.Errorf("dungeon story preview requires an ECL session")
+		return fmt.Errorf("story segment entry requires an ECL session")
 	}
 	blockBefore := s.session.CurrentBlockID()
 	if err := s.session.Switch(blockID); err != nil {
@@ -5166,10 +5174,14 @@ func (s *State) StartDungeonStoryPreview(blockID, previousBlockID, gameArea uint
 	s.session.SetMemoryValue(0x4BF2, uint16(previousBlockID))
 	s.session.SetMemoryValue(0x7ED5, 0)
 	s.session.SetMemoryValue(0x7EC9, 0)
+	s.Area.InDungeon = inDungeon
 	s.Area.GameArea = gameArea
-	s.Area.InDungeon = true
-	s.GeoMapSet = gameArea
-	s.Mode = ModeDungeon
+	if inDungeon {
+		s.GeoMapSet = gameArea
+		s.Mode = ModeDungeon
+	} else {
+		s.Mode = ModeWilderness
+	}
 	blockBefore = s.session.CurrentBlockID()
 	result, err := s.session.RunEntrySeedWithPartyContext(
 		4, 500, nil, nil, s.eclSeed, s.eclPartyContext(),

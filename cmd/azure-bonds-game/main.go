@@ -40,6 +40,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/segment"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/sound"
 	enginearea "github.com/wicanr2/golden-box-remake-engine/areamap"
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
@@ -1684,6 +1685,20 @@ func (a *app) revealedMessage() string {
 	return string(runes[:count])
 }
 
+// bigPictureSprite 用區塊編號決定要哪一張大圖。原作只有 BIGPIC1／2／6 三個檔，
+// 一共四個區塊（79 與 7B 在 1、78 在 2、7A 在 6）且彼此不重複，所以區塊編號本身
+// 就足以定檔。用章節去選檔在第 3～5 章一定落空——那三章根本沒有 BIGPIC 檔，
+// 而世界地圖那張 79 是全遊戲共用的。
+func (a *app) bigPictureSprite(block uint8) *ebiten.Image {
+	for file := 1; file <= 6; file++ {
+		key := fmt.Sprintf("bigpic%d-block-%02X-item-00.png", file, block)
+		if sprite := a.combatSprites[key]; sprite != nil {
+			return sprite
+		}
+	}
+	return nil
+}
+
 func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	if a.state.SceneCharacterRequested {
 		key := fmt.Sprintf("character-area-%d-head-%02X-body-%02X.png", a.state.Area.GameArea, a.state.SceneHeadBlock, a.state.SceneBodyBlock)
@@ -1700,8 +1715,7 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		return
 	}
 	if a.state.BigPictureRequested {
-		key := fmt.Sprintf("bigpic%d-block-%02X-item-00.png", a.state.Area.GameArea, a.state.PictureBlock)
-		if sprite := a.combatSprites[key]; sprite != nil {
+		if sprite := a.bigPictureSprite(uint8(a.state.PictureBlock)); sprite != nil {
 			const pixelScale = 2
 			op := &ebiten.DrawImageOptions{}
 			op.Filter = ebiten.FilterNearest
@@ -3329,6 +3343,8 @@ func main() {
 	screenshotPath := flag.String("screenshot", "", "write one deterministic 640x480 frame to PNG and exit")
 	journalImageEntry := flag.String("journal-image", "", "開手札並直接彈出某則的圖，例如 journal.52（分段驗收用）")
 	journalImageZoom := flag.Bool("journal-image-zoom", false, "彈窗直接以原尺寸開啟（分段驗收用）")
+	segmentEntry := flag.String("segment", "",
+		"直接進入主線的某一段：ECL{成員}/0x{block}、只給 block 編號、或既有旗標名；給 list 就列出全部")
 	flag.Parse()
 	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
@@ -3354,6 +3370,18 @@ func main() {
 	}
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
+	}
+	var chosenSegment *segment.Segment
+	if trimmed := strings.TrimSpace(*segmentEntry); trimmed != "" {
+		if strings.EqualFold(trimmed, "list") {
+			printSegmentRegistry()
+			return
+		}
+		found, ok := segment.Lookup(trimmed)
+		if !ok {
+			log.Fatalf("-segment %q 不在註冊表裡；用 -segment list 看有哪些段", trimmed)
+		}
+		chosenSegment = &found
 	}
 	if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir || *innerRitual || *innerFinalBattle {
 		*geoSet = 6
@@ -3592,7 +3620,33 @@ func main() {
 	gameApp.state.SetCombatLineTerrain(gameApp.combatLineTerrain())
 	gameApp.state.SetCombatMovementTerrain(gameApp.combatMovementTerrain())
 	gameApp.state.SetCombatScanMapProvider(gameApp.combatScanTacticalMap)
-	if *encounter {
+	if chosenSegment != nil {
+		if len(state.PartyFighters()) == 0 {
+			if err := state.OpenCharacterCreation(); err != nil {
+				log.Fatal(err)
+			}
+			if err := state.AddCreationCharacter(0); err != nil {
+				log.Fatal(err)
+			}
+			if err := state.FinishCharacterCreation(); err != nil {
+				log.Fatal(err)
+			}
+		}
+		if err := state.EnterSegment(*chosenSegment); err != nil {
+			log.Fatalf("-segment %s 進不去：%v", chosenSegment.ID, err)
+		}
+		// 幾何要跟著這一段實際載到的 GEO 檔走。段的 GEO 區塊編號不一定等於
+		// ECL block 編號（例如 ECL5/0x31 哈普村載的是 GEO5 的 0x32），所以
+		// 這裡讀的是 `LOAD FILES` 跑完之後的執行期值，不是旗標給的值。
+		if state.GeoMapSet != 0 {
+			candidate := geo.MapRef{Set: state.GeoMapSet, BlockID: state.GeoMapBlock}
+			if grid, found := geoCatalog.Lookup(candidate); found {
+				geoRef = candidate
+				geoGridValue = grid
+				*dungeonFloor = mapdata.GenerateDungeon(*geoGrid, state.DungeonX, state.DungeonY)
+			}
+		}
+	} else if *encounter {
 		if *encounterArea < 1 || *encounterArea > 6 {
 			log.Fatal("-encounter-area must be 1..6")
 		}
@@ -3992,6 +4046,43 @@ func main() {
 	if err := ebiten.RunGame(gameApp); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// printSegmentRegistry 把 `-segment` 收得下的段落列出來，欄位與
+// `docs/audit/ecl-block-graph.md` 的段落清單同一份宣告。
+func printSegmentRegistry() {
+	fmt.Println(padColumn("段", 12) + padColumn("block", 7) + padColumn("進入自", 10) +
+		padColumn("GEO 檔集", 10) + padColumn("位置", 10) + "既有旗標")
+	for _, entry := range segment.All() {
+		area := fmt.Sprintf("%d", entry.GameArea)
+		place := "地城"
+		if entry.Overland {
+			area, place = "-", "世界地圖"
+		}
+		from := fmt.Sprintf("0x%02X", entry.EnterFrom)
+		if entry.EnterFrom == 0 {
+			from = "全新開局"
+		}
+		fmt.Println(padColumn(entry.ID, 12) + padColumn(fmt.Sprintf("0x%02X", entry.Block), 7) +
+			padColumn(from, 10) + padColumn(area, 10) + padColumn(place, 10) + entry.LegacyFlag)
+	}
+}
+
+// padColumn 補到指定的顯示寬度。中日韓字元在終端機佔兩格，用 %-Ns 補會歪掉，
+// 因為那個補的是位元組數。
+func padColumn(text string, width int) string {
+	used := 0
+	for _, glyph := range text {
+		if glyph >= 0x1100 {
+			used += 2
+		} else {
+			used++
+		}
+	}
+	if used >= width {
+		return text + " "
+	}
+	return text + strings.Repeat(" ", width-used)
 }
 
 func prepareSewerCheckpoint(state *game.State, guildGrid, sewerGrid *geo.Grid) error {
