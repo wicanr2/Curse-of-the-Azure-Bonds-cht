@@ -16,6 +16,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 )
@@ -27,6 +28,12 @@ type blockGraph struct {
 	payload      int
 	newECL       map[int]int
 	lastECL      map[int]int
+	// mapBlock 是寫進 `4BC5h`（`bank0 +18Ah`，目前的 3D 地圖區塊編號）的立即值。
+	mapBlock map[int]int
+	// inDungeon 是寫進 `4BE6h`（`bank0 +1CCh`）的立即值。
+	inDungeon map[int]int
+	// loadFiles 是 `21h LOAD FILES` 的三個運算元組合。
+	loadFiles map[string]int
 }
 
 func main() {
@@ -74,6 +81,12 @@ func main() {
 由 ` + "`cmd/ecl-block-graph`" + ` 產生，不要手改。
 
 - 出邊是 ` + "`20h NEWECL`" + ` 的立即運算元。
+- 「3D 地圖」是寫進 ` + "`4BC5h`" + `（` + "`bank0 +18Ah`" + `，目前的 3D 地圖區塊編號）
+  的立即值，也就是**這個 block 會把玩家放進哪一張地城地圖**。空白代表它不換地圖
+  （世界地圖 hub、純劇情 block 都是這樣）。
+- ` + "`InDungeon`" + ` 是 ` + "`4BE6h`" + `（` + "`bank0 +1CCh`" + `）：
+  0 是野外／世界地圖，非 0 是地城。
+- ` + "`LOAD FILES`" + ` 的三個運算元決定那一段用哪一組 DAX 檔。
 - ` + "`SAVE→4BF2h`" + ` 是寫進 ` + "`bank0 +1E4h`" + `（LastECL）的立即值。引擎主迴圈
   （` + "`overlay-02:3772`" + `）載入的就是這一格指的 block，並在載完之後把它寫回去，
   所以 block 寫自己的編號是「記錄我是誰」，不是轉移。
@@ -81,8 +94,8 @@ func main() {
   ` + "`docs/audit/ecl-event-catalog.md`" + ` 那份不跟，它看到的邊只有這裡的一小部分。
   拿那一份判斷「這個 block 沒有出口」會得到假零。
 
-| member | block | 可達指令 | payload | ` + "`NEWECL`" + ` 出邊 | ` + "`SAVE→4BF2h`" + ` |
-|---|---|---:|---:|---|---|
+| member | block | 可達指令 | ` + "`NEWECL`" + ` 出邊 | ` + "`SAVE→4BF2h`" + ` | 3D 地圖（` + "`4BC5h`" + `） | InDungeon（` + "`4BE6h`" + `） | ` + "`LOAD FILES`" + ` |
+|---|---|---:|---|---|---|---|---|
 `)
 	edges, noExit := 0, []string{}
 	for _, key := range keys {
@@ -91,10 +104,12 @@ func main() {
 		if len(g.newECL) == 0 {
 			noExit = append(noExit, key.member+"／"+key.block)
 		}
-		report.WriteString(fmt.Sprintf("| `%s` | `%s` | %d | %d | %s | %s |\n",
-			key.member, key.block, g.instructions, g.payload,
-			formatTargets(g.newECL), formatTargets(g.lastECL)))
+		report.WriteString(fmt.Sprintf("| `%s` | `%s` | %d | %s | %s | %s | %s | %s |\n",
+			key.member, key.block, g.instructions,
+			formatTargets(g.newECL), formatTargets(g.lastECL),
+			formatTargets(g.mapBlock), formatTargets(g.inDungeon), formatStrings(g.loadFiles)))
 	}
+	report.WriteString(segmentTable(keys, graphs))
 	report.WriteString(fmt.Sprintf("\n## 摘要\n\n| 項目 | 數量 |\n|---|---:|\n| block | %d |\n"+
 		"| 不重複 `NEWECL` 出邊 | %d |\n| 沒有出邊的 block | %d（%s）|\n",
 		len(keys), edges, len(noExit), strings.Join(noExit, "、")))
@@ -129,7 +144,8 @@ func memberPayload(archive *zip.ReadCloser, member string) []byte {
 }
 
 func traceBlock(data []byte) *blockGraph {
-	result := &blockGraph{payload: len(data), newECL: map[int]int{}, lastECL: map[int]int{}}
+	result := &blockGraph{payload: len(data), newECL: map[int]int{}, lastECL: map[int]int{},
+		mapBlock: map[int]int{}, inDungeon: map[int]int{}, loadFiles: map[string]int{}}
 	points, _, err := ecl.EntryPoints(data, 5)
 	if err != nil {
 		return result
@@ -155,14 +171,93 @@ func traceBlock(data []byte) *blockGraph {
 				result.newECL[int(operands[0].Low)]++
 			}
 		case 0x09: // SAVE
-			if len(operands) >= 2 && operands[1].WordSet && operands[1].Word == 0x4BF2 &&
-				!operands[0].WordSet {
+			if len(operands) < 2 || !operands[1].WordSet || operands[0].WordSet {
+				continue
+			}
+			switch operands[1].Word {
+			case 0x4BF2: // bank0 +1E4h：LastECL
 				result.lastECL[int(operands[0].Low)]++
+			case 0x4BC5: // bank0 +18Ah：目前的 3D 地圖區塊
+				result.mapBlock[int(operands[0].Low)]++
+			case 0x4BE6: // bank0 +1CCh：InDungeon
+				result.inDungeon[int(operands[0].Low)]++
+			}
+		case 0x21: // LOAD FILES
+			if len(operands) >= 3 {
+				result.loadFiles[fmt.Sprintf("%02X/%02X/%02X",
+					operands[0].Low, operands[1].Low, operands[2].Low)]++
 			}
 		}
 	}
 	result.instructions = len(seen)
 	return result
+}
+
+// segmentTable 把轉移圖與 game pack 的地圖宣告接起來：**`area_id` 就是 ECL
+// 成員編號、`script_block` 就是 block 編號**，所以兩邊 join 得起來。
+// 這張表是分段驗證的段落清單（`docs/plan/mainline-segmented-verification.md`）。
+func segmentTable(keys []blockKey, graphs map[blockKey]*blockGraph) string {
+	pack, err := gamepack.Default()
+	if err != nil {
+		return "\n（讀不到 game pack，略過段落清單）\n"
+	}
+	byBlock := map[[2]int][]string{}
+	for _, m := range pack.Maps {
+		if m.ScriptBlock == nil {
+			continue
+		}
+		key := [2]int{int(m.AreaID), int(*m.ScriptBlock)}
+		byBlock[key] = append(byBlock[key], m.ID)
+	}
+	incoming := map[int][]string{}
+	for _, key := range keys {
+		for target := range graphs[key].newECL {
+			incoming[target] = append(incoming[target], key.block)
+		}
+	}
+	var out strings.Builder
+	out.WriteString("\n## 段落清單（block ↔ 地圖）\n\n" +
+		"`area_id` 就是 ECL 成員編號、`script_block` 就是 block 編號，所以 game pack 的\n" +
+		"地圖宣告與轉移圖 join 得起來。**沒有地圖的 block 不是缺漏**：世界地圖 hub 與\n" +
+		"開場不需要 3D 地圖（`LOAD FILES` 是 `7F/7F/7F`），另外幾個沿用上一段的檔案。\n\n" +
+		"| 段 | 進入自 | 離開到 | game pack 地圖 |\n|---|---|---|---|\n")
+	for _, key := range keys {
+		member := 0
+		fmt.Sscanf(key.member, "ECL%d.DAX", &member)
+		block := 0
+		fmt.Sscanf(key.block, "0x%X", &block)
+		names := byBlock[[2]int{member, block}]
+		sort.Strings(names)
+		label := "—"
+		if len(names) > 0 {
+			label = "`" + strings.Join(names, "`、`") + "`"
+		}
+		in := incoming[block]
+		sort.Strings(in)
+		inLabel := "—"
+		if len(in) > 0 {
+			inLabel = "`" + strings.Join(in, "`、`") + "`"
+		}
+		out.WriteString(fmt.Sprintf("| `ECL%d/%s` | %s | %s | %s |\n",
+			member, key.block, inLabel, formatTargets(graphs[key].newECL), label))
+	}
+	return out.String()
+}
+
+func formatStrings(values map[string]int) string {
+	if len(values) == 0 {
+		return "—"
+	}
+	keys := make([]string, 0, len(values))
+	for key := range values {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	parts := make([]string, 0, len(keys))
+	for _, key := range keys {
+		parts = append(parts, "`"+key+"`")
+	}
+	return strings.Join(parts, "、")
 }
 
 func formatTargets(targets map[int]int) string {

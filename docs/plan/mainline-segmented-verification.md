@@ -56,7 +56,7 @@
 | ID | 項目 | 產出 | 驗收 | 粗估 |
 |---|---|---|---|---|
 | `SEG-01` | ✅ **完成**：轉移機制查清楚了（spec 1141）——主迴圈讀 `LastECL`、`NEWECL` 改它；圖由 `cmd/ecl-block-graph` 產生 | `docs/audit/ecl-block-graph.md` ＋ spec 1141 ＋ 形狀回歸測試 | 25 個 block 每一個都說得出怎麼進去、怎麼出來 ✓ | 已完成 |
-| `SEG-02` | **block ↔ 地圖 ↔ 區域名對照表**，由資料產生不手寫 | `cmd/` 產生的 audit 表 | 20 張地圖與 25 個 block 的對應無洞；9 個佔位名各自對到哪個 block 講得出來 | 一個小工具 |
+| `SEG-02` | ✅ **完成**：`LOAD FILES` 第一個運算元 ＝ 那一段載的地圖區塊；`area_id`／`script_block` 與 block 編號 join 得起來 | `docs/audit/ecl-block-graph.md` 的段落清單 ＋ 三條回歸測試 | 25 個 block 的地圖歸屬都算得出來 ✓；剩三張地圖缺 `script_block`、一組宣告不一致（見報告）| 已完成 |
 | `SEG-03` | **段落註冊表**：每段一筆 `{id, 進入方式, 起始狀態, 正常結束條件, 產出快照}` | Go 表 ＋ 由它產生的清單 | 註冊表與 `SEG-02` 的對照表對得起來，缺一段就 fail | 一個檔 ＋ 一條閘 |
 | `SEG-04` | **統一直入旗標**：`-segment <id>` 取代目前散在 25 個 flag 的作法（舊 flag 保留為別名） | `cmd/azure-bonds-game` | 註冊表裡每一段都進得去 | 接線 |
 
@@ -117,7 +117,7 @@
 ## 七、開工前要先有答案的
 
 1. ~~`SEG-01`~~ ✅ 已解（spec 1141）：轉移是 `NEWECL` 改 `LastECL`，主迴圈載它。
-2. 9 個 `original.geoN.block-NN` 佔位地圖各自是哪個區域——名字沒定，
-   段的 id 也定不了。
+2. 9 個 `original.geoN.block-NN` 佔位地圖各自是哪個區域——歸屬已經算得出來
+   （`SEG-02`），但**名字**要靠那些 block 的劇情文字，還沒定。
 3. 段的快照要存哪一層：整份 `SavePartyFile`、還是另外一個測試專用的
    state snapshot。前者順便驗了存檔，後者比較好控制。傾向前者。
