@@ -1605,6 +1605,62 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/ecl-cell-refs/main.go",
+      "function": "collect",
+      "sha256": "f74a43cb81d6f138f8c51f592dde346b3b84f238b06af4472abf52a155aa5971",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-refs/main.go",
+      "function": "main",
+      "sha256": "3394d9c8cd7c87929305472b55fa5a7f20a3711ccf8676bd4c20a19ea40ab0d6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-refs/main.go",
+      "function": "main",
+      "sha256": "72f6fff509700c75d35e2f8f12f728d9fe81111932ed9f7573189995202a4ab4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-refs/main.go",
+      "function": "main",
+      "sha256": "8147a75e678d1915aaf699dad4cb67ae8ed33258068566836107011fd7ec7ca3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-refs/main.go",
+      "function": "main",
+      "sha256": "cee99cc2005dc0262fa39c54f4028b7457dbb87d02a869a9ede539c0fe3b1471",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-refs/main.go",
+      "function": "main",
+      "sha256": "f999a736c08f5887317004b4a86eede7718053a677452f15a51a6ebecfd77f79",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-refs/main.go",
+      "function": "parseTargets",
+      "sha256": "1f6196ba6530b4c5893603715b3dc477456e9993c099eddc01cdba3a2dcf069b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-refs/main.go",
+      "function": "parseTargets",
+      "sha256": "a207ba3d940fb5a16a878b7ee5f333c2b850c15f1ff01e35bfece6c111dd3284",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/ecl-effect-coverage/main.go",
       "function": "main",
       "sha256": "1318ee02f82db1cc6640a30dc2a87592977cc6d90166af1b5f57c9769addfe6d",
