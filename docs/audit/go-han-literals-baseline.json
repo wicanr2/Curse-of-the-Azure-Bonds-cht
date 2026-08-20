@@ -16,6 +16,83 @@
       "category": "frontend_ui_debt"
     },
     {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "main",
+      "sha256": "d2dfc3f15f410431b46488acff5a29a0b43456194e4ad8bc3fe67b008ff21529",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "main",
+      "sha256": "df79185abfa14be089387f8dfb6256c83be6f395395d884775f0d50677922666",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "main",
+      "sha256": "f87e9476f2d6a086ffe1ab09b515acfe2fba91db498c12b6dec47461c73cd70a",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "printSegmentRegistry",
+      "sha256": "0477dbbdee99b5b350f40f5ce620d9a22713bc854fbed0aeacfd458037b3a2b5",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "printSegmentRegistry",
+      "sha256": "1f79c2264b485204279336ef3462cbc7d56d3c726ab816c74d7d75624a8e930b",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "printSegmentRegistry",
+      "sha256": "1fb4d574da92f1c182183f205b77a1fcfc538ab438a04f2399ceac29687a7a56",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "printSegmentRegistry",
+      "sha256": "4643227ad5ba6f917325552ac17a83c080bd55419f1ab2c085611ee157086603",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "printSegmentRegistry",
+      "sha256": "58f78bc6a87573ee8796114ebe3ee856eaea4f19f0d523f0d5a84d424b6ffe45",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "printSegmentRegistry",
+      "sha256": "7aaf8dbad92fbd8f37ed2cd2ae6c573e21197a6327e46ddd7af62c64880620b6",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "printSegmentRegistry",
+      "sha256": "b92f67a3a3cda11eab06502dd5655bacbfc855fe15c433b75ec44e182a9b125f",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "printSegmentRegistry",
+      "sha256": "c014266366bbf44b749df3e6026696e2e4714208478b3531df4c02489e2bb29a",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
       "path": "cmd/borland-symbols/main.go",
       "function": "main",
       "sha256": "5b913c9420b2f595d28289a7ad360efd4644cf8b7f940fdc7ea1bf696adf1bee",
@@ -542,6 +619,13 @@
     },
     {
       "path": "cmd/ecl-block-graph/main.go",
+      "function": "directEntry",
+      "sha256": "b1214bdfa2857ee50158e9caefa089f359f75c1e171e000652d936baaf4a5039",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
       "function": "main",
       "sha256": "12d85edc79785d8195309c0d2a82cc66e85fe4271dd80db58f89d48d289b9bc2",
       "occurrences": 1,
@@ -697,6 +781,13 @@
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "segmentTable",
+      "sha256": "3523ef0370c3ba02e9e371c07c1a766e915839ccf8e21995959b63cab76940ce",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
       "sha256": "37092482129c33dbd11e1880e60f893751561287040945ef6681e2f7bffb10a8",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -711,7 +802,21 @@
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "segmentTable",
-      "sha256": "85abda6935be552c222c21743f1ba457c1f1e778d1e9a330e2b932f6ee638044",
+      "sha256": "47cf4b491bda2bdd64b84e1d269ad398843bce102075262e9c30c125236adeba",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "676629fa9857c14e087f9b6e9f45c35f171533a6fa7dc00f14578e58cee3aa6d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "6d1150d6ec746ffd92f15dcb5bacfb6448a215310567da8bc29000cc7e6be4ef",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

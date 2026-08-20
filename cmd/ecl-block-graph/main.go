@@ -20,6 +20,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/segment"
 )
 
 type blockKey struct{ member, block string }
@@ -224,7 +225,10 @@ func segmentTable(keys []blockKey, graphs map[blockKey]*blockGraph) string {
 		"開場不需要 3D 地圖（`LOAD FILES` 是 `7F/7F/7F`），另外幾個沿用上一段的檔案。\n\n" +
 		"段的 id 一律是 `ECL{成員}/0x{block}`（機械且穩定）；標籤取自\n" +
 		"`docs/plan/segment-labels.json`，證據見 `docs/plan/seg-03-verification-report.md`。\n\n" +
-		"| 段 | 標籤 | 進入自 | 離開到 | game pack 地圖 |\n|---|---|---|---|---|\n")
+		"「直入」是 `-segment <id>` 這一段用的 `LastECL`（`0x00` ＝ 全新開局），\n" +
+		"括號裡是仍然保留的專用旗標；註冊表在 `internal/segment`，\n" +
+		"證據見 `docs/plan/seg-04-verification-report.md`。\n\n" +
+		"| 段 | 標籤 | 進入自 | 離開到 | 直入 | game pack 地圖 |\n|---|---|---|---|---|---|\n")
 	for _, key := range keys {
 		member := 0
 		fmt.Sscanf(key.member, "ECL%d.DAX", &member)
@@ -243,10 +247,28 @@ func segmentTable(keys []blockKey, graphs map[blockKey]*blockGraph) string {
 			inLabel = "`" + strings.Join(in, "`、`") + "`"
 		}
 		id := fmt.Sprintf("ECL%d/%s", member, key.block)
-		out.WriteString(fmt.Sprintf("| `%s` | %s | %s | %s | %s |\n",
-			id, labelOr(labels, id), inLabel, formatTargets(graphs[key].newECL), label))
+		out.WriteString(fmt.Sprintf("| `%s` | %s | %s | %s | %s | %s |\n",
+			id, labelOr(labels, id), inLabel, formatTargets(graphs[key].newECL),
+			directEntry(id), label))
 	}
 	return out.String()
+}
+
+// directEntry 描述 `-segment` 怎麼進這一段：LastECL 的值，加上仍然保留的
+// 專用旗標；過場 block 另外標出它實際會停在哪裡。
+func directEntry(id string) string {
+	found, ok := segment.Lookup(id)
+	if !ok {
+		return "—"
+	}
+	text := fmt.Sprintf("`0x%02X`", found.EnterFrom)
+	if found.LegacyFlag != "" {
+		text += fmt.Sprintf("（`-%s`）", found.LegacyFlag)
+	}
+	if found.SettlesAt != 0 {
+		text += fmt.Sprintf("，過場到 `0x%02X`", found.SettlesAt)
+	}
+	return text
 }
 
 // segmentLabels 讀人類可讀的段落標籤。讀不到就留白——標籤是給人看的，

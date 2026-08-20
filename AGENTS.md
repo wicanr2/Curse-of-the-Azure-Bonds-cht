@@ -184,7 +184,10 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   commit `temporary probe`、刻意 `Fatalf` dump 或只為觀察狀態而永遠失敗的
   測試。
 - direct-entry、直接設定 PC／旗標或注入戰鬥可以當**分段驗收的進入點**
-  （使用者 2026-08-16 修正 rulebook 65：分階段驗收算數）。每一段用 debug
+  （使用者 2026-08-16 修正 rulebook 65：分階段驗收算數）。直入的入口一律走
+  `cmd/azure-bonds-game -segment <id>`，註冊表在 `internal/segment`
+  （`-segment list` 列出 25 段）；既有的專用旗標保留，但它們做的是**段內的
+  檢查點**，不是段的入口。每一段用 debug
   進入點直入並各自對 reference 驗證無誤，即算該段完成；全部段落通過即算
   跑完，不必為了宣稱完成而跑一次連續全程。
   ⚠ 放寬的是驗收成本，不是證據標準：每段仍要對 reference 實測。
