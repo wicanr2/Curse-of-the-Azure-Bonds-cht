@@ -608,7 +608,6 @@
    "hillsfar.pirates-flee": "一艘海盜船靠了過來，直到看清船上是你們，才張滿帆逃走。",
    "hillsfar.abandoned-outpost": "沿著海岸，你們經過一座廢棄的散塔林會哨站，以及一處海盜據點的殘骸。",
    "hillsfar.boat-forced-ashore": "你們的船在河上行進時，另一艘船靠了上來，把你們逼上岸。",
-   "yulash.red-plume-patrol": "一隊紅羽衛巡邏兵走近。其中一人咆哮：「你們身上的刺青暴露了散提爾堡間諜的身分！」",
    "yulash.edge": "你們來到尤拉什城外。要進入戰區，還是繼續旅程？",
    "yulash.entry": "煙霧從尤拉什殘破的城牆後升起，裡面不斷傳來戰鬥聲。你們要如何進入？",
    "yulash.riders-burst-out": "正要進城時，一名騎著高大駿馬的男子突然衝出尤拉什，撞倒隊伍成員。駿馬疾馳而過，你們看見一名紫衣女子緊抱在男子背後；兩人迅速遠去，只聽見她高喊：「抱歉！」",
@@ -1364,7 +1363,21 @@
    "spell_magic_user_89": "移除詛咒",
    "spell_magic_user_92": "冰錐術",
    "spell_magic_user_93": "弱智術",
-   "spell_magic_user_100": "降咒術"
+   "spell_magic_user_100": "降咒術",
+   "yulash.red-plume-checkpoint": "北方有一處由紅羽衛駐守的哨卡。",
+   "zhentil.patrol-condemned": "散提爾堡的巡邏隊擋住去路，軍官上前一步：「我們的通報上寫著你們已被判處死刑，即刻執行。」",
+   "zhentil.rumour.altar": "你們聽見有人說：「費佐把大部分的錢都鎖在祭壇裡，聽說還設了陷阱。」",
+   "zhentil.rumour.panic": "你們聽見有人說：「喂，走路看路啊……喔、呃，抱歉，我、我……」那人慌張地跑開了。",
+   "zhentil.rumour.peddler": "你們聽見有人說：「嘿，要不要買點……不、不，抱歉，我認錯人了，再見。」那人拔腿就跑。",
+   "zhentil.rumour.dimswart": "你們聽見有人說：「聽說費佐把賢者迪姆斯沃特關起來了。」",
+   "zhentil.rumour.arms": "你們聽見有人說：「看他們的手臂……就是他們沒錯……」",
+   "zhentil.rumour.halfling": "你們聽見有人說：「他們就像那個半身人形容的那樣……」",
+   "zhentil.rumour.tension": "你們聽見有人說：「這座城隨時都可能炸開。」",
+   "zhentil.rumour.she-was-right": "你們聽見有人說：「看來她說得沒錯……」",
+   "zhentil.rumour.factions": "你們聽見有人說：士兵、祭司與法師互不相讓，而賢者迪姆斯沃特也不見了！",
+   "overland.red-plume-patrol": "一隊紅羽衛巡邏兵走了過來。",
+   "overland.red-plume-patrol.pass": "「這裡是戰區，自己小心。」說完便讓你們通過。",
+   "yulash.red-plume-patrol": "一隊紅羽衛巡邏兵走近。其中一人咆哮：「你們身上的刺青暴露了散提爾堡間諜的身分！」"
   }
  },
  "events": []
