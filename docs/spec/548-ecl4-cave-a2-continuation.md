@@ -42,7 +42,7 @@ Go frontend。
 | `4C03=1` 在 `LEAVE` 後保留 | 同一 raw session 的 state assertion | `exact`（本 trace） |
 | C04 map-register 寫入投影 | 第 547 輪 DOS overlay-07 IDA bridge | `exact`（writer/getter bridge） |
 | `(13,1,W)` map cache | 原始 GEO4 block `0x25` | `exact` |
-| 玩家由 E1 到 A2、三次續跑並在同一 result 抵達死精靈提示 | `TestRealNewGameContinuesFromHapToMythDrannor` | `exact`（remake normal path） |
+| 玩家由 E1 到 A2、三次續跑並在同一 result 抵達死精靈提示 | `TestRealNewGameRunsToTheEnding` | `exact`（remake normal path） |
 
 Docker focused gate：
 
@@ -50,7 +50,7 @@ Docker focused gate：
 go test -v ./internal/ecl \
   -run '^TestRealECL4CaveA2CannonContinuesToDeadElfHandler$' -count=1
 go test -v ./internal/game \
-  -run '^TestRealNewGameContinuesFromHapToMythDrannor$' -count=1
+  -run '^TestRealNewGameRunsToTheEnding$' -count=1
 go test ./gamepack \
   -run '^TestBeholderCaveMapHandoffContinuesSameECLResult$' -count=1
 ```

@@ -37,7 +37,7 @@ Dexam 劇情會被直接略過。舊文件的 raw trace 本身仍有效，但「
 
 ## 驗收與範圍
 
-- `TestRealNewGameContinuesFromHapToMythDrannor`：新遊戲→手札 59→LOOK→
+- `TestRealNewGameRunsToTheEnding`：新遊戲→手札 59→LOOK→
   Dexam 雙戰→戰後洞穴。
 - `TestRealBeholderCaveDexamAndZhentilBattles`：精確鎖定兩批敵人、戰利品與局部出口
   ECL continuation。

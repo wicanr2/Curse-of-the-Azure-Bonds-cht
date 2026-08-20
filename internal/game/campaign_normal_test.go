@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
@@ -834,7 +835,7 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 	}
 }
 
-func TestRealNewGameContinuesFromHapToMythDrannor(t *testing.T) {
+func TestRealNewGameRunsToTheEnding(t *testing.T) {
 	state := runNormalNewGameToEssembra(t)
 	if state == nil {
 		return
@@ -923,6 +924,20 @@ func TestRealNewGameContinuesFromHapToMythDrannor(t *testing.T) {
 			monster4Records[block.Entry.ID] = record
 		}
 		state.SetMonsterRecordsForECL(4, monster4Records)
+		// 第六章的怪物表：密斯卓諾的蜘蛛、盜墓者與最終戰都在這一份。
+		monster6Blocks, err := dax.Parse(zipData(t, image, "MON6CHA.DAX"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		monster6Records := make(map[uint8]monster.Record, len(monster6Blocks))
+		for _, block := range monster6Blocks {
+			record, parseErr := monster.Parse(block.Data)
+			if parseErr != nil {
+				t.Fatal(parseErr)
+			}
+			monster6Records[block.Entry.ID] = record
+		}
+		state.SetMonsterRecordsForECL(6, monster6Records)
 		grid = loadGeo5CampaignGrid(t, image, 0x32)
 		towerGrid = loadGeo5CampaignGrid(t, image, 0x33)
 		observer = newNormalCampaignObserver(t, state)
@@ -1890,9 +1905,243 @@ func TestRealNewGameContinuesFromHapToMythDrannor(t *testing.T) {
 		t.FailNow()
 	}
 
+	if !t.Run("ECL6/0x42 密斯卓諾：外城遺跡", func(t *testing.T) {
+		// ★ block 0x40 的邊界處理是 `ON GOTO C04D`（面向／2）：只有朝東跨出邊界
+		// 才會走到「更多遺跡」那個選單，其餘方向都回世界地圖。
+		observer.stopAtMessageID = "myth-drannor.more-ruins"
+		state.TurnDungeonWithGrid(burialGrid, (2-int(state.DungeonDirection)+8)%8)
+		if err := state.RunDungeonExitLifecycle(); err != nil {
+			t.Fatalf("朝東的邊界生命週期：%v", err)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "myth-drannor.more-ruins") {
+			t.Fatalf("邊界選單台詞=%q choices=%v", state.Message, state.currentOriginalChoices)
+		}
+		if !observer.selectOption(t, "myth-drannor.path") {
+			t.Fatalf("邊界選單沒有 PATH：%v", state.currentOriginalChoices)
+		}
+		observer.stopAtMessageID = ""
+		for step := 0; step < 6 && state.Mode != ModeDungeon; step++ {
+			if err := state.Continue(); err != nil {
+				if selectErr := state.Select(0); selectErr != nil {
+					t.Fatalf("走上小徑之後推不動：continue=%v select=%v", err, selectErr)
+				}
+			}
+			observer.observe()
+		}
+		if state.session.CurrentBlockID() != 0x42 || state.GeoMapSet != 6 || state.GeoMapBlock != 0x42 {
+			t.Fatalf("走上小徑之後 block=%#02x geo=%d/%#02x pos=(%d,%d,%d) mode=%v message=%q",
+				state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+				state.DungeonX, state.DungeonY, state.DungeonDirection, state.Mode, state.Message)
+		}
+		captureSegmentEnd(t, "ECL6/0x42 密斯卓諾：外城遺跡")
+	}) {
+		t.FailNow()
+	}
+
+	if !t.Run("ECL6/0x43 密斯卓諾：內城遺跡", func(t *testing.T) {
+		// 同樣是 `ON GOTO C04D`，這一塊的索引 0（＝朝北）走到大神殿廢墟。
+		outerGrid := loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x42)
+		observer.stopAtMessageID = "myth-drannor.outer.ruined-temple"
+		state.TurnDungeonWithGrid(outerGrid, (0-int(state.DungeonDirection)+8)%8)
+		if err := state.RunDungeonExitLifecycle(); err != nil {
+			t.Fatalf("朝北的邊界生命週期：%v", err)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "myth-drannor.outer.ruined-temple") {
+			t.Fatalf("神殿邊界台詞=%q", state.Message)
+		}
+		observer.stopAtMessageID = ""
+		// 神殿前問兩次「要繼續嗎」：第二次還會提醒前方危機四伏。
+		for step := 0; step < 8 && state.session.CurrentBlockID() != 0x43; step++ {
+			if observer.hasOption("option.yes") {
+				if !observer.selectOption(t, "option.yes") {
+					t.Fatalf("神殿問句選不到 YES：%v", state.currentOriginalChoices)
+				}
+			} else if err := state.Continue(); err != nil {
+				if selectErr := state.Select(0); selectErr != nil {
+					t.Fatalf("神殿問句推不動：continue=%v select=%v", err, selectErr)
+				}
+			}
+			observer.observe()
+		}
+		if state.session.CurrentBlockID() != 0x43 || state.GeoMapSet != 6 ||
+			state.GeoMapBlock != 0x43 || state.DungeonX != 6 || state.DungeonY != 15 {
+			t.Fatalf("進內城遺跡之後 block=%#02x geo=%d/%#02x pos=(%d,%d,%d) mode=%v",
+				state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+				state.DungeonX, state.DungeonY, state.DungeonDirection, state.Mode)
+		}
+		captureSegmentEnd(t, "ECL6/0x43 密斯卓諾：內城遺跡")
+	}) {
+		t.FailNow()
+	}
+
+	if !t.Run("ECL6/0x43 內城遺跡：儀式與爪牙戰", func(t *testing.T) {
+		observer.stopAtMessageID = ""
+		seen := map[string]bool{}
+		for step := 0; step < 60 && state.Mode != ModeDungeon; step++ {
+			seen[state.Message] = true
+			if state.Mode == ModeCombat {
+				for turn := 0; turn < 200 && state.Mode == ModeCombat; turn++ {
+					if err := state.CombatAct(); err != nil {
+						t.Fatalf("爪牙戰第 %d 回合：%v", turn, err)
+					}
+				}
+				observer.observe()
+				continue
+			}
+			if err := state.Continue(); err != nil {
+				if selectErr := state.Select(0); selectErr != nil {
+					t.Fatalf("儀式推不動：continue=%v select=%v", err, selectErr)
+				}
+			}
+			observer.observe()
+		}
+		// 儀式的骨幹：提朗瑟克斯的演說（手札 48）、三件神器被丟進光芒之池、
+		// 祭司掀開兜帽是無名者、密語解除枷印的控制、爪牙撲上來。
+		for _, messageID := range []string{
+			"myth-drannor.inner.ritual.arrival",
+			"myth-drannor.inner.ritual.journal",
+			"myth-drannor.inner.ritual.pool",
+			"myth-drannor.inner.ritual.nameless-reveal",
+			"myth-drannor.inner.ritual.bonds-fade",
+			"myth-drannor.inner.minions-attack",
+		} {
+			text := requireGamePackText(t, state, messageID)
+			if !seen[text] {
+				t.Fatalf("儀式沒有走到 %s", messageID)
+			}
+		}
+		if state.Mode != ModeDungeon {
+			t.Fatalf("爪牙戰之後模式是 %v", state.Mode)
+		}
+		captureSegmentEnd(t, "ECL6/0x43 內城遺跡：儀式與爪牙戰")
+	}) {
+		t.FailNow()
+	}
+
+	if !t.Run("ECL6/0x43 內城遺跡：二樓與最終戰", func(t *testing.T) {
+		innerGrid := loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x43)
+		observer.stopAtMessageID = ""
+		// ★ 內城的每格事件是 `ON GOTO (C04F & 0x7F)`——用**地形碼**分派（0 起算）。
+		// 上二樓的樓梯是地形 `0x97`（索引 23），只有 (10,7) 那一格是。
+		walkNormalDungeonTo(t, state, &innerGrid, 10, 7, observer)
+		state.DungeonWallRoof = innerGrid.CellWrapped(state.DungeonX, state.DungeonY).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatalf("樓梯格生命週期：%v", err)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "myth-drannor.inner.stairs-up") {
+			t.Fatalf("樓梯台詞=%q choices=%v", state.Message, state.currentOriginalChoices)
+		}
+		if !observer.selectOption(t, "option.yes") {
+			t.Fatalf("樓梯選不到 YES：%v", state.currentOriginalChoices)
+		}
+		if state.Mode != ModeDungeon || state.DungeonX != 2 || state.DungeonY != 5 {
+			t.Fatalf("上樓之後 mode=%v pos=(%d,%d,%d)", state.Mode,
+				state.DungeonX, state.DungeonY, state.DungeonDirection)
+		}
+		// 二樓到東北角的路線（spec 408 記下的最短合法路徑）。
+		route := []struct {
+			x, y      int
+			direction uint8
+		}{
+			{2, 4, 0}, {2, 3, 0}, {2, 2, 0}, {2, 1, 0}, {2, 0, 0},
+			{3, 0, 2}, {4, 0, 2}, {5, 0, 2}, {6, 0, 2}, {6, 1, 4},
+		}
+		seen := map[string]bool{}
+		for index, point := range route {
+			state.SetDungeonGeometryView(point.x, point.y, point.direction)
+			state.DungeonWallRoof = innerGrid.CellWrapped(point.x, point.y).Terrain
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatalf("二樓第 %d 步：%v", index, err)
+			}
+			for boundary := 0; boundary < 24 && state.Mode != ModeDungeon; boundary++ {
+				seen[state.Message] = true
+				if state.CombatActive() {
+					if seen[requireGamePackText(t, state, "myth-drannor.inner.final-amulet")] {
+						break
+					}
+					for turn := 0; turn < 400 && state.CombatActive(); turn++ {
+						if err := state.CombatAct(); err != nil {
+							t.Fatalf("二樓第 %d 步的戰鬥第 %d 回合：%v", index, turn, err)
+						}
+					}
+					observer.observe()
+					continue
+				}
+				switch state.Mode {
+				case ModeEvent:
+					if err := state.Continue(); err != nil {
+						t.Fatalf("二樓第 %d 步的事件：%v", index, err)
+					}
+				default:
+					if len(state.Choices) == 0 {
+						t.Fatalf("二樓第 %d 步停在 mode=%v 且沒有選項", index, state.Mode)
+					}
+					if err := state.Select(0); err != nil {
+						t.Fatalf("二樓第 %d 步的選單：%v", index, err)
+					}
+				}
+				observer.observe()
+			}
+			if state.CombatActive() {
+				break
+			}
+		}
+		// 最終對峙的三段台詞，以及提朗瑟克斯真的開打。
+		for _, messageID := range []string{
+			"myth-drannor.inner.final-compulsion",
+			"myth-drannor.inner.final-defiance",
+			"myth-drannor.inner.final-amulet",
+		} {
+			text := requireGamePackText(t, state, messageID)
+			if !seen[text] {
+				t.Fatalf("最終對峙沒有走到 %s：看到的是 %v", messageID, len(seen))
+			}
+		}
+		if !state.CombatActive() {
+			t.Fatalf("最終戰沒有開打：mode=%v message=%q", state.Mode, state.Message)
+		}
+		if fighters := len(state.CombatFighters()); fighters < 20 {
+			t.Fatalf("最終戰只有 %d 名戰鬥員", fighters)
+		}
+		captureSegmentEnd(t, "ECL6/0x43 內城遺跡：二樓與最終戰")
+	}) {
+		t.FailNow()
+	}
+
+	if !t.Run("結局：擊敗提朗瑟克斯", func(t *testing.T) {
+		for turn := 0; turn < 600 && state.CombatActive(); turn++ {
+			if err := state.CombatAct(); err != nil {
+				t.Fatalf("最終戰第 %d 回合：%v", turn, err)
+			}
+		}
+		if state.CombatStatus() != combat.StatusPartyWon {
+			t.Fatalf("最終戰結果=%v", state.CombatStatus())
+		}
+		observer.observe()
+		if _, ok := state.OriginalChoiceIndex("PROGRAM_END"); !ok {
+			t.Fatalf("勝利之後沒有結束選項：message=%q choices=%v",
+				state.Message, state.currentOriginalChoices)
+		}
+		saveIndex, ok := state.OriginalChoiceIndex("PROGRAM_WIN_SAVE")
+		if !ok {
+			t.Fatalf("勝利之後沒有存檔選項：%v", state.currentOriginalChoices)
+		}
+		if err := state.Select(saveIndex); err != nil {
+			t.Fatalf("勝利存檔：%v", err)
+		}
+		if state.Mode != ModeTitle {
+			t.Fatalf("勝利存檔之後模式是 %v", state.Mode)
+		}
+	}) {
+		t.FailNow()
+	}
+
 	t.Run("段界快照往返", func(t *testing.T) {
-		if len(segmentEnds) != 18 {
-			t.Fatalf("存到 %d 份段界快照，應該是 18 份", len(segmentEnds))
+		if len(segmentEnds) != 22 {
+			t.Fatalf("存到 %d 份段界快照，應該是 22 份", len(segmentEnds))
 		}
 		blocks := map[uint8][]byte{}
 		for member := 1; member <= 6; member++ {

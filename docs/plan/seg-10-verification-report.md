@@ -7,7 +7,7 @@
 
 ## 一、拆法
 
-`TestRealNewGameContinuesFromHapToMythDrannor` 原本是一個 790 行的
+`TestRealNewGameRunsToTheEnding` 原本是一個 790 行的
 函式。現在同一條 session 拆成 12 個 subtest：
 
 | subtest | 段 |

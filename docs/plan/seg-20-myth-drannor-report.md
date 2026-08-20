@@ -51,7 +51,7 @@ game pack 原本只宣告了「四位主人／再除掉三位」那一種，所�
 ★ **幽魂是「走進那一格」才出現的**：站在 `(13,14)` 上跑生命週期不會觸發，
 `MoveDungeon` 走進去才會。分段驗收時「站到定位再跑一次」與「走進去」不是同一件事。
 
-整條跑的名字跟著改成 `TestRealNewGameContinuesFromHapToMythDrannor`——
+整條跑的名字跟著改成 `TestRealNewGameRunsToTheEnding`——
 名字裡的終點是斷言，走得比它遠就要改名。
 
 ## 四、墓園裡往東要繞路
