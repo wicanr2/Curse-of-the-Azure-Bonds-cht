@@ -57,7 +57,7 @@
 |---|---|---|---|---|
 | `SEG-01` | ✅ **完成**：轉移機制查清楚了（spec 1141）——主迴圈讀 `LastECL`、`NEWECL` 改它；圖由 `cmd/ecl-block-graph` 產生 | `docs/audit/ecl-block-graph.md` ＋ spec 1141 ＋ 形狀回歸測試 | 25 個 block 每一個都說得出怎麼進去、怎麼出來 ✓ | 已完成 |
 | `SEG-02` | ✅ **完成**：`LOAD FILES` 第一個運算元 ＝ 那一段載的地圖區塊；`area_id`／`script_block` 與 block 編號 join 得起來 | `docs/audit/ecl-block-graph.md` 的段落清單 ＋ 三條回歸測試 | 25 個 block 的地圖歸屬都算得出來 ✓；剩三張地圖缺 `script_block`、一組宣告不一致（見報告）| 已完成 |
-| `SEG-03` | **段落註冊表**：每段一筆 `{id, 進入方式, 起始狀態, 正常結束條件, 產出快照}` | Go 表 ＋ 由它產生的清單 | 註冊表與 `SEG-02` 的對照表對得起來，缺一段就 fail | 一個檔 ＋ 一條閘 |
+| `SEG-03` | ✅ **前半完成**：段的 id 一律 `ECL{成員}/0x{block}`（機械、與 game pack 命名無關），標籤放 `docs/plan/segment-labels.json` | 段落清單的標籤欄 ＋ 報告 | 25 段的標籤逐條有原作敘述為證 ✓；進入方式／結束條件／快照三欄要等 `SEG-04`／`SEG-11` | 已完成前半 |
 | `SEG-04` | **統一直入旗標**：`-segment <id>` 取代目前散在 25 個 flag 的作法（舊 flag 保留為別名） | `cmd/azure-bonds-game` | 註冊表裡每一段都進得去 | 接線 |
 
 ### 階段 1：把既有的整條跑拆成段（行為不變）
@@ -117,7 +117,8 @@
 ## 七、開工前要先有答案的
 
 1. ~~`SEG-01`~~ ✅ 已解（spec 1141）：轉移是 `NEWECL` 改 `LastECL`，主迴圈載它。
-2. 9 個 `original.geoN.block-NN` 佔位地圖各自是哪個區域——歸屬已經算得出來
-   （`SEG-02`），但**名字**要靠那些 block 的劇情文字，還沒定。
+2. ~~9 個佔位地圖的名字~~ ✅ 已解（`SEG-03`）：段的 id 不綁地圖名，標籤逐條
+   有原作敘述為證。⚠ 順帶查出 `zhentil-keep.beholder-cave` 的 `script_block`
+   指到別段的劇本，留給 `SEG-10` 拆段時驗。
 3. 段的快照要存哪一層：整份 `SavePartyFile`、還是另外一個測試專用的
    state snapshot。前者順便驗了存檔，後者比較好控制。傾向前者。

@@ -711,7 +711,21 @@
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "segmentTable",
-      "sha256": "84ff78044b0ee57448871767e1dbc6fb1a558dded9e536398b36ad8f62cfe7e1",
+      "sha256": "85abda6935be552c222c21743f1ba457c1f1e778d1e9a330e2b932f6ee638044",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "c2b281db8047d5067d3da5a9797468f83ac0f0f307bee59bf7153b0008b16eed",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "de92ff9423371e785e807bf1172acb69220b6c53bc7bcd5ff8be626675ca0844",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -726,6 +740,41 @@
       "path": "cmd/ecl-block-graph/main.go",
       "function": "segmentTable",
       "sha256": "fb90911f9cee271d77b7319a23a6ea6cbe594e686db4c0faaecaf323cf65751a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-text/main.go",
+      "function": "main",
+      "sha256": "3a244cf8a1971452fe5e9d4791fe0bb514ff12f023234a93d6d07c6f6a9c503f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-text/main.go",
+      "function": "main",
+      "sha256": "3b119290b495bcc2f8f439abad75ef3d436975e01666fd09c4b86c98fa160ec4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-text/main.go",
+      "function": "main",
+      "sha256": "a85d8c7962b32828f07cd970c9950f82e4c05c9a39e3e3e03fe76d168a748c1c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-text/main.go",
+      "function": "main",
+      "sha256": "c4722a3ca2306580720c3c40633ba2dc3279ffd172b6348f57a81103d8c81264",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-text/main.go",
+      "function": "main",
+      "sha256": "d24bc0bf05b6ca88ce9e955f133134aea778b50243b96c683bf9bb752869d64a",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
