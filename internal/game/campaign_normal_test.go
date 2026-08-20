@@ -59,8 +59,14 @@ func newNormalCampaignObserver(t *testing.T, state *State) *normalCampaignObserv
 }
 
 func (o *normalCampaignObserver) observe() {
-	if o.messages != nil && o.state != nil && strings.TrimSpace(o.state.Message) != "" {
-		o.messages[o.state.Message] = true
+	if o.messages != nil && o.state != nil {
+		// 訊息與提示都要記：遭遇選單的敘述走的是 Prompt 那一行。
+		if strings.TrimSpace(o.state.Message) != "" {
+			o.messages[o.state.Message] = true
+		}
+		if strings.TrimSpace(o.state.Prompt) != "" {
+			o.messages[o.state.Prompt] = true
+		}
 	}
 	for _, messageID := range []string{
 		"hap.abandoned-village",
