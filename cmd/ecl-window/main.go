@@ -35,6 +35,7 @@ func main() {
 	operand := flag.String("operand", "", "第一個運算元要等於這個值（十六進位）；留白就不限")
 	text := flag.String("text", "", "改成找「打包文字裡含有這個子字串」的指令；設了就不看 opcode")
 	into := flag.String("into", "", "改成列出「跳到這個位移」的指令（十六進位）；用來找某段程式碼的守衛")
+	table := flag.String("table", "", "改成把這個位移的 `ON GOTO` 表拆開，逐個索引印出目的地與那裡的第一句文字")
 	raw := flag.Bool("raw", false, "每一條額外印出原始位元組（變長指令用）")
 	before := flag.Int("before", 8, "往前印幾條")
 	after := flag.Int("after", 2, "往後印幾條")
@@ -100,6 +101,44 @@ func main() {
 		offsets = append(offsets, offset)
 	}
 	sort.Ints(offsets)
+
+	if *table != "" {
+		wantOffset, parseErr := strconv.ParseInt(strings.TrimPrefix(*table, "0x"), 16, 32)
+		if parseErr != nil {
+			log.Fatal(parseErr)
+		}
+		instruction, ok := unique[int(wantOffset)]
+		if !ok {
+			log.Fatalf("位移 %#04x 不在可達指令裡", wantOffset)
+		}
+		end := instruction.Next
+		for _, offset := range offsets {
+			if offset > int(wantOffset) {
+				end = offset
+				break
+			}
+		}
+		// ⚠ 走訪用的位移與 payload 差兩個位元組（區塊標頭）。
+		raw := data[int(wantOffset)+2 : end+2]
+		fmt.Printf("%s 區塊 0x%02X 的 %s 表（位移 %#04x）：% x\n\n",
+			*member, wanted, instruction.Command.Name, wantOffset, raw)
+		// 版面是：opcode、被分派的運算元、個數、然後每個索引一個 word 目的地。
+		cursor := 1
+		cursor += operandWidth(raw[cursor:])
+		count := int(raw[cursor+1])
+		cursor += operandWidth(raw[cursor:])
+		for index := 0; cursor+2 < len(raw); index++ {
+			target := int(raw[cursor+1]) | int(raw[cursor+2])<<8
+			cursor += 3
+			payloadOffset := target - ecl.CodeAddressBase
+			fmt.Printf("索引 %2d → %#04x  %s\n", index, payloadOffset,
+				firstTextAt(unique, offsets, payloadOffset))
+			if index+1 >= count {
+				break
+			}
+		}
+		return
+	}
 
 	if *into != "" {
 		wantOffset, parseErr := strconv.ParseInt(strings.TrimPrefix(*into, "0x"), 16, 32)
@@ -185,6 +224,32 @@ func main() {
 		fmt.Println()
 	}
 	fmt.Printf("%s 區塊 0x%02X：可達指令 %d 條，命中 %d 處\n", *member, wanted, len(offsets), hits)
+}
+
+// operandWidth 回傳一個運算元佔幾個位元組。0x00 是位元組運算元（`00 vv`），
+// 其餘（0x01 等）是 word 運算元（`cc lo hi`）。
+func operandWidth(raw []byte) int {
+	if len(raw) == 0 {
+		return 0
+	}
+	if raw[0] == 0x00 {
+		return 2
+	}
+	return 3
+}
+
+// firstTextAt 從某個位移往後找，回傳最先出現的那一句打包文字。
+func firstTextAt(unique map[int]ecl.Instruction, offsets []int, start int) string {
+	index := sort.SearchInts(offsets, start)
+	for cursor := index; cursor < len(offsets) && cursor < index+12; cursor++ {
+		instruction := unique[offsets[cursor]]
+		for _, operand := range instruction.Operands {
+			if len(operand.Packed) > 0 {
+				return fmt.Sprintf("%q", ecl.DecodePackedText(operand.Packed))
+			}
+		}
+	}
+	return "（前 12 條裡沒有文字）"
 }
 
 func containsText(instruction ecl.Instruction, needle string) bool {
