@@ -22,32 +22,7 @@ func TestBurialGlenCellEventsAreLocalized(t *testing.T) {
 		t.Skipf("original image is unavailable: %v", err)
 	}
 	defer image.Close()
-	blocks := map[uint8][]byte{}
-	for chapter := 1; chapter <= 6; chapter++ {
-		parsed, parseErr := dax.Parse(zipData(t, image, "ECL"+strconv.Itoa(chapter)+".DAX"))
-		if parseErr != nil {
-			t.Fatal(parseErr)
-		}
-		for _, block := range parsed {
-			blocks[block.Entry.ID] = block.Data
-		}
-	}
-	records := map[uint8]map[uint8]monster.Record{}
-	for chapter := 1; chapter <= 6; chapter++ {
-		parsed, parseErr := dax.Parse(zipData(t, image, "MON"+strconv.Itoa(chapter)+"CHA.DAX"))
-		if parseErr != nil {
-			t.Fatal(parseErr)
-		}
-		chapterRecords := map[uint8]monster.Record{}
-		for _, block := range parsed {
-			record, recordErr := monster.Parse(block.Data)
-			if recordErr != nil {
-				t.Fatalf("MON%dCHA block %#02x: %v", chapter, block.Entry.ID, recordErr)
-			}
-			chapterRecords[block.Entry.ID] = record
-		}
-		records[uint8(chapter)] = chapterRecords
-	}
+	blocks, records := loadAllECLAndMonsters(t, image)
 	grid := loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x40)
 	glen, ok := segment.Lookup("ECL6/0x40")
 	if !ok {
@@ -85,7 +60,7 @@ func TestBurialGlenCellEventsAreLocalized(t *testing.T) {
 			}
 			var last string
 			for attempt := 0; attempt < attempts; attempt++ {
-				state := newBurialGlenState(t, blocks, records, glen)
+				state := newSegmentDungeonState(t, blocks, records, glen)
 				state.SetECLSeed(int64(attempt) + 1)
 				state.SetDungeonGeometryView(cell.x, cell.y, 0)
 				state.DungeonWallRoof = grid.CellWrapped(cell.x, cell.y).Terrain
@@ -105,8 +80,8 @@ func TestBurialGlenCellEventsAreLocalized(t *testing.T) {
 	}
 }
 
-func newBurialGlenState(t *testing.T, blocks map[uint8][]byte,
-	records map[uint8]map[uint8]monster.Record, glen segment.Segment) State {
+func newSegmentDungeonState(t *testing.T, blocks map[uint8][]byte,
+	records map[uint8]map[uint8]monster.Record, seg segment.Segment) State {
 	t.Helper()
 	state := NewStateFromECLBlocks(trainingTestCatalog(t), blocks, 0x50)
 	for chapter, chapterRecords := range records {
@@ -121,14 +96,179 @@ func newBurialGlenState(t *testing.T, blocks map[uint8][]byte,
 	if err := state.FinishCharacterCreation(); err != nil {
 		t.Fatal(err)
 	}
-	if err := state.EnterSegment(glen); err != nil {
+	if err := state.EnterSegment(seg); err != nil {
 		t.Fatal(err)
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeDungeon {
-		t.Fatalf("進墓園之後模式是 %v", state.Mode)
+		t.Fatalf("進 %s 之後模式是 %v", seg.ID, state.Mode)
 	}
 	return state
+}
+
+// loadAllECLAndMonsters 讀六個 ECL 成員與六章的怪物表。逐格盤點要重複進段，
+// 少載一章的怪物表那一段就會安靜地跳過開戰。
+func loadAllECLAndMonsters(t *testing.T, image *zip.ReadCloser) (
+	map[uint8][]byte, map[uint8]map[uint8]monster.Record) {
+	t.Helper()
+	blocks := map[uint8][]byte{}
+	for chapter := 1; chapter <= 6; chapter++ {
+		parsed, err := dax.Parse(zipData(t, image, "ECL"+strconv.Itoa(chapter)+".DAX"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, block := range parsed {
+			blocks[block.Entry.ID] = block.Data
+		}
+	}
+	records := map[uint8]map[uint8]monster.Record{}
+	for chapter := 1; chapter <= 6; chapter++ {
+		parsed, err := dax.Parse(zipData(t, image, "MON"+strconv.Itoa(chapter)+"CHA.DAX"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		chapterRecords := map[uint8]monster.Record{}
+		for _, block := range parsed {
+			record, recordErr := monster.Parse(block.Data)
+			if recordErr != nil {
+				t.Fatalf("MON%dCHA block %#02x: %v", chapter, block.Entry.ID, recordErr)
+			}
+			chapterRecords[block.Entry.ID] = record
+		}
+		records[uint8(chapter)] = chapterRecords
+	}
+	return blocks, records
+}
+
+// 外城遺跡的每格事件同樣由地形碼分派（`ON GOTO (C04F & 0x7F)`，位移 0x0219）。
+func TestOuterRuinsCellEventsAreLocalized(t *testing.T) {
+	image, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocks, records := loadAllECLAndMonsters(t, image)
+	grid := loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x42)
+	outer, ok := segment.Lookup("ECL6/0x42")
+	if !ok {
+		t.Fatal("註冊表沒有 ECL6/0x42")
+	}
+
+	cells := []struct {
+		x, y      int
+		messageID string
+	}{
+		{1, 12, "myth-drannor.outer.tirsheya.greeting"},
+		{3, 14, "myth-drannor.outer.storehouse.guards"},
+		{2, 6, "myth-drannor.outer.fugitive.intro"},
+		{3, 6, "myth-drannor.outer.fugitive.remains"},
+		{13, 7, "myth-drannor.outer.nameless-warning"},
+		{12, 9, "myth-drannor.outer.brush-decoy"},
+		{11, 11, "myth-drannor.outer.brush-bloodstains"},
+		{1, 3, "myth-drannor.outer.gambling-room"},
+		{11, 2, "myth-drannor.outer.margoyle-trap"},
+		{5, 6, "myth-drannor.outer.sewer-margoyle"},
+		{9, 6, "myth-drannor.outer.rakshasa-residence"},
+	}
+	for _, cell := range cells {
+		t.Run(cell.messageID, func(t *testing.T) {
+			state := newSegmentDungeonState(t, blocks, records, outer)
+			state.SetDungeonGeometryView(cell.x, cell.y, 0)
+			state.DungeonWallRoof = grid.CellWrapped(cell.x, cell.y).Terrain
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatalf("(%d,%d) 的生命週期：%v", cell.x, cell.y, err)
+			}
+			want := requireGamePackText(t, &state, cell.messageID)
+			if state.Message != want && state.Prompt != want {
+				t.Fatalf("(%d,%d) roof=%#02x 的敘述是 %q，提示是 %q",
+					cell.x, cell.y, state.DungeonWallRoof, state.Message, state.Prompt)
+			}
+		})
+	}
+}
+
+// 藏匿處不是走過去就有：守衛是 `COMPARE AND 7ECA,1 4CD5,1`——要**先拿到垂死者
+// 的線索**（`4CD5`），而且要在那一格**SEARCH**（`7ECA`）。這一條把整段跑一次。
+func TestOuterRuinsFugitiveCache(t *testing.T) {
+	image, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocks, records := loadAllECLAndMonsters(t, image)
+	grid := loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x42)
+	outer, ok := segment.Lookup("ECL6/0x42")
+	if !ok {
+		t.Fatal("註冊表沒有 ECL6/0x42")
+	}
+	state := newSegmentDungeonState(t, blocks, records, outer)
+	// ⚠ 這一條驗的是**內容與語系**，不是難度：臨時建的一名角色打不贏地獄犬群，
+	// 而打輸就看不到線索。所以把隊伍撐起來——與 `-inner-final-battle` 的觀察
+	// 用隊伍同一個作法，不是放寬那一段的結束條件。
+	boostSweepParty(t, &state)
+
+	state.SetDungeonGeometryView(2, 6, 0)
+	state.DungeonWallRoof = grid.CellWrapped(2, 6).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatalf("垂死者那一格：%v", err)
+	}
+	if want := requireGamePackText(t, &state, "myth-drannor.outer.fugitive.intro"); state.Message != want {
+		t.Fatalf("垂死者的敘述是 %q", state.Message)
+	}
+	for step := 0; step < 16; step++ {
+		if state.CombatActive() {
+			for turn := 0; turn < 400 && state.CombatActive(); turn++ {
+				if err := state.CombatAct(); err != nil {
+					t.Fatalf("救人的戰鬥：%v", err)
+				}
+			}
+			continue
+		}
+		if state.Mode == ModeDungeon {
+			break
+		}
+		if err := state.Continue(); err != nil {
+			if selectErr := state.Select(0); selectErr != nil {
+				t.Fatalf("救人的流程推不動：continue=%v select=%v", err, selectErr)
+			}
+		}
+	}
+	if flag, _ := state.session.MemoryValue(0x4CD5); flag != 1 {
+		t.Fatalf("救完人之後 4CD5=%#x，沒有拿到線索", flag)
+	}
+
+	// 拿到線索之後到那一格 SEARCH，藏匿處才出得來。
+	state.SetDungeonGeometryView(14, 3, 0)
+	state.DungeonWallRoof = grid.CellWrapped(14, 3).Terrain
+	state.DungeonSearchEnabled = true
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatalf("藏匿處那一格：%v", err)
+	}
+	if want := requireGamePackText(t, &state, "myth-drannor.outer.fugitive.cache"); state.Message != want {
+		t.Fatalf("藏匿處的敘述是 %q", state.Message)
+	}
+}
+
+// boostSweepParty 把隊伍撐到足以走完內容盤點的程度。**只給盤點用**：
+// 段測試不准這樣做，那會把「這一段打得贏嗎」偷偷換成「這一段演得出來嗎」。
+func boostSweepParty(t *testing.T, state *State) {
+	t.Helper()
+	party := state.PartyFighters()
+	if len(party) == 0 {
+		t.Fatal("盤點用的隊伍是空的")
+	}
+	for index := range party {
+		party[index].HitPoints, party[index].MaxHitPoints = 999, 999
+		party[index].ArmorClass = -10
+		party[index].AttackBonus = 100
+		party[index].DamageDiceCount, party[index].DamageDiceSides = 1, 1
+		party[index].DamageBonus = 100
+		party[index].AttacksPerTurn = 8
+		party[index].InitiativeBonus = 100
+	}
+	if err := state.SetParty(party); err != nil {
+		t.Fatalf("裝上盤點用隊伍：%v", err)
+	}
 }
