@@ -392,3 +392,38 @@ func StoredAttackBonus(bonus int) int { return armorClassStoredBase - (armorClas
 
 // DisplayAttackBonus 是 StoredAttackBonus 的反向。
 func DisplayAttackBonus(stored int) int { return armorClassHitTarget - (armorClassStoredBase - stored) }
+
+// DexterityDefenceAdjustment 是原作 `overlay-24:117Ah`（spec 694 的敏捷防禦表）：
+// 回傳值加進儲存刻度的護甲值，**正值代表防禦變好**（畫面上的 AC 變小）。
+//
+// AD&D 1e 的防禦調整是這張表取負號：敏捷 3 給 +4（AC 更差）、18 給 −4。
+// 19..25 那四段是本作自己補的。
+//
+// ⚠ 與 engine 的 `DexterityReactionAdjustment`（遠程命中那張，`120Ah`）**不同表**：
+// 值域與端點都不一樣，不能互相代用。
+func DexterityDefenceAdjustment(dexterity int) int {
+	switch {
+	case dexterity <= 3:
+		return -4
+	case dexterity == 4:
+		return -3
+	case dexterity == 5:
+		return -2
+	case dexterity == 6:
+		return -1
+	case dexterity <= 14:
+		return 0
+	case dexterity == 15:
+		return 1
+	case dexterity == 16:
+		return 2
+	case dexterity == 17:
+		return 3
+	case dexterity <= 20:
+		return 4
+	case dexterity <= 23:
+		return 5
+	default:
+		return 6
+	}
+}

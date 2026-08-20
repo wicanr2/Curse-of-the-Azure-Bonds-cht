@@ -436,6 +436,13 @@ type Character struct {
 	// ClassLevels preserves the eight raw DOS class-level slots. Class remains
 	// the primary-class projection used by the current combat rules layer.
 	ClassLevels [8]uint8 `json:"class_levels,omitempty"`
+	// AttackAbility 是原作角色記錄的 `+73h`：八個職業槽各查一次命中能力表、
+	// 取最大值（TRAINING `overlay-17:0782h`，spec 1140）。**儲存刻度**，
+	// 畫面上的 THAC0 是 `60 − 它`。0 代表這個角色沒有帶原作的值。
+	AttackAbility uint8 `json:"attack_ability,omitempty"`
+	// BaseArmorClass 是原作角色記錄的 `+124h`：派生數值重算把它抄進 `+19Ah`
+	// 當護甲的起點（spec 1000）。建角寫 `32h`（＝ AC 10）。同樣是儲存刻度。
+	BaseArmorClass uint8 `json:"base_armor_class,omitempty"`
 	// HitDice and MulticlassLevel preserve DOS offsets 0xE5/0xE6. A
 	// dual-class character gains no training HP until the active class has
 	// surpassed the old class level.
@@ -997,11 +1004,21 @@ func (c Character) Fighter() (combat.Fighter, error) {
 	if hitPoints < 1 {
 		hitPoints = 1
 	}
+	// 原作的命中能力在 `+73h`、護甲起點在 `+124h`（spec 1140），兩個都是
+	// 儲存刻度。有帶原作的值就用它換算；沒有的（早期存檔、合成角色）
+	// 才退回本作自己的近似式。
 	attackBonus := (c.Abilities.Strength - 10) / 2
 	if !specialist {
 		attackBonus = (c.Abilities.Dexterity - 10) / 2
 	}
+	if c.AttackAbility > 0 {
+		attackBonus = combat.DisplayAttackBonus(int(c.AttackAbility))
+	}
 	armorClass := 10 - (c.Abilities.Dexterity-10)/2
+	if c.BaseArmorClass > 0 {
+		armorClass = combat.DisplayArmorClass(int(c.BaseArmorClass) +
+			combat.DexterityDefenceAdjustment(c.Abilities.Dexterity))
+	}
 	iconSize := c.IconSize
 	if iconSize == 0 {
 		iconSize = DefaultIconSize(c.Race)
@@ -1228,4 +1245,54 @@ func abilityValue(abilities Abilities, name string) int {
 	default:
 		return 0
 	}
+}
+
+// CombatBaseLookup 是命中能力表的查詢介面。資料由 game pack 提供
+// （gamepack.CombatBase），本套件只放機制。
+type CombatBaseLookup interface {
+	ClassAttackValue(slot, level int) (int, bool)
+	CreationDefaults() (armorClassStored, attackAbilityStored int, ok bool)
+}
+
+// AttackAbilityFrom 是原作 `+73h` 的算法（TRAINING `overlay-17:0782h`，spec 1140）：
+// 八個職業槽**全部**跑一遍，等級為 0 的槽跳過，其餘查表取最大值。
+//
+// ⚠ 原作那條 `jle` 跳到的是迴圈**尾巴**（`cmp var_19, 7`）不是出口，
+// 所以空槽是 continue 不是 break——聖騎士只有槽 3 有等級，
+// 讀成 break 會在槽 0 就結束、算不出任何值。
+func AttackAbilityFrom(tables CombatBaseLookup, classLevels [8]uint8) (uint8, error) {
+	if tables == nil {
+		return 0, fmt.Errorf("命中能力表沒有注入")
+	}
+	best := 0
+	for slot, level := range classLevels {
+		if level == 0 {
+			continue
+		}
+		value, ok := tables.ClassAttackValue(slot, int(level))
+		if !ok {
+			return 0, fmt.Errorf("命中能力表查不到職業槽 %d 等級 %d", slot, level)
+		}
+		if value > best {
+			best = value
+		}
+	}
+	if best == 0 {
+		return 0, fmt.Errorf("這個角色八個職業槽都是 0 級")
+	}
+	return uint8(best), nil
+}
+
+// CreationCombatBase 回傳建角要寫進 `+73h` 與 `+124h` 的兩個值。
+// 命中能力走 AttackAbilityFrom（依職業與等級），護甲起點是建角的固定預設值。
+func CreationCombatBase(tables CombatBaseLookup, classLevels [8]uint8) (attackAbility, baseArmorClass uint8, err error) {
+	attack, err := AttackAbilityFrom(tables, classLevels)
+	if err != nil {
+		return 0, 0, err
+	}
+	armorStored, _, ok := tables.CreationDefaults()
+	if !ok {
+		return 0, 0, fmt.Errorf("game pack 沒有建角預設值")
+	}
+	return attack, uint8(armorStored), nil
 }

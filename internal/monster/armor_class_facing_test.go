@@ -11,38 +11,6 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 )
 
-// dexterityDefenceAdjustment 是原作 `overlay-24:117Ah`（spec 694 那張表的
-// 未取負號版本）：敏捷高就是正值，代表防禦變好。
-//
-// ⚠ 這裡是**測試本地**的表。它是規則，將來 AC 刻度統一之後要搬進正式程式碼；
-// 現在還沒有生產端會用它，先不放進去當死碼。
-func dexterityDefenceAdjustment(dexterity int) int {
-	switch {
-	case dexterity <= 3:
-		return -4
-	case dexterity == 4:
-		return -3
-	case dexterity == 5:
-		return -2
-	case dexterity == 6:
-		return -1
-	case dexterity <= 14:
-		return 0
-	case dexterity == 15:
-		return 1
-	case dexterity == 16:
-		return 2
-	case dexterity == 17:
-		return 3
-	case dexterity <= 20:
-		return 4
-	case dexterity <= 23:
-		return 5
-	default:
-		return 6
-	}
-}
-
 func originalMonsterRecords(t *testing.T) []([]byte) {
 	t.Helper()
 	const imagePath = "../../curseoftheazurebonds.zip"
@@ -102,7 +70,7 @@ func TestSecondArmorClassMatchesTheRecalculationFormula(t *testing.T) {
 		if err != nil {
 			continue
 		}
-		expected := record.ArmorClass - dexterityDefenceAdjustment(int(record.Dexterity)) - 2
+		expected := record.ArmorClass - combat.DexterityDefenceAdjustment(int(record.Dexterity)) - 2
 		residual := expected - record.ArmorClassFacing
 		if residual == 0 {
 			exact++

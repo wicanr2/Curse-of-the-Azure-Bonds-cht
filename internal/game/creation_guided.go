@@ -389,6 +389,19 @@ func (s *State) rollGuidedHitPoints(seed int64) error {
 	s.GuidedDraft.BaseMaxHitPoints = points.BaseMaxHitPoints
 	// 原作直接補滿：角色^[1A4h] := 角色^[78h]。
 	s.GuidedDraft.HitPoints = points.MaxHitPoints
+	// 命中能力 `+73h` 與護甲起點 `+124h`（spec 1140）。原作建角先寫兩個
+	// 預設值，訓練場再依職業與等級重算 `+73h`；一級角色兩條路的差別只在
+	// 法師與盜賊那兩張表，所以這裡直接查表。
+	combatBase, err := gamepack.CombatBase()
+	if err != nil {
+		return err
+	}
+	attack, armor, err := party.CreationCombatBase(combatBase, s.GuidedDraft.ClassLevels)
+	if err != nil {
+		return err
+	}
+	s.GuidedDraft.AttackAbility = attack
+	s.GuidedDraft.BaseArmorClass = armor
 	return nil
 }
 
