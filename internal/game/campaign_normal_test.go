@@ -852,7 +852,7 @@ func TestRealNewGameContinuesFromHapToMythDrannor(t *testing.T) {
 	defer image.Close()
 	// 跨段共用的狀態先宣告：底下每一段是一個 subtest，宣告在 subtest 裡的
 	// 變數出不了那個閉包。
-	var grid, towerGrid, pitGrid geo.Grid
+	var grid, towerGrid, pitGrid, burialGrid geo.Grid
 	var observer *normalCampaignObserver
 	// 每一段結束時存一份快照，最後一段之後整批驗往返（SEG-11／SEG-30）。
 	snapshotDir := t.TempDir()
@@ -1782,9 +1782,29 @@ func TestRealNewGameContinuesFromHapToMythDrannor(t *testing.T) {
 		t.FailNow()
 	}
 
+	if !t.Run("ECL6/0x40 墓園：進入遺跡", func(t *testing.T) {
+		if err := state.Continue(); err != nil {
+			t.Fatalf("龍盔台詞之後推不動：%v", err)
+		}
+		observer.observe()
+		// 原作把出生點寫進 C04B／C04C／C04D，remake 從那裡同步回來。
+		if state.Mode != ModeDungeon || state.DungeonX != 2 || state.DungeonY != 15 ||
+			state.DungeonDirection != 2 {
+			t.Fatalf("墓園出生點 mode=%v pos=(%d,%d,%d)", state.Mode,
+				state.DungeonX, state.DungeonY, state.DungeonDirection)
+		}
+		burialGrid = loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x40)
+		state.DungeonWallType, _ = burialGrid.WallWrapped(state.DungeonX, state.DungeonY,
+			int(state.DungeonDirection))
+		state.DungeonWallRoof = burialGrid.CellWrapped(state.DungeonX, state.DungeonY).Terrain
+		captureSegmentEnd(t, "ECL6/0x40 墓園：進入遺跡")
+	}) {
+		t.FailNow()
+	}
+
 	t.Run("段界快照往返", func(t *testing.T) {
-		if len(segmentEnds) != 15 {
-			t.Fatalf("存到 %d 份段界快照，應該是 15 份", len(segmentEnds))
+		if len(segmentEnds) != 16 {
+			t.Fatalf("存到 %d 份段界快照，應該是 16 份", len(segmentEnds))
 		}
 		blocks := map[uint8][]byte{}
 		for member := 1; member <= 6; member++ {
