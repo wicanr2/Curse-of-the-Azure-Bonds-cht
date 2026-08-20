@@ -2641,7 +2641,8 @@ func combatTerrainLayers(mode string, entry mapdata.BackgroundTile) []combatTerr
 // `鏡像(相機(地圖格))` ＝ `(6 − (x − 原點x), y − 原點y)`，所以由畫面格回推
 // 地圖格就是 `(原點x + 6 − 欄, 原點y + 列)`。地形層用它查自己該畫哪一格。
 func combatMapTileForScreen(camera combat.CombatCamera, column, row int) combat.TilePoint {
-	return combat.TilePoint{X: camera.Origin.X + 6 - column, Y: camera.Origin.Y + row}
+	origin := camera.Origin()
+	return combat.TilePoint{X: origin.X + 6 - column, Y: origin.Y + row}
 }
 
 func (a *app) drawCombatSpriteMarker(screen *ebiten.Image, fighter combat.Fighter, active, selected bool, x, y int) {
