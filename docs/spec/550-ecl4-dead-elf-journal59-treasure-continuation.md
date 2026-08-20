@@ -69,7 +69,7 @@ go test -v ./internal/ecl \
 go test -v ./gamepack \
   -run '^Test.*Journal.*|TestBeholderCaveMapHandoffContinuesSameECLResult$' -count=1
 go test -v ./internal/game \
-  -run '^TestRealNewGameContinuesFromHapToMythDrannor$' -count=1
+  -run '^TestRealNewGameRunsToTheEnding$' -count=1
 ```
 
 最後一項從真正新遊戲開始，以普通移動與正常 ECL continuation 走到手札 59，並

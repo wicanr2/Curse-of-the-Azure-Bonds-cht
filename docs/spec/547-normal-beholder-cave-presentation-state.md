@@ -88,7 +88,7 @@ getter 的 overlay-local `0x0FDC..0x108A` 對 `C04B` 作門檻比較、減去 `C
 | 目的格畫面 | `GEO4.DAX` block `0x25` cell `(13,1)`：west wall `08`、terrain `C0` | `exact` |
 | CoAB 結果 | `zhentil-keep.beholder-cave.same-block-launch` 將位置與 cache 投影為 `(13,1,W)`、`wall=08`、`roof=C0` | `exact`（remake contract） |
 
-`TestRealNewGameContinuesFromHapToMythDrannor` 現在從新遊戲一路經 Hap、
+`TestRealNewGameRunsToTheEnding` 現在從新遊戲一路經 Hap、
 熔岩洞、法師塔、世界旅行與散提爾堡進入 E1，再以一般 `MoveDungeon` BFS 走到
 source cell。測試斷言 data-pack event、最終位置、方向、`C04B..C04F` 與原始
 GEO cache，沒有 direct-entry、座標注入、戰鬥注入或 `0x4C00` 寫入。
@@ -99,7 +99,7 @@ Docker 驗證：
 go test -modfile=go.round.mod -mod=readonly -timeout=240s \
   ./gamepack -run '^TestEmbeddedPackValidatesAndOwnsZhentilText$' -count=1
 go test -modfile=go.round.mod -mod=readonly -timeout=240s \
-  ./internal/game -run '^TestRealNewGameContinuesFromHapToMythDrannor$' -count=1
+  ./internal/game -run '^TestRealNewGameRunsToTheEnding$' -count=1
 ```
 
 兩者於本輪通過。`go.round.mod` 是本機 engine replace 的測試輔助，不是版本化

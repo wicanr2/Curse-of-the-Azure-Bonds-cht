@@ -13,7 +13,7 @@
 | 沒有出邊的 block | **2**（開場 `0x52`、結局 `0x43`）| 同上 |
 | game pack 宣告的地圖 | 20（其中 **9 張還是 `original.geoN.block-NN` 佔位名**） | `gamepack/pack/00-core.json` |
 | 直入旗標 | 62 個 flag，其中約 25 個是劇情 checkpoint | `cmd/azure-bonds-game` |
-| 主線整條跑的測試 | `TestRealNewGameContinuesFromHapToMythDrannor`，**單一函式、檔案 1,625 行** | `internal/game/campaign_normal_test.go` |
+| 主線整條跑的測試 | `TestRealNewGameRunsToTheEnding`，**單一函式、檔案 1,625 行** | `internal/game/campaign_normal_test.go` |
 
 連續的新遊戲 session 目前走到眼魔洞穴與散提爾堡世界選單。
 
