@@ -63,10 +63,19 @@ d20 ＋ 命中加值 ＋ 目標 AC >= 20
 三條回歸測試各釘一段：`TestHitThresholdMatchesTheOriginalNumbers`（門檻對回原作
 的 18）、`TestHigherDexterityIsHarderToHit`、`TestRearAttackIsEasierThanFacingTheAttacker`。
 
-## 明確不宣稱
+## `v` 是 ECL 的兩格命中修正
 
-- 沒有宣稱 `v`（bank 1 的 `6E0h`／`6E2h`）是什麼；remake 目前沒有對應物，
-  也就是說隊伍與怪物之間那一項固定修正還沒接。
+`bank1^[6E0h]`／`[6E2h]` 就是 ECL 位址 `7F70h`／`7F71h`
+（bank 1 的映射是 `(位址 − 7C00h) × 2`，spec 1096）：**`7F70h` 是敵方側、
+`7F71h` 是隊伍側的當場命中修正**，由劇情用 `SAVE` 寫進去（spec 390）。
+原作依**攻擊者**的隊號（DOS `+197h`）挑哪一格，`0` 取 `+6E2h`（隊伍側）。
+
+remake 這一格接在 `SetSideAttackRollModifier`，來源是 game pack 的
+combat modifier 宣告（讀同一個 ECL 記憶格）。全 build 只有
+`overlay-05:1736`（開局清 0）與 `overlay-23:123F`（讀）碰這兩格，
+其餘都是 ECL 寫入。
+
+## 明確不宣稱
 - 沒有宣稱隊員的 AC 與命中加值**數值**與原作相同：`internal/party` 的
   `Fighter()` 仍是自己的近似（`10 − (敏捷 − 10) / 2`、`(力量 − 10) / 2`），
   本規格只處理刻度方向。

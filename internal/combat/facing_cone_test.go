@@ -164,3 +164,49 @@ func TestOpportunityAttackSkipsTheFacingCheckOnBothBypasses(t *testing.T) {
 		t.Fatalf("動作計數 0 應該跳過面向檢查，實際 %d 次", len(result.FreeAttacks))
 	}
 }
+
+// 離開接觸的機會攻擊在面向之前還有三道閘（spec 1010）：打手動得了、
+// 看得見離場的人、打手沒有撤退。每一道各自擋一次，符號寫反了會變成
+// 「只有動不了的人才打」這種完全相反的行為。
+func TestOpportunityAttackGatesBeforeFacing(t *testing.T) {
+	cases := []struct {
+		name    string
+		mutate  func(attacker, mover *Fighter)
+		attacks int
+	}{
+		{"沒有任何阻礙", func(a, m *Fighter) {}, 1},
+		{"打手睡著（35h）", func(a, m *Fighter) {
+			a.MonsterAffects = []MonsterAffect{{Kind: 0x35, Active: true}}
+		}, 0},
+		{"打手被定住（1Fh）", func(a, m *Fighter) {
+			a.MonsterAffects = []MonsterAffect{{Kind: 0x1F, Active: true}}
+		}, 0},
+		{"打手笨拙（1Bh，不在那四筆表裡）", func(a, m *Fighter) {
+			a.MonsterAffects = []MonsterAffect{{Kind: 0x1B, Active: true}}
+		}, 1},
+		{"離場的人隱形（47h）", func(a, m *Fighter) {
+			m.MonsterAffects = []MonsterAffect{{Kind: 0x47, Active: true}}
+		}, 0},
+		{"打手已經撤退（4Bh）", func(a, m *Fighter) {
+			a.MonsterAffects = []MonsterAffect{{Kind: 0x4B, Active: true}}
+		}, 0},
+		{"打手已經撤退（4Ah）", func(a, m *Fighter) {
+			a.MonsterAffects = []MonsterAffect{{Kind: 0x4A, Active: true}}
+		}, 0},
+	}
+	for _, test := range cases {
+		battle := opportunityBattle(t, 6, 1, 0)
+		attacker := battle.fighters["goblin"]
+		mover := battle.fighters["hero"]
+		test.mutate(&attacker, &mover)
+		battle.fighters["goblin"], battle.fighters["hero"] = attacker, mover
+		result, err := battle.MoveWithFreeAttacks("hero", -1, 0)
+		if err != nil {
+			t.Fatalf("%s：%v", test.name, err)
+		}
+		if len(result.FreeAttacks) != test.attacks {
+			t.Errorf("%s：機會攻擊 %d 次，預期 %d 次",
+				test.name, len(result.FreeAttacks), test.attacks)
+		}
+	}
+}
