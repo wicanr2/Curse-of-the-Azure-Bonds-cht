@@ -9,8 +9,8 @@
 |---|---:|---|
 | ECL block | 25 | `docs/audit/ecl-event-catalog.md` |
 | lifecycle entry | 125（每個 block 五個） | 同上 |
-| 靜態 `NEWECL` 邊 | 21 | 事件目錄的指令表 |
-| 沒有任何 `NEWECL` 出邊的 block | 9 | 同上 |
+| `NEWECL` 出邊 | **47** | `docs/audit/ecl-block-graph.md`（`cmd/ecl-block-graph`）|
+| 沒有出邊的 block | **2**（開場 `0x52`、結局 `0x43`）| 同上 |
 | game pack 宣告的地圖 | 20（其中 **9 張還是 `original.geoN.block-NN` 佔位名**） | `gamepack/pack/00-core.json` |
 | 直入旗標 | 62 個 flag，其中約 25 個是劇情 checkpoint | `cmd/azure-bonds-game` |
 | 主線整條跑的測試 | `TestRealNewGameContinuesFromHapToBeholderCaveEntrance`，**單一函式、檔案 1,625 行** | `internal/game/campaign_normal_test.go` |
@@ -32,23 +32,22 @@
 
 ## 三、段從哪來：不是憑感覺切的
 
-**一個 ECL block ＝ 一段**，**一條 `NEWECL` 邊 ＝ 一段交接**。靜態圖長這樣：
+**一個 ECL block ＝ 一段**，**一條 `NEWECL` 邊 ＝ 一段交接**。
+完整的圖在 [`docs/audit/ecl-block-graph.md`](../audit/ecl-block-graph.md)：
+**25 個 block、47 條出邊**，只有 `ECL1/0x52`（開場）與 `ECL6/0x43`（結局）沒有出邊。
 
-```
-ECL1  0x50 ─┐ (hub)          0x51 ─┐ (hub)          0x52
-            │                      │
-ECL2  0x01 → 0x02 → 0x03 → 0x04 → 0x03            0x03 → 0x50
-ECL3  0x10 → 0x11 → 0x12 → 0x11                   0x10/0x11/0x15 → 0x51
-ECL4  0x20 → 0x21                                 0x20/0x22 → 0x51、0x25 → 0x50
-ECL5  0x31 → 0x30 → 0x50    0x32 → 0x33           0x35 → 0x50
-ECL6  0x45 → 0x51                                 0x40/0x42/0x43 無出邊
-```
+兩個世界地圖 hub 是樞紐，其餘 block 進出都經過它們：
 
-⚠ **`0x50`／`0x51` 是 hub**（世界地圖那一側），大部分 block 結束時回到它們。
+| hub | 出邊 |
+|---|---|
+| `ECL1/0x50` | `0x03`、`0x25`、`0x31`、`0x35`、`0x40`、`0x51` |
+| `ECL1/0x51` | `0x10`、`0x11`、`0x15`、`0x20`、`0x45`、`0x50` |
 
-⚠ **ECL1 的三個 block 一條 `NEWECL` 出邊都沒有**。也就是說「從世界地圖進到某個
-地城」走的**不是 `NEWECL`**，那條進入邊目前不在靜態圖裡。這是第一個要查清楚的
-東西，否則交接圖是缺一半的。
+換 block 的機制是：主迴圈（`overlay-02:3772`）載入 `bank0 +1E4h`（LastECL）
+指的 block、載完寫回去；`20h NEWECL` 就是改那一格（spec 1141）。
+
+⚠ **不要用事件目錄的圖判斷「這個 block 沒有出口」**：它的可達性不跟 `ON GOTO`
+的目的地，算出來只有 21 條邊，而且兩個 hub 會看起來一條出邊都沒有。
 
 ## 四、工作項目
 
@@ -56,7 +55,7 @@ ECL6  0x45 → 0x51                                 0x40/0x42/0x43 無出邊
 
 | ID | 項目 | 產出 | 驗收 | 粗估 |
 |---|---|---|---|---|
-| `SEG-01` | **進入邊調查**：世界地圖如何進到各章的 block（`2Dh CALL`？地圖轉移表？`ON GOTO`？） | 一份補完的轉移圖 ＋ spec | 25 個 block 每一個都說得出「怎麼進去、怎麼出來」 | 一輪反組譯 ＋ 一輪對碼 |
+| `SEG-01` | ✅ **完成**：轉移機制查清楚了（spec 1141）——主迴圈讀 `LastECL`、`NEWECL` 改它；圖由 `cmd/ecl-block-graph` 產生 | `docs/audit/ecl-block-graph.md` ＋ spec 1141 ＋ 形狀回歸測試 | 25 個 block 每一個都說得出怎麼進去、怎麼出來 ✓ | 已完成 |
 | `SEG-02` | **block ↔ 地圖 ↔ 區域名對照表**，由資料產生不手寫 | `cmd/` 產生的 audit 表 | 20 張地圖與 25 個 block 的對應無洞；9 個佔位名各自對到哪個 block 講得出來 | 一個小工具 |
 | `SEG-03` | **段落註冊表**：每段一筆 `{id, 進入方式, 起始狀態, 正常結束條件, 產出快照}` | Go 表 ＋ 由它產生的清單 | 註冊表與 `SEG-02` 的對照表對得起來，缺一段就 fail | 一個檔 ＋ 一條閘 |
 | `SEG-04` | **統一直入旗標**：`-segment <id>` 取代目前散在 25 個 flag 的作法（舊 flag 保留為別名） | `cmd/azure-bonds-game` | 註冊表裡每一段都進得去 | 接線 |
@@ -67,7 +66,7 @@ ECL6  0x45 → 0x51                                 0x40/0x42/0x43 無出邊
 |---|---|---|
 | `SEG-10` | 把 `campaign_normal_test.go` 那一條拆成「每段一個測試」 | 拆完之後**覆蓋的步數不減**；每段紅的時候看得出是哪一段 |
 | `SEG-11` | 每段結束產生**可重播的存檔快照**，下一段用它當入口 | 快照存得下去、讀得回來（既有的 `SavePartyFile` 往返閘） |
-| `SEG-12` | **交接測試**：載入上一段快照 → 過轉移 → 驗新段的 `initial` lifecycle 跑完 | 21 條 `NEWECL` 邊 ＋ `SEG-01` 補出來的進入邊，每條一個測試 |
+| `SEG-12` | **交接測試**：載入上一段快照 → 過轉移 → 驗新段的 `initial` lifecycle 跑完 | 47 條 `NEWECL` 邊每條一個測試 |
 | `SEG-13` | 整條跑降級成 **smoke**：保留，但不當主要 gate | 主要 gate 是段測試；整條跑只驗「串得起來」 |
 
 ⚠ `SEG-11` 是關鍵：沒有快照交接，後面的段還是得從頭跑，分段就只是把同一條
@@ -117,8 +116,7 @@ ECL6  0x45 → 0x51                                 0x40/0x42/0x43 無出邊
 
 ## 七、開工前要先有答案的
 
-1. `SEG-01`：世界地圖進到各章 block 的那條邊到底是什麼機制。**這一項沒解，
-   交接圖就是缺的**，階段 1 的 `SEG-12` 也列不完整。
+1. ~~`SEG-01`~~ ✅ 已解（spec 1141）：轉移是 `NEWECL` 改 `LastECL`，主迴圈載它。
 2. 9 個 `original.geoN.block-NN` 佔位地圖各自是哪個區域——名字沒定，
    段的 id 也定不了。
 3. 段的快照要存哪一層：整份 `SavePartyFile`、還是另外一個測試專用的
