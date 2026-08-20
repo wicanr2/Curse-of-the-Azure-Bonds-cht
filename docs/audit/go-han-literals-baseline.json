@@ -122,13 +122,6 @@
     },
     {
       "path": "cmd/cell-sweep/main.go",
-      "function": "boostSweepParty",
-      "sha256": "b54a6a6a8b209d15f1c08a4cdec962462b28695491602de7d232aed9ec405363",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/cell-sweep/main.go",
       "function": "enterDungeon",
       "sha256": "5e90960fec285924f32075d0822bf70fe38a1f07a5c11f4daa1d5baee43c6e67",
       "occurrences": 1,
@@ -201,13 +194,6 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "languageOf",
       "sha256": "72726d8818f693066ceb69afa364218b692e62ea92b385782363780f47529c21",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/cell-sweep/main.go",
-      "function": "loadCorpus",
-      "sha256": "f74a43cb81d6f138f8c51f592dde346b3b84f238b06af4472abf52a155aa5971",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -2907,6 +2893,188 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/route-sweep/main.go",
+      "function": "isContinue",
+      "sha256": "d9d1f08fa5ced3965150327ccbf5aad936f1d9f0e36ce8e424a85d06bf14a8c9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "languageOf",
+      "sha256": "354b28c85333456866931a77eacdf6cd18d80b79981ccf1f4ca927b84fd99302",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "languageOf",
+      "sha256": "72726d8818f693066ceb69afa364218b692e62ea92b385782363780f47529c21",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "main",
+      "sha256": "354b28c85333456866931a77eacdf6cd18d80b79981ccf1f4ca927b84fd99302",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "main",
+      "sha256": "72726d8818f693066ceb69afa364218b692e62ea92b385782363780f47529c21",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "main",
+      "sha256": "970c065f50e6f51de1711d8bff8870f9183595dd3747877d8f97ffe172778dbf",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "main",
+      "sha256": "aff4479ab1b9a6e22c5a761fb08e9574de0cd8ae78f71d7891eae6c6ece61be1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "main",
+      "sha256": "bb0363df612d837029721b61f151908440435716b467ab298abbc59e11a2741a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "main",
+      "sha256": "c27e787f9fc1789ea99a66d82509b0cda8bb67b8f788c44e0dc391f70ff13739",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "0845864ee4bc70438b8941168f6fbe4326e4a64513e9cb42537ac274e09c4838",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "14f421dfc1dad3825ffc8e04f211be33701c42d140efc7486e75043b5104f185",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "176163fed48ae64c7932731ac15d8d1437683f9aa7ed99be40d93b3c749b4412",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "2226c95212f7915c5ddcb714189121fb2b8be020166a5c4c1396ed55bcf07a00",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "32f2cdafaec4f8802bdc21014d289f7fc8230f96aaa46b0d2be5b889273e229e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "354b28c85333456866931a77eacdf6cd18d80b79981ccf1f4ca927b84fd99302",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "3ba896c878f6d6b232e1da4ea3e644acd2fa129dfdf59c5dbb3bac27a340eb86",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "57382d55cb1d6f06f8f541ba4025da89e231dfb4f9543b1c203aa5c0ae1df003",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "72726d8818f693066ceb69afa364218b692e62ea92b385782363780f47529c21",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "81ba15cc2bc57c6b56644e04f0d48bb5cd3b02826f70dd4a8ba0b807368e95c2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "bc9f99b146e0e4976f5c8d1fcbab911e39a4f7288d2322694632ff0b33a162f4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "e3b2a4f11e097a83abe9b29a9adc2d434dbf23fc3d44728d27087b3dd00f5e70",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "e5aaa37c2e99723ea5ef300f60f72e148a5d289e992417646f91b6cf3131d27e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "e5ec89148fc14b2915006684d5a8fa922bff0dac96e3b30ec53073deb0ae8f46",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "render",
+      "sha256": "f193a1277f602db7b0e25c34d86276dad401364ea8042b077fc4d5fa82762dc4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "summarise",
+      "sha256": "354b28c85333456866931a77eacdf6cd18d80b79981ccf1f4ca927b84fd99302",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-sweep/main.go",
+      "function": "summarise",
+      "sha256": "709c3a8fbaf8af5ecf8715386904fe30eda6125590d98dce47a245d2811163c4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/save-field-coverage/main.go",
       "function": "analyze",
       "sha256": "37066a8f88d75faf82a2365d3ea9829707e14fb91bd7b4eac5a0913a02fbcc80",
@@ -3702,6 +3870,20 @@
     {
       "path": "internal/ecl/effects.go",
       "sha256": "fd7ede497a1cf29fb3d8f555305e1ea0f1fe60558c4e3b5b998e66cfed354355",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/gamecorpus/gamecorpus.go",
+      "function": "BoostParty",
+      "sha256": "b54a6a6a8b209d15f1c08a4cdec962462b28695491602de7d232aed9ec405363",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/gamecorpus/gamecorpus.go",
+      "function": "Load",
+      "sha256": "f74a43cb81d6f138f8c51f592dde346b3b84f238b06af4472abf52a155aa5971",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

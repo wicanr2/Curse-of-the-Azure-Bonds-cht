@@ -24,21 +24,17 @@
 package main
 
 import (
-	"archive/zip"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"strings"
 	"unicode"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/eclcells"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gamecorpus"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/segment"
 )
 
@@ -68,13 +64,11 @@ type blockSweep struct {
 	cells    []cellResult
 }
 
+// corpus 是原版資料（共用的載入流程在 internal/gamecorpus）加上這一支自己的
+// 掃描參數。
 type corpus struct {
-	blocks  map[uint8][]byte
-	records map[uint8]map[uint8]monster.Record
-	items   map[uint16][]monster.ItemRecord
-	geo     map[uint8]geo.Catalog
-	catalog locale.Catalog
-	seeds   int
+	gamecorpus.Corpus
+	seeds int
 }
 
 func main() {
@@ -111,89 +105,16 @@ func main() {
 }
 
 func loadCorpus(imagePath, localePath string, seeds int) (corpus, error) {
-	archive, err := zip.OpenReader(imagePath)
+	data, err := gamecorpus.Load(imagePath, localePath)
 	if err != nil {
 		return corpus{}, err
 	}
-	defer archive.Close()
-
-	data := corpus{
-		blocks:  map[uint8][]byte{},
-		records: map[uint8]map[uint8]monster.Record{},
-		geo:     map[uint8]geo.Catalog{},
-		seeds:   seeds,
-	}
-	// 寶物的物品表也要載：段的入口有 `TREASURE`（散提爾堡的魔法商店就是），
-	// 沒載會在入口就跑不動，那一整段的每一格都變成「跑不動」。
-	itemPayloads := map[uint8][]byte{}
-	for chapter := 1; chapter <= 6; chapter++ {
-		payload := memberPayload(archive, fmt.Sprintf("ITEM%d.DAX", chapter))
-		if payload == nil {
-			continue
-		}
-		itemPayloads[uint8(chapter)] = payload
-	}
-	items, err := game.ParseTreasureItemBlocks(itemPayloads)
-	if err != nil {
-		return corpus{}, err
-	}
-	data.items = items
-	for chapter := 1; chapter <= 6; chapter++ {
-		payload := memberPayload(archive, fmt.Sprintf("ECL%d.DAX", chapter))
-		if payload == nil {
-			return corpus{}, fmt.Errorf("image 裡沒有 ECL%d.DAX", chapter)
-		}
-		parsed, err := dax.Parse(payload)
-		if err != nil {
-			return corpus{}, err
-		}
-		for _, block := range parsed {
-			data.blocks[block.Entry.ID] = block.Data
-		}
-		// 六章的怪物表都要載：段的入口有可能直接開戰，少載一章那一段就會
-		// 安靜地跳過開戰，看起來像「入口沒事」。
-		monsters := memberPayload(archive, fmt.Sprintf("MON%dCHA.DAX", chapter))
-		if monsters == nil {
-			continue
-		}
-		parsedMonsters, err := dax.Parse(monsters)
-		if err != nil {
-			return corpus{}, err
-		}
-		chapterRecords := map[uint8]monster.Record{}
-		for _, block := range parsedMonsters {
-			record, err := monster.Parse(block.Data)
-			if err != nil {
-				return corpus{}, fmt.Errorf("MON%dCHA block %#02x: %w", chapter, block.Entry.ID, err)
-			}
-			chapterRecords[block.Entry.ID] = record
-		}
-		data.records[uint8(chapter)] = chapterRecords
-
-		payload = memberPayload(archive, fmt.Sprintf("GEO%d.DAX", chapter))
-		if payload == nil {
-			continue
-		}
-		catalog := geo.NewCatalog()
-		if err := catalog.AddDAX(uint8(chapter), payload); err != nil {
-			return corpus{}, fmt.Errorf("GEO%d: %w", chapter, err)
-		}
-		data.geo[uint8(chapter)] = catalog
-	}
-	localeData, err := os.ReadFile(localePath)
-	if err != nil {
-		return corpus{}, err
-	}
-	data.catalog, err = locale.Load(localeData)
-	if err != nil {
-		return corpus{}, err
-	}
-	return data, nil
+	return corpus{Corpus: data, seeds: seeds}, nil
 }
 
 func sweepBlock(data corpus, seg segment.Segment) blockSweep {
 	sweep := blockSweep{id: seg.ID}
-	payload, ok := data.blocks[seg.Block]
+	payload, ok := data.Blocks[seg.Block]
 	if !ok {
 		sweep.note = "image 裡沒有這個 block"
 		return sweep
@@ -210,7 +131,7 @@ func sweepBlock(data corpus, seg segment.Segment) blockSweep {
 
 	firstCell := map[int][2]int{}
 	roofs := map[int]uint8{}
-	catalog, hasCatalog := data.geo[sweep.geoSet]
+	catalog, hasCatalog := data.Geo[sweep.geoSet]
 	if hasCatalog {
 		if grid, hasGrid := catalog.Lookup(geo.MapRef{Set: sweep.geoSet, BlockID: sweep.geoBlock}); hasGrid {
 			for y := 0; y < geo.Height; y++ {
@@ -314,24 +235,16 @@ func playerText(state *game.State) string {
 // enterDungeon 建一支盤點用隊伍、直接進段，並把入口的事件／選單／戰鬥推完，
 // 直到停在地城模式上。
 func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
-	state := game.NewStateFromECLBlocks(data.catalog, data.blocks, 0x50)
-	for chapter, chapterRecords := range data.records {
-		state.SetMonsterRecordsForECL(chapter, chapterRecords)
-	}
-	state.SetTreasureItemBlocks(data.items)
-	if err := state.OpenCharacterCreation(); err != nil {
-		return nil, err
-	}
-	if err := state.AddCreationCharacter(0); err != nil {
-		return nil, err
-	}
-	if err := state.FinishCharacterCreation(); err != nil {
+	state, err := data.NewParty()
+	if err != nil {
 		return nil, err
 	}
 	if err := state.EnterSegment(seg); err != nil {
 		return nil, fmt.Errorf("進 %s：%w", seg.ID, err)
 	}
-	if err := boostSweepParty(&state); err != nil {
+	// ⚠ 盤點用的隊伍一律撐起來：有的段一進去就開打（古熔岩洞的伏擊），臨時建的
+	// 一名角色會死在入口，後面一格都盤點不到。**只給盤點用**。
+	if err := gamecorpus.BoostParty(&state); err != nil {
 		return nil, err
 	}
 	trail := make([]string, 0, 16)
@@ -346,9 +259,9 @@ func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
 			}
 			continue
 		}
-		// ⚠ 地點模式（商店、神殿、旅店）的第一個選項是「買」，選下去會在
-		// 商店選單裡繞不出來——散提爾堡的魔法商店就是這樣把整段擋住的。
-		// 那裡要選最後一項（離開）。事件模式的第一項才是「繼續」。
+		// ⚠ 地點模式（商店、神殿、旅店）的第一個選項是「買」，選下去會在商店選單
+		// 裡繞不出來——散提爾堡的魔法商店就是這樣把整段擋住的。那裡要選最後一項
+		// （離開）。事件模式的第一項才是「繼續」。
 		choice := 0
 		if state.Mode == game.ModePlace && len(state.Choices) > 0 {
 			choice = len(state.Choices) - 1
@@ -365,25 +278,6 @@ func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
 			seg.ID, modeName(state.Mode), strings.Join(trail, " → "))
 	}
 	return &state, nil
-}
-
-// boostSweepParty 把隊伍撐到足以走完內容盤點的程度。**只給盤點用**：段測試不准
-// 這樣做，那會把「這一段打得贏嗎」偷偷換成「這一段演得出來嗎」。
-func boostSweepParty(state *game.State) error {
-	party := state.PartyFighters()
-	if len(party) == 0 {
-		return fmt.Errorf("盤點用的隊伍是空的")
-	}
-	for index := range party {
-		party[index].HitPoints, party[index].MaxHitPoints = 999, 999
-		party[index].ArmorClass = -10
-		party[index].AttackBonus = 100
-		party[index].DamageDiceCount, party[index].DamageDiceSides = 1, 1
-		party[index].DamageBonus = 100
-		party[index].AttacksPerTurn = 8
-		party[index].InitiativeBonus = 100
-	}
-	return state.SetParty(party)
 }
 
 // languageOf 判定一段玩家看得到的字是中文、原文還是沒有字。原作文字是英文，
@@ -568,23 +462,4 @@ func firstLine(text string) string {
 		return string(runes[:32]) + "…"
 	}
 	return string(runes)
-}
-
-func memberPayload(archive *zip.ReadCloser, member string) []byte {
-	for _, file := range archive.File {
-		if !strings.EqualFold(file.Name, member) {
-			continue
-		}
-		reader, err := file.Open()
-		if err != nil {
-			return nil
-		}
-		defer reader.Close()
-		payload, err := io.ReadAll(reader)
-		if err != nil {
-			return nil
-		}
-		return payload
-	}
-	return nil
 }
