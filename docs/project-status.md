@@ -86,7 +86,7 @@ Docker 仍通過 Dexam 揭露、兩場戰鬥、戰後續跑、洞穴出口與世
 通關。完整證據見 [`spec 544`](spec/544-opaque-memory-route-boundary-and-cave-entry.md)。
 
 第 543 輪把第 542 輪的正常新遊戲 session 延伸到 Hap、熔岩洞與法師塔：同一條
-`TestRealNewGameContinuesFromHapToBeholderCaveEntrance` 逐格完成 Hap 村落主要事件、
+`TestRealNewGameContinuesFromHapToMythDrannor` 逐格完成 Hap 村落主要事件、
 JSON 外部出口、熔岩洞入口／守門戰、巫師塔德拉坎德羅斯／黑龍事件、回洞穴、
 熔岩池友善交涉後重訪戰鬥與防火桶耐熱失敗。新增的 `original.geo5.block-33`
 `spawn=(7,15,W)` 是資料驅動的地圖錨點，用來避免 ECL 故事重繪的暫存座標覆蓋

@@ -47,7 +47,7 @@
 宣告是對的：
 
 - **眼魔洞穴與 Dexam 那一段跑的時候，`CurrentBlockID()` 就是 `0x22`**，
-  幾何是 `GEO4/0x25`（`TestRealNewGameContinuesFromHapToBeholderCaveEntrance`
+  幾何是 `GEO4/0x25`（`TestRealNewGameContinuesFromHapToMythDrannor`
   的 `ECL4/0x22` 段逐項斷言）。
 - **迪姆斯華特那一場戲跑在 `0x21`**（量到 `block=0x21 geo=4/0x21`），不在 `0x22`。
   `0x22` 的字串裡有 `DIMSWART THE SAGE` 並不代表那一場戲屬於 `0x22`——

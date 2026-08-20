@@ -59,7 +59,7 @@ bytes 閉合；本檔原先只將位置交易標成 `strong inference` 的限制
 地圖不會因共享 raw 暫存器而被錯誤移動。
 
 驗收測試為
-`TestRealNewGameContinuesFromHapToBeholderCaveEntrance`，沒有直接設定洞穴
+`TestRealNewGameContinuesFromHapToMythDrannor`，沒有直接設定洞穴
 座標、沒有 direct-entry 戰鬥，也沒有寫入 `0x4C00`。測試固定斷言：
 
 - mode 仍為 `ModeDungeon`；
