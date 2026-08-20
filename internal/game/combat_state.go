@@ -261,6 +261,12 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 	for id, list := range affects {
 		resolvedAffects[id] = list
 	}
+	// 怪物的物品鏈跟效果鏈走同一條解析路徑：依怪物 ID 的章節命名空間取，
+	// 不能假設「現在這個 ECL block 擁有那張表」。
+	resolvedItems := map[uint8][]monster.ItemRecord{}
+	for id, list := range s.monsterItemsForCurrentECL() {
+		resolvedItems[id] = list
+	}
 	for _, spawn := range result.MonsterSpawns {
 		chapter := monsterChapterForBlock(spawn.MonsterID)
 		if record, ok := s.monsterRecordsByECL[chapter][spawn.MonsterID]; ok {
@@ -268,6 +274,9 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 		}
 		if list, ok := s.monsterAffectsByECL[chapter][spawn.MonsterID]; ok {
 			resolvedAffects[spawn.MonsterID] = list
+		}
+		if list, ok := s.monsterItemsByECL[chapter][spawn.MonsterID]; ok {
+			resolvedItems[spawn.MonsterID] = list
 		}
 	}
 	ecl.ApplyCombatTeamWrites(result.MonsterSpawns, result.CombatTeamWrites)
@@ -277,8 +286,12 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 	}
 	enemyIndex := 0
 	for _, spawn := range result.MonsterSpawns {
+		items := combatMonsterItems(resolvedItems[spawn.MonsterID])
 		for count := uint8(0); count < spawn.Count && enemyIndex < len(enemies); count++ {
 			enemies[enemyIndex].SpriteSet = monsterChapterForBlock(spawn.MonsterID)
+			// ⚠ 每一隻各自一份：同一個 spawn 生出來的怪共用同一張表，但物品
+			// 是各自的——共用同一個 slice 會讓一隻換裝影響到全部。
+			enemies[enemyIndex].MonsterItems = append([]combat.MonsterItem(nil), items...)
 			enemyIndex++
 		}
 	}
@@ -316,6 +329,22 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 	copy(s.pendingSoundEvents[pendingSoundStart+1:], s.pendingSoundEvents[pendingSoundStart:])
 	s.pendingSoundEvents[pendingSoundStart] = SoundCombat
 	return nil
+}
+
+// combatMonsterItems 把 `MON*ITM` 的一條物品鏈鏡射成戰鬥側的型別。
+func combatMonsterItems(records []monster.ItemRecord) []combat.MonsterItem {
+	if len(records) == 0 {
+		return nil
+	}
+	out := make([]combat.MonsterItem, 0, len(records))
+	for _, record := range records {
+		out = append(out, combat.MonsterItem{
+			Name: record.Name, Type: record.Type, Plus: record.Plus,
+			Readied: record.Readied, Cursed: record.Cursed, Count: record.Count,
+			Weight: record.Weight, Value: record.Value, Affects: record.Affects,
+		})
+	}
+	return out
 }
 
 func (s *State) CombatActive() bool { return s.battle != nil && s.Mode == ModeCombat }

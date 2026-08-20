@@ -87,6 +87,10 @@ type Fighter struct {
 	// MonsterAffects preserves raw MON*SPC records. Gameplay projections are
 	// intentionally left to later, verified rules adapters.
 	MonsterAffects []MonsterAffect
+	// MonsterItems preserves raw MON*ITM records. 原作的 AI 換裝（spec 1120）
+	// 讀的就是這條物品鏈；隊伍側早就接上了，怪物側先前連資料都沒有。
+	// ⚠ 掛上資料不等於接上規則：換裝之後的派生值重算還沒做。
+	MonsterItems []MonsterItem
 	// CombatMap position/size. A future Area/ECL placement decoder can set
 	// these directly; StartCombat supplies a deterministic fallback otherwise.
 	HasCombatPosition bool
@@ -240,6 +244,24 @@ type MonsterAffect struct {
 	// suppress a monster's innate effects in the combat projection.
 	Innate bool
 	Data   [4]byte
+}
+
+// MonsterItem 保留 `MON*ITM` 的一筆物品。欄位與 `monster.ItemRecord` 對應，
+// 但**型別定義在這裡**——`monster` 匯入 `combat`（`BuildEnemies` 回傳
+// `[]Fighter`），反向匯入會成環，所以跟 `MonsterAffect` 一樣在這一側鏡射。
+//
+// ⚠ 這是**原始資料**，不是規則。掛上去只代表「這隻怪身上有這些東西」；
+// 換裝、掉落與使用各自要另外接。
+type MonsterItem struct {
+	Name    string
+	Type    uint8
+	Plus    int
+	Readied bool
+	Cursed  bool
+	Count   uint8
+	Weight  int16
+	Value   int16
+	Affects [3]uint8
 }
 
 func (a MonsterAffect) operational() bool { return a.Active || a.Innate }
