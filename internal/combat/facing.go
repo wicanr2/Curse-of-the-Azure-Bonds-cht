@@ -282,6 +282,57 @@ func InFacingCone(startX, startY, targetX, targetY int, direction uint8) bool {
 	return true // direction 8：原地，無條件成立
 }
 
+// opportunityAttackIncapacitated 是原作 `overlay-24 entry#6`（`sub_BE3`）查的
+// 四個效果碼，表在 `DS:27CAh`..`27CDh`（已初始化資料，不是 BSS）。四個都掛在
+// `CHECKFX(07h)`（「這一回合動得了嗎」）的同一支 handler `overlay-12:0075h`，
+// 其中 `35h` 的訊息是 `falls asleep`。
+//
+// ⚠ 這四個是 `MonsterIsHeld` 那五個的**子集**——原作這張表沒有 `1Bh`。
+// 直接借用 `MonsterIsHeld` 會多擋一個效果。
+var opportunityAttackBlockingAffects = []uint8{0x33, 0x34, 0x35, 0x1F}
+
+// opportunityAttackWithdrawnAffects 是原作連問兩次 `overlay-24 entry#27` 的兩個
+// 效果碼。士氣崩潰而且跑得掉時掛的就是這兩個（spec 831），所以「已經撤退的人
+// 不打離場的那一下」。
+var opportunityAttackWithdrawnAffects = []uint8{0x4B, 0x4A}
+
+// opportunityAttackAllowed 是原作「離開接觸就被打」（`overlay-13:095Ah`，
+// spec 1010）在動手之前的四道閘，順序照原作：
+//
+//  1. `overlay-24 entry#6`：它本身就是對 `entry#27` 問四次，所以查法與
+//     第 3 道相同（只比對效果碼，不看持續時間）；打手動不了就不打；
+//  2. `sub_1144(角色, 打手)`：`CHECKFX(01h, 角色)` 的否決權——閃現與隱形
+//     那一組（`25h`／`19h`／`47h`／`45h`）就是這個時機的成員，
+//     所以看不見離場的人就打不到；
+//  3. `overlay-24 entry#27` 連問兩次 `4Bh`／`4Ah`：已經撤退的人不打；
+//  4. 面向（見下）。
+//
+// ⚠ `CHECKFX(00h, 打手)` 那一次在 CoAB 是空的（時機 `00h` 沒有任何效果碼），
+// 所以第 2 道實際上只剩 `01h` 那一問。
+func (b *Battle) opportunityAttackAllowed(attackerID, moverID string) (bool, error) {
+	if b == nil {
+		return false, fmt.Errorf("battle is nil")
+	}
+	attacker, ok := b.fighters[attackerID]
+	if !ok {
+		return false, fmt.Errorf("unknown fighter %q", attackerID)
+	}
+	mover, ok := b.fighters[moverID]
+	if !ok {
+		return false, fmt.Errorf("unknown fighter %q", moverID)
+	}
+	if fighterHasAnyAffect(attacker, opportunityAttackBlockingAffects) {
+		return false, nil
+	}
+	if !mover.VisibleTo(attacker) {
+		return false, nil
+	}
+	if fighterHasAnyAffect(attacker, opportunityAttackWithdrawnAffects) {
+		return false, nil
+	}
+	return b.opportunityAttackFacingAllows(attackerID, moverID)
+}
+
 // opportunityAttackFacingAllows 是原作「離開接觸就被打」（`overlay-13:095Ah`，
 // spec 1010）動手前的最後一道閘：打手的**朝向 −2 .. ＋2** 這五個方向裡，
 // 只要有一個讓移動者落在扇形內就打得到——正面加左右各 90°，合起來 180°。

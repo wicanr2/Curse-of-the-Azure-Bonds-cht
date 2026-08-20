@@ -62,13 +62,32 @@ for i := 1 to n前 do begin
 
     if <overlay-24 entry#6>(打手) <> 0     then continue;
     if <sub_1144>(角色, 打手) = 0          then continue;
-    if <overlay-24 entry#27>(@緩衝, 4Bh, 打手) <> 0 then continue;
-    if <overlay-24 entry#27>(@緩衝, 4Ah, 打手) <> 0 then continue;
+    if <overlay-24 entry#27>(打手, 4Bh, @緩衝) <> 0 then continue;
+    if <overlay-24 entry#27>(打手, 4Ah, @緩衝) <> 0 then continue;
     …
 ```
 
-`overlay-24 entry#27(@緩衝, 效果碼, 角色)` 是「這個人身上有沒有某個效果」的查詢
-（`4Ah` 與 `4Bh` 兩個效果碼會讓他打不出這一擊）。
+### ★★ 四道閘各自是什麼
+
+`overlay-24 entry#27(角色, 效果碼, @緩衝)` 是「這個人身上有沒有某個效果」的查詢
+——走一遍 `+0F2h` 起的效果串列比對每一節的第一個位元組，**不看持續時間**。
+
+| 閘 | 內容 | 證據 |
+|---|---|---|
+| `entry#6(打手)` | 對 `entry#27` 連問四次，效果碼取自 `DS:27CAh`..`27CDh` ＝ **`33h`、`34h`、`35h`、`1Fh`** | DOS `overlay-24:0BE3h` 逐條讀完；那張表在已初始化資料區（BSS 界線是 `47E0h`，spec 804） |
+| `sub_1144(角色, 打手)` | `CHECKFX(01h, 角色)` 與 `CHECKFX(00h, 打手)` 的否決權，任一支效果設了中止旗標 `DS:6F9Bh` 就是「不行」 | 兩個 far call 都解到 `overlay-23 entry#4` ＝ `CHECKFX`（spec 766 的結構 ＋ far call 對照表） |
+| `4Bh`／`4Ah` | 士氣崩潰而且跑得掉時掛上的兩個效果碼（spec 831） | 同一組碼 |
+
+★ **那四個碼就是「這一回合動不了」那一組**：`CHECKFX(07h)` 的成員，
+四個共用同一支 handler `overlay-12:0075h`，其中 `35h` 印的是 `falls asleep`。
+⚠ 它們是 `MonsterIsHeld` 那五個的**子集**——原作這張表**沒有 `1Bh`**。
+
+★ **時機 `00h` 在 CoAB 是空的**（分派表裡沒有任何效果碼），
+所以第二道實際上只剩 `CHECKFX(01h, 角色)` 那一問；而 `01h` 的成員是
+`25h`（閃現）、`19h`／`47h`（隱形）、`45h`——**看不見離場的人就打不到**。
+
+⚠ 參數是**由左往右推**，宣告順序是 `(角色, 效果碼, @緩衝)`；
+`entry#27` 自己的框架（`arg_6` 讀 `+0F2h` 效果鏈頭、`arg_0` 回填）證實這個順序。
 
 ★ **`+196h` ＝ 1 是「站著、能行動」**——`overlay-23 entry#23`（`STANDUP`）
 寫的是 `+195h := 0` 與 **`+196h := 1`**。
@@ -159,19 +178,26 @@ if <overlay-24 entry#41>(打手) <> 0 then
 
 | remake | 原作 |
 |---|---|
+| `(*Battle).opportunityAttackAllowed` | 動手前的四道閘，順序照原作 |
+| `opportunityAttackBlockingAffects` ＝ `{33h,34h,35h,1Fh}` | `entry#6` 查的那張表（`DS:27CAh`）|
+| `Fighter.VisibleTo` | `sub_1144` ⇒ `CHECKFX(01h)` 的成員 `25h`／`19h`／`47h`／`45h` |
+| `opportunityAttackWithdrawnAffects` ＝ `{4Bh,4Ah}` | 連問兩次的 `entry#27` |
+| `fighterHasAnyAffect` | `entry#27` 本身（只比對碼，不看持續時間）|
 | `(*Battle).opportunityAttackFacingAllows` | 五方向迴圈 ＋ 兩個旁路 |
 | `combat.InFacingCone` | `overlay-31 entry#4`（spec 1002） |
 | `Fighter.CombatFacing`／`CombatActionCount`／`CombatAction.Delay` | `+18Dh` 的 `+09h`／`+0Fh`／`+03` |
 
-`MoveWithTerrainAndFreeAttacks` 的「離開接觸就被打」那一段現在先過這道閘才動手。
-⚠ 前面四道（`entry#6`、`sub_1144`、效果碼 `4Ah`／`4Bh`）還沒解讀，remake 沒有對應物，
-所以現在的閘比原作**鬆**。
+`MoveWithTerrainAndFreeAttacks` 的「離開接觸就被打」那一段現在四道閘都會過。
+⚠ 仍沒有對應物的是差集那一段本身（原作把座標暫時挪到目的格再查一次相鄰者），
+remake 用的是「移動前後各算一次相鄰」的等價寫法，沒有借用座標陣列。
 
 ## 明確不宣稱
 
-- 沒有宣稱 `overlay-24 entry#32`、`entry#6`、`entry#5`、`entry#27` 的內部行為。
-- 沒有宣稱效果碼 `4Ah`／`4Bh` 是什麼（要查 spec 1005 的分派表才知道處理常式）。
-- 沒有宣稱 `sub_1144`（同模組）判斷什麼，也沒有宣稱 `sub_19D8` 怎麼算攻擊。
+- 沒有宣稱 `overlay-24 entry#32`、`entry#5` 的內部行為。
+- 沒有宣稱效果碼 `4Ah`／`4Bh` 各自代表什麼狀態，只宣稱它們由士氣崩潰的撤退掛上。
+- 沒有宣稱 `sub_19D8` 怎麼算攻擊。
+- 沒有宣稱 `CHECKFX(01h)` 的四個成員裡誰真的會設中止旗標——remake 用
+  `VisibleTo` 覆蓋同一組碼，但那是從別處讀來的行為。
 - 沒有宣稱 `DS:75E5h`／`75E6h` 這兩個旗標給誰看。
 - `打手^[18Dh]^[3]` 是先攻、`^[0Fh]` 是這一輪的動作計數（spec 1137 的四道閘），
   但沒有宣稱「先攻還沒歸零就無條件打」在遊戲設計上是什麼意思。
