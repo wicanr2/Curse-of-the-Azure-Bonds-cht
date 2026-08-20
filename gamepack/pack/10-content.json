@@ -4504,6 +4504,105 @@
    "message_id": "essembra.places"
   },
   {
+   "id": "world.shadowdale.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "SHADOWDALE",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "world.shadowdale.places"
+  },
+  {
+   "id": "hap.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "HAP",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "hap.places"
+  },
+  {
+   "id": "tilverton.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "TILVERTON",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "tilverton.places"
+  },
+  {
+   "id": "world.dagger-falls.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "DAGGER FALLS",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "world.dagger-falls.places"
+  },
+  {
+   "id": "standing-stone.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "STANDING STONES",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "standing-stone.places"
+  },
+  {
+   "id": "world.voonlar.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "VOONLAR",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "world.voonlar.places"
+  },
+  {
+   "id": "world.teshwave.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "TESHWAVE",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "world.teshwave.places"
+  },
+  {
+   "id": "myth-drannor.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "MYTH DRANNOR",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "myth-drannor.places"
+  },
+  {
+   "id": "world.phlan.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "PHLAN",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "world.phlan.places"
+  },
+  {
+   "id": "yulash.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "YULASH",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "yulash.places"
+  },
+  {
+   "id": "zhentil.places",
+   "all_contains": [
+    "YOU ARE IN",
+    "ZHENTIL KEEP",
+    "WHAT PLACE WILL YOU VISIT"
+   ],
+   "message_id": "zhentil.places"
+  },
+  {
    "id": "essembra.branching-oak",
    "all_contains": [
     "WELCOME TO THE BRANCHING OAK"
@@ -8567,6 +8666,21 @@
    "id": "ecl-option.attack",
    "source": "ATTACK",
    "message_id": "attack"
+  },
+  {
+   "id": "ecl-option.meet-them",
+   "source": "MEET THEM",
+   "message_id": "ecl-option.meet-them"
+  },
+  {
+   "id": "ecl-option.pass",
+   "source": "PASS",
+   "message_id": "ecl-option.pass"
+  },
+  {
+   "id": "ecl-option.hide",
+   "source": "HIDE",
+   "message_id": "ecl-option.hide"
   },
   {
    "id": "ecl-option.evade",

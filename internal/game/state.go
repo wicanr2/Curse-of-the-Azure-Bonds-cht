@@ -783,6 +783,15 @@ func (s *State) SetCombatSeed(seed int64) { s.combatSeed = seed }
 // SetECLSeed controls the deterministic RANDOM stream while replaying an
 // event path. BlockSession retains the generator across ECL invocations, so
 // revisiting a random terrain consumes the next roll instead of restarting.
+// CurrentOriginalChoices 回傳目前這個選單**未中文化**的選項字串。
+//
+// ★ 用途是分辨「這個選單是原作的還是 remake 自己的 UI」：原作選單的原文是
+// 自然英文（`ENTER CITY`、`MEET THEM`），remake 自己的 UI 選單用的是帶底線的
+// 識別字（`REST_START`、`TEMPLE_HEAL`）。盤點工具靠這個決定要不要繼續往下走。
+func (s *State) CurrentOriginalChoices() []string {
+	return append([]string(nil), s.currentOriginalChoices...)
+}
+
 func (s *State) SetECLSeed(seed int64) {
 	s.eclSeed = seed
 	if s.session != nil {
