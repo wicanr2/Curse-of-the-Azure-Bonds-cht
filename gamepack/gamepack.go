@@ -83,6 +83,64 @@ type CharacterTables struct {
 	FighterConstitutionCombos    []int `json:"fighter_constitution_combos"`
 	FighterConstitutionBonusFrom int   `json:"fighter_constitution_bonus_from"`
 	FighterConstitutionBonus     []int `json:"fighter_constitution_bonus"`
+	// ClassAttackTable 是命中能力表（`DS:3E38h`，spec 1140）：八個職業槽各
+	// 13 筆，索引就是那一槽的等級。值是**儲存刻度**，畫面上的 THAC0 是
+	// `60 − 它`。
+	ClassAttackTable ClassAttackTableRules `json:"class_attack_table"`
+	// CreationDefaults 是建角時直接寫進角色記錄的兩個值（spec 1140）。
+	CreationDefaults CreationDefaultRules `json:"creation_defaults"`
+}
+
+// ClassAttackTableRules 是原作 `DS:3E38h` 的命中能力表。
+type ClassAttackTableRules struct {
+	Source string  `json:"source"`
+	Note   string  `json:"note"`
+	Rows   [][]int `json:"rows"`
+}
+
+// CreationDefaultRules 是建角寫進 `+124h`／`+73h` 的兩個預設值。
+type CreationDefaultRules struct {
+	Source              string `json:"source"`
+	ArmorClassStored    int    `json:"armor_class_stored"`
+	AttackAbilityStored int    `json:"attack_ability_stored"`
+}
+
+// CombatBaseLookup 把命中能力表與建角預設值包成注入用的查詢介面。
+type CombatBaseLookup struct{ tables *CharacterTables }
+
+// CombatBase 讀 game pack 的命中能力表。
+func CombatBase() (CombatBaseLookup, error) {
+	parsed, err := Tables()
+	if err != nil {
+		return CombatBaseLookup{}, err
+	}
+	return CombatBaseLookup{tables: parsed}, nil
+}
+
+// ClassAttackValue 查某個職業槽在某個等級的命中能力（儲存刻度）。
+// 等級超出表尾時**夾到最後一筆**——原作的訓練場另有等級上限，
+// 這裡不靠讀到表外的位元組來表現那件事。
+func (l CombatBaseLookup) ClassAttackValue(slot, level int) (int, bool) {
+	if l.tables == nil || slot < 0 || slot >= len(l.tables.ClassAttackTable.Rows) {
+		return 0, false
+	}
+	row := l.tables.ClassAttackTable.Rows[slot]
+	if len(row) == 0 || level < 0 {
+		return 0, false
+	}
+	if level >= len(row) {
+		level = len(row) - 1
+	}
+	return row[level], true
+}
+
+// CreationDefaults 回傳建角時寫進 `+124h` 與 `+73h` 的兩個值。
+func (l CombatBaseLookup) CreationDefaults() (armorClassStored, attackAbilityStored int, ok bool) {
+	if l.tables == nil || l.tables.CreationDefaults.ArmorClassStored == 0 {
+		return 0, 0, false
+	}
+	return l.tables.CreationDefaults.ArmorClassStored,
+		l.tables.CreationDefaults.AttackAbilityStored, true
 }
 
 // AbilityRollRules 是建角每個屬性的擲法（spec 1103 §二）：

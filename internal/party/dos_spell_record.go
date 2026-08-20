@@ -68,6 +68,8 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	if character.ClassLevels != [8]uint8{} {
 		copy(out[0x109:0x111], character.ClassLevels[:])
 	}
+	out[0x073] = character.AttackAbility
+	out[0x124] = character.BaseArmorClass
 	out[0xE5] = character.HitDice
 	out[0xE6] = character.MulticlassLevel
 	if character.AlignmentKnown {
@@ -180,6 +182,10 @@ type DOSPlayerRecord struct {
 	Alignment        uint8
 	AlignmentKnown   bool
 	ClassLevels      [8]uint8
+	// AttackAbility 是 `+73h`、BaseArmorClass 是 `+124h`，兩個都是儲存刻度
+	// （畫面上的 THAC0 與 AC 都是 `60 − 它`，spec 1140）。
+	AttackAbility  uint8
+	BaseArmorClass uint8
 	HitDice          uint8
 	MulticlassLevel  uint8
 	Inventory        []monster.ItemRecord
@@ -391,6 +397,7 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		MemorizedSpells: spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
 		SpellCastCount: spellCastCount,
 		ClassLevels:    classLevels, HitDice: data[0xE5], MulticlassLevel: data[0xE6],
+		AttackAbility:  data[0x73], BaseArmorClass: data[0x124],
 	}, nil
 }
 
@@ -409,6 +416,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		NPC: r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale, ECLFlag192: r.ECLFlag192,
 		Gender: Gender(r.Gender),
 		ClassLevels: r.ClassLevels, HitDice: r.HitDice, MulticlassLevel: r.MulticlassLevel,
+		AttackAbility: r.AttackAbility, BaseArmorClass: r.BaseArmorClass,
 		Copper: r.Copper, Silver: r.Silver, Electrum: r.Electrum,
 		Gold: r.Gold, Platinum: r.Platinum, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
