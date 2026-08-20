@@ -36,6 +36,8 @@ func main() {
 	text := flag.String("text", "", "改成找「打包文字裡含有這個子字串」的指令；設了就不看 opcode")
 	into := flag.String("into", "", "改成列出「跳到這個位移」的指令（十六進位）；用來找某段程式碼的守衛")
 	table := flag.String("table", "", "改成把這個位移的 `ON GOTO` 表拆開，逐個索引印出目的地與那裡的第一句文字")
+	getTable := flag.String("gettable", "", "改成把這個位移的 `GETTABLE` 查表拆開：逐個索引印出查到的值；後面緊接 `ON GOTO` 時一併印出那個值對到哪一支處理常式")
+	getCount := flag.Int("gettable-count", 32, "`-gettable` 要印幾個索引")
 	raw := flag.Bool("raw", false, "每一條額外印出原始位元組（變長指令用）")
 	before := flag.Int("before", 8, "往前印幾條")
 	after := flag.Int("after", 2, "往後印幾條")
@@ -101,6 +103,11 @@ func main() {
 		offsets = append(offsets, offset)
 	}
 	sort.Ints(offsets)
+
+	if *getTable != "" {
+		dumpGetTable(*member, uint8(wanted), data, unique, offsets, *getTable, *getCount)
+		return
+	}
 
 	if *table != "" {
 		wantOffset, parseErr := strconv.ParseInt(strings.TrimPrefix(*table, "0x"), 16, 32)
@@ -273,6 +280,112 @@ func matchesOperand(instruction ecl.Instruction, want int) bool {
 		return int(first.Word) == want
 	}
 	return int(first.Low) == want
+}
+
+// dumpGetTable 拆 `GETTABLE <表>, <索引格>, <目的地>`：表的位址在 block 自己的
+// 資料裡（`位址 − 0x8000`），逐個索引就是一個位元組。
+//
+// ★ 這是每格事件的**第二種分派形狀**。前一種是 `AND C04F, <遮罩>` ＋ `ON GOTO`
+// （地形碼直接當索引）；這一種多一層查表，索引來自別的格子（世界地圖是所在地點
+// `4C9D`，地城是位置編號）。
+//
+// ⚠ 表沒有宣告長度。後面緊接的 `ON GOTO` 有個數，可以當上界；沒有 `ON GOTO`
+// 時就照 `-gettable-count` 印，多印的部分是相鄰資料，不要當成表的內容。
+func dumpGetTable(member string, block uint8, data []byte,
+	unique map[int]ecl.Instruction, offsets []int, want string, count int) {
+	wantOffset, err := strconv.ParseInt(strings.TrimPrefix(want, "0x"), 16, 32)
+	if err != nil {
+		log.Fatal(err)
+	}
+	instruction, ok := unique[int(wantOffset)]
+	if !ok {
+		log.Fatalf("位移 %#04x 不在可達指令裡", wantOffset)
+	}
+	if instruction.Command.Name != "GETTABLE" || len(instruction.Operands) < 3 {
+		log.Fatalf("位移 %#04x 是 %s，不是 GETTABLE", wantOffset, instruction.Command.Name)
+	}
+	base := int(instruction.Operands[0].Word) - ecl.CodeAddressBase
+	source := operandLabel(instruction.Operands[1])
+	dest := operandLabel(instruction.Operands[2])
+	fmt.Printf("%s 區塊 0x%02X 的 GETTABLE（位移 %#04x）：表在 %#04x，索引取自 %s，結果存進 %s\n\n",
+		member, block, wantOffset, base, source, dest)
+
+	// 後面緊接的 `ON GOTO` 決定「查到的值」能對到哪一支處理常式。
+	targets := map[int]int{}
+	onGotoCount := 0
+	for index, offset := range offsets {
+		if offset != int(wantOffset) {
+			continue
+		}
+		for cursor := index + 1; cursor < len(offsets) && cursor <= index+2; cursor++ {
+			if unique[offsets[cursor]].Command.Opcode != 0x25 {
+				continue
+			}
+			targets, onGotoCount = decodeOnGoto(data, unique, offsets, offsets[cursor])
+			fmt.Printf("後面緊接 `ON GOTO`（位移 %#04x，%d 個索引）\n\n",
+				offsets[cursor], onGotoCount)
+		}
+		break
+	}
+	if onGotoCount > 0 && count > onGotoCount {
+		// 表的長度沒有宣告，但值必須落在 `ON GOTO` 的範圍內才有意義。
+		fmt.Printf("⚠ `ON GOTO` 只有 %d 個索引，查到的值超過它就沒有對應的處理常式。\n\n",
+			onGotoCount)
+	}
+	fmt.Println("| 索引 | 查到的值 | 對到的處理常式 |")
+	fmt.Println("|---:|---:|---|")
+	for index := 0; index < count; index++ {
+		cell := base + index + 2 // ⚠ payload 與走訪位移差兩個位元組（區塊標頭）
+		if cell < 0 || cell >= len(data) {
+			break
+		}
+		value := int(data[cell])
+		handler := "—"
+		if target, ok := targets[value]; ok {
+			text := firstTextAt(unique, offsets, target)
+			handler = fmt.Sprintf("%#04x %s", target, text)
+		} else if onGotoCount > 0 {
+			handler = "（超出 `ON GOTO` 的範圍）"
+		}
+		fmt.Printf("| %d | %d | %s |\n", index, value, handler)
+	}
+}
+
+// decodeOnGoto 把 `ON GOTO` 的版面拆成索引 → 目的地位移，並回傳宣告的個數。
+func decodeOnGoto(data []byte, unique map[int]ecl.Instruction, offsets []int,
+	offset int) (map[int]int, int) {
+	end := unique[offset].Next
+	for _, candidate := range offsets {
+		if candidate > offset {
+			end = candidate
+			break
+		}
+	}
+	low, high := offset+2, end+2
+	if low < 0 || high > len(data) || high <= low {
+		return nil, 0
+	}
+	raw := data[low:high]
+	cursor := 1
+	cursor += operandWidth(raw[cursor:])
+	if cursor+1 >= len(raw) {
+		return nil, 0
+	}
+	count := int(raw[cursor+1])
+	cursor += operandWidth(raw[cursor:])
+	targets := map[int]int{}
+	for index := 0; index < count && cursor+2 < len(raw); index++ {
+		targets[index] = int(raw[cursor+1]) | int(raw[cursor+2])<<8 - ecl.CodeAddressBase
+		cursor += 3
+	}
+	return targets, count
+}
+
+func operandLabel(operand ecl.Operand) string {
+	if operand.WordSet {
+		return fmt.Sprintf("%04X", operand.Word)
+	}
+	return fmt.Sprintf("%02X", operand.Low)
 }
 
 func format(instruction ecl.Instruction) string {

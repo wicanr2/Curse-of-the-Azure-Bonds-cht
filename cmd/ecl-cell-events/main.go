@@ -47,6 +47,11 @@ type blockReport struct {
 	found    bool
 	note     string
 	events   []cellEvent
+	// tableForm 為真代表這個 block 走查表分派：索引不是地形碼，而是
+	// tableIndexCell 那一格，中間隔一層 tableValues。
+	tableForm      bool
+	tableIndexCell uint16
+	tableValues    []int
 }
 
 func main() {
@@ -115,13 +120,22 @@ func main() {
 func describe(catalogs map[uint8]geo.Catalog, member int, id uint8, data []byte) blockReport {
 	report := blockReport{member: member, block: id}
 	dispatch := eclcells.Analyze(data)
+	if dispatch.TableForm {
+		// ⚠ 第二種形狀：`GETTABLE <表>, <索引格> → <格子>` ＋ 分派同一格的
+		// `ON GOTO`。索引不是地形碼，是別的格子（世界地圖是路段編號 `4C9D`）。
+		report.tableForm = true
+		report.tableIndexCell = dispatch.TableIndexCell
+		report.tableValues = dispatch.TableValues
+		report.geoSet, report.geoBlock = uint8(member), dispatch.GeoBlock
+		for _, index := range dispatch.Indexes {
+			report.events = append(report.events, cellEvent{
+				index: index, text: dispatch.Texts[index],
+			})
+		}
+		return report
+	}
 	if !dispatch.Found {
 		report.note = "沒有以地形碼分派的每格事件"
-		if dispatch.TableForm {
-			// ⚠ 第二種形狀：`GETTABLE <表>, <索引>, <目的地>` ＋ `ON GOTO`。
-			// 那是「位置 → 查表 → 索引」，要先解出表的內容與索引怎麼算。
-			report.note += "；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）"
-		}
 		return report
 	}
 	report.found = true
@@ -175,6 +189,10 @@ func render(reports []blockReport) string {
 		"⚠ 索引 0 是「沒有事件的地面」，格子欄一律留白（那是全圖大半）。\n\n")
 	for _, report := range reports {
 		out.WriteString(fmt.Sprintf("## ECL%d／`0x%02X`\n\n", report.member, report.block))
+		if report.tableForm {
+			out.WriteString(renderTableForm(report))
+			continue
+		}
 		if !report.found {
 			out.WriteString(report.note + "\n\n")
 			continue
@@ -198,6 +216,37 @@ func render(reports []blockReport) string {
 		}
 		out.WriteString("\n")
 	}
+	return out.String()
+}
+
+// renderTableForm 排版查表分派：先列「查到的值 → 那一場」，再列「索引 → 值」。
+func renderTableForm(report blockReport) string {
+	var out strings.Builder
+	out.WriteString(fmt.Sprintf(
+		"查表分派：索引取自 `%04X`，查 block 自己的表得到 `ON GOTO` 的索引。\n"+
+			"⚠ 索引**不是地形碼**，所以這裡沒有「哪一格」——那要看索引那一格是誰在寫。\n\n",
+		report.tableIndexCell))
+	out.WriteString("| 值 | 那一場的第一句 |\n|---:|---|\n")
+	for _, event := range report.events {
+		text := event.text
+		if text == "" {
+			text = "—"
+		} else {
+			text = "「" + text + "」"
+		}
+		out.WriteString(fmt.Sprintf("| %d | %s |\n", event.index, text))
+	}
+	if len(report.tableValues) > 0 {
+		out.WriteString("\n查表內容（⚠ 表沒有宣告長度，這是探測前 " +
+			fmt.Sprintf("%d", len(report.tableValues)) + " 個索引，" +
+			"超出表尾的部分是相鄰資料）：\n\n")
+		parts := make([]string, 0, len(report.tableValues))
+		for index, value := range report.tableValues {
+			parts = append(parts, fmt.Sprintf("%d→%d", index, value))
+		}
+		out.WriteString("`" + strings.Join(parts, "`、`") + "`\n")
+	}
+	out.WriteString("\n")
 	return out.String()
 }
 

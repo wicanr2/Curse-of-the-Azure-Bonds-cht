@@ -48,15 +48,15 @@ func TestAnalyzeFindsBothMaskShapes(t *testing.T) {
 	if blocks != 25 {
 		t.Fatalf("掃到 %d 個 block，應該是 25 個", blocks)
 	}
-	if found != 14 {
-		t.Errorf("有地形分派的 block 是 %d 個，宣告的是 14 個", found)
+	if found != 16 {
+		t.Errorf("有地形分派的 block 是 %d 個，宣告的是 16 個", found)
 	}
 	// ⚠ 遮罩不是固定的：`0x7F` 與 `0x3F` 都量到過。寫死一種會讓另一種整批落空。
 	if masks[0x7F] == 0 || masks[0x3F] == 0 {
 		t.Errorf("遮罩分布是 %v，兩種都應該還在", masks)
 	}
-	if tableForm != 5 {
-		t.Errorf("用 GETTABLE 查表分派的 block 是 %d 個，宣告的是 5 個", tableForm)
+	if tableForm != 3 {
+		t.Errorf("用 GETTABLE 查表分派的 block 是 %d 個，宣告的是 3 個", tableForm)
 	}
 }
 

@@ -1509,13 +1509,6 @@
     {
       "path": "cmd/ecl-cell-events/main.go",
       "function": "describe",
-      "sha256": "83b899990969e126d4e9eb4769d809796f669eda2cdbc7b67db0a03bb49c49e9",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/ecl-cell-events/main.go",
-      "function": "describe",
       "sha256": "c58d072042217d98d506c79880901926f9827711c7c565d2eb83a7763eef704a",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1601,6 +1594,48 @@
       "path": "cmd/ecl-cell-events/main.go",
       "function": "render",
       "sha256": "f1fd5664bebd613c638a54789ae40445899530b481b83bc75738c3dedd04b1ae",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-events/main.go",
+      "function": "renderTableForm",
+      "sha256": "0e52779d2c111216efaa01a4e7352a643042c58cc1b3269fc2c1385f11175d41",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-events/main.go",
+      "function": "renderTableForm",
+      "sha256": "10ec43b3f94c29a5a54c66b7e54f97b4db1454f2b57fb87afb68fad79e398c9b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-events/main.go",
+      "function": "renderTableForm",
+      "sha256": "3265a3a4e087ffae5de6b71c444c470c3ff10546e072c1949c1f31fb39765af6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-events/main.go",
+      "function": "renderTableForm",
+      "sha256": "a1f9a79ddde5a9d12f43ecb15245982464c643b57a81bf5e354d757e9c5fda0a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-events/main.go",
+      "function": "renderTableForm",
+      "sha256": "b6e278ba0fba570218c19bcb4192963f4ccc4d90cf2e4e62167b63d90b8269d4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-cell-events/main.go",
+      "function": "renderTableForm",
+      "sha256": "f1e99fb825995aa8f759c5aea407bed2ef68d0502a7be0ba762c75388f698471",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1963,6 +1998,55 @@
     },
     {
       "path": "cmd/ecl-window/main.go",
+      "function": "dumpGetTable",
+      "sha256": "276ebc1f2eb6f247d9702f66bc92ef8e435b8684822935e8a9fac04b7d9d50e7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-window/main.go",
+      "function": "dumpGetTable",
+      "sha256": "3753a22d7e7de0e2eb49f1ca44bae3a75f3b34ca025cd45e5b125339626de67b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-window/main.go",
+      "function": "dumpGetTable",
+      "sha256": "963e8c6ab149128f5290793271933185e4741c253c43efb4ef22940be5684a3a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-window/main.go",
+      "function": "dumpGetTable",
+      "sha256": "a4e3b4b7097eccf381300f068de4a5e7dc1f027a9ccfce3387b44710cd440231",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-window/main.go",
+      "function": "dumpGetTable",
+      "sha256": "c40c8f04b93d7c3df5a0588be325f714caaf90ab52afdd53b6de9a27d04b5ecf",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-window/main.go",
+      "function": "dumpGetTable",
+      "sha256": "e0979e0a37a8deb05ad63cdeb338d5049774043e79d0ca30ccf2453302ae5ebc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-window/main.go",
+      "function": "dumpGetTable",
+      "sha256": "f13af05aecb81fb397be52c1cd5d37a136cb3efabaf0f0ae0dfc35a3d2e40a87",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-window/main.go",
       "function": "firstTextAt",
       "sha256": "5c3ffe87c47a2c67c74a4caf5b678004801893ecfe217ece67ba35ffd656f8d5",
       "occurrences": 1,
@@ -2048,7 +2132,21 @@
     {
       "path": "cmd/ecl-window/main.go",
       "function": "main",
+      "sha256": "8667ce09b72ded61d235056d90c96d720eef98e50cb2308e0d32674b0cec6983",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-window/main.go",
+      "function": "main",
       "sha256": "99998dd4110c5308a2ac88d8fdda41656dfc86239c2975ce1051e5c6a38f0c73",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-window/main.go",
+      "function": "main",
+      "sha256": "9e1e87318ff22c920e9b6853d478ff0871c9f5a7d8672d4ef1f872971f087508",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

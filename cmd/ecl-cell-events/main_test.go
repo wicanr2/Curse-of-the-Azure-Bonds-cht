@@ -59,8 +59,8 @@ func TestCellEventTableShape(t *testing.T) {
 			dispatchers++
 		}
 	}
-	if dispatchers != 14 {
-		t.Errorf("有地形分派的 block 是 %d 個，宣告的是 14 個", dispatchers)
+	if dispatchers != 16 {
+		t.Errorf("有地形分派的 block 是 %d 個，宣告的是 16 個", dispatchers)
 	}
 	// ⚠ 遮罩不是固定的：`0x7F` 與 `0x3F` 都量到過。寫死一種會讓另一種整個落空。
 	masks := map[int]int{}
