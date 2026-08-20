@@ -99,8 +99,25 @@ func newSegmentDungeonState(t *testing.T, blocks map[uint8][]byte,
 	if err := state.EnterSegment(seg); err != nil {
 		t.Fatal(err)
 	}
-	if err := state.Continue(); err != nil {
-		t.Fatal(err)
+	// ⚠ 盤點用的隊伍一律撐起來：有的段一進去就開打（古熔岩洞的伏擊），
+	// 臨時建的一名角色會死在入口，後面一格都盤點不到。**只給盤點用**——
+	// 段測試不准這樣做（見 boostSweepParty）。
+	boostSweepParty(t, &state)
+	// 段的入口不一定停在同一種模式：有的要按繼續，有的停在選單上，有的開打。
+	for step := 0; step < 16 && state.Mode != ModeDungeon; step++ {
+		if state.CombatActive() {
+			for turn := 0; turn < 400 && state.CombatActive(); turn++ {
+				if err := state.CombatAct(); err != nil {
+					t.Fatalf("進 %s 的入口戰鬥：%v", seg.ID, err)
+				}
+			}
+			continue
+		}
+		if err := state.Continue(); err != nil {
+			if selectErr := state.Select(0); selectErr != nil {
+				t.Fatalf("進 %s 的入口推不動：continue=%v select=%v", seg.ID, err, selectErr)
+			}
+		}
 	}
 	if state.Mode != ModeDungeon {
 		t.Fatalf("進 %s 之後模式是 %v", seg.ID, state.Mode)
@@ -204,10 +221,6 @@ func TestOuterRuinsFugitiveCache(t *testing.T) {
 		t.Fatal("註冊表沒有 ECL6/0x42")
 	}
 	state := newSegmentDungeonState(t, blocks, records, outer)
-	// ⚠ 這一條驗的是**內容與語系**，不是難度：臨時建的一名角色打不贏地獄犬群，
-	// 而打輸就看不到線索。所以把隊伍撐起來——與 `-inner-final-battle` 的觀察
-	// 用隊伍同一個作法，不是放寬那一段的結束條件。
-	boostSweepParty(t, &state)
 
 	state.SetDungeonGeometryView(2, 6, 0)
 	state.DungeonWallRoof = grid.CellWrapped(2, 6).Terrain
@@ -270,5 +283,61 @@ func boostSweepParty(t *testing.T, state *State) {
 	}
 	if err := state.SetParty(party); err != nil {
 		t.Fatalf("裝上盤點用隊伍：%v", err)
+	}
+}
+
+// 古熔岩洞的每格事件同樣由地形碼分派（遮罩 `0x7F`）。對照表由
+// `cmd/ecl-cell-events` 產生，在 `docs/audit/ecl-cell-events.md`。
+func TestLavaTubeCellEventsAreLocalized(t *testing.T) {
+	image, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocks, records := loadAllECLAndMonsters(t, image)
+	grid := loadGeoCampaignGrid(t, image, 5, "GEO5.DAX", 0x32)
+	cave, ok := segment.Lookup("ECL5/0x32")
+	if !ok {
+		t.Fatal("註冊表沒有 ECL5/0x32")
+	}
+
+	cells := []struct {
+		x, y      int
+		messageID string
+	}{
+		{2, 0, "lava-tube.arrow-in-ash"},
+		{13, 5, "lava-tube.stone-arrow-south"},
+		{4, 0, "lava-tube.four-dark-elves"},
+		{0, 3, "lava-tube.violated-our-precinct"},
+		{14, 2, "lava-tube.barracks-disturbed"},
+		{8, 4, "lava-tube.incense-room"},
+		{0, 7, "lava-tube.mage-meditation-room"},
+		{4, 2, "lava-tube.guarded-door"},
+		{7, 12, "lava-tube.crimdrac-introduces"},
+		{13, 15, "lava-tube.guarded-by-efreeti"},
+		{15, 13, "lava-tube.tunnel-collapsed"},
+	}
+	for _, cell := range cells {
+		t.Run(cell.messageID, func(t *testing.T) {
+			// ⚠ 古熔岩洞有一半的格子要**搜尋**才會演（守衛讀 `7ECA`），
+			// 所以先不搜尋跑一次，沒有再搜尋跑一次。
+			for _, search := range []bool{false, true} {
+				state := newSegmentDungeonState(t, blocks, records, cave)
+				state.SetDungeonGeometryView(cell.x, cell.y, 0)
+				state.DungeonWallRoof = grid.CellWrapped(cell.x, cell.y).Terrain
+				state.DungeonSearchEnabled = search
+				if err := state.RunDungeonLifecycle(); err != nil {
+					t.Fatalf("(%d,%d) 的生命週期：%v", cell.x, cell.y, err)
+				}
+				want := requireGamePackText(t, &state, cell.messageID)
+				if state.Message == want || state.Prompt == want {
+					return
+				}
+				if search {
+					t.Fatalf("(%d,%d) roof=%#02x 搜尋前後都沒出現；最後的敘述是 %q，提示是 %q",
+						cell.x, cell.y, state.DungeonWallRoof, state.Message, state.Prompt)
+				}
+			}
+		})
 	}
 }
