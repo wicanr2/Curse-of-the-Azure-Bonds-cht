@@ -8239,6 +8239,48 @@
     "YOU ARE APPROACHED BY A RED PLUME PATROL"
    ],
    "message_id": "overland.red-plume-patrol"
+  },
+  {
+   "id": "myth-drannor.rubble-scavengers",
+   "all_contains": [
+    "A FILTHY GROUP HAS BEEN PICKING THROUGH THE RUBBLE"
+   ],
+   "message_id": "myth-drannor.rubble-scavengers"
+  },
+  {
+   "id": "encounter.insects-watch",
+   "all_contains": [
+    "INSECTS WATCH YOU"
+   ],
+   "message_id": "encounter.insects-watch"
+  },
+  {
+   "id": "encounter.patrol-watches",
+   "all_contains": [
+    "THE PATROL WATCHES YOU"
+   ],
+   "message_id": "encounter.patrol-watches"
+  },
+  {
+   "id": "encounter.salamanders-investigate",
+   "all_contains": [
+    "THE SALAMANDERS COME UP TO INVESTIGATE"
+   ],
+   "message_id": "encounter.salamanders-investigate"
+  },
+  {
+   "id": "prompt.bonds-gone-what-do-you-do",
+   "all_contains": [
+    "WITH THE BONDS GONE, WHAT DO YOU DO"
+   ],
+   "message_id": "prompt.bonds-gone-what-do-you-do"
+  },
+  {
+   "id": "prompt.what-do-you-do",
+   "all_contains": [
+    "WHAT DO YOU DO?"
+   ],
+   "message_id": "prompt.what-do-you-do"
   }
  ],
  "option_rules": [

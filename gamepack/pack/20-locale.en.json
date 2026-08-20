@@ -1377,7 +1377,13 @@
    "zhentil.rumour.factions": "You overhear that troopers, priests and mages are all at odds, and Dimswart the sage has disappeared.",
    "overland.red-plume-patrol": "You are approached by a Red Plume patrol.",
    "overland.red-plume-patrol.pass": "'You are in a war zone, beware.' They let you pass.",
-   "yulash.red-plume-patrol": "A Red Plume patrol approaches. One guard claims your tattoos reveal you as Zhentil spies."
+   "yulash.red-plume-patrol": "A Red Plume patrol approaches. One guard claims your tattoos reveal you as Zhentil spies.",
+   "myth-drannor.rubble-scavengers": "A filthy group has been picking through the rubble. They stare at you fearfully.",
+   "encounter.insects-watch": "Insects watch you.",
+   "encounter.patrol-watches": "The patrol watches you.",
+   "encounter.salamanders-investigate": "The salamanders come up to investigate.",
+   "prompt.bonds-gone-what-do-you-do": "With the bonds gone, what do you do?",
+   "prompt.what-do-you-do": "What do you do?"
   }
  },
  "events": []

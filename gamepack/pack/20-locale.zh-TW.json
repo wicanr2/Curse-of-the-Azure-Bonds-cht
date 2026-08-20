@@ -1377,7 +1377,13 @@
    "zhentil.rumour.factions": "你們聽見有人說：士兵、祭司與法師互不相讓，而賢者迪姆斯沃特也不見了！",
    "overland.red-plume-patrol": "一隊紅羽衛巡邏兵走了過來。",
    "overland.red-plume-patrol.pass": "「這裡是戰區，自己小心。」說完便讓你們通過。",
-   "yulash.red-plume-patrol": "一隊紅羽衛巡邏兵走近。其中一人咆哮：「你們身上的刺青暴露了散提爾堡間諜的身分！」"
+   "yulash.red-plume-patrol": "一隊紅羽衛巡邏兵走近。其中一人咆哮：「你們身上的刺青暴露了散提爾堡間諜的身分！」",
+   "myth-drannor.rubble-scavengers": "一群衣衫襤褸的人正在瓦礫堆裡翻找，見到你們便驚恐地盯著看。",
+   "encounter.insects-watch": "蟲群正盯著你們。",
+   "encounter.patrol-watches": "巡邏隊正盯著你們。",
+   "encounter.salamanders-investigate": "火蜥蜴靠了過來查看。",
+   "prompt.bonds-gone-what-do-you-do": "枷印已經消失，你們要怎麼做？",
+   "prompt.what-do-you-do": "你們要怎麼做？"
   }
  },
  "events": []
