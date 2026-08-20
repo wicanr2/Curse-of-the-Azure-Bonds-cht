@@ -64,10 +64,10 @@
 
 | ID | 項目 | 驗收 |
 |---|---|---|
-| `SEG-10` | 把 `campaign_normal_test.go` 那一條拆成「每段一個測試」 | 拆完之後**覆蓋的步數不減**；每段紅的時候看得出是哪一段 |
-| `SEG-11` | ✅ **前半完成**：25 段的邊界狀態往返閘（`TestSegmentEntrySnapshotRoundTrips`）＋ `-segment-snapshot` 寫出快照、`-party-load` 當下一段入口 | 存得下去、讀得回來 ✓（報告見 `docs/plan/seg-11-verification-report.md`）；**段結束**的快照要等 `SEG-10` |
+| `SEG-10` | ✅ **完成**：那一條 790 行的函式拆成 12 個 subtest（同一條 session）| 正規化逐行比對證明**沒有任何遊戲動作被加進來或拿掉** ✓；段紅的時候直接看得出是哪一段 ✓（報告見 `docs/plan/seg-10-verification-report.md`）|
+| `SEG-11` | ✅ **完成**：25 段的**入口**往返閘 ＋ 12 段的**結束**快照往返 ＋ `-segment-snapshot`／`-party-load` 交接 | 存得下去、讀得回來 ✓（報告見 `docs/plan/seg-11-verification-report.md` 與 `seg-10-verification-report.md`）|
 | `SEG-12` | ✅ **完成**：`TestEveryNewECLEdgeHandsOff`——來源段存快照 → 讀回 → 帶著來源 block 當 `LastECL` 進目的段 | 47 條邊每條一個子測試 ✓（報告見 `docs/plan/seg-12-verification-report.md`）；來源用的是段的入口狀態，段結束狀態要等 `SEG-10` |
-| `SEG-13` | 整條跑降級成 **smoke**：保留，但不當主要 gate | 主要 gate 是段測試；整條跑只驗「串得起來」 |
+| `SEG-13` | ✅ **完成（作法有調整）**：主要 gate 已經是段測試（12 個 subtest ＋ 段界快照往返），整條跑是它們共用的同一條 session | ⚠ 快照**不進 repo**：存檔格式一改整批失效，而分段診斷與快照往返兩項好處已經拿到（理由見報告 §四）|
 
 ⚠ `SEG-11` 是關鍵：沒有快照交接，後面的段還是得從頭跑，分段就只是把同一條
 長跑切成看起來比較短的樣子。**所以它排在 `SEG-10` 前面做**——先把交接機制驗
@@ -88,7 +88,8 @@
   與每回合／搜尋生命週期裡，不在 `initial`。**不是資料缺漏**。
 
 ⇒ 階段 2 剩下的工作不在「段的入口」，而在**段內**：每回合／搜尋生命週期、
-離開邊的觸發條件，以及段內的戰鬥。那要等 `SEG-10` 把每段拆成自己的測試。
+離開邊的觸發條件，以及段內的戰鬥。已經有段內逐步覆蓋的是 `SEG-10` 那 12 段
+（哈普村到眼魔洞穴）；其餘 13 段只驗到入口與交接。
 
 ⚠ 只有 `ECL6/0x43`（內城遺跡，結局）沒有出邊；`0x40` 與 `0x42` 都有
 （`0x40 → 0x42`／`0x50`、`0x42 → 0x40`／`0x43`）。
@@ -124,7 +125,8 @@
 
 1. ~~`SEG-01`~~ ✅ 已解（spec 1141）：轉移是 `NEWECL` 改 `LastECL`，主迴圈載它。
 2. ~~9 個佔位地圖的名字~~ ✅ 已解（`SEG-03`）：段的 id 不綁地圖名，標籤逐條
-   有原作敘述為證。⚠ 順帶查出 `zhentil-keep.beholder-cave` 的 `script_block`
-   指到別段的劇本，留給 `SEG-10` 拆段時驗。
-3. 段的快照要存哪一層：整份 `SavePartyFile`、還是另外一個測試專用的
-   state snapshot。前者順便驗了存檔，後者比較好控制。傾向前者。
+   有原作敘述為證。`zhentil-keep.beholder-cave` 的 `script_block 0x22` 實機量過
+   是對的（`SEG-10` 的 `ECL4/0x22` 段）；⚠ 未解的是**幾何怎麼換成 `GEO4/0x25`**
+   ——`ECL4/0x22` 的 `LOAD FILES` 是 `21`，remake 目前用 game pack 事件重建。
+3. ~~段的快照要存哪一層~~ ✅ 已解：整份 `SavePartyFile`，順便驗了存檔往返
+   （`SEG-11`）。

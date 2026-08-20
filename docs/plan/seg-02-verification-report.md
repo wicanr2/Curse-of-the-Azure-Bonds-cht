@@ -61,10 +61,11 @@ game pack 早就把它宣告成 `original.geo3.block-11-level-2`（**同一張�
    `zhentil-keep.inner-city`、`zhentil-keep.dark-shrine`。它們的 `geometry_block`
    分別是 `01`／`20`／`21`，與 `LOAD FILES` 對得上，但**沒有直接證據說哪一個
    block 是它的 script**（`0x01` 與 `0x02` 都載 `01`），所以這一輪不填。
-2. ⚠ **`zhentil-keep.beholder-cave` 的宣告與原作資料不一致**：pack 宣告
-   `script_block 0x22` ＋ `geometry_block 0x25`，但 `ECL4/0x22` 的 `LOAD FILES`
-   是 `21`，而 `ECL4/0x25` 才載 `25`。兩者只能有一個對。要回到原始 bytes 或
-   實機路徑判。
+2. **`zhentil-keep.beholder-cave` 的 `script_block 0x22` 是對的**（實機路徑量過，
+   見 `seg-03-verification-report.md` §三）：那一段跑的時候 `CurrentBlockID()`
+   就是 `0x22`。⚠ 仍未解的是**幾何怎麼換的**——`ECL4/0x22` 的 `LOAD FILES` 是
+   `21`，而洞穴用的是 `GEO4/0x25`；remake 用 game pack 事件重建，原作靠什麼換
+   還沒查。
 3. **九個佔位名還沒定**（`original.geo3.*` 四個、`original.geo5.*` 四個、
    `original.geo6.block-45`）。命名要靠那些 block 的劇情文字，屬於下一輪。
    已知線索：`gamepack` 既有測試把 `original.geo5.block-31` 稱作 Hap。

@@ -40,20 +40,27 @@
 其餘十個段（提爾佛頓一族、密斯卓諾三張、世界地圖 hub、開場）沿用 game pack
 既有的命名。
 
-## 三、⚠ 一個宣告與內容不符
+## 三、`beholder-cave` 的 `script_block 0x22` 是對的
 
-`SEG-02` 標出 `zhentil-keep.beholder-cave` 宣告 `script_block 0x22` ＋
-`geometry_block 0x25`，與 `LOAD FILES` 對不上。這一輪的文字證據把它講清楚了：
+`SEG-02` 把 `zhentil-keep.beholder-cave` 的 `script_block 0x22` ＋
+`geometry_block 0x25` 標成「與 `LOAD FILES` 對不上」。實機路徑量過之後，
+宣告是對的：
 
-- **眼魔的內容在 `ECL4/0x25`**（`THE MULMASTER BEHOLDER CORPS`），而 `0x25` 的
-  `LOAD FILES` 正是 `25`。
-- **`ECL4/0x22` 是迪姆斯華特那一段**（`DIMSWART THE SAGE`），`LOAD FILES` 是 `21`
-  ——也就是神殿／牢房那張地圖，與「醒過來、老人自我介紹」的敘述一致。
+- **眼魔洞穴與 Dexam 那一段跑的時候，`CurrentBlockID()` 就是 `0x22`**，
+  幾何是 `GEO4/0x25`（`TestRealNewGameContinuesFromHapToBeholderCaveEntrance`
+  的 `ECL4/0x22` 段逐項斷言）。
+- **迪姆斯華特那一場戲跑在 `0x21`**（量到 `block=0x21 geo=4/0x21`），不在 `0x22`。
+  `0x22` 的字串裡有 `DIMSWART THE SAGE` 並不代表那一場戲屬於 `0x22`——
+  他入隊之後在 `0x22` 還有台詞（離場序列的 `dexam.departure.dimswart`）。
+- **`ECL4/0x25` 是另一件事**：世界地圖上的穆爾馬斯特眼魔軍團
+  （`THE MULMASTER BEHOLDER CORPS`），由 hub `0x50` 進入。
 
-⇒ `beholder-cave` 的 `script_block` 指到的是**別段的劇本**。
+⇒ 一個 block 可以裝不只一場戲；**字串出現在哪個 block ≠ 那場戲屬於哪個 block**。
 
-**這一輪不改。** 現行的眼魔洞穴 checkpoint 走得通，改欄位是行為變更，要先確認
-那條路徑實際吃的是哪一個 block。列進 `SEG-10` 拆段時一併驗。
+⚠ 仍未解的是**幾何怎麼換的**：`ECL4/0x22` 的 `LOAD FILES` 是 `21`，而洞穴用的
+是 `GEO4/0x25`。remake 目前用 game pack 事件
+（`zhentil-keep.beholder-cave.same-block-launch` 的 `set_map_position`）重建，
+原作靠什麼換還沒查。
 
 ## 四、量錯一次，記下來
 
