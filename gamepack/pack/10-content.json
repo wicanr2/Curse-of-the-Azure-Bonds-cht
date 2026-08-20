@@ -8913,6 +8913,11 @@
    "message_id": "trail"
   },
   {
+   "id": "ecl-option.by-boat",
+   "source": "BY BOAT",
+   "message_id": "ecl-option.by-boat"
+  },
+  {
    "id": "ecl-option.combat",
    "source": "COMBAT",
    "message_id": "encounter_combat"

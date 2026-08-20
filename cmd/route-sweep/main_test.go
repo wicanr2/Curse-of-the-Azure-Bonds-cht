@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gamecorpus"
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/segment"
 )
 
 const (
@@ -25,25 +24,23 @@ func TestWorldMapBranchesAreLocalized(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	legs := []leg(nil)
-	for _, id := range []string{"ECL1/0x50", "ECL1/0x51"} {
-		hub, ok := segment.Lookup(id)
-		if !ok {
-			t.Fatalf("註冊表沒有 %s", id)
-		}
-		found, _ := walk(data, hub, 8)
-		legs = append(legs, found...)
+	legs, _, err := sweepAllLocations(data, 6)
+	if err != nil {
+		t.Fatal(err)
 	}
-	if len(legs) < 15 {
-		t.Fatalf("只走到 %d 個分支，宣告的下限是 15", len(legs))
+	// ⚠ 下限釘的是**走到的分支數**：走訪一旦壞掉（起點進不去、選單認錯），
+	// 分支數會塌下來而每一條剩下的都還是中文——語系全綠但其實什麼都沒驗到。
+	if len(legs) < 700 {
+		t.Fatalf("只走到 %d 個分支，宣告的下限是 700", len(legs))
 	}
 	for _, item := range legs {
 		if item.language == "原文" {
-			t.Errorf("`%s` 地點 %d 選「%s」之後演的是原文：%s",
-				item.hub, item.from, item.option, firstLine(item.text))
+			t.Errorf("起點 %d 地點 %d 選「%s」之後演的是原文：%s",
+				item.origin, item.from, item.option, firstLine(item.text))
 		}
 		if item.optionLanguage == "原文" {
-			t.Errorf("`%s` 地點 %d 的選項「%s」沒有中文化", item.hub, item.from, item.option)
+			t.Errorf("起點 %d 地點 %d 的選項「%s」沒有中文化",
+				item.origin, item.from, item.option)
 		}
 	}
 }

@@ -783,6 +783,30 @@ func (s *State) SetCombatSeed(seed int64) { s.combatSeed = seed }
 // SetECLSeed controls the deterministic RANDOM stream while replaying an
 // event path. BlockSession retains the generator across ECL invocations, so
 // revisiting a random terrain consumes the next roll instead of restarting.
+// WorldLocations 回傳 game pack 宣告的世界地圖地點（原生編號與相鄰表）。
+//
+// 盤點工具要「從每一個地點各掃一次」時需要這份清單；沒有它就只掃得到開局
+// 走得到的那一圈，而**走不到的地點與沒有內容的地點長得一模一樣**。
+func (s *State) WorldLocations() []goldenbox.MapPoint {
+	if s.dataPack == nil {
+		return nil
+	}
+	definition, found := s.dataPack.FindMapByKind("overland")
+	if !found {
+		return nil
+	}
+	return append([]goldenbox.MapPoint(nil), definition.Locations...)
+}
+
+// ArriveAtWorldLocation 直接把隊伍放到某個世界地圖地點，走的是**正常抵達那一條
+// 交易**（ECL1 entry 1），不是塞狀態。
+//
+// ⚠ 診斷／盤點用。正常玩法要走過去；直接抵達不會帶上路上該發生的事，也不會
+// 檢查那個地點在劇情上到不到得了。
+func (s *State) ArriveAtWorldLocation(destination uint8) error {
+	return s.arriveAtWorldLocation(destination)
+}
+
 // CurrentOriginalChoices 回傳目前這個選單**未中文化**的選項字串。
 //
 // ★ 用途是分辨「這個選單是原作的還是 remake 自己的 UI」：原作選單的原文是
