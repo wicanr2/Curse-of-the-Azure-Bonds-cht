@@ -2,8 +2,9 @@ package game
 
 import (
 	"archive/zip"
-	"sort"
+	"fmt"
 	"path/filepath"
+	"sort"
 	"slices"
 	"strconv"
 	"strings"
@@ -15,6 +16,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 type normalDungeonPoint struct {
@@ -883,6 +885,9 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		}
 		roster := make([]string, 0, len(state.partyRoster))
 		experience := make(map[string]uint32, len(state.partyRoster))
+		equipment := make(map[string]string, len(state.partyRoster))
+		spells := make(map[string]string, len(state.partyRoster))
+		effects := make(map[string]string, len(state.partyRoster))
 		for _, character := range state.partyRoster {
 			label := character.ScriptName
 			if label == "" {
@@ -890,12 +895,16 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			}
 			roster = append(roster, label)
 			experience[label] = character.Experience
+			equipment[label] = campaignEquipmentSignature(character)
+			spells[label] = campaignSpellSignature(character)
+			effects[label] = campaignEffectSignature(character)
 		}
 		segmentEnds = append(segmentEnds, campaignSegmentEnd{
 			name: name, path: path, block: state.session.CurrentBlockID(),
 			mode: state.Mode, area: state.Area.GameArea, inDungeon: state.Area.InDungeon,
 			party: len(state.PartyFighters()), roster: roster, experience: experience,
 			music: state.activeMusicTrackID,
+			equipment: equipment, spells: spells, effects: effects,
 		})
 	}
 	if !t.Run("ECL5/0x31 哈普村", func(t *testing.T) {
@@ -2328,6 +2337,70 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		}
 	})
 
+	// SEG-31 後半：裝備、記憶法術與效果的跨段連續性。
+	//
+	// ⚠ 這一條**先擋非空**再擋變動。只擋「沒有變動」的話，哪天攜帶物整批讀不
+	// 到、每一段都是空的，測試照樣全綠——空的等於空的。
+	t.Run("攜帶物的跨段連續性", func(t *testing.T) {
+		richestEquipment, castersSeen, effectsSeen := 0, 0, 0
+		for _, end := range segmentEnds {
+			for label := range end.equipment {
+				count := 0
+				if end.equipment[label] != "" {
+					count = strings.Count(end.equipment[label], ",") + 1
+				}
+				if count > richestEquipment {
+					richestEquipment = count
+				}
+				if !strings.Contains(end.spells[label], "記憶=[]") {
+					castersSeen++
+				}
+				if end.effects[label] != "" {
+					effectsSeen++
+				}
+			}
+		}
+		if richestEquipment < 4 {
+			t.Errorf("整條路線上最多裝備的角色只有 %d 件，攜帶物的比對等於沒驗", richestEquipment)
+		}
+		if castersSeen == 0 {
+			t.Error("整條路線上沒有一名角色帶著記憶法術，法術的比對等於沒驗")
+		}
+		if effectsSeen == 0 {
+			t.Error("整條路線上沒有一名角色帶著效果，效果的比對等於沒驗")
+		}
+
+		// 同一個角色的攜帶物在相鄰兩段之間的變動位置是宣告好的。這條路線上沒有
+		// 購買、消耗或劇情剝奪，所以清單是空的——多出一處就代表有東西被靜靜
+		// 改掉或掉了。
+		changes := []string{}
+		previous := campaignSegmentEnd{}
+		for index, end := range segmentEnds {
+			if index > 0 {
+				for label, value := range end.equipment {
+					if before, ok := previous.equipment[label]; ok && before != value {
+						changes = append(changes, end.name+"／"+label+"：裝備")
+					}
+				}
+				for label, value := range end.spells {
+					if before, ok := previous.spells[label]; ok && before != value {
+						changes = append(changes, end.name+"／"+label+"：法術")
+					}
+				}
+				for label, value := range end.effects {
+					if before, ok := previous.effects[label]; ok && before != value {
+						changes = append(changes, end.name+"／"+label+"：效果")
+					}
+				}
+			}
+			previous = end
+		}
+		sort.Strings(changes)
+		if len(changes) != 0 {
+			t.Errorf("攜帶物在段界之間變動的位置是 %v，宣告的是沒有變動", changes)
+		}
+	})
+
 	t.Run("段界快照往返", func(t *testing.T) {
 		if len(segmentEnds) != 23 {
 			t.Fatalf("存到 %d 份段界快照，應該是 23 份", len(segmentEnds))
@@ -2362,6 +2435,32 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 				t.Errorf("%s 讀回來隊伍 %d 人，存的是 %d 人", end.name,
 					len(restored.PartyFighters()), end.party)
 			}
+			// SEG-31 後半：交接走的是快照，所以「裝備／記憶法術／效果存下去
+			// 讀得回來」就是跨段不變量本身。⚠ 人數對不代表身上的東西還在。
+			for _, character := range restored.partyRoster {
+				label := character.ScriptName
+				if label == "" {
+					label = character.Name
+				}
+				if want, ok := end.equipment[label]; ok {
+					if got := campaignEquipmentSignature(character); got != want {
+						t.Errorf("%s 的 %s 讀回來裝備是 %q，存的是 %q",
+							end.name, label, got, want)
+					}
+				}
+				if want, ok := end.spells[label]; ok {
+					if got := campaignSpellSignature(character); got != want {
+						t.Errorf("%s 的 %s 讀回來法術是 %q，存的是 %q",
+							end.name, label, got, want)
+					}
+				}
+				if want, ok := end.effects[label]; ok {
+					if got := campaignEffectSignature(character); got != want {
+						t.Errorf("%s 的 %s 讀回來效果是 %q，存的是 %q",
+							end.name, label, got, want)
+					}
+				}
+			}
 		}
 	})
 }
@@ -2378,6 +2477,44 @@ type campaignSegmentEnd struct {
 	roster     []string
 	experience map[string]uint32
 	music      string
+	// 下面三個是 `SEG-31` 後半：跨段的**攜帶物**。段與段之間的交接一律走快照，
+	// 所以「存下去讀回來還在不在」就是跨段不變量本身。
+	equipment  map[string]string
+	spells     map[string]string
+	effects    map[string]string
+}
+
+// campaignEquipmentSignature 把一名角色的裝備列成穩定字串。⚠ 要帶上「有沒有
+// 裝備中」與數量：只比件數的話，武器被卸下或用掉一支都看不出來。
+func campaignEquipmentSignature(character party.Character) string {
+	parts := make([]string, 0, len(character.Equipment))
+	for _, item := range character.Equipment {
+		readied := ""
+		if item.Readied {
+			readied = "*"
+		}
+		parts = append(parts, fmt.Sprintf("%d%s×%d+%d", item.Type, readied, item.Count, item.Plus))
+	}
+	return strings.Join(parts, ",")
+}
+
+// campaignSpellSignature 把記憶法術與法術書列成穩定字串。
+func campaignSpellSignature(character party.Character) string {
+	return fmt.Sprintf("記憶=%v 法術書=%v 容量=%v",
+		character.SpellSlots, character.KnownSpells, character.SpellCastCount)
+}
+
+// campaignEffectSignature 把身上的效果列成穩定字串。
+func campaignEffectSignature(character party.Character) string {
+	parts := make([]string, 0, len(character.Effects))
+	for _, effect := range character.Effects {
+		active := ""
+		if effect.Active {
+			active = "*"
+		}
+		parts = append(parts, fmt.Sprintf("%02X%s/%d", effect.Kind, active, effect.Duration))
+	}
+	return strings.Join(parts, ",")
 }
 
 // campaignMessageHasHan 判斷一句話裡有沒有漢字。
