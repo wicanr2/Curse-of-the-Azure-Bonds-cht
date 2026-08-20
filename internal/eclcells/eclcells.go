@@ -47,6 +47,32 @@ type Dispatch struct {
 	// Guards 是索引 → 處理常式開頭在講話之前先做的判斷，用來回答「這一格
 	// 為什麼站上去沒反應」。空字串代表一進去就講話，沒有守衛。
 	Guards map[int]string
+	// TableIndexCell 是查表分派的索引取自哪一格（`TableForm` 為真時才有意義）。
+	TableIndexCell uint16
+	// TableValues 是查表的內容：`TableValues[i]` 是索引 i 查到的值，也就是
+	// `ON GOTO` 的索引。表沒有宣告長度，這裡只讀 tableProbeLength 個。
+	TableValues []int
+}
+
+// tableProbeLength 是查表分派要讀幾個索引。表沒有宣告長度，讀太多會撈到相鄰
+// 資料——所以只讀到足以看出用法的長度，並在文件裡講明這是探測不是宣告。
+const tableProbeLength = 48
+
+// minTableRun 是「表的開頭要連續幾個值落在 `ON GOTO` 範圍內」才認定是查表分派。
+const minTableRun = 8
+
+// inRangeRun 回傳表的開頭有連續幾個值小於 size。
+func inRangeRun(data []byte, base, size int) int {
+	run := 0
+	for index := 0; index < tableProbeLength; index++ {
+		// ⚠ payload 與走訪位移差兩個位元組（區塊標頭）。
+		cell := base + index + 2
+		if cell < 0 || cell >= len(data) || int(data[cell]) >= size {
+			break
+		}
+		run++
+	}
+	return run
 }
 
 // maxTextLookahead 是「往下找幾條指令算第一句話」的上限。處理常式的開頭常常
@@ -80,9 +106,9 @@ func Analyze(data []byte) Dispatch {
 	}
 	sort.Ints(offsets)
 
-	dispatcher, mask, ok := findTerrainDispatcher(unique, offsets)
+	dispatcher, mask, ok := findTerrainDispatcher(data, unique, offsets)
 	if !ok {
-		return Dispatch{TableForm: hasTableDispatcher(unique, offsets)}
+		return analyzeTableForm(data, unique, offsets)
 	}
 	out := Dispatch{Found: true, Mask: mask}
 	out.GeoBlock, _ = firstGeometryBlock(unique, offsets)
@@ -97,10 +123,48 @@ func Analyze(data []byte) Dispatch {
 	return out
 }
 
-// findTerrainDispatcher 找「`AND C04F, <遮罩>` 之後緊接著的 `ON GOTO`」，
-// 並回傳那個遮罩。
-func findTerrainDispatcher(unique map[int]ecl.Instruction, offsets []int) (int, int, bool) {
-	for index, offset := range offsets {
+// findTerrainDispatcher 找「`AND C04F, <遮罩> → <格子>` 配上分派同一個格子的
+// `ON GOTO`」，並回傳那個遮罩。
+//
+// ⚠ 配對條件是**目的地運算元相同**，不是「緊接在後面」。提爾佛頓下水道
+// （`ECL2/0x03`）中間隔了 `DIVIDE` 與 `GETTABLE` 兩條，用「緊接兩條內」去找會
+// 整個 block 落空——而落空跟「這個 block 沒有每格事件」長得一模一樣。
+func findTerrainDispatcher(data []byte, unique map[int]ecl.Instruction, offsets []int) (int, int, bool) {
+	bestTarget, bestMask, bestSize := 0, 0, 0
+	for _, offset := range offsets {
+		if unique[offset].Command.Opcode != 0x25 {
+			continue
+		}
+		cell, ok := onGotoCell(data, offset)
+		if !ok {
+			continue
+		}
+		mask, ok := maskFeeding(unique, offsets, cell, offset)
+		if !ok {
+			continue
+		}
+		// ⚠ 一個 block 有好幾組 `AND C04F, <遮罩>` ＋ `ON GOTO`：`& 0x80` 那種是
+		// 「這一格特別嗎」的位元測試，只有兩三個目的地。**每格事件的分派器是把
+		// 地形碼逐個列出來的那一組**，所以取表最大的。
+		if size := onGotoSize(data, unique, offsets, offset); size > bestSize {
+			bestTarget, bestMask, bestSize = offset, mask, size
+		}
+	}
+	return bestTarget, bestMask, bestSize > 0
+}
+
+// maskFeeding 找「在 `before` 之前、離它最近、把地形碼遮罩後寫進 `cell`」的
+// `AND`，回傳那個遮罩。
+//
+// ⚠ 同一格會被好幾條 `AND C04F, <遮罩>` 寫過（`0x3F`、`0x7F`、`0x80` 都有），
+// 取最近的那一條才會拿到餵給這個 `ON GOTO` 的遮罩。
+func maskFeeding(unique map[int]ecl.Instruction, offsets []int,
+	cell uint16, before int) (int, bool) {
+	mask, found := 0, false
+	for _, offset := range offsets {
+		if offset >= before {
+			break
+		}
 		instruction := unique[offset]
 		if instruction.Command.Name != "AND" || len(instruction.Operands) < 3 {
 			continue
@@ -108,41 +172,138 @@ func findTerrainDispatcher(unique map[int]ecl.Instruction, offsets []int) (int, 
 		if !mentions(instruction, 0xC04F) {
 			continue
 		}
-		mask := -1
+		if !instruction.Operands[2].WordSet || instruction.Operands[2].Word != cell {
+			continue
+		}
+		candidate := -1
 		for _, operand := range instruction.Operands[:2] {
 			value := int(operand.Low)
 			if operand.WordSet {
 				value = int(operand.Word)
 			}
 			if value != 0xC04F {
-				mask = value
+				candidate = value
 			}
 		}
-		if mask <= 0 {
-			continue
-		}
-		for cursor := index + 1; cursor < len(offsets) && cursor <= index+2; cursor++ {
-			if unique[offsets[cursor]].Command.Opcode == 0x25 {
-				return offsets[cursor], mask, true
-			}
+		if candidate > 0 {
+			mask, found = candidate, true
 		}
 	}
-	return 0, 0, false
+	return mask, found
 }
 
-// hasTableDispatcher 判斷這個 block 是不是用 `GETTABLE` ＋ `ON GOTO` 分派。
-func hasTableDispatcher(unique map[int]ecl.Instruction, offsets []int) bool {
-	for index, offset := range offsets {
-		if unique[offset].Command.Name != "GETTABLE" {
-			continue
-		}
-		for cursor := index + 1; cursor < len(offsets) && cursor <= index+2; cursor++ {
-			if unique[offsets[cursor]].Command.Opcode == 0x25 {
-				return true
-			}
+// onGotoSize 回傳 `ON GOTO` 宣告的索引個數。
+func onGotoSize(data []byte, unique map[int]ecl.Instruction, offsets []int, offset int) int {
+	end := unique[offset].Next
+	for _, candidate := range offsets {
+		if candidate > offset {
+			end = candidate
+			break
 		}
 	}
-	return false
+	low, high := offset+2, end+2
+	if low < 0 || high > len(data) || high <= low {
+		return 0
+	}
+	raw := data[low:high]
+	cursor := 1
+	cursor += operandWidth(raw[cursor:])
+	if cursor+1 >= len(raw) {
+		return 0
+	}
+	return int(raw[cursor+1])
+}
+
+// analyzeTableForm 解讀第二種分派形狀：`GETTABLE <表>, <索引格> → <格子>` 配上
+// 分派同一格的 `ON GOTO`。索引不是地形碼，而是別的格子（世界地圖是路段編號
+// `4C9D`），中間多一層查表。
+func analyzeTableForm(data []byte, unique map[int]ecl.Instruction, offsets []int) Dispatch {
+	bestGet, bestTarget, bestRun := -1, 0, 0
+	for _, offset := range offsets {
+		instruction := unique[offset]
+		if instruction.Command.Name != "GETTABLE" || len(instruction.Operands) < 3 {
+			continue
+		}
+		if !instruction.Operands[2].WordSet {
+			continue
+		}
+		target, ok := findOnGoto(data, unique, offsets, instruction.Operands[2].Word)
+		if !ok || target <= offset {
+			continue
+		}
+		size := onGotoSize(data, unique, offsets, target)
+		if size == 0 {
+			continue
+		}
+		// ★ 判準是**查到的值要落在 `ON GOTO` 的範圍內**。同一個 block 有好幾組
+		// `GETTABLE` ＋ `ON GOTO`，只有真正餵給這個分派的那張表，每個索引查出來
+		// 的值才會是合法的處理常式編號。光比表的大小會挑到不相干的一對。
+		run := inRangeRun(data, int(instruction.Operands[0].Word)-ecl.CodeAddressBase, size)
+		if run > bestRun {
+			bestGet, bestTarget, bestRun = offset, target, run
+		}
+	}
+	// 連續合法值太少就不算查表分派——那多半只是剛好相鄰的兩條指令。
+	if bestRun < minTableRun {
+		return Dispatch{}
+	}
+	get := unique[bestGet]
+	out := Dispatch{TableForm: true, TableIndexCell: get.Operands[1].Word}
+	if !get.Operands[1].WordSet {
+		out.TableIndexCell = uint16(get.Operands[1].Low)
+	}
+	out.GeoBlock, _ = firstGeometryBlock(unique, offsets)
+	out.Targets = decodeTable(data, unique, offsets, bestTarget)
+	out.Texts, out.Guards = map[int]string{}, map[int]string{}
+	for index, target := range out.Targets {
+		out.Indexes = append(out.Indexes, index)
+		out.Texts[index] = firstTextAt(unique, offsets, target)
+		out.Guards[index] = guardAt(unique, offsets, target)
+	}
+	sort.Ints(out.Indexes)
+
+	// 查表本身在 block 自己的資料裡（`位址 − 0x8000`），一個索引一個位元組。
+	base := int(get.Operands[0].Word) - ecl.CodeAddressBase
+	for index := 0; index < tableProbeLength; index++ {
+		// ⚠ payload 與走訪位移差兩個位元組（區塊標頭）。
+		cell := base + index + 2
+		if cell < 0 || cell >= len(data) {
+			break
+		}
+		out.TableValues = append(out.TableValues, int(data[cell]))
+	}
+	return out
+}
+
+// findOnGoto 找分派 `cell` 的第一個 `ON GOTO`。
+//
+// ⚠ `ON GOTO` 是變長指令，`Command.Arity` 是 0，所以 `Instruction.Operands`
+// **是空的**——被分派的那一格只能從 payload 的原始位元組讀。
+func findOnGoto(data []byte, unique map[int]ecl.Instruction, offsets []int,
+	cell uint16) (int, bool) {
+	for _, offset := range offsets {
+		if unique[offset].Command.Opcode != 0x25 {
+			continue
+		}
+		if value, ok := onGotoCell(data, offset); ok && value == cell {
+			return offset, true
+		}
+	}
+	return 0, false
+}
+
+// onGotoCell 讀出 `ON GOTO` 分派的是哪一格。
+func onGotoCell(data []byte, offset int) (uint16, bool) {
+	// ⚠ 走訪用的位移與 payload 差兩個位元組（區塊標頭）。
+	base := offset + 2
+	if base < 0 || base+3 >= len(data) {
+		return 0, false
+	}
+	if data[base+1] == 0x00 {
+		// 立即數當分派來源沒有意義，當成讀不到。
+		return 0, false
+	}
+	return uint16(data[base+2]) | uint16(data[base+3])<<8, true
 }
 
 func mentions(instruction ecl.Instruction, value uint16) bool {

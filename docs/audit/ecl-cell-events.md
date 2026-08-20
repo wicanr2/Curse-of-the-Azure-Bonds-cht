@@ -13,11 +13,55 @@
 
 ## ECL1／`0x50`
 
-沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）
+查表分派：索引取自 `4C9D`，查 block 自己的表得到 `ON GOTO` 的索引。
+⚠ 索引**不是地形碼**，所以這裡沒有「哪一格」——那要看索引那一格是誰在寫。
+
+| 值 | 那一場的第一句 |
+|---:|---|
+| 0 | 「YOU REACH SHADOW GAP. ATOP IT, YOU NOTE A RECENTLY」 |
+| 1 | 「THE MOUNTAINS RISE INTO AN IMPASSABLE WALL,」 |
+| 2 | 「SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES.」 |
+| 3 | 「AS YOU TRAVEL SOUTH, YOU ARE PASSED BY THE」 |
+| 4 | 「AMIDST THE FIELDS OF DAGGERDALE, YOU FIND HUGE」 |
+| 5 | 「LIZARDMEN RUSH FROM A SWAMPY SECTION OF THE RIVERBANK.」 |
+| 6 | 「LIZARDMEN RUSH FROM A SWAMPY SECTION OF THE RIVERBANK.」 |
+| 7 | 「A YOUNG WOMAN WITH A PURPLE SASH RACES BY ON」 |
+| 8 | 「YOU ARE AMBUSHED BY FIRE KNIVES DISGUISED AS」 |
+| 9 | 「YOU ARE AMBUSHED BY FIRE KNIVES DISGUISED AS」 |
+| 10 | 「YOU ARE AMBUSHED BY FIRE KNIVES DISGUISED AS」 |
+| 11 | 「YOU ARE AMBUSHED BY FIRE KNIVES DISGUISED AS」 |
+| 12 | 「CENTAURS APPROACH AND OFFER YOU HOSPITALITY.」 |
+| 13 | — |
+
+查表內容（⚠ 表沒有宣告長度，這是探測前 48 個索引，超出表尾的部分是相鄰資料）：
+
+`0→0`、`1→1`、`2→0`、`3→13`、`4→0`、`5→6`、`6→4`、`7→2`、`8→1`、`9→6`、`10→11`、`11→13`、`12→4`、`13→5`、`14→13`、`15→13`、`16→11`、`17→12`、`18→11`、`19→7`、`20→3`、`21→9`、`22→9`、`23→13`、`24→8`、`25→8`、`26→13`、`27→13`、`28→13`、`29→9`、`30→9`、`31→7`、`32→2`、`33→12`、`34→13`、`35→13`、`36→2`、`37→13`、`38→13`、`39→13`、`40→9`、`41→9`、`42→9`、`43→10`、`44→10`、`45→11`、`46→8`、`47→13`
 
 ## ECL1／`0x51`
 
-沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）
+查表分派：索引取自 `4C9D`，查 block 自己的表得到 `ON GOTO` 的索引。
+⚠ 索引**不是地形碼**，所以這裡沒有「哪一格」——那要看索引那一格是誰在寫。
+
+| 值 | 那一場的第一句 |
+|---:|---|
+| 0 | 「HALFWAY TO VOONLAR, YOU SPOT THE VANGUARD」 |
+| 1 | 「HALFWAY TO VOONLAR, YOU SPOT THE VANGUARD」 |
+| 2 | 「HALFWAY TO VOONLAR, YOU SPOT THE VANGUARD」 |
+| 3 | 「TRAVELLING THROUGH THE WILDS, YOU COME UPON A」 |
+| 4 | 「TRAVELLING THROUGH THE WILDS, YOU COME UPON A」 |
+| 5 | 「TRAVELLING THROUGH THE WILDS, YOU COME UPON A」 |
+| 6 | 「AS YOUR BOAT TRAVELS」 |
+| 7 | 「AS YOUR BOAT TRAVELS」 |
+| 8 | — |
+| 9 | 「YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP.」 |
+| 10 | 「YOU ARE APPROACHED BY A RED PLUME PATROL.」 |
+| 11 | 「YOU ARE AMBUSHED BY FIRE KNIVES DISGUISED AS」 |
+| 12 | 「AND YOU RECORD IT IN JOURNAL ENTRY」 |
+| 13 | 「AND YOU RECORD IT IN JOURNAL ENTRY」 |
+
+查表內容（⚠ 表沒有宣告長度，這是探測前 48 個索引，超出表尾的部分是相鄰資料）：
+
+`0→0`、`1→1`、`2→0`、`3→13`、`4→0`、`5→6`、`6→4`、`7→2`、`8→1`、`9→6`、`10→11`、`11→13`、`12→4`、`13→5`、`14→13`、`15→13`、`16→11`、`17→12`、`18→11`、`19→13`、`20→3`、`21→9`、`22→9`、`23→13`、`24→8`、`25→8`、`26→13`、`27→13`、`28→5`、`29→9`、`30→9`、`31→7`、`32→13`、`33→12`、`34→13`、`35→13`、`36→13`、`37→13`、`38→13`、`39→13`、`40→9`、`41→9`、`42→9`、`43→10`、`44→10`、`45→11`、`46→8`、`47→13`
 
 ## ECL1／`0x52`
 
@@ -25,7 +69,33 @@
 
 ## ECL2／`0x01`
 
-沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）
+地圖：`GEO2/0x01`；索引 ＝ 地形碼 `& 0x7F`
+
+| 索引 | 遮罩後 | 格子 | 那一場的第一句 |
+|---:|---|---|---|
+| 0 | `00` | — | — |
+| 1 | `01` | `(3,3)`、`(9,3)` | 「TILVERTON GENERAL STORE」 |
+| 2 | `02` | `(1,3)`、`(2,3)`、`(13,5)`、`(14,5)`、`(13,6)`、`(14,6)` | 「'GOOD DAY TO YOU, GENTLE PERSONS. DO YOU WISH」 |
+| 3 | `03` | `(3,12)`、`(10,15)` | 「WEAPONERS OF CORMYR」 |
+| 4 | `04` | `(12,7)`、`(0,12)`、`(2,12)` | 「'WE HAVE A SELECTION OF THE FINEST CORMYR STEEL.」 |
+| 5 | `05` | `(15,7)`、`(6,12)` | 「WINDLORD'S INN」 |
+| 6 | `06` | `(11,2)`、`(11,3)`、`(6,13)` | 「'WELCOME TO THE FAIR CITY OF TILVERTON,' BEAMS THE」 |
+| 7 | `07` | `(11,7)`、`(5,10)` | 「THE CURSE」 |
+| 8 | `08` | `(6,10)` | 「YOU NOTE THE BARTENDER HAS A BLACK EYE AND HIS ARM IN A」 |
+| 9 | `09` | `(5,5)` | 「THE SAGE FILANI」 |
+| 10 | `0A` | `(6,5)` | 「'I AM THE SAGE FILANI. YOU ARE HERE ABOUT THE SIGILS,」 |
+| 11 | `0B` | `(5,3)` | 「THE HALL OF TRAINING」 |
+| 12 | `0C` | `(5,2)` | 「'DO YOU WANT TO TRAIN?'」 |
+| 13 | `0D` | `(4,7)` | 「TEMPLE OF GOND」 |
+| 14 | `0E` | `(3,7)` | 「AN ACCOLYTE GREETS YOU. 'IF YOU WANT HEALING, PRAY AT」 |
+| 15 | `0F` | `(1,10)` | 「'I AM THE HIGH PRIEST. YOU LOOK TROUBLED, MY CHILDREN.」 |
+| 16 | `10` | `(7,3)`、`(1,4)`、`(7,7)`、`(1,11)`、`(7,12)` | 「A THIEF APPEARS AND OFFERS TO LEAD YOU TO SAFETY. DO YOU」 |
+| 17 | `11` | `(1,0)`、`(1,1)`、`(1,14)`、`(1,15)` | 「YOU ENCOUNTER A GROUP OF ROYAL GUARDS.」 |
+| 18 | `12` | `(0,7)` | 「AS YOU WANDER THE TEMPLE, PEOPLE BEGIN TO STREAM」 |
+| 19 | `13` | `(6,3)`、`(2,4)`、`(6,7)`、`(2,11)` | 「'PSST.  COMMERE.' COMES A WHISPER FROM DOWN THE ALLEY.」 |
+| 20 | `14` | `(7,14)` | 「ON THE BED IN THIS ROOM IS A DISHEVELED MAN,」 |
+| 21 | `15` | `(1,6)`、`(2,6)`、`(1,8)`、`(2,8)` | 「AS YOU WANDER THE TEMPLE, PEOPLE BEGIN TO STREAM」 |
+| 22 | `16` | `(7,11)` | 「'SORRY, BUT THIS IS THE SIDE DOOR. ENTER THROUGH」 |
 
 ## ECL2／`0x02`
 
@@ -44,7 +114,30 @@
 
 ## ECL2／`0x03`
 
-沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）
+地圖：`GEO2/0x03`；索引 ＝ 地形碼 `& 0x3F`
+
+| 索引 | 遮罩後 | 格子 | 那一場的第一句 |
+|---:|---|---|---|
+| 0 | `00` | — | — |
+| 1 | `01` | `(1,8)` | 「YOU ARE AT A CHECKPOINT.」 |
+| 2 | `02` | `(5,5)` | 「YOU ARE AT A CHECKPOINT.」 |
+| 3 | `03` | `(13,10)` | 「HERE LIES THE SLAUGHTERED REMAINS OF A FIRE KNIFE」 |
+| 4 | `04` | `(1,14)`、`(2,14)` | 「A TERRIBLE STENCH ASSAULTS YOUR SENSES AS YOU ENTER」 |
+| 5 | `05` | `(8,10)`、`(9,10)`、`(7,11)`、`(8,11)`、`(9,11)` | 「PILES OF EXCREMENT HAVE BEEN SHAPED INTO PYRAMIDS HERE.」 |
+| 6 | `06` | `(8,14)`、`(9,14)`、`(8,15)`、`(9,15)` | 「THE ROOM IS FILLED WITH FILTH, THOUGH MOST OF」 |
+| 7 | `07` | `(11,2)`、`(12,2)`、`(11,3)`、`(12,3)` | 「THE ROOM IS SWAMPY, AND YOU SINK DOWN TO YOUR」 |
+| 8 | `08` | `(13,2)`、`(14,2)`、`(15,2)`、`(13,3)`、`(14,3)`、`(15,3)`、`(14,4)`、`(15,4)` | 「AS YOU OPEN THE DOOR, HANDS REACH DOWN FROM ABOVE.」 |
+| 9 | `09` | `(13,6)` | — |
+| 10 | `0A` | `(15,15)` | — |
+| 11 | `0B` | `(5,7)`、`(1,9)` | — |
+| 12 | `0C` | `(11,10)` | — |
+| 13 | `0D` | `(5,3)`、`(1,6)`、`(13,8)` | — |
+| 14 | `0E` | `(14,6)`、`(15,6)`、`(13,7)`、`(14,7)`、`(15,7)`、`(14,8)`、`(15,8)`、`(15,9)`、`(15,10)`、`(15,11)`、`(14,12)`、`(15,12)`、`(14,13)`、`(15,13)`、`(14,14)`、`(15,14)`、`(14,15)` | 「YOU ENTER THE HIDDEN CHAMBERS.」 |
+| 15 | `0F` | `(2,15)` | 「YOU SEE A SCRAP OF PURPLE CLOTH CLINGING TO THE BOTTOM」 |
+| 16 | `10` | `(10,3)` | 「BURNT INTO THE WALL HERE IS THE SYMBOL OF A HAND WITH」 |
+| 17 | `11` | `(9,9)`、`(7,10)` | 「PILES OF EXCREMENT HAVE BEEN SHAPED INTO PYRAMIDS HERE.」 |
+| 18 | `12` | `(3,9)` | 「YOU SPOT SOMETHING FLAPPING ON THE CEILING. TO」 |
+| 19 | `13` | `(13,5)` | 「YOU HEAR A SOUND, SUDDENLY CUT OFF, TO THE SOUTH」 |
 
 ## ECL2／`0x04`
 
@@ -99,20 +192,59 @@
 
 ## ECL3／`0x11`
 
-沒有以地形碼分派的每格事件
-
-## ECL3／`0x12`
-
-沒有以地形碼分派的每格事件
-
-## ECL3／`0x15`
-
-地圖：`GEO3/0x15`；索引 ＝ 地形碼 `& 0x3F`
+地圖：`GEO3/0x11`；索引 ＝ 地形碼 `& 0x3F`
 
 | 索引 | 遮罩後 | 格子 | 那一場的第一句 |
 |---:|---|---|---|
 | 0 | `00` | — | — |
-| 1 | `01` | `(0,2)` | — |
+| 1 | `01` | `(3,0)`、`(15,14)` | 「THE BODY OF A DEAD CULTIST LIES IN A」 |
+| 2 | `02` | `(3,5)`、`(14,14)` | 「A BLEEDING CLERIC CRAWLS OUT OF THE DOOR」 |
+| 3 | `03` | `(2,2)`、`(8,11)`、`(8,12)`、`(9,12)` | 「GREEN ICHOR COVERS THE FLOOR AND WALLS.」 |
+| 4 | `04` | `(2,4)`、`(14,8)`、`(13,9)`、`(14,9)` | 「A PILE OF DEAD CLERICS, SHAMBLING MOUNDS AND」 |
+| 5 | `05` | `(1,4)`、`(11,13)`、`(9,15)`、`(11,15)` | 「YOU SEE A FEMALE FIGHTER AND A STRANGE-LOOKING」 |
+| 6 | `06` | `(15,11)`、`(15,12)`、`(7,14)` | 「YOU SEE STAIRS LEADING DOWN TO THE SOUTH.」 |
+| 7 | `07` | `(6,4)`、`(5,5)`、`(6,5)`、`(11,8)`、`(10,9)`、`(11,9)` | — |
+| 8 | `08` | `(2,6)`、`(3,7)`、`(11,11)` | — |
+| 9 | `09` | `(10,6)`、`(11,6)`、`(3,9)`、`(2,10)` | — |
+| 10 | `0A` | `(9,1)`、`(14,1)`、`(9,3)`、`(14,3)`、`(9,4)`、`(14,4)`、`(5,10)`、`(4,11)`、`(5,11)`、`(6,11)` | — |
+| 11 | `0B` | `(12,6)`、`(6,8)` | — |
+| 12 | `0C` | `(6,1)`、`(7,1)`、`(11,3)`、`(12,3)` | — |
+| 13 | `0D` | `(0,13)`、`(2,13)`、`(2,14)`、`(12,15)` | — |
+| 14 | `0E` | `(12,10)`、`(6,14)` | 「GIANT SLUGS ARE CROSSING YOUR PATH.」 |
+| 15 | `0F` | `(12,4)`、`(0,12)` | 「YOU ARE ATTACKED BY A LARGE FORCE OF」 |
+| 16 | `10` | `(12,0)`、`(4,9)` | — |
+| 17 | `11` | `(4,5)`、`(14,15)` | — |
+| 18 | `12` | `(7,4)` | — |
+| 19 | `13` | `(7,11)` | — |
+
+## ECL3／`0x12`
+
+地圖：`GEO3/0x00`；索引 ＝ 地形碼 `& 0x3F`
+
+| 索引 | 遮罩後 | 格子 | 那一場的第一句 |
+|---:|---|---|---|
+| 0 | `00` | — | — |
+| 1 | `01` | — | 「YOU SEE STAIRS GOING UP IN THE NORTH WALL.」 |
+| 2 | `02` | — | — |
+| 3 | `03` | — | — |
+| 4 | `04` | — | — |
+| 5 | `05` | — | — |
+| 6 | `06` | — | — |
+| 7 | `07` | — | — |
+| 8 | `08` | — | 「SHAMBLING MOUNDS AND SLUGS ATTACK!」 |
+| 9 | `09` | — | 「GIANT SLUGS APPEAR.」 |
+| 10 | `0A` | — | 「YOU ARE ATTACKED BY CULTISTS OF MOANDER.」 |
+| 11 | `0B` | — | — |
+| 12 | `0C` | — | — |
+| 13 | `0D` | — | — |
+| 14 | `0E` | — | — |
+| 15 | `0F` | — | — |
+| 16 | `10` | — | 「YOU HAVE FOUND A CACHE OF JEWELS AND GEMS!」 |
+| 17 | `11` | — | 「YOU SEE THE MANGLED REMAINS OF A DEAD ZHENTRIM」 |
+
+## ECL3／`0x15`
+
+沒有以地形碼分派的每格事件
 
 ## ECL4／`0x20`
 
@@ -209,7 +341,20 @@
 
 ## ECL4／`0x23`
 
-沒有以地形碼分派的每格事件
+查表分派：索引取自 `7F7C`，查 block 自己的表得到 `ON GOTO` 的索引。
+⚠ 索引**不是地形碼**，所以這裡沒有「哪一格」——那要看索引那一格是誰在寫。
+
+| 值 | 那一場的第一句 |
+|---:|---|
+| 0 | 「WOULD YOU LIKE TO GAMBLE ON THE ARENA COMBATS?」 |
+| 1 | 「WOULD YOU LIKE TO GAMBLE ON THE ARENA COMBATS?」 |
+| 2 | 「WOULD YOU LIKE TO GAMBLE ON THE ARENA COMBATS?」 |
+| 3 | 「THE PROPRIETOR CHUCKLES AND CRYS IN A LOUD VOICE,」 |
+| 4 | 「WOULD YOU LIKE TO GAMBLE ON THE ARENA COMBATS?」 |
+
+查表內容（⚠ 表沒有宣告長度，這是探測前 42 個索引，超出表尾的部分是相鄰資料）：
+
+`0→0`、`1→1`、`2→1`、`3→1`、`4→1`、`5→2`、`6→0`、`7→3`、`8→3`、`9→3`、`10→3`、`11→2`、`12→2`、`13→37`、`14→35`、`15→9`、`16→38`、`17→32`、`18→37`、`19→35`、`20→9`、`21→38`、`22→32`、`23→12`、`24→13`、`25→15`、`26→13`、`27→19`、`28→0`、`29→22`、`30→53`、`31→42`、`32→38`、`33→50`、`34→39`、`35→10`、`36→57`、`37→51`、`38→18`、`39→16`、`40→29`、`41→0`
 
 ## ECL4／`0x25`
 
@@ -310,17 +455,24 @@
 
 ## ECL5／`0x33`
 
-沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）
-
-## ECL5／`0x35`
-
-地圖：`GEO5/0x35`；索引 ＝ 地形碼 `& 0x3F`
+地圖：`GEO5/0x33`；索引 ＝ 地形碼 `& 0x7F`
 
 | 索引 | 遮罩後 | 格子 | 那一場的第一句 |
 |---:|---|---|---|
 | 0 | `00` | — | — |
-| 1 | `01` | `(0,2)` | — |
-| 2 | `02` | `(0,13)` | — |
+| 1 | `01` | `(7,15)` | — |
+| 2 | `02` | `(3,1)` | 「GUARDING THE STAIRS IS A BURLY DARK」 |
+| 3 | `03` | `(8,0)` | — |
+| 4 | `04` | `(5,4)` | 「AT THE BASE OF THIS SET OF STAIRS IS A DARK ELF」 |
+| 5 | `05` | `(9,5)` | — |
+| 6 | `06` | `(14,1)` | 「ON THE FLOOR IS A FOLDED PIECE OF PAPER WITH THE」 |
+| 7 | `07` | `(14,6)` | — |
+| 8 | `08` | `(9,12)` | 「THE BOTTOM SET OF STAIRS GOES FLAT, PROPELLING」 |
+| 9 | `09` | `(0,12)` | — |
+
+## ECL5／`0x35`
+
+沒有以地形碼分派的每格事件
 
 ## ECL6／`0x40`
 
@@ -409,10 +561,5 @@
 
 ## ECL6／`0x45`
 
-地圖：`GEO6/0x45`；索引 ＝ 地形碼 `& 0x3F`
-
-| 索引 | 遮罩後 | 格子 | 那一場的第一句 |
-|---:|---|---|---|
-| 0 | `00` | — | — |
-| 1 | `01` | `(0,0)` | — |
+沒有以地形碼分派的每格事件
 

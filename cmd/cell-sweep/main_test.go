@@ -31,17 +31,16 @@ func TestCellSweepHasNoUntranslatedOrUnexplainedCells(t *testing.T) {
 	}
 	counts := summarise(sweeps)
 
-	// ⚠ 13 而不是 14：`ECL4/0x25` 有分派表，但從註冊表宣告的入口進去是魔法商店，
-	// 到不了它那張地圖（GEO4/0x25 的莊園）。remake 的眼魔洞穴走的是 game pack
-	// 事件重建，不是這個 block 的每格分派。
-	if counts["block"] != 13 {
-		t.Errorf("掃到 %d 個 block，宣告的是 13 個", counts["block"])
+	// ⚠ 14 而不是 16：`ECL4/0x25`（莊園）與 `ECL5/0x33`（法師塔）有分派表，但從
+	// 註冊表宣告的入口進去分別是魔法商店與塔前庭院，到不了它們那張地圖。
+	if counts["block"] != 14 {
+		t.Errorf("掃到 %d 個 block，宣告的是 14 個", counts["block"])
 	}
 	if counts["原文"] != 0 {
 		t.Errorf("有 %d 格演出來是原文", counts["原文"])
 	}
-	if counts["中文"] < 185 {
-		t.Errorf("演出中文的格子剩 %d 個，宣告的下限是 185", counts["中文"])
+	if counts["中文"] < 235 {
+		t.Errorf("演出中文的格子剩 %d 個，宣告的下限是 235", counts["中文"])
 	}
 	for _, sweep := range sweeps {
 		for _, cell := range sweep.cells {
