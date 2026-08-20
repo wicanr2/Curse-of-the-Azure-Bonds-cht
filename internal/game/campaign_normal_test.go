@@ -2041,6 +2041,52 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		t.FailNow()
 	}
 
+	if !t.Run("ECL6/0x43 內城遺跡：一樓房間", func(t *testing.T) {
+		innerGrid := loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x43)
+		observer.stopAtMessageID = ""
+		// ★ 每格事件由地形碼分派（`ON GOTO (C04F & 0x7F)`），所以房間的位置是
+		// 從 GEO 的地形碼反推的，不是走到哪算哪。
+		rooms := []struct {
+			x, y       int
+			messageID  string
+			suppressed bool
+		}{
+			{8, 13, "myth-drannor.inner.chapel", false},
+			{9, 12, "myth-drannor.inner.bedroom", false},
+			{11, 12, "myth-drannor.inner.office", false},
+			{13, 14, "myth-drannor.inner.kitchen", true},
+			{15, 15, "myth-drannor.inner.sewer-collapsed", false},
+			{14, 11, "myth-drannor.inner.tiered-beds", true},
+			{14, 8, "myth-drannor.inner.worshipping-priests", true},
+			{4, 9, "myth-drannor.inner.statuary", false},
+			{1, 9, "myth-drannor.inner.kennel", false},
+		}
+		for _, room := range rooms {
+			walkNormalDungeonTo(t, state, &innerGrid, room.x, room.y, observer)
+			resolveInnerRoom(t, state, observer)
+			fired := observer.messages[requireGamePackText(t, state, room.messageID)]
+			switch {
+			case fired && room.suppressed:
+				t.Errorf("(%d,%d) 的 %s 現在出得來了，請把 suppressed 拿掉",
+					room.x, room.y, room.messageID)
+			case !fired && !room.suppressed:
+				t.Errorf("走到 (%d,%d) 沒有出現 %s（停在 (%d,%d,%d) roof=%#02x）",
+					room.x, room.y, room.messageID, state.DungeonX, state.DungeonY,
+					state.DungeonDirection, state.DungeonWallRoof)
+			}
+		}
+		// ⚠ 被壓掉的三間房是同一個原因：它們的守衛是
+		// `COMPARE AND 4C06,0 4C07,0`，而這條 session 走到這裡時
+		// `4C06=0x0A`、`4C07=0x80`——那是**前面幾張地圖**留下的值。
+		// 原作的 `4C00` 一段是 map-local bank，remake 目前是一份全域的。
+		if value, _ := state.session.MemoryValue(0x4C07); value == 0 {
+			t.Error("4C07 已經是 0 了，被壓掉的房間清單該重驗")
+		}
+		captureSegmentEnd(t, "ECL6/0x43 內城遺跡：一樓房間")
+	}) {
+		t.FailNow()
+	}
+
 	if !t.Run("ECL6/0x43 內城遺跡：二樓與最終戰", func(t *testing.T) {
 		innerGrid := loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x43)
 		observer.stopAtMessageID = ""
@@ -2237,8 +2283,8 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 	})
 
 	t.Run("段界快照往返", func(t *testing.T) {
-		if len(segmentEnds) != 22 {
-			t.Fatalf("存到 %d 份段界快照，應該是 22 份", len(segmentEnds))
+		if len(segmentEnds) != 23 {
+			t.Fatalf("存到 %d 份段界快照，應該是 23 份", len(segmentEnds))
 		}
 		blocks := map[uint8][]byte{}
 		for member := 1; member <= 6; member++ {
@@ -2313,4 +2359,26 @@ func campaignMessageHasLatinWord(message string) bool {
 		run = 0
 	}
 	return false
+}
+
+// resolveInnerRoom 把房間事件推到底：事件按繼續、選單選第一項、遇上就打。
+func resolveInnerRoom(t *testing.T, state *State, observer *normalCampaignObserver) {
+	t.Helper()
+	for step := 0; step < 16 && state.Mode != ModeDungeon; step++ {
+		if state.CombatActive() {
+			for turn := 0; turn < 400 && state.CombatActive(); turn++ {
+				if err := state.CombatAct(); err != nil {
+					t.Fatalf("房間戰鬥第 %d 回合：%v", turn, err)
+				}
+			}
+			observer.observe()
+			continue
+		}
+		if err := state.Continue(); err != nil {
+			if selectErr := state.Select(0); selectErr != nil {
+				t.Fatalf("房間事件推不動：continue=%v select=%v", err, selectErr)
+			}
+		}
+		observer.observe()
+	}
 }
