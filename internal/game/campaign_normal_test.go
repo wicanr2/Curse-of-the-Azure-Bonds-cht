@@ -10,6 +10,7 @@ import (
 	"testing"
 	"unicode"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
@@ -874,10 +875,21 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		if err := state.SavePartyFile(path); err != nil {
 			t.Fatalf("段界快照存不下去：%v", err)
 		}
+		roster := make([]string, 0, len(state.partyRoster))
+		experience := make(map[string]uint32, len(state.partyRoster))
+		for _, character := range state.partyRoster {
+			label := character.ScriptName
+			if label == "" {
+				label = character.Name
+			}
+			roster = append(roster, label)
+			experience[label] = character.Experience
+		}
 		segmentEnds = append(segmentEnds, campaignSegmentEnd{
 			name: name, path: path, block: state.session.CurrentBlockID(),
 			mode: state.Mode, area: state.Area.GameArea, inDungeon: state.Area.InDungeon,
-			party: len(state.PartyFighters()),
+			party: len(state.PartyFighters()), roster: roster, experience: experience,
+			music: state.activeMusicTrackID,
 		})
 	}
 	if !t.Run("ECL5/0x31 哈普村", func(t *testing.T) {
@@ -2172,6 +2184,58 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		t.Logf("整條主線記到 %d 句話，落回原文 %d 句", len(observer.messages), len(fallbacks))
 	})
 
+	// SEG-31 的隊伍連續性：**同一個角色**的經驗值不會倒退，隊伍成員只在劇情
+	// 安排的地方變動。NPC 同伴會依劇情加入與離開，所以比的是逐個角色，不是總和。
+	t.Run("隊伍連續性", func(t *testing.T) {
+		changes := []string{}
+		previous := campaignSegmentEnd{}
+		for index, end := range segmentEnds {
+			if len(end.roster) == 0 {
+				t.Errorf("%s 的隊伍是空的", end.name)
+			}
+			if index > 0 {
+				for name, value := range end.experience {
+					if before, ok := previous.experience[name]; ok && value < before {
+						t.Errorf("%s 在 %s 的經驗值從 %d 掉到 %d",
+							name, end.name, before, value)
+					}
+				}
+				if strings.Join(end.roster, "／") != strings.Join(previous.roster, "／") {
+					changes = append(changes,
+						end.name+"：["+strings.Join(end.roster, "／")+"]")
+				}
+			}
+			previous = end
+		}
+		// 隊伍變動的位置是宣告好的：多一處或少一處都代表同伴的加入／離開被改了。
+		want := []string{
+			"ECL1/0x50 世界路線：艾森布拉到希爾斯法：[戰士]",
+			"ECL3/0x11 猶拉什：地下第一層：[戰士／ALIAS／DRAGONBAIT]",
+			"ECL3/0x11 返回與猶拉什邊界：[戰士]",
+		}
+		if strings.Join(changes, "｜") != strings.Join(want, "｜") {
+			t.Errorf("隊伍變動的位置是 %v，宣告的是 %v", changes, want)
+		}
+	})
+
+	// SEG-33 的音樂綁定：每一段結束時都該有一首正在播的曲子，而且曲名要在
+	// game pack 的曲目表裡。
+	t.Run("音樂綁定", func(t *testing.T) {
+		pack, err := gamepack.Default()
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, end := range segmentEnds {
+			if end.music == "" {
+				t.Errorf("%s 結束時沒有正在播的曲子", end.name)
+				continue
+			}
+			if _, found := pack.FindMusicTrack(end.music); !found {
+				t.Errorf("%s 的曲目 %q 不在 game pack 的曲目表裡", end.name, end.music)
+			}
+		}
+	})
+
 	t.Run("段界快照往返", func(t *testing.T) {
 		if len(segmentEnds) != 22 {
 			t.Fatalf("存到 %d 份段界快照，應該是 22 份", len(segmentEnds))
@@ -2212,13 +2276,16 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 
 // campaignSegmentEnd 是一段走完時的邊界狀態，用來驗那份快照讀得回來。
 type campaignSegmentEnd struct {
-	name      string
-	path      string
-	block     uint8
-	mode      Mode
-	area      uint8
-	inDungeon bool
-	party     int
+	name       string
+	path       string
+	block      uint8
+	mode       Mode
+	area       uint8
+	inDungeon  bool
+	party      int
+	roster     []string
+	experience map[string]uint32
+	music      string
 }
 
 // campaignMessageHasHan 判斷一句話裡有沒有漢字。
