@@ -31,22 +31,22 @@ type Record struct {
 	AlignmentKnown bool
 	// RawMonsterType is CHARREC.MONSTERTYPE at +14C; its gameplay meaning is
 	// intentionally not inferred by this record decoder.
-	RawMonsterType  uint8
-	Dexterity       uint8
-	BaseArmorClass  int
-	ArmorClass      int
+	RawMonsterType uint8
+	Dexterity      uint8
+	BaseArmorClass int
+	ArmorClass     int
 	// ArmorClassFacing 是角色記錄的第二個護甲欄位 `+19Bh`：派生數值重算
 	// （`overlay-24:0C28h`，spec 1000）算的是
 	// `+19Bh := +19Ah − 敏捷防禦調整 − 盾牌那一槽 − 2`，攻擊結算
 	// （`overlay-13:14E8h`）在背後攻擊成立時改用它。
 	//
-	// ⚠ 兩個欄位的**絕對值**刻度與 `Fighter.ArmorClass` 不同（見
-	// `CombatArmorClass`），所以投影時搬的是**差值**，不是 `+19Bh` 本身。
+	// ⚠ 這裡存的是**原始儲存值**；投影到 `Fighter` 時與第一格走同一條換算
+	// （見 `CombatArmorClassFacing`）。
 	ArmorClassFacing int
-	AttackBonus     int
-	DamageDiceCount int
-	DamageDiceSides int
-	DamageBonus     int
+	AttackBonus      int
+	DamageDiceCount  int
+	DamageDiceSides  int
+	DamageBonus      int
 	// Raw1A5 preserves an unresolved byte without assigning the disproven
 	// initiative-bonus name. Initiative is derived from Dexterity +17.
 	Raw1A5           uint8
@@ -69,6 +69,25 @@ type Record struct {
 func CombatArmorClass(raw int) int {
 	if raw >= 50 && raw <= 70 {
 		return 60 - raw
+	}
+	return raw
+}
+
+// CombatArmorClassFacing 把第二個護甲欄位換到與 `CombatArmorClass` 相同的刻度。
+// 換不換由**第一格**決定：第二格比第一格小 2..8，自己判會掉出視窗。
+func (r Record) CombatArmorClassFacing() int {
+	if CombatArmorClass(r.ArmorClass) == r.ArmorClass {
+		return r.ArmorClassFacing
+	}
+	return 60 - r.ArmorClassFacing
+}
+
+// CombatAttackBonus 是命中能力那一側的同一件事：原作 `+199h` 存的是
+// `60 − THAC0`，remake 的 `AttackBonus` 用的是 `20 − THAC0`，兩者差 40。
+// 真實記錄落在 40..53，合成／已解碼的小數值原樣保留。
+func CombatAttackBonus(raw int) int {
+	if raw >= 30 && raw <= 70 {
+		return raw - 40
 	}
 	return raw
 }
@@ -111,11 +130,11 @@ func Parse(data []byte) (Record, error) {
 	var spellUses [3]uint8
 	copy(spellUses[:], data[0xB5:0xB8])
 	return Record{
-		Raw:            append([]byte(nil), data[:RecordSize]...),
-		Name:           name,
-		THAC0:          int(int8(data[0x73])),
-		MaxHitPoints:   maxHP,
-		HitPoints:      currentHP,
+		Raw:              append([]byte(nil), data[:RecordSize]...),
+		Name:             name,
+		THAC0:            int(int8(data[0x73])),
+		MaxHitPoints:     maxHP,
+		HitPoints:        currentHP,
 		BaseArmorClass:   int(data[0x124]),
 		ArmorClass:       int(data[0x19A]),
 		ArmorClassFacing: int(data[0x19B]),
@@ -158,14 +177,15 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		RawMonsterType: r.RawMonsterType,
 		Dexterity:      r.Dexterity,
 		CombatTeam:     r.CombatTeam,
-		ArmorClass:     CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
-		// 背後攻擊用的第二個 AC。原作 `+19Ah` 與 `+19Bh` 同域，差值就是
-		// 「不算敏捷、不算盾牌，再 −2」那筆減免（spec 1000 §七）。
-		// `ResolveAttack` 的判定是 `attackTotal >= AC`——數字小才好打——
-		// 所以背後那一格是**減掉**差值，不是直接搬 `+19Bh` 的絕對值。
-		ArmorClassFacing:      CombatArmorClass(r.ArmorClass) - (r.ArmorClass - r.ArmorClassFacing),
+		ArmorClass:     CombatArmorClass(r.ArmorClass), AttackBonus: CombatAttackBonus(r.AttackBonus),
+		// 背後攻擊用的第二個 AC（`+19Bh`，spec 1000 §七）。儲存值比 `+19Ah` 小，
+		// 換成畫面刻度就比正面那一格大——也就是比較好打。
+		//
+		// ⚠ 兩格要走**同一個**判斷：第二格系統性地小 2..8，可以掉出
+		// `CombatArmorClass` 的視窗，各判各的會讓一格換算、一格沒換。
+		ArmorClassFacing:      r.CombatArmorClassFacing(),
 		ArmorClassFacingKnown: r.ArmorClass != 0 && r.ArmorClassFacing != 0,
-		DamageDiceCount: r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
+		DamageDiceCount:       r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
 		DamageBonus:    r.DamageBonus,
 		AttacksPerTurn: r.AttacksPerTurn,
 		CombatSize:     r.CombatSize,

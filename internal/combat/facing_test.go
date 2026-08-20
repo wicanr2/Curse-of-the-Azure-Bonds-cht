@@ -163,9 +163,9 @@ func TestSecondArmorClassIsIgnoredUntilItIsDecoded(t *testing.T) {
 		battle := facingBattle(t)
 		defender, _ := battle.Fighter("orc")
 		defender.CombatFacing, defender.CombatActionCount, defender.CombatTurnTotal = 6, 2, 5
-		// 30 是**探針值**，不是原作會算出來的第二個 AC（那一定比正面那格小）。
+		// −30 是**探針值**，不是原作會算出來的第二個 AC（那一定比正面那格大）。
 		// 這裡要量的是「這一格到底有沒有被讀」，所以刻意挑一個好分辨的值。
-		defender.ArmorClassFacing, defender.ArmorClassFacingKnown = 30, known
+		defender.ArmorClassFacing, defender.ArmorClassFacingKnown = -30, known
 		battle.fighters["orc"] = defender
 		hits := 0
 		for i := 0; i < 200; i++ {
@@ -183,7 +183,7 @@ func TestSecondArmorClassIsIgnoredUntilItIsDecoded(t *testing.T) {
 		return hits
 	}
 	ignored, used := count(false), count(true)
-	// ⚠ 自然 20 一律命中，與 AC 無關（`critical` 那一路），所以「用了 AC 30」
+	// ⚠ 自然 20 一律命中，與 AC 無關（`critical` 那一路），所以「用了 AC −30」
 	// 不會是零命中，而是掉到只剩重擊。
 	if used >= ignored {
 		t.Fatalf("標成已知時應該明顯難打中：命中 %d 次 vs 不用第二個 AC 的 %d 次", used, ignored)
@@ -192,7 +192,7 @@ func TestSecondArmorClassIsIgnoredUntilItIsDecoded(t *testing.T) {
 		t.Fatal("不用第二個 AC 時一次都沒命中，這組樣本測不出差別")
 	}
 	if used > ignored/4 {
-		t.Fatalf("AC 30 應該只剩重擊打得中，實際命中 %d 次（對照 %d 次）", used, ignored)
+		t.Fatalf("AC −30 應該只剩重擊打得中，實際命中 %d 次（對照 %d 次）", used, ignored)
 	}
 }
 
@@ -255,20 +255,19 @@ func TestRoundStartClearsCountersButKeepsFacing(t *testing.T) {
 	}
 }
 
-// 原作的第二個 AC 一定比第一個小（`+19Bh ＝ +19Ah − 敏捷 − 盾牌 − 2`，
-// spec 1000 §七），而命中判定是 `attackTotal >= AC`——**數字小才好打**。
-// 所以背後攻擊必須比正面攻擊容易命中。
+// 原作的第二個 AC 儲存值一定比第一個小（`+19Bh ＝ +19Ah − 敏捷 − 盾牌 − 2`，
+// spec 1000 §七），換成畫面刻度就是**比較大**，而命中判定是
+// `d20 ＋ 命中加值 ＋ AC >= 20`——數字大才好打。所以背後攻擊必須比正面容易命中。
 //
-// ⚠ 這條擋的是符號錯誤：`monster.CombatArmorClass` 會把儲存值反轉，
-// 直接搬 `+19Bh` 的絕對值會讓背後攻擊變成更難打，而那個錯誤在單看數字時
-// 完全看不出來——兩邊都是「有換到第二個 AC」。
+// ⚠ 這條擋的是符號錯誤：兩種寫法在「有沒有換到第二個 AC」上看起來一樣，
+// 只有命中率會相反。
 func TestRearAttackIsEasierThanFacingTheAttacker(t *testing.T) {
 	count := func(rearPenalty int) int {
 		battle := facingBattle(t)
 		defender, _ := battle.Fighter("orc")
 		defender.CombatFacing, defender.CombatActionCount, defender.CombatTurnTotal = 6, 2, 5
-		defender.ArmorClass = 15
-		defender.ArmorClassFacing = defender.ArmorClass - rearPenalty
+		defender.ArmorClass = -5
+		defender.ArmorClassFacing = defender.ArmorClass + rearPenalty
 		defender.ArmorClassFacingKnown = rearPenalty > 0
 		battle.fighters["orc"] = defender
 		hits := 0

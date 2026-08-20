@@ -311,3 +311,33 @@ func (b *Battle) opportunityAttackFacingAllows(attackerID, moverID string) (bool
 	}
 	return false, nil
 }
+
+// 原作把護甲值存成 `60 − 畫面上的 AC`（spec 767 的顯示式），命中判定是
+//
+//	d20 ＋ 攻擊者^[199h] ＋ v >= 目標的儲存 AC        （`overlay-23:123Fh`）
+//
+// 兩邊同時換回畫面刻度（`儲存值 ＝ 60 − 畫面值`、`+199h ＝ 60 − THAC0`）之後
+// 就是 AD&D 1e 的標準式：
+//
+//	d20 ＋ 命中加值 ＋ 目標 AC >= 20
+//
+// remake 的 `Fighter.ArmorClass`／`AttackBonus` 用的是**畫面刻度**
+// （AC 越小越難打、命中加值越大越好），所以判定用後面那一式。
+const (
+	armorClassStoredBase = 60
+	armorClassHitTarget  = 20
+)
+
+// StoredArmorClass 把畫面刻度的 AC 換成原作記錄裡的儲存值。原作衍生的算式
+// （`CanHitTarget`、隊伍戰力）吃的是儲存值，跨這條邊界時要換。
+func StoredArmorClass(display int) int { return armorClassStoredBase - display }
+
+// DisplayArmorClass 是 StoredArmorClass 的反向。
+func DisplayArmorClass(stored int) int { return armorClassStoredBase - stored }
+
+// StoredAttackBonus 把畫面刻度的命中加值（`THAC0 ＝ 20 − 它`）換成原作的
+// `+199h`（`THAC0 ＝ 60 − 它`）。
+func StoredAttackBonus(bonus int) int { return armorClassStoredBase - (armorClassHitTarget - bonus) }
+
+// DisplayAttackBonus 是 StoredAttackBonus 的反向。
+func DisplayAttackBonus(stored int) int { return armorClassHitTarget - (armorClassStoredBase - stored) }

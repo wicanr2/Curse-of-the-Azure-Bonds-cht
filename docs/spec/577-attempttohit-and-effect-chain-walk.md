@@ -5,21 +5,32 @@
 
 ## `ATTEMPTTOHIT`：完整的命中式
 
-PC-98 `122Ch`／DOS `123Fh`，10 bytes 參數。
+PC-98 `122Ch`／DOS `123Fh`，`retf 0Ah`。宣告順序是**兩個遠指標在前、門檻在後**
+（Turbo Pascal 由左往右推，最右邊的參數落在 `[bp+6]`）：
 
 ```text
-ATTEMPTTOHIT(need, attacker_far, target_far) -> boolean
-    <前置>(target)                       ← sub_1552
-    DS:A039h := ROLLDICE(1, 20)          ← d20，結果存進全域
-    if DS:A039h <= 1 then return false   ← 自然 1（含 0）必失手
-    if DS:A039h  = 20 then DS:A039h := 100
-    CHECKFX(0Ah, target)                 ← 可改寫 DS:A039h
-    CHECKFX(10h, attacker)               ← 可改寫 DS:A039h
-    if target^[198h] = 0 then v := bank1^[6E2h]
+ATTEMPTTOHIT(攻擊者: 遠指標; 對象: 遠指標; 目標值: byte) -> boolean
+    <前置>(攻擊者)                        ← DOS sub_1569
+    DS:6F9Fh := ROLLDICE(1, 20)          ← d20，結果存進全域（PC-98 是 A039h）
+    if DS:6F9Fh <= 1 then return false   ← 自然 1（含 0）必失手
+    if DS:6F9Fh  = 20 then DS:6F9Fh := 100
+    CHECKFX(0Ah, 攻擊者)                  ← 可改寫 DS:6F9Fh
+    CHECKFX(10h, 對象)                    ← 可改寫 DS:6F9Fh
+    if 攻擊者^[197h] = 0 then v := bank1^[6E2h]
     else                       v := bank1^[6E0h]
-    if DS:A039h < 0 then return false    ← CHECKFX 可能把它壓成負值
-    return (DS:A039h + target^[19Ah] + v) >= need
+    if DS:6F9Fh < 0 then return false    ← CHECKFX 可能把它壓成負值
+    return (DS:6F9Fh + 攻擊者^[199h] + v) >= 目標值
 ```
+
+★★ **加進骰值的是攻擊者的 `+199h`（命中能力，由 `+73h` 起算，spec 1000），
+比較的門檻是傳進來的那個 byte ＝ 防禦者的 AC**。`sub_14E8`（spec 1137）挑好
+三段 AC 之一之後，就是把它當這個門檻送進來。
+
+⚠ 上面是 **DOS 的欄位位移**。PC-98 在 `+11Ch` 之後整體 ＋1（spec 1010），
+對側是 `+198h`／`+19Ah`。
+
+⚠ 本函式只用 `對象` 做 `CHECKFX(10h)`，沒有再讀它的任何欄位，
+所以「對象就是防禦者」是由呼叫端決定的，不是本支證明的。
 
 要點：
 
@@ -28,10 +39,10 @@ ATTEMPTTOHIT(need, attacker_far, target_far) -> boolean
 - 自然 20 換成 **100**（不是 +20），確保任何修正下都命中。
 - 自然 1 的判定是 `<= 1`，把 `CHECKFX` 之前可能出現的 0 也一起吃掉。
 - `CHECKFX` 之後再檢查一次 `< 0`，這是**第二道失手閘門**。
-- `v` 取自 bank 1 的 `6E0h`／`6E2h`，由 `target^[198h]` 是否為 0 選擇。
-  兩個位址差 2，形狀像「同一張表的兩欄」。
+- `v` 取自 bank 1 的 `6E0h`／`6E2h`，由**攻擊者**的隊號（DOS `+197h`）
+  是否為 0 選擇。兩個位址差 2，形狀像「同一張表的兩欄」。
 
-`DS:A039h` 是 byte，比較用 `cmp byte ptr`＋`jle`／`jl`，取值用 `cbw`
+`DS:6F9Fh`（PC-98 `A039h`）是 byte，比較用 `cmp byte ptr`＋`jle`／`jl`，取值用 `cbw`
 **符號延伸**——所以它確實可以是負的。
 
 ## `sub_269`：effect 鏈遍歷（161 個呼叫者）

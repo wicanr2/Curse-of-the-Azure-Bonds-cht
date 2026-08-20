@@ -112,9 +112,10 @@ type Fighter struct {
 	CombatTurnTotal   uint8
 	// ArmorClassFacing 是原作角色記錄的第二個 AC 欄位（`+19Bh`）。攻擊結算依
 	// `RearAttackApplies` 在它與 `ArmorClass`（`+19Ah`）之間挑一個。
-	// ⚠ 原作怎麼算出這一格**還沒解讀**（spec 1000 明寫「不宣稱 +19Ah／+19Bh」），
-	// 所以 `ArmorClassFacingKnown` 為 false 時攻擊結算**不會**改用它——
-	// 機制接上了，數值沒有被發明。0 是合法的 AC，不能拿零值當「沒有」。
+	// 原作算的是 `+19Bh ＝ +19Ah − 敏捷防禦調整 − 盾牌那一槽 − 2`（spec 1000 §七），
+	// 換成這裡的畫面刻度就是**比 `ArmorClass` 大**——也就是比較好打。
+	// ⚠ 隊員那一側目前沒有這一格，所以 `ArmorClassFacingKnown` 為 false 時
+	// 攻擊結算不會改用它。0 是合法的 AC，不能拿零值當「沒有」。
 	ArmorClassFacing      int
 	ArmorClassFacingKnown bool
 	HitPoints             int
@@ -1641,16 +1642,18 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 			targetArmorClass = target.ArmorClassFacing
 		}
 	}
-	targetArmorClass += target.MonsterAffectArmorClassBonusAgainst(attacker)
+	// AC 是畫面刻度：**數字小才難打**，所以防禦加成一律往下扣。
+	targetArmorClass -= target.MonsterAffectArmorClassBonusAgainst(attacker)
 	if attacker.isEvil() && target.ProtectedFromEvil {
-		targetArmorClass += 2
+		targetArmorClass -= 2
 	}
 	if attacker.isGood() && target.ProtectedFromGood {
-		targetArmorClass += 2
+		targetArmorClass -= 2
 	}
 	conditional := target.MonsterConditionalModifierAgainst(attacker)
 	attackTotal := attackRoll + attacker.AttackBonus + b.attackRollModifier[attacker.Side] + conditional.AttackRollDelta
-	hit := !forcedMiss && (target.MonsterIsHeld() || critical || (attackRoll != 1 && attackTotal >= targetArmorClass))
+	hit := !forcedMiss && (target.MonsterIsHeld() || critical ||
+		(attackRoll != 1 && attackTotal+targetArmorClass >= armorClassHitTarget))
 	damage := 0
 	if hit {
 		damage = damageRoll + attacker.DamageBonus

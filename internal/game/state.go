@@ -490,8 +490,10 @@ func (s *State) eclPartyContext() ecl.PartyContext {
 		for _, fighter := range s.party {
 			if fighter.ID == character.ID {
 				member.HitPoints = fighter.HitPoints
-				member.ArmorClass = fighter.ArmorClass
-				member.AttackBonus = fighter.AttackBonus
+				// ECL 的隊伍戰力算式（`partyStrength`）是原作搬過來的，
+				// 吃的是**儲存刻度**（`AC > 60`、`命中 > 39` 才算分）。
+				member.ArmorClass = combat.StoredArmorClass(fighter.ArmorClass)
+				member.AttackBonus = combat.StoredAttackBonus(fighter.AttackBonus)
 				member.MovementAllowance = fighter.MovementAllowance
 				break
 			}
@@ -2324,7 +2326,10 @@ func (s *State) ResolvePendingECLDamageWithDefaultHitResolverContext(selectedInd
 				return false, err
 			}
 		}
-		return party.CanHitECLDamageTargetWithContext(target, fighter.ArmorClass, bonus, context, hitRoll)
+		// `CanHitTarget` 也是原作算式（`骰值 ＋ bonus > AC`，數字大才難打），
+		// 所以 AC 要換回儲存刻度再送進去。
+		return party.CanHitECLDamageTargetWithContext(target,
+			combat.StoredArmorClass(fighter.ArmorClass), bonus, context, hitRoll)
 	}
 	return s.ResolvePendingECLDamageWithHitResolver(selectedIndex, rollDie, rollSave, hitTarget)
 }
