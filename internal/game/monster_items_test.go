@@ -121,3 +121,102 @@ func TestEncounterCarriesMonsterItemsPerFighter(t *testing.T) {
 		t.Errorf("帶著物品的怪有 %d 隻，應該是 2 隻", armed)
 	}
 }
+
+// 怪物記錄裡的傷害骰，跟牠**裝備中的武器**對不對得起來？這決定了「怪物換裝之後
+// 傷害怎麼算」——是把武器蓋上去（隊伍側的模型），還是記錄本來就已經含了武器。
+//
+// ⚠ 這一條**不下結論**，只把量到的分布釘住：數字一變，代表資料解讀或槽位過濾
+// 被改動過，那個改動要重新回答這個問題。
+//
+// ★ 比對一定要過濾**武器槽**（類別表 `+0` ＝ 0）。第一件裝備中的物品常常是弓或
+// 彈藥（slot 10）——拿它去比，FIRE KNIFE 會被判成「記錄 1d8、武器 1d6 不一致」，
+// 而牠 slot 0 的武器正好就是 1d8。**槽位過濾漏掉會製造出假的不一致。**
+func TestMonsterRecordDamageAgainstReadiedWeapon(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	catalog, err := monster.ParseBaseItems(zipData(t, image, "ITEMS"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	same, differ, zeroRecord, noWeapon := 0, 0, 0, 0
+	for chapter := 1; chapter <= 6; chapter++ {
+		records := map[uint8]monster.Record{}
+		charBlocks, err := dax.Parse(zipData(t, image, "MON"+strconv.Itoa(chapter)+"CHA.DAX"))
+		if err != nil {
+			t.Fatalf("MON%dCHA: %v", chapter, err)
+		}
+		for _, block := range charBlocks {
+			record, parseErr := monster.Parse(block.Data)
+			if parseErr != nil {
+				continue
+			}
+			records[block.Entry.ID] = record
+		}
+		itemBlocks, err := dax.Parse(zipData(t, image, "MON"+strconv.Itoa(chapter)+"ITM.DAX"))
+		if err != nil {
+			continue
+		}
+		for _, block := range itemBlocks {
+			record, ok := records[block.Entry.ID]
+			if !ok {
+				continue
+			}
+			items, parseErr := monster.ParseItems(block.Data)
+			if parseErr != nil {
+				continue
+			}
+			weapon, found := readiedWeaponEffect(items, catalog)
+			if !found {
+				noWeapon++
+				continue
+			}
+			switch {
+			case weapon.DamageDiceCount == record.DamageDiceCount &&
+				weapon.DamageDiceSides == record.DamageDiceSides:
+				same++
+			case record.DamageDiceCount == 0 || record.DamageDiceSides == 0:
+				differ++
+				zeroRecord++
+			default:
+				differ++
+			}
+		}
+	}
+	t.Logf("裝備中的武器 vs 記錄傷害：相同 %d、不同 %d（其中記錄是 0 的 %d）、沒有武器 %d",
+		same, differ, zeroRecord, noWeapon)
+	for _, check := range []struct {
+		name string
+		got  int
+		want int
+	}{
+		{"相同", same, 17}, {"不同", differ, 26},
+		{"記錄傷害是 0", zeroRecord, 13}, {"沒有裝備中的武器", noWeapon, 1},
+	} {
+		if check.got != check.want {
+			t.Errorf("%s 的怪有 %d 隻，先前量到的是 %d 隻", check.name, check.got, check.want)
+		}
+	}
+}
+
+// readiedWeaponEffect 取一條物品鏈裡**武器槽**那一件裝備中的物品的效果。
+func readiedWeaponEffect(items []monster.ItemRecord,
+	catalog monster.BaseItemCatalog) (monster.EquipmentEffect, bool) {
+	for _, item := range items {
+		if !item.Readied {
+			continue
+		}
+		base, ok := catalog.Lookup(item.Type)
+		if !ok || base.Slot != 0 {
+			continue
+		}
+		effect, err := item.Effect(catalog, false)
+		if err != nil || effect.DamageDiceCount == 0 {
+			continue
+		}
+		return effect, true
+	}
+	return monster.EquipmentEffect{}, false
+}
