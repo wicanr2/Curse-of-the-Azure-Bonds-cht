@@ -543,6 +543,13 @@
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "main",
+      "sha256": "12d85edc79785d8195309c0d2a82cc66e85fe4271dd80db58f89d48d289b9bc2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "main",
       "sha256": "13356c0db2887a68db72bd29dca866cfbaa4c905e0d8483cc9ec335d3af1e93a",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -564,14 +571,14 @@
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "main",
-      "sha256": "5363dfc6b178b3e3a86adeb7b47054659f03211f7ec1ee1dda5b54d50567599e",
+      "sha256": "34fe51559a25c03a14b596235200563b92cee684e91edf1158c83764cd5ab0ba",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "main",
-      "sha256": "553fd66a73f158bea5fd4fc3b88826d05724561f7e3d775580827dd555bd333c",
+      "sha256": "5363dfc6b178b3e3a86adeb7b47054659f03211f7ec1ee1dda5b54d50567599e",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -585,14 +592,28 @@
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "main",
-      "sha256": "885c90eef9fab9a945aad84c7db1a2547f3fe32146ddbe8932406f15315fc013",
+      "sha256": "5f3865c5382148d3eb9eb0942e5e74d7717d0649ba63204104757ba104df58c1",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "main",
-      "sha256": "8d6616c10bcd60139e4f3f66080edf08993d986ee02cf8c279352a46be5137be",
+      "sha256": "706db06dc4ea1131b0d0d811ab8236504bc557574c372dfe07186db95b8b0b5b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "main",
+      "sha256": "7d86078027dc6657edc693af88ffeb60c4fb2b5f817809eba8612aee7522abd3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "main",
+      "sha256": "885c90eef9fab9a945aad84c7db1a2547f3fe32146ddbe8932406f15315fc013",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -627,6 +648,13 @@
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "main",
+      "sha256": "b143e4d55950deb324042826915fcda46de932361aecae6163154c2dc72dc3b3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "main",
       "sha256": "c312f675e35dea9dfadb2a9afa2dedec346c33270c2b46cc61aa6ee1860887f6",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -641,6 +669,13 @@
     {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "main",
+      "sha256": "df57d8d76920014ab12f6e1bc77ab2a9b878ccb1921d437bb025a1b58a16d521",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "main",
       "sha256": "ec7719d0da1c88c9dbf150fd47fa7269b03598f41dc33ede5f15bcea91431c98",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -649,6 +684,48 @@
       "path": "cmd/ecl-block-graph/main.go",
       "function": "main",
       "sha256": "f85dc7ec444e19f95786f3946a85ec301b2c8f167451f4fc60f55568f5110e55",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "0a1d368fe30d2602f4dd7bc6e072ac57a5af6c33ebcc8df6aba3ca605a3eca43",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "37092482129c33dbd11e1880e60f893751561287040945ef6681e2f7bffb10a8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "39034aa2236040aec39da8e5fa4b64637a3537279c26fad7759aa38e02fa38bd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "84ff78044b0ee57448871767e1dbc6fb1a558dded9e536398b36ad8f62cfe7e1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "edfbb0ed8961a24268737a02385af66359c4c8f942f9b42e35f0c87e6dd77d9a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-block-graph/main.go",
+      "function": "segmentTable",
+      "sha256": "fb90911f9cee271d77b7319a23a6ea6cbe594e686db4c0faaecaf323cf65751a",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
