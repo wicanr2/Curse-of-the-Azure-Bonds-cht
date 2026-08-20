@@ -144,7 +144,7 @@ gate 只能作輸入，不等於此清冊已完成。
 | 圖像 asset codec | PIC/BIGPIC/HEAD/BODY/CPIC/SPRIT 多數可解 | 局部 | 全資產 manifest、selector producer、palette cycle、動畫 identity 與 malformed gate | `visual-asset-corpus` |
 | UI／renderer fidelity | 640×480、石框、16×15、部分舞台已完成；**第一人稱逐格對照 19／20**（提爾佛頓五格 × 四朝向，spec 1134）| 待實作／待動態驗證 | 其餘 17 張 `first_person` 地圖，以及所有 adventure/combat/map/dialog/roster/shop/spell/save/ending 狀態逐張 contract | `screen-state-fidelity-matrix` |
 | 繁體中文 | 字型與部分 stable locale 已接通 | 待實作 | 全 ECL、UI、物品、法術、怪物、場所、Journal、攻略與詞彙校對 coverage | `zh-tw-content-coverage` |
-| 開場到結局 | 正常新遊戲 session 已到散提爾堡世界選單；另有終戰 fixture | **待逆向／待驗證** | 後續章節、所有必要事件、最終戰、`PROGRAM 8`、結局、存檔與重開 | `campaign-spine-to-ending` |
+| 開場到結局 | ✅ **同一條正常 session 從開場走到擊敗提朗瑟克斯的結局選單**（23 個段 subtest，段界快照往返）| 局部 | 段內支線（墓園盜墓者、內城各房間、外城下水道口）、所有必要事件的分支、存檔與重開 | `campaign-spine-to-ending` |
 
 ## 區域事件 coverage
 
@@ -158,8 +158,8 @@ gate 只能作輸入，不等於此清冊已完成。
 | Hap／熔岩洞／巫師塔 | 正常主線局部已通 | 局部 | 全村民、可選房間、所有戰鬥／談判／失敗與重訪 |
 | 希爾斯法 | 多為固定 fixture | 待逆向 | 正常進出城、碼頭、伏擊、場所、所有分支與世界 handoff |
 | 尤拉什／摩安德之坑 | 固定與局部正常測試 | 待逆向 | 全樓層、NPC、坑內事件、戰鬥、出口、重訪與 save |
-| 散提爾堡／暗神殿／眼魔洞穴 | 正常主線已到洞穴離場 | 局部 | 全城市／洞穴事件、隨機事件、替代分支與重訪 |
-| Myth Drannor | Burial Glen 等多個 vertical slice；終戰 fixture | 待逆向 | 正常世界入口、全三區房間、主線旗標、最終戰與結局同 session |
+| 散提爾堡／暗神殿／眼魔洞穴 | 正常主線已通過洞穴離場並續接下一章 | 局部 | 全城市／洞穴事件、隨機事件、替代分支與重訪 |
+| Myth Drannor | 正常世界入口 → 墓園（紅網、黛米爾公主）→ 外城 → 內城儀式與最終戰，全在同一 session | 局部 | 墓園盜墓者、內城的臥房／辦公室／廚房／犬舍／雕像室／禮拜堂、外城下水道口 |
 
 每個區域最終必須產生逐事件記錄：`map/block/cell/facing/terrain → ECL entry/PC →
 preconditions → ordered effects → continuation → flags/items/journal/combat → leave/re-enter →

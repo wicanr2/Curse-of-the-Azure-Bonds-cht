@@ -99,11 +99,10 @@ JSON 外部出口、熔岩洞入口／守門戰、巫師塔德拉坎德羅斯／
 主線骨架：同一 ECL session 從火刀首領勝利後的 `PATROL FOREST`、世界旅行、
 阿沙本福德城內 Tavern Tale 28、立石群提爾隘口戰鬥與尋紅線索，走到艾森布拉城外。
 測試選項使用 game-pack stable ID；`PATROL FOREST` 的分支差異確認是前置
-提爾佛頓事件留下的 `4C03=0x80` 共享旗標，不是應清掉的 stale state。這是目前最長
-的正常主線 handoff；第 555 輪已進一步延伸至眼魔洞穴離場與散提爾堡世界選單。仍不能宣稱
-全城市／全房間／完整結局；固定整合測試涵蓋的哈普、
-熔岩洞、法師塔、希爾斯法、尤拉什、摩安德之坑、散提爾堡與 Myth Drannor 仍須與
-正常新遊戲 session 分開標示。完整邊界見
+提爾佛頓事件留下的 `4C03=0x80` 共享旗標，不是應清掉的 stale state。這條骨架後來一路延伸到結局：2026-08-20 起同一條 session
+從開場走到擊敗提朗瑟克斯的結局選單（`TestRealNewGameRunsToTheEnding`，23 個段
+subtest）。仍不能宣稱全城市／全房間——段內支線（墓園盜墓者、內城各房間、
+外城下水道口）還沒接。完整邊界見
 [`spec 542`](spec/542-normal-campaign-spine-and-city-dungeon-handoff.md)。
 
 第 541 輪完成 ECL 外部 routine 的 engine／CoAB adapter 分層，並修正荒野抵達時

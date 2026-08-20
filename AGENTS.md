@@ -222,7 +222,9 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   第 555 輪再依中文手札 59 明示的神殿東門、GEO4/25 wrapped edge 與普通門路網，
   以 `(15,1,E)` LOOK 後十二步正常移動抵達 terrain `93h`／`(6,3)`，完成離場
   敘事並回到散提爾堡世界選單。東門仍是 `strong inference`，不可升格成原版
-  SEARCH writer exact；洞內全支線、重訪與後續主線仍未完成。
+  SEARCH writer exact；洞內全支線與重訪仍未完成。**後續主線已經接上**：
+  同一條 session 由此經立石群走到密斯卓諾，打完最終戰抵達結局選單
+  （`TestRealNewGameRunsToTheEnding`）。
 - 《軟體世界》中文說明書的原始掃描仍在
   `珍020-青色枷的詛咒.rar`；第 534 輪只把 `MOVEPARTY` 相關頁面與雜湊整理進
   `docs/spec/534-chinese-manual-moveparty-character-transfer.md`。使用者記憶中
