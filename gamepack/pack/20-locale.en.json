@@ -536,6 +536,7 @@
    "village": "VILLAGE",
    "depart": "DEPART",
    "trail": "TRAIL",
+   "ecl-option.by-boat": "BY BOAT",
    "encounter_combat": "COMBAT",
    "encounter_wait": "WAIT",
    "enter_blades": "ENTER THE BLADES",
