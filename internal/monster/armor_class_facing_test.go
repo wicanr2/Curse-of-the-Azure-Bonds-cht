@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 )
 
@@ -121,10 +122,9 @@ func TestSecondArmorClassMatchesTheRecalculationFormula(t *testing.T) {
 	t.Logf("記錄數 %d，殘差為 0 的 %d 筆，殘差分佈 %v", len(records), exact, residuals)
 }
 
-// 投影到 `Fighter` 的是**差值**：`ResolveAttack` 用 `attackTotal >= AC` 判命中，
-// 數字小才好打，所以背後那一格一定要比正面那一格小。
-// 直接搬 `+19Bh` 的絕對值會因為 `CombatArmorClass` 的反轉而變成「背後更難打」。
-func TestFacingArmorClassProjectsThePenaltyNotTheStoredValue(t *testing.T) {
+// 兩格都走同一條 `CombatArmorClass` 換算，換完之後背後那一格一定**比較大**
+// ——畫面刻度是「數字大才好打」，而原作的 `+19Bh` 儲存值比 `+19Ah` 小。
+func TestFacingArmorClassKeepsTheRearPenaltyAfterConversion(t *testing.T) {
 	for _, data := range originalMonsterRecords(t) {
 		record, err := Parse(data)
 		if err != nil {
@@ -138,13 +138,58 @@ func TestFacingArmorClassProjectsThePenaltyNotTheStoredValue(t *testing.T) {
 		if penalty < 2 {
 			t.Fatalf("%s 的減免是 %d——至少要有那個固定的 2", record.Name, penalty)
 		}
-		if fighter.ArmorClassFacing != fighter.ArmorClass-penalty {
+		if fighter.ArmorClassFacing != fighter.ArmorClass+penalty {
 			t.Fatalf("%s：正面 AC %d、背後 AC %d，差值應該是 %d",
 				record.Name, fighter.ArmorClass, fighter.ArmorClassFacing, penalty)
 		}
-		if fighter.ArmorClassFacing >= fighter.ArmorClass {
+		if fighter.ArmorClassFacing <= fighter.ArmorClass {
 			t.Fatalf("%s：背後 AC %d 不比正面 AC %d 好打",
 				record.Name, fighter.ArmorClassFacing, fighter.ArmorClass)
 		}
+	}
+}
+
+// 命中門檻拿原作的數字釘死一次。FIRE KNIFE 的記錄是
+// `+199h ＝ 41`（THAC0 19）、`+19Ah ＝ 59`（AC 1），原作的判定
+// `d20 ＋ 41 >= 59` 要 **18** 才打得中。換到 remake 的畫面刻度是
+// `d20 ＋ 1 ＋ 1 >= 20`——同一個 18。
+//
+// ⚠ 兩邊的刻度只要有一邊沒換，這個數字就會掉到 1 或飆到 20 以上，
+// 而「攻擊有沒有結算」看起來完全正常。
+func TestHitThresholdMatchesTheOriginalNumbers(t *testing.T) {
+	var fireKnife Record
+	for _, data := range originalMonsterRecords(t) {
+		record, err := Parse(data)
+		if err == nil && record.Name == "FIRE KNIFE" {
+			fireKnife = record
+			break
+		}
+	}
+	if fireKnife.Name == "" {
+		t.Skip("這份 image 裡沒有 FIRE KNIFE")
+	}
+	if fireKnife.AttackBonus != 41 || fireKnife.ArmorClass != 59 {
+		t.Fatalf("FIRE KNIFE 的原始欄位變了：+199h=%d +19Ah=%d",
+			fireKnife.AttackBonus, fireKnife.ArmorClass)
+	}
+	attacker := fireKnife.Fighter("attacker", combat.SideParty)
+	defender := fireKnife.Fighter("defender", combat.SideEnemy)
+	defender.HitPoints, defender.MaxHitPoints = 999, 999
+	lowest := 0
+	for roll := 2; roll <= 19; roll++ {
+		battle, err := combat.NewBattle([]combat.Fighter{attacker, defender}, 1)
+		if err != nil {
+			t.Fatal(err)
+		}
+		result, err := battle.ResolveAttack("attacker", "defender", roll, 1)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if result.Hit && lowest == 0 {
+			lowest = roll
+		}
+	}
+	if lowest != 18 {
+		t.Fatalf("FIRE KNIFE 打 FIRE KNIFE 的最低命中骰是 %d，原作是 18", lowest)
 	}
 }

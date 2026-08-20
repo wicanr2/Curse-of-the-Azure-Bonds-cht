@@ -58,13 +58,16 @@ func (b *Battle) ApplyEffectRecordWrites(fighterID string, timing uint8) (bool, 
 			fighter.MovementAllowance = applyRecordOp(write, fighter.MovementAllowance)
 			changed = true
 		case write.Record == "player" && write.Field == playerArmourClassPrimary:
-			fighter.ArmorClass = applyRecordOp(write, fighter.ArmorClass)
+			// ⚠ 效果表裡的護甲修正是**儲存刻度**（`add_capped 2 cap 60` 的
+			// 上限 60 就是儲存值的 AC 0），而 `Fighter.ArmorClass` 是畫面刻度。
+			// 換過去套完再換回來，符號與上下限都不必自己翻。
+			fighter.ArmorClass = DisplayArmorClass(applyRecordOp(write, StoredArmorClass(fighter.ArmorClass)))
 			changed = true
 		case write.Record == "player" && write.Field == playerArmourClassSecondary:
 			// 沒有第二個 AC 的戰鬥員（隊員、合成記錄）不套——那一格是 0，
 			// 套下去會憑空生出一個「比正面好打很多」的背後 AC。
 			if fighter.ArmorClassFacingKnown {
-				fighter.ArmorClassFacing = applyRecordOp(write, fighter.ArmorClassFacing)
+				fighter.ArmorClassFacing = DisplayArmorClass(applyRecordOp(write, StoredArmorClass(fighter.ArmorClassFacing)))
 				changed = true
 			}
 		}
