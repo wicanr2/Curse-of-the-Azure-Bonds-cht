@@ -66,7 +66,7 @@
 |---|---|---|
 | `SEG-10` | 把 `campaign_normal_test.go` 那一條拆成「每段一個測試」 | 拆完之後**覆蓋的步數不減**；每段紅的時候看得出是哪一段 |
 | `SEG-11` | ✅ **前半完成**：25 段的邊界狀態往返閘（`TestSegmentEntrySnapshotRoundTrips`）＋ `-segment-snapshot` 寫出快照、`-party-load` 當下一段入口 | 存得下去、讀得回來 ✓（報告見 `docs/plan/seg-11-verification-report.md`）；**段結束**的快照要等 `SEG-10` |
-| `SEG-12` | **交接測試**：載入上一段快照 → 過轉移 → 驗新段的 `initial` lifecycle 跑完 | 47 條 `NEWECL` 邊每條一個測試 |
+| `SEG-12` | ✅ **完成**：`TestEveryNewECLEdgeHandsOff`——來源段存快照 → 讀回 → 帶著來源 block 當 `LastECL` 進目的段 | 47 條邊每條一個子測試 ✓（報告見 `docs/plan/seg-12-verification-report.md`）；來源用的是段的入口狀態，段結束狀態要等 `SEG-10` |
 | `SEG-13` | 整條跑降級成 **smoke**：保留，但不當主要 gate | 主要 gate 是段測試；整條跑只驗「串得起來」 |
 
 ⚠ `SEG-11` 是關鍵：沒有快照交接，後面的段還是得從頭跑，分段就只是把同一條
