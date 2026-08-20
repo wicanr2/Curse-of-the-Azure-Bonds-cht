@@ -1802,9 +1802,59 @@ func TestRealNewGameContinuesFromHapToMythDrannor(t *testing.T) {
 		t.FailNow()
 	}
 
+	if !t.Run("ECL6/0x40 墓園：紅網", func(t *testing.T) {
+		// ⚠ x=3 那一整欄（地形 0x01）是墓園的離場格：踩上去隊伍會被送回世界
+		// 地圖。往東要繞 y=12 那一列。
+		observer.stopAtMessageID = "myth-drannor.red-web"
+		for _, target := range []normalDungeonPoint{{2, 13}, {2, 12}, {6, 12}, {6, 14}} {
+			walkNormalDungeonTo(t, state, &burialGrid, target.x, target.y, observer)
+			if state.Mode != ModeDungeon && state.Mode != ModeWilderness {
+				t.Fatalf("走到 (%d,%d) 時模式是 %v", target.x, target.y, state.Mode)
+			}
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "myth-drannor.red-web") {
+			t.Fatalf("紅網台詞=%q pos=(%d,%d,%d) choices=%v", state.Message,
+				state.DungeonX, state.DungeonY, state.DungeonDirection,
+				state.currentOriginalChoices)
+		}
+		// 說出通關語只會讓網更亮（`red-web.brighter`），原作的解法是砍。
+		if !observer.selectOption(t, "ecl-option.hack-it") {
+			t.Fatalf("紅網 HACK IT 選項不在：%v", state.currentOriginalChoices)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "myth-drannor.red-web.hack") {
+			t.Fatalf("砍網之後的台詞=%q choices=%v", state.Message, state.currentOriginalChoices)
+		}
+		for step := 0; step < 8 && state.Mode != ModeDungeon; step++ {
+			switch {
+			case state.Mode == ModeCombat:
+				for turn := 0; turn < 64 && state.Mode == ModeCombat; turn++ {
+					if err := state.CombatAct(); err != nil {
+						t.Fatalf("紅網蜘蛛戰第 %d 回合：%v", turn, err)
+					}
+				}
+			default:
+				if err := state.Continue(); err != nil {
+					if selectErr := state.Select(0); selectErr != nil {
+						t.Fatalf("砍網之後推不動：continue=%v select=%v", err, selectErr)
+					}
+				}
+			}
+			observer.observe()
+		}
+		if state.Mode != ModeDungeon || state.DungeonX != 6 || state.DungeonY != 14 {
+			t.Fatalf("砍網之後 mode=%v pos=(%d,%d,%d)", state.Mode,
+				state.DungeonX, state.DungeonY, state.DungeonDirection)
+		}
+		captureSegmentEnd(t, "ECL6/0x40 墓園：紅網")
+	}) {
+		t.FailNow()
+	}
+
 	t.Run("段界快照往返", func(t *testing.T) {
-		if len(segmentEnds) != 16 {
-			t.Fatalf("存到 %d 份段界快照，應該是 16 份", len(segmentEnds))
+		if len(segmentEnds) != 17 {
+			t.Fatalf("存到 %d 份段界快照，應該是 17 份", len(segmentEnds))
 		}
 		blocks := map[uint8][]byte{}
 		for member := 1; member <= 6; member++ {
