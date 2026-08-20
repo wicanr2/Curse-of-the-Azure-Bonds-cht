@@ -2108,6 +2108,46 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			t.Fatalf("上樓之後 mode=%v pos=(%d,%d,%d)", state.Mode,
 				state.DungeonX, state.DungeonY, state.DungeonDirection)
 		}
+		// 二樓的房間也照地形碼逐間走一次，再往東北角。
+		upstairs := []struct {
+			x, y       int
+			messageID  string
+			suppressed bool
+		}{
+			{10, 5, "myth-drannor.inner.preservation-room", false},
+			{10, 1, "myth-drannor.inner.biers", true},
+			{14, 1, "myth-drannor.inner.library", false},
+			{14, 4, "myth-drannor.inner.food-storeroom", true},
+			{14, 5, "myth-drannor.inner.magic-circle", false},
+		}
+		for _, room := range upstairs {
+			state.SetDungeonGeometryView(room.x, room.y, 0)
+			state.DungeonWallRoof = innerGrid.CellWrapped(room.x, room.y).Terrain
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatalf("二樓房間 (%d,%d)：%v", room.x, room.y, err)
+			}
+			resolveInnerRoom(t, state, observer)
+			fired := observer.messages[requireGamePackText(t, state, room.messageID)]
+			switch {
+			case fired && room.suppressed:
+				t.Errorf("(%d,%d) 的 %s 現在出得來了，請把 suppressed 拿掉",
+					room.x, room.y, room.messageID)
+			case !fired && !room.suppressed:
+				t.Errorf("二樓 (%d,%d) 沒有出現 %s（roof=%#02x）",
+					room.x, room.y, room.messageID, state.DungeonWallRoof)
+			}
+		}
+
+		// ⚠ 停屍架與食品儲藏室被壓掉的原因與一樓那三間同一個（spec 1142）：
+		// 它們的 once-only 旗標帶著**別張地圖**留下的值，這條 session 根本沒
+		// 進過那兩間房。
+		if value, _ := state.session.MemoryValue(0x4C0B); value != 1 {
+			t.Error("4C0B 不再是 1 了，食品儲藏室該重驗")
+		}
+		if value, _ := state.session.MemoryValue(0x4C0F); value == 0 {
+			t.Error("4C0F 已經是 0 了，停屍架那間該重驗")
+		}
+
 		// 二樓到東北角的路線（spec 408 記下的最短合法路徑）。
 		route := []struct {
 			x, y      int
@@ -2364,6 +2404,8 @@ func campaignMessageHasLatinWord(message string) bool {
 // resolveInnerRoom 把房間事件推到底：事件按繼續、選單選第一項、遇上就打。
 func resolveInnerRoom(t *testing.T, state *State, observer *normalCampaignObserver) {
 	t.Helper()
+	// 先記一次：有些房間的敘述不會停下來等玩家，迴圈的條件會直接把它跳過。
+	observer.observe()
 	for step := 0; step < 16 && state.Mode != ModeDungeon; step++ {
 		if state.CombatActive() {
 			for turn := 0; turn < 400 && state.CombatActive(); turn++ {
