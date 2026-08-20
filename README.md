@@ -156,7 +156,10 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
 ## 目前明確未完成
 
 - **開場到結局的主線串接**是最大的一塊：目前走到眼魔洞穴與散提爾堡世界選單，
-  後續章節、最終戰與結局序列尚未串完。
+  後續章節、最終戰與結局序列尚未串完。驗證方式改成**分段**——一個 ECL block
+  一段、一條 `NEWECL` 邊一段交接，計畫見
+  [`docs/plan/mainline-segmented-verification.md`](docs/plan/mainline-segmented-verification.md)。
+  轉移機制已查清（spec 1141）：25 個 block、47 條出邊，只有開場與結局沒有出邊。
 - **戰鬥回合生命週期**：回合開始那一段已收完（spec 1135／1136）——先攻算式、
   選誰動、DELAY／GUARD／QUICK、定身與機會攻擊都與原作相符，突襲遮罩判定為死碼。
   面向、動作計數與累計轉向三個欄位也接上了（spec 1138），背後攻擊的三道條件
