@@ -8,6 +8,7 @@ package main
 
 import (
 	"archive/zip"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -216,11 +217,14 @@ func segmentTable(keys []blockKey, graphs map[blockKey]*blockGraph) string {
 		}
 	}
 	var out strings.Builder
+	labels := segmentLabels()
 	out.WriteString("\n## 段落清單（block ↔ 地圖）\n\n" +
 		"`area_id` 就是 ECL 成員編號、`script_block` 就是 block 編號，所以 game pack 的\n" +
 		"地圖宣告與轉移圖 join 得起來。**沒有地圖的 block 不是缺漏**：世界地圖 hub 與\n" +
 		"開場不需要 3D 地圖（`LOAD FILES` 是 `7F/7F/7F`），另外幾個沿用上一段的檔案。\n\n" +
-		"| 段 | 進入自 | 離開到 | game pack 地圖 |\n|---|---|---|---|\n")
+		"段的 id 一律是 `ECL{成員}/0x{block}`（機械且穩定）；標籤取自\n" +
+		"`docs/plan/segment-labels.json`，證據見 `docs/plan/seg-03-verification-report.md`。\n\n" +
+		"| 段 | 標籤 | 進入自 | 離開到 | game pack 地圖 |\n|---|---|---|---|---|\n")
 	for _, key := range keys {
 		member := 0
 		fmt.Sscanf(key.member, "ECL%d.DAX", &member)
@@ -238,10 +242,34 @@ func segmentTable(keys []blockKey, graphs map[blockKey]*blockGraph) string {
 		if len(in) > 0 {
 			inLabel = "`" + strings.Join(in, "`、`") + "`"
 		}
-		out.WriteString(fmt.Sprintf("| `ECL%d/%s` | %s | %s | %s |\n",
-			member, key.block, inLabel, formatTargets(graphs[key].newECL), label))
+		id := fmt.Sprintf("ECL%d/%s", member, key.block)
+		out.WriteString(fmt.Sprintf("| `%s` | %s | %s | %s | %s |\n",
+			id, labelOr(labels, id), inLabel, formatTargets(graphs[key].newECL), label))
 	}
 	return out.String()
+}
+
+// segmentLabels 讀人類可讀的段落標籤。讀不到就留白——標籤是給人看的，
+// 缺了不影響這張表的機械內容。
+func segmentLabels() map[string]string {
+	payload, err := os.ReadFile("docs/plan/segment-labels.json")
+	if err != nil {
+		return nil
+	}
+	var parsed struct {
+		Labels map[string]string `json:"labels"`
+	}
+	if json.Unmarshal(payload, &parsed) != nil {
+		return nil
+	}
+	return parsed.Labels
+}
+
+func labelOr(labels map[string]string, id string) string {
+	if label, ok := labels[id]; ok {
+		return label
+	}
+	return "—"
 }
 
 func formatStrings(values map[string]int) string {
