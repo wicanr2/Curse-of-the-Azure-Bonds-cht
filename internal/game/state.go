@@ -5171,6 +5171,11 @@ func (s *State) StartStorySegment(blockID, previousBlockID, gameArea uint8, inDu
 		return err
 	}
 	s.eclStart = start
+	// 上一段的訊息與選單不能跟進新的段：這一段的 initial lifecycle 不出文字時，
+	// 畫面會留著前一段的字，看起來像「這一段有接」。
+	s.Message = ""
+	s.Choices = nil
+	s.currentOriginalChoices = nil
 	s.session.SetMemoryValue(0x4BF2, uint16(previousBlockID))
 	s.session.SetMemoryValue(0x7ED5, 0)
 	s.session.SetMemoryValue(0x7EC9, 0)
