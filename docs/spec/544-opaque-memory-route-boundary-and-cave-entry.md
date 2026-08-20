@@ -22,7 +22,7 @@
   `zhentil-keep.inner-city.route-memory-reset` 宣告
   `ECL block 0x20 ∧ [0x4C00]=2 → [0x4C00]=0`。這是重製的玩家路徑契約，
   不是對原版欄位語意的宣稱。
-- `TestRealNewGameContinuesFromHapToBeholderCaveEntrance` 已由同一新遊戲
+- `TestRealNewGameContinuesFromHapToMythDrannor` 已由同一新遊戲
   session 正常抵達 Cave E1 `(5,7,W)`，並接通原始 ECL 寫出的死精靈格
   `(13,1,W)`。完整洞穴、隨機遭遇與出口仍不以猜測 GEO 邊連線取代。
 
@@ -92,7 +92,7 @@ Docker 內已通過：
   `TestRealZhentilRecruitDimswart`、
   `TestRealZhentilHoodedWomanReachesBeholderCave`、
   `TestRealBeholderCaveDexamAndZhentilBattles`、
-  `TestRealNewGameContinuesFromHapToBeholderCaveEntrance`。
+  `TestRealNewGameContinuesFromHapToMythDrannor`。
 
 Ebiten command package 仍須以有界 Xvfb 做獨立 build／smoke；它不是本輪 raw
 memory 或 D&D 規則證據。

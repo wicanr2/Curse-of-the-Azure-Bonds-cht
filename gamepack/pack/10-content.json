@@ -5402,6 +5402,14 @@
    "message_id": "standing-stone.four-masters"
   },
   {
+   "id": "standing-stone.two-masters",
+   "all_contains": [
+    "YOU PRESENTLY SERVE TWO MASTER",
+    "RETURN TO ME WHEN YOU HAVE SLAIN ONE MORE"
+   ],
+   "message_id": "standing-stone.two-masters"
+  },
+  {
    "id": "standing-stone.seek-red",
    "all_contains": [
     "SEEK RED TO THE SOUTH"

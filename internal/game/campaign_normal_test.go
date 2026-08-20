@@ -834,7 +834,7 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 	}
 }
 
-func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
+func TestRealNewGameContinuesFromHapToMythDrannor(t *testing.T) {
 	state := runNormalNewGameToEssembra(t)
 	if state == nil {
 		return
@@ -1695,9 +1695,96 @@ func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
 	}) {
 		t.FailNow()
 	}
+	if !t.Run("ECL1/0x50 立石群：灰袍男子", func(t *testing.T) {
+		// 散提爾堡的世界圖鄰居只有帖許瓦／猶拉什／費蘭，要繞經猶拉什與希爾斯法
+		// 才接得到立石群。
+		observer.stopAtMessageID = ""
+		observer.stopAtWorldEdge = false
+		observer.nextWorldDestinations = []string{
+			"ecl-option.yulash", "ecl-option.hillsfar", "ecl-option.the-standing-stone",
+		}
+		if !observer.selectOption(t, "ecl-option.journey-on") {
+			t.Fatalf("散提爾堡 JOURNEY ON 選項不在：%v", state.currentOriginalChoices)
+		}
+		observer.resolveDungeonBoundary(t)
+		if state.Location != LocationStandingStone || state.Area.CurrentCity != 4 {
+			t.Fatalf("走到立石群失敗：location=%v city=%d block=%#02x",
+				state.Location, state.Area.CurrentCity, state.session.CurrentBlockID())
+		}
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatalf("立石群生命週期：%v", err)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "standing-stone.grey-man") {
+			t.Fatalf("立石群開場=%q", state.Message)
+		}
+		if !observer.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+			t.Fatalf("立石群開場沒有繼續選項：%v", state.currentOriginalChoices)
+		}
+		observer.observe()
+		// 灰袍男子按「還剩幾位主人」換一種說法，數字是執行期插進同一頁的，
+		// 所以每一種數字是一條獨立的文字規則。這條路徑走到這裡剩兩位。
+		if state.Message != requireGamePackText(t, state, "standing-stone.two-masters") {
+			t.Fatalf("立石群灰袍男子的台詞=%q choices=%v", state.Message, state.currentOriginalChoices)
+		}
+		if !observer.selectOption(t, "ecl-option.thank-him") {
+			t.Fatalf("立石群 THANK HIM 選項不在：%v", state.currentOriginalChoices)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "standing-stone.seek-red") {
+			t.Fatalf("立石群指路台詞=%q", state.Message)
+		}
+		if !observer.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+			t.Fatalf("立石群指路沒有繼續選項：%v", state.currentOriginalChoices)
+		}
+		observer.observe()
+		if !observer.hasOption("ecl-option.journey-on") {
+			t.Fatalf("立石群結束之後沒有回到世界選單：mode=%v choices=%v",
+				state.Mode, state.currentOriginalChoices)
+		}
+		captureSegmentEnd(t, "ECL1/0x50 立石群：灰袍男子")
+	}) {
+		t.FailNow()
+	}
+
+	if !t.Run("密斯卓諾：世界路線", func(t *testing.T) {
+		observer.stopAtMessageID = "myth-drannor.edge"
+		observer.nextWorldDestinations = []string{"ecl-option.myth-drannor"}
+		if !observer.selectOption(t, "ecl-option.journey-on") {
+			t.Fatalf("立石群 JOURNEY ON 選項不在：%v", state.currentOriginalChoices)
+		}
+		observer.resolveDungeonBoundary(t)
+		if state.Location != LocationMythDrannor || state.Area.CurrentCity != 13 ||
+			state.Message != requireGamePackText(t, state, "myth-drannor.edge") {
+			t.Fatalf("走到密斯卓諾邊緣失敗：location=%v city=%d block=%#02x message=%q",
+				state.Location, state.Area.CurrentCity, state.session.CurrentBlockID(), state.Message)
+		}
+		captureSegmentEnd(t, "密斯卓諾：世界路線")
+	}) {
+		t.FailNow()
+	}
+
+	if !t.Run("ECL6/0x40 密斯卓諾：墓園", func(t *testing.T) {
+		observer.stopAtMessageID = ""
+		if !observer.selectOption(t, "ecl-option.enter-city") {
+			t.Fatalf("密斯卓諾 ENTER CITY 選項不在：%v", state.currentOriginalChoices)
+		}
+		if state.session.CurrentBlockID() != 0x40 || state.GeoMapSet != 6 || state.GeoMapBlock != 0x40 {
+			t.Fatalf("進遺跡之後 block=%#02x geo=%d/%#02x", state.session.CurrentBlockID(),
+				state.GeoMapSet, state.GeoMapBlock)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "myth-drannor.helm-north") {
+			t.Fatalf("墓園入口台詞=%q", state.Message)
+		}
+		captureSegmentEnd(t, "ECL6/0x40 密斯卓諾：墓園")
+	}) {
+		t.FailNow()
+	}
+
 	t.Run("段界快照往返", func(t *testing.T) {
-		if len(segmentEnds) != 12 {
-			t.Fatalf("存到 %d 份段界快照，應該是 12 份", len(segmentEnds))
+		if len(segmentEnds) != 15 {
+			t.Fatalf("存到 %d 份段界快照，應該是 15 份", len(segmentEnds))
 		}
 		blocks := map[uint8][]byte{}
 		for member := 1; member <= 6; member++ {

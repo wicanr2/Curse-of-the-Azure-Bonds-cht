@@ -618,7 +618,7 @@ go.sum 仍然逐版本鎖雜湊）。
 - 第 543 輪已把同一新遊戲 session 從第 542 輪的艾森布拉城外接到 Hap 村落、
   熔岩洞、巫師塔、回洞穴與熔岩池第二次戰鬥／防火桶分支；正式測試為
   `internal/game/campaign_normal_test.go` 的
-  `TestRealNewGameContinuesFromHapToBeholderCaveEntrance`。測試只用正常
+  `TestRealNewGameContinuesFromHapToMythDrannor`。測試只用正常
   `MoveDungeon`、game-pack stable option ID 與同一 ECL continuation，不能因這條
   路徑通過就宣稱全城市、全地城或完整結局。
 - 第 543 輪的巫師塔座標修正是 engine＋JSON 通用邊界：
@@ -634,7 +634,7 @@ go.sum 仍然逐版本鎖雜湊）。
 - 第 544 輪新增 engine `set_memory`／`Runtime.MemoryWrites`，CoAB JSON 以
   `zhentil-keep.inner-city.route-memory-reset` 保存 `0x4C00` 的 raw route
   dependency；這不是 D&D 規則欄位，也沒有替它建立語意名稱。正常 session 測試
-  已改名為 `TestRealNewGameContinuesFromHapToBeholderCaveEntrance`，只驗證到
+  已改名為 `TestRealNewGameContinuesFromHapToMythDrannor`，只驗證到
   Dexam 洞穴入口 `(4,5,N)`；洞穴內部路徑仍是下一個玩家可見 milestone。
 - 第 510 輪已把新遊戲進入提爾佛頓後的第一個正常西行輸入收回
   `State.MoveDungeon`；原始 GEO2 block 1 的起點、雙側牆／門可走性與 ECL

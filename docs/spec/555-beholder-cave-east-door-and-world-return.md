@@ -55,7 +55,7 @@
 
 ## 驗收
 
-- `TestRealNewGameContinuesFromHapToBeholderCaveEntrance`：新遊戲至散提爾堡世界
+- `TestRealNewGameContinuesFromHapToMythDrannor`：新遊戲至散提爾堡世界
   選單的同一正常 session。
 - `TestRealBeholderCaveDexamAndZhentilBattles`：局部兩戰、戰利品與 ECL 離場回歸；
   不作世界目的地 oracle。
