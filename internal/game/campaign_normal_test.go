@@ -1852,9 +1852,47 @@ func TestRealNewGameContinuesFromHapToMythDrannor(t *testing.T) {
 		t.FailNow()
 	}
 
+	if !t.Run("ECL6/0x40 墓園：黛米爾公主的祝福", func(t *testing.T) {
+		observer.stopAtMessageID = ""
+		for _, target := range []normalDungeonPoint{{6, 12}, {13, 12}, {13, 13}} {
+			walkNormalDungeonTo(t, state, &burialGrid, target.x, target.y, observer)
+			if state.Mode != ModeDungeon {
+				t.Fatalf("走向 (%d,%d) 時模式是 %v", target.x, target.y, state.Mode)
+			}
+		}
+		// ★ 幽魂是**走進那一格**才出現的，站在那一格跑生命週期不會觸發。
+		state.TurnDungeonWithGrid(burialGrid, (4-int(state.DungeonDirection)+8)%8)
+		if err := state.MoveDungeon(burialGrid, 0, 1, 4); err != nil {
+			t.Fatalf("走進公主那一格：%v", err)
+		}
+		if state.Message != requireGamePackText(t, state, "myth-drannor.daemir.offer") {
+			t.Fatalf("幽魂台詞=%q pos=(%d,%d,%d)", state.Message,
+				state.DungeonX, state.DungeonY, state.DungeonDirection)
+		}
+		if err := state.Continue(); err != nil {
+			t.Fatalf("幽魂台詞之後推不動：%v", err)
+		}
+		if !observer.selectOption(t, "option.accept") {
+			t.Fatalf("幽魂 ACCEPT 選項不在：%v", state.currentOriginalChoices)
+		}
+		if state.Message != requireGamePackText(t, state, "myth-drannor.daemir.blessing") {
+			t.Fatalf("接受祝福之後的台詞=%q", state.Message)
+		}
+		if !observer.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+			t.Fatalf("祝福之後沒有繼續選項：%v", state.currentOriginalChoices)
+		}
+		if state.Mode != ModeDungeon || state.DungeonX != 13 || state.DungeonY != 14 {
+			t.Fatalf("祝福之後 mode=%v pos=(%d,%d,%d)", state.Mode,
+				state.DungeonX, state.DungeonY, state.DungeonDirection)
+		}
+		captureSegmentEnd(t, "ECL6/0x40 墓園：黛米爾公主的祝福")
+	}) {
+		t.FailNow()
+	}
+
 	t.Run("段界快照往返", func(t *testing.T) {
-		if len(segmentEnds) != 17 {
-			t.Fatalf("存到 %d 份段界快照，應該是 17 份", len(segmentEnds))
+		if len(segmentEnds) != 18 {
+			t.Fatalf("存到 %d 份段界快照，應該是 18 份", len(segmentEnds))
 		}
 		blocks := map[uint8][]byte{}
 		for member := 1; member <= 6; member++ {
