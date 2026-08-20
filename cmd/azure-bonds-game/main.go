@@ -3345,6 +3345,8 @@ func main() {
 	journalImageZoom := flag.Bool("journal-image-zoom", false, "彈窗直接以原尺寸開啟（分段驗收用）")
 	segmentEntry := flag.String("segment", "",
 		"直接進入主線的某一段：ECL{成員}/0x{block}、只給 block 編號、或既有旗標名；給 list 就列出全部")
+	segmentSnapshot := flag.String("segment-snapshot", "",
+		"進到 -segment 指定的那一段之後把存檔寫到這個路徑就結束，供下一段用 -party-load 當入口")
 	flag.Parse()
 	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
@@ -3634,6 +3636,13 @@ func main() {
 		}
 		if err := state.EnterSegment(*chosenSegment); err != nil {
 			log.Fatalf("-segment %s 進不去：%v", chosenSegment.ID, err)
+		}
+		if *segmentSnapshot != "" {
+			if err := state.SavePartyFile(*segmentSnapshot); err != nil {
+				log.Fatalf("寫 -segment-snapshot 失敗：%v", err)
+			}
+			fmt.Printf("%s → %s\n", chosenSegment.ID, *segmentSnapshot)
+			return
 		}
 		// 幾何要跟著這一段實際載到的 GEO 檔走。段的 GEO 區塊編號不一定等於
 		// ECL block 編號（例如 ECL5/0x31 哈普村載的是 GEO5 的 0x32），所以

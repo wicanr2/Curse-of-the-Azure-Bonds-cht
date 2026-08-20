@@ -5176,8 +5176,11 @@ func (s *State) StartStorySegment(blockID, previousBlockID, gameArea uint8, inDu
 	s.session.SetMemoryValue(0x7EC9, 0)
 	s.Area.InDungeon = inDungeon
 	s.Area.GameArea = gameArea
+	// GEO 檔集要跟著章節一起改，即使這一段不載幾何：存檔沒有獨立的 GEO 檔集
+	// 欄位，讀檔時是拿 `Area.GameArea` 重建的（見 LoadPartyFile）。兩者留下
+	// 不同的值，快照就往返不回來。
+	s.GeoMapSet = gameArea
 	if inDungeon {
-		s.GeoMapSet = gameArea
 		s.Mode = ModeDungeon
 	} else {
 		s.Mode = ModeWilderness
