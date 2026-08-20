@@ -4731,6 +4731,21 @@
    "message_id": "yulash.shambling-mounds"
   },
   {
+   "id": "yulash.shambling-mounds-drag-cleric",
+   "all_contains": [
+    "SHAMBLING MOUNDS ATTEMPT TO DRAG A CLERICS BODY AWAY"
+   ],
+   "message_id": "yulash.shambling-mounds-drag-cleric"
+  },
+  {
+   "id": "yulash.red-plume-pit-refusal",
+   "all_contains": [
+    "A RED PLUME GUARD GROWLS",
+    "GO BACK INTO THE PIT"
+   ],
+   "message_id": "yulash.red-plume-pit-refusal"
+  },
+  {
    "id": "yulash.zhentil-marauders",
    "all_contains": [
     "A BAND OF ZHENTIL KEEP MARAUDERS JUMP YOU"
@@ -4998,6 +5013,20 @@
     "YOU SEE A CHECKPOINT MANNED BY RED PLUME GUARDS TO THE EAST"
    ],
    "message_id": "yulash.checkpoint-to-the-east"
+  },
+  {
+   "id": "yulash.checkpoint-to-the-south",
+   "all_contains": [
+    "YOU SEE A CHECKPOINT MANNED BY RED PLUME GUARDS TO THE SOUTH"
+   ],
+   "message_id": "yulash.checkpoint-to-the-south"
+  },
+  {
+   "id": "yulash.checkpoint-to-the-west",
+   "all_contains": [
+    "YOU SEE A CHECKPOINT MANNED BY RED PLUME GUARDS TO THE WEST"
+   ],
+   "message_id": "yulash.checkpoint-to-the-west"
   },
   {
    "id": "yulash.war-blasted-section",
