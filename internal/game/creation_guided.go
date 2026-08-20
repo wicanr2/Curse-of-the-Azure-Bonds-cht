@@ -402,6 +402,8 @@ func (s *State) rollGuidedHitPoints(seed int64) error {
 	}
 	s.GuidedDraft.AttackAbility = attack
 	s.GuidedDraft.BaseArmorClass = armor
+	// `+125h`：建角寫 1，力量的命中／傷害調整才會生效（spec 694／697）。
+	s.GuidedDraft.AbilityAdjustments = 1
 	return nil
 }
 

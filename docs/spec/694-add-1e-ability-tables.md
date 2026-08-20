@@ -59,6 +59,49 @@ i = 19     → +3       i = 20..29 → i − 17    i = 30    → +14
 
 **十九格全中**，唯一的差別是力量 1：1e 給 −4，本作把 1 併進 2 的格子給 −2。
 
+## ★ `+125h` 是這兩張表的開關
+
+`13FDh` 與 `1345h` 開頭都是 `if 角色^[125h] = 0 then 回傳 0`。
+
+- 建角（`overlay-16:228Eh`、`overlay-17:1ECDh`）寫 **1**；
+- 讀檔（`overlay-16:19EAh`）從存檔抄過來；
+- **全 build 沒有任何地方寫 0**。
+
+⚠ 它**不是**「玩家角色」的同義詞：六章 `MON*CHA` 共 81 筆記錄裡
+**61 筆是 0、20 筆是 1**。怪物那一側兩種都有。
+
+## 原版存檔的逐項驗證
+
+`docs/reference/original-dos/save-samples/CHRDATA1.sav`（戰士 5 級、
+力量 18/18、敏捷 15、沒有裝備）把輸入與算出來的結果同時存了下來：
+
+| 欄位 | 記錄裡的值 | 重算 |
+|---|---:|---|
+| `+73h` 命中能力 | 44 | 職業表 slot 2 等級 5（spec 1140） |
+| `+199h` | 45 | `44 ＋ 力量命中 1`（索引 19） |
+| `+1A2h` 傷害加值 | 3 | 力量傷害（索引 19） |
+| `+19Ah` 護甲值 | 51 | `+124h 50 ＋ 敏捷防禦 1` |
+| `+19Bh` 第二個 AC | 48 | `51 − 1 − 0 − 2`（spec 1000 §七） |
+
+五格全中。回歸測試在 `internal/party/original_record_derivation_test.go`。
+
+## remake 對照
+
+| remake | 原作 |
+|---|---|
+| `engine combat/ability.StrengthIndex` | `129Ah` |
+| `engine combat/ability.StrengthHitAdjustment` | `1345h`（spec 697） |
+| `engine combat/ability.StrengthDamageAdjustment` | `13FDh` |
+| `engine combat/ability.DexterityDefenceAdjustment` | `117Ah` |
+| `party.Character.StrengthAdjustments` | 兩支的 `+125h` 閘門 |
+| `party.Character.AbilityAdjustments` | `+125h` |
+
+⚠ **傷害表的索引 19 是單獨一格（＋3）**，不是 `i − 17` 那一段的一部分。
+寫成一段會讓 18/01–50 的角色少一點傷害加值。
+
+⚠ **`129Ah` 兩條不寫回傳值的路**（力量落在 0..25 之外且不是 18、
+力量 18 但百分比 > 100）在 remake 一律回 `ok = false`，不猜值。
+
 ## `117Ah`／`120Ah`：兩張敏捷表
 
 兩支都讀 `角色^[17h]`。
