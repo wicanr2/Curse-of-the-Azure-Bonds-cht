@@ -2769,6 +2769,12 @@
     },
     {
       "path": "internal/party/dos_record_fields.go",
+      "sha256": "efbd770d168a8304c29605097d3aa0ecfcb62fbcb3c5285083c52273ae18a86c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
       "sha256": "f8036258fa4fb7a4f1571d13ef72b1108b2a7901e984063d1da0d1e0b265245a",
       "occurrences": 1,
       "category": "runtime_ui_debt"

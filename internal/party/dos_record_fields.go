@@ -90,7 +90,10 @@ var DOSPlayerRecordFields = []DOSRecordField{
 	{0x120, 2, "攻擊面數 基準", DOSFieldDocumented, "1000／795"},
 	{0x122, 2, "傷害加值 基準（有號）", DOSFieldDocumented, "1000／795"},
 	{0x124, 1, "護甲起點（重算時抄進 +19Ah；建角寫 32h ＝ AC 10）", DOSFieldDecoded, "1000／1140"},
-	{0x125, 2, "（未定）", DOSFieldUnknown, ""},
+	// `+125h` 為 0 時力量的命中／傷害調整直接回 0（spec 694／697）。
+	// `MON*CHA` 的 81 筆裡 61 筆是 0、20 筆是 1，所以它不是「玩家角色」的同義詞。
+	{0x125, 1, "力量調整的開關（0 ＝ 不套用命中／傷害調整）", DOSFieldDecoded, "694／697"},
+	{0x126, 1, "（未定）", DOSFieldUnknown, ""},
 	{0x127, 4, "經驗值（dword）", DOSFieldDecoded, "185"},
 	{0x12B, 1, "職業可用性遮罩（與物品類別表 `+0Dh` 做 and）", DOSFieldDocumented, "1120"},
 	{0x12C, 1, "基準最大 HP（不含裝備加成）", DOSFieldDecoded, "185"},

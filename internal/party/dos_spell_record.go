@@ -70,6 +70,7 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	}
 	out[0x073] = character.AttackAbility
 	out[0x124] = character.BaseArmorClass
+	out[0x125] = character.AbilityAdjustments
 	out[0xE5] = character.HitDice
 	out[0xE6] = character.MulticlassLevel
 	if character.AlignmentKnown {
@@ -157,9 +158,9 @@ type DOSPlayerRecord struct {
 	Experience       uint32
 	ControlMorale    uint8
 	// ECLFlag192 是記錄位移 0x192，ECL 用投影位址 7CE4h 讀（只取 and 1）。
-	ECLFlag192       uint8
+	ECLFlag192 uint8
 	// Gender 是記錄位移 0x119（spec 1093）。
-	Gender uint8
+	Gender           uint8
 	IconHead         uint8
 	IconWeapon       uint8
 	IconID           uint8
@@ -186,10 +187,12 @@ type DOSPlayerRecord struct {
 	// （畫面上的 THAC0 與 AC 都是 `60 − 它`，spec 1140）。
 	AttackAbility  uint8
 	BaseArmorClass uint8
-	HitDice          uint8
-	MulticlassLevel  uint8
-	Inventory        []monster.ItemRecord
-	Effects          []monster.AffectRecord
+	// AbilityAdjustments 是 `+125h`：力量的命中／傷害調整在它為 0 時不套用。
+	AbilityAdjustments uint8
+	HitDice            uint8
+	MulticlassLevel    uint8
+	Inventory          []monster.ItemRecord
+	Effects            []monster.AffectRecord
 }
 
 // DOSPlayerFiles is the decomposed character bundle documented by the
@@ -377,9 +380,9 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		BaseMaxHitPoints: int(data[0x12C]),
 		DrainedLevels:    int(data[0x0E7]),
 		DrainedHitPoints: int(data[0x0E8]),
-		Age:           int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
-		Experience:    binary.LittleEndian.Uint32(data[0x127:0x12B]),
-		ControlMorale: data[0xF7], ECLFlag192: data[0x192], Gender: data[0x119],
+		Age:              int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
+		Experience:       binary.LittleEndian.Uint32(data[0x127:0x12B]),
+		ControlMorale:    data[0xF7], ECLFlag192: data[0x192], Gender: data[0x119],
 		IconHead: data[0x141], IconWeapon: data[0x142], IconID: data[0x143], IconSize: data[0x144],
 		Copper:           binary.LittleEndian.Uint16(data[0x0FB:0x0FD]),
 		Silver:           binary.LittleEndian.Uint16(data[0x0FD:0x0FF]),
@@ -397,7 +400,8 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		MemorizedSpells: spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
 		SpellCastCount: spellCastCount,
 		ClassLevels:    classLevels, HitDice: data[0xE5], MulticlassLevel: data[0xE6],
-		AttackAbility:  data[0x73], BaseArmorClass: data[0x124],
+		AttackAbility: data[0x73], BaseArmorClass: data[0x124],
+		AbilityAdjustments: data[0x125],
 	}, nil
 }
 
@@ -413,11 +417,12 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		BaseMaxHitPoints: r.BaseMaxHitPoints,
 		DrainedLevels:    r.DrainedLevels,
 		DrainedHitPoints: r.DrainedHitPoints,
-		NPC: r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale, ECLFlag192: r.ECLFlag192,
-		Gender: Gender(r.Gender),
+		NPC:              r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale, ECLFlag192: r.ECLFlag192,
+		Gender:      Gender(r.Gender),
 		ClassLevels: r.ClassLevels, HitDice: r.HitDice, MulticlassLevel: r.MulticlassLevel,
 		AttackAbility: r.AttackAbility, BaseArmorClass: r.BaseArmorClass,
-		Copper: r.Copper, Silver: r.Silver, Electrum: r.Electrum,
+		AbilityAdjustments: r.AbilityAdjustments,
+		Copper:             r.Copper, Silver: r.Silver, Electrum: r.Electrum,
 		Gold: r.Gold, Platinum: r.Platinum, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
 		Equipment:        append([]monster.ItemRecord(nil), r.Inventory...),

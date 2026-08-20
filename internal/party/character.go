@@ -9,6 +9,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	engineability "github.com/wicanr2/golden-box-remake-engine/combat/ability"
 )
 
 type Race uint8
@@ -443,6 +444,10 @@ type Character struct {
 	// BaseArmorClass 是原作角色記錄的 `+124h`：派生數值重算把它抄進 `+19Ah`
 	// 當護甲的起點（spec 1000）。建角寫 `32h`（＝ AC 10）。同樣是儲存刻度。
 	BaseArmorClass uint8 `json:"base_armor_class,omitempty"`
+	// AbilityAdjustments 是原作角色記錄的 `+125h`：力量的命中與傷害調整
+	// （`overlay-24:1345h`／`13FDh`）在它為 0 時**直接回 0**。建角寫 1；
+	// `MON*CHA` 的 81 筆裡 61 筆是 0、20 筆是 1，所以它不是「玩家角色」的同義詞。
+	AbilityAdjustments uint8 `json:"ability_adjustments,omitempty"`
 	// HitDice and MulticlassLevel preserve DOS offsets 0xE5/0xE6. A
 	// dual-class character gains no training HP until the active class has
 	// surpassed the old class level.
@@ -1013,6 +1018,17 @@ func (c Character) Fighter() (combat.Fighter, error) {
 	}
 	if c.AttackAbility > 0 {
 		attackBonus = combat.DisplayAttackBonus(int(c.AttackAbility))
+		// 原作的派生數值重算在**第 0 個裝備槽是空的**時候才加力量調整
+		// （spec 1000 §四）。這一支不帶裝備，所以那一槽必然是空的。
+		if hit, _, ok := c.StrengthAdjustments(); ok {
+			attackBonus += hit
+		}
+	}
+	damageBonus := 0
+	if c.AttackAbility > 0 {
+		if _, damage, ok := c.StrengthAdjustments(); ok {
+			damageBonus = damage
+		}
 	}
 	armorClass := 10 - (c.Abilities.Dexterity-10)/2
 	if c.BaseArmorClass > 0 {
@@ -1038,6 +1054,7 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		Alignment:     c.Alignment, AlignmentKnown: c.AlignmentKnown,
 		HasPartyIcon: true, PartyHeadBlock: headBlock, PartyBodyBlock: bodyBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
 		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
+		DamageBonus: damageBonus,
 		HitDice:     c.HitDice,
 		Dexterity:   uint8(c.Abilities.Dexterity),
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
@@ -1295,4 +1312,24 @@ func CreationCombatBase(tables CombatBaseLookup, classLevels [8]uint8) (attackAb
 		return 0, 0, fmt.Errorf("game pack 沒有建角預設值")
 	}
 	return attack, uint8(armorStored), nil
+}
+
+// StrengthAdjustments 是原作的力量命中／傷害調整（`overlay-24:1345h`／`13FDh`，
+// spec 694／697）。`+125h` 為 0 時原作直接回 0，所以這裡回 `ok = false`。
+//
+// ⚠ 力量索引查不到（力量超出 0..25、或 18 但百分比 > 100）時原作回的是堆疊
+// 殘值——這裡一律回 `ok = false`，不猜一個看起來合理的值。
+func (c Character) StrengthAdjustments() (hit, damage int, ok bool) {
+	if c.AbilityAdjustments == 0 {
+		return 0, 0, false
+	}
+	strength := c.Abilities.StrengthFull
+	if strength == 0 {
+		strength = c.Abilities.Strength
+	}
+	index, found := engineability.StrengthIndex(strength, c.Abilities.StrengthExceptional)
+	if !found {
+		return 0, 0, false
+	}
+	return engineability.StrengthHitAdjustment(index), engineability.StrengthDamageAdjustment(index), true
 }
