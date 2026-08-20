@@ -269,6 +269,7 @@ session ＋ 讀畫面。詳見 [`docs/spec/1134-original-first-person-oracle.md`
 |---|---|
 | `tools/ida.sh` | IDA headless 唯一入口（固定 `ida-pro-9.4-idapython:py312-v1`） |
 | `tools/go.sh` | Docker 內 Go 工具鏈（主機不裝 Go；`.git` 在 workplace 故帶 `-buildvcs=false`） |
+| `tools/engine-bootstrap.sh` | 乾淨 clone 的第一步：把 `go.mod` 鎖住的 engine commit 準備好並重建 proxy |
 | `tools/engine-proxy.sh` | 把 nested engine 的某個 commit 打包成檔案型 Go module proxy，供 `go get` 鎖版 |
 | `tools/re-sweep.sh` | 一個平台的全模組建庫＋匯出：manifest → resident → 36 段 overlay |
 | `tools/ida/export_module.py` | 匯出一個 database 的函式／xref／字串／segment／未定義區 |
@@ -469,6 +470,21 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 只有重大、已測試、可展示的 milestone 才集中 commit＋push；不要每個小改
   都提交。
 - 兩個 repo 各自 commit／push，歷史保持獨立。
+### 乾淨 clone 之後的第一步
+
+`golden-box-remake-engine/` 與 `workplace/` 都在 `.gitignore` 裡，所以剛 clone
+完的 CoAB **既沒有 engine 原始碼、也沒有檔案型 proxy**，直接 `tools/go.sh` 會卡在
+取不到私有模組。先跑：
+
+```sh
+tools/engine-bootstrap.sh      # clone／fetch engine，打包 go.mod 鎖的那個 commit
+tools/go.sh test ./...
+```
+
+它只認 `go.mod` 鎖住的版本，**不動 engine 的工作區、也不 checkout**，
+所以開發者自己在 engine 上的改動不會被踩掉。engine 的 commit 還沒 push 上
+GitHub 時它會明講並結束——那時要先去有那份 commit 的機器上推。
+
 ### 升級 engine 相依（私有 repo，容器沒有憑證）
 
 `golden-box-remake-engine` 是**私有** repo：`proxy.golang.org` 取不到，容器裡也

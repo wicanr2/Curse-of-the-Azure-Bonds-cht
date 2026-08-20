@@ -99,6 +99,21 @@ Hap／熔岩洞／巫師塔 → 散提爾堡 → **眼魔洞穴（手札 59、De
 更多地圖、人物舞台、戰鬥時間軸與素材圖在[截圖目錄](docs/screenshots/)；原版忠實
 theme 與日後美化 theme 分開維護。
 
+## 從乾淨 clone 開始建置
+
+可重用的 engine 是**獨立的私有 repo**，而 `golden-box-remake-engine/` 與
+`workplace/` 都不在本 repo 的版控裡，所以剛 clone 完要先把相依準備好：
+
+```sh
+git clone https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht.git
+cd Curse-of-the-Azure-Bonds-cht
+tools/engine-bootstrap.sh      # clone／fetch engine，打包 go.mod 鎖的那個 commit
+tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
+```
+
+`tools/engine-bootstrap.sh` 只認 `go.mod` 鎖住的版本，不動 engine 的工作區。
+編譯一律走 docker（`tools/go.sh`），主機不需要裝 Go。
+
 ## 玩家文件
 
 - [繁體中文攻略入口](docs/guide/README.md)：目前可玩的主線、分區攻略與無雷提示。

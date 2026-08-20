@@ -35,8 +35,12 @@ version="v0.0.0-${stamp}-${short}"
 
 # ⚠ 未提交的改動不會進 zip：模組內容一律取自 commit，不取自工作區。
 # 否則 go.sum 的雜湊會對應到一份 GitHub 上不存在的東西。
-if [ -n "$(git -C "$ENGINE" status --porcelain)" ]; then
-  echo "engine 工作區有未提交的改動；先 commit 再打包" >&2
+#
+# 這道檢查只在**沒有指定 commit**（也就是要打包 HEAD）時才有意義——那時
+# 「我以為包進去了」的風險是真的。明確指定 commit 時打包的內容毫無歧義，
+# 而且 `tools/engine-bootstrap.sh` 要能在開發者的 engine 工作區有改動時照樣跑。
+if [ $# -eq 0 ] && [ -n "$(git -C "$ENGINE" status --porcelain)" ]; then
+  echo "engine 工作區有未提交的改動；先 commit 再打包，或明確指定要打包哪個 commit" >&2
   exit 2
 fi
 
