@@ -15,7 +15,8 @@
 | 直入旗標 | 62 個 flag，其中約 25 個是劇情 checkpoint | `cmd/azure-bonds-game` |
 | 主線整條跑的測試 | `TestRealNewGameRunsToTheEnding`，**單一函式、檔案 1,625 行** | `internal/game/campaign_normal_test.go` |
 
-連續的新遊戲 session 目前走到眼魔洞穴與散提爾堡世界選單。
+連續的新遊戲 session **已經可以從開場一路打到結局**（`TestRealNewGameRunsToTheEnding`，
+23 個段 subtest）。剩下的是段內支線與跨段不變量的後半。
 
 ## 二、為什麼要分段
 

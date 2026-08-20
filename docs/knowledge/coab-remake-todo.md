@@ -69,9 +69,9 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | ECL 副作用候選 | **154** 個中 33 個已審（31 筆依效果序列沿用） | `ecl-ordered-effect-reviews.json` |
 | ECL opcode commit phase | **55** 個 corpus opcode 中 25 支 handler 已讀、**30 支 `unknown`** | `ecl-opcode-effect-phases.md` |
 | **原作文字段落覆蓋** | **1,022** 頁**控制流可達**，`matched` **999**／**`unmatched` 0**／`variable-insert` **16**（頁裡印的是執行期的值，靜態驗不到）／`subroutine` **7**（共用子程式片段，實機不會單獨出現）。⚠ 分母的算法在 spec 1110 換過：上一版用 offset 順序切頁、又沒走訪 `ON GOTO`，197 頁只佔兩成 | `ecl-text-coverage.md` |
-| 正常玩家路徑 | 走到**眼魔洞穴東門 → 散提爾堡邊緣** | `go test` |
+| 正常玩家路徑 | **開場 → 結局**（擊敗提朗瑟克斯的結局選單），拆成 23 個段 subtest | `go test` |
 | 全套 gate | `./tools/go.sh test ./...` 全綠 | 本輪實跑 |
-| 遊戲入口旗標 | **60** 個，其中 32 個是分段驗收的直入點 | `main.go` |
+| 遊戲入口旗標 | `-segment <id>` 統一直入（`-segment list` 列 25 段）＋ 既有專用旗標 | `internal/segment`／`main.go` |
 
 **函式層已經全部看過一遍，語意層與內容量才是剩下的工作。**
 兩層不可互換：函式已盤點不代表系統語意閉合。
@@ -276,7 +276,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 
 | 類別 | 旗標 | 分段驗收時的角色 |
 |---|---|---|
-| 場景直入（25） | `-encounter` `-character-creation` `-tilverton-dungeon` `-inn` `-filani` `-weapon-shop` `-temple` `-training` `-tavern` `-high-priest` `-carriage` `-guildmaster` `-sewers` `-lava-tube` `-wizard-tower` `-wizard-tower-battle` `-wizard-tower-parlay` `-wizard-tower-exit` `-burial-red-web` `-burial-red-web-battle` `-burial-grave-battle` `-burial-daemir` `-inner-ritual` `-inner-final-battle` `-world-map` | **各自是一段的進入點**；該段要走到正常結束狀態，不是只驗一個畫面 |
+| 場景直入（`-segment <id>` ＋ 25 個既有旗標） | `-encounter` `-character-creation` `-tilverton-dungeon` `-inn` `-filani` `-weapon-shop` `-temple` `-training` `-tavern` `-high-priest` `-carriage` `-guildmaster` `-sewers` `-lava-tube` `-wizard-tower` `-wizard-tower-battle` `-wizard-tower-parlay` `-wizard-tower-exit` `-burial-red-web` `-burial-red-web-battle` `-burial-grave-battle` `-burial-daemir` `-inner-ritual` `-inner-final-battle` `-world-map` | **各自是一段的進入點**；該段要走到正常結束狀態，不是只驗一個畫面。統一入口是 `-segment <id>`（`-segment list` 列 25 段，註冊表在 `internal/segment`），既有旗標保留但它們做的是**段內**檢查點 |
 | 視覺 oracle（5） | `-dungeon-x` `-dungeon-y` `-area-map` `-combat-terrain` `-combat-visual-demo` | deterministic 截圖比對；不單獨構成一段 |
 | 正常入口 | `-opening` | ⚠ 它跳過建角 ⇒ 建角是**另外一段**，用 `-guided-creation` 驗 |
 | 資產／設定 | `-font` `-eten-font` `-locale` `-image` `-sound-dir` `-savgam-dir` 等 | 允許 |

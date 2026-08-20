@@ -63,7 +63,7 @@
 
 | 級 | 工作 | 量到的缺口 | 下一個可驗收成果 |
 |---|---|---|---|
-| **P0** | **開場→結局的正常主線** | 目前走到眼魔洞穴手札 59 與散提爾堡世界選單；後續章節、最終戰與 `PROGRAM 8` 結局未串完 | 沿同一 session 續接下一章，最後閉合結局與 save／reload |
+| **P0** | **開場→結局的正常主線** | ✅ **通關了**（2026-08-20）：同一條 session 從開場走到擊敗提朗瑟克斯的結局選單，23 個段 subtest；報告見 [`docs/plan/seg-21-ending-report.md`](docs/plan/seg-21-ending-report.md) | 補段內支線（墓園盜墓者、內城各房間、外城下水道口）與 save／reload gate |
 | **P0** | **戰鬥回合生命週期**（`RE-06` → `ENG-07`）| ECL `24h COMBAT` 199 處標 `partial`——分派點已接、回合生命週期未接；initiative／held／delayed／guard／quick 的逐項對照仍開著 | 每一項各一條回歸測試 ＋ 一條正常戰鬥路徑 |
 | **P1** | **ECL 的 11 個 `partial` opcode** | 1,057 條指令：`CLEARMONSTERS` 206、`PICTURE` 199、`COMBAT` 199、`CALL` 168、`PRINT RETURN` 120、`TREASURE` 63、`DAMAGE` 24、`LOAD PIECES` 23、`LOAD FILES` 22、`APPROACH` 20、`PROGRAM` 13 | 依出現次數往下做；每一個都要 producer→state→consumer 三段齊全 |
 | **P1** | **手札 producer** | locale 有 45 則手札，只有 **15 則**接上 ECL producer ⇒ 30 則還沒有觸發來源；手札 59 的地圖 renderer 未做 | 逐則從 ECL producer 接入，不因手冊有內容就提早揭露 |
@@ -512,7 +512,7 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
 |---|---|---|
 | 火刀據點完整正常路徑 | 入口→首領→戰後世界→阿沙本福德→立石群→艾森布拉城外的正常 session 已接通；仍未覆蓋所有可選房間、全部寶物、失敗／重訪分支。 | 以原始 GEO 路徑補齊火刀可選房間與重訪，再把可驗收結果寫入 coverage matrix。 |
 | 火刀據點出口、返回世界地圖與重訪 | 正常 session 的 `PATROL FOREST`、`JOURNEY ON`、阿沙本福德抵達與後續城市 handoff 已閉合；Tilverton 固定 fixture 的 save/load 回歸仍保留。 | 將同一正常 session 的存檔／重載與重訪延伸到世界路由，並分離固定夾具與正常主線證據。 |
-| 開場到結局的正常玩家主線 | 已從開場走到眼魔洞穴手札 59、Dexam 雙戰；第 555 輪再由神殿東門沿十二步普通移動／開門抵達 `(6,3)`，完成離場並回到散提爾堡世界選單。後續完整章節、最終戰與結局尚未串完。 | 從散提爾堡世界選單沿同一 session 續接下一個主線章節，最終閉合 `PROGRAM 8` 結局與 save/reload gate。 |
+| 開場到結局的正常玩家主線 | ✅ **通關**：同一條 session 從開場走到擊敗提朗瑟克斯的結局選單（立石群 → 密斯卓諾墓園的紅網與黛米爾公主 → 外城遺跡 → 內城遺跡的儀式與爪牙戰 → 二樓東北角的最終戰，38 名戰鬥員）。拆成 23 個段 subtest，每段結束存快照並驗往返。 | 補段內支線（墓園盜墓者、內城的臥房／辦公室／廚房／犬舍／雕像室／禮拜堂、外城下水道口）與 save／reload gate。 |
 
 ### P1：補齊可玩規則、資料與原版行為
 
