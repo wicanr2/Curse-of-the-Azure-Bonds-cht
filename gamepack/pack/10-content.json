@@ -8145,6 +8145,100 @@
     "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"
    ],
    "message_id": "world.phlan.edge"
+  },
+  {
+   "id": "yulash.red-plume-checkpoint",
+   "all_contains": [
+    "YOU SEE A CHECKPOINT MANNED BY RED PLUME GUARDS TO THE NORTH"
+   ],
+   "message_id": "yulash.red-plume-checkpoint"
+  },
+  {
+   "id": "zhentil.patrol-condemned",
+   "all_contains": [
+    "YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP",
+    "CONDEMNED TO DEATH"
+   ],
+   "message_id": "zhentil.patrol-condemned"
+  },
+  {
+   "id": "zhentil.rumour.altar",
+   "all_contains": [
+    "MOST OF THE MONEY LOCKED UP IN THE ALTAR"
+   ],
+   "message_id": "zhentil.rumour.altar"
+  },
+  {
+   "id": "zhentil.rumour.panic",
+   "all_contains": [
+    "WATCH WHERE YOU",
+    "RUSHES OFF IN PANIC"
+   ],
+   "message_id": "zhentil.rumour.panic"
+  },
+  {
+   "id": "zhentil.rumour.peddler",
+   "all_contains": [
+    "YOU WANT TO BUY SOME",
+    "HE RUNS OFF"
+   ],
+   "message_id": "zhentil.rumour.peddler"
+  },
+  {
+   "id": "zhentil.rumour.dimswart",
+   "all_contains": [
+    "GOT DIMSWART THE SAGE LOCKED UP"
+   ],
+   "message_id": "zhentil.rumour.dimswart"
+  },
+  {
+   "id": "zhentil.rumour.arms",
+   "all_contains": [
+    "LOOK, ON THEIR ARMS"
+   ],
+   "message_id": "zhentil.rumour.arms"
+  },
+  {
+   "id": "zhentil.rumour.halfling",
+   "all_contains": [
+    "THE ONES THE HALFLING DESCRIBED"
+   ],
+   "message_id": "zhentil.rumour.halfling"
+  },
+  {
+   "id": "zhentil.rumour.tension",
+   "all_contains": [
+    "READY TO BLOW ANYTIME"
+   ],
+   "message_id": "zhentil.rumour.tension"
+  },
+  {
+   "id": "zhentil.rumour.she-was-right",
+   "all_contains": [
+    "LOOKS LIKE SHE WAS RIGHT"
+   ],
+   "message_id": "zhentil.rumour.she-was-right"
+  },
+  {
+   "id": "zhentil.rumour.factions",
+   "all_contains": [
+    "TROOPERS, PRIESTS, AND MAGES ALL AT ODDS"
+   ],
+   "message_id": "zhentil.rumour.factions"
+  },
+  {
+   "id": "overland.red-plume-patrol.pass",
+   "all_contains": [
+    "YOU ARE IN A WAR ZONE"
+   ],
+   "message_id": "overland.red-plume-patrol.pass"
+  },
+  {
+   "id": "overland.red-plume-patrol",
+   "all_contains": [
+    "YOU ARE APPROACHED BY A RED PLUME PATROL"
+   ],
+   "message_id": "overland.red-plume-patrol"
   }
  ],
  "option_rules": [

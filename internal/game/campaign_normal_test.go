@@ -2,11 +2,13 @@ package game
 
 import (
 	"archive/zip"
+	"sort"
 	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
 	"testing"
+	"unicode"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
@@ -44,14 +46,21 @@ type normalCampaignObserver struct {
 	nextWorldDestinations []string
 	stopAtMessageID       string
 	stopAtDataPackEventID string
+	// messages 記下這條 session 期間玩家看得到的每一句話，供語系不變量檢查。
+	messages map[string]bool
 }
 
 func newNormalCampaignObserver(t *testing.T, state *State) *normalCampaignObserver {
 	t.Helper()
-	return &normalCampaignObserver{state: state, seen: make(map[string]bool)}
+	return &normalCampaignObserver{
+		state: state, seen: make(map[string]bool), messages: make(map[string]bool),
+	}
 }
 
 func (o *normalCampaignObserver) observe() {
+	if o.messages != nil && o.state != nil && strings.TrimSpace(o.state.Message) != "" {
+		o.messages[o.state.Message] = true
+	}
 	for _, messageID := range []string{
 		"hap.abandoned-village",
 		"hap.hiding-peasants",
@@ -2139,6 +2148,30 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		t.FailNow()
 	}
 
+	// SEG-32 的語系不變量：整條主線上玩家看得到的每一句話都要是中文。
+	// 判準是「有沒有漢字」——原作文字整段是大寫英文，沒有漢字而有英文字母
+	// 就是落回原文。
+	t.Run("語系：整條主線沒有落回原文", func(t *testing.T) {
+		if len(observer.messages) < 100 {
+			t.Fatalf("只記到 %d 句話，這條 session 不可能這麼短", len(observer.messages))
+		}
+		var fallbacks []string
+		for message := range observer.messages {
+			if campaignMessageHasHan(message) {
+				continue
+			}
+			if !campaignMessageHasLatinWord(message) {
+				continue
+			}
+			fallbacks = append(fallbacks, message)
+		}
+		sort.Strings(fallbacks)
+		for _, message := range fallbacks {
+			t.Errorf("落回原文：%q", message)
+		}
+		t.Logf("整條主線記到 %d 句話，落回原文 %d 句", len(observer.messages), len(fallbacks))
+	})
+
 	t.Run("段界快照往返", func(t *testing.T) {
 		if len(segmentEnds) != 22 {
 			t.Fatalf("存到 %d 份段界快照，應該是 22 份", len(segmentEnds))
@@ -2186,4 +2219,31 @@ type campaignSegmentEnd struct {
 	area      uint8
 	inDungeon bool
 	party     int
+}
+
+// campaignMessageHasHan 判斷一句話裡有沒有漢字。
+func campaignMessageHasHan(message string) bool {
+	for _, glyph := range message {
+		if unicode.Is(unicode.Han, glyph) {
+			return true
+		}
+	}
+	return false
+}
+
+// campaignMessageHasLatinWord 判斷一句話裡有沒有連續兩個以上的英文字母。
+// 單獨的字母多半是數字旁的單位或原作的代號，不算落回原文。
+func campaignMessageHasLatinWord(message string) bool {
+	run := 0
+	for _, glyph := range message {
+		if (glyph >= 'A' && glyph <= 'Z') || (glyph >= 'a' && glyph <= 'z') {
+			run++
+			if run >= 2 {
+				return true
+			}
+			continue
+		}
+		run = 0
+	}
+	return false
 }

@@ -608,7 +608,6 @@
    "hillsfar.pirates-flee": "A pirate craft approaches until the party is spotted; then they pile on the canvas and flee.",
    "hillsfar.abandoned-outpost": "Along the coast the party passes an abandoned Zhentarim outpost and the remains of a buccaneer's base.",
    "hillsfar.boat-forced-ashore": "As the party's boat travels along the river, another craft comes alongside and forces them ashore.",
-   "yulash.red-plume-patrol": "A Red Plume patrol approaches. One guard claims your tattoos reveal you as Zhentil spies.",
    "yulash.edge": "You are at the edge of Yulash. Will you enter the war zone or continue your journey?",
    "yulash.entry": "Smoke rises behind Yulash's ruined walls and battle sounds from within. How will you enter?",
    "yulash.riders-burst-out": "Before you enter, a man on a large horse bursts from Yulash and knocks a party member down. A woman in purple clings behind him and calls an apology as they race away.",
@@ -1364,7 +1363,21 @@
    "spell_magic_user_89": "Remove Curse",
    "spell_magic_user_92": "Cone of Cold",
    "spell_magic_user_93": "Feeblemind",
-   "spell_magic_user_100": "Bestow Curse"
+   "spell_magic_user_100": "Bestow Curse",
+   "yulash.red-plume-checkpoint": "You see a checkpoint manned by Red Plume guards to the north.",
+   "zhentil.patrol-condemned": "A patrol from Zhentil Keep confronts you. The officer steps forward. 'You are listed in our reports as condemned to death, sentence to be carried out immediately.'",
+   "zhentil.rumour.altar": "You overhear: 'Fzoul's got most of the money locked up in the altar. I hear it's trapped.'",
+   "zhentil.rumour.panic": "You overhear: 'Hey buddy! Watch where you're... oh, uh, excuse me, I'm, uh...' He rushes off in panic.",
+   "zhentil.rumour.peddler": "You overhear: 'Hey, you want to buy some... no, no, I'm sorry, uh, mistake. Bye.' He runs off.",
+   "zhentil.rumour.dimswart": "You overhear: 'I hear Fzoul's got Dimswart the sage locked up.'",
+   "zhentil.rumour.arms": "You overhear: 'Look, on their arms. That's them...'",
+   "zhentil.rumour.halfling": "You overhear: 'They look like the ones the halfling described...'",
+   "zhentil.rumour.tension": "You overhear: 'This city's ready to blow anytime.'",
+   "zhentil.rumour.she-was-right": "You overhear: 'Well, looks like she was right...'",
+   "zhentil.rumour.factions": "You overhear that troopers, priests and mages are all at odds, and Dimswart the sage has disappeared.",
+   "overland.red-plume-patrol": "You are approached by a Red Plume patrol.",
+   "overland.red-plume-patrol.pass": "'You are in a war zone, beware.' They let you pass.",
+   "yulash.red-plume-patrol": "A Red Plume patrol approaches. One guard claims your tattoos reveal you as Zhentil spies."
   }
  },
  "events": []
