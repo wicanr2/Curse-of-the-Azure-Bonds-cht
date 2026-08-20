@@ -1,27 +1,31 @@
 package combat
 
-// CombatCamera converts CombatMap tile coordinates into the tile coordinates
-// used by the combat viewport. The original combat screen follows the active
-// character; keeping this transform in the platform-neutral core lets Ebiten
-// and later Gold Box front ends share the same map/camera contract.
+import engineviewport "github.com/wicanr2/golden-box-remake-engine/viewport"
+
+// CombatCamera 把戰鬥地圖格換成戰鬥視窗的格座標。平移本身在共用 engine 的
+// `viewport.Camera`；這裡只保留 `TilePoint` 的轉接。
 type CombatCamera struct {
-	Origin TilePoint
+	camera engineviewport.Camera
 }
 
-// NewCombatCamera centers the active tile at the requested viewport tile.
-// Callers that do not have a decoded active position should use the zero
-// camera, which preserves the existing absolute-coordinate fallback.
+// NewCombatCamera 讓目前行動的格落在視窗的指定位置。沒有已知的行動格時回零值
+// 相機，也就是保留絕對座標的 fallback。
 func NewCombatCamera(active, viewportCenter TilePoint, ok bool) CombatCamera {
 	if !ok {
 		return CombatCamera{}
 	}
-	return CombatCamera{Origin: TilePoint{
-		X: active.X - viewportCenter.X,
-		Y: active.Y - viewportCenter.Y,
-	}}
+	return CombatCamera{camera: engineviewport.NewCamera(active.X, active.Y,
+		viewportCenter.X, viewportCenter.Y)}
 }
 
-// Apply translates one CombatMap tile into viewport-relative coordinates.
+// Origin 是相機的平移量，也就是視窗左上角對應的地圖格。
+// 反查（由畫面格回推地圖格）需要它。
+func (c CombatCamera) Origin() TilePoint {
+	return TilePoint{X: c.camera.OriginX, Y: c.camera.OriginY}
+}
+
+// Apply 把一格戰鬥地圖座標換成視窗相對座標。
 func (c CombatCamera) Apply(point TilePoint) TilePoint {
-	return TilePoint{X: point.X - c.Origin.X, Y: point.Y - c.Origin.Y}
+	x, y := c.camera.Apply(point.X, point.Y)
+	return TilePoint{X: x, Y: y}
 }

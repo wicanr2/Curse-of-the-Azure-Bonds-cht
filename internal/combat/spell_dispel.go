@@ -1,6 +1,10 @@
 package combat
 
-import "fmt"
+import (
+	"fmt"
+
+	enginedispel "github.com/wicanr2/golden-box-remake-engine/combat/dispel"
+)
 
 // 解除魔法的對抗（spec 1125，handler `overlay-22@317Eh`）。
 //
@@ -13,24 +17,9 @@ import "fmt"
 // ★ 兩個方向的係數**不一樣**（高出去每級 ＋5，低下去每級 −2）。寫成對稱的
 // ±5 會讓低階施法者解得太少、高階施法者解得太多，而且兩邊都不會有人發現。
 
-const (
-	// dispelBaseChance 是等級相同時的機率。
-	dispelBaseChance = 50
-	// dispelPerLevelAbove／Below 是兩個方向各自的係數。
-	dispelPerLevelAbove = 5
-	dispelPerLevelBelow = 2
-)
-
-// DispelChance 回傳「解得掉」的百分比機率。
+// DispelChance 回傳「解得掉」的百分比機率。曲線在共用 engine 的 `combat/dispel`。
 func DispelChance(casterLevel, effectLevel int) int {
-	switch {
-	case casterLevel > effectLevel:
-		return (casterLevel-effectLevel)*dispelPerLevelAbove + dispelBaseChance
-	case casterLevel < effectLevel:
-		return dispelBaseChance - (effectLevel-casterLevel)*dispelPerLevelBelow
-	default:
-		return dispelBaseChance
-	}
+	return enginedispel.Chance(casterLevel, effectLevel)
 }
 
 // DispelImpact 是一個目標身上被解掉的效果。

@@ -1,6 +1,10 @@
 package combat
 
-import "fmt"
+import (
+	"fmt"
+
+	engineaiscan "github.com/wicanr2/golden-box-remake-engine/combat/aiscan"
+)
 
 // AI 的「這回合做什麼」：用道具與施法共用一套門檻掃描（spec 835／836）。
 //
@@ -46,15 +50,10 @@ func MoraleValue(raw uint8) (int, bool) {
 // ⚠ **1d7 一定要擲**，即使候選清單是空的：原作在檢查清單之前就擲了
 // （spec 835／836 都是），省掉它會讓後續的亂數序列整條偏掉。
 func AIThresholdScan(roll func(sides int) int, perRound func(threshold int) (uint8, bool)) (uint8, bool) {
-	rounds := roll(aiThresholdRoundsDie)
-	threshold := aiInitialThreshold
-	for round := 1; round <= rounds; round++ {
-		if choice, ok := perRound(threshold); ok {
-			return choice, true
-		}
-		threshold--
-	}
-	return 0, false
+	return engineaiscan.Scan(engineaiscan.Rules{
+		InitialThreshold: aiInitialThreshold,
+		RoundsDie:        aiThresholdRoundsDie,
+	}, roll, perRound)
 }
 
 // AIPriorityLookup 回傳一個候選的 AI 分數（法術屬性表的 `+0Dh`，spec 802／835）
