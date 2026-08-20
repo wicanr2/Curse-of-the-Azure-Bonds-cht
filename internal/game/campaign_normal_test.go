@@ -2319,13 +2319,16 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		}
 	})
 
-	// SEG-33 的音樂綁定：每一段結束時都該有一首正在播的曲子，而且曲名要在
-	// game pack 的曲目表裡。
+	// SEG-33 的音樂綁定：每一段結束時都該有一首正在播的曲子、曲名在 game pack
+	// 的曲目表裡，**而且是 PC-98 原作在那個 block 會選的那一首**（spec 355）。
+	//
+	// ⚠ 只驗「有一首在曲目表裡的曲子」擋不住「每一段都播同一首」。
 	t.Run("音樂綁定", func(t *testing.T) {
 		pack, err := gamepack.Default()
 		if err != nil {
 			t.Fatal(err)
 		}
+		distinct := map[string]bool{}
 		for _, end := range segmentEnds {
 			if end.music == "" {
 				t.Errorf("%s 結束時沒有正在播的曲子", end.name)
@@ -2334,6 +2337,20 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			if _, found := pack.FindMusicTrack(end.music); !found {
 				t.Errorf("%s 的曲目 %q 不在 game pack 的曲目表裡", end.name, end.music)
 			}
+			distinct[end.music] = true
+			choices, declared := expectedMusicForBlock(end.block)
+			if !declared {
+				// `0x30` 不換曲、`0x52` 沒有分支：那兩段沿用前一段的曲子。
+				continue
+			}
+			if !slices.Contains(choices, end.music) {
+				t.Errorf("%s（block %#02X）結束時播的是 %s，spec 355 說應該是 %v",
+					end.name, end.block, end.music, choices)
+			}
+		}
+		// ⚠ 非空還不夠：整條主線只播出一首也會讓上面每一條都過。
+		if len(distinct) < 4 {
+			t.Errorf("整條主線只播出 %d 首不同的曲子，選曲的比對等於沒驗", len(distinct))
 		}
 	})
 
