@@ -20,7 +20,7 @@
 
 | opcode | 名稱 | 狀態 | 可達出現次數 | 出現在幾個 block | 還差什麼 |
 |---|---|---|---:|---:|---|
-| `0x1C` | CLEARMONSTERS | `partial` | 206 | 24 | ECL 看得到的部分已完整（怪物鏈與已放置數；原作另清的 47E6h／8B69h／7603h／6F8Ch 都不是 ECL 變數，見 ecl-shared-cells）。要收尾的是 remake 這側的怪物／圖示模型還有沒有該一起清的狀態 |
+| `0x1C` | CLEARMONSTERS | `partial` | 206 | 24 | 原作 120Eh 逐條讀完（37 條）：清怪物鏈與已放置數（47E6h）、清「有怪要打」旗標（8B69h，spec 1095）、把 6F70h 起 28 bytes 的戰利品池歸零（七種貨幣／寶石／珠寶，spec 1059）、沿 6F8Ch 鏈逐節點 FreeMem(63) 釋放 27h 串進去的物品節點（spec 1087），並把 7603h 設成 8。remake 這一側全部對上——怪物鏈、跨執行累積的戰利品堆都清（docs/audit/ecl-treasure-clear.md）。partial 只剩一項：7603h 設成 8 的語意還沒解讀 |
 | `0x0E` | PICTURE | `partial` | 199 | 23 | PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層 |
 | `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）。回合生命週期已收（spec 1135～1138）。199 處分成 153 處真的要打（前面擺過怪）與 46 處走服務分派（商店／營地／神殿，見 docs/audit/ecl-combat-sites.md）；`partial` 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標 |
 | `0x2D` | CALL | `partial` | 168 | 22 | CALL 是七路 switch；corpus 只用 2E10h 與 6803h，兩者的 consumer 尚未逐條驗（RE-03） |

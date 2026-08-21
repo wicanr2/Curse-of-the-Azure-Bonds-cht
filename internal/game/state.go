@@ -1992,6 +1992,18 @@ func (s *State) applyECLInventorySignals(result ecl.RunResult) {
 // and money adapters. It intentionally does not load ITEM*.DAX or generate
 // random treasure here: those operations need the active area and item data.
 func (s *State) applyECLTreasureSignals(result ecl.RunResult) {
+	// `1Ch CLEARMONSTERS` 把還沒領走的戰利品堆整個丟掉（原作 `120Eh`：`6F70h`
+	// 起 28 bytes 歸零 ＋ `6F8Ch` 鏈逐節點釋放）。corpus 唯一走得到「發了又清」
+	// 那條路的是提爾佛頓火刀首領的重打迴圈（`ECL2/0x04`）——少了這一段，重打一次
+	// 就多領一次上一輪的戰利品。
+	//
+	// ⚠ 隊伍已經拿走的東西不在這一堆裡（`TakeTreasureItem` 早就搬進角色身上），
+	// 金幣也不動：remake 的金幣是直接入帳的，清它等於沒收玩家的錢。
+	if result.ClearMonstersRequested {
+		s.pendingTreasure = nil
+		s.pendingTreasureItems = nil
+		s.treasureGems, s.treasureJewelry = 0, 0
+	}
 	s.pendingTreasure = append(s.pendingTreasure, result.TreasureRequests...)
 }
 
