@@ -204,7 +204,8 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   商店旗標排在後面——remake 原本反過來。`CALL`（168 條）七支分派逐條讀完
   （spec 1150）：corpus 用到四個運算元，`6803h` 是圖片序列的下一格、`B200h`
   的第二個音效走不到。`TREASURE`（63 條）也讀完了（spec 1151）：戰利品池是覆寫、
-  物品鏈是前插所以清單反序，隨機表的區間 bug 已修。`CLEARMONSTERS`（206 條）已逐條讀完
+  物品鏈是前插所以清單反序，隨機表的區間 bug 已修，隨機那一路也接上了原作的
+  造物品常式（spec 1036），開出來的東西帶得出加值與名稱修飾。`CLEARMONSTERS`（206 條）已逐條讀完
   並跟上（spec 1145），只剩 `7603h := 8` 的語意未解讀。每一支 handler 的位址與
   條數在 [`docs/audit/ecl-opcode-handlers-dos.md`](docs/audit/ecl-opcode-handlers-dos.md)。
 - **存檔**：角色記錄還有 24 bytes 未解讀；跨遊戲角色轉移未做。

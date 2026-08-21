@@ -86,7 +86,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x24: {EffectPartial, "COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；partial 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標——兩個旗標都沒有 producer"},
 	0x25: {EffectDone, "動態分支，目的地是字面位址（spec 1110）"},
 	0x26: {EffectDone, "同上，返回位址進堆疊"},
-	0x27: {EffectPartial, "原作 1B53h 整支 398 條讀完（spec 1151）：前七個運算元以 32-bit **覆寫** DS:6F70h 的戰利品池（1Ch 清的就是它）；第八個 ItemBlock 三選一——< 80h 載 ITEM<片>.DAX 那個區塊並把裡面每一筆都掛上鏈、= 0FFh 不給物品、80h..FEh 隨機產生 n − 80h 件。物品鏈 DS:6F8Ch 的 next 在 +2Ah 且是**前插**，顯示端從鏈頭走（overlay-05:0CF5h），所以清單是反序——remake 已跟上。隨機表的區間 bug 也修了（第二擲 48／49 原作回 59，remake 先前回劍）。partial 剩兩項：隨機那一路沒跑 CREATERNDTREASURE（spec 1036）所以加值／名稱三段／重量／價值／卷軸法術都是空的；以及 remake 把同一次執行的多筆 TREASURE 相加而原作是覆寫（corpus 未觀察到兩筆之間沒有 1Ch 的情形）"},
+	0x27: {EffectPartial, "原作 1B53h 整支 398 條讀完（spec 1151）：前七個運算元以 32-bit **覆寫** DS:6F70h 的戰利品池（1Ch 清的就是它）；第八個 ItemBlock 三選一——< 80h 載 ITEM<片>.DAX 那個區塊並把裡面每一筆都掛上鏈、= 0FFh 不給物品、80h..FEh 隨機產生 n − 80h 件。物品鏈 DS:6F8Ch 的 next 在 +2Ah 且是**前插**，顯示端從鏈頭走（overlay-05:0CF5h），所以清單是反序——remake 已跟上。隨機表的區間 bug 也修了（第二擲 48／49 原作回 59，remake 先前回劍）。隨機那一路已接上 CREATERNDTREASURE（spec 1036）——加值（1d20：1..14 給 ＋1、15..20 給 ＋2）、名稱三段索引、重量、價值、卷軸法術與特殊物品範本都照原作補齊，擲骰順序也對上。partial 只剩一項：remake 把同一次執行的多筆 TREASURE 相加而原作是覆寫（corpus 未觀察到兩筆之間沒有 1Ch 的情形）"},
 	0x28: {EffectDone, "ROB 依比例取走金錢與物品"},
 	0x29: {EffectDone, "遭遇選單"},
 	0x2A: {EffectDone, "GETTABLE 讀表（手札編號就是靠它，spec 1108）"},

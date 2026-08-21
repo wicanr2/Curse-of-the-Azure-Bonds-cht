@@ -2175,9 +2175,14 @@ func (s *State) ResolveTreasureRequests() error {
 			if request.ItemBlock == 0xFF {
 				continue
 			}
+			roll := func(sides int) int { return rng.Intn(sides) + 1 }
 			for count := 0; count < int(request.ItemBlock-0x80); count++ {
+				// 先擲類別（`overlay-02:1D02h`），再交給原作的造物品常式
+				// `CREATERNDTREASURE` 補上加值、名稱三段、重量、價值與卷軸法術
+				// （`overlay-21:0FEDh`，spec 1036）。少了後半段，隨機開出來的東西
+				// 只有一個類別名，撿東西畫面上看不到 `+N` 也看不到名稱修飾。
 				total.items = prependTreasureItem(total.items,
-					monster.ItemRecord{Type: randomTreasureItemType(rng), Count: 1})
+					monster.BuildRandomTreasureItem(randomTreasureItemType(rng), roll))
 			}
 			continue
 		}

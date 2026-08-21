@@ -114,8 +114,23 @@ func TestECLTreasureResolvesReferenceRandomCount(t *testing.T) {
 		t.Fatal(err)
 	}
 	items := state.PendingTreasureItems()
-	if len(items) != 2 || items[0].Count != 1 || items[1].Count != 1 {
-		t.Fatalf("random items=%#v, want two count-one records", items)
+	if len(items) != 2 {
+		t.Fatalf("random items=%#v, want two records", items)
+	}
+	// ★ 隨機那一路要跑完整的 `CREATERNDTREASURE`（spec 1036），不是只放一個類別。
+	// 種子 7 這兩件：`+1` 的類別 9（重量 25、`+39h` ＝ 5、價值 ＝ 1 × 2000），
+	// 與類別 `3Eh` 的一張卷軸（一個法術 ⇒ namenum(2) ＝ `0D1h+1`，
+	// namenum(3) ＝ `0D0h`，第四環 1d5+65 擲到 69，價值 ＝ 4 × 300）。
+	arrow := monster.ItemRecord{
+		Type: 0x09, NameNumbers: [3]uint8{0, 0xA2, 0x09}, Plus: 1,
+		HiddenNameFlags: 6, Weight: 25, Count: 5, Value: 2000,
+	}
+	scroll := monster.ItemRecord{
+		Type: 0x3E, NameNumbers: [3]uint8{0, 0xD2, 0xD0}, Plus: 1,
+		HiddenNameFlags: 6, Weight: 25, Value: 1200, Affects: [3]uint8{69, 0, 0},
+	}
+	if items[0] != arrow || items[1] != scroll {
+		t.Fatalf("random items=%#v, want %#v and %#v", items, arrow, scroll)
 	}
 }
 
