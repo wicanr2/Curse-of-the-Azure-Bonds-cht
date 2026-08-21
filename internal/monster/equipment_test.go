@@ -194,22 +194,65 @@ func (c testItemText) Text(key, fallback string) string {
 func TestLocalizedItemNameComposesTypedFields(t *testing.T) {
 	text := testItemText{
 		"item_type_1C": "bolt", "item_type_24": "sword",
-		"item_name_24": "sword", "item_name_9F": "+1",
-		"item_unknown": "unknown(0x%02X)", "item_count": "%s x%d",
+		"item_name_24": "sword", "item_name_A2": "+1",
+		"item_unknown": "unknown(0x%02X)", "item_count": "%d %s",
 	}
-	if got := LocalizedItemName(ItemRecord{Type: 28, Count: 9}, text); got != "bolt x9" {
+	// 三個名稱編號都是 0：退回類別名，而數量照原作**前綴**（`10 Arrow`）。
+	if got := LocalizedItemName(ItemRecord{Type: 28, Count: 9}, text); got != "9 bolt" {
 		t.Fatalf("quarrel name=%q", got)
 	}
 	if got := LocalizedItemName(ItemRecord{Type: 0xEE}, text); got != "unknown(0xEE)" {
 		t.Fatalf("unknown name=%q", got)
 	}
-	item := ItemRecord{Type: 36, NameNumbers: [3]uint8{159, 36, 0}}
-	if got := LocalizedItemName(item, text); got != "+1 sword" {
+	// 成分由 `+31h` 排到 `+2Fh`：`{+1, Long Sword, 0}` 讀成 `sword` 再接 `+1`。
+	item := ItemRecord{Type: 36, NameNumbers: [3]uint8{0xA2, 0x24, 0}}
+	if got := LocalizedItemName(item, text); got != "sword+1" {
 		t.Fatalf("visible name numbers=%q", got)
 	}
-	item.HiddenNameFlags = 4 // reference hides namenum1
+	item.HiddenNameFlags = 4 // 藏住第一個名稱編號（未鑑定的加值）
 	if got := LocalizedItemName(item, text); got != "sword" {
 		t.Fatalf("hidden name number=%q", got)
+	}
+}
+
+// 名字**完全**來自三個名稱編號：類別名一個字都不該冒出來（spec 1178）。
+// ⚠ 這條與上一個測試不同——上面驗的是「有翻譯時組得對」，這裡驗的是
+// 「類別名不會偷偷混進去」。原版 253 件物品每一件都至少有一個名稱編號。
+func TestLocalizedItemNameIgnoresTheItemTypeWhenNameNumbersExist(t *testing.T) {
+	text := testItemText{
+		"item_type_46": "雜項", "item_name_6C": "伊奧恩石", "item_name_74": "‧深紅",
+	}
+	item := ItemRecord{Type: 0x46, NameNumbers: [3]uint8{0x74, 0x6C, 0}}
+	if got := LocalizedItemName(item, text); got != "伊奧恩石‧深紅" {
+		t.Fatalf("名稱 ＝ %q，預期 %q", got, "伊奧恩石‧深紅")
+	}
+}
+
+// `+32h`（Plus）與 `+36h`（Cursed）不進名字：加值是走名稱編號 `A2h..A6h`，
+// 原作 72 件帶 Plus 的物品裡有 54 件從頭到尾不顯示加值（spec 1178）。
+func TestLocalizedItemNameDoesNotPrintPlusOrCursed(t *testing.T) {
+	text := testItemText{"item_type_24": "sword", "item_name_24": "sword"}
+	item := ItemRecord{Type: 0x24, NameNumbers: [3]uint8{0, 0, 0x24}, Plus: 3, Cursed: true}
+	if got := LocalizedItemName(item, text); got != "sword" {
+		t.Fatalf("名稱 ＝ %q，預期 %q", got, "sword")
+	}
+}
+
+// 三個成分而中間是連接詞時把前後對調：英文 `Wand of Fireballs`，
+// 中文要讀成「火球之魔杖」而不是「魔杖之火球」。
+func TestLocalizedItemNameSwapsAroundConnectors(t *testing.T) {
+	text := testItemText{
+		"item_name_45": "魔杖", "item_name_A7": "之", "item_name_F2": "火球",
+		"item_name_6C": "伊奧恩石", "item_name_74": "‧深紅", "item_name_40": "藥水",
+	}
+	item := ItemRecord{Type: 0x4F, NameNumbers: [3]uint8{0xF2, 0xA7, 0x45}}
+	if got := LocalizedItemName(item, text); got != "火球之魔杖" {
+		t.Fatalf("名稱 ＝ %q，預期 %q", got, "火球之魔杖")
+	}
+	// 中間不是連接詞就照原順序，不能一律對調。
+	plain := ItemRecord{Type: 0x46, NameNumbers: [3]uint8{0x74, 0x6C, 0x40}}
+	if got := LocalizedItemName(plain, text); got != "藥水伊奧恩石‧深紅" {
+		t.Fatalf("名稱 ＝ %q，預期 %q", got, "藥水伊奧恩石‧深紅")
 	}
 }
 

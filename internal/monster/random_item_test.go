@@ -266,14 +266,24 @@ func TestRandomItemWeightAndValueTables(t *testing.T) {
 	}
 }
 
-// TestBuildRandomTreasureItemNamesShowPlus 釘住驗收條件本身：隨機開出來的東西
-// 在撿東西畫面上要顯示得出加值與名稱修飾，不能只剩一個類別名。
+// TestBuildRandomTreasureItemNamesShowPlus 釘住隨機寶物的加值怎麼進名字。
+//
+// ⚠ 加值走的是**名稱編號** `A2h..A6h`（`+1`..`+5`），不是 `+32h` 那個欄位
+// （spec 1178）。而 `+35h` 預設 6 ＝ 藏住前兩個成分，所以剛撿到的時候玩家
+// 只看得到類別名——**加值要鑑定過才會出現**，這是原作行為不是缺譯。
 func TestBuildRandomTreasureItemNamesShowPlus(t *testing.T) {
 	rolls := &scriptedRolls{t: t, sides: []int{20}, value: []int{15}}
 	item := BuildRandomTreasureItem(0x24, rolls.roll)
-	text := stubTextResolver{"item_type_24": "長劍", "item_plus": "＋%d %s"}
-	if got := LocalizedItemName(item, text); got != "＋2 長劍" {
-		t.Fatalf("顯示名稱 ＝ %q，預期 %q", got, "＋2 長劍")
+	if item.NameNumbers != [3]uint8{0, 0xA3, 0x24} {
+		t.Fatalf("名稱編號 ＝ %v，預期 {0, A3h, 24h}", item.NameNumbers)
+	}
+	text := stubTextResolver{"item_type_24": "長劍", "item_name_24": "長劍", "item_name_A3": "＋2"}
+	if got := LocalizedItemName(item, text); got != "長劍" {
+		t.Fatalf("未鑑定時 ＝ %q，預期 %q", got, "長劍")
+	}
+	item.HiddenNameFlags = 0
+	if got := LocalizedItemName(item, text); got != "長劍＋2" {
+		t.Fatalf("鑑定後 ＝ %q，預期 %q", got, "長劍＋2")
 	}
 }
 

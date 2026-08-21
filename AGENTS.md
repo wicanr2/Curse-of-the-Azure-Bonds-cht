@@ -96,6 +96,8 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 
 ### 容易重犯的反組譯與實作錯誤
 
+- **照 reference 實作填出來的對照表，要拿原始資料量過才算數。** 抄一份社群port 的陣列很快，而**索引基底差一格不會有任何錯誤訊息**——出來的名字仍然是合法的名字，只是換了一個。量法是把原始資料整批組回去比字串：對的基底會有壓倒性的相符率，錯的基底是 0。物品名稱那張表就是這樣抓到的（54 筆裡 `9Fh`之後整段偏 3，玩家看到的加值是錯的數字，spec 1178）。
+
 - 已閉合的 `MON*SPC` 傷害能力也必須遵守 engine＋game-pack 分層：raw effect
   kind、damage flag 與 operation 由版本化 JSON 宣告，不能把 `0Ah／70h／87h`
   或中文名稱硬編進共用 engine、State 或測試 fixture。`half` 與 `immune` 必須
