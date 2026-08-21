@@ -3096,6 +3096,90 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "000a220ef3daadb68bb9876e484967c41efbd2719004e7bd2c96a04ec2b0a76c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "3544b2e33f66b2bd99b2b16389bcb442be9524eb9fcf19ac5ff59252a3d47635",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "3b4a6e4f3eb038cb6b72b067a7bb6bf04302d506006df63c3014d477b95e6b6d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "3e9179dc9973487a5f61429b83f654d0801b5c3ff7e71d133779d4ece1567544",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "4b55d185c74b0c556a7c448612f453bbaf7b5322849987fbac267cf11614024e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "52504cdec8badf1f132b94baaba0f0d66eaeb6b5f945ea8679b5b72c0f9d4685",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "8e029b63a499c01456b870c146b75e609f782f12d6e87105f6ca6dfb3f0fa8d1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "9d2e31df3ce2b01407f718c60f5f5b3848dddef0350a5a32d954459532d9f26f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "ac2c10d5afb4477af18ebef62b5fea574549d75ab24d95a57175a7df34fb1810",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "f497da0201f5aebf55a0855a1a216955c7bf431b63f98c6ba7a92c6de2f9ce3e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/item-use-audit/main.go",
+      "function": "main",
+      "sha256": "f59c959ac7267bb8ff07a5043b175ec4816064ea6b35baaa095cc812f58e3383",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/locale-drift-audit/main.go",
       "function": "main",
       "sha256": "5f5ebcca8586b6b6edda024a534b95501d4bc1997517af85cd73923391f5b72e",

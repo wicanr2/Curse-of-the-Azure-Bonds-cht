@@ -3164,16 +3164,54 @@ func (s *State) CombatDone() error {
 	return s.advanceCombatToParty()
 }
 
-// CombatMainMenuText 依狀態組出主選單。
+// CombatMainMenuText 依狀態把主選單組出來。
 //
-// ★ 原作的選單是**動態組合**的（spec 905）：`'Turn '` 只有牧師而且這一場還沒
-// 驅散過才接上去。remake 這一側把兩種排列各放一條文字規則，挑哪一條由同一個
-// 條件決定。
+// ★ 原作是**逐項串接**的（spec 905）：`'Move '`、`'View Aim '`、`'Use '`、
+// `'Cast '`、`'Turn '`，最後接上 `'Quick Done'`，每一項各有自己的條件。
+// remake 這一側照同一個形狀組，每一項一條文字規則。
+//
+// ⚠ 目前只有兩項真的照條件收放：`使用`（身上有東西）與 `退散`（牧師且這一場
+// 還沒用過）。`移動` 的原作條件是 `MOVELEFT > 0`，而 remake 沒有「這一回合還剩
+// 幾格」的模型（進移動模式時才由移動力現算）；`施法` 的原作條件是三件事同時成立
+// （有記憶法術、`CANCAST`、一個全域旗標）。兩者補上之前先照常顯示，理由寫在
+// spec 1168。
 func (s *State) CombatMainMenuText() string {
-	if s.CombatCanTurnUndead() {
-		return s.catalog.Text("combat_menu_main_turn", "combat_menu_main_turn")
+	options := []string{s.catalog.Text("combat_menu_item_move", "combat_menu_item_move")}
+	options = append(options,
+		s.catalog.Text("combat_menu_item_view", "combat_menu_item_view"),
+		s.catalog.Text("combat_menu_item_aim", "combat_menu_item_aim"))
+	if s.CombatCanUseItem() {
+		options = append(options, s.catalog.Text("combat_menu_item_use", "combat_menu_item_use"))
 	}
-	return s.catalog.Text("combat_menu_main", "combat_menu_main")
+	options = append(options, s.catalog.Text("combat_menu_item_cast", "combat_menu_item_cast"))
+	if s.CombatCanTurnUndead() {
+		options = append(options, s.catalog.Text("combat_menu_turn_undead", "combat_menu_turn_undead"))
+	}
+	return strings.Join(append(options,
+		s.catalog.Text("combat_menu_item_quick", "combat_menu_item_quick"),
+		s.catalog.Text("combat_menu_item_done", "combat_menu_item_done")), "　")
+}
+
+// CombatCanUseItem 回報「使用」該不該出現。
+//
+// ★ 原作的條件是 `角色^[14Ch] > 0`——**身上有東西就顯示**，不管那些東西能不能
+// 用（spec 905）。真的按下去之後才由 spec 921 分成卷軸與充能物品兩條路，
+// 兩條都不成立就什麼都不做。
+//
+// ⚠ remake 目前**還沒有** USE 的動作本身，這裡先讓選單誠實：沒東西就不顯示。
+// 缺口的量測在 `docs/audit/combat-item-use.md`。
+func (s *State) CombatCanUseItem() bool {
+	fighter, ok := s.combatPartyTurn()
+	if !ok {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != fighter.ID {
+			continue
+		}
+		return len(character.Equipment) > 0
+	}
+	return false
 }
 
 func (s *State) CombatHitPointsLabel() string {
