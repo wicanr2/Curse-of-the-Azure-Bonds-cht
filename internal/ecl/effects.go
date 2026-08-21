@@ -102,7 +102,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x34: {EffectDone, "ECL CLOCK"},
 	0x35: {EffectDone, "SAVE TABLE"},
 	0x36: {EffectDone, "ADD NPC 建出隊員"},
-	0x37: {EffectPartial, "LOAD PIECES 記下請求；資產載入由上層做"},
+	0x37: {EffectPartial, "與 21h 共用 overlay-02:0C15h..0DA3h 一支 131 條（spec 1087；⚠ IDA 只認到 0D4Ah／104 條，切掉的正是收尾重繪判斷）。三個運算元是三個牆面組槽位的片號，載得進去的槽走 LOADWALLSET(槽, 片)，而那一支收尾寫 [7210h+槽×4] := 片、[7212h+槽×4] := 槽；運算元是 0FFh 的槽由 handler 自己寫成 0FFFFh ⇒ 這三格就是存檔第 9..14 欄（spec 1076／1153）。remake 的資產載入本來就接上了，這一輪補上存檔那一半。partial 剩兩條 corpus 走不到的路：o[1] = 7Fh ⇒ LOADWALLSET(1, 0)，以及 bank0^[1CEh]／[1D0h] 都非零時只載槽 1／3"},
 	0x38: {EffectPartial, "PROGRAM 記下 ID；PROGRAM 8 的通關序列（spec 1087）尚未接完"},
 	0x39: {EffectDone, "WHO 選人"},
 	0x3A: {EffectDone, "DELAY"},

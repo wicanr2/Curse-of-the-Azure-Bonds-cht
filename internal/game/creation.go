@@ -676,6 +676,11 @@ func (s *State) savgamContainerForSave() (partySave.SAVGAMContainer, error) {
 	container.MapDirection = s.DungeonDirection
 	container.MapWallType = s.DungeonWallType
 	container.MapWallRoof = s.DungeonWallRoof
+	// 三組牆面參數由 `37h LOAD PIECES` 維護（spec 1153）。沒有跑過任何
+	// `LOAD PIECES` 時保留匯入來的那一份，不要用零蓋掉原版存下來的值。
+	if s.wallSetParams != ([3]partySave.SAVGAMSetBlock{}) {
+		container.SetBlocks = s.wallSetParams
+	}
 	container.PartyCount = uint8(len(s.partyRoster))
 	for index := range container.CharacterRefs {
 		container.CharacterRefs[index] = nil

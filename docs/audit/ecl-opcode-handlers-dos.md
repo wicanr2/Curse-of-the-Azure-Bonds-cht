@@ -58,7 +58,7 @@ tools/ida.sh py workplace/re-sweep/dos/overlays/overlay-02.bin.i64 \
 | `34h` | ECL CLOCK | 2 | `2CB5h` | `2CB5h`..`2CEAh` | 22 | `done` |
 | `35h` | SAVE TABLE | 3 | `0E71h` | `0E71h`..`0EBDh` | 29 | `done` |
 | `36h` | ADD NPC | 2 | `2DA9h` | `2DA9h`..`2E16h` | 38 | `done` |
-| `37h` | LOAD PIECES | 3 | `0C15h` | `0C15h`..`0D4Ah` | 104 | `partial` |
+| `37h` | LOAD PIECES | 3 | `0C15h` | `0C15h`..`0DA3h` | 131 | `partial` |
 | `38h` | PROGRAM | 1 | `30DDh` | `30DDh`..`321Fh` | 104 | `partial` |
 | `39h` | WHO | 1 | `2D5Eh` | `2D5Eh`..`2DA9h` | 36 | `done` |
 | `3Ah` | DELAY | 0 | `28F3h` | `28F3h`..`2903h` | 7 | `done` |

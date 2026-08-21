@@ -106,7 +106,10 @@ end;
 > 這正是 Gold Box 系列「帶角色進下一款」的入口。
 > ★ `DS:4FC7h` 就是 spec 1084 那個「這次訓練不收費」旗標之一，由 `PROGRAM 3` 打開。
 
-## `dos overlay-02:00C15h`（131 條）＝ `21h` `LOAD FILES` ／ `37h` `LOAD PIECES`
+## `dos overlay-02:00C15h`..`00DA3h`（131 條）＝ `21h` `LOAD FILES` ／ `37h` `LOAD PIECES`
+
+⚠ IDA 只認到 `00D4Ah`（104 條）——真正的 `retf` 在 `00DA3h`，而被切掉的正是
+收尾那段重繪判斷。PC-98 側同一支的邊界問題見 [spec 587](587-ecl-handler-21-37-shared.md)。
 
 **同一支處理兩個指令碼**，靠 `DS:75FFh`（目前指令碼，spec 1083 的同一格）分流：
 
@@ -116,32 +119,41 @@ for i := 1 to 3 do o[i] := ADDRESSVALUE(i);
 
 if DS:75FFh = 21h then begin                      { LOAD FILES }
     DS:47E5h := 1;
-    if (o[3] <> 0FFh) and (o[3] <> 7Fh) and (bank0^[1CCh] <> 0) then begin
-        bank0^[18Ah] := o[3];
-        <overlay-30 entry#9>(o[3]);               { Load3DMap }
+    if (o[1] <> 0FFh) and (o[1] <> 7Fh) and (bank0^[1CCh] <> 0) then begin
+        bank0^[18Ah] := o[1];
+        <overlay-30 entry#9 LOAD3DMAP>(o[1]);
         bank1^[592h] := 0;
     end;
-    if (o[1] <> 0FFh) and (bank0^[1CCh] = 0) and (DS:728Ah <> 'P') then
-        <overlay-29 entry#9>('y');                { 載入 bigpic }
+    if (o[3] <> 0FFh) and (bank0^[1CCh] = 0) and (DS:728Ah <> 'P') then
+        <overlay-29 entry#9 LOADBIGPIC>('y');
 end else begin                                     { LOAD PIECES }
     DS:47E4h := 1;
-    if o[3] = 7Fh then <overlay-30 entry#8>(1, 0)  { WALLDEF }
+    if o[1] = 7Fh then <overlay-30 entry#8 LOADWALLSET>(1, 0)
     else if (bank0^[1CEh] <> 0) and (bank0^[1D0h] <> 0) then begin
-        if o[3] <> 0FFh then <overlay-30 entry#8>(1, o[3]);
-        if o[1] <> 0FFh then <overlay-30 entry#8>(3, o[1]);
+        if o[1] <> 0FFh then <overlay-30 entry#8 LOADWALLSET>(1, o[1]);
+        if o[3] <> 0FFh then <overlay-30 entry#8 LOADWALLSET>(3, o[3]);
     end else
         for i := 1 to 3 do
-            if o[i] <> 0FFh then <overlay-30 entry#8>(i, o[i])
+            if o[i] <> 0FFh then <overlay-30 entry#8 LOADWALLSET>(i, o[i])
             else begin word[DS:7210h ＋ i × 4] := 0FFFFh;
                        word[DS:7212h ＋ i × 4] := 0FFFFh end;
 end;
 
-if (DS:47E4h <> 0) and (DS:47E5h <> 0)
-   and (DS:4FBBh = 3) and (DS:4FBAh <> 3) and (DS:8B6Eh <> 0) then begin
-    <01A0:0136h>();  <overlay-24 entry#2>(目前角色);  <overlay-24 entry#38>();
+if (DS:47E4h <> 0) and (DS:47E5h <> 0) and (DS:4FBBh = 3) then begin
+    if (DS:4FBAh <> 3) and (DS:8B6Eh <> 0) then begin
+        <01A0:0136h>();  <overlay-24 entry#2 SHOWALL>(目前角色);
+        <overlay-24 entry#38 SHOWLOCATION>();
+    end;
+    DS:8B6Eh := 0;                { ★ 清除在外層 if 之內，不是無條件 }
 end;
-DS:8B6Eh := 0;
 ```
+
+> ⚠ **`o[i]` 是運算元編號，不是 IDA 的 `var_N` 標籤。** 三個值存在
+> `[bp-3]`／`[bp-2]`／`[bp-1]`，也就是 IDA 的 `var_3`／`var_2`／`var_1`，
+> 所以 `o[1]` ＝ `var_3`。照 `var_N` 抄會把順序整個顛倒過來——而全遊戲的
+> `21h` 運算元是 `<地圖> 02 FF`，順序反了就會得到「`LOAD3DMAP` 永遠不執行」
+> 這個自洽但錯的結論。逐槽迴圈那一支也證明了同一件事：它是
+> `LOADWALLSET(i, o[i])`，槽號與運算元同號。
 
 > ★★★ **`DS:7210h`／`DS:7212h` 就是 spec 1076 存進存檔的那三組牆面參數**
 > ——這裡是**寫入端**，`0FFFFh` 代表「這一格不用」，正好對上
