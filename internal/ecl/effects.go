@@ -93,7 +93,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x2B: {EffectDone, "水平選單"},
 	0x2C: {EffectDone, "PARLAY"},
 	0x2D: {EffectPartial, "原作 2F02h 整支 124 條讀完（spec 1150）：operand − 7FFFh 之後七路分派。corpus 用到四個——2E10h 125 處（重畫）、B200h 19 處（音效）、C01Eh 13 處（MOVEFORWARD）、6803h 11 處（圖片序列推一格）。B200h 的兩支已判定：選號由 ECL 格 03DE 決定，全 corpus 15 次寫入一律是 5 ⇒ 只走得到 10 那一支；6803h 已接成序列游標。partial 只剩 2E10h：原作是 STOREVALUE 當場寫 720Fh/7210h/7211h 並立五個髒旗標之一，CALL 只負責「髒了才重畫」，remake 改用 CALL 當下回頭掃 SaveWrites 的啟發式"},
-	0x2E: {EffectPartial, "只有明確指定全隊的封包（旗標 0xC0）會在正式路徑結算；其餘要選定角色的形式仍留在 pending"},
+	0x2E: {EffectPartial, "原作 2942h 整支 305 條讀完（spec 1152）：★ 旗標 bit 7 清空時**整個 byte 是次數**——連打 N 下，每下隨機挑一名隊員、用第五個運算元當攻擊值擲 TRYTOHIT，而且每下之間重擲傷害；bit 7 設定才是旗標（bit 6 全隊、bit 5 不擲豁免、bit 4 豁免成功仍吃**全額**、bit 0..4 豁免調整值——bit 4 與調整值欄位重疊，但 corpus 24 處低 5 位全 0）。目標三選一：全隊／目前角色（第五個運算元 bit 7）／隨機一名。★ 目前角色那一路傳給 MAKESAVE 的種類要**減一**且 0 代表不擲豁免，另外兩路不減一、由 bit 5 決定；兩種讀法在 corpus 上結果相同。正式路徑先前只結算全隊那 14 處，現在三種形式都結算（目標由封包自己帶著發出當下選的角色，否則整隊迴圈裡的傷害會全算到同一位身上）。partial 只剩原作那條 corpus 走不到的「單體但隨機挑一名」沒接"},
 	0x2F: {EffectDone, "位元運算"},
 	0x30: {EffectDone, "位元運算"},
 	0x31: {EffectDone, "關掉畫面上的怪物圖示；同一次執行又要求新畫面時以新的為準（原作也是先關再畫）"},

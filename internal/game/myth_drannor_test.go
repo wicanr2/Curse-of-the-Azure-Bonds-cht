@@ -1863,18 +1863,10 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	outcomes, err := state.ResolvePendingECLDamageWithDefaultHitResolver(
-		-1,
-		func(sides int) int {
-			if sides == 20 {
-				return 20
-			}
-			return 1
-		},
-		func(int) int { return 1 },
-	)
-	if err != nil || len(outcomes) != 2 {
-		t.Fatalf("red-plume two-arrow damage outcomes=%v err=%v", outcomes, err)
+	// 兩支箭是 `2Eh` 的「連打 N 下」形式（旗標 bit 7 清空 ⇒ 整個 byte 是次數，
+	// spec 1152）。正式路徑現在自己就會結算它，不需要測試另外呼叫一次。
+	if len(state.pendingDamageRequests) != 0 {
+		t.Fatalf("red-plume 兩支箭沒有在正式路徑結算：%#v", state.pendingDamageRequests)
 	}
 	for step := 0; step < 4 && state.Mode == ModeWilderness &&
 		reflect.DeepEqual(state.currentOriginalChoices,
@@ -1892,8 +1884,8 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	}
 	arrowHP := state.partyRoster[0].HitPoints
 	if arrowHP >= state.partyRoster[0].MaxHitPoints {
-		t.Fatalf("red-plume arrows did not create a real Cure target: hp=%d/%d outcomes=%v",
-			arrowHP, state.partyRoster[0].MaxHitPoints, outcomes)
+		t.Fatalf("red-plume arrows did not create a real Cure target: hp=%d/%d",
+			arrowHP, state.partyRoster[0].MaxHitPoints)
 	}
 	if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
 		t.Fatalf("red-plume ALT+M enabled=%v err=%v", enabled, err)
@@ -2613,23 +2605,10 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness ||
 		state.Message != gamePackText(t, state, "myth-drannor.outer.brush-attack") ||
-		len(state.pendingDamageRequests) != 1 {
+		len(state.pendingDamageRequests) != 0 {
 		t.Fatalf("brush rocks mode=%v message=%q pending=%+v choices=%v",
 			state.Mode, state.Message, state.pendingDamageRequests,
 			state.currentOriginalChoices)
-	}
-	rockOutcomes, err := state.ResolvePendingECLDamageWithDefaultHitResolver(
-		-1,
-		func(sides int) int {
-			if sides == 20 {
-				return 20
-			}
-			return 1
-		},
-		func(int) int { return 1 },
-	)
-	if err != nil || len(rockOutcomes) == 0 {
-		t.Fatalf("brush rock damage outcomes=%+v err=%v", rockOutcomes, err)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)

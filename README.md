@@ -205,7 +205,9 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   （spec 1150）：corpus 用到四個運算元，`6803h` 是圖片序列的下一格、`B200h`
   的第二個音效走不到。`TREASURE`（63 條）也讀完了（spec 1151）：戰利品池是覆寫、
   物品鏈是前插所以清單反序，隨機表的區間 bug 已修，隨機那一路也接上了原作的
-  造物品常式（spec 1036），開出來的東西帶得出加值與名稱修飾。`CLEARMONSTERS`（206 條）已逐條讀完
+  造物品常式（spec 1036），開出來的東西帶得出加值與名稱修飾。`DAMAGE`（24 處）也讀完了（spec 1152）：旗標最高位元清空時
+  整個 byte 是「連打幾下」，每下隨機挑人擲命中——正式路徑先前只結算全隊那一種，
+  現在三種目標形式都算得出來。`CLEARMONSTERS`（206 條）已逐條讀完
   並跟上（spec 1145），只剩 `7603h := 8` 的語意未解讀。每一支 handler 的位址與
   條數在 [`docs/audit/ecl-opcode-handlers-dos.md`](docs/audit/ecl-opcode-handlers-dos.md)。
 - **存檔**：角色記錄還有 24 bytes 未解讀；跨遊戲角色轉移未做。

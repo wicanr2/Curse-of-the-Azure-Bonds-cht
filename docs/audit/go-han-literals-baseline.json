@@ -4289,12 +4289,6 @@
     },
     {
       "path": "internal/ecl/effects.go",
-      "sha256": "d2284bcaa0ec4767922fe2826c5ce1137dd89414e53d836d8656247989f62777",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/ecl/effects.go",
       "sha256": "d3907402bbb99dd32929237f549fee3f4c9897591de9dd32222a1db3720d7ab1",
       "occurrences": 2,
       "category": "runtime_ui_debt"
@@ -4302,6 +4296,12 @@
     {
       "path": "internal/ecl/effects.go",
       "sha256": "d51390eac59d2e55a09f31203da87f6c88adbead0f3dc53e172ad4b6c895de63",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/ecl/effects.go",
+      "sha256": "d5fcccfa861628da5bd54ccbeb1c8a6ebb40103fb53a6940a7c16e285e701ed1",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
