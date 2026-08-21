@@ -24,6 +24,9 @@
 | 51 | Lightning Bolt | 3 | magic-user | none | other_finish | `?d6` | — | `overlay-22 entry#69` |
 | 56 | Restoration | 7 | cleric | none | other_finish | （不擲骰） | — | `overlay-22 entry#71` |
 | 58 | Cure Serious Wounds | 4 | cleric | heal | entry9 | `2d8 ＋ 1` | — | `overlay-22 entry#73` |
+| 60 | （無名：物品效果 `3Ch`，spec 1169） | 6 |  | none | other_finish | `1d6` | — | `overlay-22 entry#75` |
+| 64 | （無名：物品效果 `40h`，spec 1169） | 6 |  | damage | computed | `1d3`、`?d6` | `09h` | `overlay-22 entry#64` |
+| 65 | （無名：物品效果 `41h`，spec 1169） | 6 |  | damage | entry10 | `2d4 ＋ 2` | `08h` | `overlay-22 entry#79` |
 | 66 | Cause Serious Wounds | 4 | cleric | damage | entry10 | `2d8 ＋ 1` | `08h` | `overlay-22 entry#80` |
 | 67 | Neutralize Poison（紮營） | 4 | cleric | none | other_finish | （不擲骰） | — | `overlay-22 entry#81` |
 | 68 | Poison | 4 | cleric | damage | flat | `0` | `08h` | `overlay-22 entry#82` |
@@ -38,4 +41,6 @@
 | 89 | Remove Curse | 4 | magic-user | none | other_finish | （不擲骰） | — | `overlay-22 entry#9` |
 | 91 | Cloud Kill | 5 | magic-user | none | other_finish | （不擲骰） | — | `overlay-22 entry#101` |
 | 92 | Cone of Cold | 5 | magic-user | damage | computed | `?d4` | `0Ah` | `overlay-22 entry#102` |
+| 98 | （無名：物品效果 `62h`，spec 1169） | 6 |  | none | other_finish | `6d6` | — | `overlay-22 entry#107` |
+| 99 | （無名：物品效果 `63h`，spec 1169） | 6 |  | heal | entry9 | `2d4 ＋ 2` | — | `overlay-22 entry#108` |
 | 100 | Bestow Curse | 4 | magic-user | damage | flat | `0` | `00h` | `overlay-22 entry#62` |

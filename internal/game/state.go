@@ -197,6 +197,8 @@ type State struct {
 	combatTurnIndex         int
 	combatDelayedTurns      map[int]bool
 	combatTargetIndex       int
+	// combatItemIndex 是戰鬥選單 `使用` 目前選中的第幾件可用物品（spec 1170）。
+	combatItemIndex         int
 	combatCastingSpell      uint8
 	combatCastingClass      party.Class
 	combatCastingClassSet   bool

@@ -5,6 +5,7 @@
  "spells": {
   "3": {
    "name": "Cure Light Wounds",
+   "placeholder": false,
    "level": 1,
    "caster_class": "cleric",
    "camp_only": false,
@@ -35,6 +36,7 @@
   },
   "4": {
    "name": "Cause Light Wounds",
+   "placeholder": false,
    "level": 1,
    "caster_class": "cleric",
    "camp_only": false,
@@ -65,6 +67,7 @@
   },
   "9": {
    "name": "Burning Hands",
+   "placeholder": false,
    "level": 1,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -81,6 +84,7 @@
   },
   "15": {
    "name": "Magic Missile",
+   "placeholder": false,
    "level": 1,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -109,6 +113,7 @@
   },
   "20": {
    "name": "Shocking Grasp",
+   "placeholder": false,
    "level": 1,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -136,6 +141,7 @@
   },
   "31": {
    "name": "Knock",
+   "placeholder": false,
    "level": 2,
    "caster_class": "magic-user",
    "camp_only": true,
@@ -152,6 +158,7 @@
   },
   "36": {
    "name": "Animate Dead",
+   "placeholder": false,
    "level": 7,
    "caster_class": "",
    "camp_only": false,
@@ -167,6 +174,7 @@
   },
   "37": {
    "name": "Cure Blindness",
+   "placeholder": false,
    "level": 3,
    "caster_class": "cleric",
    "camp_only": false,
@@ -182,6 +190,7 @@
   },
   "39": {
    "name": "Cure Disease",
+   "placeholder": false,
    "level": 3,
    "caster_class": "cleric",
    "camp_only": true,
@@ -197,6 +206,7 @@
   },
   "41": {
    "name": "Dispel Magic",
+   "placeholder": false,
    "level": 3,
    "caster_class": "cleric",
    "camp_only": false,
@@ -224,6 +234,7 @@
   },
   "43": {
    "name": "Remove Curse",
+   "placeholder": false,
    "level": 3,
    "caster_class": "cleric",
    "camp_only": false,
@@ -239,6 +250,7 @@
   },
   "46": {
    "name": "Dispel Magic",
+   "placeholder": false,
    "level": 3,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -266,6 +278,7 @@
   },
   "47": {
    "name": "Fireball",
+   "placeholder": false,
    "level": 3,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -304,6 +317,7 @@
   },
   "51": {
    "name": "Lightning Bolt",
+   "placeholder": false,
    "level": 3,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -331,6 +345,7 @@
   },
   "56": {
    "name": "Restoration",
+   "placeholder": false,
    "level": 7,
    "caster_class": "cleric",
    "camp_only": false,
@@ -346,6 +361,7 @@
   },
   "58": {
    "name": "Cure Serious Wounds",
+   "placeholder": false,
    "level": 4,
    "caster_class": "cleric",
    "camp_only": false,
@@ -374,8 +390,107 @@
    "dice_sides": 8,
    "bonus": 1
   },
+  "60": {
+   "name": "",
+   "placeholder": true,
+   "level": 6,
+   "caster_class": "",
+   "camp_only": false,
+   "instructions": 37,
+   "overlay": 22,
+   "entry": 75,
+   "offset": 16372,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "count": {
+      "kind": "literal",
+      "value": 1
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 6
+     }
+    }
+   ],
+   "shape": "other_finish"
+  },
+  "64": {
+   "name": "",
+   "placeholder": true,
+   "level": 6,
+   "caster_class": "",
+   "camp_only": false,
+   "instructions": 103,
+   "overlay": 22,
+   "entry": 64,
+   "offset": 14094,
+   "outcome": "damage",
+   "value_source": "dice",
+   "element": 9,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "count": {
+      "kind": "literal",
+      "value": 1
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 3
+     }
+    },
+    {
+     "shape": "entry10",
+     "count": {
+      "kind": "computed",
+      "via": "mov    al,BYTE PTR [bp-0x1]"
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 6
+     }
+    }
+   ],
+   "shape": "computed"
+  },
+  "65": {
+   "name": "",
+   "placeholder": true,
+   "level": 6,
+   "caster_class": "",
+   "camp_only": false,
+   "instructions": 31,
+   "overlay": 22,
+   "entry": 79,
+   "offset": 16643,
+   "outcome": "damage",
+   "value_source": "dice",
+   "element": 8,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "count": {
+      "kind": "literal",
+      "value": 2
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 4
+     }
+    }
+   ],
+   "shape": "entry10",
+   "dice_count": 2,
+   "dice_sides": 4,
+   "bonus": 2
+  },
   "66": {
    "name": "Cause Serious Wounds",
+   "placeholder": false,
    "level": 4,
    "caster_class": "cleric",
    "camp_only": false,
@@ -406,6 +521,7 @@
   },
   "67": {
    "name": "Neutralize Poison",
+   "placeholder": false,
    "level": 4,
    "caster_class": "cleric",
    "camp_only": true,
@@ -421,6 +537,7 @@
   },
   "68": {
    "name": "Poison",
+   "placeholder": false,
    "level": 4,
    "caster_class": "cleric",
    "camp_only": false,
@@ -437,6 +554,7 @@
   },
   "71": {
    "name": "Cure Critical Wounds",
+   "placeholder": false,
    "level": 5,
    "caster_class": "cleric",
    "camp_only": false,
@@ -467,6 +585,7 @@
   },
   "72": {
    "name": "Cause Critical Wounds",
+   "placeholder": false,
    "level": 5,
    "caster_class": "cleric",
    "camp_only": false,
@@ -497,6 +616,7 @@
   },
   "74": {
    "name": "Flame Strike",
+   "placeholder": false,
    "level": 5,
    "caster_class": "cleric",
    "camp_only": false,
@@ -527,6 +647,7 @@
   },
   "75": {
    "name": "Raise Dead",
+   "placeholder": false,
    "level": 5,
    "caster_class": "cleric",
    "camp_only": true,
@@ -542,6 +663,7 @@
   },
   "76": {
    "name": "Slay Living",
+   "placeholder": false,
    "level": 5,
    "caster_class": "cleric",
    "camp_only": false,
@@ -569,6 +691,7 @@
   },
   "83": {
    "name": "Dimension Door",
+   "placeholder": false,
    "level": 4,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -584,6 +707,7 @@
   },
   "85": {
    "name": "Fire Shield",
+   "placeholder": false,
    "level": 4,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -611,6 +735,7 @@
   },
   "87": {
    "name": "Ice Storm",
+   "placeholder": false,
    "level": 4,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -641,6 +766,7 @@
   },
   "89": {
    "name": "Remove Curse",
+   "placeholder": false,
    "level": 4,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -656,6 +782,7 @@
   },
   "91": {
    "name": "Cloud Kill",
+   "placeholder": false,
    "level": 5,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -671,6 +798,7 @@
   },
   "92": {
    "name": "Cone of Cold",
+   "placeholder": false,
    "level": 5,
    "caster_class": "magic-user",
    "camp_only": false,
@@ -697,8 +825,68 @@
    "value_via": "mov    al,BYTE PTR [bp-0x6]",
    "shape": "computed"
   },
+  "98": {
+   "name": "",
+   "placeholder": true,
+   "level": 6,
+   "caster_class": "",
+   "camp_only": false,
+   "instructions": 75,
+   "overlay": 22,
+   "entry": 107,
+   "offset": 22212,
+   "outcome": "none",
+   "value_source": "absent",
+   "element": null,
+   "dice_calls": [
+    {
+     "shape": "entry10",
+     "count": {
+      "kind": "literal",
+      "value": 6
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 6
+     }
+    }
+   ],
+   "shape": "other_finish"
+  },
+  "99": {
+   "name": "",
+   "placeholder": true,
+   "level": 6,
+   "caster_class": "",
+   "camp_only": false,
+   "instructions": 33,
+   "overlay": 22,
+   "entry": 108,
+   "offset": 22411,
+   "outcome": "heal",
+   "value_source": "dice",
+   "element": null,
+   "dice_calls": [
+    {
+     "shape": "entry9",
+     "count": {
+      "kind": "literal",
+      "value": 2
+     },
+     "sides": {
+      "kind": "literal",
+      "value": 4
+     }
+    }
+   ],
+   "shape": "entry9",
+   "dice_count": 2,
+   "dice_sides": 4,
+   "bonus": 2
+  },
   "100": {
    "name": "Bestow Curse",
+   "placeholder": false,
    "level": 4,
    "caster_class": "magic-user",
    "camp_only": false,
