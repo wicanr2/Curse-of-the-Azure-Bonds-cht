@@ -652,6 +652,23 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 	whoSelectionCursor := 0
 	stringInputCursor := 0
 	result := RunResult{PC: pc}
+	// recordStore 把「指令算出一個值、存進某個變數」記進 `SaveWrites`。
+	//
+	// ★ 原作只有一條寫入路徑：`STOREVALUE`。所有會寫變數的 opcode 都走它，
+	// 而它同時負責把隊伍座標鏡射到 `720Fh`／`7210h`／`7211h` 並立髒旗標。
+	// 所以「哪些 opcode 寫過座標」在原作裡不是分類問題——**任何一個都算**。
+	// remake 這一側靠 `SaveWrites` 重建同一件事，因此每一條算完再存的指令都要
+	// 記；只記 `09h SAVE` 會漏掉 `ADD`／`SUBTRACT`／`GETTABLE` 那 21 處座標寫入
+	// （spec 1159）。
+	recordStore := func(address, value uint16, at int) {
+		eventSequence++
+		result.SaveWrites = append(result.SaveWrites, MemoryWrite{
+			Address:  address,
+			Value:    value,
+			PC:       at,
+			Sequence: eventSequence,
+		})
+	}
 	for result.Steps < maxSteps {
 		instruction, err := decodeInstruction(payload, pc)
 		if err != nil {
@@ -739,6 +756,7 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				value = left | right
 			}
 			memory[instruction.Operands[2].Word] = value
+			recordStore(instruction.Operands[2].Word, value, pc)
 			if instruction.Command.Opcode == 0x2F || instruction.Command.Opcode == 0x30 {
 				// 原作 `2Fh`／`30h` 共用的 handler 在寫回目的地之前呼叫
 				// `compare_variables(0, 結果)`——**0 是左運算元**
@@ -774,6 +792,7 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			}
 			value := uint16(rng.Intn(bound))
 			memory[instruction.Operands[1].Word] = value
+			recordStore(instruction.Operands[1].Word, value, pc)
 			result.RandomValues = append(result.RandomValues, value)
 		case 0x14: // COMPARE AND
 			leftA, err := operandValue(instruction.Operands[0], memory)
@@ -810,6 +829,7 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			}
 			value := memory[instruction.Operands[0].Word+index]
 			memory[instruction.Operands[2].Word] = value
+			recordStore(instruction.Operands[2].Word, value, pc)
 		case 0x29: // ENCOUNTER MENU
 			if len(instruction.Operands) != 14 {
 				return result, fmt.Errorf("encounter menu at %d has %d operands", pc, len(instruction.Operands))
@@ -1001,13 +1021,7 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 					return result, fmt.Errorf("save at %d: %w", pc, err)
 				}
 				memory[instruction.Operands[1].Word] = value
-				eventSequence++
-				result.SaveWrites = append(result.SaveWrites, MemoryWrite{
-					Address:  instruction.Operands[1].Word,
-					Value:    value,
-					PC:       pc,
-					Sequence: eventSequence,
-				})
+				recordStore(instruction.Operands[1].Word, value, pc)
 				if instruction.Operands[1].Word == 0x7D0C {
 					result.CombatTeamWrites = append(result.CombatTeamWrites, CombatTeamWrite{
 						TeamListIndex: selectedTeamListIndex,
@@ -1227,13 +1241,7 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			// operand 2.Word + value operand 3.
 			address := instruction.Operands[1].Word + offset
 			memory[address] = value
-			eventSequence++
-			result.SaveWrites = append(result.SaveWrites, MemoryWrite{
-				Address:  address,
-				Value:    value,
-				PC:       pc,
-				Sequence: eventSequence,
-			})
+			recordStore(address, value, pc)
 		case 0x0A: // LOAD CHARACTER
 			address, err := operandAddress(instruction.Operands[0])
 			if err != nil {

@@ -155,8 +155,10 @@ func TestRunSubsetGetTableReadsIndexedMemory(t *testing.T) {
 	if len(result.Text) != 1 || result.Text[0] != "7" {
 		t.Fatalf("text=%q, want [7]", result.Text)
 	}
+	// `GETTABLE` 也是一條寫入路徑（原作同樣走 `STOREVALUE`），所以兩條都記。
 	if !reflect.DeepEqual(result.SaveWrites, []MemoryWrite{
 		{Address: 0x9001, Value: 7, PC: 0, Sequence: 1},
+		{Address: 0x9100, Value: 7, PC: 6, Sequence: 2},
 	}) {
 		t.Fatalf("save writes=%+v", result.SaveWrites)
 	}
