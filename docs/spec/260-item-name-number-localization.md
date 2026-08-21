@@ -11,8 +11,7 @@
 
 ## 保留邊界
 
-完整 `itemNames` 全表翻譯、Identify 對 affect／cursed／magic library 的原版 side effect，以及未知 name number 的語意仍待逐項驗證；raw fields 不會因 UI 翻譯而改寫。
-
-## 回歸
-
-測試覆蓋 `+1 長劍` name-number composition，以及 `HiddenNameFlags=0x4` 隱藏第一個 name number 的 reference boundary。
+`itemNames` 全表已於 spec 1178 由原始資料段解出並全數翻譯，**組名規則與編號對照
+以 spec 1178 為準**（本輪當時依 reference 實作 `Item.GenerateName` 推得的順序正確，
+但編號對照不正確）。Identify 對 affect／cursed／magic library 的原版 side effect
+仍待逐項驗證；raw fields 不會因 UI 翻譯而改寫。

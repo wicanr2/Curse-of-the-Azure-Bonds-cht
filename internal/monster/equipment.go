@@ -296,40 +296,65 @@ type TextResolver interface {
 	Text(key, fallback string) string
 }
 
-// LocalizedItemName composes a display name from typed legacy fields and a
-// game-pack locale. Unknown IDs remain visible diagnostics rather than guessed
-// translations; unknown name-number components are intentionally omitted.
+// itemNameConnectors 是那幾個「X of Y」的連接詞（`of`、`Of Prot.`、各神祇的
+// `Of ...`）。原作把它們當成一般成分排在中間，英文因此讀成 `Wand of Fireballs`。
+//
+// ⚠ 中文的修飾語在中心語**前面**，照原順序會排成「魔杖之火球」。所以三個成分而
+// 中間是連接詞時，把前後兩段對調 → 「火球之魔杖」。這是**翻譯層**的決定，不動
+// 任何原始欄位；成分本身與原作逐一對應（spec 1178）。
+var itemNameConnectors = map[uint8]bool{
+	0xA7: true, // of
+	0xC8: true, // Of Seeking
+	0xE0: true, // Of Prot.
+	0xEB: true, // Of Maglubiyet
+	0xF9: true, // Of Tyr
+	0xFA: true, // Of Tempus
+	0xFB: true, // Of Sune
+}
+
+// LocalizedItemName 依原作 `overlay-24:0467h` 的組名規則產生顯示名稱。
+//
+// ★ 名稱**完全由三個名稱編號組成**，物品類別（`+2Eh`）一個字都不出現
+// （spec 1178）。類別名只在三個編號都看不見時當保險絲用——原版 253 件物品
+// 沒有一件走到那條路。
+//
+// 規則（原作逐條對應）：
+//
+//	`+39h` Count > 0     前面加上數量（原作連 `1` 都印，`1 Oil`）
+//	成分順序             `+31h` → `+30h` → `+2Fh`（原作的迴圈由 3 數到 1）
+//	`+35h` 的 bit 3−N    設起來就藏住第 N 個成分（未鑑定的魔法屬性）
+//
+// ⚠ **`+32h`（Plus）與 `+36h`（Cursed）不進名字。** 加值是走名稱編號
+// `A2h..A6h`（`+1`..`+5`）那幾個**可以被藏起來**的成分；原作 72 件帶 Plus 的
+// 物品裡只有 18 件同時帶 `+N` 成分，剩下 54 件在原作永遠不顯示加值。
 func LocalizedItemName(item ItemRecord, resolver TextResolver) string {
-	base := resolver.Text(fmt.Sprintf("item_type_%02X", item.Type), "")
-	if base == "" {
-		format := resolver.Text("item_unknown", "item 0x%02X")
-		return fmt.Sprintf(format, item.Type)
-	}
 	parts := make([]string, 0, 3)
+	numbers := make([]uint8, 0, 3)
 	for slot := 3; slot >= 1; slot-- {
 		nameNumber := item.NameNumbers[slot-1]
 		if nameNumber == 0 || item.HiddenNameFlags&(1<<(3-slot)) != 0 {
 			continue
 		}
-		if translated := resolver.Text(fmt.Sprintf("item_name_%02X", nameNumber), ""); translated != "" {
-			// The type's base name is already rendered below; avoid duplicating
-			// the common type token when it is also present in NameNumbers.
-			if translated != base {
-				parts = append(parts, translated)
-			}
+		translated := resolver.Text(fmt.Sprintf("item_name_%02X", nameNumber), "")
+		if translated == "" {
+			continue
+		}
+		parts = append(parts, translated)
+		numbers = append(numbers, nameNumber)
+	}
+	if len(parts) == 3 && itemNameConnectors[numbers[1]] {
+		parts[0], parts[2] = parts[2], parts[0]
+	}
+	base := strings.Join(parts, "")
+	if base == "" {
+		// 三個成分都看不見或都沒翻譯：退回類別名，再不行才露出原始編號。
+		base = resolver.Text(fmt.Sprintf("item_type_%02X", item.Type), "")
+		if base == "" {
+			return fmt.Sprintf(resolver.Text("item_unknown", "item 0x%02X"), item.Type)
 		}
 	}
-	if len(parts) > 0 {
-		base = strings.Join(append(parts, base), " ")
-	}
-	if item.Plus > 0 {
-		base = fmt.Sprintf(resolver.Text("item_plus", "+%d %s"), item.Plus, base)
-	}
-	if item.Cursed {
-		base += resolver.Text("item_cursed_suffix", " [cursed]")
-	}
-	if item.Count > 1 && item.Type == 28 {
-		base = fmt.Sprintf(resolver.Text("item_count", "%s x%d"), base, item.Count)
+	if item.Count > 0 {
+		base = fmt.Sprintf(resolver.Text("item_count", "%d %s"), item.Count, base)
 	}
 	return base
 }
