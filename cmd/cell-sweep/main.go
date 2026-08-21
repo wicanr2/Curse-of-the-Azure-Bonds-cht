@@ -13,9 +13,10 @@
 // 的同一套）好讓入口戰鬥不會擋住盤點，所以「這一格演得出來」不等於「正常隊伍走
 // 得到這一格」。走得到走不到由主線分段測試負責。
 //
-// ⚠ 演不出來有四種成因，這支只分得出前兩種：地圖上沒有那個地形碼、要搜尋才演、
-// `RANDOM` 擋著（多換幾顆種子）、前置劇情旗標沒有。最後一種會落在「沒演出來」，
-// 要人去讀處理常式的守衛。
+// ⚠ 演不出來有四種成因：地圖上沒有那個地形碼、要搜尋才演、`RANDOM` 擋著
+// （多換幾顆種子）、前置劇情旗標沒有。**第四種現在也分得出來**：守衛裡的
+// `COMPARE <格子> <值>` 拆得出來，把那幾格設成比對的值再站一次——演得出來就是
+// 「需要前置狀態」，還是演不出來才是真的沒接（spec 1177）。
 //
 // 用法：
 //
@@ -50,6 +51,9 @@ type cellResult struct {
 	seed     int64
 	note     string
 	guard    string
+	// precondition 非空代表這一格是**把守衛的格子設好之後**才演出來的，
+	// 內容就是那組前置狀態。
+	precondition string
 }
 
 // played 為真代表這一格真的演出了字。
@@ -168,11 +172,15 @@ func sweepBlock(data corpus, seg segment.Segment) blockSweep {
 			})
 			continue
 		}
-		result := standOnCell(data, seg, index, cell[0], cell[1], roofs[index])
+		result := standOnCell(data, seg, index, cell[0], cell[1], roofs[index], nil)
 		if !result.played() {
 			// 沒演出來就把處理常式開頭的判斷帶出來——「為什麼沒反應」的答案
 			// 寫在那幾條指令裡，一格一格去反組譯太貴。
 			result.guard = dispatch.Guards[index]
+			// 再試一次：把守衛比對的格子設成它要的值。演得出來就代表這一格
+			// 有接、只是缺前置狀態；那是**盤點的限制**不是 remake 的缺口。
+			result = retryWithGuardCells(data, seg, index, cell[0], cell[1],
+				roofs[index], dispatch.GuardCells[index], result)
 		}
 		sweep.cells = append(sweep.cells, result)
 	}
@@ -181,7 +189,8 @@ func sweepBlock(data corpus, seg segment.Segment) blockSweep {
 
 // standOnCell 把隊伍放到一格上跑生命週期。演不出來就換條件再試：先加搜尋，
 // 再換亂數種子——`RANDOM` 擋著的場景（墓園的盜墓者是 100 抽 32）一次不一定演。
-func standOnCell(data corpus, seg segment.Segment, index, x, y int, roof uint8) cellResult {
+func standOnCell(data corpus, seg segment.Segment, index, x, y int, roof uint8,
+	preset map[uint16]uint16) cellResult {
 	result := cellResult{index: index, cell: fmt.Sprintf("(%d,%d)", x, y), roof: roof}
 	var lastErr error
 	for seed := 1; seed <= data.seeds; seed++ {
@@ -199,6 +208,9 @@ func standOnCell(data corpus, seg segment.Segment, index, x, y int, roof uint8) 
 					continue
 				}
 				state.SetECLSeed(int64(seed))
+				for address, value := range preset {
+					state.SetECLMemoryValue(address, value)
+				}
 				state.SetDungeonGeometryView(x, y, facing)
 				state.DungeonWallRoof = roof
 				state.DungeonSearchEnabled = search
@@ -221,6 +233,61 @@ func standOnCell(data corpus, seg segment.Segment, index, x, y int, roof uint8) 
 	if lastErr != nil {
 		result.note = "跑不動：" + lastErr.Error()
 	}
+	return result
+}
+
+// maxGuardPresetCells 是一次最多幫幾個守衛格子擺前置狀態。守衛裡比對的格子
+// 通常一到兩個；放寬只會讓組合數爆掉，而且「要擺五個旗標才演得出來」本身就
+// 不是一個有用的結論。
+const maxGuardPresetCells = 2
+
+// retryWithGuardCells 把守衛比對的格子設成它要的值再站一次。
+//
+// ★ 為什麼要這一步。 先前「沒演出來」是一個混在一起的桶子：可能是 remake 沒接，
+// 也可能只是這一格要前置劇情。兩者的處置完全不同，而分辨的成本是**一格一格去
+// 反組譯守衛**。守衛裡的 `COMPARE` 已經拆得出來，直接擺上去再跑一次就分得開。
+//
+// ⚠ 這是**滿足守衛**不是重現劇情：擺出來的狀態不保證是正常玩下來會有的。
+// 所以演得出來只結論到「有接、缺前置」，報表也照實寫出擺了什麼。
+func retryWithGuardCells(data corpus, seg segment.Segment, index, x, y int, roof uint8,
+	cells []eclcells.GuardCompare, silent cellResult) cellResult {
+	if len(cells) == 0 {
+		return silent
+	}
+	unique := make([]eclcells.GuardCompare, 0, maxGuardPresetCells)
+	seen := map[uint16]bool{}
+	for _, cell := range cells {
+		// 只避「條件成立就 `EXIT`」那幾條——別的 `COMPARE` 動了只會擾亂分派。
+		if !cell.ExitsOnMatch {
+			continue
+		}
+		if seen[cell.Address] || len(unique) >= maxGuardPresetCells {
+			continue
+		}
+		seen[cell.Address] = true
+		unique = append(unique, cell)
+	}
+	preset := make(map[uint16]uint16, len(unique))
+	parts := make([]string, 0, len(unique))
+	for _, cell := range unique {
+		// ⚠ 不是設成比對的值就好：`COMPARE 4C01 01 / IF >= / EXIT` 要的是
+		// **小於 1**，設成 1 反而保證離開（spec 1177）。
+		value, ok := cell.AvoidValue()
+		if !ok {
+			continue
+		}
+		preset[cell.Address] = value
+		parts = append(parts, fmt.Sprintf("%04X=%02X", cell.Address, value))
+	}
+	if len(preset) == 0 {
+		return silent
+	}
+	result := standOnCell(data, seg, index, x, y, roof, preset)
+	if !result.played() {
+		return silent
+	}
+	result.guard = silent.guard
+	result.precondition = strings.Join(parts, " ")
 	return result
 }
 
@@ -332,6 +399,9 @@ func summarise(sweeps []blockSweep) map[string]int {
 			if cell.seed > 1 {
 				counts["要換種子"]++
 			}
+			if cell.precondition != "" {
+				counts["要前置"]++
+			}
 		}
 	}
 	return counts
@@ -348,8 +418,15 @@ func render(sweeps []blockSweep) string {
 		"⚠ 每一格都重新進段，once-only 旗標不互相污染。\n" +
 		"⚠ 盤點用的隊伍被撐起來過，好讓入口戰鬥不擋住盤點。**「演得出來」不等於\n" +
 		"「正常隊伍走得到」**——可達性由主線分段測試負責。\n" +
-		"⚠ 「沒演出來」有兩種成因這支分不出來：`RANDOM` 沒抽中（已經換過種子），\n" +
-		"以及處理常式的前置劇情旗標沒有。要人去讀那支處理常式的守衛。\n" +
+		"⚠ 「前置」欄是**第二次站上去**的結果：守衛裡 `COMPARE <格子> <值> / IF <op> /\n" +
+		"EXIT` 那幾條拆得出來，把格子設成避開 `EXIT` 的值再站一次。演得出來就代表\n" +
+		"這一格**有接、只是缺前置劇情**（spec 1177）。⚠ 那是**滿足守衛**不是重現劇情，\n" +
+		"擺出來的狀態不保證正常玩下來會有。\n" +
+		"⚠ 剩下的「沒演出來」四種形狀，都是**盤點的限制**不是 remake 的缺口：\n" +
+		"（1）守衛比的是移動前快照（`4BF0`／`4BF1`）——這支是把隊伍放上去不是走過去；\n" +
+		"（2）擺好的旗標被該段自己的前導覆蓋（`4C01` 這一類）；\n" +
+		"（3）擷取到的守衛跨過了真正的處理常式（開頭就有 `EXIT` 的那幾格）；\n" +
+		"（4）處理常式本來就不講話（`PICTURE FF` 只是把圖關掉）。\n" +
 		"⚠ 索引 0 是「沒有事件的地面」，不列。\n\n")
 	for _, sweep := range sweeps {
 		out.WriteString(fmt.Sprintf("## `%s`\n\n", sweep.id))
@@ -377,6 +454,9 @@ func render(sweeps []blockSweep) string {
 			if cell.seed > 1 {
 				extra = append(extra, fmt.Sprintf("第 %d 顆種子", cell.seed))
 			}
+			if cell.precondition != "" {
+				extra = append(extra, "前置 `"+cell.precondition+"`")
+			}
 			condition := "站上去"
 			if len(extra) > 0 {
 				condition = strings.Join(extra, "＋")
@@ -389,6 +469,9 @@ func render(sweeps []blockSweep) string {
 				text = "「" + firstLine(cell.text) + "」"
 				if cell.note != "" {
 					text += "（" + cell.note + "）"
+				}
+				if cell.precondition != "" {
+					text += "（守衛：`" + cell.guard + "`）"
 				}
 			}
 			if !cell.played() {
@@ -409,6 +492,7 @@ func render(sweeps []blockSweep) string {
 	out.WriteString(fmt.Sprintf("| 其中要搜尋才演 | %d |\n", counts["要搜尋"]))
 	out.WriteString(fmt.Sprintf("| 其中要面對特定方向才演 | %d |\n", counts["要轉向"]))
 	out.WriteString(fmt.Sprintf("| 其中要換亂數種子才演 | %d |\n", counts["要換種子"]))
+	out.WriteString(fmt.Sprintf("| 其中要先擺好守衛的旗標才演 | %d |\n", counts["要前置"]))
 	out.WriteString(fmt.Sprintf("| 分派表有、地圖上沒有那個地形碼 | %d |\n",
 		counts["沒有地形碼"]))
 	return out.String()

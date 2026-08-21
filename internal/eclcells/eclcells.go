@@ -49,11 +49,57 @@ type Dispatch struct {
 	// Guards 是索引 → 處理常式開頭在講話之前先做的判斷，用來回答「這一格
 	// 為什麼站上去沒反應」。空字串代表一進去就講話，沒有守衛。
 	Guards map[int]string
+	// GuardCells 是同一段守衛裡出現過的 `COMPARE <格子> <值>`，拆成結構。
+	//
+	// ★ 它讓「站上去沒反應」的盤點從**要人去讀守衛**變成可以自動分類：
+	// 把這些格子設成守衛比對的值再站一次，演得出來就是「需要前置狀態」，
+	// 演不出來才是真的沒接（spec 1177）。
+	GuardCells map[int][]GuardCompare
 	// TableIndexCell 是查表分派的索引取自哪一格（`TableForm` 為真時才有意義）。
 	TableIndexCell uint16
 	// TableValues 是查表的內容：`TableValues[i]` 是索引 i 查到的值，也就是
 	// `ON GOTO` 的索引。表沒有宣告長度，這裡只讀 tableProbeLength 個。
 	TableValues []int
+}
+
+// GuardCompare 是守衛裡的一次 `COMPARE <格子> <值>`，連同它後面那條 `IF`。
+//
+// ★ 只有 `Address`／`Value` 是不夠的：`COMPARE 4C01 01 / IF >= / EXIT` 的意思是
+// 「`4C01 >= 1` 就離開」，把 `4C01` 設成 1 反而保證演不出來。要避開離開那一路，
+// 得知道比較運算子往哪一邊（spec 1177）。
+type GuardCompare struct {
+	Address uint16
+	Value   uint16
+	// Operator 是後面那條 `IF` 的運算子（`=`／`<>`／`<`／`>`／`<=`／`>=`）。
+	// 空字串代表這一條 `COMPARE` 後面沒有接得上的 `IF`。
+	Operator string
+	// ExitsOnMatch 為真代表條件成立時下一條是 `EXIT`——那正是「站上去沒反應」
+	// 的形狀。
+	ExitsOnMatch bool
+}
+
+// AvoidValue 回一個**避開離開那一路**的值。第二個回傳值為 false 代表避不開
+// （例如 `IF >= 0`：任何無號值都成立）。
+func (g GuardCompare) AvoidValue() (uint16, bool) {
+	switch g.Operator {
+	case "<>":
+		// 不等於就離開 ⇒ 設成相等。
+		return g.Value, true
+	case ">":
+		return g.Value, true
+	case "<":
+		return g.Value, true
+	case "=":
+		return g.Value + 1, true
+	case "<=":
+		return g.Value + 1, true
+	case ">=":
+		if g.Value == 0 {
+			return 0, false
+		}
+		return g.Value - 1, true
+	}
+	return 0, false
 }
 
 // tableProbeLength 是查表分派要讀幾個索引。表沒有宣告長度，讀太多會撈到相鄰
@@ -116,10 +162,12 @@ func Analyze(data []byte) Dispatch {
 	out.GeoBlock, _ = firstGeometryBlock(unique, offsets)
 	out.Targets = decodeTable(data, unique, offsets, dispatcher)
 	out.Texts, out.Guards = map[int]string{}, map[int]string{}
+	out.GuardCells = map[int][]GuardCompare{}
 	for index, target := range out.Targets {
 		out.Indexes = append(out.Indexes, index)
 		out.Texts[index] = firstTextAt(unique, offsets, target)
 		out.Guards[index] = guardAt(unique, offsets, target)
+		out.GuardCells[index] = guardCellsAt(unique, offsets, target)
 	}
 	sort.Ints(out.Indexes)
 	return out
@@ -257,10 +305,12 @@ func analyzeTableForm(data []byte, unique map[int]ecl.Instruction, offsets []int
 	out.GeoBlock, _ = firstGeometryBlock(unique, offsets)
 	out.Targets = decodeTable(data, unique, offsets, bestTarget)
 	out.Texts, out.Guards = map[int]string{}, map[int]string{}
+	out.GuardCells = map[int][]GuardCompare{}
 	for index, target := range out.Targets {
 		out.Indexes = append(out.Indexes, index)
 		out.Texts[index] = firstTextAt(unique, offsets, target)
 		out.Guards[index] = guardAt(unique, offsets, target)
+		out.GuardCells[index] = guardCellsAt(unique, offsets, target)
 	}
 	sort.Ints(out.Indexes)
 
@@ -393,6 +443,51 @@ func guardAt(unique map[int]ecl.Instruction, offsets []int, start int) string {
 		parts = append(parts, compact(instruction))
 	}
 	return strings.Join(parts, " / ")
+}
+
+// guardCellsAt 把守衛裡的 `COMPARE` 拆成「哪一格、比什麼值」。
+//
+// ⚠ 只收**資料格**：位址落在程式碼視窗（`8000h` 以上）的是跳躍目標不是格子，
+// 立即數那一側也只收得到單一位元組。`COMPARE AND` 一條裡有兩組，兩組都收。
+func guardCellsAt(unique map[int]ecl.Instruction, offsets []int, start int) []GuardCompare {
+	index := sort.SearchInts(offsets, start)
+	cells := make([]GuardCompare, 0, 4)
+	for cursor := index; cursor < len(offsets) && cursor < index+maxGuardInstructions; cursor++ {
+		instruction := unique[offsets[cursor]]
+		if hasText(instruction) {
+			break
+		}
+		if !strings.HasPrefix(instruction.Command.Name, "COMPARE") {
+			continue
+		}
+		// 後面那條 `IF` 決定往哪一邊避，再後面那條是不是 `EXIT` 決定值不值得避。
+		operator, exits := "", false
+		if cursor+1 < len(offsets) {
+			next := unique[offsets[cursor+1]].Command.Name
+			if strings.HasPrefix(next, "IF ") {
+				operator = strings.TrimPrefix(next, "IF ")
+				if cursor+2 < len(offsets) {
+					exits = unique[offsets[cursor+2]].Command.Name == "EXIT"
+				}
+			}
+		}
+		operands := instruction.Operands
+		for position := 0; position+1 < len(operands); position += 2 {
+			address := operands[position]
+			value := operands[position+1]
+			if !address.WordSet || address.Word >= ecl.CodeAddressBase {
+				continue
+			}
+			compare := GuardCompare{Address: address.Word, Operator: operator, ExitsOnMatch: exits}
+			if value.WordSet {
+				compare.Value = value.Word
+			} else {
+				compare.Value = uint16(value.Low)
+			}
+			cells = append(cells, compare)
+		}
+	}
+	return cells
 }
 
 func hasText(instruction ecl.Instruction) bool {
