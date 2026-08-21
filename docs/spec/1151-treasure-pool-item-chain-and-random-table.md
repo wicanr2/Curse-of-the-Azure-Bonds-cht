@@ -90,12 +90,15 @@ a := ROLLDICE(1, 100)
 - `TreasureRequest` 的八個運算元由 `operandValue` 解析，所以 corpus 裡把數量或
   `ItemBlock` 放在 ECL 格的用法（`7F79`／`7F80` 那幾處）本來就走得通。
 
-⚠ 仍是 `partial`，剩兩項：
+- 隨機那一路接上了 `CREATERNDTREASURE`（`monster.BuildRandomTreasureItem`，
+  spec 1036）：擲完類別之後照原作補加值、名稱三段索引、重量、價值、卷軸法術
+  與特殊物品範本，撿東西畫面上顯示得出 `＋N` 與名稱修飾。
+  兩邊共用同一條 seeded 亂數流，擲骰順序也照原作（`plus` 先擲、`15h` 的 1d5 後擲、
+  `47h` 的 1d8 在範本選擇裡擲），順序被 `scriptedRolls` 逐顆釘住。
 
-1. **隨機那一路沒跑 `CREATERNDTREASURE`**。remake 只放 `{Type, Count}`，所以加值、
-   名稱三段索引、重量、價值、卷軸法術與特殊物品範本全是空的。原作那一支已經是
-   `exact`（spec 1036），這是接線工作不是逆向工作。
-2. **多筆 TREASURE 的模型不同**：原作對七個池是**覆寫**，remake 把同一次執行的
+⚠ 仍是 `partial`，剩一項：
+
+1. **多筆 TREASURE 的模型不同**：原作對七個池是**覆寫**，remake 把同一次執行的
    多筆相加。corpus 沒有觀察到「兩筆之間沒有 `1Ch`」的情形，所以今天看不出差別。
 
 ## 明確不宣稱
