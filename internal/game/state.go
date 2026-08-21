@@ -354,6 +354,10 @@ type State struct {
 	// 還停在被搬走前那一格，接下來的事件會分派到錯的一支或什麼都不演
 	// （spec 1161）。
 	geoCatalog geo.Catalog
+
+	// eclProjectedPosition 記著「這一次 ECL 執行有沒有自己指定隊伍座標」。
+	// 有的話，地圖宣告的 spawn 就不再蓋回去（spec 1160）。
+	eclProjectedPosition bool
 }
 
 // playerIconBlocks are the four verified CHEAD/CBODY block families extracted
@@ -3867,6 +3871,13 @@ func (s *State) enterProgramTitle(message string) {
 // routine itself does not perform collision checks). The renderer still
 // consumes the ordered calls so redraw can use its loaded GEO/piece assets.
 func (s *State) applyECLCallSignals(result ecl.RunResult) {
+	// ★ 原作是髒旗標：`STOREVALUE` 寫座標時立旗，`2E10h` 重畫時**清掉**，
+	// 所以同一筆座標寫入只會被一次重畫吃到。remake 沒有旗標，改記「上一次
+	// 重畫吃到哪個執行序」——沒有這條游標，走位迴圈裡的第二次重畫會把進場
+	// 那筆 spawn 再投影一次，把中間 `MOVEFORWARD` 走的步數整個抹掉
+	// （盜賊公會的抓捕動畫，spec 1160）。
+	redrawnThrough := 0
+	s.eclProjectedPosition = false
 	for index, address := range result.CallAddresses {
 		s.pendingECLCalls = append(s.pendingECLCalls, address)
 		switch address {
@@ -3875,17 +3886,30 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 			// registers. Some same-block ECL events assign a new position
 			// immediately before this CALL, so project those registers before
 			// the renderer rebuilds the view.
+			// ⚠ 判準是**這一條 `CALL` 自己的 block**，不是「整次執行都在同一個
+			// block」。跨 block 的執行（`NEWECL`）裡照樣有重畫——盜賊公會的
+			// 抓捕動畫就整段在新 block 裡跑（spec 1160）。投影本身已經用
+			// `write.BlockID != call.BlockID` 濾掉別的 block 的寫入。
 			if s.session != nil && s.Area.InDungeon &&
 				index < len(result.CallRequests) &&
-				result.SessionBlockRangeSet &&
-				result.SessionStartBlockID == result.CallRequests[index].BlockID &&
-				result.SessionEndBlockID == result.CallRequests[index].BlockID &&
 				result.CallRequests[index].BlockID == s.session.CurrentBlockID() {
 				s.projectFreshDungeonCoordinatesBeforeCall(
-					result, result.CallRequests[index],
+					result, result.CallRequests[index], redrawnThrough,
 				)
 			}
+			if index < len(result.CallRequests) {
+				redrawnThrough = result.CallRequests[index].Sequence
+			}
 		case 0xC01E:
+			// ★ 朝向要用**腳本當下寫進 `C04D` 的值**，不是 remake 的
+			// `DungeonDirection`。原作 `MoveForward` 讀的是地圖暫存器，而腳本
+			// 會在走之前指定方向——盜賊公會的抓捕動畫在 `ECL2/0x02:0D90h`
+			// 先 `SAVE 7F7B C04D` 再走（spec 1160）。
+			if index < len(result.CallRequests) {
+				s.DungeonDirection = s.eclFacingBeforeCall(
+					result, result.CallRequests[index], redrawnThrough,
+				)
+			}
 			switch s.DungeonDirection {
 			case 0:
 				s.DungeonY = (s.DungeonY + 15) % 16
@@ -3895,6 +3919,13 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 				s.DungeonY = (s.DungeonY + 1) % 16
 			case 6:
 				s.DungeonX = (s.DungeonX + 15) % 16
+			}
+			s.MapX, s.MapY = s.DungeonX, s.DungeonY
+			// 原作走完一步就把新座標留在地圖暫存器裡，後面的腳本讀得到；
+			// 牆面／地形也一起重讀（spec 1161）。
+			if s.session != nil {
+				s.syncDungeonECLRegisters()
+				s.refreshDungeonTerrainFromMap()
 			}
 		case 0xB200:
 			// 原作 `overlay-02:2FCFh` 用 `DS:8B4Ch`（＝ ECL 格 `03DE`，由
@@ -3918,23 +3949,34 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 // 兩者共用同一個游標；所以畫面要顯示的是「自走的相位 ＋ 這個位移」。
 func (s *State) PictureFrameAdvances() int { return s.pictureFrameAdvances }
 
+// eclFacingBeforeCall 回報「這一條 `CALL` 執行的那一刻，腳本寫進 `C04D` 的
+// 朝向」。沒有人寫過（或已經被前一次重畫吃掉）就沿用目前的朝向。
+func (s *State) eclFacingBeforeCall(
+	result ecl.RunResult, call ecl.CallRequest, redrawnThrough int,
+) uint8 {
+	facing := s.DungeonDirection
+	for _, write := range result.SaveWrites {
+		if write.BlockID != call.BlockID || write.Sequence >= call.Sequence ||
+			write.Sequence <= redrawnThrough {
+			continue
+		}
+		if write.Address == 0xC04D {
+			facing = uint8(write.Value&3) * 2
+		}
+	}
+	return facing
+}
+
 func (s *State) projectFreshDungeonCoordinatesBeforeCall(
 	result ecl.RunResult,
 	call ecl.CallRequest,
+	redrawnThrough int,
 ) {
-	// A map declaration with a spawn is a destination anchor, not a signal
-	// that every same-block redraw CALL owns the party position.  Some ECL
-	// narrative branches use C04B/C04C/C04D as scratch operands immediately
-	// before the redraw routine; the map's declared anchor keeps those values
-	// out of the live dungeon cursor.  Titles that genuinely move the party
-	// keep Spawn nil and continue to use the verified register transaction.
-	if s.dataPack != nil && s.session != nil {
-		if definition, found := s.dataPack.FindMapByKindScript(
-			"first_person", s.Area.GameArea, s.session.CurrentBlockID(),
-		); found && definition.Spawn != nil {
-			return
-		}
-	}
+	// ⚠ 不要再加「這張圖宣告了 spawn 就整張跳過」這種條件。宣告的 spawn 是
+	// **進場錨點**，不是「這張圖的腳本不會搬隊伍」——提爾弗頓、贊提爾暗黑
+	// 神殿與巫師塔都宣告了 spawn，而三張圖上都有玩家看得見的腳本位移
+	// （賢者／商店／神殿離場退回門外、酒館的走位動畫、城門衛兵送回去、
+	// 塔頂傳送，spec 1159／1160）。
 	var mask uint8
 	var x, y uint16
 	var direction uint16
@@ -3942,7 +3984,8 @@ func (s *State) projectFreshDungeonCoordinatesBeforeCall(
 		// ⚠ 用**執行序**不是 PC。一次執行裡有迴圈與反向跳躍，PC 小的可能後
 		// 執行、同一個位址也可能被執行好幾次——「PC 比 CALL 小就是先發生」
 		// 只在直線碼上成立（spec 1156）。
-		if write.BlockID != call.BlockID || write.Sequence >= call.Sequence {
+		if write.BlockID != call.BlockID || write.Sequence >= call.Sequence ||
+			write.Sequence <= redrawnThrough {
 			continue
 		}
 		switch write.Address {
@@ -3961,6 +4004,11 @@ func (s *State) projectFreshDungeonCoordinatesBeforeCall(
 	// 「退回上一格」出口（`ECL2/0x04:160Ch` 等 23 處，spec 1157）只寫
 	// `C04B`／`C04C`，朝向刻意保持不變——加了那個條件就會把玩家看得見的
 	// 位移整批壓掉，而且主線仍然會通，因為路線測試會跟著被壓掉的行為長出來。
+	if mask != 0 {
+		// 這次執行的腳本自己指定了座標；宣告的 spawn 只是沒人指定時的錨點，
+		// 不可以再蓋回去（spec 1160）。
+		s.eclProjectedPosition = true
+	}
 	if mask&1 != 0 {
 		s.DungeonX = int(int16(x))
 	}
@@ -5479,14 +5527,12 @@ func (s *State) syncDungeonECLRegisters() {
 // Thieves' Guild as a local 8x16 map mirrored into the right half of GEO2
 // block 1: script (1,12,N) corresponds to geometry (9,3,S).
 func (s *State) DungeonGeometryView() (x, y int, direction uint8) {
-	x, y, direction = s.DungeonX, s.DungeonY, s.DungeonDirection
-	if s.session != nil && s.session.CurrentBlockID() == 0x02 &&
-		s.GeoMapSet == 2 && s.GeoMapBlock == 1 {
-		x = (x + 8) % geo.Width
-		y = geo.Height - 1 - y
-		direction = (4 - direction + 8) % 8
-	}
-	return x, y, direction
+	// ⚠ 不要再幫盜賊公會（`ECL2/0x02`）加座標位移。它與提爾弗頓共用
+	// `GEO2/0x01`，而**腳本的暫存器本來就是 GEO 格子**：進場寫 `(8,0)`、
+	// 走位動畫走到 `(9,3)`，而 `(9,3)` 正是 ECL2/0x02 分派表裡公會主人那一格
+	// （「BEFORE YOU STANDS A BURLY MAN…」）。先前那個 `x+8`／`15−y`／鏡射
+	// 的位移是投影被壓掉時湊出來的（spec 1160）。
+	return s.DungeonX, s.DungeonY, s.DungeonDirection
 }
 
 // SetDungeonGeometryView is the inverse adapter used by renderers after a
@@ -5494,16 +5540,6 @@ func (s *State) DungeonGeometryView() (x, y int, direction uint8) {
 func (s *State) SetDungeonGeometryView(x, y int, direction uint8) {
 	oldX, oldY, _ := s.DungeonGeometryView()
 	moved := oldX != x || oldY != y
-	if s.session != nil && s.session.CurrentBlockID() == 0x02 &&
-		s.GeoMapSet == 2 && s.GeoMapBlock == 1 {
-		s.DungeonX = (x + 8) % geo.Width
-		s.DungeonY = geo.Height - 1 - y
-		s.DungeonDirection = (4 - direction + 8) % 8
-		if moved {
-			s.session.SetMemoryValue(0x7F81, 0)
-		}
-		return
-	}
 	s.DungeonX, s.DungeonY, s.DungeonDirection = x, y, direction
 	if moved && s.session != nil {
 		// SearchLocation uses 7F81h as a per-successful-step event guard:
@@ -5583,6 +5619,12 @@ func (s *State) dungeonWrapEnabled() bool {
 // result signals have been applied rather than tied to one menu branch.
 func (s *State) applyDeclaredDungeonSpawn() bool {
 	if s.session == nil || s.dataPack == nil {
+		return false
+	}
+	if s.eclProjectedPosition {
+		// 腳本自己把隊伍放好了（`ECL3/0x10:006Ch` 那類進場座標），宣告的
+		// spawn 是**沒人指定時**的錨點，這時候蓋回去會得到「X／Y 來自 pack、
+		// 朝向來自腳本」的混合值（spec 1160）。
 		return false
 	}
 	definition, found := s.dataPack.FindMapByKindScript(

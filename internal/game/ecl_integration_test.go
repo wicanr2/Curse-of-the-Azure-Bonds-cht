@@ -168,6 +168,17 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		}
 	}
 	state := NewStateFromECLBlocks(trainingTestCatalog(t), all, 0x50)
+	// ★ 交一份原版 GEO 目錄給 State，和遊戲本體同一條路徑：腳本傳送
+	// （只寫 `C04B`／`C04C`）之後，重畫要自己去地圖重讀牆面／地形寫回
+	// `C04E`／`C04F`，接下來的每格事件才分派得到（spec 1161）。
+	campaignGeo := geo.NewCatalog()
+	for chapter := 2; chapter <= 6; chapter++ {
+		if err := campaignGeo.AddDAX(uint8(chapter),
+			zipData(t, image, "GEO"+strconv.Itoa(chapter)+".DAX")); err != nil {
+			t.Fatal(err)
+		}
+	}
+	state.SetGeoCatalog(campaignGeo)
 	guardBlocks, err := dax.Parse(zipData(t, image, "MON2CHA.DAX"))
 	if err != nil {
 		t.Fatal(err)
@@ -485,7 +496,11 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		// 下水道尖叫的傳聞先前只有 Go 的 fallback，本輪改由 game pack 供應。
 		wantRumor := requireGamePackText(t, &state, "tilverton.rumor.sewer-scream")
 		wantGreenRobesRumor := requireGamePackText(t, &state, "tilverton.green-robes-rumor")
-		if (state.Message != wantSign && state.Message != wantRumor && state.Message != wantGreenRobesRumor) || len(state.Choices) != 1 {
+		// 街上的傳聞是照 `4C18` 計數逐條放的，走過的格子一多就會多聽到幾則。
+		wantDragonRumor := requireGamePackText(t, &state, "tilverton.rumor.dragon-flight")
+		if (state.Message != wantSign && state.Message != wantRumor &&
+			state.Message != wantGreenRobesRumor && state.Message != wantDragonRumor) ||
+			len(state.Choices) != 1 {
 			t.Fatalf("unexpected normal-path pause mode=%v position=(%d,%d,%d) choices=%v message=%q", state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection, state.Choices, state.Message)
 		}
 		if err := state.Select(0); err != nil {
@@ -583,9 +598,14 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeDungeon || state.DungeonX != 6 || state.DungeonY != 5 {
-		t.Fatalf("Filani continuation mode=%v position=(%d,%d), want same dungeon cell",
-			state.Mode, state.DungeonX, state.DungeonY)
+	// 賢者那一場結束走的是 `ECL2/0x01:1441h` 的共用收尾：`PICTURE 0FFh` ＋
+	// `SAVE 4BF0 C04B; SAVE 4BF1 C04C` ＋ `CALL 2E10h`——把隊伍退回進門前那一格
+	// （spec 1157 的 15 處之一）。隊伍是從 `(5,5)`（「THE SAGE FILANI」的招牌格）
+	// 走進 `(6,5)` 的，所以「YOU MOVE AWAY.」之後要回到 `(5,5)`，朝向不變。
+	if state.Mode != ModeDungeon || state.DungeonX != 5 || state.DungeonY != 5 ||
+		state.DungeonDirection != 2 {
+		t.Fatalf("Filani continuation mode=%v position=(%d,%d,%d), want (5,5,2)",
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection)
 	}
 
 	// Weaponers of Cormyr uses CMD_COMBAT as CityShop's engine-service
@@ -596,8 +616,8 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	for index, step := range []struct {
 		dx, dy, direction int
 	}{
-		{-1, 0, 6}, // (6,5) -> (5,5)
-		{0, 1, 4},  // (5,5) -> (5,6)
+		// ⚠ 起點是 `(5,5)`：賢者那一場已經把隊伍退回招牌格（見上面）。
+		{0, 1, 4}, // (5,5) -> (5,6)
 		{0, 1, 4},  // (5,6) -> (5,7)
 		{0, 1, 4},  // (5,7) -> (5,8)
 		{0, 1, 4},  // (5,8) -> (5,9)
@@ -612,7 +632,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			t.Fatalf("normal path to Weaponers step %d: %v", index, err)
 		}
 		resumeKnownPathPause()
-		if index+1 < 11 && state.Mode != ModeDungeon {
+		if index+1 < 10 && state.Mode != ModeDungeon {
 			t.Fatalf("normal path to Weaponers step %d stopped at mode=%v position=(%d,%d)",
 				index, state.Mode, state.DungeonX, state.DungeonY)
 		}
@@ -686,8 +706,10 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeDungeon || state.DungeonX != 2 || state.DungeonY != 12 {
-		t.Fatalf("Weaponers continuation mode=%v position=(%d,%d), want same dungeon cell",
+	// 商店收尾同樣走 `1441h` 的共用退格：隊伍是從 `(3,12)`（「WEAPONERS OF
+	// CORMYR」的招牌格）走進 `(2,12)` 的，離開時退回 `(3,12)`。
+	if state.Mode != ModeDungeon || state.DungeonX != 3 || state.DungeonY != 12 {
+		t.Fatalf("Weaponers continuation mode=%v position=(%d,%d), want (3,12)",
 			state.Mode, state.DungeonX, state.DungeonY)
 	}
 
@@ -699,7 +721,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	for index, step := range []struct {
 		dx, dy, direction int
 	}{
-		{1, 0, 2},  // (2,12) -> (3,12)
+		// ⚠ 起點是 `(3,12)`：武器店那一場已經把隊伍退回招牌格。
 		{0, -1, 0}, // (3,12) -> (3,11)
 		{1, 0, 2},  // (3,11) -> (4,11)
 		{0, -1, 0}, // (4,11) -> (4,10)
@@ -715,7 +737,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			t.Fatalf("normal path to Gond temple step %d: %v", index, err)
 		}
 		resumeKnownPathPause()
-		if index+1 < 11 && state.Mode != ModeDungeon {
+		if index+1 < 10 && state.Mode != ModeDungeon {
 			t.Fatalf("normal path to Gond temple step %d stopped at mode=%v position=(%d,%d) choices=%v message=%q",
 				index, state.Mode, state.DungeonX, state.DungeonY, state.Choices, state.Message)
 		}
@@ -766,8 +788,9 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	if err := state.Select(5); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeDungeon || state.DungeonX != 0 || state.DungeonY != 7 {
-		t.Fatalf("Gond temple continuation mode=%v position=(%d,%d) picture=%v:%d message=%q choices=%v, want same dungeon cell",
+	// 神殿收尾同樣退回進門前那一格：隊伍是從 `(1,7)` 走進祭壇 `(0,7)` 的。
+	if state.Mode != ModeDungeon || state.DungeonX != 1 || state.DungeonY != 7 {
+		t.Fatalf("Gond temple continuation mode=%v position=(%d,%d) picture=%v:%d message=%q choices=%v, want (1,7)",
 			state.Mode, state.DungeonX, state.DungeonY, state.PictureRequested, state.PictureBlock,
 			state.Message, state.Choices)
 	}
@@ -787,8 +810,8 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	for index, step := range []struct {
 		dx, dy, direction int
 	}{
-		{1, 0, 2},  // (0,7) -> (1,7)
-		{1, 0, 2},  // (1,7) -> (2,7)
+		// ⚠ 起點是 `(1,7)`：神殿那一場已經把隊伍退回門外。
+		{1, 0, 2}, // (1,7) -> (2,7)
 		{1, 0, 2},  // (2,7) -> (3,7)
 		{1, 0, 2},  // (3,7) -> (4,7)
 		{0, -1, 0}, // (4,7) -> (4,6)
@@ -802,7 +825,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			t.Fatalf("normal path to training hall step %d: %v", index, err)
 		}
 		resumeKnownPathPause()
-		if index+1 < 10 && state.Mode != ModeDungeon {
+		if index+1 < 9 && state.Mode != ModeDungeon {
 			t.Fatalf("normal path to training hall step %d stopped at mode=%v position=(%d,%d)",
 				index, state.Mode, state.DungeonX, state.DungeonY)
 		}
@@ -955,16 +978,24 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeDungeon || state.DungeonX != 6 || state.DungeonY != 10 ||
-		len(state.Choices) != 0 {
-		t.Fatalf("tavern continuation mode=%v position=(%d,%d) picture=%v:%d message=%q choices=%v, want same tavern cell without stale menu",
-			state.Mode, state.DungeonX, state.DungeonY, state.PictureRequested, state.PictureBlock,
-			state.Message, state.Choices)
+	// 「側邊有騷動」那一段是原作用腳本演的**走位**，不是留在原地：
+	// `0C75h` 的 `SUBTRACT 1 C04B` 先走出門到 `(5,10)`，接著
+	// `0CE9h`..`0D2Dh` 每寫一次座標就 `GOSUB 0D73h`（`CALL 2E10h; DELAY`）
+	// 重畫一格——朝南、y＋1 兩次到 `(5,12)`，轉朝東、x＋1 兩次到 `(7,12)`。
+	if state.Mode != ModeDungeon || state.DungeonX != 7 || state.DungeonY != 12 ||
+		state.DungeonDirection != 2 || len(state.Choices) != 0 {
+		t.Fatalf("tavern continuation mode=%v position=(%d,%d,%d) picture=%v:%d message=%q choices=%v, want (7,12,2) without stale menu",
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.PictureRequested, state.PictureBlock, state.Message, state.Choices)
 	}
 	for index, step := range []struct {
 		dx, dy, direction int
 	}{
-		{-1, 0, 6}, // (6,10) -> (5,10)
+		// ⚠ 起點是 `(7,12)`：上面那段走位把隊伍帶到建築側邊。
+		{-1, 0, 6}, // (7,12) -> (6,12)
+		{-1, 0, 6}, // (6,12) -> (5,12)
+		{0, -1, 0}, // (5,12) -> (5,11)
+		{0, -1, 0}, // (5,11) -> (5,10)
 		{0, -1, 0}, // (5,10) -> (5,9)
 		{0, -1, 0}, // (5,9) -> (5,8)
 		{0, -1, 0}, // (5,8) -> (5,7)
@@ -1017,6 +1048,10 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	highPriest.DungeonX, highPriest.DungeonY, highPriest.DungeonDirection = 1, 10, 0
 	highPriest.DungeonWallType, _ = grid.WallWrapped(1, 10, 0)
 	highPriest.DungeonWallRoof = grid.CellWrapped(1, 10).Terrain
+	// 這個 fixture 是直接把隊伍放在 `(1,10)`，沒有走過去，所以移動前快照
+	// （`4BF0`／`4BF1`）還是 0。高階祭司那一場收尾走 `142Eh` 的退格，讀的就是
+	// 那兩格——照著上面那條路線補成「從 `(2,10)` 走進來」，否則會退回 `(0,0)`。
+	highPriest.snapshotPreMoveCoordinates(2, 10)
 	if err := highPriest.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
@@ -1059,9 +1094,10 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	if err := highPriest.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if highPriest.Mode != ModeDungeon || highPriest.DungeonX != 1 || highPriest.DungeonY != 10 ||
+	// 「YOU MOVE AWAY.」走的是 `142Eh` 的退格，退回進門前那一格 `(2,10)`。
+	if highPriest.Mode != ModeDungeon || highPriest.DungeonX != 2 || highPriest.DungeonY != 10 ||
 		len(highPriest.Choices) != 0 {
-		t.Fatalf("high priest continuation mode=%v position=(%d,%d) message=%q choices=%v originals=%v, want same cell",
+		t.Fatalf("high priest continuation mode=%v position=(%d,%d) message=%q choices=%v originals=%v, want (2,10)",
 			highPriest.Mode, highPriest.DungeonX, highPriest.DungeonY, highPriest.Message, highPriest.Choices, highPriest.currentOriginalChoices)
 	}
 	// Keep the single generated integration-test hero alive across this long
@@ -1108,19 +1144,19 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	if !cityGateClosedDuringWalk {
 		t.Fatal("normal path did not trigger the city-gate closure")
 	}
-	if state.DungeonX != 1 || state.DungeonY != 0 || state.DungeonDirection != 6 {
-		t.Fatalf("normal path reached city gate (%d,%d,%d), want (1,0,6)",
+	// 皇家衛兵那一格（`139Ah`）每踩一次就 `ADD 1 4C04`，第一次（`4C04 < 2`）走
+	// 「THIS WAY IS CLOSED… AND THEY SEND YOU BACK.」那一支，收尾是 `1444h` 的
+	// 退格——所以隊伍會被推回進來時的 `(2,0)`。第二次踩上去才比 `4C10 == 3`，
+	// 成立就演皇家馬車（spec 292「曾被城門衛兵驅回一次後，再次進入 (1,0)」）。
+	if state.DungeonX != 2 || state.DungeonY != 0 || state.DungeonDirection != 6 {
+		t.Fatalf("normal path sent back from city gate to (%d,%d,%d), want (2,0,6)",
 			state.DungeonX, state.DungeonY, state.DungeonDirection)
 	}
 	if state.Mode != ModeDungeon {
 		t.Fatalf("normal city-gate continuation mode=%v, want dungeon", state.Mode)
 	}
-	state.TurnDungeonWithGrid(grid, 2)
-	if state.DungeonDirection != 0 {
-		t.Fatalf("city gate approach direction=%d, want north after turn", state.DungeonDirection)
-	}
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
+	if err := state.MoveDungeon(grid, -1, 0, 6); err != nil {
+		t.Fatalf("second approach to the city gate: %v", err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 11 ||
 		state.SceneHeadBlock != 0xFF || state.Message != requireGamePackText(t, &state, "tilverton.carriage-make-way") {
@@ -1211,11 +1247,20 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
+	// 公會的進場是腳本自己演的：`ECL2/0x02:0047h` 先把隊伍放在 `(8,0)` 朝東，
+	// 接著 `0D44h` 的迴圈跑五次，每次從方向表 `0DD1h`（1,2,2,2,2）取一個方向
+	// ——方向不同就只轉向、相同才 `CALL C01Eh` 走一步。所以是「往東一步、
+	// 轉朝南、往南三步」，停在 `(9,3)` 朝南，那正是 ECL2/0x02 分派表裡公會
+	// 主人那一格（spec 1160）。
 	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x02 ||
-		state.DungeonX != 1 || state.DungeonY != 12 || len(state.Choices) != 0 {
-		t.Fatalf("thieves guild transition mode=%v block=%#x position=(%d,%d) choices=%v",
-			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY, state.Choices)
+		state.DungeonX != 9 || state.DungeonY != 3 || state.DungeonDirection != 4 ||
+		len(state.Choices) != 0 {
+		t.Fatalf("thieves guild transition mode=%v block=%#x position=(%d,%d,%d) choices=%v",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, state.Choices)
 	}
+	// 公會與提爾弗頓共用 `GEO2/0x01`，腳本的暫存器本來就是 GEO 格子，
+	// 畫面座標與腳本座標一致。
 	geometryX, geometryY, geometryDirection := state.DungeonGeometryView()
 	if geometryX != 9 || geometryY != 3 || geometryDirection != 4 {
 		t.Fatalf("guild script-to-geometry view=(%d,%d,%d), want (9,3,4)",
@@ -1315,6 +1360,21 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		if state.Mode == ModeEvent && state.CombatStatus() == combat.StatusPartyWon && state.eventReturnMode == ModeDungeon {
 			if err := state.Continue(); err != nil {
 				t.Fatalf("%s resume: %v", context, err)
+			}
+		}
+		// 打完會掉戰利品的場次要先把 TREASURE 選單收掉才回到地城視角。
+		for spin := 0; spin < 6 && state.treasureMenu; spin++ {
+			exit, ok := state.OriginalChoiceIndex("TREASURE_EXIT")
+			if !ok {
+				break
+			}
+			if err := state.Select(exit); err != nil {
+				t.Fatalf("%s treasure exit: %v", context, err)
+			}
+			if state.Mode == ModeEvent {
+				if err := state.Continue(); err != nil {
+					t.Fatalf("%s treasure resume: %v", context, err)
+				}
 			}
 		}
 		if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeDungeon {
@@ -1823,7 +1883,39 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			finishDungeonEncounter(fmt.Sprintf("normal Fire Knife hideout combat step %d", step))
 		}
 		for pause := 0; state.Mode != ModeDungeon; pause++ {
-			if pause >= 8 || len(state.Choices) == 0 {
+			// 一次性旗標是每一段自己的（spec 1162），所以這條路線上多演了
+			// 幾格；其中有的會直接開打，戰鬥要在迴圈裡收掉。
+			if state.Mode == ModeCombat {
+				if !state.CombatActive() {
+					t.Fatalf("Fire Knife hideout step %d entered inactive combat", step)
+				}
+				for turn := 0; turn < 100 && state.CombatActive(); turn++ {
+					if err := state.CombatAct(); err != nil {
+						t.Fatalf("Fire Knife hideout combat step %d turn %d: %v", step, turn, err)
+					}
+				}
+				if state.CombatStatus() != combat.StatusPartyWon {
+					t.Fatalf("Fire Knife hideout combat step %d status=%v", step, state.CombatStatus())
+				}
+				continue
+			}
+			if state.treasureMenu {
+				exit, ok := state.OriginalChoiceIndex("TREASURE_EXIT")
+				if !ok {
+					t.Fatalf("Fire Knife hideout step %d treasure menu has no exit: %v", step, state.currentOriginalChoices)
+				}
+				if err := state.Select(exit); err != nil {
+					t.Fatalf("Fire Knife hideout step %d treasure exit: %v", step, err)
+				}
+				continue
+			}
+			if state.Mode == ModeEvent {
+				if err := state.Continue(); err != nil {
+					t.Fatalf("resume Fire Knife hideout narration at step %d: %v", step, err)
+				}
+				continue
+			}
+			if pause >= 12 || len(state.Choices) == 0 {
 				t.Fatalf("Fire Knife hideout event did not resume at step %d: mode=%v message=%q choices=%v",
 					step, state.Mode, state.Message, state.Choices)
 			}
@@ -1837,6 +1929,10 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 				choice = requireGamePackOptionIndex(t, &state, "ecl-option.wait")
 			case requireGamePackText(t, &state, "fire-knife.frozen-room"):
 				choice = requireGamePackOptionIndex(t, &state, "ecl-option.interrogate")
+			case requireGamePackText(t, &state, "tilverton.sewers-checkpoint"):
+				// 檢查哨要你們投降。投降也能見到首領，但這條路線是**打進去**，
+				// 所以答「否」，讓隊伍自己走到 `(3,13)`。
+				choice = requireGamePackOptionIndex(t, &state, "option.no")
 			}
 			if err := state.Select(choice); err != nil {
 				t.Fatalf("continue Fire Knife hideout event at step %d: %v", step, err)
@@ -4761,7 +4857,10 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		state.Area.GameArea != 3 || !state.Area.InDungeon ||
 		state.GeoMapSet != 3 || state.GeoMapBlock != 0x10 ||
 		!state.geoMapPending ||
-		state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 2 {
+		// 進猶拉什是腳本演的走位：`ECL3/0x10:006Ch` 先落在 `(0,8)` 朝西，
+		// `0127h` 移到 `(1,0)` 朝南，接著一串 `CALL C01Eh` 往南再往西走到
+		// `(0,3)`——**收尾朝西**，不是地圖宣告的 spawn 那個朝東。
+		state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 6 {
 		t.Fatalf("Yulash waiting room transition mode=%v block=0x%02X area=%+v geo=%d/%d pending=%v coords=%d,%d,%d message=%q",
 			state.Mode, session.CurrentBlockID(), state.Area, state.GeoMapSet, state.GeoMapBlock,
 			state.geoMapPending, state.DungeonX, state.DungeonY, state.DungeonDirection,
@@ -4849,8 +4948,10 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
+	// 離開指揮官那一段收尾寫的是 `ECL3/0x10:0185h` 的 `SAVE 4C00 C04D`——
+	// 朝向由劇情變數決定，不是地圖宣告的 spawn。這條路線上是朝西。
 	if state.Mode != ModeDungeon ||
-		state.DungeonX != 1 || state.DungeonY != 3 || state.DungeonDirection != 2 ||
+		state.DungeonX != 1 || state.DungeonY != 3 || state.DungeonDirection != 6 ||
 		len(state.Choices) != 0 || state.Message != "" {
 		t.Fatalf("Yulash commander exit mode=%v coords=%d,%d,%d originals=%#v choices=%#v message=%q",
 			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,

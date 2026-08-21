@@ -38,6 +38,7 @@ func main() {
 	table := flag.String("table", "", "改成把這個位移的 `ON GOTO` 表拆開，逐個索引印出目的地與那裡的第一句文字")
 	getTable := flag.String("gettable", "", "改成把這個位移的 `GETTABLE` 查表拆開：逐個索引印出查到的值；後面緊接 `ON GOTO` 時一併印出那個值對到哪一支處理常式")
 	getCount := flag.Int("gettable-count", 32, "`-gettable` 要印幾個索引")
+	at := flag.String("at", "", "改成從這個位移開始往下印（十六進位）；`-after` 決定印幾條")
 	raw := flag.Bool("raw", false, "每一條額外印出原始位元組（變長指令用）")
 	before := flag.Int("before", 8, "往前印幾條")
 	after := flag.Int("after", 2, "往後印幾條")
@@ -180,6 +181,33 @@ func main() {
 			fmt.Println()
 		}
 		fmt.Printf("%s 區塊 0x%02X：跳進 %#04x 的來源 %d 處\n", *member, wanted, wantOffset, len(keys))
+		return
+	}
+
+	if *at != "" {
+		wantOffset, parseErr := strconv.ParseInt(strings.TrimPrefix(*at, "0x"), 16, 32)
+		if parseErr != nil {
+			log.Fatal(parseErr)
+		}
+		index := sort.SearchInts(offsets, int(wantOffset))
+		if index >= len(offsets) {
+			log.Fatalf("位移 %#04x 之後沒有可達指令", wantOffset)
+		}
+		low := index - *before
+		if low < 0 {
+			low = 0
+		}
+		high := index + *after
+		if high >= len(offsets) {
+			high = len(offsets) - 1
+		}
+		for cursor := low; cursor <= high; cursor++ {
+			marker := "   "
+			if cursor == index {
+				marker = "→  "
+			}
+			fmt.Printf("%s%#04x  %s\n", marker, offsets[cursor], format(unique[offsets[cursor]]))
+		}
 		return
 	}
 

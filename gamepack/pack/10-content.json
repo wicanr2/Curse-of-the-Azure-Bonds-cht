@@ -5545,6 +5545,13 @@
    "message_id": "standing-stone.seek-red"
   },
   {
+   "id": "standing-stone.seek-green",
+   "all_contains": [
+    "SEEK GREEN TO THE NORTHWEST"
+   ],
+   "message_id": "standing-stone.seek-green"
+  },
+  {
    "id": "standing-stone.edge",
    "all_contains": [
     "YOU ARE AT THE EDGE OF",

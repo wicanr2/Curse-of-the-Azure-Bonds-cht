@@ -3070,14 +3070,15 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		}
 		previousX, previousY = step.x, step.y
 	}
-	// Outer-ruins Nameless already set global byte 4C06h. Block 43 reuses
-	// that byte for this kitchen description, so the canonical path
-	// intentionally observes a silent one-shot rather than replaying it.
-	if kitchenFlag, ok := state.session.MemoryValue(0x4C06); !ok ||
-		kitchenFlag != 1 || state.DungeonWallRoof != 0x8C ||
+	// 內城前導從下水道進來時就先唸過廚房那一段，並把 `4C07` 設成 1
+	// （`ECL6/0x43:00EEh`）。走到廚房格時守衛 `COMPARE AND 4C06,0 4C07,0`
+	// 因此不成立，那一格安靜，`4C06` 也還沒被動過。
+	kitchenFlag, kitchenSeen := state.session.MemoryValue(0x4C06)
+	arrival, arrivalOK := state.session.MemoryValue(0x4C07)
+	if kitchenSeen || !arrivalOK || arrival != 1 || state.DungeonWallRoof != 0x8C ||
 		state.Mode != ModeDungeon || state.Message != "" {
-		t.Fatalf("inner kitchen shared flag=%d,%v terrain=%02x mode=%v message=%q",
-			kitchenFlag, ok, state.DungeonWallRoof, state.Mode, state.Message)
+		t.Fatalf("inner kitchen flag=%d,%v arrival=%d,%v terrain=%02x mode=%v message=%q",
+			kitchenFlag, kitchenSeen, arrival, arrivalOK, state.DungeonWallRoof, state.Mode, state.Message)
 	}
 
 	innerOfficeRoute := []dungeonStep{
@@ -3098,14 +3099,17 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		}
 		previousX, previousY = step.x, step.y
 	}
-	// Burial Glen block 40h already wrote 4C05h=1. Block 43h reuses that
-	// absolute SAVGAM ECL byte for the office one-shot, so a maximal prior
-	// route also reaches this room silently.
+	// 辦公室的一次性標記是內城自己那一份 `4C05`（spec 1162），別的段寫過同一格
+	// 也蓋不到這裡，所以這一趟唸得出描述。
 	if officeFlag, ok := state.session.MemoryValue(0x4C05); !ok ||
 		officeFlag != 1 || state.DungeonWallRoof != 0x8B ||
-		state.Mode != ModeDungeon || state.Message != "" {
-		t.Fatalf("inner office shared flag=%d,%v terrain=%02x mode=%v message=%q",
+		state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.inner.office") {
+		t.Fatalf("inner office flag=%d,%v terrain=%02x mode=%v message=%q",
 			officeFlag, ok, state.DungeonWallRoof, state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
 	}
 
 	beforeBedroomMoney := state.MoneyPool()
