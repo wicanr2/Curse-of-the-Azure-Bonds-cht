@@ -311,6 +311,16 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 			if err := o.state.Continue(); err != nil {
 				t.Fatalf("continue normal campaign event message=%q: %v", o.state.Message, err)
 			}
+		case ModeMap:
+			// 走荒野那條路線會先進世界地圖：目的地已經排好，收掉這一段行程
+			// 就會回到目標城鎮的邊緣選單。
+			if !o.state.pendingWorldTravel {
+				t.Fatalf("normal campaign world map without a pending destination: message=%q choices=%v",
+					o.state.Message, o.state.currentOriginalChoices)
+			}
+			if err := o.state.EnterPlaces(); err != nil {
+				t.Fatalf("normal campaign world travel: %v", err)
+			}
 		case ModeWilderness:
 			switch {
 			case o.state.treasureMenu:
@@ -581,6 +591,13 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 				if !o.selectOption(t, "option.no") {
 					t.Fatalf("lava cask retreat option unavailable: %v", o.state.currentOriginalChoices)
 				}
+			case o.state.Message == requireGamePackText(t, o.state, "zhentil.enter-prompt"):
+				// 黑暗神殿的正門（`ECL4/0x20:0213h`，地形 5 且朝東）。這條路線
+				// 走的是劇情那條：先在 `(10,11)` 遇上奧莉薇，由她帶進去。
+				// 從正門闖進去會跳過她那一段。
+				if !o.selectOption(t, "option.no") {
+					t.Fatalf("Zhentil shrine door NO option unavailable: %v", o.state.currentOriginalChoices)
+				}
 			case o.state.session != nil && o.state.session.CurrentBlockID() == 0x33 &&
 				o.selectOption(t, "ecl-option.press-button-or-return-to-continue"):
 				if o.state.Mode == ModeDungeon && !o.towerReady {
@@ -589,6 +606,20 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 						t.Fatalf("open wizard-tower roof exit: %v", err)
 					}
 					o.towerReady = true
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "wizard-tower.wilderness-exit"):
+				// 出塔之後問「要順道去哈普村還是離開這一區」。這條路線已經
+				// 走過哈普村了，選 DEPART 繼續世界路線。
+				if !o.selectOption(t, "ecl-option.depart") {
+					t.Fatalf("wizard-tower exit DEPART option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "wizard-tower.stairs.down"):
+				// 巫師塔每層之間靠樓梯事件接（`ECL5/0x33:090Ch` 先用地形碼查
+				// 一張「這道樓梯要朝哪個方向站」的表）。這條路線要下樓回熔岩洞，
+				// 所以答是——通用 fallback 會先撞到 `option.no`，那等於一直待在
+				// 塔頂（spec 1161）。
+				if !o.selectOption(t, "option.yes") {
+					t.Fatalf("wizard-tower stairs YES option unavailable: %v", o.state.currentOriginalChoices)
 				}
 			case o.state.Message == requireGamePackText(t, o.state, "hap.leave"):
 				optionID := "option.no"
@@ -617,6 +648,9 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 				if !o.selectOption(t, "myth-drannor.grave.rebury") {
 					t.Fatalf("Myth Drannor grave REBURY option unavailable: %v", o.state.currentOriginalChoices)
 				}
+			case o.selectOption(t, "ecl-option.thank-him"):
+				// 絲綢在古熔岩洞出口那一場（`(6,15)`）也給 THANK HIM／ATTACK／
+				// LEAVE，敘述只有「WHAT DO YOU DO?」。這條路線一律道謝走人。
 			case o.selectOption(t, "ecl-option.parlay-nice"):
 			case o.selectOption(t, "option.no"):
 			case o.selectOption(t, "ecl-option.evade"):
@@ -709,6 +743,100 @@ func (o *normalCampaignObserver) recordRefusedEdge(point normalDungeonPoint, dir
 	}] = true
 }
 
+// wizardTowerRooms 是 `GEO5/0x33` 上互不相連的五個房間各自有哪些樓梯格，
+// 以及每道樓梯「要朝哪個方向站」。
+//
+// ★ 塔的每一層在 GEO 上是獨立的小房間，層與層之間只靠樓梯事件接：
+// `ECL5/0x33:090Ch` 用地形碼查 `1C81h` 那張表拿到方向，朝向不對就直接 `EXIT`
+// （畫面上什麼都不會發生）。表的值是 `C04D`（0..3），這裡換成 remake 的
+// 0/2/4/6 刻度。房間的分組由 `cmd/geo-probe` 的連通性算出來（spec 1161）。
+var wizardTowerRooms = [][]struct {
+	point  normalDungeonPoint
+	facing uint8
+}{
+	{{normalDungeonPoint{3, 1}, 0}},
+	{{normalDungeonPoint{8, 0}, 4}, {normalDungeonPoint{5, 4}, 6}},
+	{{normalDungeonPoint{9, 5}, 2}, {normalDungeonPoint{14, 1}, 0}},
+	{{normalDungeonPoint{14, 6}, 4}, {normalDungeonPoint{9, 12}, 6}},
+	{{normalDungeonPoint{0, 12}, 2}},
+}
+
+// takeWizardTowerStairs 在塔裡走一步：走到這間房裡還沒用過的那道樓梯**前一格**，
+// 再朝樓梯要的方向踏上去。
+//
+// ⚠ 不要直接用 `walkNormalDungeonTo` 走到樓梯格上：踏上去的當下事件就會把隊伍
+// 傳到別的房間，走訪器會以為「還沒到目標」而繼續找路，然後回報「目標走不到」。
+// 同一間房裡的兩道樓梯一上一下，所以要先挑不是腳下這一格的那道。
+func takeWizardTowerStairs(
+	t *testing.T, state *State, observer *normalCampaignObserver, used map[normalDungeonPoint]bool,
+) bool {
+	t.Helper()
+	here := normalDungeonPoint{state.DungeonX, state.DungeonY}
+	for _, room := range wizardTowerRooms {
+		inRoom := false
+		for _, stairs := range room {
+			if stairs.point == here {
+				inRoom = true
+			}
+		}
+		if !inRoom {
+			continue
+		}
+		ordered := make([]struct {
+			point  normalDungeonPoint
+			facing uint8
+		}, 0, len(room))
+		for _, stairs := range room {
+			if stairs.point != here {
+				ordered = append(ordered, stairs)
+			}
+		}
+		for _, stairs := range room {
+			if stairs.point == here {
+				ordered = append(ordered, stairs)
+			}
+		}
+		for _, stairs := range ordered {
+			if used[stairs.point] {
+				continue
+			}
+			used[stairs.point] = true
+			deltaX, deltaY := normalDungeonDelta(int(stairs.facing))
+			if stairs.point == here {
+				// 已經站在樓梯上（劇情把隊伍送到這裡）：原地轉到它要的方向。
+				// `7F81` 是「這一步已經演過一場」的旗標，移動時才會被清掉，
+				// 原地轉向要照移動的做法清一次，否則事件會被自己的旗標擋住。
+				state.TurnDungeonWithGrid(observer.towerGrid,
+					(int(stairs.facing)-int(state.DungeonDirection)+8)%8)
+				state.session.SetMemoryValue(0x7F81, 0)
+				if err := state.RunDungeonLifecycle(); err != nil {
+					t.Fatalf("run wizard-tower stairs lifecycle: %v", err)
+				}
+				observer.resolveDungeonBoundary(t)
+				return true
+			}
+			approach := normalDungeonPoint{
+				geo.WrapCoordinate(stairs.point.x-deltaX, geo.Width),
+				geo.WrapCoordinate(stairs.point.y-deltaY, geo.Height),
+			}
+			if approach != here {
+				walkNormalDungeonTo(t, state, &observer.towerGrid, approach.x, approach.y, observer)
+				if state.session.CurrentBlockID() != 0x33 {
+					return true
+				}
+			}
+			if err := state.MoveDungeon(observer.towerGrid,
+				deltaX, deltaY, int(stairs.facing)); err != nil {
+				t.Fatalf("step onto wizard-tower stairs (%d,%d): %v",
+					stairs.point.x, stairs.point.y, err)
+			}
+			observer.resolveDungeonBoundary(t)
+			return true
+		}
+	}
+	return false
+}
+
 func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, targetY int, observer *normalCampaignObserver) {
 	t.Helper()
 	target := normalDungeonPoint{targetX, targetY}
@@ -741,7 +869,11 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 				// the known random cells are not needed for the main path. The
 				// Zhentil shrine route is deliberately left connected: its prison
 				// corridor crosses one of these cells in the original GEO.
+				// ⚠ 巫師塔（`GEO5/0x33`）也要放行：`(8,15)` 與 `(12,10)` 落在
+				// 那張圖的走廊上，排除掉會把第 15 列切斷，看起來就像「塔頂下
+				// 不來」（spec 1161）。這份清單是**逐圖**的排除，不是通則。
 				if !(state.GeoMapSet == 4 && state.GeoMapBlock == 0x21) &&
+					!(state.GeoMapSet == 5 && state.GeoMapBlock == 0x33) &&
 					(next == (normalDungeonPoint{10, 2}) || next == (normalDungeonPoint{8, 11}) ||
 						next == (normalDungeonPoint{8, 15}) || next == (normalDungeonPoint{12, 10})) {
 					continue
@@ -783,6 +915,7 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 						nextY := geo.WrapCoordinate(y+deltaY, geo.Height)
 						next := normalDungeonPoint{nextX, nextY}
 						if !(state.GeoMapSet == 4 && state.GeoMapBlock == 0x21) &&
+							!(state.GeoMapSet == 5 && state.GeoMapBlock == 0x33) &&
 							(next == (normalDungeonPoint{10, 2}) || next == (normalDungeonPoint{8, 11}) ||
 								next == (normalDungeonPoint{8, 15}) || next == (normalDungeonPoint{12, 10})) {
 							continue
@@ -818,8 +951,13 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 				}
 			}
 			if !hasNextDoor {
-				t.Fatalf("normal dungeon target (%d,%d) is unreachable from (%d,%d) and no locked door leads onward",
-					targetX, targetY, start.x, start.y)
+				refused := []string{}
+				for edge := range observer.refusedEdges {
+					refused = append(refused, fmt.Sprintf("%+v", edge))
+				}
+				sort.Strings(refused)
+				t.Fatalf("normal dungeon target (%d,%d) is unreachable from (%d,%d) and no locked door leads onward; refused=%v",
+					targetX, targetY, start.x, start.y, refused)
 			}
 			current := nextDoor.source
 			doorPath := make([]struct {
@@ -837,17 +975,26 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 			for left, right := 0, len(doorPath)-1; left < right; left, right = left+1, right-1 {
 				doorPath[left], doorPath[right] = doorPath[right], doorPath[left]
 			}
+			doorEdgeRefused := false
 			for _, step := range doorPath {
 				observer.resolveDungeonBoundary(t)
 				if state.Mode != ModeDungeon {
 					t.Fatalf("normal dungeon route to locked door mode=%v message=%q", state.Mode, state.Message)
 				}
 				deltaX, deltaY := normalDungeonDelta(step.direction)
+				doorFrom := normalDungeonPoint{state.DungeonX, state.DungeonY}
 				if err := state.MoveDungeon(*grid, deltaX, deltaY, step.direction); err != nil {
 					t.Fatalf("normal dungeon route to locked door (%d,%d): %v",
 						nextDoor.source.x, nextDoor.source.y, err)
 				}
 				observer.resolveDungeonBoundary(t)
+				// 走去開鎖門的路上一樣會撞到「走過去卻被推回來」的邊；記下來
+				// 讓外層重新規劃，否則會卡在同一步（同主迴圈那段）。
+				if state.DungeonX == doorFrom.x && state.DungeonY == doorFrom.y {
+					observer.recordRefusedEdge(doorFrom, step.direction)
+					doorEdgeRefused = true
+					break
+				}
 				if observer.stoppedAtDataPackEvent() {
 					return
 				}
@@ -855,9 +1002,13 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 					return
 				}
 			}
+			if doorEdgeRefused {
+				continue
+			}
+			// ⚠ 走到門口的路上劇情可能把隊伍搬走。搬走了就把控制權交回呼叫端
+			// 重新規劃——原本的目標很可能在新位置那一區根本走不到。
 			if state.DungeonX != nextDoor.source.x || state.DungeonY != nextDoor.source.y {
-				t.Fatalf("normal dungeon did not reach locked door source (%d,%d), ended at (%d,%d)",
-					nextDoor.source.x, nextDoor.source.y, state.DungeonX, state.DungeonY)
+				return
 			}
 			state.TurnDungeonWithGrid(*grid,
 				(nextDoor.direction-int(state.DungeonDirection)+8)%8)
@@ -904,6 +1055,14 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 		// 會把隊伍推回上一格）。記下來讓尋路繞開，否則會一直重試同一步。
 		if state.DungeonX == start.x && state.DungeonY == start.y {
 			observer.recordRefusedEdge(start, step.direction)
+			continue
+		}
+		// ⚠ 落點不是規劃的那一格，代表劇情把隊伍搬走了（傳送、走位動畫）。
+		// 把控制權交回呼叫端重新規劃，不要繼續照舊計畫走——舊計畫的目標很
+		// 可能在新位置那一區根本走不到，然後會以「目標走不到」收場，
+		// **症狀出現在終點、原因在中間某一步**（spec 1161）。
+		if state.DungeonX != step.point.x || state.DungeonY != step.point.y {
+			return
 		}
 	}
 	if observer.stoppedAtDataPackEvent() {
@@ -1093,7 +1252,43 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			t.Fatalf("normal lava guarded-door route mode=%v coverage=%v position=(%d,%d,%d)",
 				state.Mode, observer.seen, state.DungeonX, state.DungeonY, state.DungeonDirection)
 		}
-		walkNormalDungeonTo(t, state, &grid, 0, 5, observer)
+		// ⚠ 走去熔岩池的途中會被劇情搬走：巫師塔那一段的 `ECL5/0x33:022Bh`
+		// 把隊伍直接放到塔頂 `(3,1)`。塔裡要一層一層走樓梯下來，最後在
+		// 地面層的 `(7,15)` 朝東才會冒出「地道還是荒野」那個出口選單
+		// （`0811h`）；選 CAVES 走 `088Bh` ＝ `SAVE 06 C04B; SAVE 0F C04C;
+		// NEWECL 32h`（spec 1160／1161）。
+		observer.towerReturnOption = "ecl-option.caves"
+		towerStairsUsed := map[normalDungeonPoint]bool{}
+		for attempt := 0; attempt < 16 && (state.session.CurrentBlockID() != 0x32 ||
+			state.DungeonX != 0 || state.DungeonY != 5); attempt++ {
+			if state.session.CurrentBlockID() == 0x33 {
+				observer.towerReady = true
+				if !takeWizardTowerStairs(t, state, observer, towerStairsUsed) {
+					// 樓梯走完就到了塔的地面層。出口 `(7,15)`（地形碼 1）不走
+					// 樓梯那條分派——`07D7h` 先比地形碼 1，再在 `07E2h` 比
+					// `C04D == 1`（朝東）。⚠ 樓梯方向表對索引 1 給的是 5，
+					// 不是合法朝向，正說明這一格不是樓梯。
+					walkNormalDungeonTo(t, state, &observer.towerGrid, 7, 15, observer)
+					if state.session.CurrentBlockID() != 0x33 {
+						continue
+					}
+					state.TurnDungeonWithGrid(observer.towerGrid,
+						(2-int(state.DungeonDirection)+8)%8)
+					state.session.SetMemoryValue(0x7F81, 0)
+					if err := state.RunDungeonLifecycle(); err != nil {
+						t.Fatalf("run wizard-tower exit lifecycle: %v", err)
+					}
+					observer.resolveDungeonBoundary(t)
+				}
+				continue
+			}
+			walkNormalDungeonTo(t, state, &grid, 0, 5, observer)
+		}
+		if state.session.CurrentBlockID() != 0x32 || state.DungeonX != 0 || state.DungeonY != 5 {
+			t.Fatalf("normal lava pool approach ended at (%d,%d,%d) block=%#x mode=%v",
+				state.DungeonX, state.DungeonY, state.DungeonDirection,
+				state.session.CurrentBlockID(), state.Mode)
+		}
 		// The original ECL5 pool branch is time-gated. Advance the shared clock
 		// through the engine time service, equivalent to a normal CAMP/REST period;
 		// do not write 4BC9 directly in this normal-session test.
@@ -1153,7 +1348,13 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		observer.towerReturnOption = "ecl-option.wilderness"
 		observer.towerReady = false
 		observer.stopAtWorldEdge = true
-		walkNormalDungeonTo(t, state, &grid, 6, 15, observer)
+		// ⚠ 古熔岩洞（`ECL5/0x32`）與哈普村（`ECL5/0x31`）共用 `GEO5/0x32`
+		// （spec 1158）。從熔岩池走到地圖出口 `(6,15)` 的路上會經過村界，
+		// 走進去就換成 0x31；再走一次就會從村子的出口回到 0x32。
+		for attempt := 0; attempt < 6 && state.Mode == ModeDungeon &&
+			(state.DungeonX != 6 || state.DungeonY != 15); attempt++ {
+			walkNormalDungeonTo(t, state, &grid, 6, 15, observer)
+		}
 		area5DepartureSeen := observer.seen["area5.depart-akabar"] || observer.seen["area5.depart-akabar-reluctant"]
 		if state.Mode != ModeWilderness ||
 			state.Message != requireGamePackText(t, state, "essembra.edge") ||
@@ -1278,7 +1479,10 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		observer.resolveDungeonBoundary(t)
 		if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x10 ||
 			state.GeoMapSet != 3 || state.GeoMapBlock != 0x10 ||
-			state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 2 {
+			// 進猶拉什是腳本演的走位：`ECL3/0x10:006Ch` 先落在 `(0,8)` 朝西，
+			// `0127h` 移到 `(1,0)` 朝南，接著一串 `CALL C01Eh` 往南再往西走到
+			// `(0,3)`——**收尾朝西**，不是地圖宣告的 spawn 那個朝東。
+			state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 6 {
 			t.Fatalf("normal Yulash entry mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) coverage=%v",
 				state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
 				state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
@@ -1467,16 +1671,21 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		}
 		zhentilGrid := loadGeoCampaignGrid(t, image, 4, "GEO4.DAX", 0x20)
 		walkNormalDungeonTo(t, state, &zhentilGrid, 10, 11, observer)
-		// The ECL cell contract is position plus facing: Olive appears at
-		// (10,11,N).  Approach it from the southern neighbor so the normal move,
-		// rather than a direct coordinate assignment or same-cell redraw, supplies
-		// the north-facing trigger.
-		walkNormalDungeonTo(t, state, &zhentilGrid, 10, 12, observer)
-		state.TurnDungeonWithGrid(zhentilGrid, (0-int(state.DungeonDirection)+8)%8)
-		if err := state.MoveDungeon(zhentilGrid, 0, -1, 0); err != nil {
-			t.Fatalf("normal Zhentil Olive north-facing approach: %v", err)
+		// ECL 那一格的條件是位置加朝向：奧莉薇在 `(10,11,N)` 才出現。所以從南邊
+		// 那一格走上去，讓一般的移動供給朝北的觸發，而不是直接寫座標或原地重畫。
+		// ⚠ 上面那趟路本身就可能經過她那一格：她會直接把隊伍帶進黑暗神殿
+		// （`ECL4/0x21`）。已經被帶走就不要再照城區的地圖走一次——那張圖上的
+		// 座標在神殿裡沒有意義。
+		if state.session.CurrentBlockID() == 0x20 {
+			walkNormalDungeonTo(t, state, &zhentilGrid, 10, 12, observer)
 		}
-		observer.resolveDungeonBoundary(t)
+		if state.session.CurrentBlockID() == 0x20 {
+			state.TurnDungeonWithGrid(zhentilGrid, (0-int(state.DungeonDirection)+8)%8)
+			if err := state.MoveDungeon(zhentilGrid, 0, -1, 0); err != nil {
+				t.Fatalf("normal Zhentil Olive north-facing approach: %v", err)
+			}
+			observer.resolveDungeonBoundary(t)
+		}
 		for _, messageID := range []string{
 			"zhentil.olive_appears",
 			"zhentil.olive_follow",
@@ -1559,7 +1768,9 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		// E1 is the original Cave of the Beholder entrance. It is a distinct
 		// player-visible anchor from the later dead-elf teleporter destination;
 		// the normal ECL transaction below connects the two in a separate step.
-		if state.DungeonX != 5 || state.DungeonY != 7 || state.DungeonDirection != 6 {
+		// 只認格子，不認朝向：走到 E1 的最後一步朝哪邊由前面那段的收尾決定，
+		// 下一段一開始就會自己轉向。
+		if state.DungeonX != 5 || state.DungeonY != 7 {
 			t.Fatalf("normal Beholder Cave spawn mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) coverage=%v",
 				state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
 				state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
@@ -1570,21 +1781,35 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 	}
 	if !t.Run("ECL4/0x22 眼魔洞穴與 Dexam", func(t *testing.T) {
 		caveGrid := loadGeoCampaignGrid(t, image, 4, "GEO4.DAX", 0x25)
-		observer.stopAtDataPackEventID = "zhentil-keep.beholder-cave.same-block-launch"
+		// ⚠ 傳送現在是腳本自己做的：`ECL4/0x22:061Bh` 在「YOU ARE SUDDENLY
+		// SLAMMED AGAINST A WALL.」之後寫 `(13,1)` 朝西、重畫，接著同一次執行
+		// 就印出死精靈那一段。停下來的訊號因此改成那句敘述本身——不能再靠
+		// game pack 那條 `set_map_position` 替身事件，而且**要在觀察器的
+		// 「洞穴裡一律 LEAVE」那條通用規則之前停住**，否則死精靈的選單會被
+		// 順手選掉（spec 1161）。
+		observer.stopAtMessageID = "dexam.dead-elf.remains"
 		// The source cell is reached by ordinary GEO movement.  The ECL transaction
 		// then writes the destination through C04B/C04C/C04D; the title pack only
 		// projects that original virtual-map handoff back into State.
-		walkNormalDungeonTo(t, state, &caveGrid, 5, 9, observer)
-		if !observer.stoppedAtDataPackEvent() || state.Mode != ModeWilderness ||
+		for attempt := 0; attempt < 6 && state.Mode == ModeDungeon &&
+			(state.DungeonX != 13 || state.DungeonY != 1); attempt++ {
+			walkNormalDungeonTo(t, state, &caveGrid, 5, 9, observer)
+		}
+		// 敘述先停在按鍵那一格；推完之後同一場的選單才交出來。
+		// 牆面／地形現在由重畫自己去地圖重讀（spec 1161），到站時就已經是
+		// `(13,1)` 那一格的值。
+		if (state.Mode != ModeWilderness && state.Mode != ModeEvent) ||
 			state.DungeonX != 13 || state.DungeonY != 1 || state.DungeonDirection != 6 ||
 			state.DungeonWallType != 8 || state.DungeonWallRoof != 0xC0 {
-			t.Fatalf("normal Beholder Cave teleporter mode=%v pos=(%d,%d,%d) wall=%#x roof=%#x applied=%v coverage=%v",
+			t.Fatalf("normal Beholder Cave teleporter mode=%v pos=(%d,%d,%d) wall=%#x roof=%#x coverage=%v",
 				state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,
-				state.DungeonWallType, state.DungeonWallRoof,
-				state.appliedDataPackEvents[observer.stopAtDataPackEventID], observer.seen)
+				state.DungeonWallType, state.DungeonWallRoof, observer.seen)
 		}
+		// ⚠ 這裡不再驗 `4C03`：那一格先前是 game pack 那條 `set_map_position`
+		// 替身順手寫的（`set_memory 4C03 = 0`）。傳送改由腳本自己做之後，
+		// 這一刻 `4C03` 就是腳本留下的值，不該再拿替身的副作用當期望值。
 		for address, want := range map[uint16]uint16{
-			0xC04B: 13, 0xC04C: 1, 0xC04D: 3, 0xC04E: 8, 0xC04F: 0xC0, 0x4C03: 0,
+			0xC04B: 13, 0xC04C: 1, 0xC04D: 3, 0xC04E: 8, 0xC04F: 0xC0,
 		} {
 			got, ok := state.session.MemoryValue(address)
 			if !ok || got != want {
@@ -1594,8 +1819,38 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		if guard, ok := state.session.MemoryValue(0x7F81); !ok || guard != 0 {
 			t.Fatalf("normal Beholder Cave teleporter guard=%#x ok=%v, want cleared", guard, ok)
 		}
-		if state.Message != requireGamePackText(t, state, "dexam.dead-elf.remains") ||
-			!observer.hasOption("dexam.dead-elf.examine-remains") || !observer.hasOption("ecl-option.leave") {
+		// 傳送同一次執行就印出死精靈的敘述（`ECL4/0x22:0631h`），這條路線停在
+		// 這裡再自己把後面那段互動走完。
+		if state.Message != requireGamePackText(t, state, "dexam.dead-elf.remains") {
+			t.Fatalf("normal Beholder Cave dead-elf narration message=%q choices=%v",
+				state.Message, state.currentOriginalChoices)
+		}
+		// `0651h` 用 `4C06` 把那段互動擋成一次性。這一格是眼魔洞穴自己的暫存
+		// （spec 1162），進洞時是 0，所以走的是「第一次」那條分支，`066Bh`
+		// 已經把它設成 1。
+		if flag, ok := state.session.MemoryValue(0x4C06); !ok || flag != 1 {
+			t.Fatalf("normal Beholder Cave dead-elf gate 4C06=%#x,%v, want 1", flag, ok)
+		}
+		// ⚠ 停用停止訊號再往下走：`stopAtMessageID` 還設著的話，觀察器每次都會
+		// 在這句敘述上立刻返回，看起來就像「推不動」。
+		observer.stopAtMessageID = ""
+		// 敘述先停在按鍵那一格；推完之後同一場的選單才交出來。
+		for attempt := 0; attempt < 4 &&
+			!observer.hasOption("dexam.dead-elf.examine-remains"); attempt++ {
+			if state.Mode == ModeEvent {
+				if err := state.Continue(); err != nil {
+					t.Fatalf("continue the dead-elf narration: %v", err)
+				}
+				continue
+			}
+			if state.Mode != ModeWilderness ||
+				!observer.hasOption("ecl-option.press-button-or-return-to-continue") {
+				break
+			}
+			selectOption(t, "ecl-option.press-button-or-return-to-continue")
+		}
+		if !observer.hasOption("dexam.dead-elf.examine-remains") ||
+			!observer.hasOption("ecl-option.leave") {
 			t.Fatalf("normal Beholder Cave dead-elf prompt message=%q choices=%v originals=%v",
 				state.Message, state.Choices, state.currentOriginalChoices)
 		}
@@ -1627,10 +1882,8 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		if !slices.Contains(state.JournalPages, requireGamePackText(t, state, "journal.59")) {
 			t.Fatalf("normal Beholder Cave Journal 59 was not unlocked: %v", state.JournalPages)
 		}
-		for address, want := range map[uint16]uint16{0x4C03: 0, 0x4C07: 0x80} {
-			if got, ok := state.session.MemoryValue(address); !ok || got != want {
-				t.Fatalf("normal Beholder Cave raw memory[%#x]=%#x ok=%v, want %#x", address, got, ok, want)
-			}
+		if got, ok := state.session.MemoryValue(0x4C07); !ok || got != 0x80 {
+			t.Fatalf("normal Beholder Cave raw memory[0x4c07]=%#x ok=%v, want 0x80", got, ok)
 		}
 		selectOption(t, "ecl-option.press-button-or-return-to-continue")
 		treasureExit, hasTreasureExit := state.OriginalChoiceIndex("TREASURE_EXIT")
@@ -1854,22 +2107,24 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			t.Fatalf("立石群開場沒有繼續選項：%v", state.currentOriginalChoices)
 		}
 		observer.observe()
-		// 灰袍男子按「還剩幾位主人」換一種說法，數字是執行期插進同一頁的，
-		// 所以每一種數字是一條獨立的文字規則。這條路徑走到這裡剩兩位。
-		if state.Message != requireGamePackText(t, state, "standing-stone.two-masters") {
+		// 灰袍男子唸的是「還剩幾位主人」：`ECL1/0x50:0232h` 把 `4C59`（巫師塔的
+		// 崔坎卓斯）、`4C5B`（猶拉什）、`4C5A`（眼魔洞穴的 Dexam）各算一分，
+		// 三分就走 `028Bh IF =` 那條——直接揭露烈焰之主並指向密斯卓諾。
+		// 這條主線在走到立石群之前三處都已經打完，所以看到的是這一頁，
+		// 不是「還剩兩位」。
+		if state.Message != requireGamePackText(t, state, "myth-drannor.tyranthraxus-reveal") {
 			t.Fatalf("立石群灰袍男子的台詞=%q choices=%v", state.Message, state.currentOriginalChoices)
 		}
-		if !observer.selectOption(t, "ecl-option.thank-him") {
-			t.Fatalf("立石群 THANK HIM 選項不在：%v", state.currentOriginalChoices)
+		for press := 0; press < 4 && !observer.hasOption("ecl-option.journey-on"); press++ {
+			if state.Mode == ModeEvent {
+				if err := state.Continue(); err != nil {
+					t.Fatalf("立石群揭露頁：%v", err)
+				}
+			} else if !observer.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+				break
+			}
+			observer.observe()
 		}
-		observer.observe()
-		if state.Message != requireGamePackText(t, state, "standing-stone.seek-red") {
-			t.Fatalf("立石群指路台詞=%q", state.Message)
-		}
-		if !observer.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
-			t.Fatalf("立石群指路沒有繼續選項：%v", state.currentOriginalChoices)
-		}
-		observer.observe()
 		if !observer.hasOption("ecl-option.journey-on") {
 			t.Fatalf("立石群結束之後沒有回到世界選單：mode=%v choices=%v",
 				state.Mode, state.currentOriginalChoices)
@@ -1881,7 +2136,9 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 
 	if !t.Run("密斯卓諾：世界路線", func(t *testing.T) {
 		observer.stopAtMessageID = "myth-drannor.edge"
-		observer.nextWorldDestinations = []string{"ecl-option.myth-drannor"}
+		// 密斯卓諾只有荒野這一條路（`world-route.myth-drannor` 只給
+		// `WILDERNESS`／`EXIT`），所以路線選項跟目的地一起排進佇列。
+		observer.nextWorldDestinations = []string{"ecl-option.myth-drannor", "ecl-option.wilderness"}
 		if !observer.selectOption(t, "ecl-option.journey-on") {
 			t.Fatalf("立石群 JOURNEY ON 選項不在：%v", state.currentOriginalChoices)
 		}
@@ -2150,8 +2407,12 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			{8, 13, "myth-drannor.inner.chapel", false},
 			{9, 12, "myth-drannor.inner.bedroom", false},
 			{11, 12, "myth-drannor.inner.office", false},
-			{13, 14, "myth-drannor.inner.kitchen", true},
-			{15, 15, "myth-drannor.inner.sewer-collapsed", false},
+			{13, 14, "myth-drannor.inner.kitchen", false},
+			// 「下水道塌了」只有從下水道進來（`4C07` 非 0）才唸得到
+			// （`ECL6/0x43:0E47h`）。這條路線走的是正門，所以這一格安靜。
+			{15, 15, "myth-drannor.inner.sewer-collapsed", true},
+			// 這兩間的守衛都帶著 `4C00`（`0E7Fh`／`0EF8h`）——儀式那場打完之後
+			// 警報已經拉起來，房裡的人不會再照本宣科招呼你們。
 			{14, 11, "myth-drannor.inner.tiered-beds", true},
 			{14, 8, "myth-drannor.inner.worshipping-priests", true},
 			{4, 9, "myth-drannor.inner.statuary", false},
@@ -2171,12 +2432,10 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 					state.DungeonDirection, state.DungeonWallRoof)
 			}
 		}
-		// ⚠ 被壓掉的三間房是同一個原因：它們的守衛是
-		// `COMPARE AND 4C06,0 4C07,0`，而這條 session 走到這裡時
-		// `4C06=0x0A`、`4C07=0x80`——那是**前面幾張地圖**留下的值。
-		// 原作的 `4C00` 一段是 map-local bank，remake 目前是一份全域的。
-		if value, _ := state.session.MemoryValue(0x4C07); value == 0 {
-			t.Error("4C07 已經是 0 了，被壓掉的房間清單該重驗")
+		// `4C00`..`4C0F` 是每一段自己的暫存（spec 1162），所以走進內城時這一區
+		// 是乾淨的：`4C07` 是 0（沒從下水道進來），廚房才唸得出來。
+		if value, ok := state.session.MemoryValue(0x4C07); ok && value != 0 {
+			t.Errorf("進內城時 4C07=%#x，這條路線不是從下水道進來的", value)
 		}
 		captureSegmentEnd(t, "ECL6/0x43 內城遺跡：一樓房間")
 	}) {
@@ -2211,9 +2470,11 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			suppressed bool
 		}{
 			{10, 5, "myth-drannor.inner.preservation-room", false},
+			// 地形 `0x93` 的分派是一句 `EXIT`（`10EAh`）；有內容的是地形
+			// `0x94`／`0x95` 那兩支。這一格本來就不唸。
 			{10, 1, "myth-drannor.inner.biers", true},
 			{14, 1, "myth-drannor.inner.library", false},
-			{14, 4, "myth-drannor.inner.food-storeroom", true},
+			{14, 4, "myth-drannor.inner.food-storeroom", false},
 			{14, 5, "myth-drannor.inner.magic-circle", false},
 		}
 		for _, room := range upstairs {
@@ -2234,14 +2495,13 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			}
 		}
 
-		// ⚠ 停屍架與食品儲藏室被壓掉的原因與一樓那三間同一個（spec 1142）：
-		// 它們的 once-only 旗標帶著**別張地圖**留下的值，這條 session 根本沒
-		// 進過那兩間房。
-		if value, _ := state.session.MemoryValue(0x4C0B); value != 1 {
-			t.Error("4C0B 不再是 1 了，食品儲藏室該重驗")
-		}
-		if value, _ := state.session.MemoryValue(0x4C0F); value == 0 {
-			t.Error("4C0F 已經是 0 了，停屍架那間該重驗")
+		// 停屍架那一格安靜的原因是抵達標記 `4C0E`，不是別張地圖留下的殘值
+		// （`4C00`..`4C0F` 已經是每一段自己的，spec 1162）。
+		// `4C00`..`4C0F` 已經是每一段自己的暫存（spec 1162），走進內城時整區
+		// 是乾淨的。停屍架那一格安靜跟旗標無關：它的地形是 `0x93`，
+		// `ON GOTO (C04F & 0x7F)` 的第 19 支就是一句 `EXIT`（`10EAh`）。
+		if terrain := innerGrid.CellWrapped(10, 1).Terrain; terrain != 0x93 {
+			t.Errorf("停屍架那一格的地形變成 %#x 了，分派索引要重算", terrain)
 		}
 
 		// 二樓到東北角的路線（spec 408 記下的最短合法路徑）。

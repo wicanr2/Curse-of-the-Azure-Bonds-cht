@@ -16,7 +16,21 @@ type BlockSession struct {
 	selectionOffset    int
 	whoSelectionOffset int
 	stringInputOffset  int
+	// blockScratch 依 block 保存 `4C00h`..`4C0Fh` 這 16 格。整個 session 共用
+	// 一份會讓世界地圖的旅行時鐘把地城的一次性旗標覆蓋掉（spec 1162）。
+	blockScratch map[uint8]map[uint16]uint16
 }
+
+// per-block scratch 的位址範圍。整個區 0 是 `4B00h`..`4EFFh`（spec 1096），
+// 但只有開頭這 16 格是每一段自己的暫存：`cmd/ecl-cell-refs -range 4C00-4C0F`
+// 顯示這 16 格**沒有任何唯讀的消費者**——會讀的段一定自己也寫。`4C10h` 以上
+// 反過來滿是跨段交接（`4CE3h` 由 `ECL4/0x20` 寫、`ECL4/0x21`／`0x22` 讀；
+// `4C59h`／`4C5Ah` 由巫師塔與眼魔洞穴寫、世界地圖讀），必須留在共用區。
+// 推導見 spec 1162。
+const (
+	blockScratchLow  = 0x4C00
+	blockScratchHigh = 0x4C0F
+)
 
 func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, error) {
 	if len(blocks) == 0 {
@@ -34,7 +48,12 @@ func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, err
 	for id := range owned {
 		states[id] = shared
 	}
-	session := &BlockSession{blocks: owned, current: current, states: states}
+	session := &BlockSession{
+		blocks:       owned,
+		current:      current,
+		states:       states,
+		blockScratch: map[uint8]map[uint16]uint16{},
+	}
 	session.loadCurrentCodeMemory()
 	return session, nil
 }
@@ -64,6 +83,21 @@ func (s *BlockSession) MemoryValue(address uint16) (uint16, bool) {
 
 // SetMemoryValue synchronizes a work-owned engine register into shared VM
 // memory before a lifecycle entry. The work adapter owns address semantics.
+// BlockMemoryValue 讀「某一段自己那份」暫存格。隊伍已經換到別段時，
+// `MemoryValue` 看不到停在那邊的值——那正是 per-block scratch 的本意
+// （spec 1162）。位址不在暫存區內就退回 `MemoryValue`。
+func (s *BlockSession) BlockMemoryValue(blockID uint8, address uint16) (uint16, bool) {
+	if address < blockScratchLow || address > blockScratchHigh || blockID == s.current {
+		return s.MemoryValue(address)
+	}
+	bank, ok := s.blockScratch[blockID]
+	if !ok {
+		return 0, false
+	}
+	value, ok := bank[address]
+	return value, ok
+}
+
 func (s *BlockSession) SetMemoryValue(address, value uint16) {
 	state := s.states[s.current]
 	if state == nil {
@@ -87,12 +121,39 @@ func (s *BlockSession) Switch(id uint8) error {
 	if _, ok := s.blocks[id]; !ok {
 		return fmt.Errorf("ECL session target block 0x%02X is unavailable", id)
 	}
+	if id != s.current {
+		s.swapBlockScratch(id)
+	}
 	s.current = id
 	if _, ok := s.states[id]; !ok {
 		s.states[id] = s.states[s.current]
 	}
 	s.loadCurrentCodeMemory()
 	return nil
+}
+
+// swapBlockScratch 把目前這一段的暫存格收起來，換上目標那一段自己那份。沒跑過
+// 的段從全 0 開始。`4C10h` 以上不動，跨段交接（`4CE3h`、`4C59h`、`4C5Ah`）才
+// 留得住。
+func (s *BlockSession) swapBlockScratch(next uint8) {
+	runtime := s.states[s.current]
+	if runtime == nil {
+		return
+	}
+	if s.blockScratch == nil {
+		s.blockScratch = map[uint8]map[uint16]uint16{}
+	}
+	saved := make(map[uint16]uint16)
+	for address := uint16(blockScratchLow); address <= blockScratchHigh; address++ {
+		if value, ok := runtime.Memory[address]; ok {
+			saved[address] = value
+		}
+		delete(runtime.Memory, address)
+	}
+	s.blockScratch[s.current] = saved
+	for address, value := range s.blockScratch[next] {
+		runtime.Memory[address] = value
+	}
 }
 
 // Reset starts a fresh VM context at one available block. This is distinct
@@ -105,6 +166,7 @@ func (s *BlockSession) Reset(id uint8) error {
 	for blockID := range s.blocks {
 		s.states[blockID] = shared
 	}
+	s.blockScratch = map[uint8]map[uint16]uint16{}
 	s.current = id
 	s.selectionOffset = 0
 	s.whoSelectionOffset = 0
