@@ -2418,6 +2418,64 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		}
 	})
 
+	// P0 的 save／reload gate：讀回來之後**還走得動**。
+	//
+	// ⚠ 「欄位對得上」與「還能繼續玩」是兩件事。上一個 subtest 驗的是前者；
+	// 存檔如果掉了 ECL 的續跑位置或地城的生命週期上下文，欄位照樣全對，
+	// 但玩家按下一步就會卡住或噴錯——而且不會有任何欄位比對抓得到。
+	t.Run("段界快照讀回來還走得動", func(t *testing.T) {
+		blocks := map[uint8][]byte{}
+		records := map[uint8]map[uint8]monster.Record{}
+		for member := 1; member <= 6; member++ {
+			parsed, err := dax.Parse(zipData(t, image, "ECL"+strconv.Itoa(member)+".DAX"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, block := range parsed {
+				blocks[block.Entry.ID] = block.Data
+			}
+			monsterBlocks, err := dax.Parse(zipData(t, image,
+				"MON"+strconv.Itoa(member)+"CHA.DAX"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			chapter := map[uint8]monster.Record{}
+			for _, block := range monsterBlocks {
+				record, parseErr := monster.Parse(block.Data)
+				if parseErr != nil {
+					t.Fatalf("MON%dCHA block %#02x: %v", member, block.Entry.ID, parseErr)
+				}
+				chapter[block.Entry.ID] = record
+			}
+			records[uint8(member)] = chapter
+		}
+		stepped := 0
+		for _, end := range segmentEnds {
+			restored := NewStateFromECLBlocks(testCatalog(), blocks, 0x50)
+			for chapter, chapterRecords := range records {
+				restored.SetMonsterRecordsForECL(chapter, chapterRecords)
+			}
+			if err := restored.LoadPartyFile(end.path); err != nil {
+				t.Errorf("%s 讀不回來：%v", end.name, err)
+				continue
+			}
+			if err := stepRestoredCampaignState(&restored); err != nil {
+				t.Errorf("%s 讀回來之後走不動：%v", end.name, err)
+				continue
+			}
+			stepped++
+			// ⚠ 只驗「走得動 ＋ 隊伍還在」。**不驗 block 有沒有變**：世界地圖那
+			// 幾段的下一步就是出發旅行，換 block 是對的。
+			if len(restored.PartyFighters()) == 0 {
+				t.Errorf("%s 讀回來走一步之後隊伍空了", end.name)
+			}
+		}
+		// ⚠ 非空閘門：走得動的份數如果塌下來，上面每一條都不會紅。
+		if stepped < len(segmentEnds) {
+			t.Errorf("%d／%d 份段界快照讀回來走得動", stepped, len(segmentEnds))
+		}
+	})
+
 	t.Run("段界快照往返", func(t *testing.T) {
 		if len(segmentEnds) != 23 {
 			t.Fatalf("存到 %d 份段界快照，應該是 23 份", len(segmentEnds))
@@ -2532,6 +2590,23 @@ func campaignEffectSignature(character party.Character) string {
 		parts = append(parts, fmt.Sprintf("%02X%s/%d", effect.Kind, active, effect.Duration))
 	}
 	return strings.Join(parts, ",")
+}
+
+// stepRestoredCampaignState 讓讀回來的狀態**真的走一步**，走哪一種依它停在哪。
+//
+// ⚠ 這不是「跑到下一個劇情點」，只是「按得下去」。段與段之間的完整續接由
+// `SEG-12` 的 47 條邊負責。
+func stepRestoredCampaignState(state *State) error {
+	switch {
+	case state.CombatActive():
+		return state.CombatAct()
+	case state.Mode == ModeDungeon:
+		return state.RunDungeonLifecycle()
+	case len(state.Choices) > 0 && state.Mode != ModeEvent:
+		return state.Select(0)
+	default:
+		return state.Continue()
+	}
 }
 
 // campaignMessageHasHan 判斷一句話裡有沒有漢字。

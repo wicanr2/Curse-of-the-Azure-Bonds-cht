@@ -770,6 +770,18 @@ func (s *State) LoadPartyFile(path string) error {
 	if s.Mode == ModeMap && s.Location != LocationShadowdale {
 		s.Mode = ModeWilderness
 	}
+	// ★ 存檔沒有保存「事件結束要回到哪裡」（`eventReturnMode`）。存在事件畫面上的
+	// 檔讀回來之後，那一格是零值，`Continue()` 會落到 default 分支回
+	// 「event has no continuation」——**玩家按下一步就卡住，而且每一個欄位都對得上**。
+	//
+	// 這裡不是猜：回到哪裡由已經存下來的隊伍位置決定，跟活著的流程在那些點設的
+	// 值一樣（地城裡回地城，否則回世界地圖）。
+	if s.Mode == ModeEvent {
+		s.eventReturnMode = ModeWilderness
+		if s.Area.InDungeon {
+			s.eventReturnMode = ModeDungeon
+		}
+	}
 	if file.Version >= 6 && file.ECLSession != nil {
 		if s.session == nil {
 			return fmt.Errorf("game save contains an ECL session but no original ECL blocks are loaded")
