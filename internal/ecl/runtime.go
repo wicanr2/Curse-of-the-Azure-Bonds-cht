@@ -769,13 +769,18 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			if err != nil {
 				return result, fmt.Errorf("encounter menu distance at %d: %w", pc, err)
 			}
+			// ⚠ `29h` 進門**重新**設一次距離（`20D1h` 寫上限、`2177h`..`21B5h` 從
+			// 地圖算再夾住），把 `0Dh APPROACH` 減掉的蓋回去。照抄這個次序，
+			// 否則「走近兩步之後開選單」會挑到錯的旁白。
+			InitEncounterDistance(memory, maxDistance)
+			distance := memory[EncounterDistanceCell]
 			// 三句旁白依距離挑一句，挑法見 `EncounterPromptSlots`。
 			//
 			// ⚠ 原作看的是**當下的距離**（由地圖座標算出、再被這個上限夾住），
 			// remake 還沒有那個距離模型，所以用上限代替——`ADVANCE`／`PARLAY`
 			// 的判斷本來就已經是同一個代替法。
 			prompt := ""
-			for _, slot := range EncounterPromptSlots(int(maxDistance)) {
+			for _, slot := range EncounterPromptSlots(int(distance)) {
 				operand := instruction.Operands[EncounterPromptOperand+slot]
 				if !operandIsText(operand) {
 					continue
@@ -789,7 +794,7 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				}
 			}
 			options := []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}
-			if maxDistance == 0 {
+			if distance == 0 {
 				options[3] = "PARLAY"
 			}
 			menu := Menu{Location: instruction.Operands[3].Word, Options: options, Prompt: prompt}
@@ -1089,10 +1094,15 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			// effect. Preserve the count for the frontend and continue.
 			result.DelayCount++
 		case 0x0D: // APPROACH
-			// Reference CMD_Approach advances an encounter sprite toward the
-			// party. Preserve the presentation signal while leaving geometry
-			// and animation to the engine adapter.
-			result.ApproachCount++
+			// 原作 `overlay-02:0801h`（22 條）整支就是：距離 > 0 就減一，再用
+			// 新的距離重畫遭遇圖；距離是 0 就什麼都不做。
+			//
+			// ⚠ 這個減一**不會影響後面的遭遇選單**：`29h` 進門會重新從地圖算一次
+			// 距離並重新夾住（`2177h`..`21B5h`），把 `APPROACH` 減掉的蓋回去。
+			// 所以它是「怪物一步一步走近」的演出，不是選單條件。
+			if ApproachEncounter(memory) {
+				result.ApproachCount++
+			}
 		case 0x2E: // DAMAGE
 			if len(instruction.Operands) != 5 {
 				return result, fmt.Errorf("DAMAGE at %d has unexpected arity", pc)
@@ -1429,6 +1439,9 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				owned := setup
 				runtime.MonsterSetup = &owned
 			}
+			// `0Ch` 同時把遭遇距離擺好（`overlay-02:03EBh`..`043Ch`）：運算元 2
+			// 是上限，當下距離由地圖算出再被上限夾住。
+			InitEncounterDistance(memory, uint16(setup.MaxDistance))
 		case 0x36: // ADD NPC
 			npcID, err := operandValue(instruction.Operands[0], memory)
 			if err != nil {

@@ -1,5 +1,43 @@
 package ecl
 
+// 遭遇距離的兩格工作記憶體。
+//
+// ★ 位址是從 `bank1^[X] ＝ ECL 格 0x7C00 ＋ X ÷ 2` 換算來的，三個獨立的已知點
+// 都對得上（`bank1^[5C4h]`＝`7EE2h` 營地、`bank1^[5C2h]`＝`7EE1h`、
+// `bank1^[550h]`＝`7EA8h`，見 docs/audit/ecl-shared-cells.md）。第四個佐證是
+// `ECL4/0x20` `+00B5h` 的 `SAVE 00 7EC0`——腳本自己會把距離上限歸零。
+const (
+	// EncounterMaxDistanceCell ＝ `bank1^[580h]`：`0Ch SETUP MONSTER` 與
+	// `29h ENCOUNTER MENU` 的運算元 2 寫進來的**距離上限**。
+	EncounterMaxDistanceCell = 0x7EC0
+	// EncounterDistanceCell ＝ `bank1^[582h]`：**當下的距離**。原作由地圖座標
+	// 算出再被上限夾住；`0Dh APPROACH` 與遭遇選單的 `ADVANCE` 會把它減一。
+	EncounterDistanceCell = 0x7EC1
+)
+
+// InitEncounterDistance 依原作 `0Ch`（`overlay-02:03CAh`）與 `29h`
+// （`overlay-02:2177h`）共用的那一段設定距離：先從地圖算，再被上限夾住。
+//
+// ⚠ remake 沒有「從地圖算距離」的模型（原作走 `overlay-07 entry#6(座標, 朝向)`），
+// 所以直接取上限——夾住那一步在這個近似下永遠成立，不是被省略掉。
+func InitEncounterDistance(memory map[uint16]uint16, maxDistance uint16) {
+	if memory == nil {
+		return
+	}
+	memory[EncounterMaxDistanceCell] = maxDistance
+	memory[EncounterDistanceCell] = maxDistance
+}
+
+// ApproachEncounter 把當下距離減一，回傳有沒有真的減。距離已經是 0 就什麼都不做
+// ——原作 `0Dh`（`overlay-02:0801h`）的第一條就是 `cmp ... 0 / jbe`。
+func ApproachEncounter(memory map[uint16]uint16) bool {
+	if memory == nil || memory[EncounterDistanceCell] == 0 {
+		return false
+	}
+	memory[EncounterDistanceCell]--
+	return true
+}
+
 // EncounterPromptOperand 是 `29h ENCOUNTER MENU` 第一句旁白的運算元位置。
 // 三句旁白在運算元 9、10、11。
 const EncounterPromptOperand = 9

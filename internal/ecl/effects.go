@@ -60,7 +60,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x0A: {EffectDone, "角色欄位投影，含 7CE4h 的 and 1 遮罩（ENG-13）"},
 	0x0B: {EffectDone, "怪物載入請求交給戰鬥層"},
 	0x0C: {EffectDone, "怪物編成請求交給戰鬥層"},
-	0x0D: {EffectPartial, "APPROACH 只記請求；原作的接近動畫與距離狀態未還原"},
+	0x0D: {EffectDone, "原作 0801h 逐條讀完（22 條）：距離（bank1^[582h] ＝ ECL 格 7EC1h）大於 0 就減一並用新距離重畫遭遇圖，是 0 就什麼都不做。remake 兩件都做：ApproachEncounter 減格子、ApproachCount 給上層重畫。⚠ 這個減一不影響遭遇選單——29h 進門會重新設一次距離把它蓋回去（spec 1146）"},
 	0x0E: {EffectPartial, "PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層"},
 	0x0F: {EffectConsumed, "INPUT NUMBER 在 corpus 靜態不可達，沒有輸入通道"},
 	0x10: {EffectDone, "字串輸入，退格以 rune 為單位（CHT-02）"},

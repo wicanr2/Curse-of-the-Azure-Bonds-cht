@@ -387,8 +387,8 @@
   {
    "opcode": "0x0D",
    "name": "APPROACH",
-   "status": "partial",
-   "note": "APPROACH 只記請求；原作的接近動畫與距離狀態未還原",
+   "status": "done",
+   "note": "原作 0801h 逐條讀完（22 條）：距離（bank1^[582h] ＝ ECL 格 7EC1h）大於 0 就減一並用新距離重畫遭遇圖，是 0 就什麼都不做。remake 兩件都做：ApproachEncounter 減格子、ApproachCount 給上層重畫。⚠ 這個減一不影響遭遇選單——29h 進門會重新設一次距離把它蓋回去（spec 1146）",
    "occurrences": 20,
    "blocks": [
     "ECL2.DAX/0x02",
@@ -1457,12 +1457,12 @@
   }
  ],
  "instructions_by_status": {
-  "done": 13120,
-  "partial": 1057
+  "done": 13140,
+  "partial": 1037
  },
  "opcodes_by_status": {
-  "done": 50,
-  "partial": 11
+  "done": 51,
+  "partial": 10
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1497,25 +1497,25 @@
   "ECL1.DAX/0x51": 34,
   "ECL1.DAX/0x52": 20,
   "ECL2.DAX/0x01": 47,
-  "ECL2.DAX/0x02": 43,
+  "ECL2.DAX/0x02": 41,
   "ECL2.DAX/0x03": 43,
   "ECL2.DAX/0x04": 29,
   "ECL3.DAX/0x10": 57,
   "ECL3.DAX/0x11": 46,
   "ECL3.DAX/0x12": 53,
   "ECL3.DAX/0x15": 20,
-  "ECL4.DAX/0x20": 70,
+  "ECL4.DAX/0x20": 64,
   "ECL4.DAX/0x21": 60,
   "ECL4.DAX/0x22": 50,
   "ECL4.DAX/0x23": 22,
-  "ECL4.DAX/0x25": 92,
-  "ECL5.DAX/0x31": 26,
+  "ECL4.DAX/0x25": 90,
+  "ECL5.DAX/0x31": 24,
   "ECL5.DAX/0x32": 55,
-  "ECL5.DAX/0x33": 63,
-  "ECL5.DAX/0x35": 44,
+  "ECL5.DAX/0x33": 59,
+  "ECL5.DAX/0x35": 43,
   "ECL6.DAX/0x40": 54,
-  "ECL6.DAX/0x42": 38,
-  "ECL6.DAX/0x43": 36,
+  "ECL6.DAX/0x42": 37,
+  "ECL6.DAX/0x43": 34,
   "ECL6.DAX/0x45": 20
  }
 }
