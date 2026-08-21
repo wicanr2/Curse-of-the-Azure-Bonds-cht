@@ -379,6 +379,11 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 			aggregate.BigPictureRequested = result.BigPictureRequested
 			aggregate.PictureHeadBlock = result.PictureHeadBlock
 			aggregate.PictureHeadBlockSet = result.PictureHeadBlockSet
+			// 這一段自己換過圖，游標已經被 LOADSEQUENCE 設回第 1 格，
+			// 前面幾段推的格數不再算數（spec 1150）。
+			aggregate.PictureFrameAdvances = result.PictureFrameAdvances
+		} else {
+			aggregate.PictureFrameAdvances += result.PictureFrameAdvances
 		}
 		aggregate.SpellSearches = append(aggregate.SpellSearches, result.SpellSearches...)
 		aggregate.ProtectionRequests = append(aggregate.ProtectionRequests, result.ProtectionRequests...)

@@ -1741,7 +1741,12 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	// A screenshot checkpoint freezes the source animation on frame zero;
 	// container startup time must not choose a different XOR/delta phase.
 	if a.state.AnimationsEnabled() && a.screenshotPath == "" {
-		frame = animationFrame(frames, time.Since(a.animationStart))
+		// 原作有兩個驅動器共用同一個序列游標：`MENUS` 依每格自帶的延遲自走，
+		// 腳本的 `2Dh CALL 6803h` 另外推格（spec 1150）。自走那一支是這裡的
+		// 時間相位，腳本那一支是相位上的位移。
+		index := animationFrameIndex(frames, time.Since(a.animationStart))
+		index = (index + a.state.PictureFrameAdvances()) % len(frames)
+		frame = frames[index]
 	}
 	a.drawAdventureChrome(screen)
 	// DOS runtime measurement fixes the visible PIC field at native

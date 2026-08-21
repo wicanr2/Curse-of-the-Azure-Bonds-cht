@@ -201,7 +201,9 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   （spec 1147）：它是硬換行，連續兩條會空一行——缺口在 UI 的行模型，不是 ECL VM。
   `PICTURE`（199 條）也讀完了（spec 1148）：`0FFh` 是關閉，先前 remake 什麼都不做。
   `COMBAT`（199 條）的三選一順序已照抄原作（spec 1149）：場上有怪就直接打，
-  商店旗標排在後面——remake 原本反過來。`CLEARMONSTERS`（206 條）已逐條讀完
+  商店旗標排在後面——remake 原本反過來。`CALL`（168 條）七支分派逐條讀完
+  （spec 1150）：corpus 用到四個運算元，`6803h` 是圖片序列的下一格、`B200h`
+  的第二個音效走不到。`CLEARMONSTERS`（206 條）已逐條讀完
   並跟上（spec 1145），只剩 `7603h := 8` 的語意未解讀。每一支 handler 的位址與
   條數在 [`docs/audit/ecl-opcode-handlers-dos.md`](docs/audit/ecl-opcode-handlers-dos.md)。
 - **存檔**：角色記錄還有 24 bytes 未解讀；跨遊戲角色轉移未做。

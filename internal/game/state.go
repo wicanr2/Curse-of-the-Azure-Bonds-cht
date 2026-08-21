@@ -191,6 +191,7 @@ type State struct {
 	musicPlaybackSnapshot   *pc98music.TrackPCMStreamSnapshot
 	oneShotPlaybackSnapshot *audiostate.Snapshot
 	pendingECLCalls         []uint16
+	pictureFrameAdvances    int
 	battle                  *combat.Battle
 	combatTurns             []combat.Turn
 	combatTurnIndex         int
@@ -3702,11 +3703,11 @@ func (s *State) enterProgramTitle(message string) {
 	s.session = nil
 }
 
-// applyECLCallSignals translates the three raw CALL operands observed in the
-// CoAB ECL image. CALL 0xC01E maps to reference MovePositionForward and is a
-// forced wrapped move (the routine itself does not perform collision checks).
-// The renderer still consumes the ordered calls so redraw can use its loaded
-// GEO/piece assets.
+// applyECLCallSignals translates the CALL operands the CoAB ECL image actually
+// uses（`2E10h` 125 處、`B200h` 19 處、`C01Eh` 13 處、`6803h` 11 處，spec 1150）。
+// CALL 0xC01E maps to reference MoveForward and is a forced wrapped move (the
+// routine itself does not perform collision checks). The renderer still
+// consumes the ordered calls so redraw can use its loaded GEO/piece assets.
 func (s *State) applyECLCallSignals(result ecl.RunResult) {
 	for index, address := range result.CallAddresses {
 		s.pendingECLCalls = append(s.pendingECLCalls, address)
@@ -3738,13 +3739,26 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 				s.DungeonX = (s.DungeonX + 15) % 16
 			}
 		case 0xB200:
-			// Reference word_1EE76 selects sound_a for the default/8 branch
-			// and sound_b for 10. That transient is not yet projected into
-			// State, so preserve the verified default sound_a behavior.
+			// 原作 `overlay-02:2FCFh` 用 `DS:8B4Ch`（＝ ECL 格 `03DE`，由
+			// `STOREVALUE` 的 `cmp ax, 3DEh` 寫入）挑音效編號：等於 `0Ah`
+			// 播 11，其餘（含等於 8）播 10。CoAB 全 corpus 對 `03DE` 只有
+			// 15 次寫入、值一律是 5，所以 11 那一支走不到（spec 1150）。
 			s.requestSound(SoundStep)
 		}
 	}
+	// 圖片序列的游標。原作換圖時 `LOADSEQUENCE` 會把游標設回第 1 格，
+	// 所以有換圖的執行取代、沒換圖的執行累加（spec 1150）。
+	if result.PictureRequested {
+		s.pictureFrameAdvances = result.PictureFrameAdvances
+	} else {
+		s.pictureFrameAdvances += result.PictureFrameAdvances
+	}
 }
+
+// PictureFrameAdvances 是目前這張圖被 `2Dh CALL 6803h` 往前推了幾格。原作
+// 除了這個腳本驅動的推格，`MENUS` 還有一個依每格自帶延遲自走的驅動器，
+// 兩者共用同一個游標；所以畫面要顯示的是「自走的相位 ＋ 這個位移」。
+func (s *State) PictureFrameAdvances() int { return s.pictureFrameAdvances }
 
 func (s *State) projectFreshDungeonCoordinatesBeforeCall(
 	result ecl.RunResult,

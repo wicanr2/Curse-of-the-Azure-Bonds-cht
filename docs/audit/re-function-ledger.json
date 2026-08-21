@@ -62,8 +62,8 @@
    "ea": 12034,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/561-ecl-external-call-registry.md",
-   "note": "ECL CALL（opcode 2Dh）handler；operand-7FFFh=selector，認得 7 個 external routine：2E10h／6803h／8000h／8001h／B200h／C018h／C01Eh"
+   "spec": "docs/spec/1150-ecl-call-external-routines.md",
+   "note": "ECL CALL（opcode 2Dh）handler；operand−7FFFh=selector，認得 7 個 external routine。逐支語意見 spec 1150：2E10h＝重算 SPECIALCODE 進 7213h，且 47E3h≠0 又有髒旗標（8B62h/8B65h/8B67h/8B68h/8B6Ah 任一）時才 DRAWWIN entry#1 ＋ SHOWLOCATION ＋清旗標 ＋ WALLCODE 進 7212h；C01Eh＝ECL2.MOVEFORWARD；B200h＝SOUNDFX(8B4Ch=0Ah 播 11，其餘播 10)；C018h＝bank1^[1CCh]=0 才重算 WALLCODE；8000h/8001h＝ECL2.GODUEL(1)/(0)；6803h＝PORTRAIT.SHOWPORTRAIT(3,3,1,序列[游標]) 後游標＋1 迴繞、再 GAMEDELAY。corpus 用到四個：2E10h 125／B200h 19／C01Eh 13／6803h 11"
   },
   {
    "platform": "pc98",
@@ -80,8 +80,8 @@
    "ea": 12486,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/561-ecl-external-call-registry.md",
-   "note": "ECL CALL（opcode 2Dh）handler；operand-7FFFh=selector，認得 7 個 external routine：2E10h／6803h／8000h／8001h／B200h／C018h／C01Eh"
+   "spec": "docs/spec/1150-ecl-call-external-routines.md",
+   "note": "ECL CALL（opcode 2Dh）handler；operand−7FFFh=selector，認得 7 個 external routine。逐支語意見 spec 1150：2E10h＝重算 SPECIALCODE 進 7213h，且 47E3h≠0 又有髒旗標（8B62h/8B65h/8B67h/8B68h/8B6Ah 任一）時才 DRAWWIN entry#1 ＋ SHOWLOCATION ＋清旗標 ＋ WALLCODE 進 7212h；C01Eh＝ECL2.MOVEFORWARD；B200h＝SOUNDFX(8B4Ch=0Ah 播 11，其餘播 10)；C018h＝bank1^[1CCh]=0 才重算 WALLCODE；8000h/8001h＝ECL2.GODUEL(1)/(0)；6803h＝PORTRAIT.SHOWPORTRAIT(3,3,1,序列[游標]) 後游標＋1 迴繞、再 GAMEDELAY。corpus 用到四個：2E10h 125／B200h 19／C01Eh 13／6803h 11"
   },
   {
    "platform": "pc98",

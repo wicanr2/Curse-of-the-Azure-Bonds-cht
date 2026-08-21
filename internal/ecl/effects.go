@@ -92,7 +92,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x2A: {EffectDone, "GETTABLE 讀表（手札編號就是靠它，spec 1108）"},
 	0x2B: {EffectDone, "水平選單"},
 	0x2C: {EffectDone, "PARLAY"},
-	0x2D: {EffectPartial, "CALL 是七路 switch；corpus 只用 2E10h 與 6803h，兩者的 consumer 尚未逐條驗（RE-03）"},
+	0x2D: {EffectPartial, "原作 2F02h 整支 124 條讀完（spec 1150）：operand − 7FFFh 之後七路分派。corpus 用到四個——2E10h 125 處（重畫）、B200h 19 處（音效）、C01Eh 13 處（MOVEFORWARD）、6803h 11 處（圖片序列推一格）。B200h 的兩支已判定：選號由 ECL 格 03DE 決定，全 corpus 15 次寫入一律是 5 ⇒ 只走得到 10 那一支；6803h 已接成序列游標。partial 只剩 2E10h：原作是 STOREVALUE 當場寫 720Fh/7210h/7211h 並立五個髒旗標之一，CALL 只負責「髒了才重畫」，remake 改用 CALL 當下回頭掃 SaveWrites 的啟發式"},
 	0x2E: {EffectPartial, "只有明確指定全隊的封包（旗標 0xC0）會在正式路徑結算；其餘要選定角色的形式仍留在 pending"},
 	0x2F: {EffectDone, "位元運算"},
 	0x30: {EffectDone, "位元運算"},
