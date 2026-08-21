@@ -8,6 +8,10 @@
 [`CoAB 全遊戲逆向工程完整度矩陣`](../knowledge/coab-re-coverage-matrix.md)；再從本頁
 選取對應 READY spec。舊 spec 即使標為 READY，也只在它明寫的限定範圍內成立。
 
+⚠ **本索引是挑過的，不是全部**：`docs/spec/` 目前有 1,131 份，這裡列不到一半。
+**「索引裡沒有」不等於「沒寫過」**——要找某個主題先 `grep -rl <關鍵字> docs/spec/`
+或 `ls docs/spec | grep <編號>`，不要因為索引查不到就重做一次。
+
 狀態定義：
 
 - `DRAFT`：有初步觀察，但仍有未驗證的關鍵假設。
@@ -18,7 +22,7 @@
 
 目前規格：
 
-- [第五百五十七輪 ECL 全事件靜態清冊與有序副作用稽核](./557-ecl-event-catalog-and-ordered-effects-audit.md)（`READY`：限 6 DAX／25 block／125 entry／1,355 靜態 instruction inventory 與 33 個 audit candidates；ordered runtime semantics 仍未完成）
+- [第五百五十七輪 ECL 全事件靜態清冊與有序副作用稽核](./557-ecl-event-catalog-and-ordered-effects-audit.md)（`READY`：限 6 DAX／25 block／125 entry 的靜態 inventory；⚠ 指令數在 spec 1106 補上 `IF` 的 else 路徑後由 1,355 變成 **4,222**，候選由 33 變成 **154（其中 33 個已審）**——引用數字請以 `cmd/ecl-event-catalog` 的現值為準；ordered runtime semantics 仍未完成）
 - [第五百五十八輪 PC-98 ECL TREASURE／COMBAT 邊界勘誤](./558-pc98-ecl-treasure-combat-boundary.md)（`READY`：三組候選已由既有 transaction 覆蓋、PC-98 IDA handler dispatch、DOS 真實 pause／resume 與 fail-closed review ledger；全域 ordered log 仍未完成）
 - [第五百五十四輪眼魔洞穴 LOOK 與 Dexam 雙戰正常路徑](./554-normal-beholder-cave-dexam-route.md)（`READY`：同一新遊戲 session 經手札 59、LOOK 秘密通路、Dexam 雙戰與戰後回洞穴；不含 `(6,3)` 出口）
 - [第五百五十三輪中文冒險手札重建與靜態地圖抽樣準則](./553-chinese-journal-reconstruction-and-static-map-sampling.md)（`READY`：手札 1–59 可追溯繁中摘要、手札 59 完整掃描圖證據及 GEO／ECL／必要 runtime 抽樣門檻）
@@ -509,7 +513,7 @@
 - [第四百九十七輪 PC-98 Quick 牧師指定目標法術](./497-pc98-quick-cleric-targeted-spells.md)（`READY`：Curse／Cause Light Wounds／Protection from Evil／Good targeted pending、效果／slot regression；候選 pointer 順序、`cast_on` consumer 與敵方 Quick AI 仍未完成）
 - [第四百九十八輪 PC-98 寒冷抗性與資料驅動傷害效果](./498-pc98-resist-cold-data-driven-affect-rule.md)（`READY`：effect `0Ah` 的寒冷傷害減半、`70h／87h` 免疫規則移入 engine＋CoAB JSON，開戰／讀檔重新注入；寒冷法術入口與完整戰鬥仍未完成）
 - [第四百九十九輪 PC-98 alignment 與條件式 effect `08h／09h`](./499-pc98-alignment-conditional-effects.md)（`READY`：`RACETYPE／ALIGNMENT／MONSTERTYPE` 欄位修正、互動 alignment 條件與 `SAVEROLL／ROLLTOHIT` 資料驅動規則；完整 effect 生命週期與全作通關仍未完成）
-- [1104 ECL opcode 有序副作用相位](./1104-ecl-opcode-ordered-effect-phases.md)（`READY`：DOS 23 支 handler ＋ operand 解碼器 ＋ lifecycle 驅動器；PC 先推進的通則、`20h NEWECL` 終止、`CALL 2E10h` 是畫面唯一提交點、`21h`＋`37h` 配對閂鎖、`2Dh` 七路登記表；21 支 handler 仍未讀，PC-98 只比對兩項）
+- [1104 ECL opcode 有序副作用相位](./1104-ecl-opcode-ordered-effect-phases.md)（`READY`：DOS 23 支 handler ＋ operand 解碼器 ＋ lifecycle 驅動器；PC 先推進的通則、`20h NEWECL` 終止、`CALL 2E10h` 是畫面唯一提交點、`21h`＋`37h` 配對閂鎖、`2Dh` 七路登記表（逐支語意見 spec 1150）；phase 台帳列 55 支、25 支已分類、**30 支仍是 `unknown`**，另有 6 支可達 opcode 沒有列，PC-98 只比對兩項）
 - [1105 game pack 分檔與 stable ID](./1105-game-pack-file-split-and-stable-ids.md)（`READY`：依種類切成四檔、`LoadPackParts` 合併契約（重複即失敗、合併後才驗證）、ID 命名規範與 155 筆既有基線；依區域再切與熱鍵表留待後續）
 - [1106 ECL `IF` 跳過與操作元個數表](./1106-ecl-if-skip-and-operand-arity.md)（`READY`：`IF` 條件不成立跳過下一條、`overlay-07 entry#29` 的 arity 表、原作跳過表少算 `34h`／`36h`；靜態可達 instruction 1,355→4,222、文字段落 43→221）
 - [1130 README 截圖的四個對齊錯誤](./1130-screenshot-layer-alignment.md)（`READY`：sub-image 目的地座標只裁切不平移、戰鬥地形要跟戰鬥員走同一條相機＋鏡像路徑、佈陣的地面檢查與敵方縱帶落在視野內、戰場圖示是 CPIC 不是 SPRIT；第一人稱幾何與 spec 1006 逐項相符，不含 `WALLDEF` 美術對應）

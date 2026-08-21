@@ -591,46 +591,20 @@ go.sum 仍然逐版本鎖雜湊）。
   target／QUICK 清除與第 508 輪 SCAN producer
   milestone；本輪另完成第 517 輪反組譯缺口盤點與 worklist，兩個 repository 的
   實際 HEAD／remote 才是最終版本依據。
-- 第 529 輪最新 engine 依賴已推送為
-  `29362ef269fa75f3b33b7f283dcf724d67601589`，root `go.mod` 鎖定
-  `v0.0.0-20260809195616-29362ef269fa`；前述較早 checkpoint 只保留為歷史基線，
-  compact 後以兩個 repository 的實際 HEAD／`go.mod` 為準。此版本新增
-  `combat_player_spells`，但不代表完整法術表或完整 remake 已完成。
-- Engine dependency：`3bf5f0541cf46285f0fe824edb89caebaf954d9e`（第 515 輪
-  GitHub `main` checkpoint；含作品中立 game-pack
-  `character_creation.templates` schema／validation、繁中角色建立知識庫，
-  以及 YM2203 opaque full-state／PCM
-  resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
-  `TDEFTYPE／TACTICALMAP` 地形視線、footprint producer 與 `INARC` 八方向
-  inclusive 扇區、`combat/scanorder`
-  的三 byte record 原版排序、`combat/sleep` 的 `4d4`／
-  ordered HD capacity filter、`combat/action` 的 delayed
-  spell `TargetID`／point-target transaction、`ActionTargetID` 與 interruption clear、
-  `combat/initiative`、
-  `combat/quickspell`、`randomstream`，以及 game-pack
-  `presentation.scene_character` native geometry、繁中人物版面知識庫、
-  `combat_modifiers`、
-  signed low-byte decoder、繁中 ECL 戰鬥修正知識庫、`option_rules`、世界目的地
-  有向圖 schema／validation、
-  繁體中文音訊架構知識庫及中立
-  `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
-  `audio/pc98soundbios`、
-  `combat_visuals`、
-  `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
-  `title_id` schema，以及 `combat/damage` 的 `ModeHalf／ModeImmune`、
-  `combat_affect_rules` schema／loader、`combat/posthit`、
-  `combat_post_hit_rules` schema／loader、`combat/quicktarget`、
-  `combat_ai_target_rules` schema／loader、`combat/targetselect`、
-  `combat_target_rules`／`combat_action_rules` schema／loader、作品中立
-  `MapPositionTransition`／`set_map_position` schema／runtime 與繁中地圖位置轉移知識庫）。
+- **engine 依賴以 `go.mod` 為準**，不要引用文件裡的 hash：文件寫下的版本會過期，
+  而 `go.mod` 鎖的那一個才是建置實際用的。要升級走
+  `tools/engine-proxy.sh` ＋ `tools/go.sh get`（見 §7）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 原版石框、人物／3D／PIC 分離舞台、16×15 倚天與 PC-98 typography
   study 已完成並 push；角色資訊全頁與所有畫面逐張 fidelity 尚未完成。
-- 專案仍是多 vertical slices prototype，尚未完整可通關。
-- 主要缺口見 `docs/project-status.md`：完整 ECL/external routines、開場到結局
-  玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
-  三平台發行與長時間回歸。
+- 主線**已經跑得完**：同一條 session 從開場走到擊敗提朗瑟克斯的結局選單，拆成
+  23 個段 subtest（`docs/plan/seg-21-ending-report.md`）。這不等於全城市、全地城、
+  全事件或全戰鬥規則都完成——逐項狀態看 `WORKLIST.md` 與完整度矩陣。
+- 主要缺口見 `WORKLIST.md`（執行順序）與
+  `docs/knowledge/coab-re-coverage-matrix.md`（完整度）：全地圖與全事件覆蓋、
+  戰鬥規則／AI／戰後、全翻譯校對、音樂音效 cue、完整 save 相容與三平台發行。
+  `docs/project-status.md` 只作追溯，不是現況。
 - 第 543 輪已把同一新遊戲 session 從第 542 輪的艾森布拉城外接到 Hap 村落、
   熔岩洞、巫師塔、回洞穴與熔岩池第二次戰鬥／防火桶分支；正式測試為
   `internal/game/campaign_normal_test.go` 的
@@ -1295,7 +1269,7 @@ go.sum 仍然逐版本鎖雜湊）。
   duration／save、`area.field_596` surprise writer、DOS 等價性及原版底層
   PRNG 仍未完成。第 420 輪已推翻「一般 DELAY 是 20→19」：頂層 D 先進
   DONE 子選單，第二層 D exact 寫 delay 1 並由動態 scheduler 同輪重新入列；
-  20→19 是尚未接 UI 的 Quick handoff。READY spec 419／420 是權威。
+  20→19 是 Quick handoff（第 422 輪已接 UI）。READY spec 419／420 是權威。
 - 第 406 輪先完成 GUI fidelity 稽核：IDA／DOS bytes 證明 HEAD 後 BODY，
   BODY 執行 `row+5`；DOS runtime 則證明第一人稱／一般 PIC 使用獨立灰色
   88×88 舞台。640×480 frame 現保留原版上半部與命令帶，只在訊息區插入
@@ -2149,10 +2123,11 @@ go.sum 仍然逐版本鎖雜湊）。
 - **先盤點、再語意**。使用者 2026-08-13 指示先徹底完成反組譯分析，避免邊做
   邊分析。驗收口徑見 §2.5；方法與基線見
   `docs/spec/559-full-module-re-sweep.md`。
-- 基線：DOS 37 模組／1,344 函式，PC-98 37 模組／1,481 函式，共 2,825 個，
-  **全部 `待解讀`**。這個數字是刻意的誠實起點，不要用關鍵字比對把它調低。
-  進度只透過 `docs/audit/re-function-ledger.json` 的明確記錄變動，改完重跑
-  `cmd/re-ledger`。
+- 第 559 輪的起點是「DOS 1,344 ＋ PC-98 1,481 共 2,825 個函式**全部 `待解讀`**」
+  ——刻意的誠實起點，不用關鍵字比對把它調低。**現在 `待解讀` 已經是 0**
+  （2,874 個函式：已解讀 2,137／不阻塞 162／邊界碎片 575），數字一律以
+  `cmd/re-ledger` 現跑的輸出為準，不要引用這裡或任何文件裡的快照。進度只透過
+  `docs/audit/re-function-ledger.json` 的明確記錄變動，改完重跑 `cmd/re-ledger`。
 - **不要重跑一次性 IDC 去回答「這個 overlay 有什麼」**。全掃結果已在
   `workplace/re-sweep/<平台>/out/<模組>.json`：函式、chunk、xref、字串、
   具名資料、未定義區都在裡面。要逐指令證據用 `tools/ida/dump_function.py`。
@@ -2161,7 +2136,9 @@ go.sum 仍然逐版本鎖雜湊）。
 - overlay 對應：PC-98 的 36 個原始 Turbo Pascal 單元名見 spec 559 表；29／36
   段的 entry_count 與 DOS 相同。這只是 **module 級對應假說**，個別函式位址
   必須各自證明，不得把 PC-98 符號名直接寫成 DOS 的事實。
-- 下一批第一項是 ECL opcode → handler 全表（PC-98 `overlay-02:373Eh` 讀
-  `ds:0A891h`、DOS `overlay-02:3377h` 讀 `ds:75FFh`，各 53 個 call）。
-  dispatcher 位置已確認，**表本身尚未完成**；只有 31 個 opcode 能由單層 `cmp`
-  對上，其餘在巢狀條件內，必須讀完控制流才能定案。不得用文字比對硬湊。
+- ECL opcode → handler 全表**已完成**（spec 560；DOS 那份在
+  [`docs/audit/ecl-opcode-handlers-dos.md`](docs/audit/ecl-opcode-handlers-dos.md)，
+  分派器 `overlay-02:3377h` 逐條讀出 52 個 opcode，含每支的位址範圍與指令數）。
+  它現在的用途是**排順序**：剩下的 `partial` opcode 一支一支收，成本差一個數量級
+  的先做。⚠ 巢狀條件裡的 opcode 當初是讀完控制流才定案的，不是文字比對——後續
+  要擴充這張表也一樣不得硬湊。

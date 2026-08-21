@@ -123,7 +123,8 @@ func sweepBlock(data corpus, seg segment.Segment) blockSweep {
 	if !dispatch.Found {
 		sweep.note = "沒有以地形碼分派的每格事件"
 		if dispatch.TableForm {
-			sweep.note += "；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）"
+			sweep.note += "；改用 `GETTABLE` ＋ `ON GOTO` 查表分派——那一種解得出來，" +
+				"但不在本工具的範圍內，見 `cmd/ecl-cell-events`"
 		}
 		return sweep
 	}

@@ -16,11 +16,11 @@
 
 ## `ECL1/0x50`
 
-沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）
+沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派——那一種解得出來，但不在本工具的範圍內，見 `cmd/ecl-cell-events`
 
 ## `ECL1/0x51`
 
-沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）
+沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派——那一種解得出來，但不在本工具的範圍內，見 `cmd/ecl-cell-events`
 
 ## `ECL1/0x52`
 
@@ -291,7 +291,7 @@
 
 ## `ECL4/0x23`
 
-沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派（尚未解讀）
+沒有以地形碼分派的每格事件；改用 `GETTABLE` ＋ `ON GOTO` 查表分派——那一種解得出來，但不在本工具的範圍內，見 `cmd/ecl-cell-events`
 
 ## `ECL4/0x25`
 
