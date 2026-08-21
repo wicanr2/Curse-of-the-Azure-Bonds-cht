@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/borlanddebug"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98ovr"
@@ -41,6 +42,9 @@ type typeJSON struct {
 	Name      string `json:"name"`
 	Size      uint16 `json:"size"`
 	NameIndex uint16 `json:"name_index"`
+	// Detail 是型別記錄尾巴那三個位元組。record（`id=30`）用它指到成員表：
+	// 前兩個位元組是第一個成員的索引，第三個是成員數（spec 1164）。
+	Detail [3]byte `json:"detail"`
 }
 
 type memberJSON struct {
@@ -88,6 +92,8 @@ func main() {
 	exePath := flag.String("exe", "", "resident MZ executable")
 	ovrPath := flag.String("ovr", "", "TPOV overlay 容器（可省略；提供才做 segment→overlay 歸屬）")
 	outPath := flag.String("out", "", "輸出 JSON（預設 stdout）")
+	recordName := flag.String("record", "", "改成印一個 record 型別的逐欄位移表（例如 CHARREC）")
+	allRecords := flag.Bool("records", false, "改成印出每一個具名 record 型別的逐欄位移表")
 	flag.Parse()
 	if *exePath == "" {
 		flag.Usage()
@@ -104,6 +110,58 @@ func main() {
 		fmt.Fprintf(os.Stderr, "borland-symbols: %v\n", err)
 		os.Exit(1)
 	}
+	if *allRecords {
+		names := map[string]bool{}
+		for _, entry := range table.Types {
+			if entry.ID == borlanddebug.RecordTypeID && entry.Name != "" {
+				names[entry.Name] = true
+			}
+		}
+		ordered := make([]string, 0, len(names))
+		for name := range names {
+			ordered = append(ordered, name)
+		}
+		sort.Strings(ordered)
+		fmt.Printf("# PC-98 除錯符號裡的 record 版面\n\n")
+		fmt.Printf("由 `cmd/borland-symbols -records` 產生，不要手改。連法與注意事項見 spec 1164。\n\n")
+		for _, name := range ordered {
+			fields, layoutErr := table.RecordLayout(name)
+			if layoutErr != nil {
+				fmt.Printf("## %s\n\n展不開：%v\n\n", name, layoutErr)
+				continue
+			}
+			total := fields[len(fields)-1].Offset + fields[len(fields)-1].Size
+			fmt.Printf("## %s（%d 欄，%d bytes）\n\n", name, len(fields), total)
+			fmt.Printf("| 位移 | 長度 | 欄位 | 型別 |\n|---|---:|---|---|\n")
+			for _, field := range fields {
+				typeName := field.TypeName
+				if typeName == "" {
+					typeName = fmt.Sprintf("（id %d）", field.TypeID)
+				}
+				fmt.Printf("| `+%03Xh` | %d | `%s` | %s |\n", field.Offset, field.Size, field.Name, typeName)
+			}
+			fmt.Println()
+		}
+		return
+	}
+
+	if *recordName != "" {
+		fields, layoutErr := table.RecordLayout(*recordName)
+		if layoutErr != nil {
+			fmt.Fprintf(os.Stderr, "borland-symbols: %v\n", layoutErr)
+			os.Exit(1)
+		}
+		fmt.Printf("record %s：%d 欄，共 %d bytes\n", *recordName, len(fields), fields[len(fields)-1].Offset+fields[len(fields)-1].Size)
+		for _, field := range fields {
+			typeName := field.TypeName
+			if typeName == "" {
+				typeName = fmt.Sprintf("id=%d", field.TypeID)
+			}
+			fmt.Printf("+%03Xh %3d %-22s %s\n", field.Offset, field.Size, field.Name, typeName)
+		}
+		return
+	}
+
 	// MZ header 的 paragraph 數決定 load image 起點；overlay control 的 file
 	// offset 減掉它才是 resident segment（spec 412 的 08B0h → 段 008Bh）。
 	headerParagraphs := int(uint32(executable[8]) | uint32(executable[9])<<8)
@@ -131,6 +189,7 @@ func main() {
 	for _, t := range table.Types {
 		out.Types = append(out.Types, typeJSON{
 			Index: t.Index, ID: t.ID, Name: t.Name, Size: t.Size, NameIndex: t.NameIndex,
+			Detail: t.Detail,
 		})
 	}
 	for _, m := range table.Members {

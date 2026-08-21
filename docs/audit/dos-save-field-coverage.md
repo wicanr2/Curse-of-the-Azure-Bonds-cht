@@ -13,8 +13,8 @@
 | 狀態 | 位元組 | 佔比 |
 |---|---:|---:|
 | `decoded` | 299 | 70% |
-| `documented` | 99 | 23% |
-| `unknown` | 24 | 5% |
+| `documented` | 123 | 29% |
+| `unknown` | 0 | 0% |
 | 合計 | 422 | 100% |
 
 解析器實際讀到的位元組（5 份基準記錄的聯集）：**291／422**。
@@ -76,7 +76,7 @@
 | `+01Ch` | 1 | 特殊力量 現值（18/xx 的百分位） | `decoded` | spec 1086 | 1 |
 | `+01Dh` | 1 | 特殊力量 基準 | `decoded` | spec 1086 | 1 |
 | `+01Eh` | 84 | 記憶法術清單 84 格（最高位 ＝ 還在記憶中） | `decoded` | spec 1016／792 | 84 |
-| `+072h` | 1 | （未定） | `unknown` | — | 0 |
+| `+072h` | 1 | 最短休息時數 `MINREST` | `documented` | spec 1164 | 0 |
 | `+073h` | 1 | 命中能力（八個職業槽查表取最大；重算時抄進 +199h） | `decoded` | spec 1000／1140 | 1 |
 | `+074h` | 1 | 種族編號 1..7 | `decoded` | spec 998／1084 | 1 |
 | `+075h` | 1 | 職業組合編號 0..10h | `decoded` | spec 1093 | 1 |
@@ -84,43 +84,48 @@
 | `+078h` | 1 | 最大 HP | `decoded` | spec 185 | 1 |
 | `+079h` | 100 | 每法術旗標 100 格（法術編號 1..100） | `decoded` | spec 815 | 100 |
 | `+0DDh` | 1 | 橫掃上限的來源（回合初始化抄進戰鬥狀態 +5） | `documented` | spec 806／833 | 0 |
-| `+0DEh` | 1 | （未定） | `unknown` | — | 0 |
+| `+0DEh` | 1 | 體型 `SIZE` | `documented` | spec 1164 | 0 |
 | `+0DFh` | 5 | 五個豁免門檻（毒／石化／法杖／噴吐／法術） | `decoded` | spec 1111 | 5 |
 | `+0E4h` | 1 | 移動力基準（重算時抄進 +1A5h） | `documented` | spec 1000／683 | 0 |
 | `+0E5h` | 1 | 最高職業等級（0 ＝ 零級生物） | `decoded` | spec 811／815 | 1 |
-| `+0E6h` | 1 | 多職角色的現行等級 | `decoded` | spec 185 | 1 |
+| `+0E6h` | 1 | 前一個最高等級 `HIGHESTPREVLEVEL`（spec 185 讀成「多職角色的現行等級」，兩種讀法待對） | `decoded` | spec 185／1164 | 1 |
 | `+0E7h` | 1 | 被吸掉的等級數（復原術每次還一級） | `decoded` | spec 1125 | 1 |
 | `+0E8h` | 1 | 被吸掉的 HP 總數（還一級就還其中 1/N） | `decoded` | spec 1125 | 1 |
 | `+0E9h` | 1 | 不死生物種類 1..10（轉化矩陣的列索引） | `documented` | spec 834 | 0 |
 | `+0EAh` | 8 | 盜賊技能八項 | `decoded` | spec 185 | 8 |
 | `+0F2h` | 4 | 效果鏈頭（遠指標） | `decoded` | spec 185 | 4 |
-| `+0F6h` | 1 | （未定） | `unknown` | — | 0 |
+| `+0F6h` | 1 | 被復活過 `RAISED` | `documented` | spec 1164 | 0 |
 | `+0F7h` | 1 | 控制／士氣（>= 80h 是 NPC） | `decoded` | spec 758 | 1 |
-| `+0F8h` | 3 | （未定） | `unknown` | — | 0 |
+| `+0F8h` | 1 | 派生值已重算 `MODIFIED` | `documented` | spec 1164 | 0 |
+| `+0F9h` | 1 | 換職前的職業 `OLDCLASS` | `documented` | spec 1164 | 0 |
+| `+0FAh` | 1 | 換職前的等級 `OLDLEVEL` | `documented` | spec 1164 | 0 |
 | `+0FBh` | 14 | 七種貨幣（銅銀琥珀金白金寶石首飾，各一個 word） | `decoded` | spec 1000 | 14 |
 | `+109h` | 8 | 第一職業的八個欄位（等級在前） | `decoded` | spec 728 | 8 |
 | `+111h` | 8 | 第二職業的八個平行欄位（雙職角色才看） | `documented` | spec 728 | 0 |
 | `+119h` | 1 | 性別 | `decoded` | spec 1086 | 1 |
-| `+11Ah` | 1 | （未定） | `unknown` | — | 0 |
+| `+11Ah` | 1 | 種族大類 `RACETYPE` | `documented` | spec 1164 | 0 |
 | `+11Bh` | 1 | 陣營 | `decoded` | spec 1102 | 1 |
-| `+11Ch` | 1 | 武器槽選擇（0 時回落到槽 2） | `documented` | spec 1010 | 0 |
-| `+11Dh` | 1 | （未定；三組基準值陣列的第 0 格，原作不用） | `unknown` | — | 0 |
+| `+11Ch` | 1 | 攻擊次數基準的第一個武器槽 `BASEATTBLOWS[0]`；spec 1010 由 DOS 側讀成「武器槽選擇」，兩種讀法待對 | `documented` | spec 1010／1164 | 0 |
+| `+11Dh` | 1 | 攻擊次數基準的第二個武器槽 `BASEATTBLOWS[1]` | `documented` | spec 1164 | 0 |
 | `+11Eh` | 2 | 攻擊骰數 基準（兩個武器槽） | `documented` | spec 1000／795 | 0 |
 | `+120h` | 2 | 攻擊面數 基準 | `documented` | spec 1000／795 | 0 |
 | `+122h` | 2 | 傷害加值 基準（有號） | `documented` | spec 1000／795 | 0 |
 | `+124h` | 1 | 護甲起點（重算時抄進 +19Ah；建角寫 32h ＝ AC 10） | `decoded` | spec 1000／1140 | 1 |
 | `+125h` | 1 | 力量調整的開關（0 ＝ 不套用命中／傷害調整） | `decoded` | spec 694／697 | 1 |
-| `+126h` | 1 | （未定） | `unknown` | — | 0 |
+| `+126h` | 1 | 角色亂數種子 `RANDOMID` | `documented` | spec 1164 | 0 |
 | `+127h` | 4 | 經驗值（dword） | `decoded` | spec 185 | 4 |
 | `+12Bh` | 1 | 職業可用性遮罩（與物品類別表 `+0Dh` 做 and） | `documented` | spec 1120 | 0 |
 | `+12Ch` | 1 | 基準最大 HP（不含裝備加成） | `decoded` | spec 185 | 1 |
 | `+12Dh` | 15 | 每環可施放次數：牧師／德魯伊／法師各五環 | `decoded` | spec 1016 | 15 |
-| `+13Ch` | 5 | （未定） | `unknown` | — | 0 |
-| `+141h` | 1 | 頭像 block | `decoded` | spec 185 | 1 |
-| `+142h` | 1 | 武器圖示 block | `decoded` | spec 185 | 1 |
-| `+143h` | 1 | 圖示 ID | `decoded` | spec 185 | 1 |
-| `+144h` | 1 | 體型 1 小／2 中 | `decoded` | spec 1093 | 1 |
-| `+145h` | 7 | （未定） | `unknown` | — | 0 |
+| `+13Ch` | 2 | 基準經驗值 `BASEEXP`（word） | `documented` | spec 1164 | 0 |
+| `+13Eh` | 1 | 每點 HP 的經驗 `EXPPERHP` | `documented` | spec 1164 | 0 |
+| `+13Fh` | 1 | 頭部造型 `HEAD` | `documented` | spec 1164 | 0 |
+| `+140h` | 1 | 身體造型 `BODY` | `documented` | spec 1164 | 0 |
+| `+141h` | 1 | 頭像 block `ICONHEAD` | `decoded` | spec 185／1164 | 1 |
+| `+142h` | 1 | 身體圖示 block `ICONBODY` | `decoded` | spec 185／1164 | 1 |
+| `+143h` | 1 | 圖示編號 `ICONINDEX` | `decoded` | spec 185／1164 | 1 |
+| `+144h` | 1 | 人像高度 `ICONHEIGHT`（1 小／2 中） | `decoded` | spec 1093／1164 | 1 |
+| `+145h` | 7 | 人像配色表 `COLORLIST`（7 格，每格是 EGA 色號對） | `documented` | spec 1164 | 0 |
 | `+14Ch` | 1 | 物品件數（重算時數出來） | `documented` | spec 1000 | 0 |
 | `+14Dh` | 4 | 物品鏈頭（遠指標） | `decoded` | spec 1000 | 4 |
 | `+151h` | 52 | 13 個裝備槽遠指標（槽 9 雙持佔兩格） | `documented` | spec 1000 | 0 |
@@ -129,9 +134,10 @@
 | `+187h` | 2 | 總重（含硬幣枚數） | `documented` | spec 1000／974 | 0 |
 | `+189h` | 4 | 隊伍／戰鬥員鏈的 next（遠指標） | `documented` | spec 689／815 | 0 |
 | `+18Dh` | 4 | 戰鬥狀態記錄的遠指標（22 bytes 的那一份） | `documented` | spec 806 | 0 |
-| `+191h` | 1 | （未定） | `unknown` | — | 0 |
-| `+192h` | 1 | ECL 旗標（投影位址 7CE4h） | `decoded` | spec 1098 | 1 |
-| `+193h` | 2 | （未定） | `unknown` | — | 0 |
+| `+191h` | 1 | 解除詛咒的來源標記 `PDLNREMOVECURSE` | `documented` | spec 1164 | 0 |
+| `+192h` | 1 | ECL 旗標（投影位址 7CE4h）；Pascal 那邊叫保留欄 `DUM1` | `decoded` | spec 1098／1164 | 1 |
+| `+193h` | 1 | 保留欄 `DUM2` | `documented` | spec 1164 | 0 |
+| `+194h` | 1 | 保留欄 `DUM3` | `documented` | spec 1164 | 0 |
 | `+195h` | 1 | 狀態碼（8 ＝ 被摧毀） | `documented` | spec 833／1010 | 0 |
 | `+196h` | 1 | 站著且能行動（1 ＝ 可以） | `documented` | spec 1010 | 0 |
 | `+197h` | 1 | 隊號（0 是一邊，非 0 是另一邊） | `documented` | spec 777／1112 | 0 |

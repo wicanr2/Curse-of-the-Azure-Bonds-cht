@@ -4,8 +4,7 @@
  "baselines": 5,
  "bytes_by_status": {
   "decoded": 299,
-  "documented": 99,
-  "unknown": 24
+  "documented": 123
  },
  "consumed_bytes": 291,
  "fields": [
@@ -148,8 +147,9 @@
   {
    "offset": "+072h",
    "size": 1,
-   "name": "（未定）",
-   "status": "unknown",
+   "name": "最短休息時數 `MINREST`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
@@ -211,8 +211,9 @@
   {
    "offset": "+0DEh",
    "size": 1,
-   "name": "（未定）",
-   "status": "unknown",
+   "name": "體型 `SIZE`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
@@ -242,9 +243,9 @@
   {
    "offset": "+0E6h",
    "size": 1,
-   "name": "多職角色的現行等級",
+   "name": "前一個最高等級 `HIGHESTPREVLEVEL`（spec 185 讀成「多職角色的現行等級」，兩種讀法待對）",
    "status": "decoded",
-   "spec": "185",
+   "spec": "185／1164",
    "consumed_bytes": 1
   },
   {
@@ -290,8 +291,9 @@
   {
    "offset": "+0F6h",
    "size": 1,
-   "name": "（未定）",
-   "status": "unknown",
+   "name": "被復活過 `RAISED`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
@@ -304,9 +306,26 @@
   },
   {
    "offset": "+0F8h",
-   "size": 3,
-   "name": "（未定）",
-   "status": "unknown",
+   "size": 1,
+   "name": "派生值已重算 `MODIFIED`",
+   "status": "documented",
+   "spec": "1164",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+0F9h",
+   "size": 1,
+   "name": "換職前的職業 `OLDCLASS`",
+   "status": "documented",
+   "spec": "1164",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+0FAh",
+   "size": 1,
+   "name": "換職前的等級 `OLDLEVEL`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
@@ -344,8 +363,9 @@
   {
    "offset": "+11Ah",
    "size": 1,
-   "name": "（未定）",
-   "status": "unknown",
+   "name": "種族大類 `RACETYPE`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
@@ -359,16 +379,17 @@
   {
    "offset": "+11Ch",
    "size": 1,
-   "name": "武器槽選擇（0 時回落到槽 2）",
+   "name": "攻擊次數基準的第一個武器槽 `BASEATTBLOWS[0]`；spec 1010 由 DOS 側讀成「武器槽選擇」，兩種讀法待對",
    "status": "documented",
-   "spec": "1010",
+   "spec": "1010／1164",
    "consumed_bytes": 0
   },
   {
    "offset": "+11Dh",
    "size": 1,
-   "name": "（未定；三組基準值陣列的第 0 格，原作不用）",
-   "status": "unknown",
+   "name": "攻擊次數基準的第二個武器槽 `BASEATTBLOWS[1]`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
@@ -414,8 +435,9 @@
   {
    "offset": "+126h",
    "size": 1,
-   "name": "（未定）",
-   "status": "unknown",
+   "name": "角色亂數種子 `RANDOMID`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
@@ -452,48 +474,74 @@
   },
   {
    "offset": "+13Ch",
-   "size": 5,
-   "name": "（未定）",
-   "status": "unknown",
+   "size": 2,
+   "name": "基準經驗值 `BASEEXP`（word）",
+   "status": "documented",
+   "spec": "1164",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+13Eh",
+   "size": 1,
+   "name": "每點 HP 的經驗 `EXPPERHP`",
+   "status": "documented",
+   "spec": "1164",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+13Fh",
+   "size": 1,
+   "name": "頭部造型 `HEAD`",
+   "status": "documented",
+   "spec": "1164",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+140h",
+   "size": 1,
+   "name": "身體造型 `BODY`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
    "offset": "+141h",
    "size": 1,
-   "name": "頭像 block",
+   "name": "頭像 block `ICONHEAD`",
    "status": "decoded",
-   "spec": "185",
+   "spec": "185／1164",
    "consumed_bytes": 1
   },
   {
    "offset": "+142h",
    "size": 1,
-   "name": "武器圖示 block",
+   "name": "身體圖示 block `ICONBODY`",
    "status": "decoded",
-   "spec": "185",
+   "spec": "185／1164",
    "consumed_bytes": 1
   },
   {
    "offset": "+143h",
    "size": 1,
-   "name": "圖示 ID",
+   "name": "圖示編號 `ICONINDEX`",
    "status": "decoded",
-   "spec": "185",
+   "spec": "185／1164",
    "consumed_bytes": 1
   },
   {
    "offset": "+144h",
    "size": 1,
-   "name": "體型 1 小／2 中",
+   "name": "人像高度 `ICONHEIGHT`（1 小／2 中）",
    "status": "decoded",
-   "spec": "1093",
+   "spec": "1093／1164",
    "consumed_bytes": 1
   },
   {
    "offset": "+145h",
    "size": 7,
-   "name": "（未定）",
-   "status": "unknown",
+   "name": "人像配色表 `COLORLIST`（7 格，每格是 EGA 色號對）",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
@@ -563,23 +611,33 @@
   {
    "offset": "+191h",
    "size": 1,
-   "name": "（未定）",
-   "status": "unknown",
+   "name": "解除詛咒的來源標記 `PDLNREMOVECURSE`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
    "offset": "+192h",
    "size": 1,
-   "name": "ECL 旗標（投影位址 7CE4h）",
+   "name": "ECL 旗標（投影位址 7CE4h）；Pascal 那邊叫保留欄 `DUM1`",
    "status": "decoded",
-   "spec": "1098",
+   "spec": "1098／1164",
    "consumed_bytes": 1
   },
   {
    "offset": "+193h",
-   "size": 2,
-   "name": "（未定）",
-   "status": "unknown",
+   "size": 1,
+   "name": "保留欄 `DUM2`",
+   "status": "documented",
+   "spec": "1164",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+194h",
+   "size": 1,
+   "name": "保留欄 `DUM3`",
+   "status": "documented",
+   "spec": "1164",
    "consumed_bytes": 0
   },
   {
