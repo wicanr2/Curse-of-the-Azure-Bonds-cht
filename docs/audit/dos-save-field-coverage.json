@@ -3,11 +3,11 @@
  "record_size": 422,
  "baselines": 5,
  "bytes_by_status": {
-  "decoded": 294,
+  "decoded": 299,
   "documented": 99,
-  "unknown": 29
+  "unknown": 24
  },
- "consumed_bytes": 286,
+ "consumed_bytes": 291,
  "fields": [
   {
    "offset": "+000h",
@@ -155,10 +155,10 @@
   {
    "offset": "+073h",
    "size": 1,
-   "name": "重算時抄進 +199h 的來源",
-   "status": "documented",
-   "spec": "1000",
-   "consumed_bytes": 0
+   "name": "命中能力（八個職業槽查表取最大；重算時抄進 +199h）",
+   "status": "decoded",
+   "spec": "1000／1140",
+   "consumed_bytes": 1
   },
   {
    "offset": "+074h",
@@ -249,10 +249,19 @@
   },
   {
    "offset": "+0E7h",
-   "size": 2,
-   "name": "（未定）",
-   "status": "unknown",
-   "consumed_bytes": 0
+   "size": 1,
+   "name": "被吸掉的等級數（復原術每次還一級）",
+   "status": "decoded",
+   "spec": "1125",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+0E8h",
+   "size": 1,
+   "name": "被吸掉的 HP 總數（還一級就還其中 1/N）",
+   "status": "decoded",
+   "spec": "1125",
+   "consumed_bytes": 1
   },
   {
    "offset": "+0E9h",
@@ -357,6 +366,13 @@
   },
   {
    "offset": "+11Dh",
+   "size": 1,
+   "name": "（未定；三組基準值陣列的第 0 格，原作不用）",
+   "status": "unknown",
+   "consumed_bytes": 0
+  },
+  {
+   "offset": "+11Eh",
    "size": 2,
    "name": "攻擊骰數 基準（兩個武器槽）",
    "status": "documented",
@@ -364,7 +380,7 @@
    "consumed_bytes": 0
   },
   {
-   "offset": "+11Fh",
+   "offset": "+120h",
    "size": 2,
    "name": "攻擊面數 基準",
    "status": "documented",
@@ -372,7 +388,7 @@
    "consumed_bytes": 0
   },
   {
-   "offset": "+121h",
+   "offset": "+122h",
    "size": 2,
    "name": "傷害加值 基準（有號）",
    "status": "documented",
@@ -380,23 +396,24 @@
    "consumed_bytes": 0
   },
   {
-   "offset": "+123h",
-   "size": 1,
-   "name": "（未定）",
-   "status": "unknown",
-   "consumed_bytes": 0
-  },
-  {
    "offset": "+124h",
    "size": 1,
-   "name": "重算時抄進 +19Ah 的來源",
-   "status": "documented",
-   "spec": "1000",
-   "consumed_bytes": 0
+   "name": "護甲起點（重算時抄進 +19Ah；建角寫 32h ＝ AC 10）",
+   "status": "decoded",
+   "spec": "1000／1140",
+   "consumed_bytes": 1
   },
   {
    "offset": "+125h",
-   "size": 2,
+   "size": 1,
+   "name": "力量調整的開關（0 ＝ 不套用命中／傷害調整）",
+   "status": "decoded",
+   "spec": "694／697",
+   "consumed_bytes": 1
+  },
+  {
+   "offset": "+126h",
+   "size": 1,
    "name": "（未定）",
    "status": "unknown",
    "consumed_bytes": 0
@@ -412,8 +429,9 @@
   {
    "offset": "+12Bh",
    "size": 1,
-   "name": "（未定）",
-   "status": "unknown",
+   "name": "職業可用性遮罩（與物品類別表 `+0Dh` 做 and）",
+   "status": "documented",
+   "spec": "1120",
    "consumed_bytes": 0
   },
   {
@@ -607,7 +625,7 @@
   {
    "offset": "+19Ah",
    "size": 1,
-   "name": "重算時由 +124h 抄過來",
+   "name": "護甲值（重算時由 +124h 起算；顯示是 60 − 它）",
    "status": "documented",
    "spec": "1000",
    "consumed_bytes": 0
@@ -615,21 +633,21 @@
   {
    "offset": "+19Bh",
    "size": 1,
-   "name": "本回合選用的武器槽",
+   "name": "護甲值第二格（背後攻擊用；＝ +19Ah − 敏捷防禦調整 − 盾牌槽 − 2）",
    "status": "documented",
-   "spec": "1010",
+   "spec": "1000／1137",
    "consumed_bytes": 0
   },
   {
    "offset": "+19Ch",
-   "size": 1,
-   "name": "本回合的攻擊次數（每回合重算）",
+   "size": 2,
+   "name": "兩個武器槽本回合的攻擊次數（spec 1010 寫 +19Bh ＋ 槽）",
    "status": "documented",
-   "spec": "808",
+   "spec": "808／1010",
    "consumed_bytes": 0
   },
   {
-   "offset": "+19Dh",
+   "offset": "+19Eh",
    "size": 2,
    "name": "攻擊骰數 現值（兩個武器槽）",
    "status": "documented",
@@ -637,7 +655,7 @@
    "consumed_bytes": 0
   },
   {
-   "offset": "+19Fh",
+   "offset": "+1A0h",
    "size": 2,
    "name": "攻擊面數 現值",
    "status": "documented",
@@ -645,18 +663,11 @@
    "consumed_bytes": 0
   },
   {
-   "offset": "+1A1h",
+   "offset": "+1A2h",
    "size": 2,
    "name": "傷害加值 現值（有號）",
    "status": "documented",
    "spec": "1000／795",
-   "consumed_bytes": 0
-  },
-  {
-   "offset": "+1A3h",
-   "size": 1,
-   "name": "（未定）",
-   "status": "unknown",
    "consumed_bytes": 0
   },
   {
