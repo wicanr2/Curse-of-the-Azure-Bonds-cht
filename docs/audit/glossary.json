@@ -3,11 +3,11 @@
  "sources": [
   {
    "path": "gamepack/pack/20-locale.zh-TW.json",
-   "count": 1426
+   "count": 1472
   },
   {
    "path": "assets/locale/zh-TW.json",
-   "count": 916
+   "count": 1142
   },
   {
    "path": "internal/tooltext/messages/zh-TW.json",
@@ -23,7 +23,7 @@
     "泰蘭索斯"
    ],
    "note": "稱號見下一列",
-   "uses": 17
+   "uses": 20
   },
   {
    "source": "Flamed One",
@@ -34,7 +34,7 @@
     "燃燒者"
    ],
    "note": "提朗瑟克斯的稱號",
-   "uses": 10
+   "uses": 11
   },
   {
    "source": "Dracandros",
@@ -44,7 +44,7 @@
     "德拉坎卓斯"
    ],
    "note": "塞爾紅袍法師",
-   "uses": 19
+   "uses": 20
   },
   {
    "source": "Fzoul Chembryl",
@@ -72,14 +72,14 @@
    "source": "Alias",
    "chinese": "愛麗雅絲",
    "category": "人物",
-   "uses": 37
+   "uses": 38
   },
   {
    "source": "Dragonbait",
    "chinese": "龍餌",
    "category": "人物",
    "note": "蜥蜴人聖武士",
-   "uses": 25
+   "uses": 26
   },
   {
    "source": "Olive Ruskettle",
@@ -101,7 +101,7 @@
    "source": "Elminster",
    "chinese": "伊爾明斯特",
    "category": "人物",
-   "uses": 3
+   "uses": 4
   },
   {
    "source": "Filani",
@@ -115,7 +115,7 @@
    "chinese": "娜卡西亞",
    "category": "人物",
    "note": "公主",
-   "uses": 7
+   "uses": 8
   },
   {
    "source": "Gharri",
@@ -125,13 +125,13 @@
     "嘉莉"
    ],
    "note": "剛德的祭司",
-   "uses": 5
+   "uses": 6
   },
   {
    "source": "Akabar",
    "chinese": "阿卡巴",
    "category": "人物",
-   "uses": 8
+   "uses": 9
   },
   {
    "source": "Azoun",
@@ -199,8 +199,11 @@
    "source": "Akabar Bel Akash",
    "chinese": "阿卡巴・貝爾・阿卡什",
    "category": "人物",
-   "note": "`Akabar` 的全名，兩個詞條並存",
-   "uses": 3
+   "note": "`Akabar` 的全名，兩個詞條並存；原文另作 `AKABAR BEL AKAS`（戰鬥員名截短）",
+   "aliases": [
+    "AKABAR BEL AKAS"
+   ],
+   "uses": 4
   },
   {
    "source": "Alaterian",
@@ -238,19 +241,19 @@
     "貝恩"
    ],
    "note": "`Banite` 併入本詞條",
-   "uses": 19
+   "uses": 20
   },
   {
    "source": "Moander",
    "chinese": "摩安德",
    "category": "神祇",
-   "uses": 33
+   "uses": 34
   },
   {
    "source": "Lathander",
    "chinese": "洛山達",
    "category": "神祇",
-   "uses": 5
+   "uses": 6
   },
   {
    "source": "Gond",
@@ -265,14 +268,20 @@
    "forbidden": [
     "火焰匕首"
    ],
-   "note": "單複數同譯",
-   "uses": 39
+   "note": "單複數同譯；原文另作 `FIRE KNIFE`",
+   "aliases": [
+    "FIRE KNIFE"
+   ],
+   "uses": 40
   },
   {
    "source": "Zhentarim",
    "chinese": "散塔林會",
    "category": "組織",
    "note": "原文另作 `Zhentrim`",
+   "aliases": [
+    "Zhentrim"
+   ],
    "uses": 14
   },
   {
@@ -290,7 +299,7 @@
     "紅羽戰士"
    ],
    "note": "希爾斯法軍隊；尤拉什圍城的一方",
-   "uses": 29
+   "uses": 30
   },
   {
    "source": "Red Wizards of Thay",
@@ -337,13 +346,13 @@
    "source": "Myth Drannor",
    "chinese": "迷斯卓諾",
    "category": "地名",
-   "uses": 15
+   "uses": 16
   },
   {
    "source": "Shadowdale",
    "chinese": "暗影谷",
    "category": "地名",
-   "uses": 15
+   "uses": 16
   },
   {
    "source": "Hillsfar",
@@ -445,19 +454,19 @@
    "source": "Gauntlet of Moander",
    "chinese": "摩安德護手",
    "category": "神器與關鍵物品",
-   "uses": 3
+   "uses": 4
   },
   {
    "source": "Amulet of Lathander",
    "chinese": "洛山達護符",
    "category": "神器與關鍵物品",
-   "uses": 5
+   "uses": 6
   },
   {
    "source": "Pool of Radiance",
    "chinese": "光芒之池",
    "category": "神器與關鍵物品",
-   "uses": 7
+   "uses": 8
   },
   {
    "source": "azure bonds",
@@ -471,49 +480,52 @@
     "青色印記"
    ],
    "note": "平常寫「枷印」；需要完整名稱時寫「青色枷」，沿用原中文版譯名（《青色枷的詛咒》）",
-   "uses": 50
+   "uses": 51
   },
   {
    "source": "Otyugh",
    "chinese": "奧提尤格",
    "category": "敘述中出現的怪物",
    "note": "世界地圖遭遇與手札 21",
-   "uses": 10
+   "uses": 12
   },
   {
    "source": "Thri-Kreen",
    "chinese": "斯瑞克林",
    "category": "敘述中出現的怪物",
    "note": "手札 45",
-   "uses": 2
+   "uses": 3
   },
   {
    "source": "phase spider",
    "chinese": "相位蜘蛛",
    "category": "敘述中出現的怪物",
    "note": "手札 45",
-   "uses": 1
+   "uses": 2
   },
   {
    "source": "Displacer Beast",
    "chinese": "移位獸",
    "category": "敘述中出現的怪物",
    "note": "手札 58",
-   "uses": 2
+   "uses": 3
   },
   {
    "source": "bugbear",
    "chinese": "熊地精",
    "category": "敘述中出現的怪物",
    "note": "手札 36",
-   "uses": 3
+   "uses": 4
   },
   {
    "source": "warg",
    "chinese": "座狼",
    "category": "敘述中出現的怪物",
-   "note": "手札 36",
-   "uses": 3
+   "note": "手札 36；原文另作 `WORG`",
+   "aliases": [
+    "WORG"
+   ],
+   "uses": 4
   },
   {
    "source": "HIPPOGRIFF",
@@ -527,7 +539,7 @@
    "chinese": "戰士",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 32
+   "uses": 33
   },
   {
    "source": "BLACK DRAGON",
@@ -562,7 +574,7 @@
    "chinese": "伊弗利特",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 8
+   "uses": 9
   },
   {
    "source": "SALAMANDER",
@@ -675,6 +687,321 @@
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
    "uses": 2
+  },
+  {
+   "source": "AKABAR BEL AKAS",
+   "chinese": "阿卡巴・貝爾・阿卡什",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "ALIAS",
+   "chinese": "愛麗雅絲",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 38
+  },
+  {
+   "source": "ANHKHEG",
+   "chinese": "掘地蟲",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "BAR PATRON",
+   "chinese": "酒館客人",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "BUGBEAR",
+   "chinese": "熊地精",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "CENTAUR",
+   "chinese": "半人馬",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "CROCODILE",
+   "chinese": "鱷魚",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "CYNTHIA",
+   "chinese": "辛西亞",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "DARK ELF LORD",
+   "chinese": "黑暗精靈領主",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "DISPLACER BEAST",
+   "chinese": "移位獸",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 3
+  },
+  {
+   "source": "DRACANDROS",
+   "chinese": "德拉坎德羅斯",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 20
+  },
+  {
+   "source": "DRAGONBAIT",
+   "chinese": "龍餌",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 26
+  },
+  {
+   "source": "ETTIN",
+   "chinese": "雙頭巨魔",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "FIGHTING DOG",
+   "chinese": "鬥犬",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "FIRE KNIFE",
+   "chinese": "火刀",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 40
+  },
+  {
+   "source": "GIANT SLUG",
+   "chinese": "巨鼻涕蟲",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "GIANT SPIDER",
+   "chinese": "巨蜘蛛",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "GRENDEL",
+   "chinese": "格倫戴爾",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "GRIFFON",
+   "chinese": "獅鷲",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "HELL HOUND",
+   "chinese": "地獄犬",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 9
+  },
+  {
+   "source": "KNIGHT",
+   "chinese": "騎士",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 6
+  },
+  {
+   "source": "LG VEGEPYGMY",
+   "chinese": "大型菌人",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "LIZARD MAN",
+   "chinese": "蜥蜴人",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "LOOTER",
+   "chinese": "掠奪者",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 3
+  },
+  {
+   "source": "MAGE",
+   "chinese": "法師",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 48
+  },
+  {
+   "source": "MANTICORE",
+   "chinese": "蠍尾獅",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 2
+  },
+  {
+   "source": "MARGOYLE",
+   "chinese": "大石像鬼",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "MONKEY",
+   "chinese": "猴子",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 3
+  },
+  {
+   "source": "NEO-OTYUGH",
+   "chinese": "新奧提尤格",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "OGRE",
+   "chinese": "食人魔",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "OTYUGH",
+   "chinese": "奧提尤格",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 12
+  },
+  {
+   "source": "OWL BEAR",
+   "chinese": "梟熊",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 5
+  },
+  {
+   "source": "PHASE SPIDER",
+   "chinese": "相位蜘蛛",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 2
+  },
+  {
+   "source": "PRIEST OF BANE",
+   "chinese": "班恩祭司",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 2
+  },
+  {
+   "source": "RAKSHASA",
+   "chinese": "羅剎",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 16
+  },
+  {
+   "source": "RED PLUME",
+   "chinese": "紅羽衛",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 30
+  },
+  {
+   "source": "ROYAL GUARD",
+   "chinese": "皇家衛兵",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 8
+  },
+  {
+   "source": "RUSTLE",
+   "chinese": "拉梭",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "SM VEGEPYGMY",
+   "chinese": "小型菌人",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
+  },
+  {
+   "source": "THIEF",
+   "chinese": "盜賊",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 23
+  },
+  {
+   "source": "THRI-KREEN",
+   "chinese": "斯瑞克林",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 3
+  },
+  {
+   "source": "TROLL",
+   "chinese": "巨魔",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 8
+  },
+  {
+   "source": "TYRANTHRAXUS",
+   "chinese": "提朗瑟克斯",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 20
+  },
+  {
+   "source": "WORG",
+   "chinese": "座狼",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 4
+  },
+  {
+   "source": "WYVERN",
+   "chinese": "雙足飛龍",
+   "category": "怪物（由 combatant_name_rules 匯入）",
+   "imported": true,
+   "uses": 1
   }
  ],
  "issues": null

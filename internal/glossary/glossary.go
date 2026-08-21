@@ -33,6 +33,11 @@ type Term struct {
 	Category   string   `json:"category"`
 	Forbidden  []string `json:"forbidden,omitempty"`
 	Note       string   `json:"note,omitempty"`
+	// Aliases 是**原文**的另一種拼法，由備註欄的「原文另作 `X`」解析出來。
+	// 遊戲資料裡的名字常常是截短或單複數不同的同一個詞（`AKABAR BEL AKAS`
+	// 之於 `Akabar Bel Akash`、`FIRE KNIFE` 之於 `Fire Knives`），那不是兩個
+	// 詞條，而是同一個詞條的兩種寫法——譯名相同是**正確**而不是重複。
+	Aliases []string `json:"aliases,omitempty"`
 	// Imported marks rows taken from combatant_name_rules rather than the table.
 	Imported bool `json:"imported,omitempty"`
 	// Uses counts how many scanned strings contain Chinese.
@@ -140,10 +145,21 @@ func audit(terms []Term, items []scanned) []Issue {
 	var issues []Issue
 	// 同一個原文可以同時是人工詞條與 combatant 規則（`MOGION` 就是），那不是重複，
 	// 是**跨檔交叉檢查的機會**：兩邊的譯名必須一樣。所以分組用大寫折疊後的原文。
+	// 別名折疊到正式寫法：`AKABAR BEL AKAS` 與 `AKABAR BEL AKASH` 是同一個人，
+	// 譯名相同是正確的，而且折疊之後兩邊還多了一道一致性檢查。
+	canonical := map[string]string{}
+	for _, term := range terms {
+		for _, alias := range term.Aliases {
+			canonical[strings.ToUpper(alias)] = strings.ToUpper(term.Source)
+		}
+	}
 	bySource := map[string][]Term{}
 	byChinese := map[string]map[string]bool{}
 	for _, term := range terms {
 		key := strings.ToUpper(term.Source)
+		if folded, ok := canonical[key]; ok {
+			key = folded
+		}
 		bySource[key] = append(bySource[key], term)
 		if byChinese[term.Chinese] == nil {
 			byChinese[term.Chinese] = map[string]bool{}
@@ -255,6 +271,7 @@ func parseTable(path string) ([]Term, []exception, error) {
 			Category:   category,
 			Forbidden:  splitForbidden(fields[2]),
 			Note:       strings.TrimSpace(fields[3]),
+			Aliases:    parseAliases(fields[3]),
 		})
 	}
 	if err := scanner.Err(); err != nil {
@@ -337,6 +354,24 @@ func trimAll(values []string) []string {
 	var out []string
 	for _, value := range values {
 		if trimmed := strings.TrimSpace(value); trimmed != "" {
+			out = append(out, trimmed)
+		}
+	}
+	return out
+}
+
+// aliasPattern 抓備註欄的「原文另作 `X`」，可以連寫多個。
+var aliasPattern = regexp.MustCompile("原文另作((?:\\s*`[^`]+`、?)+)")
+
+func parseAliases(note string) []string {
+	match := aliasPattern.FindStringSubmatch(note)
+	if match == nil {
+		return nil
+	}
+	var out []string
+	for _, part := range strings.Split(match[1], "、") {
+		trimmed := strings.TrimSpace(strings.Trim(strings.TrimSpace(part), "`"))
+		if trimmed != "" {
 			out = append(out, trimmed)
 		}
 	}

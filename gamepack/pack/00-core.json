@@ -3495,6 +3495,231 @@
    "id": "bit-of-moander",
    "source": "BIT O' MOANDER",
    "message_id": "combatant.bit-of-moander"
+  },
+  {
+   "id": "akabar-bel-akash",
+   "source": "AKABAR BEL AKAS",
+   "message_id": "combatant.akabar-bel-akash"
+  },
+  {
+   "id": "alias",
+   "source": "ALIAS",
+   "message_id": "combatant.alias"
+  },
+  {
+   "id": "ankheg",
+   "source": "ANHKHEG",
+   "message_id": "combatant.ankheg"
+  },
+  {
+   "id": "bar-patron",
+   "source": "BAR PATRON",
+   "message_id": "combatant.bar-patron"
+  },
+  {
+   "id": "bugbear",
+   "source": "BUGBEAR",
+   "message_id": "combatant.bugbear"
+  },
+  {
+   "id": "centaur",
+   "source": "CENTAUR",
+   "message_id": "combatant.centaur"
+  },
+  {
+   "id": "crocodile",
+   "source": "CROCODILE",
+   "message_id": "combatant.crocodile"
+  },
+  {
+   "id": "cynthia",
+   "source": "CYNTHIA",
+   "message_id": "combatant.cynthia"
+  },
+  {
+   "id": "dark-elf-lord",
+   "source": "DARK ELF LORD",
+   "message_id": "combatant.dark-elf-lord"
+  },
+  {
+   "id": "displacer-beast",
+   "source": "DISPLACER BEAST",
+   "message_id": "combatant.displacer-beast"
+  },
+  {
+   "id": "dracandros",
+   "source": "DRACANDROS",
+   "message_id": "combatant.dracandros"
+  },
+  {
+   "id": "dragonbait",
+   "source": "DRAGONBAIT",
+   "message_id": "combatant.dragonbait"
+  },
+  {
+   "id": "ettin",
+   "source": "ETTIN",
+   "message_id": "combatant.ettin"
+  },
+  {
+   "id": "fighting-dog",
+   "source": "FIGHTING DOG",
+   "message_id": "combatant.fighting-dog"
+  },
+  {
+   "id": "fire-knife",
+   "source": "FIRE KNIFE",
+   "message_id": "combatant.fire-knife"
+  },
+  {
+   "id": "giant-slug",
+   "source": "GIANT SLUG",
+   "message_id": "combatant.giant-slug"
+  },
+  {
+   "id": "giant-spider",
+   "source": "GIANT SPIDER",
+   "message_id": "combatant.giant-spider"
+  },
+  {
+   "id": "grendel",
+   "source": "GRENDEL",
+   "message_id": "combatant.grendel"
+  },
+  {
+   "id": "griffon",
+   "source": "GRIFFON",
+   "message_id": "combatant.griffon"
+  },
+  {
+   "id": "hell-hound",
+   "source": "HELL HOUND",
+   "message_id": "combatant.hell-hound"
+  },
+  {
+   "id": "knight",
+   "source": "KNIGHT",
+   "message_id": "combatant.knight"
+  },
+  {
+   "id": "large-vegepygmy",
+   "source": "LG VEGEPYGMY",
+   "message_id": "combatant.large-vegepygmy"
+  },
+  {
+   "id": "lizard-man",
+   "source": "LIZARD MAN",
+   "message_id": "combatant.lizard-man"
+  },
+  {
+   "id": "looter",
+   "source": "LOOTER",
+   "message_id": "combatant.looter"
+  },
+  {
+   "id": "mage",
+   "source": "MAGE",
+   "message_id": "combatant.mage"
+  },
+  {
+   "id": "manticore",
+   "source": "MANTICORE",
+   "message_id": "combatant.manticore"
+  },
+  {
+   "id": "margoyle",
+   "source": "MARGOYLE",
+   "message_id": "combatant.margoyle"
+  },
+  {
+   "id": "monkey",
+   "source": "MONKEY",
+   "message_id": "combatant.monkey"
+  },
+  {
+   "id": "neo-otyugh",
+   "source": "NEO-OTYUGH",
+   "message_id": "combatant.neo-otyugh"
+  },
+  {
+   "id": "ogre",
+   "source": "OGRE",
+   "message_id": "combatant.ogre"
+  },
+  {
+   "id": "otyugh",
+   "source": "OTYUGH",
+   "message_id": "combatant.otyugh"
+  },
+  {
+   "id": "owl-bear",
+   "source": "OWL BEAR",
+   "message_id": "combatant.owl-bear"
+  },
+  {
+   "id": "phase-spider",
+   "source": "PHASE SPIDER",
+   "message_id": "combatant.phase-spider"
+  },
+  {
+   "id": "priest-of-bane",
+   "source": "PRIEST OF BANE",
+   "message_id": "combatant.priest-of-bane"
+  },
+  {
+   "id": "rakshasa",
+   "source": "RAKSHASA",
+   "message_id": "combatant.rakshasa"
+  },
+  {
+   "id": "red-plume",
+   "source": "RED PLUME",
+   "message_id": "combatant.red-plume"
+  },
+  {
+   "id": "royal-guard",
+   "source": "ROYAL GUARD",
+   "message_id": "combatant.royal-guard"
+  },
+  {
+   "id": "rustle",
+   "source": "RUSTLE",
+   "message_id": "combatant.rustle"
+  },
+  {
+   "id": "small-vegepygmy",
+   "source": "SM VEGEPYGMY",
+   "message_id": "combatant.small-vegepygmy"
+  },
+  {
+   "id": "thief",
+   "source": "THIEF",
+   "message_id": "combatant.thief"
+  },
+  {
+   "id": "thri-kreen",
+   "source": "THRI-KREEN",
+   "message_id": "combatant.thri-kreen"
+  },
+  {
+   "id": "troll",
+   "source": "TROLL",
+   "message_id": "combatant.troll"
+  },
+  {
+   "id": "tyranthraxus",
+   "source": "TYRANTHRAXUS",
+   "message_id": "combatant.tyranthraxus"
+  },
+  {
+   "id": "worg",
+   "source": "WORG",
+   "message_id": "combatant.worg"
+  },
+  {
+   "id": "wyvern",
+   "source": "WYVERN",
+   "message_id": "combatant.wyvern"
   }
  ]
 }

@@ -1185,6 +1185,90 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "LoadLocale",
+      "sha256": "639ff7bf1d3ae9b53a925a66be3eb05dd6c3c6060e2fd7cf8ab9181ed373068d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "01d3b4025afad83c2c2b7256fff34ef5bdf878eedade40628ada06d4718c0820",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "13c83a8a875ec7e2062411851fe501ab53a525064bf5d4b7e53233fd2d729ac6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "6389882aa39a4a67ff64732180c71b84a629140a2f460986f69353e8744e250b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "7ab35f1c602ccc04f4723e8f82a2b4add2c8fade399a1af35c0230437bcc3632",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "88ad2e9a2d36c107d49a3bec253e0a383da0e5ed9118bdc708485eb737027aed",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "8cc53c8b7eca9d41556e01b4860b9b8f1497c072f5d75e104aad638a87dbba61",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "8ebf9c66385189ad2016057450408c7164e82beb1297aa8bb98e09c99ac892e7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "90f916a91fdcbd1d7971a918a687dc8192db3710d90691981448f26952fca008",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "a4688149747340657190caae03ec4b6188fa074dc35c9e63be2c7415f2408b96",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/combatant-name-audit/main.go",
+      "function": "main",
+      "sha256": "d3cdca52641f7173ea97a0acb8946a38e52374152f77dd8d66b41f0342b3824d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/dos-save-export/main.go",
       "function": "main",
       "sha256": "0240b7a5a9afbb72bdf11bb0c76b7763c33e165db21e871f332ccc50bc2b5793",
@@ -4744,6 +4828,12 @@
     {
       "path": "internal/glossary/glossary.go",
       "sha256": "13f6c30c2ea2d611505de219d92dced91135f5d9bb21264600680376d20d452a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/glossary/glossary.go",
+      "sha256": "3077d5894ce7b34cfacccd1ee86a2f8751c9744997f94a74d04e6a957b7e3548",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

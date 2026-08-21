@@ -345,8 +345,8 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			state.Mode, state.CombatStatus(), state.livingBySide(combat.SideEnemy), state.Message)
 	}
 	for _, enemy := range state.livingBySide(combat.SideEnemy) {
-		if enemy.Name != monsterRecords[0x42].Name {
-			t.Fatalf("spider enemy=%q, want source record %q", enemy.Name, monsterRecords[0x42].Name)
+		if enemy.SourceName != monsterRecords[0x42].Name {
+			t.Fatalf("spider enemy=%q, want source record %q", enemy.SourceName, monsterRecords[0x42].Name)
 		}
 	}
 	// Save version 7 at a real campaign combat boundary, then rebuild a fresh
@@ -420,7 +420,7 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	}
 	if state.Mode != ModeCombat || state.CombatStatus() != combat.StatusActive ||
 		len(state.livingBySide(combat.SideEnemy)) != 1 ||
-		state.livingBySide(combat.SideEnemy)[0].Name != monsterRecords[0x43].Name {
+		state.livingBySide(combat.SideEnemy)[0].SourceName != monsterRecords[0x43].Name {
 		t.Fatalf("rakshasa combat mode=%v status=%v enemies=%#v",
 			state.Mode, state.CombatStatus(), state.livingBySide(combat.SideEnemy))
 	}
@@ -2121,7 +2121,7 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		}
 	}
 	if len(temporaryAllies) != 1 || !temporaryAllies[0].QuickFight ||
-		temporaryAllies[0].Name != monsterRecords[0x43].Name ||
+		temporaryAllies[0].SourceName != monsterRecords[0x43].Name ||
 		len(state.partyRoster) != 1 {
 		t.Fatalf("Beyrha temporary ally=%+v persistent roster=%+v",
 			temporaryAllies, state.partyRoster)

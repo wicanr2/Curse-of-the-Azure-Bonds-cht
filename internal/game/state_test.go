@@ -4335,7 +4335,7 @@ func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 		t.Fatal(err)
 	}
 	enemies := state.CombatTargets()
-	if !state.CombatActive() || len(enemies) != 1 || enemies[0].Name != "BUGBEAR" || enemies[0].SpriteSet != 1 || enemies[0].SpriteBlock != 0x35 || enemies[0].AnimationBlock != 0x09 || !enemies[0].HasAnimation {
+	if !state.CombatActive() || len(enemies) != 1 || enemies[0].SourceName != "BUGBEAR" || enemies[0].SpriteSet != 1 || enemies[0].SpriteBlock != 0x35 || enemies[0].AnimationBlock != 0x09 || !enemies[0].HasAnimation {
 		t.Fatalf("state=%#v enemies=%#v", state, enemies)
 	}
 	if got := state.ConsumeSoundEvents(); len(got) == 0 || got[0] != SoundCombat {
@@ -4378,7 +4378,7 @@ func TestStartEncounterUsesEightReservedPlayerSlotsForTemporaryMonsterAlly(t *te
 	for _, fighter := range fighters {
 		if fighter.Side == combat.SideParty {
 			partyCount++
-			if fighter.Name == "RAKSHASA" && fighter.QuickFight && fighter.TemporaryAlly {
+			if fighter.SourceName == "RAKSHASA" && fighter.QuickFight && fighter.TemporaryAlly {
 				temporaryFound = true
 			}
 		} else {

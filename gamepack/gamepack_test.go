@@ -196,8 +196,8 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 			}
 		}
 	}
-	if len(pack.CombatantNameRules) != 23 {
-		t.Fatalf("combatant name rules=%d, want 23", len(pack.CombatantNameRules))
+	if len(pack.CombatantNameRules) != 68 {
+		t.Fatalf("combatant name rules=%d, want 68", len(pack.CombatantNameRules))
 	}
 	for _, rule := range pack.CombatantNameRules {
 		for _, language := range []string{"en", "zh-TW"} {
