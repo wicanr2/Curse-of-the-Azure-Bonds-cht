@@ -131,6 +131,12 @@ type MemoryWrite struct {
 	Value   uint16
 	PC      int
 	BlockID uint8
+	// Sequence 是這次執行裡的**執行序**，`CallRequest.Sequence` 用同一條計數。
+	//
+	// ⚠ 不要拿 `PC` 當執行順序用。一次執行裡有迴圈與反向跳躍，PC 小的可能
+	// 後執行、同一個位址也可能被執行好幾次——「`PC` 比 `CALL` 小就是先發生」
+	// 只在直線碼上成立。
+	Sequence int
 }
 
 // CallRequest preserves the bytecode position and block identity of one
@@ -139,6 +145,8 @@ type CallRequest struct {
 	Address uint16
 	PC      int
 	BlockID uint8
+	// Sequence 與 MemoryWrite.Sequence 共用同一條執行序計數。
+	Sequence int
 }
 
 // NPCRequest preserves both operands consumed by CMD_AddNPC. Morale is later
@@ -596,6 +604,9 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 		rng = runtime.Random.Rand()
 	}
 	var compare [6]bool
+	// eventSequence 是這次執行的執行序計數，`SaveWrites` 與 `CallRequests`
+	// 共用它。⚠ 不要拿 `PC` 當順序（見 MemoryWrite.Sequence 的說明）。
+	eventSequence := 0
 	selectedPlayerIndex := -1
 	selectedPlayerSet := false
 	selectedTeamListIndex := 0
@@ -985,10 +996,12 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 					return result, fmt.Errorf("save at %d: %w", pc, err)
 				}
 				memory[instruction.Operands[1].Word] = value
+				eventSequence++
 				result.SaveWrites = append(result.SaveWrites, MemoryWrite{
-					Address: instruction.Operands[1].Word,
-					Value:   value,
-					PC:      pc,
+					Address:  instruction.Operands[1].Word,
+					Value:    value,
+					PC:       pc,
+					Sequence: eventSequence,
 				})
 				if instruction.Operands[1].Word == 0x7D0C {
 					result.CombatTeamWrites = append(result.CombatTeamWrites, CombatTeamWrite{
@@ -1135,9 +1148,11 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			// instruction. Keep the address observable while leaving the
 			// routine-specific DOS side effect to a later adapter.
 			result.CallAddresses = append(result.CallAddresses, address)
+			eventSequence++
 			result.CallRequests = append(result.CallRequests, CallRequest{
-				Address: address,
-				PC:      pc,
+				Address:  address,
+				PC:       pc,
+				Sequence: eventSequence,
 			})
 			if address == ExternalCallAdvancePictureFrame {
 				result.PictureFrameAdvances++
@@ -1207,10 +1222,12 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			// operand 2.Word + value operand 3.
 			address := instruction.Operands[1].Word + offset
 			memory[address] = value
+			eventSequence++
 			result.SaveWrites = append(result.SaveWrites, MemoryWrite{
-				Address: address,
-				Value:   value,
-				PC:      pc,
+				Address:  address,
+				Value:    value,
+				PC:       pc,
+				Sequence: eventSequence,
 			})
 		case 0x0A: // LOAD CHARACTER
 			address, err := operandAddress(instruction.Operands[0])

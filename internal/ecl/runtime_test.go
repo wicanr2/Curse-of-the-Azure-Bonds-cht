@@ -156,7 +156,7 @@ func TestRunSubsetGetTableReadsIndexedMemory(t *testing.T) {
 		t.Fatalf("text=%q, want [7]", result.Text)
 	}
 	if !reflect.DeepEqual(result.SaveWrites, []MemoryWrite{
-		{Address: 0x9001, Value: 7, PC: 0},
+		{Address: 0x9001, Value: 7, PC: 0, Sequence: 1},
 	}) {
 		t.Fatalf("save writes=%+v", result.SaveWrites)
 	}
