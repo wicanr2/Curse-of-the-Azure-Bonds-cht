@@ -608,13 +608,9 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
 4. Docker 內完成受影響套件、代表性正常玩家路徑、save round-trip、截圖／包裝 smoke；
    再集中 commit＋push 兩個 repository。
 
-下一個最小可重現工作：沿第 543 輪同一個 ECL session 從防火桶返回的熔岩洞續接
-尤拉什、摩安德之坑、散提爾堡與 Myth Drannor；同時以手札 59 的房間鄰接圖、
-GEO4/25 cell graph 與 ECL4/22 producer／consumer 對位，閉合 `(13,1,W)` 到
-德克薩姆及 `(6,3)` 出口的唯一正常 route；只有靜態證據仍有多解時才用修改存檔
-做受控 DOSBox 抽樣。之後建立
-城市／GEO 事件 coverage matrix，逐項標示 normal、fixed fixture 或
-coordinate-assisted。不要把本輪
-Hap／巫師塔局部路徑或既有 `PROGRAM 8` fixture 擴大解讀成完整結局。
-不要把 static corpus／路網 gate 擴大解讀成完整 ECL，也不要先深挖與玩家結果無關的
-反組譯。
+下一個最小可重現工作：`27h TREASURE`（handler `1B53h`..`1F46h`，398 條）——它是
+`partial` 名單裡照成本排的下一支，做法與第 615–619 輪相同：整支讀完 → 對 remake
+→ 兩個方向都釘測試 → 缺口收斂成一句可執行的待辦。
+
+⚠ 不要把「主線跑得完」擴大解讀成全城市、全地城或全事件完成；也不要先深挖與玩家
+結果無關的反組譯。上面那張表的「量到的缺口」欄才是分母，不是印象。
