@@ -107,7 +107,7 @@ Docker 內以 Go 1.24.13、暫存 `modfile` 將鎖版 private engine dependency 
 
 | 缺口 | 類型 | 是否阻塞玩家 | 下一步 |
 |---|---|---:|---|
-| effect 的全域有序 transaction model | 局部 | 否 | 逐 opcode 的 commit phase 已由 spec 1104 閉合（DOS 25／46 支）；剩下 21 支未讀 handler 與原版／remake trace diff。 |
+| effect 的全域有序 transaction model | 局部 | 否 | 逐 opcode 的 commit phase 已由 spec 1104 閉合；phase 台帳列了 55 支、25 支有分類、**30 支仍是 `unknown`**，另有 6 支可達 opcode 連一列都沒有（`1Eh`、`26h`、`2Ch`、`30h`、`34h`、`3Bh`）。⚠ 台帳目前重生不出來，落後於實際進度（`0Dh` 已由 spec 1146 讀完、表上仍是 `unknown`），詳見 `WORKLIST.md`。 |
 | 動態 `ON GOTO／ON GOSUB` 與 menu branches | 待逆向 | 是 | 把 runtime branch trace 合併回 catalog 的動態 edge 層，不覆寫靜態證據。 |
-| external CALL registry | 待逆向 | 是 | 從 23 個靜態可達 CALL instruction 擷取 operand，逐址閉合 consumer。 |
+| external CALL registry | ✅ 已完成 | — | 七支分派的位址（spec 561）與逐支語意（spec 1150）都已解出；可達 168 條、四個運算元。剩下的只有 `2E10h` 的髒旗標模型。 |
 | cell／terrain／劇情名稱對應 | 待研究／資料整合 | 視事件而定 | 由 GEO、ECL predicate 與正常路徑回填，不從攻略直接命名。 |

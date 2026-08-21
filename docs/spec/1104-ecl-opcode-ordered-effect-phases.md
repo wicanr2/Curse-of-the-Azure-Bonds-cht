@@ -166,21 +166,29 @@ remake 的 `internal/ecl/runtime.go` 用 `ParseOperands(payload, headNext-1, cou
 
 `2F02h` 把 operand 的 16-bit 值減去 `7FFFh` 之後走七路 switch：
 
-| operand 值 | switch 比較值 | 動作 | corpus 出現次數 |
-|---|---|---|---|
-| `2E10h` | `0AE11h` | 重取 terrain ＋ 五個髒旗標的提交點（§四） | **12** |
-| `8000h` | `1` | `overlay-07 entry#25(1)` | 0 |
-| `8001h` | `2` | `overlay-07 entry#25(0)` | 0 |
-| `B200h` | `3201h` | 依 `ds:8B4Ch` 取一個 word 呼叫 resident `007900h` | 0 |
-| `C01Eh` | `401Fh` | `overlay-07 entry#26` | 0 |
-| `C018h` | `4019h` | bank0 `1CCh` 為 0 時 `ds:7212h := overlay-30 entry#4(...)` | 0 |
-| `6803h` | `0E804h` | 依 `ds:722Dh` 取一組指標呼叫 `overlay-29 entry#1` 繪製，`722Dh` 遞增並在超過 `ds:722Ch` 時繞回 1，最後呼叫與 `3Ah DELAY` 相同的 resident 延遲常式 ⇒ 逐格播放動畫 | **11** |
+七支的目標名字與逐支內容見 [spec 1150](./1150-ecl-call-external-routines.md)；
+本節只保留分派形狀與出現次數。
 
-★ **23 個靜態可達的 `CALL` 只用到其中兩個目標**：`2E10h` 12 次、`6803h` 11 次。
-另外五路在 CoAB 的 ECL 裡靜態上一次都沒出現。
+| operand 值 | switch 比較值 | 動作 | corpus 可達條數 |
+|---|---|---|---|
+| `2E10h` | `0AE11h` | 重取 terrain ＋ 五個髒旗標的提交點（§四） | **125** |
+| `8000h` | `1` | `overlay-07 entry#25(1)` ＝ `GODUEL(1)` | 0 |
+| `8001h` | `2` | `overlay-07 entry#25(0)` ＝ `GODUEL(0)` | 0 |
+| `B200h` | `3201h` | 依 `ds:8B4Ch`（＝ ECL 格 `03DE`）取一個 word 呼叫 `SOUNDFX` | **19** |
+| `C01Eh` | `401Fh` | `overlay-07 entry#26` ＝ `MOVEFORWARD` | **13** |
+| `C018h` | `4019h` | bank1 `1CCh` 為 0 時 `ds:7212h := overlay-30 entry#4(...)` | 0 |
+| `6803h` | `0E804h` | 依 `ds:722Dh` 取一組指標呼叫 `overlay-29 entry#1`（`SHOWPORTRAIT`）繪製，`722Dh` 遞增並在超過 `ds:722Ch` 時繞回 1，最後呼叫與 `3Ah DELAY` 相同的 resident 延遲常式 ⇒ 推圖片序列一格 | **11** |
+
+★ **CoAB 的腳本用到四個目標**：沿 `ecl.TraceGraph` 走完 25 個 block，可達的 `2Dh`
+共 **168 條**（`2E10h` 125、`B200h` 19、`C01Eh` 13、`6803h` 11）；另外三路
+（`8000h`／`8001h`／`C018h`）一次都沒出現。
+⚠ 用 `docs/audit/ecl-event-catalog.json` 數只會得到 78 條——那份目錄不跟 `IF` 的
+兩條路，是**下界**。
 ★ **不在 switch 內的目標會靜默 no-op**（直接落到收尾 `306Fh`），不會報錯。
 
-⚠ 不宣稱 `722Ah`／`722Ch` 指標陣列的完整版面，也不宣稱那五路未使用分支的語意。
+`722Ch` 是圖片序列的記錄（`p^[0]` 張數、`p^[1]` 游標、第 i 格的遠指標在
+`p + 8i − 2`），生產者是 `0Eh PICTURE` 的 `LOADSEQUENCE`；版面與另一個自走的
+驅動器見 spec 1150。
 
 ## 八、PC-98 對照
 

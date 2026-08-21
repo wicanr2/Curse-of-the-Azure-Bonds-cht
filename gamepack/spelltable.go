@@ -116,8 +116,10 @@ func (s SpellEntry) RequiresSave() bool { return s.SaveKind != 0 }
 // Fireball／Lightning Bolt／Flame Strike／Cone of Cold 與兩筆占位——AD&D 1e
 // 裡正好都是「豁免成功傷害減半」。
 //
-// ⚠ 等級：strong inference。`overlay-23 entry#20` 的本體還沒讀，所以
-// `+8 = 1`／`= 3` 兩個值**沒有**對應的判定函式——不要為了對稱補上去。
+// `overlay-23 entry#20`（DOS `overlay-23:1FD6h`）已經讀完（spec 1061／581）：
+// 有做存活檢定時依這個值分兩支——**1 把傷害歸 0、2 除以 2**，其餘值什麼都不做。
+// 所以 `= 1` 有語意（豁免就沒事，`internal/combat` 的 saveNegatesKind），
+// 而全表兩筆的 `= 3` **沒有任何分支**——不要為了對稱補上去。
 func (s SpellEntry) SaveHalvesDamage() bool { return s.SaveKind == 2 }
 
 // 檔案由 gamepack.go 的 `//go:embed rules/*.json` 一起收進 ruleFiles。

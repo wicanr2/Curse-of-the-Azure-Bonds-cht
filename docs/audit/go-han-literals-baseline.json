@@ -683,6 +683,13 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "sweepBlock",
+      "sha256": "2a24418bbe10b8af8e6f4d027a73afc5eb065ae1c0d836fb22db3c40899a1772",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "sweepBlock",
       "sha256": "39cb0957d4716df27262673ba5aab08ec296459d537007120c0dbd6483e9961a",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -704,14 +711,14 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "sweepBlock",
-      "sha256": "83b899990969e126d4e9eb4769d809796f669eda2cdbc7b67db0a03bb49c49e9",
+      "sha256": "c58d072042217d98d506c79880901926f9827711c7c565d2eb83a7763eef704a",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "sweepBlock",
-      "sha256": "c58d072042217d98d506c79880901926f9827711c7c565d2eb83a7763eef704a",
+      "sha256": "dc050ed3e9c0144d47c0b446dfde686e3d56433d38bced44f69f5f372f32f988",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

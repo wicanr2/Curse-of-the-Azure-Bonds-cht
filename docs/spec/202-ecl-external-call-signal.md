@@ -19,4 +19,6 @@ ECL1–ECL6 的 `0x2D CALL` 線性掃描只觀察到非 code-segment word operan
 - 非 word operand 仍回傳明確 error。
 
 這個切片原先只讓 external call 後的中文事件 prefix 繼續執行；第 276 輪已補上
-State／frontend adapter。`0xB200` 的 transient `word_1EE76 == 10` sound-b 分支仍待投影。
+State／frontend adapter。`0xB200` 的音效編號由 `DS:8B4Ch`（＝ ECL 格 `03DE`）決定：
+等於 `0Ah` 播 11、其餘播 10。CoAB 全 corpus 對 `03DE` 只有 15 次寫入、值一律是 5，
+所以 11 那一支走不到（spec 1150）。

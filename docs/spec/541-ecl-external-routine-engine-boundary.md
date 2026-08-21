@@ -38,7 +38,7 @@
 | ECL1–ECL6 25 個 block／125 個 entry corpus gate | 本作生命週期 entry 能被 parser／control-flow trace 建立；不等於每個 external side effect 已完成 | `exact`（corpus） |
 | `CALL 0x2E10` → `AE11h` → overlay control vector | raw dispatch／map redraw candidate；尚未閉合完整 DOS producer→projection→consumer | `exact` raw，`strong inference` routine role |
 | `CALL 0xC01E` → forced forward movement | CoAB adapter 的 cardinal wrapped forced move；不是玩家 wall collision transaction | `exact` remake contract；原版 routine 行為依既有 spec |
-| `CALL 0xB200` | external sound boundary；`word_1EE76` 選 A/B 的 B 分支尚未投影 | `strong inference` |
+| `CALL 0xB200` | external sound boundary；音效編號由 `DS:8B4Ch`（＝ ECL 格 `03DE`）選，`0Ah` 播 11、其餘播 10，而 corpus 對 `03DE` 一律寫 5 ⇒ 只走得到 10（spec 1150） | `exact` |
 | `PROGRAM 0/3/8/9` | ID 與 external boundary 可保存；訓練、全滅、勝利、CAMP 由 CoAB caller context 解讀 | `exact` boundary；ID 語意為 CoAB adapter |
 | `LOAD FILES`／`LOAD PIECES` | 三個 raw selector 可保存並交給 title resource adapter | `exact` request；實際資源 identity 屬 game pack |
 | `moonsea.overland` 14 點與 adjacency | native value、點位與 directed destinations 可由 JSON 驗證；不是自由 25×50 tile map | `exact` game-pack contract；原版像素地圖仍另驗證 |
@@ -63,7 +63,7 @@
 |---|---|
 | `0x2E10` 的 redraw／position semantics | DOS overlay dispatch、`C04B..C04F` projection、dirty flags 與 map consumer 尚未在同一位址空間閉合；不同作品可能用不同 map service |
 | `0xC01E` 的 address-to-movement 對應 | 「這個 raw address 代表前進」是 CoAB 證據；engine 可提供 forced-move transaction，但不應內建 `0xC01E` |
-| `0xB200` 的 sound A/B | `word_1EE76` consumer 尚未閉合；sound selector、平台 driver 與缺檔 fallback 應由 title audio adapter 宣告 |
+| `0xB200` 的音效編號 | 選號來自 CoAB 的 ECL 格 `03DE`，是本作 work memory；sound selector、平台 driver 與缺檔 fallback 應由 title audio adapter 宣告 |
 | `PROGRAM 0/3/8/9` 的畫面／流程 | `PROGRAM 0` 在訓練館不是主選單；`3`、`8`、`9` 的 roster／save／camp 副作用也與 CoAB State context 有關 |
 | `0x7F6C`／`0x7EE2` shop／temple dispatch | 這些是 CoAB ECL work memory；共用 engine 不應直接讀固定作品位址來猜 service type |
 | world native values、城市名稱、旗標、ECL block、事件文字 | 屬 CoAB JSON／ECL data；不進作品中立 engine，不在 Go switch 硬編劇情 |

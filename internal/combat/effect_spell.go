@@ -51,9 +51,9 @@ type EffectSpellRequest struct {
 	CasterLevel int
 }
 
-// saveNegatesKind 是 `+8h = 1` 那一組。spec 1111 只把它記成觀察（那一組全是
-// 「豁免就沒事」型的法術），不是讀過 `entry#20` 的定論——所以判斷寫在這裡一處，
-// 日後讀出真正的語意時只改這一行。
+// saveNegatesKind 是 `+8h = 1` 那一組。原作那一支已經讀完（spec 1061／581，DOS
+// `overlay-23:1FD6h`）：有做存活檢定時 `1` 把傷害歸 0、`2` 除以 2，其餘值不做事。
+// 判斷仍然寫在這裡一處。
 const saveNegatesKind = 1
 
 // CastEffectSpell 對每個目標擲豁免並套上效果。
