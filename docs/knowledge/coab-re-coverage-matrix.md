@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》全遊戲逆向工程完整度矩陣
 
-狀態日期：2026-08-15（第 560 輪：ECL 主迴圈與 `COMBAT` 續跑閉合）
+狀態日期：2026-08-21（第 619 輪：external `CALL` registry 的語意層閉合，spec 1150）
 
 ## 兩層完整度
 
@@ -12,11 +12,11 @@
 - 人工判定唯一來源：`../audit/re-function-ledger.json`
 - 方法與基線：[`../spec/559-full-module-re-sweep.md`](../spec/559-full-module-re-sweep.md)
 
-目前狀態（2026-08-15）：共 2,922 個函式，**已解讀 2,175／不阻塞 162／邊界碎片
-585／待解讀 0**（DOS 已解讀 1,016、PC-98 1,159；證據等級 `exact` 1,952、
+目前狀態（2026-08-21）：共 2,874 個函式，**已解讀 2,137／不阻塞 162／邊界碎片
+575／待解讀 0**（DOS 已解讀 1,016、PC-98 1,121；證據等級 `exact` 1,914、
 `strong inference` 223）。函式層已全部看過一遍。
 
-尚未做的是 `WORKLIST.md` 第 559 輪第 5 步：DOS 16,044 bytes／PC-98 20,319 bytes
+尚未做的是 `WORKLIST.md` 第 559 輪第 5 步：DOS 16,065 bytes／PC-98 20,321 bytes
 不屬於任何已知函式的區段還沒逐段判定為資料表、對齊填充或漏掉的程式碼。
 
 兩層不可互相替代——系統層可以宣稱某條玩家路徑閉合，但那不代表相關模組的
@@ -117,8 +117,8 @@ gate 只能作輸入，不等於此清冊已完成。
 | 原始檔與平台 inventory | DOS 主檔多有 hash；PC-98 VFD 有缺 sector | 局部 | 建立 DOS／PC-98 executable、overlay、DAX、GEO、save、音訊與手冊的單一 manifest；標示 pristine／derived | `coab-source-manifest` |
 | DAX container／壓縮 | 多種真實資產已可抽取 | 局部 | 對所有實際成員補 record count、bounds、round-trip 與 malformed gate；區分不同 DAX payload | `dax-corpus-matrix` |
 | ECL framing／控制流 | 第 557／558 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊與穩定 candidate ID；第 564 輪修正 `NEWECL` 的直線切分（候選 33→32，指令數不變） | 局部 | 32 個候選中 31 個 `covered/exact`、1 個 `partial`（來源：`docs/audit/ecl-ordered-effect-reviews.json`）；動態 branch、間接 dispatch、錯誤路徑仍缺；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
-| ECL 副作用／時序 | 主迴圈、dispatcher、`24h` handler、位址空間五區映射（spec 1095／1096）與**逐 opcode commit phase**（spec 1104：DOS 25／46 支已讀）已閉合；31 個候選 `covered/exact` | **局部** | 21 支 handler 未讀（`03h`..`09h`、`14h`、`16h`..`1Bh`、`1Dh`、`25h`、`29h`、`2Ah`、`2Fh`、`32h`、`35h`）；`47E2h` 的「執行結束還原目前角色」在 remake 尚未實作；動態 branch 與原版 trace diff 仍缺 | `ecl-opcode-effect-phases` 已產出；續讀剩餘 handler ＋ 動態層 |
-| External `CALL` | `2E10／C01E／B200` 等有局部證據 | 待逆向 | 實際使用地址全集；每址的 caller、operand、state projection、consumer、返回與未知 fallback | `external-call-registry` |
+| ECL 副作用／時序 | 主迴圈、dispatcher、`24h` handler、位址空間五區映射（spec 1095／1096）與**逐 opcode commit phase**（spec 1104）已閉合；31 個候選 `covered/exact` | **局部** | phase 台帳列了 55 支、其中 **30 支仍是 `unknown`**，另有 **6 支 opcode 連一列都沒有**（`1Eh`、`26h`、`2Ch`、`30h`、`34h`、`3Bh`）；`0Dh` 的那一列已過期（spec 1146 讀完了）；`47E2h` 的「執行結束還原目前角色」在 remake 尚未實作；動態 branch 與原版 trace diff 仍缺 | 先讓 `cmd/ecl-event-catalog` 能重生（見 `WORKLIST.md` 的 ⚠），再續讀剩餘 handler ＋ 動態層 |
+| External `CALL` | 七支分派逐條讀完並取到名字（spec 1150）；使用地址全集已量出：可達 168 條、四個運算元（`2E10h` 125／`B200h` 19／`C01Eh` 13／`6803h` 11）；未列入 switch 的目標靜默返回 | 局部 | `2E10h` 的 consumer：原作是 `STOREVALUE` 當場寫座標並立五個髒旗標之一、`CALL` 只負責「髒了才重畫」，remake 用的是回頭掃 `SaveWrites` 的啟發式（spec 276／402／403 的回歸鎖著），兩套並存未收斂 | `external-call-registry` 已完成；續收 `2E10h` 的髒旗標模型 |
 | `NEWECL／PROGRAM` | boundary ID 與部分 context 已知 | 局部 | 全 context 的 area/resource/map/save/ending 副作用與 resume ownership | `program-newecl-context-matrix` |
 | GEO 幾何／四平面 | 16 個原始 block 已宣告；loader／部分 plane consumer 有證據 | 局部 | 所有 plane 欄位、wall/door/roof/terrain interaction、wrapped edge、視覺 consumer | `geo-block-and-cell-schema` |
 | 地城移動／門／SEARCH／LOOK | 正常切片與 wall=09 候選已接通 | 局部 | 普通門、鎖門、bash/knock、秘密通路、成功率、方向、時間與重訪的原版 transaction | `dungeon-movement-action-matrix` |
@@ -192,14 +192,20 @@ IDAPython 並放 `tools/ida/`。
 1. 靜態 `ecl-event-catalog` 已完成，逐 opcode 的 commit phase 台帳（spec 1104）
    也已完成：32 個候選 31 個 `covered/exact`、1 個 `partial`（ECL1 block `0x52`
    的開場過場，卡在 `PROGRAM` 的 operand 值與該場戰後續跑）。下一個 probe 不再是
-   某個候選，而是**剩下 21 支未讀的 handler**——逐支狀態在
+   某個候選，而是**剩下未讀的 handler**——逐支狀態在
    `docs/audit/ecl-opcode-effect-phases.md`，`unknown` 的每一列就是一項待辦。
+   ⚠ 那份產物目前**重生不出來**（兩道 fail-closed 閘都是紅的，見 `WORKLIST.md`
+   的 ⚠），所以它落後於實際進度：`0Dh` 已由 spec 1146 讀完、表上仍是 `unknown`，
+   而 6 支可達 opcode 連一列都沒有。要拿它當待辦清單得先讓它能重生。
 2. 將已驗證的動態 edge、條件與 continuation 回填 catalog，逐步完成
    `ecl-ordered-effects` 規格；未審查候選維持 unknown，不因相似序列批次升格。
-3. `external-call-registry` 的靜態層已由 spec 1104 §七 取得：`2Dh CALL` 是七路
-   switch，23 個靜態可達 CALL 只用到 `2E10h`（12 次，畫面提交點）與 `6803h`
-   （11 次，逐格動畫）；不在 switch 內的目標靜默 no-op。仍缺的是那兩個目標的
-   consumer 逐條驗證與 remake adapter。
+3. `external-call-registry` 已完成（spec 561 位址、spec 1150 語意）：`2Dh CALL`
+   是七路 switch，走完 25 個 block 的**可達** `2Dh` 共 168 條、用到四個運算元
+   （`2E10h` 125、`B200h` 19、`C01Eh` 13、`6803h` 11）；不在 switch 內的目標靜默
+   返回。⚠ 拿 `docs/audit/ecl-event-catalog.json` 數會得到 78 條——那份目錄不進
+   `IF` 的兩條路，是下界。`B200h`（選號由 ECL 格 `03DE` 決定，全 corpus 一律是 5）
+   與 `6803h`（圖片序列推一格）的 consumer 都已驗過並接上；仍缺的只有 `2E10h`
+   的髒旗標模型。
 4. 建立 `area-event-coverage`，把清冊與 GEO cell／terrain／正常路徑合併；先盤點，
    不立刻補 Go 特判。
 5. 再依矩陣順序閉合戰鬥、存檔、音訊與畫面；只有 R1–R3 足夠的項目才交給
