@@ -26012,8 +26012,8 @@
    "ea": 6995,
    "state": "已解讀",
    "level": "exact",
-   "spec": "1087",
-   "note": "ECL 27h TREASURE：READVAR(8)，operand 2..7 存進 DS:6F70h + i*4(32-bit)。operand8 分三段：<80h 從 ITEM<資料片>.dax 讀第 n 塊，每 3Fh=63 bytes 一筆(物品節點)串進 DS:6F8Ch 鏈(next +2Ah)，讀不到就印 Unable to find item file 並結束程式；=0FFh 什麼都不做；>=80h 隨機產生 n−80h 件(d100 巢狀分段 → 類型碼 → overlay-21 entry#18)。⚠隨機表 56h..5Ch 與 5Bh..62h 兩段重疊，後者實際只涵蓋 93..98"
+   "spec": "docs/spec/1151-treasure-pool-item-chain-and-random-table.md",
+   "note": "ECL TREASURE（opcode 27h）handler，398 條全部讀完（spec 1151）：七個錢幣運算元以 32-bit 覆寫 DS:6F70h 的戰利品池；ItemBlock 三選一——< 80h 載 ITEM<片>.DAX 區塊並把每一筆前插上 DS:6F8Ch 鏈（節點 63 bytes、next 在 +2Ah）、= 0FFh 不給物品、80h..FEh 隨機 n − 80h 件（ROLLDICE ＋ CREATERNDTREASURE，spec 1036）並在最後沿鏈逐件 PRINTITEMNAME。顯示端 overlay-05:0CF5h 從鏈頭走 ⇒ 清單是反序"
   },
   {
    "platform": "pc98",

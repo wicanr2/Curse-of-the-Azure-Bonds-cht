@@ -2176,7 +2176,8 @@ func (s *State) ResolveTreasureRequests() error {
 				continue
 			}
 			for count := 0; count < int(request.ItemBlock-0x80); count++ {
-				total.items = append(total.items, monster.ItemRecord{Type: randomTreasureItemType(rng), Count: 1})
+				total.items = prependTreasureItem(total.items,
+					monster.ItemRecord{Type: randomTreasureItemType(rng), Count: 1})
 			}
 			continue
 		}
@@ -2188,20 +2189,35 @@ func (s *State) ResolveTreasureRequests() error {
 		if !ok {
 			return fmt.Errorf("TREASURE item block 0x%02X for area %d is not loaded", request.ItemBlock, s.Area.GameArea)
 		}
-		total.items = append(total.items, items...)
+		for _, item := range items {
+			total.items = prependTreasureItem(total.items, item)
+		}
 	}
 	total.copper += uint64(s.moneyCopperRemainder)
 	s.moneyPool += uint32(total.copper / 200)
 	s.moneyCopperRemainder = uint16(total.copper % 200)
 	s.treasureGems += total.gems
 	s.treasureJewelry += total.jewelry
-	s.pendingTreasureItems = append(s.pendingTreasureItems, total.items...)
+	s.pendingTreasureItems = append(total.items, s.pendingTreasureItems...)
 	s.pendingTreasure = nil
 	return nil
 }
 
-// randomTreasureItemType mirrors the reference CMD_Treasure d100 table. The
-// caller owns the seeded stream; this helper only returns the raw item type.
+// prependTreasureItem 照抄原作把戰利品掛上鏈的方式：`DS:6F8Ch` 是鏈頭，
+// 每一件都**插在最前面**（新節點成為鏈頭，舊鏈頭寫進新節點的 `+2Ah`，
+// DOS `overlay-02:1C7Ch`／`1EB4h`）。所以清單順序是載入／產生順序的反序，
+// 而原作走訪與顯示都從鏈頭開始（spec 1151）。
+func prependTreasureItem(items []monster.ItemRecord, item monster.ItemRecord) []monster.ItemRecord {
+	return append([]monster.ItemRecord{item}, items...)
+}
+
+// randomTreasureItemType 照抄原作 `27h TREASURE` 的隨機表
+// （DOS `overlay-02:1D02h`..`1E6Bh`，spec 1151）。呼叫端擁有那條 seeded 亂數流，
+// 這裡只回傳原始物品編號。
+//
+// ⚠ 每一段都是**兩端都夾**的區間，不是「else if 一路往下」。原作在
+// `1D61h` 明寫 `cmp ax, 3Ch / jl` ——所以第二段是 `[60,90]` 而不是「≤90」，
+// 落在 `{48,49}` 的那兩點會一路掉到最後的預設值 59，不是劍。
 func randomTreasureItemType(rng *rand.Rand) uint8 {
 	roll := rng.Intn(100) + 1
 	if roll <= 60 {
@@ -2212,7 +2228,7 @@ func randomTreasureItemType(rng *rand.Rand) uint8 {
 			}
 			return uint8(itemRoll)
 		}
-		if itemRoll <= 90 {
+		if itemRoll >= 60 && itemRoll <= 90 {
 			swordRoll := rng.Intn(10) + 1
 			switch {
 			case swordRoll <= 4:
@@ -2227,13 +2243,17 @@ func randomTreasureItemType(rng *rand.Rand) uint8 {
 				return 38
 			}
 		}
-		if itemRoll <= 94 {
+		if itemRoll >= 91 && itemRoll <= 94 {
 			return 73
 		}
-		if itemRoll <= 97 {
+		if itemRoll >= 95 && itemRoll <= 97 {
 			return 93
 		}
-		return 77
+		if itemRoll >= 98 {
+			return 77
+		}
+		// `{48,49}`：四段區間都不收，原作走 `1DEFh` 的預設值。
+		return 59
 	}
 	if roll <= 0x55 {
 		return 61
