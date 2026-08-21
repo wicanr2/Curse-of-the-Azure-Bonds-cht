@@ -954,13 +954,34 @@ func TestRunSubsetParlayPausesAndWritesTacticResult(t *testing.T) {
 	}
 }
 
-func TestRunSubsetApproachPreservesPresentationSignal(t *testing.T) {
-	result, err := RunSubset([]byte{0, 0, 0x0D, 0x3A, 0x0D, 0x00}, 0, 8)
+// `0Dh APPROACH` 是「距離減一並重畫」，距離已經是 0 就什麼都不做
+// （原作 `overlay-02:0801h` 第一條就是 `cmp ... 0 / jbe`）。
+func TestRunSubsetApproachStepsTheEncounterDistance(t *testing.T) {
+	// `0Ch SETUP MONSTER` 先把距離擺成 2，再走兩步。
+	setup := []byte{0x0C, 0x00, 0x34, 0x00, 0x02, 0x00, 0x34}
+	block := append([]byte{0, 0}, setup...)
+	block = append(block, 0x0D, 0x3A, 0x0D, 0x00)
+	runtime := NewRuntimeState(0)
+	result, err := runSubsetWithState(block, 0, 12, nil, false, 1, runtime)
 	if err != nil {
 		t.Fatal(err)
 	}
+	memory := runtime.Memory
 	if !result.Exited || result.ApproachCount != 2 || result.DelayCount != 1 {
 		t.Fatalf("result=%+v, want two APPROACH signals around one DELAY", result)
+	}
+	if got := memory[EncounterDistanceCell]; got != 0 {
+		t.Errorf("走兩步之後距離是 %d，應該是 0", got)
+	}
+
+	// ⚠ 反向：沒有擺過遭遇（距離 0）時 `APPROACH` 不該產生訊號。少了這一條，
+	// 把 `0Dh` 寫回「無條件 ＋1」也會過。
+	bare, err := RunSubset([]byte{0, 0, 0x0D, 0x0D, 0x00}, 0, 8)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bare.ApproachCount != 0 {
+		t.Errorf("距離是 0 卻走了 %d 步", bare.ApproachCount)
 	}
 }
 
