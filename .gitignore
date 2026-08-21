@@ -51,3 +51,19 @@ __pycache__/
 /symbol-export
 /tmp-pc98-tone-events
 /picture-probe
+
+# `go build ./cmd/<name>` 會把執行檔丟在 repo 根目錄，檔名就是目錄名。
+# ⚠ 新增 cmd 時要一起加進來——`git add -A` 會把它一起收進去（第 647 輪就漏了一個）。
+/cell-sweep
+/ecl-block-graph
+/ecl-block-text
+/ecl-cell-events
+/ecl-cell-refs
+/ecl-combat-sites
+/ecl-encounter-text
+/ecl-redraw-sites
+/ecl-treasure-clear
+/ecl-window
+/item-use-audit
+/route-sweep
+/segment-coverage
