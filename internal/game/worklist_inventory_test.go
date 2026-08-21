@@ -26,7 +26,10 @@ func TestWorklistInventoryNumbersAreCurrent(t *testing.T) {
 	requireWorklistMentions(t, worklist, "partial", "ECL 副作用的 `partial` 指令數", partial)
 
 	// 2) 存檔：角色記錄還有幾個位元組是 unknown。
-	save := readRepoFile(t, filepath.Join(root, "docs", "audit", "save-field-coverage.md"))
+	// ⚠ 正本是 `dos-save-field-coverage.md`（`cmd/save-field-coverage` 的用法
+	// 註解與 spec 1115 都指這個名字）。曾經同時存在一份 `save-field-coverage.md`
+	// 的副本，兩份各自過期。
+	save := readRepoFile(t, filepath.Join(root, "docs", "audit", "dos-save-field-coverage.md"))
 	unknown := auditNumber(t, save, `\|\s*`+"`unknown`"+`\s*\|\s*([\d,]+)\s*\|`)
 	requireWorklistMentions(t, worklist, "unknown", "角色記錄的 `unknown` 位元組數", unknown)
 

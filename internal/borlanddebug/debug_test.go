@@ -73,3 +73,52 @@ func TestRejectsTrailingNameBytes(t *testing.T) {
 		t.Fatal("expected invalid trailing name bytes")
 	}
 }
+
+// RecordLayout 的連法：record 型別記錄的 Detail 後兩個位元組是**第一個成員的
+// 1-based 索引**，成員依序排列、沒有對齊填塞，加到記錄大小為止（spec 1164）。
+func TestRecordLayoutFollowsTheMemberChain(t *testing.T) {
+	table := Table{
+		Types: []Type{
+			{Index: 1, ID: 8, Size: 1},                // byte
+			{Index: 2, ID: 9, Size: 2},                // word
+			{Index: 3, ID: 28, Size: 4, Name: "QUAD"}, // array
+			{Index: 4, ID: RecordTypeID, Size: 7, Name: "REC", Detail: [3]byte{0, 2, 0}},
+		},
+		Members: []Member{
+			{Index: 0, Name: "BEFORE", TypeIndex: 1},
+			{Index: 1, Name: "FIRST", TypeIndex: 1},
+			{Index: 2, Name: "SECOND", TypeIndex: 2},
+			{Index: 3, Name: "THIRD", TypeIndex: 3},
+			{Index: 4, Name: "AFTER", TypeIndex: 1},
+		},
+	}
+	fields, err := table.RecordLayout("REC")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []RecordField{
+		{Offset: 0, Size: 1, Name: "FIRST", TypeID: 8, TypeIndex: 1},
+		{Offset: 1, Size: 2, Name: "SECOND", TypeID: 9, TypeIndex: 2},
+		{Offset: 3, Size: 4, Name: "THIRD", TypeName: "QUAD", TypeID: 28, TypeIndex: 3},
+	}
+	if len(fields) != len(want) {
+		t.Fatalf("fields=%+v", fields)
+	}
+	for index := range want {
+		if fields[index] != want[index] {
+			t.Fatalf("field %d = %+v, want %+v", index, fields[index], want[index])
+		}
+	}
+
+	// ⚠ 成員數不在型別記錄裡，是「加到記錄大小為止」——所以**記錄大小變大會
+	// 悄悄多吃一個成員**，只有跨過邊界才擋得住。這條測試釘的是後者。
+	table.Types[3].Size = 6
+	if _, err := table.RecordLayout("REC"); err == nil {
+		t.Fatal("欄位跨過記錄邊界時應該報錯")
+	}
+	table.Types[3].Size = 7
+	table.Types[3].Detail = [3]byte{0, 0, 0}
+	if _, err := table.RecordLayout("REC"); err == nil {
+		t.Fatal("第一個成員索引是 0 時應該報錯")
+	}
+}

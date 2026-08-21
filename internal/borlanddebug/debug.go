@@ -290,3 +290,63 @@ func parseASCIIZNames(pool []byte, count int) ([]string, error) {
 	}
 	return names, nil
 }
+
+// RecordTypeID 是 legacy 型別表裡「record」的 id。
+const RecordTypeID = 30
+
+// RecordField 是一個 record 欄位在記錄裡的位置。
+type RecordField struct {
+	Offset    int
+	Size      int
+	Name      string
+	TypeName  string
+	TypeID    byte
+	TypeIndex uint16
+}
+
+// RecordLayout 把一個 record 型別展開成逐欄的位移表。
+//
+// ★ 連法：record 型別記錄尾巴那三個位元組（`Detail`）的後兩個是**第一個成員的
+// 1-based 索引**，欄位依序排列、沒有對齊填塞，所以位移是前面各欄大小的累加。
+//
+// ⚠ **成員數不在型別記錄裡**，只能加到記錄大小為止。代價是「記錄大小如果讀錯
+// 且剛好比實際大」會悄悄多吃一個成員；只有欄位跨過記錄邊界才擋得下來
+// （spec 1164）。
+func (t Table) RecordLayout(name string) ([]RecordField, error) {
+	var record *Type
+	for index := range t.Types {
+		if t.Types[index].ID == RecordTypeID && t.Types[index].Name == name {
+			record = &t.Types[index]
+			break
+		}
+	}
+	if record == nil {
+		return nil, fmt.Errorf("debug table has no record type %q", name)
+	}
+	first := int(uint16(record.Detail[1]) | uint16(record.Detail[2])<<8)
+	if first <= 0 || first > len(t.Members) {
+		return nil, fmt.Errorf("record %q first member index %d is outside the member table", name, first)
+	}
+	byIndex := make(map[uint16]Type, len(t.Types))
+	for _, entry := range t.Types {
+		byIndex[uint16(entry.Index)] = entry
+	}
+	fields := make([]RecordField, 0, 32)
+	offset := 0
+	for cursor := first - 1; cursor < len(t.Members) && offset < int(record.Size); cursor++ {
+		member := t.Members[cursor]
+		memberType, ok := byIndex[member.TypeIndex]
+		if !ok {
+			return nil, fmt.Errorf("record %q member %q has unknown type index %d", name, member.Name, member.TypeIndex)
+		}
+		fields = append(fields, RecordField{
+			Offset: offset, Size: int(memberType.Size), Name: member.Name,
+			TypeName: memberType.Name, TypeID: memberType.ID, TypeIndex: member.TypeIndex,
+		})
+		offset += int(memberType.Size)
+	}
+	if offset != int(record.Size) {
+		return nil, fmt.Errorf("record %q fields total %d bytes, want %d", name, offset, record.Size)
+	}
+	return fields, nil
+}
