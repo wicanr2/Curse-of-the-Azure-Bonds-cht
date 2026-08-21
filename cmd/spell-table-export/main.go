@@ -61,7 +61,8 @@ type spellRecord struct {
 	SpellID int    `json:"spell_id"`
 	Name    string `json:"name"`
 	// Placeholder：名字是空的那 13 筆（spec 815）。它們的 `+0`／`+1` 是
-	// `03`／`06`，玩家取不到，但**不能從表裡刪掉**——編號是索引。
+	// `03`／`06`。⚠ 名字空**不等於**玩家取不到：那 13 筆是充能物品的效果列，
+	// 由 `物品^[3Dh] and 7Fh` 指到（spec 1169）。欄名沿用是為了不動 JSON 結構。
 	Placeholder bool `json:"placeholder"`
 
 	// CasterClass 是 `+0`（spec 1016）。值 3 沒有職業語意 ⇒ 留空字串。

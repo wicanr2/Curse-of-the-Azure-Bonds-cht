@@ -9,22 +9,22 @@
 | 按了不會有事 | 223 |
 | 合計 | 253 |
 
-充能物品的效果編號就是法術主表的列。**沒有在 game pack 的 `combat_player_spells` 裡宣告的效果沒有目標模式**，接不上既有的效果施法路——那是 USE 還缺的東西：15 件裡有 9 個效果還沒宣告。
+充能物品的效果編號就是**法術主表的列**：目標模式（`+6`）、豁免（`+8`）、效果碼（`+0Ah`）都在表裡，骰子在各自的 handler 裡（spec 1169）。`已接` ＝ remake 的 `internal/combat` 有那一支 handler 的行為讀法；15 件裡還有 0 個效果沒接。
 
-| 章 | 區塊 | 名稱 | 類別 | 充能 | 效果 | 已宣告 |
+| 章 | 區塊 | 名稱 | 類別 | 充能 | 效果 | 已接 |
 |---:|---:|---|---|---:|---|---|
 | 5 | 49 | Wand | `4Fh` | 12 | `2Fh` | ✅ |
 | 3 | 17 | Wand | `4Eh` | 12 | `33h` | ✅ |
-| 2 | 2 | Potion | `47h` | 1 | `39h` | — |
-| 4 | 32 | Potion of Speed | `47h` | 1 | `39h` | — |
-| 2 | 2 | Potion | `54h` | 1 | `3Bh` | — |
-| 4 | 35 | Wand | `4Eh` | 10 | `3Dh` | — |
-| 2 | 2 | Dust | `46h` | 1 | `3Fh` | — |
-| 2 | 3 | Necklace | `46h` | 7 | `40h` | — |
-| 4 | 32 | Wand of Magic Missiles | `4Fh` | 88 | `41h` | — |
+| 2 | 2 | Potion | `47h` | 1 | `39h` | ✅ |
+| 4 | 32 | Potion of Speed | `47h` | 1 | `39h` | ✅ |
+| 2 | 2 | Potion | `54h` | 1 | `3Bh` | ✅ |
+| 4 | 35 | Wand | `4Eh` | 10 | `3Dh` | ✅ |
+| 2 | 2 | Dust | `46h` | 1 | `3Fh` | ✅ |
+| 2 | 3 | Necklace | `46h` | 7 | `40h` | ✅ |
+| 4 | 32 | Wand of Magic Missiles | `4Fh` | 88 | `41h` | ✅ |
 | 5 | 49 | Wand | `4Fh` | 15 | `57h` | ✅ |
-| 2 | 2 | Potion | `47h` | 1 | `61h` | — |
-| 4 | 32 | Potion of Invisibility | `47h` | 1 | `61h` | — |
-| 3 | 17 | Wand of Beaker | `4Fh` | 89 | `62h` | — |
-| 2 | 2 | Potion | `47h` | 3 | `63h` | — |
-| 4 | 32 | Potion Extra Healing | `47h` | 3 | `63h` | — |
+| 2 | 2 | Potion | `47h` | 1 | `61h` | ✅ |
+| 4 | 32 | Potion of Invisibility | `47h` | 1 | `61h` | ✅ |
+| 3 | 17 | Wand of Beaker | `4Fh` | 89 | `62h` | ✅ |
+| 2 | 2 | Potion | `47h` | 3 | `63h` | ✅ |
+| 4 | 32 | Potion Extra Healing | `47h` | 3 | `63h` | ✅ |

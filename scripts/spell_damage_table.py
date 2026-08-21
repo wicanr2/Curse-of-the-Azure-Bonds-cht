@@ -236,13 +236,18 @@ def main():
     table = json.load(open(SPELLS, encoding="utf-8"))
     records = {}
     for spell in table["spells"]:
-        if spell["effect_id"] != 0 or spell["placeholder"]:
+        if spell["effect_id"] != 0:
             continue
+        # ⚠ **不要**在這裡排除 `placeholder`。那 13 筆無名列不是占位，是**物品效果
+        # 列**：充能物品的 `+3Dh and 7Fh` 就指到它們，而火球的 handler 自己
+        # `cmp ds:6F97h, 40h` 為項鍊分了一條路（spec 1169）。之前這一行把它們濾掉，
+        # 於是「這幾個效果沒有骰子」這個結論其實是自己的過濾器造成的。
         handler = handlers.get(spell["spell_id"])
         if not handler:
             continue
         calls, value, bonus, element, outcome, length = read_handler(handler["offset"])
-        record = {"name": spell["name"], "level": spell["level"],
+        record = {"name": spell["name"], "placeholder": spell["placeholder"],
+                  "level": spell["level"],
                   "caster_class": spell["caster_class"],
                   "camp_only": spell["camp_only"], "instructions": length,
                   "overlay": handler["overlay"], "entry": handler["entry"],
@@ -274,12 +279,13 @@ def main():
             record["shape"] = "computed"
         records[spell["spell_id"]] = record
 
+    unnamed = sum(1 for item in records.values() if item["placeholder"])
     usable = sum(1 for item in records.values() if item["shape"] in ("entry9", "entry10"))
     computed = sum(1 for item in records.values() if item["shape"] == "computed")
     flat = sum(1 for item in records.values() if item["shape"] == "flat")
-    print("`+0Ah = 0` 的法術 %d 支：數字可直接用 %d 支、算出來的 %d 支、"
-          "固定值 %d 支、收尾不是標準那兩支 %d 支"
-          % (len(records), usable, computed, flat,
+    print("`+0Ah = 0` 的法術 %d 支（其中無名的物品效果列 %d 支）："
+          "數字可直接用 %d 支、算出來的 %d 支、固定值 %d 支、收尾不是標準那兩支 %d 支"
+          % (len(records), unnamed, usable, computed, flat,
              len(records) - usable - computed - flat))
     if "--write" not in sys.argv:
         print("（預覽模式；加 --write 才寫報表）")
@@ -318,8 +324,9 @@ def main():
                 "`%sd%s`" % (describe(call["count"]), describe(call["sides"]))
                 for call in item["dice_calls"]) or "（不擲骰）"
         element = item.get("element")
+        name = item["name"] or "（無名：物品效果 `%02Xh`，spec 1169）" % key
         lines.append("| %d | %s%s | %d | %s | %s | %s | %s | %s | `overlay-%d entry#%d` |" % (
-            key, item["name"], "（紮營）" if item["camp_only"] else "",
+            key, name, "（紮營）" if item["camp_only"] else "",
             item["level"], item["caster_class"], item["outcome"], item["shape"], dice,
             "`%02Xh`" % element if element is not None else "—",
             item["overlay"], item["entry"]))

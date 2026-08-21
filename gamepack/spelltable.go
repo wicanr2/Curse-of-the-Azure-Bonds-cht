@@ -148,8 +148,10 @@ func Spells() (*SpellTable, error) {
 	return spellTable, spellTableErr
 }
 
-// SpellByID 依原作編號取一筆。編號是**索引**，占位那 13 筆一樣查得到——
-// 玩家取不到它們，但存檔裡的位元組可能出現，靜靜回 false 會把匯入問題藏起來。
+// SpellByID 依原作編號取一筆。編號是**索引**，無名那 13 筆一樣查得到。
+//
+// ⚠ `Placeholder` 只代表「這一列沒有名字」，**不代表玩家取不到**：那 13 筆是
+// **物品效果列**，充能物品的 `+3Dh and 7Fh` 就指到它們（spec 1169）。
 func SpellByID(spellID int) (SpellEntry, bool) {
 	table, err := Spells()
 	if err != nil || table == nil {

@@ -1,9 +1,8 @@
 // Command item-use-audit 把原版每一件物品照「戰鬥裡按 USE 會走哪一條路」分類。
 //
-// ★ 存在的理由：戰鬥選單有 `使用`，但 remake 沒有 USE 的動作本身。
-// 「還缺多少」不能憑印象——這一支把它變成可以引用的數字：全部物品幾件、
-// 其中卷軸幾件、充能物品幾件，以及那些充能效果有沒有在 game pack 裡宣告成
-// 可施放的法術（沒有宣告就沒有目標模式，接不上既有的效果施法路）。
+// ★ 存在的理由：「還缺多少」不能憑印象——這一支把它變成可以引用的數字：
+// 全部物品幾件、其中卷軸幾件、充能物品幾件，以及那些充能效果 remake 有沒有
+// **接上**（`internal/combat` 的 handler 行為表，spec 1169／1170）。
 //
 // 分類依據（spec 921／1168）：
 //
@@ -26,7 +25,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
@@ -39,13 +38,13 @@ import (
 var scrollTypes = map[uint8]bool{0x3C: true, 0x3D: true, 0x3E: true}
 
 type chargedItem struct {
-	Chapter  int
-	Block    uint8
-	Name     string
-	Type     uint8
-	Charges  uint8
-	Effect   uint8
-	Declared bool
+	Chapter int
+	Block   uint8
+	Name    string
+	Type    uint8
+	Charges uint8
+	Effect  uint8
+	Wired   bool
 }
 
 func main() {
@@ -58,15 +57,6 @@ func main() {
 		log.Fatal(err)
 	}
 	defer archive.Close()
-
-	pack, err := gamepack.Default()
-	if err != nil {
-		log.Fatal(err)
-	}
-	declared := map[uint8]bool{}
-	for _, spell := range pack.CombatPlayerSpells {
-		declared[spell.SpellID] = true
-	}
 
 	total, scrolls, inert := 0, 0, 0
 	charged := make([]chargedItem, 0, 32)
@@ -96,7 +86,7 @@ func main() {
 					charged = append(charged, chargedItem{
 						Chapter: chapter, Block: block.Entry.ID, Name: item.Name,
 						Type: item.Type, Charges: item.Affects[0], Effect: effect,
-						Declared: declared[effect],
+						Wired: wired(effect),
 					})
 				default:
 					inert++
@@ -122,19 +112,20 @@ func main() {
 
 	missing := map[uint8]int{}
 	for _, item := range charged {
-		if !item.Declared {
+		if !item.Wired {
 			missing[item.Effect]++
 		}
 	}
-	fmt.Fprintf(&report, "充能物品的效果編號就是法術主表的列。**沒有在 game pack 的 "+
-		"`combat_player_spells` 裡宣告的效果沒有目標模式**，接不上既有的效果施法路——"+
-		"那是 USE 還缺的東西：%d 件裡有 %d 個效果還沒宣告。\n\n", len(charged), len(missing))
+	fmt.Fprintf(&report, "充能物品的效果編號就是**法術主表的列**：目標模式（`+6`）、"+
+		"豁免（`+8`）、效果碼（`+0Ah`）都在表裡，骰子在各自的 handler 裡"+
+		"（spec 1169）。`已接` ＝ remake 的 `internal/combat` 有那一支 handler 的"+
+		"行為讀法；%d 件裡還有 %d 個效果沒接。\n\n", len(charged), len(missing))
 
-	fmt.Fprintf(&report, "| 章 | 區塊 | 名稱 | 類別 | 充能 | 效果 | 已宣告 |\n")
+	fmt.Fprintf(&report, "| 章 | 區塊 | 名稱 | 類別 | 充能 | 效果 | 已接 |\n")
 	fmt.Fprintf(&report, "|---:|---:|---|---|---:|---|---|\n")
 	for _, item := range charged {
 		mark := "✅"
-		if !item.Declared {
+		if !item.Wired {
 			mark = "—"
 		}
 		fmt.Fprintf(&report, "| %d | %d | %s | `%02Xh` | %d | `%02Xh` | %s |\n",
@@ -147,8 +138,15 @@ func main() {
 	} else if err := os.WriteFile(*output, []byte(text), 0o644); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Fprintf(os.Stderr, "total=%d scroll=%d charged=%d inert=%d undeclared-effects=%d\n",
+	fmt.Fprintf(os.Stderr, "total=%d scroll=%d charged=%d inert=%d unwired-effects=%d\n",
 		total, scrolls, len(charged), inert, len(missing))
+}
+
+// wired 回答「remake 接得起這個效果嗎」。判斷落在 `internal/combat` 那張表上
+// 一處，報表不自己維護第二份清單——兩份會漂移。
+func wired(effect uint8) bool {
+	_, ok := combat.LookupChargedItemBehaviour(effect)
+	return ok
 }
 
 func member(archive *zip.ReadCloser, name string) []byte {
