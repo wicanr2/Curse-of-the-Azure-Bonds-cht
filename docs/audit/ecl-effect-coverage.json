@@ -891,7 +891,7 @@
    "opcode": "0x24",
    "name": "COMBAT",
    "status": "partial",
-   "note": "COMBAT 是三選一的服務分派點（spec 1095）；戰鬥本身的回合生命週期仍是 RE-06",
+   "note": "COMBAT 是三選一的服務分派點（spec 1095）。回合生命週期已收（spec 1135～1138）；`partial` 指的是遭遇編成的參數（隊形、圖示、旗標）還沒逐處對過",
    "occurrences": 199,
    "blocks": [
     "ECL1.DAX/0x50",

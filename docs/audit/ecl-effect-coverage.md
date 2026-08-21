@@ -22,7 +22,7 @@
 |---|---|---|---:|---:|---|
 | `0x1C` | CLEARMONSTERS | `partial` | 206 | 24 | ECL 看得到的部分已完整（怪物鏈與已放置數；原作另清的 47E6h／8B69h／7603h／6F8Ch 都不是 ECL 變數，見 ecl-shared-cells）。要收尾的是 remake 這側的怪物／圖示模型還有沒有該一起清的狀態 |
 | `0x0E` | PICTURE | `partial` | 199 | 23 | PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層 |
-| `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）；戰鬥本身的回合生命週期仍是 RE-06 |
+| `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）。回合生命週期已收（spec 1135～1138）；`partial` 指的是遭遇編成的參數（隊形、圖示、旗標）還沒逐處對過 |
 | `0x2D` | CALL | `partial` | 168 | 22 | CALL 是七路 switch；corpus 只用 2E10h 與 6803h，兩者的 consumer 尚未逐條驗（RE-03） |
 | `0x33` | PRINT RETURN | `partial` | 120 | 13 | PRINT RETURN 目前等同換行；原作的游標行為未逐格對上 |
 | `0x27` | TREASURE | `partial` | 63 | 22 | 八個運算元解成 TreasureRequest，錢幣／寶石／首飾與 ITEM 區塊由 combat_state 的 ResolveTreasureRequests 實際入帳；ItemBlock 的隨機／特殊分支未驗 |

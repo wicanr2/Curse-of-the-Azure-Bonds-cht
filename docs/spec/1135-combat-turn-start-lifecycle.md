@@ -86,7 +86,10 @@ if 有號(p^[18Dh]^[3]) > 0 then
 - 沒有宣稱 `+18Dh^[3]` 的量綱，也沒有宣稱為什麼 20 要壓成 19。
 - 沒有宣稱 remake 的 `MonsterIsHeld()` 短路與原作「`CHECKFX(7)` → `CLEARACTION`
   → 先攻歸 0」在**所有**效果碼上等價；驗過的是結果（那一回合不動作）。
-- 回合開始的三個歸零裡，`+0Fh`（動作計數）與 `+12h`（累計轉向）已經投影進
-  `Fighter`（`CombatActionCount`／`CombatTurnTotal`，spec 1137）並在回合開始清 0。
-  **`+07h`（保留的機會攻擊）仍沒有對應欄位。**
+- 回合開始的三個歸零在 remake 都有對應狀態：`+0Fh`（動作計數）與 `+12h`（累計轉向）
+  是 `CombatActionCount`／`CombatTurnTotal`（spec 1137），`+07h`（保留的機會攻擊）
+  是 `CombatAction.Guarding`——設定（GUARD）、消費（相鄰者進來）、清除（回合開始）
+  三端都對得上 spec 1136，而且存得下去讀得回來
+  （`TestGuardReservationSurvivesASaveRoundTrip`）。
+  沒有宣稱的是**逐位元組鏡射**：remake 用旗標表達那個狀態，不保留原始位元組。
 - 沒有宣稱突襲遮罩由誰寫入；CoAB 仍傳 0。

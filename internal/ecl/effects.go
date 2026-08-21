@@ -83,7 +83,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x21: {EffectPartial, "LOAD FILES 記下請求；實際換檔由上層做"},
 	0x22: {EffectDone, "隊伍突襲判定"},
 	0x23: {EffectConsumed, "SURPRISE 在 corpus 靜態不可達；原作結果碼 3 也寫不出去（spec 1087）"},
-	0x24: {EffectPartial, "COMBAT 是三選一的服務分派點（spec 1095）；戰鬥本身的回合生命週期仍是 RE-06"},
+	0x24: {EffectPartial, "COMBAT 是三選一的服務分派點（spec 1095）。回合生命週期已收（spec 1135～1138）；`partial` 指的是遭遇編成的參數（隊形、圖示、旗標）還沒逐處對過"},
 	0x25: {EffectDone, "動態分支，目的地是字面位址（spec 1110）"},
 	0x26: {EffectDone, "同上，返回位址進堆疊"},
 	0x27: {EffectPartial, "八個運算元解成 TreasureRequest，錢幣／寶石／首飾與 ITEM 區塊由 combat_state 的 ResolveTreasureRequests 實際入帳；ItemBlock 的隨機／特殊分支未驗"},
