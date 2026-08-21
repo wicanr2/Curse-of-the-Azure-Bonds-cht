@@ -7,6 +7,15 @@ tools/ida.sh py workplace/re-sweep/dos/overlays/overlay-02.bin.i64 \
   dump_function.py /work/dispatch.json 3377 3861
 ```
 
+⚠ **表裡的位址範圍與條數以 IDA 的函式邊界為準，而 IDA 會切錯。** 已知三處：
+`21h`／`37h` 共用的 `0C15h` 真正結束在 `0DA3h`（131 條，IDA 只認到 `0D4Ah`／104 條，
+spec 1153）、`2Fh`／`30h` 共用的 `0DA4h` 真正結束在 `0E12h`（43 條，IDA 拆成 11＋32，
+spec 1157）。**收尾一支之前先各自驗一次邊界**，方法是往後 dump 到看見 `retf`。
+
+⚠ **同一個位址出現在兩列代表兩個 opcode 共用一支 handler**，那種 handler 會
+**再讀一次 `DS:75FFh`（目前指令碼）分辨自己被誰呼叫**（spec 587）。只實作其中
+一個 opcode 的行為會讓另一個靜靜地做錯事。
+
 ★ 存在的理由：剩下的 `partial` opcode 要一支一支收尾，而「那一支在哪、多大」
 以前每次都要重找。有了這張表就能先排順序——`33h PRINT RETURN` 只有 14 條，
 `2Dh CALL` 有 124 條，成本差一個數量級。
@@ -51,7 +60,8 @@ tools/ida.sh py workplace/re-sweep/dos/overlays/overlay-02.bin.i64 \
 | `2Ch` | PARLAY | 6 | `27A8h` | `27A8h`..`2847h` | 66 | `done` |
 | `2Dh` | CALL | 1 | `2F02h` | `2F02h`..`3073h` | 124 | `partial` |
 | `2Eh` | DAMAGE | 5 | `2942h` | `2942h`..`2C8Fh` | 305 | `partial` |
-| `30h` | OR | 3 | `0DA4h` | `0DA4h`..`0DBFh` | 11 | `done` |
+| `2Fh` | AND | 3 | `0DA4h` | `0DA4h`..`0E12h` | 43 | `done` |
+| `30h` | OR | 3 | `0DA4h` | `0DA4h`..`0E12h` | 43 | `done` |
 | `31h` | SPRITE OFF | 0 | `2C8Fh` | `2C8Fh`..`2CB5h` | 12 | `done` |
 | `32h` | FIND ITEM | 1 | `2847h` | `2847h`..`28F3h` | 61 | `done` |
 | `33h` | PRINT RETURN | 0 | `2CEAh` | `2CEAh`..`2D15h` | 14 | `partial` |

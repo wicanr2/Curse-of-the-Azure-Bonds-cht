@@ -740,9 +740,14 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			}
 			memory[instruction.Operands[2].Word] = value
 			if instruction.Command.Opcode == 0x2F || instruction.Command.Opcode == 0x30 {
-				// Reference CMD_AndOr calls compare_variables(result, 0)
-				// before writing the destination. Event-bit helpers therefore
-				// branch on the bitwise result without an explicit COMPARE.
+				// 原作 `2Fh`／`30h` 共用的 handler 在寫回目的地之前呼叫
+				// `compare_variables(0, 結果)`——**0 是左運算元**
+				// （DOS `overlay-02:0DF3h` 先 `push 0` 再 push 結果，
+				// 而 `03h COMPARE` 是 `push op1` 再 `push op2`）。
+				// 所以下面四個排序格子是 `0 op 結果`，不是 `結果 op 0`。
+				// ⚠ 別照直覺把它們對調：全 corpus 174 處 `AND`／`OR` 後面
+				// 沒有一處接排序型 `IF`（125 處是 `IF <>`），對調了測不出來
+				// ——只有讀 `0DF3h` 那三條指令才分得出方向（spec 1157）。
 				compare[0] = value == 0
 				compare[1] = value != 0
 				compare[2] = 0 < value
