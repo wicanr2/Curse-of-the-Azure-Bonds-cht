@@ -79,6 +79,22 @@ overlay 與某個十六進位值」的檔案，而**它自己的輸出就在 `do
 （同樣輸入兩次輸出相同），只是「跑一次就 commit」可能留下非不動點的版本。
 影響僅止於提示欄的檔名清單，不動任何狀態判定。
 
+⚠ **`cmd/ecl-event-catalog` 目前兩道 fail-closed 閘都是紅的**（2026-08-21 第 619 輪
+量到，成因在本輪之前）——所以 `docs/audit/ecl-event-catalog.*` 與
+`docs/audit/ecl-opcode-effect-phases.*` **四份產物現在都重生不出來**：
+
+- 帶預設的 `-reviews`：`candidate review ECL4.DAX/0x23/0x0130-0x019D does not match
+  the current corpus`。審查台帳裡有一個 candidate ID 不在目前 corpus，照 `AGENTS.md`
+  §12 這種情況必須失敗即關閉，要重新審那個候選、不能模糊比對。
+- 關掉 reviews（`-reviews=`）：`ordered-effect phase ledger is missing corpus opcodes
+  0x1E, 0x26, 0x2C, 0x30, 0x34, 0x3B`。`internal/eclcatalog/phases.go` 的表少這六支，
+  而它們在目前 corpus 裡是可達的——覆蓋率閘擋下來了，這正是它該做的事。
+
+⇒ 連帶影響：phase 台帳對 `0Dh`（spec 1146 已讀完，表上仍是 `unknown`）與 `2Dh`
+（spec 1150 已讀完）是**過期的**。改 `phases.go` 但重生不了產物只是把不一致換個地方
+放，所以這一輪沒有動它。要收就是一件事：補那六支的分類 ＋ 重審那個 candidate ＋
+重生四份產物。
+
 ⚠ 三個**已量到但還沒排工作**的小缺口（都不擋主線，理由與代價都寫清楚了）：
 
 | 缺口 | 現況 | 為什麼還沒排 |
