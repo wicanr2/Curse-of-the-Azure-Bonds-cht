@@ -292,6 +292,13 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 			// ⚠ 每一隻各自一份：同一個 spawn 生出來的怪共用同一張表，但物品
 			// 是各自的——共用同一個 slice 會讓一隻換裝影響到全部。
 			enemies[enemyIndex].MonsterItems = append([]combat.MonsterItem(nil), items...)
+			// 原作對怪物與隊員走同一支派生值重算：槽 0 的裝備中武器**無條件**
+			// 蓋掉記錄的傷害骰（spec 1174）。少了這一步，帶著武器的怪物打出來
+			// 的是牠放下武器時的天生攻擊。
+			if s.itemCatalogReady {
+				enemies[enemyIndex] = monster.ProjectMonsterWeapon(
+					enemies[enemyIndex], s.itemCatalog)
+			}
 			enemyIndex++
 		}
 	}

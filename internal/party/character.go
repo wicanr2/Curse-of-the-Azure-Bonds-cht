@@ -1146,6 +1146,16 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 			fighter.DamageDiceCount = effect.DamageDiceCount
 			fighter.DamageDiceSides = effect.DamageDiceSides
 			fighter.DamageBonus = effect.DamageBonus
+			// 大型目標那一組（類別表 `+02h`..`+04h`）也一起帶著——原作是在
+			// 攻擊結算當下才換，所以兩組都要在戰鬥員身上（spec 1175）。
+			largeEffect, largeErr := item.Effect(catalog, true)
+			if largeErr != nil {
+				return combat.Fighter{}, largeErr
+			}
+			fighter.LargeDamageDiceCount = largeEffect.DamageDiceCount
+			fighter.LargeDamageDiceSides = largeEffect.DamageDiceSides
+			fighter.LargeDamageBonus = largeEffect.DamageBonus
+			fighter.HasSlotZeroWeapon = weaponIndex >= 0
 			fighter.AttacksPerTurn = effect.AttacksPerTurn
 			fighter.AmmunitionType = effect.AmmunitionType
 			fighter.WeaponRange = effect.WeaponRange
