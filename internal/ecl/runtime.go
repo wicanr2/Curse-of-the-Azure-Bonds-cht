@@ -405,16 +405,39 @@ type ClockRequest struct {
 	TimeSlot uint16
 }
 
-// DamageRequest preserves the five numeric operands consumed by the original
-// ECL DAMAGE command. Flags encode target count/selection and saving-throw
-// behavior in the DOS engine; the bounded VM leaves those rules to a
-// party/combat adapter instead of rolling or mutating HP here.
+// DamageRequest 保存 `2Eh DAMAGE` 的五個運算元。規則由 party／combat adapter
+// 執行，VM 這一層不擲骰也不改 HP。
+//
+// 五個運算元的語意逐條讀自 DOS `overlay-02:2942h`（spec 1152）：
+//
+//	Flags     bit 7 清空時**整個 byte 是次數**：連續打 N 下，每下各自
+//	          隨機挑一名隊員並用 SaveFlags 當攻擊值擲 `TRYTOHIT`，
+//	          而且**每下之間重擲傷害**。
+//	          bit 7 設定時才是旗標：bit 6 ＝ 全隊、bit 5 ＝ 不擲豁免、
+//	          bit 4 ＝ 豁免成功仍吃**全額**傷害、bit 0..4 ＝ 豁免調整值。
+//	          ⚠ bit 4 同時屬於調整值欄位（原作是 `and 1Fh`）；全 corpus
+//	          24 處的低 5 位一律是 0，所以實務上它只是旗標。
+//	DiceCount／DiceSize／Bonus  傷害 ＝ `DiceCount d DiceSize ＋ Bonus`。
+//	SaveFlags bit 7 ＝ 目標是**目前角色**（`DS:6506h`）；bit 0..2 ＝ 豁免種類。
+//	          ⚠ 目前角色那一路傳給 `MAKESAVE` 的是 `(SaveFlags and 7) − 1`，
+//	          而且 `= 0` 代表**不擲豁免**；全隊與隨機那兩路用的是沒有減一的值，
+//	          要不要擲改由 Flags bit 5 決定。兩種讀法在 corpus 上結果相同，
+//	          只有把 handler 讀完才分得出來。
 type DamageRequest struct {
 	Flags     uint16
 	DiceCount uint16
 	DiceSize  uint16
 	Bonus     uint16
 	SaveFlags uint16
+	// SelectedPlayerIndex 是**這一條指令執行當下**選定的角色（原作的
+	// `DS:6506h`），`SelectedPlayerSet` 為 false 時沒有意義。
+	//
+	// ★ 為什麼要蓋在封包上而不是事後問狀態。 腳本的慣用法是
+	// `0Ah LOAD CHARACTER` 緊接一條 `2Eh DAMAGE`，而且會整個包在
+	// 「逐一走過隊伍」的迴圈裡（`ECL5.DAX/0x32:0223h` 配 `7F3Eh` 隊伍人數）。
+	// 一次執行會累積好幾組，事後只看最後一次選的人會把整批傷害算到同一位身上。
+	SelectedPlayerIndex int
+	SelectedPlayerSet   bool
 }
 
 // SpellSearch is the data-bearing part of ECL SPELL. The bounded runner keeps
@@ -1152,6 +1175,8 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			result.DamageRequests = append(result.DamageRequests, DamageRequest{
 				Flags: values[0], DiceCount: values[1], DiceSize: values[2],
 				Bonus: values[3], SaveFlags: values[4],
+				SelectedPlayerIndex: selectedPlayerIndex,
+				SelectedPlayerSet:   selectedPlayerSet,
 			})
 		case 0x34: // ECL CLOCK
 			if len(instruction.Operands) != 2 {

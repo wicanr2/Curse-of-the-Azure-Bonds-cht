@@ -660,7 +660,10 @@ func TestRunSubsetRecordsDamageOperandsAndContinues(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := DamageRequest{Flags: 0x80, DiceCount: 1, DiceSize: 6, Bonus: 1, SaveFlags: 0x80}
+	// SelectedPlayerIndex 是 −1：這段腳本沒有 LOAD CHARACTER／WHO，
+	// 所以封包上記的是「當下沒有選定角色」，由 game adapter 決定退路。
+	want := DamageRequest{Flags: 0x80, DiceCount: 1, DiceSize: 6, Bonus: 1, SaveFlags: 0x80,
+		SelectedPlayerIndex: -1}
 	if len(result.DamageRequests) != 1 || result.DamageRequests[0] != want || len(result.Text) != 1 || result.Text[0] != "HI" {
 		t.Fatalf("result=%+v, want damage=%+v and continuation", result, want)
 	}

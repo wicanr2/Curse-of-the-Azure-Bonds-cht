@@ -6145,8 +6145,8 @@
     "audit/ecl-opcode-effect-phases.md",
     "audit/ecl-opcode-handlers-dos.md",
     "audit/function-strings.md",
-    "spec/1087-ecl-handlers-six.md",
-    "spec/1151-treasure-pool-item-chain-and-random-table.md"
+    "context/60-log-2026-08-14-18.md",
+    "spec/1087-ecl-handlers-six.md"
    ]
   },
   {
@@ -6275,13 +6275,15 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "609",
-   "note": "同 PC-98 overlay-02:02ACEh（ECL opcode 2Eh 範圍效果與全滅判定）。★DOS 多印一句 'press \u003center\u003e/\u003creturn\u003e to continue'（CS:291Fh，11 條指令），PC-98 沒有。其餘是位址：DS:6506h/650Ah↔9594h/9598h、DS:4F9Dh↔7F09h、角色 +189h↔+18Ah",
+   "spec": "1152",
+   "note": "`2Eh DAMAGE` 的 handler，305 條逐條讀完見 spec 1152：旗標 bit 7 清空時整個 byte 是「連打幾下」（每下隨機挑一名隊員擲 TRYTOHIT、每下之間重擲傷害），設定時才是旗標（bit 6 全隊／bit 5 不擲豁免／bit 4 豁免成功仍吃全額／bit 0..4 豁免調整值）；目標三選一，「目前角色」那一路的豁免種類要減一且 0 代表不擲。收尾走隊伍鏈用 +196h 判全滅並還原 DS:6506h。同 PC-98 overlay-02:02ACEh。★DOS 多印一句 'press \u003center\u003e/\u003creturn\u003e to continue'（CS:291Fh，11 條指令），PC-98 沒有。位址對應：DS:6506h/650Ah↔9594h/9598h、DS:4F9Dh↔7F09h、角色 +189h↔+18Ah",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/ecl-opcode-effect-phases.md",
     "audit/ecl-opcode-handlers-dos.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1152-ecl-damage-targets-saves-and-repeat-attacks.md",
+    "spec/README.md"
    ]
   },
   {
@@ -6302,7 +6304,8 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/ecl-opcode-effect-phases.md",
-    "audit/ecl-opcode-handlers-dos.md"
+    "audit/ecl-opcode-handlers-dos.md",
+    "spec/1152-ecl-damage-targets-saves-and-repeat-attacks.md"
    ]
   },
   {
@@ -19166,6 +19169,7 @@
    "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
    "note": "1d20 兩段分支(retf，無參數)：r := ROLLDICE(1,20)(overlay-23 entry#9)；1..14 回 1、15..20 回 2。⚠ 兩段外的路徑 local 未初始化(1d20 走不到，但值域一改就會回傳堆疊殘值)。14:6 的分法",
    "citations": [
+    "spec/1036-random-item-builder.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
@@ -22309,7 +22313,8 @@
    "citations": [
     "audit/effect-dispatch-table.md",
     "audit/effect-modifier-table.md",
-    "audit/far-call-map-dos.md"
+    "audit/far-call-map-dos.md",
+    "spec/1152-ecl-damage-targets-saves-and-repeat-attacks.md"
    ]
   },
   {
@@ -22354,6 +22359,7 @@
     "audit/far-call-map-dos.md",
     "audit/far-call-map-pc98.md",
     "audit/function-index/dos-overlay-23.md",
+    "spec/1152-ecl-damage-targets-saves-and-repeat-attacks.md",
     "spec/582-makesave-and-losedude.md",
     "spec/864-cloud-tick-and-hd-field.md"
    ]
@@ -33123,6 +33129,7 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-02.md",
+    "spec/1152-ecl-damage-targets-saves-and-repeat-attacks.md",
     "spec/609-ecl-area-effect-and-wipeout.md"
    ]
   },

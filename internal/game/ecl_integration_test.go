@@ -2811,6 +2811,10 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
 		Level: 1, HitPoints: 10, MaxHitPoints: 10,
+		// 這一段腳本會丟出「目前角色」形式的 `2Eh DAMAGE`，而它要擲豁免
+		// （角色 `+0DFh` 起的五格表，spec 582／1152）。沒有這張表的角色
+		// 在正式路徑上會直接失敗——那是刻意的，不是靜靜跳過豁免。
+		SavingThrows: []uint8{14, 15, 16, 17, 18},
 		Abilities: party.Abilities{
 			Strength: 10, Intelligence: 10, Wisdom: 10,
 			Dexterity: 10, Constitution: 10, Charisma: 10,

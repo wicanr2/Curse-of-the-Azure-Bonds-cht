@@ -1417,7 +1417,12 @@ func (s *State) Select(index int) error {
 		s.applyECLCallSignals(result)
 		s.applySpellSignals(result)
 		s.applyECLDamageSignals(result)
-		if _, err := s.resolveAutomaticWholePartyECLDamage(); err != nil {
+		// ⚠ 順序：結算要排在 `applyECLLoadCharacterSignals` **之前**。
+		// 每個封包都帶著自己發出當下的選定角色，所以本次執行裡的 LOAD CHARACTER
+		// 不影響它們；而**沒帶**的封包代表 VM 到那一刻為止沒有人被選過，
+		// 該退回的是這一次執行**之前**的選定角色。把結算移到後面，
+		// 那種封包就會改用本次執行最後選到的人——那是錯的。
+		if _, err := s.resolveAutomaticECLDamage(); err != nil {
 			return err
 		}
 		s.applyECLLoadCharacterSignals(result)
@@ -2319,19 +2324,26 @@ func (s *State) ConsumeDamageRequests() []ecl.DamageRequest {
 	return requests
 }
 
-// resolveAutomaticWholePartyECLDamage commits environmental DAMAGE packets
-// that explicitly target the whole party (flags 0x80|0x40). The 0x20 bit
-// bypasses saving throws; packets without it still resolve each member's
-// encoded save type. Other DAMAGE forms remain pending because they need a
-// selected character or the reference CanHitTarget adapter.
-func (s *State) resolveAutomaticWholePartyECLDamage() ([]party.DamageOutcome, error) {
+// resolveAutomaticECLDamage 在正式路徑上結算腳本丟出來的 `2Eh DAMAGE` 封包。
+// 原作三種形式（spec 1152）都接得住：
+//
+//   - **全隊**（`Flags` bit 7＋bit 6）：逐一走過隊伍，bit 5 決定要不要擲豁免。
+//   - **目前角色**（bit 7、非 bit 6，且 `SaveFlags` bit 7）：目標是
+//     `0Ah LOAD CHARACTER`／`15h WHO` 當下選定的那一位，由封包自己帶著。
+//   - **連續 N 次擲命中**（bit 7 清空 ⇒ `Flags` 整個 byte 是次數）：每下各自
+//     隨機挑一名隊員擲 `TRYTOHIT`，命中才吃傷害，且每下之間重擲傷害。
+//
+// 唯一留在 pending 的是「單體但隨機挑一名」那一支（bit 7 設定、bit 6 清空、
+// `SaveFlags` bit 7 清空）。它在原作裡是活著的程式碼，但全 corpus 24 處
+// 沒有一處走得到，沒有可驗的目標選擇語意，所以不猜。
+func (s *State) resolveAutomaticECLDamage() ([]party.DamageOutcome, error) {
 	if len(s.pendingDamageRequests) == 0 {
 		return nil, nil
 	}
 	automatic := make([]ecl.DamageRequest, 0, len(s.pendingDamageRequests))
 	remaining := make([]ecl.DamageRequest, 0, len(s.pendingDamageRequests))
 	for _, request := range s.pendingDamageRequests {
-		if request.Flags&0xC0 == 0xC0 {
+		if s.eclDamageResolvableNow(request) {
 			automatic = append(automatic, request)
 		} else {
 			remaining = append(remaining, request)
@@ -2349,13 +2361,33 @@ func (s *State) resolveAutomaticWholePartyECLDamage() ([]party.DamageOutcome, er
 	}
 	original := s.pendingDamageRequests
 	s.pendingDamageRequests = automatic
-	outcomes, err := s.ResolvePendingECLDamage(-1, roll, roll)
+	outcomes, err := s.ResolvePendingECLDamageWithDefaultHitResolver(s.whoSelectedIndex, roll, roll)
 	if err != nil {
 		s.pendingDamageRequests = original
 		return nil, err
 	}
 	s.pendingDamageRequests = remaining
 	return outcomes, nil
+}
+
+// eclDamageResolvableNow 判斷一個 DAMAGE 封包現在有沒有足夠的上下文結算。
+func (s *State) eclDamageResolvableNow(request ecl.DamageRequest) bool {
+	if request.Flags&0x80 == 0 {
+		// 連續 N 次擲命中：目標每一下自己擲，不需要選定角色。
+		return true
+	}
+	if request.Flags&0x40 != 0 {
+		return true
+	}
+	if request.SaveFlags&0x80 == 0 {
+		// 單體但隨機挑一名——corpus 走不到，留著當明確邊界。
+		return false
+	}
+	index := s.whoSelectedIndex
+	if request.SelectedPlayerSet {
+		index = request.SelectedPlayerIndex
+	}
+	return index >= 0 && index < len(s.partyRoster)
 }
 
 // ResolvePendingECLDamage applies pending requests transactionally through
@@ -2486,7 +2518,14 @@ func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave fun
 	}
 	outcomes := make([]party.DamageOutcome, 0)
 	for _, request := range s.pendingDamageRequests {
-		resolved, err := working.ApplyECLDamageWithHitResolver(request, selectedIndex, rollDie, rollSave, hitTarget)
+		// ★ 目標取自**封包自己**記下的選定角色，不是這一次呼叫的參數。
+		// 腳本會把 `LOAD CHARACTER` ＋ `DAMAGE` 包在走過整隊的迴圈裡，
+		// 一次執行累積好幾組；用聚合值會把整批傷害算到最後那一位身上。
+		target := selectedIndex
+		if request.SelectedPlayerSet {
+			target = request.SelectedPlayerIndex
+		}
+		resolved, err := working.ApplyECLDamageWithHitResolver(request, target, rollDie, rollSave, hitTarget)
 		if err != nil {
 			return nil, err
 		}

@@ -904,7 +904,7 @@ func TestAutomaticWholePartyECLDamageUsesStateSeed(t *testing.T) {
 	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{{
 		Flags: 0xE0, DiceCount: 8, DiceSize: 8,
 	}}})
-	outcomes, err := state.resolveAutomaticWholePartyECLDamage()
+	outcomes, err := state.resolveAutomaticECLDamage()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -933,7 +933,7 @@ func TestAutomaticWholePartyECLDamageResolvesSavingThrows(t *testing.T) {
 	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{{
 		Flags: 0xC0, DiceCount: 3, DiceSize: 4, Bonus: 3, SaveFlags: 1,
 	}}})
-	outcomes, err := state.resolveAutomaticWholePartyECLDamage()
+	outcomes, err := state.resolveAutomaticECLDamage()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -956,7 +956,7 @@ func TestAutomaticWholePartyECLDamageDoesNotWaitBehindSelectedPackets(t *testing
 	selected := ecl.DamageRequest{Flags: 0x90, DiceCount: 1, DiceSize: 10, SaveFlags: 0x80}
 	wholeParty := ecl.DamageRequest{Flags: 0xE0, DiceCount: 1, DiceSize: 1}
 	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{selected, wholeParty}})
-	outcomes, err := state.resolveAutomaticWholePartyECLDamage()
+	outcomes, err := state.resolveAutomaticECLDamage()
 	if err != nil || len(outcomes) != 1 || outcomes[0].Applied != 1 ||
 		state.partyRoster[0].HitPoints != 99 {
 		t.Fatalf("mixed automatic damage outcomes=%+v err=%v roster=%+v", outcomes, err, state.partyRoster)
@@ -5595,7 +5595,7 @@ func TestHoldPersonAppliesTheOriginalEffectCodeAndHolds(t *testing.T) {
 		HasCombatPosition: true, CombatX: 2, CombatY: 5}}
 	enemies := []combat.Fighter{{ID: "orc", Name: "獸人", Side: combat.SideEnemy,
 		HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, HitDice: 1,
-		SavingThrows: []uint8{20, 20, 20, 20, 20}, // 幾乎必定豁免失敗
+		SavingThrows:      []uint8{20, 20, 20, 20, 20}, // 幾乎必定豁免失敗
 		HasCombatPosition: true, CombatX: 3, CombatY: 5}}
 	if err := state.StartCombat(party, enemies, 5); err != nil {
 		t.Fatal(err)
