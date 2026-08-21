@@ -8479,6 +8479,104 @@
     "YOU ARE SPOTTED BY A PATROL"
    ],
    "message_id": "myth-drannor.spotted-by-patrol"
+  },
+  {
+   "id": "yulash.shambling-mounds-distant",
+   "all_contains": [
+    "YOU SEE A LARGE GROUP OF SHAMBLING MOUNDS IN THE DISTANCE."
+   ],
+   "message_id": "yulash.shambling-mounds-distant"
+  },
+  {
+   "id": "yulash.people-distant",
+   "all_contains": [
+    "YOU SEE A GROUP OF PEOPLE IN THE DISTANCE."
+   ],
+   "message_id": "yulash.people-distant"
+  },
+  {
+   "id": "yulash.red-plume-guards-ahead",
+   "all_contains": [
+    "YOU NOTICE SOME RED PLUME GUARDS AHEAD."
+   ],
+   "message_id": "yulash.red-plume-guards-ahead"
+  },
+  {
+   "id": "yulash.skittish-clerics-eye-you",
+   "all_contains": [
+    "SOME VERY SKITTISH CLERICS OF MOANDER EYE YOU SUSPICIOUSLY."
+   ],
+   "message_id": "yulash.skittish-clerics-eye-you"
+  },
+  {
+   "id": "pit.moaderites-point-to-door",
+   "all_contains": [
+    "A GROUP OF MOADERITES POINT BACK TO THE DOOR."
+   ],
+   "message_id": "pit.moaderites-point-to-door"
+  },
+  {
+   "id": "pit.vegepygmies-distant",
+   "all_contains": [
+    "YOU SEE VEGEPYGMIES IN THE DISTANCE."
+   ],
+   "message_id": "pit.vegepygmies-distant"
+  },
+  {
+   "id": "pit.shambling-mounds-distant",
+   "all_contains": [
+    "YOU SEE SHAMBLING MOUNDS IN THE DISTANCE."
+   ],
+   "message_id": "pit.shambling-mounds-distant"
+  },
+  {
+   "id": "zhentil.soldiers-in-view",
+   "all_contains": [
+    "YOU SEE SOLDIERS."
+   ],
+   "message_id": "zhentil.soldiers-in-view"
+  },
+  {
+   "id": "zhentil.mages-in-view",
+   "all_contains": [
+    "YOU SEE MAGES."
+   ],
+   "message_id": "zhentil.mages-in-view"
+  },
+  {
+   "id": "zhentil.clerics-in-view",
+   "all_contains": [
+    "YOU SEE CLERICS."
+   ],
+   "message_id": "zhentil.clerics-in-view"
+  },
+  {
+   "id": "zhentil.priest-and-troop-patrol-distant",
+   "all_contains": [
+    "YOU SEE A PATROL OF PRIESTS AND TROOPS IN THE DISTANCE."
+   ],
+   "message_id": "zhentil.priest-and-troop-patrol-distant"
+  },
+  {
+   "id": "myth-drannor.insects-appear",
+   "all_contains": [
+    "INSECTS APPEAR"
+   ],
+   "message_id": "myth-drannor.insects-appear"
+  },
+  {
+   "id": "myth-drannor.lone-red-plume-spotted",
+   "all_contains": [
+    "YOU SPOT A LONE RED PLUME"
+   ],
+   "message_id": "myth-drannor.lone-red-plume-spotted"
+  },
+  {
+   "id": "myth-drannor.patrol-confronts-you",
+   "all_contains": [
+    "A PATROL CONFRONTS YOU"
+   ],
+   "message_id": "myth-drannor.patrol-confronts-you"
   }
  ],
  "option_rules": [
