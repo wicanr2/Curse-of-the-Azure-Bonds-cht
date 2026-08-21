@@ -1474,9 +1474,9 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		switch {
 		case fighter.Side == combat.SideParty:
 			kennelParty++
-		case fighter.Name == "FIRE KNIFE":
+		case fighter.SourceName == "FIRE KNIFE":
 			kennelFireKnives++
-		case fighter.Name == "FIGHTING DOG":
+		case fighter.SourceName == "FIGHTING DOG":
 			kennelDogs++
 			if fighter.MonsterType != combat.MonsterTypeAnimal {
 				t.Fatalf("FIGHTING DOG monster type=%#x, want animal", fighter.MonsterType)
@@ -1725,7 +1725,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	}
 	fireKnives := 0
 	for _, fighter := range state.CombatFighters() {
-		if fighter.Side == combat.SideEnemy && fighter.Name == "FIRE KNIFE" {
+		if fighter.Side == combat.SideEnemy && fighter.SourceName == "FIRE KNIFE" {
 			fireKnives++
 		}
 	}
