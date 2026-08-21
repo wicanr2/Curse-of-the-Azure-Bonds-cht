@@ -7496,6 +7496,13 @@
    "message_id": "pit.shambling-mounds-push"
   },
   {
+   "id": "pit.shambling-mounds-push-corridor",
+   "all_contains": [
+    "SOME SHAMBLING MOUNDS ATTEMPT TO PUSH YOU BACK INTO THE CORRIDOR"
+   ],
+   "message_id": "pit.shambling-mounds-push-corridor"
+  },
+  {
    "id": "pit.giant-slugs",
    "all_contains": [
     "GIANT SLUGS ARE CROSSING YOUR PATH"
@@ -8409,6 +8416,69 @@
     "WHAT DO YOU DO?"
    ],
    "message_id": "prompt.what-do-you-do"
+  },
+  {
+   "id": "yulash.dirty-robed-people-appear",
+   "all_contains": [
+    "SOME DIRTY ROBED PEOPLE APPEAR AHEAD."
+   ],
+   "message_id": "yulash.dirty-robed-people-appear"
+  },
+  {
+   "id": "pit.cultists-push-you-out",
+   "all_contains": [
+    "CULTISTS TRY TO PUSH YOU OUT THE DOOR."
+   ],
+   "message_id": "pit.cultists-push-you-out"
+  },
+  {
+   "id": "zhentil.keep-troops-stare-down",
+   "all_contains": [
+    "ZHENTIL KEEP TROOPS STARE YOU DOWN."
+   ],
+   "message_id": "zhentil.keep-troops-stare-down"
+  },
+  {
+   "id": "zhentil.mages-and-bodyguards-upon-you",
+   "all_contains": [
+    "MAGES AND THEIR BODYGUARDS ARE UPON YOU."
+   ],
+   "message_id": "zhentil.mages-and-bodyguards-upon-you"
+  },
+  {
+   "id": "zhentil.priests-of-bane-upon-you",
+   "all_contains": [
+    "PRIESTS OF BANE AND THEIR BODYGUARDS ARE UPON YOU."
+   ],
+   "message_id": "zhentil.priests-of-bane-upon-you"
+  },
+  {
+   "id": "zhentil.fzoul-summons",
+   "all_contains": [
+    "YOU MUST COME WITH US TO SEE OUR LORD FZOUL CHEMBRYL!"
+   ],
+   "message_id": "zhentil.fzoul-summons"
+  },
+  {
+   "id": "zhentil.unwashed-minions-of-bane",
+   "all_contains": [
+    "YOU ARE FACE TO FACE WITH THE UNWASHED MINIONS OF BANE."
+   ],
+   "message_id": "zhentil.unwashed-minions-of-bane"
+  },
+  {
+   "id": "hap.dark-elf-patrol-arrives",
+   "all_contains": [
+    "A DARK ELF PATROL ARRIVES"
+   ],
+   "message_id": "hap.dark-elf-patrol-arrives"
+  },
+  {
+   "id": "myth-drannor.spotted-by-patrol",
+   "all_contains": [
+    "YOU ARE SPOTTED BY A PATROL"
+   ],
+   "message_id": "myth-drannor.spotted-by-patrol"
   }
  ],
  "option_rules": [

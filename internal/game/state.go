@@ -6286,9 +6286,6 @@ func (s *State) localizePrompt(prompt string) string {
 	if prompt == "WHAT WILL YOU DRINK?" {
 		return s.catalog.Text("tavern_drink_prompt", "tavern_drink_prompt")
 	}
-	if prompt == "A DARK ELF PATROL ARRIVES" {
-		return s.catalog.Text("ecl_hap_dark_elf_patrol", "ecl_hap_dark_elf_patrol")
-	}
 	return prompt
 }
 
