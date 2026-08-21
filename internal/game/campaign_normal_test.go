@@ -2476,6 +2476,113 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		}
 	})
 
+	// 段內支線：主線走到某一段的當下，那張地圖上除了主線路線以外的格子演不演
+	// 得出來。★ `cmd/cell-sweep` 每一格都重新進段，答的是「這一格演不演得出來」；
+	// 這裡答的是**「帶著主線進度走到那一格，演不演得出來」**——處理常式開頭那些
+	// `COMPARE 4C2D 01 / IF = / EXIT` 的守衛只有帶著進度才滿足得了。
+	t.Run("段內支線在主線進度下演得出來", func(t *testing.T) {
+		blocks := map[uint8][]byte{}
+		records := map[uint8]map[uint8]monster.Record{}
+		catalogs := map[uint8]geo.Catalog{}
+		for member := 1; member <= 6; member++ {
+			parsed, err := dax.Parse(zipData(t, image, "ECL"+strconv.Itoa(member)+".DAX"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, block := range parsed {
+				blocks[block.Entry.ID] = block.Data
+			}
+			monsterBlocks, err := dax.Parse(zipData(t, image, "MON"+strconv.Itoa(member)+"CHA.DAX"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			chapter := map[uint8]monster.Record{}
+			for _, block := range monsterBlocks {
+				record, parseErr := monster.Parse(block.Data)
+				if parseErr != nil {
+					t.Fatalf("MON%dCHA block %#02x: %v", member, block.Entry.ID, parseErr)
+				}
+				chapter[block.Entry.ID] = record
+			}
+			records[uint8(member)] = chapter
+			// 第一章沒有 `GEO1.DAX`（世界地圖不走地城地圖）。
+			if payload := optionalZipData(image, "GEO"+strconv.Itoa(member)+".DAX"); payload != nil {
+				catalog := geo.NewCatalog()
+				if err := catalog.AddDAX(uint8(member), payload); err != nil {
+					t.Fatalf("GEO%d: %v", member, err)
+				}
+				catalogs[uint8(member)] = catalog
+			}
+		}
+
+		swept, playedCells, fallbacks := 0, 0, []string{}
+		// ⚠ 記的是「**掃成功**的 block」，不是「看過的 block」。同一個 block 常有
+		// 好幾份段界快照，前面那份可能停在世界地圖上推不回地城；用「看過就跳過」
+		// 會把整段判成掃不到，而那不是事實。
+		sweptBlock := map[uint8]bool{}
+		noDispatcher := []string{}
+		for _, end := range segmentEnds {
+			if sweptBlock[end.block] {
+				continue
+			}
+			// ⚠ 語系要用**正式語系檔**，不是 `testCatalog()`。兄弟 subtest 只比
+			// 欄位，用最小語系檔無妨；這裡量的是玩家看到的字，最小語系檔會讓
+			// 每一句都退回 stable id（`party_ready`），整批看起來像沒中文化。
+			catalog := trainingTestCatalog(t)
+			restore := func() (State, error) {
+				restored := NewStateFromECLBlocks(catalog, blocks, 0x50)
+				for chapter, chapterRecords := range records {
+					restored.SetMonsterRecordsForECL(chapter, chapterRecords)
+				}
+				if err := restored.LoadPartyFile(end.path); err != nil {
+					return restored, err
+				}
+				return restored, nil
+			}
+			sweep := sweepSideBranches(end.name, restore, blocks, catalogs)
+			t.Log(sweep.summarize())
+			if sweep.skipped != "" {
+				noDispatcher = append(noDispatcher,
+					fmt.Sprintf("%s：%s", end.name, sweep.skipped))
+				continue
+			}
+			sweptBlock[end.block] = true
+			sweptBlock[sweep.block] = true
+			swept++
+			for _, cell := range sweep.cells {
+				if !cell.played() {
+					continue
+				}
+				playedCells++
+				// 語系跟主線同一個判準：沒有漢字而有連續英文字母就是落回原文。
+				if campaignMessageHasHan(cell.text) || !campaignMessageHasLatinWord(cell.text) {
+					continue
+				}
+				fallbacks = append(fallbacks, fmt.Sprintf("%s 索引 %d (%d,%d)：%q",
+					sweep.name, cell.index, cell.x, cell.y, cell.text))
+			}
+		}
+		sort.Strings(fallbacks)
+		for _, message := range fallbacks {
+			t.Errorf("段內支線落回原文：%s", message)
+		}
+		// ⚠ 非空閘門：走訪壞掉會變成「語系全綠但什麼都沒驗到」。掃得到的段數與
+		// 演得出來的格數任一塌下來，上面那條語系檢查都不會紅。
+		if swept < 8 {
+			t.Errorf("只掃到 %d 段的段內支線，太少", swept)
+		}
+		if playedCells < 110 {
+			t.Errorf("段內支線只演出 %d 格，太少", playedCells)
+		}
+		// 沒有地形分派器的段一律列出來，不要靜靜地不算進分母。
+		// 掃不到的段一律列出來並附理由，不要靜靜地不算進分母。
+		for _, note := range noDispatcher {
+			t.Logf("掃不到：%s", note)
+		}
+		t.Logf("段內支線：%d 段掃得到，%d 格演得出來，落回原文 %d 格",
+			swept, playedCells, len(fallbacks))
+	})
+
 	t.Run("段界快照往返", func(t *testing.T) {
 		if len(segmentEnds) != 23 {
 			t.Fatalf("存到 %d 份段界快照，應該是 23 份", len(segmentEnds))
