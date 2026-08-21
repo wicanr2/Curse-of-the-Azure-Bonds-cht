@@ -1098,11 +1098,32 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 	if err != nil {
 		return combat.Fighter{}, err
 	}
-	hasWeapon := false
-	for _, item := range c.Equipment {
+	// ★ 原作挑武器看的是**裝備槽 0**，不是「第一件有傷害骰的裝備中物品」。
+	// 派生值重算（`overlay-24:0025h`，spec 1174）第一件事就是讀 `+151h` ——
+	// 那是「依槽索引的裝備中物品」表，`[0]` 是武器槽；為 NIL 就整支不做，
+	// 記錄自己的基準骰因此原封不動。
+	//
+	// ⚠ 用「第一件有傷害骰的」會被**弓或彈藥**搶走：它們排在鏈的前面而槽不是 0
+	// （spec 1120 量測時就多報過兩隻）。
+	weaponIndex := -1
+	for index, item := range c.Equipment {
 		if !item.Readied {
 			continue
 		}
+		if base, found := catalog.Lookup(item.Type); found && base.Slot == 0 {
+			weaponIndex = index
+			break
+		}
+	}
+	hasWeapon := false
+	for index, item := range c.Equipment {
+		if !item.Readied {
+			continue
+		}
+		// 有槽 0 的武器時只有它供給傷害骰；沒有的話沿用既有的「第一件有骰的」
+		// ——原作在那個情況下什麼都不做，但 remake 還沒有「徒手」的完整模型，
+		// 拿掉會讓只帶弓的角色變成沒有攻擊（spec 1174 的明確不宣稱）。
+		suppliesWeapon := weaponIndex < 0 || index == weaponIndex
 		// AI 用道具只看第二個效果槽（spec 835 的過濾：裝備中、`+3Dh > 0`、
 		// `+3Eh < 80h`）。這裡把符合條件的效果碼投影出來，戰鬥層才不必認識
 		// 整條物品鏈。⚠ `Affects` 的三格依序是 `+3Ch`／`+3Dh`／`+3Eh`。
@@ -1117,7 +1138,10 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 		if effect.MovementAllowance > 0 && (fighter.MovementAllowance == 0 || effect.MovementAllowance < fighter.MovementAllowance) {
 			fighter.MovementAllowance = effect.MovementAllowance
 		}
-		if effect.DamageDiceCount > 0 && !hasWeapon {
+		// ⚠ 槽 0 的武器**無條件**蓋掉記錄的骰子（`sub_25` 沒有「骰數 > 0」
+		// 這個條件）；退回舊規則時才保留它。
+		if suppliesWeapon && !hasWeapon &&
+			(weaponIndex >= 0 || effect.DamageDiceCount > 0) {
 			fighter.AttackBonus += effect.AttackBonus
 			fighter.DamageDiceCount = effect.DamageDiceCount
 			fighter.DamageDiceSides = effect.DamageDiceSides

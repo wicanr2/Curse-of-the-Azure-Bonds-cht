@@ -774,8 +774,8 @@
   {
    "opcode": "0x1C",
    "name": "CLEARMONSTERS",
-   "status": "partial",
-   "note": "原作 120Eh 逐條讀完（37 條）：清怪物鏈與已放置數（47E6h）、清「有怪要打」旗標（8B69h，spec 1095）、把 6F70h 起 28 bytes 的戰利品池歸零（七種貨幣／寶石／珠寶，spec 1059）、沿 6F8Ch 鏈逐節點 FreeMem(63) 釋放 27h 串進去的物品節點（spec 1087），並把 7603h 設成 8。remake 這一側全部對上——怪物鏈、跨執行累積的戰利品堆都清（docs/audit/ecl-treasure-clear.md）。partial 只剩一項：7603h 設成 8 的語意還沒解讀",
+   "status": "done",
+   "note": "原作 120Eh 逐條讀完（37 條）：清怪物鏈與已放置數（47E6h）、清「有怪要打」旗標（8B69h，spec 1095）、把 6F70h 起 28 bytes 的戰利品池歸零（七種貨幣／寶石／珠寶，spec 1059）、沿 6F8Ch 鏈逐節點 FreeMem(63) 釋放 27h 串進去的物品節點（spec 1087），並把 7603h 設成 8。remake 這一側全部對上——怪物鏈、跨執行累積的戰利品堆都清（docs/audit/ecl-treasure-clear.md）。7603h 設成 8 的語意也讀出來了（spec 1173）：它是**下一批怪物的圖示槽**（`+143h` ＝ `ICONINDEX`，`overlay-33 entry#5` 拿它與 `CPIC` 組檔名），`inc` 在放置迴圈**結束後**才做一次 ⇒ 同一批共用一張圖，而 0..7 是隊伍成員的圖示，所以重設值是 8 不是 0。它是**快取索引不是遊戲狀態**——remake 的每個戰鬥員自己帶 SpriteBlock，可觀察行為相同，因此沒有對應動作、也不該有",
    "occurrences": 206,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1457,12 +1457,12 @@
   }
  ],
  "instructions_by_status": {
-  "done": 13153,
-  "partial": 1024
+  "done": 13359,
+  "partial": 818
  },
  "opcodes_by_status": {
-  "done": 52,
-  "partial": 9
+  "done": 53,
+  "partial": 8
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1493,29 +1493,29 @@
   "ECL6.DAX/0x45": 320
  },
  "unreproduced_by_block": {
-  "ECL1.DAX/0x50": 32,
-  "ECL1.DAX/0x51": 32,
-  "ECL1.DAX/0x52": 19,
-  "ECL2.DAX/0x01": 46,
-  "ECL2.DAX/0x02": 40,
-  "ECL2.DAX/0x03": 42,
-  "ECL2.DAX/0x04": 29,
-  "ECL3.DAX/0x10": 57,
-  "ECL3.DAX/0x11": 46,
-  "ECL3.DAX/0x12": 52,
-  "ECL3.DAX/0x15": 20,
-  "ECL4.DAX/0x20": 63,
-  "ECL4.DAX/0x21": 60,
-  "ECL4.DAX/0x22": 50,
-  "ECL4.DAX/0x23": 21,
-  "ECL4.DAX/0x25": 90,
-  "ECL5.DAX/0x31": 24,
-  "ECL5.DAX/0x32": 55,
-  "ECL5.DAX/0x33": 59,
-  "ECL5.DAX/0x35": 43,
-  "ECL6.DAX/0x40": 54,
-  "ECL6.DAX/0x42": 37,
-  "ECL6.DAX/0x43": 33,
-  "ECL6.DAX/0x45": 20
+  "ECL1.DAX/0x50": 20,
+  "ECL1.DAX/0x51": 19,
+  "ECL1.DAX/0x52": 18,
+  "ECL2.DAX/0x01": 40,
+  "ECL2.DAX/0x02": 31,
+  "ECL2.DAX/0x03": 28,
+  "ECL2.DAX/0x04": 23,
+  "ECL3.DAX/0x10": 48,
+  "ECL3.DAX/0x11": 40,
+  "ECL3.DAX/0x12": 41,
+  "ECL3.DAX/0x15": 14,
+  "ECL4.DAX/0x20": 52,
+  "ECL4.DAX/0x21": 56,
+  "ECL4.DAX/0x22": 42,
+  "ECL4.DAX/0x23": 20,
+  "ECL4.DAX/0x25": 70,
+  "ECL5.DAX/0x31": 20,
+  "ECL5.DAX/0x32": 40,
+  "ECL5.DAX/0x33": 46,
+  "ECL5.DAX/0x35": 32,
+  "ECL6.DAX/0x40": 43,
+  "ECL6.DAX/0x42": 32,
+  "ECL6.DAX/0x43": 29,
+  "ECL6.DAX/0x45": 14
  }
 }
