@@ -335,6 +335,10 @@ type State struct {
 	dungeonSeed             int64
 	combatMapDirection      uint8
 
+	// endingScene／endingPageIndex 是 `PROGRAM 8` 結局過場的游標（spec 1154）。
+	endingScene     bool
+	endingPageIndex int
+
 	// wallSetParams 是存檔第 9..14 欄那三組牆面參數（`DS:7210h ＋ 槽×4`／
 	// `DS:7212h ＋ 槽×4`，spec 1076）。寫入端是 `37h LOAD PIECES`：
 	// 載得進去的槽記 `{片, 槽}`，運算元是 `0FFh` 的槽記 `{0FFFFh, 0FFFFh}`
@@ -1243,6 +1247,9 @@ func (s *State) Select(index int) error {
 	}
 	if s.trainingMenu {
 		return s.selectTraining(originalChoice)
+	}
+	if s.endingScene {
+		return s.selectEndingScene()
 	}
 	if s.programEndMenu {
 		return s.selectProgramEnd(originalChoice)
@@ -3747,16 +3754,9 @@ func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
 			s.party[index].DeathOverlay = false
 			s.party[index].DownedCorpse = false
 		}
-		s.programEndMenu = true
-		s.Mode = ModeWilderness
-		s.OriginalEvent = "PROGRAM 8"
-		s.Prompt = s.catalog.Text("program_victory_prompt", "program_victory_prompt")
-		s.Choices = []string{
-			s.catalog.Text("program_victory_save", "program_victory_save"),
-			s.catalog.Text("program_end_without_save", "program_end_without_save"),
-		}
-		s.currentOriginalChoices = []string{"PROGRAM_WIN_SAVE", "PROGRAM_END"}
-		s.Message = s.catalog.Text("program_victory_message", "program_victory_message")
+		// ★ 原作先跑結局過場才回主選單問存檔（`overlay-18:10FFh`，spec 1082）。
+		// 先前 remake 直接跳到存檔詢問，打通關的玩家一句結局都看不到。
+		s.beginEndingScene()
 		return true, nil
 	case 9:
 		s.campECLService = s.session != nil && len(s.eclBlock) > 0
@@ -3786,6 +3786,57 @@ func (s *State) selectProgramEnd(originalChoice string) error {
 func isTrainingProgramChoice(originalChoice string, result ecl.RunResult) bool {
 	return originalChoice == "HALL" && result.ProgramExit &&
 		len(result.ProgramIDs) > 0 && result.ProgramIDs[len(result.ProgramIDs)-1] == 0
+}
+
+// endingSceneKeys 是結局過場的五頁。分頁點照原作的等鍵位置切
+// （DOS `overlay-18:10FFh` 裡 `542h:0946h` 出現在第 1／2／3／4 頁之後，
+// 第 5 頁演完直接落到 `PROGRAM 8` 的存檔詢問，spec 1154）。
+// ⚠ 第 4 頁在原作是 8 行，其餘四頁各 4 行——它本來就是兩倍長的一段。
+var endingSceneKeys = []string{
+	"ending_page_1", "ending_page_2", "ending_page_3", "ending_page_4", "ending_page_5",
+}
+
+// beginEndingScene 從第一頁開始播結局過場。
+func (s *State) beginEndingScene() {
+	s.endingScene = true
+	s.endingPageIndex = 0
+	s.Mode = ModeWilderness
+	s.OriginalEvent = "PROGRAM 8"
+	s.showEndingPage()
+}
+
+func (s *State) showEndingPage() {
+	s.Prompt = s.catalog.Text("program_victory_prompt", "program_victory_prompt")
+	s.Message = s.catalog.Text(endingSceneKeys[s.endingPageIndex], endingSceneKeys[s.endingPageIndex])
+	s.currentOriginalChoices = []string{"PRESS BUTTON OR RETURN TO CONTINUE."}
+	s.Choices = []string{s.localizeOption(s.currentOriginalChoices[0])}
+}
+
+// selectEndingScene 翻到下一頁；演完最後一頁才進勝利選單。
+func (s *State) selectEndingScene() error {
+	s.endingPageIndex++
+	if s.endingPageIndex < len(endingSceneKeys) {
+		s.showEndingPage()
+		return nil
+	}
+	s.endingScene = false
+	s.endingPageIndex = 0
+	s.enterVictoryMenu()
+	return nil
+}
+
+// enterVictoryMenu 是原作結局過場之後的「回主選單、問要不要存檔」。
+func (s *State) enterVictoryMenu() {
+	s.programEndMenu = true
+	s.Mode = ModeWilderness
+	s.OriginalEvent = "PROGRAM 8"
+	s.Prompt = s.catalog.Text("program_victory_prompt", "program_victory_prompt")
+	s.Choices = []string{
+		s.catalog.Text("program_victory_save", "program_victory_save"),
+		s.catalog.Text("program_end_without_save", "program_end_without_save"),
+	}
+	s.currentOriginalChoices = []string{"PROGRAM_WIN_SAVE", "PROGRAM_END"}
+	s.Message = s.catalog.Text("program_victory_message", "program_victory_message")
 }
 
 func (s *State) enterProgramTitle(message string) {

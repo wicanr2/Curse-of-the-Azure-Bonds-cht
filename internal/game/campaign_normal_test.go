@@ -2243,6 +2243,20 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			t.Fatalf("最終戰結果=%v", state.CombatStatus())
 		}
 		observer.observe()
+		// ★ 原作打完最終戰先跑結局過場才回主選單（spec 1082／1154）。
+		// 這裡逐頁走過去，順便證明那五頁在真實玩家路徑上到得了、而且是中文。
+		for page := 0; state.endingScene; page++ {
+			if page >= len(endingSceneKeys) {
+				t.Fatalf("結局過場翻不完，停在第 %d 頁", state.endingPageIndex)
+			}
+			if !campaignMessageHasHan(state.Message) {
+				t.Fatalf("結局第 %d 頁落回原文：%q", page+1, state.Message)
+			}
+			observer.observe()
+			if err := state.Select(0); err != nil {
+				t.Fatalf("結局第 %d 頁：%v", page+1, err)
+			}
+		}
 		if _, ok := state.OriginalChoiceIndex("PROGRAM_END"); !ok {
 			t.Fatalf("勝利之後沒有結束選項：message=%q choices=%v",
 				state.Message, state.currentOriginalChoices)

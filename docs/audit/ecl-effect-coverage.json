@@ -971,7 +971,7 @@
    "opcode": "0x27",
    "name": "TREASURE",
    "status": "partial",
-   "note": "原作 1B53h 整支 398 條讀完（spec 1151）：前七個運算元以 32-bit **覆寫** DS:6F70h 的戰利品池（1Ch 清的就是它）；第八個 ItemBlock 三選一——\u003c 80h 載 ITEM\u003c片\u003e.DAX 那個區塊並把裡面每一筆都掛上鏈、= 0FFh 不給物品、80h..FEh 隨機產生 n − 80h 件。物品鏈 DS:6F8Ch 的 next 在 +2Ah 且是**前插**，顯示端從鏈頭走（overlay-05:0CF5h），所以清單是反序——remake 已跟上。隨機表的區間 bug 也修了（第二擲 48／49 原作回 59，remake 先前回劍）。partial 剩兩項：隨機那一路沒跑 CREATERNDTREASURE（spec 1036）所以加值／名稱三段／重量／價值／卷軸法術都是空的；以及 remake 把同一次執行的多筆 TREASURE 相加而原作是覆寫（corpus 未觀察到兩筆之間沒有 1Ch 的情形）",
+   "note": "原作 1B53h 整支 398 條讀完（spec 1151）：前七個運算元以 32-bit **覆寫** DS:6F70h 的戰利品池（1Ch 清的就是它）；第八個 ItemBlock 三選一——\u003c 80h 載 ITEM\u003c片\u003e.DAX 那個區塊並把裡面每一筆都掛上鏈、= 0FFh 不給物品、80h..FEh 隨機產生 n − 80h 件。物品鏈 DS:6F8Ch 的 next 在 +2Ah 且是**前插**，顯示端從鏈頭走（overlay-05:0CF5h），所以清單是反序——remake 已跟上。隨機表的區間 bug 也修了（第二擲 48／49 原作回 59，remake 先前回劍）。隨機那一路已接上 CREATERNDTREASURE（spec 1036）——加值（1d20：1..14 給 ＋1、15..20 給 ＋2）、名稱三段索引、重量、價值、卷軸法術與特殊物品範本都照原作補齊，擲骰順序也對上。partial 只剩一項：remake 把同一次執行的多筆 TREASURE 相加而原作是覆寫（corpus 未觀察到兩筆之間沒有 1Ch 的情形）",
    "occurrences": 63,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1147,7 +1147,7 @@
    "opcode": "0x2E",
    "name": "DAMAGE",
    "status": "partial",
-   "note": "只有明確指定全隊的封包（旗標 0xC0）會在正式路徑結算；其餘要選定角色的形式仍留在 pending",
+   "note": "原作 2942h 整支 305 條讀完（spec 1152）：★ 旗標 bit 7 清空時**整個 byte 是次數**——連打 N 下，每下隨機挑一名隊員、用第五個運算元當攻擊值擲 TRYTOHIT，而且每下之間重擲傷害；bit 7 設定才是旗標（bit 6 全隊、bit 5 不擲豁免、bit 4 豁免成功仍吃**全額**、bit 0..4 豁免調整值——bit 4 與調整值欄位重疊，但 corpus 24 處低 5 位全 0）。目標三選一：全隊／目前角色（第五個運算元 bit 7）／隨機一名。★ 目前角色那一路傳給 MAKESAVE 的種類要**減一**且 0 代表不擲豁免，另外兩路不減一、由 bit 5 決定；兩種讀法在 corpus 上結果相同。正式路徑先前只結算全隊那 14 處，現在三種形式都結算（目標由封包自己帶著發出當下選的角色，否則整隊迴圈裡的傷害會全算到同一位身上）。partial 只剩原作那條 corpus 走不到的「單體但隨機挑一名」沒接",
    "occurrences": 24,
    "blocks": [
     "ECL2.DAX/0x03",
@@ -1299,7 +1299,7 @@
    "opcode": "0x37",
    "name": "LOAD PIECES",
    "status": "partial",
-   "note": "LOAD PIECES 記下請求；資產載入由上層做",
+   "note": "與 21h 共用 overlay-02:0C15h..0DA3h 一支 131 條（spec 1087；⚠ IDA 只認到 0D4Ah／104 條，切掉的正是收尾重繪判斷）。三個運算元是三個牆面組槽位的片號，載得進去的槽走 LOADWALLSET(槽, 片)，而那一支收尾寫 [7210h+槽×4] := 片、[7212h+槽×4] := 槽；運算元是 0FFh 的槽由 handler 自己寫成 0FFFFh ⇒ 這三格就是存檔第 9..14 欄（spec 1076／1153）。remake 的資產載入本來就接上了，這一輪補上存檔那一半。partial 剩兩條 corpus 走不到的路：o[1] = 7Fh ⇒ LOADWALLSET(1, 0)，以及 bank0^[1CEh]／[1D0h] 都非零時只載槽 1／3",
    "occurrences": 23,
    "blocks": [
     "ECL2.DAX/0x01",
@@ -1326,8 +1326,8 @@
   {
    "opcode": "0x38",
    "name": "PROGRAM",
-   "status": "partial",
-   "note": "PROGRAM 記下 ID；PROGRAM 8 的通關序列（spec 1087）尚未接完",
+   "status": "done",
+   "note": "原作 30DDh 整支 104 條讀完（spec 1154）：四個分派值 0（重新初始化＋主選單）／3（DS:4FC7h := 1 ⇒ 宣告隊伍全滅、停掉迴圈）／8（結局）／9（CAMP），corpus 13 處四個值全用得到、沒有一處落在什麼都不做的預設值。★ PROGRAM 8 先跑 overlay-18:10FFh 的結局過場才回主選單問存檔——把字串位移與等鍵呼叫依序取出來，分段是**五頁四次等鍵**，而且第 4 頁是 8 行、其餘四頁各 4 行。remake 先前直接跳到存檔詢問，打通關一句結局都看不到；現在照原作的等鍵位置分頁播完才進選單。⚠ spec 1087 說 4FC7h 是「訓練免費」旗標是把它和 4FC8h 搞混了",
    "occurrences": 13,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1457,12 +1457,12 @@
   }
  ],
  "instructions_by_status": {
-  "done": 13140,
-  "partial": 1037
+  "done": 13153,
+  "partial": 1024
  },
  "opcodes_by_status": {
-  "done": 51,
-  "partial": 10
+  "done": 52,
+  "partial": 9
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1493,21 +1493,21 @@
   "ECL6.DAX/0x45": 320
  },
  "unreproduced_by_block": {
-  "ECL1.DAX/0x50": 35,
-  "ECL1.DAX/0x51": 34,
-  "ECL1.DAX/0x52": 20,
-  "ECL2.DAX/0x01": 47,
-  "ECL2.DAX/0x02": 41,
-  "ECL2.DAX/0x03": 43,
+  "ECL1.DAX/0x50": 32,
+  "ECL1.DAX/0x51": 32,
+  "ECL1.DAX/0x52": 19,
+  "ECL2.DAX/0x01": 46,
+  "ECL2.DAX/0x02": 40,
+  "ECL2.DAX/0x03": 42,
   "ECL2.DAX/0x04": 29,
   "ECL3.DAX/0x10": 57,
   "ECL3.DAX/0x11": 46,
-  "ECL3.DAX/0x12": 53,
+  "ECL3.DAX/0x12": 52,
   "ECL3.DAX/0x15": 20,
-  "ECL4.DAX/0x20": 64,
+  "ECL4.DAX/0x20": 63,
   "ECL4.DAX/0x21": 60,
   "ECL4.DAX/0x22": 50,
-  "ECL4.DAX/0x23": 22,
+  "ECL4.DAX/0x23": 21,
   "ECL4.DAX/0x25": 90,
   "ECL5.DAX/0x31": 24,
   "ECL5.DAX/0x32": 55,
@@ -1515,7 +1515,7 @@
   "ECL5.DAX/0x35": 43,
   "ECL6.DAX/0x40": 54,
   "ECL6.DAX/0x42": 37,
-  "ECL6.DAX/0x43": 34,
+  "ECL6.DAX/0x43": 33,
   "ECL6.DAX/0x45": 20
  }
 }

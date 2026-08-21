@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -123,6 +124,10 @@ func TestApplyECLProgramVictoryHealsAndRequestsSave(t *testing.T) {
 	if fighter.HitPoints != 12 || fighter.DeathOverlay || fighter.DownedCorpse {
 		t.Fatalf("PROGRAM 8 fighter recovery=%+v", fighter)
 	}
+	// ★ 存檔詢問排在結局過場**之後**（spec 1154）。
+	if err := advanceEndingScene(t, &state); err != nil {
+		t.Fatal(err)
+	}
 	if state.Prompt != catalog.Text("program_victory_prompt", "") ||
 		len(state.Choices) != 2 || state.Choices[0] != catalog.Text("program_victory_save", "") ||
 		state.Choices[1] != catalog.Text("program_end_without_save", "") ||
@@ -150,6 +155,9 @@ func TestApplyECLProgramVictoryCanEndWithoutSave(t *testing.T) {
 	if err != nil || !handled {
 		t.Fatalf("PROGRAM 8: handled=%v err=%v", handled, err)
 	}
+	if err := advanceEndingScene(t, &state); err != nil {
+		t.Fatal(err)
+	}
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
@@ -169,5 +177,77 @@ func TestApplyECLProgramCamp(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness || !state.campMenu {
 		t.Fatalf("PROGRAM 9 did not enter camp: mode=%v camp=%v", state.Mode, state.campMenu)
+	}
+}
+
+// advanceEndingScene 把結局過場整個翻完，讓斷言回到「過場之後」那一刻。
+func advanceEndingScene(t *testing.T, state *State) error {
+	t.Helper()
+	for guard := 0; state.endingScene; guard++ {
+		if guard > len(endingSceneKeys) {
+			return fmt.Errorf("結局過場翻不完，停在第 %d 頁", state.endingPageIndex)
+		}
+		if err := state.Select(0); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// TestApplyECLProgramVictoryPlaysTheEndingScene 釘住結局過場本身：
+// 原作 `PROGRAM 8` 先跑 `overlay-18:10FFh` 那段五頁的敘事才回主選單問存檔
+// （spec 1082／1154）。先前 remake 直接跳到存檔詢問，打通關一句結局都看不到。
+func TestApplyECLProgramVictoryPlaysTheEndingScene(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
+	state.partyRoster = party.Roster{{ID: "hero", HitPoints: 1, MaxHitPoints: 1}}
+
+	if _, err := state.applyECLProgram(programResult(8)); err != nil {
+		t.Fatal(err)
+	}
+	for page := range endingSceneKeys {
+		if !state.endingScene || state.endingPageIndex != page {
+			t.Fatalf("第 %d 頁：endingScene=%v index=%d", page+1, state.endingScene, state.endingPageIndex)
+		}
+		want := catalog.Text(endingSceneKeys[page], "")
+		if want == "" {
+			t.Fatalf("結局第 %d 頁沒有譯文（key %q）", page+1, endingSceneKeys[page])
+		}
+		if state.Message != want {
+			t.Fatalf("結局第 %d 頁 ＝ %q，預期 %q", page+1, state.Message, want)
+		}
+		if len(state.Choices) != 1 || len(state.currentOriginalChoices) != 1 ||
+			state.currentOriginalChoices[0] != "PRESS BUTTON OR RETURN TO CONTINUE." {
+			t.Fatalf("結局第 %d 頁的選項 ＝ %v／%v", page+1, state.Choices, state.currentOriginalChoices)
+		}
+		if state.programEndMenu {
+			t.Fatalf("結局第 %d 頁就開了存檔選單", page+1)
+		}
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.endingScene {
+		t.Fatal("五頁演完之後過場還沒結束")
+	}
+	if !state.programEndMenu || len(state.Choices) != 2 {
+		t.Fatalf("過場之後沒有進勝利選單：menu=%v choices=%v", state.programEndMenu, state.Choices)
+	}
+}
+
+// TestEndingSceneTextIsDistinctPerPage 擋掉「五頁都指到同一個 key」這種
+// 看起來會過的接法——每一頁的譯文必須互不相同。
+func TestEndingSceneTextIsDistinctPerPage(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	seen := make(map[string]int, len(endingSceneKeys))
+	for index, key := range endingSceneKeys {
+		text := catalog.Text(key, "")
+		if text == "" {
+			t.Fatalf("第 %d 頁的 key %q 沒有譯文", index+1, key)
+		}
+		if previous, ok := seen[text]; ok {
+			t.Fatalf("第 %d 頁與第 %d 頁的譯文相同", index+1, previous+1)
+		}
+		seen[text] = index
 	}
 }
