@@ -25,9 +25,37 @@ remake 的 `State` **手上沒有 GEO 目錄**——`grid` 一律由呼叫端傳
 才走得下去（巫師塔塔頂、熔岩池、眼魔洞穴各一次）。**那不是路線問題，
 是引擎少了一塊。**
 
-⇒ **下一步是把 GEO 目錄交給 `State`**，讓 `projectFreshDungeonCoordinatesBeforeCall`
-投影完座標之後照原作重算 `C04E`／`C04F`。做完之後再套 spec 1160 那六件事，
-路線測試才不需要那些手動補值。
+## remake（已完成）
+
+- `State` 收下一份 `geo.Catalog`（`SetGeoCatalog`），`currentDungeonGrid` 依
+  `GeoMapSet`／`GeoMapBlock` 取圖。
+- `projectFreshDungeonCoordinatesBeforeCall` 投影完座標就呼叫
+  `refreshDungeonTerrainFromMap`，照原作重畫的做法把牆面／地形讀回
+  `C04E`／`C04F`。
+- `cmd/azure-bonds-game` 在載完 GEO 目錄之後交給 `State`，遊戲本體與測試走
+  同一條路徑。
+- 兩面測試 `TestRedrawRefreshesTerrainOnlyWhenTheScriptMovedTheParty`：
+  腳本有寫座標的重畫要換地形碼，沒寫座標的不能動它——只釘一邊的話
+  「每次重畫都重讀」與「永遠不重讀」各會過一邊。
+
+★ 效果已量到：把 spec 1160 那六件事套上去之後，眼魔洞穴到站時的
+`C04E`／`C04F` **不再需要測試手動補**，直接就是 `8`／`0C0h`。
+
+## ⚠ 剩下的是內容順序，不是引擎
+
+六件事全部套上、九處斷言全部改完之後，`internal/game` 只剩主線通關測試的
+眼魔洞穴那一段。卡住的點已經定位到 `ECL4/0x22:0651h`：
+
+```text
+0631h  PRINTCLEAR "YOU SEE THE REMAINS OF AN ELF FIGHTER."
+0651h  COMPARE 4C06 01
+0657h  IF =   → GOTO 0E41h     { 已經看過就跳過選單 }
+065Ch  IF <   → GOTO 066Bh     { 第一次：SAVE 01 4C06 之後才開選單 }
+```
+
+⇒ 死精靈那個選單是**一次性**的（`4C06`）。投影生效之後主線會在更早的地方
+先走到那一格，選單就在那時被消費掉，等到這一段的斷言時只剩敘述。
+**這不是引擎問題，是那一段測試的內容順序要跟著重排。**
 
 ## ★★ 巫師塔怎麼走（`ECL5/0x33`）
 

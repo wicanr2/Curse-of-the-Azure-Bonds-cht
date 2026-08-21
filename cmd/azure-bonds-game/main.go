@@ -3608,6 +3608,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// 交給 State 之後，腳本傳送（只寫 `C04B`／`C04C`）也能照原作重畫的做法
+	// 把牆面／地形重讀回 `C04E`／`C04F`，接下來的每格事件才分派得到
+	// （spec 1161）。
+	state.SetGeoCatalog(geoCatalog)
 	geoRef := geo.MapRef{Set: uint8(*geoSet), BlockID: uint8(*geoBlock)}
 	geoGridValue, ok := geoCatalog.Lookup(geoRef)
 	if !ok {
