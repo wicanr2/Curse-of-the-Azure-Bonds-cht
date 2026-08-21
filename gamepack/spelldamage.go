@@ -103,3 +103,16 @@ func (t *SpellDamageTable) Dice(spellID uint8) (count, sides, bonus int, ok bool
 	}
 	return entry.DiceCount, entry.DiceSides, entry.Bonus, true
 }
+
+// Outcome 回報收尾走哪一支（`damage`／`heal`／`none`）。第二個回傳值為 false
+// 代表這一支法術不在表裡（`+0Ah` 非 0，效果在屬性表而不在 handler）。
+func (t *SpellDamageTable) Outcome(spellID uint8) (string, bool) {
+	if t == nil {
+		return "", false
+	}
+	entry, found := t.Spells[fmt.Sprintf("%d", spellID)]
+	if !found {
+		return "", false
+	}
+	return entry.Outcome, true
+}

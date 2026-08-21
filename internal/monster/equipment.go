@@ -169,6 +169,37 @@ func ParseBaseItems(data []byte) (BaseItemCatalog, error) {
 	return BaseItemCatalog{Header: binary.LittleEndian.Uint16(data[:2]), Items: items}, nil
 }
 
+// 卷軸的判別（spec 1171）。
+//
+// ★ 原作判「這是不是卷軸」看的是**類別表的第一格**（裝備槽），不是物品類別
+// 本身：`byte[5CF6h ＋ 類別 × 16]` 落在 `0Bh`..`0Dh` 才是卷軸。
+//
+// ⚠ 用物品類別 `3Ch`..`3Eh` 去判會多抓三件——`3Ch` 的槽是 `0Ah`，名字雖然叫
+// `Scroll`，原作把它當**充能物品**（效果 `5Fh`／`60h`）。
+const (
+	scrollSlotLow  = 0x0B
+	scrollSlotHigh = 0x0D
+	// ClericalScrollSlot 是牧師卷軸的槽。牧師讀這一種不需要法術辨識
+	// （`overlay-22:08A1h` 只對這個槽放行）。
+	ClericalScrollSlot = 0x0C
+)
+
+// ItemSlot 回傳類別表的第一格（裝備槽）。
+func (c BaseItemCatalog) ItemSlot(itemType uint8) (uint8, bool) {
+	base, ok := c.Lookup(itemType)
+	if !ok {
+		return 0, false
+	}
+	return base.Slot, true
+}
+
+// IsScroll 重現原作的卷軸判別。目錄查不到那個類別時回 false——原作的那一支對
+// NIL 物品也是回 0。
+func (c BaseItemCatalog) IsScroll(itemType uint8) bool {
+	slot, ok := c.ItemSlot(itemType)
+	return ok && slot > scrollSlotLow-1 && slot < scrollSlotHigh+1
+}
+
 // Lookup returns a descriptor by item type without allowing an out-of-range
 // type byte to panic a save/import or corrupted-file path.
 func (c BaseItemCatalog) Lookup(itemType uint8) (BaseItem, bool) {

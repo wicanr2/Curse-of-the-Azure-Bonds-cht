@@ -957,12 +957,16 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyT) && a.state.CombatCanTurnUndead() {
 			return a.combatAction(a.state.CombatTurnUndead)
 		}
-		// 「使用」：U 用掉目前選中的那一件，Alt+U 換下一件（spec 1170）。
+		// 「使用」：U 用掉目前選中的那一件，Alt+U 換下一件（spec 1170）；
+		// 選中的是卷軸時 Alt+S 換要唸的法術（spec 1171）。
 		if inpututil.IsKeyJustPressed(ebiten.KeyU) {
 			if combatAltPressed() {
 				return a.combatAction(func() error { return a.state.CombatSelectItem(1) })
 			}
 			return a.combatAction(a.state.CombatUseItem)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyS) && combatAltPressed() {
+			return a.combatAction(func() error { return a.state.CombatSelectScrollSpell(1) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {

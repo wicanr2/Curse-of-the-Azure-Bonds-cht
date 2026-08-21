@@ -14,18 +14,14 @@ import (
 // 那個編號就是法術主表的列；目標模式（`+6`）、豁免（`+8`）、效果碼（`+0Ah`）、
 // 持續時間係數（`+2`／`+3`）全部查表，骰子查 spec 1169 的 handler 表。
 //
-// ⚠ 卷軸那一條（物品類別 `3Ch`..`3Eh`）還沒接：原作用 `sub_3474h` 讓玩家從
-// 卷軸上的三個法術挑一個，那一支沒有讀出來。按下去會回錯誤，**不會**默默扣掉
-// 卷軸。
+// ⚠ 卷軸那一條走 `combat_use_scroll.go`（spec 1171）。判別**用裝備槽不用物品
+// 類別**：`byte[5CF6h ＋ 類別 × 16]` ∈ `0Bh`..`0Dh`。
 
 // itemCasterLevel 是物品施放時的施法者等級。
 //
 // ★ 原作在 `DS:7563h` 非 0（效果來自物品）時等級一律當 6，不查使用者
 // （spec 733／1016）。所以魔杖的火球永遠是 6d6，不會因為誰拿著而變強。
 const itemCasterLevel = 6
-
-// scrollItemTypes 是三種卷軸的物品類別（spec 1168）。
-var scrollItemTypes = map[uint8]bool{0x3C: true, 0x3D: true, 0x3E: true}
 
 // UsableItem 是「這個角色身上按 USE 有反應的東西」。
 type UsableItem struct {
@@ -37,14 +33,16 @@ type UsableItem struct {
 	// Charges 是 `+3Ch`，Count 是 `+39h`（一疊物品的最後一個才會消耗充能）。
 	Charges uint8 `json:"charges"`
 	Count   uint8 `json:"count"`
+	// Scroll 為 true 時 Effect／Charges 沒有意義：法術從三個槽裡選（spec 1171）。
+	Scroll bool `json:"scroll,omitempty"`
 }
 
 // chargedItemEffect 依原作的判準取出充能物品的效果編號（spec 921）。
 //
 // ⚠ 判準是**物品的三個欄位**，不是物品類別：`+3Dh > 0` 且 `+3Eh < 80h`。
 // 用類別去判會漏掉粉塵與項鍊那兩件（它們的類別是 `46h`）。
-func chargedItemEffect(item monster.ItemRecord) (uint8, bool) {
-	if scrollItemTypes[item.Type] {
+func chargedItemEffect(item monster.ItemRecord, catalog monster.BaseItemCatalog) (uint8, bool) {
+	if catalog.IsScroll(item.Type) {
 		return 0, false
 	}
 	if item.Affects[1] == 0 || item.Affects[2] >= 0x80 {
@@ -65,7 +63,18 @@ func (s *State) CombatUsableItems() []UsableItem {
 		}
 		items := make([]UsableItem, 0, len(character.Equipment))
 		for index, item := range character.Equipment {
-			effect, charged := chargedItemEffect(item)
+			if s.itemCatalog.IsScroll(item.Type) {
+				// 卷軸要**讀得出來**才算可用（spec 1171）：法術辨識沒生效時
+				// 原作連選單都不會出現。
+				if len(s.CombatScrollSpells(index)) == 0 {
+					continue
+				}
+				items = append(items, UsableItem{
+					Index: index, Name: item.Name, Scroll: true, Count: item.Count,
+				})
+				continue
+			}
+			effect, charged := chargedItemEffect(item, s.itemCatalog)
 			if !charged || item.Affects[0] == 0 {
 				continue
 			}
@@ -141,11 +150,10 @@ func (s *State) CombatUseItemAt(index int) error {
 		return fmt.Errorf("equipment index %d is out of range", index)
 	}
 	item := equipment[index]
-	if scrollItemTypes[item.Type] {
-		// spec 1168：`sub_3474h`（從卷軸上挑一支法術）還沒讀出來。
-		return fmt.Errorf("scroll item type 0x%02X has no reading path yet", item.Type)
+	if s.itemCatalog.IsScroll(item.Type) {
+		return s.useScrollAt(user, characterIndex, index)
 	}
-	effect, charged := chargedItemEffect(item)
+	effect, charged := chargedItemEffect(item, s.itemCatalog)
 	if !charged {
 		// 原作對這一類就是「什麼都不會發生」，連訊息都沒有（spec 921）。
 		return fmt.Errorf("item type 0x%02X does nothing when used", item.Type)
@@ -201,7 +209,7 @@ func (s *State) resolveChargedItem(user combat.Fighter, item monster.ItemRecord,
 	}
 	switch behaviour.Shape {
 	case combat.ChargedItemNamedSpell:
-		return s.resolveNamedSpellItem(user, item, entry, center)
+		return s.resolveNamedSpellItem(user, item, entry, targets, center)
 	case combat.ChargedItemEffect:
 		return s.resolveChargedItemEffect(user, item, entry, behaviour, targets)
 	case combat.ChargedItemGiantStrength:
@@ -247,6 +255,14 @@ func (s *State) chargedItemTargets(user combat.Fighter, entry gamepack.SpellEntr
 	center := combat.TilePoint{X: user.CombatX, Y: user.CombatY}
 	if !behaviour.CenterOnUser && s.combatSpellTargetsPoint {
 		center = s.combatSpellTargetPoint
+	}
+	// ★ 卷軸上唸得到主表裡任何一支法術，而其中 73 支 game pack 已經宣告過目標
+	// 模式（記憶施法走的就是那一條）。**唸卷軸與記憶施法選目標的方式必須一樣**，
+	// 所以宣告過的優先走既有那條，不要在這裡再判一次。
+	if definition, found := s.combatPlayerSpellDefinition(uint8(entry.SpellID)); found {
+		if targets := s.effectSpellTargets(user, uint8(entry.SpellID), definition.TargetMode); len(targets) > 0 {
+			return targets, center, nil
+		}
 	}
 	switch entry.TargetModeKind {
 	case "self":
@@ -505,8 +521,22 @@ func (s *State) chargedItemMessage(user combat.Fighter, item monster.ItemRecord,
 // ★ 三支都走既有的施法路，只有一個差別：**等級一律 6**（`itemCasterLevel`）。
 // 所以火球魔杖永遠是 6d6，不會因為誰拿著而變強。
 func (s *State) resolveNamedSpellItem(user combat.Fighter, item monster.ItemRecord,
-	entry gamepack.SpellEntry, center combat.TilePoint) (bool, error) {
+	entry gamepack.SpellEntry, targets []string, center combat.TilePoint) (bool, error) {
 	switch uint8(entry.SpellID) {
+	case MagicMissileSpellID:
+		if len(targets) == 0 {
+			return false, fmt.Errorf("item %q has no target", item.Name)
+		}
+		result, err := s.battle.CastMagicMissile(user.ID, targets[0], itemCasterLevel)
+		if err != nil {
+			return false, err
+		}
+		s.requestSound(SoundSpellHit)
+		target, _ := s.fighter(targets[0])
+		s.combatMessage = fmt.Sprintf(
+			s.catalog.Text("combat_item_damage", "combat_item_damage"),
+			user.Name, item.Name, target.Name, result.Damage)
+		return true, nil
 	case FireballSpellID:
 		result, err := s.battle.CastFireball(user.ID, center, itemCasterLevel)
 		if err != nil {

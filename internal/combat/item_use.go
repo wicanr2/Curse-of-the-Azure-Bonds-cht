@@ -1,5 +1,7 @@
 package combat
 
+import "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
+
 // 充能物品在戰鬥裡按 `使用` 會做什麼（spec 921 的分派、spec 1169 的九支 handler）。
 //
 // ★ 為什麼是一張表而不是九段程式碼。 目標模式、豁免種類、效果碼、持續時間係數
@@ -54,7 +56,7 @@ type ChargedItemBehaviour struct {
 }
 
 // chargedItemBehaviours 的鍵是效果編號 ＝ 物品的 `+3Dh and 7Fh`（spec 921）。
-// 十二個編號就是六章 253 件物品用到的全部（`docs/audit/combat-item-use.md`）。
+// 十四個編號就是六章 253 件物品用到的全部（`docs/audit/combat-item-use.md`）。
 var chargedItemBehaviours = map[uint8]ChargedItemBehaviour{
 	// 有名字的法術：魔杖裡裝的是火球／閃電／冰風暴本人。
 	0x2F: {Shape: ChargedItemNamedSpell},
@@ -68,6 +70,11 @@ var chargedItemBehaviours = map[uint8]ChargedItemBehaviour{
 	0x3F: {Shape: ChargedItemEffect, MessageKey: "combat_item_invisible"},
 	0x40: {Shape: ChargedItemAreaDamage, Dice: SpellDamageFormula{Sides: 6}, RandomDiceCount: true},
 	0x41: {Shape: ChargedItemDamage, Dice: SpellDamageFormula{Count: 2, Sides: 4, Bonus: 2}},
+	// `5Fh`／`60h` 的持有者是三件**名字叫 `Scroll` 但槽是 `0Ah`** 的物品
+	// （spec 1171）：原作把它們當充能物品，不走卷軸那條路。兩支 handler 都是
+	// 「只套 `+0Ah`、沒有訊息」的形狀。
+	0x5F: {Shape: ChargedItemEffect},
+	0x60: {Shape: ChargedItemEffect},
 	0x61: {Shape: ChargedItemEffect},
 	0x62: {Shape: ChargedItemAreaDamage, Dice: SpellDamageFormula{Count: 6, Sides: 6},
 		CenterOnUser: true, RaceTypeOnly: 0x12},
@@ -141,6 +148,11 @@ func (b *Battle) FighterHasAffect(fighterID string, kind uint8) bool {
 	return false
 }
 
+// namedItemSpells 是骰數**算出來**（不在 spec 1124 的立即數表裡）而 remake 另有
+// 專屬結算的那幾支：魔法飛彈 `(等級＋1) div 2` 顆、火球與閃電 `等級d6`。
+// 卷軸上唸得到它們，所以要走 `ChargedItemNamedSpell` 那條路。
+var namedItemSpells = map[uint8]bool{0x0F: true, 0x2F: true, 0x33: true}
+
 // RollDie 擲一顆 `1..sides`。物品效果的持續時間要它（`(1d4 ＋ 4) × 10`），
 // 而那條算式在原作是 handler 自己擲的，不在屬性表裡。
 func (b *Battle) RollDie(sides int) int {
@@ -148,4 +160,49 @@ func (b *Battle) RollDie(sides int) int {
 		return 0
 	}
 	return b.rng.Intn(sides) + 1
+}
+
+// DeriveSpellItemBehaviour 推出「卷軸上的一支法術」該怎麼結算。
+//
+// ★ 卷軸不像充能物品只有十幾個效果——三個槽裡可以是主表裡任何一支法術，
+// 所以這一條不查手寫的表，改**照兩張原版表推**：
+//
+//	屬性表 `+0Ah` 非 0  → 套效果（spec 1117 那條資料驅動的路）
+//	`+0Ah` ＝ 0        → 傷害／治療在 handler 裡，查 spec 1124 的骰子表
+//
+// ⚠ 兩張表都答不出來就回 false——那代表**那一支 handler 還沒讀**。呼叫端要當成
+// 錯誤，不可以退回「什麼都沒發生」：安靜地失敗會把卷軸吃掉。
+func DeriveSpellItemBehaviour(spellID uint8, effectID int, area bool) (ChargedItemBehaviour, bool) {
+	if behaviour, ok := LookupChargedItemBehaviour(spellID); ok {
+		return behaviour, true
+	}
+	if namedItemSpells[spellID] {
+		return ChargedItemBehaviour{Shape: ChargedItemNamedSpell}, true
+	}
+	if effectID != 0 {
+		return ChargedItemBehaviour{Shape: ChargedItemEffect}, true
+	}
+	table, err := gamepack.SpellDamage()
+	if err != nil {
+		return ChargedItemBehaviour{}, false
+	}
+	outcome, found := table.Outcome(spellID)
+	if !found {
+		return ChargedItemBehaviour{}, false
+	}
+	count, sides, bonus, ok := table.Dice(spellID)
+	if !ok {
+		return ChargedItemBehaviour{}, false
+	}
+	dice := SpellDamageFormula{Count: count, Sides: sides, Bonus: bonus}
+	switch outcome {
+	case "heal":
+		return ChargedItemBehaviour{Shape: ChargedItemHeal, Dice: dice}, true
+	case "damage":
+		if area {
+			return ChargedItemBehaviour{Shape: ChargedItemAreaDamage, Dice: dice}, true
+		}
+		return ChargedItemBehaviour{Shape: ChargedItemDamage, Dice: dice}, true
+	}
+	return ChargedItemBehaviour{}, false
 }
