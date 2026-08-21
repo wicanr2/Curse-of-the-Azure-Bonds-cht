@@ -98,6 +98,10 @@ type RunResult struct {
 	ProtectionRequests     []uint16
 	ClockRequests          []ClockRequest
 	TreasureRequests       []TreasureRequest
+	// ClearMonstersRequested 為真代表這一次執行跑過 `1Ch CLEARMONSTERS`。
+	// 上層要據此把**跨執行累積**的戰利品堆一起丟掉——`result` 裡的那一份已經
+	// 在指令當下清掉了。
+	ClearMonstersRequested bool
 	RobRequests            []RobRequest
 	PartyStrengthRequests  []PartyStrengthRequest
 	PartySurpriseRequests  []PartySurpriseRequest
@@ -1553,6 +1557,17 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				if runtime != nil {
 					runtime.MonsterSpawns = nil
 				}
+				// ★ `1Ch` 的名字只講了一半：它同時把**還沒領走的戰利品堆**丟掉。
+				// 原作在 `120Eh` 把 `DS:6F70h` 起的 28 個位元組歸零（七種貨幣／
+				// 寶石／珠寶的池，spec 1059），並沿 `DS:6F8Ch` 鏈逐節點
+				// `FreeMem(63)`（`27h TREASURE` 串進去的物品節點，spec 1087）。
+				//
+				// corpus 的慣用法是「先 `1Ch` 清乾淨，再 `LOAD MONSTER` ＋
+				// `TREASURE` 擺下一場」，所以清掉同一次執行裡**排在前面**的
+				// 戰利品請求才是對的順序——這裡直接清 `result`，順序由執行本身
+				// 決定，不必事後猜。
+				result.TreasureRequests = nil
+				result.ClearMonstersRequested = true
 			}
 			if instruction.Command.Opcode == 0x27 {
 				request := TreasureRequest{}
