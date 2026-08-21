@@ -13,7 +13,7 @@ opcode 名稱／arity」與「已證實 runtime semantics」分開；command tab
 | `09`–`14` | SAVE／LOAD CHARACTER／LOAD MONSTER／SETUP MONSTER／APPROACH／PICTURE／…／COMPARE AND | 2/1/3/3/0/1/…/4 | partial signal／bounded |
 | `15`–`1F` | menus／IF variants／CLEARMONSTERS／party checks | variable／fixed | partial |
 | `20`–`2C` | NEWECL／LOAD FILES／surprise／COMBAT／ON branches／treasure／menus／PARLAY | variable | partial signal／bounded |
-| `2D` | CALL | 1 | typed external-call signal；CoAB 已接三個 observed address |
+| `2D` | CALL | 1 | typed external-call signal；CoAB 用到四個 operand，都已接 |
 | `2E` | DAMAGE | 5 | bounded raw signal（flags／dice／bonus／save flags） |
 | `2F`–`30` | AND／OR | 3/3 | bounded 16-bit memory destination |
 | `31`–`40` | sprite／item／clock／save table／NPC／pieces／PROGRAM／WHO／delay／spell／protection／… | variable | partial signal／bounded |
@@ -195,8 +195,9 @@ CoAB 的 `PROGRAM (0x38)` 已確認 0/3/8/9 都是「停止本輪 VM，再交給
 UI。CoAB remake 讓一般選單與 combat continuation 共用同一 adapter，避免戰後吞掉勝利。
 
 `CALL (0x2D)` 的 raw operand 不能直接當 code pointer：CoAB dispatch 先做 unsigned
-`operand - 0x7FFF`。已觀察 raw `0x2E10/0xC01E/0xB200` 分別是 redraw、forced
-`MovePositionForward` 與 sound A/B。forced move 是 16×16 cardinal wrap 且不檢查碰撞；
+`operand - 0x7FFF`。CoAB 用到的四個 raw operand 是 `0x2E10`（重畫）、`0xC01E`
+（`MOVEFORWARD`）、`0xB200`（音效）與 `0x6803`（圖片序列推一格）。forced move 是
+16×16 cardinal wrap 且不檢查碰撞；
 玩家按鍵 movement 的門／牆阻擋不可誤套到 script CALL。其他作品必須重新驗證 dispatch
 base 與 address table，不可直接沿用 CoAB 位址。
 
@@ -237,9 +238,9 @@ dual-class gate 同樣是 player rules adapter：DOS `0xE5 HitDice` 在 active c
 4. 作品 adapter：CoAB State 已處理該 request；
 5. real-image regression：原始 ECL 分支已由玩家流程鎖定。
 
-例如 `CALL (0x2D)` 已達 typed signal，CoAB 的 `0x2E10／0xC01E／0xB200` 也有作品
-adapter 與 regression，但未知 address 仍只有保留 request；不能把整個 opcode 宣稱為
-完整 DOS external dispatch。`PICTURE／LOAD FILES／TREASURE／LOAD PIECES／SPELL／
+例如 `CALL (0x2D)` 已達 typed signal，CoAB 用到的四個 operand 都有作品 adapter 與
+regression，但未知 address 仍只有保留 request；不能把整個 opcode 宣稱為完整 DOS
+external dispatch。`PICTURE／LOAD FILES／TREASURE／LOAD PIECES／SPELL／
 PROTECTION` 也都已超過 no-op framing，runtime 註解與本表應依這五層維持一致。
 
 ## Signal 時序與 exactly-once
@@ -275,11 +276,13 @@ selection cursor；State 不可先攔下 PARLAY 顯示泛用文案，否則原 s
 SLY／NICE 等分支永遠無法執行。共用 VM 不得直接複製未知 behavior mode 到
 destination；缺少 engine context 的 case 必須保留 boundary。
 
-`APPROACH (0x0D)` 是 encounter presentation command，不是未知 opcode 或
-ECL memory mutation。CoAB reference 會讓 encounter sprite 靠近隊伍；共用
-runner 以 ordered count 保存 intent，frontend 再依 encounter distance／sprite
-state 呈現。runner error 不得在 State adapter 被丟棄，否則真正的 unsupported
-command 會被誤顯示成空白劇情並污染後續 selection offsets。
+`APPROACH (0x0D)` 是 encounter presentation command，但它**會動 ECL 記憶體**：
+原作 `overlay-02:0801h` 在遭遇距離大於 0 時把它減一，再用新的距離重畫遭遇圖；
+距離是 0 就整支跳過（spec 1146；距離格在 CoAB 是 `7EC1h`）。共用 runner 以
+ordered count 保存演出 intent，並在距離非 0 時真的減一。★ 這個減一**不決定選單
+內容**——`29h ENCOUNTER MENU` 進門會重新從地圖算距離並夾住，把減掉的蓋回去。
+runner error 不得在 State adapter 被丟棄，否則真正的 unsupported command 會被
+誤顯示成空白劇情並污染後續 selection offsets。
 
 HORIZONTAL／VERTICAL MENU 的 option label 不等於 engine command。ECL5 block
 `0x33 +0x0193` 的普通四選單恰好命名為 `COMBAT/WAIT/FLEE/PARLAY`，但只有

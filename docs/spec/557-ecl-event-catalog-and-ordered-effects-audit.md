@@ -100,6 +100,9 @@ Docker 內以 Go 1.24.13、暫存 `modfile` 將鎖版 private engine dependency 
 - `go test ./internal/eclcatalog ./internal/ecl ./cmd/ecl-event-catalog`
 - 連續生成與 `-check／-check-summary` byte-for-byte 相符。
 - 統計固定為：6 members、25 blocks、125 entries、**4,222** instructions、**154** candidates。
+  ⚠ 這是**當時那份產物**的數字，也是 committed 的那份現在還在的數字；走訪後來又修過，
+  現跑 `cmd/ecl-event-catalog` 是 **14,177** 條、**701** 個候選，而它目前重生不出來
+  （見 `WORKLIST.md` 的 ⚠）。要分母請用 `cmd/ecl-effect-coverage`。
   （`20h NEWECL` 與立即值 3／9 的 `38h PROGRAM` 是終止指令，不切在它們後面會併出假候選；
   `IF` 條件不成立時跳過下一條，不走那條路會漏掉三分之二的程式碼——見 spec 1104 §九與 spec 1106。）
 

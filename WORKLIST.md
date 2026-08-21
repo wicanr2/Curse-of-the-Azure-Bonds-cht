@@ -79,21 +79,34 @@ overlay 與某個十六進位值」的檔案，而**它自己的輸出就在 `do
 （同樣輸入兩次輸出相同），只是「跑一次就 commit」可能留下非不動點的版本。
 影響僅止於提示欄的檔名清單，不動任何狀態判定。
 
-⚠ **`cmd/ecl-event-catalog` 目前兩道 fail-closed 閘都是紅的**（2026-08-21 第 619 輪
-量到，成因在本輪之前）——所以 `docs/audit/ecl-event-catalog.*` 與
-`docs/audit/ecl-opcode-effect-phases.*` **四份產物現在都重生不出來**：
+⚠ **`docs/audit/ecl-event-catalog.*` 這份 committed 產物比現況落後 3.4 倍，而且
+重生不出來**（2026-08-21 第 619 輪量到，成因在本輪之前）：
+
+| | committed 的那份 | 現跑 `cmd/ecl-event-catalog` |
+|---|---:|---:|
+| 靜態可達 instruction | 4,222 | **14,177** |
+| 跨 effect-kind 候選 | 154 | **701** |
+| corpus 出現的 opcode | 55 | **61** |
+| 其中 `2Dh CALL` | 78 | **168** |
+
+現跑的 14,177 與 `cmd/ecl-effect-coverage` 的分母**完全一致**，所以現跑那份才是對的；
+committed 那份停在走訪修好之前。**任何拿事件目錄數出來的數字都要先確認是不是這個坑**
+——它會系統性少報，而少報的方向剛好是「看起來已經數完了」。
+
+重生被兩道 fail-closed 閘擋著，兩道都是設計上該擋：
 
 - 帶預設的 `-reviews`：`candidate review ECL4.DAX/0x23/0x0130-0x019D does not match
-  the current corpus`。審查台帳裡有一個 candidate ID 不在目前 corpus，照 `AGENTS.md`
-  §12 這種情況必須失敗即關閉，要重新審那個候選、不能模糊比對。
+  the current corpus`。候選 ID 由 `member/block/start-end` 組成，走訪一變 ID 就跟著變；
+  照 `AGENTS.md` §12 必須失敗即關閉，要重新審那個候選，不能模糊比對。
 - 關掉 reviews（`-reviews=`）：`ordered-effect phase ledger is missing corpus opcodes
   0x1E, 0x26, 0x2C, 0x30, 0x34, 0x3B`。`internal/eclcatalog/phases.go` 的表少這六支，
-  而它們在目前 corpus 裡是可達的——覆蓋率閘擋下來了，這正是它該做的事。
+  而它們在**現在的** corpus 裡是可達的。
 
-⇒ 連帶影響：phase 台帳對 `0Dh`（spec 1146 已讀完，表上仍是 `unknown`）與 `2Dh`
-（spec 1150 已讀完）是**過期的**。改 `phases.go` 但重生不了產物只是把不一致換個地方
-放，所以這一輪沒有動它。要收就是一件事：補那六支的分類 ＋ 重審那個 candidate ＋
-重生四份產物。
+⇒ 連帶影響：phase 台帳（55 列、25 支已分類、30 支 `unknown`）也重生不出來，對 `0Dh`
+（spec 1146 已讀完，表上仍是 `unknown`）與 `2Dh`（spec 1150）是**過期的**。改
+`phases.go` 但重生不了產物只是把不一致換個地方放，所以這一輪沒有動它。要收是一件事：
+補那六支的分類 ＋ 重審那個 candidate ＋ 重生四份產物，順便把所有引用 4,222／154 的
+文件一起改。
 
 ⚠ 三個**已量到但還沒排工作**的小缺口（都不擋主線，理由與代價都寫清楚了）：
 
@@ -345,7 +358,7 @@ coverage 代替全系統閉合。
    輪 transaction 覆蓋，並補 PC-98 IDA、真實 DAX pause／resume 與候選審查台帳；
    下一組改為 ECL2 block `0x02 +04BC..+053A` 的 `COMBAT → text`，再逐步建立全域
    ordered effects／exactly-once 規格。不得重做已標 `covered/exact` 的三組候選。
-2. `P0-RE-2`：靜態層已完成 6 DAX／25 block／125 entry／1,355 instruction 的可重生
+2. `P0-RE-2`：靜態層已完成 6 DAX／25 block／125 entry／14,177 instruction 的可重生
    清冊；下一步回填動態 edge、條件旗標、座標／terrain、external routine、resume
    與每項 R1–R5，不把 33 個靜態候選冒稱 runtime order。
 3. `P0-RE-3`：統一 spec 狀態、IDA 腳本引用與可重生報告；舊逐輪文章只作歷史。
