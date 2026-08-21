@@ -120,8 +120,16 @@ type RunResult struct {
 // ECL `2Dh CALL` 的運算元是 external routine 的選擇子（`selector = 運算元 −
 // 7FFFh`，spec 561）。原作的分派器認得七個，CoAB 的腳本用到四個：
 // `2E10h` 重畫、`C01Eh` 前進一格、`B200h` 播音效、`6803h` 推圖片序列一格。
-// 只有 `6803h` 在 remake 這一側有自己的狀態要記（spec 1150）。
-const ExternalCallAdvancePictureFrame = 0x6803
+// `6803h` 與 `2E10h` 在 remake 這一側各有自己的狀態要記（spec 1150）。
+const (
+	ExternalCallAdvancePictureFrame = 0x6803
+	// ExternalCallRedrawView 是「髒了才重畫」那一支。它**不是無條件重畫**：
+	// 原作先看那五個髒旗標，重畫之後再把它們清掉。
+	ExternalCallRedrawView = 0x2E10
+	// ExternalCallMoveForward 是強制前進一格（原作那一支不做碰撞判斷）。
+	// 它**當場**改地圖暫存器，所以鏡射要在 VM 裡跟著走。
+	ExternalCallMoveForward = 0xC01E
+)
 
 // MemoryWrite preserves one numeric SAVE/SAVE TABLE side effect from the
 // current bounded transaction. The VM owns memory mutation; adapters use this
@@ -147,6 +155,10 @@ type CallRequest struct {
 	BlockID uint8
 	// Sequence 與 MemoryWrite.Sequence 共用同一條執行序計數。
 	Sequence int
+	// View 是這條 `CALL` 執行的那一刻，`720Fh`／`7210h`／`7211h` 與五個髒旗標
+	// 的值（spec 1150）。`2E10h` 的呼叫端照它決定要不要投影座標——**不要**再
+	// 回頭掃 `SaveWrites`，那個視窗跨不了執行也跨不了 block。
+	View ViewMirror
 }
 
 // NPCRequest preserves both operands consumed by CMD_AddNPC. Morale is later
@@ -487,6 +499,11 @@ type RuntimeState struct {
 	MonsterSetup        *MonsterSetup
 	MonsterSpawns       []MonsterSpawn
 	Random              *randomstream.Stream
+	// View 是 `720Fh`／`7210h`／`7211h` 與五個髒旗標的鏡射（spec 1150）。
+	// 它跟著 shared state 走，所以跨 block 也保留——原作那幾格就是全域。
+	View ViewMirror
+	// CurrentBlock 是正在執行的 block，`ViewMirror` 用它記「這筆座標是誰寫的」。
+	CurrentBlock uint8
 }
 
 func NewRuntimeState(start int) *RuntimeState {
@@ -661,6 +678,10 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 	// 記；只記 `09h SAVE` 會漏掉 `ADD`／`SUBTRACT`／`GETTABLE` 那 21 處座標寫入
 	// （spec 1159）。
 	recordStore := func(address, value uint16, at int) {
+		// ★ 原作的 `STOREVALUE` 在這一刻就把座標鏡射到 `720Fh`／`7210h`／`7211h`
+		// 並立髒旗標（spec 1150）。這裡是 remake 唯一那條寫入路徑，所以鏡射
+		// 也只接在這裡一處。
+		runtime.View.Store(address, value, runtime.CurrentBlock)
 		eventSequence++
 		result.SaveWrites = append(result.SaveWrites, MemoryWrite{
 			Address:  address,
@@ -1168,13 +1189,25 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			// routine-specific DOS side effect to a later adapter.
 			result.CallAddresses = append(result.CallAddresses, address)
 			eventSequence++
-			result.CallRequests = append(result.CallRequests, CallRequest{
+			request := CallRequest{
 				Address:  address,
 				PC:       pc,
 				Sequence: eventSequence,
-			})
+				View:     runtime.View,
+			}
+			result.CallRequests = append(result.CallRequests, request)
 			if address == ExternalCallAdvancePictureFrame {
 				result.PictureFrameAdvances++
+			}
+			if address == ExternalCallMoveForward {
+				// 原作走完一步就把新座標留在地圖暫存器裡，同一次執行裡排在
+				// 後面的重畫看得到（spec 1172）。
+				runtime.View.StepForward()
+			}
+			if address == ExternalCallRedrawView {
+				// 原作重畫之後把那五個旗標逐個清掉，所以同一批寫入不會被投影
+				// 兩次（spec 1150）。
+				runtime.View.ClearDirty()
 			}
 		case 0x3A: // DELAY
 			// GameDelay is an engine timing boundary with no ECL memory side
@@ -1638,7 +1671,11 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				// ★ 先前 `0FFh` 是**什麼都不做**——原作在那裡是把圖關掉。
 				if value == 0xFF {
 					result.PictureCloseRequested = true
+					// 關圖那一支（`08E9h`）清 `8B62h`／`8B65h` 再重繪。
+					runtime.View.Dirty &^= ViewDirtyPicture | ViewDirtyWindow
 				} else {
+					// 開圖立 `8B62h`。
+					runtime.View.Dirty |= ViewDirtyPicture
 					result.PictureRequested = true
 					result.PictureBlock = value
 					result.BigPictureRequested = value >= 0x78
@@ -1737,6 +1774,8 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				// `ECL2.DAX/0x02 +0CCBh` 用它接 `2Dh CALL 2E10h`（畫面提交點）
 				// 再開新頁：逃走之後那隻怪物不該還留在畫面上。
 				result.SpriteOffRequested = true
+				// `31h SPRITE OFF` 清 `8B65h`（spec 1150 的旗標表）。
+				runtime.View.Dirty &^= ViewDirtyWindow
 			}
 			if instruction.Command.Opcode == 0x3D {
 				// `3Dh CLEAR BOX` 把文字框清空但**不印任何東西**。原作用它在

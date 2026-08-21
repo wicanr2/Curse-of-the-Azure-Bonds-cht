@@ -37,19 +37,16 @@ func TestRedrawRefreshesTerrainOnlyWhenTheScriptMovedTheParty(t *testing.T) {
 
 	for _, probe := range []struct {
 		name      string
-		writes    []ecl.MemoryWrite
+		writes    [][2]uint16
 		wantX     int
 		wantY     int
 		wantRoof  uint8
 		reasoning string
 	}{
 		{
-			name: "腳本搬了隊伍",
-			writes: []ecl.MemoryWrite{
-				{Address: 0xC04B, Value: 5, PC: 0x1000, BlockID: 0x01, Sequence: 1},
-				{Address: 0xC04C, Value: 3, PC: 0x1006, BlockID: 0x01, Sequence: 2},
-			},
-			wantX: 5, wantY: 3, wantRoof: to,
+			name:   "腳本搬了隊伍",
+			writes: [][2]uint16{{0xC04B, 5}, {0xC04C, 3}},
+			wantX:  5, wantY: 3, wantRoof: to,
 			reasoning: "重畫要把 (5,3) 的地形碼讀回來",
 		},
 		{
@@ -76,9 +73,9 @@ func TestRedrawRefreshesTerrainOnlyWhenTheScriptMovedTheParty(t *testing.T) {
 				SessionEndBlockID:    0x01,
 				SessionBlockRangeSet: true,
 				CallRequests: []ecl.CallRequest{
-					{Address: 0x2E10, PC: 0x100C, BlockID: 0x01, Sequence: 3},
+					{Address: 0x2E10, PC: 0x100C, BlockID: 0x01, Sequence: 3,
+						View: scriptView(0x01, probe.writes...)},
 				},
-				SaveWrites: probe.writes,
 			})
 			if state.DungeonX != probe.wantX || state.DungeonY != probe.wantY ||
 				state.DungeonWallRoof != probe.wantRoof {

@@ -38,6 +38,16 @@ func TestApplyECLCallSignalsMovesForwardAndWraps(t *testing.T) {
 	}
 }
 
+// scriptView 用 VM 那支 `ViewMirror.Store` 建出鏡射——**不要在測試裡手寫鏡射
+// 的欄位**，那會變成第二份規則，改了 VM 也不會紅（spec 1172）。
+func scriptView(block uint8, writes ...[2]uint16) ecl.ViewMirror {
+	var view ecl.ViewMirror
+	for _, write := range writes {
+		view.Store(write[0], write[1], block)
+	}
+	return view
+}
+
 func TestApplyECLCallSignalsPreservesOrderAndDefaultSound(t *testing.T) {
 	state := State{}
 	state.applyECLCallSignals(ecl.RunResult{CallAddresses: []uint16{0x2E10, 0xB200, 0x9999}})
@@ -74,12 +84,9 @@ func TestApplyECLCallSignalsRedrawProjectsSameBlockDungeonRegisters(t *testing.T
 		SessionEndBlockID:    0x42,
 		SessionBlockRangeSet: true,
 		CallRequests: []ecl.CallRequest{
-			{Address: 0x2E10, PC: 0x1096, BlockID: 0x42, Sequence: 4},
-		},
-		SaveWrites: []ecl.MemoryWrite{
-			{Address: 0xC04B, Value: 11, PC: 0x1084, BlockID: 0x42, Sequence: 1},
-			{Address: 0xC04C, Value: 10, PC: 0x108A, BlockID: 0x42, Sequence: 2},
-			{Address: 0xC04D, Value: 2, PC: 0x1090, BlockID: 0x42, Sequence: 3},
+			{Address: 0x2E10, PC: 0x1096, BlockID: 0x42, Sequence: 4,
+				View: scriptView(0x42,
+					[2]uint16{0xC04B, 11}, [2]uint16{0xC04C, 10}, [2]uint16{0xC04D, 2})},
 		},
 	})
 
@@ -181,11 +188,8 @@ func TestApplyECLCallSignalsRedrawProjectsOnlyFreshRegisters(t *testing.T) {
 		SessionEndBlockID:    0x42,
 		SessionBlockRangeSet: true,
 		CallRequests: []ecl.CallRequest{
-			{Address: 0x2E10, PC: 0x13DB, BlockID: 0x42, Sequence: 3},
-		},
-		SaveWrites: []ecl.MemoryWrite{
-			{Address: 0xC04B, Value: 10, PC: 0x13CF, BlockID: 0x42, Sequence: 1},
-			{Address: 0xC04D, Value: 0, PC: 0x13D5, BlockID: 0x42, Sequence: 2},
+			{Address: 0x2E10, PC: 0x13DB, BlockID: 0x42, Sequence: 3,
+				View: scriptView(0x42, [2]uint16{0xC04B, 10}, [2]uint16{0xC04D, 0})},
 		},
 	})
 
@@ -223,11 +227,8 @@ func TestApplyECLCallSignalsRedrawWithoutFacingStillMovesTheParty(t *testing.T) 
 		SessionEndBlockID:    0x01,
 		SessionBlockRangeSet: true,
 		CallRequests: []ecl.CallRequest{
-			{Address: 0x2E10, PC: 0x1452, BlockID: 0x01, Sequence: 3},
-		},
-		SaveWrites: []ecl.MemoryWrite{
-			{Address: 0xC04B, Value: 0, PC: 0x1444, BlockID: 0x01, Sequence: 1},
-			{Address: 0xC04C, Value: 0, PC: 0x144B, BlockID: 0x01, Sequence: 2},
+			{Address: 0x2E10, PC: 0x1452, BlockID: 0x01, Sequence: 3,
+				View: scriptView(0x01, [2]uint16{0xC04B, 0}, [2]uint16{0xC04C, 0})},
 		},
 	})
 
@@ -272,44 +273,6 @@ func TestApplyECLCallSignalsCarriesPictureFrameCursor(t *testing.T) {
 	}
 }
 
-// TestApplyECLCallSignalsUsesExecutionOrderNotPC 是直接的回歸擋板。
-//
-// fixture 裡有一次**反向跳躍**：`CALL` 之後腳本跳回較小的 PC 又寫了一輪座標。
-// 那一輪的 PC 比 `CALL` 小，所以「PC 比 CALL 小就是先發生」會把它算進來、
-// 挑到 (7,8,2)；用執行序才會正確地把它排除、挑到 `CALL` 之前的 (3,4,0)。
-//
-// ⚠ 沒有這一條，把 `write.Sequence >= call.Sequence` 改回 `write.PC >= call.PC`
-// 仍然全綠（spec 1156）。
-func TestApplyECLCallSignalsUsesExecutionOrderNotPC(t *testing.T) {
-	session, err := ecl.NewBlockSession(map[uint8][]byte{0x42: {0, 0}}, 0x42)
-	if err != nil {
-		t.Fatal(err)
-	}
-	state := State{session: session, DungeonX: 1, DungeonY: 1, DungeonDirection: 0}
-	state.Area.InDungeon = true
-
-	state.applyECLCallSignals(ecl.RunResult{
-		CallAddresses:        []uint16{0x2E10},
-		SessionStartBlockID:  0x42,
-		SessionEndBlockID:    0x42,
-		SessionBlockRangeSet: true,
-		CallRequests: []ecl.CallRequest{
-			{Address: 0x2E10, PC: 0x0200, BlockID: 0x42, Sequence: 4},
-		},
-		SaveWrites: []ecl.MemoryWrite{
-			// `CALL` 之前這一輪：執行序 1..3、PC 也比 `CALL` 小。
-			{Address: 0xC04B, Value: 3, PC: 0x0100, BlockID: 0x42, Sequence: 1},
-			{Address: 0xC04C, Value: 4, PC: 0x0106, BlockID: 0x42, Sequence: 2},
-			{Address: 0xC04D, Value: 0, PC: 0x010C, BlockID: 0x42, Sequence: 3},
-			// `CALL` **之後**跳回去又寫一輪：執行序 5..7，但 PC 仍比 `CALL` 小。
-			{Address: 0xC04B, Value: 7, PC: 0x0080, BlockID: 0x42, Sequence: 5},
-			{Address: 0xC04C, Value: 8, PC: 0x0086, BlockID: 0x42, Sequence: 6},
-			{Address: 0xC04D, Value: 2, PC: 0x008C, BlockID: 0x42, Sequence: 7},
-		},
-	})
-
-	if state.DungeonX != 3 || state.DungeonY != 4 || state.DungeonDirection != 0 {
-		t.Fatalf("投影用的是 PC 順序而不是執行序：位置 ＝ (%d,%d,%d)，預期 (3,4,0)",
-			state.DungeonX, state.DungeonY, state.DungeonDirection)
-	}
-}
+// 執行序這件事現在由 VM 的鏡射結構性地保證（`CALL` 當下複製一份），
+// 回歸擋板搬到 `internal/ecl` 的 `TestViewMirrorSnapshotIsTakenAtTheCall`，
+// 那一支跑的是真的 bytecode 而不是手寫的 fixture（spec 1172）。

@@ -118,6 +118,18 @@ func (s *BlockSession) SetMemoryValue(address, value uint16) {
 		return
 	}
 	state.Memory[address] = value
+	// 引擎自己搬隊伍時要同步 `720Fh` 那三格，**但不弄髒**——原作那一側寫的是
+	// 全域本身，不經過 `STOREVALUE`（spec 1150）。
+	state.View.Adopt(address, value)
+}
+
+// View 回傳目前的畫面鏡射（`720Fh`／`7210h`／`7211h` 與五個髒旗標）。
+func (s *BlockSession) View() ViewMirror {
+	state := s.states[s.current]
+	if state == nil {
+		return ViewMirror{}
+	}
+	return state.View
 }
 
 // ResetRandomSeed starts a new deterministic PRNG stream without resetting
@@ -366,6 +378,13 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 		SessionEndBlockID:    s.current,
 		SessionBlockRangeSet: true,
 	}
+	if state := s.states[s.current]; state != nil {
+		// ⚠ `Written` 是 remake 這一側的補丁，不是原作的東西：它記「腳本這一次
+		// 執行寫過三格中的哪幾格」。每一次頂層執行重新起算——原作不需要，因為
+		// 它的引擎每走一步都回寫 `720Fh`，三格永遠與真實位置同步；remake 有
+		// 好幾條位置變動路徑不經過 ECL 暫存器（spec 1172）。
+		state.View.Written = 0
+	}
 	var err error
 	selectionOffset := s.selectionOffset
 	// sequenceBase 把每一段 sub-run 各自從 1 起算的執行序接成一條。
@@ -391,6 +410,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 			remainingStrings = nil
 		}
 		runtime := s.states[s.current]
+		runtime.CurrentBlock = s.current
 		if !runtime.Started {
 			runtime.PC = start
 			// SetMemoryValue may seed Area/player/work memory before the first
