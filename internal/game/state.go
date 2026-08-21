@@ -344,6 +344,16 @@ type State struct {
 	// 載得進去的槽記 `{片, 槽}`，運算元是 `0FFh` 的槽記 `{0FFFFh, 0FFFFh}`
 	// （spec 1153）。remake 先前完全沒有寫這三格，存出來的檔一律是零。
 	wallSetParams [3]partySave.SAVGAMSetBlock
+
+	// geoCatalog 讓 `State` 自己讀得到目前這張地圖。
+	//
+	// ★ 原作的 `2E10h` 重畫是**自己去地圖讀**目前這一格的牆面與地形，寫進
+	// `C04E`／`C04F`；而每格事件的分派器 (`AND C04F, <遮罩>` ＋ `ON GOTO`)
+	// 就靠 `C04F`。remake 先前只在 `MoveDungeon` 這類「呼叫端傳 grid 進來」
+	// 的路徑上更新那兩格，所以**腳本傳送**（只寫 `C04B`／`C04C`）之後地形碼
+	// 還停在被搬走前那一格，接下來的事件會分派到錯的一支或什麼都不演
+	// （spec 1161）。
+	geoCatalog geo.Catalog
 }
 
 // playerIconBlocks are the four verified CHEAD/CBODY block families extracted
@@ -3962,6 +3972,9 @@ func (s *State) projectFreshDungeonCoordinatesBeforeCall(
 	}
 	if mask != 0 {
 		s.MapX, s.MapY = s.DungeonX, s.DungeonY
+		// 原作的重畫連牆面／地形一起重讀；不補這一步，接下來的每格事件會拿
+		// 被搬走前那一格的地形碼去分派（spec 1161）。
+		s.refreshDungeonTerrainFromMap()
 	}
 }
 
@@ -5424,6 +5437,33 @@ func (s *State) syncDungeonStateFromECLRegisters() {
 		s.DungeonDirection = uint8(value&3) * 2
 	}
 	s.MapX, s.MapY = s.DungeonX, s.DungeonY
+}
+
+// SetGeoCatalog 交給 `State` 一份原版 GEO 目錄。沒交也能跑——只是腳本傳送
+// 之後的牆面／地形要由呼叫端自己補（見 `geoCatalog` 的說明）。
+func (s *State) SetGeoCatalog(catalog geo.Catalog) { s.geoCatalog = catalog }
+
+// currentDungeonGrid 取目前所在的那張 GEO。
+func (s *State) currentDungeonGrid() (geo.Grid, bool) {
+	if s.geoCatalog.Len() == 0 {
+		return geo.Grid{}, false
+	}
+	return s.geoCatalog.Lookup(geo.MapRef{Set: s.GeoMapSet, BlockID: s.GeoMapBlock})
+}
+
+// refreshDungeonTerrainFromMap 照原作重畫的做法，把目前這一格的牆面與地形讀回
+// `C04E`／`C04F`。腳本只寫座標的傳送要靠這一步才接得上每格事件。
+func (s *State) refreshDungeonTerrainFromMap() {
+	grid, found := s.currentDungeonGrid()
+	if !found {
+		return
+	}
+	s.DungeonWallType, _ = grid.WallWrapped(s.DungeonX, s.DungeonY, int(s.DungeonDirection))
+	s.DungeonWallRoof = grid.CellWrapped(s.DungeonX, s.DungeonY).Terrain
+	if s.session != nil {
+		s.session.SetMemoryValue(0xC04E, uint16(s.DungeonWallType))
+		s.session.SetMemoryValue(0xC04F, uint16(s.DungeonWallRoof))
+	}
 }
 
 func (s *State) syncDungeonECLRegisters() {
