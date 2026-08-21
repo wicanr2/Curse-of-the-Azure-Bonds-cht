@@ -29,19 +29,19 @@
 
 | 位移 | 長度 | 欄位 | 狀態 | 出處 |
 |---|---:|---|---|---|
-| `+00h` | 42 | 名稱（右側補 NUL／空白） | `decoded` | spec 185 |
-| `+2Ah` | 4 | 物品鏈的 next（遠指標） | `documented` | spec 1000／832 |
-| `+2Eh` | 1 | 物品類型（索引 DS:5CF6h 那張 16 bytes 的類別表） | `decoded` | spec 1000／832 |
-| `+2Fh` | 3 | 名稱編號三格（未鑑定時顯示用） | `decoded` | spec 1036 |
-| `+32h` | 1 | 加值（有號） | `decoded` | spec 1036 |
-| `+33h` | 1 | 豁免用的加值 | `decoded` | spec 1036 |
-| `+34h` | 1 | 裝備中（非 0 ＝ 已裝備） | `decoded` | spec 1000／832 |
-| `+35h` | 1 | 名稱隱藏旗標 | `decoded` | spec 1036 |
-| `+36h` | 1 | 詛咒 | `decoded` | spec 1036 |
-| `+37h` | 2 | 單位重量（word） | `decoded` | spec 1000／762 |
-| `+39h` | 1 | 數量（重量與價值都要乘它） | `decoded` | spec 1000／762 |
-| `+3Ah` | 2 | 價值（word，有號） | `decoded` | spec 1035 |
-| `+3Ch` | 3 | 三個效果槽（`+3Ch`／`+3Dh`／`+3Eh`） | `decoded` | spec 803／807 |
+| `+00h` | 42 | 名稱（右側補 NUL／空白）；PC-98 是 `NAME: STR40` ＋ `TITLE` | `decoded` | spec 185／1165 |
+| `+2Ah` | 4 | 物品鏈的 next（遠指標）`NEXT` | `documented` | spec 1000／832 |
+| `+2Eh` | 1 | 物品類型 `ITEMPTR`（索引 DS:5CF6h 那張 16 bytes 的類別表） | `decoded` | spec 1000／832 |
+| `+2Fh` | 3 | 名稱編號三格 `NAMENUM`（未鑑定時顯示用） | `decoded` | spec 1036 |
+| `+32h` | 1 | 加值 `PLUS`（有號） | `decoded` | spec 1036 |
+| `+33h` | 1 | 豁免用的加值 `PLUSSAVE` | `decoded` | spec 1036 |
+| `+34h` | 1 | 裝備中 `READY`（非 0 ＝ 已裝備） | `decoded` | spec 1000／832 |
+| `+35h` | 1 | 鑑定位元 `IDENTIFIED`（remake 當成「哪幾格名稱要藏起來」的遮罩） | `decoded` | spec 1036／1165 |
+| `+36h` | 1 | 詛咒 `CURSED` | `decoded` | spec 1036 |
+| `+37h` | 2 | 單位重量 `ENCUMBERANCE`（word） | `decoded` | spec 1000／762 |
+| `+39h` | 1 | 數量 `NUMITEMS`（重量與價值都要乘它） | `decoded` | spec 1000／762 |
+| `+3Ah` | 2 | 價值 `VALUE`（word，有號） | `decoded` | spec 1035 |
+| `+3Ch` | 3 | 三個效果槽 `SPECIAL`（`+3Ch`／`+3Dh`／`+3Eh`） | `decoded` | spec 803／807 |
 
 ### .FX 效果記錄（9 bytes）
 
@@ -49,11 +49,11 @@
 
 | 位移 | 長度 | 欄位 | 狀態 | 出處 |
 |---|---:|---|---|---|
-| `+00h` | 1 | 效果碼 | `decoded` | spec 1005 |
-| `+01h` | 2 | 持續時間（word，分鐘） | `decoded` | spec 712 |
-| `+03h` | 1 | 強度（0FFh ＝ 永久） | `decoded` | spec 441 |
-| `+04h` | 1 | 生效旗標 | `decoded` | spec 441 |
-| `+05h` | 4 | 效果鏈的 next（遠指標，原樣保留） | `documented` | spec 1000 |
+| `+00h` | 1 | 效果碼 `EFFECTNUM` | `decoded` | spec 1005 |
+| `+01h` | 2 | 持續時間 `DURATION`（word，分鐘） | `decoded` | spec 712 |
+| `+03h` | 1 | `SPECIAL`（spec 441 讀成強度，`0FFh` ＝ 永久；兩種讀法待對） | `decoded` | spec 441／1165 |
+| `+04h` | 1 | 生效旗標 `SPECIALOFF` | `decoded` | spec 441／1165 |
+| `+05h` | 4 | 效果鏈的 next `NEXT`（遠指標，原樣保留） | `documented` | spec 1000 |
 
 ## 角色記錄逐段
 

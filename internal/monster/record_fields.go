@@ -26,29 +26,34 @@ type RecordField struct {
 // ★ `+2Ah` 是鏈結指標，不是名字的一部分。 名字只到 `+29h`；原作走物品鏈用的
 // 就是 `q := q^[2Ah]`（spec 1000／832）。把名字讀成 46 bytes 會把指標讀進字串，
 // 而那在英文原版看起來只是「名字後面有幾個怪字元」。
+//
+// ⚠ PC-98 的 `CHARITEMFILREC` 把這一段宣告成 `NAME: STR40`（41 bytes，
+// `+00h`..`+28h`）加一格 `TITLE`（`+29h`，boolean）——remake 這一側是把 42 bytes
+// 當右側補白的字串一起讀。兩種讀法在現有資料上結果相同（名字沒有長到 40 字），
+// 但 `+29h` 到底是不是名字的一部分還沒對過（spec 1165）。
 var ItemRecordFields = []RecordField{
-	{0x00, 42, "名稱（右側補 NUL／空白）", FieldDecoded, "185"},
-	{0x2A, 4, "物品鏈的 next（遠指標）", FieldDocumented, "1000／832"},
-	{0x2E, 1, "物品類型（索引 DS:5CF6h 那張 16 bytes 的類別表）", FieldDecoded, "1000／832"},
-	{0x2F, 3, "名稱編號三格（未鑑定時顯示用）", FieldDecoded, "1036"},
-	{0x32, 1, "加值（有號）", FieldDecoded, "1036"},
-	{0x33, 1, "豁免用的加值", FieldDecoded, "1036"},
-	{0x34, 1, "裝備中（非 0 ＝ 已裝備）", FieldDecoded, "1000／832"},
-	{0x35, 1, "名稱隱藏旗標", FieldDecoded, "1036"},
-	{0x36, 1, "詛咒", FieldDecoded, "1036"},
-	{0x37, 2, "單位重量（word）", FieldDecoded, "1000／762"},
-	{0x39, 1, "數量（重量與價值都要乘它）", FieldDecoded, "1000／762"},
-	{0x3A, 2, "價值（word，有號）", FieldDecoded, "1035"},
-	{0x3C, 3, "三個效果槽（`+3Ch`／`+3Dh`／`+3Eh`）", FieldDecoded, "803／807"},
+	{0x00, 42, "名稱（右側補 NUL／空白）；PC-98 是 `NAME: STR40` ＋ `TITLE`", FieldDecoded, "185／1165"},
+	{0x2A, 4, "物品鏈的 next（遠指標）`NEXT`", FieldDocumented, "1000／832"},
+	{0x2E, 1, "物品類型 `ITEMPTR`（索引 DS:5CF6h 那張 16 bytes 的類別表）", FieldDecoded, "1000／832"},
+	{0x2F, 3, "名稱編號三格 `NAMENUM`（未鑑定時顯示用）", FieldDecoded, "1036"},
+	{0x32, 1, "加值 `PLUS`（有號）", FieldDecoded, "1036"},
+	{0x33, 1, "豁免用的加值 `PLUSSAVE`", FieldDecoded, "1036"},
+	{0x34, 1, "裝備中 `READY`（非 0 ＝ 已裝備）", FieldDecoded, "1000／832"},
+	{0x35, 1, "鑑定位元 `IDENTIFIED`（remake 當成「哪幾格名稱要藏起來」的遮罩）", FieldDecoded, "1036／1165"},
+	{0x36, 1, "詛咒 `CURSED`", FieldDecoded, "1036"},
+	{0x37, 2, "單位重量 `ENCUMBERANCE`（word）", FieldDecoded, "1000／762"},
+	{0x39, 1, "數量 `NUMITEMS`（重量與價值都要乘它）", FieldDecoded, "1000／762"},
+	{0x3A, 2, "價值 `VALUE`（word，有號）", FieldDecoded, "1035"},
+	{0x3C, 3, "三個效果槽 `SPECIAL`（`+3Ch`／`+3Dh`／`+3Eh`）", FieldDecoded, "803／807"},
 }
 
 // AffectRecordFields 是 `.FX` 效果記錄（9 bytes）的逐段台帳。
 var AffectRecordFields = []RecordField{
-	{0x00, 1, "效果碼", FieldDecoded, "1005"},
-	{0x01, 2, "持續時間（word，分鐘）", FieldDecoded, "712"},
-	{0x03, 1, "強度（0FFh ＝ 永久）", FieldDecoded, "441"},
-	{0x04, 1, "生效旗標", FieldDecoded, "441"},
-	{0x05, 4, "效果鏈的 next（遠指標，原樣保留）", FieldDocumented, "1000"},
+	{0x00, 1, "效果碼 `EFFECTNUM`", FieldDecoded, "1005"},
+	{0x01, 2, "持續時間 `DURATION`（word，分鐘）", FieldDecoded, "712"},
+	{0x03, 1, "`SPECIAL`（spec 441 讀成強度，`0FFh` ＝ 永久；兩種讀法待對）", FieldDecoded, "441／1165"},
+	{0x04, 1, "生效旗標 `SPECIALOFF`", FieldDecoded, "441／1165"},
+	{0x05, 4, "效果鏈的 next `NEXT`（遠指標，原樣保留）", FieldDocumented, "1000"},
 }
 
 // ValidateRecordFields 檢查台帳蓋滿整份記錄、沒有洞也沒有重疊。

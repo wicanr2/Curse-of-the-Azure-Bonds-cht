@@ -11,8 +11,12 @@ import "fmt"
 // MoraleCheckResult 是一次士氣檢定（`overlay-09:01388h`，spec 1122）。
 type MoraleCheckResult struct {
 	FighterID string `json:"fighter_id"`
-	// AlreadyFled 是「這個人先前已經逃走了」（`+18Dh^[10h] <> 0`）。
-	// 這種情況不做檢定，直接標成本回合撤退。
+	// AlreadyFled 是「這個人已經在逃了」（`+18Dh^[10h] <> 0`）。這種情況不做
+	// 檢定，直接標成本回合撤退。
+	//
+	// ⚠ `+10h` 在 PC-98 的 `COMBATVARREC` 裡叫 `TURNED`——**被牧師逼退的不死
+	// 生物**。兩者的可觀察行為相同（都是掉頭就跑），但這一格的來源是轉化，
+	// 不是先前的士氣崩潰；`+14h`（`ROUTING`）才是士氣那條（spec 1165）。
 	AlreadyFled bool `json:"already_fled,omitempty"`
 	// Checked 是「真的做了檢定」。`+0F7h` 最高位沒設就沒有士氣資料，直接離開。
 	Checked bool `json:"checked"`
@@ -20,7 +24,7 @@ type MoraleCheckResult struct {
 	// Threshold 是 `100 − 目前HP佔最大HP的百分比`：傷得越重門檻越高。
 	Threshold int `json:"threshold,omitempty"`
 	Passed    bool `json:"passed"`
-	// Withdrew 是 `+18Dh^[14h] := 1`：士氣崩了而且跑得掉。
+	// Withdrew 是 `+18Dh^[14h] := 1`（PC-98 叫 `ROUTING`）：士氣崩了而且跑得掉。
 	Withdrew bool `json:"withdrew,omitempty"`
 	// MessageID 只在要印訊息時有值。
 	MessageID string `json:"message_id,omitempty"`
