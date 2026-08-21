@@ -1827,9 +1827,16 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 				t.Fatalf("Fire Knife hideout event did not resume at step %d: mode=%v message=%q choices=%v",
 					step, state.Mode, state.Message, state.Choices)
 			}
+			// ⚠ 這兩個選單的第一個選項都是「退出去」（`ECL2/0x04` 的
+			// `ON GOTO` 目的地是 `160Ch`，會把隊伍推回上一格，spec 1157）。
+			// 這條路線的用意是**穿過去**，所以要明確挑會進去的那一項，
+			// 不能用預設的 0。
 			choice := 0
-			if state.Message == requireGamePackText(t, &state, "fire-knife.blade-barrier") {
+			switch state.Message {
+			case requireGamePackText(t, &state, "fire-knife.blade-barrier"):
 				choice = requireGamePackOptionIndex(t, &state, "ecl-option.wait")
+			case requireGamePackText(t, &state, "fire-knife.frozen-room"):
+				choice = requireGamePackOptionIndex(t, &state, "ecl-option.interrogate")
 			}
 			if err := state.Select(choice); err != nil {
 				t.Fatalf("continue Fire Knife hideout event at step %d: %v", step, err)

@@ -197,7 +197,10 @@ func TestApplyECLCallSignalsRedrawProjectsOnlyFreshRegisters(t *testing.T) {
 	}
 }
 
-func TestApplyECLCallSignalsRedrawRequiresFreshDirectionCommit(t *testing.T) {
+// 只寫 `C04B`／`C04C`、不寫 `C04D` 的重畫仍然是真實移動：原作「退回上一格」
+// 的出口（`ECL2/0x01:1444h`「THEY SEND YOU BACK. YOU MOVE AWAY.」等 15 處，
+// spec 1157）就是這個形狀，朝向刻意保持不變。
+func TestApplyECLCallSignalsRedrawWithoutFacingStillMovesTheParty(t *testing.T) {
 	session, err := ecl.NewBlockSession(map[uint8][]byte{
 		0x01: {0, 0},
 	}, 0x01)
@@ -228,9 +231,11 @@ func TestApplyECLCallSignalsRedrawRequiresFreshDirectionCommit(t *testing.T) {
 		},
 	})
 
-	if state.DungeonX != 6 || state.DungeonY != 5 || state.DungeonDirection != 2 {
-		t.Fatalf("scratch coordinates changed position=(%d,%d,%d)",
-			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	if state.DungeonX != 0 || state.DungeonY != 0 || state.DungeonDirection != 2 ||
+		state.MapX != 0 || state.MapY != 0 {
+		t.Fatalf("restore-previous-cell position=(%d,%d,%d) map=(%d,%d)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.MapX, state.MapY)
 	}
 }
 
