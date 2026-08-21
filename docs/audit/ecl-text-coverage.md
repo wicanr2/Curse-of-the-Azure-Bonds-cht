@@ -17,10 +17,10 @@
 | 處置 | 數量 | 意思 |
 |---|---:|---|
 | 控制流可達的頁 | 1022 | 分母 |
-| `matched` | 999 | 有規則命中它所在的 run |
+| `matched` | 1002 | 有規則命中它所在的 run |
 | **`unmatched`** | **0** | **還沒寫規則——這才是待辦** |
 | `variable-insert` | 16 | 頁裡印的是執行期的值（城名、傳聞編號、隊員名），靜態驗不到 |
-| `subroutine` | 7 | 共用子程式的片段，實機一定被併進呼叫端那一頁 |
+| `subroutine` | 4 | 共用子程式的片段，實機一定被併進呼叫端那一頁 |
 
 下面兩欄是**註記**不是狀態：它們與上表重疊，不要加總。
 
@@ -122,7 +122,7 @@
 | `ECL1.DAX/0x51` | `0x19A5` | `matched` | `world.wilderness.chosen-ones-to-yulash` | THEY SAY THEY ARE FOLLOWING THE 'CHOSEN ONES' TO YULASH. |
 | `ECL1.DAX/0x51` | `0x19DD` | `matched` | `world.wilderness.yulash-forest-slash` | NEAR YULASH, YOU DISCOVER A GREAT SLASH THROUGH THE FOREST TO THE SOUTH. DO YOU INVESTIGATE IT? |
 | `ECL1.DAX/0x51` | `0x1A26` | `matched` | `world.wilderness.filth-lair` | AFTER SEVERAL MILES, IT ENDS IN A HUGE PILE OF DECAYING FILTH WHICH MONSTERS NOW USE AS A LAIR. DO YOU INVESTIGATE IT? |
-| `ECL1.DAX/0x51` | `0x1AB7` | `matched` | `yulash.red-plume-patrol` | YOU ARE APPROACHED BY A RED PLUME PATROL. ONE SNARLS, 'YOUR TATOO BETRAYS YOU AS A ZHENTRIM SPY.' |
+| `ECL1.DAX/0x51` | `0x1AB7` | `matched` | `overland.red-plume-patrol` | YOU ARE APPROACHED BY A RED PLUME PATROL. ONE SNARLS, 'YOUR TATOO BETRAYS YOU AS A ZHENTRIM SPY.' |
 | `ECL1.DAX/0x51` | `0x1B7A` | `matched` | `hillsfar.fire-knives-ambush` | YOU ARE AMBUSHED BY FIRE KNIVES DISGUISED AS FIGHTERS. |
 | `ECL1.DAX/0x52` | `0x002E` | `matched` | `opening.curse-summary` | ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN YOU AWAKE YOUR PARTY HAS BEEN CURSED WITH FIVE AZURE SYMBOLS. |
 | `ECL1.DAX/0x52` | `0x00B4` | `matched` | `opening.curse-summary` | THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS. AND WHEN THE BONDS GLOW YOU MUST DO AS THEY COMMAND. |
@@ -348,7 +348,7 @@
 | `ECL3.DAX/0x10` | `0x0910` | `matched` | `yulash.red-plume-avenge-commander` | RED PLUME GUARDS RUSH AT YOU YELLING, 'THAT'S THEM!  THEY'RE THE SCUM WHO KILLED THE COMMANDER!' |
 | `ECL3.DAX/0x10` | `0x0971` | `matched` | `yulash.trying-to-sneak-past` | SO, TRYING TO SNEAK PAST US, HUH? |
 | `ECL3.DAX/0x10` | `0x0995` | `matched` | `yulash.checkpoint-halt` | HALT! |
-| `ECL3.DAX/0x10` | `0x09AF` | `matched` | `yulash.checkpoint-halt` | A GUARD WARILY COMES OUT OF A CHECKPOINT. OTHER GUARDS GATHER BEHIND HIM. WHAT DO YOU DO? |
+| `ECL3.DAX/0x10` | `0x09AF` | `matched` | `prompt.what-do-you-do` | A GUARD WARILY COMES OUT OF A CHECKPOINT. OTHER GUARDS GATHER BEHIND HIM. WHAT DO YOU DO? |
 | `ECL3.DAX/0x10` | `0x0AA3` | `matched` | `yulash.led-to-commander` | YOU HAVE BEEN LED IN TO SEE THE RED PLUME COMMANDER. |
 | `ECL3.DAX/0x10` | `0x0AD1` | `matched` | `yulash.commander-business` | THE COMMANDER DEMANDS TO KNOW YOUR BUSINESS IN YULASH. HOW DO YOU RESPOND? |
 | `ECL3.DAX/0x10` | `0x0BEB` | `matched` | `yulash.swanmay-approved` | I SEE YOU HAVE ONE OF THE SWANMAYS WITH YOU. THAT IS GOOD. |
@@ -381,7 +381,7 @@
 | `ECL3.DAX/0x10` | `0x1B56` | `matched` | `yulash.riders-burst-out` | AS THE HORSE GALLOPS BY, YOU NOTICE A WOMAN DRESSED IN PURPLE CLINGING TO THE LARGE MAN'S BACK. AS THEY SPEED AWAY YOU HEAR HER CALL OUT, 'SORRY!' |
 | `ECL3.DAX/0x10` | `0x1C53` | `matched` | `zhentil.fzoul-bond-compels` | THE BOND OF FZOUL ON YOUR ARM SUDDENLY GIVES OFF A BLUE GLOW. YOU FEEL AN UNAVOIDABLE COMPULSION TO DRAW YOUR WEAPONS AND ATTACK. |
 | `ECL3.DAX/0x10` | `0x1CCC` | `matched` | `yulash.pit-entrance` | YOU SEE BEFORE THE PIT CREATED BY MOANDER IN HIS LAST INCARNATION.  STEP FORWARD TO ENTER THE DARK DEMESNE. |
-| `ECL3.DAX/0x10` | `0x1D2C` | `subroutine` | — | WHAT DO YOU DO? |
+| `ECL3.DAX/0x10` | `0x1D2C` | `matched` | `prompt.what-do-you-do` | WHAT DO YOU DO? |
 | `ECL3.DAX/0x10` | `0x1D3C` | `matched` | `yulash.checkpoint-to-the-east` | YOU SEE A CHECKPOINT MANNED BY RED PLUME GUARDS TO THE EAST. WHAT DO YOU DO? |
 | `ECL3.DAX/0x11` | `0x0074` | `matched` | `pit.opening-dead-cultists` | YOU SEE THREE CULTISTS LYING DEAD ON THE FLOOR. JUST AHEAD OF YOU, ANOTHER CLERIC GASPS FOR BREATH. |
 | `ECL3.DAX/0x11` | `0x00CA` | `matched` | `pit.opening-chosen` | THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC TRIUMPH. HE HOWLS, 'THE CHOSEN ONES!' |
@@ -489,7 +489,7 @@
 | `ECL3.DAX/0x12` | `0x195E` | `matched` | `pit.whole-place-after-us` | ALIAS GRUMBLES, 'OH HELL, NOW THE WHOLE PLACE WILL BE AFTER US.' SHE SIGHS AND LOOKS ABOUT IN DISGUST. AFTER A MOMENT, SHE BRIGHTENS AND SAYS, 'THE TREASURE IS … |
 | `ECL3.DAX/0x12` | `0x1A20` | `matched` | `pit.altar-treasure` | YOU HAVE FOUND A CACHE OF JEWELS AND GEMS! |
 | `ECL3.DAX/0x12` | `0x1A5A` | `matched` | `journal-trigger.pit-temple-map-20` | YOU HAVE ALSO FOUND A MAP OF THE TEMPLE.  YOU RECORD IT AS JOURNAL ENTRY 20. |
-| `ECL3.DAX/0x12` | `0x1AFC` | `subroutine` | — | WHAT DO YOU DO? |
+| `ECL3.DAX/0x12` | `0x1AFC` | `matched` | `prompt.what-do-you-do` | WHAT DO YOU DO? |
 | `ECL3.DAX/0x15` | `0x007E` | `matched` | `yulash.war-blasted-section` | YOU FIND A WAR BLASTED SECTION OF THE CITY. |
 | `ECL3.DAX/0x15` | `0x00C9` | `matched` | `yulash.unconquered-part` | YOU HAVE FOUND AN UNCONQUERED PART OF THE CITY. |
 | `ECL3.DAX/0x15` | `0x01D6` | `matched` | `yulash.false-door` | YOU HAVE FOUND A FALSE DOOR. |
@@ -542,7 +542,7 @@
 | `ECL4.DAX/0x20` | `0x1095` | `matched` | `zhentil.street.fresh-blood` | FRESH BLOOD IS SPLASHED AGAINST THE WALL. |
 | `ECL4.DAX/0x20` | `0x1113` | `matched` | `zhentil.street.rotten-food` | SOME ROTTEN FOOD DROPS ON TOP OF YOU FROM AN OPEN WINDOW. |
 | `ECL4.DAX/0x20` | `0x11D6` | `matched` | `zhentil.street.city-gone-silent` | THE CITY HAS GONE SILENT.  STREETS ARE DESERTED. AN OMINOUS DREAD SEEPS INTO YOUR BONES. |
-| `ECL4.DAX/0x20` | `0x1227` | `matched` | `zhentil.rumor.no-decent-mark` | YOU OVERHEAR, YOU CAN'T FIND A DECENT MARK ANYWHERE. EVERYBODY'S A MAGE OR A PRIEST WITH MAGICAL PROTECTION.  NOW PHLAN, THERE'S A CITY FOR A SLIPPERY HAND. |
+| `ECL4.DAX/0x20` | `0x1227` | `matched` | `zhentil.rumour.altar` | YOU OVERHEAR, YOU CAN'T FIND A DECENT MARK ANYWHERE. EVERYBODY'S A MAGE OR A PRIEST WITH MAGICAL PROTECTION.  NOW PHLAN, THERE'S A CITY FOR A SLIPPERY HAND. |
 | `ECL4.DAX/0x20` | `0x1268` | `matched` | `zhentil.street.ones-she-told-us-about` | 'AREN'T THOSE THE ONES SHE TOLD US ABOUT...?' |
 | `ECL4.DAX/0x20` | `0x13D8` | `matched` | `zhentil.street.people-run-indoors` | PEOPLE ARE RUNNING INDOORS AND SHUTTING WINDOWS. |
 | `ECL4.DAX/0x20` | `0x1453` | `matched` | `zhentil.street.woman-and-child` | A WOMAN AND HER YOUNG CHILD START TO PASS CLOSE TO YOU. SHE GRABS THE CHILD IN PANIC AND RUSHES OFF. |
@@ -568,7 +568,7 @@
 | `ECL4.DAX/0x20` | `0x1B7D` | `matched` | `zhentil.court.guards-attack` | THE GUARDS ATTACK! |
 | `ECL4.DAX/0x20` | `0x1BA8` | `matched` | `zhentil.court.first-wave-defeated` | YOU HAVE DEFEATED THE FIRST WAVE OF GUARDS. OTHERS ARE POURING INTO THE ROOM! WHAT DO YOU DO? |
 | `ECL4.DAX/0x20` | `0x1C1B` | `matched` | `zhentil.fzoul-bond-compels` | THE BOND OF FZOUL ON YOUR ARM SUDDENLY GIVES OFF A BLUE GLOW. YOU FEEL AN UNAVOIDABLE COMPULSION TO DRAW YOUR WEAPONS AND ATTACK. |
-| `ECL4.DAX/0x20` | `0x1CDE` | `subroutine` | — | WHAT DO YOU DO? |
+| `ECL4.DAX/0x20` | `0x1CDE` | `matched` | `prompt.what-do-you-do` | WHAT DO YOU DO? |
 | `ECL4.DAX/0x21` | `0x0080` | `matched` | `zhentil.dimswart_appears` | YOU ARE DRAGGED THROUGH THE TEMPLE. |
 | `ECL4.DAX/0x21` | `0x01A7` | `matched` | `zhentil.dimswart_appears` | YOU WAKE UP IN A DARK, DREARY CELL. |
 | `ECL4.DAX/0x21` | `0x01D5` | `matched` | `zhentil.temple.sealed-by-priest` | A BLINDING FLASH ENVELOPES THE MAIN DOORS. |

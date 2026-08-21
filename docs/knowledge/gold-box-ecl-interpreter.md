@@ -242,8 +242,10 @@ engine 認得 7 個，兩平台相同：
 
 `8000h`、`8001h`、`B200h`、`C018h`、`C01Eh`、`2E10h`、`6803h`
 
-其餘 operand 走 epilogue，不做事直接返回。CoAB 的 ECL1–ECL6 靜態只用到
-`2E10h`（12 次）與 `6803h`（11 次）。
+其餘 operand 走 epilogue，不做事直接返回。CoAB 的 ECL1–ECL6 用到**四個**：
+沿控制流走完 25 個 block，可達的 `2Dh` 共 168 條——`2E10h` 125、`B200h` 19、
+`C01Eh` 13、`6803h` 11；`8000h`／`8001h`／`C018h` 一次都沒出現。逐支語意見
+[spec 1150](../spec/1150-ecl-call-external-routines.md)。
 表：[`../audit/ecl-external-call-registry.md`](../audit/ecl-external-call-registry.md)。
 
 ## `ECL2` 具名 routine（PC-98 Borland 符號，`exact`）

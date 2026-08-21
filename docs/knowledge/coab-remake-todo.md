@@ -40,7 +40,7 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | 三 | **補完戰鬥所缺** | `RE-06`／`RE-07`／`ENG-07`／`ENG-08`／`ENG-09` 全部在範圍內 |
 | 四 | **remake 讀舊版 DAT、存成自己的格式，不必互通** | `ENG-10`／`VER-07` **移除雙向 round-trip 與寫回原版的要求**；只保留「讀得進來」與 remake 自己的存檔完整性 |
 | 五 | **繁中化地基優先** | 見下方 C 區的重新界定 |
-| 六 | **讀完 21 支未讀 ECL handler、清掉台帳孤兒；PC-98 與 remake engine 無關的部份不必解讀** | PC-98 的角色從「語意骨幹」收斂成「只讀 remake 需要的部分」，不再追求全模組語意閉合 |
+| 六 | **讀完 phase 台帳剩下的 `unknown` handler、清掉台帳孤兒；PC-98 與 remake engine 無關的部份不必解讀** | PC-98 的角色從「語意骨幹」收斂成「只讀 remake 需要的部分」，不再追求全模組語意閉合 |
 
 ## 現況量測（2026-08-21 實測）
 
@@ -60,15 +60,15 @@ DOS 的多職起始年齡表 207 條在 PC-98 只剩 14 條（spec 1094）。
 | 共用 engine | 獨立 repo，84 個 `.go` | `golden-box-remake-engine/` |
 | 內容資料 | `gamepack/pack/` **四檔**：core 59 KB／content 216 KB／locale.en 160 KB／locale.zh-TW 162 KB | `ls -la` |
 | ├ 事件 | 4 個 `events`、117 條 `option_rules`、**1,100 條 `text_rules`** | `json` |
-| └ 語系 | `en` **1,426** 條、`zh-TW` **1,426** 條，**一一對齊、沒有漏譯**；譯名一致性由 `internal/glossary` fail-closed 擋住（92 詞條、0 不一致） | `json` |
+| └ 語系 | `en` **1,426** 條、`zh-TW` **1,426** 條，**一一對齊、沒有漏譯**；譯名一致性由 `internal/glossary` fail-closed 擋住（93 詞條、0 不一致） | `json` |
 | UI 詞條 | `assets/locale/zh-TW.json` **916** 條 | `json` |
 | 建角規則表 | `gamepack/rules/character-tables.json`：7 種族、17 職業組合、8 職業槽、擲點與體質加值 | `json` |
 | 法術主表 | `gamepack/rules/spell-table.json`：原作 100 筆，16 個位元組全部有出處（spec 1111）；占位 13、只能紮營 8、戰鬥可施放 **79** | `json` |
-| 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**4,222 個靜態可達 instruction** | `cmd/ecl-event-catalog` |
-| ECL 靜態可達 instruction | **4,222**（spec 1106 補上 `IF` 的 else 路徑後，由 1,355 增為三倍） | `ecl-event-catalog.md` |
+| 原作事件總量 | 6 DAX／25 block／125 lifecycle entry／**14,177 個靜態可達 instruction**（現跑值；committed 的 `ecl-event-catalog.*` 停在 4,222，重生不出來——見 `WORKLIST.md` 的 ⚠）| `cmd/ecl-event-catalog` |
+| ECL 靜態可達 instruction | **14,177**（spec 1106 補上 `IF` 的 else 路徑；1,355 → 4,222 → 現值）| `cmd/ecl-effect-coverage`（同一條走訪，且它跑得起來）|
 | ECL 副作用候選 | **154** 個中 33 個已審（31 筆依效果序列沿用） | `ecl-ordered-effect-reviews.json` |
 | ECL opcode commit phase | corpus 有 **61** 個 opcode；台帳列了 **55** 支（25 支已分類、**30 支 `unknown`**），另 **6 支連一列都沒有**（`1Eh`、`26h`、`2Ch`、`30h`、`34h`、`3Bh`）。⚠ 台帳目前重生不出來，見 `WORKLIST.md` 的 ⚠ | `ecl-opcode-effect-phases.md` |
-| **原作文字段落覆蓋** | **1,022** 頁**控制流可達**，`matched` **999**／**`unmatched` 0**／`variable-insert` **16**（頁裡印的是執行期的值，靜態驗不到）／`subroutine` **7**（共用子程式片段，實機不會單獨出現）。⚠ 分母的算法在 spec 1110 換過：上一版用 offset 順序切頁、又沒走訪 `ON GOTO`，197 頁只佔兩成 | `ecl-text-coverage.md` |
+| **原作文字段落覆蓋** | **1,022** 頁**控制流可達**，`matched` **1,002**／**`unmatched` 0**／`variable-insert` **16**（頁裡印的是執行期的值，靜態驗不到）／`subroutine` **4**（共用子程式片段，實機不會單獨出現）。⚠ 分母的算法在 spec 1110 換過：上一版用 offset 順序切頁、又沒走訪 `ON GOTO`，197 頁只佔兩成 | `ecl-text-coverage.md` |
 | 正常玩家路徑 | **開場 → 結局**（擊敗提朗瑟克斯的結局選單），拆成 23 個段 subtest | `go test` |
 | 全套 gate | `./tools/go.sh test ./...` 全綠 | 本輪實跑 |
 | 遊戲入口旗標 | `-segment <id>` 統一直入（`-segment list` 列 25 段）＋ 既有專用旗標 | `internal/segment`／`main.go` |
@@ -130,7 +130,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 | `RE-15` | **ECL 變數讀取端** | ✅ **已完成**（spec 1098）：分區表、`×2`、區 3 的 byte 寬度三項完全對稱 | — | spec 1098 |
 | `RE-17` | **角色欄位投影** | ✅ 機制已解：讀取側投影表 spec 624／1040 早有；spec 1098 補上**寫入側也有一張表且與讀取側不同** ⇒ 12 個位址是唯讀投影（寫了讀不到） | 寫入側表未逐條人工確認的部分（含 `7C80h`／`7C81h`） | 補進 spec 1098 |
 | `RE-16` | **`7ECAh` 還原方式的時機對應** | spec 1097 §三：原作跑完還原成 `and 1`，remake 一律寫 0 | 先確認 remake 的 `SearchLocation` 對應原作哪一段流程，再決定是否照抄 `and 1` | 補進 spec 1097 |
-| `RE-02` | **全遊戲事件清冊**（P0-RE-2） | 靜態層完成（6 DAX／25 block／125 entry／1,355 instruction） | 補動態 branch、座標／terrain、條件旗標、consumer、resume、R1–R5 回填 | `ecl-event-catalog` 動態層 |
+| `RE-02` | **全遊戲事件清冊**（P0-RE-2） | 靜態層完成（6 DAX／25 block／125 entry／**14,177** instruction）。⚠ committed 的 `ecl-event-catalog.*` 停在 4,222／154 候選，重生不出來——見 `WORKLIST.md` 的 ⚠ | 補動態 branch、座標／terrain、條件旗標、consumer、resume、R1–R5 回填 | `ecl-event-catalog` 動態層 |
 | `RE-03` | **External `CALL` 登記表** | ✅ **已完成**（位址 spec 561、語意 spec 1150）：`2Dh` 是七路 switch（operand 值減 `7FFFh`），目標名字由 PC-98 Borland 符號表依 entry 槽號取得。走訪可達的 `2Dh` 共 **168 條、四個運算元**（`2E10h` 125／`B200h` 19／`C01Eh` 13／`6803h` 11），另三路 corpus 從未使用；未列入 switch 的目標**靜默返回**。`B200h` 的第二個音效走不到（選號的 ECL 格 `03DE` 全 corpus 一律寫 5）；`6803h` 的序列記錄版面已取（`p^[0]` 張數、`p^[1]` 游標、第 i 格遠指標在 `p + 8i − 2`），生產者是 `0Eh PICTURE` 的 `LOADSEQUENCE` | 只剩 `2E10h` 的 consumer：原作是 `STOREVALUE` 當場寫座標並立髒旗標、`CALL` 只負責「髒了才重畫」，remake 用的是回頭掃 `SaveWrites` 的啟發式，兩套並存未收斂 | `external-call-registry` |
 | `RE-04` | **劇情與全地圖事件** | 大量 fixture，缺逐格覆蓋 | 每區逐格／逐事件的 producer、條件、分支、副作用、重訪 | `area-event-coverage` |
 | `RE-05` | **DOS save bundle（只讀）** | **角色記錄逐位元組有台帳**（spec 1115）：422 bytes 中 `decoded` 299／`documented` 99／`unknown` 24（解析器實際讀到 291／422），`decoded` 用位元組突變量測驗證，雙向對帳跑在 `go test` 裡 ；`.SWG`（63 bytes）與 `.FX`（9 bytes）也蓋滿，`unknown` 都是 0 | 剩 PC-98 `CHARREC`（`1A7h`，多一 byte）。⚠ 決策四：**不需要寫回原版、不需要 round-trip gate**，只要讀得進來 | `dos-save-bundle-schema` |
@@ -174,7 +174,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 
 | ID | 項目 | 要做什麼 |
 |---|---|---|
-| `ENG-01` | **事件內容補齊** | ✅ **全部接上**：`cmd/ecl-text-coverage` 依**控制流走訪**逐頁列出原作文字與 game pack 的接線（spec 1110）。控制流可達的 **1022 頁**中 `matched` 999、**`unmatched` 0**；剩下 `variable-insert` 16（頁裡印的是執行期的值，靜態驗不到）與 `subroutine` 7（共用子程式片段，實機一定被併進呼叫端那一頁）。text_rules 由 464 條成長到 1009 條。⚠ 上一版的分母 197 頁只佔兩成——`25h ON GOTO` 沒被走訪、`15h`／`2Bh`／`25h`／`26h` 的變長指令長度沒算、頁的歸屬用 offset 順序，三者疊起來讓 `unmatched=0` 什麼都不代表。**寫規則前先看報告的 Limitations**，尤其三種會讓實機變差的寫法（片段跨 run、片段短到攔截別人、把執行期的值換成固定句），見 spec 1110 §四 |
+| `ENG-01` | **事件內容補齊** | ✅ **全部接上**：`cmd/ecl-text-coverage` 依**控制流走訪**逐頁列出原作文字與 game pack 的接線（spec 1110）。控制流可達的 **1022 頁**中 `matched` 1,002、**`unmatched` 0**；剩下 `variable-insert` 16（頁裡印的是執行期的值，靜態驗不到）與 `subroutine` 4（共用子程式片段，實機一定被併進呼叫端那一頁）。text_rules 已經到 1,100 條。⚠ 上一版的分母 197 頁只佔兩成——`25h ON GOTO` 沒被走訪、`15h`／`2Bh`／`25h`／`26h` 的變長指令長度沒算、頁的歸屬用 offset 順序，三者疊起來讓 `unmatched=0` 什麼都不代表。**寫規則前先看報告的 Limitations**，尤其三種會讓實機變差的寫法（片段跨 run、片段短到攔截別人、把執行期的值換成固定句），見 spec 1110 §四 |
 | `ENG-02` | **game pack 分檔** | ✅ **第一步已完成**（spec 1105）：切成 `gamepack/pack/` 四檔——`00-core`（機制資料）、`10-content`（`text_rules`／`option_rules`／`events`）、`20-locale.en`／`20-locale.zh-TW`。引擎新增 `LoadPackParts`，合併後才驗證，重複一律失敗不做後蓋前。⚠ **依區域再切留給命名收斂之後**：實測 ID 命名空間不一致（83 條 `ecl-option.*`、約 100 個沒有命名空間的扁平 locale 鍵），現在依區域切會夾帶一次大改名 |
 | `ENG-13` | **補 `7CE4h` 的角色欄位投影** | ✅ **已完成**：`Character.ECLFlag192`／`DOSPlayerRecord.ECLFlag192`／`PartyMemberContext.ECLFlag192` 三處加欄位，DOS 記錄 `0x192` 讀寫 round-trip，`LOAD CHARACTER` 時投影並套 `and 1` 遮罩；回歸測試 `TestRunSubsetLoadCharacterProjectsFlag192MaskedToLowBit` |
 | `ENG-14` | **原版資料表一律走 JSON** | 使用者要求：原版取出的資料表全部轉成 game pack JSON，Go 只留機制，不再 hardcode。已完成起始年齡（`gamepack/rules/character-tables.json`）。⚠ 仍 hardcode 在 `internal/party/character.go` 的：`WithAgeEffects` 的年齡分期門檻與效果表、`raceAllowsClass`；`internal/party/dos_spell_record.go` 的 `parseDOSRace`／`parseDOSClass` 對應表也應改由 JSON 提供 |
@@ -219,7 +219,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 
 ## C. 繁體中文化
 
-目前 `assets/locale/zh-TW.json` 872 條；game pack 內建雙語 `en` 1,269 ＝ `zh-TW` 1,269，key 完全對齊。
+目前 `assets/locale/zh-TW.json` 916 條；game pack 內建雙語 `en` 1,426 ＝ `zh-TW` 1,426，key 完全對齊。
 
 **擋路的不是雙位元組處理（那在 remake 不存在），是 `CHT-04` 的熱鍵欄位；`CHT-09` 的譯名表已於 spec 1107 立完。**
 
@@ -323,13 +323,14 @@ transaction）要自己列一段驗——這是 rulebook 65 來源案例的失�
    剩下 `RE-15`（讀取端）與 `RE-16`（`7ECAh` 時機）兩個小尾巴，不擋路。
 3. ✅ **`RE-01` ECL 有序副作用的擋路部分已解除**（spec 1104）——`ENG-01` 的事件資料形狀現在有依據了：
    效果一律在 PC 推進之後發生（停下再續跑不會重播），畫面提交點只有 `CALL 2E10h`，
-   `NEWECL` 終止本次執行。剩下 21 支未讀 handler 不擋 `ENG-01`，可與內容產出平行。
+   `NEWECL` 終止本次執行。剩下 30 支 `unknown` handler（另 6 支沒有列）不擋
+   `ENG-01`，可與內容產出平行。
 4. **`RE-12` 資料段表格取出**——多份規格卡在同一個原因，取出後 `ENG-04`／`ENG-05`／`ENG-06` 一起解鎖。
    可與第 2 項平行。
 5. **`CHT-04`（熱鍵欄位）**——剩下的地基：熱鍵是 schema 缺口，必須在分檔定案前補。`CHT-09`（譯名表）已於 spec 1107 完成，大量產出的前提解除。`CHT-01`／`CHT-02` 已確認 remake 不受原作 byte 管線影響。
 6. **`ENG-02`／`ENG-03`**——game pack 分檔與 stable ID 定案。必須在大量產出內容之前，否則後期分檔會動到每一條資料。
 7. ✅ **`ENG-01` 的文字層已接完**（spec 1110）——控制流可達的 1,022 頁 `unmatched` 為 0，
-   `CHT-06` 隨之同步（兩語系各 1,269 條、key 對齊）。**剩下的是 `RE-04`**：
+   `CHT-06` 隨之同步（兩語系各 1,426 條、key 對齊）。**剩下的是 `RE-04`**：
    事件的**副作用**（旗標、解鎖、戰鬥編成、座標與重訪條件）逐格盤點並接上，
    以及 `ECL1.DAX/0x51` 走訪截斷的那一塊要換方法補齊。文字已經不是這一項的瓶頸。
 8. **`RE-06`／`RE-07` ＋ `ENG-07`／`ENG-08`**——戰鬥系統。可與第 7 項平行（不同人／不同輪）。

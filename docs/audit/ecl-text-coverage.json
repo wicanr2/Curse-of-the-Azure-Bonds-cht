@@ -759,7 +759,7 @@
    "block": "0x51",
    "offset": "0x1AB7",
    "text": "YOU ARE APPROACHED BY A RED PLUME PATROL. ONE SNARLS, 'YOUR TATOO BETRAYS YOU AS A ZHENTRIM SPY.'",
-   "rule_id": "yulash.red-plume-patrol",
+   "rule_id": "overland.red-plume-patrol",
    "status": "matched"
   },
   {
@@ -2675,7 +2675,7 @@
    "block": "0x10",
    "offset": "0x09AF",
    "text": "A GUARD WARILY COMES OUT OF A CHECKPOINT. OTHER GUARDS GATHER BEHIND HIM. WHAT DO YOU DO?",
-   "rule_id": "yulash.checkpoint-halt",
+   "rule_id": "prompt.what-do-you-do",
    "status": "matched"
   },
   {
@@ -2950,7 +2950,8 @@
    "block": "0x10",
    "offset": "0x1D2C",
    "text": "WHAT DO YOU DO?",
-   "status": "subroutine"
+   "rule_id": "prompt.what-do-you-do",
+   "status": "matched"
   },
   {
    "member": "ECL3.DAX",
@@ -3831,7 +3832,8 @@
    "block": "0x12",
    "offset": "0x1AFC",
    "text": "WHAT DO YOU DO?",
-   "status": "subroutine"
+   "rule_id": "prompt.what-do-you-do",
+   "status": "matched"
   },
   {
    "member": "ECL3.DAX",
@@ -4275,7 +4277,7 @@
    "block": "0x20",
    "offset": "0x1227",
    "text": "YOU OVERHEAR, YOU CAN'T FIND A DECENT MARK ANYWHERE. EVERYBODY'S A MAGE OR A PRIEST WITH MAGICAL PROTECTION.  NOW PHLAN, THERE'S A CITY FOR A SLIPPERY HAND.",
-   "rule_id": "zhentil.rumor.no-decent-mark",
+   "rule_id": "zhentil.rumour.altar",
    "status": "matched"
   },
   {
@@ -4484,7 +4486,8 @@
    "block": "0x20",
    "offset": "0x1CDE",
    "text": "WHAT DO YOU DO?",
-   "status": "subroutine"
+   "rule_id": "prompt.what-do-you-do",
+   "status": "matched"
   },
   {
    "member": "ECL4.DAX",
@@ -8591,13 +8594,13 @@
  ],
  "summary": {
   "groups": 1022,
-  "matched": 999,
+  "matched": 1002,
   "unmatched": 0,
   "gosub_insert_notes": 32,
   "variable_insert": 16,
   "branch_insert_notes": 228,
   "branch_tail": 0,
-  "subroutine": 7,
+  "subroutine": 4,
   "unmatched_by_block": {}
  }
 }

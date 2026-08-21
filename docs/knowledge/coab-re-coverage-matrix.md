@@ -71,11 +71,13 @@ transaction，本輪以 PC-98 IDA 與三段 DOS 真實 DAX continuation 補強�
 
 第 564 輪把問題換了個問法：33 個候選只由 20 個不同的 opcode 組成，而**次序是
 dispatcher 與各 handler 的性質，不是某段直線區域的性質**。逐 opcode 讀完 DOS
-的 23 支 handler ＋ operand 解碼器 ＋ lifecycle 驅動器（spec 1104）後得到三條
-通則：PC 一律在效果之前推進；畫面的提交點只有 `CALL 2E10h` 一個；
-`20h NEWECL` 是終止指令。32 個候選中 31 個 `covered/exact`、1 個 `partial`。
-剩下的缺口是 21 支尚未讀的 handler，逐支狀態在
-[`ecl-opcode-effect-phases.md`](../audit/ecl-opcode-effect-phases.md)。
+的 handler ＋ operand 解碼器 ＋ lifecycle 驅動器（spec 1104）後得到三條
+通則：PC 一律在效果之前推進（`0Dh APPROACH` 的 `inc` 排在效果之後，是唯一例外）；
+畫面的提交點只有 `CALL 2E10h` 一個；`20h NEWECL` 是終止指令。32 個候選中 31 個
+`covered/exact`、1 個 `partial`。剩下的缺口是 phase 台帳裡 **30 支 `unknown`**
+的 handler，另有 **6 支可達 opcode 連一列都沒有**，逐支狀態在
+[`ecl-opcode-effect-phases.md`](../audit/ecl-opcode-effect-phases.md)
+（⚠ 那份產物目前重生不出來，見 `WORKLIST.md` 的 ⚠）。
 
 閉合要求：
 
@@ -99,7 +101,7 @@ dispatcher 與各 handler 的性質，不是某段直線區域的性質**。逐 
 gate 只能作輸入，不等於此清冊已完成。
 
 第 557 輪已完成第一層靜態清冊：6 個 DAX、25 個 block、125 個 lifecycle entry、
-1,355 個不重複靜態可達 instruction 與 33 個跨 effect-kind 直線候選均可由原始 archive
+靜態可達 instruction 與跨 effect-kind 直線候選均可由原始 archive
 重生。仍缺動態 branch、座標／terrain、條件旗標、consumer、resume 與 R1–R5 回填，
 所以 P0-RE-2 維持 `局部`，不能標成全事件閉合。
 
@@ -116,7 +118,7 @@ gate 只能作輸入，不等於此清冊已完成。
 |---|---|---|---|---|
 | 原始檔與平台 inventory | DOS 主檔多有 hash；PC-98 VFD 有缺 sector | 局部 | 建立 DOS／PC-98 executable、overlay、DAX、GEO、save、音訊與手冊的單一 manifest；標示 pristine／derived | `coab-source-manifest` |
 | DAX container／壓縮 | 多種真實資產已可抽取 | 局部 | 對所有實際成員補 record count、bounds、round-trip 與 malformed gate；區分不同 DAX payload | `dax-corpus-matrix` |
-| ECL framing／控制流 | 第 557／558 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊與穩定 candidate ID；第 564 輪修正 `NEWECL` 的直線切分（候選 33→32，指令數不變） | 局部 | 32 個候選中 31 個 `covered/exact`、1 個 `partial`（來源：`docs/audit/ecl-ordered-effect-reviews.json`）；動態 branch、間接 dispatch、錯誤路徑仍缺；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
+| ECL framing／控制流 | 第 557／558 輪已版本化 6 DAX／25 block／125 entry 的靜態清冊與穩定 candidate ID（⚠ 指令數已經走過 1,355 → 4,222 → **14,177**，而 committed 的產物停在 4,222 且重生不出來，見 `WORKLIST.md` 的 ⚠）；第 564 輪修正 `NEWECL` 的直線切分（候選 33→32，指令數不變） | 局部 | 32 個候選中 31 個 `covered/exact`、1 個 `partial`（來源：`docs/audit/ecl-ordered-effect-reviews.json`）；動態 branch、間接 dispatch、錯誤路徑仍缺；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
 | ECL 副作用／時序 | 主迴圈、dispatcher、`24h` handler、位址空間五區映射（spec 1095／1096）與**逐 opcode commit phase**（spec 1104）已閉合；31 個候選 `covered/exact` | **局部** | phase 台帳列了 55 支、其中 **30 支仍是 `unknown`**，另有 **6 支 opcode 連一列都沒有**（`1Eh`、`26h`、`2Ch`、`30h`、`34h`、`3Bh`）；`0Dh` 的那一列已過期（spec 1146 讀完了）；`47E2h` 的「執行結束還原目前角色」在 remake 尚未實作；動態 branch 與原版 trace diff 仍缺 | 先讓 `cmd/ecl-event-catalog` 能重生（見 `WORKLIST.md` 的 ⚠），再續讀剩餘 handler ＋ 動態層 |
 | External `CALL` | 七支分派逐條讀完並取到名字（spec 1150）；使用地址全集已量出：可達 168 條、四個運算元（`2E10h` 125／`B200h` 19／`C01Eh` 13／`6803h` 11）；未列入 switch 的目標靜默返回 | 局部 | `2E10h` 的 consumer：原作是 `STOREVALUE` 當場寫座標並立五個髒旗標之一、`CALL` 只負責「髒了才重畫」，remake 用的是回頭掃 `SaveWrites` 的啟發式（spec 276／402／403 的回歸鎖著），兩套並存未收斂 | `external-call-registry` 已完成；續收 `2E10h` 的髒旗標模型 |
 | `NEWECL／PROGRAM` | boundary ID 與部分 context 已知 | 局部 | 全 context 的 area/resource/map/save/ending 副作用與 resume ownership | `program-newecl-context-matrix` |
@@ -202,8 +204,9 @@ IDAPython 並放 `tools/ida/`。
 3. `external-call-registry` 已完成（spec 561 位址、spec 1150 語意）：`2Dh CALL`
    是七路 switch，走完 25 個 block 的**可達** `2Dh` 共 168 條、用到四個運算元
    （`2E10h` 125、`B200h` 19、`C01Eh` 13、`6803h` 11）；不在 switch 內的目標靜默
-   返回。⚠ 拿 `docs/audit/ecl-event-catalog.json` 數會得到 78 條——那份目錄不進
-   `IF` 的兩條路，是下界。`B200h`（選號由 ECL 格 `03DE` 決定，全 corpus 一律是 5）
+   返回。⚠ 拿 `docs/audit/ecl-event-catalog.json` 數會得到 78 條——**那份 committed
+   產物是舊的**，現跑是 168 條（見 `WORKLIST.md` 的 ⚠）。`B200h`（選號由 ECL 格
+   `03DE` 決定，全 corpus 一律是 5）
    與 `6803h`（圖片序列推一格）的 consumer 都已驗過並接上；仍缺的只有 `2E10h`
    的髒旗標模型。
 4. 建立 `area-event-coverage`，把清冊與 GEO cell／terrain／正常路徑合併；先盤點，
