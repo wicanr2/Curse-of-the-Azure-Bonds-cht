@@ -75,7 +75,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x19: {EffectDone, "同上"},
 	0x1A: {EffectDone, "同上"},
 	0x1B: {EffectDone, "同上"},
-	0x1C: {EffectPartial, "原作 120Eh 逐條讀完（37 條）：清怪物鏈與已放置數（47E6h）、清「有怪要打」旗標（8B69h，spec 1095）、把 6F70h 起 28 bytes 的戰利品池歸零（七種貨幣／寶石／珠寶，spec 1059）、沿 6F8Ch 鏈逐節點 FreeMem(63) 釋放 27h 串進去的物品節點（spec 1087），並把 7603h 設成 8。remake 這一側全部對上——怪物鏈、跨執行累積的戰利品堆都清（docs/audit/ecl-treasure-clear.md）。partial 只剩一項：7603h 設成 8 的語意還沒解讀"},
+	0x1C: {EffectDone, "原作 120Eh 逐條讀完（37 條）：清怪物鏈與已放置數（47E6h）、清「有怪要打」旗標（8B69h，spec 1095）、把 6F70h 起 28 bytes 的戰利品池歸零（七種貨幣／寶石／珠寶，spec 1059）、沿 6F8Ch 鏈逐節點 FreeMem(63) 釋放 27h 串進去的物品節點（spec 1087），並把 7603h 設成 8。remake 這一側全部對上——怪物鏈、跨執行累積的戰利品堆都清（docs/audit/ecl-treasure-clear.md）。7603h 設成 8 的語意也讀出來了（spec 1173）：它是**下一批怪物的圖示槽**（`+143h` ＝ `ICONINDEX`，`overlay-33 entry#5` 拿它與 `CPIC` 組檔名），`inc` 在放置迴圈**結束後**才做一次 ⇒ 同一批共用一張圖，而 0..7 是隊伍成員的圖示，所以重設值是 8 不是 0。它是**快取索引不是遊戲狀態**——remake 的每個戰鬥員自己帶 SpriteBlock，可觀察行為相同，因此沒有對應動作、也不該有"},
 	0x1D: {EffectDone, "隊伍強度"},
 	0x1E: {EffectDone, "CHECKPARTY 六個條件"},
 	0x1F: {EffectConsumed, "UNKNOWN_1F 在 corpus 靜態不可達"},

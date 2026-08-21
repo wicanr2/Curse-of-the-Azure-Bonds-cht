@@ -200,9 +200,11 @@ if 角色^[151h] <> NIL then
 `FIRE KNIFE` 會被判成「記錄 `1d8`、武器 `1d6`」不一致，而牠 slot 0 的武器正好是
 `1d8`——第一版的量測就是這樣多報了兩隻。
 
-分布由 `TestMonsterRecordDamageAgainstReadiedWeapon` 釘住。要回答那個問題，
-可走的兩條路是：讀原作的派生值重算（`overlay-24:0C28h`，spec 1000 已經走過它的
-AC 那一半），或拿原版當 oracle 量一次怪物的實際傷害。
+分布由 `TestMonsterRecordDamageAgainstReadiedWeapon` 釘住。
+
+★ **答案在 spec 1174**：派生值重算（`overlay-24:0C28h` → `0025h`）讀的是
+**槽 0 的裝備中武器**，有就**無條件**把類別表的小型傷害三連寫進現值。所以
+「兩者都非 0 但不一樣」那 13 隻不是矛盾——記錄的骰是**放下武器時**的天生攻擊。
 
 - 沒有宣稱怪物也會自動換裝。物品鏈本身已經進到 `combat.Fighter.MonsterItems`
   （開戰時從 `MON*ITM` 鏡射），但**規則那一側還沒接**：換裝之後的命中／傷害重投影
