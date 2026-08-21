@@ -1818,8 +1818,9 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		}
 		previousX, previousY = step.x, step.y
 	}
+	// ⚠ 旁白依距離挑（spec 1144）：這一處的距離上限是 2，抵達時演的是遠距那一句。
 	if state.DungeonWallRoof != 0x05 || state.Mode != ModeWilderness ||
-		state.Prompt != gamePackText(t, state, "myth-drannor.red-plume.gesture") {
+		state.Prompt != gamePackText(t, state, "myth-drannor.lone-red-plume-spotted") {
 		t.Fatalf("red-plume arrival terrain=%02x mode=%v prompt=%q choices=%v",
 			state.DungeonWallRoof, state.Mode, state.Prompt, state.currentOriginalChoices)
 	}

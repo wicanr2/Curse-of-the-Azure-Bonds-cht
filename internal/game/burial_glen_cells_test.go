@@ -49,7 +49,9 @@ func TestBurialGlenCellEventsAreLocalized(t *testing.T) {
 		{9, 2, "myth-drannor.spider-mausoleum", false},
 		{10, 1, "myth-drannor.spider-funnel", false},
 		{4, 8, "myth-drannor.clan-figure.greeting", false},
-		{13, 6, "myth-drannor.red-plume.gesture", false},
+		// ⚠ 遭遇選單的旁白依**距離**挑一句（spec 1144）。這一處的距離上限是 2，
+		// 所以站上去看到的是遠距那一句；`red-plume.gesture` 是距離 0 才演的。
+		{13, 6, "myth-drannor.lone-red-plume-spotted", false},
 		{3, 1, "myth-drannor.court.armor", false},
 	}
 	for _, cell := range cells {

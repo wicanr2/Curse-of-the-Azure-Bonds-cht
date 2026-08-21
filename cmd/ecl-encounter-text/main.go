@@ -46,6 +46,8 @@ type prompt struct {
 	member int
 	block  uint8
 	offset int
+	// distance 是運算元 2（`bank1^[580h]`，距離上限）的字面值；不是立即數就是 -1。
+	distance int
 	// slot 是這一句排在第幾個旁白運算元（9／10／11）。
 	slot int
 	// shown 為真代表 remake 真的會把這一句演出來。
@@ -152,13 +154,20 @@ func scanBlock(pack *goldenbox.Pack, localeName string, member int, id uint8,
 		if len(instruction.Operands) <= lastPromptOperand {
 			continue
 		}
-		firstNonEmpty := -1
-		for slot := firstPromptOperand; slot <= lastPromptOperand; slot++ {
-			if strings.TrimSpace(textOf(instruction.Operands[slot])) == "" {
-				continue
+		// remake 依距離挑一句（`ecl.EncounterPromptSlots`）。距離上限不是立即數時
+		// **每一句都當成演得到**——那種情況要跑起來才知道是哪一句，靜態上不能
+		// 排除任何一句，而漏判會讓缺口消失。
+		distance := literalDistance(instruction.Operands[1])
+		shownSlot := -1
+		if distance >= 0 {
+			for _, slot := range ecl.EncounterPromptSlots(distance) {
+				operand := instruction.Operands[firstPromptOperand+slot]
+				if strings.TrimSpace(textOf(operand)) == "" {
+					continue
+				}
+				shownSlot = firstPromptOperand + slot
+				break
 			}
-			firstNonEmpty = slot
-			break
 		}
 		for slot := firstPromptOperand; slot <= lastPromptOperand; slot++ {
 			text := strings.TrimSpace(textOf(instruction.Operands[slot]))
@@ -166,7 +175,8 @@ func scanBlock(pack *goldenbox.Pack, localeName string, member int, id uint8,
 				continue
 			}
 			item := prompt{member: member, block: id, offset: offset, slot: slot,
-				shown: slot == firstNonEmpty, text: text}
+				distance: distance,
+				shown:    distance < 0 || slot == shownSlot, text: text}
 			// ⚠ 一句一句比對，不是整條指令合起來比：三句旁白只有一句會被演出來，
 			// 合起來比會讓沒接上的那兩句被第一句的規則蓋掉。
 			if result := pack.MatchText([]string{text}, localeName); result.Matched {
@@ -176,6 +186,15 @@ func scanBlock(pack *goldenbox.Pack, localeName string, member int, id uint8,
 		}
 	}
 	return out, nil
+}
+
+// literalDistance 取距離上限的字面值。運算元不是立即數（是記憶體位址）時回 -1
+// ——那種情況要跑起來才知道，不能靜態宣稱。
+func literalDistance(operand ecl.Operand) int {
+	if operand.WordSet {
+		return -1
+	}
+	return int(operand.Low)
 }
 
 func textOf(operand ecl.Operand) string {
@@ -197,8 +216,8 @@ func render(prompts []prompt, localeName string) string {
 		"那兩句被第一句的規則蓋掉。\n\n" +
 		"⚠ `cmd/ecl-text-coverage` 的分母裡**沒有這個 opcode**，所以那份報告的\n" +
 		"「未接上 0 群」與這一份不衝突：那裡從來沒數過這批文字。\n\n")
-	out.WriteString("| 段 | 位移 | 旁白 | remake 演得到 | 規則 | 原文 |\n")
-	out.WriteString("|---|---|---:|---|---|---|\n")
+	out.WriteString("| 段 | 位移 | 距離上限 | 旁白 | remake 演得到 | 規則 | 原文 |\n")
+	out.WriteString("|---|---|---:|---:|---|---|---|\n")
 	for _, item := range prompts {
 		shown := "否"
 		if item.shown {
@@ -212,8 +231,12 @@ func render(prompts []prompt, localeName string) string {
 		if len([]rune(text)) > 64 {
 			text = string([]rune(text)[:64]) + "…"
 		}
-		out.WriteString(fmt.Sprintf("| `ECL%d/0x%02X` | `%#04x` | %d | %s | %s | %s |\n",
-			item.member, item.block, item.offset, item.slot, shown, rule, text))
+		distance := fmt.Sprintf("%d", item.distance)
+		if item.distance < 0 {
+			distance = "動態"
+		}
+		out.WriteString(fmt.Sprintf("| `ECL%d/0x%02X` | `%#04x` | %s | %d | %s | %s | %s |\n",
+			item.member, item.block, item.offset, distance, item.slot, shown, rule, text))
 	}
 	shown, shownGap, hidden, hiddenGap, sites := 0, 0, 0, 0, map[string]bool{}
 	for _, item := range prompts {

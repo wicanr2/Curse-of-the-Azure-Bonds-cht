@@ -765,16 +765,23 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			if err != nil {
 				return result, fmt.Errorf("encounter menu distance at %d: %w", pc, err)
 			}
+			// 三句旁白依距離挑一句，挑法見 `EncounterPromptSlots`。
+			//
+			// ⚠ 原作看的是**當下的距離**（由地圖座標算出、再被這個上限夾住），
+			// remake 還沒有那個距離模型，所以用上限代替——`ADVANCE`／`PARLAY`
+			// 的判斷本來就已經是同一個代替法。
 			prompt := ""
-			for index := 9; index <= 11; index++ {
-				if operandIsText(instruction.Operands[index]) {
-					prompt, err = operandText(instruction.Operands[index], stringsMemory)
-					if err != nil {
-						return result, fmt.Errorf("encounter menu prompt at %d: %w", pc, err)
-					}
-					if prompt != "" {
-						break
-					}
+			for _, slot := range EncounterPromptSlots(int(maxDistance)) {
+				operand := instruction.Operands[EncounterPromptOperand+slot]
+				if !operandIsText(operand) {
+					continue
+				}
+				prompt, err = operandText(operand, stringsMemory)
+				if err != nil {
+					return result, fmt.Errorf("encounter menu prompt at %d: %w", pc, err)
+				}
+				if prompt != "" {
+					break
 				}
 			}
 			options := []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}

@@ -1345,7 +1345,9 @@ func TestRealBurialGlenRedPlumeTrapBranches(t *testing.T) {
 			if runErr != nil || !intro.WaitingForMenu ||
 				!reflect.DeepEqual(intro.Menus[len(intro.Menus)-1].Options,
 					[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) ||
-				intro.Menus[len(intro.Menus)-1].Prompt != "HE MAKES A GESTURE OF FRIENDSHIP" {
+				// ⚠ 三句旁白依距離挑（spec 1144）。這一處的距離上限是 2，所以演的是
+				// 第三句（遠距）；`HE MAKES A GESTURE OF FRIENDSHIP` 是距離 0 那一句。
+				intro.Menus[len(intro.Menus)-1].Prompt != "YOU SPOT A LONE RED PLUME" {
 				t.Fatalf("decision=%d intro=%+v err=%v", decision, intro, runErr)
 			}
 			journal := resume(t, session, 1)
