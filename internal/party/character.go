@@ -1059,6 +1059,7 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		Dexterity:   uint8(c.Abilities.Dexterity),
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		SavingThrows: append([]uint8(nil), c.SavingThrows...), SavingThrowBonus: int(c.SavingThrowBonus),
+		ClericLevel:  c.turnUndeadLevel(),
 	}
 	return c.applyKnownEffects(fighter), nil
 }
@@ -1332,4 +1333,23 @@ func (c Character) StrengthAdjustments() (hit, damage int, ok bool) {
 		return 0, 0, false
 	}
 	return engineability.StrengthHitAdjustment(index), engineability.StrengthDamageAdjustment(index), true
+}
+
+// turnUndeadLevel 是驅散不死用的「牧師槽等級」（角色記錄 `+109h`）。
+//
+// ★ 原作的顯示條件是 `+109h > 0`（牧師槽的等級）或第二職業成立（spec 905），
+// 也就是**只有牧師會看到那個選項**。聖騎士在 AD&D 一版是三級起以「等級 − 2」
+// 驅散，但本作的判斷是牧師槽——聖騎士的牧師槽在原版存檔裡是 0，所以這裡
+// 只認牧師，多的規則要有證據再加。
+func (c Character) turnUndeadLevel() uint8 {
+	if c.Class != ClassCleric {
+		return 0
+	}
+	if c.Level < 1 {
+		return 0
+	}
+	if c.Level > 255 {
+		return 255
+	}
+	return uint8(c.Level)
 }

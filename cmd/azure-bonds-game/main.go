@@ -953,6 +953,10 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyV) {
 			return a.combatAction(a.state.BeginCombatView)
 		}
+		// 「退散」只有牧師、而且這一場還沒用過才看得到（spec 905）。
+		if inpututil.IsKeyJustPressed(ebiten.KeyT) && a.state.CombatCanTurnUndead() {
+			return a.combatAction(a.state.CombatTurnUndead)
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {
 				return a.combatAction(func() error { return a.state.CombatSelectSpellTarget(1) })
