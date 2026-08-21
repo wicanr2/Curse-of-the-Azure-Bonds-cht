@@ -422,8 +422,8 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 	return nil
 }
 
-// encodeECLBanksInto 把 ECL session 的區 0／1／2 寫進 SAVGAM 的前三塊
-// （spec 1163）。沒有 session 就什麼都不動。
+// encodeECLBanksInto 把 ECL session 的區 0..3 寫進 SAVGAM 的四塊（spec 1163）。
+// 沒有 session 就什麼都不動。
 func (s *State) encodeECLBanksInto(container *partySave.SAVGAMContainer) error {
 	if s.session == nil {
 		return nil
@@ -443,10 +443,17 @@ func (s *State) encodeECLBanksInto(container *partySave.SAVGAMContainer) error {
 		}
 		*bank.record = encoded
 	}
+	// 區 3 是 **ECL 位元組碼本身**，位元組定址（spec 1176）。不寫回等於把腳本
+	// 對自己位元組碼做的修改丟掉——原版存的是存檔當下那一份。
+	encoded, err := partySave.EncodeECLCode(s.session.CodeMemorySnapshot(), container.ECL)
+	if err != nil {
+		return err
+	}
+	container.ECL = encoded
 	return nil
 }
 
-// seedECLBanksFrom 反過來：匯入原版存檔時把那三塊讀回 ECL session。
+// seedECLBanksFrom 反過來：匯入原版存檔時把那四塊讀回 ECL session。
 // ⚠ 每一段自己的暫存（`4C00h`..`4C0Fh`，spec 1162）在原版版面裡只有一份，
 // 就是目前這一段的；別段停放的值原版存不下來，讀檔之後從 0 開始。
 func (s *State) seedECLBanksFrom(container partySave.SAVGAMContainer) error {
@@ -470,6 +477,14 @@ func (s *State) seedECLBanksFrom(container partySave.SAVGAMContainer) error {
 		}
 		for address, value := range memory {
 			s.session.SetMemoryValue(address, value)
+		}
+	}
+	if container.ECL != nil {
+		// ⚠ 只有目前這一段就是存檔當時那一段時才對得上——原版存檔只存得下
+		// 一份程式碼視窗（spec 1176）。長度不符就跳過，不要把半份碼蓋上去。
+		code, err := partySave.DecodeECLCode(container.ECL)
+		if err == nil {
+			s.session.RestoreCodeMemory(code)
 		}
 	}
 	return nil

@@ -97,6 +97,44 @@ func (s *BlockSession) MemorySnapshot() map[uint16]uint16 {
 	return memory
 }
 
+// CodeMemorySnapshot 回傳目前這一段的程式碼視窗（`8000h..9DFFh`）逐位元組。
+//
+// ★ 這一區是 **ECL 位元組碼本身**：`GETTABLE` 讀的分派表就住在裡面，腳本也寫得
+// 進去。原版存檔存的是**存檔當下那一份**，不是遊戲檔裡的原始版本
+// （spec 1163／1176）。
+func (s *BlockSession) CodeMemorySnapshot() map[uint16]uint8 {
+	runtime := s.states[s.current]
+	if runtime == nil {
+		return nil
+	}
+	code := make(map[uint16]uint8, 0x1E00)
+	for address := uint16(CodeAddressBase); address <= 0x9DFF; address++ {
+		value, ok := runtime.Memory[address]
+		if !ok {
+			continue
+		}
+		code[address] = uint8(value)
+	}
+	return code
+}
+
+// RestoreCodeMemory 把程式碼視窗換成存檔裡的那一份。
+//
+// ⚠ 只動視窗內的位址。呼叫端要確定目前這一段就是存檔當時那一段——原版存檔
+// 只存得下一份程式碼，換錯段等於把別段的碼蓋上去。
+func (s *BlockSession) RestoreCodeMemory(code map[uint16]uint8) {
+	runtime := s.states[s.current]
+	if runtime == nil {
+		return
+	}
+	for address, value := range code {
+		if address < CodeAddressBase || address > 0x9DFF {
+			continue
+		}
+		runtime.Memory[address] = uint16(value)
+	}
+}
+
 // BlockMemoryValue 讀「某一段自己那份」暫存格。隊伍已經換到別段時，
 // `MemoryValue` 看不到停在那邊的值——那正是 per-block scratch 的本意
 // （spec 1162）。位址不在暫存區內就退回 `MemoryValue`。
