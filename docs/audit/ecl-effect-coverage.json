@@ -1116,7 +1116,7 @@
    "opcode": "0x2D",
    "name": "CALL",
    "status": "partial",
-   "note": "CALL 是七路 switch；corpus 只用 2E10h 與 6803h，兩者的 consumer 尚未逐條驗（RE-03）",
+   "note": "原作 2F02h 整支 124 條讀完（spec 1150）：operand − 7FFFh 之後七路分派。corpus 用到四個——2E10h 125 處（重畫）、B200h 19 處（音效）、C01Eh 13 處（MOVEFORWARD）、6803h 11 處（圖片序列推一格）。B200h 的兩支已判定：選號由 ECL 格 03DE 決定，全 corpus 15 次寫入一律是 5 ⇒ 只走得到 10 那一支；6803h 已接成序列游標。partial 只剩 2E10h：原作是 STOREVALUE 當場寫 720Fh/7210h/7211h 並立五個髒旗標之一，CALL 只負責「髒了才重畫」，remake 改用 CALL 當下回頭掃 SaveWrites 的啟發式",
    "occurrences": 168,
    "blocks": [
     "ECL1.DAX/0x52",

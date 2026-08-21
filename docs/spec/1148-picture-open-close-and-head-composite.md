@@ -48,13 +48,21 @@ DS:8B48h := 0;  DS:8B49h := 0;
 `0FFh` 先前是**什麼都不做**；現在會發出 `PictureCloseRequested`。開啟那一支的
 三件事（區塊、大圖旗標、頭像 block）本來就對得上。
 
+一般圖那一支的兩條呼叫是 `LOADSEQUENCE(圖名, n, 0, @DS:722Ch)` 與
+`SHOWPORTRAIT(3, 3, 1, 序列[1])`——`PIC*.DAX` 的每個 block 都是**多格序列**，
+`PICTURE` 只畫第 1 格，之後由 `MENUS` 的自走驅動器或腳本的 `2Dh CALL 6803h`
+往下推（spec 1150）。
+
 ⚠ 仍是 `partial`：`PictureRequested`／`PictureCloseRequested` 是**訊號**，實際的
 載入、頭像與身體的分塊合成、以及 `4FBAh`／`4FBBh` 那個「兩個都等於 4 就不重繪」
 的旁路都在 UI 那一側，還沒逐項對過。
 
 ## 明確不宣稱
 
-- 沒有宣稱 `DS:4FBAh`／`DS:4FBBh` 是什麼（只知道兩個都等於 4 時關閉不重繪）。
+- `DS:4FBAh`／`DS:4FBBh` 由 ECL 格 `4BE6` 決定：`STOREVALUE` 發現 `4BE6` 換值時
+  先 `4FBBh := 4FBAh`，再依新值 0／非 0 把 `4FBAh` 設成 3／4
+  （DOS `overlay-07:0DA0h`，spec 1150）。所以「兩個都等於 4 就不重繪」＝
+  「本來就是這種畫面、現在還是」。這一支各代表哪一種畫面仍未解讀。
 - 沒有宣稱 `DS:8B62h`／`8B63h`／`8B65h`／`8B48h`／`8B49h` 各自的語意。
 - 沒有宣稱 `DS:7580h`（大圖 0、關閉 1）代表什麼。
 - 沒有宣稱 corpus 裡 `PICTURE 0FFh` 出現幾處——只確認它存在

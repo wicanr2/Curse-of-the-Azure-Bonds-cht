@@ -92,6 +92,11 @@ type RunResult struct {
 	PictureRequested       bool
 	// PictureCloseRequested 為真代表 `0Eh PICTURE` 的運算元是 `0FFh`：把圖關掉。
 	PictureCloseRequested  bool
+	// PictureFrameAdvances 是**最後一張圖之後**跑過幾次 `2Dh CALL 6803h`。
+	// 原作那一支把圖片序列的游標往前推一格（超過張數回到第 1 格）、畫出那一格
+	// 再等一個 GAMEDELAY；換圖時 LOADSEQUENCE 會把游標設回第 1 格，所以換圖
+	// 之前推的格數不算（spec 1150）。
+	PictureFrameAdvances   int
 	PictureBlock           uint16
 	BigPictureRequested    bool
 	PictureHeadBlock       uint16
@@ -111,6 +116,12 @@ type RunResult struct {
 	WhoRequests            []WhoRequest
 	StringInputRequests    []StringInputRequest
 }
+
+// ECL `2Dh CALL` 的運算元是 external routine 的選擇子（`selector = 運算元 −
+// 7FFFh`，spec 561）。原作的分派器認得七個，CoAB 的腳本用到四個：
+// `2E10h` 重畫、`C01Eh` 前進一格、`B200h` 播音效、`6803h` 推圖片序列一格。
+// 只有 `6803h` 在 remake 這一側有自己的狀態要記（spec 1150）。
+const ExternalCallAdvancePictureFrame = 0x6803
 
 // MemoryWrite preserves one numeric SAVE/SAVE TABLE side effect from the
 // current bounded transaction. The VM owns memory mutation; adapters use this
@@ -1105,6 +1116,9 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				Address: address,
 				PC:      pc,
 			})
+			if address == ExternalCallAdvancePictureFrame {
+				result.PictureFrameAdvances++
+			}
 		case 0x3A: // DELAY
 			// GameDelay is an engine timing boundary with no ECL memory side
 			// effect. Preserve the count for the frontend and continue.
@@ -1577,6 +1591,9 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 						result.PictureHeadBlock = head
 						result.PictureHeadBlockSet = true
 					}
+					// 開圖那一支叫 LOADSEQUENCE，它把序列游標設回第 1 格
+					// （DOS `overlay-29:0270h`），所以換圖之前推的格數不算。
+					result.PictureFrameAdvances = 0
 				}
 			}
 			if instruction.Command.Opcode == 0x1C {

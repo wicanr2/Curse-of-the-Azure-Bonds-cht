@@ -233,3 +233,36 @@ func TestApplyECLCallSignalsRedrawRequiresFreshDirectionCommit(t *testing.T) {
 			state.DungeonX, state.DungeonY, state.DungeonDirection)
 	}
 }
+
+// `2Dh CALL 6803h` 把圖片序列往前推一格；換圖時原作的 `LOADSEQUENCE` 會把游標
+// 設回第 1 格，所以有換圖的執行取代、沒換圖的執行累加（spec 1150）。
+func TestApplyECLCallSignalsCarriesPictureFrameCursor(t *testing.T) {
+	state := State{}
+	state.applyECLCallSignals(ecl.RunResult{
+		CallAddresses:        []uint16{0x6803, 0x6803},
+		PictureFrameAdvances: 2,
+	})
+	if state.PictureFrameAdvances() != 2 {
+		t.Fatalf("游標推了 %d 格，應該是 2", state.PictureFrameAdvances())
+	}
+
+	// 沒換圖 ⇒ 累加。
+	state.applyECLCallSignals(ecl.RunResult{
+		CallAddresses:        []uint16{0x6803},
+		PictureFrameAdvances: 1,
+	})
+	if state.PictureFrameAdvances() != 3 {
+		t.Fatalf("累加之後是 %d 格，應該是 3", state.PictureFrameAdvances())
+	}
+
+	// 換圖 ⇒ 取代（VM 已經在 `0Eh PICTURE` 把計數歸零）。
+	state.applyECLCallSignals(ecl.RunResult{
+		CallAddresses:        []uint16{0x6803},
+		PictureRequested:     true,
+		PictureBlock:         0x1D,
+		PictureFrameAdvances: 1,
+	})
+	if state.PictureFrameAdvances() != 1 {
+		t.Fatalf("換圖之後是 %d 格，應該是 1", state.PictureFrameAdvances())
+	}
+}

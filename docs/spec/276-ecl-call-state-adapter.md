@@ -9,9 +9,9 @@
 
 | raw ECL operand | dispatch value | reference routine |
 |---|---:|---|
-| `0x2E10` | `0xAE11` | 重算目前 wall/roof，必要時 redraw view／時間 HUD |
-| `0xC01E` | `0x401F` | `MovePositionForward` |
-| `0xB200` | `0x3201` | 依 `word_1EE76` 播放 sound A/B，其他值預設 A |
+| `0x2E10` | `0xAE11` | 重算目前格的特殊碼；畫面髒了才重畫視窗、地點列與牆面碼（spec 1150）|
+| `0xC01E` | `0x401F` | `ECL2.MOVEFORWARD` |
+| `0xB200` | `0x3201` | 依 `DS:8B4Ch`（＝ ECL 格 `03DE`）播 10 或 11 號音效 |
 
 `MovePositionForward` 只接受方向 0/2/4/6，將 16×16 map coordinate 前移並 wrap；
 routine 本身沒有 collision check，之後才重算 wall/roof。因此 ECL forced movement
@@ -28,7 +28,8 @@ routine 本身沒有 collision check，之後才重算 wall/roof。因此 ECL fo
   wall type 與 roof state。這涵蓋完整與部分同 block 傳送，又不會把跨
   `NEWECL` 流程或無方向對話 scratch registers 誤當成玩家目的地。
 - `0xC01E` 由 State 先完成 forced move，再由 frontend request 重繪。
-- `0xB200` 目前播放 reference default sound A（selector 10／Step）。
+- `0xB200` 播 reference 的 10 號音效（Step）。全 corpus 對 `03DE` 只有 15 次
+  `SAVE 05 03DE`、沒有讀取，所以 11 號那一支走不到（spec 1150）。
 - 未知 CALL 仍保留 ordered request，不猜 side effect。
 - 一般 ECL menu flow 與 combat continuation 使用同一 State adapter。
 
@@ -51,8 +52,12 @@ ECL6 block `42h` terrain `0Bh` 又在 `+13CFh` 只寫 `C04B=0Ah`、
 
 ## Remaining boundary
 
-`word_1EE76` 尚未投影到 State，因此 `0xB200` 的值 10 → sound B 分支未實作；
-`0x2E10` 的 DOS dirty/redraw flags 在 remake 由立即 one-shot redraw 取代。
+`0x2E10` 的髒旗標在 remake 由立即 one-shot redraw 取代。原作是
+`ECL2.STOREVALUE` 收到 `C04B`／`C04C`／`C04D` 就**當場**寫
+`DS:720Fh`／`7210h`／`7211h` 並把 `8B68h` 設 1，`CALL` 只負責「髒了就重畫」；
+本節這個「同 block、且要有新寫的 `C04D`」的判準是 remake 這一側的啟發式，由
+第 402／403 輪的正常玩家路徑回歸鎖著。兩種模型在「對話把 `C04B`／`C04C` 當
+暫存」時結果不同，要換成原作模型必須先解釋那些回歸為什麼過得去（spec 1150）。
 
 ```text
 go test ./internal/game ./internal/ecl ./internal/party

@@ -12,11 +12,14 @@ external routine 共 7 個，兩平台完全相同**：
 |---|---|---|---|---:|
 | `8000h` | `0001h` | `2FAFh` | `3173h` | 0 |
 | `8001h` | `0002h` | `2FBFh` | `3183h` | 0 |
-| `B200h` | `3201h` | `2FCFh` | `3193h` | 0 |
+| `B200h` | `3201h` | `2FCFh` | `3193h` | 19 |
 | `C018h` | `4019h` | `300Eh` | `31D2h` | 0 |
-| `C01Eh` | `401Fh` | `3002h` | `31C6h` | 0 |
-| `2E10h` | `AE11h` | `2F31h` | `30F5h` | 12 |
+| `C01Eh` | `401Fh` | `3002h` | `31C6h` | 13 |
+| `2E10h` | `AE11h` | `2F31h` | `30F5h` | 125 |
 | `6803h` | `E804h` | `3035h` | `31F9h` | 11 |
+
+使用次數是沿 `ecl.TraceGraph` 走完 25 個 block 的**可達**條數，合計 168，與
+`cmd/ecl-effect-coverage` 的 `0x2D` 分母一致。每一支實際做什麼見 spec 1150。
 
 其餘 operand 一律走到 handler 的 epilogue：**不做事直接返回**，不是錯誤路徑。
 
@@ -44,20 +47,15 @@ selector `AE11h`」，與本輪一致。
 
 ## 與 CoAB corpus 的關係
 
-`docs/audit/ecl-event-catalog.json` 的靜態清冊裡共有 23 個 `CALL` 指令，
-operand 只有兩種：`2E10h`（12 次）與 `6803h`（11 次）。這正是完整度矩陣裡
-「23 個靜態可達 CALL」的來源。
-
-所以本輪把兩件事分開了：
+兩件事要分開：
 
 - **engine 認得 7 個**（本規格，`exact`）。
-- **CoAB 的 ECL1–ECL6 靜態使用 2 個**（清冊，`exact`）。
+- **CoAB 的 ECL1–ECL6 用到 4 個**：`2E10h`、`B200h`、`C01Eh`、`6803h`
+  （上表，`exact`）。`8000h`／`8001h`／`C018h` 認得但沒有腳本用。
 
-先前文件寫「CoAB 已接三個 observed address」（`2E10h`、`C01Eh`、`B200h`）。
-後兩者不在靜態 corpus 裡，但確實被 handler 認得。它們的來源是別條路徑
-（動態觀察或其他成員），本規格不推翻也不採信該敘述，只把可重生的事實分成
-上面兩層；要把 `C01Eh`／`B200h` 寫成 CoAB 實際會走到的路徑，必須另外提出
-runtime trace 或指出它們在哪個 DAX 成員出現。
+⚠ 用 `docs/audit/ecl-event-catalog.json` 數會少報：那份清冊只跟循序與靜態可見的
+跳躍，不進 `IF` 的兩條路，`2Dh` 只數得到 78 條。要分母就用 `ecl.TraceGraph`
+（`cmd/ecl-window`、`cmd/ecl-cell-refs`、`cmd/ecl-effect-coverage` 走同一條路）。
 
 ## 方法
 
@@ -83,11 +81,11 @@ python3 scripts/ecl_call_registry.py --merge \
 
 ## 這份規格明確不宣稱
 
-- **任何 routine 的效果**。分支主體位址是 `exact`，但每個分支做什麼——
-  `2E10h` 的地圖／重繪語意、`6803h` 的用途、`B200h`／`C018h`／`C01Eh`／
-  `8000h`／`8001h` 是什麼——全部仍是 `待解讀`。第 519／520 輪已對 `2E10h`
-  追到 overlay-30 的 cell-layer accessor，那條結論不受本規格影響也不被它擴大。
+- **任何 routine 的效果**。分支主體位址是 `exact`；每個分支做什麼在 spec 1150
+  才逐條讀出（`2E10h` 髒了才重畫、`6803h` 推圖片序列一格、`B200h` 播 10 或 11
+  號音效、`C01Eh` 是 `MOVEFORWARD`、`8000h`／`8001h` 是 `GODUEL(1)`／`GODUEL(0)`、
+  `C018h` 有條件重算牆面碼）。
 - **`8000h`／`8001h` 兩個分支只差一個常數**（PC-98`3173h` 推 `1`、`3183h`
-  推 `0`，之後呼叫同一個 far routine）。這看起來像同一功能的開關，但在證明
-  那個 routine 是什麼之前不得命名。
+  推 `0`，之後呼叫同一個 far routine ＝ `ECL2.GODUEL`）。這看起來像同一功能的
+  開關，但 `GODUEL` 內容本身仍是 `待解讀`。
 - **跨作品通用性**。其他 Gold Box 作品的 selector 表必須各自解，不得沿用。
