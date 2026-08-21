@@ -68,6 +68,11 @@ DS:4FC7h := 0;
 ★★ **ECL 執行的入口是 `overlay-28 entry#1`**，主迴圈裡出現三次。
 ★★ `bank1^[594h]` 進 ECL 前被暫存成 `and 1`、設 1、跑完再還原
 ——形狀上是「這一格還有沒有事件」的計數，ECL 執行期間先壓成 1。
+★★★ **`bank0^[1E0h]`／`[1E2h]` 就是 ECL 格 `4BF0`／`4BF1`**
+（[spec 1098](1098-ecl-read-path-and-character-projection.md) 的區 0 換算
+`bank0 + (位址 − 4B00h) × 2`）。腳本用 `SAVE 4BF0 C04B; SAVE 4BF1 C04C`
+把隊伍退回上一格，全 corpus 有 15 處這樣用（[spec 1155](1155-redraw-call-coordinate-divergence.md)）。
+
 ★★★ **座標比對**：`bank0^[1E0h]`／`1E2h` 存進 ECL 前的座標，
 跑完拿 `DS:720Fh`／`7210h`（spec 1022／1026／1042 的同一組）比對，
 **只有被 ECL 搬動過才叫 `0713:0020h`**。
