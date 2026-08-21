@@ -372,6 +372,8 @@
   "combat_item_stronger": "%s 使用%s，%s 力氣變大了。",
   "combat_item_paralyzed": "%s 使用%s，%s 被定住了。",
   "combat_item_invisible": "%s 使用%s，%s 隱形了。",
+  "combat_scroll_selected": "選擇要唸的法術：%s",
+  "combat_scroll_oops": "%s 糟了！",
   "combat_got_away": "%s 逃離了戰場。",
   "combat_escape_blocked": "去路被擋住，逃不掉。",
   "combat_monster_held": "%s 無法行動。",

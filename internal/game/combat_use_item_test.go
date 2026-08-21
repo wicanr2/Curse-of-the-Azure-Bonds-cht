@@ -52,17 +52,25 @@ func useItemState(t *testing.T, items []monster.ItemRecord, raceType uint8) *Sta
 
 // ★ 判準是欄位不是類別：粉塵與項鍊的物品類別是 `46h`，用類別去判會整批漏掉。
 func TestChargedItemClassificationUsesTheFieldsNotTheType(t *testing.T) {
+	catalog := scrollCatalog()
 	dust := chargedItem("Dust", 0x46, 1, 0x3F, 0)
-	effect, ok := chargedItemEffect(dust)
+	effect, ok := chargedItemEffect(dust, catalog)
 	if !ok || effect != 0x3F {
 		t.Fatalf("粉塵應該被判成充能物品：effect=%02X ok=%v", effect, ok)
 	}
-	// 卷軸走另一條路，不是充能物品。
-	if _, ok := chargedItemEffect(monster.ItemRecord{Type: 0x3C, Affects: [3]uint8{1, 0x0F, 0}}); ok {
+	// ★ `3Ch` 名字叫 `Scroll`，但槽是 `0Ah` ⇒ 原作把它當**充能物品**（spec 1171）。
+	if _, ok := chargedItemEffect(
+		monster.ItemRecord{Type: 0x3C, Affects: [3]uint8{1, 0x5F, 0}}, catalog); !ok {
+		t.Fatal("`3Ch` 應該走充能物品那條路")
+	}
+	// 真正的卷軸（槽 `0Bh`）走另一條路。
+	if _, ok := chargedItemEffect(
+		monster.ItemRecord{Type: 0x3D, Affects: [3]uint8{1, 0x0F, 0}}, catalog); ok {
 		t.Fatal("卷軸不該被判成充能物品")
 	}
 	// `+3Eh` 最高位立起來就不是充能物品。
-	if _, ok := chargedItemEffect(monster.ItemRecord{Type: 0x4F, Affects: [3]uint8{5, 0x41, 0x80}}); ok {
+	if _, ok := chargedItemEffect(
+		monster.ItemRecord{Type: 0x4F, Affects: [3]uint8{5, 0x41, 0x80}}, catalog); ok {
 		t.Fatal("`+3Eh` ≥ 80h 不該被判成充能物品")
 	}
 }

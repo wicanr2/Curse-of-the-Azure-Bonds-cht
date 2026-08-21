@@ -18,6 +18,8 @@ var specChargedItems = map[uint8]struct {
 	0x3F: {shape: ChargedItemEffect},
 	0x40: {shape: ChargedItemAreaDamage, dice: "?d6", center: "aim"},
 	0x41: {shape: ChargedItemDamage, dice: "2d4+2"},
+	0x5F: {shape: ChargedItemEffect},
+	0x60: {shape: ChargedItemEffect},
 	0x61: {shape: ChargedItemEffect},
 	0x62: {shape: ChargedItemAreaDamage, dice: "6d6", center: "user"},
 	0x63: {shape: ChargedItemHeal, dice: "2d4+2"},
@@ -96,5 +98,35 @@ func TestNecklaceDiceCountIsOddAndBounded(t *testing.T) {
 	}
 	if len(seen) != 3 {
 		t.Fatalf("60 顆種子只擲出 %d 種骰數：%v", len(seen), seen)
+	}
+}
+
+// ⚠ 卷軸上唸得到主表裡任何一支法術，所以那一條不查手寫的表，改照兩張原版表推。
+// 推不出來要回 false——**安靜地退回「什麼都沒發生」會把卷軸吃掉**。
+func TestDeriveSpellItemBehaviourFallsBackToTheOriginalTables(t *testing.T) {
+	// `+0Ah` 非 0 ⇒ 走效果那條，不必查骰子表。
+	if behaviour, ok := DeriveSpellItemBehaviour(0x17, 0x34, false); !ok ||
+		behaviour.Shape != ChargedItemEffect {
+		t.Fatalf("`+0Ah` 非 0 應該走效果那條：%+v ok=%v", behaviour, ok)
+	}
+	// 治療輕傷（3）：`+0Ah` ＝ 0，骰子表給 `1d8`。
+	behaviour, ok := DeriveSpellItemBehaviour(3, 0, false)
+	if !ok || behaviour.Shape != ChargedItemHeal ||
+		behaviour.Dice.Count != 1 || behaviour.Dice.Sides != 8 {
+		t.Fatalf("治療輕傷應該推成 `1d8` 治療：%+v ok=%v", behaviour, ok)
+	}
+	// 致重傷（66）：`2d8 ＋ 1` 傷害。
+	behaviour, ok = DeriveSpellItemBehaviour(66, 0, false)
+	if !ok || behaviour.Shape != ChargedItemDamage || behaviour.Dice.Bonus != 1 {
+		t.Fatalf("致重傷應該推成 `2d8 ＋ 1` 傷害：%+v ok=%v", behaviour, ok)
+	}
+	// 魔法飛彈的骰數是算出來的，走 remake 專屬結算。
+	if behaviour, ok = DeriveSpellItemBehaviour(0x0F, 0, false); !ok ||
+		behaviour.Shape != ChargedItemNamedSpell {
+		t.Fatalf("魔法飛彈應該走專屬結算：%+v ok=%v", behaviour, ok)
+	}
+	// 屠殺活物（76）：收尾不是那兩支標準收尾 ⇒ 推不出來，必須回 false。
+	if _, ok = DeriveSpellItemBehaviour(76, 0, false); ok {
+		t.Fatal("收尾不是標準那兩支的法術不該被推出行為")
 	}
 }
