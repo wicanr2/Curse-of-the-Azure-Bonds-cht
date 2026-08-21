@@ -25,7 +25,7 @@
 | `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；partial 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標——兩個旗標都沒有 producer |
 | `0x2D` | CALL | `partial` | 168 | 22 | 原作 2F02h 整支 124 條讀完（spec 1150）：operand − 7FFFh 之後七路分派。corpus 用到四個——2E10h 125 處（重畫）、B200h 19 處（音效）、C01Eh 13 處（MOVEFORWARD）、6803h 11 處（圖片序列推一格）。B200h 的兩支已判定：選號由 ECL 格 03DE 決定，全 corpus 15 次寫入一律是 5 ⇒ 只走得到 10 那一支；6803h 已接成序列游標。partial 只剩 2E10h：原作是 STOREVALUE 當場寫 720Fh/7210h/7211h 並立五個髒旗標之一，CALL 只負責「髒了才重畫」，remake 改用 CALL 當下回頭掃 SaveWrites 的啟發式 |
 | `0x33` | PRINT RETURN | `partial` | 120 | 13 | 原作 2CEAh 整支 14 條讀完（spec 1147）：欄 65A0h := 1、列 65A1h ＋1，兩個分支對游標做的事一樣（8B61h 只決定要不要順手清）。所以它是硬換行——連續兩條會空一行。remake 只記指令邊界（PrintReturnCount），沒有游標模型；缺口在 UI 的行模型，不是 ECL VM |
-| `0x27` | TREASURE | `partial` | 63 | 22 | 八個運算元解成 TreasureRequest，錢幣／寶石／首飾與 ITEM 區塊由 combat_state 的 ResolveTreasureRequests 實際入帳；ItemBlock 的隨機／特殊分支未驗 |
+| `0x27` | TREASURE | `partial` | 63 | 22 | 原作 1B53h 整支 398 條讀完（spec 1151）：前七個運算元以 32-bit **覆寫** DS:6F70h 的戰利品池（1Ch 清的就是它）；第八個 ItemBlock 三選一——< 80h 載 ITEM<片>.DAX 那個區塊並把裡面每一筆都掛上鏈、= 0FFh 不給物品、80h..FEh 隨機產生 n − 80h 件。物品鏈 DS:6F8Ch 的 next 在 +2Ah 且是**前插**，顯示端從鏈頭走（overlay-05:0CF5h），所以清單是反序——remake 已跟上。隨機表的區間 bug 也修了（第二擲 48／49 原作回 59，remake 先前回劍）。partial 剩兩項：隨機那一路沒跑 CREATERNDTREASURE（spec 1036）所以加值／名稱三段／重量／價值／卷軸法術都是空的；以及 remake 把同一次執行的多筆 TREASURE 相加而原作是覆寫（corpus 未觀察到兩筆之間沒有 1Ch 的情形） |
 | `0x2E` | DAMAGE | `partial` | 24 | 12 | 只有明確指定全隊的封包（旗標 0xC0）會在正式路徑結算；其餘要選定角色的形式仍留在 pending |
 | `0x37` | LOAD PIECES | `partial` | 23 | 19 | LOAD PIECES 記下請求；資產載入由上層做 |
 | `0x21` | LOAD FILES | `partial` | 22 | 21 | LOAD FILES 記下請求；實際換檔由上層做 |

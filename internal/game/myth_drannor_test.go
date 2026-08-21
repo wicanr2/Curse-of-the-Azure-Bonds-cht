@@ -2459,9 +2459,12 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		state.MoneyPool() != cacheMoney ||
 		state.MoneyPoolCopperRemainder() != cacheRemainder+100 ||
 		len(cacheItems) != 3 ||
-		cacheItems[0].Type != 0x3F || cacheItems[0].Plus != 2 ||
+		// 順序是 ITEM 區塊順序的**反序**：原作把每一件都前插到 `DS:6F8Ch`
+		// 這條單鏈的最前面（`overlay-02:1C7Ch`），而顯示端從鏈頭走
+		// （`overlay-05:0CF5h` 的 `PRINTITEMNAME` 迴圈）。spec 1151。
+		cacheItems[0].Type != 0x24 || cacheItems[0].Plus != 5 ||
 		cacheItems[1].Type != 0x41 || cacheItems[1].Plus != 1 ||
-		cacheItems[2].Type != 0x24 || cacheItems[2].Plus != 5 {
+		cacheItems[2].Type != 0x3F || cacheItems[2].Plus != 2 {
 		t.Fatalf("cache treasure mode=%v menu=%v money=%d/%d remainder=%d/%d items=%+v message=%q",
 			state.Mode, state.treasureMenu, state.MoneyPool(), cacheMoney,
 			state.MoneyPoolCopperRemainder(), cacheRemainder, cacheItems,
