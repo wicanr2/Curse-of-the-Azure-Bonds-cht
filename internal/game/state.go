@@ -3947,12 +3947,10 @@ func (s *State) projectFreshDungeonCoordinatesBeforeCall(
 			mask |= 4
 		}
 	}
-	// Verified party-position transactions always commit a fresh facing.
-	// Some dialogue events write C04B/C04C as scratch coordinates before the
-	// same redraw CALL without moving the party; do not project those values.
-	if mask&4 == 0 {
-		return
-	}
+	// ⚠ 不要再加「一定要同時寫 `C04D`（朝向）才算數」這種條件。原作的
+	// 「退回上一格」出口（`ECL2/0x04:160Ch` 等 23 處，spec 1157）只寫
+	// `C04B`／`C04C`，朝向刻意保持不變——加了那個條件就會把玩家看得見的
+	// 位移整批壓掉，而且主線仍然會通，因為路線測試會跟著被壓掉的行為長出來。
 	if mask&1 != 0 {
 		s.DungeonX = int(int16(x))
 	}

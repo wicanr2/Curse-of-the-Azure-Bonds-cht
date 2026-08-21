@@ -183,14 +183,16 @@ end;
 - `B200h` 維持 `SoundStep`，理由改成「另一支走不到」而不是「還沒接」。
 
 ⚠ 仍是 `partial`，剩下的是 `2E10h`。remake 沒有那五個髒旗標，改用「`CALL`
-當下回頭掃同 block 的 `SaveWrites`、而且要有新寫的 `C04D`」的啟發式。
-125 處可達的 `CALL 2E10h` 裡有 **23 處只寫 `C04B`／`C04C`**，remake 全部跳過。
+當下回頭掃同 block、執行序在前的 `SaveWrites`」。125 處可達的 `CALL 2E10h`
+現在全部照原作的模型投影——包含只寫 `C04B`／`C04C` 的那 23 處（朝向刻意不變，
+[spec 1157](1157-restore-previous-cell-sites-and-shared-handlers.md)、
+[spec 1158](1158-hap-village-extent-and-refused-edges.md)）；
+`4BF0`／`4BF1` 的 producer 是地城主迴圈的移動前快照
+（[spec 1155](1155-redraw-call-coordinate-divergence.md)）。
 
-★ **但擋路的不是髒旗標。** 那 23 處裡有 15 處是同一個慣用法
-`SAVE 4BF0 C04B; SAVE 4BF1 C04C`（還原一組存起來的座標），而 `4BF0`／`4BF1`
-在整個 ECL corpus 裡只被常數寫過兩次、remake 這一側完全沒有 producer。
-把 `C04D` 條件拿掉之後隊伍會被丟到 `(0,1)`——**那個條件是在補這個洞**。
-要換成原作模型，得先答出 `4BF0`／`4BF1` 的值從哪來（[spec 1155](1155-redraw-call-coordinate-divergence.md)）。
+★ 剩下的差異是**視窗不等於髒旗標**：同一次執行裡更早、與這條 `CALL` 無關的
+座標寫入仍會被算進來。要收掉得把 `720Fh`／`7210h`／`7211h` 與那五個髒旗標
+建出來，讓 `CALL` 只做「髒了才重畫」。
 
 ## 明確不宣稱
 

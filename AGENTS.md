@@ -130,6 +130,15 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 - **一支 handler 在下結論前先 `grep docs/spec/` 那個位址。** 這個專案已經有
   1,100 多份規格，同一支函式常常兩平台各有一份。重讀一次不是錯，但把既有結論
   當成新發現寫進 commit 就是錯的；而且既有那份往往就是判別誰對的第二個證人。
+- **要問「誰跳到這個位址」，用 `cmd/ecl-window -into`，不要用 `-opcode 24 -operand`。**
+  `-operand` 比對的是**指令運算元**，而 `ON GOTO`／`ON GOSUB` 的目的地在指令後面
+  那張表裡，所以它看不到任何選單分派；`-into` 走 `ecl.TraceGraph`，兩種邊都跟。
+  `ECL2/0x04:160Ch` 用 `-operand` 只算得到 3 個入口，`-into` 是 6 個，而**玩家實際
+  會踩到的三個全在漏掉的那一半**。純位元組掃描目的地字（如 `0C 96`）則相反，會有
+  假陽性。查到之後再用 `-table <位移>` 把那張表拆開，逐個索引對到目的地。
+- **`go test` 會吞掉通過測試的 stdout。** 加了 `fmt.Printf` 探針卻「什麼都沒印」
+  時，先加 `-v` 再下結論——失敗的測試會顯示輸出，通過的不會，所以同一個探針
+  在測試修好之後就「消失」了，很容易誤判成沒有執行到。
 - **要下「全 corpus 都沒有 X」這種全稱結論，block 清單就不能是手打的。**
   取 `docs/audit/ecl-effect-coverage.json` 該 opcode 的 `blocks` 欄逐一掃，
   掃完的處數要對得上同一筆的 `occurrences`。對不上就是漏了 block，不是資料有誤。

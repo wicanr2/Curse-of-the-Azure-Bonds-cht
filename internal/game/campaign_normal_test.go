@@ -49,14 +49,31 @@ type normalCampaignObserver struct {
 	nextWorldDestinations []string
 	stopAtMessageID       string
 	stopAtDataPackEventID string
+	// refusedEdges 記下「走過去卻被 ECL 推回來」的邊。原作有一類格子會問
+	// 「你要離開嗎」，回答否就把隊伍送回上一格（spec 1157 的 15 處「退回上
+	// 一格」）。地圖的牆資料允許那一步，所以尋路演算法看不出來；只有實際
+	// 走一次才知道。記下來之後尋路就會繞開，而不是原地來回撞到步數用完。
+	refusedEdges map[normalDungeonEdge]bool
+	// hapLeaveYes 決定哈普村邊界那句「你們正準備返回荒野。要繼續嗎？」怎麼答。
+	// 站在地形碼 2／3／1 的邊界格朝東／西／北就會問；答否會把隊伍推回上一格
+	// （ECL5/0x31:0E9Fh），所以只有真的要離村時才答是。
+	hapLeaveYes bool
 	// messages 記下這條 session 期間玩家看得到的每一句話，供語系不變量檢查。
 	messages map[string]bool
+}
+
+// normalDungeonEdge 是「某張地圖的某一格往某個方向」這條邊。
+type normalDungeonEdge struct {
+	set, block uint8
+	point      normalDungeonPoint
+	direction  int
 }
 
 func newNormalCampaignObserver(t *testing.T, state *State) *normalCampaignObserver {
 	t.Helper()
 	return &normalCampaignObserver{
 		state: state, seen: make(map[string]bool), messages: make(map[string]bool),
+		refusedEdges: make(map[normalDungeonEdge]bool),
 	}
 }
 
@@ -575,7 +592,7 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 				}
 			case o.state.Message == requireGamePackText(t, o.state, "hap.leave"):
 				optionID := "option.no"
-				if o.state.DungeonX == 15 && o.state.DungeonY == 5 {
+				if o.hapLeaveYes {
 					optionID = "option.yes"
 				}
 				if !o.selectOption(t, optionID) {
@@ -584,6 +601,21 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 			case o.state.Message == requireGamePackText(t, o.state, "hap.map-route"):
 				if !o.selectOption(t, "ecl-option.caves") {
 					t.Fatalf("Hap map route option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "pit.vegepygmies-retreat"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.shambling-mounds-push"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.shambling-mounds-push-corridor"):
+				// 這三場的 `FLEE` 走 `ECL3/0x11:0589h`——會把隊伍推回上一格；
+				// `WAIT` 走 `1075h`，跳過那兩句 `SAVE` 直接重畫，隊伍留在原地。
+				// 這條路線要往前推進，所以取 `WAIT`。
+				if !o.selectOption(t, "ecl-option.wait") {
+					t.Fatalf("pit blocking encounter WAIT option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "myth-drannor.grave.skeleton"):
+				// `GO` 走 `ECL6/0x40:097Fh`，會把隊伍推回上一格；`REBURY SKELETON`
+				// 走 `0D28h`，不打也不搶。這條路線要繼續往東，所以重新掩埋。
+				if !o.selectOption(t, "myth-drannor.grave.rebury") {
+					t.Fatalf("Myth Drannor grave REBURY option unavailable: %v", o.state.currentOriginalChoices)
 				}
 			case o.selectOption(t, "ecl-option.parlay-nice"):
 			case o.selectOption(t, "option.no"):
@@ -655,6 +687,28 @@ func openNormalDungeonDoor(t *testing.T, state *State, grid *geo.Grid) {
 	state.DungeonWallType, _ = grid.WallWrapped(state.DungeonX, state.DungeonY, int(direction))
 }
 
+// refusedEdge 回報「從這一格往這個方向走會被推回來」。
+func (o *normalCampaignObserver) refusedEdge(point normalDungeonPoint, direction int) bool {
+	if o == nil || o.refusedEdges == nil || o.state == nil {
+		return false
+	}
+	return o.refusedEdges[normalDungeonEdge{
+		set: o.state.GeoMapSet, block: o.state.GeoMapBlock,
+		point: point, direction: direction,
+	}]
+}
+
+// recordRefusedEdge 在實際走過去卻沒有離開原地時記下那條邊。
+func (o *normalCampaignObserver) recordRefusedEdge(point normalDungeonPoint, direction int) {
+	if o == nil || o.refusedEdges == nil || o.state == nil {
+		return
+	}
+	o.refusedEdges[normalDungeonEdge{
+		set: o.state.GeoMapSet, block: o.state.GeoMapBlock,
+		point: point, direction: direction,
+	}] = true
+}
+
 func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, targetY int, observer *normalCampaignObserver) {
 	t.Helper()
 	target := normalDungeonPoint{targetX, targetY}
@@ -690,6 +744,9 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 				if !(state.GeoMapSet == 4 && state.GeoMapBlock == 0x21) &&
 					(next == (normalDungeonPoint{10, 2}) || next == (normalDungeonPoint{8, 11}) ||
 						next == (normalDungeonPoint{8, 15}) || next == (normalDungeonPoint{12, 10})) {
+					continue
+				}
+				if observer.refusedEdge(current, direction) {
 					continue
 				}
 				if _, found := previous[next]; found ||
@@ -843,6 +900,11 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 		if state.session != nil && state.session.CurrentBlockID() != initialBlock {
 			return
 		}
+		// 走完一步還在原地，代表這條邊被 ECL 擋下來（例如「要離開嗎」回答否
+		// 會把隊伍推回上一格）。記下來讓尋路繞開，否則會一直重試同一步。
+		if state.DungeonX == start.x && state.DungeonY == start.y {
+			observer.recordRefusedEdge(start, step.direction)
+		}
 	}
 	if observer.stoppedAtDataPackEvent() {
 		return
@@ -978,20 +1040,39 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		towerGrid = loadGeo5CampaignGrid(t, image, 0x33)
 		observer = newNormalCampaignObserver(t, state)
 		observer.towerGrid = towerGrid
-		for _, target := range []normalDungeonPoint{{4, 10}, {9, 10}, {3, 13}, {15, 5}} {
+		// 哈普村只佔 GEO5/0x32 的西半（x≤5）：ECL5/0x31 的每格分派前面就擋著
+		// `COMPARE C04F 80h; IF <`，地形碼 ≥ 0x80 的東半是黑暗精靈那張圖
+		// （ECL5/0x32）共用同一張 GEO。村子的邊界格是地形碼 1（朝北）、
+		// 2（朝東）、3（朝西），走上去就會問「要不要回荒野」。
+		//
+		// 路線因此全部落在西半：`(4,10)` 是村民（地形碼 4）、`(4,4)` 是阿卡巴
+		// （地形碼 A）、`(3,13)` 是伊夫利特的穀倉（地形碼 8）、`(4,12)` 是東側
+		// 出村格 `(5,12)` 的前一格。
+		walkNormalDungeonTo(t, state, &grid, 4, 10, observer)
+		// `4C02` 是「這一步已經演過一場」的閂：每格分派器先寫 0
+		// （ECL5/0x31:03D7h），每支場景處理常式看到 1 就 `EXIT`、演完寫 1
+		// （`0534h`／`066Eh`／`0B22h`／`0CFAh`）。剛演完村民那場就會是 1。
+		if value, ok := state.session.MemoryValue(0x4C02); !ok || value != 1 {
+			t.Fatalf("normal Hap peasants scene left memory[0x4c02]=%#x,%v want 1", value, ok)
+		}
+		for _, target := range []normalDungeonPoint{{4, 4}, {3, 13}, {4, 12}} {
 			walkNormalDungeonTo(t, state, &grid, target.x, target.y, observer)
 		}
 		if !observer.seen["hap.peasants-flee"] || !observer.seen["hap.akabar-join"] ||
 			!observer.seen["hap.efreet-map"] {
 			t.Fatalf("normal Hap story coverage=%v", observer.seen)
 		}
-		for address, want := range map[uint16]uint16{0x4C01: 5, 0x4C02: 1, 0x4C5E: 1, 0x4C5F: 1} {
+		// `4C02` 在這裡是 0：隊伍停在 `(4,12)`（地形碼 0），分派器已經把閂清掉，
+		// 而地形碼 0 那一支不演任何場景，所以不會再寫回 1。
+		for address, want := range map[uint16]uint16{0x4C01: 5, 0x4C02: 0, 0x4C5E: 1, 0x4C5F: 1} {
 			if got, ok := state.session.MemoryValue(address); !ok || got != want {
 				t.Fatalf("normal Hap memory[%#x]=%#x,%v want %#x", address, got, ok, want)
 			}
 		}
+		// 出村：站上 `(5,12)`（地形碼 2）朝東就會問，這一次答「是」。
+		observer.hapLeaveYes = true
 		if err := state.MoveDungeon(grid, 1, 0, 2); err != nil {
-			t.Fatalf("normal Hap east external exit: %v", err)
+			t.Fatalf("normal Hap east village exit: %v", err)
 		}
 		observer.resolveDungeonBoundary(t)
 		if state.session.CurrentBlockID() != 0x32 || state.GeoMapSet != 5 || state.GeoMapBlock != 0x32 ||
