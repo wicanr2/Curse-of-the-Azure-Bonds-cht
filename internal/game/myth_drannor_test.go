@@ -3791,6 +3791,19 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		t.Fatalf("PROGRAM 8 game won=%v mode=%v event=%q message=%q choices=%v",
 			state.GameWon(), state.Mode, state.OriginalEvent, state.Message, state.Choices)
 	}
+	// ★ 存檔詢問排在結局過場**之後**（spec 1154）。這條路徑也走一次五頁，
+	// 順便證明過場在最終戰結束的那一刻就接得上、每一頁都有譯文。
+	for page := 0; state.endingScene; page++ {
+		if page >= len(endingSceneKeys) {
+			t.Fatalf("結局過場翻不完，停在第 %d 頁", state.endingPageIndex)
+		}
+		if want := state.catalog.Text(endingSceneKeys[page], ""); want == "" || state.Message != want {
+			t.Fatalf("結局第 %d 頁 ＝ %q，預期 %q", page+1, state.Message, want)
+		}
+		if err := state.Select(0); err != nil {
+			t.Fatalf("結局第 %d 頁：%v", page+1, err)
+		}
+	}
 	if state.Prompt != state.catalog.Text("program_victory_prompt", "") ||
 		len(state.Choices) != 2 ||
 		state.Choices[0] != state.catalog.Text("program_victory_save", "") ||

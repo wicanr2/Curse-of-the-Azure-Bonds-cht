@@ -103,7 +103,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x35: {EffectDone, "SAVE TABLE"},
 	0x36: {EffectDone, "ADD NPC 建出隊員"},
 	0x37: {EffectPartial, "與 21h 共用 overlay-02:0C15h..0DA3h 一支 131 條（spec 1087；⚠ IDA 只認到 0D4Ah／104 條，切掉的正是收尾重繪判斷）。三個運算元是三個牆面組槽位的片號，載得進去的槽走 LOADWALLSET(槽, 片)，而那一支收尾寫 [7210h+槽×4] := 片、[7212h+槽×4] := 槽；運算元是 0FFh 的槽由 handler 自己寫成 0FFFFh ⇒ 這三格就是存檔第 9..14 欄（spec 1076／1153）。remake 的資產載入本來就接上了，這一輪補上存檔那一半。partial 剩兩條 corpus 走不到的路：o[1] = 7Fh ⇒ LOADWALLSET(1, 0)，以及 bank0^[1CEh]／[1D0h] 都非零時只載槽 1／3"},
-	0x38: {EffectPartial, "PROGRAM 記下 ID；PROGRAM 8 的通關序列（spec 1087）尚未接完"},
+	0x38: {EffectDone, "原作 30DDh 整支 104 條讀完（spec 1154）：四個分派值 0（重新初始化＋主選單）／3（DS:4FC7h := 1 ⇒ 宣告隊伍全滅、停掉迴圈）／8（結局）／9（CAMP），corpus 13 處四個值全用得到、沒有一處落在什麼都不做的預設值。★ PROGRAM 8 先跑 overlay-18:10FFh 的結局過場才回主選單問存檔——把字串位移與等鍵呼叫依序取出來，分段是**五頁四次等鍵**，而且第 4 頁是 8 行、其餘四頁各 4 行。remake 先前直接跳到存檔詢問，打通關一句結局都看不到；現在照原作的等鍵位置分頁播完才進選單。⚠ spec 1087 說 4FC7h 是「訓練免費」旗標是把它和 4FC8h 搞混了"},
 	0x39: {EffectDone, "WHO 選人"},
 	0x3A: {EffectDone, "DELAY"},
 	0x3B: {EffectDone, "依行軍順序找持有者，slot 與隊員索引寫回兩個位址，找不到寫 0FFh；依據是呼叫端（COMPARE FFh ＋ LOAD CHARACTER），不是命令表"},
