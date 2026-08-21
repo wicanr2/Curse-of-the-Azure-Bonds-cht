@@ -98,7 +98,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x30: {EffectDone, "位元運算"},
 	0x31: {EffectDone, "關掉畫面上的怪物圖示；同一次執行又要求新畫面時以新的為準（原作也是先關再畫）"},
 	0x32: {EffectDone, "FIND ITEM"},
-	0x33: {EffectPartial, "PRINT RETURN 目前等同換行；原作的游標行為未逐格對上"},
+	0x33: {EffectPartial, "原作 2CEAh 整支 14 條讀完（spec 1147）：欄 65A0h := 1、列 65A1h ＋1，兩個分支對游標做的事一樣（8B61h 只決定要不要順手清）。所以它是硬換行——連續兩條會空一行。remake 只記指令邊界（PrintReturnCount），沒有游標模型；缺口在 UI 的行模型，不是 ECL VM"},
 	0x34: {EffectDone, "ECL CLOCK"},
 	0x35: {EffectDone, "SAVE TABLE"},
 	0x36: {EffectDone, "ADD NPC 建出隊員"},

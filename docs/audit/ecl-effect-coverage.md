@@ -24,7 +24,7 @@
 | `0x0E` | PICTURE | `partial` | 199 | 23 | PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層 |
 | `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）。回合生命週期已收（spec 1135～1138）。199 處分成 153 處真的要打（前面擺過怪）與 46 處走服務分派（商店／營地／神殿，見 docs/audit/ecl-combat-sites.md）；`partial` 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標 |
 | `0x2D` | CALL | `partial` | 168 | 22 | CALL 是七路 switch；corpus 只用 2E10h 與 6803h，兩者的 consumer 尚未逐條驗（RE-03） |
-| `0x33` | PRINT RETURN | `partial` | 120 | 13 | PRINT RETURN 目前等同換行；原作的游標行為未逐格對上 |
+| `0x33` | PRINT RETURN | `partial` | 120 | 13 | 原作 2CEAh 整支 14 條讀完（spec 1147）：欄 65A0h := 1、列 65A1h ＋1，兩個分支對游標做的事一樣（8B61h 只決定要不要順手清）。所以它是硬換行——連續兩條會空一行。remake 只記指令邊界（PrintReturnCount），沒有游標模型；缺口在 UI 的行模型，不是 ECL VM |
 | `0x27` | TREASURE | `partial` | 63 | 22 | 八個運算元解成 TreasureRequest，錢幣／寶石／首飾與 ITEM 區塊由 combat_state 的 ResolveTreasureRequests 實際入帳；ItemBlock 的隨機／特殊分支未驗 |
 | `0x2E` | DAMAGE | `partial` | 24 | 12 | 只有明確指定全隊的封包（旗標 0xC0）會在正式路徑結算；其餘要選定角色的形式仍留在 pending |
 | `0x37` | LOAD PIECES | `partial` | 23 | 19 | LOAD PIECES 記下請求；資產載入由上層做 |
