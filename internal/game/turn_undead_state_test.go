@@ -164,3 +164,22 @@ func requireCatalogText(t *testing.T, state *State, key string) string {
 	}
 	return text
 }
+
+// 選單是逐項串接的（spec 905／1168）：`使用` 只有身上有東西才出現。
+func TestCombatMenuShowsUseOnlyWhenTheCharacterCarriesSomething(t *testing.T) {
+	state := turnUndeadState(t, 5, 1)
+	if _, ok := state.combatPartyTurn(); !ok {
+		t.Skip("這一局的先攻沒有讓牧師先動")
+	}
+	empty := requireCatalogText(t, state, "combat_menu_item_use")
+	if strings.Contains(state.CombatMainMenuText(), empty) {
+		t.Fatalf("身上沒東西不該顯示「使用」：%q", state.CombatMainMenuText())
+	}
+	state.partyRoster[0].Equipment = []monster.ItemRecord{{Name: "藥水"}}
+	if !state.CombatCanUseItem() {
+		t.Fatal("身上有東西就該顯示")
+	}
+	if !strings.Contains(state.CombatMainMenuText(), empty) {
+		t.Fatalf("身上有東西卻沒顯示「使用」：%q", state.CombatMainMenuText())
+	}
+}
