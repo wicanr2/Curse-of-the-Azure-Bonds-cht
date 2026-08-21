@@ -12,23 +12,27 @@ const sessionSnapshotVersion = 1
 // remake save. Original code bytes are not copied; CodeMemory contains only
 // runtime differences from the player-supplied block image.
 type SessionSnapshot struct {
-	Version            int                    `json:"version"`
-	CurrentBlock       uint8                  `json:"current_block"`
-	PC                 int                    `json:"pc"`
-	Started            bool                   `json:"started"`
-	Stack              []int                  `json:"stack,omitempty"`
-	Memory             map[uint16]uint16      `json:"memory,omitempty"`
-	CodeMemory         map[uint16]uint16      `json:"code_memory_changes,omitempty"`
-	Strings            map[uint16]string      `json:"strings,omitempty"`
-	Compare            [6]bool                `json:"compare"`
-	SelectedPlayer     int                    `json:"selected_player"`
-	SelectedPlayerSet  bool                   `json:"selected_player_set"`
-	MonsterSetup       *MonsterSetup          `json:"monster_setup,omitempty"`
-	MonsterSpawns      []MonsterSpawn         `json:"monster_spawns,omitempty"`
-	Random             *randomstream.Snapshot `json:"random,omitempty"`
-	SelectionOffset    int                    `json:"selection_offset"`
-	WhoSelectionOffset int                    `json:"who_selection_offset"`
-	StringInputOffset  int                    `json:"string_input_offset"`
+	Version           int                    `json:"version"`
+	CurrentBlock      uint8                  `json:"current_block"`
+	PC                int                    `json:"pc"`
+	Started           bool                   `json:"started"`
+	Stack             []int                  `json:"stack,omitempty"`
+	Memory            map[uint16]uint16      `json:"memory,omitempty"`
+	CodeMemory        map[uint16]uint16      `json:"code_memory_changes,omitempty"`
+	Strings           map[uint16]string      `json:"strings,omitempty"`
+	Compare           [6]bool                `json:"compare"`
+	SelectedPlayer    int                    `json:"selected_player"`
+	SelectedPlayerSet bool                   `json:"selected_player_set"`
+	MonsterSetup      *MonsterSetup          `json:"monster_setup,omitempty"`
+	MonsterSpawns     []MonsterSpawn         `json:"monster_spawns,omitempty"`
+	Random            *randomstream.Snapshot `json:"random,omitempty"`
+	// BlockScratch 是「停在旁邊」那幾段的暫存（`4C00h`..`4C0Fh`，spec 1162）。
+	// 目前這一段的那一份在 Memory 裡，不重複收。舊存檔沒有這一欄，讀回來就是
+	// 沒有停放值——與加這一欄之前的行為相同。
+	BlockScratch       map[uint8]map[uint16]uint16 `json:"block_scratch,omitempty"`
+	SelectionOffset    int                         `json:"selection_offset"`
+	WhoSelectionOffset int                         `json:"who_selection_offset"`
+	StringInputOffset  int                         `json:"string_input_offset"`
 }
 
 // Snapshot returns an owned representation of the shared session runtime.
@@ -68,6 +72,19 @@ func (s *BlockSession) Snapshot() (SessionSnapshot, error) {
 		if index < 0 || index+2 >= len(data) || uint16(data[index+2]) != value {
 			snapshot.CodeMemory[address] = value
 		}
+	}
+	for blockID, bank := range s.blockScratch {
+		if blockID == s.current || len(bank) == 0 {
+			continue
+		}
+		if snapshot.BlockScratch == nil {
+			snapshot.BlockScratch = make(map[uint8]map[uint16]uint16, len(s.blockScratch))
+		}
+		owned := make(map[uint16]uint16, len(bank))
+		for address, value := range bank {
+			owned[address] = value
+		}
+		snapshot.BlockScratch[blockID] = owned
 	}
 	if runtime.Random != nil {
 		random := runtime.Random.Snapshot()
@@ -125,6 +142,20 @@ func (s *BlockSession) RestoreSnapshot(snapshot SessionSnapshot) error {
 		s.states[blockID] = runtime
 	}
 	s.current = snapshot.CurrentBlock
+	s.blockScratch = make(map[uint8]map[uint16]uint16, len(snapshot.BlockScratch))
+	for blockID, bank := range snapshot.BlockScratch {
+		if blockID == snapshot.CurrentBlock {
+			return fmt.Errorf("ECL session snapshot parks scratch for the current block 0x%02X", blockID)
+		}
+		owned := make(map[uint16]uint16, len(bank))
+		for address, value := range bank {
+			if address < blockScratchLow || address > blockScratchHigh {
+				return fmt.Errorf("ECL session snapshot parked scratch has non-scratch address 0x%04X", address)
+			}
+			owned[address] = value
+		}
+		s.blockScratch[blockID] = owned
+	}
 	s.selectionOffset = snapshot.SelectionOffset
 	s.whoSelectionOffset = snapshot.WhoSelectionOffset
 	s.stringInputOffset = snapshot.StringInputOffset

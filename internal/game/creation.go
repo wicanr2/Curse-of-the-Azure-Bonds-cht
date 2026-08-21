@@ -416,6 +416,62 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 	s.DungeonWallType = container.MapWallType
 	s.DungeonWallRoof = container.MapWallRoof
 	s.savgamPrefix = &container
+	if err := s.seedECLBanksFrom(container); err != nil {
+		return err
+	}
+	return nil
+}
+
+// encodeECLBanksInto 把 ECL session 的區 0／1／2 寫進 SAVGAM 的前三塊
+// （spec 1163）。沒有 session 就什麼都不動。
+func (s *State) encodeECLBanksInto(container *partySave.SAVGAMContainer) error {
+	if s.session == nil {
+		return nil
+	}
+	memory := s.session.MemorySnapshot()
+	for _, bank := range []struct {
+		record    *[]byte
+		low, high uint16
+	}{
+		{&container.Area1, partySave.ECLBank0Low, partySave.ECLBank0High},
+		{&container.Area2, partySave.ECLBank1Low, partySave.ECLBank1High},
+		{&container.Runtime, partySave.ECLBank2Low, partySave.ECLBank2High},
+	} {
+		encoded, err := partySave.EncodeECLBank(memory, bank.low, bank.high, *bank.record)
+		if err != nil {
+			return err
+		}
+		*bank.record = encoded
+	}
+	return nil
+}
+
+// seedECLBanksFrom 反過來：匯入原版存檔時把那三塊讀回 ECL session。
+// ⚠ 每一段自己的暫存（`4C00h`..`4C0Fh`，spec 1162）在原版版面裡只有一份，
+// 就是目前這一段的；別段停放的值原版存不下來，讀檔之後從 0 開始。
+func (s *State) seedECLBanksFrom(container partySave.SAVGAMContainer) error {
+	if s.session == nil {
+		return nil
+	}
+	for _, bank := range []struct {
+		record    []byte
+		low, high uint16
+	}{
+		{container.Area1, partySave.ECLBank0Low, partySave.ECLBank0High},
+		{container.Area2, partySave.ECLBank1Low, partySave.ECLBank1High},
+		{container.Runtime, partySave.ECLBank2Low, partySave.ECLBank2High},
+	} {
+		if bank.record == nil {
+			continue
+		}
+		memory, err := partySave.DecodeECLBank(bank.record, bank.low, bank.high)
+		if err != nil {
+			return err
+		}
+		for address, value := range memory {
+			s.session.SetMemoryValue(address, value)
+		}
+	}
 	return nil
 }
 
@@ -652,6 +708,12 @@ func (s *State) savgamContainerForSave() (partySave.SAVGAMContainer, error) {
 		container.Area2 = append([]byte(nil), s.savgamPrefix.Area2...)
 		container.Runtime = append([]byte(nil), s.savgamPrefix.Runtime...)
 		container.ECL = append([]byte(nil), s.savgamPrefix.ECL...)
+	}
+	// ★ 前三塊就是 ECL 位址空間的區 0／1／2（spec 1163），所以 VM 記憶體要
+	// 先寫回去，再讓 Area 編碼器覆蓋它自己那幾個具名欄位——那幾個欄位本來就是
+	// 同一批位址，remake 這一側以 `s.Area` 為準。
+	if err := s.encodeECLBanksInto(&container); err != nil {
+		return partySave.SAVGAMContainer{}, err
 	}
 	container.GameArea = s.Area.GameArea
 	container.Area1, err = area.EncodeArea1(s.Area, container.Area1)
