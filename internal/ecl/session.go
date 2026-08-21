@@ -292,6 +292,8 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 	}
 	var err error
 	selectionOffset := s.selectionOffset
+	// sequenceBase 把每一段 sub-run 各自從 1 起算的執行序接成一條。
+	sequenceBase := 0
 	for transitions := 0; transitions < 8; transitions++ {
 		aggregate.SessionEndBlockID = s.current
 		remaining := selections
@@ -341,14 +343,19 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 		aggregate.ProgramIDs = append(aggregate.ProgramIDs, result.ProgramIDs...)
 		aggregate.ProgramExit = aggregate.ProgramExit || result.ProgramExit
 		aggregate.CallAddresses = append(aggregate.CallAddresses, result.CallAddresses...)
+		// 每一段 sub-run 的執行序都從 1 重新算，聚合時要加上前面幾段的總量，
+		// 否則跨段之後「誰先發生」會亂掉。
 		for _, request := range result.CallRequests {
 			request.BlockID = s.current
+			request.Sequence += sequenceBase
 			aggregate.CallRequests = append(aggregate.CallRequests, request)
 		}
 		for _, write := range result.SaveWrites {
 			write.BlockID = s.current
+			write.Sequence += sequenceBase
 			aggregate.SaveWrites = append(aggregate.SaveWrites, write)
 		}
+		sequenceBase += len(result.CallRequests) + len(result.SaveWrites)
 		aggregate.DamageRequests = append(aggregate.DamageRequests, result.DamageRequests...)
 		aggregate.PrintReturnCount += result.PrintReturnCount
 		aggregate.ApproachCount += result.ApproachCount

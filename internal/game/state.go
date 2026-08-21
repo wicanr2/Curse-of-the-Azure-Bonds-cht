@@ -3929,7 +3929,10 @@ func (s *State) projectFreshDungeonCoordinatesBeforeCall(
 	var x, y uint16
 	var direction uint16
 	for _, write := range result.SaveWrites {
-		if write.BlockID != call.BlockID || write.PC >= call.PC {
+		// ⚠ 用**執行序**不是 PC。一次執行裡有迴圈與反向跳躍，PC 小的可能後
+		// 執行、同一個位址也可能被執行好幾次——「PC 比 CALL 小就是先發生」
+		// 只在直線碼上成立（spec 1156）。
+		if write.BlockID != call.BlockID || write.Sequence >= call.Sequence {
 			continue
 		}
 		switch write.Address {

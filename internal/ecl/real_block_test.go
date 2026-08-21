@@ -320,10 +320,12 @@ func TestRealECL4CaveA2CannonContinuesToDeadElfHandler(t *testing.T) {
 	}
 	if !reflect.DeepEqual(result.CallAddresses, []uint16{0x2E10}) ||
 		!reflect.DeepEqual(result.SaveWrites, []MemoryWrite{
-			{Address: 0xC04B, Value: 13, PC: 0x061B},
-			{Address: 0xC04C, Value: 1, PC: 0x0621},
-			{Address: 0xC04D, Value: 3, PC: 0x0627},
-			{Address: 0x4C06, Value: 1, PC: 0x066B},
+			// ★ 執行序 4 是中間那條 `CALL`——`SaveWrites` 與 `CallRequests`
+			// 共用同一條計數，所以這裡跳號是對的。
+			{Address: 0xC04B, Value: 13, PC: 0x061B, Sequence: 1},
+			{Address: 0xC04C, Value: 1, PC: 0x0621, Sequence: 2},
+			{Address: 0xC04D, Value: 3, PC: 0x0627, Sequence: 3},
+			{Address: 0x4C06, Value: 1, PC: 0x066B, Sequence: 5},
 		}) {
 		t.Fatalf("dead-elf position transaction calls=%#v writes=%+v", result.CallAddresses, result.SaveWrites)
 	}
@@ -415,7 +417,7 @@ func TestRealECL4CaveDeadElfPouchUnlocksJournal59AndRequestsCombat(t *testing.T)
 	}
 	if gasTrap.PC != 0x14D5 || !gasTrap.WaitingForMenu ||
 		!reflect.DeepEqual(gasTrap.Text, []string{"A GAS TRAP GOES OFF!"}) ||
-		!reflect.DeepEqual(gasTrap.SaveWrites, []MemoryWrite{{Address: 0x7F79, Value: 0, PC: 0x08A6}}) {
+		!reflect.DeepEqual(gasTrap.SaveWrites, []MemoryWrite{{Address: 0x7F79, Value: 0, PC: 0x08A6, Sequence: 1}}) {
 		t.Fatalf("dead-elf gas trap=%+v", gasTrap)
 	}
 
@@ -430,7 +432,7 @@ func TestRealECL4CaveDeadElfPouchUnlocksJournal59AndRequestsCombat(t *testing.T)
 			"YOU PLACE IT IN YOUR JOURNAL AS ENTRY 59.",
 		}) ||
 		!reflect.DeepEqual(mapResult.DamageRequests, []DamageRequest{{Flags: 0xC0, DiceCount: 1, DiceSize: 12, SaveFlags: 3}}) ||
-		!reflect.DeepEqual(mapResult.SaveWrites, []MemoryWrite{{Address: 0x4C07, Value: 0x80, PC: 0x09AC}}) {
+		!reflect.DeepEqual(mapResult.SaveWrites, []MemoryWrite{{Address: 0x4C07, Value: 0x80, PC: 0x09AC, Sequence: 1}}) {
 		t.Fatalf("dead-elf Journal 59 map=%+v", mapResult)
 	}
 	if runtime.Memory[0x4C03] != 1 || runtime.Memory[0x4C07] != 0x80 {
