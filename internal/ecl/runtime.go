@@ -1054,11 +1054,25 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			// 回到同一個 ECL 迴圈續跑，而本實作的營地是獨立的引擎功能
 			// (State.Camp/EnterDungeonCamp)，缺的是「營地結束後 ECL 續跑」。
 			// 修正屬於營地流程的範圍，先保留現行行為避免無證據的改動。
-			if memory[addrShopRequest] == 1 {
+			// ★ 順序照原作（`overlay-02:179Ah`）：**場上有怪就直接打**，
+			// 根本不看商店旗標——
+			//
+			//   17A4  cmp byte ptr ds:8B69h, 0 / jz  → 非 0 就 jmp sub_1956（打）
+			//   17AE  cmp byte ptr ds:8B56h, 0 / jz  → 非 0 就 jmp sub_1956（打）
+			//   17B8  cmp word ptr es:[di+6D8h], 1   → 這之後才輪到商店
+			//
+			// `8B69h` 就是 `1Ch CLEARMONSTERS` 清的那個「有怪要打」旗標
+			// （spec 1095／1145），在 remake 對應的是怪物鏈非空。
+			//
+			// ⚠ 兩個請求旗標目前都沒有 producer，所以這個順序今天觀察不到差別；
+			// 照著寫是為了哪天補上寫入端時不會先走錯支。
+			monstersPresent := len(result.MonsterSpawns) > 0 ||
+				(runtime != nil && len(runtime.MonsterSpawns) > 0)
+			if !monstersPresent && memory[addrShopRequest] == 1 {
 				result.ShopRequested = true
 				result.ShopPriceScale = memory[addrShopPriceScale]
 				memory[addrShopRequest] = 0
-			} else if memory[addrCampRequest] == 1 {
+			} else if !monstersPresent && memory[addrCampRequest] == 1 {
 				result.TempleRequested = true
 				memory[addrCampRequest] = 0
 			} else {

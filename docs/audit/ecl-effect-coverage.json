@@ -891,7 +891,7 @@
    "opcode": "0x24",
    "name": "COMBAT",
    "status": "partial",
-   "note": "COMBAT 是三選一的服務分派點（spec 1095）。回合生命週期已收（spec 1135～1138）。199 處分成 153 處真的要打（前面擺過怪）與 46 處走服務分派（商店／營地／神殿，見 docs/audit/ecl-combat-sites.md）；`partial` 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標",
+   "note": "COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；partial 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標——兩個旗標都沒有 producer",
    "occurrences": 199,
    "blocks": [
     "ECL1.DAX/0x50",
