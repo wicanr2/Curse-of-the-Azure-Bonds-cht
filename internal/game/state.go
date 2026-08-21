@@ -3875,34 +3875,25 @@ func (s *State) enterProgramTitle(message string) {
 // routine itself does not perform collision checks). The renderer still
 // consumes the ordered calls so redraw can use its loaded GEO/piece assets.
 func (s *State) applyECLCallSignals(result ecl.RunResult) {
-	// ★ 原作是髒旗標：`STOREVALUE` 寫座標時立旗，`2E10h` 重畫時**清掉**，
-	// 所以同一筆座標寫入只會被一次重畫吃到。remake 沒有旗標，改記「上一次
-	// 重畫吃到哪個執行序」——沒有這條游標，走位迴圈裡的第二次重畫會把進場
-	// 那筆 spawn 再投影一次，把中間 `MOVEFORWARD` 走的步數整個抹掉
-	// （盜賊公會的抓捕動畫，spec 1160）。
-	redrawnThrough := 0
+	// ★ 髒旗標現在建在 VM 裡（`ecl.ViewMirror`，spec 1172）：`STOREVALUE` 寫
+	// `C04B`／`C04C`／`C04D` 時當場鏡射到 `720Fh`／`7210h`／`7211h` 並立
+	// `8B68h`，`2E10h` 重畫之後清掉。所以同一筆座標寫入只會被一次重畫吃到，
+	// 而且**跨執行、跨 block 都算**——先前那個「回頭掃同一 block、執行序在前的
+	// `SaveWrites`」的視窗跨不過去。
 	s.eclProjectedPosition = false
 	for index, address := range result.CallAddresses {
 		s.pendingECLCalls = append(s.pendingECLCalls, address)
 		switch address {
 		case 0x2E10:
-			// The reference redraw routine consumes the current dungeon
-			// registers. Some same-block ECL events assign a new position
-			// immediately before this CALL, so project those registers before
-			// the renderer rebuilds the view.
-			// ⚠ 判準是**這一條 `CALL` 自己的 block**，不是「整次執行都在同一個
-			// block」。跨 block 的執行（`NEWECL`）裡照樣有重畫——盜賊公會的
-			// 抓捕動畫就整段在新 block 裡跑（spec 1160）。投影本身已經用
-			// `write.BlockID != call.BlockID` 濾掉別的 block 的寫入。
-			if s.session != nil && s.Area.InDungeon &&
-				index < len(result.CallRequests) &&
-				result.CallRequests[index].BlockID == s.session.CurrentBlockID() {
-				s.projectFreshDungeonCoordinatesBeforeCall(
-					result, result.CallRequests[index], redrawnThrough,
-				)
-			}
-			if index < len(result.CallRequests) {
-				redrawnThrough = result.CallRequests[index].Sequence
+			// 原作的重畫吃的是地圖暫存器 `720Fh`／`7210h`／`7211h`。腳本在這條
+			// `CALL` 之前指定的新座標**早就寫進去了**（`STOREVALUE` 當場寫），
+			// 這裡只是把它投影到 remake 的位置。
+			//
+			// ⚠ 沒有 block 判準——`720Fh` 那三格是全域，跨 block 的執行
+			// （`NEWECL`）照樣看得到，盜賊公會的抓捕動畫就整段在新 block 裡跑
+			// （spec 1160）。
+			if s.session != nil && s.Area.InDungeon && index < len(result.CallRequests) {
+				s.projectDungeonCoordinatesFromView(result.CallRequests[index].View)
 			}
 		case 0xC01E:
 			// ★ 朝向要用**腳本當下寫進 `C04D` 的值**，不是 remake 的
@@ -3910,9 +3901,9 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 			// 會在走之前指定方向——盜賊公會的抓捕動畫在 `ECL2/0x02:0D90h`
 			// 先 `SAVE 7F7B C04D` 再走（spec 1160）。
 			if index < len(result.CallRequests) {
-				s.DungeonDirection = s.eclFacingBeforeCall(
-					result, result.CallRequests[index], redrawnThrough,
-				)
+				if view := result.CallRequests[index].View; view.Known {
+					s.DungeonDirection = uint8(view.Facing)
+				}
 			}
 			switch s.DungeonDirection {
 			case 0:
@@ -3953,81 +3944,44 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 // 兩者共用同一個游標；所以畫面要顯示的是「自走的相位 ＋ 這個位移」。
 func (s *State) PictureFrameAdvances() int { return s.pictureFrameAdvances }
 
-// eclFacingBeforeCall 回報「這一條 `CALL` 執行的那一刻，腳本寫進 `C04D` 的
-// 朝向」。沒有人寫過（或已經被前一次重畫吃掉）就沿用目前的朝向。
-func (s *State) eclFacingBeforeCall(
-	result ecl.RunResult, call ecl.CallRequest, redrawnThrough int,
-) uint8 {
-	facing := s.DungeonDirection
-	for _, write := range result.SaveWrites {
-		if write.BlockID != call.BlockID || write.Sequence >= call.Sequence ||
-			write.Sequence <= redrawnThrough {
-			continue
-		}
-		if write.Address == 0xC04D {
-			facing = uint8(write.Value&3) * 2
-		}
+// projectDungeonCoordinatesFromView 把 `720Fh`／`7210h`／`7211h` 投影到 remake
+// 的位置——**只在 `8B68h` 髒的時候**（spec 1172）。
+//
+// ⚠ 不要再加「一定要同時寫 `C04D`（朝向）才算數」這種條件。原作的「退回上一格」
+// 出口（`ECL2/0x04:160Ch` 等 23 處，spec 1157）只寫 `C04B`／`C04C`，朝向刻意
+// 保持不變——鏡射裡的朝向本來就等於目前的朝向，投影回去是 no-op。
+//
+// ⚠ 也不要再加「這張圖宣告了 spawn 就整張跳過」。宣告的 spawn 是**進場錨點**，
+// 不是「這張圖的腳本不會搬隊伍」——提爾弗頓、贊提爾暗黑神殿與巫師塔都宣告了
+// spawn，而三張圖上都有玩家看得見的腳本位移（spec 1159／1160）。
+func (s *State) projectDungeonCoordinatesFromView(view ecl.ViewMirror) {
+	if !view.Known || view.Dirty&ecl.ViewDirtyCoords == 0 {
+		return
 	}
-	return facing
-}
-
-func (s *State) projectFreshDungeonCoordinatesBeforeCall(
-	result ecl.RunResult,
-	call ecl.CallRequest,
-	redrawnThrough int,
-) {
-	// ⚠ 不要再加「這張圖宣告了 spawn 就整張跳過」這種條件。宣告的 spawn 是
-	// **進場錨點**，不是「這張圖的腳本不會搬隊伍」——提爾弗頓、贊提爾暗黑
-	// 神殿與巫師塔都宣告了 spawn，而三張圖上都有玩家看得見的腳本位移
-	// （賢者／商店／神殿離場退回門外、酒館的走位動畫、城門衛兵送回去、
-	// 塔頂傳送，spec 1159／1160）。
-	var mask uint8
-	var x, y uint16
-	var direction uint16
-	for _, write := range result.SaveWrites {
-		// ⚠ 用**執行序**不是 PC。一次執行裡有迴圈與反向跳躍，PC 小的可能後
-		// 執行、同一個位址也可能被執行好幾次——「PC 比 CALL 小就是先發生」
-		// 只在直線碼上成立（spec 1156）。
-		if write.BlockID != call.BlockID || write.Sequence >= call.Sequence ||
-			write.Sequence <= redrawnThrough {
-			continue
-		}
-		switch write.Address {
-		case 0xC04B:
-			x = write.Value
-			mask |= 1
-		case 0xC04C:
-			y = write.Value
-			mask |= 2
-		case 0xC04D:
-			direction = write.Value
-			mask |= 4
-		}
+	// ⚠ 座標要是**這一個 block 的腳本**寫的才算。換 block 的進場放置在原作是
+	// 引擎做的、會把那三格覆蓋掉；remake 那一半是 game pack 宣告的 spawn
+	// （`applyDeclaredDungeonSpawn`），沒有回寫暫存器。少了這個比對，舊 block
+	// 留下的座標會贏過新地圖的進場錨點——火刀據點的入口就會落在 `(6,0)`
+	// 而不是 `(6,1)`（spec 1172）。
+	if s.session != nil && view.Block != s.session.CurrentBlockID() {
+		return
 	}
-	// ⚠ 不要再加「一定要同時寫 `C04D`（朝向）才算數」這種條件。原作的
-	// 「退回上一格」出口（`ECL2/0x04:160Ch` 等 23 處，spec 1157）只寫
-	// `C04B`／`C04C`，朝向刻意保持不變——加了那個條件就會把玩家看得見的
-	// 位移整批壓掉，而且主線仍然會通，因為路線測試會跟著被壓掉的行為長出來。
-	if mask != 0 {
-		// 這次執行的腳本自己指定了座標；宣告的 spawn 只是沒人指定時的錨點，
-		// 不可以再蓋回去（spec 1160）。
-		s.eclProjectedPosition = true
+	// 這次執行的腳本自己指定了座標；宣告的 spawn 只是沒人指定時的錨點，
+	// 不可以再蓋回去（spec 1160）。
+	s.eclProjectedPosition = true
+	if view.Written&ecl.ViewWroteX != 0 {
+		s.DungeonX = int(int16(view.X))
 	}
-	if mask&1 != 0 {
-		s.DungeonX = int(int16(x))
+	if view.Written&ecl.ViewWroteY != 0 {
+		s.DungeonY = int(int16(view.Y))
 	}
-	if mask&2 != 0 {
-		s.DungeonY = int(int16(y))
+	if view.Written&ecl.ViewWroteFacing != 0 {
+		s.DungeonDirection = uint8(view.Facing)
 	}
-	if mask&4 != 0 {
-		s.DungeonDirection = uint8(direction&3) * 2
-	}
-	if mask != 0 {
-		s.MapX, s.MapY = s.DungeonX, s.DungeonY
-		// 原作的重畫連牆面／地形一起重讀；不補這一步，接下來的每格事件會拿
-		// 被搬走前那一格的地形碼去分派（spec 1161）。
-		s.refreshDungeonTerrainFromMap()
-	}
+	s.MapX, s.MapY = s.DungeonX, s.DungeonY
+	// 原作的重畫連牆面／地形一起重讀；不補這一步，接下來的每格事件會拿
+	// 被搬走前那一格的地形碼去分派（spec 1161）。
+	s.refreshDungeonTerrainFromMap()
 }
 
 // applyECLNPCSignals mirrors load_npc: resolve the current chapter's shared
