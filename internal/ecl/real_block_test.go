@@ -417,7 +417,11 @@ func TestRealECL4CaveDeadElfPouchUnlocksJournal59AndRequestsCombat(t *testing.T)
 	}
 	if gasTrap.PC != 0x14D5 || !gasTrap.WaitingForMenu ||
 		!reflect.DeepEqual(gasTrap.Text, []string{"A GAS TRAP GOES OFF!"}) ||
-		!reflect.DeepEqual(gasTrap.SaveWrites, []MemoryWrite{{Address: 0x7F79, Value: 0, PC: 0x08A6, Sequence: 1}}) {
+		// `08A6h` 的 `SAVE 0 7F79` 起頭，接著 `08B0h` 的 `ADD 01 7F79 7F79`
+		// 把整隊走一遍——算術也是寫入路徑，所以八次遞增都在裡面。
+		!reflect.DeepEqual(gasTrap.SaveWrites, append([]MemoryWrite{
+			{Address: 0x7F79, Value: 0, PC: 0x08A6, Sequence: 1},
+		}, incrementingWrites(0x7F79, 0x08B0, 1, 8)...)) {
 		t.Fatalf("dead-elf gas trap=%+v", gasTrap)
 	}
 
@@ -679,4 +683,18 @@ func TestRealECL2Block3DamageOperandOrder(t *testing.T) {
 		return
 	}
 	t.Fatal("ECL2 block 3 is absent")
+}
+
+// incrementingWrites 展開「同一條 `ADD 1` 在迴圈裡跑 count 次」的寫入序列。
+func incrementingWrites(address uint16, pc int, firstValue uint16, count int) []MemoryWrite {
+	writes := make([]MemoryWrite, 0, count)
+	for index := 0; index < count; index++ {
+		writes = append(writes, MemoryWrite{
+			Address:  address,
+			Value:    firstValue + uint16(index),
+			PC:       pc,
+			Sequence: index + 2,
+		})
+	}
+	return writes
 }

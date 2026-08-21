@@ -15,6 +15,10 @@
 | 明確移動 | 8 | `SAVE <常數> C04B/C04C`（傳送）或 `ADD`／`SUBTRACT 1`（走一步）|
 | 退回上一格 | 15 | `SAVE 4BF0 C04B; SAVE 4BF1 C04C` |
 
+⚠ 「明確移動」實際是 **12 處**：這裡的 23 處是只認 `09h SAVE` 當寫入路徑時
+量出來的，四處 `GETTABLE` 的假門傳送被漏到「沒有座標寫入」那一類。逐處清單見
+[spec 1159](1159-storevalue-is-the-only-write-path.md)。
+
 **兩類都是真實的隊伍移動**——後者的來源是「這一步移動之前的座標」
 （[spec 1155](1155-redraw-call-coordinate-divergence.md)），退回去也是移動。
 ⇒ `C04D` 條件擋掉的是**玩家看得見的位移**，不是暫存值——條件已於
