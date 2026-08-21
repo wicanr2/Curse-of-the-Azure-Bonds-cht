@@ -23357,8 +23357,8 @@
    "ea": 4172,
    "state": "已解讀",
    "level": "exact",
-   "spec": "926",
-   "note": "載入 WALLDEF<磁碟>.dax(retf 4 = (arg_0 1..3, arg_2))：組檔名 'WALLDEF'+Str(DS:5BEEh 磁碟編號) 與 '.dax'，用 0636h:08DEh 載入；大小 = 0 或 大小 div 30Ch + arg_0 > 4 就印 'Unable to load '+arg_2+' from WALLDEF'+磁碟+'.'、等一次按鍵、★直接 06EAh:0000h 結束程式(與 spec 924 紮營的 Quit TO DOS 同一個離開入口)。成功則逐塊 30Ch 搬進 遠指標(DS:7202h) 的第 (arg_0−1) 塊起、FreeMem 緩衝，再對編號落在集合常數 [1,2,3] 的塊做重定索引：每塊 5 個 9Ch 子塊，byte ≥ DS:268Ah 就加上 word[2680h+arg_0*2] − word[2682h]"
+   "spec": "926/1153",
+   "note": "載入 WALLDEF<磁碟>.dax(retf 4 = (arg_0 1..3, arg_2))：組檔名 'WALLDEF'+Str(DS:5BEEh 磁碟編號) 與 '.dax'，用 0636h:08DEh 載入；大小 = 0 或 大小 div 30Ch + arg_0 > 4 就印 'Unable to load '+arg_2+' from WALLDEF'+磁碟+'.'、等一次按鍵、★直接 06EAh:0000h 結束程式(與 spec 924 紮營的 Quit TO DOS 同一個離開入口)。成功則逐塊 30Ch 搬進 遠指標(DS:7202h) 的第 (arg_0−1) 塊起、FreeMem 緩衝，再對編號落在集合常數 [1,2,3] 的塊做重定索引：每塊 5 個 9Ch 子塊，byte ≥ DS:268Ah 就加上 word[2680h+arg_0*2] − word[2682h]。★收尾六條(12DEh..1309h)是三組牆面參數的寫入端：word[7210h+arg_0*4] := arg_2(片)、word[7212h+arg_0*4] := arg_0(槽本身——12F4h/12FBh 讀的都是 arg_0)，那三格就是存檔第 9..14 欄(spec 1076/1153)"
   },
   {
    "platform": "pc98",
@@ -26003,8 +26003,8 @@
    "ea": 3093,
    "state": "已解讀",
    "level": "exact",
-   "spec": "1087",
-   "note": "ECL 21h LOAD FILES 與 37h LOAD PIECES 共用一支，靠 DS:75FFh(目前指令碼)分流。LOAD FILES 設 DS:47E5h、載 3D 地圖(overlay-30 entry#9)或 bigpic；LOAD PIECES 設 DS:47E4h、叫 overlay-30 entry#8 載 WALLDEF，operand 為 0FFh 時把 DS:7210h/7212h + i*4 寫成 0FFFFh ⇒ ★這是 spec 1072/1074/1076 那三組牆面參數的寫入端。兩個旗標都亮才觸發最後重繪"
+   "spec": "1087/1153",
+   "note": "⚠函式真正結束在 0DA3h(retf，131 條)；IDA 只認到 0D4Ah(104 條)，切掉的正是收尾那段重繪判斷。ECL 21h LOAD FILES 與 37h LOAD PIECES 共用一支，靠 DS:75FFh(目前指令碼)分流。LOAD FILES 設 DS:47E5h、載 3D 地圖(overlay-30 entry#9)或 bigpic；LOAD PIECES 設 DS:47E4h、叫 overlay-30 entry#8 載 WALLDEF，operand 為 0FFh 時把 DS:7210h/7212h + i*4 寫成 0FFFFh ⇒ ★這是 spec 1072/1074/1076 那三組牆面參數的寫入端。兩個旗標都亮才觸發最後重繪。★運算元順序：三個值存在 [bp-3]/[bp-2]/[bp-1]，o[1] 是 IDA 的 var_3——照 var_N 抄會整個顛倒(spec 1087 舊版就是這樣錯的，PC-98 側 spec 587 一直是對的)"
   },
   {
    "platform": "dos",

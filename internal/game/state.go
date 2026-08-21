@@ -334,6 +334,12 @@ type State struct {
 	fixSeed                 int64
 	dungeonSeed             int64
 	combatMapDirection      uint8
+
+	// wallSetParams 是存檔第 9..14 欄那三組牆面參數（`DS:7210h ＋ 槽×4`／
+	// `DS:7212h ＋ 槽×4`，spec 1076）。寫入端是 `37h LOAD PIECES`：
+	// 載得進去的槽記 `{片, 槽}`，運算元是 `0FFh` 的槽記 `{0FFFFh, 0FFFFh}`
+	// （spec 1153）。remake 先前完全沒有寫這三格，存出來的檔一律是零。
+	wallSetParams [3]partySave.SAVGAMSetBlock
 }
 
 // playerIconBlocks are the four verified CHEAD/CBODY block families extracted
@@ -1884,7 +1890,34 @@ func (s *State) applyLoadPieces(result ecl.RunResult) {
 	}
 	s.LoadPieces = result.LoadPieces
 	s.loadPiecesPending = true
+	s.applyWallSetParams(result.LoadPieces)
 }
+
+// applyWallSetParams 照原作 `LOADWALLSET` 的收尾把三組牆面參數寫進存檔狀態。
+//
+// 走的是 `37h` 的**逐槽迴圈**那一支：`片 <> 0FFh` 就 `LOADWALLSET(槽, 片)`，
+// 而那一支結尾寫 `[7210h ＋ 槽×4] := 片`、`[7212h ＋ 槽×4] := 槽`
+// （DOS `overlay-30:12DEh`）；`= 0FFh` 則由 handler 自己把兩個 word 寫成
+// `0FFFFh`（`overlay-02:0D44h`）。
+//
+// ⚠ 原作另有兩條路沒有照抄：`片[1] = 7Fh` ⇒ `LOADWALLSET(1, 0)`，以及
+// `bank0^[1CEh]` 與 `[1D0h]` 都非零時只載槽 1／3。全 corpus 23 處 `37h`
+// **沒有一處**帶 `7Fh`，而槽 2 每一處都帶著真實片號（`02`／`06`／`0Ah`／
+// `0Fh`／`10h`／`12h`），兩條路都觀察不到，所以不猜。
+func (s *State) applyWallSetParams(pieces [3]uint16) {
+	for index, piece := range pieces {
+		if piece == 0xFF {
+			s.wallSetParams[index] = partySave.SAVGAMSetBlock{BlockID: 0xFFFF, SetID: 0xFFFF}
+			continue
+		}
+		s.wallSetParams[index] = partySave.SAVGAMSetBlock{
+			BlockID: piece, SetID: uint16(index + 1),
+		}
+	}
+}
+
+// WallSetParams 回傳目前的三組牆面參數，讓存檔與測試都讀得到同一份。
+func (s *State) WallSetParams() [3]partySave.SAVGAMSetBlock { return s.wallSetParams }
 
 // ConsumeLoadPiecesRequest transfers the ECL LOAD PIECES selector exactly
 // once to a future map-piece loader.
