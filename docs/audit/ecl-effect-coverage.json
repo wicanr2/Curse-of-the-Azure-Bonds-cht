@@ -405,7 +405,7 @@
    "opcode": "0x0E",
    "name": "PICTURE",
    "status": "partial",
-   "note": "PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層",
+   "note": "原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n \u003e= 78h 是大圖。remake 三個判準都對得上，0FFh 先前什麼都不做、現在發 PictureCloseRequested。partial 剩表現層：實際載入、頭像與身體的分塊合成、以及 4FBAh/4FBBh 那個不重繪的旁路",
    "occurrences": 199,
    "blocks": [
     "ECL1.DAX/0x50",

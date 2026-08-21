@@ -90,6 +90,8 @@ type RunResult struct {
 	LoadPiecesRequested    bool
 	LoadPieces             [3]uint16
 	PictureRequested       bool
+	// PictureCloseRequested 為真代表 `0Eh PICTURE` 的運算元是 `0FFh`：把圖關掉。
+	PictureCloseRequested  bool
 	PictureBlock           uint16
 	BigPictureRequested    bool
 	PictureHeadBlock       uint16
@@ -1544,7 +1546,16 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				if err != nil {
 					return result, fmt.Errorf("picture at %d: %w", pc, err)
 				}
-				if value != 0xFF {
+				// 原作 `overlay-02:0841h`（77 條）第一件事就是分兩支：
+				// `0FFh` 走**關閉**（`08E9h`：清 `8B62h`／`8B65h`、重繪、
+				// `8B48h`／`8B49h` 歸零），其餘走開啟。開啟那一支再依
+				// `bank1^[5C2h]`（＝ `7EE1h` 頭像 block）是不是 `0FFh` 決定要不要
+				// 走頭像合成，並依 `n >= 78h` 分大圖／一般圖。
+				//
+				// ★ 先前 `0FFh` 是**什麼都不做**——原作在那裡是把圖關掉。
+				if value == 0xFF {
+					result.PictureCloseRequested = true
+				} else {
 					result.PictureRequested = true
 					result.PictureBlock = value
 					result.BigPictureRequested = value >= 0x78
