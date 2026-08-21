@@ -5666,6 +5666,28 @@ func (s *State) restoreDungeonSearchState(enabled bool, edgeIDs []string) error 
 	return nil
 }
 
+// eclPreMoveX／eclPreMoveY 是 ECL 格 `4BF0`／`4BF1`。
+//
+// 原作的地城主迴圈在呼叫 `MOVEPARTY` **之前**先把當時的座標存進
+// `bank0^[1E0h]`／`[1E2h]`，跑完再比對「隊伍到底有沒有移動」
+// （DOS `overlay-02:3984h`，spec 1045）。而 spec 1098 的區 0 換算
+// `bank0 + (位址 − 4B00h) × 2` 把那兩個 word 對回 ECL 格 `4BF0`／`4BF1`
+// ——所以腳本的 `SAVE 4BF0 C04B; SAVE 4BF1 C04C` 就是**把隊伍退回上一格**
+// （spec 1155）。全 corpus 有 15 處這樣用，先前 remake 沒有 producer。
+const (
+	eclPreMoveX uint16 = 0x4BF0
+	eclPreMoveY uint16 = 0x4BF1
+)
+
+// snapshotPreMoveCoordinates 照原作在每一步移動之前記下座標。
+func (s *State) snapshotPreMoveCoordinates(x, y int) {
+	if s.session == nil {
+		return
+	}
+	s.session.SetMemoryValue(eclPreMoveX, uint16(int16(x)))
+	s.session.SetMemoryValue(eclPreMoveY, uint16(int16(y)))
+}
+
 // CanMoveDungeon is the State-owned movement predicate used by frontends.
 // It layers pack-declared discovered edges and external exits over the raw
 // two-sided GEO wall check without changing the geometry decoder.
@@ -5674,6 +5696,7 @@ func (s *State) CanMoveDungeon(grid geo.Grid, dx, dy, direction int) bool {
 		return false
 	}
 	x, y, _ := s.DungeonGeometryView()
+	s.snapshotPreMoveCoordinates(x, y)
 	nextX, nextY := x+dx, y+dy
 	exitAttempt := nextX < 0 || nextX >= geo.Width || nextY < 0 || nextY >= geo.Height
 	if exitAttempt {
