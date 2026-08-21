@@ -97,6 +97,10 @@ type Fighter struct {
 	CombatX           int
 	CombatY           int
 	CombatSize        uint8
+	// LargeTarget 為 true 時，攻擊它的人要用武器的**大型**傷害三連
+	// （原作 `overlay-13:15EFh`，spec 1175）。隊伍成員一律 false：可玩種族的
+	// `+0DEh` 在原版資料裡全部是 `01h`。
+	LargeTarget bool
 	// DeathOverlay requests the renderer's downed/death visual. The original
 	// CombatantKilled routine draws an animated skull; keeping this as a
 	// signal lets each frontend choose an asset without leaking CPIC indices
@@ -168,12 +172,19 @@ type Fighter struct {
 	DamageDiceCount      int
 	DamageDiceSides      int
 	DamageBonus          int
-	AttacksPerTurn       int
-	AmmunitionType       uint8
-	MovementAllowance    int
-	WeaponRange          int
-	MissileWeapon        bool
-	ThrownWeapon         bool
+	// 大型目標用的另一組傷害三連（類別表 `+02h`..`+04h`）。只有**槽 0 有裝備中
+	// 武器**時才換——原作那一段整個包在 `if 攻擊者^[151h] <> NIL` 裡（spec 1175）。
+	LargeDamageDiceCount int
+	LargeDamageDiceSides int
+	LargeDamageBonus     int
+	// HasSlotZeroWeapon 就是 `攻擊者^[151h] <> NIL`。
+	HasSlotZeroWeapon bool
+	AttacksPerTurn    int
+	AmmunitionType    uint8
+	MovementAllowance int
+	WeaponRange       int
+	MissileWeapon     bool
+	ThrownWeapon      bool
 	// InitiativeBonus is retained only as a legacy synthetic-fixture ordering
 	// seam. Production party/MON adapters never set it. Nonzero fixture values
 	// replace the rolled delay after the exact d6 draw, while d100 scan traffic
@@ -1692,7 +1703,10 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 		(attackRoll != 1 && attackTotal+targetArmorClass >= armorClassHitTarget))
 	damage := 0
 	if hit {
-		damage = damageRoll + attacker.DamageBonus
+		// 加值也要跟著大／小體型換（原作是「減掉小型的、加上大型的」，
+		// 等價於直接用那一組的加值，spec 1175）。
+		_, _, damageBonus := attacker.WeaponDamageAgainst(target)
+		damage = damageRoll + damageBonus
 		if damage < 0 {
 			damage = 0
 		}
@@ -1730,20 +1744,33 @@ func (b *Battle) Attack(attackerID, targetID string) (AttackResult, error) {
 	return b.attackSlot(attackerID, targetID, 1)
 }
 
+// WeaponDamageAgainst 回傳這一次攻擊要用的傷害三連。
+//
+// ★ 原作在攻擊結算當下才換（`overlay-13:15EFh`，spec 1175）：攻擊者**有槽 0 的
+// 武器**而且目標算大型時，改用類別表的大型三連，加值則是「減掉小型的、加上
+// 大型的」。沒有武器時整段跳過——天生攻擊不分大小。
+func (f Fighter) WeaponDamageAgainst(target Fighter) (count, sides, bonus int) {
+	if !f.HasSlotZeroWeapon || !target.LargeTarget {
+		return f.DamageDiceCount, f.DamageDiceSides, f.DamageBonus
+	}
+	return f.LargeDamageDiceCount, f.LargeDamageDiceSides, f.LargeDamageBonus
+}
+
 func (b *Battle) attackSlot(attackerID, targetID string, attackSlot int) (AttackResult, error) {
 	if err := b.ValidateAttack(attackerID, targetID); err != nil {
 		return AttackResult{}, err
 	}
 	attacker := b.fighters[attackerID]
+	diceCount, diceSides, _ := attacker.WeaponDamageAgainst(b.fighters[targetID])
 	var result AttackResult
 	var err error
-	if attacker.DamageDiceCount < 1 || attacker.DamageDiceSides < 1 {
+	if diceCount < 1 || diceSides < 1 {
 		result, err = b.ResolveAttack(attackerID, targetID, b.rng.Intn(20)+1, 0)
 	} else {
 		attackRoll := b.rng.Intn(20) + 1
 		damageRoll := 0
-		for i := 0; i < attacker.DamageDiceCount; i++ {
-			damageRoll += b.rng.Intn(attacker.DamageDiceSides) + 1
+		for i := 0; i < diceCount; i++ {
+			damageRoll += b.rng.Intn(diceSides) + 1
 		}
 		result, err = b.ResolveAttack(attackerID, targetID, attackRoll, damageRoll)
 	}
@@ -2445,6 +2472,12 @@ func (b *Battle) ReplaceFighterEquipment(fighterID string, projected Fighter) er
 	fighter.DamageDiceCount = projected.DamageDiceCount
 	fighter.DamageDiceSides = projected.DamageDiceSides
 	fighter.DamageBonus = projected.DamageBonus
+	// 大型目標那一組與「有沒有槽 0 武器」也要跟著換——少了它，換裝之後打大型
+	// 目標用的還是上一把武器的骰（spec 1175）。
+	fighter.LargeDamageDiceCount = projected.LargeDamageDiceCount
+	fighter.LargeDamageDiceSides = projected.LargeDamageDiceSides
+	fighter.LargeDamageBonus = projected.LargeDamageBonus
+	fighter.HasSlotZeroWeapon = projected.HasSlotZeroWeapon
 	fighter.WeaponRange = projected.WeaponRange
 	fighter.MissileWeapon = projected.MissileWeapon
 	fighter.ThrownWeapon = projected.ThrownWeapon

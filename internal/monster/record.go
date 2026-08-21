@@ -56,10 +56,14 @@ type Record struct {
 	DamageBonus      int
 	// Raw1A5 preserves an unresolved byte without assigning the disproven
 	// initiative-bonus name. Initiative is derived from Dexterity +17.
-	Raw1A5           uint8
-	AttacksPerTurn   int
-	CombatTeam       uint8
-	CombatSize       uint8
+	Raw1A5         uint8
+	AttacksPerTurn int
+	CombatTeam     uint8
+	CombatSize     uint8
+	// RawSize 是 `+0DEh` 的完整位元組（`SIZE`）。**不要只留 `and 7`**：
+	// 低 3 位是佔格大小，而 **bit 7 是「傷害算大型目標」**——`81h` 的佔格是 1
+	// 但仍算大型（BEHOLDER、BUGBEAR、兩種巨蛛都是這個值，spec 1175）。
+	RawSize          uint8
 	ModID            uint8
 	SpellIDs         []uint8
 	MonsterSpellUses [3]uint8
@@ -155,6 +159,7 @@ func Parse(data []byte) (Record, error) {
 		AttacksPerTurn:   int(data[0xA1]),
 		CombatTeam:       data[0x198],
 		CombatSize:       data[0xDE] & 7,
+		RawSize:          data[0xDE],
 		ModID:            data[0x126],
 		SpellIDs:         spellIDs,
 		MonsterSpellUses: spellUses,
@@ -172,6 +177,16 @@ func Parse(data []byte) (Record, error) {
 		// （spec 834／1164）。
 		UndeadType: data[0x0E9],
 	}, nil
+}
+
+// LargeDamageTarget 重現原作攻擊結算的大／小體型判斷
+// （`overlay-13:15EFh`，spec 1175）：
+//
+//	if (目標^[0DEh] > 80h) or ((目標^[0DEh] and 7) > 1) then 用大型傷害三連
+//
+// ⚠ 只看 `and 7` 會漏掉 `81h`——那一格的佔格是 1，但 bit 7 說它算大型。
+func LargeDamageTarget(rawSize uint8) bool {
+	return rawSize > 0x80 || rawSize&7 > 1
 }
 
 func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
@@ -200,6 +215,7 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		DamageBonus:    r.DamageBonus,
 		AttacksPerTurn: r.AttacksPerTurn,
 		CombatSize:     r.CombatSize,
+		LargeTarget:    LargeDamageTarget(r.RawSize),
 		SavingThrows:   append([]uint8(nil), r.SavingThrows...), SavingThrowBonus: r.SavingThrowBonus,
 		MonsterSpellIDs: append([]uint8(nil), r.SpellIDs...), MonsterSpellUses: r.MonsterSpellUses,
 	}
