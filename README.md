@@ -198,7 +198,8 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   （法術那一半已經收斂：可宣告 73 支全部有 handler、視覺與音效。）
 - **ECL 的 10 個部分完成 opcode**，共 1,037 條指令：`PICTURE`、`COMBAT`、`CALL`、
   `PRINT RETURN`、`TREASURE`、`DAMAGE` 等。其中 `PRINT RETURN`（120 條）已逐條讀完
-  （spec 1147）：它是硬換行，連續兩條會空一行——缺口在 UI 的行模型，不是 ECL VM。`CLEARMONSTERS`（206 條）已逐條讀完
+  （spec 1147）：它是硬換行，連續兩條會空一行——缺口在 UI 的行模型，不是 ECL VM。
+  `PICTURE`（199 條）也讀完了（spec 1148）：`0FFh` 是關閉，先前 remake 什麼都不做。`CLEARMONSTERS`（206 條）已逐條讀完
   並跟上（spec 1145），只剩 `7603h := 8` 的語意未解讀。每一支 handler 的位址與
   條數在 [`docs/audit/ecl-opcode-handlers-dos.md`](docs/audit/ecl-opcode-handlers-dos.md)。
 - **存檔**：角色記錄還有 24 bytes 未解讀；跨遊戲角色轉移未做。

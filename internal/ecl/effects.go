@@ -61,7 +61,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x0B: {EffectDone, "怪物載入請求交給戰鬥層"},
 	0x0C: {EffectDone, "怪物編成請求交給戰鬥層"},
 	0x0D: {EffectDone, "原作 0801h 逐條讀完（22 條）：距離（bank1^[582h] ＝ ECL 格 7EC1h）大於 0 就減一並用新距離重畫遭遇圖，是 0 就什麼都不做。remake 兩件都做：ApproachEncounter 減格子、ApproachCount 給上層重畫。⚠ 這個減一不影響遭遇選單——29h 進門會重新設一次距離把它蓋回去（spec 1146）"},
-	0x0E: {EffectPartial, "PICTURE 記下 block 與 big-picture 旗標；頭像／身體分塊仍靠上層"},
+	0x0E: {EffectPartial, "原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n >= 78h 是大圖。remake 三個判準都對得上，0FFh 先前什麼都不做、現在發 PictureCloseRequested。partial 剩表現層：實際載入、頭像與身體的分塊合成、以及 4FBAh/4FBBh 那個不重繪的旁路"},
 	0x0F: {EffectConsumed, "INPUT NUMBER 在 corpus 靜態不可達，沒有輸入通道"},
 	0x10: {EffectDone, "字串輸入，退格以 rune 為單位（CHT-02）"},
 	0x11: {EffectDone, "文字累積進 result.Text"},
