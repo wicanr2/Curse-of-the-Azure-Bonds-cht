@@ -22,7 +22,7 @@
 |---|---|---|---:|---:|---|
 | `0x1C` | CLEARMONSTERS | `partial` | 206 | 24 | 原作 120Eh 逐條讀完（37 條）：清怪物鏈與已放置數（47E6h）、清「有怪要打」旗標（8B69h，spec 1095）、把 6F70h 起 28 bytes 的戰利品池歸零（七種貨幣／寶石／珠寶，spec 1059）、沿 6F8Ch 鏈逐節點 FreeMem(63) 釋放 27h 串進去的物品節點（spec 1087），並把 7603h 設成 8。remake 這一側全部對上——怪物鏈、跨執行累積的戰利品堆都清（docs/audit/ecl-treasure-clear.md）。partial 只剩一項：7603h 設成 8 的語意還沒解讀 |
 | `0x0E` | PICTURE | `partial` | 199 | 23 | 原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n >= 78h 是大圖。remake 三個判準都對得上，0FFh 先前什麼都不做、現在發 PictureCloseRequested。partial 剩表現層：實際載入、頭像與身體的分塊合成、以及 4FBAh/4FBBh 那個不重繪的旁路 |
-| `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）。回合生命週期已收（spec 1135～1138）。199 處分成 153 處真的要打（前面擺過怪）與 46 處走服務分派（商店／營地／神殿，見 docs/audit/ecl-combat-sites.md）；`partial` 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標 |
+| `0x24` | COMBAT | `partial` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；partial 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標——兩個旗標都沒有 producer |
 | `0x2D` | CALL | `partial` | 168 | 22 | CALL 是七路 switch；corpus 只用 2E10h 與 6803h，兩者的 consumer 尚未逐條驗（RE-03） |
 | `0x33` | PRINT RETURN | `partial` | 120 | 13 | 原作 2CEAh 整支 14 條讀完（spec 1147）：欄 65A0h := 1、列 65A1h ＋1，兩個分支對游標做的事一樣（8B61h 只決定要不要順手清）。所以它是硬換行——連續兩條會空一行。remake 只記指令邊界（PrintReturnCount），沒有游標模型；缺口在 UI 的行模型，不是 ECL VM |
 | `0x27` | TREASURE | `partial` | 63 | 22 | 八個運算元解成 TreasureRequest，錢幣／寶石／首飾與 ITEM 區塊由 combat_state 的 ResolveTreasureRequests 實際入帳；ItemBlock 的隨機／特殊分支未驗 |
