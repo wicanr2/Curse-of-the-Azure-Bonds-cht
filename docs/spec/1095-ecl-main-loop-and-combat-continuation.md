@@ -223,9 +223,17 @@ remake 跑在 Ebiten 事件迴圈上，無法在 opcode handler 內阻塞整場�
 > ⇒ 它們是**引擎寫入、ECL 讀取**的共用格子，正是 spec 1096 §五第 2 點指出的
 > 最高風險類別：map 寫入永遠成功，對不上時不會有任何錯誤訊息。
 >
-> ⚠ 本規格不宣稱 remake 現行行為是否因此出錯——若 remake 的營地不經由 ECL 觸發，
-> 這一格在 remake 內部仍可自洽。**要判定的是「原作的營地會從 `24h` 回到 ECL 續跑」
-> 這個語意在 remake 有沒有等價物**，這需要另外查 `internal/game` 的營地流程。
+> ★★★ **查完了：語意有等價物，那一格則是一條沒有 producer 的死路。**
+>
+> - 「營地跑完 ECL 再回來」在 remake 走的是**另一條路**：`EnterDungeonCamp` 跑
+>   lifecycle entry 2（`pre_camp`）、把結果交給 `applyDungeonLifecycleResult`，
+>   再開營地選單；中斷走 entry 3（`RunCampInterrupted`）。機制與原作不同
+>   （生命週期入口 vs `24h` 旗標），**效果等價**。
+> - `0x7EE2` 在 remake 的正式程式碼裡**沒有任何一處寫入**（ECL 那一側本來就沒寫過）。
+>   所以 `TempleRequested` 目前走不到，語意標成 Temple **不會產生錯誤行為**。
+>
+> ⚠ 它仍然是個會誤導下一個人的名字。`TestCampRequestFlagHasNoProducer` 釘住
+> 「沒有 producer」這件事：哪天有人補上寫入端，就必須先決定那一格是營地還是神殿。
 
 ## 明確不宣稱
 
