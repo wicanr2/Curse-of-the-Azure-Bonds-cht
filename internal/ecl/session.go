@@ -83,6 +83,20 @@ func (s *BlockSession) MemoryValue(address uint16) (uint16, bool) {
 
 // SetMemoryValue synchronizes a work-owned engine register into shared VM
 // memory before a lifecycle entry. The work adapter owns address semantics.
+// MemorySnapshot 回傳目前這一段看得到的整份記憶體（含共用區與這一段的暫存），
+// 不含停在旁邊那幾段的暫存。給存檔編碼器用。
+func (s *BlockSession) MemorySnapshot() map[uint16]uint16 {
+	runtime := s.states[s.current]
+	if runtime == nil {
+		return nil
+	}
+	memory := make(map[uint16]uint16, len(runtime.Memory))
+	for address, value := range runtime.Memory {
+		memory[address] = value
+	}
+	return memory
+}
+
 // BlockMemoryValue 讀「某一段自己那份」暫存格。隊伍已經換到別段時，
 // `MemoryValue` 看不到停在那邊的值——那正是 per-block scratch 的本意
 // （spec 1162）。位址不在暫存區內就退回 `MemoryValue`。
