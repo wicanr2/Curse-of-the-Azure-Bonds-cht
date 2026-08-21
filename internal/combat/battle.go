@@ -141,9 +141,9 @@ type Fighter struct {
 	// explicit known bit is required before a conditional effect may match.
 	Alignment      uint8 `json:"alignment,omitempty"`
 	AlignmentKnown bool  `json:"alignment_known,omitempty"`
-	// RawMonsterType preserves CHARREC.MONSTERTYPE at +14C without assigning
-	// a gameplay meaning that belongs to a later evidence-backed adapter.
-	RawMonsterType uint8 `json:"raw_monster_type,omitempty"`
+	// RawItemCount 原樣保留角色記錄的 `+14Ch`（DOS 版面是 `NUMITEMS`，
+	// spec 1166），不指派任何規則語意。
+	RawItemCount uint8 `json:"raw_item_count,omitempty"`
 	// Dexterity preserves the shared Player byte at +17 used by the original
 	// initiative reaction table. It is deliberately not converted to a modern
 	// ability modifier.
@@ -194,6 +194,20 @@ type Fighter struct {
 	// 語意未解讀，但它同時是兩種障礙地形的通行豁免（spec 1119），所以照原樣
 	// 留著：日後解出語意時只要有東西寫它，移動那一側就自動生效。
 	RawCombatState10 uint8 `json:"raw_combat_state_10,omitempty"`
+	// UndeadType 是角色記錄 `+0E9h`（`UNDEADLEVEL`）：1..10 是驅散矩陣的列，
+	// 0 代表不是不死生物（spec 834／1164）。
+	UndeadType uint8 `json:"undead_type,omitempty"`
+	// ClericLevel 是牧師槽的等級（角色記錄 `+109h`）。只有它 > 0 的人看得到
+	// 戰鬥選單的「退散」（spec 905）。
+	ClericLevel uint8 `json:"cleric_level,omitempty"`
+	// SecondClassLevel 是第二職業的等級（`+111h`）；換算驅散矩陣的欄要用到
+	// 合計等級。
+	SecondClassLevel uint8 `json:"second_class_level,omitempty"`
+	// TriedToTurn 是 22 bytes 戰鬥狀態的 `+11h`（`TRIEDTOTURN`）：這一場已經
+	// 驅散過了，選單就不再出現（spec 834／905／1165）。
+	TriedToTurn bool `json:"tried_to_turn,omitempty"`
+	// turnOrderIndex 只在挑驅散目標時暫存，不進存檔。
+	turnOrderIndex int
 	// Escaped 是「走出戰場邊界離開這一場」（spec 799／1112）。與死亡不同：
 	// 人還活著，只是不在戰場上，所以不算敵方戰果、也不再是任何效果的目標。
 	Escaped bool `json:"escaped,omitempty"`

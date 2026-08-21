@@ -29,9 +29,16 @@ type Record struct {
 	MonsterType    uint8
 	Alignment      uint8
 	AlignmentKnown bool
-	// RawMonsterType is CHARREC.MONSTERTYPE at +14C; its gameplay meaning is
-	// intentionally not inferred by this record decoder.
-	RawMonsterType uint8
+	// RawItemCount 是角色記錄 `+14Ch`。
+	//
+	// ⚠ 這一格先前記成「`CHARREC.MONSTERTYPE`」——那是 **PC-98** 的版面。
+	// DOS 的記錄少一格（422 vs 423），`MONSTERTYPE` 正是少掉的那一格，所以
+	// DOS 的 `+14Ch` 是 `NUMITEMS`、`+14Dh`..`+150h` 才是物品鏈指標（spec 1166）。
+	// 遊戲資料裡它一律是 0，這個欄位只是原樣保留，沒有任何規則讀它。
+	RawItemCount uint8
+	// UndeadType 是 `+0E9h`（`UNDEADLEVEL`）：1..10 是驅散不死矩陣的列，
+	// 0 代表不是不死生物（spec 834／1164）。
+	UndeadType     uint8
 	Dexterity      uint8
 	BaseArmorClass int
 	ArmorClass     int
@@ -159,8 +166,11 @@ func Parse(data []byte) (Record, error) {
 		MonsterType:      data[0x11A],
 		Alignment:        data[0x11B],
 		AlignmentKnown:   true,
-		RawMonsterType:   data[0x14C],
+		RawItemCount:     data[0x14C],
 		Dexterity:        data[0x17],
+		// `+0E9h` ＝ `UNDEADLEVEL`：1..10 是驅散矩陣的列，0 代表不是不死生物
+		// （spec 834／1164）。
+		UndeadType: data[0x0E9],
 	}, nil
 }
 
@@ -174,10 +184,11 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		RaceTypeKnown: true,
 		MonsterType:   r.MonsterType,
 		Alignment:     r.Alignment, AlignmentKnown: r.AlignmentKnown,
-		RawMonsterType: r.RawMonsterType,
-		Dexterity:      r.Dexterity,
-		CombatTeam:     r.CombatTeam,
-		ArmorClass:     CombatArmorClass(r.ArmorClass), AttackBonus: CombatAttackBonus(r.AttackBonus),
+		RawItemCount: r.RawItemCount,
+		UndeadType:   r.UndeadType,
+		Dexterity:    r.Dexterity,
+		CombatTeam:   r.CombatTeam,
+		ArmorClass:   CombatArmorClass(r.ArmorClass), AttackBonus: CombatAttackBonus(r.AttackBonus),
 		// 背後攻擊用的第二個 AC（`+19Bh`，spec 1000 §七）。儲存值比 `+19Ah` 小，
 		// 換成畫面刻度就比正面那一格大——也就是比較好打。
 		//

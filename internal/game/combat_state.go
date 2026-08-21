@@ -3164,7 +3164,15 @@ func (s *State) CombatDone() error {
 	return s.advanceCombatToParty()
 }
 
+// CombatMainMenuText 依狀態組出主選單。
+//
+// ★ 原作的選單是**動態組合**的（spec 905）：`'Turn '` 只有牧師而且這一場還沒
+// 驅散過才接上去。remake 這一側把兩種排列各放一條文字規則，挑哪一條由同一個
+// 條件決定。
 func (s *State) CombatMainMenuText() string {
+	if s.CombatCanTurnUndead() {
+		return s.catalog.Text("combat_menu_main_turn", "combat_menu_main_turn")
+	}
 	return s.catalog.Text("combat_menu_main", "combat_menu_main")
 }
 
@@ -3274,6 +3282,57 @@ func (s *State) CombatGuard() error {
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_guard", "combat_guard"), attacker.Name)
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
+}
+
+// CombatCanTurnUndead 回報「退散」這個選項現在該不該出現。
+//
+// ★ 原作的顯示條件是**牧師槽的等級 > 0** 而且 `+18Dh^[11h] = 0`
+// （這一場還沒驅散過），用過就從選單消失（spec 905／834）。
+// ⚠ 條件裡**沒有**「場上有不死生物」——原作照樣讓你按下去，然後印
+// `Nothing Happens...`。
+func (s *State) CombatCanTurnUndead() bool {
+	fighter, ok := s.combatPartyTurn()
+	return ok && fighter.ClericLevel > 0 && !fighter.TriedToTurn
+}
+
+// CombatTurnUndead 演一次驅散不死，然後結束這名角色的行動。
+func (s *State) CombatTurnUndead() error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	cleric, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	result, err := s.battle.TurnUndead(cleric.ID)
+	if err != nil {
+		return err
+	}
+	s.combatMessage = s.turnUndeadMessage(cleric, result)
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+// turnUndeadMessage 把原作那四句組起來：宣告一定印，接著逐個目標印「被驅離」
+// 或「被摧毀」，一個都沒成就印「什麼都沒發生」（spec 834）。
+func (s *State) turnUndeadMessage(cleric combat.Fighter, result combat.TurnUndeadResult) string {
+	lines := []string{fmt.Sprintf(
+		s.catalog.Text("combat_turn_undead", "combat_turn_undead"), cleric.Name)}
+	for _, outcome := range result.Outcomes {
+		target, found := s.fighter(outcome.TargetID)
+		if !found {
+			continue
+		}
+		key := "combat_turn_undead_turned"
+		if outcome.Destroyed {
+			key = "combat_turn_undead_destroyed"
+		}
+		lines = append(lines, fmt.Sprintf(s.catalog.Text(key, key), target.Name))
+	}
+	if result.Nothing() {
+		lines = append(lines, s.catalog.Text("combat_turn_undead_nothing", "combat_turn_undead_nothing"))
+	}
+	return strings.Join(lines, "\n")
 }
 
 func (s *State) CombatCanBandage() bool {
