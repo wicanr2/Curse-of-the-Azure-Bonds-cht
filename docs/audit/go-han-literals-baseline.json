@@ -2998,6 +2998,181 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "0eff7af55886314903132af28c261b33700c7de8e4977821470833e38b6cb4ec",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "3941bb44df5c6c4beddda2f93e2c54a60aced0546ed6b1ee9146386c4dff100a",
+      "occurrences": 2,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "4e6bdfcbfd877793837874848fde569ea954ea4b3919feadee2e824e2e4ad8bb",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "57bcbbd61eed3ea848e249be497a2d37e4d7bd1f029fde34661bbc2534ccc697",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "64e4db8efc50a44192e001b6b4a6fc485bfb0961caedc3d1555b4e79a765f4e7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "651e662f30074b7a9936d4f4df161f4f2aaa115e4c0ce633af890b2881bba9ad",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "77507364a169d93fa1b9dda1173e9e20fe45331a2247614cf2eb6cf8f0b4ac1e",
+      "occurrences": 2,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "7872c79e9548adafdb698ff6714e1d973e60173f36574d81c1e0a1ba7b7d1f28",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "79f855c8b433e9bf71b4236e4a173fdc48daa453fd017dfb8a76355503d8eb7f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "7acfd3a53f4a6e788aab719dedaf23a1c6bdc0a9a601800dce94a90b075d3a47",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "7c6b37f452702d5db8b45f673029be2fec2c17cd648bd0fd2cf248032033a9cb",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "8077481925b66ecc16a63895fa96f7b87d55bc6592eb95be180ce362f0ad6633",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "8224f938c4bd7800effaf8a5894816de67205a0d1e24e4d738d4ad4629356bc3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "834f666647938d73aa5707ddb953272e50a35d9dcc8f9b8a007eb452344e681a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "aed4460fb32dd0d8dc196cb1cbf06bef3d8bf4dcd4d21e50d4e8438eb27038d8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "b5141d3d19e9a04855acdb2dd5218b0924254b73d3cb663557ed0f9f73403750",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "bb934e3218681609ef8e9a5e1c8f369a57c82cdeb77e54cf6de786cbc8b348f7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "c1ae1cbd9d02fa8bffc6fc450b3072810796d2a2dfd4fa57c83f732c5a8f739c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "d1f38f83215595dbe8f9b8442dc18f37addbca6541dd5987a55fefc2123a0eef",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "main",
+      "sha256": "ff7d418f0d4050c65918149c36b5442b332a1970eff3398deddefec0de9cb5eb",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "scan",
+      "sha256": "3941bb44df5c6c4beddda2f93e2c54a60aced0546ed6b1ee9146386c4dff100a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "scan",
+      "sha256": "64e4db8efc50a44192e001b6b4a6fc485bfb0961caedc3d1555b4e79a765f4e7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "scan",
+      "sha256": "77507364a169d93fa1b9dda1173e9e20fe45331a2247614cf2eb6cf8f0b4ac1e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-treasure-census/main.go",
+      "function": "scan",
+      "sha256": "fcca5a4d1c917c046b663363880e9dcc906ae19b513b7527a432bbd1cba80a3c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/ecl-treasure-clear/main.go",
       "function": "main",
       "sha256": "aff4479ab1b9a6e22c5a761fb08e9574de0cd8ae78f71d7891eae6c6ece61be1",
