@@ -73,8 +73,15 @@ func TestSeedingHandoffClosesMostOfTheGap(t *testing.T) {
 	if doc.SeededRisky*5 > doc.TotalRisky {
 		t.Fatalf("只關掉 %d／%d，不到八成", doc.TotalRisky-doc.SeededRisky, doc.TotalRisky)
 	}
-	// 剩下的要對得起來：三類加起來就是全部，否則分類漏了一種成因。
-	if sum := doc.ResidueEngineSet + doc.ResidueViewCell + doc.ResidueOther; sum != doc.SeededRisky {
+	// 剩下的要對得起來：四類加起來就是全部，否則分類漏了一種成因。
+	sum := doc.ResidueEngineSet + doc.ResidueViewCell +
+		doc.ResidueLifecycleOwned + doc.ResidueOther
+	if sum != doc.SeededRisky {
 		t.Fatalf("殘差分類 %d 加起來不等於 %d：漏了一種成因", sum, doc.SeededRisky)
+	}
+	// ★ 真正「歸不了因」的那一類要**遠小於**總數，否則這份分類等於沒解釋什麼。
+	if doc.ResidueOther*4 > doc.SeededRisky {
+		t.Fatalf("歸不了因的有 %d／%d，超過四分之一：分類沒有解釋到東西",
+			doc.ResidueOther, doc.SeededRisky)
 	}
 }

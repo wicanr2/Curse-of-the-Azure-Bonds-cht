@@ -144,6 +144,7 @@ func main() {
 		FromInside    int `json:"from_inside"`
 		SeededRisky   int `json:"seeded_risky"`
 		ResidueOther  int `json:"residue_other"`
+		Lifecycle     int `json:"residue_lifecycle_owned"`
 		Failed        int `json:"failed"`
 	}
 	if readJSON(*auditDir, "segment-handoff.json", &handoff) {

@@ -81,7 +81,13 @@ type report struct {
 	// 剩下的差異按成因分：引擎進段時自己設的、由位置推出來的視圖暫存器、其餘。
 	ResidueEngineSet int `json:"residue_engine_set"`
 	ResidueViewCell  int `json:"residue_view_cell"`
-	ResidueOther     int `json:"residue_other"`
+	// ResidueLifecycleOwned 是「鋪了也沒用」的格子：直入那一側鋪與不鋪算出來的
+	// 值**一模一樣** ⇒ 進段的 initial lifecycle 自己把它算掉了。
+	//
+	// ★ 這種格子**不是交接缺口**：它是那一段自己決定的東西，交接給不給都一樣。
+	// 混進「歸不了因」會讓剩下的數字看起來比實際大。
+	ResidueLifecycleOwned int `json:"residue_lifecycle_owned"`
+	ResidueOther          int `json:"residue_other"`
 	// FromArrival／FromInside 是取樣點的分佈。⚠ 一定要分開數：`inside` 那幾段
 	// 量到的是「交接 ＋ 主線又走了一段」，混進總數會讓整份報表看起來比實際緊。
 	FromArrival int `json:"from_arrival"`
@@ -154,11 +160,14 @@ func main() {
 				row.SeededDropped++
 				if readBy[item.Block][address] {
 					row.SeededRisky = append(row.SeededRisky, address)
-					switch residueKind(address) {
-					case "engine-set":
+					switch {
+					case residueKind(address) == "engine-set":
 						doc.ResidueEngineSet++
-					case "view-cell":
+					case residueKind(address) == "view-cell":
 						doc.ResidueViewCell++
+					case plain[address] == seeded[address]:
+						// 鋪與不鋪算出來一樣 ⇒ lifecycle 自己算掉了。
+						doc.ResidueLifecycleOwned++
 					default:
 						doc.ResidueOther++
 					}
@@ -202,10 +211,11 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Fprintf(os.Stderr,
-		"segments=%d dropped=%d risky=%d | seeded: dropped=%d risky=%d (engine=%d view=%d other=%d) failed=%d\n",
+		"segments=%d dropped=%d risky=%d | seeded: dropped=%d risky=%d (engine=%d view=%d lifecycle=%d other=%d) failed=%d\n",
 		doc.Segments, doc.TotalDropped, doc.TotalRisky,
 		doc.SeededDropped, doc.SeededRisky,
-		doc.ResidueEngineSet, doc.ResidueViewCell, doc.ResidueOther, doc.Failed)
+		doc.ResidueEngineSet, doc.ResidueViewCell, doc.ResidueLifecycleOwned,
+		doc.ResidueOther, doc.Failed)
 }
 
 // readAddressesByBlock 收集每個 block 的碼**會讀**的記憶體位址。
@@ -522,12 +532,16 @@ func render(doc report) string {
 		"其中會讀的 **%d** 格（原本 %d），分佈在 %d 段（原本 %d）。\n\n",
 		doc.SeededDropped, doc.TotalDropped, doc.SeededRisky, doc.TotalRisky,
 		doc.SeededRiskySegments, doc.RiskySegments)
-	fmt.Fprintf(&out, "剩下的 %d 格按成因分：引擎進段時自己設的 **%d**"+
-		"（`4BF2h` LastECL、`7ED5h`、`7EC9h`）、由隊伍位置推出來的視圖暫存器 **%d**"+
-		"（`C04Bh`..`C05Fh`，如 `C04Fh` ＝ 牆頂）、其餘 **%d**。\n\n"+
-		"⚠ 前兩類**本來就不該被交接狀態蓋過去**——它們不是劇情旗標，是引擎自己算的。"+
-		"真正剩下來的是最後那一類。\n",
-		doc.SeededRisky, doc.ResidueEngineSet, doc.ResidueViewCell, doc.ResidueOther)
+	fmt.Fprintf(&out, "剩下的 %d 格按成因分：\n\n"+
+		"| 成因 | 格數 | 該不該補 |\n|---|---:|---|\n"+
+		"| 引擎進段時自己設的（`4BF2h` LastECL、`7ED5h`、`7EC9h`）| %d | **不該**：進段這一支自己管 |\n"+
+		"| 由隊伍位置推出來的視圖暫存器（`C04Bh`..`C05Fh`，如 `C04Fh` ＝ 牆頂）| %d | **不該**：引擎自己算的 |\n"+
+		"| 進段的 initial lifecycle 自己算掉的（鋪與不鋪結果一樣）| %d | **不能**：鋪了也沒用 |\n"+
+		"| 歸不了因 | %d | 這才是真正剩下來的 |\n\n"+
+		"⚠ 前三類**都不是交接缺口**：前兩類是引擎自己算的，第三類是那一段自己決定的"+
+		"（交接給不給都一樣）。混在一起數會讓剩下的數字看起來比實際大。\n",
+		doc.SeededRisky, doc.ResidueEngineSet, doc.ResidueViewCell,
+		doc.ResidueLifecycleOwned, doc.ResidueOther)
 	if doc.FromInside > 0 {
 		out.WriteString("\n⚠ 用 `站上地城` 取樣的那幾段是**上界**（見上）。" +
 			"沒有 `剛換到` 的快照通常是因為主線**不是靠換段進去的**——" +
