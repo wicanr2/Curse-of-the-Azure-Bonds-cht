@@ -129,6 +129,13 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   （`DOES ANYONE WANT TO…`）的兄弟句**全都是併在前一頁的規則裡**，那就是片段，
   不要替它寫規則。
 
+- **「發得出來」與「有東西會發」要分兩欄問。**
+  規則層有某個動作是**能力**，現在有哪一段劇情會發是**有沒有用到**。混成一格會讓
+  「寫了但沒人呼叫」看起來像做完了。音訊生命週期就卡在這裡：`stop` 的程式碼在，
+  但 game-pack **表達不出來**——共用 engine 的驗證擋掉 `track_id` 空的 binding。
+  ⇒ 「沒人寫」補一行 JSON 就好，「寫不出來」要動共用 repo，**兩種卡點的處置差很多**，
+  報表要寫的是哪一種，而且那句話要**跑出來的**不是手打的（spec 1192）。
+
 - **前端讀鍵盤只能走 `a.justPressed`／`a.keyDown`。**
   直接呼叫 `inpututil.IsKeyJustPressed`／`ebiten.IsKeyPressed` 會被
   `TestFrontendReadsKeysOnlyThroughTheSeam` 擋下來。理由不是整潔：繞過接縫的

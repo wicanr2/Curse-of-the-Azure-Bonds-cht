@@ -135,6 +135,21 @@ func main() {
 			len(keySession.Modes), keySession.Messages, keySession.Fallbacks)
 	}
 
+	// 原機音訊的**播放生命週期**：原作有幾種動作、remake 發得出幾種、
+	// game-pack 真的會發幾種。三個數字要分開，混一格會讓「寫了但用不到」
+	// 看起來像做完了（spec 1192）。
+	var audio struct {
+		Sites   int `json:"sites"`
+		Wired   int `json:"wired"`
+		Used    int `json:"used"`
+		Actions []struct {
+			Action string `json:"action"`
+		} `json:"actions"`
+	}
+	if readJSON(*auditDir, "audio-lifecycle.json", &audio) {
+		add("audio_lifecycle", audio.Sites, len(audio.Actions), audio.Wired, audio.Used)
+	}
+
 	var save struct {
 		RecordSize    int            `json:"record_size"`
 		BytesByStatus map[string]int `json:"bytes_by_status"`

@@ -22,15 +22,36 @@ func (s *State) requestMusicForCurrentBlock(context string) {
 	if !found {
 		return
 	}
-	if binding.TrackID == s.activeMusicTrackID {
+	event, changed := musicEventForTrack(s.activeMusicTrackID, binding.TrackID)
+	if !changed {
 		return
 	}
 	s.activeMusicTrackID = binding.TrackID
 	s.musicPlaybackSnapshot = nil
-	s.pendingMusicEvents = append(s.pendingMusicEvents, MusicEvent{
-		Action:  "play",
-		TrackID: binding.TrackID,
-	})
+	s.pendingMusicEvents = append(s.pendingMusicEvents, event)
+}
+
+// musicEventForTrack 決定「從這一首換到那一首」要發什麼。抽出來是為了**測得到**：
+// 走 `requestMusicForCurrentBlock` 得先有一份 game-pack，而目前的 engine
+// 根本不收「不放音樂」的宣告（見下），於是那條分支在整合測試裡永遠跑不到。
+//
+// ★ 空的 `TrackID` ＝**這裡不放音樂**，要把正在放的停掉，不是放一首叫「」的曲子。
+// 原作的停止是在派曲處寫 `MUSICNUM := 255`（PC-98 常駐 `9451h`、初始化 `2F5Ah`），
+// `MUSICSW := 0`（`2F46h`）是同一件事的開關版（spec 1192）。
+//
+// ⚠ **目前這條分支在正式資料上到不了**：engine 的 pack 驗證會把 `track_id` 是空的
+// binding 擋掉（`music_bindings[i] references unknown track ""`），所以「這裡不放
+// 音樂」在 pack 裡表達不出來。程式碼先擺著是因為少了它，空的 `TrackID` 會發成
+// `play` 然後在 adapter 那裡查無此曲、**只留一行 log**：音樂繼續放著，看不出來。
+// 要真的用上，得在共用 engine 那邊讓 pack 表達得出「停」。
+func musicEventForTrack(previous, next string) (MusicEvent, bool) {
+	if next == previous {
+		return MusicEvent{}, false
+	}
+	if next == "" {
+		return MusicEvent{Action: "stop"}, true
+	}
+	return MusicEvent{Action: "play", TrackID: next}, true
 }
 
 func (s *State) requestMusicForSignal(signal string, value uint16) {

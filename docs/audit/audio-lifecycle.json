@@ -1,0 +1,102 @@
+{
+ "schema": "coab-audio-lifecycle/1",
+ "sites": 17,
+ "actions": [
+  {
+   "action": "select-track",
+   "symbol": "MUSICNO",
+   "meaning": "選曲：換成哪一首",
+   "sites": 12,
+   "wired": true,
+   "used": true,
+   "remake_by": "`State.requestMusicForCurrentBlock`（game-pack 的 music binding）",
+   "values": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    12
+   ],
+   "routines": [
+    "DOGEN＋24B1h",
+    "DOGEN＋83Dh",
+    "DOINTRO＋6h",
+    "DOPOSTCOMBAT＋1E0h",
+    "FINAL＋47Ah"
+   ]
+  },
+  {
+   "action": "load-track",
+   "symbol": "MUSICNUM",
+   "meaning": "曲目編號：驅動程式要載哪一份資料",
+   "sites": 1,
+   "wired": true,
+   "used": true,
+   "remake_by": "同上：remake 的 `TrackID` 就是曲目，載入由 adapter 負責"
+  },
+  {
+   "action": "stop-track",
+   "symbol": "MUSICNUM",
+   "meaning": "停止：曲目編號寫 `255`（沒有曲子）",
+   "sites": 2,
+   "wired": true,
+   "used": false,
+   "used_note": "engine 的 pack 驗證不收 `track_id` 空的 binding，「這裡不放音樂」目前**表達不出來**（`TestEnginePackCannotExpressStopYet`）",
+   "remake_by": "`State.requestMusicForCurrentBlock`：binding 的 `TrackID` 是空的就發 `stop`",
+   "values": [
+    255
+   ]
+  },
+  {
+   "action": "music-switch",
+   "symbol": "MUSICSW",
+   "meaning": "音樂開關：整個音樂要不要響",
+   "sites": 2,
+   "wired": true,
+   "used": false,
+   "used_note": "engine 的 pack 驗證不收 `track_id` 空的 binding，「這裡不放音樂」目前**表達不出來**（`TestEnginePackCannotExpressStopYet`）",
+   "remake_by": "同上；開關的「開」由一般的選曲表達",
+   "values": [
+    0
+   ]
+  },
+  {
+   "action": "sfx-halt",
+   "symbol": "SOUNDHALT",
+   "meaning": "音效停止",
+   "sites": 0,
+   "wired": true,
+   "used": true,
+   "remake_by": "原作一處都沒寫到這一格"
+  },
+  {
+   "action": "sfx-off",
+   "symbol": "SOUNDOFF",
+   "meaning": "音效關",
+   "sites": 0,
+   "wired": true,
+   "used": true,
+   "remake_by": "原作一處都沒寫到這一格"
+  },
+  {
+   "action": "sfx-on",
+   "symbol": "SOUNDON",
+   "meaning": "音效開",
+   "sites": 0,
+   "wired": true,
+   "used": true,
+   "remake_by": "原作一處都沒寫到這一格"
+  }
+ ],
+ "wired": 7,
+ "used": 5,
+ "remake_actions": [
+  "play",
+  "stop"
+ ]
+}

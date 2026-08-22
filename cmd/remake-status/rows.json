@@ -38,6 +38,12 @@
       "source": "`key-driven-session.json`（`TestKeysDriveARealSessionFromTheTitle`，需 `COAB_KEY_SESSION_JSON`）",
       "not_proof": "這是**開場**那一段，不是「按鍵玩到結局」。戰役測試直接呼叫 `state.X()`，這一份從標題畫面開始只按鍵、全程走 `(*app).Update()`，證明的是那一段劇情按得出來而且沒有英文。停下來的原因已經查明：整場**沒有出現任何真的選單**（只有「按任意鍵繼續」），所以不是選錯選項，是幾何上到不了——同一段用幾何走訪找得到 83 格（spec 1189／1191）。"
     },
+    "audio_lifecycle": {
+      "category": "原機音訊：播放生命週期（開／關／停）",
+      "format": "原作 %d 處寫入、%d 種動作：規則層發得出 **%d** 種，game-pack 真的會發 **%d** 種",
+      "source": "`audio-lifecycle.json`（`cmd/audio-lifecycle-audit`）",
+      "not_proof": "★ 這是 `cmd/dseg-writers` 那個**分母**的下一步：把寫入點按生命週期動作分類，再對 remake 真的發得出來的動作。⚠ **「發得出來」與「有東西會發」是兩件事**：規則層有這個動作是能力，現在有哪一段劇情會發是有沒有用到；混成一格會讓「寫了但沒人呼叫」看起來像做完了。⚠ 差的兩種都是**停止**（`MUSICNUM := 255`、`MUSICSW := 0`），卡點不是「還沒寫那條 binding」而是**寫不出來**——共用 engine 的 pack 驗證會把 `track_id` 空的 binding 判成 `references unknown track \"\"`，要動 engine 才解得開（`TestEnginePackCannotExpressStopYet` 釘住這個限制，鬆綁時會紅）。⚠ **PC-98 版面**：DOS 沒有音樂，位址不能套（spec 1187／1192）。⚠ 位元組直掃有偽陽性，所以逐處都印所屬常式。"
+    },
     "save_fields": {
       "category": "存檔相容（角色記錄）",
       "format": "%d bytes：decoded %d／documented %d／unknown %d；remake 實際消費 %d",

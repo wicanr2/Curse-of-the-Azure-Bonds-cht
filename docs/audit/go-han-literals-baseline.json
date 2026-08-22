@@ -2,6 +2,259 @@
   "schema_version": 1,
   "findings": [
     {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "0e736f75d7f61c07610a6de53e8b73de1d4f3b0ab8a0eb2dd84996354042306d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "48b913622502dec7c63c50f98484598e72f0fe98cf86ce0fb86e7c0c0e89f1de",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "62bfe8d81feff8692e62b99eb0462f76cf206572cc0efbbe081cba3b3c4bfcac",
+      "occurrences": 2,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "66f1fb44ddfec89adf46f0e86564ace36db4852a86a14089c16b3cb450ad04aa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "6908882c628ecedc4645ea99dcdc969082da09426e56ceed3c0c9cb3882bada7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "8aa109986bc43ad6b64ae318d1cb3f34b13484e34591d96000cbc2c1607e9cd2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "9be517378512d6d62a695d6a6ef01d80ba19bbba095234a2080852e65d34c6ca",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "b0d738697d00728a493e75469b488b38a62751c4022766207407d74c5c932f28",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "d83a548325e97e3a5ea7f6f6d31131b24282afcdc3678bc99901fdbdaa533425",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "d859b5457cdb428861fd31c09e1d266ce4547525fa975fe89e736401bf348b0f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "f1c005cd581bd51432ee5db749635624ef6f545aa0f5da619e7d86826228ba59",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "f5f3ae981fbae1a5e4347bbdba4dc9558262c0827afb59a5000aaec7d27d5426",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "sha256": "f7c22d2c0a4a1b1b8ba344cfc67218ac8b9ded13c3330b58805ebaef64e7b32d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "buildReport",
+      "sha256": "90f834c0c430f31fb4d9f9470ed0952bc2e8cc94713f0fe9dee0d35a032a990a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "buildReport",
+      "sha256": "9df359b2b793c310ed25c1f6b22414c7db9e1e8cee5c06e3f90d95e73caee3fe",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "buildReport",
+      "sha256": "f8966e9410e28a882f5d3f474764afa9037825ede53b2b18bd59544dcc52b77f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "main",
+      "sha256": "1d8e820ae7452f2c18c58a21a2526fdee9bb1871d8dcb838e5b64e7434c75150",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "main",
+      "sha256": "33ca57ae26bdc56ec345e2d865b052b6f648fa5d25dafc669d029cdab7e71a3d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "main",
+      "sha256": "6f34d54efdfd88ad27930e0cfe06319145e0fa96ac9d3fa3880d4af9952551e2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "main",
+      "sha256": "7299c956bbb9d191164800d0ca854c4650b0db65a2ece5f9d9914af9c6a13833",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "main",
+      "sha256": "82c568be008250009d0ce1c2aa5ef1cbfde2903474ed25ae7f86086d811afa7c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "main",
+      "sha256": "a70cfce00962ba10edffa4924ea26e83a9c17266297eccc679bad1b76b4bae7e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "main",
+      "sha256": "fff5cb9e9bc24edb28f07463425ce11f927f7bc7f2a2d6d86ce8f01d063baaa7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "0bfb3ba682c458b65331319270294c6c9362fe624371267a9234fda16170da03",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "144f4af878cc889ede060b66abf53d49725de8d0cfb03b8fe72c28c7988ac494",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "16705b09e6f3c124cae88b3ab0ab1b2e86a4402315cdb9c5dc69407dadc820b7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "37abc71d59ccddbfaf12ebc848532fa768652722612582379c70e94ee97d1b63",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "42b03e682d3ee70bb6d5314564a5ed7d2360532c27cbda5e0503439c9f3e3b48",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "5f992d4f0d5c79ff1414866ae6591d198177c5a0062d66b4662efb8fd4d0cf4e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "805ad7b6ee0e959bdcc02c5d84593515325a3c2b7caa7395e62eface729ded71",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "9361c4d2c3de2fb9e3e14edef6e2b4eadd4917ab47a33b960b6c33900c6b1677",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "9e79f707b264bca2da902798994d65433be0af7e748c55b27fc1580a82f0be00",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "9ef47d96e206431ec0e5696f3f1749b759336b38bb754068d18711f4b70d29f9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "a536125fe2f42b78596c65ea0eb4cecf4e963cea74ff30c76d55e12792cbb252",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "ac2fd653402c100f4da9df971783cb6b9d30ddc2eeef16c5782cbfa93296cbb2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "d219533ee3a95a513020d29d4b453f6376f9c12014f01e49931aa8c3ab33fa42",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "f01862dfbd5f82d1baba54e37020842c726bbda6467e291bc9b0456d0b47f4a2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "f66564471c5c22243e47490beda14edf902aaf583db56fe27791b0c4814132bd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/azure-bonds-game/main.go",
       "function": "main",
       "sha256": "70cfc7b45f7fc65e265f15ee9780721953d115a928445e5e66615e4a8fd163b0",
