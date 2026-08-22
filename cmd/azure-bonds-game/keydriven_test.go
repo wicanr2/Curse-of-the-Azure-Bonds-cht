@@ -145,9 +145,17 @@ func (s *keyDrivenSession) routeChoice() (int, bool) {
 func (s *keyDrivenSession) routeMove() (int, bool) {
 	x, y, _ := s.app.state.DungeonGeometryView()
 	block, _ := s.app.state.CurrentECLBlockID()
-	for offset := 0; offset < routeLookahead && s.routeAt+offset < len(s.route); offset++ {
+	// ⚠ 視窗要算的是「往前看幾個**移動**」，不是「往前看幾筆紀錄」。路線裡的
+	// `select` 佔了一半（783／1607），照筆數算的話它們會把視窗塞滿，
+	// 下一個 `move` 被擠到範圍外 ⇒ 看起來像跟丟，其實只是沒看到。
+	seen := 0
+	for offset := 0; s.routeAt+offset < len(s.route) && seen < routeLookahead; offset++ {
 		step := s.route[s.routeAt+offset]
-		if step.Kind != "move" || step.FromX != x || step.FromY != y {
+		if step.Kind != "move" {
+			continue
+		}
+		seen++
+		if step.FromX != x || step.FromY != y {
 			continue
 		}
 		s.routeAt += offset + 1
@@ -220,17 +228,20 @@ func (s *keyDrivenSession) moveCursorTo(t *testing.T, want int) bool {
 // routeLookahead 是「往前找幾個決策」。
 //
 // ⚠ 太小會在第一個岔開的地方就跟丟；太大會讓後面的決策被提早消耗掉，
-// 之後真的走到那裡時反而沒有路線可用。**兩邊都不是線性的**，實測：
+// 之後真的走到那裡時反而沒有路線可用。**兩邊都不是線性的**，而且**視窗算的是
+// 往前看幾個「移動」不是幾筆紀錄**——路線裡 `select` 佔了一半（783／1607），
+// 照筆數算會把視窗塞滿，下一個 `move` 被擠到範圍外。
 //
-//	2  → 28 格／37 句／照路線 0 次（完全跟不上）
-//	4  → 16 格／14 句／2 次
-//	8  → **76 格／63 句／104 次，而且第一次走出 `0x01` 到 `0x02`**
-//	12 → 72 格／57 句／103 次
-//	24 → 41 格／37 句／41 次
-//	100→ 48 格／20 句／62 次
+// 實測（1500 幀，視窗以移動計）：
 //
-// ⇒ 8 是實測出來的，不是猜的。改動走法之後要重新量。
-const routeLookahead = 8
+//	3  → 82 格／57 句／照路線 122 次
+//	8  → 82 格／57 句／123 次
+//	20 → **83 格／66 句／76 次** ← 目前這一版
+//	40 → 83 格／66 句／81 次（與 20 相同）
+//	80 → 43 格／10 句／60 次，而且退回只有 `0x01`
+//
+// ⇒ 20 是實測出來的。改動走法之後要重新量。
+const routeLookahead = 20
 
 // keyDrivenMenuPatience 是「同一個選單按同一項幾次還在原地，就換下一項」。
 //
