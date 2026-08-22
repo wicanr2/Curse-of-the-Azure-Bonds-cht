@@ -69,6 +69,13 @@ func main() {
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "語系檔")
 	steps := flag.Int("steps", 4000, "每一段最多走幾步")
 	cellsOut := flag.String("cells-json", "", "把走得到的 (block, 地形碼) 寫成 JSON")
+	// ★ 「走得到的」與「圖上有的」是兩件事。沒有後者就分不出「走不進去」與
+	// **「這個地形碼在這張圖上根本不存在」**——後者不論誰來走都踏不到，
+	// 把它算進未達成會讓覆蓋率永遠差一截，而且看起來像還有事情可做。
+	onMapOut := flag.String("on-map-json", "", "把**圖上出現過**的 (block, 地形碼) 寫成 JSON")
+	// ★ 「站得上去的」比「從入口走得到的」多：地圖常常分成好幾塊互不相連的區域
+	// （巫師塔每一層都是獨立房間）。這一份是**走路能到的上限**。
+	componentsOut := flag.String("walkable-json", "", "把**站得上去**（任一連通分量內）的 (block, 地形碼) 寫成 JSON")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
 	flag.Parse()
 
@@ -83,6 +90,8 @@ func main() {
 		Terrain uint8 `json:"terrain"`
 	}
 	records := make([]cellRecord, 0, 256)
+	onMap := make([]cellRecord, 0, 256)
+	components := make([]cellRecord, 0, 256)
 	for _, seg := range segment.All() {
 		payload, ok := data.Blocks[seg.Block]
 		if !ok {
@@ -108,6 +117,23 @@ func main() {
 		for terrain := range terrains {
 			records = append(records, cellRecord{Block: seg.Block, Terrain: terrain})
 		}
+		// 整張圖掃一遍：這個 block 的地圖上到底出現過哪些地形碼。
+		present := map[uint8]bool{}
+		for y := 0; y < geo.Height; y++ {
+			for x := 0; x < geo.Width; x++ {
+				present[grid.CellWrapped(x, y).Terrain] = true
+			}
+		}
+		for terrain := range present {
+			onMap = append(onMap, cellRecord{Block: seg.Block, Terrain: terrain})
+		}
+		// ★ 連通分量：一張圖常常不是一整片。巫師塔每一層在 GEO 上是獨立的小房間，
+		// 層與層之間只靠樓梯**事件**接（spec 1161）——從入口用走的永遠到不了別層。
+		// 分不出「走不進去」是**幾何上斷開**還是**門擋著**，就不知道要補路線
+		// 還是補劇情旗標。
+		for terrain := range componentTerrains(data, grid) {
+			components = append(components, cellRecord{Block: seg.Block, Terrain: terrain})
+		}
 		walks = append(walks, walk)
 	}
 	sort.Slice(records, func(left, right int) bool {
@@ -116,6 +142,36 @@ func main() {
 		}
 		return records[left].Terrain < records[right].Terrain
 	})
+	sort.Slice(onMap, func(left, right int) bool {
+		if onMap[left].Block != onMap[right].Block {
+			return onMap[left].Block < onMap[right].Block
+		}
+		return onMap[left].Terrain < onMap[right].Terrain
+	})
+	sort.Slice(components, func(left, right int) bool {
+		if components[left].Block != components[right].Block {
+			return components[left].Block < components[right].Block
+		}
+		return components[left].Terrain < components[right].Terrain
+	})
+	if *componentsOut != "" {
+		payload, err := json.MarshalIndent(components, "", "  ")
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := os.WriteFile(*componentsOut, append(payload, '\n'), 0o644); err != nil {
+			log.Fatal(err)
+		}
+	}
+	if *onMapOut != "" {
+		payload, err := json.MarshalIndent(onMap, "", "  ")
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := os.WriteFile(*onMapOut, append(payload, '\n'), 0o644); err != nil {
+			log.Fatal(err)
+		}
+	}
 	if *cellsOut != "" {
 		payload, err := json.MarshalIndent(records, "", "  ")
 		if err != nil {
@@ -257,4 +313,34 @@ func settle(state *game.State) error {
 		return fmt.Errorf("停在%v", state.Mode)
 	}
 	return nil
+}
+
+// componentTerrains 回傳「**站得上去**的格子」出現過的地形碼——也就是任何一個
+// 連通分量裡的格子，不限於入口那一塊。
+//
+// ★ 判準是「至少有一條邊進得來或出得去」：孤立到四面都不通的格子玩家永遠站不上。
+//
+// ⚠ 這裡**只看幾何**（`CanMoveDungeon`），不跑 ECL。走過去又被劇情推回來那種
+// 不算在內——那是內容不是幾何，混進來會讓這個上限失去意義。
+func componentTerrains(data gamecorpus.Corpus, grid geo.Grid) map[uint8]bool {
+	out := map[uint8]bool{}
+	state, err := data.NewParty()
+	if err != nil {
+		return out
+	}
+	for y := 0; y < geo.Height; y++ {
+		for x := 0; x < geo.Width; x++ {
+			for _, direction := range []int{0, 2, 4, 6} {
+				deltaX, deltaY := dungeonDelta(direction)
+				state.SetDungeonGeometryView(x, y, uint8(direction))
+				state.DungeonWallRoof = grid.CellWrapped(x, y).Terrain
+				if !state.CanMoveDungeon(grid, deltaX, deltaY, direction) {
+					continue
+				}
+				out[grid.CellWrapped(x, y).Terrain] = true
+				out[grid.CellWrapped(x+deltaX, y+deltaY).Terrain] = true
+			}
+		}
+	}
+	return out
 }
