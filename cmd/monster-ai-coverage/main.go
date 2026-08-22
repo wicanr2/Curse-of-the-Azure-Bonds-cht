@@ -213,14 +213,19 @@ func main() {
 					blocker = "那一格 remake 還沒對應到 `Fighter` 的欄位"
 				} else {
 					action = fmt.Sprintf("設暫存全域 `%s`", table.ScratchName(modifier.Global))
-					blocker = "那些 timing 的呼叫點還沒對回原作（連常數都還沒命名）"
+					blocker = "那些 timing **找不到任何呼叫端**（`checkfx-callsites.md`）"
 				}
 			}
 			fmt.Fprintf(&report, "| `%02Xh` | %s | %s | %s |\n",
 				kind, strings.Join(timings, "／"), action, blocker)
 		}
-		fmt.Fprintf(&report, "\n⇒ 四個都**卡在反組譯，不是卡在接線**。"+
-			"先把 timing 的呼叫點與那一格記錄欄位解出來，才輪得到實作。\n\n")
+		fmt.Fprintf(&report, "\n⇒ 四個都**卡在反組譯，不是卡在接線**。\n\n")
+		fmt.Fprintf(&report, "⚠ 其中三個（`4Fh`／`50h`／`7Bh`）落在時機 `02h`／`03h` 上，"+
+			"而 `cmd/checkfx-callsites` 掃過 30 處呼叫點之後，**這兩個時機一處呼叫端都沒有**。"+
+			"如果它們真的不會被問到，那這三個就**不是缺口**——原作也不會跑到。\n\n")
+		fmt.Fprintf(&report, "⚠⚠ 但**現在還不能這樣結論**：那一支只看得到兩種呼叫形狀，"+
+			"常駐執行檔那一側因為重定位掃不到。**先把常駐側排除掉，再決定這三個是缺口還是死碼**——"+
+			"直接當成缺口去實作，等於為一段原作永遠不會執行的路寫程式。\n\n")
 	}
 
 	if missing+inert+unread+uncatalogued > 0 {
