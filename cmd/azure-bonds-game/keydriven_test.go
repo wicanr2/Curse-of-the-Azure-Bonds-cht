@@ -146,6 +146,8 @@ type keyDrivenSession struct {
 	frames int
 	// cells 是實際站上過的地城格（含 ECL 段），跨段不會互相蓋掉。
 	cells map[[3]int]bool
+	// tried 是「從這個方向踏進這一格」試過沒有——見 `chooseHeading` 的說明。
+	tried map[[4]int]bool
 	// modes 是走到過的畫面模式。
 	modes map[game.Mode]bool
 	// messages 是演出來的每一句話（去重）。
@@ -164,7 +166,7 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 	application, keys := keyDrivenApp(t)
 	return &keyDrivenSession{
 		app: application, keys: keys,
-		cells: map[[3]int]bool{}, modes: map[game.Mode]bool{},
+		cells: map[[3]int]bool{}, tried: map[[4]int]bool{}, modes: map[game.Mode]bool{},
 		messages: map[string]bool{}, fallbacks: map[string]bool{},
 		blocks: map[uint8]bool{}, menus: map[string]bool{},
 	}
@@ -232,6 +234,10 @@ func (s *keyDrivenSession) observe() {
 func (s *keyDrivenSession) step(t *testing.T) {
 	t.Helper()
 	if s.app.state.Mode != game.ModeDungeon || s.app.geoGrid == nil {
+		// ⚠ 選單**一律按第一項**。試過依幀數輪流選：走過的格子從 28 掉到 27、
+		// 記到的話從 23 掉到 16——因為輪到「離開」那一項就真的離開了，
+		// 整條路被自己切斷。冷走那邊多策略有效，是因為它**每一種策略各跑一趟**
+		// 再取聯集；這裡是**一條連續的 session**，換選項不是多一條路，是換一條路。
 		tap(t, s.app, s.keys, ebiten.KeyEnter)
 		return
 	}
@@ -322,6 +328,10 @@ func (s *keyDrivenSession) handleDoorMenu(t *testing.T) {
 
 // chooseHeading 挑下一步要朝哪。先要沒去過的，沒有就退回任何走得通的。
 //
+// ⚠ **「去過沒有」要以（格子, 進入方向）為單位**：樓梯與傳送事件是「站對方向
+// 踏上去」才觸發的，只記格子的話，第一次從錯的方向踏上去就把那一格封死，
+// 另外三個方向永遠不會再試（spec 1193）。
+//
 // ⚠ 起點依幀數輪替：全部都去過時，固定從同一個方向找會讓隊伍在兩格之間
 // 來回震盪。輪替是**決定性的**，重跑結果一樣。
 // 第二個回傳值是「這個方向通往**沒去過**的格子」。
@@ -339,7 +349,9 @@ func (s *keyDrivenSession) chooseHeading() (int, bool, bool) {
 			fallback, hasFallback = heading, true
 		}
 		x, y, _ := s.app.state.DungeonGeometryView()
-		if !s.cells[[3]int{int(s.app.geoBlock), x + deltaX, y + deltaY}] {
+		target := [4]int{int(s.app.geoBlock), x + deltaX, y + deltaY, heading}
+		if !s.tried[target] {
+			s.tried[target] = true
 			return heading, true, true
 		}
 	}
@@ -413,6 +425,8 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		t.Fatal("按 D 之後還停在角色建立：完成那條路按不出來")
 	}
 
+	// ⚠ 600 幀就到頂了：跑到 3000 幀走過的格子還是 28。加幀數不會再多，
+	// 所以不要為了「看起來跑得久」而拖慢整個測試套件。
 	for session.frames = 0; session.frames < 600; session.frames++ {
 		session.observe()
 		session.step(t)
