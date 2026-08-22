@@ -2,10 +2,10 @@
  "schema": "coab-cell-reachability/1",
  "indices": 259,
  "walked_by_campaign": 191,
- "reached_on_foot": 194,
- "union": 204,
+ "reached_on_foot": 205,
+ "union": 210,
  "walkable_ceiling": 258,
- "gated_off": 54,
+ "gated_off": 48,
  "no_passable_edge": 1,
  "not_on_map": 0
 }
