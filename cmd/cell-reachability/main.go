@@ -279,13 +279,33 @@ func main() {
 		"`TestRealNewGameRunsToTheEnding` 是照劇情走的主線，"+
 		"而 `TestTilvertonRouteIsWalkableAndLocalized` 是**廣度優先的走訪**——"+
 		"後者用的方法和下面那個「冷走」一樣，所以它一加進來，這一欄就會往冷走那一欄收斂，"+
-		"而**聯集幾乎不動**（101→152 但聯集只從 177 到 178）。"+
+		"而**它一加進來這一欄就往冷走收斂，聯集卻幾乎不動**。"+
 		"⇒ 那條路線的價值不在數字，在於它是**帶著語系不變量的測試**："+
 		"第一次跑就抓到兩句玩家看得到的英文。\n")
+	// ⚠ 這兩個例子要**算出來**，不能寫死：走法一改動它們就變了，而寫死的數字
+	// 不會有任何東西提醒你它已經不對。
+	campaignWins, footWins := rows[0], rows[0]
+	for _, row := range rows {
+		if row.reached-row.onFoot > campaignWins.reached-campaignWins.onFoot {
+			campaignWins = row
+		}
+		if row.onFoot-row.reached > footWins.onFoot-footWins.reached {
+			footWins = row
+		}
+	}
 	fmt.Fprintf(&report, "\n⚠ **兩把尺互不涵蓋，所以要看聯集。** 主線有劇情旗標，"+
-		"開得了冷走打不開的門（`ECL4/0x22` 主線 6、冷走 1）；冷走沒有劇情擋路，"+
-		"走得到主線繞過的地方（`ECL6/0x40` 主線 2、冷走 22）。"+
-		"只報其中一個都會低估。\n")
+		"開得了冷走打不開的門（差最多的是 `%s`：主線 %d、冷走 %d）；冷走沒有劇情擋路，"+
+		"走得到主線繞過的地方（差最多的是 `%s`：主線 %d、冷走 %d）。"+
+		"只報其中一個都會低估。\n",
+		campaignWins.id, campaignWins.reached, campaignWins.onFoot,
+		footWins.id, footWins.reached, footWins.onFoot)
+	report.WriteString("\n★ **冷走要跑好幾種策略再取聯集。** 單一策略的結果看起來都很合理，" +
+		"但每一種都會被某一類岔路擋住：選單挑第一項會被**收費關卡**擋在外面" +
+		"（下水道的奧提尤格要食物），挑最後一項會在「要離開嗎」那種提示上直接走人；" +
+		"而**踏上去被事件搬走時不從落點繼續**，等於把「走上樓」記成「走到樓梯口」，" +
+		"靠樓梯才進得去的樓層永遠不會被走到（spec 1161）。" +
+		"目前跑 8 種（選第 1／2／3／最後項 × 跟不跟傳送）——" +
+		"再加第 4 項一個索引都沒多，所以就停在這裡。\n")
 	fmt.Fprintf(&report, "\n| 段 | ECL block | 分派索引 | 實跑踏到 | 走得到 | 聯集 |\n")
 	fmt.Fprintf(&report, "|---|---:|---:|---:|---:|---:|\n")
 	for _, row := range rows {

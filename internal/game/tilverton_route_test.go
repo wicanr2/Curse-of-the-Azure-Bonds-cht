@@ -224,6 +224,16 @@ func walkTilvertonSegment(t *testing.T, blocks map[uint8][]byte, catalog geo.Cat
 				continue
 			}
 			queue = append(queue, next)
+			// ★ 事件可能把隊伍搬走（樓梯、傳送）。只把**打算走到**的那一格排進
+			// 佇列的話，落點就被丟掉了——而樓梯正是進到別的連通分量的唯一辦法
+			// （巫師塔每一層在 GEO 上是獨立房間，spec 1161）。丟掉落點等於把
+			// 「走上樓」記成「走到樓梯口」，那些樓層永遠不會被走到。
+			landed := point{state.DungeonX, state.DungeonY}
+			if landed != next && !seen[landed] {
+				seen[landed] = true
+				visited++
+				queue = append(queue, landed)
+			}
 		}
 	}
 	return visited
