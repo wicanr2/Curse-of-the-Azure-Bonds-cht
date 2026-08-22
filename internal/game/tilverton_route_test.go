@@ -215,8 +215,18 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 	}
 
 	type point struct{ x, y int }
+	// ⚠ **踏進一格的方向會改變結果**：樓梯事件是「站對方向踏上去」才觸發的
+	// （`ECL5/0x33:090Ch` 用地形碼查表拿方向，朝向不對就直接 `EXIT`，畫面上什麼
+	// 都不會發生，spec 1161）。只用格子當鍵，第一次從錯的方向踏上去就把那一格
+	// 封死，另外三個方向永遠不會再試——**靠樓梯才進得去的樓層因此永遠走不到**。
+	// ⇒ 邊界記 **(格子, 進入方向)**；「這一格去過沒有」另外記。
+	type entry struct {
+		at        point
+		direction int
+	}
 	start := point{state.DungeonX, state.DungeonY}
 	seen := map[point]bool{start: true}
+	tried := map[entry]bool{}
 	queue := []point{start}
 	visited := 1
 	for len(queue) > 0 && visited < 260 {
@@ -225,9 +235,13 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 		for _, direction := range []int{0, 2, 4, 6} {
 			deltaX, deltaY := normalDungeonDelta(direction)
 			next := point{current.x + deltaX, current.y + deltaY}
-			if next.x < 0 || next.x >= geo.Width || next.y < 0 || next.y >= geo.Height || seen[next] {
+			if next.x < 0 || next.x >= geo.Width || next.y < 0 || next.y >= geo.Height {
 				continue
 			}
+			if tried[entry{next, direction}] {
+				continue
+			}
+			tried[entry{next, direction}] = true
 			state.SetDungeonGeometryView(current.x, current.y, uint8(direction))
 			state.DungeonWallRoof = grid.CellWrapped(current.x, current.y).Terrain
 			if !state.CanMoveDungeon(grid, deltaX, deltaY, direction) {
@@ -236,8 +250,10 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 			if err := state.MoveDungeon(grid, deltaX, deltaY, direction); err != nil {
 				continue
 			}
-			seen[next] = true
-			visited++
+			if !seen[next] {
+				seen[next] = true
+				visited++
+			}
 			if !settle() {
 				// 推不回地城就不從這一格繼續往外走；已經到過的算數。
 				continue
