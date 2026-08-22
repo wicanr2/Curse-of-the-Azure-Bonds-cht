@@ -95,5 +95,8 @@ var wiredTimings = []struct {
 	{timing: CheckFXMeleeAttacker, scratch: scratchDamage},
 	{timing: CheckFXMeleeTarget, scratch: scratchDamage},
 	{timing: checkFXDamage, scratch: scratchSavingThrow},
+	// 傷害時機也會**改記錄**：效果 `54h` 在傷害屬性帶電時把目前 HP 加 8。
+	// 三個呼叫端（單體、範圍、屠戮生物）都已經把 `Records` 套上去了。
+	{timing: checkFXDamage, records: true},
 	{timing: CheckFXCanAct, records: true},
 }
