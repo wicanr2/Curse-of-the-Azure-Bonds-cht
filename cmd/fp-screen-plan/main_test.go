@@ -71,13 +71,14 @@ func TestSignatureWrapsLikeTheOriginal(t *testing.T) {
 	}
 }
 
-// 四面都是牆的格子玩家進不去，收進分母只會虛胖。
-func TestWalkableNeedsAtLeastOneOpenSide(t *testing.T) {
-	sealed := wallGrid(map[[2]int][4]uint8{{3, 3}: {1, 1, 1, 1}})
-	if walkable(sealed, 3, 3) {
-		t.Fatal("四面都是牆不該算站得住")
+// ⚠ 四面都是牆**不代表**玩家不會站在那裡：開新遊戲的起點 `GEO2/0x01 (7,13)`
+// 正是密室（劇情要求先找出口），而它是每個玩家看到的第一張畫面。所以這一支
+// 只認「是不是密室」，**不拿它過濾分母**。
+func TestSealedRecognisesFullyWalledCells(t *testing.T) {
+	if !sealed(wallGrid(map[[2]int][4]uint8{{3, 3}: {1, 1, 1, 1}}), 3, 3) {
+		t.Fatal("四面都是牆就是密室")
 	}
-	if !walkable(wallGrid(map[[2]int][4]uint8{{3, 3}: {1, 1, 1, 0}}), 3, 3) {
-		t.Fatal("有一面開著就站得住")
+	if sealed(wallGrid(map[[2]int][4]uint8{{3, 3}: {1, 1, 1, 0}}), 3, 3) {
+		t.Fatal("有一面開著就不是密室")
 	}
 }

@@ -10,33 +10,73 @@ Presence and tile are two independent axes, so they get two denominators. Geomet
 
 An earlier version folded the wall-type value into the signature and got 15,693 "distinct" signatures out of 17,684 screens -- deduplication did almost nothing, because the type differs in nearly every cell. That number was honest and useless: mixing the two axes measures neither.
 
-Caveats: this is the denominator for the **renderer**, not for content, and not for reachability -- a cell counts as standable when at least one side has no wall, which is not the same as the party being able to walk there. Comparing every signature would still not prove the first-person view is correct: sky colour, wall-tile selection and palette follow the map declaration and need their own comparison (spec 1134's black ceiling was exactly that).
+Caveats: this is the denominator for the **renderer**, not for content, and not for reachability. Every cell is in the denominator, including the ones sealed on all four sides: the new-game start cell is exactly that (the story requires finding the exit) and it is the first screen every player sees. Which cells the party can actually reach needs a connectivity walk plus script placement, and this tool does not do that. Comparing every signature would still not prove the first-person view is correct: sky colour, wall-tile selection and palette follow the map declaration and need their own comparison (spec 1134's black ceiling was exactly that).
 
 | total | value |
 |---|---:|
 | first-person maps | 18 |
-| standable cells | 4421 |
-| cells x facings | 17684 |
+| cells | 4608 |
+| of which sealed on all four sides | 187 |
+| cells x facings | 18432 |
 | **distinct wall-presence signatures (geometry)** | **585** |
 | **distinct wall-type values (tiles)** | **15** |
 
-| map | GEO | block | cells | screens | signatures | new here | wall types |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| `tilverton.first-person` | 2 | `0x01` | 251 | 1004 | 108 | 108 | 13 |
-| `tilverton.sewers.first-person` | 2 | `0x03` | 255 | 1020 | 97 | 54 | 6 |
-| `tilverton.fire-knife-hideout.first-person` | 2 | `0x04` | 256 | 1024 | 64 | 5 | 6 |
-| `original.geo3.block-10` | 3 | `0x10` | 252 | 1008 | 144 | 53 | 11 |
-| `original.geo3.block-11-level-1` | 3 | `0x11` | 234 | 936 | 87 | 23 | 12 |
-| `original.geo3.block-11-level-2` | 3 | `0x11` | 234 | 936 | 87 | 0 | 12 |
-| `original.geo3.block-15` | 3 | `0x15` | 249 | 996 | 155 | 47 | 14 |
-| `zhentil-keep.inner-city` | 4 | `0x20` | 254 | 1016 | 84 | 9 | 15 |
-| `zhentil-keep.dark-shrine` | 4 | `0x21` | 253 | 1012 | 108 | 16 | 8 |
-| `zhentil-keep.beholder-cave` | 4 | `0x25` | 239 | 956 | 118 | 42 | 12 |
-| `original.geo5.block-31` | 5 | `0x32` | 256 | 1024 | 133 | 30 | 5 |
-| `original.geo5.block-32` | 5 | `0x32` | 256 | 1024 | 133 | 0 | 5 |
-| `original.geo5.block-33` | 5 | `0x33` | 249 | 996 | 199 | 104 | 10 |
-| `original.geo5.block-35` | 5 | `0x35` | 248 | 992 | 136 | 20 | 9 |
-| `myth-drannor.burial-glen` | 6 | `0x40` | 219 | 876 | 172 | 45 | 14 |
-| `myth-drannor.outer-ruins` | 6 | `0x42` | 252 | 1008 | 174 | 27 | 7 |
-| `myth-drannor.inner-ruins` | 6 | `0x43` | 254 | 1016 | 88 | 1 | 9 |
-| `original.geo6.block-45` | 6 | `0x45` | 210 | 840 | 107 | 1 | 14 |
+| map | GEO | block | cells | sealed | screens | signatures | new here | wall types |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `tilverton.first-person` | 2 | `0x01` | 256 | 5 | 1024 | 108 | 108 | 13 |
+| `tilverton.sewers.first-person` | 2 | `0x03` | 256 | 1 | 1024 | 97 | 54 | 6 |
+| `tilverton.fire-knife-hideout.first-person` | 2 | `0x04` | 256 | 0 | 1024 | 64 | 5 | 6 |
+| `original.geo3.block-10` | 3 | `0x10` | 256 | 4 | 1024 | 144 | 53 | 11 |
+| `original.geo3.block-11-level-1` | 3 | `0x11` | 256 | 22 | 1024 | 87 | 23 | 12 |
+| `original.geo3.block-11-level-2` | 3 | `0x11` | 256 | 22 | 1024 | 87 | 0 | 12 |
+| `original.geo3.block-15` | 3 | `0x15` | 256 | 7 | 1024 | 155 | 47 | 14 |
+| `zhentil-keep.inner-city` | 4 | `0x20` | 256 | 2 | 1024 | 84 | 9 | 15 |
+| `zhentil-keep.dark-shrine` | 4 | `0x21` | 256 | 3 | 1024 | 108 | 16 | 8 |
+| `zhentil-keep.beholder-cave` | 4 | `0x25` | 256 | 17 | 1024 | 118 | 42 | 12 |
+| `original.geo5.block-31` | 5 | `0x32` | 256 | 0 | 1024 | 133 | 30 | 5 |
+| `original.geo5.block-32` | 5 | `0x32` | 256 | 0 | 1024 | 133 | 0 | 5 |
+| `original.geo5.block-33` | 5 | `0x33` | 256 | 7 | 1024 | 199 | 104 | 10 |
+| `original.geo5.block-35` | 5 | `0x35` | 256 | 8 | 1024 | 136 | 20 | 9 |
+| `myth-drannor.burial-glen` | 6 | `0x40` | 256 | 37 | 1024 | 172 | 45 | 14 |
+| `myth-drannor.outer-ruins` | 6 | `0x42` | 256 | 4 | 1024 | 174 | 27 | 7 |
+| `myth-drannor.inner-ruins` | 6 | `0x43` | 256 | 2 | 1024 | 88 | 1 | 9 |
+| `original.geo6.block-45` | 6 | `0x45` | 256 | 46 | 1024 | 107 | 1 | 14 |
+
+## Coverage
+
+| item | value |
+|---|---:|
+| captured screens in `index.tsv` | 20 |
+| captures that map to no standable cell | 0 |
+| **distinct signatures covered** | **12 / 585** |
+
+### Next cells worth capturing
+
+Greedy order: each row is the cell that knocks out the most still-uncovered signatures. One capture session covers four facings, so the unit is a cell, not a screen.
+
+| # | map | GEO | block | cell | new signatures | still uncovered after |
+|---:|---|---:|---:|---|---:|---:|
+| 1 | `tilverton.first-person` | 2 | `0x01` | `(0,0)` | 4 | 569 |
+| 2 | `tilverton.first-person` | 2 | `0x01` | `(3,2)` | 4 | 565 |
+| 3 | `tilverton.first-person` | 2 | `0x01` | `(3,3)` | 4 | 561 |
+| 4 | `tilverton.first-person` | 2 | `0x01` | `(4,3)` | 4 | 557 |
+| 5 | `tilverton.first-person` | 2 | `0x01` | `(1,6)` | 4 | 553 |
+| 6 | `tilverton.sewers.first-person` | 2 | `0x03` | `(11,6)` | 4 | 549 |
+| 7 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(12,7)` | 4 | 545 |
+| 8 | `zhentil-keep.dark-shrine` | 4 | `0x21` | `(6,7)` | 4 | 541 |
+| 9 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,12)` | 4 | 537 |
+| 10 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,13)` | 4 | 533 |
+| 11 | `original.geo5.block-32` | 5 | `0x32` | `(0,14)` | 4 | 529 |
+| 12 | `original.geo5.block-32` | 5 | `0x32` | `(0,15)` | 4 | 525 |
+| 13 | `original.geo5.block-33` | 5 | `0x33` | `(15,1)` | 4 | 521 |
+| 14 | `original.geo5.block-33` | 5 | `0x33` | `(1,4)` | 4 | 517 |
+| 15 | `original.geo5.block-33` | 5 | `0x33` | `(2,4)` | 4 | 513 |
+| 16 | `original.geo5.block-33` | 5 | `0x33` | `(3,4)` | 4 | 509 |
+| 17 | `original.geo5.block-33` | 5 | `0x33` | `(10,5)` | 4 | 505 |
+| 18 | `original.geo5.block-33` | 5 | `0x33` | `(15,6)` | 4 | 501 |
+| 19 | `original.geo5.block-33` | 5 | `0x33` | `(14,7)` | 4 | 497 |
+| 20 | `original.geo5.block-33` | 5 | `0x33` | `(15,12)` | 4 | 493 |
+| 21 | `original.geo5.block-33` | 5 | `0x33` | `(13,13)` | 4 | 489 |
+| 22 | `original.geo5.block-33` | 5 | `0x33` | `(14,13)` | 4 | 485 |
+| 23 | `original.geo5.block-33` | 5 | `0x33` | `(15,13)` | 4 | 481 |
+| 24 | `original.geo5.block-33` | 5 | `0x33` | `(8,15)` | 4 | 477 |

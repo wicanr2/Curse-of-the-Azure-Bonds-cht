@@ -20,9 +20,15 @@
 // ⚠ 也不宣稱「比完所有簽章 ＝ 第一人稱完全正確」：天空色、牆磚選圖、調色盤
 // 都跟著地圖宣告走（spec 1134 的天花板就是這樣錯的），那些要各自比。
 //
+// ★★★ `-covered` 把已經擷取的原版畫面換算成簽章，於是分母有了**分子**：
+// `docs/reference/original-dos/first-person/index.tsv` 那 20 張蓋掉幾種、還剩幾種。
+// 它同時列出**接下來該拍哪幾格**——照「這一格能一次蓋掉幾個還沒蓋到的簽章」排序，
+// 那就是 oracle session 的工作清單。
+//
 // 用法：
 //
-//	./tools/go.sh run ./cmd/fp-screen-plan -output docs/audit/fp-screen-plan.md
+//	./tools/go.sh run ./cmd/fp-screen-plan -output docs/audit/fp-screen-plan.md \
+//	  -covered docs/reference/original-dos/first-person/index.tsv
 package main
 
 import (
@@ -32,7 +38,10 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
@@ -141,18 +150,83 @@ func wallTypes(grid geo.Grid) map[uint8]bool {
 	return out
 }
 
-// walkable 回答「這一格站得住嗎」。四面都是實牆的格子玩家進不去，畫面也就
-// 不會出現，收進分母只會虛胖。
+// sealed 回答「這一格四面都是實牆嗎」。
 //
-// ⚠ 判準是「至少有一個方向沒有牆」，不是「走得到」。真正的可達性要從入口做
-// 連通性走訪，而那還要考慮腳本傳送——這支刻意不做，也不假裝有做。
-func walkable(grid geo.Grid, x, y int) bool {
+// ⚠ **四面都是牆不代表玩家不會站在那裡。** 第一版拿它當過濾器把那種格子排除在
+// 分母外，而開新遊戲的起點 `GEO2/0x01 (7,13)` 正是這種格子——劇情要求先找出口，
+// 所以它是密室，但它是**每個玩家看到的第一張畫面**。`-covered` 因此有四張擷取
+// 對不到任何格子，工具照實回報，那個矛盾才浮出來。
+//
+// 現在分母收**全部 256 格**；這一支只用來回報「其中有幾格是密室」，讓讀的人
+// 知道分母的形狀，而不是拿來過濾。
+//
+// ⚠ 真正的「玩家站得到哪些格」要從入口做連通性走訪，還要考慮腳本傳送
+// （spec 1183：進場落點是腳本自己寫的）。這支刻意不做，也不假裝有做。
+func sealed(grid geo.Grid, x, y int) bool {
 	for _, direction := range []int{0, 2, 4, 6} {
 		if wall, ok := grid.WallWrapped(x, y, direction); ok && wall == 0 {
-			return true
+			return false
 		}
 	}
-	return false
+	return true
+}
+
+// coveredEntry 是一張已經擷取的原版畫面。
+type coveredEntry struct {
+	Set    uint8
+	Block  uint8
+	X, Y   int
+	Facing int
+}
+
+// referenceName 從檔名認出 GEO 檔號與區塊：`geo2-b01-x07-y13-N.png`。
+// ⚠ 索引檔本身沒有這兩欄，而**猜錯會讓簽章整批算在錯的地圖上**，看起來像
+// 「已經蓋掉很多」。認不出來就整列跳過並回報，不要預設成某一張圖。
+var referenceName = regexp.MustCompile(`^geo(\d+)-b([0-9a-fA-F]+)-`)
+
+var facingLetter = map[string]int{"N": 0, "E": 2, "S": 4, "W": 6}
+
+func readCovered(path string) ([]coveredEntry, error) {
+	payload, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]coveredEntry, 0, 32)
+	for _, line := range strings.Split(string(payload), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		parts := strings.Fields(line)
+		if len(parts) < 4 {
+			continue
+		}
+		match := referenceName.FindStringSubmatch(parts[0])
+		if match == nil {
+			fmt.Fprintf(os.Stderr, "skip %s: filename does not name a GEO set/block\n", parts[0])
+			continue
+		}
+		set, _ := strconv.ParseUint(match[1], 10, 8)
+		block, _ := strconv.ParseUint(match[2], 16, 8)
+		x, errX := strconv.Atoi(parts[1])
+		y, errY := strconv.Atoi(parts[2])
+		facing, ok := facingLetter[strings.ToUpper(parts[3])]
+		if errX != nil || errY != nil || !ok {
+			fmt.Fprintf(os.Stderr, "skip %s: cannot parse %q\n", parts[0], line)
+			continue
+		}
+		out = append(out, coveredEntry{Set: uint8(set), Block: uint8(block), X: x, Y: y, Facing: facing})
+	}
+	return out, nil
+}
+
+// placement 是「哪一張圖的哪一格朝哪個方向」。朝向留空時代表整格（四個朝向）。
+type placement struct {
+	mapID  string
+	set    uint8
+	block  uint8
+	x, y   int
+	facing int
 }
 
 type mapPlan struct {
@@ -166,11 +240,15 @@ type mapPlan struct {
 	NewHere int
 	// WallTypes 是這張地圖用到的相異牆型值（貼圖那一軸）。
 	WallTypes int
+	// Sealed 是四面都是實牆的格子數。**不是**用來過濾的，只是讓分母的形狀
+	// 看得見——開新遊戲的起點就是這種格子。
+	Sealed int
 }
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
 	output := flag.String("output", "", "Markdown output path (empty prints to stdout)")
+	covered := flag.String("covered", "", "index.tsv of already-captured original screens; adds the numerator")
 	flag.Parse()
 
 	pack, err := gamepack.Default()
@@ -199,6 +277,10 @@ func main() {
 
 	seen := map[string]bool{}
 	allWallTypes := map[uint8]bool{}
+	// signatureAt 記「哪一張圖的哪一格朝哪個方向是這個簽章」，`-covered` 要靠它
+	// 把擷取換算成簽章，也要靠它排出「接下來拍哪一格最划算」。
+	signatureAt := map[string][]placement{}
+	byPlacement := map[placement]string{}
 	plans := make([]mapPlan, 0, 24)
 	definitions := append([]goldenbox.MapDefinition(nil), pack.Maps...)
 	sort.SliceStable(definitions, func(i, j int) bool {
@@ -226,13 +308,17 @@ func main() {
 		local := map[string]bool{}
 		for y := 0; y < 16; y++ {
 			for x := 0; x < 16; x++ {
-				if !walkable(grid, x, y) {
-					continue
-				}
 				plan.Cells++
+				if sealed(grid, x, y) {
+					plan.Sealed++
+				}
 				for _, facing := range []int{0, 2, 4, 6} {
 					plan.Screens++
 					key := signature(grid, x, y, facing)
+					spot := placement{mapID: definition.ID, set: definition.AreaID,
+						block: definition.GeometryBlock, x: x, y: y, facing: facing}
+					signatureAt[key] = append(signatureAt[key], spot)
+					byPlacement[spot] = key
 					if !local[key] {
 						local[key] = true
 						plan.Signatures++
@@ -247,10 +333,11 @@ func main() {
 		plans = append(plans, plan)
 	}
 
-	totalCells, totalScreens := 0, 0
+	totalCells, totalScreens, totalSealed := 0, 0, 0
 	for _, plan := range plans {
 		totalCells += plan.Cells
 		totalScreens += plan.Screens
+		totalSealed += plan.Sealed
 	}
 
 	var report strings.Builder
@@ -272,21 +359,120 @@ func main() {
 		"type differs in nearly every cell. That number was honest and useless: mixing the two axes "+
 		"measures neither.\n\n")
 	fmt.Fprintf(&report, "Caveats: this is the denominator for the **renderer**, not for content, and not "+
-		"for reachability -- a cell counts as standable when at least one side has no wall, which is not "+
-		"the same as the party being able to walk there. Comparing every signature would still not prove "+
+		"for reachability. Every cell is in the denominator, including the ones sealed on all four sides: "+
+		"the new-game start cell is exactly that (the story requires finding the exit) and it is the first "+
+		"screen every player sees. Which cells the party can actually reach needs a connectivity walk plus "+
+		"script placement, and this tool does not do that. Comparing every signature would still not prove "+
 		"the first-person view is correct: sky colour, wall-tile selection and palette follow the map "+
 		"declaration and need their own comparison (spec 1134's black ceiling was exactly that).\n\n")
 	fmt.Fprintf(&report, "| total | value |\n|---|---:|\n")
 	fmt.Fprintf(&report, "| first-person maps | %d |\n", len(plans))
-	fmt.Fprintf(&report, "| standable cells | %d |\n", totalCells)
+	fmt.Fprintf(&report, "| cells | %d |\n", totalCells)
+	fmt.Fprintf(&report, "| of which sealed on all four sides | %d |\n", totalSealed)
 	fmt.Fprintf(&report, "| cells x facings | %d |\n", totalScreens)
 	fmt.Fprintf(&report, "| **distinct wall-presence signatures (geometry)** | **%d** |\n", len(seen))
 	fmt.Fprintf(&report, "| **distinct wall-type values (tiles)** | **%d** |\n\n", len(allWallTypes))
-	fmt.Fprintf(&report, "| map | GEO | block | cells | screens | signatures | new here | wall types |\n|---|---:|---:|---:|---:|---:|---:|---:|\n")
+	fmt.Fprintf(&report, "| map | GEO | block | cells | sealed | screens | signatures | new here | wall types |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|\n")
 	for _, plan := range plans {
-		fmt.Fprintf(&report, "| `%s` | %d | `0x%02X` | %d | %d | %d | %d | %d |\n",
-			plan.ID, plan.Set, plan.Block, plan.Cells, plan.Screens, plan.Signatures,
-			plan.NewHere, plan.WallTypes)
+		fmt.Fprintf(&report, "| `%s` | %d | `0x%02X` | %d | %d | %d | %d | %d | %d |\n",
+			plan.ID, plan.Set, plan.Block, plan.Cells, plan.Sealed, plan.Screens,
+			plan.Signatures, plan.NewHere, plan.WallTypes)
+	}
+
+	if *covered != "" {
+		entries, coverErr := readCovered(*covered)
+		if coverErr != nil {
+			log.Fatal(coverErr)
+		}
+		hit := map[string]bool{}
+		unresolved := 0
+		for _, entry := range entries {
+			spot := placement{}
+			found := false
+			// 索引只給 GEO 檔號與區塊，而同一個區塊可能被多張地圖宣告
+			// （`geo3/0x11` 就是兩層共用），簽章相同所以取第一個對得上的。
+			for candidate, key := range byPlacement {
+				if candidate.set == entry.Set && candidate.block == entry.Block &&
+					candidate.x == entry.X && candidate.y == entry.Y &&
+					candidate.facing == entry.Facing {
+					spot, found = candidate, true
+					hit[key] = true
+					break
+				}
+			}
+			if !found {
+				unresolved++
+				fmt.Fprintf(os.Stderr, "unresolved capture: GEO%d block %#02x (%d,%d) facing %d\n",
+					entry.Set, entry.Block, entry.X, entry.Y, entry.Facing)
+			}
+			_ = spot
+		}
+		fmt.Fprintf(&report, "\n## Coverage\n\n")
+		fmt.Fprintf(&report, "| item | value |\n|---|---:|\n")
+		fmt.Fprintf(&report, "| captured screens in `%s` | %d |\n", filepath.Base(*covered), len(entries))
+		fmt.Fprintf(&report, "| captures that map to no standable cell | %d |\n", unresolved)
+		fmt.Fprintf(&report, "| **distinct signatures covered** | **%d / %d** |\n\n", len(hit), len(seen))
+		if unresolved > 0 {
+			fmt.Fprintf(&report, "A capture resolves to nothing when its cell is sealed on all four sides, "+
+				"which means either the index or the GEO block is wrong. It is reported rather than "+
+				"silently dropped.\n\n")
+		}
+
+		// 接下來拍哪一格：貪婪法，每次挑「一次能蓋掉最多還沒蓋到的簽章」的格子。
+		// 一格拍四個朝向，所以單位是格不是畫面。
+		type candidate struct {
+			spot placement
+			gain int
+			keys []string
+		}
+		remaining := map[string]bool{}
+		for key := range seen {
+			if !hit[key] {
+				remaining[key] = true
+			}
+		}
+		cells := map[placement][]string{}
+		for spot, key := range byPlacement {
+			cell := placement{mapID: spot.mapID, set: spot.set, block: spot.block, x: spot.x, y: spot.y}
+			cells[cell] = append(cells[cell], key)
+		}
+		picks := make([]candidate, 0, 24)
+		for len(remaining) > 0 && len(picks) < 24 {
+			best := candidate{}
+			for cell, keys := range cells {
+				gain, fresh := 0, make([]string, 0, 4)
+				for _, key := range keys {
+					if remaining[key] {
+						gain++
+						fresh = append(fresh, key)
+					}
+				}
+				if gain > best.gain ||
+					(gain == best.gain && gain > 0 && lessPlacement(cell, best.spot)) {
+					best = candidate{spot: cell, gain: gain, keys: fresh}
+				}
+			}
+			if best.gain == 0 {
+				break
+			}
+			for _, key := range best.keys {
+				delete(remaining, key)
+			}
+			picks = append(picks, best)
+		}
+		fmt.Fprintf(&report, "### Next cells worth capturing\n\n")
+		fmt.Fprintf(&report, "Greedy order: each row is the cell that knocks out the most still-uncovered "+
+			"signatures. One capture session covers four facings, so the unit is a cell, not a screen.\n\n")
+		fmt.Fprintf(&report, "| # | map | GEO | block | cell | new signatures | still uncovered after |\n")
+		fmt.Fprintf(&report, "|---:|---|---:|---:|---|---:|---:|\n")
+		left := len(seen) - len(hit)
+		for index, pick := range picks {
+			left -= pick.gain
+			fmt.Fprintf(&report, "| %d | `%s` | %d | `0x%02X` | `(%d,%d)` | %d | %d |\n",
+				index+1, pick.spot.mapID, pick.spot.set, pick.spot.block,
+				pick.spot.x, pick.spot.y, pick.gain, left)
+		}
+		fmt.Fprintf(os.Stderr, "covered=%d/%d unresolved=%d\n", len(hit), len(seen), unresolved)
 	}
 
 	text := report.String()
@@ -295,8 +481,23 @@ func main() {
 	} else if err := os.WriteFile(*output, []byte(text), 0o644); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Fprintf(os.Stderr, "maps=%d cells=%d screens=%d signatures=%d wall-types=%d\n",
-		len(plans), totalCells, totalScreens, len(seen), len(allWallTypes))
+	fmt.Fprintf(os.Stderr, "maps=%d cells=%d sealed=%d screens=%d signatures=%d wall-types=%d\n",
+		len(plans), totalCells, totalSealed, totalScreens, len(seen), len(allWallTypes))
+}
+
+// lessPlacement 讓貪婪法在同分時有穩定的順序——否則同一份輸入每次跑出來的
+// 「接下來拍哪格」都不一樣，那張表就沒辦法當工作清單引用。
+func lessPlacement(a, b placement) bool {
+	if a.set != b.set {
+		return a.set < b.set
+	}
+	if a.block != b.block {
+		return a.block < b.block
+	}
+	if a.y != b.y {
+		return a.y < b.y
+	}
+	return a.x < b.x
 }
 
 func memberPayload(archive *zip.Reader, name string) []byte {
