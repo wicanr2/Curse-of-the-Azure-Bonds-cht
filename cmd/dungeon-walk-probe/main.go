@@ -62,6 +62,9 @@ type segmentWalk struct {
 	reached  map[int]bool
 	cells    int
 	blocked  int
+	// teleports 是「踏上去之後被事件搬到別處」的次數——樓梯與傳送就是這樣進到
+	// 別的連通分量的。
+	teleports int
 }
 
 func main() {
@@ -111,8 +114,33 @@ func main() {
 		}
 		walk := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
 		terrains := map[uint8]bool{}
-		if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &walk, terrains); err != nil {
-			walk.note = err.Error()
+		// 兩種走法都跑，聯集才是這一段真正走得到的（見 `walkSegment` 的說明）。
+		// ★ 走訪策略要**跑好幾種再取聯集**。單一策略的結果看起來都很合理，
+		// 但每一種都會被某一類岔路擋住：選第一項會被收費關卡擋在外面，
+		// 選最後一項會在「要離開嗎」那種提示上直接走人。
+		for _, policy := range []struct {
+			follow bool
+			pick   int
+		}{
+			{false, 0}, {true, 0}, {false, 1}, {true, 1},
+			{false, 2}, {true, 2}, {false, -1}, {true, -1},
+		} { // ⚠ 試過再加第 4 項：一個索引都沒多，跑一趟卻多花兩分半 ⇒ 收斂了。
+			pass := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
+			if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &pass, terrains,
+				policy.follow, policy.pick); err != nil {
+				if walk.note == "" {
+					walk.note = err.Error()
+				}
+				continue
+			}
+			for index := range pass.reached {
+				walk.reached[index] = true
+			}
+			if pass.cells > walk.cells {
+				walk.cells = pass.cells
+			}
+			walk.blocked += pass.blocked
+			walk.teleports += pass.teleports
 		}
 		for terrain := range terrains {
 			records = append(records, cellRecord{Block: seg.Block, Terrain: terrain})
@@ -221,8 +249,18 @@ func main() {
 //
 // ⚠ 每走一步都要把事件推完再繼續，否則下一次 `MoveDungeon` 會在事件模式上失敗
 // ——那會被記成「走不到」，而其實只是沒把畫面推回地城。
+// walkSegment 走一遍。`followTeleports` 決定踏上去被事件搬走時要不要**從落點繼續**。
+//
+// ★ 兩種走法**互不涵蓋**，所以兩種都要跑再取聯集：
+//
+//	不跟傳送  走訪順序穩定，once-only 事件按幾何順序觸發
+//	跟傳送    樓梯進得去別的連通分量（`ECL6/0x43` 的格子 191 → 235），
+//	          但順序一變，某些 once-only 事件就在別的地方觸發了 ⇒ 反而少踩到兩個索引
+//
+// ⚠ 只跑其中一種都會低估，而且**兩邊看起來都很合理**——這正是「下界看起來和
+// 全集一樣合理」那個坑（spec 1186）。
 func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mask, steps int,
-	walk *segmentWalk, terrains map[uint8]bool) error {
+	walk *segmentWalk, terrains map[uint8]bool, followTeleports bool, pick int) error {
 	state, err := data.NewParty()
 	if err != nil {
 		return err
@@ -234,7 +272,7 @@ func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mas
 	if err := gamecorpus.BoostParty(&state); err != nil {
 		return err
 	}
-	if err := settle(&state); err != nil {
+	if err := settleWith(&state, pick); err != nil {
 		return fmt.Errorf("入口推不動：%v", err)
 	}
 	start := point{state.DungeonX, state.DungeonY}
@@ -273,7 +311,7 @@ func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mas
 				walk.blocked++
 				continue
 			}
-			if err := settle(&state); err != nil {
+			if err := settleWith(&state, pick); err != nil {
 				// 推不回地城就別再從這一格往外走，但已經到過的算數。
 				seen[next] = true
 				walk.cells++
@@ -283,13 +321,33 @@ func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mas
 			walk.cells++
 			record(&state)
 			queue = append(queue, next)
+			// ★ 事件可能把隊伍搬走（樓梯、傳送）。原本只把**打算走到**的那一格
+			// 排進佇列，落點就被丟掉了——而**樓梯正是進到別的連通分量的唯一辦法**
+			// （巫師塔每一層在 GEO 上是獨立房間，spec 1161）。丟掉落點等於把
+			// 「走上樓」記成「走到樓梯口」，那些樓層永遠不會被走到。
+			if !followTeleports {
+				continue
+			}
+			landedX, landedY, _ := state.DungeonGeometryView()
+			landed := point{landedX, landedY}
+			if landed != next && !seen[landed] {
+				seen[landed] = true
+				walk.cells++
+				walk.teleports++
+				queue = append(queue, landed)
+			}
 		}
 	}
 	return nil
 }
 
 // settle 把事件／選單／戰鬥推完，直到回到地城模式。
-func settle(state *game.State) error {
+// settle 把事件／選單／戰鬥推完，直到回到地城模式。
+//
+// ⚠ `preferLast` 決定選單挑第一項還是最後一項。**這不是美觀問題**：地城裡有
+// 收費關卡（下水道的奧提尤格要食物）與「要進去嗎」的岔路，挑第一項會被擋在
+// 外面，而被擋住的那一側**看起來就像沒有路**。兩種都跑再取聯集。
+func settleWith(state *game.State, pick int) error {
 	for step := 0; step < 40 && state.Mode != game.ModeDungeon; step++ {
 		if state.CombatActive() {
 			for turn := 0; turn < 400 && state.CombatActive(); turn++ {
@@ -299,7 +357,16 @@ func settle(state *game.State) error {
 			}
 			continue
 		}
+		// `pick < 0` ＝ 最後一項；否則取第 `pick` 項（超出範圍就取最後一項）。
 		choice := 0
+		if count := len(state.Choices); count > 0 {
+			switch {
+			case pick < 0 || pick >= count:
+				choice = count - 1
+			default:
+				choice = pick
+			}
+		}
 		if state.Mode == game.ModePlace && len(state.Choices) > 0 {
 			choice = len(state.Choices) - 1
 		}
@@ -344,3 +411,6 @@ func componentTerrains(data gamecorpus.Corpus, grid geo.Grid) map[uint8]bool {
 	}
 	return out
 }
+
+// settle 是預設策略（選單挑第一項），保留給既有呼叫點。
+func settle(state *game.State) error { return settleWith(state, 0) }
