@@ -3404,6 +3404,62 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/geo-move-mask/main.go",
+      "function": "main",
+      "sha256": "09c8a5a38e78c64069d846446b587aaeaf2ba50ede22ff1b6f136d55f81cabfc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-move-mask/main.go",
+      "function": "main",
+      "sha256": "2c17ad5573265f27d243b185412dc86dd91c1f1726aee75b0f528e95faee3477",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-move-mask/main.go",
+      "function": "main",
+      "sha256": "39ee1d20af3248794cbde440fc898b6a324b3f4782a223c4147e785f5d64687f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-move-mask/main.go",
+      "function": "main",
+      "sha256": "604f9ddffb264ded7fec658b9ff157b78d04d331c4f80752917312bd7dacbc33",
+      "occurrences": 2,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-move-mask/main.go",
+      "function": "main",
+      "sha256": "65884ddead2ea16969a0368a57058aff1128a0050d8814858fc21ea2c9189f26",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-move-mask/main.go",
+      "function": "main",
+      "sha256": "79f855c8b433e9bf71b4236e4a173fdc48daa453fd017dfb8a76355503d8eb7f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-move-mask/main.go",
+      "function": "main",
+      "sha256": "cfd9421a6aadd0d9c4625ac6d9288cd0d7c259ef467ede0ebb5b3c68bb244818",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-move-mask/main.go",
+      "function": "main",
+      "sha256": "e3d3f40d66aa63006ee5ea1d80dae91a2b410daa91a30f4a7cc9a9020b77153f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/geo-probe/main.go",
       "function": "main",
       "sha256": "01f1a8d27227116b361f53f66e49acb19c198c66c131acff97d7bdd57e416422",
@@ -3491,6 +3547,13 @@
       "path": "cmd/geo-wall-grid/main.go",
       "function": "main",
       "sha256": "79f855c8b433e9bf71b4236e4a173fdc48daa453fd017dfb8a76355503d8eb7f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-wall-grid/main.go",
+      "function": "main",
+      "sha256": "92988a09a57767bedb3b0cfb8be2accd7a27e4cb4fff26bfb6983dae15414af6",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
