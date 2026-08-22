@@ -416,6 +416,10 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 	frame := event.FrameAt(elapsed)
 	if !s.combatVisualTravelSent && frame.Phase >= combat.VisualTravel {
 		switch {
+		case event.Kind == combat.VisualMelee:
+			// 原作的 `SWISHFX` 在呼叫 `DESCRIBEWEAPONATTACK` **之前**放，
+			// 而且不看中不中——揮擊聲是每一次揮擊都有的（spec 1186）。
+			s.requestSound(SoundSwish)
 		case event.Kind == combat.VisualMissile:
 			s.requestSound(SoundArrow)
 		case event.Kind == combat.VisualLineSpell:
@@ -432,17 +436,27 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 	if impact, ok := event.Impact(frame); ok {
 		if frame.Phase >= combat.VisualImpact && frame.ImpactIndex > s.combatVisualImpactSent {
 			switch event.Kind {
-			case combat.VisualMagicMissile, combat.VisualLineSpell, combat.VisualTwinkle:
+			case combat.VisualTwinkle:
+				// 原作的 `TWINKLE` 用同一個 `if` 選音效：中了放 `SPELLHITFX`、
+				// 沒中放 `MISSFX`（spec 1186）。這是 `MISSFX` 在整支執行檔裡
+				// **唯一**的呼叫點。
+				if impact.Hit {
+					s.requestSound(SoundSpellHit)
+				} else {
+					s.requestSound(SoundMiss)
+				}
+			case combat.VisualMagicMissile, combat.VisualLineSpell:
 				s.requestSound(SoundSpellHit)
 			case combat.VisualAreaSpell:
 				if event.Effect != "stinking_cloud" && event.Effect != "cloudkill" {
 					s.requestSound(SoundSpellHit)
 				}
 			default:
+				// ⚠ 沒中**不放音效**。原作的近戰揮空只有揮擊聲（travel 階段那一聲
+				// `SWISHFX`），`MISSFX` 是法術沒中的聲音，不是揮空的聲音——
+				// 這裡以前放 `SoundMiss`，等於在原作從不出聲的時機放了法術音效。
 				if impact.Hit {
 					s.requestSound(SoundHit)
-				} else {
-					s.requestSound(SoundMiss)
 				}
 			}
 			s.combatVisualImpactSent = frame.ImpactIndex
@@ -4297,17 +4311,38 @@ func hasMonsterMagicMissile(fighter combat.Fighter) bool {
 	return false
 }
 
+// requestAttackSounds 是**沒有走視覺時間軸**那條路的攻擊音效（前端沒接
+// `AdvanceCombatVisual` 時仍然要有聲音）。時機照 spec 1186：
+//
+//   - 近戰每一次揮擊都有 `SWISHFX`，投射武器進場一律 `ARROWFX`；
+//   - 命中補一聲 `HITFX`；
+//   - **揮空沒有音效**——`MISSFX` 是法術沒中的聲音（`TWINKLE`），
+//     不是近戰揮空的聲音；
+//   - 目標離場放 `DEADFX`（原作在 `SUBTRACTDUDE` 裡）。
 func (s *State) requestAttackSounds(results []combat.AttackResult) {
 	for _, result := range results {
+		if s.attackerUsesMissile(result.AttackerID) {
+			s.requestSound(SoundArrow)
+		} else {
+			s.requestSound(SoundSwish)
+		}
 		if result.Hit {
 			s.requestSound(SoundHit)
-		} else {
-			s.requestSound(SoundMiss)
 		}
 		if result.TargetHP <= 0 {
 			s.requestSound(SoundDead)
 		}
 	}
+}
+
+// attackerUsesMissile 回答「這一擊是投射武器嗎」。查不到攻擊者就當近戰——
+// 近戰是絕大多數，而且 `SWISHFX` 在原作裡本來就是最常響的攻擊音。
+func (s *State) attackerUsesMissile(attackerID string) bool {
+	if s.battle == nil || attackerID == "" {
+		return false
+	}
+	fighter, ok := s.battle.Fighter(attackerID)
+	return ok && fighter.MissileWeapon
 }
 
 func (s *State) queueAttackVisual(attacker, target combat.Fighter, results []combat.AttackResult) bool {

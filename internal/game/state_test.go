@@ -163,12 +163,23 @@ func TestSoundEventsAreOneShotAndRendererNeutral(t *testing.T) {
 	if got := state.ConsumeSoundEvents(); len(got) != 0 {
 		t.Fatalf("sound events were not consumed: %#v", got)
 	}
+	// 時機照 spec 1186：近戰**每一次**揮擊都有 `SWISHFX`，命中補一聲 `HITFX`，
+	// 目標離場放 `DEADFX`；**揮空沒有音效**——`MISSFX` 是法術沒中的聲音
+	// （原作只在 `TWINKLE` 裡呼叫它），不是近戰揮空的聲音。
 	state.requestAttackSounds([]combat.AttackResult{
 		{Hit: true, TargetHP: 0},
 		{Hit: false, TargetHP: 4},
 	})
-	if got, want := state.ConsumeSoundEvents(), []SoundEvent{SoundHit, SoundDead, SoundMiss}; !reflect.DeepEqual(got, want) {
+	want := []SoundEvent{SoundSwish, SoundHit, SoundDead, SoundSwish}
+	if got := state.ConsumeSoundEvents(); !reflect.DeepEqual(got, want) {
 		t.Fatalf("attack sound events=%#v want %#v", got, want)
+	}
+	// 負對照：揮空那一擊**不能**發 `SoundMiss`。上面的序列已經釘住了，
+	// 但這一條把「為什麼」寫清楚——這一格錯了會在原作從不出聲的時機放法術音效。
+	for _, event := range want {
+		if event == SoundMiss {
+			t.Fatal("近戰揮空不該發 SoundMiss")
+		}
 	}
 }
 

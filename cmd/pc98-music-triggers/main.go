@@ -20,6 +20,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -28,6 +29,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98sfx"
 )
 
 // musicNoCell 是 PC-98 的 `MUSICNO`（Borland 符號表直接讀出）。
@@ -38,19 +41,34 @@ const musicNoCell = 0x8BF3
 // 目標段 `0893h`——兩邊對得上。段內位移也直接取自符號表。
 const soundSegment = "0893"
 
-// soundEffectNames 是 `SOUNDFX` 的引數——**音效描述子變數**，不是編號。
+// soundEffectLabels 給每個 Borland 符號一個中文說明。**名字與位址都不在這裡**
+// ——那兩樣由 `pc98sfx.Selectors()` 推出來（描述子位址 ＝ 基底 ＋ 選擇子×2）。
 //
-// ★ 名字全部由 PC-98 的 Borland 除錯符號直接讀出（資料段 3113）。DOS 版沒有符號，
-// 所以這一層語意只有 PC-98 給得出來；這正是本專案拿 PC-98 當語意骨幹的理由。
-//
-// ⚠ 呼叫端多半是 `push word [位址]`（`FF 36 <addr>`），不是推立即數——
-// 只找立即數的話 36 處裡只解得出 5 處，會得到「大部分音效查不到」這個假結論。
-var soundEffectNames = map[int]string{
-	0x4838: "SOUNDHALT（停止）", 0x483A: "SOUNDOFF（關）", 0x483C: "SOUNDON（開）",
-	0x483E: "CASTFX（施法）", 0x4844: "DEADFX（死亡）", 0x4846: "WHISTLEFX（哨音）",
-	0x4848: "HITFX（命中）", 0x484A: "LIGHTNINGFX（閃電）", 0x484C: "SWISHFX（揮擊）",
-	0x484E: "PADFX（腳步）", 0x4850: "FIREBALLFX（火球）", 0x4852: "ARROWFX（箭）",
-	0x4854: "OVERTUREFX（序曲）", 0x4856: "COMBATFX（戰鬥）", 0x4858: "CRASHFX（撞擊）",
+// ⚠ 這裡以前是一張手打的「位址 → 名字」對照表，而它**漏了 4840h 與 4842h**
+// （MISSFX／SPELLHITFX）。漏掉不會報錯：報表把那兩處印成「符號表沒有」，
+// 讀起來像原作真的少了兩個名字，而下游的 `cmd/sound-trigger-compare` 連帶
+// 少了兩列——正好是 remake 用得最兇的 `SoundSpellHit` 與 `SoundMiss`。
+// 位址改成用推的之後，「漏一格」在結構上就不可能發生。
+var soundEffectLabels = map[string]string{
+	"SOUNDHALT": "停止", "SOUNDOFF": "關", "SOUNDON": "開",
+	"CASTFX": "施法", "MISSFX": "揮空", "SPELLHITFX": "法術命中",
+	"DEADFX": "死亡", "WHISTLEFX": "哨音", "HITFX": "命中",
+	"LIGHTNINGFX": "閃電", "SWISHFX": "揮擊", "PADFX": "腳步",
+	"FIREBALLFX": "火球", "ARROWFX": "箭", "OVERTUREFX": "序曲",
+	"COMBATFX": "戰鬥", "CRASHFX": "撞擊",
+}
+
+// soundEffectName 是報表裡那個「符號（說明）」字串。
+func soundEffectName(address int) (string, bool) {
+	info, ok := pc98sfx.SelectorForDescriptor(address)
+	if !ok {
+		return "", false
+	}
+	label, known := soundEffectLabels[info.Symbol]
+	if !known {
+		return info.Symbol, true
+	}
+	return fmt.Sprintf("%s（%s）", info.Symbol, label), true
 }
 
 var soundRoutines = map[int]string{
@@ -73,6 +91,7 @@ func main() {
 	corePath := flag.String("core", "gamepack/pack/00-core.json", "game pack 核心宣告")
 	localePath := flag.String("locale", "gamepack/pack/20-locale.zh-TW.json", "中文語系檔")
 	farCallMap := flag.String("far-call-map", "docs/audit/far-call-map-pc98.json", "PC-98 far call 對照表")
+	symbols := flag.String("symbols", "workplace/re-sweep/pc98/borland-symbols.json", "PC-98 Borland 除錯符號表")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
 	flag.Parse()
 
@@ -171,12 +190,25 @@ func main() {
 			fmt.Fprintf(&report, "| %s | `%04Xh` | %d | %s |\n", name, offset, count, strings.Join(modules, "、"))
 		}
 		fmt.Fprintf(&report, "\n合計 %d 處。\n\n", total)
-		if effects, resolved, unresolved := soundEffectUsage(*farCallMap, *root); resolved+unresolved > 0 {
+		sites := scanSoundFXSites(*root, *resident, *symbols)
+		if effects, resolved, unresolved := tallySites(sites); resolved+unresolved > 0 {
 			fmt.Fprintf(&report, "### `SOUNDFX` 每一處在放什麼音效\n\n")
 			fmt.Fprintf(&report, "引數是**音效描述子變數**（`push word [位址]`），不是編號；"+
 				"名字由 PC-98 的 Borland 除錯符號直接讀出。\n\n")
-			fmt.Fprintf(&report, "⚠ 只找立即數的話 36 處裡只解得出 5 處——會得到「大部分音效查不到」"+
+			fmt.Fprintf(&report, "⚠ 只找立即數的話只解得出 5 處——會得到「大部分音效查不到」"+
 				"這個假結論。真正的形狀是推變數。\n\n")
+			fmt.Fprintf(&report, "⚠ 這一節**直掃位元組**（`9A 00 00 93 08`），不走 far-call 對照表。"+
+				"表只收得到 IDA 認成程式碼的呼叫點，比實際少 12 處，而且其中一處會改結論："+
+				"`LIGHTNINGFX` 在表裡是 0 處，看起來像「remake 有、原版沒有」，"+
+				"實際上它在 `CASTSPELL` 裡。**假零的來源是掃描面，不是原作。**\n\n")
+			if mapped, subset := crossCheckFarCallMap(*farCallMap, sites); mapped > 0 {
+				verdict := "**表裡有而直掃沒有**——直掃漏了，要查"
+				if subset {
+					verdict = "表裡那些是直掃的真子集"
+				}
+				fmt.Fprintf(&report, "★ **交叉檢查**：far-call 對照表列 %d 處、直掃 %d 處；%s。\n\n",
+					mapped, len(sites), verdict)
+			}
 			fmt.Fprintf(&report, "| 音效 | 呼叫點 | 來源模組 |\n|---|---:|---|\n")
 			keys := make([]string, 0, len(effects))
 			for name := range effects {
@@ -194,6 +226,22 @@ func main() {
 				fmt.Fprintf(&report, "| %s | %d | %s |\n", name, count, strings.Join(modules, "、"))
 			}
 			fmt.Fprintf(&report, "\n解出 %d 處，還有 %d 處的引數靜態看不出來。\n\n", resolved, unresolved)
+
+			// 逐處攤開：**「幾處」回答不了「什麼時候響」**，而後者才是 remake
+			// 接得上接不上的依據。所在常式由 Borland 符號表推（同段裡位移不大於
+			// 呼叫點的最後一個符號）。
+			if len(sites) > 0 {
+				fmt.Fprintf(&report, "#### 逐處：哪一支常式在放\n\n")
+				fmt.Fprintf(&report, "所在常式取**同段裡位移不大於呼叫點的最後一個符號**。"+
+					"符號表只收得到公開程序，所以模組內部的靜態常式會掛在前一個公開名字底下"+
+					"——標成 `A＋n`，那個 `n` 就是它離公開入口多遠，不要當成「就是 A」。\n\n")
+				fmt.Fprintf(&report, "| 音效 | 模組 | 位移 | 所在常式 |\n|---|---|---:|---|\n")
+				for _, site := range sites {
+					fmt.Fprintf(&report, "| %s | `%s` | `%04Xh` | %s |\n",
+						site.effect, site.module, site.ea, site.routine)
+				}
+				fmt.Fprintf(&report, "\n")
+			}
 		}
 		fmt.Fprintf(&report, "★ **交叉印證**：`MSCPLAY` 的呼叫點正好落在上表那五個"+
 			"改寫 `MUSICNO` 的 overlay 上（`GEN`×2、`overlay-01`、`POSTCOM`、`overlay-18`）"+
@@ -332,13 +380,200 @@ func soundCallSites(path string) (map[int]map[string]int, int) {
 	return routines, total
 }
 
-// soundEffectUsage 解出每一處 `SOUNDFX` 呼叫在放哪一個音效。
-//
-// 兩種形狀都認：`push word [位址]`（`FF 36`，最常見）與 `mov al, imm` ＋ `push ax`。
-func soundEffectUsage(mapPath, root string) (map[string]map[string]int, int, int) {
-	raw, err := os.ReadFile(mapPath)
+
+// effectSite 是一處 `SOUNDFX` 呼叫點的完整身分。
+type effectSite struct {
+	effect  string
+	module  string
+	ea      int
+	routine string
+}
+
+
+// descriptorAt 往前掃出這一處推的是哪一個音效描述子。
+func descriptorAt(data []byte, ea int) string {
+	low := ea - 20
+	if low < 0 {
+		low = 0
+	}
+	for index := ea - 3; index >= low; index-- {
+		if data[index] == 0xFF && data[index+1] == 0x36 {
+			address := int(data[index+2]) | int(data[index+3])<<8
+			if known, found := soundEffectName(address); found {
+				return known
+			}
+			return fmt.Sprintf("（描述子 %04Xh 不在 SOUNDFX 的表裡）", address)
+		}
+		if data[index] == 0xB0 && data[index+2] == 0x50 {
+			return fmt.Sprintf("（立即數 %d）", data[index+1])
+		}
+	}
+	return ""
+}
+
+// symbolIndex 是 overlay → 該段的符號清單（依位移排序）。
+type symbolIndex struct {
+	byModule map[string][]struct {
+		offset int
+		name   string
+	}
+}
+
+func loadSymbolIndex(path string) symbolIndex {
+	index := symbolIndex{byModule: map[string][]struct {
+		offset int
+		name   string
+	}{}}
+	raw, err := os.ReadFile(path)
 	if err != nil {
-		return nil, 0, 0
+		return index
+	}
+	var table struct {
+		Segments []struct {
+			Segment int    `json:"segment"`
+			Module  string `json:"module"`
+		} `json:"overlay_segments"`
+		Symbols []struct {
+			Name    string `json:"name"`
+			Segment int    `json:"segment"`
+			Offset  int    `json:"offset"`
+		} `json:"symbols"`
+	}
+	if err := json.Unmarshal(raw, &table); err != nil {
+		return index
+	}
+	moduleOf := map[int]string{}
+	for _, segment := range table.Segments {
+		moduleOf[segment.Segment] = segment.Module
+	}
+	for _, symbol := range table.Symbols {
+		module, ok := moduleOf[symbol.Segment]
+		if !ok {
+			continue
+		}
+		index.byModule[module] = append(index.byModule[module], struct {
+			offset int
+			name   string
+		}{offset: symbol.Offset, name: symbol.Name})
+	}
+	for module := range index.byModule {
+		list := index.byModule[module]
+		sort.Slice(list, func(left, right int) bool { return list[left].offset < list[right].offset })
+		index.byModule[module] = list
+	}
+	return index
+}
+
+// routineAt 回傳位移所屬的公開程序；不是入口就標 `名字＋n`。
+func (index symbolIndex) routineAt(module string, ea int) string {
+	list := index.byModule[module]
+	best := -1
+	for position, symbol := range list {
+		if symbol.offset > ea {
+			break
+		}
+		best = position
+	}
+	if best < 0 {
+		return "（這一段前面沒有符號）"
+	}
+	delta := ea - list[best].offset
+	if delta == 0 {
+		return fmt.Sprintf("**%s**", list[best].name)
+	}
+	return fmt.Sprintf("**%s**＋%Xh", list[best].name, delta)
+}
+
+// soundFXCall 是 `call far 0893:0000`（`SOUNDFX`）的位元組樣式。
+var soundFXCall = []byte{0x9A, 0x00, 0x00, 0x93, 0x08}
+
+// scanSoundFXSites 直掃全部 overlay ＋ 常駐，找出每一處 `SOUNDFX` 呼叫點。
+//
+// ★ 為什麼不走 far-call 對照表。 表只收得到 IDA 認成程式碼的呼叫點：實測
+// overlay 側表列 36 處、直掃 42 處，常駐側表根本不涵蓋（另有 12 處）。
+// 而且那 12 處差異裡有一處會**改結論**——`LIGHTNINGFX` 在表裡是 0 處，
+// 於是對照報表寫成「remake 有、原版沒有」；實際上它在 `CASTSPELL` 裡。
+// 這正是「grep 反組譯只看得到 IDA 認成程式碼的部分」那種假零。
+//
+// ⚠ 位元組直掃的相對風險是**假陽性**（資料剛好長得像那五個位元組）。這裡靠
+// 兩件事壓住：呼叫點前面必須推得出一個已知的音效描述子，否則不收；而且
+// far-call 表那 36 處必須是直掃結果的子集（`crossCheckFarCallMap` 在報表裡
+// 印出裁決）。
+func scanSoundFXSites(root, resident, symbolPath string) []effectSite {
+	index := loadSymbolIndex(symbolPath)
+	sites := make([]effectSite, 0, 64)
+
+	collect := func(module string, data []byte) {
+		for at := 0; ; {
+			found := bytes.Index(data[at:], soundFXCall)
+			if found < 0 {
+				return
+			}
+			ea := at + found
+			if name := descriptorAt(data, ea); name != "" {
+				sites = append(sites, effectSite{
+					effect: name, module: module, ea: ea,
+					routine: index.routineAt(module, ea),
+				})
+			}
+			at = ea + 1
+		}
+	}
+
+	entries, _ := os.ReadDir(filepath.Join(root, "overlays"))
+	for _, entry := range entries {
+		name := entry.Name()
+		if !strings.HasPrefix(name, "overlay-") || !strings.HasSuffix(name, ".bin") {
+			continue
+		}
+		data, err := os.ReadFile(filepath.Join(root, "overlays", name))
+		if err != nil {
+			continue
+		}
+		collect(strings.TrimSuffix(name, ".bin"), data)
+	}
+	// 常駐：far-call 對照表不涵蓋，但它自己也叫 `SOUNDFX`（SOUNDHALT／
+	// SOUNDOFF／SOUNDON），不掃就會少 12 處。
+	if data, err := os.ReadFile(filepath.Join(root, resident)); err == nil {
+		collect("常駐", data)
+	}
+
+	sort.SliceStable(sites, func(left, right int) bool {
+		if sites[left].effect != sites[right].effect {
+			return sites[left].effect < sites[right].effect
+		}
+		if sites[left].module != sites[right].module {
+			return sites[left].module < sites[right].module
+		}
+		return sites[left].ea < sites[right].ea
+	})
+	return sites
+}
+
+// tallySites 把逐處清單收成「音效 → 模組 → 處數」。
+func tallySites(sites []effectSite) (map[string]map[string]int, int, int) {
+	effects := map[string]map[string]int{}
+	resolved, unresolved := 0, 0
+	for _, site := range sites {
+		if strings.HasPrefix(site.effect, "（") {
+			unresolved++
+			continue
+		}
+		if effects[site.effect] == nil {
+			effects[site.effect] = map[string]int{}
+		}
+		effects[site.effect][site.module]++
+		resolved++
+	}
+	return effects, resolved, unresolved
+}
+
+// crossCheckFarCallMap 回答「far-call 對照表列的那些，直掃有沒有全部找到」。
+// 回傳表列處數與「是不是真子集」。**不是子集就代表直掃漏了**，那要查。
+func crossCheckFarCallMap(path string, sites []effectSite) (int, bool) {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return 0, false
 	}
 	var table struct {
 		Targets []struct {
@@ -348,54 +583,26 @@ func soundEffectUsage(mapPath, root string) (map[string]map[string]int, int, int
 		} `json:"targets"`
 	}
 	if err := json.Unmarshal(raw, &table); err != nil {
-		return nil, 0, 0
+		return 0, false
 	}
-	effects := map[string]map[string]int{}
-	resolved, unresolved := 0, 0
-	cache := map[string][]byte{}
+	found := map[string]bool{}
+	for _, site := range sites {
+		found[fmt.Sprintf("%s:%04X", site.module, site.ea)] = true
+	}
+	mapped, subset := 0, true
 	for _, call := range table.Targets {
 		if call.Raw != soundSegment+":0000" {
 			continue
 		}
-		data, ok := cache[call.Module]
-		if !ok {
-			data, _ = os.ReadFile(filepath.Join(root, "overlays", call.Module+".bin"))
-			cache[call.Module] = data
-		}
+		mapped++
 		var ea int
-		if _, err := fmt.Sscanf(strings.TrimSuffix(call.EA, "h"), "%04X", &ea); err != nil || ea >= len(data) {
-			unresolved++
+		if _, err := fmt.Sscanf(strings.TrimSuffix(call.EA, "h"), "%04X", &ea); err != nil {
+			subset = false
 			continue
 		}
-		low := ea - 20
-		if low < 0 {
-			low = 0
+		if !found[fmt.Sprintf("%s:%04X", call.Module, ea)] {
+			subset = false
 		}
-		name := ""
-		for index := ea - 3; index >= low; index-- {
-			if data[index] == 0xFF && data[index+1] == 0x36 {
-				address := int(data[index+2]) | int(data[index+3])<<8
-				if known, found := soundEffectNames[address]; found {
-					name = known
-				} else {
-					name = fmt.Sprintf("（位址 %04Xh，符號表沒有）", address)
-				}
-				break
-			}
-			if data[index] == 0xB0 && data[index+2] == 0x50 {
-				name = fmt.Sprintf("（立即數 %d）", data[index+1])
-				break
-			}
-		}
-		if name == "" {
-			unresolved++
-			continue
-		}
-		if effects[name] == nil {
-			effects[name] = map[string]int{}
-		}
-		effects[name][call.Module]++
-		resolved++
 	}
-	return effects, resolved, unresolved
+	return mapped, subset
 }

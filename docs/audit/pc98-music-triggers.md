@@ -43,26 +43,93 @@
 
 引數是**音效描述子變數**（`push word [位址]`），不是編號；名字由 PC-98 的 Borland 除錯符號直接讀出。
 
-⚠ 只找立即數的話 36 處裡只解得出 5 處——會得到「大部分音效查不到」這個假結論。真正的形狀是推變數。
+⚠ 只找立即數的話只解得出 5 處——會得到「大部分音效查不到」這個假結論。真正的形狀是推變數。
+
+⚠ 這一節**直掃位元組**（`9A 00 00 93 08`），不走 far-call 對照表。表只收得到 IDA 認成程式碼的呼叫點，比實際少 12 處，而且其中一處會改結論：`LIGHTNINGFX` 在表裡是 0 處，看起來像「remake 有、原版沒有」，實際上它在 `CASTSPELL` 裡。**假零的來源是掃描面，不是原作。**
+
+★ **交叉檢查**：far-call 對照表列 36 處、直掃 54 處；表裡那些是直掃的真子集。
 
 | 音效 | 呼叫點 | 來源模組 |
 |---|---:|---|
 | ARROWFX（箭） | 2 | overlay-13×2 |
-| CASTFX（施法） | 1 | overlay-22×1 |
+| CASTFX（施法） | 2 | overlay-22×2 |
 | CRASHFX（撞擊） | 1 | overlay-02×1 |
 | DEADFX（死亡） | 3 | overlay-03×1、overlay-32×2 |
-| FIREBALLFX（火球） | 1 | overlay-02×1 |
-| HITFX（命中） | 1 | overlay-13×1 |
+| FIREBALLFX（火球） | 2 | overlay-02×1、overlay-22×1 |
+| HITFX（命中） | 2 | overlay-13×2 |
+| LIGHTNINGFX（閃電） | 1 | overlay-22×1 |
+| MISSFX（揮空） | 1 | overlay-24×1 |
 | OVERTUREFX（序曲） | 1 | overlay-01×1 |
 | PADFX（腳步） | 7 | overlay-02×3、overlay-13×1、overlay-14×3 |
-| SOUNDHALT（停止） | 11 | overlay-02×11 |
-| SOUNDON（開） | 1 | overlay-03×1 |
+| SOUNDHALT（停止） | 18 | overlay-02×13、常駐×5 |
+| SOUNDOFF（關） | 3 | 常駐×3 |
+| SOUNDON（開） | 5 | overlay-03×1、常駐×4 |
+| SPELLHITFX（法術命中） | 1 | overlay-24×1 |
 | SWISHFX（揮擊） | 3 | overlay-13×3 |
 | WHISTLEFX（哨音） | 2 | overlay-13×2 |
-| （位址 4840h，符號表沒有） | 1 | overlay-24×1 |
-| （位址 4842h，符號表沒有） | 1 | overlay-24×1 |
 
-解出 36 處，還有 0 處的引數靜態看不出來。
+解出 54 處，還有 0 處的引數靜態看不出來。
+
+#### 逐處：哪一支常式在放
+
+所在常式取**同段裡位移不大於呼叫點的最後一個符號**。符號表只收得到公開程序，所以模組內部的靜態常式會掛在前一個公開名字底下——標成 `A＋n`，那個 `n` 就是它離公開入口多遠，不要當成「就是 A」。
+
+| 音效 | 模組 | 位移 | 所在常式 |
+|---|---|---:|---|
+| ARROWFX（箭） | `overlay-13` | `2A7Ch` | **SHOWARROW**＋Ah |
+| ARROWFX（箭） | `overlay-13` | `2B4Ah` | **SHOWARROW**＋D8h |
+| CASTFX（施法） | `overlay-22` | `1701h` | **CASTSPELL**＋2C4h |
+| CASTFX（施法） | `overlay-22` | `1D72h` | **CASTSPELL**＋935h |
+| CRASHFX（撞擊） | `overlay-02` | `35A1h` | **LOADINTERPET**＋35A1h |
+| DEADFX（死亡） | `overlay-03` | `03C5h` | **DOPROTECT**＋294h |
+| DEADFX（死亡） | `overlay-32` | `1537h` | **SUBTRACTDUDE**＋11h |
+| DEADFX（死亡） | `overlay-32` | `15D4h` | **SUBTRACTDUDE**＋AEh |
+| FIREBALLFX（火球） | `overlay-02` | `31AFh` | **LOADINTERPET**＋31AFh |
+| FIREBALLFX（火球） | `overlay-22` | `16E7h` | **CASTSPELL**＋2AAh |
+| HITFX（命中） | `overlay-13` | `15C0h` | **ANYUNDEAD**＋10Ch |
+| HITFX（命中） | `overlay-13` | `1863h` | **ANYUNDEAD**＋3AFh |
+| LIGHTNINGFX（閃電） | `overlay-22` | `16F6h` | **CASTSPELL**＋2B9h |
+| MISSFX（揮空） | `overlay-24` | `2494h` | **TWINKLE**＋8Ah |
+| OVERTUREFX（序曲） | `overlay-01` | `0A5Fh` | **DOINTRO**＋129h |
+| PADFX（腳步） | `overlay-02` | `319Fh` | **LOADINTERPET**＋319Fh |
+| PADFX（腳步） | `overlay-02` | `31BAh` | **LOADINTERPET**＋31BAh |
+| PADFX（腳步） | `overlay-02` | `3CAFh` | **GOECL**＋28Eh |
+| PADFX（腳步） | `overlay-13` | `095Dh` | **REALMOVE**＋1CFh |
+| PADFX（腳步） | `overlay-14` | `080Eh` | **LOADMOVEMENT**＋80Eh |
+| PADFX（腳步） | `overlay-14` | `0ACFh` | **PREMOVEPARTY**＋1EBh |
+| PADFX（腳步） | `overlay-14` | `0B1Ah` | **PREMOVEPARTY**＋236h |
+| SOUNDHALT（停止） | `overlay-02` | `1863h` | **LOADINTERPET**＋1863h |
+| SOUNDHALT（停止） | `overlay-02` | `1895h` | **LOADINTERPET**＋1895h |
+| SOUNDHALT（停止） | `overlay-02` | `18B8h` | **LOADINTERPET**＋18B8h |
+| SOUNDHALT（停止） | `overlay-02` | `18F6h` | **LOADINTERPET**＋18F6h |
+| SOUNDHALT（停止） | `overlay-02` | `1928h` | **LOADINTERPET**＋1928h |
+| SOUNDHALT（停止） | `overlay-02` | `194Bh` | **LOADINTERPET**＋194Bh |
+| SOUNDHALT（停止） | `overlay-02` | `196Eh` | **LOADINTERPET**＋196Eh |
+| SOUNDHALT（停止） | `overlay-02` | `19A0h` | **LOADINTERPET**＋19A0h |
+| SOUNDHALT（停止） | `overlay-02` | `19C3h` | **LOADINTERPET**＋19C3h |
+| SOUNDHALT（停止） | `overlay-02` | `19E7h` | **LOADINTERPET**＋19E7h |
+| SOUNDHALT（停止） | `overlay-02` | `1A56h` | **LOADINTERPET**＋1A56h |
+| SOUNDHALT（停止） | `overlay-02` | `1A88h` | **LOADINTERPET**＋1A88h |
+| SOUNDHALT（停止） | `overlay-02` | `1ABAh` | **LOADINTERPET**＋1ABAh |
+| SOUNDHALT（停止） | `常駐` | `0AC1h` | （這一段前面沒有符號） |
+| SOUNDHALT（停止） | `常駐` | `0BA5h` | （這一段前面沒有符號） |
+| SOUNDHALT（停止） | `常駐` | `0C01h` | （這一段前面沒有符號） |
+| SOUNDHALT（停止） | `常駐` | `0C37h` | （這一段前面沒有符號） |
+| SOUNDHALT（停止） | `常駐` | `0C7Bh` | （這一段前面沒有符號） |
+| SOUNDOFF（關） | `常駐` | `0ADBh` | （這一段前面沒有符號） |
+| SOUNDOFF（關） | `常駐` | `842Ah` | （這一段前面沒有符號） |
+| SOUNDOFF（關） | `常駐` | `89FBh` | （這一段前面沒有符號） |
+| SOUNDON（開） | `overlay-03` | `03BCh` | **DOPROTECT**＋28Bh |
+| SOUNDON（開） | `常駐` | `846Ch` | （這一段前面沒有符號） |
+| SOUNDON（開） | `常駐` | `8567h` | （這一段前面沒有符號） |
+| SOUNDON（開） | `常駐` | `864Ah` | （這一段前面沒有符號） |
+| SOUNDON（開） | `常駐` | `8A21h` | （這一段前面沒有符號） |
+| SPELLHITFX（法術命中） | `overlay-24` | `2489h` | **TWINKLE**＋7Fh |
+| SWISHFX（揮擊） | `overlay-13` | `193Bh` | **ANYUNDEAD**＋487h |
+| SWISHFX（揮擊） | `overlay-13` | `2B81h` | **SHOWARROW**＋10Fh |
+| SWISHFX（揮擊） | `overlay-13` | `2C48h` | **SHOWARROW**＋1D6h |
+| WHISTLEFX（哨音） | `overlay-13` | `2BB4h` | **SHOWARROW**＋142h |
+| WHISTLEFX（哨音） | `overlay-13` | `2C01h` | **SHOWARROW**＋18Fh |
 
 ★ **交叉印證**：`MSCPLAY` 的呼叫點正好落在上表那五個改寫 `MUSICNO` 的 overlay 上（`GEN`×2、`overlay-01`、`POSTCOM`、`overlay-18`）——兩次獨立的掃描（資料格寫入 vs 函式呼叫）指到同一組地方。
 
