@@ -1511,7 +1511,14 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 				t.Fatalf("normal Yulash commander route did not cover %s: %v", messageID, observer.seen)
 			}
 		}
-		openNormalDungeonDoor(t, state, &yulashGrid)
+		// ★ 「指揮官帶你走側門」是**腳本自己搬的隊伍**：`ECL3/0x10:0C7Eh` 連寫
+		// `C04B=2`／`C04C=5`／`C04D=1`，**後面沒有 `CALL 2E10h`**。原作的
+		// `STOREVALUE` 一寫就搬，所以這一段結束時隊伍已經在辦公室外面
+		// `(2,5)` 朝東，不必再自己撞那扇鎖住的門（spec 1172）。
+		if state.DungeonX != 2 || state.DungeonY != 5 || state.DungeonDirection != 2 {
+			t.Fatalf("指揮官側門之後位置 ＝ (%d,%d,%d)，want (2,5,2)",
+				state.DungeonX, state.DungeonY, state.DungeonDirection)
+		}
 		walkNormalDungeonTo(t, state, &yulashGrid, 11, 0, observer)
 		if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x10 {
 			t.Fatalf("normal Yulash route before Pit exit mode=%v block=%#x pos=(%d,%d,%d) coverage=%v",

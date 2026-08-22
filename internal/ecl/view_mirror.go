@@ -29,22 +29,7 @@ type ViewMirror struct {
 	// game pack 宣告的 spawn——不比對 block 的話，舊 block 留下的座標會贏過
 	// 新地圖的進場錨點。要拿掉它得先讓進場放置也回寫暫存器。
 	Block uint8
-	// Written 記「自上次重畫以來，腳本寫過三格中的哪幾格」（bit 0 X、1 Y、2 朝向）。
-	//
-	// ⚠ **原作沒有這個。** 原作的重畫一律讀滿三格，而它靠「引擎每走一步都寫
-	// `720Fh`」保持三格與真實位置同步。remake 改變位置的路徑不只一條，不是每一條
-	// 都會回寫 ECL 暫存器，所以整組蓋回去會把沒被腳本碰過的那一格拉回舊值。
-	// 只投影腳本真的寫過的格子，在**三格同步**的情況下與原作等價，不同步時則
-	// 保守。要拿掉這一格，得先讓每一條位置變動都經過 `SetMemoryValue`。
-	Written uint8
 }
-
-// Written 的三個位元。
-const (
-	ViewWroteX uint8 = 1 << iota
-	ViewWroteY
-	ViewWroteFacing
-)
 
 // 五個髒旗標，各自的生產者見 spec 1150。
 const (
@@ -90,18 +75,15 @@ func (m *ViewMirror) Store(address, value uint16, block uint8) {
 		m.X = value
 		m.Known = true
 		m.Dirty |= ViewDirtyCoords
-		m.Written |= ViewWroteX
 	case viewCellY:
 		m.Y = value
 		m.Known = true
 		m.Dirty |= ViewDirtyCoords
-		m.Written |= ViewWroteY
 	case viewCellFacing:
 		// 原作把 `C04D` 折成 0／2／4／6 再寫 `7211h`。
 		m.Facing = (value & 3) * 2
 		m.Known = true
 		m.Dirty |= ViewDirtyCoords
-		m.Written |= ViewWroteFacing
 	case viewCellTerrain, viewCellWall:
 		m.Dirty |= ViewDirtyCell
 	case viewCellPartyA, viewCellPartyB:
@@ -127,17 +109,14 @@ func (m *ViewMirror) Adopt(address, value uint16) {
 		m.X = value
 		m.Known = true
 		m.Dirty &^= ViewDirtyCoords
-		m.Written = 0
 	case viewCellY:
 		m.Y = value
 		m.Known = true
 		m.Dirty &^= ViewDirtyCoords
-		m.Written = 0
 	case viewCellFacing:
 		m.Facing = (value & 3) * 2
 		m.Known = true
 		m.Dirty &^= ViewDirtyCoords
-		m.Written = 0
 	}
 }
 
@@ -174,5 +153,4 @@ func (m *ViewMirror) ClearDirty() {
 		return
 	}
 	m.Dirty = 0
-	m.Written = 0
 }

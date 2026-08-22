@@ -40,9 +40,6 @@ func TestViewMirrorSnapshotIsTakenAtTheCall(t *testing.T) {
 		if view.Dirty&ViewDirtyCoords == 0 {
 			t.Fatalf("第 %d 次快照沒有立 `8B68h`", index+1)
 		}
-		if view.Written != ViewWroteX|ViewWroteY|ViewWroteFacing {
-			t.Fatalf("第 %d 次快照的 Written ＝ %02x", index+1, view.Written)
-		}
 	}
 }
 
@@ -57,8 +54,8 @@ func TestViewMirrorFoldsFacingAndSeparatesFlags(t *testing.T) {
 	}
 	view = ViewMirror{}
 	view.Store(0xC059, 1, 1)
-	if view.Dirty != ViewDirtyCell || view.Written != 0 {
-		t.Fatalf("`C059` 應該只立 `8B67h`：dirty=%02x written=%02x", view.Dirty, view.Written)
+	if view.Dirty != ViewDirtyCell {
+		t.Fatalf("`C059` 應該只立 `8B67h`：dirty=%02x", view.Dirty)
 	}
 	view = ViewMirror{}
 	view.Store(0x4BFD, 1, 1)
@@ -92,5 +89,35 @@ func TestViewMirrorStepForwardWrapsLikeTheOriginal(t *testing.T) {
 	unknown.StepForward()
 	if unknown.Known || unknown.X != 0 || unknown.Y != 0 {
 		t.Fatal("沒有已知座標時 StepForward 不該動")
+	}
+}
+
+// ★ 「寫了座標卻沒有 `2E10h`」的執行必須留著髒旗標，收尾投影才接得到。
+//
+// 原作的 `STOREVALUE` 一寫 `C04B` 就當場改 `720Fh`，隊伍在那一刻就搬了；
+// remake 的投影掛在重畫上，所以這種執行要靠 `RunResult.FinalView` 補。實例是
+// `ECL3/0x10:0C7Eh`「指揮官帶你走側門」：連寫三格之後直接 `GOTO` 回主分派器，
+// 隔壁那條搶劫結局（`0D24h`）才有 `CALL 2E10h`（spec 1172）。
+func TestViewMirrorKeepsCoordsDirtyWithoutARedraw(t *testing.T) {
+	var view ViewMirror
+	view.Adopt(0xC04B, 1)
+	view.Adopt(0xC04C, 3)
+	view.Adopt(0xC04D, 3)
+	if view.Dirty != 0 {
+		t.Fatalf("引擎自己搬隊伍不該弄髒：dirty=%02x", view.Dirty)
+	}
+	view.Store(0xC04B, 2, 0x10)
+	view.Store(0xC04C, 5, 0x10)
+	view.Store(0xC04D, 1, 0x10)
+	if view.X != 2 || view.Y != 5 || view.Facing != 2 {
+		t.Fatalf("三格 ＝ (%d,%d,%d)，want (2,5,2)", view.X, view.Y, view.Facing)
+	}
+	if view.Dirty&ViewDirtyCoords == 0 {
+		t.Fatal("沒有重畫的座標寫入必須留著 `8B68h`")
+	}
+	// 重畫才清；清掉之後同一筆寫入不會再被投影一次。
+	view.ClearDirty()
+	if view.Dirty != 0 {
+		t.Fatalf("重畫之後 dirty ＝ %02x", view.Dirty)
 	}
 }
