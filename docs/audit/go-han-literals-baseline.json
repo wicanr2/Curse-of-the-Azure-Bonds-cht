@@ -504,6 +504,251 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "01075088acb3d1f51fd060baac45d6de3a17da4fdcc278a5d8e0aa6470613a2d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "064e004551fc729b6e242b1befece945388c88b15cdfd2ebfe40349ad489da25",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "13c83a8a875ec7e2062411851fe501ab53a525064bf5d4b7e53233fd2d729ac6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "1976f93da98116a325a2493d8162b4c84b38fca638486060b46564bbae899c3f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "2bbbb28f9713632f90f70c65e834172748c62f6b5fbaae2b6c360aff182f03f8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "3b487f729f8236c3f22d0e184235cd88d24028a73202a848c4bbc9f064c4db5e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "4245ef91565325e6ffea9dde8eea58808aca9cfd4cda2ef71e6b308c40342753",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "4a90648f0242a5cd41a750e5414ea8b5580f39809aa7a66e403b0af1c2a0d887",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "5ee8ef0567d6151b7b6fecfed6774434ff6191b9b4ef0966e525c1eeb794d2b3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "5fe50553d0d1e2aca35208757d1c9938ee8870c8b62359cb0378ae75406169cf",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "697958203959b6380250c09da3339aa64e4bb57a11d7a1c4a1917775d960676e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "6b4074276f58a60dfa7c446e7a0677653e428a422c6cc3d5c138295d7bcd38c5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "72871b2f729515bb959f7551fd406e0dbe0ba59e91f9799009e8ae07de354da1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "743e62f813d879fcae8862cb544bdf08f53f2f4c825b45ae9994d32d306c765e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "74f97624b4dd5226396ab5f12fa67f1065cd49a19329c6e316251981cb7759e2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "78e867228e14704ffd6bca231d2792a1392950f15daab1ba7fdd52c8a060c21d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "8ae705333376e4938882bcf03ec882d9a12ebcef420415cc7591354bbfab76a1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "8d0c6b4ee72566d56e1e61bdd01b03a4353736524bddb971b5cd4fd5da6ad309",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "902f6353b92c912fe0078bb36a45e9d3322513c3c02224e7d815c9a0fbcdf925",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "91b16ee690c458074db6e493661f3c37fa899d5aad72adcb557ca3f28d63b97b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "9474a9d9a47b025e6bc0bc246dc2947ce018ad13e195f8e67e586a83d0ac48ba",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "95a80cf8a99354894385d6e45648fdfa21c02d817d0636b8600b710cb238be06",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "98410c4dd11a2aac0eaec69e5d72d2bdf52e5f36ea65fd8357f3aee722aabb12",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "aa3f6e760237774aac09d531642c5f4e525e51e6bc742caf42dceec76a8a4c0c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "aaa6e7eb79a25f20c018ebd17c41175198be7991a557e2701ae1f6af8e4b7dc6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "adf453a1f1c2b4dabe2ce222303822156333239f6b5c5301adc3d5f0847112d5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "b91268717948decffd633af24f3ede72b2b2b899e04efd7b72ead09e9cbaaff5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "be6c71d35815aeee2131be4d3ece612e21c5e360ce50b8d63118ab224217ebaa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "c21a2e90c97c983ff56fd107e15225218d2e0a38ed1b09debfae29238196ee0a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "c707d2a9f63cd48f37b9dff9b64158253020980eb50232044224974d9eaf5095",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "cb5b3dd2c5ad399e2e0f0151ecc67e9882dcf46ceaba20af541a7233993f2e88",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "df597688ab8f37443595946ea6df95762cde184adb749415221e27ba9a4fa5fe",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "e4e3d23ed386657ee8b50ce75d9a26d0b70aa5599db4c4490c6fe46963e28e7f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "f8daf874df0ebf79437f99bbdb0a50fa5adeaef533f0520337b7506dfac675c4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/cell-sweep/main.go",
       "function": "enterDungeon",
       "sha256": "5e90960fec285924f32075d0822bf70fe38a1f07a5c11f4daa1d5baee43c6e67",
@@ -598,6 +843,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "main",
       "sha256": "354b28c85333456866931a77eacdf6cd18d80b79981ccf1f4ca927b84fd99302",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "main",
+      "sha256": "5a44f43df721f3a42ba578a9b7c7ce96cee31d8594aa70fbf603831ee2696ede",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1578,6 +1830,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "sweepBlock",
       "sha256": "dc050ed3e9c0144d47c0b446dfde686e3d56433d38bced44f69f5f372f32f988",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "writeIndexJSON",
+      "sha256": "5e63f0393483c74bf32a76bd7f020f79b28dbb7c9faf3d14129dccc9e4c26fc7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

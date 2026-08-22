@@ -2,6 +2,7 @@ package game
 
 import (
 	"archive/zip"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -78,7 +79,29 @@ func newNormalCampaignObserver(t *testing.T, state *State) *normalCampaignObserv
 	}
 }
 
+// campaignVisitedCells 累積整條主線**實際站上過**的（ECL block、地形碼）。
+//
+// ★ 存在的理由：`cmd/cell-sweep` 逐格試過 250 個分派索引，但它把隊伍**直接放**
+// 到那一格上、還把隊伍撐起來——所以它答的是「這一格演不演得出來」，
+// **不是「正常隊伍走不走得到」**。走訪那一列缺的可達性只有實跑資料答得了，
+// 而這條 session 就是實跑資料。
+//
+// ⚠ 這是**下界**：主線只走它要走的路，支線與可選房間本來就不會全部踏到。
+// 「沒被踏到」不等於「走不到」。
+var campaignVisitedCells = map[campaignCellKey]bool{}
+
+type campaignCellKey struct {
+	block   uint8
+	terrain uint8
+}
+
 func (o *normalCampaignObserver) observe() {
+	if o.state != nil && o.state.Mode == ModeDungeon && o.state.session != nil {
+		campaignVisitedCells[campaignCellKey{
+			block:   o.state.session.CurrentBlockID(),
+			terrain: o.state.DungeonWallRoof,
+		}] = true
+	}
 	if o.messages != nil && o.state != nil {
 		// 訊息與提示都要記：遭遇選單的敘述走的是 Prompt 那一行。
 		if strings.TrimSpace(o.state.Message) != "" {
@@ -2957,6 +2980,40 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		}
 		t.Logf("段內支線：%d 段掃得到，%d 格演得出來，落回原文 %d 格",
 			swept, playedCells, len(fallbacks))
+	})
+
+	// 走訪可達性：把整條主線實際踏過的格子導出來，供 `cmd/cell-reachability`
+	// 與逐格實測的分母對照。⚠ 預設不寫檔（一般跑測試不該在 repo 裡留東西）。
+	t.Run("走訪可達性導出", func(t *testing.T) {
+		if len(campaignVisitedCells) == 0 {
+			t.Fatal("整條主線一格都沒記到——記錄點沒被叫到")
+		}
+		t.Logf("主線實際站上過 %d 組（block, 地形碼）", len(campaignVisitedCells))
+		path := os.Getenv("COAB_CAMPAIGN_CELLS_PATH")
+		if path == "" {
+			return
+		}
+		type record struct {
+			Block   uint8 `json:"block"`
+			Terrain uint8 `json:"terrain"`
+		}
+		records := make([]record, 0, len(campaignVisitedCells))
+		for key := range campaignVisitedCells {
+			records = append(records, record{Block: key.block, Terrain: key.terrain})
+		}
+		sort.Slice(records, func(left, right int) bool {
+			if records[left].Block != records[right].Block {
+				return records[left].Block < records[right].Block
+			}
+			return records[left].Terrain < records[right].Terrain
+		})
+		payload, err := json.MarshalIndent(records, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, payload, 0o644); err != nil {
+			t.Fatal(err)
+		}
 	})
 
 	t.Run("段界快照往返", func(t *testing.T) {
