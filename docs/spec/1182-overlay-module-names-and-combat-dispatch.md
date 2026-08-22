@@ -107,8 +107,28 @@ COMBAT
 一個假零。取代它的 `TestServiceRequestFlagsHaveScriptProducers` 是**正對照**：
 掃出 0 就直接說「那是假零，先確認掃描而不是下結論」，數字與 4／9 對不上也紅。
 
-- ⚠ 仍是 `partial`：兩個「有怪要打」旗標 `8B69h`／`8B56h` 在 remake 沒有
-  producer——那兩格是引擎側的，remake 用「怪物鏈非空」代替，**行為等價**。
+## ★★ 第一支的第二個條件：`DS:8B56h` ＝ 決鬥旗標，而決鬥在這一款走不到
+
+`24h` 的第一支是 `8B69h <> 0` **或** `8B56h <> 0`。前者是 `1Ch CLEARMONSTERS`
+清的「有怪要打」旗標（spec 1145），remake 用**怪物鏈非空**代替。後者一直標著
+「不宣稱」——其實答案早就在自己的規格裡：
+
+- **`DS:8B56h` ＝ 是不是決鬥**（spec 917 判讀戰後結算的措辭時就解出來了：
+  `8B56h <> 0` 時印 `You have won the duel.` 與 `The duelist receives `，
+  否則印 `The party has won.` 與 `Each character receives `）。
+- 整個 DOS 執行檔裡**只有一處**把它設成 1：`overlay-07 entry#25` ＝ **`GODUEL`**
+  （spec 626；DOS 那一版複製出來的分身叫 `ROLF`，PC-98 叫 `ロルフ`）。
+  其餘三處都是寫 0（`overlay-11` INIT 兩處、`overlay-02` 一處）。
+- `GODUEL` 只有 `2Dh CALL` 的兩個選擇子到得了：`8000h` ⇒ `GODUEL(1)`、
+  `8001h` ⇒ `GODUEL(0)`（spec 1150）——而 **corpus 兩個都沒用到**。
+
+⇒ **`8B56h` 那一支在 CoAB 走不到**，所以 remake 用怪物鏈非空覆蓋了整個可達條件。
+`TestDuelCallSelectorsAreUnusedWhileTheOthersAreNot` 釘住這件事，而且**先做正對照**
+（那四個真的有在用的選擇子要掃到 125／19／13／11）才讓那兩個零算數。
+
+⇒ `24h` 轉 **`done`**：四支全部接上，各有實機路徑。
+
+⚠ 決鬥本身仍是 `2Dh CALL` 的未接目標之一，那屬於 `2Dh` 的帳。
 
 ## 回歸
 
