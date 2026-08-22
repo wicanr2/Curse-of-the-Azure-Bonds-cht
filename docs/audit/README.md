@@ -71,6 +71,17 @@ UI locale、工具訊息）比對。規則與九組已修正的不一致見
 `哈普`，而哈普正是 `Hap`），沒有任何字串比對能分辨，只能逐句對照原文。表的
 〈通用寫法〉一節把這類判準寫成規則。
 
+## 第一人稱該比哪些畫面
+
+[`fp-screen-plan.md`](fp-screen-plan.md) 由 `cmd/fp-screen-plan` 算出 UI fidelity
+的**分母**：18 張 `first_person` 地圖、17,684 張「格子 × 朝向」收斂成 **585 種**
+看得到的牆面配置，加上 **15 種**牆型值。結論與三版定義的演進見
+[`spec 1185`](../spec/1185-first-person-fidelity-denominator.md)。
+
+⚠ 這是**分母**，沒有分子——目前沒有「哪些簽章比過了」的台帳。
+⚠ 幾何與貼圖是兩個軸，分開算；比完幾何也不等於第一人稱正確（天空色、牆磚選圖
+與調色盤跟著地圖宣告走，各自要比）。
+
 ## 還剩多少：量得到的那部分
 
 [`remake-status.md`](remake-status.md) 由 `cmd/remake-status` 把本目錄底下**已經

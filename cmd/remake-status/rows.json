@@ -85,16 +85,33 @@
     3,
     4
    ]
+  },
+  "fp_screens": {
+   "category": "第一人稱 fidelity 的**分母**",
+   "format": "18 張地圖、%s 張畫面收斂成 **%s 種**看得到的牆面配置 ＋ %s 種牆型值",
+   "source": "`fp-screen-plan.md`（`cmd/fp-screen-plan`）",
+   "not_proof": "⚠ **這只是分母，沒有分子。** 目前沒有「哪些簽章比過了」的台帳；spec 1134 比過的 20 張也沒記成簽章。而且比完 585 種也不等於第一人稱正確——天空色、牆磚選圖與調色盤跟著地圖宣告走，各自要比（spec 1134 那個黑掉的天花板在 20 張裡張張都錯，逐格比對本身抓不出「兩邊照同一個錯宣告畫」）。",
+   "report": "fp-screen-plan.md",
+   "patterns": [
+    "\\|\\s*cells x facings\\s*\\|\\s*(\\d+)\\s*\\|",
+    "\\|\\s*\\*\\*distinct wall-presence signatures \\(geometry\\)\\*\\*\\s*\\|\\s*\\*\\*(\\d+)\\*\\*\\s*\\|",
+    "\\|\\s*\\*\\*distinct wall-type values \\(tiles\\)\\*\\*\\s*\\|\\s*\\*\\*(\\d+)\\*\\*\\s*\\|"
+   ],
+   "fields": [
+    0,
+    1,
+    2
+   ]
   }
  },
  "unmeasured": [
   {
    "category": "原機音訊（音樂／音效生命週期）",
-   "not_proof": "PC-98 音樂與音效的 producer 已有規格，但**播放生命週期與戰鬥 phase 同步沒有覆蓋率報表**。"
+   "not_proof": "PC-98 音樂與音效的 producer 已有規格與 `cmd/pc98-music-audit`／`cmd/pc98-sfx-audit` 驗本機橋接檔，但**播放生命週期與戰鬥 phase 同步**沒有覆蓋率報表——那是「什麼時候該響」的問題，不是「檔案對不對」。"
   },
   {
-   "category": "UI fidelity（逐張與原版比對）",
-   "not_proof": "本機沒有原版逐張畫面，所以「像不像」目前**不是一個數字**。要先建原版截圖 oracle。"
+   "category": "UI fidelity 的**分子**（比過幾張）",
+   "not_proof": "分母有了（見上一列：585 種幾何 ＋ 15 種牆型）。缺的是台帳：spec 1134 比過提爾佛頓 20 張（19 張相同、1 張差一格），但那 20 張沒有記成簽章，所以「比過幾種」目前是零記錄。下一步是那份台帳，不是再建工具。"
   },
   {
    "category": "開場到結局的同一 session",
