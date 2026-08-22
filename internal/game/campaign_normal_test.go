@@ -103,7 +103,24 @@ type campaignCellKey struct {
 //
 // ⚠ 每一段只存**第一次**進到地城的那一刻：存太多份會讓走訪時間乘上份數，
 // 而同一段的旗標在段內的差異對「走得到哪些格子」影響很小。
-var insideSegmentSnapshots = map[uint8]bool{}
+var insideSegmentSnapshots = map[uint8]int{}
+
+// insideSegmentSnapshotLimit 是每一段最多存幾份，`insideSegmentSpacing` 是兩份
+// 之間至少隔幾次觀測。
+//
+// ★ 為什麼不只存一份：從**同一個起點**走，走得到的就是那一塊連通分量。
+// `ECL4/0x22` 那種段，主線是靠劇情事件一路被帶進去的，只存第一份等於只拿到
+// 入口那一小塊（16 格）。沿路多存幾份，走訪才涵蓋得到後面那些塊。
+//
+// ⚠ 份數不能無上限：走訪時間是「份數 × 選單策略數」，而同一塊裡多存幾份
+// 走出來的東西幾乎一樣。
+const (
+	insideSegmentSnapshotLimit = 6
+	insideSegmentSpacing       = 6
+)
+
+// insideSegmentObservations 記著每一段被觀測過幾次，用來把快照隔開。
+var insideSegmentObservations = map[uint8]int{}
 
 // captureInsideSegment 在隊伍**第一次**站上某一段的地城時存一份快照。
 // 只有設了 `COAB_CAMPAIGN_SNAPSHOT_DIR` 才會寫檔。
@@ -113,13 +130,23 @@ func captureInsideSegment(state *State) {
 		return
 	}
 	block := state.session.CurrentBlockID()
-	if insideSegmentSnapshots[block] {
+	taken := insideSegmentSnapshots[block]
+	if taken >= insideSegmentSnapshotLimit {
 		return
 	}
-	insideSegmentSnapshots[block] = true
+	insideSegmentObservations[block]++
+	// 第一份一進段就存；之後每隔 `insideSegmentSpacing` 次觀測再存一份。
+	if taken > 0 && insideSegmentObservations[block] < taken*insideSegmentSpacing {
+		return
+	}
+	insideSegmentSnapshots[block] = taken + 1
+	name := fmt.Sprintf("inside-block-%02X.json", block)
+	if taken > 0 {
+		name = fmt.Sprintf("inside-block-%02X-%d.json", block, taken)
+	}
 	// ⚠ 存檔失敗**不讓戰役測試紅**：這是附帶產出，不是戰役的驗收條件。
 	// 失敗會在報表那一側以「這一段沒有段內快照」的形式看得出來。
-	_ = state.SavePartyFile(filepath.Join(dir, fmt.Sprintf("inside-block-%02X.json", block)))
+	_ = state.SavePartyFile(filepath.Join(dir, name))
 }
 
 func (o *normalCampaignObserver) observe() {

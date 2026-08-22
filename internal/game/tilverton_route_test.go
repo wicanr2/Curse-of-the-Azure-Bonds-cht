@@ -177,6 +177,9 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 			campaignVisitedCells[campaignCellKey{
 				block: state.session.CurrentBlockID(), terrain: state.DungeonWallRoof,
 			}] = true
+			// 這條路線走的段（提爾佛頓那三段等）主線不一定經過，段內快照也要在
+			// 這裡存，否則那些段在 `cmd/cell-sweep -snapshots` 那邊沒有備用入口。
+			captureInsideSegment(&state)
 		}
 	}
 	settle := func() bool {
