@@ -997,6 +997,13 @@
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
+      "sha256": "12b4b740c9cb41ff515deaa465e24a4bab8f4ba626acdb119f2e88c853c75f03",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
       "sha256": "13c83a8a875ec7e2062411851fe501ab53a525064bf5d4b7e53233fd2d729ac6",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -8785,6 +8792,48 @@
       "path": "cmd/re-ledger/main.go",
       "function": "writeMarkdown",
       "sha256": "ff1c78f63d397ee6354696389e8b8b5ca406956077dcfdac414ee3362f524f01",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-cells/main.go",
+      "function": "main",
+      "sha256": "2f3a88c275e1871c173c9427a8eaa65f88d9963423c4de7478487ab5da55b184",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-cells/main.go",
+      "function": "main",
+      "sha256": "33c48eb91ff02dbe367a3f799d3e5ae1c6a61dcb3dd36322e56048c485fa99ce",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-cells/main.go",
+      "function": "main",
+      "sha256": "9c3b4db6568f9a7b84d66e598492d8ef32ad53d69279024f7a2f0d5623c82639",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-cells/main.go",
+      "function": "main",
+      "sha256": "cae25a9066c36c03cb1410b67b6c46108383de438a5ec80ce0e69420ba5559c4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-cells/main.go",
+      "function": "main",
+      "sha256": "d6f74fdf6629f2d10121a28566e212d10d054a996b1acf53a9382c942852dec2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/route-cells/main.go",
+      "function": "main",
+      "sha256": "fa60d931eafec872266c6e5c2e283e54920dcea27e3b38c8ea89897811037238",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

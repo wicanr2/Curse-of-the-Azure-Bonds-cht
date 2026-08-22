@@ -68,6 +68,10 @@ func main() {
 	// **從主線快照出發、把那一段走遍**。
 	snapshotPath := flag.String("snapshot-cells", "workplace/campaign-frames/snapshot-cells.json",
 		"`cmd/campaign-snapshot-walk -cells-json` 輸出的格子（可省略）")
+	// ★ 主線**每一步移動**換算出來的格子（`cmd/route-cells`）。實跑那一欄本來
+	// 只採樣觀測迴圈，「走過去又馬上被劇情推走」的格子沒被記到——這一份補上。
+	routeCellsPath := flag.String("route-cells", "workplace/campaign-frames/route-cells.json",
+		"`cmd/route-cells` 輸出的格子（可省略）")
 	visitedPath := flag.String("visited", "workplace/campaign-frames/visited-cells.json",
 		"主線實跑導出的格子（見本檔頂端）")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
@@ -142,6 +146,15 @@ func main() {
 		return out
 	}
 	standable := loadCells(*walkablePath)
+	// 路線走出來的格子併進「實跑踏到」：來源都是主線，只是取樣密度不同。
+	for block, set := range loadCells(*routeCellsPath) {
+		if walked[block] == nil {
+			walked[block] = map[uint8]bool{}
+		}
+		for terrain := range set {
+			walked[block][terrain] = true
+		}
+	}
 	withFlags := loadCells(*snapshotPath)
 	onMap := loadCells(*onMapPath)
 	matches := func(table map[uint8]map[uint8]bool, block uint8, mask, index int) bool {
