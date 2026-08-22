@@ -39,6 +39,31 @@
 
 合計 52 處。
 
+### `SOUNDFX` 每一處在放什麼音效
+
+引數是**音效描述子變數**（`push word [位址]`），不是編號；名字由 PC-98 的 Borland 除錯符號直接讀出。
+
+⚠ 只找立即數的話 36 處裡只解得出 5 處——會得到「大部分音效查不到」這個假結論。真正的形狀是推變數。
+
+| 音效 | 呼叫點 | 來源模組 |
+|---|---:|---|
+| ARROWFX（箭） | 2 | overlay-13×2 |
+| CASTFX（施法） | 1 | overlay-22×1 |
+| CRASHFX（撞擊） | 1 | overlay-02×1 |
+| DEADFX（死亡） | 3 | overlay-03×1、overlay-32×2 |
+| FIREBALLFX（火球） | 1 | overlay-02×1 |
+| HITFX（命中） | 1 | overlay-13×1 |
+| OVERTUREFX（序曲） | 1 | overlay-01×1 |
+| PADFX（腳步） | 7 | overlay-02×3、overlay-13×1、overlay-14×3 |
+| SOUNDHALT（停止） | 11 | overlay-02×11 |
+| SOUNDON（開） | 1 | overlay-03×1 |
+| SWISHFX（揮擊） | 3 | overlay-13×3 |
+| WHISTLEFX（哨音） | 2 | overlay-13×2 |
+| （位址 4840h，符號表沒有） | 1 | overlay-24×1 |
+| （位址 4842h，符號表沒有） | 1 | overlay-24×1 |
+
+解出 36 處，還有 0 處的引數靜態看不出來。
+
 ★ **交叉印證**：`MSCPLAY` 的呼叫點正好落在上表那五個改寫 `MUSICNO` 的 overlay 上（`GEN`×2、`overlay-01`、`POSTCOM`、`overlay-18`）——兩次獨立的掃描（資料格寫入 vs 函式呼叫）指到同一組地方。
 
 ⚠ 這裡只數**跨 overlay 的 far call**。常駐自己呼叫 `SOUNDX` 的次數不在裡面（那是段內近呼叫，far-call 表看不到），所以是**下界**。
