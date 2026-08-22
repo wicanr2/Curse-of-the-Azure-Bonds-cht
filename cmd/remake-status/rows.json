@@ -26,6 +26,12 @@
       "source": "`ecl-text-coverage.json`（`cmd/ecl-text-coverage`）",
       "not_proof": "「有一條 `text_rule` 命中」不等於譯文正確，也不等於那一頁的事件副作用已還原。"
     },
+    "ecl_text_runs": {
+      "category": "原作玩家可見文字接線（以執行路徑計）",
+      "format": "走得到的 run %d 條：matched %d、**orphan %d**、截斷 %d",
+      "source": "`ecl-text-coverage.json`（`cmd/ecl-text-coverage`）",
+      "not_proof": "上一列是**逐頁**判的，一頁只要被某一條命中的 run 經過就算接上；玩家走的是**一條** run。兄弟句規則（`all_contains` 含了別段的片段）攔不到單獨印的情況，逐頁看不出來，這一列才看得出來。`orphan` 的 0 拿掉任一條規則就會變成非 0（spec 1190）。「截斷」是走訪器在 `IF` 分岔上切出來的半句，不是待辦。"
+    },
     "save_fields": {
       "category": "存檔相容（角色記錄）",
       "format": "%d bytes：decoded %d／documented %d／unknown %d；remake 實際消費 %d",

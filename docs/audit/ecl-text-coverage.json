@@ -27,7 +27,7 @@
    "block": "0x50",
    "offset": "0x01C4",
    "text": "YOU ARE AT THE STANDING STONES. A GREY ROBED MAN SITS AGAINST A STONE, HIS FACE COVERED IN SHADOW.",
-   "rule_id": "standing-stone.grey-man",
+   "rule_id": "standing-stone.arrival",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -51,7 +51,7 @@
    "block": "0x50",
    "offset": "0x030B",
    "text": "HE CONTINUES, ' SEEK GREEN TO THE NORTHWEST.'",
-   "rule_id": "standing-stone.seek-red",
+   "rule_id": "world.wilderness.voice-continues-seek-black",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -60,7 +60,7 @@
    "block": "0x50",
    "offset": "0x031E",
    "text": "THE ROBE COLLAPSES WHEN YOU ATTACK. FROM ABOVE COMES A VOICE, ' SEEK GREEN TO THE NORTHWEST.'",
-   "rule_id": "standing-stone.seek-red",
+   "rule_id": "world.wilderness.robe-collapses-seek-black",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -126,7 +126,7 @@
    "block": "0x50",
    "offset": "0x0963",
    "text": "THE PATRONS BECOME SURLY. THE BARTENDER SUGGESTS YOU LEAVE. A FARMER STANDS UP AND TELLS THEM OF YOUR DEFEAT OF THE ETTINS. THEY QUIET DOWN AND BECOME FRIENDLY.",
-   "rule_id": "ashabenford.tavern-turns-friendly",
+   "rule_id": "ashabenford.tavern-asked-to-leave",
    "status": "matched"
   },
   {
@@ -231,7 +231,7 @@
    "block": "0x50",
    "offset": "0x1375",
    "text": "SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES. SUDDENLY, THEY SWEEP DOWN, REVEALED AS FEARSOME BLACK DRAGONS.",
-   "rule_id": "hap.black-dragons",
+   "rule_id": "world.wilderness.black-shapes-in-sky",
    "status": "matched"
   },
   {
@@ -472,7 +472,7 @@
    "block": "0x51",
    "offset": "0x081B",
    "text": "SOME RED PLUMES COME OVER AND SPILL YOUR DRINKS. THEY ORDER YOU TO CLEAN UP THE MESS. DO YOU?",
-   "rule_id": "hillsfar.red-plumes-spill-drinks",
+   "rule_id": "hillsfar.red-plumes-spill-drinks-only",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -656,7 +656,7 @@
    "block": "0x51",
    "offset": "0x14DC",
    "text": "THE FORCES TURN OUT TO BE CLOSELY MATCHED. BOTH THE TROOPERS AND THE MONSTERS ARE ROUTED. TESHWAVE ITSELF ONLY SUFFERED MINOR DAMAGE. THE MONSTERS FLEE INTO THE WILDS.",
-   "rule_id": "teshwave.both-routed",
+   "rule_id": "yulash.battle-mutual-rout",
    "status": "matched"
   },
   {
@@ -1707,7 +1707,7 @@
    "block": "0x03",
    "offset": "0x034A",
    "text": "YOU ARE AT A CHECKPOINT. THE FIRE KNIVES DEMAND YOUR IMMEDIATE SURRENDER. DO YOU SURRENDER?",
-   "rule_id": "tilverton.sewers-checkpoint",
+   "rule_id": "fire-knife.checkpoint-arrival",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -1784,7 +1784,7 @@
    "block": "0x03",
    "offset": "0x085B",
    "text": "THEY COLLECT MONEY AND EQUIPMENT AND HEAD OFF TO ENJOY THE SPOILS. THEY LAUGH. 'THE MASTER IS AT THE SOUTH END OF THE SEWERS. TELL HIM WE SENT YOU ON.'",
-   "rule_id": "tilverton.sewers.piercing-alarm",
+   "rule_id": "tilverton.sewers.spoils-and-master-alone",
    "status": "matched"
   },
   {
@@ -1996,7 +1996,7 @@
    "block": "0x03",
    "offset": "0x15CB",
    "text": "THE THIEF RETRIEVES A SWATCH OF CLOTH FROM A SEALED TRAPDOOR. THE DOOR WAS TOO WELL JAMMED TO OPEN. THE SCENT OF A TAVERN WAFTS DOWN THROUGH THE DOOR. YOU RECOGNIZE THE CLOTH AS BEING THE SAME AS THE DRESS WORN BY THE WOMAN WHO DISAPPEARED FROM THE BAR.",
-   "rule_id": "tilverton.sewers.swatch-of-cloth",
+   "rule_id": "tilverton.sewers.thief-swatch-trapdoor",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -2169,7 +2169,7 @@
    "block": "0x04",
    "offset": "0x0235",
    "text": "YOU ARE AT A CHECKPOINT. THE FIRE KNIVES DEMAND YOUR IMMEDIATE SURRENDER. DO YOU SURRENDER?",
-   "rule_id": "tilverton.sewers-checkpoint",
+   "rule_id": "fire-knife.checkpoint-arrival",
    "status": "matched"
   },
   {
@@ -3282,7 +3282,7 @@
    "block": "0x11",
    "offset": "0x135A",
    "text": "A SLIGHT TANG OF LEMON IS IN THE AIR. ALIAS SAYS, 'DRAGONBAIT SMELLS FRESH AIR.  THERE MUST BE A WAY OUT AROUND HERE.'",
-   "rule_id": "pit.lemon-tang",
+   "rule_id": "pit.lemon-tang-alone",
    "status": "matched"
   },
   {
@@ -3491,7 +3491,7 @@
    "block": "0x12",
    "offset": "0x0B63",
    "text": "ALIAS SAYS, 'THIS IS IT, THE ENTRANCE TO THE ALTAR OF MOGION.' YOU SMELL VIOLETS.",
-   "rule_id": "pit.altar-entrance",
+   "rule_id": "pit.alias-altar-entrance",
    "status": "matched"
   },
   {
@@ -4494,7 +4494,7 @@
    "block": "0x21",
    "offset": "0x0080",
    "text": "YOU ARE DRAGGED THROUGH THE TEMPLE.",
-   "rule_id": "zhentil.dimswart_appears",
+   "rule_id": "zhentil.temple.dragged-to-cell",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -4503,7 +4503,7 @@
    "block": "0x21",
    "offset": "0x01A7",
    "text": "YOU WAKE UP IN A DARK, DREARY CELL.",
-   "rule_id": "zhentil.dimswart_appears",
+   "rule_id": "zhentil.temple.dragged-to-cell",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -6143,7 +6143,7 @@
    "block": "0x32",
    "offset": "0x0908",
    "text": "YOU HEAR A PATROL APPROACH FROM BEHIND YOU.",
-   "rule_id": "lava-tube.elves-see-mark",
+   "rule_id": "lava-tube.patrol-behind",
    "status": "matched"
   },
   {
@@ -6365,7 +6365,7 @@
    "block": "0x32",
    "offset": "0x1518",
    "text": "SILK STEPS OUT FROM THE SHADOWS.' CONGRATULATIONS ON YOUR SUCCESSES. I WILL PAY YOU WELL FOR THE DRAGON'S BLACK HEART AND BLACK EGGS , IF YOU ARE INTERESTED. ARE YOU?",
-   "rule_id": "lava-tube.silk-buys-heart",
+   "rule_id": "lava-tube.silk-buys-eggs",
    "status": "matched"
   },
   {
@@ -6823,7 +6823,7 @@
    "block": "0x33",
    "offset": "0x1A8C",
    "text": "AN EFREET LEADS A BAND OF DARK ELVES AGAINST YOU.",
-   "rule_id": "wizard-tower.sucked-into-sphere",
+   "rule_id": "wizard-tower.efreet-band",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -7015,7 +7015,7 @@
    "block": "0x35",
    "offset": "0x0D4B",
    "text": "THE GIRL ESCAPED, BUT THE DRAGONS RUSH AFTER HER.",
-   "rule_id": "dark-elf-caves.girl-asks-shadowdale",
+   "rule_id": "dark-elf-caves.girl-escaped-dragons-pursue",
    "status": "matched"
   },
   {
@@ -7422,7 +7422,7 @@
    "block": "0x40",
    "offset": "0x0E2C",
    "text": "FOLLOW ME. THANK YOU FOR YOUR MAGNANAMOUS GESTURE.",
-   "rule_id": "myth-drannor.red-plume.warning",
+   "rule_id": "myth-drannor.red-plume.follow-then-warning",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -7439,7 +7439,7 @@
    "block": "0x40",
    "offset": "0x0F5C",
    "text": "A WHISPERY VOICE CRIES OUT,'BEWARE, A TRAP.' THE RED PLUME SNARLS AND CUTS OFF THE VOICE WITH A GESTURE.",
-   "rule_id": "myth-drannor.red-plume.warning",
+   "rule_id": "myth-drannor.red-plume.trap-warning-alone",
    "status": "matched"
   },
   {
@@ -8592,6 +8592,578 @@
    "status": "matched"
   }
  ],
+ "orphan_runs": [
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x17E3"
+   ],
+   "text": "A YOUNG WOMAN WITH A PURPLE SASH RACES BY ON HORSEBACK. MOMENTS LATER A MAN WITH A HAMMER",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x153D"
+   ],
+   "text": "AMIDST THE FIELDS OF DAGGERDALE, YOU FIND HUGE FOOTPRINTS LEADING TOWARD A SMALL FARM. IN THE RAYS OF",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x14C7"
+   ],
+   "text": "AS YOU TRAVEL SOUTH, YOU ARE PASSED BY THE",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x030B"
+   ],
+   "text": "HE CONTINUES, '",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x11AE"
+   ],
+   "text": "HOWEVER, ALL IS NOT WELL. INDISTINCT SHAPES CIRCLE THE BUILDING. A BATTLE IS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x16DA"
+   ],
+   "text": "PARALLELING YOU THROUGH THE FOREST IS A GROUP WEARING THE LIVERY OF MYTH DRANNOR.",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x16DA"
+   ],
+   "text": "PARALLELING YOU THROUGH THE FOREST IS A GROUP WEARING THE LIVERY OF MYTH DRANNOR. WHEN YOU TRY TO CLOSE WITH THEM, THEY MELT INTO THE",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x12E8"
+   ],
+   "text": "THE MOUNTAINS RISE INTO AN IMPASSABLE WALL,",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x0963"
+   ],
+   "text": "THE PATRONS BECOME SURLY. THE",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x031E"
+   ],
+   "text": "THE ROBE COLLAPSES WHEN YOU ATTACK. FROM ABOVE COMES A VOICE, '",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x189B"
+   ],
+   "text": "YOU ARE AMBUSHED BY FIRE KNIVES DISGUISED AS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x0BAE"
+   ],
+   "text": "YOU ARE IN A",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x50",
+   "pages": [
+    "0x1161"
+   ],
+   "text": "YOU REACH SHADOW GAP. ATOP IT, YOU NOTE A RECENTLY",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0597"
+   ],
+   "text": "'BEGONE ZHENTRIM SCUM. YOU'LL NOT SOIL MY",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x169A"
+   ],
+   "text": "A PIRATE CRAFT APPROACHES UNTIL THE PARTY IS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x1A26"
+   ],
+   "text": "AFTER SEVERAL MILES, IT ENDS IN A HUGE PILE OF",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x17AC"
+   ],
+   "text": "ALONG THE COAST, YOU PASS AN ABANDONED ZHENTRIM",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0072"
+   ],
+   "text": "AS YOU DEPART, A HUGE FORCE OF ZHENTIL KEEP",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x00C5"
+   ],
+   "text": "AS YOU LEAVE, YOU SEE THAT CIVIL WAR IS ERUPTING.",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x00C5"
+   ],
+   "text": "AS YOU LEAVE, YOU SEE THAT CIVIL WAR IS ERUPTING. MANY FACTIONS ARE USING THE HAVOC YOU'VE CAUSED TO EVEN",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x156E"
+   ],
+   "text": "BEREFT OF EFFECTIVE LEADERSHIP, THE ARMY OF",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x125E"
+   ],
+   "text": "BUGBEARS AND WORGS COME TO THE RESCUE OF THE",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0E08"
+   ],
+   "text": "HALFWAY TO VOONLAR, YOU SPOT THE VANGUARD",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x19DD"
+   ],
+   "text": "NEAR YULASH, YOU DISCOVER A GREAT SLASH",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x13ED"
+   ],
+   "text": "ON THE LONG ROAD TO DAGGER FALLS, THE MONSTERS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x13ED"
+   ],
+   "text": "ON THE LONG ROAD TO DAGGER FALLS, THE MONSTERS BEGIN TO FIGHT AMONGST THEMSELVES. ONE NIGHT, THEIR",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU.",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x169A"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. A PIRATE CRAFT APPROACHES UNTIL THE PARTY IS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x17AC"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. ALONG THE COAST, YOU PASS AN ABANDONED ZHENTRIM",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x0072"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. AS YOU DEPART, A HUGE FORCE OF ZHENTIL KEEP",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x00C5"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. AS YOU LEAVE, YOU SEE THAT CIVIL WAR IS ERUPTING.",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x00C5"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. AS YOU LEAVE, YOU SEE THAT CIVIL WAR IS ERUPTING. MANY FACTIONS ARE USING THE HAVOC YOU'VE CAUSED TO EVEN",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x0E08"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. HALFWAY TO VOONLAR, YOU SPOT THE VANGUARD",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x19DD"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. NEAR YULASH, YOU DISCOVER A GREAT SLASH",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x032F"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. THE GUARDS INFORM YOU THAT THE CITY IS SEALED,",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x1024"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. TRAVELLING THROUGH THE WILDS, YOU COME UPON A",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x1B7A"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. YOU ARE AMBUSHED BY FIRE KNIVES DISGUISED AS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x180C"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP.",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F7C",
+    "0x180C"
+   ],
+   "text": "THE ARMY CONTINUES ON PAST YOU. YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP. THE OFFICER STEPS FORWARD. 'YOU ARE LISTED IN OUR",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x164D"
+   ],
+   "text": "THE CAPTAIN IS IMPRESSED WITH YOUR SKILL",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0F30"
+   ],
+   "text": "THE FIRST OFFICER YOU MEET STATES FLATLY, 'THE",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x032F"
+   ],
+   "text": "THE GUARDS INFORM YOU THAT THE CITY IS SEALED,",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0FB1"
+   ],
+   "text": "THE REST OF THE ARMY, CONFUSED BY THE SUDDEN",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x1072"
+   ],
+   "text": "THE TRAIL LEADS UP INTO A CRAGGY WILDERNESS,",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x1072"
+   ],
+   "text": "THE TRAIL LEADS UP INTO A CRAGGY WILDERNESS, FINALLY ENDING BELOW A GIGANTIC PEAK. A SQUAD OF ZHENTIL",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x1178"
+   ],
+   "text": "THE TROOPERS GO TO ALERT TESHWAVE AND LEAVE",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x19A5"
+   ],
+   "text": "THEY SAY THEY ARE FOLLOWING THE",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x1024"
+   ],
+   "text": "TRAVELLING THROUGH THE WILDS, YOU COME UPON A",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x1B7A"
+   ],
+   "text": "YOU ARE AMBUSHED BY FIRE KNIVES DISGUISED AS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x180C"
+   ],
+   "text": "YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP.",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x180C"
+   ],
+   "text": "YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP. THE OFFICER STEPS FORWARD. 'YOU ARE LISTED IN OUR",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0EA0"
+   ],
+   "text": "YOU ARE TAKEN TO THE OFFICERS WHO STATE THAT THEY",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x0EA0"
+   ],
+   "text": "YOU ARE TAKEN TO THE OFFICERS WHO STATE THAT THEY ARE MARCHING ON SHADOWDALE. NOTING THE SIGILS ON YOUR",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x12F2"
+   ],
+   "text": "YOU ESCAPE FROM THE MONSTERS AND REACH",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x12F2"
+   ],
+   "text": "YOU ESCAPE FROM THE MONSTERS AND REACH DAGGER FALLS BEFORE THEM. THE CITY MOBILIZES AND ROUTS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x12F2"
+   ],
+   "text": "YOU ESCAPE FROM THE MONSTERS AND REACH DAGGER FALLS BEFORE THEM. THE CITY MOBILIZES AND ROUTS THE DISORGANIZED CREATURES. THE ZHENTRIM RESCUE FORCE IS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x1468"
+   ],
+   "text": "YOU SWEEP DOWN UPON THE ZHENTRIM FORCES AS THEY",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL1.DAX",
+   "block": "0x51",
+   "pages": [
+    "0x1468"
+   ],
+   "text": "YOU SWEEP DOWN UPON THE ZHENTRIM FORCES AS THEY PREPARE TO MARCH ON DAGGER FALLS, AND A VAST MELEE",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL3.DAX",
+   "block": "0x12",
+   "pages": [
+    "0x13C9"
+   ],
+   "text": "TENDRILS COME UP FROM THE FLOOR AND WRAP THEMSELVES AROUND",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL3.DAX",
+   "block": "0x12",
+   "pages": [
+    "0x13C9"
+   ],
+   "text": "TENDRILS COME UP FROM THE FLOOR AND WRAP THEMSELVES AROUND ALIAS",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL3.DAX",
+   "block": "0x12",
+   "pages": [
+    "0x13C9"
+   ],
+   "text": "TENDRILS COME UP FROM THE FLOOR AND WRAP THEMSELVES AROUND ALIAS AND",
+   "status": "truncated"
+  },
+  {
+   "member": "ECL4.DAX",
+   "block": "0x23",
+   "pages": [
+    "0x0396"
+   ],
+   "text": "YOU ARE BEING ATTACKED BY",
+   "status": "truncated"
+  }
+ ],
  "summary": {
   "groups": 1022,
   "matched": 1002,
@@ -8601,6 +9173,14 @@
   "branch_insert_notes": 228,
   "branch_tail": 0,
   "subroutine": 4,
-  "unmatched_by_block": {}
+  "unmatched_by_block": {},
+  "runs": 1375,
+  "runs_matched": 1199,
+  "runs_orphan": 0,
+  "runs_variable_insert": 72,
+  "runs_subroutine": 35,
+  "runs_gosub_insert": 7,
+  "runs_truncated": 62,
+  "orphan_runs_by_block": {}
  }
 }

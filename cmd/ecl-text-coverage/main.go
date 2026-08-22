@@ -82,7 +82,32 @@ type report struct {
 	Schema      string   `json:"schema"`
 	Limitations []string `json:"limitations"`
 	Groups      []group  `json:"groups"`
-	Summary     summary  `json:"summary"`
+	// OrphanRuns 是**一整條 run 沒有任何規則命中**的路徑。
+	//
+	// ★ 為什麼要另外算一個數。 `Groups` 的處置是**逐頁**判的，而一頁只要曾經
+	// 被某一條命中的 run 經過就算 `matched`。問題是玩家走的是**一條** run，
+	// 不是所有 run 的聯集：同一頁在 A 路徑上和兄弟句一起印（規則命中），
+	// 在 B 路徑上單獨印（沒有規則）——逐頁的算法只看得到 A，`unmatched` 是 0，
+	// 而實機走 B 的玩家看到英文。
+	//
+	// 這不是假想的失誤。`wizard-tower.efreet-band` 與
+	// `tilverton.sewers.spoils-and-master-alone` 兩條規則是實機走出來才發現要補的；
+	// 把它們從 pack 拿掉重跑，`unmatched` **仍然是 0**——逐頁的算法對這一類
+	// 缺陷是全盲的。`TestOrphanRunAccountingCatchesTheAloneSiblingBug` 把這件事釘住。
+	OrphanRuns []orphanRun `json:"orphan_runs,omitempty"`
+	Summary    summary     `json:"summary"`
+}
+
+// orphanRun 是一條沒有任何規則命中的執行路徑。
+type orphanRun struct {
+	Member string `json:"member"`
+	Block  string `json:"block"`
+	// Pages 是這條 run 依序經過的頁（payload offset）。
+	Pages []string `json:"pages"`
+	// Text 是交給 `MatchText` 的那一份（各頁以空白相接）。
+	Text string `json:"text"`
+	// Status：`orphan` 才是待辦；其餘是與逐頁同一套的豁免。
+	Status string `json:"status"`
 }
 
 type summary struct {
@@ -97,6 +122,83 @@ type summary struct {
 	BranchTail     int            `json:"branch_tail"`
 	Subroutine     int            `json:"subroutine"`
 	ByBlock        map[string]int `json:"unmatched_by_block"`
+
+	// 下面四個是 **run** 為單位的帳（見 `report.OrphanRuns`）。文字相同的 run
+	// 只算一次：走訪器會在不同位址上吐出同一份文字，那是同一段玩家體驗。
+	Runs               int            `json:"runs"`
+	RunsMatched        int            `json:"runs_matched"`
+	RunsOrphan         int            `json:"runs_orphan"`
+	RunsVariableInsert int            `json:"runs_variable_insert"`
+	RunsSubroutine     int            `json:"runs_subroutine"`
+	RunsGosubInsert    int            `json:"runs_gosub_insert"`
+	RunsTruncated      int            `json:"runs_truncated"`
+	OrphanByBlock      map[string]int `json:"orphan_runs_by_block"`
+}
+
+// truncatedRun 判一條 orphan run 是不是走訪器切出來的半截，而不是玩家真的
+// 看得到的一頁。兩個形狀：
+//
+//	停在句子中間   原作只在一句講完之後才把文字交出去（選單／戰鬥／寶物／輸入）
+//	是別條的前綴   同一條路徑的截斷版，完整的那條才是實機會演的
+//
+// ⚠ 收尾的引號要看**前一個字元**：`HE CONTINUES, '` 收在引號上，但引號前是逗號，
+// 那是「話還沒講完」不是句子結束。少了這一關會有半句混進待辦清單。
+func truncatedRun(text string, all map[string]bool) bool {
+	for other := range all {
+		if other != text && strings.HasPrefix(other, text) {
+			return true
+		}
+	}
+	runes := []rune(text)
+	if len(runes) == 0 {
+		return true
+	}
+	last := runes[len(runes)-1]
+	if last == '\'' || last == '"' {
+		if len(runes) < 2 {
+			return true
+		}
+		last = runes[len(runes)-2]
+	}
+	return last != '.' && last != '!' && last != '?'
+}
+
+// markdownCell 把一份 run 文字放進表格：跳脫直線、截到看得完的長度。
+func markdownCell(text string) string {
+	cell := strings.ReplaceAll(strings.TrimSpace(text), "|", "\\|")
+	if len(cell) > 200 {
+		cell = cell[:200] + "…"
+	}
+	return cell
+}
+
+// classifyRun 判一條**沒命中**的 run 是待辦還是豁免。豁免用的是與逐頁同一套
+// 判準，只是提升到 run；順序有意義，前面的先套。
+//
+//	variable-insert  run 裡有任何一頁印執行期的值 → 靜態比對不到，不是缺陷
+//	subroutine       整條 run 就是一頁共用子程式片段 → 實機會被併進呼叫端那一頁
+//	gosub-insert     run 裡有插入點 → 手上這份文字**不完整**，不能當缺陷
+//	orphan           控制流走得到、文字完整、卻沒有任何規則命中 —— 這才是待辦
+func classifyRun(pages []string, notes map[string]group, subroutines, aloneOnly map[string]bool) string {
+	switch {
+	case anyPageHas(notes, pages, func(item group) bool { return len(item.VariableInserts) > 0 }):
+		return "variable-insert"
+	case len(pages) == 1 && subroutines[pages[0]] && aloneOnly[pages[0]]:
+		return "subroutine"
+	case anyPageHas(notes, pages, func(item group) bool { return len(item.GosubInserts) > 0 }):
+		return "gosub-insert"
+	}
+	return "orphan"
+}
+
+// anyPageHas 回答「這條 run 經過的頁裡有沒有符合條件的」。
+func anyPageHas(notes map[string]group, pages []string, want func(group) bool) bool {
+	for _, page := range pages {
+		if want(notes[page]) {
+			return true
+		}
+	}
+	return false
 }
 
 func main() {
@@ -130,7 +232,7 @@ func main() {
 			"⚠ `ECL1.DAX/0x50`／`0x51` 的**比對**走訪會碰到狀態上限（4,000,000）而提早停：世界地圖那一段 `IF` 分岔多又長。碰到上限會在 stderr 印一行，**沒有靜默截斷**；分母不受影響（見上一條），代價只是那個 block 可能有頁比對不到而算成待辦。實測目前兩趟走訪找到的頁完全相同，代價為 0。",
 			"『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。",
 		},
-		Summary: summary{ByBlock: map[string]int{}},
+		Summary: summary{ByBlock: map[string]int{}, OrphanByBlock: map[string]int{}},
 	}
 
 	for _, member := range members {
@@ -177,9 +279,23 @@ func main() {
 			// （`WHAT DO YOU DO?`、`UP`／`DOWN`）在實機一定被併進呼叫端那一頁，
 			// 走訪器卻會從某些路徑上單獨吐出它們。
 			aloneOnly := map[string]bool{}
+			// runSeen 讓「文字相同的 run」只算一次：走訪器會在不同位址上吐出
+			// 同一份文字（同一段玩家體驗），逐條計數會讓分母被分支數放大。
+			runSeen := map[string]bool{}
+			type runRecord struct {
+				pages   []string
+				matched bool
+			}
+			runs := make([]runRecord, 0, len(paths))
+			runText := make([]string, 0, len(paths))
 			for _, path := range paths {
 				joined := strings.Join(path.Texts, " ")
 				matched := pack.MatchText(path.Texts, pack.DefaultLocale)
+				if strings.TrimSpace(joined) != "" && !runSeen[joined] {
+					runSeen[joined] = true
+					runText = append(runText, joined)
+					runs = append(runs, runRecord{pages: path.Pages, matched: matched.Matched})
+				}
 				for _, page := range path.Pages {
 					if len(path.Pages) > 1 {
 						aloneOnly[page] = false
@@ -210,6 +326,40 @@ func main() {
 			notes := map[string]group{}
 			for _, item := range annotations.groups {
 				notes[item.Offset] = item
+			}
+			// ── run 級的帳 ───────────────────────────────────────────────
+			// 豁免用的是與逐頁同一套判準，只是提升到 run：
+			//
+			//	variable-insert  run 裡有任何一頁印執行期的值 → 靜態比對不到
+			//	subroutine       整條 run 就是一頁共用子程式片段 → 實機會被併進呼叫端
+			//	gosub-insert     run 裡有插入點 → 這份文字**不完整**，不能當缺陷
+			//
+			// 剩下的才是 `orphan`：控制流走得到、文字完整、卻沒有任何規則命中。
+			for index, record := range runs {
+				result.Summary.Runs++
+				if record.matched {
+					result.Summary.RunsMatched++
+					continue
+				}
+				status := classifyRun(record.pages, notes, annotations.subroutines, aloneOnly)
+				switch status {
+				case "variable-insert":
+					result.Summary.RunsVariableInsert++
+				case "subroutine":
+					result.Summary.RunsSubroutine++
+				case "gosub-insert":
+					result.Summary.RunsGosubInsert++
+				default:
+					result.Summary.RunsOrphan++
+					result.Summary.OrphanByBlock[member+"/"+blockID]++
+				}
+				if status != "orphan" {
+					continue
+				}
+				result.OrphanRuns = append(result.OrphanRuns, orphanRun{
+					Member: member, Block: blockID, Pages: record.pages,
+					Text: runText[index], Status: status,
+				})
 			}
 			offsets := make([]string, 0, len(pageText))
 			for offset := range pageText {
@@ -265,6 +415,37 @@ func main() {
 				result.Groups = append(result.Groups, item)
 			}
 		}
+	}
+
+	// ── orphan 再分一次：把走訪器切出來的半句挑掉 ──────────────────────
+	//
+	// ★ 為什麼可以這樣挑。 原作把累積的文字交給 `MatchText` 的時機是**選單、
+	// 戰鬥、寶物、輸入、換 block、離開**——那些點一定落在一句話講完之後。
+	// 所以「停在句子中間」的 run 不是玩家看得到的一頁，是走訪器在 `IF` 分岔上
+	// 切出來的半截。同理，另一條 run 的**嚴格前綴**也是同一條路徑的截斷版。
+	//
+	// ⚠ 只降級不刪除：這些 run 仍留在 `orphan_runs` 裡並標成 `truncated`，
+	// 需要時看得到。真的要盯的是 `runs_orphan`。
+	{
+		full := map[string]bool{}
+		for _, item := range result.OrphanRuns {
+			full[strings.TrimSpace(item.Text)] = true
+		}
+		kept := result.OrphanRuns[:0]
+		for _, item := range result.OrphanRuns {
+			text := strings.TrimSpace(item.Text)
+			if truncatedRun(text, full) {
+				item.Status = "truncated"
+				result.Summary.RunsTruncated++
+				result.Summary.RunsOrphan--
+				result.Summary.OrphanByBlock[item.Member+"/"+item.Block]--
+				if result.Summary.OrphanByBlock[item.Member+"/"+item.Block] == 0 {
+					delete(result.Summary.OrphanByBlock, item.Member+"/"+item.Block)
+				}
+			}
+			kept = append(kept, item)
+		}
+		result.OrphanRuns = kept
 	}
 
 	if *outputJSON != "" {
@@ -886,6 +1067,58 @@ func renderMarkdown(result report) []byte {
 	out.WriteString("\n## 未接上的段落，依 block\n\n| Block | 未接上 |\n|---|---:|\n")
 	for _, key := range blocks {
 		fmt.Fprintf(&out, "| `%s` | %d |\n", key, result.Summary.ByBlock[key])
+	}
+
+	fmt.Fprintf(&out, "\n## 沒有規則的執行路徑（run）\n\n")
+	out.WriteString("上面那張表是**逐頁**判的，而一頁只要曾經被某一條命中的 run 經過就算 `matched`。" +
+		"玩家走的是**一條** run，不是所有 run 的聯集：同一頁在 A 路徑上和兄弟句一起印（規則命中）、" +
+		"在 B 路徑上單獨印（沒有規則），逐頁的算法只看得到 A。\n\n")
+	out.WriteString("這不是假想的失誤。`wizard-tower.efreet-band` 與 " +
+		"`tilverton.sewers.spoils-and-master-alone` 是實機走出來才發現要補的規則；" +
+		"把它們從 pack 拿掉重跑，逐頁的 `unmatched` **仍然是 0**，而下面這個數字從 93 變成 95，" +
+		"新增的正好是那兩份文字。`TestOrphanRunAccountingCatchesTheAloneSiblingBug` 釘住這個差別。\n\n")
+	fmt.Fprintf(&out, "| 處置 | run 數 | 意思 |\n|---|---:|---|\n")
+	fmt.Fprintf(&out, "| 控制流走得到的 run | %d | 分母（文字相同的只算一次）|\n", result.Summary.Runs)
+	fmt.Fprintf(&out, "| `matched` | %d | 有規則命中這一整條 |\n", result.Summary.RunsMatched)
+	fmt.Fprintf(&out, "| **`orphan`** | **%d** | **走得到、文字完整、沒有任何規則命中——這才是待辦** |\n",
+		result.Summary.RunsOrphan)
+	fmt.Fprintf(&out, "| `variable-insert` | %d | run 裡有頁印執行期的值，靜態比對不到 |\n",
+		result.Summary.RunsVariableInsert)
+	fmt.Fprintf(&out, "| `subroutine` | %d | 整條就是一頁共用子程式片段，實機會被併進呼叫端 |\n",
+		result.Summary.RunsSubroutine)
+	fmt.Fprintf(&out, "| `gosub-insert` | %d | run 裡有插入點，手上這份文字不完整，不能當缺陷 |\n", 
+		result.Summary.RunsGosubInsert)
+	fmt.Fprintf(&out, "| `truncated` | %d | 停在句子中間或是別條的前綴——走訪器在 `IF` 分岔上切出來的半截 |\n\n",
+		result.Summary.RunsTruncated)
+
+	orphanBlocks := make([]string, 0, len(result.Summary.OrphanByBlock))
+	for key := range result.Summary.OrphanByBlock {
+		orphanBlocks = append(orphanBlocks, key)
+	}
+	sort.Slice(orphanBlocks, func(i, j int) bool {
+		left, right := result.Summary.OrphanByBlock[orphanBlocks[i]], result.Summary.OrphanByBlock[orphanBlocks[j]]
+		if left != right {
+			return left > right
+		}
+		return orphanBlocks[i] < orphanBlocks[j]
+	})
+	out.WriteString("| Block | `orphan` run |\n|---|---:|\n")
+	for _, key := range orphanBlocks {
+		fmt.Fprintf(&out, "| `%s` | %d |\n", key, result.Summary.OrphanByBlock[key])
+	}
+
+	out.WriteString("\n⚠ 這是**候選清單不是缺陷清單**：走訪器把 `IF` 的兩條路都走，" +
+		"其中一條在實機可能永遠不成立。判一條是不是真的缺陷，要看**兄弟句**——" +
+		"若有另一條規則的 `all_contains` 含了這份文字的片段**再加上**別段的片段，" +
+		"那條規則就攔不到單獨印的情況，缺的就是這一條。\n\n")
+	out.WriteString("| Block | 起始頁 | 頁數 | 這條 run 的文字 |\n|---|---|---:|---|\n")
+	for _, item := range result.OrphanRuns {
+		start := ""
+		if len(item.Pages) > 0 {
+			start = item.Pages[0]
+		}
+		fmt.Fprintf(&out, "| `%s/%s` | `%s` | %d | %s |\n",
+			item.Member, item.Block, start, len(item.Pages), markdownCell(item.Text))
 	}
 
 	out.WriteString("\n## 逐段\n\n| Block | offset | 處置 | 已接上的規則 | 原作文字 |\n|---|---|---|---|---|\n")

@@ -8599,6 +8599,224 @@
     "A PATROL CONFRONTS YOU"
    ],
    "message_id": "myth-drannor.patrol-confronts-you"
+  },
+  {
+   "id": "world.wilderness.robe-collapses-seek-black",
+   "all_contains": [
+    "THE ROBE COLLAPSES WHEN YOU ATTACK",
+    "SEEK BLACK TO THE NORTH"
+   ],
+   "message_id": "world.wilderness.robe-collapses-seek-black"
+  },
+  {
+   "id": "world.wilderness.voice-continues-seek-black",
+   "all_contains": [
+    "HE CONTINUES",
+    "SEEK BLACK TO THE NORTH"
+   ],
+   "message_id": "world.wilderness.voice-continues-seek-black"
+  },
+  {
+   "id": "world.wilderness.black-shapes-in-sky",
+   "all_contains": [
+    "SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES"
+   ],
+   "message_id": "world.wilderness.black-shapes-in-sky"
+  },
+  {
+   "id": "ashabenford.tavern-asked-to-leave",
+   "all_contains": [
+    "THE PATRONS BECOME SURLY",
+    "THE BARTENDER SUGGESTS YOU LEAVE"
+   ],
+   "message_id": "ashabenford.tavern-asked-to-leave"
+  },
+  {
+   "id": "standing-stone.arrival",
+   "all_contains": [
+    "YOU ARE AT THE STANDING STONES"
+   ],
+   "message_id": "standing-stone.arrival"
+  },
+  {
+   "id": "world.tavern.good-quality",
+   "all_contains": [
+    "YOU ARE IN A GOOD QUALITY TAVERN"
+   ],
+   "message_id": "world.tavern.good-quality"
+  },
+  {
+   "id": "world.tavern.small-ale-shop",
+   "all_contains": [
+    "YOU ARE IN A SMALL ALE SHOP"
+   ],
+   "message_id": "world.tavern.small-ale-shop"
+  },
+  {
+   "id": "hillsfar.red-plumes-spill-drinks-only",
+   "all_contains": [
+    "SOME RED PLUMES COME OVER AND SPILL YOUR DRINKS"
+   ],
+   "message_id": "hillsfar.red-plumes-spill-drinks-only"
+  },
+  {
+   "id": "yulash.battle-mutual-rout",
+   "all_contains": [
+    "THE FORCES TURN OUT TO BE CLOSELY MATCHED",
+    "BOTH THE TROOPERS AND THE MONSTERS ARE ROUTED"
+   ],
+   "message_id": "yulash.battle-mutual-rout"
+  },
+  {
+   "id": "tilverton.sewers.thief-swatch-trapdoor",
+   "all_contains": [
+    "THE THIEF RETRIEVES A SWATCH OF CLOTH",
+    "TOO WELL JAMMED TO OPEN"
+   ],
+   "message_id": "tilverton.sewers.thief-swatch-trapdoor"
+  },
+  {
+   "id": "fire-knife.checkpoint-arrival",
+   "all_contains": [
+    "YOU ARE AT A CHECKPOINT"
+   ],
+   "message_id": "fire-knife.checkpoint-arrival"
+  },
+  {
+   "id": "pit.lemon-tang-alone",
+   "all_contains": [
+    "A SLIGHT TANG OF LEMON IS IN THE AIR"
+   ],
+   "message_id": "pit.lemon-tang-alone"
+  },
+  {
+   "id": "pit.brimstone-dragonbait-disturbed",
+   "all_contains": [
+    "YOU SMELL BRIMSTONE",
+    "DRAGONBAIT LOOKS DISTURBED"
+   ],
+   "message_id": "pit.brimstone-dragonbait-disturbed"
+  },
+  {
+   "id": "pit.alias-treasure-behind-altar",
+   "all_contains": [
+    "THERE'S ALSO THE MATTER OF THE TREASURE THAT IS KEPT BEHIND THE ALTAR"
+   ],
+   "message_id": "pit.alias-treasure-behind-altar"
+  },
+  {
+   "id": "pit.alias-altar-entrance",
+   "all_contains": [
+    "THIS IS IT, THE ENTRANCE TO THE ALTAR OF MOGION"
+   ],
+   "message_id": "pit.alias-altar-entrance"
+  },
+  {
+   "id": "pit.alias-dragonbait-tendrils-no-conjunction",
+   "all_contains": [
+    "TENDRILS COME UP FROM THE FLOOR",
+    "AROUND ALIAS DRAGONBAIT"
+   ],
+   "message_id": "pit.alias-dragonbait-tendrils-no-conjunction"
+  },
+  {
+   "id": "pit.dragonbait-tendrils",
+   "all_contains": [
+    "TENDRILS COME UP FROM THE FLOOR",
+    "AROUND DRAGONBAIT"
+   ],
+   "message_id": "pit.dragonbait-tendrils"
+  },
+  {
+   "id": "zhentil.temple.dragged-to-cell",
+   "all_contains": [
+    "YOU ARE DRAGGED THROUGH THE TEMPLE",
+    "YOU WAKE UP IN A DARK, DREARY CELL"
+   ],
+   "message_id": "zhentil.temple.dragged-to-cell"
+  },
+  {
+   "id": "zhentil.temple.wake-in-cell",
+   "all_contains": [
+    "YOU WAKE UP IN A DARK, DREARY CELL"
+   ],
+   "message_id": "zhentil.temple.wake-in-cell"
+  },
+  {
+   "id": "zhentil.arena.manticores-attack",
+   "all_contains": [
+    "YOU ARE BEING ATTACKED BY MANTICORES"
+   ],
+   "message_id": "zhentil.arena.manticores-attack"
+  },
+  {
+   "id": "zhentil.arena.ogres-attack",
+   "all_contains": [
+    "YOU ARE BEING ATTACKED BY OGRES"
+   ],
+   "message_id": "zhentil.arena.ogres-attack"
+  },
+  {
+   "id": "zhentil.arena.otyughs-attack",
+   "all_contains": [
+    "YOU ARE BEING ATTACKED BY OTYUGHS"
+   ],
+   "message_id": "zhentil.arena.otyughs-attack"
+  },
+  {
+   "id": "lava-tube.silk-buys-eggs",
+   "all_contains": [
+    "SILK STEPS OUT FROM THE SHADOWS",
+    "FOR THE BLACK EGGS"
+   ],
+   "message_id": "lava-tube.silk-buys-eggs"
+  },
+  {
+   "id": "lava-tube.silk-buys-heart-only",
+   "all_contains": [
+    "SILK STEPS OUT FROM THE SHADOWS",
+    "FOR THE DRAGON'S BLACK HEART"
+   ],
+   "message_id": "lava-tube.silk-buys-heart-only"
+  },
+  {
+   "id": "lava-tube.patrol-behind",
+   "all_contains": [
+    "YOU HEAR A PATROL APPROACH FROM BEHIND YOU"
+   ],
+   "message_id": "lava-tube.patrol-behind"
+  },
+  {
+   "id": "dark-elf-caves.girl-escaped-dragons-pursue",
+   "all_contains": [
+    "THE GIRL ESCAPED, BUT THE DRAGONS RUSH AFTER HER"
+   ],
+   "message_id": "dark-elf-caves.girl-escaped-dragons-pursue"
+  },
+  {
+   "id": "dark-elf-caves.girl-asks-shadowdale-alone",
+   "all_contains": [
+    "THE GIRL SMILES DEMURELY",
+    "RETURN ME TO SHADOWDALE"
+   ],
+   "message_id": "dark-elf-caves.girl-asks-shadowdale-alone"
+  },
+  {
+   "id": "myth-drannor.red-plume.follow-then-warning",
+   "all_contains": [
+    "FOLLOW ME",
+    "A WHISPERY VOICE CRIES OUT",
+    "BEWARE, A TRAP"
+   ],
+   "message_id": "myth-drannor.red-plume.follow-then-warning"
+  },
+  {
+   "id": "myth-drannor.red-plume.trap-warning-alone",
+   "all_contains": [
+    "A WHISPERY VOICE CRIES OUT",
+    "BEWARE, A TRAP"
+   ],
+   "message_id": "myth-drannor.red-plume.trap-warning-alone"
   }
  ],
  "option_rules": [
