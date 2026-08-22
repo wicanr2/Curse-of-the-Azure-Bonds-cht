@@ -416,3 +416,49 @@ func TestEnginePackCannotExpressMonsterSetCueYet(t *testing.T) {
 		t.Fatalf("擋下來的理由變了：%v", err)
 	}
 }
+
+// ★ 事件驅動的換曲點：開場與角色建立。兩處原作都**不看場景**（各自寫 `MUSICNO`
+// 之後派曲），所以 remake 用每一段都列的 `context` binding 表達。
+func TestTitleAndCreationHaveTheirOwnMusic(t *testing.T) {
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{0x01: {}}, 0x01)
+	if got := state.ConsumeMusicEvents(); len(got) != 0 {
+		t.Fatalf("建構不該發音樂：%+v", got)
+	}
+
+	state.RequestTitleMusic()
+	title := state.ConsumeMusicEvents()
+	if len(title) != 1 || title[0].Action != "play" {
+		t.Fatalf("標題曲沒放：%+v", title)
+	}
+
+	if err := state.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	creation := state.ConsumeMusicEvents()
+	if len(creation) != 1 || creation[0].Action != "play" {
+		t.Fatalf("角色建立曲沒放：%+v", creation)
+	}
+	if creation[0].TrackID == title[0].TrackID {
+		t.Fatalf("角色建立和標題放同一首（%s）", creation[0].TrackID)
+	}
+}
+
+// ★ 事件驅動的換曲點都**不挑段**：每一個有 ECL 的段都要找得到那一首。
+// 少一段就是那一段沒有那個場合的音樂——**而那不會報錯**。
+func TestEventDrivenMusicCoversEveryECLBlock(t *testing.T) {
+	state := NewState(testCatalog())
+	if state.dataPack == nil {
+		t.Skip("沒有 game pack")
+	}
+	blocks := []uint8{1, 2, 3, 4, 16, 17, 18, 21, 32, 33, 34, 35, 37, 48, 49,
+		50, 51, 53, 64, 66, 67, 69, 80, 81, 82}
+	for _, context := range []string{
+		combatMusicContext, titleMusicContext, creationMusicContext,
+	} {
+		for _, block := range blocks {
+			if _, found := state.dataPack.FindMusicBinding(block, context); !found {
+				t.Errorf("段 0x%02X 沒有 %q 的曲子", block, context)
+			}
+		}
+	}
+}

@@ -162,8 +162,25 @@ func (s *State) requestCombatMusic(monsterID uint8) {
 	s.requestMusicForCurrentBlock(context)
 }
 
-// combatMusicContext 是「戰鬥中」那一組 binding 的 context。
-const combatMusicContext = "pc98-combat"
+// 事件驅動的換曲點各自的 context。原作那幾處都**不看 `CURRENTECL`**（各自把曲號
+// 推給 `MSCPLAY` 或直接寫 `MUSICNO` 之後派曲），所以 pack 那一側是每一段都列。
+const (
+	// combatMusicContext ＝ 開戰（`INITCOMBAT`，COMPREP）。
+	combatMusicContext = "pc98-combat"
+	// titleMusicContext ＝ 開場（`DOINTRO`，overlay-01 `093Ch`，曲目 1 標題）。
+	titleMusicContext = "pc98-title"
+	// creationMusicContext ＝ 角色建立（`GEN`，overlay-17 `0B08h`，曲目 2）。
+	creationMusicContext = "pc98-character-creation"
+)
+
+// RequestTitleMusic 是開場那一首。由前端在**顯示標題畫面時**呼叫。
+//
+// ⚠ 不能在 `NewState` 就發：建構還不是「畫面上出現標題」，而且會讓所有只是造一個
+// State 的測試都收到音樂事件（`TestActiveECLBlockRequestsPC98MusicSelector` 正是
+// 釘住「建構不發音樂」）。
+func (s *State) RequestTitleMusic() {
+	s.requestMusicForCurrentBlock(titleMusicContext)
+}
 
 // restoreSceneMusic 是**戰鬥結束回到場景曲**。
 //

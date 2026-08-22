@@ -120,6 +120,7 @@ type app struct {
 	messageStart           time.Time
 	soundPlayer            *sound.Player
 	pc98MusicDriver        []byte
+	titleMusicRequested    bool
 	currentMusicTrack      string
 	screenshotPath         string
 	screenshotDone         bool
@@ -444,6 +445,12 @@ func (a *app) clampChoiceCursor() {
 
 func (a *app) Update() error {
 	a.clampChoiceCursor()
+	// 標題曲：畫面上真的出現標題時才發，而且只發一次。原作是 `DOINTRO`
+	// （overlay-01 `093Ch`）在開場時寫 `MUSICNO := 1`（spec 1192）。
+	if !a.titleMusicRequested && a.state.Mode == game.ModeTitle {
+		a.titleMusicRequested = true
+		a.state.RequestTitleMusic()
+	}
 	// 音訊開關「隨時都可以按」，所以擺在所有模式前面（見 `globalAudioKeys`）。
 	if a.globalAudioKeys() {
 		a.syncSoundEvents()

@@ -150,10 +150,12 @@ CTRL S : Toggles sound on and off (may be used at any time).
 |---|---|---|---|---|
 | `overlay-10` COMPREP | `1DA1h` | **開戰** | 7 戰鬥 | ✅ `context: "pc98-combat"` |
 | `overlay-10` COMPREP | `1D97h` | 開戰且 `LOADMONNUM == 47h` | 11 地城二 | — engine 擋住（見下）|
-| `overlay-01` | `093Ch` | 開場 | 1 標題 | — 未接 |
-| `overlay-17` GEN | `0B08h` | 角色建立 | 2 角色建立 | — 未接 |
-| `overlay-05` | `1955h` | `DOPOSTCOMBAT＋1E0h` | 2 角色建立 | — 未接（語意待確認）|
-| `overlay-18` | `168Dh` | 結局 | 10 結局 | — 未接 |
+| `overlay-01` | `093Ch` | **開場** | 1 標題 | ✅ `context: "pc98-title"` |
+| `overlay-17` GEN | `0B08h` | **角色建立** | 2 | ✅ `context: "pc98-character-creation"` |
+| `overlay-05` | `1955h` | 戰後回文字選單 | 2 | — remake 沒有這個畫面（見下）|
+| `overlay-18` | `168Dh` | 結局 | 10 結局 | — remake 沒有這個狀態 |
+
+⇒ 13 個換曲點裡 **10 個接上了**（7 個查表 ＋ 開戰、開場、角色建立）。
 
 ### 開戰換曲
 
@@ -168,6 +170,29 @@ remake 用 `context: "pc98-combat"` 的 binding 表達「不看場景」：**每
 ⚠ **戰鬥結束要換回場景曲。** 原作的派曲常式由主迴圈在場景變動時呼叫，戰鬥結束
 回到地城時它依 `CURRENTECL` 重算 `MUSICNO`，自然換回去。remake 只有「換段」會
 派曲，而戰鬥前後**段沒有變** ⇒ 少了 `restoreSceneMusic()`，戰鬥曲會一直放下去。
+
+### `overlay-05 1955h` 是「戰後回文字選單」，不是「每次戰鬥結束」
+
+這一處寫的是 `MUSICNO := 2`，而曲目 2 我們標成「角色建立」——對「戰後」不合理，
+所以逐指令看過：
+
+```
+1955h  c6 06 f3 8b 02      mov byte [MUSICNO], 2
+       a0 f3 8b / 50       push MUSICNO
+       9a 14 01 93 08      call far 0893:0114   ; MSCPLAY
+       c6 06 36 7f 01      mov byte [TTY], 1     ; ← 切到文字模式
+       c4 3e 09 7f         les di, [VARLIST]
+       31 c0 / 26 89 85 …  ; 把 VARLIST 底下 6E0h／6E2h／6E4h／5C6h 清零
+```
+
+`TTY`（`7F36h`）與 `VARLIST`（`7F09h`）都是 Borland 符號直接讀出來的。**切文字
+模式 ＋ 清變數 ＋ 放那一首**⇒ 這是戰後**回到文字選單**那條路，不是每一場戰鬥
+結束都會走的。
+
+★ 順帶修正一個標籤：曲目 2 我們叫它「角色建立」，那是**第一次看到它的場合**。
+它其實是**文字選單／管理畫面**的曲子，角色建立只是其中一種場合。
+
+⇒ remake 沒有對應的文字選單畫面，所以這一處**沒有可接的時機**，不是漏掉。
 
 ### `47h` 那個分岔：engine 擋住了，而這次是真的
 

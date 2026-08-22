@@ -77,6 +77,9 @@ func (s *State) OpenCharacterCreation() error {
 	s.CreationCursor = 0
 	s.CreationMessage = s.catalog.Text("creation_prompt", "creation_prompt")
 	s.Mode = ModeCharacterCreation
+	// 角色建立有自己的曲子（原作 `GEN`，overlay-17 `0B08h` 寫 `MUSICNO := 2`）。
+	// ⚠ 那一處**不看場景**，所以 pack 那一側是每一段都列（spec 1192）。
+	s.requestMusicForCurrentBlock(creationMusicContext)
 	return nil
 }
 
