@@ -89,6 +89,18 @@ UI locale、工具訊息）比對。規則與九組已修正的不一致見
 ⚠ 報表本體是英文的。`cmd/coab-audit` 的漢字 gate 只准數量下降，而報表就是
 位址與助憶碼的表格；分析文字寫在 spec 1183，工具的推理寫在檔頭註解。
 
+## 進場落點是誰決定的
+
+[`map-spawn-sources.md`](map-spawn-sources.md) 由 `cmd/map-spawn-audit` 產生，
+把每個 `first_person` 地圖定義宣告的 `spawn` 與**同一個 ECL block 裡走得到的
+立即數座標寫入**逐張對照。結論見
+[`spec 1184`](../spec/1184-map-spawn-sources.md)：18 張裡 11 張完全靠腳本、
+4 張的宣告值與腳本座標**對不上**、3 張沒有 script block，而**沒有任何一個宣告值
+等於腳本寫過的座標**。
+
+⚠ 走訪與 `cmd/ecl-cell-refs` 同一條路，所以查無寫入不代表不存在。這支也**不判**
+哪一組才是進場那一組——一個 block 通常有好幾組（進場一組、劇情傳送好幾組）。
+
 ## Go 漢字字串基線
 
 `go-han-literals-baseline.json` 由 `cmd/coab-audit` 使用 Go AST 產生，只掃正式
