@@ -6568,6 +6568,14 @@
    "message_id": "tilverton.sewers.spoils-and-master"
   },
   {
+   "id": "tilverton.sewers.spoils-and-master-alone",
+   "all_contains": [
+    "HEAD OFF TO ENJOY THE SPOILS",
+    "TELL HIM WE SENT YOU ON"
+   ],
+   "message_id": "tilverton.sewers.spoils-and-master-alone"
+  },
+  {
    "id": "tilverton.sewers.hidden-training-hall",
    "all_contains": [
     "YOU ENTER THE HIDDEN CHAMBERS"

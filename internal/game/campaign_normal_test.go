@@ -2989,31 +2989,7 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			t.Fatal("整條主線一格都沒記到——記錄點沒被叫到")
 		}
 		t.Logf("主線實際站上過 %d 組（block, 地形碼）", len(campaignVisitedCells))
-		path := os.Getenv("COAB_CAMPAIGN_CELLS_PATH")
-		if path == "" {
-			return
-		}
-		type record struct {
-			Block   uint8 `json:"block"`
-			Terrain uint8 `json:"terrain"`
-		}
-		records := make([]record, 0, len(campaignVisitedCells))
-		for key := range campaignVisitedCells {
-			records = append(records, record{Block: key.block, Terrain: key.terrain})
-		}
-		sort.Slice(records, func(left, right int) bool {
-			if records[left].Block != records[right].Block {
-				return records[left].Block < records[right].Block
-			}
-			return records[left].Terrain < records[right].Terrain
-		})
-		payload, err := json.MarshalIndent(records, "", "  ")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := os.WriteFile(path, payload, 0o644); err != nil {
-			t.Fatal(err)
-		}
+		exportCampaignVisitedCells(t)
 	})
 
 	t.Run("段界快照往返", func(t *testing.T) {
@@ -3197,5 +3173,39 @@ func resolveInnerRoom(t *testing.T, state *State, observer *normalCampaignObserv
 			}
 		}
 		observer.observe()
+	}
+}
+
+// exportCampaignVisitedCells 把**目前累積到的**走訪格子寫出去。
+//
+// ⚠ `campaignVisitedCells` 是套件層級的累積器，主線與提爾佛頓路線都往裡面寫。
+// 兩邊都呼叫這一支，所以不論 Go 先跑哪一個測試，**最後寫的那一次都帶著聯集**
+// （這個 map 只會長大）。靠「哪個測試先跑」來決定內容會在改檔名的那天壞掉。
+func exportCampaignVisitedCells(t *testing.T) {
+	t.Helper()
+	path := os.Getenv("COAB_CAMPAIGN_CELLS_PATH")
+	if path == "" {
+		return
+	}
+	type record struct {
+		Block   uint8 `json:"block"`
+		Terrain uint8 `json:"terrain"`
+	}
+	records := make([]record, 0, len(campaignVisitedCells))
+	for key := range campaignVisitedCells {
+		records = append(records, record{Block: key.block, Terrain: key.terrain})
+	}
+	sort.Slice(records, func(left, right int) bool {
+		if records[left].Block != records[right].Block {
+			return records[left].Block < records[right].Block
+		}
+		return records[left].Terrain < records[right].Terrain
+	})
+	payload, err := json.MarshalIndent(records, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, payload, 0o644); err != nil {
+		t.Fatal(err)
 	}
 }

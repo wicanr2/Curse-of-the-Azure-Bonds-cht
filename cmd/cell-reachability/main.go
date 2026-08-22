@@ -176,8 +176,9 @@ func main() {
 	fmt.Fprintf(&report, "★ 走訪那一列最後缺的問題是**可達性**。`cmd/cell-sweep` 把隊伍"+
 		"**直接放**到目標格上、還把隊伍撐起來，所以它答的是「這一格演不演得出來」，"+
 		"不是「正常隊伍走不走得到」。可達性只有實跑資料答得了——"+
-		"而 `TestRealNewGameRunsToTheEnding`（從角色建立打到提朗瑟克斯）就是實跑資料。\n\n")
-	fmt.Fprintf(&report, "⚠ **「沒被踏到」不等於「走不到」。** 主線只走它要走的路："+
+		"而 `TestRealNewGameRunsToTheEnding`（從角色建立打到提朗瑟克斯）與 "+
+		"`TestTilvertonRouteIsWalkableAndLocalized`（開場那三段）就是實跑資料。\n\n")
+	fmt.Fprintf(&report, "⚠ **「沒被踏到」不等於「走不到」。** 實跑路線只走它要走的路："+
 		"支線房間、可選對話、另一條分歧本來就不會被踏到。這一份能證明「這些走得到」，"+
 		"**不能證明「其餘走不到」** ⇒ 覆蓋率是**下界**。\n\n")
 	fmt.Fprintf(&report, "⚠ 記錄點是觀測迴圈不是每一步移動，走過去又馬上被劇情推走的"+
@@ -186,7 +187,7 @@ func main() {
 	fmt.Fprintf(&report, "| 指標 | 數字 |\n|---|---:|\n")
 	fmt.Fprintf(&report, "| 有地形分派、地圖上也有格子的 block | %d |\n", len(rows))
 	fmt.Fprintf(&report, "| 分派索引（**直接取自逐格實測的輸出**）| %d |\n", totalIndices)
-	fmt.Fprintf(&report, "| **主線實際踏到的** | %d |\n", totalReached)
+	fmt.Fprintf(&report, "| **實跑路線踏到的** | %d |\n", totalReached)
 	fmt.Fprintf(&report, "| **從段入口用走的走得到的** | %d |\n", totalOnFoot)
 	fmt.Fprintf(&report, "| **兩者的聯集**（目前最好的下界）| %d |\n", totalEither)
 	if totalIndices > 0 {
@@ -197,7 +198,7 @@ func main() {
 		"開得了冷走打不開的門（`ECL4/0x22` 主線 6、冷走 1）；冷走沒有劇情擋路，"+
 		"走得到主線繞過的地方（`ECL6/0x40` 主線 2、冷走 22）。"+
 		"只報其中一個都會低估。\n")
-	fmt.Fprintf(&report, "\n| 段 | ECL block | 分派索引 | 主線踏到 | 走得到 | 聯集 |\n")
+	fmt.Fprintf(&report, "\n| 段 | ECL block | 分派索引 | 實跑踏到 | 走得到 | 聯集 |\n")
 	fmt.Fprintf(&report, "|---|---:|---:|---:|---:|---:|\n")
 	for _, row := range rows {
 		fmt.Fprintf(&report, "| `%s` | %d | %d | %d | %d | %d |\n",
@@ -214,11 +215,11 @@ func main() {
 			missing += row.indices
 		}
 	}
-	fmt.Fprintf(&report, "## 主線一格都沒踏到的段\n\n")
+	fmt.Fprintf(&report, "## 實跑路線一格都沒踏到的段\n\n")
 	if len(untouched) == 0 {
 		fmt.Fprintf(&report, "（沒有。）\n")
 	} else {
-		fmt.Fprintf(&report, "這幾段**整段沒被主線走過**，共 %d 個分派索引"+
+		fmt.Fprintf(&report, "這幾段**整段沒被任何實跑路線走過**，共 %d 個分派索引"+
 			"（占分母的 %.0f%%）。那不是「覆蓋率低」，是這條路線根本沒去過那裡——"+
 			"逐格實測驗過它們演得出來，但**沒有任何一條實跑路徑經過**。\n\n",
 			missing, 100*float64(missing)/float64(totalIndices))
