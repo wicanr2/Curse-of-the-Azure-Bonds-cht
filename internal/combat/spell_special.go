@@ -71,6 +71,8 @@ func (b *Battle) CastSlayLiving(casterID, targetID string) (SlayLivingResult, er
 	if err != nil {
 		return SlayLivingResult{}, err
 	}
+	// 同上：這一次查詢也可能改記錄（效果 `54h`）。
+	applyRecordWritesTo(&target, adjusted)
 	damage = adjusted.Applied[scratchDamage]
 	if damage < 0 {
 		damage = 0

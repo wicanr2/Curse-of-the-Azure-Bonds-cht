@@ -2594,6 +2594,11 @@ func (b *Battle) CastDamageDice(casterID, targetID string, dice SpellDamageFormu
 	// 只認傷害屬性旗標的一個位元——所以旗標要一起傳進去。
 	adjusted, err := CheckFX(target, checkFXDamage, map[string]int{
 		scratchDamage: damage, scratchDamageElement: int(element)})
+	// ⚠ 這一次查詢除了折半傷害，也可能**改記錄**（效果 `54h`：被電回血 8 點）。
+	// 原本只讀 `Applied[damage]`，`Records` 就這樣掉了。
+	if err == nil {
+		applyRecordWritesTo(&target, adjusted)
+	}
 	if err != nil {
 		return SpellResult{}, err
 	}
@@ -2702,6 +2707,8 @@ func (b *Battle) CastAreaDamageDice(casterID string, center TilePoint,
 		if err != nil {
 			return AreaSpellResult{}, err
 		}
+		// 同上：這一次查詢也可能改記錄（效果 `54h`）。
+		applyRecordWritesTo(&target, adjusted)
 		damage = adjusted.Applied[scratchDamage]
 		if damage < 0 {
 			damage = 0

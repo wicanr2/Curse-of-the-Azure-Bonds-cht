@@ -121,6 +121,18 @@ func CheckFX(fighter Fighter, timing uint8, base map[string]int) (CheckFXDetail,
 		}
 		applied := false
 		for _, modifier := range handler.Modifiers {
+			// ⚠ 守衛要在**記錄寫入之前**檢查。原本記錄那一支排在守衛前面直接
+			// `continue`，於是**有條件的記錄寫入完全繞過自己的條件**——效果 `54h`
+			// （傷害屬性帶電才回血）不管什麼屬性都會回血。全域修正那一路沒事，
+			// 因為它排在守衛後面；這條路只是先前沒有任何有守衛的記錄寫入，
+			// 所以一直沒被觸發。
+			if modifier.GuardGlobal != "" {
+				guard := table.ScratchName(modifier.GuardGlobal)
+				if detail.Applied[guard]&modifier.GuardMask == 0 {
+					// 旗標不符：這個修正這一次不套。**不是 0，是不適用。**
+					continue
+				}
+			}
 			if modifier.Record != "" {
 				detail.Records = append(detail.Records, CheckFXRecordWrite{
 					Record: modifier.Record, Field: modifier.Field,
@@ -128,13 +140,6 @@ func CheckFX(fighter Fighter, timing uint8, base map[string]int) (CheckFXDetail,
 					Cap: modifier.Cap, CapThreshold: modifier.CapThreshold})
 				applied = true
 				continue
-			}
-			if modifier.GuardGlobal != "" {
-				guard := table.ScratchName(modifier.GuardGlobal)
-				if detail.Applied[guard]&modifier.GuardMask == 0 {
-					// 旗標不符：這個修正這一次不套。**不是 0，是不適用。**
-					continue
-				}
 			}
 			applied = true
 			name := table.ScratchName(modifier.Global)
