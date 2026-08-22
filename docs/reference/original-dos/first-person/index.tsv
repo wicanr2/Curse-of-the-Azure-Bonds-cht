@@ -20,3 +20,24 @@ geo2-b01-x05-y07-E.png	5	7	E
 geo2-b01-x05-y07-S.png	5	7	S
 geo2-b01-x05-y07-W.png	5	7	W
 geo2-b01-x05-y07-N.png	5	7	N
+# 第 669 輪：照 cmd/fp-screen-plan 的貪婪順序補拍的五格
+geo2-b01-x00-y00-N.png	0	0	N
+geo2-b01-x00-y00-E.png	0	0	E
+geo2-b01-x00-y00-S.png	0	0	S
+geo2-b01-x00-y00-W.png	0	0	W
+geo2-b01-x03-y02-N.png	3	2	N
+geo2-b01-x03-y02-E.png	3	2	E
+geo2-b01-x03-y02-S.png	3	2	S
+geo2-b01-x03-y02-W.png	3	2	W
+geo2-b01-x03-y03-N.png	3	3	N
+geo2-b01-x03-y03-E.png	3	3	E
+geo2-b01-x03-y03-S.png	3	3	S
+geo2-b01-x03-y03-W.png	3	3	W
+geo2-b01-x04-y03-N.png	4	3	N
+geo2-b01-x04-y03-E.png	4	3	E
+geo2-b01-x04-y03-S.png	4	3	S
+geo2-b01-x04-y03-W.png	4	3	W
+geo2-b01-x01-y06-N.png	1	6	N
+geo2-b01-x01-y06-E.png	1	6	E
+geo2-b01-x01-y06-S.png	1	6	S
+geo2-b01-x01-y06-W.png	1	6	W
