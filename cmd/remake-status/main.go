@@ -176,7 +176,7 @@ func main() {
 	}
 
 	// 這幾份沒有 JSON，摘要在 Markdown 的句子裡；比對樣式在 `rows.json`。
-	for _, key := range []string{"charged_items", "cell_sweep", "fp_screens", "monster_ai", "table_dispatch", "treasure_sites", "proofread", "audio_triggers"} {
+	for _, key := range []string{"charged_items", "cell_sweep", "fp_screens", "monster_ai", "table_dispatch", "treasure_sites", "proofread", "audio_triggers", "music_triggers"} {
 		spec := rowsData.Measured[key]
 		fields, ok := grepNumbers(*auditDir, spec.Report, spec.Patterns...)
 		if !ok {
