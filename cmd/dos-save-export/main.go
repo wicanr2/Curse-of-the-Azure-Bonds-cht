@@ -180,7 +180,13 @@ func main() {
 			// 圖的**選圖去新章的檔案裡找，然後印
 			// `Unable to load 1 from WALLDEF4.` 收場（第 679 輪實測）。
 			// 值就取自我們正要裝進去的那一段自己發的 `37h LOAD PIECES`。
-			if piecesOK {
+			// ⚠ **只有換章的時候才改牆面參數。** 這一段是為了跨章而加的：底檔的
+			// 選圖（提爾佛頓的 1,2,3）在 `WALLDEF4` 裡不存在，載入會停在
+			// `Unable to load 1 from WALLDEF4.`。但**同一章之內不能改**——實測
+			// 同一格 (1,8) E 的原版畫面，改了之後與沒改差 3,735 格，而沒改的那張
+			// 與 remake 逐格相同。同章之內段自己的 `LOAD PIECES` 會把選圖設對，
+			// 先寫進去反而讓原版走到不一樣的狀態。
+			if piecesOK && *gameArea != int(prefix[0]) {
 				for index, piece := range pieces {
 					value := piece
 					if piece == 0xFF {
@@ -191,7 +197,7 @@ func main() {
 				}
 				fmt.Fprintf(os.Stderr, "牆面參數改成 %d,%d,%d（取自該段自己的 LOAD PIECES）\n",
 					pieces[0], pieces[1], pieces[2])
-			} else {
+			} else if !piecesOK {
 				fmt.Fprintln(os.Stderr, "⚠ 這一段的 LOAD PIECES 不是常數，牆面參數維持底檔的值")
 			}
 			fmt.Fprintf(os.Stderr, "換入 ECL%d 段 0x%02X 的位元組碼 %d bytes（視窗 %d bytes）\n",
