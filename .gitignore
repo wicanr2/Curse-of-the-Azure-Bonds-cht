@@ -27,6 +27,7 @@ __pycache__/
 /combat-tile-export
 /dos-save-export
 /dseg-export
+/dseg-writers
 /ecl-effect-coverage
 /ecl-event-catalog
 /ecl-text-coverage
