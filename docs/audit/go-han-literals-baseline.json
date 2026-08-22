@@ -4765,13 +4765,13 @@
     },
     {
       "path": "internal/ecl/effects.go",
-      "sha256": "ae50e27ad6773ea08838ee6991d6693bfcf1f06d778dc8d0b606021c932c993b",
+      "sha256": "af8825cd37bf8bba11d38f900a73dd7395106bf676ed77f546c83fa2b18d70ac",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "internal/ecl/effects.go",
-      "sha256": "af8825cd37bf8bba11d38f900a73dd7395106bf676ed77f546c83fa2b18d70ac",
+      "sha256": "b28a09b784838c666e7195354bf92e938855c301af230e4e6176400cf05243df",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

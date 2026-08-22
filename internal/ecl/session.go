@@ -507,6 +507,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)
 		aggregate.EncounterActions = append(aggregate.EncounterActions, result.EncounterActions...)
 		aggregate.LoadFilesRequested = aggregate.LoadFilesRequested || result.LoadFilesRequested
+		aggregate.LoadFilesLoaded3DMap = aggregate.LoadFilesLoaded3DMap || result.LoadFilesLoaded3DMap
 		if result.LoadFilesRequested {
 			aggregate.LoadFiles = result.LoadFiles
 		}

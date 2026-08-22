@@ -860,8 +860,8 @@
   {
    "opcode": "0x21",
    "name": "LOAD FILES",
-   "status": "partial",
-   "note": "LOAD FILES 記下請求；實際換檔由上層做",
+   "status": "done",
+   "note": "原作 0C15h 與 37h 共用一支（spec 1087）：載 3D 地圖那一路 handler **自己寫兩格 ECL 記憶體**（spec 1181）——`bank0^[18Ah] := o[1]`（格 `4BC5h`）與 `bank1^[592h] := 0`（格 `7EC9h`），條件是 `o[1] \u003c\u003e 0FFh`、`\u003c\u003e 7Fh` 且 `bank0^[1CCh] \u003c\u003e 0`（格 `4BE6h`，22 處寫入全在 ECL1 的三個世界地圖 block，形狀是「現在是不是第一人稱畫面」）。★ `7EC9h` **腳本讀得到**：全 corpus 34 處存取，腳本一路寫 `FFh`，唯一的讀取端 `ECL2/0x03:00F6h` 是 `COMPARE 7EC9 FF`，而清掉它的只有這個 handler ⇒ 不寫的話腳本會永遠停在那個分支。remake 現在照條件寫那兩格（都走 `recordStore`，會進 `SaveWrites`），並帶出 `LoadFilesLoaded3DMap` 讓上層知道原作走的是哪一路；實際換檔仍由上層做，那是資產層不是副作用",
    "occurrences": 22,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1457,12 +1457,12 @@
   }
  ],
  "instructions_by_status": {
-  "done": 13469,
-  "partial": 708
+  "done": 13491,
+  "partial": 686
  },
  "opcodes_by_status": {
-  "done": 56,
-  "partial": 5
+  "done": 57,
+  "partial": 4
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1493,29 +1493,29 @@
   "ECL6.DAX/0x45": 320
  },
  "unreproduced_by_block": {
-  "ECL1.DAX/0x50": 18,
-  "ECL1.DAX/0x51": 17,
-  "ECL1.DAX/0x52": 18,
-  "ECL2.DAX/0x01": 37,
-  "ECL2.DAX/0x02": 29,
-  "ECL2.DAX/0x03": 24,
-  "ECL2.DAX/0x04": 18,
-  "ECL3.DAX/0x10": 40,
-  "ECL3.DAX/0x11": 37,
+  "ECL1.DAX/0x50": 17,
+  "ECL1.DAX/0x51": 16,
+  "ECL1.DAX/0x52": 17,
+  "ECL2.DAX/0x01": 36,
+  "ECL2.DAX/0x02": 28,
+  "ECL2.DAX/0x03": 23,
+  "ECL2.DAX/0x04": 17,
+  "ECL3.DAX/0x10": 39,
+  "ECL3.DAX/0x11": 35,
   "ECL3.DAX/0x12": 39,
-  "ECL3.DAX/0x15": 12,
-  "ECL4.DAX/0x20": 46,
+  "ECL3.DAX/0x15": 11,
+  "ECL4.DAX/0x20": 45,
   "ECL4.DAX/0x21": 50,
-  "ECL4.DAX/0x22": 36,
+  "ECL4.DAX/0x22": 35,
   "ECL4.DAX/0x23": 20,
-  "ECL4.DAX/0x25": 56,
-  "ECL5.DAX/0x31": 18,
-  "ECL5.DAX/0x32": 35,
-  "ECL5.DAX/0x33": 38,
-  "ECL5.DAX/0x35": 25,
-  "ECL6.DAX/0x40": 34,
-  "ECL6.DAX/0x42": 26,
-  "ECL6.DAX/0x43": 25,
-  "ECL6.DAX/0x45": 10
+  "ECL4.DAX/0x25": 55,
+  "ECL5.DAX/0x31": 17,
+  "ECL5.DAX/0x32": 34,
+  "ECL5.DAX/0x33": 37,
+  "ECL5.DAX/0x35": 24,
+  "ECL6.DAX/0x40": 33,
+  "ECL6.DAX/0x42": 25,
+  "ECL6.DAX/0x43": 24,
+  "ECL6.DAX/0x45": 9
  }
 }
