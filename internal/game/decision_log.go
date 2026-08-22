@@ -28,6 +28,9 @@ type Decision struct {
 	Index   int      `json:"index"`
 	// Chosen 是選中那一項的文字，重放時用來核對。
 	Chosen string `json:"chosen"`
+	// Segment 是當下的 ECL 段。★ 重放跟丟時要靠它**重新對齊**：光有座標不夠，
+	// 不同段的地圖上都有 (7,13)。
+	Segment   int `json:"segment,omitempty"`
 	// 以下只有 `move` 用：從哪一格、往哪個方向走。
 	FromX     int `json:"from_x,omitempty"`
 	FromY     int `json:"from_y,omitempty"`
@@ -86,13 +89,13 @@ func DecisionLogLength() int {
 //
 // ⚠ 記**起點與方向**不是終點：重放端要先轉到那個方向才踏得出去，而樓梯事件正是
 // 「站對方向踏上去」才觸發的（spec 1193）。
-func recordMove(fromX, fromY, direction int) {
+func recordMove(segment, fromX, fromY, direction int) {
 	if !decisionRecording {
 		return
 	}
 	decisionMu.Lock()
 	defer decisionMu.Unlock()
 	decisionLog = append(decisionLog, Decision{
-		Kind: "move", FromX: fromX, FromY: fromY, Direction: direction,
+		Kind: "move", Segment: segment, FromX: fromX, FromY: fromY, Direction: direction,
 	})
 }
