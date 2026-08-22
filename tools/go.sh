@@ -37,6 +37,9 @@ exec docker run --rm \
   -e GOFLAGS="-mod=mod -buildvcs=false" \
   -e GOPROXY="file:///src/workplace/engine-proxy,https://proxy.golang.org,direct" \
   -e GOSUMDB=off \
+  `# COAB_* 是本專案自己的測試開關（例如把戰役快照導出到 workplace/），` \
+  `# 沒設就是空字串，對容器內沒有影響。` \
+  -e COAB_CAMPAIGN_SNAPSHOT_DIR="${COAB_CAMPAIGN_SNAPSHOT_DIR:-}" \
   `# engine 是私有 repo，容器沒有（也不該有）GitHub 憑證，proxy.golang.org 也取不到。` \
   `# tools/engine-proxy.sh 會把本機那份 commit 打包成檔案型 proxy 放在最前面。` \
   `# ⚠ 不要改用 GOPRIVATE：它會強制走 direct，正好繞過這個 proxy。` \

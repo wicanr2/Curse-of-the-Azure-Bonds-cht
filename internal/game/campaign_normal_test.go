@@ -3,6 +3,7 @@ package game
 import (
 	"archive/zip"
 	"fmt"
+	"os"
 	"path/filepath"
 	"sort"
 	"slices"
@@ -1095,7 +1096,20 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 	var grid, towerGrid, pitGrid, burialGrid geo.Grid
 	var observer *normalCampaignObserver
 	// 每一段結束時存一份快照，最後一段之後整批驗往返（SEG-11／SEG-30）。
+	//
+	// ★ `COAB_CAMPAIGN_SNAPSHOT_DIR` 設了就改寫到那個目錄，讓**真的前端**
+	// 可以拿這 24 個劇情檢查點逐一開起來畫一張（`tools/campaign-frames.sh`）。
+	// 戰役測試驅動的是 `*State`，畫面那一層一次都沒被跑到——那正是
+	// 「開場到結局」那一列說的「測試路徑不是玩家路徑」。
+	//
+	// ⚠ 預設仍然是 `t.TempDir()`：一般跑測試不該在 repo 裡留檔案。
 	snapshotDir := t.TempDir()
+	if exported := os.Getenv("COAB_CAMPAIGN_SNAPSHOT_DIR"); exported != "" {
+		if err := os.MkdirAll(exported, 0o755); err != nil {
+			t.Fatalf("快照輸出目錄建不起來：%v", err)
+		}
+		snapshotDir = exported
+	}
 	var segmentEnds []campaignSegmentEnd
 	captureSegmentEnd := func(t *testing.T, name string) {
 		t.Helper()
