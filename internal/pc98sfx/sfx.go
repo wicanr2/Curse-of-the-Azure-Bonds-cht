@@ -146,3 +146,66 @@ func decodeEffect(game []byte, selector int) Effect {
 	}
 	return effect
 }
+
+// ---- 音效描述子（PC-98 資料段 3113）----
+//
+// `SOUNDFX` 的引數不是選擇子而是**描述子變數的位址**：呼叫端寫的是
+// `push word [位址]`。那些變數在資料段 3113 連續排列，順序就是選擇子順序，
+// 前面多一個 `SOUNDHALT`：
+//
+//	4838h  SOUNDHALT   （不是選擇子，是「停手上那一個」）
+//	483Ah  選擇子 0（SOUNDOFF）
+//	483Ch  選擇子 1（SOUNDON）
+//	…
+//	4858h  選擇子 15（CRASHFX）
+//
+// ⚠ 這一段以前是**手打的位址→名字對照表**，而那張表漏了 `4840h` 與 `4842h`
+// 兩格（MISSFX／SPELLHITFX）。漏掉不會有任何錯誤：報表把它們印成
+// 「符號表沒有」，讀起來像原作真的少了兩個名字。改成從選擇子表推之後，
+// 「漏一格」在結構上就不可能發生。
+const (
+	// HaltDescriptor 是 `SOUNDHALT` 的變數位址。
+	HaltDescriptor = 0x4838
+	// DescriptorBase 是選擇子 0 的變數位址；每個選擇子佔一個 word。
+	DescriptorBase = 0x483A
+)
+
+// SelectorInfo 是一個 `SOUNDFX` 選擇子的靜態身分。
+type SelectorInfo struct {
+	Selector int
+	// Symbol 是 Borland 除錯符號表裡的名字（`SWISHFX` 這種）。
+	Symbol string
+	// Event 是 remake 這一側的語意事件；`SOUNDOFF`／`SOUNDON` 沒有對應的
+	// 玩法事件，留空。
+	Event string
+	// Descriptor 是呼叫端推的變數位址。
+	Descriptor int
+}
+
+// Selectors 回傳全部 16 個選擇子，外加 `SOUNDHALT`（選擇子 −1）。
+// **描述子位址由基底推出來，不是另外抄一份**。
+func Selectors() []SelectorInfo {
+	list := make([]SelectorInfo, 0, selectorCount+1)
+	list = append(list, SelectorInfo{
+		Selector: -1, Symbol: "SOUNDHALT", Event: "stop", Descriptor: HaltDescriptor,
+	})
+	for selector, metadata := range selectorMetadata {
+		list = append(list, SelectorInfo{
+			Selector:   selector,
+			Symbol:     metadata.symbol,
+			Event:      metadata.event,
+			Descriptor: DescriptorBase + selector*2,
+		})
+	}
+	return list
+}
+
+// SelectorForDescriptor 把呼叫端推的變數位址翻回選擇子身分。
+func SelectorForDescriptor(address int) (SelectorInfo, bool) {
+	for _, info := range Selectors() {
+		if info.Descriptor == address {
+			return info, true
+		}
+	}
+	return SelectorInfo{}, false
+}

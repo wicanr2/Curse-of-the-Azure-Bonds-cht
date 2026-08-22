@@ -77,3 +77,65 @@ func TestSelectorForEventUsesBorlandSemanticNames(t *testing.T) {
 		t.Fatal("unknown event was accepted")
 	}
 }
+
+// 描述子位址曾經是一張手打的對照表，而那張表漏了 4840h／4842h 兩格
+// （MISSFX／SPELLHITFX）。漏掉沒有任何徵兆：報表只是把那兩處印成
+// 「符號表沒有」。這一組把「不可能漏」釘住。
+func TestSelectorsCoverEveryDescriptorContiguously(t *testing.T) {
+	list := Selectors()
+	if len(list) != 17 {
+		t.Fatalf("選擇子 ＋ SOUNDHALT 共 %d 個，want 17", len(list))
+	}
+	if list[0].Symbol != "SOUNDHALT" || list[0].Descriptor != HaltDescriptor {
+		t.Fatalf("第一個應該是 SOUNDHALT@%04Xh：%+v", HaltDescriptor, list[0])
+	}
+	seen := map[int]string{}
+	for _, info := range list[1:] {
+		if info.Descriptor != DescriptorBase+info.Selector*2 {
+			t.Fatalf("選擇子 %d 的描述子 %04Xh 不等於基底 ＋ 選擇子×2", info.Selector, info.Descriptor)
+		}
+		if previous, clash := seen[info.Descriptor]; clash {
+			t.Fatalf("描述子 %04Xh 同時屬於 %s 與 %s", info.Descriptor, previous, info.Symbol)
+		}
+		seen[info.Descriptor] = info.Symbol
+	}
+	// 那兩格必須查得到，而且必須是這兩個名字——這正是舊表漏掉的兩格。
+	for address, want := range map[int]string{0x4840: "MISSFX", 0x4842: "SPELLHITFX"} {
+		info, ok := SelectorForDescriptor(address)
+		if !ok || info.Symbol != want {
+			t.Fatalf("%04Xh ＝ %+v，want %s", address, info, want)
+		}
+	}
+	// 負對照：表外的位址必須查不到，否則上面的「查得到」不算數。
+	if info, ok := SelectorForDescriptor(0x4836); ok {
+		t.Fatalf("4836h 不在表裡卻查得到：%+v", info)
+	}
+	if info, ok := SelectorForDescriptor(0x485A); ok {
+		t.Fatalf("485Ah 不在表裡卻查得到：%+v", info)
+	}
+}
+
+// 每個有玩法語意的選擇子都要有事件名，而且事件名不能撞號——
+// `cmd/sound-trigger-compare` 是拿事件名當鍵去對 remake 的。
+func TestSelectorEventsAreUniqueWhenPresent(t *testing.T) {
+	events := map[string]string{}
+	for _, info := range Selectors() {
+		if info.Event == "" {
+			// SOUNDOFF／SOUNDON 是驅動開關，沒有玩法事件。
+			if info.Symbol != "SOUNDOFF" && info.Symbol != "SOUNDON" {
+				t.Fatalf("%s 沒有事件名", info.Symbol)
+			}
+			continue
+		}
+		if previous, clash := events[info.Event]; clash {
+			t.Fatalf("事件 %q 同時屬於 %s 與 %s", info.Event, previous, info.Symbol)
+		}
+		events[info.Event] = info.Symbol
+		if _, ok := SelectorForEvent(info.Event); !ok {
+			t.Fatalf("%s 的事件 %q 反查不回選擇子", info.Symbol, info.Event)
+		}
+	}
+	if len(events) != 15 {
+		t.Fatalf("有事件名的選擇子 %d 個，want 15", len(events))
+	}
+}
