@@ -890,8 +890,8 @@
   {
    "opcode": "0x24",
    "name": "COMBAT",
-   "status": "partial",
-   "note": "COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；★★ **第四支已經解出來並接上**（spec 1182）：`sub_184B` 讀完是「`bank1^[5C4h] = 1` ⇒ 神殿（overlay-04 ＝ TEMPLE），否則 ⇒ 戰後處理（overlay-05 ＝ DOPOSTCOMBAT）」——那正是那 46 處「沒擺過怪的 24h」的去向，腳本先用 `27h TREASURE` 堆好戰利品再用 `24h` 開分配畫面。remake 因此把零隻怪的 `24h` 改成發 `PostCombatRequested` 而不是 `CombatRequested`（原作的 `24h` 沒有「零隻怪的戰鬥」，有怪才走 `sub_1956`）。⚠ 仍是 `partial`：兩個「有怪要打」旗標 `8B69h`／`8B56h` 在 remake 沒有 producer（用怪物鏈非空代替），而神殿那一支的 `7EE2h` 也沒有 producer",
+   "status": "done",
+   "note": "COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；★★ **第四支已經解出來並接上**（spec 1182）：`sub_184B` 讀完是「`bank1^[5C4h] = 1` ⇒ 神殿（overlay-04 ＝ TEMPLE），否則 ⇒ 戰後處理（overlay-05 ＝ DOPOSTCOMBAT）」——那正是那 46 處「沒擺過怪的 24h」的去向，腳本先用 `27h TREASURE` 堆好戰利品再用 `24h` 開分配畫面。remake 因此把零隻怪的 `24h` 改成發 `PostCombatRequested` 而不是 `CombatRequested`（原作的 `24h` 沒有「零隻怪的戰鬥」，有怪才走 `sub_1956`）。★★★ 四支全部接上而且都有實機路徑：打（怪物鏈非空 ＝ 原作的 `8B69h`，spec 1145）、商店、神殿（後兩者的 producer 是腳本自己，`7F6Ch` 9 處／`7EE2h` 4 處，已用原版資料跑過）、戰後處理。★★ 第一支的另一個條件 `DS:8B56h` ＝ **決鬥旗標**，整個執行檔只有 `GODUEL`（`overlay-07 entry#25`）設它，而 `GODUEL` 只有 `2Dh CALL` 的 `8000h`／`8001h` 到得了——**corpus 兩個都沒用到**（spec 1150），所以那一支在 CoAB 走不到，remake 用怪物鏈非空覆蓋了整個可達條件",
    "occurrences": 199,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1457,12 +1457,12 @@
   }
  ],
  "instructions_by_status": {
-  "done": 13491,
-  "partial": 686
+  "done": 13690,
+  "partial": 487
  },
  "opcodes_by_status": {
-  "done": 57,
-  "partial": 4
+  "done": 58,
+  "partial": 3
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1493,29 +1493,29 @@
   "ECL6.DAX/0x45": 320
  },
  "unreproduced_by_block": {
-  "ECL1.DAX/0x50": 17,
-  "ECL1.DAX/0x51": 16,
-  "ECL1.DAX/0x52": 17,
-  "ECL2.DAX/0x01": 36,
-  "ECL2.DAX/0x02": 28,
-  "ECL2.DAX/0x03": 23,
-  "ECL2.DAX/0x04": 17,
-  "ECL3.DAX/0x10": 39,
-  "ECL3.DAX/0x11": 35,
-  "ECL3.DAX/0x12": 39,
-  "ECL3.DAX/0x15": 11,
-  "ECL4.DAX/0x20": 45,
-  "ECL4.DAX/0x21": 50,
-  "ECL4.DAX/0x22": 35,
-  "ECL4.DAX/0x23": 20,
-  "ECL4.DAX/0x25": 55,
-  "ECL5.DAX/0x31": 17,
-  "ECL5.DAX/0x32": 34,
-  "ECL5.DAX/0x33": 37,
-  "ECL5.DAX/0x35": 24,
-  "ECL6.DAX/0x40": 33,
-  "ECL6.DAX/0x42": 25,
-  "ECL6.DAX/0x43": 24,
-  "ECL6.DAX/0x45": 9
+  "ECL1.DAX/0x50": 5,
+  "ECL1.DAX/0x51": 3,
+  "ECL1.DAX/0x52": 16,
+  "ECL2.DAX/0x01": 31,
+  "ECL2.DAX/0x02": 19,
+  "ECL2.DAX/0x03": 9,
+  "ECL2.DAX/0x04": 11,
+  "ECL3.DAX/0x10": 30,
+  "ECL3.DAX/0x11": 29,
+  "ECL3.DAX/0x12": 28,
+  "ECL3.DAX/0x15": 5,
+  "ECL4.DAX/0x20": 34,
+  "ECL4.DAX/0x21": 47,
+  "ECL4.DAX/0x22": 32,
+  "ECL4.DAX/0x23": 19,
+  "ECL4.DAX/0x25": 35,
+  "ECL5.DAX/0x31": 13,
+  "ECL5.DAX/0x32": 19,
+  "ECL5.DAX/0x33": 24,
+  "ECL5.DAX/0x35": 13,
+  "ECL6.DAX/0x40": 22,
+  "ECL6.DAX/0x42": 20,
+  "ECL6.DAX/0x43": 20,
+  "ECL6.DAX/0x45": 3
  }
 }
