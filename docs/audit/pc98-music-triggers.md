@@ -9,22 +9,26 @@
 | 總計 | 數量 |
 |---|---:|
 | 換曲點（`mov byte [MUSICNO], imm`）| 11 |
-| 被選到的相異曲目 | 10 |
+| 換曲點（曲號直接推給 `MSCPLAY`）| 2 |
+| 換曲點合計 | 13 |
+| 被選到的相異曲目 | 12 |
 | game pack 宣告的曲目 | 12 |
 
-| 模組 | 單元 | 位移 | 選擇子 | 曲目 |
-|---|---|---:|---:|---|
-| `PC98-GAME.EXE` | — | `9486h` | 3 | 城鎮 |
-| `PC98-GAME.EXE` | — | `94AEh` | 4 | 地城三 |
-| `PC98-GAME.EXE` | — | `94C4h` | 6 | 村莊 |
-| `PC98-GAME.EXE` | — | `94CBh` | 5 | 荒野 |
-| `PC98-GAME.EXE` | — | `94E2h` | 8 | 散提爾堡城壁 |
-| `PC98-GAME.EXE` | — | `94F9h` | 9 | 盜賊公會 |
-| `PC98-GAME.EXE` | — | `9514h` | 12 | 地城 |
-| `overlay-01` | — | `093Ch` | 1 | 標題 |
-| `overlay-05` | POSTCOM | `1955h` | 2 | 角色建立 |
-| `overlay-17` | GEN | `0B08h` | 2 | 角色建立 |
-| `overlay-18` | — | `168Dh` | 10 | 結局 |
+| 模組 | 單元 | 位移 | 形狀 | 選擇子 | 曲目 |
+|---|---|---:|---|---:|---|
+| `PC98-GAME.EXE` | — | `9486h` | `mov byte [MUSICNO], imm` | 3 | 城鎮 |
+| `PC98-GAME.EXE` | — | `94AEh` | `mov byte [MUSICNO], imm` | 4 | 地城三 |
+| `PC98-GAME.EXE` | — | `94C4h` | `mov byte [MUSICNO], imm` | 6 | 村莊 |
+| `PC98-GAME.EXE` | — | `94CBh` | `mov byte [MUSICNO], imm` | 5 | 荒野 |
+| `PC98-GAME.EXE` | — | `94E2h` | `mov byte [MUSICNO], imm` | 8 | 散提爾堡城壁 |
+| `PC98-GAME.EXE` | — | `94F9h` | `mov byte [MUSICNO], imm` | 9 | 盜賊公會 |
+| `PC98-GAME.EXE` | — | `9514h` | `mov byte [MUSICNO], imm` | 12 | 地城 |
+| `overlay-01` | — | `093Ch` | `mov byte [MUSICNO], imm` | 1 | 標題 |
+| `overlay-05` | POSTCOM | `1955h` | `mov byte [MUSICNO], imm` | 2 | 角色建立 |
+| `overlay-10` | COMPREP | `1D97h` | `push imm` → `MSCPLAY` | 11 | 地城二 |
+| `overlay-10` | COMPREP | `1DA1h` | `push imm` → `MSCPLAY` | 7 | 戰鬥 |
+| `overlay-17` | GEN | `0B08h` | `mov byte [MUSICNO], imm` | 2 | 角色建立 |
+| `overlay-18` | — | `168Dh` | `mov byte [MUSICNO], imm` | 10 | 結局 |
 
 ## 播放常式的呼叫點（音效那一半）
 
@@ -32,12 +36,14 @@
 
 | 常式 | 位移 | 呼叫點 | 來源模組 |
 |---|---:|---:|---|
-| SOUNDFX（音效） | `0000h` | 36 | overlay-01×1、overlay-02×16、overlay-03×2、overlay-13×9、overlay-14×3、overlay-22×1、overlay-24×2、overlay-32×2 |
-| INITSOUND（初始化） | `010Dh` | 10 | overlay-02×10 |
-| MSCPLAY（放音樂） | `0114h` | 5 | overlay-01×1、overlay-05×1、overlay-17×2、overlay-18×1 |
-| BGMPLAY（背景音樂） | `0177h` | 1 | overlay-26×1 |
+| SOUNDFX（音效） | `0000h` | 54 | overlay-01×1、overlay-02×18、overlay-03×2、overlay-13×10、overlay-14×3、overlay-22×4、overlay-24×2、overlay-32×2、常駐×12 |
+| INITSOUND（初始化） | `010Dh` | 16 | overlay-02×13、常駐×3 |
+| MSCPLAY（放音樂） | `0114h` | 7 | overlay-01×1、overlay-05×1、overlay-10×2、overlay-17×2、overlay-18×1 |
+| MSCSTOP（停音樂） | `015Eh` | 1 | 常駐×1 |
+| BGMPLAY（背景音樂） | `0177h` | 2 | overlay-26×1、常駐×1 |
+| （符號表沒有這一格） | `025Fh` | 1 | 常駐×1 |
 
-合計 52 處。
+合計 81 處。
 
 ### `SOUNDFX` 每一處在放什麼音效
 
@@ -131,12 +137,21 @@
 | WHISTLEFX（哨音） | `overlay-13` | `2BB4h` | **SHOWARROW**＋142h |
 | WHISTLEFX（哨音） | `overlay-13` | `2C01h` | **SHOWARROW**＋18Fh |
 
-★ **交叉印證**：`MSCPLAY` 的呼叫點正好落在上表那五個改寫 `MUSICNO` 的 overlay 上（`GEN`×2、`overlay-01`、`POSTCOM`、`overlay-18`）——兩次獨立的掃描（資料格寫入 vs 函式呼叫）指到同一組地方。
+★ **交叉印證**：兩次獨立的掃描——換曲點（資料格寫入／推給 `MSCPLAY` 的立即數）與 `MSCPLAY` 的呼叫點——有 **5** 個模組重合：overlay-01、overlay-05、overlay-10、overlay-17、overlay-18。
 
-⚠ 這裡只數**跨 overlay 的 far call**。常駐自己呼叫 `SOUNDX` 的次數不在裡面（那是段內近呼叫，far-call 表看不到），所以是**下界**。
+⚠ 這一節是**位元組直掃**，涵蓋常駐與全部 overlay。改用直掃之前走的是 far-call 對照表，`SOUNDFX` 少 18 處、`MSCPLAY` 少 2 處（少掉的正是 `COMPREP` 那兩處戰鬥音樂），而**下界看起來和全集一樣合理**。
 
 ## 沒有任何換曲點選到的曲目
 
-11（地城二）、7（戰鬥）
+（沒有——**宣告的 12 首每一首都有地方會選到**。）
 
-⚠ 不要直接讀成「這首用不到」：這一支只認 `mov byte [MUSICNO], imm` 這一種形狀。從暫存器或變數寫進去的換曲點看不到——**要下「沒有人選它」的結論得先排除那些形狀**。
+⚠ 這個 0 是**改寬掃描面之後**才出現的。只認 `mov byte [MUSICNO], imm` 的時候有兩首（戰鬥、地城二）落在外面，報表只能寫「不能讀成用不到」然後停在那裡。真正的形狀是 `INITCOMBAT`（COMPREP）**把曲號直接推給 `MSCPLAY`**，完全不碰 `MUSICNO`：
+
+```
+cmp byte [LOADMONNUM], 47h
+jnz  →  mov al, 07h  ; 戰鬥
+        mov al, 0Bh  ; 地城二
+push ax / call MSCPLAY
+```
+
+⇒ **戰鬥開始換哪一首，取決於載入了哪一組怪物**（`LOADMONNUM` ＝ `8BE2h`，Borland 符號直接讀出）。
