@@ -39,7 +39,9 @@ gate() {
 while [ "$#" -ge 2 ]; do
   x="$1"; y="$2"; shift 2
   echo "=== 目標 ($x,$y) ==="
-  (cd "$ROOT" && tools/go.sh run ./cmd/dos-save-export -base "$base" -out "$SAVE" -slot A -area 2 -x "$x" -y "$y" -facing 0 >/dev/null)
+  (cd "$ROOT" && tools/go.sh run ./cmd/dos-save-export -base "$base" -out "$SAVE" -slot A \
+    -area "$AREA" -ecl-block "$ECL_BLOCK" -map-block "$GEO_BLOCK" \
+    -x "$x" -y "$y" -facing 0 >/dev/null 2>&1)
   "$S" start >/dev/null
   for _ in $(seq 20); do screen | grep -q "PLAY DEMO" && break; sleep 1; done
   gate Escape "CHOOSE A FUNCTION" || { echo "  主選單沒出現，跳過"; continue; }
