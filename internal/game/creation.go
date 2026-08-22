@@ -427,8 +427,38 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 	// 才輪得到腳本去改它（spec 1172）。
 	if s.session != nil {
 		s.syncDungeonECLRegisters()
+		s.restoreWallPiecesForLoadedBlock()
 	}
 	return nil
+}
+
+// restoreWallPiecesForLoadedBlock 把牆磚選圖補回來。
+//
+// ★ 為什麼需要。 原版存檔裡**沒有**牆磚選圖，也沒有地圖幾何——整份存檔掃過六個
+// GEO 檔集一塊都找不到（spec 1185）。原版是靠**重跑當前 ECL block 的進入碼**
+// 把 `LOAD FILES`／`LOAD PIECES` 再發一次拿回來的。remake 載入存檔時不重跑那段
+// （會連帶觸發劇情副作用），於是 `LoadPieces` 停在全零。
+//
+// ⚠ 全零不會報錯，它會把**每一面牆都畫成空氣**，而畫面看起來完全正常：天空、
+// 地板、UI 都在，只是牆不見了。拿這種畫面去跟原版比會得到一個很大的差異數字，
+// 然後被誤判成「第一人稱畫錯了」。
+//
+// 查表的鍵是 **ECL block**，不是地圖：GEO5 的 `0x31` 與 `0x32` 共用同一張幾何
+// 區塊，牆磚選圖卻不同。
+func (s *State) restoreWallPiecesForLoadedBlock() {
+	if s.LoadPieces != [3]uint16{} {
+		return
+	}
+	// ⚠ 鍵要用**存檔記下來的 ECL 段**（`LastECLBlockID`），不是 session 當下的
+	// 段。載入存檔之後 `CurrentBlockID()` 還停在初始化時的世界地圖段 `0x50`，
+	// 拿它去查一定查不到——而查不到的後果是安靜地不補，牆照樣是空氣。
+	pieces, ok := eclBlockWallPieces[eclBlockKey{
+		area: s.Area.GameArea, block: uint8(s.Area.LastECLBlockID)}]
+	if !ok {
+		return
+	}
+	s.applyLoadPieces(ecl.RunResult{LoadPiecesRequested: true, LoadPieces: pieces,
+		WallSetAssignments: ecl.WallSetAssignmentsFor(pieces, s.session.MemorySnapshot())})
 }
 
 // encodeECLBanksInto 把 ECL session 的區 0..3 寫進 SAVGAM 的四塊（spec 1163）。
