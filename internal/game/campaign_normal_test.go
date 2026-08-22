@@ -95,12 +95,40 @@ type campaignCellKey struct {
 	terrain uint8
 }
 
+// insideSegmentSnapshots 記著哪些段已經在**段內**存過快照了。
+//
+// ★ 為什麼要段內存：段界的快照（`captureSegmentEnd`）停在段落**結束**的地方，
+// 讀回來常常已經在荒野或地圖模式——`cmd/campaign-snapshot-walk` 那時什麼都走不了。
+// 要「帶著劇情旗標把那一段走遍」，快照就得在**隊伍還站在那一段的地城裡**的時候存。
+//
+// ⚠ 每一段只存**第一次**進到地城的那一刻：存太多份會讓走訪時間乘上份數，
+// 而同一段的旗標在段內的差異對「走得到哪些格子」影響很小。
+var insideSegmentSnapshots = map[uint8]bool{}
+
+// captureInsideSegment 在隊伍**第一次**站上某一段的地城時存一份快照。
+// 只有設了 `COAB_CAMPAIGN_SNAPSHOT_DIR` 才會寫檔。
+func captureInsideSegment(state *State) {
+	dir := os.Getenv("COAB_CAMPAIGN_SNAPSHOT_DIR")
+	if dir == "" || state.session == nil {
+		return
+	}
+	block := state.session.CurrentBlockID()
+	if insideSegmentSnapshots[block] {
+		return
+	}
+	insideSegmentSnapshots[block] = true
+	// ⚠ 存檔失敗**不讓戰役測試紅**：這是附帶產出，不是戰役的驗收條件。
+	// 失敗會在報表那一側以「這一段沒有段內快照」的形式看得出來。
+	_ = state.SavePartyFile(filepath.Join(dir, fmt.Sprintf("inside-block-%02X.json", block)))
+}
+
 func (o *normalCampaignObserver) observe() {
 	if o.state != nil && o.state.Mode == ModeDungeon && o.state.session != nil {
 		campaignVisitedCells[campaignCellKey{
 			block:   o.state.session.CurrentBlockID(),
 			terrain: o.state.DungeonWallRoof,
 		}] = true
+		captureInsideSegment(o.state)
 	}
 	if o.messages != nil && o.state != nil {
 		// 訊息與提示都要記：遭遇選單的敘述走的是 Prompt 那一行。
