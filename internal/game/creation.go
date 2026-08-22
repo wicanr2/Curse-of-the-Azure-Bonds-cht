@@ -413,11 +413,20 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 	s.MapX = int(container.MapPosX)
 	s.MapY = int(container.MapPosY)
 	s.DungeonDirection = container.MapDirection
+	// ⚠ `MapPos` 那一組就是地城裡的隊伍格（原作 `720Fh`／`7210h`），不是另一
+	// 套世界地圖座標；只填 `MapX`／`MapY` 會讓讀檔後的地城位置停在上一次的值。
+	s.DungeonX = int(container.MapPosX)
+	s.DungeonY = int(container.MapPosY)
 	s.DungeonWallType = container.MapWallType
 	s.DungeonWallRoof = container.MapWallRoof
 	s.savgamPrefix = &container
 	if err := s.seedECLBanksFrom(container); err != nil {
 		return err
+	}
+	// 原版存檔的 map state 那五個位元組就是地圖暫存器本身，讀進來之後要回寫，
+	// 才輪得到腳本去改它（spec 1172）。
+	if s.session != nil {
+		s.syncDungeonECLRegisters()
 	}
 	return nil
 }
@@ -876,6 +885,13 @@ func (s *State) LoadPartyFile(path string) error {
 		if err != nil {
 			return err
 		}
+	}
+	// ★ 讀檔之後地圖暫存器要跟隊伍位置一致。 原作的引擎每動一次位置就寫
+	// `720Fh`／`7210h`／`7211h`，那三格因此永遠等於真實位置。remake 的讀檔
+	// 路徑會做版本回退與範圍夾擠（上面那幾條 `= 7, 13, 0`），不同步的話
+	// `2Dh CALL 2E10h` 的重畫會拿快照裡的舊座標去投影（spec 1172）。
+	if s.session != nil {
+		s.syncDungeonECLRegisters()
 	}
 	s.activeMusicTrackID = ""
 	s.musicPlaybackSnapshot = nil
