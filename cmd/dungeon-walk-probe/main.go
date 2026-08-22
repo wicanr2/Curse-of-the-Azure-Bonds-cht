@@ -18,7 +18,19 @@
 //
 // 用法：
 //
-//	go run ./cmd/dungeon-walk-probe -output docs/audit/dungeon-walk.md
+//	# 先錄主線在每一段的到達取樣（門要劇情旗標才開得了）
+//	rm -rf workplace/campaign-frames/arrivals
+//	mkdir -p workplace/campaign-frames/arrivals
+//	COAB_ARRIVAL_SNAPSHOT_DIR=/src/workplace/campaign-frames/arrivals \
+//	    tools/go.sh test ./internal/game/ -count=1 \
+//	    -run 'TestRealNewGameRunsToTheEnding|TestTilvertonRouteIsWalkableAndLocalized'
+//	go run ./cmd/dungeon-walk-probe -arrivals workplace/campaign-frames/arrivals \
+//	    -output docs/audit/dungeon-walk.md
+//
+// ⚠ **不給 `-arrivals` 會低估**：冷走每一段都開一支新隊伍、沒有任何劇情旗標，
+// 要旗標才開得了的門對它永遠是牆。實測 220 → **225** 個分派索引，
+// 可達性聯集 214 → **224**（spec 1193／1195）。少給那個旗標不會報錯，
+// 只會少幾格——**而少幾格和「那裡本來就走不到」長得一模一樣**。
 package main
 
 import (
@@ -27,7 +39,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/eclcells"
@@ -79,6 +93,8 @@ func main() {
 	// ★ 「站得上去的」比「從入口走得到的」多：地圖常常分成好幾塊互不相連的區域
 	// （巫師塔每一層都是獨立房間）。這一份是**走路能到的上限**。
 	componentsOut := flag.String("walkable-json", "", "把**站得上去**（任一連通分量內）的 (block, 地形碼) 寫成 JSON")
+	arrivals := flag.String("arrivals", "",
+		"到達取樣目錄：冷走前先把主線在那一段的劇情旗標鋪上（spec 1195），門才開得了")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
 	flag.Parse()
 
@@ -127,7 +143,7 @@ func main() {
 		} { // ⚠ 試過再加第 4 項：一個索引都沒多，跑一趟卻多花兩分半 ⇒ 收斂了。
 			pass := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
 			if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &pass, terrains,
-				policy.follow, policy.pick); err != nil {
+				policy.follow, policy.pick, handoffFor(*arrivals, seg.Block)); err != nil {
 				if walk.note == "" {
 					walk.note = err.Error()
 				}
@@ -259,11 +275,48 @@ func main() {
 //
 // ⚠ 只跑其中一種都會低估，而且**兩邊看起來都很合理**——這正是「下界看起來和
 // 全集一樣合理」那個坑（spec 1186）。
+// handoffFor 讀那一段的到達取樣。⚠ 目錄沒給或那一段沒有取樣就回 nil——
+// 冷走照舊，只是那一段的門仍然打不開。
+func handoffFor(dir string, block uint8) map[uint16]uint16 {
+	if dir == "" {
+		return nil
+	}
+	raw, err := os.ReadFile(filepath.Join(dir, fmt.Sprintf("arrival-block-%02X.json", block)))
+	if err != nil {
+		return nil
+	}
+	var file struct {
+		Schema string            `json:"schema"`
+		Memory map[string]uint16 `json:"memory"`
+	}
+	if json.Unmarshal(raw, &file) != nil || file.Schema != "coab-arrival-sample/1" {
+		return nil
+	}
+	out := make(map[uint16]uint16, len(file.Memory))
+	for key, value := range file.Memory {
+		address, err := strconv.ParseUint(key, 10, 16)
+		if err != nil {
+			continue
+		}
+		out[uint16(address)] = value
+	}
+	return out
+}
+
 func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mask, steps int,
-	walk *segmentWalk, terrains map[uint8]bool, followTeleports bool, pick int) error {
+	walk *segmentWalk, terrains map[uint8]bool, followTeleports bool, pick int,
+	handoff map[uint16]uint16) error {
 	state, err := data.NewParty()
 	if err != nil {
 		return err
+	}
+	// ★ 冷走每一段都開一支新隊伍、**沒有任何劇情旗標**，所以要旗標才開得了的門
+	// 對它永遠是牆——那正是可達性缺口的主要成因（spec 1193）。有了主線在那一段
+	// 的到達取樣，就可以把當時的旗標鋪上去再走（spec 1195）。
+	//
+	// ⚠ 這仍然**不是**「玩家走得到」的證明，是**帶著劇情旗標的幾何可達性**。
+	if len(handoff) > 0 {
+		state.SeedHandoffMemory(handoff)
 	}
 	if err := state.EnterSegment(seg); err != nil {
 		return fmt.Errorf("進不去：%v", err)
