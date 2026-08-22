@@ -128,6 +128,7 @@ func main() {
 		Modes     []string `json:"modes"`
 		Messages  int      `json:"messages"`
 		Fallbacks int      `json:"fallbacks"`
+		Doors     int      `json:"doors_found"`
 	}
 	if readJSON(*auditDir, "key-driven-session.json", &keySession) {
 		add("key_driven_session", keySession.Frames, keySession.Cells,
