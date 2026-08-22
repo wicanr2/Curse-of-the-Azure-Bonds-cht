@@ -1122,6 +1122,181 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "18a8248f0745caa3033b7c8f9f01a48422cbc8987d1ad9ad4f99b9f6771538f0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "18efdde42412e2350ce1740b09e149cf5edbda431fbf55a85e2321ef1392f411",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "2a77e8ea84cee3cf76c603f7d867ab166c67d863e45a6c4f3e439cde80141dac",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "369657f07944662bbfd5cc64dc5e8bb328f11a25ef3efd485fe5029e0ffa879b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "3b7dd4ad3e15a328a8a310127414fde166575416087545b75e22507eae00aaab",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "5e1d82de481c9d09253df4362e51aa9c6c157ba8f06768ea80c7f107cffac7aa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "74b2b2b874988f63973c29f4a70996a63a975c48efb638ea3aa7e070ad0f7926",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "7cd6773fb7608ff1d62e6cbbcdc5fb84670fec2becdc7f00568c0046bcce2df5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "88ad2e9a2d36c107d49a3bec253e0a383da0e5ed9118bdc708485eb737027aed",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "9455efc075797630c1d78ef388cfbbab8f335ca9b95d0bc0df6a555cba4983af",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "996b58182f3c7336a77e14b41439118a4ce31a9e9027a22eb8a73525b647ca9c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "9bb815523620d5a3d8641a1dd80d86f957b250c697badd54a9f6512627c35a01",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "9e3ddaedd64ae2970ea8d8b2eaa0a60f11a1fd9da2a66d811f59fe8fc42407b7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "b0b238f92a40348a6556392842839db9069cb53edbfbea4783b99acd1265c3e7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "c03e2f87b88f20ab901378e760b2b9054895956d030b6ed87707763c768b6247",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "d4232137f59c88821058cc551f4c94459ad98c323ab84713fbc80dc84e95c67a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "d96ad9ceb160f07da6cfa3d11448301e16bf95564d7984a745b9873eb10fb9e4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "daada28c10a7506007212c31ca8ba893b4d9aa535e085517ae5dad0b1f66cd50",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "ef81b587fc92f1bb1439ff9a730406d1ba0bdc5d11e781890a2436268abf5243",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "f3a2b18be5099570d8f2dd8fed1555a48ebabcf88b33e158c35c16371bf23a55",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "main",
+      "sha256": "fc444386e10e923d5628bea0588afd81283cc2f81f02fbdb68ddd123299b8899",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "section",
+      "sha256": "6a914315b1be2be66e5790c7410326986dadd49624a7d33f348983049675df13",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "section",
+      "sha256": "cae965c94fb5229fe34b2ac8649fbb2121b6dd32dab9ca5f54a6330a3f98d6dc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cht-proofread-audit/main.go",
+      "function": "section",
+      "sha256": "da2dee540ba322c4704c4b3516d9bf64e8d8dab48a00edffc81cbbbedb314277",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/combat-spell-coverage-audit/main.go",
       "function": "describeData",
       "sha256": "0c242793a0b6b6fb21f6cf46b5a0650da0731d6f642b6be9a2ab7237691f20bd",
