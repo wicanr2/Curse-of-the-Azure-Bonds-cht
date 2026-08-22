@@ -86,7 +86,8 @@ call 停止 → 延遲 → 開始
 
 ## 兩個玩家開關，互不影響
 
-全域按鍵處理是 `sub_18036`（讀一個鍵，處理全域熱鍵）：
+全域按鍵處理是 `sub_18036`（讀一個鍵，處理全域熱鍵）。**那支常式一共只有四個
+分支**，音訊佔兩個；完整的四個與另外兩個是什麼，見 spec 1194。
 
 | 原作鍵 | 內部碼 | 做什麼 | remake |
 |---|---|---|---|
@@ -158,4 +159,5 @@ CTRL S : Toggles sound on and off (may be used at any time).
 - `TestMusicSwitchIsTheOnlyThingThatStopsMusic`、
   `TestSoundAndMusicSwitchesAreIndependent`、
   `TestCtrlSAndCtrlOTogglePlayerAudioThroughTheKeySeam`
+- spec 1194（全域熱鍵的完整四個）
 - spec 1183（dseg 掃描）、1186（音效觸發語意）、1187（DOS 音效描述子）

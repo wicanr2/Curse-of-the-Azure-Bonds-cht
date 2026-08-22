@@ -171,3 +171,50 @@ func TestCtrlSAndCtrlOTogglePlayerAudioThroughTheKeySeam(t *testing.T) {
 	}
 	keys.release()
 }
+
+// ★ 原作的全域熱鍵**只有四個**，而且它們住在同一支常式裡（PC-98 `sub_18036`），
+// 所以這是個問得完的分母。這條把「四個各自的處置」寫死：接了哪兩個、另外兩個
+// 為什麼不接。
+//
+// ⚠ 它擋的是**默默漂移**：接上第三個而沒有更新 spec 1194，或反過來把已接的拿掉。
+// 分母不會自己更新，所以讓它在這裡紅。
+func TestOriginalGlobalHotkeysAreAccountedFor(t *testing.T) {
+	for _, item := range []struct {
+		name     string
+		key      ebiten.Key
+		wired    bool
+		toggle   func(*game.State) bool
+		whyNotDo string
+	}{
+		{
+			name: "Ctrl+S 音效開關（原作 13h）", key: ebiten.KeyS, wired: true,
+			toggle: (*game.State).SoundSwitchOff,
+		},
+		{
+			name: "Ctrl+O 音樂開關（原作 0Fh）", key: ebiten.KeyO, wired: true,
+			toggle: (*game.State).MusicSwitchOff,
+		},
+		{
+			name: "Ctrl+B 範圍瞄準游標（原作 02h）", key: ebiten.KeyB, wired: false,
+			whyNotDo: "戰鬥介面功能，要等 TACMAP 的範圍瞄準本身做到那個程度（spec 1194）",
+		},
+		{
+			name: "Ctrl+V 螢幕模式（原作 16h）", key: ebiten.KeyV, wired: false,
+			whyNotDo: "PC-98 顯示器時序（GDC 參數 304h／334h），跨平台沒有對應物（spec 1194）",
+		},
+	} {
+		t.Run(item.name, func(t *testing.T) {
+			state := game.NewState(locale.Catalog{})
+			keys := newScriptedKeys()
+			application := &app{state: &state, keys: keys}
+			keys.press(ebiten.KeyControlLeft, item.key)
+			eaten := application.globalAudioKeys()
+			if eaten != item.wired {
+				t.Fatalf("這顆鍵被吃掉 ＝ %v，want %v（%s）", eaten, item.wired, item.whyNotDo)
+			}
+			if item.wired && !item.toggle(&state) {
+				t.Fatal("按下去之後設定沒有翻過來")
+			}
+		})
+	}
+}
