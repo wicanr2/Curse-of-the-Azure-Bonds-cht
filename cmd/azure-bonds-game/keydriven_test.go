@@ -141,6 +141,10 @@ type keyDrivenSession struct {
 	fallbacks map[string]bool
 	// blocks 是走到過的 ECL 段。
 	blocks map[uint8]bool
+	// doorsFound 是撞到門而開出選單的次數。
+	doorsFound int
+	// menus 是遇到過的選單（選項以「｜」相接），用來看卡在哪一個決定上。
+	menus map[string]bool
 }
 
 func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
@@ -149,7 +153,7 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 		app: application, keys: keys,
 		cells: map[[3]int]bool{}, modes: map[game.Mode]bool{},
 		messages: map[string]bool{}, fallbacks: map[string]bool{},
-		blocks: map[uint8]bool{},
+		blocks: map[uint8]bool{}, menus: map[string]bool{},
 	}
 }
 
@@ -192,6 +196,9 @@ func (s *keyDrivenSession) observe() {
 		s.cells[[3]int{block, x, y}] = true
 	}
 	s.blocks[s.app.geoBlock] = true
+	if len(state.Choices) > 0 {
+		s.menus[strings.Join(state.Choices, "｜")] = true
+	}
 	for _, text := range []string{state.Message, state.Prompt} {
 		trimmed := strings.TrimSpace(text)
 		if trimmed == "" {
@@ -215,10 +222,29 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		tap(t, s.app, s.keys, ebiten.KeyEnter)
 		return
 	}
-	target, ok := s.chooseHeading()
+	// 門的選單開著就先處理掉：敲門 → 撬鎖 → 撞門，都失敗就退出。
+	if s.app.dungeonDoorMenu {
+		s.handleDoorMenu(t)
+		return
+	}
+	target, fresh, ok := s.chooseHeading()
+	// ⚠ 沒有**新**格子可走時就先去撞門，不要直接退回舊路。`chooseHeading` 只要
+	// 有任何一個方向走得通就會給出退路，所以把「撞門」掛在「四面都是牆」底下
+	// 等於永遠不會執行——隊伍會沿著已走過的路來回，而門一次都沒被碰過。
+	if ok && !fresh && s.app.state.Mode == game.ModeDungeon {
+		s.tryDoors(t)
+		if s.app.dungeonDoorMenu || s.app.state.Mode != game.ModeDungeon {
+			return
+		}
+		// 撞完一圈沒有門，才照退路走。
+		target, _, ok = s.chooseHeading()
+	}
 	if !ok {
-		// 四面都是牆：轉一格，讓下一幀重新看。
-		tap(t, s.app, s.keys, ebiten.KeyM)
+		// ⚠ 沒有走得通的方向**不代表**沒路：**門在 `CanMoveDungeon` 眼裡是牆**。
+		// 玩家的做法是**撞上去**——`moveDungeonPreview` 發現擋住的是門（flags
+		// 2／3）就開選單。只挑「走得通」的方向會讓隊伍永遠不去碰門，
+		// 於是整段地城看起來只有開場那幾格。
+		s.tryDoors(t)
 		return
 	}
 	// M 是順時針轉 2；轉到面向目標為止（最多三次）。
@@ -235,11 +261,58 @@ func (s *keyDrivenSession) step(t *testing.T) {
 	tap(t, s.app, s.keys, ebiten.KeyUp)
 }
 
+// tryDoors 朝四個方向各撞一次，看有沒有門。撞到門會開選單，交給下一幀處理。
+func (s *keyDrivenSession) tryDoors(t *testing.T) {
+	t.Helper()
+	for turn := 0; turn < 4; turn++ {
+		if s.app.state.Mode != game.ModeDungeon {
+			return
+		}
+		tap(t, s.app, s.keys, ebiten.KeyUp)
+		if s.app.dungeonDoorMenu {
+			s.doorsFound++
+			s.handleDoorMenu(t)
+			return
+		}
+		x, y, _ := s.app.state.DungeonGeometryView()
+		if !s.cells[[3]int{int(s.app.geoBlock), x, y}] {
+			// 撞出去了（門本來就開著或劇情把隊伍搬走）。
+			return
+		}
+		tap(t, s.app, s.keys, ebiten.KeyM)
+	}
+}
+
+// handleDoorMenu 依原作提供的選項按鍵：能敲就敲、能撬就撬、能撞就撞。
+//
+// ⚠ 選項是原作算出來的（`DungeonDoorMenuOptions`），不要自己猜有哪些——
+// 上鎖的門沒有「開」這一項，硬按只會什麼都不發生然後看起來像卡住。
+func (s *keyDrivenSession) handleDoorMenu(t *testing.T) {
+	t.Helper()
+	flags, ok := s.app.dungeonDoorFlags()
+	if !ok {
+		tap(t, s.app, s.keys, ebiten.KeyEscape)
+		return
+	}
+	options := s.app.state.DungeonDoorMenuOptions(flags)
+	switch {
+	case options.Knock:
+		tap(t, s.app, s.keys, ebiten.KeyK)
+	case options.Pick:
+		tap(t, s.app, s.keys, ebiten.KeyP)
+	case options.Bash:
+		tap(t, s.app, s.keys, ebiten.KeyB)
+	default:
+		tap(t, s.app, s.keys, ebiten.KeyEscape)
+	}
+}
+
 // chooseHeading 挑下一步要朝哪。先要沒去過的，沒有就退回任何走得通的。
 //
 // ⚠ 起點依幀數輪替：全部都去過時，固定從同一個方向找會讓隊伍在兩格之間
 // 來回震盪。輪替是**決定性的**，重跑結果一樣。
-func (s *keyDrivenSession) chooseHeading() (int, bool) {
+// 第二個回傳值是「這個方向通往**沒去過**的格子」。
+func (s *keyDrivenSession) chooseHeading() (int, bool, bool) {
 	headings := []int{0, 2, 4, 6}
 	offset := s.frames % len(headings)
 	fallback, hasFallback := 0, false
@@ -254,10 +327,10 @@ func (s *keyDrivenSession) chooseHeading() (int, bool) {
 		}
 		x, y, _ := s.app.state.DungeonGeometryView()
 		if !s.cells[[3]int{int(s.app.geoBlock), x + deltaX, y + deltaY}] {
-			return heading, true
+			return heading, true, true
 		}
 	}
-	return fallback, hasFallback
+	return fallback, false, hasFallback
 }
 
 // headingDelta 把 0／2／4／6 換成格子位移。
@@ -327,7 +400,7 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		t.Fatal("按 D 之後還停在角色建立：完成那條路按不出來")
 	}
 
-	for session.frames = 0; session.frames < 400; session.frames++ {
+	for session.frames = 0; session.frames < 600; session.frames++ {
 		session.observe()
 		session.step(t)
 	}
@@ -348,8 +421,15 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		}
 		t.Fatalf("按鍵玩到的畫面有 %d 句落回原文", len(session.fallbacks))
 	}
-	t.Logf("按鍵驅動 %d 幀：走過 %d 格、%d 種畫面、記到 %d 句話，落回原文 0 句",
-		session.frames, len(session.cells), len(session.modes), len(session.messages))
+	t.Logf("按鍵驅動 %d 幀：走過 %d 格、%d 種畫面、記到 %d 句話、撞到門 %d 次，落回原文 0 句",
+		session.frames, len(session.cells), len(session.modes), len(session.messages),
+		session.doorsFound)
+	// ★ 卡住的原因記在這裡：整場**沒有出現任何真的選單**（只有「按任意鍵繼續」）。
+	// 所以走不遠不是「選錯了選項」，是幾何上到不了——這兩種成因的處置完全不同，
+	// 分不出來就會往錯的方向修。
+	for menu := range session.menus {
+		t.Logf("  選單 %s", menu)
+	}
 
 	if path := os.Getenv("COAB_KEY_SESSION_JSON"); path != "" {
 		if err := session.writeReport(path); err != nil {
@@ -375,9 +455,12 @@ func (s *keyDrivenSession) writeReport(path string) error {
 		Modes     []string `json:"modes"`
 		Messages  int      `json:"messages"`
 		Fallbacks int      `json:"fallbacks"`
+		Doors     int      `json:"doors_found"`
+		Menus     int      `json:"menus"`
 	}{
 		Schema: "coab-key-driven-session/1", Frames: s.frames, Cells: len(s.cells),
 		Modes: modes, Messages: len(s.messages), Fallbacks: len(s.fallbacks),
+		Doors: s.doorsFound, Menus: len(s.menus),
 	}
 	encoded, err := json.MarshalIndent(report, "", " ")
 	if err != nil {
