@@ -117,6 +117,10 @@ func (a *app) canStepForward() bool {
 // keyDrivenMenuPatience 是「同一個選單按同一項幾次還在原地，就換下一項」。
 //
 // ⚠ 太小會變成輪流選（實測會自己切斷路線）；太大就等於永遠第一項。
+//
+// ⚠ 實測 2／3／6 三個值結果**完全一樣**（28 格／37 句／只到 `0x01`）——
+// 所以**限制不在選單策略上**。再調這個數字不會有任何改變；要離開開場那一段，
+// 缺的是**路線知識**（戰役測試裡逐段寫死的那一份）。
 const keyDrivenMenuPatience = 6
 
 // modeName 讓紀錄看得懂。
@@ -256,7 +260,11 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		// 這不是亂試，是「這條路走過了，換下一條」——而且預設仍然是第一項，
 		// 所以不會像輪流選那樣自己切斷路線。
 		if count := len(s.app.state.Choices); count > 1 {
-			signature := strings.Join(s.app.state.Choices, "｜") + "\x00" + s.app.state.Message
+			// ⚠ 簽章**只看選項，不看訊息**：商店每按一項就換一句回應
+			// （「目前沒有可提取的隊伍金幣。」…），把訊息放進簽章的話計數永遠
+			// 歸零，**卡住偵測等於沒有**——而商店的「離開商店」是最後一項，
+			// 於是整場 session 就困在店裡。
+			signature := strings.Join(s.app.state.Choices, "｜")
 			s.menuSeen[signature]++
 			want := (s.menuSeen[signature] - 1) / keyDrivenMenuPatience
 			if want >= count {
@@ -730,5 +738,57 @@ func TestKeyDrivenSnapshotDiagnose(t *testing.T) {
 		s = application.state
 		t.Logf("   按 Enter 後：mode=%s grid=%v msg=%.30q",
 			modeName(s.Mode), application.geoGrid != nil, s.Message)
+	}
+}
+
+// TestKeyDrivenRouteProbe 探路用：從開場走到世界地圖選單，逐項試「進入城市／
+// 繼續旅程／紮營」會走到哪。預設不跑。
+func TestKeyDrivenRouteProbe(t *testing.T) {
+	if os.Getenv("COAB_KEY_EXPLORE") == "" {
+		t.Skip("探路用")
+	}
+	for pick := 0; pick < 3; pick++ {
+		session := newKeyDrivenSession(t)
+		application, keys := session.app, session.keys
+		tap(t, application, keys, ebiten.KeyEnter)
+		for index := 0; index < 6; index++ {
+			tap(t, application, keys, ebiten.KeyEnter)
+		}
+		tap(t, application, keys, ebiten.KeyD)
+		// 走到出現三選一的世界地圖選單為止。
+		found := false
+		for frame := 0; frame < 400 && !found; frame++ {
+			session.frames = frame
+			session.observe()
+			if len(application.state.Choices) == 3 &&
+				strings.Contains(strings.Join(application.state.Choices, "｜"), "繼續旅程") {
+				found = true
+				break
+			}
+			session.step(t)
+		}
+		if !found {
+			t.Logf("pick=%d：400 幀內沒看到世界地圖選單", pick)
+			continue
+		}
+		for step := 0; step < 3 && application.choiceCursor != pick; step++ {
+			tap(t, application, keys, ebiten.KeyDown)
+		}
+		before, _ := application.state.CurrentECLBlockID()
+		tap(t, application, keys, ebiten.KeyEnter)
+		for frame := 0; frame < 60; frame++ {
+			session.frames = frame
+			session.observe()
+			session.step(t)
+		}
+		after, _ := application.state.CurrentECLBlockID()
+		blocks := make([]string, 0, len(session.blocks))
+		for block := range session.blocks {
+			blocks = append(blocks, fmt.Sprintf("0x%02X", block))
+		}
+		sort.Strings(blocks)
+		t.Logf("pick=%d（%s）：段 0x%02X → 0x%02X；走到過 %s；mode=%s msg=%.40q",
+			pick, application.state.Choices, before, after, strings.Join(blocks, " "),
+			modeName(application.state.Mode), application.state.Message)
 	}
 }
