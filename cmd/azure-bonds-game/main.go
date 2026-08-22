@@ -3375,6 +3375,7 @@ func main() {
 	dungeonXOverride := flag.Int("dungeon-x", -1, "override dungeon X (0..15) for deterministic visual verification")
 	dungeonYOverride := flag.Int("dungeon-y", -1, "override dungeon Y (0..15) for deterministic visual verification")
 	dungeonFacingOverride := flag.Int("dungeon-facing", -1, "override dungeon facing (0..7, 0=N) for deterministic visual verification")
+	firstPerson := flag.Bool("first-person", false, "render the scripted flow's final cell as a first-person frame (first-person fidelity comparison)")
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	characterCreation := flag.Bool("character-creation", false, "show the opening character-creation command as a deterministic renderer checkpoint")
@@ -4140,6 +4141,35 @@ func main() {
 		gameApp.state.SetDungeonGeometryView(x, y, facing)
 		gameApp.state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(facing))
 		gameApp.state.DungeonWallRoof = geoGrid.CellWrapped(x, y).Terrain
+	}
+	// -first-person 把腳本流程**停下來的那一格**轉成第一人稱畫面。
+	//
+	// ★ 為什麼需要這一支。 故事流程會停在**事件**上：`-sewers` 走完之後停在火刀
+	// checkpoint 的投降問句，那是一張文字畫面。第一人稱保真度比對要的不是故事，
+	// 是「引擎站在某張圖的某一格、往某個方向看」畫出來的那張圖——跟停在哪個
+	// 事件無關。沒有這一支的話，非提爾佛頓的地圖一張都取不到畫面。
+	//
+	// ⚠ 牆面／地形要用**流程最後載入的那張圖**算，不是 `-geo-set`／`-geo-block`
+	// 那張。兩者在 `-sewers` 底下不同（流程走到 GEO2 區塊 3，旗標預設是提爾佛頓），
+	// 拿錯的那張算出來的牆型會是另一張圖的牆，而畫面看起來仍然「正常」。
+	if *firstPerson {
+		if !gameApp.state.Area.InDungeon {
+			log.Fatal("-first-person requires the flow to be in a dungeon; combine it with -tilverton-dungeon or -sewers")
+		}
+		grid := geoGrid
+		ref := geo.MapRef{Set: gameApp.state.GeoMapSet, BlockID: gameApp.state.GeoMapBlock}
+		if value, found := geoCatalog.Lookup(ref); found {
+			grid = &value
+		}
+		x, y, facing := gameApp.state.DungeonGeometryView()
+		gameApp.state.DungeonWallType, _ = grid.WallWrapped(x, y, int(facing))
+		gameApp.state.DungeonWallRoof = grid.CellWrapped(x, y).Terrain
+		gameApp.geoGrid = grid
+		// 事件的選項與訊息在這裡要清掉：留著的話 `Draw` 會走文字分支，
+		// 而 `-first-person` 的定義就是「不看故事、只看這一格」。
+		gameApp.state.Mode = game.ModeDungeon
+		gameApp.state.Choices = nil
+		gameApp.state.Message = ""
 	}
 	if err := ebiten.RunGame(gameApp); err != nil {
 		log.Fatal(err)

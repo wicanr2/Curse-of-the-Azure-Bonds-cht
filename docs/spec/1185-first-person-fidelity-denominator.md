@@ -180,13 +180,24 @@ if item < 0 || item >= int(picture.ItemCount) { return …, false }
 
 - **原版側**：`cmd/dos-save-export -map-block` 改得了地圖編號，但牆面素材是
   `LOAD PIECES` 在 ECL 裡載的。直接跳到別張圖的存檔會不會帶對牆組**沒有驗過**。
-- **remake 側**：已驗過**不通**。`-geo-set 2 -geo-block 3` 單獨用只畫得出
-  3 種顏色的空畫面（相對地，提爾佛頓那條路徑畫得出 11 種）——第一人稱要靠
-  `-tilverton-dungeon` 那條進地城的流程把 piece set 準備好，而那支旗標只認
-  提爾佛頓。
+- **remake 側**：已解決，加了 `-first-person`（第 674 輪）。原本的說法「只認
+  提爾佛頓」是錯的——`-guildmaster`、`-sewers` 都走得完，而且**沒有壞**。
+  真正的限制是：故事流程會**停在事件上**。`-sewers` 走完停在火刀 checkpoint 的
+  投降問句，那是一張文字畫面，不是第一人稱。
 
-⇒ 下一步不是繼續拍，是**先讓兩側都能進任意一張第一人稱地圖**。在那之前多拍的
-畫面沒有東西可以對照。
+  `-first-person` 把「流程停下來的那一格」轉成第一人稱畫面：取流程**最後載入
+  的那張圖**（`GeoMapSet`／`GeoMapBlock`，`-sewers` 是 GEO2 區塊 3）算牆面與
+  地形，切到 `ModeDungeon`，清掉事件的選項與訊息。實測：
+
+  | 指令 | 第一人稱面板 |
+  |---|---|
+  | `-sewers -first-person` | ✅ 與提爾佛頓差 18,244 像素 |
+  | `-sewers -first-person -dungeon-x 8 -dungeon-y 8 -dungeon-facing 0` | ✅ 與上一格差 13,808 像素 |
+
+  ⚠ 牆面要用流程載入的那張圖算，不是 `-geo-set`／`-geo-block` 那張。拿錯的那張
+  算出來的牆型是**另一張圖的牆**，而畫面看起來仍然「正常」——這種錯不會自己現形。
+
+⇒ remake 側通了，剩下原版側：要能把存檔跳到任一張圖的任一格。
 
 逐地圖的「新增幾種」那一欄直接就是工作順序：提爾佛頓 108 種全新、
 `geo5/0x33` 104 種、墓園 45 種……而 `myth-drannor.inner-ruins` 與
