@@ -29,13 +29,19 @@
 package main
 
 import (
+	"archive/zip"
+	"encoding/binary"
 	"flag"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 
+	"io"
+	"strings"
+
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
@@ -46,6 +52,14 @@ const (
 	mapPosOffset = 1 + partySave.SAVGAMArea1Size + partySave.SAVGAMArea2Size +
 		partySave.SAVGAMRuntimeStateSize + partySave.SAVGAMECLMemorySize
 	area1MapBlockOffset = 1 + 0x18A
+	area1LastECLOffset  = 1 + 0x1E4
+	// ⚠ `GameArea` 在存檔裡有**兩份**：容器的第一個位元組，以及 Area2 的
+	// `0x624`。載入端讀的是 Area2 那一份（`area1.GameArea = area2.GameArea`），
+	// 只改容器那一份的話章節看起來變了、實際沒變——而且不會報錯。
+	area2GameAreaOffset = 1 + partySave.SAVGAMArea1Size + 0x624
+	// ECL 程式碼視窗在存檔的第四塊，接在前三塊之後（spec 1163）。
+	eclWindowOffset = 1 + partySave.SAVGAMArea1Size + partySave.SAVGAMArea2Size +
+		partySave.SAVGAMRuntimeStateSize
 	area1LastXOffset    = 1 + 0x1E0
 	area1LastYOffset    = 1 + 0x1E2
 )
@@ -75,6 +89,8 @@ func main() {
 	city := flag.Int("city", 0, "CurrentCity（只在沒有 -base 時使用）")
 	charRef := flag.String("char-ref", "", "存檔裡記的角色檔名；留空用 CHRDAT<槽>1 並一併寫出該檔")
 	base := flag.String("base", "", "以既有的原版 savgam?.dat 為底，只覆寫座標／朝向")
+	eclBlock := flag.Int("ecl-block", -1, "把這一段 ECL 的位元組碼換進存檔的程式碼視窗（換圖用；-1 不動）")
+	image := flag.String("image", "curseoftheazurebonds.zip", "原版 image ZIP（-ecl-block 要用）")
 	flag.Parse()
 
 	if *out == "" {
@@ -108,6 +124,7 @@ func main() {
 		given := setFlags()
 		if given["area"] {
 			patched[0] = byte(*gameArea)
+			patched[area2GameAreaOffset] = byte(*gameArea)
 		}
 		if given["map-block"] {
 			patched[area1MapBlockOffset] = byte(*mapBlock)
@@ -121,8 +138,8 @@ func main() {
 			//
 			// remake 這一側反而**認**這個位元組（`Current3DMapBlockID`），
 			// 所以兩邊會指向不同的圖而且都不會報錯——這正是最危險的形狀。
-			fmt.Fprintln(os.Stderr, "⚠ -map-block 只改存檔裡的標記；原版的第一人稱地圖由 ECL 狀態決定，"+
-				"實測改這個位元組不會換圖（remake 卻會）。跨圖取 oracle 目前要另外找路。")
+			fmt.Fprintln(os.Stderr, "⚠ -map-block 只改存檔裡的標記；原版的第一人稱地圖由 ECL 狀態決定。"+
+				"要換圖請加 -ecl-block（同一個 GEO 檔集內有效；跨檔集實測無效，見 spec 1185）。")
 		}
 		// Area1 的 LastX／LastY 與地圖那五格都要改：前者是「上一個座標」，
 		// 後者才是載入之後站的位置，只改一邊會在畫面與地圖標記之間打架。
@@ -138,6 +155,25 @@ func main() {
 		}
 		if *wallRoof >= 0 {
 			patched[mapPosOffset+4] = byte(*wallRoof)
+		}
+		// -ecl-block 換圖。 原版的第一人稱地圖不是存檔裡某個編號決定的，是**當前
+		// ECL 段的進入碼**跑 `LOAD FILES` 決定的（第 675 輪實測）。而存檔的第四塊
+		// 就是那一段的位元組碼本身：實測 slot B 的視窗正是 `ECL2` 段 `0x01` 的
+		// 資料**從位移 2 開始**（前兩個 byte 是段頭，不進記憶體）。所以換圖＝把
+		// 另一段的位元組碼換進這個視窗，並把段編號一起改掉。
+		if *eclBlock >= 0 {
+			code, err := eclBlockBytes(*image, *gameArea, uint8(*eclBlock))
+			if err != nil {
+				log.Fatal(err)
+			}
+			window := patched[eclWindowOffset : eclWindowOffset+partySave.SAVGAMECLMemorySize]
+			for i := range window {
+				window[i] = 0
+			}
+			copy(window, code)
+			binary.LittleEndian.PutUint16(patched[area1LastECLOffset:], uint16(*eclBlock))
+			fmt.Fprintf(os.Stderr, "換入 ECL%d 段 0x%02X 的位元組碼 %d bytes（視窗 %d bytes）\n",
+				*gameArea, *eclBlock, len(code), partySave.SAVGAMECLMemorySize)
 		}
 		if err := os.WriteFile(filepath.Join(*out, prefixName), patched, 0o644); err != nil {
 			log.Fatal(err)
@@ -235,4 +271,55 @@ func main() {
 		prefixName, len(prefix), baseName, *out)
 	fmt.Printf("槽 %c：area=%d block=0x%02X 位置=(%d,%d) 朝向=%d in-dungeon=%v\n",
 		key, *gameArea, *mapBlock, *posX, *posY, *facing, *inDungeon)
+}
+
+// eclBlockBytes 取出一段 ECL 要放進存檔程式碼視窗的位元組。
+//
+// ⚠ 前兩個 byte 是段頭，不進記憶體：實測 slot B 的視窗與 `ECL2` 段 `0x01` 的
+// 資料**從位移 2 起**逐 byte 相同。少切這兩個 byte，整段碼會整體偏移兩格，
+// 而 ECL 位元組碼沒有對齊檢查——它會照樣執行，只是執行的是別的東西。
+func eclBlockBytes(imagePath string, area int, block uint8) ([]byte, error) {
+	archive, err := zip.OpenReader(imagePath)
+	if err != nil {
+		return nil, err
+	}
+	defer archive.Close()
+	name := fmt.Sprintf("ECL%d.DAX", area)
+	var payload []byte
+	for _, file := range archive.File {
+		if !strings.EqualFold(file.Name, name) {
+			continue
+		}
+		handle, openErr := file.Open()
+		if openErr != nil {
+			return nil, openErr
+		}
+		payload, err = io.ReadAll(handle)
+		handle.Close()
+		if err != nil {
+			return nil, err
+		}
+	}
+	if payload == nil {
+		return nil, fmt.Errorf("image 裡沒有 %s", name)
+	}
+	blocks, err := dax.Parse(payload)
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range blocks {
+		if item.Entry.ID != block {
+			continue
+		}
+		if len(item.Data) < 2 {
+			return nil, fmt.Errorf("%s 段 0x%02X 只有 %d bytes", name, block, len(item.Data))
+		}
+		code := item.Data[2:]
+		if len(code) > partySave.SAVGAMECLMemorySize {
+			return nil, fmt.Errorf("%s 段 0x%02X 的碼 %d bytes 放不進 %d bytes 的視窗",
+				name, block, len(code), partySave.SAVGAMECLMemorySize)
+		}
+		return code, nil
+	}
+	return nil, fmt.Errorf("%s 裡沒有段 0x%02X", name, block)
 }

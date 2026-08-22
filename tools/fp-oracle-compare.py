@@ -13,6 +13,7 @@
     tools/fp-oracle-compare.py docs/reference/original-dos/first-person/index.tsv
 """
 import os
+import re
 import subprocess
 import sys
 
@@ -24,6 +25,7 @@ EGA = [(0, 0, 0), (0, 0, 170), (0, 170, 0), (0, 170, 170), (170, 0, 0), (170, 0,
        (85, 255, 255), (255, 85, 85), (255, 85, 255), (255, 255, 85), (255, 255, 255)]
 FACING = {"N": 0, "E": 2, "S": 4, "W": 6}
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+SAVE_DIR = "workplace/dos-oracle/game/SAVE"
 
 
 def quantize(pixel):
@@ -46,10 +48,37 @@ def main():
         if direction not in FACING:
             print("跳過 %s（讀不到座標）" % name)
             continue
-        shot = os.path.join(ROOT, "workplace", "fp-remake-%s-%s-%s.png" % (x, y, direction))
-        cmd = ["tools/go.sh", "run", "./cmd/azure-bonds-game", "-tilverton-dungeon",
-               "-dungeon-x", x, "-dungeon-y", y,
-               "-dungeon-facing", str(FACING[direction]),
+        # 檔名前綴就記著這張畫面是哪一張圖：`geo{檔集}-b{段}-…`。
+        # ⚠ 兩邊要餵**同一份存檔**：remake 這一側改用 `-savgam-import`，
+        # 而不是走 `-tilverton-dungeon` 的故事流程。故事流程只到得了提爾佛頓，
+        # 而且它與原版的輸入不是同一個東西——同一份存檔才是對等的比較。
+        # 兩種前綴：`geo{檔集}-b{段}-…`（ECL 段與幾何區塊同號），
+        # 以及 `geo{檔集}-e{ECL段}-b{幾何區塊}-…`（兩者不同時）。
+        # ⚠ 後者是必要的：GEO5 的 ECL 段 `0x31` 與 `0x32` **共用**幾何區塊 `0x32`，
+        # 牆磚選圖卻不同。只記一個號碼的話這兩張圖分不開。
+        match = re.match(r"geo(\d+)-e([0-9a-fA-F]{2})-b([0-9a-fA-F]{2})-", name)
+        if match:
+            area = match.group(1)
+            block = str(int(match.group(2), 16))
+            geoBlock = str(int(match.group(3), 16))
+        else:
+            match = re.match(r"geo(\d+)-b([0-9a-fA-F]{2})-", name)
+            if not match:
+                print("跳過 %s（檔名裡沒有地圖前綴）" % name)
+                continue
+            area = match.group(1)
+            block = geoBlock = str(int(match.group(2), 16))
+        shot = os.path.join(ROOT, "workplace",
+                            "fp-remake-%s-%s-%s-%s-%s-%s.png" % (area, block, geoBlock, x, y, direction))
+        author = ["tools/go.sh", "run", "./cmd/dos-save-export",
+                  "-base", "workplace/orig-savgamb.dat",
+                  "-out", SAVE_DIR, "-slot", "A", "-area", area,
+                  "-ecl-block", block, "-map-block", geoBlock,
+                  "-x", x, "-y", y, "-facing", str(FACING[direction])]
+        subprocess.run(author, cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        cmd = ["tools/go.sh", "run", "./cmd/azure-bonds-game",
+               "-savgam-dir", SAVE_DIR, "-savgam-slot", "A", "-savgam-import",
+               "-first-person",
                "-screenshot", os.path.relpath(shot, ROOT)] + extra
         subprocess.run(cmd, cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
         a = viewport(os.path.join(folder, name))
