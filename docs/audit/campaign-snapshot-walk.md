@@ -31,7 +31,20 @@
 | `ECL6-0x43-內城遺跡-二樓與最終戰` | 0 | 0 | 0 | 讀回來推不進地城：continue=continue is invalid in mode 0 select=choice 0 is invalid in mode 0 |
 | `ECL6-0x43-內城遺跡-儀式與爪牙戰` | 67 | 254 | 27 | — |
 | `ECL6-0x43-密斯卓諾-內城遺跡` | 67 | 254 | 27 | — |
+| `inside-block-10` | 16 | 143 | 26 | — |
+| `inside-block-11` | 17 | 48 | 11 | — |
+| `inside-block-12` | 18 | 1 | 1 | — |
+| `inside-block-20` | 32 | 108 | 36 | — |
+| `inside-block-21` | 33 | 2 | 1 | — |
+| `inside-block-22` | 34 | 16 | 2 | — |
+| `inside-block-31` | 49 | 231 | 20 | — |
+| `inside-block-32` | 50 | 231 | 20 | — |
+| `inside-block-33` | 51 | 15 | 2 | — |
+| `inside-block-40` | 64 | 256 | 24 | — |
+| `inside-block-42` | 66 | 256 | 16 | — |
+| `inside-block-43` | 67 | 254 | 27 | — |
+| `inside-block-50` | 0 | 0 | 0 | block 0x50 沒有地形分派 |
 | `密斯卓諾-世界路線` | 64 | 256 | 24 | 讀回來推不進地城：停在1 |
 | `希爾斯法城內` | 0 | 0 | 0 | 讀回來推不進地城：停在1 |
 
-合計 23 份快照、130 個 (block, 地形碼) 組合。
+合計 36 份快照、190 個 (block, 地形碼) 組合。
