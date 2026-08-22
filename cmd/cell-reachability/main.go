@@ -57,9 +57,16 @@ func main() {
 		"`cmd/cell-sweep -index-json` 輸出的分母")
 	walkPath := flag.String("walk-cells", "workplace/campaign-frames/walk-cells.json",
 		"`cmd/dungeon-walk-probe -cells-json` 輸出的段內可達格子（可省略）")
+	// ★ 這兩份把「沒被踏到」拆成三種完全不同的成因。少了它們，未達成只是一個
+	// 數字，看不出**要補路線、要補劇情旗標、還是根本補不了**。
+	walkablePath := flag.String("walkable-cells", "workplace/campaign-frames/walkable-cells.json",
+		"`-walkable-json` 輸出的「站得上去」格子（走路的上限，可省略）")
+	onMapPath := flag.String("on-map-cells", "workplace/campaign-frames/on-map-cells.json",
+		"`-on-map-json` 輸出的「圖上出現過」格子（可省略）")
 	visitedPath := flag.String("visited", "workplace/campaign-frames/visited-cells.json",
 		"主線實跑導出的格子（見本檔頂端）")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	outputJSON := flag.String("json", "", "JSON 輸出路徑，給 `cmd/remake-status` 取用")
 	flag.Parse()
 
 	raw, err := os.ReadFile(*visitedPath)
@@ -111,6 +118,35 @@ func main() {
 		}
 	}
 
+	loadCells := func(path string) map[uint8]map[uint8]bool {
+		out := map[uint8]map[uint8]bool{}
+		raw, err := os.ReadFile(path)
+		if err != nil {
+			return out
+		}
+		var cells []visitedCell
+		if json.Unmarshal(raw, &cells) != nil {
+			return out
+		}
+		for _, cell := range cells {
+			if out[cell.Block] == nil {
+				out[cell.Block] = map[uint8]bool{}
+			}
+			out[cell.Block][cell.Terrain] = true
+		}
+		return out
+	}
+	standable := loadCells(*walkablePath)
+	onMap := loadCells(*onMapPath)
+	matches := func(table map[uint8]map[uint8]bool, block uint8, mask, index int) bool {
+		for terrain := range table[block] {
+			if int(terrain)&mask == index {
+				return true
+			}
+		}
+		return false
+	}
+
 	type blockRow struct {
 		id       string
 		block    uint8
@@ -119,10 +155,15 @@ func main() {
 		onFoot   int
 		either   int
 		walkedIn int
+		// 未達成的三種成因（見報表說明）。
+		gatedOff  int
+		noEdge    int
+		notOnMap  int
 	}
 	bySegment := map[string]*blockRow{}
 	order := make([]string, 0, 16)
 	totalIndices, totalReached, totalOnFoot, totalEither := 0, 0, 0, 0
+	totalGated, totalNoEdge, totalNotOnMap, totalStandable := 0, 0, 0, 0
 	for _, item := range sweep {
 		row, ok := bySegment[item.Segment]
 		if !ok {
@@ -132,6 +173,9 @@ func main() {
 		}
 		row.indices++
 		totalIndices++
+		if matches(standable, item.Block, item.Mask, item.Index) {
+			totalStandable++
+		}
 		// 主線在這個 block 踏過的地形碼，換算成索引之後對得上嗎。
 		reachedHere := false
 		for terrain := range walked[item.Block] {
@@ -160,6 +204,23 @@ func main() {
 		if onFoot || reachedHere {
 			row.either++
 			totalEither++
+			continue
+		}
+		// ── 沒達成的分三種，處置完全不同 ────────────────────────────
+		switch {
+		case matches(standable, item.Block, item.Mask, item.Index):
+			// 站得上去，只是從段入口走不過去：幾何上斷開（樓梯／傳送事件才進得去）
+			// 或門擋著。要補的是**路線**。
+			row.gatedOff++
+			totalGated++
+		case matches(onMap, item.Block, item.Mask, item.Index):
+			// 圖上有這個地形碼，但那些格子四面都不通——走路永遠站不上去。
+			row.noEdge++
+			totalNoEdge++
+		default:
+			// 這個 block 的地圖上根本沒有這個地形碼：分派表有、圖上沒有。
+			row.notOnMap++
+			totalNotOnMap++
 		}
 	}
 	rows := make([]blockRow, 0, len(order))
@@ -190,10 +251,30 @@ func main() {
 	fmt.Fprintf(&report, "| **實跑路線踏到的** | %d |\n", totalReached)
 	fmt.Fprintf(&report, "| **從段入口用走的走得到的** | %d |\n", totalOnFoot)
 	fmt.Fprintf(&report, "| **兩者的聯集**（目前最好的下界）| %d |\n", totalEither)
+	fmt.Fprintf(&report, "| **走路的上限**（站得上去的格子，不限從入口走得到）| %d |\n",
+		totalStandable)
 	if totalIndices > 0 {
 		fmt.Fprintf(&report, "| 聯集覆蓋率（下界）| %.0f%% |\n",
 			100*float64(totalEither)/float64(totalIndices))
+		fmt.Fprintf(&report, "| 佔走路上限的比例 | %.0f%% |\n",
+			100*float64(totalEither)/float64(totalStandable))
 	}
+	report.WriteString("\n★ **「走路的上限」才是走訪這條路的天花板**：它是站得上去的格子，" +
+		"不管要不要靠事件才進得去那一塊。分母 250 裡差的那一格站不上去（見下），" +
+		"所以走訪能做到的最好就是這個數字——**不是 250**。\n")
+	fmt.Fprintf(&report, "\n## 沒達成的那些，是哪一種沒達成\n\n")
+	report.WriteString("★ 未達成只是一個數字的話，看不出**要補路線、要補劇情旗標、還是根本補不了**。" +
+		"這三種的處置完全不同：\n\n")
+	fmt.Fprintf(&report, "| 成因 | 索引 | 意思 | 要做什麼 |\n|---|---:|---|---|\n")
+	fmt.Fprintf(&report, "| 站得上去，但從段入口走不到 | %d | 幾何上斷開（樓梯／傳送**事件**才進得去，"+
+		"巫師塔每一層都是獨立房間）或門擋著 | 補路線：從那一塊的入口格另外走一趟 |\n", totalGated)
+	fmt.Fprintf(&report, "| 圖上有，但四面都不通 | %d | 那個地形碼只出現在沒有任何可通行邊的格子上 | "+
+		"**走路永遠站不上去**；要嘛靠事件傳送，要嘛它本來就不是玩家會站的格子 |\n", totalNoEdge)
+	fmt.Fprintf(&report, "| 圖上根本沒有這個地形碼 | %d | 分派表有這一格，地圖上沒有 | "+
+		"分母裡的死索引，補不了也不用補 |\n\n", totalNotOnMap)
+	report.WriteString("⚠ 這一段用的是**純幾何**（`CanMoveDungeon`），不跑 ECL：" +
+		"走過去又被劇情推回來那種不算「走不到」——那是內容不是幾何，混進來會讓分類失去意義。\n")
+
 	fmt.Fprintf(&report, "\n⚠ **「實跑路線踏到」裡有兩種東西**，不要把它讀成「玩到的比例」："+
 		"`TestRealNewGameRunsToTheEnding` 是照劇情走的主線，"+
 		"而 `TestTilvertonRouteIsWalkableAndLocalized` 是**廣度優先的走訪**——"+
@@ -243,6 +324,30 @@ func main() {
 			"主線測試從艾森布拉開始（`runNormalNewGameToEssembra`），提爾佛頓那一段序章"+
 			"不在它的路線上。**要不要補一條走那裡的實跑路線是另一個決定**，"+
 			"這一份負責把「路線的選擇」與「缺陷」分開。\n", onFoot)
+	}
+
+	if *outputJSON != "" {
+		encoded, err := json.MarshalIndent(struct {
+			Schema    string `json:"schema"`
+			Indices   int    `json:"indices"`
+			Reached   int    `json:"walked_by_campaign"`
+			OnFoot    int    `json:"reached_on_foot"`
+			Either    int    `json:"union"`
+			Standable int    `json:"walkable_ceiling"`
+			Gated     int    `json:"gated_off"`
+			NoEdge    int    `json:"no_passable_edge"`
+			NotOnMap  int    `json:"not_on_map"`
+		}{
+			Schema: "coab-cell-reachability/1", Indices: totalIndices, Reached: totalReached,
+			OnFoot: totalOnFoot, Either: totalEither, Standable: totalStandable,
+			Gated: totalGated, NoEdge: totalNoEdge, NotOnMap: totalNotOnMap,
+		}, "", " ")
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := os.WriteFile(*outputJSON, append(encoded, '\n'), 0o644); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	text := report.String()
