@@ -37,7 +37,11 @@ import (
 // checkfxEntry 是 `overlay-23 entry#4` 在自己模組裡的位移（far-call 表的 code_offset）。
 const checkfxEntry = 0x03FE
 
+// checkfxStubOffset 是 `overlay-23 entry#4` 的 stub 位移（far-call 表的 raw ＝ `0141:0034`）。
+const checkfxStubOffset = 0x0034
+
 type farCall struct {
+	Raw        string `json:"raw"`
 	Module     string `json:"module"`
 	Function   string `json:"function"`
 	EA         string `json:"ea"`
@@ -55,6 +59,7 @@ func main() {
 	mapPath := flag.String("far-call-map", "docs/audit/far-call-map-dos.json", "far call 對照表")
 	overlays := flag.String("overlays", "workplace/re-sweep/dos/overlays", "overlay 二進位所在目錄")
 	window := flag.Int("window", 32, "往回找 `mov al,imm`＋`push ax` 的窗口大小")
+	resident := flag.String("resident", "workplace/re-sweep/dos/START.EXE", "常駐執行檔（用來排除常駐側呼叫）")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
 	flag.Parse()
 
@@ -151,6 +156,44 @@ func main() {
 		fmt.Fprintf(&report, "\n")
 	}
 
+	// 常駐側：Borland 的 overlay 呼叫一律是 far call 到固定的 stub。
+	//
+	// ⚠ 這裡只比**位移**不比段——而這對「沒有」這個方向是安全的：位移根本沒出現
+	// 過，就沒有任何段值能讓它變成一次 CHECKFX 呼叫。反過來（宣稱「有」）才需要
+	// 比段，因為 stub 位移會撞號。
+	//
+	// ⚠⚠ 而且一定要有**正對照**：常駐側如果根本不用 far call 叫 overlay，那
+	// 「找不到 CHECKFX」就什麼都不代表。下面同時數常駐側叫得到幾種 stub 位移。
+	residentCalls, residentStubs := -1, -1
+	if payload, readErr := os.ReadFile(*resident); readErr == nil {
+		stubs := map[int]bool{}
+		for _, call := range table.Targets {
+			if !strings.HasPrefix(call.Target, "overlay-") {
+				continue
+			}
+			if _, offset, ok := splitRaw(call.Raw); ok {
+				stubs[offset] = true
+			}
+		}
+		residentCalls = countFarCallsTo(payload, checkfxStubOffset)
+		residentStubs = 0
+		for offset := range stubs {
+			if countFarCallsTo(payload, offset) > 0 {
+				residentStubs++
+			}
+		}
+		fmt.Fprintf(&report, "## 常駐執行檔那一側\n\n")
+		fmt.Fprintf(&report, "| 檢查 | 結果 |\n|---|---:|\n")
+		fmt.Fprintf(&report, "| 常駐側呼叫 `CHECKFX` 的 stub 位移 `%02Xh` 幾次 | **%d** |\n",
+			checkfxStubOffset, residentCalls)
+		fmt.Fprintf(&report, "| 正對照：常駐側叫得到幾種 overlay stub 位移 | %d／%d |\n\n",
+			residentStubs, len(stubs))
+		if residentCalls == 0 && residentStubs > 0 {
+			fmt.Fprintf(&report, "正對照成立（常駐側**確實會**用 far call 叫 overlay），"+
+				"而 `CHECKFX` 的 stub 位移一次都沒出現 ⇒ **常駐側不呼叫 `CHECKFX`**。\n\n")
+		}
+	}
+
 	fmt.Fprintf(&report, "## 沒有呼叫點的時機\n\n")
 	missing := make([]string, 0, 4)
 	for timing := 0; timing <= 0x16; timing++ {
@@ -161,12 +204,18 @@ func main() {
 	if len(missing) == 0 {
 		fmt.Fprintf(&report, "（沒有）\n")
 	} else {
-		fmt.Fprintf(&report, "%s ——分派表裡有效果碼，但這一支找不到任何呼叫端。\n\n", strings.Join(missing, "、"))
-		fmt.Fprintf(&report, "⚠ **不要直接讀成「原作不會用到」。** 這一支只看得到兩種形狀："+
-			"far-call 表裡的跨 overlay 呼叫，以及 overlay-23 內部的 `E8` 近呼叫，"+
-			"而且時機必須是 `mov al, imm` 推進去的。常駐執行檔那一側因為重定位，"+
-			"沒有辦法用同一個位元組樣式掃。**要下「這個時機是死的」這種結論，"+
-			"得先把常駐側與非立即數的呼叫都排除掉。**\n")
+		fmt.Fprintf(&report, "%s ——分派表裡有效果碼，但找不到任何呼叫端。\n\n", strings.Join(missing, "、"))
+		if len(unresolved) == 0 && residentCalls == 0 && residentStubs > 0 {
+			fmt.Fprintf(&report, "三個方向都排除掉了：跨 overlay 的 far call、"+
+				"overlay-23 內部的近呼叫、常駐執行檔（正對照成立）。"+
+				"而且 %d 處呼叫點的時機**全部**是 `mov al, imm` 推進去的，沒有一處來自變數。\n\n",
+				len(sites))
+			fmt.Fprintf(&report, "⇒ 可以說：**這兩個時機在 DOS 版是死的**。"+
+				"只在它們底下出現的效果碼，原作永遠不會執行——remake 不實作它們**是對的**，"+
+				"把它們算成缺口反而會為死碼寫程式。\n")
+		} else {
+			fmt.Fprintf(&report, "⚠ 還不能讀成「原作不會用到」：仍有沒排除掉的呼叫形狀。\n")
+		}
 	}
 
 	text := report.String()
@@ -191,4 +240,31 @@ func timingBefore(data []byte, callEA, window int) int {
 		}
 	}
 	return -1
+}
+
+// splitRaw 把 far-call 表的 `段:位移` 拆開。
+func splitRaw(raw string) (segment, offset int, ok bool) {
+	parts := strings.Split(raw, ":")
+	if len(parts) != 2 {
+		return 0, 0, false
+	}
+	segmentValue, err1 := strconv.ParseUint(parts[0], 16, 32)
+	offsetValue, err2 := strconv.ParseUint(parts[1], 16, 32)
+	if err1 != nil || err2 != nil {
+		return 0, 0, false
+	}
+	return int(segmentValue), int(offsetValue), true
+}
+
+// countFarCallsTo 數 `9A <位移低> <位移高>` 出現幾次。段值不比——重定位會改寫它，
+// 而對「沒有出現」這個方向不比段是安全的。
+func countFarCallsTo(payload []byte, offset int) int {
+	count := 0
+	low, high := byte(offset&0xFF), byte((offset>>8)&0xFF)
+	for index := 0; index+3 <= len(payload); index++ {
+		if payload[index] == 0x9A && payload[index+1] == low && payload[index+2] == high {
+			count++
+		}
+	}
+	return count
 }
