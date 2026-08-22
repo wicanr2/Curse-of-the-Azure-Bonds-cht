@@ -1029,11 +1029,17 @@ func (s *State) BeginAdventure() error {
 			s.SceneBodyBlock = uint8(result.PictureBlock)
 		}
 		s.OriginalEvent = "PICTURE"
-		if result.CombatRequested || result.WaitingForMenu || result.WaitingForString {
+		if result.CombatRequested || result.PostCombatRequested || result.WaitingForMenu || result.WaitingForString {
 			pending := result
 			pending.PictureRequested = false
 			s.pendingPictureResult = &pending
 		}
+		return nil
+	}
+	if result.PostCombatRequested {
+		// `24h` 的第四支 ＝ 戰後處理（`overlay-05` DOPOSTCOMBAT），不是戰鬥
+		// （spec 1182）。
+		s.OriginalEvent = "POSTCOMBAT"
 		return nil
 	}
 	if result.CombatRequested {
@@ -1469,7 +1475,7 @@ func (s *State) Select(index int) error {
 		s.applyECLInventorySignals(result)
 		s.applyECLTreasureSignals(result)
 		s.applyECLRobSignals(result)
-		if !result.CombatRequested {
+		if !result.CombatRequested && !result.PostCombatRequested {
 			handled, err := s.applyDataPackEvent(result)
 			if handled || err != nil {
 				if err == nil && s.session != nil && blockBefore != s.session.CurrentBlockID() {
@@ -1503,7 +1509,7 @@ func (s *State) Select(index int) error {
 					// TREASURE may contain only coins, gems, or jewelry.
 					// Open the service when actual pooled content changed,
 					// but do not insert an empty page for a zero request.
-					treasureReady = result.CombatRequested &&
+					treasureReady = (result.CombatRequested || result.PostCombatRequested) &&
 						(s.moneyPool != beforeMoney ||
 							s.treasureGems != beforeGems ||
 							s.treasureJewelry != beforeJewelry ||
@@ -1587,7 +1593,7 @@ func (s *State) Select(index int) error {
 			if s.Message == "" {
 				s.Message = s.catalog.Text("event_picture", "event_picture")
 			}
-			if result.CombatRequested || result.ShopRequested || result.TempleRequested || result.WaitingForMenu {
+			if result.CombatRequested || result.PostCombatRequested || result.ShopRequested || result.TempleRequested || result.WaitingForMenu {
 				pending := result
 				pending.PictureRequested = false
 				s.pendingPictureResult = &pending
@@ -1616,22 +1622,14 @@ func (s *State) Select(index int) error {
 			}
 			return nil
 		}
-		if result.CombatRequested {
-			records := s.monsterRecordsForCurrentECL()
-			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
-				if err := s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed); err != nil {
-					return err
-				}
-				return nil
-			}
-			if len(result.MonsterSpawns) == 0 && s.session != nil &&
-				s.eclMenuReturnMode == ModeDungeon {
-				// A real dungeon script may deliberately reduce every encounter
-				// group count to zero before COMBAT (for example after allies
-				// remove the opposition). The DOS scheduler wins that empty
-				// battle immediately; resume the saved ECL PC instead of showing
-				// the unsupported-combat fallback. Synthetic/no-session combat
-				// remains fail-closed below.
+		if result.PostCombatRequested {
+			// `24h` 的第四支：原作跑 `overlay-05` 的 `DOPOSTCOMBAT`
+			// ——戰利品分配／經驗值畫面，不是戰鬥（spec 1182）。
+			//
+			// ⚠ 地城裡的慣用法是「腳本先把遭遇編成減到零、再打 `24h`」，
+			// 原作那一路等於立刻結束並回到腳本，所以這裡續跑存下的 ECL PC，
+			// 不是停在一個不存在的戰鬥上。
+			if s.session != nil && s.eclMenuReturnMode == ModeDungeon {
 				s.combatReturnMode = ModeDungeon
 				continued, continueErr := s.continueECLAfterEngineBoundary()
 				if continueErr != nil {
@@ -1641,6 +1639,19 @@ func (s *State) Select(index int) error {
 					s.Mode = ModeDungeon
 					s.eventReturnMode = ModeDungeon
 					s.Message = ""
+				}
+				return nil
+			}
+			s.OriginalEvent = "POSTCOMBAT"
+			s.eventReturnMode = ModeWilderness
+			s.Mode = ModeEvent
+			return nil
+		}
+		if result.CombatRequested {
+			records := s.monsterRecordsForCurrentECL()
+			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
+				if err := s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed); err != nil {
+					return err
 				}
 				return nil
 			}
@@ -1733,6 +1744,11 @@ func (s *State) continueAfterSuppressedPicture(result ecl.RunResult) (bool, erro
 	}
 	if result.TempleRequested {
 		return true, s.enterECLTemple()
+	}
+	if result.PostCombatRequested {
+		s.Mode = ModeEvent
+		s.OriginalEvent = "POSTCOMBAT"
+		return true, nil
 	}
 	if result.CombatRequested {
 		records := s.monsterRecordsForCurrentECL()

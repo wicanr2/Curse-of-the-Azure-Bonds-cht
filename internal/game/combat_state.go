@@ -4503,7 +4503,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 			} else {
 				// Pure money/gem/jewelry TREASURE still owns a visible service
 				// boundary, while an all-zero request does not add an empty UI.
-				treasureReady = result.CombatRequested &&
+				treasureReady = (result.CombatRequested || result.PostCombatRequested) &&
 					(s.moneyPool != beforeMoney ||
 						s.treasureGems != beforeGems ||
 						s.treasureJewelry != beforeJewelry ||
@@ -4543,7 +4543,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 			s.SceneBodyBlock = uint8(result.PictureBlock)
 		}
 		s.OriginalEvent = "PICTURE"
-		if result.CombatRequested || result.ShopRequested || result.TempleRequested ||
+		if result.CombatRequested || result.PostCombatRequested || result.ShopRequested || result.TempleRequested ||
 			result.WaitingForMenu || result.WaitingForString {
 			pending := result
 			pending.PictureRequested = false
@@ -4579,6 +4579,14 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 		s.Mode = ModeEvent
 		s.OriginalEvent = "COMBAT"
 		s.Message = s.catalog.Text("combat_started", "combat_started")
+		return true, nil
+	}
+	if result.PostCombatRequested {
+		// `24h` 的第四支：原作跑 `overlay-05` 的 `DOPOSTCOMBAT`——戰利品分配／
+		// 經驗值畫面，不是戰鬥（spec 1182）。戰利品在上面已經結算過，
+		// `treasureReady` 會把分配畫面打開；沒有東西可分的話只留事件邊界。
+		s.Mode = ModeEvent
+		s.OriginalEvent = "POSTCOMBAT"
 		return true, nil
 	}
 	if handled, err := s.applyECLProgram(result); handled || err != nil {

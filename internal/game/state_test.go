@@ -1823,7 +1823,7 @@ func TestShopAppraiseRejectKeepsTreasure(t *testing.T) {
 	}
 }
 
-func TestStateExposesCombatEntryFromECL(t *testing.T) {
+func TestStateExposesPostCombatEntryFromECL(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["combat_started"] = "戰鬥開始（戰鬥規則尚未完成）"
 	state := NewState(catalog)
@@ -1834,8 +1834,10 @@ func TestStateExposesCombatEntryFromECL(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.Message != "戰鬥開始（戰鬥規則尚未完成）" || state.OriginalEvent != "COMBAT" {
-		t.Fatalf("combat state=%#v", state)
+	// ⚠ 這個 `24h` 沒有擺怪，所以走的是**第四支**：戰後處理（`overlay-05`
+	// ＝ POSTCOM），不是戰鬥（spec 1182）。原作的 `24h` 沒有「零隻怪的戰鬥」。
+	if state.Mode != ModeEvent || state.OriginalEvent != "POSTCOMBAT" {
+		t.Fatalf("post-combat state=%#v", state)
 	}
 }
 
@@ -2008,7 +2010,7 @@ func TestECLCombatVictoryResumesFollowingMenu(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if result, runErr := session.RunFrom(0x14, 20, nil); runErr != nil || !result.CombatRequested {
+	if result, runErr := session.RunFrom(0x14, 20, nil); runErr != nil || !result.PostCombatRequested {
 		t.Fatalf("combat prefix=%+v err=%v", result, runErr)
 	}
 

@@ -350,7 +350,7 @@ func TestRealECL4CaveA2CannonContinuesToDeadElfHandler(t *testing.T) {
 	}
 }
 
-func TestRealECL4CaveDeadElfPouchUnlocksJournal59AndRequestsCombat(t *testing.T) {
+func TestRealECL4CaveDeadElfPouchUnlocksJournal59AndRequestsPostCombat(t *testing.T) {
 	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
 	if err != nil {
 		t.Skipf("original image unavailable: %v", err)
@@ -447,7 +447,10 @@ func TestRealECL4CaveDeadElfPouchUnlocksJournal59AndRequestsCombat(t *testing.T)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if combatResult.PC != 0x089C || !combatResult.CombatRequested || combatResult.WaitingForMenu ||
+	// ⚠ 這一處沒有擺怪，所以走的是 `24h` 的**第四支**：戰利品分配
+	// （`overlay-05` ＝ POSTCOM），不是戰鬥（spec 1182）。
+	if combatResult.PC != 0x089C || !combatResult.PostCombatRequested ||
+		combatResult.CombatRequested || combatResult.WaitingForMenu ||
 		len(combatResult.Text) != 0 || len(combatResult.SaveWrites) != 0 {
 		t.Fatalf("dead-elf post-map combat=%+v", combatResult)
 	}

@@ -2626,7 +2626,7 @@ func TestRealFireKnifeOfficeStages(t *testing.T) {
 		t.Fatalf("office search=%+v", search)
 	}
 	loot := run(map[uint16]uint16{0x4C10: 1, 0x7ECA: 1}, []uint16{0})
-	if !loot.CombatRequested || len(loot.TreasureRequests) != 1 ||
+	if !loot.PostCombatRequested || loot.CombatRequested || len(loot.TreasureRequests) != 1 ||
 		loot.TreasureRequests[0] != (ecl.TreasureRequest{
 			Coins: [7]uint16{0, 0, 0, 500, 500, 3, 2}, ItemBlock: 0x82,
 		}) {

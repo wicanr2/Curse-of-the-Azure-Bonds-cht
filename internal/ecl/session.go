@@ -465,6 +465,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 		aggregate.Exited = aggregate.Exited || result.Exited
 		aggregate.CombatRequested = aggregate.CombatRequested || result.CombatRequested
 		aggregate.ShopRequested = aggregate.ShopRequested || result.ShopRequested
+		aggregate.PostCombatRequested = aggregate.PostCombatRequested || result.PostCombatRequested
 		if result.ShopRequested {
 			aggregate.ShopPriceScale = result.ShopPriceScale
 		}
