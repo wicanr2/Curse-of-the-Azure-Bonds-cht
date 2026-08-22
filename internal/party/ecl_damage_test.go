@@ -149,3 +149,63 @@ func TestApplyECLDamageProjectsReferenceDownAndDeathStates(t *testing.T) {
 		})
 	}
 }
+
+// 第三條路：單體，但目標是當場擲出來的（spec 1152 的「隨機一名」）。
+//
+// ★ corpus 走不到這一路（單體封包的 `SaveFlags` bit 7 都是設定的），所以測試
+// 直接對 handler 的形狀負責：擲一顆 1..隊伍人數挑人、豁免種類**不減一**、
+// 要不要擲由 `Flags` bit 5 決定。
+func TestApplyECLDamageRandomSingleTarget(t *testing.T) {
+	roster := Roster{
+		{ID: "a", Name: "甲", HitPoints: 20, MaxHitPoints: 20, SavingThrows: []uint8{14, 14, 14, 14, 14}},
+		{ID: "b", Name: "乙", HitPoints: 20, MaxHitPoints: 20, SavingThrows: []uint8{14, 14, 14, 14, 14}},
+		{ID: "c", Name: "丙", HitPoints: 20, MaxHitPoints: 20, SavingThrows: []uint8{14, 14, 14, 14, 14}},
+	}
+	// 傷害 1d6 ＝ 4，接著挑人的那一顆 1d3 ＝ 2 ⇒ 索引 1（乙）。
+	dice := []int{4, 2}
+	step := 0
+	rollDie := func(int) int {
+		value := dice[step]
+		step++
+		return value
+	}
+	// `Flags` bit 7 設定（旗標模式）、bit 6 清空（不是全隊）、bit 5 設定（不擲豁免）。
+	// `SaveFlags` bit 7 清空 ⇒ 走第三條路。
+	request := ecl.DamageRequest{Flags: 0xA0, DiceCount: 1, DiceSize: 6, SaveFlags: 0x02}
+	outcomes, err := roster.ApplyECLDamage(request, 0, rollDie, func(int) int { return 20 })
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(outcomes) != 1 || outcomes[0].TargetIndex != 1 {
+		t.Fatalf("結果 ＝ %+v，want 單一目標且索引 1", outcomes)
+	}
+	if outcomes[0].Applied != 4 || roster[1].HitPoints != 16 {
+		t.Fatalf("傷害 ＝ %d、乙的 HP ＝ %d，want 4／16", outcomes[0].Applied, roster[1].HitPoints)
+	}
+	// ⚠ 選定角色（第二條路）沒有被碰到——目標是擲出來的，不是 selectedIndex。
+	if roster[0].HitPoints != 20 || roster[2].HitPoints != 20 {
+		t.Fatalf("其他隊員不該受傷：%d／%d", roster[0].HitPoints, roster[2].HitPoints)
+	}
+}
+
+// 同一條路要擲豁免時，種類**不減一**：`SaveFlags and 7 = 3` 就查第 3 欄。
+func TestApplyECLDamageRandomSingleTargetDoesNotSubtractOne(t *testing.T) {
+	roster := Roster{{ID: "a", Name: "甲", HitPoints: 20, MaxHitPoints: 20,
+		// 只有第 3 欄門檻低到 20 點必過，其餘欄位不可能過。
+		SavingThrows: []uint8{99, 99, 99, 2, 99}}}
+	dice := []int{5, 1}
+	step := 0
+	rollDie := func(int) int {
+		value := dice[step]
+		step++
+		return value
+	}
+	request := ecl.DamageRequest{Flags: 0x80, DiceCount: 1, DiceSize: 6, SaveFlags: 0x03}
+	outcomes, err := roster.ApplyECLDamage(request, 0, rollDie, func(int) int { return 10 })
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !outcomes[0].Saved {
+		t.Fatalf("種類 3、門檻 2、骰 10 應該過：%+v。減一的話會查到門檻 99 的第 2 欄", outcomes[0])
+	}
+}
