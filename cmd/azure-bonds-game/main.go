@@ -4170,6 +4170,15 @@ func main() {
 		gameApp.state.Mode = game.ModeDungeon
 		gameApp.state.Choices = nil
 		gameApp.state.Message = ""
+		// ⚠ 牆磚選圖是零就**不准畫**。 `LoadPieces` 全零的時候畫得出來的是一張
+		// 「地板＋天空、一面牆都沒有」的畫面——它看起來完全正常，只是把每一面牆
+		// 都畫成了空氣。拿這種畫面去跟原版比，會得到一個很大的差異數字，然後把
+		// 它誤判成「第一人稱畫錯了」。實測：SAVGAM 匯入那條路徑正是全零
+		// （spec 1185），而故事流程那條是 `[1 2 4]`。
+		if gameApp.state.LoadPieces == [3]uint16{} {
+			log.Fatal("-first-person refuses to draw with no wall piece selectors: " +
+				"the frame would render every wall as empty air and still look plausible")
+		}
 	}
 	if err := ebiten.RunGame(gameApp); err != nil {
 		log.Fatal(err)
