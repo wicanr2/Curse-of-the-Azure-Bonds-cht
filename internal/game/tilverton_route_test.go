@@ -42,6 +42,17 @@ var walkableRouteSegments = []string{
 }
 
 func TestTilvertonRouteIsWalkableAndLocalized(t *testing.T) {
+	// ★ 這條路線走的是主線**不經過**的三段（`0x01`／`0x02`／`0x03`）。它每一步
+	// 移動的起點都是「隊伍真的站過的格子」，而那正是走訪用來進入
+	// 「幾何上斷開」連通分量的入口（spec 1193）。
+	//
+	// ⚠ 兩支測試都要跑才錄得齊：只跑主線的話那三段一個起點都沒有，
+	// 而少掉的段不會有任何錯誤訊息。
+	t.Cleanup(func() {
+		if err := WriteDecisionLog(""); err != nil {
+			t.Errorf("路線錄不出來：%v", err)
+		}
+	})
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {
 		t.Skipf("original image is unavailable: %v", err)
