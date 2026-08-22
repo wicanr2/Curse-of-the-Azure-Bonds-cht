@@ -423,7 +423,27 @@ func (a *app) saveTarget() string {
 	return a.partyPath
 }
 
+// clampChoiceCursor 讓游標不會停在**已經不存在的選項**上。
+//
+// ⚠ `choiceCursor` 是前端自己的狀態，而選項是 ECL 換頁時整批換掉的。商店選單有
+// 五十幾項，挪到第 8 項之後換到只有三項的荒野選單，游標還是 8——按下去
+// `Select` 直接回 `choice 8 is invalid in mode 1`，玩家看到的是一行錯誤訊息。
+// 重設只發生在幾條特定路徑上（選完一項、載入存檔），涵蓋不了所有換頁。
+func (a *app) clampChoiceCursor() {
+	if a.choiceCursor < 0 {
+		a.choiceCursor = 0
+		return
+	}
+	if count := len(a.state.Choices); a.choiceCursor >= count {
+		a.choiceCursor = 0
+		if count > 0 {
+			a.choiceCursor = count - 1
+		}
+	}
+}
+
 func (a *app) Update() error {
+	a.clampChoiceCursor()
 	if a.areaMapPreview {
 		if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyA) {
 			a.areaMapPreview = false
