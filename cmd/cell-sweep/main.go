@@ -54,6 +54,11 @@ type cellResult struct {
 	// precondition 非空代表這一格是**把守衛的格子設好之後**才演出來的，
 	// 內容就是那組前置狀態。
 	precondition string
+	// revisit 是**同一次進段裡再跑一次生命週期**演出來的字，用來分出
+	// 「只演一次」與「每次都演」。空字串代表第二次什麼都沒演。
+	revisit string
+	// revisitKind 是重訪的判定：`同` ／ `只演一次` ／ `不同`。
+	revisitKind string
 }
 
 // played 為真代表這一格真的演出了字。
@@ -224,6 +229,7 @@ func standOnCell(data corpus, seg segment.Segment, index, x, y int, roof uint8,
 				}
 				result.text, result.language = text, languageOf(text)
 				result.search, result.seed, result.facing = search, int64(seed), facing
+				result.revisit, result.revisitKind = revisitOnce(state, text)
 				return result
 			}
 		}
@@ -315,31 +321,9 @@ func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
 	if err := gamecorpus.BoostParty(&state); err != nil {
 		return nil, err
 	}
-	trail := make([]string, 0, 16)
-	for step := 0; step < 16 && state.Mode != game.ModeDungeon; step++ {
-		trail = append(trail, fmt.Sprintf("%s／%d 選項／%s",
-			modeName(state.Mode), len(state.Choices), firstLine(playerText(&state))))
-		if state.CombatActive() {
-			for turn := 0; turn < 400 && state.CombatActive(); turn++ {
-				if err := state.CombatAct(); err != nil {
-					return nil, fmt.Errorf("%s 的入口戰鬥：%w", seg.ID, err)
-				}
-			}
-			continue
-		}
-		// ⚠ 地點模式（商店、神殿、旅店）的第一個選項是「買」，選下去會在商店選單
-		// 裡繞不出來——散提爾堡的魔法商店就是這樣把整段擋住的。那裡要選最後一項
-		// （離開）。事件模式的第一項才是「繼續」。
-		choice := 0
-		if state.Mode == game.ModePlace && len(state.Choices) > 0 {
-			choice = len(state.Choices) - 1
-		}
-		if err := state.Continue(); err != nil {
-			if selectErr := state.Select(choice); selectErr != nil {
-				return nil, fmt.Errorf("%s 的入口推不動：continue=%v select=%v",
-					seg.ID, err, selectErr)
-			}
-		}
+	trail, err := settleToDungeon(&state, 16)
+	if err != nil {
+		return nil, fmt.Errorf("%s 的入口：%w", seg.ID, err)
 	}
 	if state.Mode != game.ModeDungeon {
 		return nil, fmt.Errorf("進 %s 之後停在%s，不是地城；推進軌跡：%s",
@@ -402,6 +386,19 @@ func summarise(sweeps []blockSweep) map[string]int {
 			if cell.precondition != "" {
 				counts["要前置"]++
 			}
+			// 重訪只在「有演出來」的格子上才有意義。
+			if cell.played() {
+				switch cell.revisitKind {
+				case "只演一次":
+					counts["重訪：只演一次"]++
+				case "同":
+					counts["重訪：每次都演"]++
+				case "不同":
+					counts["重訪：演出別的"]++
+				default:
+					counts["重訪：跑不動"]++
+				}
+			}
 		}
 	}
 	return counts
@@ -436,8 +433,8 @@ func render(sweeps []blockSweep) string {
 		}
 		out.WriteString(fmt.Sprintf("地圖：`GEO%d/0x%02X`；索引 ＝ 地形碼 `& 0x%02X`\n\n",
 			sweep.geoSet, sweep.geoBlock, sweep.mask))
-		out.WriteString("| 索引 | 格子 | 地形碼 | 條件 | 語言 | 演出來的第一句／沒演的守衛 |\n")
-		out.WriteString("|---:|---|---|---|---|---|\n")
+		out.WriteString("| 索引 | 格子 | 地形碼 | 條件 | 語言 | 重訪 | 演出來的第一句／沒演的守衛 |\n")
+		out.WriteString("|---:|---|---|---|---|---|---|\n")
 		for _, cell := range sweep.cells {
 			if cell.note == "地圖上沒有這個地形碼" {
 				out.WriteString(fmt.Sprintf("| %d | — | — | — | — | %s |\n",
@@ -477,8 +474,15 @@ func render(sweeps []blockSweep) string {
 			if !cell.played() {
 				condition = "—"
 			}
-			out.WriteString(fmt.Sprintf("| %d | `%s` | `%02X` | %s | %s | %s |\n",
-				cell.index, cell.cell, cell.roof, condition, cell.language, text))
+			revisit := cell.revisitKind
+			if !cell.played() || revisit == "" {
+				revisit = "—"
+			}
+			if revisit == "不同" {
+				revisit = "**不同**：" + firstLine(cell.revisit)
+			}
+			out.WriteString(fmt.Sprintf("| %d | `%s` | `%02X` | %s | %s | %s | %s |\n",
+				cell.index, cell.cell, cell.roof, condition, cell.language, revisit, text))
 		}
 		out.WriteString("\n")
 	}
@@ -495,6 +499,26 @@ func render(sweeps []blockSweep) string {
 	out.WriteString(fmt.Sprintf("| 其中要先擺好守衛的旗標才演 | %d |\n", counts["要前置"]))
 	out.WriteString(fmt.Sprintf("| 分派表有、地圖上沒有那個地形碼 | %d |\n",
 		counts["沒有地形碼"]))
+	out.WriteString("\n### 重訪：同一格再跑一次生命週期\n\n")
+	out.WriteString("★ 這一支本來每一格都**重新進段**（once-only 旗標會互相污染）。" +
+		"那個設計是對的，副作用是**第二次踏上同一格從來沒被觀察過**——" +
+		"而「全城市／全房間走訪」缺的分母之一正是重訪分支：原作大量用 " +
+		"`SAVE <旗標>` ＋ `IF <旗標>` 讓事件只演一次。\n\n")
+	out.WriteString("⚠ 「只演一次」**不是缺陷**：原作本來就有大量一次性事件。" +
+		"這裡給的是分母，不是待辦清單。\n\n")
+	out.WriteString("⚠ 量的是「同一格再跑一次生命週期」，**不是「走開再走回來」**。" +
+		"once-only 旗標的機制與移動無關，所以對那一類是準的；" +
+		"靠移動事件觸發的處理常式會被低估。**這是重訪的代理指標，不是重訪本身。**\n\n")
+	out.WriteString("⚠ 第二次**只看 `Message`**（新的敘述），不退回 `Prompt`。" +
+		"第一版退回 Prompt，於是 74 格被判成「演出別的字」——拆開來 53 格是" +
+		"「請按任意鍵繼續」、12 格是撿寶物的提示、5 格是地城 HUD，**真的有新敘述的只有 4 格**。" +
+		"退回 Prompt 會把 UI 文字算成劇情，分母灌水近二十倍。" +
+		"代價是把「旁白放在 Prompt 上」的那一類算成沒有新敘述 ⇒ **這一欄是下界**。\n\n")
+	out.WriteString("| 第二次的行為 | 數 |\n|---|---:|\n")
+	out.WriteString(fmt.Sprintf("| 只演一次（第二次沒有新敘述）| %d |\n", counts["重訪：只演一次"]))
+	out.WriteString(fmt.Sprintf("| 每次都演（第二次一樣）| %d |\n", counts["重訪：每次都演"]))
+	out.WriteString(fmt.Sprintf("| 第二次有**不同的敘述** | %d |\n", counts["重訪：演出別的"]))
+	out.WriteString(fmt.Sprintf("| 第二次跑不動 | %d |\n", counts["重訪：跑不動"]))
 	return out.String()
 }
 
@@ -547,4 +571,87 @@ func firstLine(text string) string {
 		return string(runes[:32]) + "…"
 	}
 	return string(runes)
+}
+
+// revisitOnce 在**同一次進段**裡再跑一次地城生命週期，回傳第二次演出來的字
+// 與判定。
+//
+// ★ 存在的理由：這一支本來每一格都重新進段（註解寫著「once-only 旗標會互相
+// 污染」）——那個設計正確，但副作用是**第二次踏上同一格的行為從來沒被觀察過**。
+// 「全城市／全房間走訪」缺的分母之一正是重訪分支：原作大量使用
+// `SAVE <旗標>` ＋ `IF <旗標>` 讓事件只演一次，而 remake 接不接得住這一半，
+// 在只走一次的盤點裡是看不見的。
+//
+// ⚠ 這量的是「**同一格再跑一次生命週期**」，不是「走開再走回來」。once-only
+// 旗標的機制與移動無關，所以對那一類是準的；但如果某一格的處理常式是靠
+// 移動事件觸發，這個做法會低估。**它是重訪的代理指標，不是重訪本身。**
+//
+// ⚠ 第二次不再演出字**不代表 remake 漏接**——原作本來就有大量只演一次的事件。
+// 這一欄提供的是分母（有多少格有重訪分支），不是缺陷清單。
+func revisitOnce(state *game.State, first string) (string, string) {
+	// ⚠ 第一次跑完畫面停在事件上，**要先推回地城**再跑第二次。少了這一步
+	// `RunDungeonLifecycle` 會正確地拒絕，而那個拒絕看起來像「remake 跑不動」。
+	if _, err := settleToDungeon(state, 24); err != nil {
+		return "", "推不回地城"
+	}
+	if state.Mode != game.ModeDungeon {
+		return "", "推不回地城"
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		return "", "跑不動"
+	}
+	// ⚠ 第二次**只看 `Message`**，不用 `playerText`。
+	//
+	// 第一版用了 `playerText`（Message 沒有就退回 Prompt），結果 74 格被判成
+	// 「第二次演出別的字」——拆開來看，53 格是「請按任意鍵或 Enter 繼續」、
+	// 12 格是撿寶物的選擇提示、5 格是地城 HUD 那一行，**真正有新敘述的只有 4 格**。
+	// 退回 Prompt 會把 UI 文字算成劇情內容，把分母灌水近二十倍。
+	//
+	// ⚠ 代價是**低估**：原作有些遭遇把旁白放在 Prompt 上（`playerText` 的註解
+	// 就是為此而寫），那一類重訪會被算成「沒有新敘述」。方向是保守的——
+	// 這一欄寧可少報，不要報出一份假的待辦清單。
+	second := strings.TrimSpace(state.Message)
+	switch {
+	case second == "":
+		return "", "只演一次"
+	case second == first:
+		return second, "同"
+	default:
+		return second, "不同"
+	}
+}
+
+// settleToDungeon 把事件／選單／戰鬥推完，直到停在地城模式。回傳推進軌跡，
+// 停不下來時連軌跡一起報出去——**「推不動」要看得到卡在哪一格**。
+//
+// ★ 抽出來是因為重訪也要用：第一次生命週期跑完之後畫面停在事件上，
+// 不先推回地城就直接再跑一次，`RunDungeonLifecycle` 會正確地拒絕，
+// 而那個拒絕會被記成「跑不動」——**看起來像 remake 有問題，其實是量法錯了**。
+func settleToDungeon(state *game.State, limit int) ([]string, error) {
+	trail := make([]string, 0, limit)
+	for step := 0; step < limit && state.Mode != game.ModeDungeon; step++ {
+		trail = append(trail, fmt.Sprintf("%s／%d 選項／%s",
+			modeName(state.Mode), len(state.Choices), firstLine(playerText(state))))
+		if state.CombatActive() {
+			for turn := 0; turn < 400 && state.CombatActive(); turn++ {
+				if err := state.CombatAct(); err != nil {
+					return trail, fmt.Errorf("戰鬥：%w", err)
+				}
+			}
+			continue
+		}
+		// ⚠ 地點模式（商店、神殿、旅店）的第一個選項是「買」，選下去會在商店選單
+		// 裡繞不出來——散提爾堡的魔法商店就是這樣把整段擋住的。那裡要選最後一項
+		// （離開）。事件模式的第一項才是「繼續」。
+		choice := 0
+		if state.Mode == game.ModePlace && len(state.Choices) > 0 {
+			choice = len(state.Choices) - 1
+		}
+		if err := state.Continue(); err != nil {
+			if selectErr := state.Select(choice); selectErr != nil {
+				return trail, fmt.Errorf("推不動：continue=%v select=%v", err, selectErr)
+			}
+		}
+	}
+	return trail, nil
 }
