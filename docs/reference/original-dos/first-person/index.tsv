@@ -46,3 +46,17 @@ geo2-b01-x01-y08-N.png	1	8	N
 geo2-b01-x01-y08-E.png	1	8	E
 geo2-b01-x01-y08-S.png	1	8	S
 geo2-b01-x01-y08-W.png	1	8	W
+# 第 673 輪：提爾佛頓剩下的三格
+geo2-b01-x03-y04-N.png	3	4	N
+geo2-b01-x03-y04-E.png	3	4	E
+geo2-b01-x03-y04-S.png	3	4	S
+geo2-b01-x03-y04-W.png	3	4	W
+geo2-b01-x01-y05-N.png	1	5	N
+geo2-b01-x01-y05-E.png	1	5	E
+geo2-b01-x01-y05-S.png	1	5	S
+geo2-b01-x01-y05-W.png	1	5	W
+geo2-b01-x00-y07-N.png	0	7	N
+geo2-b01-x00-y07-E.png	0	7	E
+geo2-b01-x00-y07-S.png	0	7	S
+geo2-b01-x00-y07-W.png	0	7	W
+
