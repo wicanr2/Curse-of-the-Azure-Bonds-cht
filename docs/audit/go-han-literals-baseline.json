@@ -4222,6 +4222,13 @@
     {
       "path": "cmd/dungeon-walk-probe/main.go",
       "function": "main",
+      "sha256": "568c10d1178646f658717a19076e6e7044947ca185958c43f3f182cea4e483a9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
       "sha256": "5baa801bcfece24130b84c2bc886bd755457db9fa7f5ca36c90523639e69ca58",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -4300,6 +4307,13 @@
       "path": "cmd/dungeon-walk-probe/main.go",
       "function": "main",
       "sha256": "be997767e3d467d2cc26e8162fc34ea2781810462e339df267d6fdda2213c668",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "e4b296cacf916a54d12308f9f4ea7d6d60fb2d8d8e5371f9e175e8e2c74602bf",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

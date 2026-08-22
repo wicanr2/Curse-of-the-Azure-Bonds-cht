@@ -24,13 +24,21 @@
 //	COAB_ARRIVAL_SNAPSHOT_DIR=/src/workplace/campaign-frames/arrivals \
 //	    tools/go.sh test ./internal/game/ -count=1 \
 //	    -run 'TestRealNewGameRunsToTheEnding|TestTilvertonRouteIsWalkableAndLocalized'
+//	# 主線的路線紀錄（隊伍真的站過哪些格）
+//	COAB_DECISION_LOG=/src/workplace/campaign-frames/route.json \
+//	    tools/go.sh test ./internal/game/ -run TestRealNewGameRunsToTheEnding -count=1
 //	go run ./cmd/dungeon-walk-probe -arrivals workplace/campaign-frames/arrivals \
+//	    -route workplace/campaign-frames/route.json \
 //	    -output docs/audit/dungeon-walk.md
 //
-// ⚠ **不給 `-arrivals` 會低估**：冷走每一段都開一支新隊伍、沒有任何劇情旗標，
-// 要旗標才開得了的門對它永遠是牆。實測 220 → **225** 個分派索引，
-// 可達性聯集 214 → **224**（spec 1193／1195）。少給那個旗標不會報錯，
-// 只會少幾格——**而少幾格和「那裡本來就走不到」長得一模一樣**。
+// ⚠ **兩個旗標都不給會低估很多**，而且都不會報錯：
+//
+//	沒有            220 個分派索引，可達性聯集 214
+//	-arrivals       225，聯集 224   （門要劇情旗標才開得了）
+//	＋ -route       256，聯集 233   （樓梯／傳送才進得去的連通分量）
+//
+// 少給不會有錯誤訊息，只會少幾格——**而少幾格和「那裡本來就走不到」長得一模一樣**
+// （spec 1193／1195）。
 package main
 
 import (
@@ -52,6 +60,42 @@ import (
 )
 
 type point struct{ x, y int }
+
+// loadRouteStarts 把主線路線紀錄裡的移動起點按 ECL 段分組（去重）。
+//
+// ⚠ 記的是**起點**：終點由下一步的起點涵蓋，最後一步的終點會漏掉（下界）。
+func loadRouteStarts(path string) map[uint8][]point {
+	out := map[uint8][]point{}
+	if path == "" {
+		return out
+	}
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return out
+	}
+	var route []struct {
+		Kind    string `json:"kind"`
+		Segment int    `json:"segment"`
+		FromX   int    `json:"from_x"`
+		FromY   int    `json:"from_y"`
+	}
+	if json.Unmarshal(raw, &route) != nil {
+		return out
+	}
+	seen := map[[3]int]bool{}
+	for _, step := range route {
+		if step.Kind != "move" {
+			continue
+		}
+		key := [3]int{step.Segment, step.FromX, step.FromY}
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		out[uint8(step.Segment)] = append(out[uint8(step.Segment)], point{step.FromX, step.FromY})
+	}
+	return out
+}
 
 // dungeonDelta 是原作的八向朝向碼換成格子位移。只走正交四向：
 // 斜向在原作的地城裡不是移動方向。
@@ -79,6 +123,9 @@ type segmentWalk struct {
 	// teleports 是「踏上去之後被事件搬到別處」的次數——樓梯與傳送就是這樣進到
 	// 別的連通分量的。
 	teleports int
+	// fromRoute 是「從主線站過的格子起走」跑了幾趟。0 代表那一段第一輪就走完了
+	// （或根本沒有路線紀錄）。
+	fromRoute int
 }
 
 func main() {
@@ -93,6 +140,9 @@ func main() {
 	// ★ 「站得上去的」比「從入口走得到的」多：地圖常常分成好幾塊互不相連的區域
 	// （巫師塔每一層都是獨立房間）。這一份是**走路能到的上限**。
 	componentsOut := flag.String("walkable-json", "", "把**站得上去**（任一連通分量內）的 (block, 地形碼) 寫成 JSON")
+	routePath := flag.String("route", "",
+		"主線路線紀錄（`COAB_DECISION_LOG`）：從隊伍真的站過的格子再走一次，"+
+			"補「幾何上斷開、樓梯／傳送才進得去」那一類缺口")
 	arrivals := flag.String("arrivals", "",
 		"到達取樣目錄：冷走前先把主線在那一段的劇情旗標鋪上（spec 1195），門才開得了")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
@@ -110,6 +160,7 @@ func main() {
 	}
 	records := make([]cellRecord, 0, 256)
 	onMap := make([]cellRecord, 0, 256)
+	routeStarts := loadRouteStarts(*routePath)
 	components := make([]cellRecord, 0, 256)
 	for _, seg := range segment.All() {
 		payload, ok := data.Blocks[seg.Block]
@@ -146,7 +197,7 @@ func main() {
 			for _, handoff := range handoffsFor(*arrivals, seg.Block) {
 				pass := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
 				if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &pass, terrains,
-					policy.follow, policy.pick, handoff); err != nil {
+					policy.follow, policy.pick, handoff, nil); err != nil {
 					if walk.note == "" {
 						walk.note = err.Error()
 					}
@@ -160,6 +211,28 @@ func main() {
 				}
 				walk.blocked += pass.blocked
 				walk.teleports += pass.teleports
+			}
+		}
+		// ★ 第二輪：從**主線真的站過**的格子起走。
+		//
+		// ⚠ 只挑「那一格的索引，第一輪沒走到」的位置——其餘的起點只會把同一塊
+		// 連通分量再走一遍，時間翻倍而一格都不會多。
+		for _, at := range routeStarts[seg.Block] {
+			index := int(grid.CellWrapped(at.x, at.y).Terrain) & dispatch.Mask
+			if walk.reached[index] {
+				continue
+			}
+			for _, follow := range []bool{false, true} {
+				pass := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
+				start := at
+				if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &pass, terrains,
+					follow, 0, handoffsFor(*arrivals, seg.Block)[0], &start); err != nil {
+					continue
+				}
+				for index := range pass.reached {
+					walk.reached[index] = true
+				}
+				walk.fromRoute++
 			}
 		}
 		for terrain := range terrains {
@@ -330,7 +403,7 @@ func readSample(path string) map[uint16]uint16 {
 
 func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mask, steps int,
 	walk *segmentWalk, terrains map[uint8]bool, followTeleports bool, pick int,
-	handoff map[uint16]uint16) error {
+	handoff map[uint16]uint16, from *point) error {
 	state, err := data.NewParty()
 	if err != nil {
 		return err
@@ -352,6 +425,18 @@ func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mas
 	}
 	if err := settleWith(&state, pick); err != nil {
 		return fmt.Errorf("入口推不動：%v", err)
+	}
+	// ★ `from` 非 nil 就從**主線真的站過的那一格**開始走。
+	//
+	// 剩下的可達性缺口成因是「幾何上斷開——樓梯／傳送事件才進得去」：那些格子
+	// 站得上去，但從段入口走不過去。主線的路線紀錄（`COAB_DECISION_LOG`）裡有
+	// 隊伍**真的站過**的座標，從那裡起走就進得去那一塊連通分量（spec 1193）。
+	//
+	// ⚠ 這仍然是**幾何可達性**：它證明「劇情把你放到那裡之後，那一塊走得完」，
+	// 不是「你走得到那裡」。走得到那裡是主線紀錄本身的事。
+	if from != nil {
+		state.DungeonX, state.DungeonY = from.x, from.y
+		state.DungeonWallRoof = grid.CellWrapped(from.x, from.y).Terrain
 	}
 	start := point{state.DungeonX, state.DungeonY}
 	// ⚠ **踏進一格的方向會改變結果**：樓梯事件是「站對方向踏上去」才觸發的
