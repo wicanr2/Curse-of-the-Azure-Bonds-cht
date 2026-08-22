@@ -40,6 +40,16 @@ import (
 // moraleOffset 是角色記錄的 `+0F7h`（spec 758／1116）。
 const moraleOffset = 0xF7
 
+// deadTimings 是**分派表裡有效果碼、但整個執行檔沒有任何呼叫端**的時機。
+//
+// ★ 出處：`cmd/checkfx-callsites` 掃過三個方向——跨 overlay 的 far call、
+// overlay-23 內部的 `E8` 近呼叫、常駐執行檔（有正對照：常駐側確實會用 far call
+// 叫 overlay，只是從不叫 `CHECKFX`）——30 處呼叫點的時機全部是立即數，沒有一處
+// 來自變數。只落在這些時機底下的效果碼，原作**永遠不會執行**。
+//
+// ⚠ 所以它們**不是缺口**。remake 不實作它們是對的；算成缺口等於為死碼寫程式。
+var deadTimings = map[uint8]bool{0x02: true, 0x03: true}
+
 func main() {
 	imagePath := flag.String("image", "curseoftheazurebonds.zip", "原版 image ZIP")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
@@ -116,8 +126,8 @@ func main() {
 	//	unread  還沒解讀 ⇒ 不知道是不是缺口。
 	//	其餘    原作有動作而 remake 沒有 ⇒ **真的缺口**。
 	table, tableErr := gamepack.EffectModifiers()
-	usable, inert, unread, uncatalogued, missing := 0, 0, 0, 0, 0
-	inertRecords, unreadRecords, uncataloguedRecords, missingRecords := 0, 0, 0, 0
+	usable, inert, unread, uncatalogued, dead, missing := 0, 0, 0, 0, 0, 0
+	inertRecords, unreadRecords, uncataloguedRecords, deadRecords, missingRecords := 0, 0, 0, 0, 0
 	status := map[uint8]string{}
 	for _, kind := range ids {
 		if combat.AffectKindIsInterpreted(kind) {
@@ -132,6 +142,10 @@ func main() {
 			}
 		}
 		switch {
+		case tableErr == nil && onlyDeadTimings(table, kind):
+			dead++
+			deadRecords += kinds[kind]
+			status[kind] = "只出現在死時機"
 		case !found:
 			// ⚠ **表裡根本沒有這個碼 ≠ remake 少做了什麼。** 它代表原作那一支
 			// 還沒被反組譯登記過，和 `unread` 同一類（不知道），不是「已知缺口」。
@@ -170,6 +184,7 @@ func main() {
 	fmt.Fprintf(&report, "| 原作那一支就沒動作（`inert`，碼／記錄）| %d／%d |\n", inert, inertRecords)
 	fmt.Fprintf(&report, "| 還沒解讀（`unread`，碼／記錄）| %d／%d |\n", unread, unreadRecords)
 	fmt.Fprintf(&report, "| 修正表裡還沒有這個碼（碼／記錄）| %d／%d |\n", uncatalogued, uncataloguedRecords)
+	fmt.Fprintf(&report, "| **只出現在死時機**（原作永遠不會執行；碼／記錄）| %d／%d |\n", dead, deadRecords)
 	fmt.Fprintf(&report, "| **真的缺口**（原作有動作、remake 沒有；碼／記錄）| **%d／%d** |\n\n", missing, missingRecords)
 
 	fmt.Fprintf(&report, "⚠ 四者不能混在一起數。`inert` 是**原作自己什麼都沒做**——"+
@@ -228,7 +243,7 @@ func main() {
 			"直接當成缺口去實作，等於為一段原作永遠不會執行的路寫程式。\n\n")
 	}
 
-	if missing+inert+unread+uncatalogued > 0 {
+	if missing+inert+unread+uncatalogued+dead > 0 {
 		fmt.Fprintf(&report, "## 逐碼\n\n")
 		fmt.Fprintf(&report, "| 效果碼 | 出現次數 | 狀態 |\n|---:|---:|---|\n")
 		for _, kind := range ids {
@@ -263,4 +278,22 @@ func member(archive *zip.Reader, name string) []byte {
 		return payload
 	}
 	return nil
+}
+
+// onlyDeadTimings 回答「這個效果碼是不是**只**出現在沒有呼叫端的時機底下」。
+// 一個都沒出現在任何 timing 清單裡的碼不算（那是另一種未知）。
+func onlyDeadTimings(table *gamepack.EffectModifierTable, kind uint8) bool {
+	listed := false
+	for timing := 0; timing <= 0x16; timing++ {
+		for _, code := range table.TimingEffects(uint8(timing)) {
+			if code != int(kind) {
+				continue
+			}
+			listed = true
+			if !deadTimings[uint8(timing)] {
+				return false
+			}
+		}
+	}
+	return listed
 }
