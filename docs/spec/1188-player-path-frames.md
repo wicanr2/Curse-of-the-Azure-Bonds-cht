@@ -22,9 +22,17 @@
 `t.TempDir()`。加一個環境變數把它們導出來，再讓真的前端逐一載入並畫一張：
 
 ```
-COAB_CAMPAIGN_SNAPSHOT_DIR=... go test -run TestRealNewGameRunsToTheEnding
+COAB_CAMPAIGN_SNAPSHOT_DIR=... go test -count=1 \
+    -run 'TestRealNewGameRunsToTheEnding|TestTilvertonRouteIsWalkableAndLocalized'
 cmd/azure-bonds-game -eten-font ... -party-load <快照> -screenshot <png>
 ```
+
+⚠ **快照有兩個產生者**，兩支測試都要跑：只跑主線的話 `0x01`／`0x02`／`0x03`
+三段一份都不會有（那三段的段內快照全來自提爾佛頓路線測試）。少掉的段不會有
+任何錯誤訊息——報表只會少幾列，和「那幾段沒東西可看」長得一模一樣。
+
+⚠ **目錄要先清乾淨**：讀的是目錄裡的每一個檔，不是這一次產生的那些。沿用舊目錄
+會把上一次不同程式、不同測試組合留下的快照一起算進來。
 
 ⚠ 字型在 repo 外（`/home/anr2/cht/etan_font`），要另外唯讀掛進容器。
 **少了它每一個字都是豆腐框，而畫面其他部分完全正常**——只看「有沒有產生 PNG」

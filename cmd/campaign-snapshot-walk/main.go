@@ -17,9 +17,20 @@
 //
 // 用法：
 //
+//	rm -rf workplace/campaign-frames/snapshots && mkdir -p workplace/campaign-frames/snapshots
 //	COAB_CAMPAIGN_SNAPSHOT_DIR=/src/workplace/campaign-frames/snapshots \
-//	    tools/go.sh test ./internal/game/ -run TestRealNewGameRunsToTheEnding -count=1
+//	    tools/go.sh test ./internal/game/ -count=1 \
+//	    -run 'TestRealNewGameRunsToTheEnding|TestTilvertonRouteIsWalkableAndLocalized'
 //	go run ./cmd/campaign-snapshot-walk -cells-json workplace/campaign-frames/snapshot-cells.json
+//
+// ⚠ **兩支測試都要跑。** 快照有兩個產生者：主線與提爾佛頓路線測試。只跑主線的話
+// `0x01`／`0x02`／`0x03` 三段**一份快照都不會有**（那三段的段內快照全來自路線測試），
+// 而少掉的段不會有任何錯誤訊息——報表只會少幾列，看起來和「那幾段沒東西可走」
+// 一模一樣。
+//
+// ⚠ **目錄要先清掉。** 這裡讀的是目錄裡的**每一個檔**，不是這一次跑出來的那些。
+// 沿用舊目錄會把上一次（不同程式、不同測試組合）留下的快照一起走進來，
+// 得到一個**比現在的程式真的產得出來還大**的數字。
 package main
 
 import (
