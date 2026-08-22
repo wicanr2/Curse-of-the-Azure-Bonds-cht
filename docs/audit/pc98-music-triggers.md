@@ -26,6 +26,23 @@
 | `overlay-17` | GEN | `0B08h` | 2 | 角色建立 |
 | `overlay-18` | — | `168Dh` | 10 | 結局 |
 
+## 播放常式的呼叫點（音效那一半）
+
+`SOUNDX` 那一組常式在程式碼段 `0893h`，段內位移取自 Borland 符號表。
+
+| 常式 | 位移 | 呼叫點 | 來源模組 |
+|---|---:|---:|---|
+| SOUNDFX（音效） | `0000h` | 36 | overlay-01×1、overlay-02×16、overlay-03×2、overlay-13×9、overlay-14×3、overlay-22×1、overlay-24×2、overlay-32×2 |
+| INITSOUND（初始化） | `010Dh` | 10 | overlay-02×10 |
+| MSCPLAY（放音樂） | `0114h` | 5 | overlay-01×1、overlay-05×1、overlay-17×2、overlay-18×1 |
+| BGMPLAY（背景音樂） | `0177h` | 1 | overlay-26×1 |
+
+合計 52 處。
+
+★ **交叉印證**：`MSCPLAY` 的呼叫點正好落在上表那五個改寫 `MUSICNO` 的 overlay 上（`GEN`×2、`overlay-01`、`POSTCOM`、`overlay-18`）——兩次獨立的掃描（資料格寫入 vs 函式呼叫）指到同一組地方。
+
+⚠ 這裡只數**跨 overlay 的 far call**。常駐自己呼叫 `SOUNDX` 的次數不在裡面（那是段內近呼叫，far-call 表看不到），所以是**下界**。
+
 ## 沒有任何換曲點選到的曲目
 
 11（地城二）、7（戰鬥）

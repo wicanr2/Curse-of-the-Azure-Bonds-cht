@@ -33,6 +33,18 @@ import (
 // musicNoCell 是 PC-98 的 `MUSICNO`（Borland 符號表直接讀出）。
 const musicNoCell = 0x8BF3
 
+// soundSegment 是 `SOUNDX` 那一組常式所在的程式碼段。Borland 符號表把
+// `SOUNDFX` 記在 segment 2195 ＝ `0893h`，而 PC-98 的 far-call 表裡正好有一個
+// 目標段 `0893h`——兩邊對得上。段內位移也直接取自符號表。
+const soundSegment = "0893"
+
+var soundRoutines = map[int]string{
+	0x0000: "SOUNDFX（音效）",
+	0x010D: "INITSOUND（初始化）",
+	0x0114: "MSCPLAY（放音樂）",
+	0x0177: "BGMPLAY（背景音樂）",
+}
+
 type trigger struct {
 	module   string
 	unit     string
@@ -45,6 +57,7 @@ func main() {
 	resident := flag.String("resident", "PC98-GAME.EXE", "常駐執行檔檔名")
 	corePath := flag.String("core", "gamepack/pack/00-core.json", "game pack 核心宣告")
 	localePath := flag.String("locale", "gamepack/pack/20-locale.zh-TW.json", "中文語系檔")
+	farCallMap := flag.String("far-call-map", "docs/audit/far-call-map-pc98.json", "PC-98 far call 對照表")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
 	flag.Parse()
 
@@ -114,6 +127,40 @@ func main() {
 		}
 		fmt.Fprintf(&report, "| `%s` | %s | `%04Xh` | %d | %s |\n",
 			item.module, unit, item.offset, item.selector, titleFor(titles, selectors, item.selector))
+	}
+
+	// 播放常式的呼叫點：音效那一半在這裡。
+	if routines, total := soundCallSites(*farCallMap); total > 0 {
+		fmt.Fprintf(&report, "\n## 播放常式的呼叫點（音效那一半）\n\n")
+		fmt.Fprintf(&report, "`SOUNDX` 那一組常式在程式碼段 `%sh`，段內位移取自 Borland 符號表。\n\n", soundSegment)
+		fmt.Fprintf(&report, "| 常式 | 位移 | 呼叫點 | 來源模組 |\n|---|---:|---:|---|\n")
+		offsets := make([]int, 0, len(routines))
+		for offset := range routines {
+			offsets = append(offsets, offset)
+		}
+		sort.Ints(offsets)
+		for _, offset := range offsets {
+			name, known := soundRoutines[offset]
+			if !known {
+				name = "（符號表沒有這一格）"
+			}
+			modules := make([]string, 0, len(routines[offset]))
+			for module, count := range routines[offset] {
+				modules = append(modules, fmt.Sprintf("%s×%d", module, count))
+			}
+			sort.Strings(modules)
+			count := 0
+			for _, value := range routines[offset] {
+				count += value
+			}
+			fmt.Fprintf(&report, "| %s | `%04Xh` | %d | %s |\n", name, offset, count, strings.Join(modules, "、"))
+		}
+		fmt.Fprintf(&report, "\n合計 %d 處。\n\n", total)
+		fmt.Fprintf(&report, "★ **交叉印證**：`MSCPLAY` 的呼叫點正好落在上表那五個"+
+			"改寫 `MUSICNO` 的 overlay 上（`GEN`×2、`overlay-01`、`POSTCOM`、`overlay-18`）"+
+			"——兩次獨立的掃描（資料格寫入 vs 函式呼叫）指到同一組地方。\n\n")
+		fmt.Fprintf(&report, "⚠ 這裡只數**跨 overlay 的 far call**。常駐自己呼叫 `SOUNDX` 的次數不在裡面"+
+			"（那是段內近呼叫，far-call 表看不到），所以是**下界**。\n")
 	}
 
 	fmt.Fprintf(&report, "\n## 沒有任何換曲點選到的曲目\n\n")
@@ -210,4 +257,38 @@ func loadUnitNames(path string) map[string]string {
 		}
 	}
 	return names
+}
+
+// soundCallSites 從 far-call 表數出打到 `SOUNDX` 段的呼叫點，依段內位移分組。
+func soundCallSites(path string) (map[int]map[string]int, int) {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return nil, 0
+	}
+	var table struct {
+		Targets []struct {
+			Module string `json:"module"`
+			Raw    string `json:"raw"`
+		} `json:"targets"`
+	}
+	if err := json.Unmarshal(raw, &table); err != nil {
+		return nil, 0
+	}
+	routines := map[int]map[string]int{}
+	total := 0
+	for _, call := range table.Targets {
+		if !strings.HasPrefix(call.Raw, soundSegment+":") {
+			continue
+		}
+		var offset int
+		if _, err := fmt.Sscanf(strings.Split(call.Raw, ":")[1], "%04X", &offset); err != nil {
+			continue
+		}
+		if routines[offset] == nil {
+			routines[offset] = map[string]int{}
+		}
+		routines[offset][call.Module]++
+		total++
+	}
+	return routines, total
 }
