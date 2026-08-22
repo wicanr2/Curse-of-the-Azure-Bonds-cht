@@ -43,6 +43,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
@@ -153,11 +154,24 @@ func main() {
 		patched[mapPosOffset] = byte(*posX)
 		patched[mapPosOffset+1] = byte(*posY)
 		patched[mapPosOffset+2] = byte(*facing)
-		if *wallType >= 0 {
+		// 牆型與地形沒指定時，**照目標地圖算**，不要沿用底檔。
+		//
+		// ⚠ 沿用底檔的後果只在天空色上看得出來：地形位元組 ≥ 80h 是室內（黑天），
+		// 否則是室外。拿提爾佛頓的 `80h` 去配一張室外的圖，原版畫黑天、remake 照
+		// 自己算出來的地形畫亮天——2,224 個像素的差異，而兩邊各自看起來都正常
+		// （第 683 輪在 GEO3 段 0x15 上踩到）。
+		derivedType, derivedRoof, derivedOK := mapCellState(*image, *gameArea, *mapBlock, *posX, *posY, *facing)
+		switch {
+		case *wallType >= 0:
 			patched[mapPosOffset+3] = byte(*wallType)
+		case derivedOK:
+			patched[mapPosOffset+3] = derivedType
 		}
-		if *wallRoof >= 0 {
+		switch {
+		case *wallRoof >= 0:
 			patched[mapPosOffset+4] = byte(*wallRoof)
+		case derivedOK:
+			patched[mapPosOffset+4] = derivedRoof
 		}
 		// -ecl-block 換圖。 原版的第一人稱地圖不是存檔裡某個編號決定的，是**當前
 		// ECL 段的進入碼**跑 `LOAD FILES` 決定的（第 675 輪實測）。而存檔的第四塊
@@ -192,8 +206,11 @@ func main() {
 					if piece == 0xFF {
 						value = 0xFFFF
 					}
+					// ⚠ 第二個欄位是**槽號**（1..3），不是選圖編號。底檔分不出這兩種
+					// 解讀——提爾佛頓的選圖剛好是 1,2,3，與槽號同號。寫成選圖編號的
+					// 話原版會**一面牆都不畫**，而畫面看起來仍然正常（天空與地板都在）。
 					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4:], value)
-					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4+2:], value)
+					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4+2:], uint16(index+1))
 				}
 				fmt.Fprintf(os.Stderr, "牆面參數改成 %d,%d,%d（取自該段自己的 LOAD PIECES）\n",
 					pieces[0], pieces[1], pieces[2])
@@ -351,4 +368,41 @@ func eclBlockBytes(imagePath string, area int, block uint8) ([]byte, [3]uint16, 
 		return code, pieces, ok, nil
 	}
 	return nil, [3]uint16{}, false, fmt.Errorf("%s 裡沒有段 0x%02X", name, block)
+}
+
+// mapCellState 從目標地圖算出這一格的牆型與地形位元組。
+func mapCellState(imagePath string, area, block, x, y, facing int) (wall, roof uint8, ok bool) {
+	archive, err := zip.OpenReader(imagePath)
+	if err != nil {
+		return 0, 0, false
+	}
+	defer archive.Close()
+	name := fmt.Sprintf("GEO%d.DAX", area)
+	catalog := geo.NewCatalog()
+	for _, file := range archive.File {
+		if !strings.EqualFold(file.Name, name) {
+			continue
+		}
+		handle, openErr := file.Open()
+		if openErr != nil {
+			return 0, 0, false
+		}
+		payload, readErr := io.ReadAll(handle)
+		handle.Close()
+		if readErr != nil {
+			return 0, 0, false
+		}
+		if addErr := catalog.AddDAX(uint8(area), payload); addErr != nil {
+			return 0, 0, false
+		}
+	}
+	grid, found := catalog.Lookup(geo.MapRef{Set: uint8(area), BlockID: uint8(block)})
+	if !found {
+		return 0, 0, false
+	}
+	wallValue, wallOK := grid.WallWrapped(x, y, facing)
+	if !wallOK {
+		return 0, 0, false
+	}
+	return wallValue, grid.CellWrapped(x, y).Terrain, true
 }

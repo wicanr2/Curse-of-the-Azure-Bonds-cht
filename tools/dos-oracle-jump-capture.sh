@@ -51,16 +51,22 @@ while [ "$#" -ge 2 ]; do
 
   # ⚠ 位置一定要從畫面讀回來核對。存檔寫進去不等於原版照著站——不核對的話
   # 索引會標成目標格，實際拍的是別格，而畫面本身看起來完全正常。
-  got="$(python3 "$ROOT/tools/dos_screen_pos.py" "$ROOT/workplace/dos-oracle/out/_live.png" | cut -f1,2)"
-  if [ "$got" != "$(printf '%s\t%s' "$x" "$y")" ]; then
-    echo "  ⚠ 畫面讀到 ($got)，不是 ($x,$y)：不收這一格"
+  # ⚠ 不是每一張圖都顯示座標：提爾佛頓是 `7,13 N 00:00`，GEO3 段 0x15 那類只有
+  # `N 00:00`。這種圖只核對得到朝向，座標只能靠存檔——而存檔的座標是驗過會生效的
+  # （提爾佛頓與下水道共 289 張逐格對得上）。分開處理，不要把「這張圖不顯示座標」
+  # 與「畫面根本不對」混成同一種。
+  read -r gx gy gd < <(python3 "$ROOT/tools/dos_screen_pos.py" "$ROOT/workplace/dos-oracle/out/_live.png")
+  if [ "$gx" = "?" ] && [ "$gd" != "?" ]; then
+    echo "  （這張圖不顯示座標，只核對朝向）"
+  elif [ "$gx" != "$x" ] || [ "$gy" != "$y" ]; then
+    echo "  ⚠ 畫面讀到 ($gx,$gy)，不是 ($x,$y)：不收這一格"
     continue
   fi
   for d in N E S W; do
     name="$PREFIX-x$(printf '%02d' "$x")-y$(printf '%02d' "$y")-$d.png"
     "$S" shot "$name" >/dev/null
     read -r rx ry rd < <(python3 "$ROOT/tools/dos_screen_pos.py" "$ROOT/workplace/dos-oracle/out/$name")
-    if [ "$rx" = "$x" ] && [ "$ry" = "$y" ] && [ "$rd" = "$d" ]; then
+    if { { [ "$rx" = "$x" ] && [ "$ry" = "$y" ]; } || [ "$rx" = "?" ]; } && [ "$rd" = "$d" ]; then
       printf '%s\t%s\t%s\t%s\n' "$name" "$x" "$y" "$d" >> "$index"
       echo "  收下 $name"
     else
