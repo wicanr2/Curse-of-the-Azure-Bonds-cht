@@ -864,6 +864,15 @@ func (s *State) LoadPartyFile(path string) error {
 	s.Area.GameTime = s.gameClock
 	s.GeoMapSet = file.Area.GameArea
 	s.GeoMapBlock = file.Area.Current3DMapBlockID
+	// ★ 讀完存檔要**通知前端換地圖**。存檔記著自己是哪一張圖，但前端的 `geoGrid`
+	// 只有在收到 `ConsumeGeoMapRequest` 時才會換——`geoMapPending` 原本只有 ECL 的
+	// LOAD FILES 那條路會設。
+	//
+	// ⚠ 少了這一行，讀檔之後前端拿的還是**上一段的地圖**：牆、門、能不能走全部
+	// 對不上，而且**不會有任何錯誤訊息**。前端一開始沒有地圖時更直接——
+	// `moveDungeonPreview` 看到 `geoGrid == nil` 就 return，**按什麼都沒反應**
+	// （spec 1191：114 份主線快照裡有 104 份是這樣）。
+	s.geoMapPending = true
 	s.MapX, s.MapY = file.MapX, file.MapY
 	if file.Version >= 3 {
 		s.DungeonX, s.DungeonY, s.DungeonDirection = file.DungeonX, file.DungeonY, file.DungeonDir

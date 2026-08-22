@@ -1893,6 +1893,11 @@ func TestVariableInsertPagesAreWiredAtRuntime(t *testing.T) {
 		// 走了出來**：13 則，逐則補了規則與譯文。
 		// ⇒ 這一類不必先解出編號來源：**列舉不到的東西，用走的走得到**。
 		{"酒館傳聞編號", []string{"YOU OVERHEAR TAVERN TALE", "31", "."}},
+		// ★ 巫師塔光球的距離原本也在「還沒接」——理由是「距離逐回合遞減，無法列舉」。
+		// 但那一頁（`0x1642`）**只有數字是變數**，而數字是 10 的倍數、範圍有限：
+		// 按鍵推主線快照時把玩家真的看得到的那幾個走了出來，逐個寫規則就結案了。
+		// ⇒ 又一次「列舉不到的東西，用走的走得到」（spec 1191）。
+		{"巫師塔光球距離", []string{"IT IS NOW ONLY", "20", "FEET FROM THE RED WIZARD."}},
 	}
 	for _, test := range handled {
 		if result := pack.MatchText(test.texts, "zh-TW"); !result.Matched {
@@ -1900,7 +1905,7 @@ func TestVariableInsertPagesAreWiredAtRuntime(t *testing.T) {
 		}
 	}
 
-	// 還沒接的三類，各附上為什麼。
+	// 還沒接的兩類，各附上為什麼。
 	unhandled := []struct {
 		name   string
 		reason string
@@ -1908,8 +1913,6 @@ func TestVariableInsertPagesAreWiredAtRuntime(t *testing.T) {
 	}{
 		{"競技場賭金", "金額是算出來的，無法列舉；要嘛規則支援佔位符，要嘛這一頁維持原文",
 			[]string{"CONGRATULATIONS, YOU HAVE WON", "250", "PLATINUM."}},
-		{"巫師塔光球距離", "距離逐回合遞減，同上",
-			[]string{"IT IS NOW ONLY", "20", "FEET FROM THE RED WIZARD."}},
 		{"隊員名字", "玩家自己取的名字，無法列舉",
 			[]string{"THE SPHERE MOVES TOWARD THE OPPOSING MAGE.", "KIVAN", ". IT IS NOW ONLY", "10", "FEET FROM", "KIVAN", "."}},
 	}

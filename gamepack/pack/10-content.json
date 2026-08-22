@@ -8923,6 +8923,62 @@
     "PAY ME A TITHE"
    ],
    "message_id": "myth-drannor.rakshasa-tithe"
+  },
+  {
+   "id": "wizard-tower.sphere-distance-10",
+   "all_contains": [
+    "IT IS NOW ONLY 10 FEET FROM THE RED WIZARD"
+   ],
+   "message_id": "wizard-tower.sphere-distance-10"
+  },
+  {
+   "id": "wizard-tower.sphere-distance-20",
+   "all_contains": [
+    "IT IS NOW ONLY 20 FEET FROM THE RED WIZARD"
+   ],
+   "message_id": "wizard-tower.sphere-distance-20"
+  },
+  {
+   "id": "wizard-tower.sphere-distance-30",
+   "all_contains": [
+    "IT IS NOW ONLY 30 FEET FROM THE RED WIZARD"
+   ],
+   "message_id": "wizard-tower.sphere-distance-30"
+  },
+  {
+   "id": "wizard-tower.sphere-distance-40",
+   "all_contains": [
+    "IT IS NOW ONLY 40 FEET FROM THE RED WIZARD"
+   ],
+   "message_id": "wizard-tower.sphere-distance-40"
+  },
+  {
+   "id": "wizard-tower.sphere-distance-50",
+   "all_contains": [
+    "IT IS NOW ONLY 50 FEET FROM THE RED WIZARD"
+   ],
+   "message_id": "wizard-tower.sphere-distance-50"
+  },
+  {
+   "id": "wizard-tower.sphere-distance-60",
+   "all_contains": [
+    "IT IS NOW ONLY 60 FEET FROM THE RED WIZARD"
+   ],
+   "message_id": "wizard-tower.sphere-distance-60"
+  },
+  {
+   "id": "wizard-tower.sphere-distance-70",
+   "all_contains": [
+    "IT IS NOW ONLY 70 FEET FROM THE RED WIZARD"
+   ],
+   "message_id": "wizard-tower.sphere-distance-70"
+  },
+  {
+   "id": "wizard-tower.sphere-opponent-focuses",
+   "all_contains": [
+    "YOUR OPPONENT FOCUSES ON THE SPHERE"
+   ],
+   "message_id": "wizard-tower.sphere-opponent-focuses"
   }
  ],
  "option_rules": [

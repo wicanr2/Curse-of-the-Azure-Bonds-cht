@@ -1518,7 +1518,15 @@
    "world.tavern-tale-3": "As you consume the local excuse for food and drink, you overhear tavern tale 3: Many soldiers think the Pit is spooky. Some have gone AWOL rather than be put on guard duty there.",
    "world.tavern-tale-9": "As you consume the local excuse for food and drink, you overhear tavern tale 9: Someone passed through recently with something he was sure would destroy the plants. He was waving a wand about.",
    "world.tavern.and-what-can-i-get-you": "“And what can I get you?”",
-   "myth-drannor.rakshasa-tithe": "The rakshasa replies, “You are in my domain. Pay me a tithe, or I will feed on your entrails.” Do you pay?"
+   "myth-drannor.rakshasa-tithe": "The rakshasa replies, “You are in my domain. Pay me a tithe, or I will feed on your entrails.” Do you pay?",
+   "wizard-tower.sphere-distance-10": "It is now only 10 feet from the red wizard.",
+   "wizard-tower.sphere-distance-20": "It is now only 20 feet from the red wizard.",
+   "wizard-tower.sphere-distance-30": "It is now only 30 feet from the red wizard.",
+   "wizard-tower.sphere-distance-40": "It is now only 40 feet from the red wizard.",
+   "wizard-tower.sphere-distance-50": "It is now only 50 feet from the red wizard.",
+   "wizard-tower.sphere-distance-60": "It is now only 60 feet from the red wizard.",
+   "wizard-tower.sphere-distance-70": "It is now only 70 feet from the red wizard.",
+   "wizard-tower.sphere-opponent-focuses": "Your opponent focuses on the sphere."
   }
  },
  "events": []
