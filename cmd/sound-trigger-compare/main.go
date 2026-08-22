@@ -123,6 +123,9 @@ func main() {
 	var out strings.Builder
 	fmt.Fprintf(&out, "# 音效觸發點：原版 vs remake\n\n")
 	fmt.Fprintf(&out, "由 `cmd/sound-trigger-compare` 產生，不要手改。\n\n")
+	fmt.Fprintf(&out, "⚠ remake 那一側數的是 `requestSound(SoundXxx)` **與** `return SoundXxx`"+
+		"（由挑選器回傳的也算一條路）。只數前者會讓 `SoundWhistle` 印成 0——"+
+		"它是 `missileImpactSound` 依武器類別挑出來的，一處直接呼叫都沒有。\n\n")
 	fmt.Fprintf(&out, "⚠ **處數不等於播放次數**，兩邊都是：一處在迴圈裡可以響很多次，"+
 		"而同一個音效在原版可能由一支共用常式依武器種類分歧（`SHOWARROW` 就同時放箭／揮擊／哨音）。"+
 		"這張表回答的是「**有沒有這條路**」，不是「響幾次」。逐處的時機在 spec 1186。\n\n")
@@ -192,10 +195,20 @@ func parseOriginal(path string) map[string]int {
 	return counts
 }
 
-// scanRemake 數 `requestSound(SoundXxx)` 的呼叫點。
+// scanRemake 數 remake 這一側的發送點。
+//
+// 兩種形狀都要數：
+//
+//	requestSound(SoundXxx)   直接送出
+//	return SoundXxx          由挑選器回傳，再由呼叫端送出
+//
+// ⚠ **只數第一種會產生假零**：`SoundWhistle` 是由 `missileImpactSound` 依武器
+// 類別挑出來的，一處 `requestSound` 都沒有，於是報表會說「remake 從沒發過」
+// ——而它其實每次用投石索攻擊都會響。這正是本輪在原版那一側踩到的同一種錯
+// （掃描面比實際窄），只是換到 remake 這一側。
 func scanRemake(root string) map[string]int {
 	counts := map[string]int{}
-	call := regexp.MustCompile(`requestSound\((Sound[A-Za-z]+)\)`)
+	call := regexp.MustCompile(`(?:requestSound\(|return )(Sound[A-Za-z]+)`)
 	filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
 		if err != nil || entry.IsDir() || !strings.HasSuffix(path, ".go") {
 			return nil
@@ -209,6 +222,10 @@ func scanRemake(root string) map[string]int {
 			return nil
 		}
 		for _, match := range call.FindAllStringSubmatch(string(raw), -1) {
+			// `return SoundEvent` 是型別不是事件。
+			if match[1] == "SoundEvent" {
+				continue
+			}
 			counts[match[1]]++
 		}
 		return nil

@@ -4531,6 +4531,206 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/missile-sound-classes/main.go",
+      "sha256": "480855709c0615a4c016924521e6ca7127cf2966577544a0505bb9a9e4002bb6",
+      "occurrences": 2,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "sha256": "58aaabcbb8d48b04682dbb270ce72c292f920f6ce3fcfcf6d9f9aa30c83f43a6",
+      "occurrences": 2,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "sha256": "c15994e312153e7c57bb820fc921b14beb5664655ed576f128f948896f07ff06",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "flagNotes",
+      "sha256": "99c07d6310ea926082878245cf8448495e72c6cd1c325545e00be6f43a4acfda",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "flagNotes",
+      "sha256": "9ad588bf2ad511697d0a4da6c6ab9afe509f49c2212cf61295203d8669630fef",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "13c83a8a875ec7e2062411851fe501ab53a525064bf5d4b7e53233fd2d729ac6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "144820bbf9f75f451124095d4dca3259d6d94ba52c137c759be6a15d0adddddf",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "2d3ce3ba8eb0e540b358f48f69080f950e5f4b4598b7520892cda1548cbfc4a1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "42e41a9ba4d3f2771684032cf91815d37063c3a8ef53738298c2cf6770570b7d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "479f862ca7881ef220ec33078ce5e3ef04e3ed20f9c3e136f2a03e8c1c748e28",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "499f532c192880a976b916a1a52c591bb24b169679f513a46bb4a413dd4b6818",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "4cedcc0fe8af54c08c2465e2316007b79c115031690c1004ec976712048734b3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "58c6aa793615998006243fbf7d8a467f3b9946b3dac4ae9b23414905633261a4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "79a04ac08d1c8a6c81f8e6ebb4b7cd7a252b0b206cf6bc4c330628d0e3426cae",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "7d16a2ab0f9ae1137e192b7bf918260582bbeb85e09d77e11a9b690ff853770b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "7dba2bff1e675dea971935d264367f0c79d5adc6b13ed98e9691e4c33f3ed433",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "82835cd68200288f559cdaa4b8edf4cac90e2f8aa81d6cb976e515863c8d63a3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "844bd129f9533146d216b5fbc704a4534b8a247bf8ed14b804db6acd68bcc390",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "8e80eb1a52c0b61f9204b83a3a60d23d0591e095dc31fe6fde6c7d368a90cfe6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "9162c41b76cab598879252728665ac5def150cf8264a696481ceacc0c9305574",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "9bfedd79bc5fc9c963e7ace908a60002b66e4a76c91d8368574755035b4e413e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "a9f51c598988fe125cd11941bfc327dca91a3084343562a5c459d7efa31b0355",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "be6c71d35815aeee2131be4d3ece612e21c5e360ce50b8d63118ab224217ebaa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "c35af4d8389e98f691721365728f9c33fde8d181b905945e09720bb2392b9e6d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "de7658d28950d71eebfdfcd6aa98a614dd3e9f1da7475fac0f2296d924939c3a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "e9b5ea1247a98c73d23fab13aac796d75efa7599a2ed9a1ff62271c15ddb89c2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "main",
+      "sha256": "fb0be82b8f13b2590cd32e301b1987ecfa2c1e992475efb89f68110b97f870f3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/missile-sound-classes/main.go",
+      "function": "nameList",
+      "sha256": "ec98869750dd4c39d5079e5c6068f7608a40060d25ace593e856077064b3eb5b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
       "sha256": "048dbbd2fafb0cfde6773926b018bbfd3ba51c332b19ebf5c16364aa9b8243a2",
@@ -6672,6 +6872,13 @@
     {
       "path": "cmd/sound-trigger-compare/main.go",
       "function": "main",
+      "sha256": "66cf4dc87dd2c23be3952ff11286f8315dc875c1dcca213c70be084bdef76214",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/sound-trigger-compare/main.go",
+      "function": "main",
       "sha256": "68fc313006e8701dd17a221102abb7da8729eff74af6758e18ecf510741bf850",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -6721,6 +6928,13 @@
     {
       "path": "cmd/sound-trigger-compare/main.go",
       "function": "main",
+      "sha256": "a8a5957a920d9d6f227327eeb68ad833d82bc468d0a9623fa138032f95829144",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/sound-trigger-compare/main.go",
+      "function": "main",
       "sha256": "a917245539cfc81e4b649e83891c6a0571f1abb06711be579293f7b4ae1f14bc",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -6764,6 +6978,13 @@
       "path": "cmd/sound-trigger-compare/main.go",
       "function": "main",
       "sha256": "f88cd37d4ef39e44f8f0488843ea96ca72d583da875f34af1883fb0cafd79bc4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/sound-trigger-compare/main.go",
+      "function": "main",
+      "sha256": "f975cc008699cb877747ea6f303395062c3cc0f34e8a961c767ca305bbe43468",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

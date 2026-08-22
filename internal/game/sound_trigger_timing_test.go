@@ -87,3 +87,58 @@ func containsSound(events []SoundEvent, want SoundEvent) bool {
 	}
 	return false
 }
+
+// 投射武器的第二聲（原作 `SHOWARROW` 的類別分歧，spec 1186）。
+// 對照表與每一類在遊戲裡的實例數在 `docs/audit/missile-sound-classes.md`。
+func TestMissileImpactSoundFollowsTheOriginalWeaponClasses(t *testing.T) {
+	for _, item := range []struct {
+		name       string
+		fighter    combat.Fighter
+		wantSecond SoundEvent
+	}{
+		// 弓：要另外的彈藥 ⇒ 飛出去的是箭（49h），落在 ARROWFX 分支。
+		{"長弓", combat.Fighter{
+			MissileWeapon: true, AmmunitionType: 0x0B, WeaponItemType: 0x2B,
+		}, SoundArrow},
+		// 弩：同理，飛出去的是弩矢（1Ch）。
+		{"輕弩", combat.Fighter{
+			MissileWeapon: true, AmmunitionType: 0x8A, WeaponItemType: 0x2E,
+		}, SoundArrow},
+		// 投石索：`+0Eh` ＝ 0Ah 自給自足 ⇒ 用武器自己的類別 2Fh → 哨音。
+		{"投石索", combat.Fighter{
+			MissileWeapon: true, AmmunitionType: 0x0A, WeaponItemType: 0x2F,
+		}, SoundWhistle},
+		{"小筏投石索", combat.Fighter{
+			MissileWeapon: true, AmmunitionType: 0x0A, WeaponItemType: 0x65,
+		}, SoundWhistle},
+		// 油瓶（56h）也在哨音那一組。
+		{"油瓶", combat.Fighter{
+			MissileWeapon: true, ThrownWeapon: true, AmmunitionType: 0x1A, WeaponItemType: 0x56,
+		}, SoundWhistle},
+		// 投擲武器：自己就是彈藥。飛鏢／標槍走箭，擲斧／棍／鎚走揮擊。
+		{"飛鏢", combat.Fighter{
+			MissileWeapon: true, ThrownWeapon: true, AmmunitionType: 0x1A, WeaponItemType: 0x09,
+		}, SoundArrow},
+		{"矛", combat.Fighter{
+			ThrownWeapon: true, AmmunitionType: 0x14, WeaponItemType: 0x1F,
+		}, SoundArrow},
+		{"擲斧", combat.Fighter{
+			ThrownWeapon: true, AmmunitionType: 0x14, WeaponItemType: 0x02,
+		}, SoundSwish},
+		{"鎚", combat.Fighter{
+			ThrownWeapon: true, AmmunitionType: 0x14, WeaponItemType: 0x14,
+		}, SoundSwish},
+	} {
+		if got := missileImpactSound(item.fighter); got != item.wantSecond {
+			t.Errorf("%s：第二聲 %q，want %q", item.name, got, item.wantSecond)
+		}
+	}
+
+	// ⚠ 負對照：預設分支**不是空的**。沒被分歧鏈點名的類別要落到揮擊，
+	// 不能因為「反正都是投射武器」就一律回箭——那樣上面那幾條會全部通過，
+	// 而分歧鏈等於沒接。
+	unnamed := combat.Fighter{MissileWeapon: true, AmmunitionType: 0x0A, WeaponItemType: 0x7F}
+	if got := missileImpactSound(unnamed); got != SoundSwish {
+		t.Fatalf("沒被點名的類別 %q，want %q", got, SoundSwish)
+	}
+}

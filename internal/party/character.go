@@ -1178,6 +1178,7 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 			fighter.WeaponRange = effect.WeaponRange
 			fighter.MissileWeapon = effect.MissileWeapon
 			fighter.ThrownWeapon = effect.ThrownWeapon
+			fighter.WeaponItemType = effect.ItemType
 			hasWeapon = true
 		}
 	}

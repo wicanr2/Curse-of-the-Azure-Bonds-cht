@@ -178,7 +178,11 @@ func TestCombatVisualMissileDefersVictoryAndOrdersSounds(t *testing.T) {
 	if err := state.AdvanceCombatVisual(combat.VisualWindupDuration + combat.VisualTravelDuration); err != nil {
 		t.Fatal(err)
 	}
-	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundHit {
+	// 投射武器在飛行動畫尾端還有一聲（原作 `SHOWARROW` 的類別分歧，spec 1186）。
+	// 這個弓手要另外的彈藥 ⇒ 飛出去的是箭 ⇒ 第二聲也是 `ARROWFX`。
+	// **弓射一次聽到兩聲箭是原作的行為**，不是重複發送。
+	if sounds := state.ConsumeSoundEvents(); len(sounds) != 2 ||
+		sounds[0] != SoundArrow || sounds[1] != SoundHit {
 		t.Fatalf("impact sounds=%v", sounds)
 	}
 	deathAt := combat.VisualWindupDuration + combat.VisualTravelDuration +
