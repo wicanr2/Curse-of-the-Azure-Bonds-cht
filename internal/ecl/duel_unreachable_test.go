@@ -69,11 +69,26 @@ func TestDuelCallSelectorsAreUnusedWhileTheOthersAreNot(t *testing.T) {
 				item.selector, item.name, counts[item.selector], item.want)
 		}
 	}
-	// 正對照過了，這兩個的零才有意義。
-	for _, selector := range []uint16{0x8000, 0x8001} {
-		if counts[selector] != 0 {
-			t.Errorf("`%04Xh`（GODUEL）出現 %d 處——決鬥不再是死路，`24h` 的 `8B56h` 那一支要重看",
-				selector, counts[selector])
+	// 正對照過了，這三個的零才有意義：分派器認得七個選擇子，corpus 只用四個
+	// （spec 1150）。`C018h` 是 `THREED.WALLCODE`，另外兩個是 `GODUEL`。
+	for _, item := range []struct {
+		selector uint16
+		name     string
+	}{
+		{0x8000, "GODUEL(1)"}, {0x8001, "GODUEL(0)"}, {0xC018, "THREED.WALLCODE"},
+	} {
+		if counts[item.selector] != 0 {
+			t.Errorf("`%04Xh`（%s）出現 %d 處——它不再是死路，相關結論要重看",
+				item.selector, item.name, counts[item.selector])
+		}
+	}
+	// 分派器認得的七個以外還有別的運算元嗎？有的話 `2Dh` 的帳要補。
+	known := map[uint16]bool{0x2E10: true, 0xB200: true, 0xC01E: true, 0x6803: true,
+		0x8000: true, 0x8001: true, 0xC018: true}
+	for selector, count := range counts {
+		if !known[selector] {
+			t.Errorf("corpus 用了分派器認不得的 `2Dh CALL` 選擇子 `%04Xh`（%d 處）",
+				selector, count)
 		}
 	}
 }

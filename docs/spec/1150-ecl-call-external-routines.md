@@ -182,25 +182,50 @@ end;
   共用同一個游標。
 - `B200h` 維持 `SoundStep`，理由改成「另一支走不到」而不是「還沒接」。
 
-⚠ 仍是 `partial`，剩下的是 `2E10h`。remake 沒有那五個髒旗標，改用「`CALL`
-當下回頭掃同 block、執行序在前的 `SaveWrites`」。125 處可達的 `CALL 2E10h`
-現在全部照原作的模型投影——包含只寫 `C04B`／`C04C` 的那 23 處（朝向刻意不變，
-[spec 1157](1157-restore-previous-cell-sites-and-shared-handlers.md)、
+⚠ 仍是 `partial`，剩下的是 `2E10h` 那一支的**兩個 remake 這一側的補丁**
+（`ViewMirror.Block` 與 `ViewMirror.Written`，理由與拿掉的條件見
+[spec 1172](1172-view-mirror-dirty-flags.md)）。
+
+那五個髒旗標**已經建出來了**（spec 1172）：`STOREVALUE` 收到 `C04B`／`C04C`／
+`C04D` 就當場鏡射並立 `8B68h`，`CALL 2E10h` 取快照後把五個旗標清掉，
+`CALL C01Eh` 當場走一步。先前那個「回頭掃同 block、執行序在前的 `SaveWrites`」
+的啟發式整支拿掉了——它的視窗會漏掉跨執行、跨 block 的座標寫入。
+125 處可達的 `CALL 2E10h` 全部照原作的模型投影，包含只寫 `C04B`／`C04C` 的那
+23 處（朝向刻意不變，[spec 1157](1157-restore-previous-cell-sites-and-shared-handlers.md)、
 [spec 1158](1158-hap-village-extent-and-refused-edges.md)）；
 `4BF0`／`4BF1` 的 producer 是地城主迴圈的移動前快照
 （[spec 1155](1155-redraw-call-coordinate-divergence.md)）。
 
-★ 剩下的差異是**視窗不等於髒旗標**：同一次執行裡更早、與這條 `CALL` 無關的
-座標寫入仍會被算進來。要收掉得把 `720Fh`／`7210h`／`7211h` 與那五個髒旗標
-建出來，讓 `CALL` 只做「髒了才重畫」。
+## ★ 七個選擇子的全量普查
+
+分派器認得七個，corpus 用四個——這句話現在有測試守著
+（`TestDuelCallSelectorsAreUnusedWhileTheOthersAreNot`），而且**兩個方向都擋**：
+
+| 選擇子 | corpus | 目標 |
+|---|---:|---|
+| `2E10h` | 125 | 重畫 |
+| `B200h` | 19 | 音效 |
+| `C01Eh` | 13 | 前進一格 |
+| `6803h` | 11 | 推圖片格 |
+| `C018h` | **0** | `THREED.WALLCODE` |
+| `8000h` | **0** | `GODUEL(1)` |
+| `8001h` | **0** | `GODUEL(0)` |
+
+- **沒有第八個**：corpus 裡沒有出現分派器認不得的選擇子。
+- ⚠ 那三個零之所以算數，是因為測試**先做正對照**——四個有在用的必須掃到
+  125／19／13／11。少了正對照，掃描壞掉會長成「三個都是死路」這種自洽而錯的結論。
+
+⇒ **未接的三個目標都走不到**，所以 `2Dh` 的 `partial` 只剩上面那兩個補丁。
 
 ## 明確不宣稱
 
 - 沒有宣稱 `DS:47E3h` 是什麼（只知道 `21h LOAD FILES` 會設 1、ECL 主迴圈會設 0
   與 1，而它是 `2E10h` 重繪的前置條件）。
 - 沒有宣稱 `DS:7580h`、`bank1^[3FEh]`、`bank1^[1CCh]` 以外的欄位語意。
-- 沒有宣稱 `GODUEL` 做什麼——只知道 `8000h`／`8001h` 差一個常數 1／0，而且
-  corpus 沒有用到。
+- `GODUEL` 是**決鬥**：複製目前角色成一個叫 `ROLF`（PC-98 `ロルフ`）的 NPC 掛進
+  隊伍鏈，並把 `DS:8B56h` 設 1（[spec 626](626-goduel-and-charrec-size.md)、
+  [spec 1182](1182-overlay-module-names-and-combat-dispatch.md)）。
+  `8000h`／`8001h` 差的常數就是 `GODUEL(mode)` 的 `mode`。corpus 兩個都沒用到。
 - 沒有宣稱序列每一格那 4 bytes 的延遲單位是什麼；只知道 `MENUS` 把它乘 10 之後
   與時鐘比，而 `6803h` 這條路根本不看它。
 - 沒有宣稱 DOS 的 `overlay-28` entry#1 叫 `DRAWWINDOW`（見上面的槽號警告）。
