@@ -1,5 +1,7 @@
 # 原版 DOS（GEO2 區塊 0x01，提爾佛頓）第一人稱畫面，640x400 擷取
 # 第 675 輪起用 tools/dos-oracle-jump-capture.sh 取得：自製存檔直接跳到指定格，
+# 第 683 輪起換圖也走這一支（AREA／ECL_BLOCK／GEO_BLOCK／PREFIX 四個環境變數），
+# 檔名前綴 geo{檔集}-b{段} 就是那張圖的身分。
 # 每一張都把畫面上的座標與朝向讀回來核對過，不符的不收（所以有幾格不是四個朝向都齊）。
 # 檔名	x	y	朝向
 geo2-b01-x07-y13-N.png	7	13	N
@@ -251,3 +253,47 @@ geo2-b01-x03-y14-N.png	3	14	N
 geo2-b01-x03-y14-E.png	3	14	E
 geo2-b01-x03-y14-S.png	3	14	S
 geo2-b01-x03-y14-W.png	3	14	W
+geo2-b03-x01-y08-N.png	1	8	N
+geo2-b03-x01-y08-E.png	1	8	E
+geo2-b03-x01-y08-S.png	1	8	S
+geo2-b03-x01-y08-W.png	1	8	W
+geo2-b03-x07-y03-N.png	7	3	N
+geo2-b03-x07-y03-E.png	7	3	E
+geo2-b03-x07-y03-S.png	7	3	S
+geo2-b03-x07-y03-W.png	7	3	W
+geo2-b03-x14-y07-N.png	14	7	N
+geo2-b03-x14-y07-E.png	14	7	E
+geo2-b03-x14-y07-S.png	14	7	S
+geo2-b03-x14-y07-W.png	14	7	W
+geo2-b03-x05-y02-N.png	5	2	N
+geo2-b03-x05-y02-E.png	5	2	E
+geo2-b03-x05-y02-S.png	5	2	S
+geo2-b03-x05-y02-W.png	5	2	W
+geo2-b03-x10-y04-N.png	10	4	N
+geo2-b03-x10-y04-E.png	10	4	E
+geo2-b03-x10-y04-S.png	10	4	S
+geo2-b03-x10-y04-W.png	10	4	W
+geo2-b03-x01-y06-N.png	1	6	N
+geo2-b03-x01-y06-E.png	1	6	E
+geo2-b03-x01-y06-S.png	1	6	S
+geo2-b03-x01-y06-W.png	1	6	W
+geo2-b03-x07-y07-N.png	7	7	N
+geo2-b03-x07-y07-E.png	7	7	E
+geo2-b03-x07-y07-S.png	7	7	S
+geo2-b03-x07-y07-W.png	7	7	W
+geo2-b03-x04-y00-N.png	4	0	N
+geo2-b03-x04-y00-E.png	4	0	E
+geo2-b03-x04-y00-S.png	4	0	S
+geo2-b03-x04-y00-W.png	4	0	W
+geo2-b03-x07-y00-N.png	7	0	N
+geo2-b03-x07-y00-E.png	7	0	E
+geo2-b03-x07-y00-S.png	7	0	S
+geo2-b03-x07-y00-W.png	7	0	W
+geo2-b03-x08-y00-N.png	8	0	N
+geo2-b03-x08-y00-E.png	8	0	E
+geo2-b03-x08-y00-S.png	8	0	S
+geo2-b03-x08-y00-W.png	8	0	W
+geo2-b03-x12-y00-N.png	12	0	N
+geo2-b03-x12-y00-E.png	12	0	E
+geo2-b03-x12-y00-S.png	12	0	S
+geo2-b03-x12-y00-W.png	12	0	W

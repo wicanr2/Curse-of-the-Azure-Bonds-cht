@@ -46,9 +46,9 @@ Caveats: this is the denominator for the **renderer**, not for content, and not 
 
 | item | value |
 |---|---:|
-| captured screens in `index.tsv` | 245 |
+| captured screens in `index.tsv` | 289 |
 | captures that map to no standable cell | 0 |
-| **distinct signatures covered** | **107 / 585** |
+| **distinct signatures covered** | **125 / 585** |
 
 ### Next cells worth capturing
 
@@ -56,67 +56,67 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 
 | # | map | GEO | block | cell | new signatures | still uncovered after |
 |---:|---|---:|---:|---|---:|---:|
-| 1 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,7)` | 4 | 474 |
-| 2 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,12)` | 4 | 470 |
-| 3 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,13)` | 4 | 466 |
-| 4 | `original.geo5.block-33` | 5 | `0x33` | `(15,0)` | 4 | 462 |
-| 5 | `original.geo5.block-33` | 5 | `0x33` | `(15,1)` | 4 | 458 |
-| 6 | `original.geo5.block-33` | 5 | `0x33` | `(15,2)` | 4 | 454 |
-| 7 | `original.geo5.block-33` | 5 | `0x33` | `(15,3)` | 4 | 450 |
-| 8 | `original.geo5.block-33` | 5 | `0x33` | `(1,4)` | 4 | 446 |
-| 9 | `original.geo5.block-33` | 5 | `0x33` | `(2,4)` | 4 | 442 |
-| 10 | `original.geo5.block-33` | 5 | `0x33` | `(3,4)` | 4 | 438 |
-| 11 | `original.geo5.block-33` | 5 | `0x33` | `(10,5)` | 4 | 434 |
-| 12 | `original.geo5.block-33` | 5 | `0x33` | `(15,6)` | 4 | 430 |
-| 13 | `original.geo5.block-33` | 5 | `0x33` | `(14,7)` | 4 | 426 |
-| 14 | `original.geo5.block-33` | 5 | `0x33` | `(15,12)` | 4 | 422 |
-| 15 | `original.geo5.block-33` | 5 | `0x33` | `(13,13)` | 4 | 418 |
-| 16 | `original.geo5.block-33` | 5 | `0x33` | `(15,13)` | 4 | 414 |
-| 17 | `original.geo5.block-33` | 5 | `0x33` | `(8,15)` | 4 | 410 |
-| 18 | `myth-drannor.burial-glen` | 6 | `0x40` | `(2,11)` | 4 | 406 |
-| 19 | `tilverton.sewers.first-person` | 2 | `0x03` | `(7,3)` | 3 | 403 |
-| 20 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(7,9)` | 3 | 400 |
-| 21 | `original.geo3.block-15` | 3 | `0x15` | `(14,3)` | 3 | 397 |
-| 22 | `original.geo3.block-15` | 3 | `0x15` | `(5,5)` | 3 | 394 |
-| 23 | `original.geo3.block-15` | 3 | `0x15` | `(9,6)` | 3 | 391 |
-| 24 | `zhentil-keep.dark-shrine` | 4 | `0x21` | `(14,13)` | 3 | 388 |
-| 25 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,10)` | 3 | 385 |
-| 26 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(13,12)` | 3 | 382 |
-| 27 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,14)` | 3 | 379 |
-| 28 | `original.geo5.block-32` | 5 | `0x32` | `(3,7)` | 3 | 376 |
-| 29 | `original.geo5.block-33` | 5 | `0x33` | `(15,4)` | 3 | 373 |
-| 30 | `original.geo5.block-33` | 5 | `0x33` | `(15,5)` | 3 | 370 |
-| 31 | `original.geo5.block-33` | 5 | `0x33` | `(15,7)` | 3 | 367 |
-| 32 | `original.geo5.block-33` | 5 | `0x33` | `(15,9)` | 3 | 364 |
-| 33 | `original.geo5.block-33` | 5 | `0x33` | `(15,11)` | 3 | 361 |
-| 34 | `original.geo5.block-33` | 5 | `0x33` | `(9,13)` | 3 | 358 |
-| 35 | `original.geo5.block-33` | 5 | `0x33` | `(14,13)` | 3 | 355 |
-| 36 | `original.geo5.block-33` | 5 | `0x33` | `(14,14)` | 3 | 352 |
-| 37 | `original.geo5.block-33` | 5 | `0x33` | `(15,14)` | 3 | 349 |
-| 38 | `original.geo5.block-33` | 5 | `0x33` | `(11,15)` | 3 | 346 |
-| 39 | `original.geo5.block-33` | 5 | `0x33` | `(15,15)` | 3 | 343 |
-| 40 | `original.geo5.block-35` | 5 | `0x35` | `(11,11)` | 3 | 340 |
-| 41 | `myth-drannor.burial-glen` | 6 | `0x40` | `(11,6)` | 3 | 337 |
-| 42 | `myth-drannor.burial-glen` | 6 | `0x40` | `(2,7)` | 3 | 334 |
-| 43 | `myth-drannor.burial-glen` | 6 | `0x40` | `(2,8)` | 3 | 331 |
-| 44 | `myth-drannor.burial-glen` | 6 | `0x40` | `(4,11)` | 3 | 328 |
-| 45 | `myth-drannor.burial-glen` | 6 | `0x40` | `(10,11)` | 3 | 325 |
-| 46 | `myth-drannor.burial-glen` | 6 | `0x40` | `(9,13)` | 3 | 322 |
-| 47 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(4,2)` | 3 | 319 |
-| 48 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(3,6)` | 3 | 316 |
-| 49 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(10,10)` | 3 | 313 |
-| 50 | `original.geo6.block-45` | 6 | `0x45` | `(9,8)` | 3 | 310 |
-| 51 | `tilverton.sewers.first-person` | 2 | `0x03` | `(13,4)` | 2 | 308 |
-| 52 | `tilverton.fire-knife-hideout.first-person` | 2 | `0x04` | `(8,4)` | 2 | 306 |
-| 53 | `original.geo3.block-10` | 3 | `0x10` | `(10,4)` | 2 | 304 |
-| 54 | `original.geo3.block-10` | 3 | `0x10` | `(10,5)` | 2 | 302 |
-| 55 | `original.geo3.block-10` | 3 | `0x10` | `(3,8)` | 2 | 300 |
-| 56 | `original.geo3.block-10` | 3 | `0x10` | `(3,9)` | 2 | 298 |
-| 57 | `original.geo3.block-10` | 3 | `0x10` | `(3,10)` | 2 | 296 |
-| 58 | `original.geo3.block-10` | 3 | `0x10` | `(3,12)` | 2 | 294 |
-| 59 | `original.geo3.block-10` | 3 | `0x10` | `(4,15)` | 2 | 292 |
-| 60 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(10,0)` | 2 | 290 |
-| 61 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(13,0)` | 2 | 288 |
-| 62 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(4,6)` | 2 | 286 |
-| 63 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,8)` | 2 | 284 |
-| 64 | `original.geo3.block-15` | 3 | `0x15` | `(6,0)` | 2 | 282 |
+| 1 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,7)` | 4 | 456 |
+| 2 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,12)` | 4 | 452 |
+| 3 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,13)` | 4 | 448 |
+| 4 | `original.geo5.block-33` | 5 | `0x33` | `(15,0)` | 4 | 444 |
+| 5 | `original.geo5.block-33` | 5 | `0x33` | `(15,1)` | 4 | 440 |
+| 6 | `original.geo5.block-33` | 5 | `0x33` | `(15,2)` | 4 | 436 |
+| 7 | `original.geo5.block-33` | 5 | `0x33` | `(15,3)` | 4 | 432 |
+| 8 | `original.geo5.block-33` | 5 | `0x33` | `(1,4)` | 4 | 428 |
+| 9 | `original.geo5.block-33` | 5 | `0x33` | `(2,4)` | 4 | 424 |
+| 10 | `original.geo5.block-33` | 5 | `0x33` | `(3,4)` | 4 | 420 |
+| 11 | `original.geo5.block-33` | 5 | `0x33` | `(10,5)` | 4 | 416 |
+| 12 | `original.geo5.block-33` | 5 | `0x33` | `(15,6)` | 4 | 412 |
+| 13 | `original.geo5.block-33` | 5 | `0x33` | `(14,7)` | 4 | 408 |
+| 14 | `original.geo5.block-33` | 5 | `0x33` | `(15,12)` | 4 | 404 |
+| 15 | `original.geo5.block-33` | 5 | `0x33` | `(13,13)` | 4 | 400 |
+| 16 | `original.geo5.block-33` | 5 | `0x33` | `(15,13)` | 4 | 396 |
+| 17 | `original.geo5.block-33` | 5 | `0x33` | `(8,15)` | 4 | 392 |
+| 18 | `myth-drannor.burial-glen` | 6 | `0x40` | `(4,11)` | 4 | 388 |
+| 19 | `original.geo3.block-15` | 3 | `0x15` | `(14,3)` | 3 | 385 |
+| 20 | `original.geo3.block-15` | 3 | `0x15` | `(9,6)` | 3 | 382 |
+| 21 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,10)` | 3 | 379 |
+| 22 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(13,12)` | 3 | 376 |
+| 23 | `original.geo5.block-31` | 5 | `0x32` | `(3,7)` | 3 | 373 |
+| 24 | `original.geo5.block-33` | 5 | `0x33` | `(15,4)` | 3 | 370 |
+| 25 | `original.geo5.block-33` | 5 | `0x33` | `(15,5)` | 3 | 367 |
+| 26 | `original.geo5.block-33` | 5 | `0x33` | `(15,7)` | 3 | 364 |
+| 27 | `original.geo5.block-33` | 5 | `0x33` | `(15,9)` | 3 | 361 |
+| 28 | `original.geo5.block-33` | 5 | `0x33` | `(15,11)` | 3 | 358 |
+| 29 | `original.geo5.block-33` | 5 | `0x33` | `(9,13)` | 3 | 355 |
+| 30 | `original.geo5.block-33` | 5 | `0x33` | `(14,13)` | 3 | 352 |
+| 31 | `original.geo5.block-33` | 5 | `0x33` | `(14,14)` | 3 | 349 |
+| 32 | `original.geo5.block-33` | 5 | `0x33` | `(15,14)` | 3 | 346 |
+| 33 | `original.geo5.block-33` | 5 | `0x33` | `(11,15)` | 3 | 343 |
+| 34 | `original.geo5.block-33` | 5 | `0x33` | `(15,15)` | 3 | 340 |
+| 35 | `original.geo5.block-35` | 5 | `0x35` | `(11,10)` | 3 | 337 |
+| 36 | `original.geo5.block-35` | 5 | `0x35` | `(11,11)` | 3 | 334 |
+| 37 | `myth-drannor.burial-glen` | 6 | `0x40` | `(12,6)` | 3 | 331 |
+| 38 | `myth-drannor.burial-glen` | 6 | `0x40` | `(2,8)` | 3 | 328 |
+| 39 | `myth-drannor.burial-glen` | 6 | `0x40` | `(3,11)` | 3 | 325 |
+| 40 | `myth-drannor.burial-glen` | 6 | `0x40` | `(10,11)` | 3 | 322 |
+| 41 | `myth-drannor.burial-glen` | 6 | `0x40` | `(9,13)` | 3 | 319 |
+| 42 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(4,2)` | 3 | 316 |
+| 43 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(3,6)` | 3 | 313 |
+| 44 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(10,10)` | 3 | 310 |
+| 45 | `original.geo6.block-45` | 6 | `0x45` | `(9,8)` | 3 | 307 |
+| 46 | `tilverton.fire-knife-hideout.first-person` | 2 | `0x04` | `(8,4)` | 2 | 305 |
+| 47 | `original.geo3.block-10` | 3 | `0x10` | `(10,4)` | 2 | 303 |
+| 48 | `original.geo3.block-10` | 3 | `0x10` | `(10,5)` | 2 | 301 |
+| 49 | `original.geo3.block-10` | 3 | `0x10` | `(3,8)` | 2 | 299 |
+| 50 | `original.geo3.block-10` | 3 | `0x10` | `(3,10)` | 2 | 297 |
+| 51 | `original.geo3.block-10` | 3 | `0x10` | `(3,12)` | 2 | 295 |
+| 52 | `original.geo3.block-10` | 3 | `0x10` | `(3,15)` | 2 | 293 |
+| 53 | `original.geo3.block-10` | 3 | `0x10` | `(4,15)` | 2 | 291 |
+| 54 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(10,0)` | 2 | 289 |
+| 55 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(13,0)` | 2 | 287 |
+| 56 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(4,6)` | 2 | 285 |
+| 57 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(12,8)` | 2 | 283 |
+| 58 | `original.geo3.block-15` | 3 | `0x15` | `(6,0)` | 2 | 281 |
+| 59 | `original.geo3.block-15` | 3 | `0x15` | `(3,3)` | 2 | 279 |
+| 60 | `original.geo3.block-15` | 3 | `0x15` | `(6,3)` | 2 | 277 |
+| 61 | `original.geo3.block-15` | 3 | `0x15` | `(14,4)` | 2 | 275 |
+| 62 | `original.geo3.block-15` | 3 | `0x15` | `(7,5)` | 2 | 273 |
+| 63 | `original.geo3.block-15` | 3 | `0x15` | `(2,9)` | 2 | 271 |
+| 64 | `original.geo3.block-15` | 3 | `0x15` | `(4,12)` | 2 | 269 |
