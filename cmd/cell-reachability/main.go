@@ -63,6 +63,11 @@ func main() {
 		"`-walkable-json` 輸出的「站得上去」格子（走路的上限，可省略）")
 	onMapPath := flag.String("on-map-cells", "workplace/campaign-frames/on-map-cells.json",
 		"`-on-map-json` 輸出的「圖上出現過」格子（可省略）")
+	// ★ 帶著劇情旗標走出來的格子（`cmd/campaign-snapshot-walk`）。冷走沒有旗標，
+	// 門對它永遠是牆；主線有旗標，但只走它要走的路。這一份是兩者的交集能力：
+	// **從主線快照出發、把那一段走遍**。
+	snapshotPath := flag.String("snapshot-cells", "workplace/campaign-frames/snapshot-cells.json",
+		"`cmd/campaign-snapshot-walk -cells-json` 輸出的格子（可省略）")
 	visitedPath := flag.String("visited", "workplace/campaign-frames/visited-cells.json",
 		"主線實跑導出的格子（見本檔頂端）")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
@@ -137,6 +142,7 @@ func main() {
 		return out
 	}
 	standable := loadCells(*walkablePath)
+	withFlags := loadCells(*snapshotPath)
 	onMap := loadCells(*onMapPath)
 	matches := func(table map[uint8]map[uint8]bool, block uint8, mask, index int) bool {
 		for terrain := range table[block] {
@@ -159,11 +165,14 @@ func main() {
 		gatedOff  int
 		noEdge    int
 		notOnMap  int
+		// withFlags 是「只有帶著劇情旗標才走得到」的索引數。
+		withFlags int
 	}
 	bySegment := map[string]*blockRow{}
 	order := make([]string, 0, 16)
 	totalIndices, totalReached, totalOnFoot, totalEither := 0, 0, 0, 0
 	totalGated, totalNoEdge, totalNotOnMap, totalStandable := 0, 0, 0, 0
+	totalWithFlags := 0
 	for _, item := range sweep {
 		row, ok := bySegment[item.Segment]
 		if !ok {
@@ -194,6 +203,12 @@ func main() {
 				onFoot = true
 				break
 			}
+		}
+		// 帶旗標走出來的算進「走得到」：那是同一種走訪，只是門開得了。
+		if !onFoot && matches(withFlags, item.Block, item.Mask, item.Index) {
+			onFoot = true
+			row.withFlags++
+			totalWithFlags++
 		}
 		if onFoot {
 			row.onFoot++
@@ -250,6 +265,7 @@ func main() {
 	fmt.Fprintf(&report, "| 分派索引（**直接取自逐格實測的輸出**）| %d |\n", totalIndices)
 	fmt.Fprintf(&report, "| **實跑路線踏到的** | %d |\n", totalReached)
 	fmt.Fprintf(&report, "| **從段入口用走的走得到的** | %d |\n", totalOnFoot)
+	fmt.Fprintf(&report, "| 　其中**只有帶著劇情旗標才走得到**的 | %d |\n", totalWithFlags)
 	fmt.Fprintf(&report, "| **兩者的聯集**（目前最好的下界）| %d |\n", totalEither)
 	fmt.Fprintf(&report, "| **走路的上限**（站得上去的格子，不限從入口走得到）| %d |\n",
 		totalStandable)

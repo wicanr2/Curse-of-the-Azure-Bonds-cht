@@ -1960,6 +1960,20 @@ func (s *State) applyWallSetParams(assignments []ecl.WallSetAssignment) {
 // WallSetParams 回傳目前的三組牆面參數，讓存檔與測試都讀得到同一份。
 func (s *State) WallSetParams() [3]partySave.SAVGAMSetBlock { return s.wallSetParams }
 
+// CurrentECLBlockID 回傳 session 現在停在哪一個 ECL 段。
+//
+// ★ 存在的理由：讀完存檔之後要知道「這一份快照是哪一段」。
+//
+// ⚠ **不要改用 `Area.LastECLBlockID`**：那一格是存檔格式裡的欄位，遊戲跑的時候
+// 從來沒有人寫它，讀出來是 0，而 0 是一個**合法的 block 編號** ⇒ 查下去會拿到
+// 完全不相干的地圖而且不會報錯。
+func (s *State) CurrentECLBlockID() (uint8, bool) {
+	if s.session == nil {
+		return 0, false
+	}
+	return s.session.CurrentBlockID(), true
+}
+
 // ConsumeLoadPiecesRequest transfers the ECL LOAD PIECES selector exactly
 // once to a future map-piece loader.
 func (s *State) ConsumeLoadPiecesRequest() (pieces [3]uint16, ok bool) {
