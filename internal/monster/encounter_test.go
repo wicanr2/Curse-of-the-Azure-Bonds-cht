@@ -51,26 +51,29 @@ func TestBuildEnemiesWithAffectsCopiesSPCRecords(t *testing.T) {
 	}
 }
 
+// 加速／緩速動的是**半次**單位，而且在換算成整數次數**之前**做——先換算再加倍
+// 會把 1.5 次的那半次先丟掉（spec 1180）。
 func TestBuildEnemiesWithAffectsProjectsHasteAttacks(t *testing.T) {
-	records := map[uint8]Record{7: {Name: "Ogre", MaxHitPoints: 8, HitPoints: 8, AttacksPerTurn: 2}}
+	records := map[uint8]Record{7: {Name: "Ogre", MaxHitPoints: 8, HitPoints: 8,
+		AttackBlows: [2]uint8{2, 0}}}
 	affects := map[uint8][]AffectRecord{7: {{Kind: 0x27, Active: true}}}
 	enemies, err := BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)
-	if err != nil || len(enemies) != 1 || enemies[0].AttacksPerTurn != 4 {
+	if err != nil || len(enemies) != 1 || enemies[0].AttackBlows != [2]int{4, 0} {
 		t.Fatalf("enemies=%#v err=%v", enemies, err)
 	}
 	affects[7][0].Active = false
 	enemies, err = BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)
-	if err != nil || enemies[0].AttacksPerTurn != 4 {
+	if err != nil || enemies[0].AttackBlows != [2]int{4, 0} {
 		t.Fatalf("raw MON*SPC byte-4 zero suppressed innate haste: enemies=%#v err=%v", enemies, err)
 	}
 	affects[7] = []AffectRecord{{Kind: 0x2A, Active: true}}
 	enemies, err = BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)
-	if err != nil || enemies[0].AttacksPerTurn != 1 {
+	if err != nil || enemies[0].AttackBlows != [2]int{1, 0} {
 		t.Fatalf("slow attacks=%#v err=%v", enemies, err)
 	}
 	affects[7] = []AffectRecord{{Kind: 0x27, Active: true}, {Kind: 0x2A, Active: true}}
 	enemies, err = BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)
-	if err != nil || enemies[0].AttacksPerTurn != 2 {
+	if err != nil || enemies[0].AttackBlows != [2]int{2, 0} {
 		t.Fatalf("haste+slow attacks=%#v err=%v", enemies, err)
 	}
 }

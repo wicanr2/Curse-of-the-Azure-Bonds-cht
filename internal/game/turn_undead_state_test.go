@@ -26,7 +26,7 @@ func turnUndeadState(t *testing.T, clericLevel int, undeadType uint8) *State {
 	result := ecl.RunResult{CombatRequested: true,
 		MonsterSpawns: []ecl.MonsterSpawn{{MonsterID: 7, Count: 1, IconBlock: 81}}}
 	records := map[uint8]monster.Record{
-		7: {Name: "DRACOLICH", HitPoints: 8, MaxHitPoints: 8, AttacksPerTurn: 1,
+		7: {Name: "DRACOLICH", HitPoints: 8, MaxHitPoints: 8, AttackBlows: [2]uint8{2, 0},
 			UndeadType: undeadType, Raw: raw},
 	}
 	cleric, err := state.partyRoster[0].Fighter()
@@ -79,7 +79,7 @@ func TestCombatTurnUndeadIsClericOnly(t *testing.T) {
 	result := ecl.RunResult{CombatRequested: true,
 		MonsterSpawns: []ecl.MonsterSpawn{{MonsterID: 7, Count: 1, IconBlock: 81}}}
 	records := map[uint8]monster.Record{
-		7: {Name: "DRACOLICH", HitPoints: 8, MaxHitPoints: 8, AttacksPerTurn: 1, UndeadType: 1},
+		7: {Name: "DRACOLICH", HitPoints: 8, MaxHitPoints: 8, AttackBlows: [2]uint8{2, 0}, UndeadType: 1},
 	}
 	fighter, err := state.partyRoster[0].Fighter()
 	if err != nil {

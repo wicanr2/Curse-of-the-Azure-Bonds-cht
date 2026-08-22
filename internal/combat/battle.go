@@ -180,6 +180,10 @@ type Fighter struct {
 	// HasSlotZeroWeapon 就是 `攻擊者^[151h] <> NIL`。
 	HasSlotZeroWeapon bool
 	AttacksPerTurn    int
+	// AttackBlows 是原作的 `BASEATTBLOWS[0..1]`（`+11Ch`）：兩個武器槽的基準
+	// 攻擊次數，單位是**半次**。本回合的整數次數由 `AdjustBlows` 依回合奇偶
+	// 換算（spec 1180）。
+	AttackBlows       [2]int `json:"attack_blows,omitempty"`
 	AmmunitionType    uint8
 	MovementAllowance int
 	WeaponRange       int
@@ -616,28 +620,25 @@ func (f Fighter) MonsterAffectForcesAttackMiss() bool {
 	return false
 }
 
-// MonsterAffectAttacksPerTurn projects the verified Haste multiplier over
-// the decoded MON*CHA attacksCount field.
-func (f Fighter) MonsterAffectAttacksPerTurn() int {
-	attacks := f.AttacksPerTurn
-	if attacks < 1 {
-		attacks = 1
-	}
+// MonsterAffectAttackBlows projects the verified Haste／Slow multiplier over
+// the record's `BASEATTBLOWS`. 加速與緩速動的是**半次**單位，所以乘除都在
+// 換算之前做——先換算再加倍會把 1.5 次的那半次先丟掉（spec 1180）。
+func (f Fighter) MonsterAffectAttackBlows() [2]int {
+	blows := f.AttackBlows
 	for _, affect := range f.MonsterAffects {
 		if !affect.operational() {
 			continue
 		}
 		switch affect.Kind {
 		case 0x27: // haste: AffectHaste doubles half-actions
-			attacks *= 2
+			blows[0] *= 2
+			blows[1] *= 2
 		case 0x2A: // slow: AffectSlow halves half-actions
-			attacks /= 2
+			blows[0] /= 2
+			blows[1] /= 2
 		}
 	}
-	if attacks < 1 {
-		attacks = 1
-	}
-	return attacks
+	return blows
 }
 
 // MonsterIsHeld mirrors the reference Player.IsHeld affect set.
@@ -1804,15 +1805,50 @@ func (b *Battle) attackSlot(attackerID, targetID string, attackSlot int) (Attack
 	return result, nil
 }
 
-// AttackSequence resolves the number of attacks granted by the readied
-// weapon's RateOfFire projection. A zero value keeps old callers at one
-// attack. Target selection after a target falls belongs to the game adapter.
+// AdjustBlows 是原作的 `ADJUSTBLOWS`（DOS `overlay-13:0F12h`、PC-98 同名函式，
+// 兩平台位元組完全相同）：把**半次**單位的基準值換成這一回合的整數次數。
+//
+//	次數 := (半次值 + (ROUND and 1)) div 2
+//
+// ★ 加的是**回合數的最低位**，所以奇數的半次值會在回合之間交替：3（一次半）
+// 在第 1、3、5 回合給 2 次，第 0、2、4 回合給 1 次。這正是 AD&D 的「每兩回合
+// 三次攻擊」——寫成 `半次值 / 2` 會把那半次無聲地丟掉（spec 1180）。
+//
+// ⚠ 原作**不夾下限**：半次值 0 就是這一回合不攻擊（`GIANT SPIDER`／`PHASE
+// SPIDER` 的槽 0 就是 0，牠們用槽 1 咬）。
+func AdjustBlows(blows, round int) int {
+	if blows < 0 {
+		return 0
+	}
+	return (blows + (round & 1)) / 2
+}
+
+// AttacksThisRound 回答「這個戰鬥員這一回合打幾下」。
+//
+// 取捨照原作 `overlay-13:0DD9h`（spec 808）：**架著遠程武器時，類別表的射速
+// 取代角色的基準值**，兩條路最後都走 `AdjustBlows`。遠程那一路的射速下限是 2。
+func (b *Battle) AttacksThisRound(f Fighter) int {
+	blows := f.AttackBlows[0]
+	if blows == 0 {
+		// 槽 0 沒有攻擊次數就用槽 1（原作 `if 打手^[11Ch] = 0 then 槽 := 2`，
+		// spec 1010）。
+		blows = f.AttackBlows[1]
+	}
+	if f.AttacksPerTurn > 0 {
+		// 遠程武器已經投影成整數次數（射速全是偶數，換算後與原作相同）。
+		return f.AttacksPerTurn
+	}
+	return AdjustBlows(blows, b.round)
+}
+
+// AttackSequence resolves how many attacks the attacker gets this round.
+// Target selection after a target falls belongs to the game adapter.
 func (b *Battle) AttackSequence(attackerID, targetID string) ([]AttackResult, error) {
 	attacker, ok := b.fighters[attackerID]
 	if !ok {
 		return nil, fmt.Errorf("unknown attacker %q", attackerID)
 	}
-	attacks := attacker.AttacksPerTurn
+	attacks := b.AttacksThisRound(attacker)
 	if attacks < 1 {
 		attacks = 1
 	}

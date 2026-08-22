@@ -34,7 +34,7 @@ func useItemState(t *testing.T, items []monster.ItemRecord, raceType uint8) *Sta
 		MonsterSpawns: []ecl.MonsterSpawn{{MonsterID: 7, Count: 1, IconBlock: 81}}}
 	records := map[uint8]monster.Record{
 		7: {Name: "SHAMBLING MOUND", HitPoints: 40, MaxHitPoints: 40,
-			AttacksPerTurn: 1, RaceType: raceType, Raw: raw},
+			AttackBlows: [2]uint8{2, 0}, RaceType: raceType, Raw: raw},
 	}
 	user, err := state.partyRoster[0].Fighter()
 	if err != nil {
