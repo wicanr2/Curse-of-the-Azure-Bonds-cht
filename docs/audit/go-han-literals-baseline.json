@@ -513,14 +513,14 @@
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
-      "sha256": "064e004551fc729b6e242b1befece945388c88b15cdfd2ebfe40349ad489da25",
+      "sha256": "13c83a8a875ec7e2062411851fe501ab53a525064bf5d4b7e53233fd2d729ac6",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
-      "sha256": "13c83a8a875ec7e2062411851fe501ab53a525064bf5d4b7e53233fd2d729ac6",
+      "sha256": "195ebca98b59dfe09d1d93f5f117393bfeef5e4d747652b066c3bb9143196268",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -541,7 +541,35 @@
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
+      "sha256": "35f2dc8ca9d8cce83c7ff1f1e3b560d6ddb18be8c0bc19c1424a20044ee14d04",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
       "sha256": "3b487f729f8236c3f22d0e184235cd88d24028a73202a848c4bbc9f064c4db5e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "3c50c395efba7b7b425c1a17af6e3ab90b8f7ad5880c5591b2fadb2b52db33f9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "3df96eb5a1c70d10fdb350c04d36e946dc7f04d60f600e45f55b09323e072345",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "3e0adabfa5504319d1a655ac9665be8135ecbf6035cb89523008a5c3bbe1ac79",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -562,7 +590,7 @@
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
-      "sha256": "5ee8ef0567d6151b7b6fecfed6774434ff6191b9b4ef0966e525c1eeb794d2b3",
+      "sha256": "539eaa7a0abe68224948bea9faa2e9afba974e193fa01d8cda4115dd0bf02630",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -576,21 +604,14 @@
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
+      "sha256": "67f8bafad4cc256f13830c8661f8665229dc62851c3d509aef504757083db8e8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
       "sha256": "697958203959b6380250c09da3339aa64e4bb57a11d7a1c4a1917775d960676e",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/cell-reachability/main.go",
-      "function": "main",
-      "sha256": "6b4074276f58a60dfa7c446e7a0677653e428a422c6cc3d5c138295d7bcd38c5",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/cell-reachability/main.go",
-      "function": "main",
-      "sha256": "72871b2f729515bb959f7551fd406e0dbe0ba59e91f9799009e8ae07de354da1",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -625,7 +646,21 @@
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
+      "sha256": "7932fbe5308568d3a09a39c46bfbc3a69e023dcde5aed272b471706c703f5f9b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
       "sha256": "8ae705333376e4938882bcf03ec882d9a12ebcef420415cc7591354bbfab76a1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "8bf4af94b7eed443284dd736467d422636408a5972d763bcf7a9694fd1119473",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -695,6 +730,13 @@
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
+      "sha256": "b5de19020e85b5dd9fcd9545ab2d731a8098bd93e7ebeee8984777cdf81a675d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
       "sha256": "b91268717948decffd633af24f3ede72b2b2b899e04efd7b72ead09e9cbaaff5",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -723,14 +765,14 @@
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
-      "sha256": "cb5b3dd2c5ad399e2e0f0151ecc67e9882dcf46ceaba20af541a7233993f2e88",
+      "sha256": "df597688ab8f37443595946ea6df95762cde184adb749415221e27ba9a4fa5fe",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
-      "sha256": "df597688ab8f37443595946ea6df95762cde184adb749415221e27ba9a4fa5fe",
+      "sha256": "dfd4f5b2e22f374b74e17b7b92decdb9a4b622f1bec45ff87a610e6ee1ac7830",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -744,7 +786,28 @@
     {
       "path": "cmd/cell-reachability/main.go",
       "function": "main",
+      "sha256": "ed1129c15d4c6b9a6315daeb63212d8e70b5f151608a7ba44dd9a308f7ae88de",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "f154c5107d25a411217ae175a3027ed7691f8b5f0594336a08e9a5a1873134b1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
       "sha256": "f8daf874df0ebf79437f99bbdb0a50fa5adeaef533f0520337b7506dfac675c4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-reachability/main.go",
+      "function": "main",
+      "sha256": "feee90fb18aea7166da663d417878c13192295217cd9f87a2709bdede61269c7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -3251,6 +3314,153 @@
       "path": "cmd/dseg-export/main.go",
       "function": "main",
       "sha256": "e114c26aade135ee027dcf2e2e0dba68b341a43f3d66f5b82e761b7b035f17d4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "2d19b349e7c09aed577510d503087644955810d67651c8c061b952febb65f658",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "33c48eb91ff02dbe367a3f799d3e5ae1c6a61dcb3dd36322e56048c485fa99ce",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "3a1d755d050377bac51c42391f217e9c260be6f311da61220ff767896a219263",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "4163a74ed02d5d59a0eb98791af90f1d42faec1cb1a16b8f543ac14ac18f9993",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "4cb1f3b235b286bc9697de6118f2087b008b3144f660b9af23329e286a9e74d6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "50e05aa24d1aeab50fdf46e99a0c4663dfe34541238c93fbe2016f56118c5551",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "5baa801bcfece24130b84c2bc886bd755457db9fa7f5ca36c90523639e69ca58",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "60b199c668b8f74c0585f2c5d892e17f51e953b02c5eaac8c7d83090d73a4de5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "8b6fdcd68b200b038e99d839321353888f10de137ec141a3ebd0ef20b89a53ea",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "8f92a302126274d99dcff545b07ff2271f350228dd7da8384516e21943a9373a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "9c3b4db6568f9a7b84d66e598492d8ef32ad53d69279024f7a2f0d5623c82639",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "a4b2b3b609e8698175a1a7f5f4bcbe435cf8829fbe31ff947f5a67cc49dba740",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "a85946afe15340ec53b9398da2591a1fd4ad3b452f2971864123f2e204232eff",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "bae03125c423e6a2d72a127a92922a37c9cc416ccfa3c02b97d35597d9e1eed1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "e8ede599d47bd8651bd597c5c0b68f75d42b460be1f1290fa5817e42e5dc3c3f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "f6d5a3553dbcbde5760806c9a198291f38cd46949dac8f199fc87231ad2ba0de",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
+      "sha256": "f6da306216007e2eabf0fc048f082e00bbce47f7690d45ad6008d1f22dc8592b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "settle",
+      "sha256": "7da71c92d849933ddb1268c3d9f511114dd4a0f0c598394711fd4703cbf3cfbe",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "walkSegment",
+      "sha256": "5e896a22eb6f3d4ff29616fbc1581b36ddc49fc8b9e588a44029be66585b104f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "walkSegment",
+      "sha256": "ee93bb777f8353e851136bfbcd3665dcdc410702267b6ecc6f6a54da47ad22a1",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

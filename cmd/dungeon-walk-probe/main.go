@@ -1,0 +1,260 @@
+// Command dungeon-walk-probe 回答「從這一段的入口**用走的**，走得到哪些格子」。
+//
+// ★ 為什麼需要它：可達性報表（`cmd/cell-reachability`）說主線實跑只踏到 250 個
+// 分派索引裡的 81 個，其中提爾佛頓整整三段（48 個索引）一格都沒踏到。
+// 但那句話有兩種完全不同的成因：
+//
+//	(a) 主線不經過那裡      → 是路線的選擇，不是缺陷
+//	(b) 那些格子走不進去    → 是缺陷，而且玩家會撞到
+//
+// 逐格實測分不出來——它把隊伍**直接放**到目標格上。這一支從入口出發，
+// 只用 `CanMoveDungeon`／`MoveDungeon` 做廣度優先，記下**真的走得到**的格子。
+//
+// ⚠ 這仍然不是「從新遊戲玩到那裡」：進段是直接進的。它答的是**段內**可達性，
+// 也就是「人已經在這張地圖上，走得到幾格」。段與段之間怎麼串是主線測試的事。
+//
+// ⚠ 走的時候會踩到事件、戰鬥、被劇情推走。推不回地城就停在那一條分支上——
+// 所以結果是**下界**：走不到不代表不可達，可能只是被某個事件擋在半路。
+//
+// 用法：
+//
+//	go run ./cmd/dungeon-walk-probe -output docs/audit/dungeon-walk.md
+package main
+
+import (
+	"encoding/json"
+	"flag"
+	"fmt"
+	"log"
+	"os"
+	"sort"
+	"strings"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/eclcells"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gamecorpus"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/segment"
+)
+
+type point struct{ x, y int }
+
+// dungeonDelta 是原作的八向朝向碼換成格子位移。只走正交四向：
+// 斜向在原作的地城裡不是移動方向。
+func dungeonDelta(direction int) (int, int) {
+	switch direction {
+	case 0:
+		return 0, -1
+	case 2:
+		return 1, 0
+	case 4:
+		return 0, 1
+	case 6:
+		return -1, 0
+	}
+	return 0, 0
+}
+
+type segmentWalk struct {
+	id       string
+	block    uint8
+	note     string
+	reached  map[int]bool
+	cells    int
+	blocked  int
+}
+
+func main() {
+	image := flag.String("image", "curseoftheazurebonds.zip", "遊戲 image")
+	localePath := flag.String("locale", "assets/locale/zh-TW.json", "語系檔")
+	steps := flag.Int("steps", 4000, "每一段最多走幾步")
+	cellsOut := flag.String("cells-json", "", "把走得到的 (block, 地形碼) 寫成 JSON")
+	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	flag.Parse()
+
+	data, err := gamecorpus.Load(*image, *localePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	walks := make([]segmentWalk, 0, 16)
+	type cellRecord struct {
+		Block   uint8 `json:"block"`
+		Terrain uint8 `json:"terrain"`
+	}
+	records := make([]cellRecord, 0, 256)
+	for _, seg := range segment.All() {
+		payload, ok := data.Blocks[seg.Block]
+		if !ok {
+			continue
+		}
+		dispatch := eclcells.Analyze(payload)
+		if !dispatch.Found {
+			continue
+		}
+		catalog, has := data.Geo[seg.Member]
+		if !has {
+			continue
+		}
+		grid, hasGrid := catalog.Lookup(geo.MapRef{Set: seg.Member, BlockID: dispatch.GeoBlock})
+		if !hasGrid {
+			continue
+		}
+		walk := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
+		terrains := map[uint8]bool{}
+		if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &walk, terrains); err != nil {
+			walk.note = err.Error()
+		}
+		for terrain := range terrains {
+			records = append(records, cellRecord{Block: seg.Block, Terrain: terrain})
+		}
+		walks = append(walks, walk)
+	}
+	sort.Slice(records, func(left, right int) bool {
+		if records[left].Block != records[right].Block {
+			return records[left].Block < records[right].Block
+		}
+		return records[left].Terrain < records[right].Terrain
+	})
+	if *cellsOut != "" {
+		payload, err := json.MarshalIndent(records, "", "  ")
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := os.WriteFile(*cellsOut, payload, 0o644); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	var report strings.Builder
+	fmt.Fprintf(&report, "# 段內可達性：從入口用走的，走得到哪些格子\n\n")
+	fmt.Fprintf(&report, "由 `cmd/dungeon-walk-probe` 產生，不要手改。\n\n")
+	fmt.Fprintf(&report, "★ 可達性報表說主線實跑只踏到 250 個分派索引裡的 81 個，"+
+		"其中提爾佛頓整整三段一格都沒踏到。那句話有兩種完全不同的成因："+
+		"**主線不經過那裡**（路線的選擇）或**那些格子走不進去**（缺陷）。"+
+		"逐格實測分不出來——它把隊伍**直接放**到目標格上。這一支從入口出發，"+
+		"只用 `CanMoveDungeon`／`MoveDungeon` 廣度優先地走。\n\n")
+	fmt.Fprintf(&report, "⚠ 這**不是**「從新遊戲玩到那裡」：進段是直接進的。"+
+		"它答的是**段內**可達性——人已經在這張地圖上，走得到幾格。\n\n")
+	fmt.Fprintf(&report, "⚠ 走的時候會踩到事件、戰鬥、被劇情推走；推不回地城就停在那條分支上。"+
+		"⇒ **下界**：走不到不代表不可達，可能只是被某個事件擋在半路。\n\n")
+	fmt.Fprintf(&report, "| 段 | ECL block | 走到的格子 | 走到的分派索引 | 撞牆次數 | 備註 |\n")
+	fmt.Fprintf(&report, "|---|---:|---:|---:|---:|---|\n")
+	totalIndices := 0
+	for _, walk := range walks {
+		note := walk.note
+		if note == "" {
+			note = "—"
+		}
+		fmt.Fprintf(&report, "| `%s` | %d | %d | %d | %d | %s |\n",
+			walk.id, walk.block, walk.cells, len(walk.reached), walk.blocked, note)
+		totalIndices += len(walk.reached)
+	}
+	fmt.Fprintf(&report, "\n合計走得到 **%d** 個分派索引。\n", totalIndices)
+
+	text := report.String()
+	if *output == "" {
+		fmt.Print(text)
+	} else if err := os.WriteFile(*output, []byte(text), 0o644); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Fprintf(os.Stderr, "segments=%d indices=%d cells=%d\n", len(walks), totalIndices, len(records))
+}
+
+// walkSegment 進段之後從落點做廣度優先，只走 `CanMoveDungeon` 允許的邊。
+//
+// ⚠ 每走一步都要把事件推完再繼續，否則下一次 `MoveDungeon` 會在事件模式上失敗
+// ——那會被記成「走不到」，而其實只是沒把畫面推回地城。
+func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mask, steps int,
+	walk *segmentWalk, terrains map[uint8]bool) error {
+	state, err := data.NewParty()
+	if err != nil {
+		return err
+	}
+	if err := state.EnterSegment(seg); err != nil {
+		return fmt.Errorf("進不去：%v", err)
+	}
+	// ⚠ 隊伍要撐起來：入口伏擊會讓臨時角色死在門口，整段就走不了。**只給盤點用。**
+	if err := gamecorpus.BoostParty(&state); err != nil {
+		return err
+	}
+	if err := settle(&state); err != nil {
+		return fmt.Errorf("入口推不動：%v", err)
+	}
+	start := point{state.DungeonX, state.DungeonY}
+	seen := map[point]bool{start: true}
+	queue := []point{start}
+	record := func(state *game.State) {
+		terrains[state.DungeonWallRoof] = true
+		walk.reached[int(state.DungeonWallRoof)&mask] = true
+	}
+	record(&state)
+	walk.cells = 1
+	used := 0
+	for len(queue) > 0 && used < steps {
+		current := queue[0]
+		queue = queue[1:]
+		for _, direction := range []int{0, 2, 4, 6} {
+			if used >= steps {
+				break
+			}
+			deltaX, deltaY := dungeonDelta(direction)
+			next := point{current.x + deltaX, current.y + deltaY}
+			if next.x < 0 || next.x >= geo.Width || next.y < 0 || next.y >= geo.Height || seen[next] {
+				continue
+			}
+			// 每一次都從入口重走到 current 太貴；改成直接把視角放到 current
+			// 再試那一步。⚠ 這是**幾何可達性**：牆擋不擋得住。ECL 把隊伍推回
+			// 上一格那種「走過去又被送回來」不算在內（那是內容不是幾何）。
+			state.SetDungeonGeometryView(current.x, current.y, uint8(direction))
+			state.DungeonWallRoof = grid.CellWrapped(current.x, current.y).Terrain
+			if !state.CanMoveDungeon(grid, deltaX, deltaY, direction) {
+				walk.blocked++
+				continue
+			}
+			used++
+			if err := state.MoveDungeon(grid, deltaX, deltaY, direction); err != nil {
+				walk.blocked++
+				continue
+			}
+			if err := settle(&state); err != nil {
+				// 推不回地城就別再從這一格往外走，但已經到過的算數。
+				seen[next] = true
+				walk.cells++
+				continue
+			}
+			seen[next] = true
+			walk.cells++
+			record(&state)
+			queue = append(queue, next)
+		}
+	}
+	return nil
+}
+
+// settle 把事件／選單／戰鬥推完，直到回到地城模式。
+func settle(state *game.State) error {
+	for step := 0; step < 40 && state.Mode != game.ModeDungeon; step++ {
+		if state.CombatActive() {
+			for turn := 0; turn < 400 && state.CombatActive(); turn++ {
+				if err := state.CombatAct(); err != nil {
+					return err
+				}
+			}
+			continue
+		}
+		choice := 0
+		if state.Mode == game.ModePlace && len(state.Choices) > 0 {
+			choice = len(state.Choices) - 1
+		}
+		if err := state.Continue(); err != nil {
+			if selectErr := state.Select(choice); selectErr != nil {
+				return fmt.Errorf("continue=%v select=%v", err, selectErr)
+			}
+		}
+	}
+	if state.Mode != game.ModeDungeon {
+		return fmt.Errorf("停在%v", state.Mode)
+	}
+	return nil
+}
