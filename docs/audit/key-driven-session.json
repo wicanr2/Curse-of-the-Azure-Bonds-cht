@@ -1,18 +1,18 @@
 {
  "schema": "coab-key-driven-session/1",
  "frames": 1500,
- "cells": 76,
+ "cells": 82,
  "modes": [
   "事件",
   "地城",
   "場所",
   "荒野"
  ],
- "messages": 63,
+ "messages": 57,
  "fallbacks": 0,
  "doors_found": 2,
  "menus": 13,
  "segments": 2,
- "route_hits": 104,
+ "route_hits": 123,
  "route_steps": 1607
 }

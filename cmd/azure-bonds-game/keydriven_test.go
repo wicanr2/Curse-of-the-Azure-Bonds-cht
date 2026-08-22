@@ -144,6 +144,7 @@ func (s *keyDrivenSession) routeChoice() (int, bool) {
 // 找到「從我現在這一格出發」的那一步為止。
 func (s *keyDrivenSession) routeMove() (int, bool) {
 	x, y, _ := s.app.state.DungeonGeometryView()
+	block, _ := s.app.state.CurrentECLBlockID()
 	for offset := 0; offset < routeLookahead && s.routeAt+offset < len(s.route); offset++ {
 		step := s.route[s.routeAt+offset]
 		if step.Kind != "move" || step.FromX != x || step.FromY != y {
@@ -151,6 +152,48 @@ func (s *keyDrivenSession) routeMove() (int, bool) {
 		}
 		s.routeAt += offset + 1
 		return step.Direction, true
+	}
+	// ★ 視窗裡找不到就**重新對齊**：拿「現在在哪一段的哪一格」去整條路線裡找。
+	//
+	// ⚠ 重新對齊是**有代價的**，實測（1500 幀）：
+	//
+	//	不對齊          76 格／63 句／照路線 104 步
+	//	對齊＋跳指標    41 格／18 句／34 步   ← 中間的步驟被整批丟掉
+	//	對齊＋不跳指標  57 格／47 句／759 步  ← 同一步一直被重用，原地震盪
+	//	對齊＋用過就記  **82 格／57 句／123 步** ← 目前這一版
+	//
+	// ⇒ 格子多了 6 個、話少了 6 句。**兩邊都不是免費的**，換走法要重新量。
+	//
+	// ⚠ 一定要**帶段號**：不同段的地圖上都有 (7,13)，只比座標會對齊到完全不相干
+	// 的地方，然後照著那裡的方向亂走。
+	//
+	// ⚠ 只往**後**找（`routeAt` 之後）：往回對齊會讓重放在同一段裡繞圈，
+	// 走過的格子看起來還在增加，實際上永遠到不了下一段。
+	if aligned, ok := s.realignRoute(int(block), x, y); ok {
+		s.routeRealigns++
+		// ⚠ **不要把 `routeAt` 跳到對齊的位置**：那會把中間還沒用到的步驟整批
+		// 丟掉，實測走過的格子從 76 掉到 41、記到的話從 63 掉到 18。
+		// 對齊只是「這一步照它走」，指標留在原地讓正常的視窗繼續往前爬。
+		return s.route[aligned].Direction, true
+	}
+	return 0, false
+}
+
+// realignRoute 在 `routeAt` 之後找「從這一段的這一格出發」的下一步。
+func (s *keyDrivenSession) realignRoute(block, x, y int) (int, bool) {
+	for index := s.routeAt; index < len(s.route); index++ {
+		step := s.route[index]
+		if step.Kind != "move" || step.Segment != block || step.FromX != x || step.FromY != y {
+			continue
+		}
+		// ⚠ **同一步不能重複用**：指標留在原地時，下一幀會在同一格再對齊到
+		// 同一步，於是一直按同一個方向——實測會在原地震盪（照路線按 759 次
+		// 卻只走 57 格）。用過就記起來，換下一個對得上的。
+		if s.routeUsed[index] {
+			continue
+		}
+		s.routeUsed[index] = true
+		return index, true
 	}
 	return 0, false
 }
@@ -253,6 +296,10 @@ type keyDrivenSession struct {
 	routeAt int
 	// routeHits 是照著路線按下去的次數，用來看路線真的被用到多少。
 	routeHits int
+	// routeRealigns 是「視窗裡找不到、靠段號＋座標重新對齊」的次數。
+	routeRealigns int
+	// routeUsed 記著哪些路線步驟已經用過，避免對齊到同一步而原地震盪。
+	routeUsed map[int]bool
 }
 
 // loadRoute 讀主線錄下來的路線；沒有就回 nil（測試照樣跑，只是沒有路線可循）。
@@ -280,7 +327,7 @@ func loadRoute(t *testing.T) []game.Decision {
 func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 	application, keys := keyDrivenApp(t)
 	return &keyDrivenSession{
-		route: loadRoute(t),
+		route: loadRoute(t), routeUsed: map[int]bool{},
 		app: application, keys: keys,
 		cells: map[[3]int]bool{}, tried: map[[4]int]bool{}, modes: map[game.Mode]bool{},
 		messages: map[string]bool{}, fallbacks: map[string]bool{},
@@ -608,7 +655,7 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		t.Fatal("按 D 之後還停在角色建立：完成那條路按不出來")
 	}
 
-	// ⚠ 1500 幀就到頂了：跑到 20000 幀還是 76 格、63 句。加幀數不會再多，
+	// ⚠ 1500 幀就到頂了：跑到 10000 幀還是 82 格、57 句。加幀數不會再多，
 	// 所以不要為了「看起來跑得久」而拖慢整個測試套件。
 	for session.frames = 0; session.frames < 1500; session.frames++ {
 		session.observe()
@@ -632,9 +679,9 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		t.Fatalf("按鍵玩到的畫面有 %d 句落回原文", len(session.fallbacks))
 	}
 	t.Logf("按鍵驅動 %d 幀：走過 %d 格、%d 種畫面、記到 %d 句話、撞到門 %d 次、"+
-		"照路線按 %d 次（路線共 %d 步），落回原文 0 句",
+		"照路線按 %d 次（路線共 %d 步、重新對齊 %d 次），落回原文 0 句",
 		session.frames, len(session.cells), len(session.modes), len(session.messages),
-		session.doorsFound, session.routeHits, len(session.route))
+		session.doorsFound, session.routeHits, len(session.route), session.routeRealigns)
 	// ★ 卡住的原因記在這裡：整場**沒有出現任何真的選單**（只有「按任意鍵繼續」）。
 	// 所以走不遠不是「選錯了選項」，是幾何上到不了——這兩種成因的處置完全不同，
 	// 分不出來就會往錯的方向修。

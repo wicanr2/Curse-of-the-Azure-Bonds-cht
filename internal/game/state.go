@@ -1962,6 +1962,14 @@ func (s *State) applyWallSetParams(assignments []ecl.WallSetAssignment) {
 // WallSetParams 回傳目前的三組牆面參數，讓存檔與測試都讀得到同一份。
 func (s *State) WallSetParams() [3]partySave.SAVGAMSetBlock { return s.wallSetParams }
 
+// currentECLBlockForLog 是給路線紀錄用的段號；沒有 session 就回 0。
+func (s *State) currentECLBlockForLog() uint8 {
+	if s.session == nil {
+		return 0
+	}
+	return s.session.CurrentBlockID()
+}
+
 // CurrentECLBlockID 回傳 session 現在停在哪一個 ECL 段。
 //
 // ★ 存在的理由：讀完存檔之後要知道「這一份快照是哪一段」。
@@ -5833,7 +5841,7 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 		return fmt.Errorf("invalid dungeon movement direction %d", direction)
 	}
 	// ★ 路線的另一半：主線走過哪些格。只錄不擋（spec 1191）。
-	recordMove(s.DungeonX, s.DungeonY, direction)
+	recordMove(int(s.currentECLBlockForLog()), s.DungeonX, s.DungeonY, direction)
 	wantDX, wantDY := 0, 0
 	switch direction {
 	case 0:
