@@ -46,7 +46,7 @@ Caveats: this is the denominator for the **renderer**, not for content, and not 
 
 | item | value |
 |---|---:|
-| captured screens in `index.tsv` | 40 |
+| captured screens in `index.tsv` | 44 |
 | captures that map to no standable cell | 0 |
 | **distinct signatures covered** | **31 / 585** |
 
@@ -57,7 +57,7 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | # | map | GEO | block | cell | new signatures | still uncovered after |
 |---:|---|---:|---:|---|---:|---:|
 | 1 | `tilverton.sewers.first-person` | 2 | `0x03` | `(11,6)` | 4 | 550 |
-| 2 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(12,7)` | 4 | 546 |
+| 2 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,7)` | 4 | 546 |
 | 3 | `zhentil-keep.dark-shrine` | 4 | `0x21` | `(6,7)` | 4 | 542 |
 | 4 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,12)` | 4 | 538 |
 | 5 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,13)` | 4 | 534 |
