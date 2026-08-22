@@ -4722,8 +4722,25 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Hillsfar bar exit picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
 	}
-	if got := state.ConsumeMusicEvents(); len(got) != 0 {
-		t.Fatalf("Hillsfar bar exit replayed town music=%+v", got)
+	// ⚠ 這裡本來斷言「一個音樂事件都不該有」——那是**戰鬥還不換曲**時寫的。
+	// 這一段路上有兩場希爾斯法的遭遇戰，開戰換曲、戰鬥結束換回場景曲都是對的
+	// （spec 1192）。真正要守的是原本的意思：**城鎮曲不該被無謂地重放**。
+	// ⇒ 改成看序列本身：不可以有連續兩次放同一首，而且最後停在城鎮服務那一首。
+	if got := state.ConsumeMusicEvents(); len(got) > 0 {
+		for index := 1; index < len(got); index++ {
+			if got[index].TrackID == got[index-1].TrackID {
+				t.Fatalf("Hillsfar bar exit 連放同一首兩次：%+v", got)
+			}
+		}
+		last := got[len(got)-1]
+		want, found := state.dataPack.FindMusicBinding(
+			state.session.CurrentBlockID(), "pc98-town-services-menu")
+		if !found {
+			t.Fatal("城鎮服務選單沒有音樂 binding")
+		}
+		if last.Action != "play" || last.TrackID != want.TrackID {
+			t.Fatalf("Hillsfar bar exit 最後應該停在城鎮服務曲 %s：%+v", want.TrackID, got)
+		}
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)

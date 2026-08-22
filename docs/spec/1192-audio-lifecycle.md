@@ -135,6 +135,57 @@ CTRL S : Toggles sound on and off (may be used at any time).
 
 `TestSilentSelectorsAreExactlyTheFiveTheOriginalReturnsEarlyOn` 把整個集合釘住。
 
+## 換曲點分兩種：查表的與事件驅動的
+
+13 個換曲點（spec 的 `cmd/pc98-music-triggers`）不是同一類：
+
+| 類 | 幾處 | 由誰決定 | remake |
+|---|---:|---|---|
+| 查 `CURRENTECL` 的派曲表（常駐 `9486h`..`9514h`）| 7 | ECL 段 | ✅ `ecl_blocks` binding |
+| 事件驅動（overlay 各自推曲號）| 6 | 劇情事件 | 見下 |
+
+事件驅動那 6 處：
+
+| 模組 | 位移 | 事件 | 曲目 | remake |
+|---|---|---|---|---|
+| `overlay-10` COMPREP | `1DA1h` | **開戰** | 7 戰鬥 | ✅ `context: "pc98-combat"` |
+| `overlay-10` COMPREP | `1D97h` | 開戰且 `LOADMONNUM == 47h` | 11 地城二 | — engine 擋住（見下）|
+| `overlay-01` | `093Ch` | 開場 | 1 標題 | — 未接 |
+| `overlay-17` GEN | `0B08h` | 角色建立 | 2 角色建立 | — 未接 |
+| `overlay-05` | `1955h` | `DOPOSTCOMBAT＋1E0h` | 2 角色建立 | — 未接（語意待確認）|
+| `overlay-18` | `168Dh` | 結局 | 10 結局 | — 未接 |
+
+### 開戰換曲
+
+★ 原作在這裡**不看場景**：`INITCOMBAT`（COMPREP）把曲號**直接推給 `MSCPLAY`**，
+完全不碰 `MUSICNO`。所以戰鬥曲不是由 ECL 段決定的——這也是為什麼只掃
+`mov byte [MUSICNO], imm` 的時候這兩首會落在外面。
+
+remake 用 `context: "pc98-combat"` 的 binding 表達「不看場景」：**每一個有 ECL 的
+段都列進去**（25 段），因為原作就是不挑段。`TestEveryECLBlockHasCombatMusic` 釘住
+「一段都不能少」——少一段就是那一段的戰鬥沒有音樂，而那不會報錯。
+
+⚠ **戰鬥結束要換回場景曲。** 原作的派曲常式由主迴圈在場景變動時呼叫，戰鬥結束
+回到地城時它依 `CURRENTECL` 重算 `MUSICNO`，自然換回去。remake 只有「換段」會
+派曲，而戰鬥前後**段沒有變** ⇒ 少了 `restoreSceneMusic()`，戰鬥曲會一直放下去。
+
+### `47h` 那個分岔：engine 擋住了，而這次是真的
+
+```
+cmp byte [LOADMONNUM], 47h
+jnz  →  MSCPLAY(07h) 戰鬥
+        MSCPLAY(0Bh) 地城二
+```
+
+要表達「載入了哪一組怪物」得用 music cue，而共用 engine 的 cue **只收 `picture`
+這一種 signal**（`music_cues[i] has unsupported signal "monster_set"`）。
+所以現在所有戰鬥都放「戰鬥」那一首。
+
+⚠ **和先前那條「停音樂被 engine 擋住」的差別要記住**：那次是把停止誤當成劇情
+資料，原作根本沒有那種資料，所以卡點是假的（見〈已被推翻的斷言〉）。這次原作明明
+白白寫著那個 `47h`。**下結論說「被別人擋住」之前，先確認原作真的有那個形狀。**
+`TestEnginePackCannotExpressMonsterSetCueYet` 釘住這個限制。
+
 ## DOS 版沒有 BGM
 
 這不是「還沒查」，是**已經答完**的問題，而且是列舉不是搜尋：
@@ -174,6 +225,7 @@ CTRL S : Toggles sound on and off (may be used at any time).
 - `internal/game/music_events.go`、`internal/game/sound_events.go`
 - `cmd/azure-bonds-game/keys.go`：`globalAudioKeys`
 - `internal/pc98sfx`：選擇子的身分與解碼
+- `TestCombatSwitchesToTheBattleThemeAndBack`、`TestEveryECLBlockHasCombatMusic`、
 - `TestMusicSwitchIsTheOnlyThingThatStopsMusic`、
   `TestSoundAndMusicSwitchesAreIndependent`、
   `TestCtrlSAndCtrlOTogglePlayerAudioThroughTheKeySeam`

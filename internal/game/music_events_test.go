@@ -330,3 +330,89 @@ func TestSoundAndMusicSwitchesAreIndependent(t *testing.T) {
 		t.Fatalf("關音樂不該影響音效：%+v", got)
 	}
 }
+
+// ★ 開戰換曲：原作在這裡**不看場景**，`INITCOMBAT`（COMPREP）把曲號直接推給
+// `MSCPLAY`。remake 用 `context: "pc98-combat"` 的 binding 表達，所以任何一段
+// 開戰都會換到戰鬥曲，而戰鬥結束要換回那一段自己的曲子。
+func TestCombatSwitchesToTheBattleThemeAndBack(t *testing.T) {
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{0x01: {}}, 0x01)
+	state.requestMusicForCurrentBlock("")
+	scene := state.ConsumeMusicEvents()
+	if len(scene) != 1 || scene[0].Action != "play" {
+		t.Fatalf("場景曲沒放：%+v", scene)
+	}
+	sceneTrack := scene[0].TrackID
+
+	state.requestCombatMusic(0)
+	battle := state.ConsumeMusicEvents()
+	if len(battle) != 1 || battle[0].Action != "play" {
+		t.Fatalf("開戰應該換曲：%+v", battle)
+	}
+	if battle[0].TrackID == sceneTrack {
+		t.Fatalf("開戰換到同一首（%s）：戰鬥曲沒接上", battle[0].TrackID)
+	}
+
+	state.restoreSceneMusic()
+	back := state.ConsumeMusicEvents()
+	if len(back) != 1 || back[0].TrackID != sceneTrack {
+		t.Fatalf("戰鬥結束應該換回場景曲 %s：%+v", sceneTrack, back)
+	}
+}
+
+// ★ 開戰換曲**不挑段**：原作那一段不看 `CURRENTECL`，所以每一個有 ECL 的段
+// 開戰都要換得到曲子。少一段就是那一段的戰鬥沒有音樂——**而那不會報錯**。
+func TestEveryECLBlockHasCombatMusic(t *testing.T) {
+	state := NewState(testCatalog())
+	if state.dataPack == nil {
+		t.Skip("沒有 game pack")
+	}
+	blocks := []uint8{1, 2, 3, 4, 16, 17, 18, 21, 32, 33, 34, 35, 37, 48, 49,
+		50, 51, 53, 64, 66, 67, 69, 80, 81, 82}
+	for _, block := range blocks {
+		if _, found := state.dataPack.FindMusicBinding(block, combatMusicContext); !found {
+			t.Errorf("段 0x%02X 開戰沒有戰鬥曲", block)
+		}
+	}
+}
+
+// ⚠ 這條釘的是**別人家的限制，而且這一次是真的**。原作的戰鬥曲有兩首，靠
+// `LOADMONNUM` 分岔：
+//
+//	cmp byte [LOADMONNUM], 47h
+//	jnz  →  MSCPLAY(07h) 戰鬥
+//	        MSCPLAY(0Bh) 地城二
+//
+// 共用 engine 的 music cue 目前只收 `picture` 這一種 signal，所以那個分岔在 pack
+// 裡表達不出來，現在所有戰鬥都放「戰鬥」那一首。
+//
+// ⚠ 和先前那條「停音樂被 engine 擋住」的差別要記住：那次是**把停止誤當成劇情
+// 資料**，原作根本沒有那種資料，所以卡點是假的。這次原作明明白白寫著那個 `47h`。
+// 下結論說「被別人擋住」之前，先確認原作真的有那個形狀。
+func TestEnginePackCannotExpressMonsterSetCueYet(t *testing.T) {
+	parts := map[string][]byte{"00-core.json": []byte(`{
+	  "schema_version": 1,
+	  "id": "monster-set-cue-test",
+	  "default_locale": "en",
+	  "locales": {"en": {"monster-set-cue-test.noop": "noop"}},
+	  "music_tracks": [
+	    {"id": "t1", "source_platform": "pc-9801", "reference_selector": 1, "driver_index": 0}
+	  ],
+	  "music_bindings": [
+	    {"ecl_blocks": [1], "track_id": "t1"},
+	    {"ecl_blocks": [1], "context": "combat-two", "track_id": "t1"}
+	  ],
+	  "music_cues": [
+	    {"ecl_blocks": [1], "signal": "monster_set", "value": 71, "context": "combat-two"}
+	  ]
+	}`)}
+	_, err := goldenbox.LoadPackPartsFS(
+		func(name string) ([]byte, error) { return parts[name], nil },
+		[]string{"00-core.json"})
+	if err == nil {
+		t.Fatal("engine 收得下 `monster_set` cue 了：把 `47h` 那個分岔補進 game-pack，" +
+			"讓地城二的戰鬥放它自己的曲子（spec 1192）")
+	}
+	if !strings.Contains(err.Error(), "unsupported signal") {
+		t.Fatalf("擋下來的理由變了：%v", err)
+	}
+}

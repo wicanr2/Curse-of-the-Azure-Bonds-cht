@@ -1235,7 +1235,7 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			name: name, path: path, block: state.session.CurrentBlockID(),
 			mode: state.Mode, area: state.Area.GameArea, inDungeon: state.Area.InDungeon,
 			party: len(state.PartyFighters()), roster: roster, experience: experience,
-			music: state.activeMusicTrackID,
+			music: state.activeMusicTrackID, inCombat: state.combatStillRunning(),
 			equipment: equipment, spells: spells, effects: effects,
 		})
 	}
@@ -2811,6 +2811,16 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 				t.Errorf("%s 的曲目 %q 不在 game pack 的曲目表裡", end.name, end.music)
 			}
 			distinct[end.music] = true
+			if end.inCombat {
+				// 開戰換曲不看場景（原作 `INITCOMBAT` 直接推曲號給 `MSCPLAY`），
+				// 所以在戰鬥中結束的段，正在放的本來就該是戰鬥曲。
+				combat, found := pack.FindMusicBinding(end.block, "pc98-combat")
+				if !found || end.music != combat.TrackID {
+					t.Errorf("%s 在戰鬥中結束，正在放的是 %s，應該是戰鬥曲 %s",
+						end.name, end.music, combat.TrackID)
+				}
+				continue
+			}
 			choices, declared := expectedMusicForBlock(end.block)
 			if !declared {
 				// `0x30` 不換曲、`0x52` 沒有分支：那兩段沿用前一段的曲子。
@@ -3132,8 +3142,15 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 
 // campaignSegmentEnd 是一段走完時的邊界狀態，用來驗那份快照讀得回來。
 type campaignSegmentEnd struct {
-	name       string
-	path       string
+	name string
+	path string
+	// inCombat 記著取樣那一刻**戰鬥還在打**。⚠ 有它才分得出「戰鬥曲該在」與
+	// 「戰鬥曲沒收回去」——兩者在 `music` 那一欄長得一模一樣（spec 1192）。
+	//
+	// ⚠ 判準不能寫成 `battle != nil`：`finishCombat` **不會**把 battle 清掉
+	// （結果畫面還要用），所以戰鬥結束之後那個判準仍然是真，於是每一段都會被
+	// 當成「在戰鬥中結束」。
+	inCombat   bool
 	block      uint8
 	mode       Mode
 	area       uint8

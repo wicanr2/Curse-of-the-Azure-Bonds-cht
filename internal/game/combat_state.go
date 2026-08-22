@@ -267,6 +267,12 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 	for id, list := range s.monsterItemsForCurrentECL() {
 		resolvedItems[id] = list
 	}
+	// ⚠ 原作的 `LOADMONNUM` 是**一個全域**，開戰時拿的是**最後一次載入**的那個
+	// 怪物編號（spec 1192）。這裡照同一個語意取最後一個 spawn，不是第一個。
+	loadedMonsterNumber := uint8(0)
+	for _, spawn := range result.MonsterSpawns {
+		loadedMonsterNumber = spawn.MonsterID
+	}
 	for _, spawn := range result.MonsterSpawns {
 		chapter := monsterChapterForBlock(spawn.MonsterID)
 		if record, ok := s.monsterRecordsByECL[chapter][spawn.MonsterID]; ok {
@@ -328,6 +334,8 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 	if err := s.StartCombat(party, enemies, seed); err != nil {
 		return err
 	}
+	// 開戰換曲。⚠ 曲目由**載入了哪一組怪物**決定，不是由場景決定（spec 1192）。
+	s.requestCombatMusic(loadedMonsterNumber)
 	// PC-98 GAME.EXE names this transition COMBATFX (selector 14). The DOS
 	// resource set has no corresponding extracted WAV, so the platform adapter
 	// may safely ignore it while the semantic event remains available to exact
@@ -4393,6 +4401,14 @@ func (s *State) advanceCombatRound() error {
 	return s.advanceCombatToParty()
 }
 
+// combatStillRunning 回答「戰鬥還在打嗎」。
+//
+// ⚠ 不要用 `s.battle != nil` 代替：`finishCombat` 不會把 battle 清掉（結果畫面
+// 還要用它），所以戰鬥結束之後 `battle != nil` 仍然是真。
+func (s *State) combatStillRunning() bool {
+	return s.battle != nil && s.battle.Status() == combat.StatusActive
+}
+
 func (s *State) finishCombat() error {
 	if s.battle == nil {
 		return fmt.Errorf("combat is not initialized")
@@ -4404,6 +4420,9 @@ func (s *State) finishCombat() error {
 	s.CancelCombatCast()
 	s.CancelCombatMove()
 	s.EndCombatView()
+	// 戰鬥結束要換回場景曲。原作靠主迴圈重新派曲自然換回去；remake 只有換段會
+	// 派曲，而戰鬥前後段沒有變 ⇒ 少了這一行，戰鬥曲會一直放下去（spec 1192）。
+	s.restoreSceneMusic()
 	s.Mode = ModeEvent
 	s.syncPartyFromBattle()
 	s.removeTemporaryCombatAllies()

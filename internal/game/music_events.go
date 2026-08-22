@@ -128,6 +128,53 @@ func (s *State) requestMusicForSignal(signal string, value uint16) {
 	s.requestMusicForCurrentBlock(cue.Context)
 }
 
+// requestCombatMusic 是**開戰換曲**。
+//
+// ★ 原作在這裡不看場景：`INITCOMBAT`（COMPREP，overlay-10）把曲號**直接推給
+// `MSCPLAY`**，完全不碰 `MUSICNO`（spec 1192）：
+//
+//	cmp byte [LOADMONNUM], 47h
+//	jnz  →  mov al, 07h   ; 戰鬥
+//	        mov al, 0Bh   ; 地城二
+//	push ax / call MSCPLAY
+//
+// ⚠ 所以戰鬥曲**不是**由 ECL 段決定的，是由**載入了哪一組怪物**決定的——
+// 這也是為什麼只掃 `mov byte [MUSICNO], imm` 的時候這兩首會落在外面。
+//
+// remake 這一側用 `context` 表達「戰鬥中」。那個 `47h` 的分岔要靠
+// `monster_set` cue，而**共用 engine 目前只收 `picture` 這一種 signal**
+// （`music_cues[i] has unsupported signal "monster_set"`）⇒ 分岔還表達不出來，
+// 所有戰鬥都放「戰鬥」那一首。
+//
+// ⚠ 這個限制是**真的**，和先前那個「停音樂被 engine 擋住」不一樣：那次是把停止
+// 誤當成劇情資料，原作根本沒有那種資料；這次原作明明白白寫著
+// `cmp byte [LOADMONNUM], 47h`。`TestEnginePackCannotExpressMonsterSetCueYet`
+// 把它釘住——鬆綁時會紅，那時候補上 cue 就好。
+func (s *State) requestCombatMusic(monsterID uint8) {
+	if s.dataPack == nil || s.session == nil {
+		return
+	}
+	context := combatMusicContext
+	if cue, found := s.dataPack.FindMusicCue(
+		s.session.CurrentBlockID(), "monster_set", uint16(monsterID)); found {
+		context = cue.Context
+	}
+	s.requestMusicForCurrentBlock(context)
+}
+
+// combatMusicContext 是「戰鬥中」那一組 binding 的 context。
+const combatMusicContext = "pc98-combat"
+
+// restoreSceneMusic 是**戰鬥結束回到場景曲**。
+//
+// ★ 為什麼需要它：原作的派曲常式（`sub_18AA7`）由主迴圈在場景變動時呼叫，
+// 戰鬥結束回到地城時它會依 `CURRENTECL` 重算 `MUSICNO`，於是自然換回場景曲。
+// remake 這一側只有「換段」會觸發派曲，而戰鬥前後**段沒有變**——少了這一支，
+// 戰鬥曲會一直放下去，而且不會有任何錯誤。
+func (s *State) restoreSceneMusic() {
+	s.requestMusicForCurrentBlock("")
+}
+
 func (s *State) requestMusicIfBlockChanged(previous uint8) {
 	if s.session != nil && s.session.CurrentBlockID() != previous {
 		// 換段的瓶頸就在這裡，所以接縫盤點也搭這班車（`block_edges.go`）。
