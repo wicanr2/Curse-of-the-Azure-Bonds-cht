@@ -3488,6 +3488,48 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/geo-wall-grid/main.go",
+      "function": "main",
+      "sha256": "79f855c8b433e9bf71b4236e4a173fdc48daa453fd017dfb8a76355503d8eb7f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-wall-grid/main.go",
+      "function": "main",
+      "sha256": "cfd9421a6aadd0d9c4625ac6d9288cd0d7c259ef467ede0ebb5b3c68bb244818",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-wall-grid/main.go",
+      "function": "main",
+      "sha256": "e3d3f40d66aa63006ee5ea1d80dae91a2b410daa91a30f4a7cc9a9020b77153f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-wall-grid/main.go",
+      "function": "main",
+      "sha256": "ebcf1a9e2f2b4c88721f61e3e4657ccc3550a2774aed285f20d5e71c88c599eb",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-wall-grid/main.go",
+      "function": "printGrid",
+      "sha256": "09c8a5a38e78c64069d846446b587aaeaf2ba50ede22ff1b6f136d55f81cabfc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-wall-grid/main.go",
+      "function": "printGrid",
+      "sha256": "d29b0e8626367921f9219a425ab4dead860625dda2c1eec5fb2600036702be08",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/glossary-audit/main.go",
       "function": "renderMarkdown",
       "sha256": "3ea6b930ce13474a79235e01a64dedba81a3f0064443d2d87bcc4e8a27311265",
