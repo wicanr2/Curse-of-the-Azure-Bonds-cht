@@ -438,6 +438,13 @@
    "message_id": "wizard-tower.sucked-into-sphere"
   },
   {
+   "id": "wizard-tower.efreet-band",
+   "all_contains": [
+    "AN EFREET LEADS A BAND OF DARK ELVES AGAINST YOU"
+   ],
+   "message_id": "wizard-tower.efreet-band"
+  },
+  {
    "id": "myth-drannor.tyranthraxus-reveal",
    "all_contains": [
     "REVEALING TYRANTHRAXUS",
