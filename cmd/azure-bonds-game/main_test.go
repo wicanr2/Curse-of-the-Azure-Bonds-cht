@@ -530,8 +530,12 @@ func TestMaskWallSymbolsReplacesMagentaWithTransparentIndex(t *testing.T) {
 }
 
 // 第 0 段（編號 1..45）先前整段沒有載入，牆頂的天空格與側牆的斜邊因此全部
-// 消失。這一支釘住「影子展開只回低編號，且格子位置與正規展開同一套」。
-func TestSharedWallGroupStampsReturnsOnlyGroupZeroCells(t *testing.T) {
+// 消失。這一支釘住「影子展開只回**那一筆記錄自己解不開**的格子，且格子位置與
+// 正規展開同一套」。
+//
+// ⚠ 判準從「編號 < 46」改成「正規展開沒有回這一格」：編號落在**別段**的符號
+// 一樣解不開，而先前那個判準會把它們漏掉（spec 1185）。
+func TestUnresolvedWallStampsReturnsWhatTheRecordCannotResolve(t *testing.T) {
 	piece := gfx.PieceSet{
 		SetID:          1,
 		WallDefs:       make([]gfx.WallDef, 1),
@@ -544,7 +548,7 @@ func TestSharedWallGroupStampsReturnsOnlyGroupZeroCells(t *testing.T) {
 	piece.WallDefs[0].Rows[0][1] = 76 // 一般牆磚，第 1 段
 	call := gfx.WallLayoutCall{WallType: 1, Layout: 0, RowStart: 4, ColStart: 5}
 
-	shared := sharedWallGroupStamps(piece, call)
+	shared := unresolvedWallStamps(piece, call)
 	if len(shared) != 1 {
 		t.Fatalf("shared stamps=%d, want 1 (%+v)", len(shared), shared)
 	}
@@ -558,5 +562,62 @@ func TestSharedWallGroupStampsReturnsOnlyGroupZeroCells(t *testing.T) {
 	}
 	if len(normal) != 1 || normal[0].SymbolID != 76 || normal[0].Row != 5 {
 		t.Fatalf("normal stamps=%+v, want only symbol 76 on the second row", normal)
+	}
+}
+
+// ⚠ 編號落在**別段**的符號也解不開，也一樣要被收回來。這一支就是提爾佛頓
+// `0Eh` 近端右側牆那兩格的形狀：記錄掛第 3 段，WALLDEF 卻引用第 2 段的 `185`。
+func TestUnresolvedWallStampsCollectsCrossSegmentSymbols(t *testing.T) {
+	piece := gfx.PieceSet{
+		SetID:          3,
+		WallDefs:       make([]gfx.WallDef, 1),
+		SymbolSetIDs:   []uint8{3},
+		SymbolBlockIDs: []uint8{3},
+		Symbols:        map[uint8]gfx.Picture{3: {ItemCount: 70}},
+	}
+	piece.WallDefs[0].Rows[0][0] = 185 // 第 2 段的最後一項——這一筆記錄解不開
+	piece.WallDefs[0].Rows[0][1] = 200 // 第 3 段，解得開
+	call := gfx.WallLayoutCall{WallType: 11, Layout: 0, RowStart: 0, ColStart: 0}
+
+	unresolved := unresolvedWallStamps(piece, call)
+	if len(unresolved) != 1 || unresolved[0].SymbolID != 185 {
+		t.Fatalf("unresolved=%+v，want 只有編號 185 那一格", unresolved)
+	}
+	normal, err := gfx.BuildWallLayout(piece, call.WallType, call.Layout, call.RowStart, call.ColStart)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(normal) != 1 || normal[0].SymbolID != 200 {
+		t.Fatalf("normal=%+v，want 只有編號 200 那一格", normal)
+	}
+}
+
+// ★ 段由**編號本身**決定，不是由「這一筆 WALLDEF 掛哪一段」決定。
+//
+// ⚠ 這一條是提爾佛頓 `0Eh` 近端右側牆少畫兩格的成因：那面牆的 WALLDEF 引用
+// 編號 `185`，那是**第 2 段的最後一項**（基準 `74h` ＝ 116），而那一筆記錄掛的
+// 是第 3 段（基準 `BAh` ＝ 186）⇒ `185 − 186 = −1` ⇒ `WallSymbolItem` 回
+// `ok=false` ⇒ 整格靜默消失。原版與 remake 因此在那條斜邊差 48 個取樣點，
+// 而牆面其餘部分完全相同（spec 1185）。
+func TestWallSymbolSegmentIsChosenByTheIDNotTheRecord(t *testing.T) {
+	for _, item := range []struct {
+		id      uint8
+		segment int
+		index   int
+	}{
+		{1, 0, 1},    // 共用段的第一項
+		{45, 0, 45},  // 共用段的最後一項
+		{46, 1, 0},   // 第 1 段的第一項（基準 2Eh）
+		{115, 1, 69}, // 第 1 段的最後一項
+		{116, 2, 0},  // 第 2 段的第一項（基準 74h）
+		{185, 2, 69}, // ⚠ 就是那一格：第 2 段的最後一項
+		{186, 3, 0},  // 第 3 段的第一項（基準 BAh）
+		{255, 3, 69}, // 第 3 段的最後一項
+	} {
+		segment, index := wallSymbolSegment(item.id)
+		if segment != item.segment || index != item.index {
+			t.Errorf("編號 %d ＝ 第 %d 段第 %d 項，want 第 %d 段第 %d 項",
+				item.id, segment, index, item.segment, item.index)
+		}
 	}
 }

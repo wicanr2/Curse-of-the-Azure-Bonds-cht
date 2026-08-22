@@ -1221,16 +1221,16 @@ func (a *app) prepareWallPreview() {
 				column: stamp.Column,
 			})
 		}
-		for _, stamp := range sharedWallGroupStamps(piece, call) {
+		for _, stamp := range unresolvedWallStamps(piece, call) {
 			if _, _, ok := wallStampNativePosition(stamp.Row, stamp.Column); !ok {
 				continue
 			}
-			item := int(stamp.SymbolID) - int(a.wallSharedFirstID)
-			if item < 0 || item >= len(a.wallSharedSymbols) {
+			image, ok := a.symbolImageForGlobalID(stamp.SymbolID)
+			if !ok {
 				continue
 			}
 			a.wallPreview = append(a.wallPreview, wallPreviewStamp{
-				image:  a.wallSharedSymbols[item],
+				image:  image,
 				row:    stamp.Row,
 				column: stamp.Column,
 			})
@@ -1238,13 +1238,23 @@ func (a *app) prepareWallPreview() {
 	}
 }
 
-// sharedWallGroupStamps 取回同一次呼叫裡**編號落在第 0 段**（`1..45`）的磚。
+// unresolvedWallStamps 取回同一次呼叫裡**那一筆 WALLDEF 自己解不開**的磚。
 //
 // ★ 作法是拿一份「影子 PieceSet」再跑一次引擎的版面展開：把符號集基準改成 0、
 // 假 Picture 的項目數放到 256，於是每一個非零編號都解得開，`SymbolID` 就是
 // WALLDEF 的原始編號。這樣**牆位版面表只有引擎那一份**，遊戲這一側不必再抄
 // 一份 10 個牆位的欄／列／位移（spec 1006）。
-func sharedWallGroupStamps(piece gfx.PieceSet, call gfx.WallLayoutCall) []gfx.WallStamp {
+//
+// ⚠ 先前這一支只補**第 0 段**（`1..45`）的共用磚，其餘一律當成「上面那一圈已經
+// 畫過」。那個假設是錯的：`PieceSet.WallSymbolItem` 只在**這一筆記錄自己那一段**
+// 裡找符號，編號落在別段時算出來的 `item` 是負的，於是**整格靜默消失**。
+// 提爾佛頓 `0Eh` 的近端右側牆就是這樣少掉兩格——它的 WALLDEF 引用編號 `185`，
+// 那是第 2 段的最後一項（基準 `74h`），而那一筆記錄掛的是第 3 段（基準 `BAh`）
+// ⇒ `185 − 186 = −1`（spec 1185）。
+//
+// 所以這裡改成「引擎解不開的都收」，由 `symbolImageForGlobalID` 依編號落在哪一段
+// 去對應的符號集取圖。
+func unresolvedWallStamps(piece gfx.PieceSet, call gfx.WallLayoutCall) []gfx.WallStamp {
 	shadow := piece
 	shadow.SymbolSetIDs = make([]uint8, len(piece.WallDefs))
 	shadow.SymbolBlockIDs = make([]uint8, len(piece.WallDefs))
@@ -1253,15 +1263,70 @@ func sharedWallGroupStamps(piece gfx.PieceSet, call gfx.WallLayoutCall) []gfx.Wa
 	if err != nil {
 		return nil
 	}
-	shared := stamps[:0]
+	resolved := map[[2]int]bool{}
+	if real, realErr := gfx.BuildWallLayout(piece, call.WallType, call.Layout, call.RowStart, call.ColStart); realErr == nil {
+		for _, stamp := range real {
+			resolved[[2]int{stamp.Row, stamp.Column}] = true
+		}
+	}
+	out := stamps[:0]
 	for _, stamp := range stamps {
-		// 第 1..3 段由上面那一圈負責；這裡只補第 0 段。
-		if stamp.SymbolID >= uint8(gfx.SymbolSetBase[1]) {
+		if resolved[[2]int{stamp.Row, stamp.Column}] {
 			continue
 		}
-		shared = append(shared, stamp)
+		out = append(out, stamp)
 	}
-	return shared
+	return out
+}
+
+// symbolImageForGlobalID 依全域符號編號落在哪一段取圖。
+//
+// 段的基準是 `gfx.SymbolSetBase` ＝ `{0, 2Eh, 74h, BAh}`：`1..45` 是共用段，
+// 之後每 70 個一段。⚠ 段**不是**由「這一筆 WALLDEF 掛哪一段」決定的，是由編號
+// 本身決定的——同一筆 WALLDEF 引用得到別段的符號（spec 1185）。
+func (a *app) symbolImageForGlobalID(id uint8) (*ebiten.Image, bool) {
+	if id == 0 {
+		return nil, false
+	}
+	segment, item := wallSymbolSegment(id)
+	if segment == 0 {
+		shared := int(id) - int(a.wallSharedFirstID)
+		if shared < 0 || shared >= len(a.wallSharedSymbols) {
+			return nil, false
+		}
+		return a.wallSharedSymbols[shared], true
+	}
+	piece, ok := a.pieceSets[uint8(segment)]
+	if !ok || len(piece.SymbolBlockIDs) == 0 {
+		return nil, false
+	}
+	picture, ok := piece.Symbols[piece.SymbolBlockIDs[0]]
+	if !ok {
+		return nil, false
+	}
+	if item >= int(picture.ItemCount) {
+		return nil, false
+	}
+	rgba, err := picture.RGBA(item, gfx.EGA16)
+	if err != nil {
+		return nil, false
+	}
+	return ebiten.NewImageFromImage(rgba), true
+}
+
+// wallSymbolSegment 把全域符號編號拆成「第幾段」與「段內第幾項」。
+//
+// 段的基準是 `gfx.SymbolSetBase` ＝ `{0, 2Eh, 74h, BAh}`。`1..45` 是共用段（0），
+// 之後每 70 個一段。⚠ 段由**編號本身**決定，不是由「這一筆 WALLDEF 掛哪一段」
+// 決定——同一筆 WALLDEF 引用得到別段的符號，而那正是先前少畫兩格的成因
+// （`0Eh` 的近端右側牆引用編號 `185`，第 2 段的最後一項，spec 1185）。
+func wallSymbolSegment(id uint8) (segment, item int) {
+	for candidate := len(gfx.SymbolSetBase) - 1; candidate >= 1; candidate-- {
+		if int(id) >= int(gfx.SymbolSetBase[candidate]) {
+			return candidate, int(id) - int(gfx.SymbolSetBase[candidate])
+		}
+	}
+	return 0, int(id)
 }
 
 func (a *app) syncDungeonWallState() {
