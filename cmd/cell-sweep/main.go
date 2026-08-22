@@ -25,6 +25,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -71,6 +72,7 @@ func (c cellResult) played() bool { return c.language == "中文" || c.language 
 
 type blockSweep struct {
 	id       string
+	eclBlock uint8
 	geoSet   uint8
 	geoBlock uint8
 	mask     int
@@ -89,6 +91,11 @@ func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
 	out := flag.String("out", "docs/audit/cell-sweep.md", "輸出的 markdown")
+	// ★ 機器可讀的分母。 走訪可達性要拿「實測試過哪些索引」當分母，
+	// 兩邊各自重算一定會漂——第一版就是這樣得到 299 而實測是 250，
+	// **兩個數都自洽，放在一起就是假的覆蓋率**。所以分母由這一支輸出，
+	// `cmd/cell-reachability` 只消費、不重算。
+	indexJSON := flag.String("index-json", "", "把「逐格試過哪些索引」寫成 JSON（可達性盤點用）")
 	seeds := flag.Int("seeds", 8, "演不出來時要換幾顆 ECL 亂數種子再試")
 	only := flag.String("only", "", "只掃這一段（`ECL4/0x25`）；留白就掃全部")
 	flag.Parse()
@@ -109,6 +116,11 @@ func main() {
 	for _, seg := range segments {
 		sweeps = append(sweeps, sweepBlock(data, seg))
 	}
+	if *indexJSON != "" {
+		if err := writeIndexJSON(*indexJSON, sweeps); err != nil {
+			log.Fatal(err)
+		}
+	}
 	if err := os.WriteFile(*out, []byte(render(sweeps)), 0o644); err != nil {
 		log.Fatal(err)
 	}
@@ -127,7 +139,7 @@ func loadCorpus(imagePath, localePath string, seeds int) (corpus, error) {
 }
 
 func sweepBlock(data corpus, seg segment.Segment) blockSweep {
-	sweep := blockSweep{id: seg.ID}
+	sweep := blockSweep{id: seg.ID, eclBlock: seg.Block}
 	payload, ok := data.Blocks[seg.Block]
 	if !ok {
 		sweep.note = "image 裡沒有這個 block"
@@ -740,4 +752,41 @@ func seedOutcomes(data corpus, seg segment.Segment, x, y int, roof, facing uint8
 		}
 	}
 	return len(seen), other
+}
+
+// writeIndexJSON 輸出「這一次逐格實測**真的試過**哪些 (段, ECL block, 分派索引)」。
+//
+// ⚠ 只收真的試過的：進不去的段、地圖上沒有那個地形碼的索引都不算。
+// 可達性的分母必須與這一份逐字相同，否則覆蓋率是拿兩把不同的尺在比。
+func writeIndexJSON(path string, sweeps []blockSweep) error {
+	// ⚠ `Mask` 一定要一起輸出：可達性那一側拿到的是**地形碼**，
+	// 要用 `地形碼 and Mask` 才對得回索引。少了它下游只能自己重算 mask，
+	// 而「自己重算」正是分母會漂掉的原因。
+	type record struct {
+		Segment string `json:"segment"`
+		Block   uint8  `json:"block"`
+		Mask    int    `json:"mask"`
+		Index   int    `json:"index"`
+		Played  bool   `json:"played"`
+	}
+	records := make([]record, 0, 256)
+	for _, sweep := range sweeps {
+		if sweep.note != "" {
+			continue
+		}
+		for _, cell := range sweep.cells {
+			if cell.note == "地圖上沒有這個地形碼" {
+				continue
+			}
+			records = append(records, record{
+				Segment: sweep.id, Block: sweep.eclBlock, Mask: sweep.mask,
+				Index: cell.index, Played: cell.played(),
+			})
+		}
+	}
+	payload, err := json.MarshalIndent(records, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, payload, 0o644)
 }
