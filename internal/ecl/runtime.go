@@ -1163,9 +1163,10 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			// `Heal View Pool Appraise Exit`、`Raise Dead` 與「a priest says…」。
 			// 營地是 `overlay-15`（`LOADCAMP`／`DOCAMP`）。詳見 spec 1182。
 			//
-			// ⚠ 第四支（都不成立 ⇒ 戰後處理）remake 走的是別的機制：
-			// 沒擺過怪的 `24h` 目前一律發 `CombatRequested`，由上層決定要不要
-			// 開戰利品畫面。那 46 處的行為等價但入口不同（spec 1182）。
+			// ★ 商店與神殿旗標的 producer 是**腳本自己**（spec 1182）：全 corpus
+			// `7EE2h` 4 處、`7F6Ch` 9 處，慣用法一律是
+			// `CLEARMONSTERS` ＋ `SAVE 01 <旗標>` ＋ `COMBAT`。
+			// ⚠ spec 1095 曾說這兩格「1,355 條指令裡沒有一條寫過」——那是假零。
 			monstersPresent := len(result.MonsterSpawns) > 0 ||
 				(runtime != nil && len(runtime.MonsterSpawns) > 0)
 			if !monstersPresent && memory[addrShopRequest] == 1 {

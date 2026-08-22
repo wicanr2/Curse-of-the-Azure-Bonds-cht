@@ -84,8 +84,31 @@ else                    <overlay-30 THREED   entry#11>();
   每一個都是真的撿東西現場（外圍廢墟倉庫、逃亡者的暗格、賭場、內城臥房、
   埋葬谷的斯瑞克林營地、火刀辦公室、洞穴裡死去精靈的皮袋）——這比任何合成
   測試都更能說明那 46 處是什麼。
+## ★★ 商店與神殿旗標的 producer 是**腳本自己**
+
+spec 1095 寫過「這兩格在 1,355 條 ECL 指令裡沒有任何一條寫過（已全掃確認）」
+——**那是假零**。掃全 corpus 得到 `7EE2h`（神殿）**4 處**、`7F6Ch`（商店）**9 處**，
+慣用法一模一樣：
+
+```
+CLEARMONSTERS          ← 保證第一支（有怪就打）不成立
+SAVE 01 <旗標>
+COMBAT
+```
+
+例如 `ECL1/0x50:0822h`（世界地圖的酒館那一段）與 `ECL2/0x01:11E3h`。
+
+⇒ 兩支服務**都走得到**，而且 remake 本來就接得起來——VM 讀 `memory`，
+腳本用 `09h SAVE` 寫進同一張 map。`TestRealTavernTempleRequestReachesTheTempleBranch`
+與 `TestRealShopRequestReachesTheShopBranch` 直接跑原版資料驗過，
+連「讀到就清零」也一起釘住。
+
+先前釘「沒有 producer」的 `TestCampRequestFlagHasNoProducer` 已經移除——它釘的是
+一個假零。取代它的 `TestServiceRequestFlagsHaveScriptProducers` 是**正對照**：
+掃出 0 就直接說「那是假零，先確認掃描而不是下結論」，數字與 4／9 對不上也紅。
+
 - ⚠ 仍是 `partial`：兩個「有怪要打」旗標 `8B69h`／`8B56h` 在 remake 沒有
-  producer（用怪物鏈非空代替），神殿那一支的 `7EE2h` 也沒有。
+  producer——那兩格是引擎側的，remake 用「怪物鏈非空」代替，**行為等價**。
 
 ## 回歸
 
