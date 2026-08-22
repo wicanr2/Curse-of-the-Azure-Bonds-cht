@@ -2767,6 +2767,167 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "01a454ef287a9bceec848538e3a601b15db158a36bcdd664445b79df2a71bf5e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "0b3af59058c5a839c33b67b9bafa5fe8d7da2a390dcf666dd5390abce6a56e16",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "0da5e5aedb1248b1fc3fba3914d6e422d020d1d807d77792b223220633ef95ec",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "19de0e49904f8063396b9ed9313a4a90aa1ebf4a0599e5c30db602cb9eb41bb5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "23d7cc0b23fbed7f39aef342c080263d98854ea42e41c7737f240940713dec54",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "2649f560f69da962179b7c20aad53a6e080fcb8401d3c203702ca73493510023",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "2703136ade428172f711253b8a1697651bd17d4712aa10b4d873e2f49a652d85",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "30b45157eb45a9d701bb5eba63f5c9321c733aaa677e2f9d9cf92c0e6c5a3fbe",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "44281d59337b0f4d904692438a09e9463ac89325554413ce43c57b1ef1cd19ff",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "4e942598fca3c10ca32ee50af93a0b2b0cf08871d185e29c000ee152c2c7363c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "500729965004339a0fd468064e8cdae3e658a600e4540a0b3cf54f085bbea112",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "5c124748e95b2d72e33949f982454c39f17d56e8bf55cc82052afcd3478b8ec9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "5d993e050e0a99db877aa9c6d193ee896ad5e40976e37072a2a8c269732eb57a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "6d861c7ca5608b2dbea8caf748e1749dcd909f54c7dacad15ef8a70f5c2e7e98",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "6f7512f8bddb8be73bab2d4feda074e3b1bf6afe29eabe346525a2ba284bed7a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "a65630e46caa5635bcd654252f5776fce9adc0ff3d0c338746729cc9fc132e71",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "c5a3caea2d70b6c7585392dd67fecff923738d3010157997f4f8e54ee2f5dc06",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "d14f893ec0aadc44e1ee6b5155fabc83f5cacc8c0fc0f88d9832b526424625c1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "d1ba5365c7b2c1708580acc1b80597f64d4a0e4fa0bb32edfc04c898b246abc5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "d8f64a0af7aca00e6ed6b2169aca013046e1d3b595f2ff6d14021aaea2e1a084",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "fddcbc6a7aeb3aa1a5062e6759103fa2e3b1ecd9f919a43a987305e0eac252b7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-wall-pieces/main.go",
+      "function": "main",
+      "sha256": "ff604587be92efe788aa04e8e4a94eaf7876941a584f8843143d4b4ed8e9b98d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/ecl-window/main.go",
       "function": "dumpGetTable",
       "sha256": "276ebc1f2eb6f247d9702f66bc92ef8e435b8684822935e8a9fac04b7d9d50e7",
