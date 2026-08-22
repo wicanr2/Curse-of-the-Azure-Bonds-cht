@@ -206,20 +206,22 @@
    ]
   },
   "music_triggers": {
-   "category": "原機音訊：在哪裡換曲、換成哪一首",
-   "format": "%s 處換曲點選到 %s 首相異曲目（game pack 宣告 %s 首）",
+   "category": "原機音訊：在哪裡換曲、在哪裡發音效",
+   "format": "%s 處換曲點選到 %s 首相異曲目（宣告 %s 首）；播放常式另有 %s 處跨 overlay 呼叫（`SOUNDFX` 36）",
    "source": "`pc98-music-triggers.md`（`cmd/pc98-music-triggers`）",
-   "not_proof": "★ 對照自洽：`overlay-01`（開場）→ 標題、`GEN`（建角）→ 角色建立、`overlay-18` → 結局，常駐那七處則是地點曲（城鎮／荒野／村莊／地城／散提爾堡城壁／盜賊公會）。⚠ **`MUSICNO` 是 1 起算**：12 首而寫入值最大 12，當成 0 起算會在最後一首溢位；`reference_selector` 是 1..12、`driver_index` 才是 0 起算。**抄錯一邊會讓每首都差一格，而每一格都還是合法曲名 ⇒ 不會有任何錯誤訊息。**⚠ 有兩首（戰鬥、地城二）沒有任何**立即數**換曲點選到——這一支只認 `mov byte [MUSICNO], imm`，從暫存器或變數寫進去的看不到，**不能讀成「這首用不到」**。⚠ 這是 PC-98 版面；DOS 沒有符號，格子要另外認。",
+   "not_proof": "★ **兩次獨立掃描互相印證**：`MSCPLAY` 的 5 處呼叫點，正好落在那 5 個改寫 `MUSICNO` 的 overlay 上（`GEN`×2、`overlay-01`、`POSTCOM`、`overlay-18`）——一次是資料格寫入、一次是函式呼叫，指到同一組地方。★ 對照也自洽：開場→標題、`GEN`（建角）→角色建立、`overlay-18`→結局，常駐七處全是地點曲。⚠ **`MUSICNO` 是 1 起算**（`reference_selector` 1..12、`driver_index` 才 0 起算）——**抄錯一邊會讓每首都差一格，而每一格都還是合法曲名 ⇒ 不會有任何錯誤訊息。**⚠ 音效呼叫點只數**跨 overlay 的 far call**，常駐自己的段內近呼叫不在裡面 ⇒ **下界**。⚠ 兩首（戰鬥、地城二）沒有立即數換曲點選到，但只認 `mov byte [MUSICNO], imm` ⇒ **不能讀成「這首用不到」**。⚠ PC-98 版面；DOS 沒有符號，格子要另外認。",
    "report": "pc98-music-triggers.md",
    "patterns": [
     "\\|\\s*換曲點（`mov byte \\[MUSICNO\\], imm`）\\s*\\|\\s*(\\d+)\\s*\\|",
     "\\|\\s*被選到的相異曲目\\s*\\|\\s*(\\d+)\\s*\\|",
-    "\\|\\s*game pack 宣告的曲目\\s*\\|\\s*(\\d+)\\s*\\|"
+    "\\|\\s*game pack 宣告的曲目\\s*\\|\\s*(\\d+)\\s*\\|",
+    "\\n合計 (\\d+) 處。"
    ],
    "fields": [
     0,
     1,
-    2
+    2,
+    3
    ]
   }
  },
