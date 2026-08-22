@@ -891,7 +891,7 @@
    "opcode": "0x24",
    "name": "COMBAT",
    "status": "partial",
-   "note": "COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；partial 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標——兩個旗標都沒有 producer",
+   "note": "COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；★★ **第四支已經解出來並接上**（spec 1182）：`sub_184B` 讀完是「`bank1^[5C4h] = 1` ⇒ 神殿（overlay-04 ＝ TEMPLE），否則 ⇒ 戰後處理（overlay-05 ＝ DOPOSTCOMBAT）」——那正是那 46 處「沒擺過怪的 24h」的去向，腳本先用 `27h TREASURE` 堆好戰利品再用 `24h` 開分配畫面。remake 因此把零隻怪的 `24h` 改成發 `PostCombatRequested` 而不是 `CombatRequested`（原作的 `24h` 沒有「零隻怪的戰鬥」，有怪才走 `sub_1956`）。⚠ 仍是 `partial`：兩個「有怪要打」旗標 `8B69h`／`8B56h` 在 remake 沒有 producer（用怪物鏈非空代替），而神殿那一支的 `7EE2h` 也沒有 producer",
    "occurrences": 199,
    "blocks": [
     "ECL1.DAX/0x50",

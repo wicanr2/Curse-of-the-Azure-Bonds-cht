@@ -260,13 +260,17 @@ func TestRunSubsetReportsNewECLBlock(t *testing.T) {
 	}
 }
 
-func TestRunSubsetReportsCombatRequest(t *testing.T) {
+// 場上沒怪的 `24h` 走的是**第四支**：原作跑 `overlay-05` 的 `DOPOSTCOMBAT`
+// （戰利品分配／經驗值），不是「打一場」——原作的 `24h` 沒有「零隻怪的戰鬥」
+// 這種東西，有怪才走 `sub_1956`（spec 1182）。
+func TestRunSubsetReportsPostCombatWhenNoMonstersArePresent(t *testing.T) {
 	result, err := RunSubset([]byte{0, 0, 0x24, 0x00}, 0, 10)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !result.CombatRequested || result.Steps != 1 || result.PC != 1 {
-		t.Fatalf("result=%+v, want one combat request", result)
+	if !result.PostCombatRequested || result.CombatRequested ||
+		result.Steps != 1 || result.PC != 1 {
+		t.Fatalf("result=%+v, want one post-combat request", result)
 	}
 }
 

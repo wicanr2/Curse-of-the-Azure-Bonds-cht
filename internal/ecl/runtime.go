@@ -50,15 +50,19 @@ type RunResult struct {
 	NewECLBlockID    *uint8
 	CombatRequested  bool
 	ShopRequested    bool
-	ShopPriceScale   uint16
-	TempleRequested  bool
-	MonsterSetup     *MonsterSetup
-	MonsterSpawns    []MonsterSpawn
-	ProgramIDs       []uint8
-	ProgramExit      bool
-	CallAddresses    []uint16
-	CallRequests     []CallRequest
-	SaveWrites       []MemoryWrite
+	// PostCombatRequested ＝ `24h` 走了第四支（沒怪、沒商店、沒神殿）：
+	// 原作跑 `overlay-05` 的 `DOPOSTCOMBAT`，也就是戰利品分配／經驗值畫面
+	// （spec 1182）。
+	PostCombatRequested bool
+	ShopPriceScale      uint16
+	TempleRequested     bool
+	MonsterSetup        *MonsterSetup
+	MonsterSpawns       []MonsterSpawn
+	ProgramIDs          []uint8
+	ProgramExit         bool
+	CallAddresses       []uint16
+	CallRequests        []CallRequest
+	SaveWrites          []MemoryWrite
 	// ClearBoxRequested 來自 `3Dh CLEAR BOX`：把文字框清空，且不印新文字。
 	ClearBoxRequested bool
 	// SpriteOffRequested 來自 `31h SPRITE OFF`：關掉畫面上的怪物圖示。
@@ -1171,6 +1175,17 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			} else if !monstersPresent && memory[addrTempleRequest] == 1 {
 				result.TempleRequested = true
 				memory[addrTempleRequest] = 0
+			} else if !monstersPresent {
+				// ★ 第四支：兩個旗標都不成立而且場上沒怪 ⇒ 原作跑的是
+				// **戰後處理**（`overlay-05` ＝ POSTCOM 的 `DOPOSTCOMBAT`），
+				// 不是「打一場」（spec 1182）。腳本的慣用法是先用 `27h TREASURE`
+				// 把戰利品堆好，再用 `24h` 開分配畫面——`overlay-05` 的字串
+				// （`The party has found Treasure!`／`Each character receives `／
+				// `View Take Pool Share`）就是那一組。
+				//
+				// ⚠ 原作的 `24h` **沒有「零隻怪的戰鬥」這種東西**：有怪才走
+				// `sub_1956`。所以零隻怪不能發 `CombatRequested`。
+				result.PostCombatRequested = true
 			} else {
 				result.CombatRequested = true
 				if runtime != nil {

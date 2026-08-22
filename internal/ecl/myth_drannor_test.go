@@ -890,7 +890,7 @@ func TestRealBurialGlenThriKreenDefenseFlagsAndWaves(t *testing.T) {
 		if runErr != nil {
 			t.Fatal(runErr)
 		}
-		if !loot.CombatRequested ||
+		if !loot.PostCombatRequested || loot.CombatRequested ||
 			!reflect.DeepEqual(loot.TreasureRequests, []TreasureRequest{wantTreasure}) ||
 			!strings.Contains(strings.Join(loot.Text, " "), "YOU GATHER UP SOME VALUABLES") ||
 			mustMemory(t, session, 0x4CC8) != 1 ||
@@ -911,7 +911,7 @@ func TestRealBurialGlenThriKreenDefenseFlagsAndWaves(t *testing.T) {
 		if runErr != nil {
 			t.Fatal(runErr)
 		}
-		if !loot.CombatRequested || loot.WaitingForMenu ||
+		if !loot.PostCombatRequested || loot.CombatRequested || loot.WaitingForMenu ||
 			!reflect.DeepEqual(loot.TreasureRequests, []TreasureRequest{wantTreasure}) ||
 			!strings.Contains(strings.Join(loot.Text, " "), "YOU GATHER UP SOME VALUABLES") ||
 			mustMemory(t, session, 0x4CCA) != 1 {
@@ -1730,7 +1730,8 @@ func TestRealOuterRuinsStorehouse(t *testing.T) {
 
 		session.SetMemoryValue(0x7ECA, 1)
 		search, runErr := session.RunEntry(1, 30000, nil)
-		if runErr != nil || !search.CombatRequested ||
+		// ⚠ 沒怪的 `24h` 走第四支：戰利品分配（`DOPOSTCOMBAT`），不是戰鬥（spec 1182）。
+		if runErr != nil || !search.PostCombatRequested || search.CombatRequested ||
 			!strings.Contains(strings.Join(search.Text, " "), "FEW VALUABLES") ||
 			!reflect.DeepEqual(search.TreasureRequests, []TreasureRequest{{
 				Coins:     [7]uint16{0, 0, 0, 2000, 1500, 8, 8},
@@ -1910,7 +1911,7 @@ func TestRealOuterRuinsFugitiveAndCache(t *testing.T) {
 		treasure, runErr := session.ResumeInteractiveSelectionSeed(
 			30000, &press, nil, 1, PartyContext{},
 		)
-		if runErr != nil || !treasure.CombatRequested ||
+		if runErr != nil || !treasure.PostCombatRequested || treasure.CombatRequested ||
 			!reflect.DeepEqual(treasure.TreasureRequests, []TreasureRequest{{
 				Coins:     [7]uint16{0, 0, 1, 0, 0, 0, 0},
 				ItemBlock: 0x43,
@@ -2304,7 +2305,7 @@ func TestRealOuterRuinsRakshasaRoomsAndSewer(t *testing.T) {
 		treasure, runErr := session.ResumeInteractiveSelectionSeed(
 			30000, nil, nil, 1, PartyContext{},
 		)
-		if runErr != nil || !treasure.CombatRequested ||
+		if runErr != nil || !treasure.PostCombatRequested || treasure.CombatRequested ||
 			!strings.Contains(strings.Join(treasure.Text, " "), "GATHER THE VALUABLES") ||
 			!reflect.DeepEqual(treasure.TreasureRequests, []TreasureRequest{{
 				Coins:     [7]uint16{0, 0, 0, 1200, 2000, 15, 9},
@@ -2453,7 +2454,7 @@ func TestRealInnerRuinsKitchenOfficeAndBedroom(t *testing.T) {
 		loot, runErr := session.ResumeInteractiveSelectionSeed(
 			30000, &yes, nil, 1, PartyContext{},
 		)
-		if runErr != nil || !loot.CombatRequested ||
+		if runErr != nil || !loot.PostCombatRequested || loot.CombatRequested ||
 			len(loot.MonsterSpawns) != 0 ||
 			!reflect.DeepEqual(loot.TreasureRequests, []TreasureRequest{{
 				Coins:     [7]uint16{0, 0, 0, 5000, 5000, 12, 15},
