@@ -856,6 +856,18 @@ func (s *State) SetECLSeed(seed int64) {
 
 // SetECLMemoryValue seeds one verified engine/script work word for a
 // reproducible story preview. Normal gameplay obtains these values from ECL.
+// ECLMemorySnapshot 回傳目前這一段看得到的整份 ECL 記憶體。
+//
+// ★ 給接縫盤點用（`cmd/segment-handoff`）：兩側要走**同一個存取器**才比得出東西。
+// 一邊走這裡、一邊走存檔編碼器的話，定義域不同（存檔不收 0、程式碼另存一塊），
+// 比出來的差異會大兩個數量級——**而那個數字看起來一樣像個結果**（spec 1195）。
+func (s *State) ECLMemorySnapshot() map[uint16]uint16 {
+	if s.session == nil {
+		return nil
+	}
+	return s.session.MemorySnapshot()
+}
+
 func (s *State) SetECLMemoryValue(address, value uint16) {
 	if s.session != nil {
 		s.session.SetMemoryValue(address, value)

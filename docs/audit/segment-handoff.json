@@ -1,8 +1,8 @@
 {
  "schema": "coab-segment-handoff/1",
  "segments": 20,
- "total_dropped": 1148,
- "total_risky": 267,
+ "total_dropped": 1132,
+ "total_risky": 251,
  "risky_segments": 20,
  "from_arrival": 19,
  "from_inside": 1,
@@ -11,8 +11,8 @@
   {
    "id": "ECL1/0x50",
    "read_cells": 133,
-   "campaign_cells": 67,
-   "dropped": 37,
+   "campaign_cells": 41,
+   "dropped": 36,
    "risky": [
     19496,
     32424,
@@ -20,7 +20,6 @@
     32467,
     32530,
     32621,
-    32633,
     32634,
     32635,
     32636,
@@ -31,7 +30,7 @@
   {
    "id": "ECL1/0x51",
    "read_cells": 119,
-   "campaign_cells": 90,
+   "campaign_cells": 66,
    "dropped": 62,
    "risky": [
     19545,
@@ -55,10 +54,9 @@
   {
    "id": "ECL2/0x01",
    "read_cells": 95,
-   "campaign_cells": 11,
-   "dropped": 3,
+   "campaign_cells": 8,
+   "dropped": 2,
    "risky": [
-    32633,
     49230,
     49231
    ],
@@ -67,15 +65,14 @@
   {
    "id": "ECL2/0x02",
    "read_cells": 54,
-   "campaign_cells": 45,
-   "dropped": 19,
+   "campaign_cells": 26,
+   "dropped": 18,
    "risky": [
     19440,
     32466,
     32467,
     32481,
     49227,
-    49228,
     49231
    ],
    "source": "arrival"
@@ -83,8 +80,8 @@
   {
    "id": "ECL2/0x03",
    "read_cells": 93,
-   "campaign_cells": 56,
-   "dropped": 30,
+   "campaign_cells": 31,
+   "dropped": 27,
    "risky": [
     19440,
     19441,
@@ -97,11 +94,8 @@
     32467,
     32481,
     32486,
-    32633,
     32634,
     32635,
-    49227,
-    49228,
     49229,
     49231
    ],
@@ -110,8 +104,8 @@
   {
    "id": "ECL2/0x04",
    "read_cells": 74,
-   "campaign_cells": 61,
-   "dropped": 36,
+   "campaign_cells": 38,
+   "dropped": 34,
    "risky": [
     19440,
     19441,
@@ -123,12 +117,10 @@
     32467,
     32481,
     32486,
-    32633,
     32634,
     32635,
     32640,
     49227,
-    49228,
     49229,
     49231
    ],
@@ -137,8 +129,8 @@
   {
    "id": "ECL3/0x10",
    "read_cells": 151,
-   "campaign_cells": 98,
-   "dropped": 62,
+   "campaign_cells": 70,
+   "dropped": 61,
    "risky": [
     990,
     19440,
@@ -149,7 +141,6 @@
     32481,
     32486,
     32530,
-    32633,
     32634,
     32635,
     49231
@@ -159,7 +150,7 @@
   {
    "id": "ECL3/0x11",
    "read_cells": 106,
-   "campaign_cells": 107,
+   "campaign_cells": 71,
    "dropped": 67,
    "risky": [
     19440,
@@ -180,7 +171,7 @@
   {
    "id": "ECL3/0x12",
    "read_cells": 116,
-   "campaign_cells": 111,
+   "campaign_cells": 79,
    "dropped": 73,
    "risky": [
     19442,
@@ -201,7 +192,7 @@
   {
    "id": "ECL4/0x20",
    "read_cells": 95,
-   "campaign_cells": 119,
+   "campaign_cells": 79,
    "dropped": 72,
    "risky": [
     19441,
@@ -221,8 +212,8 @@
   {
    "id": "ECL4/0x21",
    "read_cells": 89,
-   "campaign_cells": 123,
-   "dropped": 84,
+   "campaign_cells": 87,
+   "dropped": 83,
    "risky": [
     990,
     19442,
@@ -230,7 +221,6 @@
     32466,
     32467,
     32481,
-    32633,
     32634,
     32635,
     49227,
@@ -243,7 +233,7 @@
   {
    "id": "ECL4/0x22",
    "read_cells": 76,
-   "campaign_cells": 123,
+   "campaign_cells": 88,
    "dropped": 80,
    "risky": [
     990,
@@ -265,7 +255,7 @@
   {
    "id": "ECL4/0x23",
    "read_cells": 74,
-   "campaign_cells": 39,
+   "campaign_cells": 27,
    "dropped": 21,
    "risky": [
     19440,
@@ -283,7 +273,7 @@
   {
    "id": "ECL5/0x30",
    "read_cells": 21,
-   "campaign_cells": 90,
+   "campaign_cells": 69,
    "dropped": 66,
    "risky": [
     19451,
@@ -300,8 +290,8 @@
   {
    "id": "ECL5/0x31",
    "read_cells": 65,
-   "campaign_cells": 79,
-   "dropped": 50,
+   "campaign_cells": 57,
+   "dropped": 49,
    "risky": [
     19401,
     19440,
@@ -311,7 +301,6 @@
     32467,
     32481,
     32621,
-    32633,
     32634,
     32758,
     49231
@@ -321,8 +310,8 @@
   {
    "id": "ECL5/0x32",
    "read_cells": 91,
-   "campaign_cells": 81,
-   "dropped": 54,
+   "campaign_cells": 61,
+   "dropped": 53,
    "risky": [
     990,
     19442,
@@ -332,7 +321,6 @@
     32467,
     32481,
     32486,
-    32633,
     32634,
     32635,
     32636,
@@ -343,7 +331,7 @@
   {
    "id": "ECL5/0x33",
    "read_cells": 121,
-   "campaign_cells": 85,
+   "campaign_cells": 65,
    "dropped": 60,
    "risky": [
     19401,
@@ -372,8 +360,8 @@
   {
    "id": "ECL6/0x40",
    "read_cells": 129,
-   "campaign_cells": 126,
-   "dropped": 84,
+   "campaign_cells": 91,
+   "dropped": 83,
    "risky": [
     990,
     19440,
@@ -388,7 +376,6 @@
     32530,
     32625,
     32626,
-    32633,
     32634,
     32635,
     32637,
@@ -400,8 +387,8 @@
   {
    "id": "ECL6/0x42",
    "read_cells": 95,
-   "campaign_cells": 131,
-   "dropped": 95,
+   "campaign_cells": 95,
+   "dropped": 93,
    "risky": [
     990,
     19440,
@@ -417,12 +404,10 @@
     32467,
     32469,
     32481,
-    32633,
     32635,
     32637,
     32638,
     32639,
-    49227,
     49228,
     49231
    ],
@@ -431,8 +416,8 @@
   {
    "id": "ECL6/0x43",
    "read_cells": 94,
-   "campaign_cells": 134,
-   "dropped": 93,
+   "campaign_cells": 99,
+   "dropped": 92,
    "risky": [
     990,
     19440,
@@ -450,8 +435,7 @@
     32638,
     32639,
     49227,
-    49228,
-    49229
+    49228
    ],
    "source": "arrival"
   }

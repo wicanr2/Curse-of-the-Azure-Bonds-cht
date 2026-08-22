@@ -55,9 +55,25 @@ var (
 	ArrivalFailures = map[uint8]string{}
 )
 
-// captureArrival 在剛換到 `block` 的那一刻存一份快照（每段只存第一次）。
+// ArrivalSample 是換段那一刻的 ECL 記憶體取樣。
+//
+// ⚠⚠ **這不是存檔，不能載回來玩。** 取樣點在換段的瓶頸上，那是**指令執行到一半**
+// 的地方：PC 指在指令中間、呼叫堆疊還有東西。把它當存檔載入再按一下鍵，VM 會從
+// 那個 PC 續跑然後解不出指令（實測：`VERTICAL MENU header at 3771: operand 0 is
+// truncated`）。
+//
+// ⇒ 所以這裡**只寫記憶體**，不寫成 party file。用完整的存檔格式會讓下一個人以為
+// 它載得回來——而它看起來完全像一份存檔。
+type ArrivalSample struct {
+	Schema string            `json:"schema"`
+	Block  uint8             `json:"block"`
+	Memory map[uint16]uint16 `json:"memory"`
+	Note   string            `json:"note"`
+}
+
+// captureArrival 在剛換到 `block` 的那一刻取樣一次記憶體（每段只取第一次）。
 func (s *State) captureArrival(block uint8) {
-	if arrivalDir == "" {
+	if arrivalDir == "" || s.session == nil {
 		return
 	}
 	blockEdgeMu.Lock()
@@ -67,8 +83,19 @@ func (s *State) captureArrival(block uint8) {
 	}
 	arrivalTaken[block] = true
 	blockEdgeMu.Unlock()
-	path := filepath.Join(arrivalDir, fmt.Sprintf("arrival-block-%02X.json", block))
-	if err := s.SavePartyFile(path); err != nil {
+
+	sample := ArrivalSample{
+		Schema: "coab-arrival-sample/1",
+		Block:  block,
+		Memory: s.session.MemorySnapshot(),
+		Note:   "換段那一刻的記憶體取樣，不是存檔：PC 在指令中間，載回來會解不出指令。",
+	}
+	encoded, err := json.MarshalIndent(sample, "", " ")
+	if err == nil {
+		path := filepath.Join(arrivalDir, fmt.Sprintf("arrival-block-%02X.json", block))
+		err = os.WriteFile(path, append(encoded, '\n'), 0o644)
+	}
+	if err != nil {
 		blockEdgeMu.Lock()
 		ArrivalFailures[block] = err.Error()
 		blockEdgeMu.Unlock()

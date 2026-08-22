@@ -9608,20 +9608,6 @@
     {
       "path": "cmd/segment-handoff/main.go",
       "function": "main",
-      "sha256": "53598aac481c7374c3290b0954d98ac7a964216267e86f104980ef1d959f9b19",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/segment-handoff/main.go",
-      "function": "main",
-      "sha256": "70cabf4a2eb8a69089163b277930ec97cb3fe56b553b511699aa347562920238",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/segment-handoff/main.go",
-      "function": "main",
       "sha256": "7299c956bbb9d191164800d0ca854c4650b0db65a2ece5f9d9914af9c6a13833",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -9637,6 +9623,13 @@
       "path": "cmd/segment-handoff/main.go",
       "function": "main",
       "sha256": "9c3b4db6568f9a7b84d66e598492d8ef32ad53d69279024f7a2f0d5623c82639",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "main",
+      "sha256": "a085e513f65bf0dba059b7a6e4dcc6540bd06f2652eaa64d4f0f4d3b9f1faf37",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -10699,6 +10692,13 @@
     {
       "path": "internal/ecl/effects.go",
       "sha256": "f7ad6af8376719823760fe9ffb764236880bfb3c3d30d6381b9ad2ffbc01ee83",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/game/block_edges.go",
+      "function": "captureArrival",
+      "sha256": "8197a5b4cd868169f566f6674db8b659acfc0effef37e3184ce8605026d4f693",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

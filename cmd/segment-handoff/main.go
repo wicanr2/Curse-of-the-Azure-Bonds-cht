@@ -105,12 +105,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	temp, err := os.MkdirTemp("", "handoff")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer os.RemoveAll(temp)
-
 	doc := report{Schema: "coab-segment-handoff/1"}
 	for _, item := range segment.All() {
 		campaign, source, ok := snapshotMemory(*arrivals, *snapshots, item.Block)
@@ -136,16 +130,12 @@ func main() {
 			doc.Rows = append(doc.Rows, row)
 			continue
 		}
-		path := filepath.Join(temp, fmt.Sprintf("%02X.json", item.Block))
-		if err := state.SavePartyFile(path); err != nil {
-			row.Note = fmt.Sprintf("直入存不出來：%v", err)
-			doc.Failed++
-			doc.Rows = append(doc.Rows, row)
-			continue
-		}
-		direct, ok := memoryFromFile(path)
-		if !ok {
-			row.Note = "直入的存檔讀不回來"
+		// ⚠ 兩側走**同一個存取器**：到達取樣是 `MemorySnapshot()`，這裡也是。
+		// 一邊走存檔編碼器會讓定義域不同（不收 0、程式碼另存），差異暴增兩個
+		// 數量級——而那個數字看起來一樣像個結果。
+		direct := normalise(state.ECLMemorySnapshot())
+		if len(direct) == 0 {
+			row.Note = "直入之後記憶體是空的"
 			doc.Failed++
 			doc.Rows = append(doc.Rows, row)
 			continue
@@ -254,7 +244,7 @@ func readAddressesByBlock(image string) map[uint8]map[uint16]bool {
 // lifecycle 已經跑完、隊伍也走了幾步 ⇒ 用它量到的是「交接 ＋ 又走了一段」。
 // 兩者都印出來，才看得出取樣點差多少。
 func snapshotMemory(arrivals, inside string, block uint8) (map[uint16]uint16, string, bool) {
-	if memory, ok := memoryFromFile(
+	if memory, ok := arrivalSample(
 		filepath.Join(arrivals, fmt.Sprintf("arrival-block-%02X.json", block))); ok {
 		return memory, "arrival", true
 	}
@@ -263,6 +253,58 @@ func snapshotMemory(arrivals, inside string, block uint8) (map[uint16]uint16, st
 		return memory, "inside", true
 	}
 	return nil, "", false
+}
+
+// arrivalSample 讀換段那一刻的記憶體取樣。
+//
+// ⚠ 這個檔**不是存檔**（見 `internal/game.ArrivalSample`）：取樣點在指令執行到
+// 一半的地方，載回來當存檔用會解不出指令。它只有記憶體，而記憶體正是這一支要的。
+func arrivalSample(path string) (map[uint16]uint16, bool) {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return nil, false
+	}
+	var file struct {
+		Schema string            `json:"schema"`
+		Memory map[string]uint16 `json:"memory"`
+	}
+	if json.Unmarshal(raw, &file) != nil || file.Schema != "coab-arrival-sample/1" {
+		return nil, false
+	}
+	return parseMemory(file.Memory), true
+}
+
+func parseMemory(raw map[string]uint16) map[uint16]uint16 {
+	out := make(map[uint16]uint16, len(raw))
+	for key, value := range raw {
+		address, err := strconv.ParseUint(key, 10, 16)
+		if err != nil {
+			continue
+		}
+		out[uint16(address)] = value
+	}
+	return normalise(out)
+}
+
+// normalise 把兩側的記憶體收斂到**同一個定義域**，否則比出來的數字沒有意義。
+//
+// ⚠ 兩個來源本來就不一樣：到達取樣走 `MemorySnapshot()`（**整份**，含程式碼視窗
+// 與零），存檔那一側走存檔編碼器（零不收、程式碼另存一塊）。不對齊就直接比的話，
+// 差異會從 1,148 暴增到 103,896——**而那個數字看起來一樣像個結果**。
+//
+// 兩條規則：
+//
+//   - 去掉程式碼視窗 `8000h..9DFFh`：那是位元組碼不是狀態。
+//   - 去掉值為 0 的格：原作分不出「寫過 0」與「沒寫過」，存檔那一側也不收。
+func normalise(memory map[uint16]uint16) map[uint16]uint16 {
+	out := make(map[uint16]uint16, len(memory))
+	for address, value := range memory {
+		if value == 0 || (address >= 0x8000 && address <= 0x9DFF) {
+			continue
+		}
+		out[address] = value
+	}
+	return out
 }
 
 func memoryFromFile(path string) (map[uint16]uint16, bool) {
@@ -278,15 +320,7 @@ func memoryFromFile(path string) (map[uint16]uint16, bool) {
 	if json.Unmarshal(raw, &file) != nil {
 		return nil, false
 	}
-	out := make(map[uint16]uint16, len(file.Session.Memory))
-	for key, value := range file.Session.Memory {
-		address, err := strconv.ParseUint(key, 10, 16)
-		if err != nil {
-			continue
-		}
-		out[uint16(address)] = value
-	}
-	return out, true
+	return parseMemory(file.Session.Memory), true
 }
 
 func loadECLBlocks(image string) (map[uint8][]byte, uint8, error) {
