@@ -194,6 +194,13 @@ func main() {
 		fmt.Fprintf(&report, "| 聯集覆蓋率（下界）| %.0f%% |\n",
 			100*float64(totalEither)/float64(totalIndices))
 	}
+	fmt.Fprintf(&report, "\n⚠ **「實跑路線踏到」裡有兩種東西**，不要把它讀成「玩到的比例」："+
+		"`TestRealNewGameRunsToTheEnding` 是照劇情走的主線，"+
+		"而 `TestTilvertonRouteIsWalkableAndLocalized` 是**廣度優先的走訪**——"+
+		"後者用的方法和下面那個「冷走」一樣，所以它一加進來，這一欄就會往冷走那一欄收斂，"+
+		"而**聯集幾乎不動**（101→152 但聯集只從 177 到 178）。"+
+		"⇒ 那條路線的價值不在數字，在於它是**帶著語系不變量的測試**："+
+		"第一次跑就抓到兩句玩家看得到的英文。\n")
 	fmt.Fprintf(&report, "\n⚠ **兩把尺互不涵蓋，所以要看聯集。** 主線有劇情旗標，"+
 		"開得了冷走打不開的門（`ECL4/0x22` 主線 6、冷走 1）；冷走沒有劇情擋路，"+
 		"走得到主線繞過的地方（`ECL6/0x40` 主線 2、冷走 22）。"+
