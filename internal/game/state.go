@@ -900,6 +900,12 @@ func (s *State) TurnDungeon(delta int) {
 		direction += 8
 	}
 	s.DungeonDirection = uint8(direction)
+	// ★ 轉向也要同步 `C04D`。原作的引擎每次動到位置或朝向都寫地圖暫存器，
+	// 三格因此永遠等於真實位置；remake 少同步一處，鏡射就會留著舊朝向，
+	// 而下一次重畫會把隊伍轉回去（spec 1172 的 `Written` 補丁就是在補這個洞）。
+	if s.session != nil {
+		s.session.SetMemoryValue(0xC04D, uint16(s.DungeonDirection/2))
+	}
 }
 
 // TurnDungeonWithGrid rotates the first-person view and refreshes the wall
@@ -912,6 +918,9 @@ func (s *State) TurnDungeonWithGrid(grid geo.Grid, delta int) {
 	x, y, direction := s.DungeonGeometryView()
 	s.DungeonWallType, _ = grid.WallWrapped(x, y, int(direction))
 	s.DungeonWallRoof = grid.CellWrapped(x, y).Terrain
+	if s.session != nil {
+		s.syncDungeonECLRegisters()
+	}
 }
 
 func (s *State) Apply(action Action) error {
@@ -1316,16 +1325,6 @@ func (s *State) Select(index int) error {
 		var blockBefore uint8
 		if s.session != nil {
 			blockBefore = s.session.CurrentBlockID()
-			if blockBefore == 0x10 && originalChoice == "GO WITH GUARDS" {
-				// Yulash's outer dispatcher teleports the party to the Red
-				// Plume commander's waiting room at (0,3), facing east.
-				// The ECL branch owns the dialogue but the DOS area loop owns
-				// these map registers, so reproduce that engine transaction
-				// before resuming the shared block.
-				s.session.SetMemoryValue(0xC04B, 0)
-				s.session.SetMemoryValue(0xC04C, 3)
-				s.session.SetMemoryValue(0xC04D, 1)
-			}
 			dungeonRegistersBefore := [3]uint16{}
 			dungeonRegistersKnown := [3]bool{}
 			for i, address := range [...]uint16{0xC04B, 0xC04C, 0xC04D} {
@@ -5195,6 +5194,9 @@ func (s *State) finishNewGameEntry() {
 	}
 	s.DungeonX, s.DungeonY = int(x), int(y)
 	s.MapX, s.MapY = int(x), int(y)
+	// 開新遊戲的落點同樣要回寫：`C04B`／`C04C` 缺格時上面退回 `(7,13)`，
+	// 不回寫的話三格會停在空的狀態（spec 1172）。
+	s.syncDungeonECLRegisters()
 	s.Location = LocationTilverton
 	s.LocationName = s.catalog.Text("tilverton", "tilverton")
 	s.OriginalLocation = "TILVERTON"
@@ -5466,6 +5468,9 @@ func (s *State) syncDungeonStateFromECLRegisters() {
 		s.DungeonDirection = uint8(value&3) * 2
 	}
 	s.MapX, s.MapY = s.DungeonX, s.DungeonY
+	// 讀進來之後把三格寫回去：暫存器缺格時上面用的是 remake 這一側的值，
+	// 不回寫就會留下「state 與暫存器不一致」的空窗（spec 1172）。
+	s.syncDungeonECLRegisters()
 }
 
 // SetGeoCatalog 交給 `State` 一份原版 GEO 目錄。沒交也能跑——只是腳本傳送
