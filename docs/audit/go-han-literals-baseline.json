@@ -233,6 +233,277 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "sha256": "53ce36b5da9e1887259921554f95d95821ce36fe49f7968188180c8d98226e6c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "sha256": "625dd417c2c33739b56088c86ca53fd135acd2c9586a523993f978ab395c0cc1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "sha256": "6fe38ed1ee10422a8666ff36bbffd5fe69c56e0d23f30dfb1f5062ccb9c59d25",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "sha256": "828d4cec1f3c370d76b912ed6787626802f9c4839812798912fefe46eb79ab7d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "sha256": "90e1b1b8a537537d4fe8a7ce6df2f5f8355f70c419651a857596451341339659",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "sha256": "b549e3f43fcb4a559b0eab44958930e6c7fbc1fef35890041c1734bf0654504c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "sha256": "c014266366bbf44b749df3e6026696e2e4714208478b3531df4c02489e2bb29a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "sha256": "c560201b331c54435b445baebe03b8922d6ef6a80065411ed3f379eb8bef9848",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "sha256": "f7865e52f8b7d4b7eae42b3e23c0dcc4c8875e2b8d25cf88a20c81b09ac04400",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "13c83a8a875ec7e2062411851fe501ab53a525064bf5d4b7e53233fd2d729ac6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "1699a61010f4c4e937f3875f4e01381b93f2db7913c0d5d048f4fdfe3e8824d0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "1db2a580b6d102145c438a00ecde2830241caf17c0b88519591aac05405100b8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "2221fe2d902ec22b0eb4d76edcf6df5a35464b2b9fbe7610097fdf6c22e81f6d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "2d1be78f79d979b998d0d89f25767c4cf75858e4c6391c369b3454e2d4916551",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "32f913ef950694e54d2938726958a4de259834da46114a0d7cd3e03385def0bc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "40b7577514aceac19c0e74d24739f1e3661821d196539991c9da4b01018e3a73",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "43420567f3c261889c56d2fc57b1c5393da372d0fa27abdc6cb8019f6e733a46",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "4bdbae6b818d9b7181bf18825feecffbe7f763b3fc36e7a91cfe4ec78d3bc572",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "50a6361592c42533d0b38cf785a74664f0286d960e346abebb8278ec70ef05cf",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "595c18804d3453bb386233b3ae8966cd1d21ff76dd4fd21cdf37478b00c694f1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "5a99f7e301be8ed87f7933bee13a72e6f18c7fb873ff36cc83623bee910174b1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "6d8daf9e80f3d1ea38ef2107afbe81cfa1f59ae6215ffe42bfca5510e8979e2d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "863aa9d1e1f3f3bd086e7ae32f081e66a785e108e8b00458a4bbed144bb26915",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "902cf4104bcb852269f159c52fbb0e84b357280a8c885ca2fff77ffb5e9591d9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "9ed82e0b9822ce4f54eef84f3c9aa77f8716cf4439cdc41f76dee4515d5a08f2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "9f824029e160a640ba778a0ee0b0febbcfbff055109c76a2073d488dbef6ba3e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "a4eaa55ec85203c46cb5b13e322568f8c93ab88fda635155c73de3605ff8a121",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "ad957855681843c2ca2ca049e0ca47e2179950165cdabb54ec6395cfcad71f6f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "b5141d3d19e9a04855acdb2dd5218b0924254b73d3cb663557ed0f9f73403750",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "be6c71d35815aeee2131be4d3ece612e21c5e360ce50b8d63118ab224217ebaa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "bf6191f67bbdd712888c4f8ddd05f39ad6a0f523edf7299d224dde4474d617b7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "c56d6264d1fedd5b8f7f5e5d62d10f84b4288455ef6af5e03829bb65e1c505a8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "d2ff81ecba32d94607f2c2afa8f6c96d779a37dcb4b76026c5f3186ad37405c3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "d5a867e544ae2166e9ad322500b631d7293f80497b76b7fabcb20b253e14a0df",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "dfdc72ae9122d1d3d9460682c4981a1bd5b87772af8579238916d45dce445614",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "f785cc62d4e2b365b3000ceea43e1d7fef5a9e848358c5d398c809a187e7d1e5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "main",
+      "sha256": "f95bb44c18358918df1cbe8313e57f49097b6c2f79d01feb604c9c15478eb3f8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "measure",
+      "sha256": "048744588782e13cce7f64705da3ecd8b076235534c3db7f9056381aa54bd462",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/campaign-frame-audit/main.go",
+      "function": "measure",
+      "sha256": "78ba8371c616f4f4da390b69d47aab8d92da16a70e5d081c473f508ff25dc0f6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/cell-sweep/main.go",
       "function": "enterDungeon",
       "sha256": "5e90960fec285924f32075d0822bf70fe38a1f07a5c11f4daa1d5baee43c6e67",

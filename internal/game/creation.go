@@ -904,6 +904,11 @@ func (s *State) LoadPartyFile(path string) error {
 	if s.Mode == ModeMap && s.Location != LocationShadowdale {
 		s.Mode = ModeWilderness
 	}
+	// 世界地圖模式上面已經由 `setWorldLocation` 連名字一起設好；其餘模式
+	// （地城、戰鬥、事件、場所）只有 `Location` 被還原，名字還停在建檔時的值。
+	if s.Mode != ModeWilderness && s.Mode != ModeMap {
+		s.restoreLocationName()
+	}
 	// ★ 存檔沒有保存「事件結束要回到哪裡」（`eventReturnMode`）。存在事件畫面上的
 	// 檔讀回來之後，那一格是零值，`Continue()` 會落到 default 分支回
 	// 「event has no continuation」——**玩家按下一步就卡住，而且每一個欄位都對得上**。
@@ -980,6 +985,22 @@ func (s *State) LoadPartyFile(path string) error {
 	}
 	if s.Mode == ModeCombat {
 		return fmt.Errorf("game save mode is combat but no active-combat snapshot is present")
+	}
+	// ⚠ 世界地圖的 hub 選單只有**回到世界地圖**時才對。
+	//
+	// 這裡原本是無條件設的，於是存在事件畫面上的檔讀回來會顯示
+	// 「隊伍已建立．準備開始冒險．」＋「進入城市／繼續旅程／紮營」——
+	// 玩家人在密斯卓諾墓園，畫面卻是剛建好隊伍的世界地圖選單。
+	// 上面那段 `eventReturnMode` 的註解講的是同一類問題（存檔沒有保存畫面上的
+	// 過場狀態），只是當時只補了「按下一步會不會卡住」，沒有補「畫面對不對」。
+	//
+	// ★ 用**真的前端**畫戰役檢查點才看得到：`*State` 層的測試讀完檔就直接做下一個
+	// 動作，那兩個欄位在被看到之前就被覆蓋掉了（spec 1188）。
+	if s.Mode == ModeEvent {
+		s.Prompt = s.catalog.Text("press_enter", "Press Enter to continue")
+		s.Choices = nil
+		s.currentOriginalChoices = nil
+		return nil
 	}
 	s.Prompt = s.catalog.Text("party_ready", "party_ready")
 	s.Choices = []string{s.localizeOption("ENTER CITY"), s.localizeOption("JOURNEY ON"), s.localizeOption("CAMP")}
@@ -1187,4 +1208,42 @@ func wallPiecesFromParams(params [3]partySave.SAVGAMSetBlock) ([3]uint16, bool) 
 		useful = true
 	}
 	return pieces, useful
+}
+
+// locationDisplayKeys 是 `Location` → 語系鍵／原文。
+//
+// ★ 為什麼要有這一份：讀檔時 `Location` 有還原，**`LocationName` 沒有**，
+// 於是畫面標題永遠是建檔當下的那一個（新遊戲是「荒野」）。原本的還原路徑
+// 走 `setWorldLocation(Area.CurrentCity)`，但那一支只在世界地圖模式跑——
+// 上面那段註解說明了理由：地城與戰鬥存檔的 `CurrentCity` 可能是舊值或 0，
+// 拿它去覆寫會把有意義的 `Location` 蓋掉。
+//
+// ⚠ 所以這裡**只推顯示名稱、不碰 `Location`**：hazard 是「覆寫 Location」，
+// 而這一份不寫 `Location`，所以那個 hazard 在結構上不成立。
+var locationDisplayKeys = map[Location][2]string{
+	LocationWilderness:  {"wilderness", "Wilderness"},
+	LocationShadowdale:  {"shadowdale", "SHADOWDALE"},
+	LocationAshabenford: {"ashabenford", "ASHABENFORD"},
+	LocationDaggerFalls: {"dagger_falls", "DAGGER FALLS"},
+	LocationTilverton:   {"tilverton", "tilverton"},
+	LocationStandingStone: {"standing_stone", "standing_stone"},
+	LocationEssembra:    {"essembra", "essembra"},
+	LocationHap:         {"hap", "hap"},
+	LocationVoonlar:     {"voonlar", "VOONLAR"},
+	LocationPhlan:       {"phlan", "PHLAN"},
+	LocationTeshwave:    {"teshwave", "TESHWAVE"},
+	LocationYulash:      {"yulash", "YULASH"},
+	LocationHillsfar:    {"hillsfar", "HILLSFAR"},
+	LocationZhentilKeep: {"zhentil_keep", "ZHENTIL KEEP"},
+	LocationMythDrannor: {"myth_drannor", "MYTH DRANNOR"},
+}
+
+// restoreLocationName 由已經還原好的 `Location` 推出畫面上的地名。
+func (s *State) restoreLocationName() {
+	keys, ok := locationDisplayKeys[s.Location]
+	if !ok {
+		return
+	}
+	s.LocationName = s.catalog.Text(keys[0], keys[1])
+	s.OriginalLocation = keys[1]
 }
