@@ -55,6 +55,10 @@ const (
 		partySave.SAVGAMRuntimeStateSize + partySave.SAVGAMECLMemorySize
 	area1MapBlockOffset = 1 + 0x18A
 	area1LastECLOffset  = 1 + 0x1E4
+	// 兩槽模式的兩格閘門：ECL 格 `4BE7h`／`4BE8h` ＝ bank0 位移 `1CEh`／`1D0h`
+	// （spec 1087 的 `bank0^[1CEh]`／`[1D0h]`，換算見 spec 1096）。
+	area1WallGateAOffset = 1 + 0x1CE
+	area1WallGateBOffset = 1 + 0x1D0
 	// ⚠ `GameArea` 在存檔裡有**兩份**：容器的第一個位元組，以及 Area2 的
 	// `0x624`。載入端讀的是 Area2 那一份（`area1.GameArea = area2.GameArea`），
 	// 只改容器那一份的話章節看起來變了、實際沒變——而且不會報錯。
@@ -94,6 +98,7 @@ func main() {
 	charRef := flag.String("char-ref", "", "存檔裡記的角色檔名；留空用 CHRDAT<槽>1 並一併寫出該檔")
 	base := flag.String("base", "", "以既有的原版 savgam?.dat 為底，只覆寫座標／朝向")
 	eclBlock := flag.Int("ecl-block", -1, "把這一段 ECL 的位元組碼換進存檔的程式碼視窗（換圖用；-1 不動）")
+	twoSlot := flag.Bool("two-slot-walls", false, "把兩槽模式的兩格閘門設成 1（只載槽 1／3，槽 2 不動）")
 	image := flag.String("image", "curseoftheazurebonds.zip", "原版 image ZIP（-ecl-block 要用）")
 	flag.Parse()
 
@@ -229,6 +234,20 @@ func main() {
 			}
 			fmt.Fprintf(os.Stderr, "換入 ECL%d 段 0x%02X 的位元組碼 %d bytes（視窗 %d bytes）\n",
 				*gameArea, *eclBlock, len(code), partySave.SAVGAMECLMemorySize)
+		}
+		// -two-slot-walls 把兩槽模式的閘門打開。
+		//
+		// ★ 為什麼需要。 原版是**跑那一段的進入碼**才讓閘門變成非零的；remake 從
+		// 存檔進來不重跑，於是兩邊對「要載幾個槽」的判斷不同：原版只載槽 1／3，
+		// remake 三個都載。差別看得見——`ECL6/0x40` 的槽 2 是選圖 18，而 18 在
+		// 任何一個 `WALLDEF*.DAX` 裡都不存在。
+		//
+		// 底檔（提爾佛頓）的兩格都是 0，而它的選圖是 `1,2,3` 全都在，所以三槽模式
+		// 在那張圖上不會出事——這也是為什麼這個差異只在別的章節浮現。
+		if *twoSlot {
+			binary.LittleEndian.PutUint16(patched[area1WallGateAOffset:], 1)
+			binary.LittleEndian.PutUint16(patched[area1WallGateBOffset:], 1)
+			fmt.Fprintln(os.Stderr, "兩槽模式閘門已設為 1（只載槽 1／3）")
 		}
 		if err := os.WriteFile(filepath.Join(*out, prefixName), patched, 0o644); err != nil {
 			log.Fatal(err)
