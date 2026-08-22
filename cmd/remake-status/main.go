@@ -134,6 +134,19 @@ func main() {
 			seams.Mismatched, seams.Undeclared)
 	}
 
+	// 分段驗收漏掉多少交接（spec 1195 第二段）。
+	var handoff struct {
+		Segments      int `json:"segments"`
+		TotalDropped  int `json:"total_dropped"`
+		TotalRisky    int `json:"total_risky"`
+		RiskySegments int `json:"risky_segments"`
+		Failed        int `json:"failed"`
+	}
+	if readJSON(*auditDir, "segment-handoff.json", &handoff) {
+		add("segment_handoff", handoff.Segments, handoff.TotalDropped,
+			handoff.TotalRisky, handoff.RiskySegments, handoff.Failed)
+	}
+
 	// 按鍵驅動的一場：這是「開場到結局」那一列缺的**輸入那一層**。
 	// 戰役測試直接呼叫 `state.X()`，這一份走的是 `(*app).Update()`。
 	var keySession struct {

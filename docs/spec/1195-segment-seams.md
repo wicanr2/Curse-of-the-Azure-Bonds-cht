@@ -1,6 +1,6 @@
 # 1195 — 分段驗收的接縫：直入宣告的前一段，和主線實際的前一段
 
-狀態：`READY`（`LastECL` 這一個欄位已有分母與結果；其餘交接欄位還沒對照）
+狀態：`READY`（`LastECL` 與整包 ECL 記憶體都有分母與結果；旗標／攜帶物還沒比）
 
 ## 問題
 
@@ -73,9 +73,51 @@ requestMusicIfBlockChanged(previous)        // internal/game/music_events.go
 不會有「前一段」；把它算成「主線沒走到」會讓開場那兩段看起來像沒驗到，而實際上
 它們是這條路的起點。`TestClassifyPutsFreshStartBeforeNotVisited` 釘住這個順序。
 
+## 第二層：整包 ECL 記憶體差多少（`cmd/segment-handoff`）
+
+`LastECL` 對得上只證明**入口編號**宣告對了。真正的問題是那條 ⚠ 的後半：
+直入的合成起始狀態，和主線真的走到時的狀態，差多少？
+
+做法：拿主線的段內快照，對上「造一名隊員 → `EnterSegment` → 存檔」的狀態，
+逐格比 ECL 記憶體。差異裡再挑出**這一段自己的碼真的會讀**的那些——
+讀取點由靜態可達指令的運算元推出來（`code 01h`／`03h` 查 `memory[Word]`，
+`02h` 是立即值，見 `internal/ecl` 的 `operandValue`）。
+
+| | |
+|---|---:|
+| 比得成的段 | 16 |
+| 直入與主線差幾格 | 983 |
+| **其中那一段的碼真的會讀** | **226** |
+| 分佈在幾段 | **16**（全部）|
+
+★ 意思是：**每一段的直入驗收都缺了那一段自己會讀的狀態。** 這不是說分段驗收
+無效，是說它驗的是「那一段在乾淨狀態下的行為」，不是「主線走到那裡時的行為」。
+
+### 這個數字是上界
+
+⚠ 主線那一份是隊伍**第一次站上那一段地城**時存的——那時 initial lifecycle 已經
+跑完、隊伍也走了幾步。所以有些差異只是「主線走得比較前面」，不是交接漏掉的東西。
+`4BF0h`／`4BF1h`（移動前的座標快照）與 `4BF2h`（`LastECL`）都屬於這一類。
+
+⚠ 直入這一側只有**一名**隊員（和 `-segment` 同一條路），主線是六人，隊伍相關的
+格子必然不同。
+
+⇒ 要把上界收成實際的交接量，得在**剛進段、initial lifecycle 剛跑完**的那一刻
+另存一份快照，並讓直入那側也用六人隊伍。那是下一步。
+
+### 一個已經發生過的假零
+
+第一版忘了「直入要先有隊伍」，於是每一段的 `SavePartyFile` 都失敗，而失敗路徑把
+「漏掉幾格」留在 0。報表印出來是**「16 段比得成、漏掉 0 格」**——和「完全對得上」
+長得一模一樣。
+
+★ 救回來的是**備註欄**：每一段都印了「直入存不出來：…」，一眼就看得出不對。
+⇒ 規則：比較類的報表，**失敗要有自己的欄位，而且不能算進分母**
+（`TestFailedSegmentsAreNotCountedAsComparedZeroes`）。
+
 ## 這個數字證明不了什麼
 
-- **只比一個欄位。** 隊伍、旗標、攜帶物、ECL 記憶體的交接完全沒比。
+- **`LastECL` 那一層只比一個欄位**；旗標、攜帶物、pending transaction 還沒比。
 - 「對得上」是指**編號**對得上，不是指直入之後跑出來的狀態和主線一樣。
 - 主線的轉移是下界（見上）。
 - 5 段沒有事實可比，所以分母的**有效**部分是 18，不是 25。
@@ -83,6 +125,7 @@ requestMusicIfBlockChanged(previous)        // internal/game/music_events.go
 ## 相關
 
 - `cmd/segment-seams`、`docs/audit/segment-seams.md`
+- `cmd/segment-handoff`、`docs/audit/segment-handoff.md`
 - `internal/game/block_edges.go`（`COAB_BLOCK_EDGES`）
 - `internal/segment`：`EnterFrom` 的宣告
 - `TestCommittedSeamReportHasNoMismatch`
