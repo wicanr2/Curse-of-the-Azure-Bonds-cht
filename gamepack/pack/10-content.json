@@ -8817,6 +8817,112 @@
     "BEWARE, A TRAP"
    ],
    "message_id": "myth-drannor.red-plume.trap-warning-alone"
+  },
+  {
+   "id": "world.tavern-tale-13",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 13"
+   ],
+   "message_id": "world.tavern-tale-13"
+  },
+  {
+   "id": "world.tavern-tale-15",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 15"
+   ],
+   "message_id": "world.tavern-tale-15"
+  },
+  {
+   "id": "world.tavern-tale-17",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 17"
+   ],
+   "message_id": "world.tavern-tale-17"
+  },
+  {
+   "id": "world.tavern-tale-20",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 20"
+   ],
+   "message_id": "world.tavern-tale-20"
+  },
+  {
+   "id": "world.tavern-tale-24",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 24"
+   ],
+   "message_id": "world.tavern-tale-24"
+  },
+  {
+   "id": "world.tavern-tale-31",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 31"
+   ],
+   "message_id": "world.tavern-tale-31"
+  },
+  {
+   "id": "world.tavern-tale-43",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 43"
+   ],
+   "message_id": "world.tavern-tale-43"
+  },
+  {
+   "id": "world.tavern-tale-45",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 45"
+   ],
+   "message_id": "world.tavern-tale-45"
+  },
+  {
+   "id": "world.tavern-tale-52",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 52"
+   ],
+   "message_id": "world.tavern-tale-52"
+  },
+  {
+   "id": "world.tavern-tale-56",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 56"
+   ],
+   "message_id": "world.tavern-tale-56"
+  },
+  {
+   "id": "world.tavern-tale-59",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 59"
+   ],
+   "message_id": "world.tavern-tale-59"
+  },
+  {
+   "id": "world.tavern-tale-3",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 3"
+   ],
+   "message_id": "world.tavern-tale-3"
+  },
+  {
+   "id": "world.tavern-tale-9",
+   "all_contains": [
+    "YOU OVERHEAR TAVERN TALE 9"
+   ],
+   "message_id": "world.tavern-tale-9"
+  },
+  {
+   "id": "world.tavern.and-what-can-i-get-you",
+   "all_contains": [
+    "AND WHAT CAN I GET YOU?"
+   ],
+   "message_id": "world.tavern.and-what-can-i-get-you"
+  },
+  {
+   "id": "myth-drannor.rakshasa-tithe",
+   "all_contains": [
+    "THE RAKSHASA REPLIES",
+    "PAY ME A TITHE"
+   ],
+   "message_id": "myth-drannor.rakshasa-tithe"
   }
  ],
  "option_rules": [

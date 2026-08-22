@@ -73,7 +73,14 @@ func TestTilvertonRouteIsWalkableAndLocalized(t *testing.T) {
 			t.Fatalf("段註冊表裡沒有 %s", id)
 		}
 		t.Run(id, func(t *testing.T) {
-			cells := walkTilvertonSegment(t, blocks, catalog, seg, messages)
+			// 每一種選單策略各走一遍：格子累積在 `campaignVisitedCells` 裡，
+			// 所以是聯集（spec 1193）。
+			cells := 0
+			for _, pick := range []int{0, 1, 2, -1} {
+				if walked := walkTilvertonSegmentWith(t, pick, blocks, catalog, seg, messages); walked > cells {
+					cells = walked
+				}
+			}
 			// ⚠ 正對照：走不到東西的話下面的語系檢查會**正確地通過**，
 			// 因為它一句話都沒收到。先擋住這種假綠。
 			if cells < 8 {
@@ -123,7 +130,12 @@ func TestTilvertonRouteIsWalkableAndLocalized(t *testing.T) {
 // walkTilvertonSegment 進段之後從落點做廣度優先，回傳走到的格子數。
 // 沿路把玩家看得到的字收進 messages，並把 (block, 地形碼) 記進
 // campaignVisitedCells 讓可達性盤點看得到。
-func walkTilvertonSegment(t *testing.T, blocks map[uint8][]byte, catalog geo.Catalog,
+// walkTilvertonSegment 走一遍。`pick` 是選單策略（`-1` ＝ 最後一項）。
+//
+// ★ 為什麼要跑好幾種：**單一策略的結果看起來都很合理**，但每一種都會被某一類
+// 岔路擋住——選第一項會被收費關卡擋在門外（下水道的奧提尤格要食物），
+// 選最後一項會在「要離開嗎」那種提示上直接走人（spec 1193）。
+func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, catalog geo.Catalog,
 	seg segment.Segment, messages map[string]bool) int {
 	t.Helper()
 	state := NewStateFromECLBlocks(trainingTestCatalog(t), blocks, seg.Block)
@@ -179,6 +191,13 @@ func walkTilvertonSegment(t *testing.T, blocks map[uint8][]byte, catalog geo.Cat
 				continue
 			}
 			choice := 0
+			if count := len(state.Choices); count > 0 {
+				if pick < 0 || pick >= count {
+					choice = count - 1
+				} else {
+					choice = pick
+				}
+			}
 			if state.Mode == ModePlace && len(state.Choices) > 0 {
 				choice = len(state.Choices) - 1
 			}

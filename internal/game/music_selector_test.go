@@ -1,6 +1,8 @@
 package game
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
@@ -83,4 +85,32 @@ func expectedMusicForBlock(block uint8) ([]string, bool) {
 		return []string{want, pc98TownServicesTrack}, true
 	}
 	return []string{want}, true
+}
+
+// ★ 酒館傳聞的規則是**子字串比對**，而 `MatchText` 先命中先贏——
+// `TAVERN TALE 3` 是 `TAVERN TALE 31` 的子字串。兩位數的規則要是排在一位數後面，
+// 第 31 則就會被第 3 則的規則攔走，**而且兩邊都是合法的傳聞、畫面上看不出錯**。
+//
+// ⚠ 這條測試不是在驗「有沒有譯文」，是在驗**順序**：每一則傳聞餵自己的原文，
+// 都要命中自己那一條。
+func TestTavernTaleRulesDoNotStealEachOther(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	numbers := []int{3, 9, 13, 15, 17, 20, 24, 28, 31, 43, 44, 45, 52, 56, 59, 60}
+	for _, number := range numbers {
+		text := fmt.Sprintf(
+			"AS YOU CONSUME THE LOCAL EXCUSE FOR FOOD AND DRINK, YOU OVERHEAR TAVERN TALE %d", number)
+		result := pack.MatchText([]string{text}, pack.DefaultLocale)
+		if !result.Matched {
+			t.Errorf("第 %d 則傳聞沒有規則命中", number)
+			continue
+		}
+		want := fmt.Sprintf("tavern-tale-%d", number)
+		if !strings.HasSuffix(result.RuleID, want) {
+			t.Errorf("第 %d 則傳聞命中的是 %q，被別條攔走了（要的是 …%s）",
+				number, result.RuleID, want)
+		}
+	}
 }

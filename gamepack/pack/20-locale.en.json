@@ -1503,7 +1503,22 @@
    "dark-elf-caves.girl-escaped-dragons-pursue": "The girl escaped, but the dragons rush after her.",
    "dark-elf-caves.girl-asks-shadowdale-alone": "The girl smiles demurely, “Thank you kind warriors. You have saved me. Return me to Shadowdale, and my father will pay you handsomely.” Will you take her back?",
    "myth-drannor.red-plume.follow-then-warning": "“Follow me.” A whispery voice cries out, “Beware, a trap.”",
-   "myth-drannor.red-plume.trap-warning-alone": "A whispery voice cries out, “Beware, a trap.”"
+   "myth-drannor.red-plume.trap-warning-alone": "A whispery voice cries out, “Beware, a trap.”",
+   "world.tavern-tale-13": "As you consume the local excuse for food and drink, you overhear tavern tale 13: I hear there are Zhentil Keep terror teams in the area.",
+   "world.tavern-tale-15": "As you consume the local excuse for food and drink, you overhear tavern tale 15: Shamblers will smother you if they can grab you. Have to hack them to pieces quickly.",
+   "world.tavern-tale-17": "As you consume the local excuse for food and drink, you overhear tavern tale 17: Plants have a tendency to walk around here. Nastiest are the Shambling Mounds.",
+   "world.tavern-tale-20": "As you consume the local excuse for food and drink, you overhear tavern tale 20: Watch out for falling buildings and sink holes in the rest of the city.",
+   "world.tavern-tale-24": "As you consume the local excuse for food and drink, you overhear tavern tale 24: Dragons have been seen flying overhead. They also infest waterfalls along the river Tesh.",
+   "world.tavern-tale-31": "As you consume the local excuse for food and drink, you overhear tavern tale 31: Halflings are all thieves.",
+   "world.tavern-tale-43": "As you consume the local excuse for food and drink, you overhear tavern tale 43: Some walls and floors are dangerously shaky after Moander's rise from The Pit.",
+   "world.tavern-tale-45": "As you consume the local excuse for food and drink, you overhear tavern tale 45: Cultists of Moander are starting to roam the area again.",
+   "world.tavern-tale-52": "As you consume the local excuse for food and drink, you overhear tavern tale 52: The release of Moander from the Pit was a plot by Zhentil Keep.",
+   "world.tavern-tale-56": "As you consume the local excuse for food and drink, you overhear tavern tale 56: Green robed cultists have been seen around the Pit. They must be pining for Old Moldy.",
+   "world.tavern-tale-59": "As you consume the local excuse for food and drink, you overhear tavern tale 59: A young woman with a purple sash stole the crown jewels from the ruins of the Yulash palace. Rode through the gate and escaped with a man.",
+   "world.tavern-tale-3": "As you consume the local excuse for food and drink, you overhear tavern tale 3: Many soldiers think the Pit is spooky. Some have gone AWOL rather than be put on guard duty there.",
+   "world.tavern-tale-9": "As you consume the local excuse for food and drink, you overhear tavern tale 9: Someone passed through recently with something he was sure would destroy the plants. He was waving a wand about.",
+   "world.tavern.and-what-can-i-get-you": "“And what can I get you?”",
+   "myth-drannor.rakshasa-tithe": "The rakshasa replies, “You are in my domain. Pay me a tithe, or I will feed on your entrails.” Do you pay?"
   }
  },
  "events": []
