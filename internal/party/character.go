@@ -1055,6 +1055,9 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		HasPartyIcon: true, PartyHeadBlock: headBlock, PartyBodyBlock: bodyBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
 		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		DamageBonus: damageBonus,
+		// `BASEATTBLOWS[0]`：半次單位，展開成本回合次數是 `combat.AdjustBlows`
+		// 的事（spec 1180）。
+		AttackBlows: [2]int{c.BaseAttackBlows(), 0},
 		HitDice:     c.HitDice,
 		Dexterity:   uint8(c.Abilities.Dexterity),
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
@@ -1114,6 +1117,20 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 			weaponIndex = index
 			break
 		}
+	}
+	// 彈藥數量是**架著的那一件彈藥**的原始 `+39h`，不是全身彈藥的合計：原作
+	// `overlay-13:0DD9h` 拿的是遠程判斷帶回來的那一個物品節點（spec 808／1180）。
+	// 彈藥在類別表的槽是 11／12（`+17Dh`／`+181h` 兩個彈藥槽，spec 1120）。
+	for _, item := range c.Equipment {
+		if !item.Readied {
+			continue
+		}
+		base, found := catalog.Lookup(item.Type)
+		if !found || (base.Slot != ammunitionSlotA && base.Slot != ammunitionSlotB) {
+			continue
+		}
+		fighter.AmmunitionCount = int(item.Count)
+		break
 	}
 	hasWeapon := false
 	for index, item := range c.Equipment {
@@ -1387,3 +1404,44 @@ func (c Character) turnUndeadLevel() uint8 {
 	}
 	return uint8(c.Level)
 }
+
+// baseAttackBlowsThreshold 是「這個職業到幾級才有一次半」的門檻，
+// 直接抄原作 `overlay-25:042Fh` 那三個分支（原始職業碼 2／3／4）。
+//
+// ⚠ **不要照 AD&D 規則書填**：規則書給聖武士與遊俠的門檻是 8 級，而原作寫的是
+//
+//	職業 2（戰士）  等級 > 6
+//	職業 3（聖武士）等級 > 6   ← 與規則書不同
+//	職業 4（遊俠）  等級 > 7
+//
+// 同一組門檻在同一支裡出現三次（現職業迴圈、前職業迴圈，以及直接查
+// `PREVIOUSLEVEL[2..4]` 的收尾），三處完全一致。
+var baseAttackBlowsThreshold = map[Class]int{
+	ClassFighter: 7,
+	ClassPaladin: 7,
+	ClassRanger:  8,
+}
+
+// BaseAttackBlows 回傳角色的 `BASEATTBLOWS[0]`，單位是**半次**
+//
+//	2  一回合一次（原作的預設值）
+//	3  一回合一次半 → 由 `combat.AdjustBlows` 依回合奇偶展開成 2、1、2、1
+//
+// ★ 原作**只有這兩個值**：整包 overlay 裡寫進 `+11Ch` 的立即數只有 `2` 與 `3`，
+// 沒有任何一處寫 `4`。所以 CoAB 的隊員**永遠到不了一回合兩次**——AD&D 13 級
+// 那一段的進階在這一款沒有實作（spec 1180）。
+func (c Character) BaseAttackBlows() int {
+	blows := 2
+	for class, threshold := range baseAttackBlowsThreshold {
+		if c.ClassLevel(class) >= threshold {
+			blows = 3
+		}
+	}
+	return blows
+}
+
+// 彈藥在物品類別表的兩個槽（角色記錄的 `+17Dh`／`+181h`，spec 1120）。
+const (
+	ammunitionSlotA uint8 = 11
+	ammunitionSlotB uint8 = 12
+)

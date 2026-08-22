@@ -86,3 +86,40 @@ func TestAttacksThisRoundPrefersTheProjectedMissileRate(t *testing.T) {
 		t.Fatalf("架著弓時 ＝ %d，want 2", got)
 	}
 }
+
+// 遠程攻擊次數被剩下的彈藥壓住（spec 808）。
+//
+// ⚠ **數量 0 不會壓成 1**：原作的 `m := 1` 被第二個條件擋掉了。這一格看起來像
+// 疏漏，但照抄才是對的——所以兩邊都釘。
+func TestCapByAmmunition(t *testing.T) {
+	for _, item := range []struct {
+		attacks, count, want int
+	}{
+		{attacks: 2, count: 0, want: 2}, // 沒有數量欄位 ⇒ 不壓
+		{attacks: 2, count: 1, want: 1},
+		{attacks: 4, count: 3, want: 3},
+		{attacks: 2, count: 5, want: 2}, // 彈藥有餘 ⇒ 不動
+		{attacks: 1, count: 1, want: 1},
+	} {
+		if got := capByAmmunition(item.attacks, item.count); got != item.want {
+			t.Errorf("次數 %d、彈藥 %d ＝ %d，want %d",
+				item.attacks, item.count, got, item.want)
+		}
+	}
+}
+
+// 整條走完：架著弓（射速投影成 2 次）而箭只剩 1 支 ⇒ 這一回合只射一次。
+func TestAttacksThisRoundIsCappedByTheReadiedAmmunition(t *testing.T) {
+	battle := blowsBattle(t, [2]int{2, 0})
+	archer := battle.fighters["beast"]
+	archer.AttacksPerTurn = 2
+	archer.AmmunitionCount = 1
+	battle.fighters["beast"] = archer
+	if got := battle.AttacksThisRound(archer); got != 1 {
+		t.Fatalf("剩一支箭時 ＝ %d，want 1", got)
+	}
+	archer.AmmunitionCount = 0
+	if got := battle.AttacksThisRound(archer); got != 2 {
+		t.Fatalf("數量欄位是 0 時 ＝ %d，want 2（原作不壓）", got)
+	}
+}
