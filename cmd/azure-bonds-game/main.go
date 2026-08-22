@@ -3496,6 +3496,8 @@ func main() {
 		"直接進入主線的某一段：ECL{成員}/0x{block}、只給 block 編號、或既有旗標名；給 list 就列出全部")
 	segmentSnapshot := flag.String("segment-snapshot", "",
 		"進到 -segment 指定的那一段之後把存檔寫到這個路徑就結束，供下一段用 -party-load 當入口")
+	segmentHandoff := flag.String("segment-handoff", "",
+		"到達取樣的目錄：進 -segment 之前先鋪上主線在那一段的交接狀態（spec 1195）")
 	flag.Parse()
 	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
@@ -3786,6 +3788,17 @@ func main() {
 			if err := state.FinishCharacterCreation(); err != nil {
 				log.Fatal(err)
 			}
+		}
+		// ★ 分段驗收預設從**合成的乾淨狀態**進場，而主線走到那一段時帶著一整包
+		// 劇情旗標——實測每一段都有那一段自己的碼會讀、而直入沒有的格子。
+		// `-segment-handoff` 把量到的交接狀態鋪回來，驗的才是主線會遇到的情況
+		// （spec 1195）。
+		if *segmentHandoff != "" {
+			memory, err := loadArrivalSample(*segmentHandoff, chosenSegment.Block)
+			if err != nil {
+				log.Fatalf("-segment-handoff：%v", err)
+			}
+			state.SeedHandoffMemory(memory)
 		}
 		if err := state.EnterSegment(*chosenSegment); err != nil {
 			log.Fatalf("-segment %s 進不去：%v", chosenSegment.ID, err)

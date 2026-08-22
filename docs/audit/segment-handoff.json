@@ -4,6 +4,12 @@
  "total_dropped": 1132,
  "total_risky": 251,
  "risky_segments": 20,
+ "seeded_dropped": 62,
+ "seeded_risky": 39,
+ "seeded_risky_segments": 18,
+ "residue_engine_set": 10,
+ "residue_view_cell": 18,
+ "residue_other": 11,
  "from_arrival": 19,
  "from_inside": 1,
  "failed": 0,
@@ -24,6 +30,10 @@
     32635,
     32636,
     32758
+   ],
+   "seeded_dropped": 3,
+   "seeded_risky": [
+    32634
    ],
    "source": "arrival"
   },
@@ -49,6 +59,14 @@
     32634,
     32758
    ],
+   "seeded_dropped": 8,
+   "seeded_risky": [
+    19442,
+    19611,
+    19613,
+    19617,
+    32633
+   ],
    "source": "arrival"
   },
   {
@@ -57,6 +75,11 @@
    "campaign_cells": 8,
    "dropped": 2,
    "risky": [
+    49230,
+    49231
+   ],
+   "seeded_dropped": 2,
+   "seeded_risky": [
     49230,
     49231
    ],
@@ -72,6 +95,11 @@
     32466,
     32467,
     32481,
+    49227,
+    49231
+   ],
+   "seeded_dropped": 2,
+   "seeded_risky": [
     49227,
     49231
    ],
@@ -99,6 +127,11 @@
     49229,
     49231
    ],
+   "seeded_dropped": 3,
+   "seeded_risky": [
+    32457,
+    49231
+   ],
    "source": "arrival"
   },
   {
@@ -124,6 +157,11 @@
     49229,
     49231
    ],
+   "seeded_dropped": 3,
+   "seeded_risky": [
+    32457,
+    49231
+   ],
    "source": "arrival"
   },
   {
@@ -143,6 +181,10 @@
     32530,
     32634,
     32635,
+    49231
+   ],
+   "seeded_dropped": 2,
+   "seeded_risky": [
     49231
    ],
    "source": "arrival"
@@ -166,6 +208,11 @@
     32642,
     49231
    ],
+   "seeded_dropped": 3,
+   "seeded_risky": [
+    19442,
+    49231
+   ],
    "source": "arrival"
   },
   {
@@ -185,6 +232,11 @@
     32486,
     32633,
     32635,
+    49231
+   ],
+   "seeded_dropped": 3,
+   "seeded_risky": [
+    19442,
     49231
    ],
    "source": "arrival"
@@ -207,6 +259,10 @@
     32758,
     49231
    ],
+   "seeded_dropped": 2,
+   "seeded_risky": [
+    49231
+   ],
    "source": "arrival"
   },
   {
@@ -226,6 +282,11 @@
     49227,
     49228,
     49229,
+    49231
+   ],
+   "seeded_dropped": 2,
+   "seeded_risky": [
+    19442,
     49231
    ],
    "source": "arrival"
@@ -250,6 +311,12 @@
     32635,
     49231
    ],
+   "seeded_dropped": 3,
+   "seeded_risky": [
+    19442,
+    49227,
+    49231
+   ],
    "source": "arrival"
   },
   {
@@ -268,6 +335,7 @@
     49227,
     49228
    ],
+   "seeded_dropped": 1,
    "source": "arrival"
   },
   {
@@ -279,6 +347,15 @@
     19451,
     19550,
     19552,
+    31928,
+    32000,
+    32530,
+    32633,
+    32634
+   ],
+   "seeded_dropped": 12,
+   "seeded_risky": [
+    19451,
     31928,
     32000,
     32530,
@@ -305,6 +382,10 @@
     32758,
     49231
    ],
+   "seeded_dropped": 1,
+   "seeded_risky": [
+    49231
+   ],
    "source": "arrival"
   },
   {
@@ -324,6 +405,11 @@
     32634,
     32635,
     32636,
+    49231
+   ],
+   "seeded_dropped": 3,
+   "seeded_risky": [
+    19442,
     49231
    ],
    "source": "arrival"
@@ -355,6 +441,10 @@
     49229,
     49231
    ],
+   "seeded_dropped": 2,
+   "seeded_risky": [
+    49231
+   ],
    "source": "arrival"
   },
   {
@@ -380,6 +470,10 @@
     32635,
     32637,
     32642,
+    49231
+   ],
+   "seeded_dropped": 1,
+   "seeded_risky": [
     49231
    ],
    "source": "arrival"
@@ -411,6 +505,12 @@
     49228,
     49231
    ],
+   "seeded_dropped": 4,
+   "seeded_risky": [
+    19442,
+    32469,
+    49231
+   ],
    "source": "arrival"
   },
   {
@@ -437,6 +537,7 @@
     49227,
     49228
    ],
+   "seeded_dropped": 2,
    "source": "arrival"
   }
  ]

@@ -54,6 +54,11 @@ type handoffRow struct {
 	Dropped int `json:"dropped"`
 	// Risky 是 Dropped 之中**這一段的碼真的會讀**的那些。
 	Risky []uint16 `json:"risky,omitempty"`
+	// SeededDropped／SeededRisky 是**把交接狀態鋪回直入那側之後**還剩多少。
+	// ★ 這是修法的效果：`State.SeedHandoffMemory` 讓分段驗收從主線真實的交接
+	// 狀態進場，而不是合成的乾淨狀態。
+	SeededDropped int      `json:"seeded_dropped"`
+	SeededRisky   []uint16 `json:"seeded_risky,omitempty"`
 	// Source 是主線那一份的取樣點：`arrival`（剛換到那一段）或 `inside`
 	// （第一次站上地城，晚一些）。⚠ 兩者不可混為一談，見 `snapshotMemory`。
 	Source string `json:"source,omitempty"`
@@ -69,6 +74,14 @@ type report struct {
 	TotalRisky   int `json:"total_risky"`
 	// RiskySegments 是「漏掉的格子裡有這一段會讀的」段數。
 	RiskySegments int `json:"risky_segments"`
+	// 鋪上交接狀態之後的同一組數字。
+	SeededDropped       int `json:"seeded_dropped"`
+	SeededRisky         int `json:"seeded_risky"`
+	SeededRiskySegments int `json:"seeded_risky_segments"`
+	// 剩下的差異按成因分：引擎進段時自己設的、由位置推出來的視圖暫存器、其餘。
+	ResidueEngineSet int `json:"residue_engine_set"`
+	ResidueViewCell  int `json:"residue_view_cell"`
+	ResidueOther     int `json:"residue_other"`
 	// FromArrival／FromInside 是取樣點的分佈。⚠ 一定要分開數：`inside` 那幾段
 	// 量到的是「交接 ＋ 主線又走了一段」，混進總數會讓整份報表看起來比實際緊。
 	FromArrival int `json:"from_arrival"`
@@ -114,42 +127,51 @@ func main() {
 		row := handoffRow{ID: item.ID, ReadCells: len(readBy[item.Block]),
 			CampaignCells: len(campaign), Source: source}
 
-		state := game.NewStateFromECLBlocks(catalog, eclBlocks, initialECL)
-		// ⚠ 直入要先有隊伍，`cmd/azure-bonds-game -segment` 也是這樣做的。
-		// 少了這一步 `EnterSegment`／`SavePartyFile` 會失敗，而失敗路徑會讓
-		// 「漏掉幾格」印成 **0**——那個零看起來和「完全對得上」一模一樣。
-		if err := createParty(&state, *partySize); err != nil {
-			row.Note = fmt.Sprintf("建不出隊伍：%v", err)
+		// 跑**兩趟**：不鋪交接狀態（現況）與鋪上（修法）。兩個數字擺在一起，
+		// 「這個修法有沒有用」才不是靠敘述，是靠同一份報表裡的兩欄。
+		plain, err := directMemory(catalog, eclBlocks, initialECL, item, *partySize, nil)
+		if err != nil {
+			row.Note = err.Error()
 			doc.Failed++
 			doc.Rows = append(doc.Rows, row)
 			continue
 		}
-		if err := state.EnterSegment(item); err != nil {
-			row.Note = fmt.Sprintf("直入進不去：%v", err)
-			doc.Failed++
-			doc.Rows = append(doc.Rows, row)
-			continue
-		}
-		// ⚠ 兩側走**同一個存取器**：到達取樣是 `MemorySnapshot()`，這裡也是。
-		// 一邊走存檔編碼器會讓定義域不同（不收 0、程式碼另存），差異暴增兩個
-		// 數量級——而那個數字看起來一樣像個結果。
-		direct := normalise(state.ECLMemorySnapshot())
-		if len(direct) == 0 {
-			row.Note = "直入之後記憶體是空的"
+		seeded, err := directMemory(catalog, eclBlocks, initialECL, item, *partySize, campaign)
+		if err != nil {
+			row.Note = err.Error()
 			doc.Failed++
 			doc.Rows = append(doc.Rows, row)
 			continue
 		}
 		for address, value := range campaign {
-			if direct[address] == value {
-				continue
+			if plain[address] != value {
+				row.Dropped++
+				if readBy[item.Block][address] {
+					row.Risky = append(row.Risky, address)
+				}
 			}
-			row.Dropped++
-			if readBy[item.Block][address] {
-				row.Risky = append(row.Risky, address)
+			if seeded[address] != value {
+				row.SeededDropped++
+				if readBy[item.Block][address] {
+					row.SeededRisky = append(row.SeededRisky, address)
+					switch residueKind(address) {
+					case "engine-set":
+						doc.ResidueEngineSet++
+					case "view-cell":
+						doc.ResidueViewCell++
+					default:
+						doc.ResidueOther++
+					}
+				}
 			}
 		}
 		sort.Slice(row.Risky, func(l, r int) bool { return row.Risky[l] < row.Risky[r] })
+		sort.Slice(row.SeededRisky, func(l, r int) bool { return row.SeededRisky[l] < row.SeededRisky[r] })
+		doc.SeededDropped += row.SeededDropped
+		doc.SeededRisky += len(row.SeededRisky)
+		if len(row.SeededRisky) > 0 {
+			doc.SeededRiskySegments++
+		}
 		doc.Segments++
 		if row.Source == "arrival" {
 			doc.FromArrival++
@@ -180,9 +202,10 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Fprintf(os.Stderr,
-		"segments=%d arrival=%d inside=%d dropped=%d risky=%d riskySegments=%d failed=%d\n",
-		doc.Segments, doc.FromArrival, doc.FromInside,
-		doc.TotalDropped, doc.TotalRisky, doc.RiskySegments, doc.Failed)
+		"segments=%d dropped=%d risky=%d | seeded: dropped=%d risky=%d (engine=%d view=%d other=%d) failed=%d\n",
+		doc.Segments, doc.TotalDropped, doc.TotalRisky,
+		doc.SeededDropped, doc.SeededRisky,
+		doc.ResidueEngineSet, doc.ResidueViewCell, doc.ResidueOther, doc.Failed)
 }
 
 // readAddressesByBlock 收集每個 block 的碼**會讀**的記憶體位址。
@@ -369,6 +392,53 @@ func zipMember(reader *zip.Reader, name string) ([]byte, error) {
 	return nil, fmt.Errorf("%s 不在 image 裡", name)
 }
 
+// directMemory 造一個直入那一段的狀態，回傳正規化過的 ECL 記憶體。
+// `seed` 非 nil 就先把交接狀態鋪上去（`State.SeedHandoffMemory`）。
+//
+// ⚠ 每一趟都要**全新的 State**：鋪過交接狀態的那一個不能重用，否則第二趟量到的
+// 是第一趟的殘留。
+func directMemory(catalog locale.Catalog, blocks map[uint8][]byte, initial uint8,
+	item segment.Segment, partySize int, seed map[uint16]uint16) (map[uint16]uint16, error) {
+	state := game.NewStateFromECLBlocks(catalog, blocks, initial)
+	// ⚠ 直入要先有隊伍，`cmd/azure-bonds-game -segment` 也是這樣做的。
+	// 少了這一步 `EnterSegment` 會失敗，而失敗路徑會讓「漏掉幾格」印成 **0**
+	// ——那個零看起來和「完全對得上」一模一樣。
+	if err := createParty(&state, partySize); err != nil {
+		return nil, fmt.Errorf("建不出隊伍：%w", err)
+	}
+	if seed != nil {
+		state.SeedHandoffMemory(seed)
+	}
+	if err := state.EnterSegment(item); err != nil {
+		return nil, fmt.Errorf("直入進不去：%w", err)
+	}
+	// ⚠ 兩側走**同一個存取器**：到達取樣是 `MemorySnapshot()`，這裡也是。
+	// 一邊走存檔編碼器會讓定義域不同（不收 0、程式碼另存），差異暴增兩個
+	// 數量級——而那個數字看起來一樣像個結果。
+	memory := normalise(state.ECLMemorySnapshot())
+	if len(memory) == 0 {
+		return nil, fmt.Errorf("直入之後記憶體是空的")
+	}
+	return memory, nil
+}
+
+// residueKind 把「鋪了交接狀態還是不一樣」的格子按成因分類。
+//
+// ★ 分類的意義：引擎進段時**自己就要設**的格子（`4BF2h` LastECL、`7ED5h`、
+// `7EC9h`）與由隊伍位置推出來的視圖暫存器（`C04Bh`..`C05Fh`，如 `C04Fh`
+// ＝ 牆頂）**本來就不該被交接狀態蓋過去**——它們不是劇情旗標。把它們和真正
+// 剩下來的差異混在一起數，會讓修法看起來比實際差。
+func residueKind(address uint16) string {
+	switch address {
+	case 0x4BF2, 0x7ED5, 0x7EC9:
+		return "engine-set"
+	}
+	if address >= 0xC04B && address <= 0xC05F {
+		return "view-cell"
+	}
+	return "other"
+}
+
 // createParty 造一支隊伍。
 //
 // ⚠ **人數要和主線一樣（六人）**：`cmd/azure-bonds-game -segment` 只造一名，
@@ -408,8 +478,11 @@ func render(doc report) string {
 		"**是上界不是交接量**。\n\n")
 	out.WriteString("★ **隊伍人數不影響這個數字**——量過：直入那側造一名與造六名，" +
 		"每一段的差異格數完全相同。隊伍資料不在 ECL 記憶體裡。\n\n")
-	out.WriteString("| 段 | 取樣點 | 這一段會讀幾格 | 主線走到時有值幾格 | 直入漏掉幾格 | 會讀且漏掉 |\n" +
-		"|---|---|---:|---:|---:|---|\n")
+	out.WriteString("★ **修法在同一份報表裡**：`鋪上交接` 那兩欄是把量到的交接狀態" +
+		"鋪回直入那一側（`State.SeedHandoffMemory`，鋪在 initial lifecycle **之前**）" +
+		"之後還剩多少。有沒有用不靠敘述，靠這兩欄。\n\n")
+	out.WriteString("| 段 | 取樣點 | 這一段會讀幾格 | 主線有值 | 直入差 | 會讀且差 | 鋪上交接後差 | 鋪上後會讀且差 |\n" +
+		"|---|---|---:|---:|---:|---|---:|---|\n")
 	for _, row := range doc.Rows {
 		risky := "—"
 		if len(row.Risky) > 0 {
@@ -428,14 +501,33 @@ func render(doc report) string {
 		} else if source == "inside" {
 			source = "⚠ 站上地城"
 		}
-		fmt.Fprintf(&out, "| `%s` | %s | %d | %d | %d | %s |\n",
-			row.ID, source, row.ReadCells, row.CampaignCells, row.Dropped, risky)
+		seededRisky := "—"
+		if len(row.SeededRisky) > 0 {
+			parts := make([]string, 0, len(row.SeededRisky))
+			for _, address := range row.SeededRisky {
+				parts = append(parts, fmt.Sprintf("`%04Xh`", address))
+			}
+			seededRisky = strconv.Itoa(len(row.SeededRisky)) + "：" + strings.Join(parts, "、")
+		}
+		fmt.Fprintf(&out, "| `%s` | %s | %d | %d | %d | %s | **%d** | %s |\n",
+			row.ID, source, row.ReadCells, row.CampaignCells, row.Dropped, risky,
+			row.SeededDropped, seededRisky)
 	}
 	fmt.Fprintf(&out, "\n合計 %d 段比得成（取樣點：剛換到 %d 段、站上地城 %d 段）："+
 		"直入與主線差 **%d** 格，其中**那一段的碼真的會讀**的有 **%d** 格，"+
 		"分佈在 **%d** 段。\n",
 		doc.Segments, doc.FromArrival, doc.FromInside,
 		doc.TotalDropped, doc.TotalRisky, doc.RiskySegments)
+	fmt.Fprintf(&out, "\n**把交接狀態鋪回直入那一側之後**：差 **%d** 格（原本 %d），"+
+		"其中會讀的 **%d** 格（原本 %d），分佈在 %d 段（原本 %d）。\n\n",
+		doc.SeededDropped, doc.TotalDropped, doc.SeededRisky, doc.TotalRisky,
+		doc.SeededRiskySegments, doc.RiskySegments)
+	fmt.Fprintf(&out, "剩下的 %d 格按成因分：引擎進段時自己設的 **%d**"+
+		"（`4BF2h` LastECL、`7ED5h`、`7EC9h`）、由隊伍位置推出來的視圖暫存器 **%d**"+
+		"（`C04Bh`..`C05Fh`，如 `C04Fh` ＝ 牆頂）、其餘 **%d**。\n\n"+
+		"⚠ 前兩類**本來就不該被交接狀態蓋過去**——它們不是劇情旗標，是引擎自己算的。"+
+		"真正剩下來的是最後那一類。\n",
+		doc.SeededRisky, doc.ResidueEngineSet, doc.ResidueViewCell, doc.ResidueOther)
 	if doc.FromInside > 0 {
 		out.WriteString("\n⚠ 用 `站上地城` 取樣的那幾段是**上界**（見上）。" +
 			"沒有 `剛換到` 的快照通常是因為主線**不是靠換段進去的**——" +

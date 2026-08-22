@@ -189,6 +189,7 @@ type State struct {
 	pendingMusicEvents      []MusicEvent
 	activeMusicTrackID      string
 	musicSwitchOff          bool
+	handoffSeed             map[uint16]uint16
 	soundSwitchOff          bool
 	musicPlaybackSnapshot   *pc98music.TrackPCMStreamSnapshot
 	oneShotPlaybackSnapshot *audiostate.Snapshot
@@ -856,6 +857,42 @@ func (s *State) SetECLSeed(seed int64) {
 
 // SetECLMemoryValue seeds one verified engine/script work word for a
 // reproducible story preview. Normal gameplay obtains these values from ECL.
+// SeedHandoffMemory 設定「下一次進段時要先鋪上的交接狀態」。
+//
+// ★ 存在的理由：分段驗收直入時注入的是**合成的乾淨狀態**，而主線走到那一段時
+// 帶著一整包劇情旗標。實測 20 段裡**每一段**都有那一段自己的碼會讀、而直入沒有
+// 的格子（spec 1195）。有了這一支，分段驗收可以從**主線真實的交接狀態**進場。
+//
+// ⚠ 一次性：`StartStorySegment` 用掉就清掉。留著會讓後面每一次換段都被鋪一遍，
+// 而那些格子屬於**某一段的**交接，不是全域設定。
+//
+// ⚠ 程式碼視窗（`8000h..9DFFh`）不收：那是位元組碼不是狀態，鋪上去等於改程式。
+func (s *State) SeedHandoffMemory(memory map[uint16]uint16) {
+	if len(memory) == 0 {
+		s.handoffSeed = nil
+		return
+	}
+	seed := make(map[uint16]uint16, len(memory))
+	for address, value := range memory {
+		if address >= 0x8000 && address <= 0x9DFF {
+			continue
+		}
+		seed[address] = value
+	}
+	s.handoffSeed = seed
+}
+
+// applyHandoffSeed 把交接狀態鋪上去，然後清掉。
+func (s *State) applyHandoffSeed() {
+	if len(s.handoffSeed) == 0 || s.session == nil {
+		return
+	}
+	for address, value := range s.handoffSeed {
+		s.session.SetMemoryValue(address, value)
+	}
+	s.handoffSeed = nil
+}
+
 // ECLMemorySnapshot 回傳目前這一段看得到的整份 ECL 記憶體。
 //
 // ★ 給接縫盤點用（`cmd/segment-handoff`）：兩側要走**同一個存取器**才比得出東西。
@@ -5488,6 +5525,13 @@ func (s *State) StartStorySegment(blockID, previousBlockID, gameArea uint8, inDu
 	s.Message = ""
 	s.Choices = nil
 	s.currentOriginalChoices = nil
+	// ★ 交接狀態要在 initial lifecycle **之前**鋪上：那條 lifecycle 會讀劇情
+	// 旗標決定要演什麼。鋪在後面的話，lifecycle 已經用錯的旗標跑完了（spec 1195）。
+	//
+	// ⚠ 鋪在下面那三個 `SetMemoryValue` **之前**：`4BF2h`（LastECL）等是這一支
+	// 自己管的，引擎的值要蓋過交接來的舊值。順序反過來會把 LastECL 設成上一段
+	// 存下來的那個，而那個值正是這裡要決定的東西。
+	s.applyHandoffSeed()
 	s.session.SetMemoryValue(0x4BF2, uint16(previousBlockID))
 	s.session.SetMemoryValue(0x7ED5, 0)
 	s.session.SetMemoryValue(0x7EC9, 0)

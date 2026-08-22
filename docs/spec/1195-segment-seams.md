@@ -1,6 +1,6 @@
 # 1195 — 分段驗收的接縫：直入宣告的前一段，和主線實際的前一段
 
-狀態：`READY`（`LastECL` 與整包 ECL 記憶體都有分母與結果；旗標／攜帶物還沒比）
+狀態：`READY`（`LastECL` 與整包 ECL 記憶體都有分母、結果與修法；攜帶物還沒比）
 
 ## 問題
 
@@ -93,6 +93,40 @@ requestMusicIfBlockChanged(previous)        // internal/game/music_events.go
 ★ 意思是：**每一段的直入驗收都缺了那一段自己會讀的狀態。** 這不是說分段驗收
 無效，是說它驗的是「那一段在乾淨狀態下的行為」，不是「主線走到那裡時的行為」。
 
+## 修法：讓分段驗收從真實的交接狀態進場
+
+`State.SeedHandoffMemory(memory)` 設定「下一次進段時要先鋪上的交接狀態」，
+由 `StartStorySegment` 在**載入這一段之後、initial lifecycle 之前**鋪上。
+
+⚠ **順序有兩個地方會錯**：
+
+1. 鋪在 initial lifecycle **之後**沒有用——那條 lifecycle 會讀劇情旗標決定要演
+   什麼，鋪在後面等於它已經用錯的旗標跑完了。
+2. 鋪在 `4BF2h`（LastECL）、`7ED5h`、`7EC9h` 那三個 `SetMemoryValue` **之前**——
+   那三格是進段這一支自己管的，引擎的值要蓋過交接來的舊值。反過來會把 LastECL
+   設成上一段存下來的那個，而那正是這裡要決定的東西。
+
+前端入口是 `-segment-handoff <到達取樣目錄>`。
+
+### 效果（同一份報表的前後兩欄）
+
+| | 直入 | 鋪上交接狀態 |
+|---|---:|---:|
+| 與主線差幾格 | 1,132 | **62** |
+| 其中那一段的碼會讀 | 251 | **39** |
+| 分佈在幾段 | 20 | 18 |
+
+剩下的 39 格按成因分：
+
+| 成因 | 格數 | 該不該補 |
+|---|---:|---|
+| 引擎進段時自己設的（`4BF2h`／`7ED5h`／`7EC9h`）| 10 | **不該**：進段這一支自己管 |
+| 由隊伍位置推出來的視圖暫存器（`C04Bh`..`C05Fh`，如 `C04Fh` ＝ 牆頂）| 18 | **不該**：引擎自己算的 |
+| 歸不了因 | **11** | 這才是真正剩下來的 |
+
+⇒ **251 → 11**。`TestSeedingHandoffClosesMostOfTheGap` 釘住「至少關掉八成」與
+「三類加起來要等於全部」（少一類代表分類漏了一種成因）。
+
 ### 取樣點差很多
 
 第一版用的是段內快照（`inside-block-XX.json`）——那是隊伍**第一次站上該段地城**
@@ -168,6 +202,9 @@ file，然後拿去餵按鍵測試，結果是：
 
 - `cmd/segment-seams`、`docs/audit/segment-seams.md`
 - `cmd/segment-handoff`、`docs/audit/segment-handoff.md`
+- `internal/game/state.go`：`SeedHandoffMemory`／`applyHandoffSeed`
+- `cmd/azure-bonds-game -segment-handoff`
+- `TestSeedingHandoffClosesMostOfTheGap`
 - `internal/game/block_edges.go`（`COAB_BLOCK_EDGES`）
 - `internal/segment`：`EnterFrom` 的宣告
 - `TestCommittedSeamReportHasNoMismatch`

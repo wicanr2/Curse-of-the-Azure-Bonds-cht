@@ -309,6 +309,41 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/azure-bonds-game/keys.go",
+      "function": "loadArrivalSample",
+      "sha256": "08dac61fa54f225e745bc0fbc478ac2acc146181506ca3f33a8aef0ba6e2d79a",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/keys.go",
+      "function": "loadArrivalSample",
+      "sha256": "10fe7782f115601d4184a42b27cefe58511a3f5e95566f38bb50dd40a401cedf",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/keys.go",
+      "function": "loadArrivalSample",
+      "sha256": "11c612e118eefccaf437e2fad14348b6b6544d1d6c70ed4a92465ccad03ba591",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/keys.go",
+      "function": "loadArrivalSample",
+      "sha256": "a00d90de1b46e29ed8fa96e5d1922bac7b532647e50af8e4bf97cc7b381af55e",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "main",
+      "sha256": "20ed0dcbbb0861c60fcce36a36c2a4766c70e1685ff814b5db084aa53dbaf73f",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
       "path": "cmd/azure-bonds-game/main.go",
       "function": "main",
       "sha256": "70cfc7b45f7fc65e265f15ee9780721953d115a928445e5e66615e4a8fd163b0",
@@ -9579,6 +9614,27 @@
     },
     {
       "path": "cmd/segment-handoff/main.go",
+      "function": "directMemory",
+      "sha256": "3cd21f238059910d8b053570e1a1a207022d94034d7cbad6e996c69fd0778be7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "directMemory",
+      "sha256": "a085e513f65bf0dba059b7a6e4dcc6540bd06f2652eaa64d4f0f4d3b9f1faf37",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "directMemory",
+      "sha256": "c28594bfaffdfa56876d9275a8d2b56c354b90a0f0ccb4accec7b1a32d2547be",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
       "function": "loadECLBlocks",
       "sha256": "e201a34780b4deacddf418f196644455e736966dbe56d2991ce9d0b092a2570c",
       "occurrences": 1,
@@ -9629,28 +9685,14 @@
     {
       "path": "cmd/segment-handoff/main.go",
       "function": "main",
-      "sha256": "a085e513f65bf0dba059b7a6e4dcc6540bd06f2652eaa64d4f0f4d3b9f1faf37",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/segment-handoff/main.go",
-      "function": "main",
       "sha256": "c2472b3d6b25d0552dd2b461e973f24fbb572477398bcb1b354c64db321b2d7d",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/segment-handoff/main.go",
-      "function": "main",
-      "sha256": "e64c0c9cba6c973ebaae316c43b63fc0b26cf3939375a959359cd58003304a2e",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/segment-handoff/main.go",
-      "function": "main",
-      "sha256": "eff3aa54ca934d0abf9709c734345696d368ce7c142fb3823846ef22a7fcf9d5",
+      "function": "render",
+      "sha256": "05873f538440c8e95a6962485182832cc9f2e5bac2b201d41f9133ff853d0076",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -9679,6 +9721,13 @@
       "path": "cmd/segment-handoff/main.go",
       "function": "render",
       "sha256": "2628b6dcd71fd43fbea2d95a81cee5681e42cccf445755339fa63703cde81e2c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
+      "sha256": "2854ed0a6ab5065952690b942b145c55720e478c984243411faad74c672192c6",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -9720,6 +9769,13 @@
     {
       "path": "cmd/segment-handoff/main.go",
       "function": "render",
+      "sha256": "39db215a70feab3321a4ed7b51015156e124607be891c90df82a3b4155ac4f3a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
       "sha256": "3bceddd7c6b54685f8f41ab06fafba9e2d9c5d53e7ad9b5e5be507e4f416c4d4",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -9735,13 +9791,6 @@
       "path": "cmd/segment-handoff/main.go",
       "function": "render",
       "sha256": "41700d4e55a0621d518f23d339c4a6f3918c9b91a346b56b5e70ff12f761d9db",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/segment-handoff/main.go",
-      "function": "render",
-      "sha256": "43be6b389af4036f5f54bb7f681aadbb8efedb61d7e10a9fa419e9be0a93cef5",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -9797,6 +9846,27 @@
     {
       "path": "cmd/segment-handoff/main.go",
       "function": "render",
+      "sha256": "78c328b7540d069d241335fbbd096fa1d7816328ebd5b98d6f1c8507af300dbe",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
+      "sha256": "7e2c91d6ed9772704bbc95b669ae1f0461b7354ba05a0af53a417401418cdfcc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
+      "sha256": "82d1e13e0983fa268e431c108fbcd85a26f28531ddeec0b8aa18765317274002",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
       "sha256": "95349d4856f771eab7bf241fcb9c533a1f52f7f6abc284c0deecd8d54d2c67a8",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -9812,6 +9882,20 @@
       "path": "cmd/segment-handoff/main.go",
       "function": "render",
       "sha256": "a10baf9369e2c20df2610847a765c05a5852e319862ddc1a30aa7ed60ea0a2a1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
+      "sha256": "acd63dd5e66fc6b94b948319ba5645fa58ae47e1eeda2cf85e3e0f377a0c3c27",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
+      "sha256": "bd479e441fc96388d8f5ad21a75d2b1176cfb0e43e64dfbfe155f64ec67b61dd",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -9839,6 +9923,13 @@
     {
       "path": "cmd/segment-handoff/main.go",
       "function": "render",
+      "sha256": "d916b8f42e7f8b89654bac192e5e2aa26e1c82d61df24d452b7fae527d5fde6f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
       "sha256": "dcd46adce27b17954331dc0e787968db16af31e69c53fd7308c54cdb2478b32e",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -9847,6 +9938,20 @@
       "path": "cmd/segment-handoff/main.go",
       "function": "render",
       "sha256": "e8e7d88ec22a578dac81b7bdc506a7c49786933ab579b8abdb79cd75aa534f96",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
+      "sha256": "f05ea5517a682bce1a7bf446345e582e49346ca4fc3bb98b02a2cf8d8b780f57",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/segment-handoff/main.go",
+      "function": "render",
+      "sha256": "f7050f1cc9031e4b45705f726f37f580f34a59c604cfee908132047b601a87f3",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

@@ -1,6 +1,12 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strconv"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -77,4 +83,39 @@ func (a *app) globalAudioKeys() bool {
 // combatAltPressed 是戰鬥選單的修飾鍵（Alt ＝ 那一項的「進階」版本）。
 func (a *app) combatAltPressed() bool {
 	return a.keyDown(ebiten.KeyAltLeft) || a.keyDown(ebiten.KeyAltRight)
+}
+
+// loadArrivalSample 讀「換段那一刻」的 ECL 記憶體取樣（`cmd/segment-handoff`
+// 那一套，`COAB_ARRIVAL_SNAPSHOT_DIR` 產）。
+//
+// ⚠ 這個檔**不是存檔**：取樣點在指令執行到一半的地方，載回來當存檔用會解不出
+// 指令。它只有記憶體，而 `-segment-handoff` 要的正是記憶體（spec 1195）。
+func loadArrivalSample(dir string, block uint8) (map[uint16]uint16, error) {
+	path := filepath.Join(dir, fmt.Sprintf("arrival-block-%02X.json", block))
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("讀不到 %s：%w", path, err)
+	}
+	var file struct {
+		Schema string            `json:"schema"`
+		Memory map[string]uint16 `json:"memory"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		return nil, fmt.Errorf("%s 解不開：%w", path, err)
+	}
+	if file.Schema != "coab-arrival-sample/1" {
+		return nil, fmt.Errorf("%s 的 schema 是 %q，不是到達取樣", path, file.Schema)
+	}
+	out := make(map[uint16]uint16, len(file.Memory))
+	for key, value := range file.Memory {
+		address, err := strconv.ParseUint(key, 10, 16)
+		if err != nil {
+			continue
+		}
+		out[uint16(address)] = value
+	}
+	if len(out) == 0 {
+		return nil, fmt.Errorf("%s 裡沒有記憶體", path)
+	}
+	return out, nil
 }

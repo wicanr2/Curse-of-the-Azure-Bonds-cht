@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"encoding/json"
+	"os"
+	"testing"
+)
 
 // ★ 這條守的是一個**已經發生過**的錯：第一版忘了先造隊伍，於是每一段的
 // `EnterSegment`／`SavePartyFile` 都失敗，而失敗路徑把「漏掉幾格」留在 0。
@@ -43,4 +47,34 @@ func contains(haystack, needle string) bool {
 		}
 	}
 	return false
+}
+
+// ★ 這條守的是**修法有效**這件事本身：把交接狀態鋪回直入那一側之後，
+// 「這一段的碼會讀、而直入沒有」的格子必須大幅減少，而且剩下的多數要能歸因
+// （引擎自己設的、由位置推出來的視圖暫存器）。
+//
+// ⚠ 讀 committed 的報表：它是離線產的（要先跑主線錄到達取樣）。檔案不在就跳過。
+func TestSeedingHandoffClosesMostOfTheGap(t *testing.T) {
+	raw, err := os.ReadFile("../../docs/audit/segment-handoff.json")
+	if err != nil {
+		t.Skip("還沒產出交接報表")
+	}
+	var doc report
+	if err := json.Unmarshal(raw, &doc); err != nil {
+		t.Fatal(err)
+	}
+	if doc.Segments == 0 || doc.TotalRisky == 0 {
+		t.Fatalf("報表看起來是空的：segments=%d risky=%d", doc.Segments, doc.TotalRisky)
+	}
+	if doc.SeededRisky >= doc.TotalRisky {
+		t.Fatalf("鋪上交接狀態之後沒有變好：%d → %d", doc.TotalRisky, doc.SeededRisky)
+	}
+	// 至少要關掉八成，否則這個修法不值得留在進段路徑上。
+	if doc.SeededRisky*5 > doc.TotalRisky {
+		t.Fatalf("只關掉 %d／%d，不到八成", doc.TotalRisky-doc.SeededRisky, doc.TotalRisky)
+	}
+	// 剩下的要對得起來：三類加起來就是全部，否則分類漏了一種成因。
+	if sum := doc.ResidueEngineSet + doc.ResidueViewCell + doc.ResidueOther; sum != doc.SeededRisky {
+		t.Fatalf("殘差分類 %d 加起來不等於 %d：漏了一種成因", sum, doc.SeededRisky)
+	}
 }
