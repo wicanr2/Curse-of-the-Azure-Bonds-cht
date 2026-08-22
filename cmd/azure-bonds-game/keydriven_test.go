@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -11,6 +12,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 // keyDrivenApp 建一個**只有 `Update()` 需要的欄位**的 app，狀態走的是和正式
@@ -45,6 +47,17 @@ func keyDrivenApp(t *testing.T) (*app, *scriptedKeys) {
 		t.Fatal(err)
 	}
 	state.SetGeoCatalog(geoCatalog)
+	// ⚠ 寶物與物品表也要載：主線快照裡有一半的段會在走動時開出寶物，
+	// 少了它 `TREASURE` 會直接回錯（`item block 0x05 for area 2 is not loaded`），
+	// 而那看起來像「輸入層壞了」，其實是**測試自己少載資料**。
+	if itemData, itemErr := zipMember(imagePath, "ITEMS"); itemErr == nil {
+		if catalog, parseErr := monster.ParseBaseItems(itemData); parseErr == nil {
+			state.SetItemCatalog(catalog)
+		}
+	}
+	if blocks, blockErr := loadTreasureItemBlocks(imagePath); blockErr == nil {
+		state.SetTreasureItemBlocks(blocks)
+	}
 	keys := newScriptedKeys()
 	return &app{state: &state, keys: keys, geoCatalog: geoCatalog}, keys
 }
@@ -512,5 +525,145 @@ func TestKeyDrivenDiagnose(t *testing.T) {
 		}
 		t.Logf("幀%02d (%d,%d) 朝%d 北%v 東%v 南%v 西%v block=0x%02X",
 			frame, x, y, dir, can[0], can[1], can[2], can[3], application.geoBlock)
+	}
+}
+
+// ★ 這條把「按鍵到不到得了劇情」從**開場**擴到**整條主線**。
+//
+// 開場那條（`TestKeysDriveARealSessionFromTheTitle`）證明的是遊戲開得起來、
+// 前幾段按得動。但主線後面那些段——猶拉什地下、散提爾堡、眼魔洞穴、密斯卓諾——
+// 前端的 `Update()` 從來沒有在那些狀態下被跑過：戰役測試直接呼叫 `state.X()`。
+//
+// 主線在各段落存下來的快照就是那些狀態。這一條把每一份**讀進真的 app**，
+// 用**按鍵**推它，確認：推得動、走得動、而且演出來的字沒有落回原文。
+//
+// ⚠ 這**不是**「按鍵從頭玩到結局」：每一份是各自載入的，不是一條連續的 session。
+// 它證明的是**那些狀態下輸入層是活的**，不是「一路按過去到得了」。
+func TestKeysDriveEveryCampaignSnapshot(t *testing.T) {
+	dir := os.Getenv("COAB_CAMPAIGN_SNAPSHOT_DIR")
+	if dir == "" {
+		t.Skip("設 COAB_CAMPAIGN_SNAPSHOT_DIR 指向主線快照目錄才跑")
+	}
+	if !filepath.IsAbs(dir) {
+		dir = filepath.Join("..", "..", dir)
+	}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Skipf("讀不到快照目錄：%v", err)
+	}
+	names := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		if strings.HasSuffix(entry.Name(), ".json") {
+			names = append(names, entry.Name())
+		}
+	}
+	sort.Strings(names)
+	if len(names) == 0 {
+		t.Skip("快照目錄是空的")
+	}
+
+	driven, fallbacks := 0, map[string]string{}
+	// ★ 已知的**變數插入**頁：那一頁印的是玩家自己取的隊員名字（`0x147B` 的
+	// `7C00h` 插入點），固定譯文會把名字吃掉——所以規則層**故意不接**它，
+	// 與 `gamepack` 的變數插入台帳（`TestVariableInsertPagesAreWiredAtRuntime`
+	// 的 `隊員名字` 那一列）是同一個判斷。
+	//
+	// ⚠ 這份清單**故意很短而且不會自動長大**：任何**新的**英文落回照樣讓測試紅。
+	// 它擋的是已知的量法限制，不是拿來讓報表好看的。
+	knownVariableInsert := map[string]bool{
+		"THE SPHERE MOVES TOWARD THE OPPOSING MAGE.": true,
+	}
+	for _, name := range names {
+		application, keys := keyDrivenApp(t)
+		if err := application.state.LoadPartyFile(filepath.Join(dir, name)); err != nil {
+			t.Errorf("%s 讀不回來：%v", name, err)
+			continue
+		}
+		// 先用按鍵把畫面推到可操作狀態，再走幾步。
+		moved := false
+		for frame := 0; frame < 60; frame++ {
+			state := application.state
+			for _, text := range []string{state.Message, state.Prompt} {
+				trimmed := strings.TrimSpace(text)
+				if trimmed != "" && !hasHan(trimmed) && hasLatinWord(trimmed) &&
+					!knownVariableInsert[trimmed] {
+					fallbacks[trimmed] = name
+				}
+			}
+			// ⚠ 簽章要帶**朝向**：地城裡面對牆時按 M 只轉身，座標與訊息都不變，
+			// 少了朝向會把「轉身」判成「沒有反應」——而那正是地城裡最常見的一步。
+			_, _, facing := state.DungeonGeometryView()
+			before := fmt.Sprintf("%v/%d/%d/%d/%q",
+				state.Mode, state.DungeonX, state.DungeonY, facing, state.Message)
+			key := ebiten.KeyEnter
+			if state.Mode == game.ModeDungeon {
+				key = ebiten.KeyUp
+				if application.geoGrid != nil && !application.canStepForward() {
+					key = ebiten.KeyM
+				}
+			}
+			tap(t, application, keys, key)
+			after := application.state
+			_, _, afterFacing := after.DungeonGeometryView()
+			if fmt.Sprintf("%v/%d/%d/%d/%q",
+				after.Mode, after.DungeonX, after.DungeonY, afterFacing, after.Message) != before {
+				moved = true
+			}
+		}
+		if !moved {
+			t.Errorf("%s：按了 60 幀完全沒有反應——那個狀態下輸入層是死的", name)
+			continue
+		}
+		driven++
+	}
+	if len(fallbacks) > 0 {
+		for text, name := range fallbacks {
+			t.Errorf("按鍵推到的畫面落回原文（%s）：%q", name, text)
+		}
+	}
+	t.Logf("按鍵推得動的快照 %d／%d，落回原文 %d 句", driven, len(names), len(fallbacks))
+	if path := os.Getenv("COAB_KEY_SNAPSHOT_JSON"); path != "" {
+		report := struct {
+			Schema    string `json:"schema"`
+			Snapshots int    `json:"snapshots"`
+			Driven    int    `json:"driven"`
+			Fallbacks int    `json:"fallbacks"`
+			Known     int    `json:"known_variable_insert"`
+		}{
+			Schema: "coab-key-driven-snapshots/1", Snapshots: len(names), Driven: driven,
+			Fallbacks: len(fallbacks), Known: len(knownVariableInsert),
+		}
+		encoded, err := json.MarshalIndent(report, "", " ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !filepath.IsAbs(path) {
+			path = filepath.Join("..", "..", path)
+		}
+		if err := os.WriteFile(path, append(encoded, '\n'), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+func TestKeyDrivenSnapshotDiagnose(t *testing.T) {
+	if os.Getenv("COAB_KEY_EXPLORE") == "" {
+		t.Skip("診斷用")
+	}
+	dir := filepath.Join("..", "..", os.Getenv("COAB_CAMPAIGN_SNAPSHOT_DIR"))
+	for _, name := range []string{"inside-block-43.json", "inside-block-10.json", "inside-block-01.json"} {
+		application, keys := keyDrivenApp(t)
+		if err := application.state.LoadPartyFile(filepath.Join(dir, name)); err != nil {
+			t.Logf("%s 讀不回來：%v", name, err)
+			continue
+		}
+		s := application.state
+		t.Logf("%s 載入後：mode=%s grid=%v geoBlock=%02X msg=%.30q choices=%d",
+			name, modeName(s.Mode), application.geoGrid != nil, application.geoBlock,
+			s.Message, len(s.Choices))
+		tap(t, application, keys, ebiten.KeyEnter)
+		s = application.state
+		t.Logf("   按 Enter 後：mode=%s grid=%v msg=%.30q",
+			modeName(s.Mode), application.geoGrid != nil, s.Message)
 	}
 }

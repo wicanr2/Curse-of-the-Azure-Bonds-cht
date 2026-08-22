@@ -1518,7 +1518,15 @@
    "world.tavern-tale-3": "你們無意間聽見一則酒館傳聞：不少士兵覺得深坑那裡邪門，寧可當逃兵也不願被派去守衛。",
    "world.tavern-tale-9": "你們無意間聽見一則酒館傳聞：最近有個人經過這裡，說他手上的東西能滅掉那些植物，一路揮著一根魔杖。",
    "world.tavern.and-what-can-i-get-you": "「那，要為各位送上什麼？」",
-   "myth-drannor.rakshasa-tithe": "羅剎妖回答：「你們踏進了我的地盤。交出買路財，否則我就吃了你們的內臟。」你們要付嗎？"
+   "myth-drannor.rakshasa-tithe": "羅剎妖回答：「你們踏進了我的地盤。交出買路財，否則我就吃了你們的內臟。」你們要付嗎？",
+   "wizard-tower.sphere-distance-10": "光球離紅袍法師只剩 10 呎。",
+   "wizard-tower.sphere-distance-20": "光球離紅袍法師只剩 20 呎。",
+   "wizard-tower.sphere-distance-30": "光球離紅袍法師只剩 30 呎。",
+   "wizard-tower.sphere-distance-40": "光球離紅袍法師只剩 40 呎。",
+   "wizard-tower.sphere-distance-50": "光球離紅袍法師只剩 50 呎。",
+   "wizard-tower.sphere-distance-60": "光球離紅袍法師只剩 60 呎。",
+   "wizard-tower.sphere-distance-70": "光球離紅袍法師只剩 70 呎。",
+   "wizard-tower.sphere-opponent-focuses": "對手把心神集中在光球上。"
   }
  },
  "events": []

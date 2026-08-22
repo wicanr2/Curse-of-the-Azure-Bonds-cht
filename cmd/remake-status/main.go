@@ -150,6 +150,18 @@ func main() {
 		add("audio_lifecycle", audio.Sites, len(audio.Actions), audio.Wired, audio.Used)
 	}
 
+	// 按鍵推得動主線的每一個檢查點嗎——「開場到結局」缺的輸入那一層。
+	var keySnapshots struct {
+		Snapshots int `json:"snapshots"`
+		Driven    int `json:"driven"`
+		Fallbacks int `json:"fallbacks"`
+		Known     int `json:"known_variable_insert"`
+	}
+	if readJSON(*auditDir, "key-driven-snapshots.json", &keySnapshots) {
+		add("key_driven_snapshots", keySnapshots.Snapshots, keySnapshots.Driven,
+			keySnapshots.Fallbacks, keySnapshots.Known)
+	}
+
 	var save struct {
 		RecordSize    int            `json:"record_size"`
 		BytesByStatus map[string]int `json:"bytes_by_status"`
