@@ -1549,6 +1549,27 @@
     },
     {
       "path": "cmd/cell-sweep/main.go",
+      "function": "enterFromSnapshot",
+      "sha256": "168af957deb3f02f4b4d997c2258776ebf2b65300c418036914aa3893e8bf3cd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "enterFromSnapshot",
+      "sha256": "25eaa92efb12ee254124cd6bc2c96827ec7a4cdd1776b796940b08ac2b605cdf",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "enterFromSnapshot",
+      "sha256": "c44dec34df4b9f99c1fe0af71072c276d5e712778d7f3a4a211824c5e866b706",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
       "function": "facingName",
       "sha256": "01bc01b32975b903cf2b9402e6307327f5fc72b4ca762ac6de2bb2039f0a4cb3",
       "occurrences": 1,
@@ -1635,6 +1656,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "main",
       "sha256": "6728cf22b7afcb0c045e5c009c0fdd07b870fda1aec118f452b04bf4ec902c79",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "main",
+      "sha256": "72010d5e943b1283e5f7e3c08d32954e40a47e50aa70c75b018b4bad512e1e14",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1845,6 +1873,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "3257b93d5caafec02ac74aaf4be1266dabce6f0425b251952ea201c0a76fe67f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "33894862d14d6ebb8e429eba0001bf6fb4ba5502a0711ed3cc9092810a639886",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -2201,6 +2236,13 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
+      "sha256": "bbdc6360e91c36c06bed340384cd4e8fb83f196edfc7a7d6853725080947cb0c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
       "sha256": "c651cd0dc32b4e7a32df323724573c5987ccc55302e597c7dad1a689ca015251",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -2279,6 +2321,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "e63caf8271240b31e3061368bd3e0d201c71c0907851f44431443974b042f85d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "ee5268c4e060fdc8ff8cb3117b0557b066f01c21aa986ce2f4bc46563878b6d0",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

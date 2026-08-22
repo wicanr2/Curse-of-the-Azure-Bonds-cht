@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"unicode"
 
@@ -76,8 +77,13 @@ type blockSweep struct {
 	geoSet   uint8
 	geoBlock uint8
 	mask     int
-	note     string
-	cells    []cellResult
+	// note ＝「這一段掃不了」的原因。⚠ 渲染時看到它就整段跳過，
+	// **不要拿它放一般註記**——那會讓一段掃得好好的段從報表裡消失，
+	// 而數字只是安靜地少掉。
+	note string
+	// fromSnapshot ＝ 這一段是從主線的段內快照進的（冷進不去）。
+	fromSnapshot bool
+	cells        []cellResult
 }
 
 // corpus 是原版資料（共用的載入流程在 internal/gamecorpus）加上這一支自己的
@@ -98,7 +104,10 @@ func main() {
 	indexJSON := flag.String("index-json", "", "把「逐格試過哪些索引」寫成 JSON（可達性盤點用）")
 	seeds := flag.Int("seeds", 8, "演不出來時要換幾顆 ECL 亂數種子再試")
 	only := flag.String("only", "", "只掃這一段（`ECL4/0x25`）；留白就掃全部")
+	snapshots := flag.String("snapshots", "workplace/campaign-frames/snapshots",
+		"主線段內快照目錄；冷進不去的段改從這裡進（可省略）")
 	flag.Parse()
+	snapshotDir = *snapshots
 
 	data, err := loadCorpus(*image, *localePath, *seeds)
 	if err != nil {
@@ -182,6 +191,10 @@ func sweepBlock(data corpus, seg segment.Segment) blockSweep {
 		sweep.note = "進不去：" + err.Error()
 		return sweep
 	}
+	// ⚠ **不要寫進 `note`**：`note` 的意思是「這一段掃不了」，渲染時看到它就
+	// 整段跳過。把來源註記寫進去會讓一段**掃得好好的**段從報表裡消失，
+	// 而數字只是安靜地少掉——分母從 259 掉回 250 而且沒有任何錯誤訊息。
+	sweep.fromSnapshot = snapshotEntered[seg.ID]
 	for _, index := range dispatch.Indexes {
 		// 索引 0 是「沒有事件的地面」，全圖大半都是它。
 		if index == 0 {
@@ -331,12 +344,25 @@ func playerText(state *game.State) string {
 
 // enterDungeon 建一支盤點用隊伍、直接進段，並把入口的事件／選單／戰鬥推完，
 // 直到停在地城模式上。
+// snapshotDir 是主線段內快照的目錄（`captureInsideSegment` 產生）。設了之後，
+// **冷進不去的段**會改從快照進——巫師塔與魔法商店那兩段的入口是一整段過場，
+// 冷開一支隊伍走完會停在世界地圖，於是它們整段不在分母裡（spec 1193）。
+var snapshotDir string
+
+// snapshotEntered 記著哪些段是**從快照進**的。報表要標明——那些段的隊伍帶著
+// 主線的旗標，和冷進的隊伍不是同一個起點，混在一起讀會高估「冷開就走得到」。
+var snapshotEntered = map[string]bool{}
+
 func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
 	state, err := data.NewParty()
 	if err != nil {
 		return nil, err
 	}
 	if err := state.EnterSegment(seg); err != nil {
+		// 冷進不去就試段內快照。
+		if fromSnapshot, snapErr := enterFromSnapshot(data, seg); snapErr == nil {
+			return fromSnapshot, nil
+		}
 		return nil, fmt.Errorf("進 %s：%w", seg.ID, err)
 	}
 	// ⚠ 盤點用的隊伍一律撐起來：有的段一進去就開打（古熔岩洞的伏擊），臨時建的
@@ -349,8 +375,47 @@ func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
 		return nil, fmt.Errorf("%s 的入口：%w", seg.ID, err)
 	}
 	if state.Mode != game.ModeDungeon {
+		if fromSnapshot, snapErr := enterFromSnapshot(data, seg); snapErr == nil {
+			return fromSnapshot, nil
+		}
 		return nil, fmt.Errorf("進 %s 之後停在%s，不是地城；推進軌跡：%s",
 			seg.ID, modeName(state.Mode), strings.Join(trail, " → "))
+	}
+	return &state, nil
+}
+
+// enterFromSnapshot 從主線的段內快照進這一段。
+//
+// ★ 為什麼要這條路：有些段的入口是**一整段過場**（巫師塔是德拉坎德羅斯那一串、
+// 魔法商店那一段會回到世界地圖），冷開一支隊伍走完會停在世界地圖而不是地城，
+// 於是那些段整段落在分母外——而它們的格子**玩家真的走得到**。
+//
+// ⚠ 快照是主線跑出來的，所以隊伍**帶著那一刻的旗標**。這和冷進的隊伍不同，
+// 報表要標明那一段是從快照進的，不要混在一起讀。
+func enterFromSnapshot(data corpus, seg segment.Segment) (*game.State, error) {
+	if snapshotDir == "" {
+		return nil, fmt.Errorf("沒有指定快照目錄")
+	}
+	path := filepath.Join(snapshotDir, fmt.Sprintf("inside-block-%02X.json", seg.Block))
+	state, err := data.NewParty()
+	if err != nil {
+		return nil, err
+	}
+	if err := state.LoadPartyFile(path); err != nil {
+		return nil, err
+	}
+	snapshotEntered[seg.ID] = true
+	if err := gamecorpus.BoostParty(&state); err != nil {
+		return nil, err
+	}
+	if _, err := settleToDungeon(&state, 16); err != nil {
+		return nil, err
+	}
+	if state.Mode != game.ModeDungeon {
+		return nil, fmt.Errorf("快照讀回來停在%s", modeName(state.Mode))
+	}
+	if block, ok := state.CurrentECLBlockID(); !ok || block != seg.Block {
+		return nil, fmt.Errorf("快照的段是 0x%02X，要的是 0x%02X", block, seg.Block)
 	}
 	return &state, nil
 }
@@ -458,6 +523,11 @@ func render(sweeps []blockSweep) string {
 		if sweep.note != "" {
 			out.WriteString(sweep.note + "\n\n")
 			continue
+		}
+		if sweep.fromSnapshot {
+			out.WriteString("⚠ **這一段是從主線的段內快照進的**（冷開一支隊伍走完入口會停在" +
+				"世界地圖，不是地城）。所以這一段的隊伍**帶著主線那一刻的旗標**，" +
+				"和其他段冷進的隊伍不是同一個起點——不要混在一起讀成「冷開就走得到」。\n\n")
 		}
 		out.WriteString(fmt.Sprintf("地圖：`GEO%d/0x%02X`；索引 ＝ 地形碼 `& 0x%02X`\n\n",
 			sweep.geoSet, sweep.geoBlock, sweep.mask))
