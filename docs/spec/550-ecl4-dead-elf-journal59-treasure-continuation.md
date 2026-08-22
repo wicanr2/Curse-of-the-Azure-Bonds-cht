@@ -41,8 +41,8 @@ runtime trace。
 Entry 59。原始 Adventurer's Journal 的條目 59 地圖圖例還列出門、拱門、動物聲響、
 牛頭人聲響、Dexam 的神殿與祭壇。這些圖例文字以 PDF 與既有 OCR 交叉讀取；文字
 第 553 輪已在中文掃描 `084.jpg` 人工確認完整地圖；標籤與圖例為 `exact`，相對
-拓撲為 `layout-only`。原始地圖仍尚未接入遊戲內 Journal renderer；實際出口 route
-也不能由圖面直接反推座標或牆值。
+拓撲為 `layout-only`。原圖已裁進 `assets/journal/entry-59.png`（883×1000）並由
+遊戲內的手札檢視器顯示；實際出口 route 仍不能由圖面直接反推座標或牆值。
 
 `4C03h=1` 在這條 trace 中保持不變；本規格只記錄該路徑的 raw state，未替其命名。
 同樣地，`4C07h=80h` 只記錄事件寫入，尚未宣稱它是全局地圖或戰鬥規則欄位。
@@ -56,8 +56,9 @@ Entry 59。原始 Adventurer's Journal 的條目 59 地圖圖例還列出門、�
 - State 將無 monster spawn 的 ECL `COMBAT` request 轉為既有戰利品服務邊界。正常
   session 在 `TREASURE_EXIT` 後執行地城 lifecycle，清空暫存物品與選項並回到
   `(13,1,W)`；這是 remake runtime contract，不把它誤稱為原始戰鬥 AI 證據。
-- 手札 59 現先提供可讀的繁中圖例摘要，並明示原始圖像保存於《冒險者手札》。待
-  原圖抽取、版面驗證後再將 bitmap 放入遊戲內，不以合成圖替代原作證據。
+- 手札 59 除了繁中圖例摘要，遊戲內也顯示**原版掃描裁出來的地圖本身**
+  （`assets/journal/entry-59.png`，對應表在 `gamepack/rules/journal-images.json`）。
+  沒有用合成圖替代原作證據。
 
 ## 驗證
 

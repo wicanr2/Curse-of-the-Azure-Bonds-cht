@@ -5371,6 +5371,12 @@
     },
     {
       "path": "internal/party/dos_record_fields.go",
+      "sha256": "694ecdbe15912d4d3c7c8aef35b7e812dbc32a366b86c5a0c702034e70e693d1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/party/dos_record_fields.go",
       "sha256": "6ec628b291608cc0d825d19e69ec339c1eb61a1c5ce011a82da7dad22de949d8",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -5660,12 +5666,6 @@
     {
       "path": "internal/party/dos_record_fields.go",
       "sha256": "f8036258fa4fb7a4f1571d13ef72b1108b2a7901e984063d1da0d1e0b265245a",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/party/dos_record_fields.go",
-      "sha256": "fb66c0da8e2db1e9c320aa98d2120ef863ecc982759588dd9ec91351fb85d7ff",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

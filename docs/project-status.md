@@ -42,8 +42,9 @@ DOS 真實 ECL 則分別保存 treasure、monster descriptor、COMBAT 後 PC 與
 `EXAMINE REMAINS → PICK UP POUCH`。原始 ECL4 block `0x22` 依序產生皮袋、氣體
 陷阱、手札 59 地圖與無 monster spawn 的 `COMBAT` request；CoAB game-pack 以 stable
 `message_id` 解鎖可在遊戲內閱讀的繁中手札 59，State 在 `TREASURE_EXIT` 後保留同一
-洞穴 `(13,1,W)`，沒有座標注入或推測性搜尋邊。原始地圖 bitmap 尚未接入 Journal
-renderer，Dexam、出口與後續主線也尚未在同一 session 閉合。舊 `(15,1)` 搜尋邊維持
+洞穴 `(13,1,W)`，沒有座標注入或推測性搜尋邊。原版地圖 bitmap 已接進 Journal
+renderer（`assets/journal/entry-59.png`）；Dexam、出口與後續主線尚未在同一
+session 閉合。舊 `(15,1)` 搜尋邊維持
 `strong inference`，不再列為 normal-path 證據。完整範圍見
 [`spec 550`](spec/550-ecl4-dead-elf-journal59-treasure-continuation.md)。
 
