@@ -3882,6 +3882,20 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
+      "sha256": "0de6dfdc44e3aafa642c679e5bc4df33efebc5c758634799d7c5b5b88fb307a0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "11b7d5136563cb447465f715d3b945a8b8f284934a064f40ad929a0dcab0ca4f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
       "sha256": "144ee8386c22f7dfff417bc1a15e8c0ea884b9453b104cda2ace1d06c3299233",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -3896,8 +3910,15 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
-      "sha256": "245cdcd5fad22442a10804b7c455e8c68ba33ba449eed2cb7f0ecdaf10ebb0cb",
+      "sha256": "172d6b97e8df06742666a8740440279cf3bf1eba6d6943cafa345fd8ce9536b7",
       "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "245cdcd5fad22442a10804b7c455e8c68ba33ba449eed2cb7f0ecdaf10ebb0cb",
+      "occurrences": 2,
       "category": "runtime_ui_debt"
     },
     {
@@ -3924,7 +3945,35 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
+      "sha256": "27974c2ad2d104c74631d59b3b93c76f5987979dc6a30aec6e0348ccce07570b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "2c736614739affe21c17c23519880b12e873a381da95d9953857922021b18b09",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
       "sha256": "2d045b11e6c538b4db8a486db0204fd8fac025d1bed180b2bac5c08c01d99108",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "31731a0a46bae653912acd5c1977a3b407c1818959483bed85fe21ed659399a0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "31f728323bcd17576455481a0d086ea7a852dffd817fb8912df765ea0133ef8f",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -3938,7 +3987,35 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
+      "sha256": "365c359598facc2e05ed25008c9cce179f9a62200fb05909f1fc370a78639d3c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
       "sha256": "380a095840a3c8c6692ed0e7020034855dd9d81a4e05e97744bea66d2d98b58f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "46ef0e82bf0b075c4e5ac271c46bf7354c1fa913b6897b0809ebf04b86f62eb7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "489c17d501d5e00e5638a68b0e52c73d0e6c2e7ba0153a33d5513d264301a764",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "48dd82e8d59da4502eb53172d8386931fc9a8444de1b1e12a94f30f3fb95b98c",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -3994,13 +4071,6 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
-      "sha256": "79d8a1e80825f0e5930bdfede0d2ea48600a785f96772361df1b7b53a4bbb5d0",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/monster-ai-coverage/main.go",
-      "function": "main",
       "sha256": "79f855c8b433e9bf71b4236e4a173fdc48daa453fd017dfb8a76355503d8eb7f",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -4008,7 +4078,28 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
+      "sha256": "7a1d0120174ea4f46de57e9d5f49787d0c819be5af3a0b7b300eaa3cbf59ba79",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "7af3e2e2aecf702d53f9eedfb6266dbc525cb700160af1046f62734c95cfe080",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
       "sha256": "8ab6d779800de9be25fe84161908618b28c27edacb9b67dd310d7df1fa5453d9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "8e42b2dc44dd10fed5c4b511285cb48629e49be4d9bc667334423af85f4b0882",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -4029,6 +4120,13 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
+      "sha256": "a5085942f436b8d77eea0b84e93fefeb01f8736d1424ee5b99591c358d852351",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
       "sha256": "b83576d9cf8fa8988ecb8b37bce420e546519a28d71dc661221e1318d620ed3b",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -4043,7 +4141,21 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
+      "sha256": "bad98c8bc29f606d97c30ecde661f3a22a85765da50307a4184de62e9b881a3e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
       "sha256": "c6c414bf7fd8fa75b8287765d532991c4111fd3f09eebc031f62d40a9ee1029b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "d00fa7b349a1690611b4070414cc477ed01ffc169e9849872ff825c838f24a0c",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -4065,6 +4177,13 @@
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
       "sha256": "dc3d349f5b8339be155106445955cd8a3511c74ee703550c63c30e4e2155793a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "e82fcfbb066dacf4afc4aba3ffe62f93b8f9fd5fd0b35538500c08aabc00c7f7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -4093,13 +4212,6 @@
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
       "sha256": "f8c349bcf02772186f6edb733c418e2a24ff412eaa216ce7d5840ff91bd6944e",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/monster-ai-coverage/main.go",
-      "function": "main",
-      "sha256": "fff9c3bb81d090b6e2731ad57ceaf9a5f6ee108588ac6aecaf8325748230fc99",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

@@ -116,8 +116,8 @@ func main() {
 	//	unread  還沒解讀 ⇒ 不知道是不是缺口。
 	//	其餘    原作有動作而 remake 沒有 ⇒ **真的缺口**。
 	table, tableErr := gamepack.EffectModifiers()
-	usable, inert, unread, missing := 0, 0, 0, 0
-	inertRecords, unreadRecords, missingRecords := 0, 0, 0
+	usable, inert, unread, uncatalogued, missing := 0, 0, 0, 0, 0
+	inertRecords, unreadRecords, uncataloguedRecords, missingRecords := 0, 0, 0, 0
 	status := map[uint8]string{}
 	for _, kind := range ids {
 		if combat.AffectKindIsInterpreted(kind) {
@@ -125,18 +125,25 @@ func main() {
 			status[kind] = "已接"
 			continue
 		}
-		state := ""
+		state, found := "", false
 		if tableErr == nil {
-			if handler, found := table.Handler(kind); found {
-				state = handler.Status
+			if handler, ok := table.Handler(kind); ok {
+				state, found = handler.Status, true
 			}
 		}
-		switch state {
-		case "inert":
+		switch {
+		case !found:
+			// ⚠ **表裡根本沒有這個碼 ≠ remake 少做了什麼。** 它代表原作那一支
+			// 還沒被反組譯登記過，和 `unread` 同一類（不知道），不是「已知缺口」。
+			// 第 688 輪把這一格算進缺口，於是 9 個裡有 5 個是假的。
+			uncatalogued++
+			uncataloguedRecords += kinds[kind]
+			status[kind] = "修正表裡還沒有這個碼"
+		case state == "inert":
 			inert++
 			inertRecords += kinds[kind]
 			status[kind] = "原作就沒動作"
-		case "unread":
+		case state == "unread":
 			unread++
 			unreadRecords += kinds[kind]
 			status[kind] = "還沒解讀"
@@ -162,10 +169,12 @@ func main() {
 	fmt.Fprintf(&report, "| **戰鬥規則會理的** | **%d** |\n", usable)
 	fmt.Fprintf(&report, "| 原作那一支就沒動作（`inert`，碼／記錄）| %d／%d |\n", inert, inertRecords)
 	fmt.Fprintf(&report, "| 還沒解讀（`unread`，碼／記錄）| %d／%d |\n", unread, unreadRecords)
+	fmt.Fprintf(&report, "| 修正表裡還沒有這個碼（碼／記錄）| %d／%d |\n", uncatalogued, uncataloguedRecords)
 	fmt.Fprintf(&report, "| **真的缺口**（原作有動作、remake 沒有；碼／記錄）| **%d／%d** |\n\n", missing, missingRecords)
 
-	fmt.Fprintf(&report, "⚠ 三者不能混在一起數。`inert` 是**原作自己什麼都沒做**——"+
-		"remake 也不做才是對的，把它算成缺口會憑空生出一個永遠補不完的待辦。\n\n")
+	fmt.Fprintf(&report, "⚠ 四者不能混在一起數。`inert` 是**原作自己什麼都沒做**——"+
+		"remake 也不做才是對的；`unread` 與「表裡還沒有這個碼」則是**不知道**，"+
+		"同樣不是已知缺口。把它們算進缺口會憑空生出一個永遠補不完的待辦。\n\n")
 
 	fmt.Fprintf(&report, "## ★ 這一款遊戲裡，怪物的 AI 施法路徑**沒有資料可跑**\n\n")
 	fmt.Fprintf(&report, "全部 %d 隻怪物的記憶法術槽（角色記錄 `+33h..+6Ah`）**逐位元組都是 0**。\n", total)
@@ -176,7 +185,45 @@ func main() {
 		"拿 CoAB 當樣本去驗證施法 AI，會得到一個永遠全綠而且什麼都沒驗到的測試。\n\n")
 	fmt.Fprintf(&report, "⇒ 本作的敵方行為分母落在 `MON*SPC` 的特殊能力上，不在法術清單上。\n\n")
 
-	if missing+inert+unread > 0 {
+	if missing > 0 && tableErr == nil {
+		fmt.Fprintf(&report, "## 真的缺口：每一個卡在哪\n\n")
+		fmt.Fprintf(&report, "這四個碼在修正表裡**有解出來的動作**，但 `AffectKindIsInterpreted` "+
+			"仍然回 false。三個條件（列在某個 timing 裡、那個 timing remake 有查、"+
+			"它動的那一格 remake 有讀）少了哪一條，決定了要補的是什麼工。\n\n")
+		fmt.Fprintf(&report, "| 效果碼 | 出現在 timing | 動什麼 | 卡在哪 |\n|---:|---|---|---|\n")
+		for _, kind := range ids {
+			if status[kind] != "缺口" {
+				continue
+			}
+			handler, _ := table.Handler(kind)
+			timings := make([]string, 0, 4)
+			for timing := 0; timing <= 0x12; timing++ {
+				for _, code := range table.TimingEffects(uint8(timing)) {
+					if code == int(kind) {
+						timings = append(timings, fmt.Sprintf("`%02X`", timing))
+						break
+					}
+				}
+			}
+			action, blocker := "（沒有解出來的動作）", "修正表裡沒有動作"
+			if len(handler.Modifiers) > 0 {
+				modifier := handler.Modifiers[0]
+				if modifier.Record != "" {
+					action = fmt.Sprintf("寫 `%s` 的第 %d 格", modifier.Record, modifier.Field)
+					blocker = "那一格 remake 還沒對應到 `Fighter` 的欄位"
+				} else {
+					action = fmt.Sprintf("設暫存全域 `%s`", table.ScratchName(modifier.Global))
+					blocker = "那些 timing 的呼叫點還沒對回原作（連常數都還沒命名）"
+				}
+			}
+			fmt.Fprintf(&report, "| `%02Xh` | %s | %s | %s |\n",
+				kind, strings.Join(timings, "／"), action, blocker)
+		}
+		fmt.Fprintf(&report, "\n⇒ 四個都**卡在反組譯，不是卡在接線**。"+
+			"先把 timing 的呼叫點與那一格記錄欄位解出來，才輪得到實作。\n\n")
+	}
+
+	if missing+inert+unread+uncatalogued > 0 {
 		fmt.Fprintf(&report, "## 逐碼\n\n")
 		fmt.Fprintf(&report, "| 效果碼 | 出現次數 | 狀態 |\n|---:|---:|---|\n")
 		for _, kind := range ids {
