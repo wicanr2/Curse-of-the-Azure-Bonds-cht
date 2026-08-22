@@ -1962,6 +1962,349 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "loadModules",
+      "sha256": "4671035ec21392242d315347552a13ddb73cc8db19809eb6d49d4f6f3e7abb29",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "00e3ccc00e4c752614a6ee985baeb24efb8d5da397f911bb49ae56a2726959b9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "01b65629678e411cca1f6c049c5fce74a2e9f27cdb014ba25d1a697c545e904a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "0de1cfc05f9b72aaff281ffc1496c5880db99080a3ae44e534bd129771999725",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "13c83a8a875ec7e2062411851fe501ab53a525064bf5d4b7e53233fd2d729ac6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "151f324913c7b80f974acfed537bc677b4211713d3419fd50e9bdabff708829e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "1a9a9b2900a6be822fbe2e5fe11dd7a31b5d53f9a4ec75538896ffdb374f89d0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "1aaa32e78ee1e91e562a5a79ba299e1774fd183c3bf50f1e7fd5ad7d220b5584",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "1db040ca5da2a426cb0d4811e05c2005147fb732b392146c42be64eb3f63b04b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "26f435678c9e161d86f1718a1072202d0a7b59639806277e5d7af1916745b846",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "2d6dce111721ebba84ac41893edd05372b6ce0bdee11029174ab40476a8b3370",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "347975fec7efd167c4dd51b25b3e90cbac1ae05b2345ed04792a687b2bae4b52",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "384460dd29fe84d92206f505937c7441194012b555760f49f4c3da95868d251b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "4243c2b05ae2ee1c50bff128b6fbdb2e7406e6e404675f431bf6d5c5e63b7abe",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "44ee0db72be166ed069cdbd50a4d3483e855ef86b94a4c5f2ba6276b72fa24e7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "452d76a1be2981ce198fc2d76910da72c6264d134d6ff96b9a94ee86b799e7d3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "4671035ec21392242d315347552a13ddb73cc8db19809eb6d49d4f6f3e7abb29",
+      "occurrences": 2,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "5651fb26d0c3357c3053ad1af1aec7300e06f395257e365db9711db0a921f4e2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "5fb769376c230ccd000691c772c4cd3f07643c77119590df0965f4a1e26eb8a8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "65ca4d3dd247d3384216d94bee6e254de5a93170043f04776159decea14b0c78",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "6709b9cff31da9a025458c682f94489f917fc0c114bd12d2c267fd5df8fd686a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "6ca7133d0e2ec4f3f50fedf4a1a595df463db4e8f344d28338daf68e1306e66b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "7299ee1f36764456cd3fdb67f39d39e17eb274a2573b4b548e8228dc8053d02d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "7971e279e5fa66af990f0dbd5548f40e635adefa7d2ebd677f3e6eac0473619f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "7a290a0dcefa6e62103009840b79db3cd89fa22188152d7cd9c318a4a6c20b57",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "7d222ffc4098ff6feffb4c27f95d88141e5db34f428d382f8f736dd13e71a320",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "806660e43527d8713005a9190b3b24ebeac1d7fa7dfeb810d374c5e7801c8761",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "8e8bc709fa8ad420e7a9d4c9940c17d57566d656af0435a852084de9a7203505",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "9e487de640f0f00650a162479be514cdf29ca288cc3e1df4111c0a85b3def529",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "9f71c7628809818bcbadaccf9eb9af5ce9dff481116dabe91a2243308eb81eac",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "a51d2488a6c133f7f0233732a2c92380b418d5623d1c5d8a82e48b4725f5c39c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "a5242f33d486513ab73e8a13e0983340c85718723f6030a43f14f2b1a6e79a0b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "a90dc78e02503a964fb0aef4df3518ff48a90d9ca97027aac333e79c794e1748",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "abeffed39b5b7645a16be222cad3f462de4451fe2591c526441354d5148a79fc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "aea12fe06c96f492acd1c4eb5476e1a914bcd721bde13ee2542e0bb2d6280ea7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "b0736c40c381912a39dc2916d177ab88f19025a59ff18fd19b918bb5b1004252",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "b1184e3b06c38d12ab35d62d4fc90d8f27ad025a47951f1a806080c0fa081954",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "b1407f24e7202f2afe8acbf454a498318fe75b6c2c82c187185558be8885a1e8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "b450823f6dc06e34028614e00f9201c18eed9934153eabb6679b8214b7f10802",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "b993b4afad77a19ec21c6824045c3f6dc9fb91a0c12100a041fc811f12e19209",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "bfc28e6a742fff7ce166f847a788192a55b68e3067a2475ed3d6f14f8a00fcfc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "c62d847e6923ff8f01fb4a13fc986dcdeb5365a0a7830ee46b9d5854f8f4d6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "e6a2acd59bfe2c1533612189a2aab8c630bf31e9da501e6146d4d48a5a68dee5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "f11e338d1195bdd6eecf2429c61c56c2c2f718de1128f85796cd229d29e170a1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "f141c38802a08f4d02815c3767358dbd43f0dc05609f8c7b01401de1c0c9f624",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "main",
+      "sha256": "f9bc158795a94ac138a23b9561c46560e01da16eddecee1fcddbd15c0c40a3a5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "residentCount",
+      "sha256": "4671035ec21392242d315347552a13ddb73cc8db19809eb6d49d4f6f3e7abb29",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-sound-map/main.go",
+      "function": "scanTargets",
+      "sha256": "4671035ec21392242d315347552a13ddb73cc8db19809eb6d49d4f6f3e7abb29",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/dseg-export/main.go",
       "function": "main",
       "sha256": "1040debcb8677950569c8d97a172ef970220420b234b471effbdbc17e3411593",
