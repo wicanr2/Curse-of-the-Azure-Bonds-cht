@@ -276,7 +276,18 @@ func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mas
 		return fmt.Errorf("入口推不動：%v", err)
 	}
 	start := point{state.DungeonX, state.DungeonY}
+	// ⚠ **踏進一格的方向會改變結果**：樓梯事件是「站對方向踏上去」才觸發的
+	// （`ECL5/0x33:090Ch` 用地形碼查表拿方向，朝向不對就直接 `EXIT`，畫面上
+	// 什麼都不會發生，spec 1161）。只用格子當鍵，第一次從錯的方向踏上去就把
+	// 那一格封死，另外三個方向永遠不會再試——**靠樓梯才進得去的樓層因此永遠
+	// 走不到**，而報表只會顯示「那幾格走不到」，看不出是走法的問題。
+	// ⇒ 邊界記 **(格子, 進入方向)**；「這一格去過沒有」另外記。
+	type entry struct {
+		at        point
+		direction int
+	}
 	seen := map[point]bool{start: true}
+	tried := map[entry]bool{}
 	queue := []point{start}
 	record := func(state *game.State) {
 		terrains[state.DungeonWallRoof] = true
@@ -294,9 +305,13 @@ func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mas
 			}
 			deltaX, deltaY := dungeonDelta(direction)
 			next := point{current.x + deltaX, current.y + deltaY}
-			if next.x < 0 || next.x >= geo.Width || next.y < 0 || next.y >= geo.Height || seen[next] {
+			if next.x < 0 || next.x >= geo.Width || next.y < 0 || next.y >= geo.Height {
 				continue
 			}
+			if tried[entry{next, direction}] {
+				continue
+			}
+			tried[entry{next, direction}] = true
 			// 每一次都從入口重走到 current 太貴；改成直接把視角放到 current
 			// 再試那一步。⚠ 這是**幾何可達性**：牆擋不擋得住。ECL 把隊伍推回
 			// 上一格那種「走過去又被送回來」不算在內（那是內容不是幾何）。
@@ -313,12 +328,16 @@ func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mas
 			}
 			if err := settleWith(&state, pick); err != nil {
 				// 推不回地城就別再從這一格往外走，但已經到過的算數。
-				seen[next] = true
-				walk.cells++
+				if !seen[next] {
+					seen[next] = true
+					walk.cells++
+				}
 				continue
 			}
-			seen[next] = true
-			walk.cells++
+			if !seen[next] {
+				seen[next] = true
+				walk.cells++
+			}
 			record(&state)
 			queue = append(queue, next)
 			// ★ 事件可能把隊伍搬走（樓梯、傳送）。原本只把**打算走到**的那一格

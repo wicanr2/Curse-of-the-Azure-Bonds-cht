@@ -210,7 +210,21 @@ func walkSnapshot(data gamecorpus.Corpus, path string, steps, pick int) (uint8, 
 
 	terrains := map[uint8]bool{}
 	start := point{state.DungeonX, state.DungeonY}
-	seen := map[point]bool{start: true}
+	// ⚠ **踏進一格的方向會改變結果**：樓梯事件是「站對方向踏上去」才觸發的
+	// （`ECL5/0x33:090Ch` 用地形碼查表拿方向，朝向不對就直接 `EXIT`，
+	// 畫面上什麼都不會發生，spec 1161）。
+	//
+	// 只用格子當 `seen` 的鍵，第一次從錯的方向踏上去就把那一格封死，
+	// 另外三個方向永遠不會再試——**靠樓梯才進得去的樓層因此永遠走不到**，
+	// 而報表只會顯示「那幾格走不到」，看不出是走法的問題。
+	//
+	// 所以邊界要記 **(格子, 進入方向)**；「這一格去過沒有」另外記。
+	type entry struct {
+		at        point
+		direction int
+	}
+	visited := map[point]bool{start: true}
+	tried := map[entry]bool{}
 	queue := []point{start}
 	cells := 1
 	terrains[state.DungeonWallRoof] = true
@@ -224,9 +238,13 @@ func walkSnapshot(data gamecorpus.Corpus, path string, steps, pick int) (uint8, 
 			}
 			deltaX, deltaY := headingDelta(direction)
 			next := point{current.x + deltaX, current.y + deltaY}
-			if next.x < 0 || next.x >= geo.Width || next.y < 0 || next.y >= geo.Height || seen[next] {
+			if next.x < 0 || next.x >= geo.Width || next.y < 0 || next.y >= geo.Height {
 				continue
 			}
+			if tried[entry{next, direction}] {
+				continue
+			}
+			tried[entry{next, direction}] = true
 			state.SetDungeonGeometryView(current.x, current.y, uint8(direction))
 			state.DungeonWallRoof = grid.CellWrapped(current.x, current.y).Terrain
 			if !state.CanMoveDungeon(grid, deltaX, deltaY, direction) {
@@ -236,8 +254,10 @@ func walkSnapshot(data gamecorpus.Corpus, path string, steps, pick int) (uint8, 
 			if err := state.MoveDungeon(grid, deltaX, deltaY, direction); err != nil {
 				continue
 			}
-			seen[next] = true
-			cells++
+			if !visited[next] {
+				visited[next] = true
+				cells++
+			}
 			if err := settleWith(&state, pick); err != nil {
 				continue
 			}
@@ -246,8 +266,8 @@ func walkSnapshot(data gamecorpus.Corpus, path string, steps, pick int) (uint8, 
 			// 事件把隊伍搬走時要從**落點**繼續，否則靠樓梯才進得去的樓層永遠
 			// 走不到（spec 1193）。
 			landed := point{state.DungeonX, state.DungeonY}
-			if landed != next && !seen[landed] {
-				seen[landed] = true
+			if landed != next && !visited[landed] {
+				visited[landed] = true
 				cells++
 				queue = append(queue, landed)
 			}
