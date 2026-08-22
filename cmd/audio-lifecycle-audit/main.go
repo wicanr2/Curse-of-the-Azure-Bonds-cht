@@ -10,9 +10,12 @@
 //	MUSICNO   `8BF3h`  選曲：換成哪一首
 //	MUSICNUM  `8BE1h`  曲目編號：驅動程式要載哪一份資料
 //	MUSICSW   `8BE3h`  音樂開關：整個音樂要不要響
-//	SOUNDHALT `4838h`  音效停止
-//	SOUNDOFF  `483Ah`  音效關
-//	SOUNDON   `483Ch`  音效開
+//
+// ⚠ `SOUNDHALT`／`SOUNDOFF`／`SOUNDON`（`4838h`／`483Ah`／`483Ch`）**不是這種格**。
+// 它們是 `SOUNDFX` 的**選擇子常數**，和 `CASTFX`…`CRASHFX` 排在同一張表裡，
+// 資料段裡就寫死成 255／0／1，全程式一處都沒有寫入。這一支本來把它們當狀態格掃，
+// 掃出 0 處寫入，然後照「原作沒寫到就不算待辦」的規則印成 ✅ ——
+// **三個假零被當成三項做完的工作**。選擇子的身分歸 `internal/pc98sfx` 管。
 //
 // ⚠ **這是 PC-98 的版面**。DOS 版沒有除錯符號，位址不能直接套（spec 1187）。
 //
@@ -53,9 +56,6 @@ var cells = []cell{
 	// 報表卻說這一類已經接上了。分類要看值。
 	{0x8BE1, "MUSICNUM", "stop-track", "停止：曲目編號寫 `255`（沒有曲子）"},
 	{0x8BE3, "MUSICSW", "music-switch", "音樂開關：整個音樂要不要響"},
-	{0x4838, "SOUNDHALT", "sfx-halt", "音效停止"},
-	{0x483A, "SOUNDOFF", "sfx-off", "音效關"},
-	{0x483C, "SOUNDON", "sfx-on", "音效開"},
 }
 
 // site 是一處寫入。
@@ -77,7 +77,7 @@ func main() {
 	resident := flag.String("resident", "PC98-GAME.EXE", "常駐執行檔（相對 root）")
 	symbols := flag.String("symbols", "workplace/re-sweep/pc98/borland-symbols.json", "Borland 符號表")
 	remake := flag.String("remake", "internal/game", "remake 規則層目錄")
-	packCore := flag.String("pack", "gamepack/pack/00-core.json", "game-pack 的 core JSON")
+	frontend := flag.String("frontend", "cmd/azure-bonds-game", "前端目錄（按鍵綁在這裡）")
 	output := flag.String("output", "", "Markdown 輸出路徑")
 	outputJSON := flag.String("json", "", "JSON 輸出路徑")
 	flag.Parse()
@@ -111,7 +111,8 @@ func main() {
 	}
 	emitted := scanRemakeActions(*remake)
 
-	report := buildReport(sites, byAction, emitted, packUsesStop(*packCore))
+	report := buildReport(sites, byAction, emitted,
+		playerCanStopMusic(*remake, *frontend))
 	if *outputJSON != "" {
 		encoded, err := json.MarshalIndent(report, "", " ")
 		if err != nil {
@@ -218,34 +219,23 @@ var remakeCounterpart = map[string]struct {
 }{
 	"select-track": {"play", "`State.requestMusicForCurrentBlock`（game-pack 的 music binding）"},
 	"load-track":   {"play", "同上：remake 的 `TrackID` 就是曲目，載入由 adapter 負責"},
-	"stop-track":   {"stop", "`State.requestMusicForCurrentBlock`：binding 的 `TrackID` 是空的就發 `stop`"},
+	"stop-track":   {"stop", "`State.ToggleMusicSwitch`（Ctrl+O）：關掉時 `stopMusic` 發 `stop`"},
 	"music-switch": {"stop", "同上；開關的「開」由一般的選曲表達"},
-	"sfx-halt":     {"sound-halt", "尚未建模：`SoundEvent` 只有「放這個音效」，沒有停止"},
-	"sfx-off":      {"sound-off", "尚未建模"},
-	"sfx-on":       {"sound-on", "尚未建模"},
 }
 
-// packUsesStop 問「game-pack 裡有沒有東西會讓音樂停下來」——也就是有沒有
-// `track_id` 是空的 music binding。
-func packUsesStop(path string) bool {
-	raw, err := os.ReadFile(path)
-	if err != nil {
-		return false
-	}
-	var pack struct {
-		Bindings []struct {
-			TrackID string `json:"track_id"`
-		} `json:"music_bindings"`
-	}
-	if json.Unmarshal(raw, &pack) != nil {
-		return false
-	}
-	for _, binding := range pack.Bindings {
-		if strings.TrimSpace(binding.TrackID) == "" {
-			return true
-		}
-	}
-	return false
+// playerCanStopMusic 問「玩家真的按得到停止嗎」。
+//
+// ★ 這個問題本來問錯了。原本問的是「game-pack 裡有沒有 `track_id` 是空的
+// binding」，那是把「停止」當成**劇情資料**——但原作根本沒有「這一段不放音樂」
+// 這種資料：派曲常式（`sub_18AA7`）查不到就 `ret`，音樂繼續放。原作**唯一**會停
+// 音樂的地方是玩家把音樂關掉（`MUSICSW`），而那是**按鍵**不是資料。
+//
+// ⚠ 所以「共用 engine 不收空的 `track_id`」從來就不是卡點：那條路一開始就不該走。
+// 這裡改問「規則層有沒有開關，而且前端有沒有把它綁到按鍵上」——兩者缺一都等於
+// 玩家按不到（spec 1192）。
+func playerCanStopMusic(rulesDir, frontendDir string) bool {
+	return declaresMethod(rulesDir, "ToggleMusicSwitch") &&
+		callsSelector(frontendDir, "ToggleMusicSwitch")
 }
 
 func buildReport(sites []site, byAction map[string][]site, emitted map[string]bool, stopUsed bool) reportDoc {
@@ -280,12 +270,8 @@ func buildReport(sites []site, byAction map[string][]site, emitted map[string]bo
 			case "stop":
 				row.Used = stopUsed
 				if !stopUsed {
-					// ⚠ 卡點不是「還沒有人寫那條 binding」，是**寫不出來**：
-					// 共用 engine 的 pack 驗證會把 `track_id` 空的 binding 判成
-					// `references unknown track ""`。這兩種卡點的處置完全不同，
-					// 寫成前者會讓人以為補一行 JSON 就好。
-					row.UsedNote = "engine 的 pack 驗證不收 `track_id` 空的 binding，" +
-						"「這裡不放音樂」目前**表達不出來**（`TestEnginePackCannotExpressStopYet`）"
+					row.UsedNote = "規則層要有 `ToggleMusicSwitch`，前端要把它綁到按鍵上；" +
+						"缺一個玩家就按不到"
 				}
 			default:
 				row.Used = row.Wired
@@ -323,9 +309,13 @@ func renderMarkdown(doc reportDoc, byAction map[string][]site) string {
 		"代價是偽陽性，所以每一處都印出所屬常式讓人看得出合不合理。\n\n")
 	fmt.Fprintf(&out, "remake 規則層目前發得出來的動作：`%s`\n\n",
 		strings.Join(doc.Emitted, "`、`"))
-	out.WriteString("⚠ **「發得出來」與「有東西會發」是兩件事**，分兩欄問：規則層有這個動作是**能力**，" +
-		"現在有哪一段劇情會發是**有沒有用到**。混成一格會讓「寫了但沒人呼叫」看起來像做完了。\n\n")
-	fmt.Fprintf(&out, "| 動作 | 格 | 意思 | 原作寫入處 | 規則層發得出來 | pack 有用到 | 由誰負責 |\n"+
+	out.WriteString("⚠ **「發得出來」與「玩家碰得到」是兩件事**，分兩欄問：規則層有這個動作是**能力**，" +
+		"實際有沒有東西會觸發它是**有沒有用到**。混成一格會讓「寫了但沒人呼叫」看起來像做完了。\n\n")
+	out.WriteString("⚠ 「停止」不是劇情資料。原作沒有「這一段不放音樂」這種宣告——派曲常式" +
+		"（`sub_18AA7`）查不到就 `ret`，音樂繼續放。**唯一**會停的是玩家把音樂關掉" +
+		"（`MUSICSW`，Ctrl+O），所以那一欄問的是「按鍵綁上去了沒」，不是「pack 寫了沒」" +
+		"（spec 1192）。\n\n")
+	fmt.Fprintf(&out, "| 動作 | 格 | 意思 | 原作寫入處 | 規則層發得出來 | 玩家碰得到 | 由誰負責 |\n"+
 		"|---|---|---|---:|---|---|---|\n")
 	for _, row := range doc.Actions {
 		mark, used := "—", "—"
@@ -341,8 +331,19 @@ func renderMarkdown(doc reportDoc, byAction map[string][]site) string {
 			row.Action, row.Symbol, row.Meaning, row.Sites, mark, used, row.RemakeBy)
 	}
 	fmt.Fprintf(&out, "\n合計 %d 處寫入、%d 種動作：規則層發得出 **%d** 種，"+
-		"game-pack 真的會發的有 **%d** 種。\n\n",
+		"玩家真的碰得到 **%d** 種。\n\n",
 		doc.Sites, len(doc.Actions), doc.Wired, doc.Used)
+
+	out.WriteString("## 不在這張表裡的三個名字\n\n")
+	out.WriteString("`SOUNDHALT`（`4838h`）、`SOUNDOFF`（`483Ah`）、`SOUNDON`（`483Ch`）" +
+		"看起來像三格音訊狀態，**但它們不是狀態**：那是 `SOUNDFX` 的選擇子常數，" +
+		"和 `CASTFX`…`CRASHFX` 排在資料段同一張表裡，值分別寫死成 `255`／`0`／`1`，" +
+		"全程式一處都沒有寫入。\n\n")
+	out.WriteString("⚠ 這一支本來把它們當狀態格掃，掃出 0 處寫入，然後照「原作沒寫到就不算待辦」" +
+		"的規則印成 ✅ ——**三個假零被當成三項做完的工作**。三個相鄰符號同時掃出零，" +
+		"本身就該當成模型錯了的訊號，不是結論。選擇子的身分與解碼歸 `internal/pc98sfx`；" +
+		"玩家關音效走的是 `SOUNDTYPE := 2`（Ctrl+S），`SOUNDFX` 開頭就擋掉，" +
+		"和音樂開關互不影響。\n\n")
 
 	out.WriteString("## 逐處\n\n| 檔案 | 常式 | 位移 | 格 | 形式 | 值 |\n|---|---|---|---|---|---|\n")
 	for _, item := range cells {

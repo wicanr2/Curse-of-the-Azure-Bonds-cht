@@ -46,9 +46,9 @@
     },
     "audio_lifecycle": {
       "category": "原機音訊：播放生命週期（開／關／停）",
-      "format": "原作 %d 處寫入、%d 種動作：規則層發得出 **%d** 種，game-pack 真的會發 **%d** 種",
+      "format": "原作 %d 處寫入、%d 種動作：規則層發得出 **%d** 種，玩家真的碰得到 **%d** 種",
       "source": "`audio-lifecycle.json`（`cmd/audio-lifecycle-audit`）",
-      "not_proof": "★ 這是 `cmd/dseg-writers` 那個**分母**的下一步：把寫入點按生命週期動作分類，再對 remake 真的發得出來的動作。⚠ **「發得出來」與「有東西會發」是兩件事**：規則層有這個動作是能力，現在有哪一段劇情會發是有沒有用到；混成一格會讓「寫了但沒人呼叫」看起來像做完了。⚠ 差的兩種都是**停止**（`MUSICNUM := 255`、`MUSICSW := 0`），卡點不是「還沒寫那條 binding」而是**寫不出來**——共用 engine 的 pack 驗證會把 `track_id` 空的 binding 判成 `references unknown track \"\"`，要動 engine 才解得開（`TestEnginePackCannotExpressStopYet` 釘住這個限制，鬆綁時會紅）。⚠ **PC-98 版面**：DOS 沒有音樂，位址不能套（spec 1187／1192）。⚠ 位元組直掃有偽陽性，所以逐處都印所屬常式。"
+      "not_proof": "★ 這是 `cmd/dseg-writers` 那個**分母**的下一步：把寫入點按生命週期動作分類，再對 remake 真的發得出來的動作。⚠ **「發得出來」與「玩家碰得到」是兩件事**：規則層有這個動作是能力，實際有沒有東西會觸發它是有沒有用到；混成一格會讓「寫了但沒人呼叫」看起來像做完了。⚠ **「停止」不是劇情資料**：原作沒有「這一段不放音樂」這種宣告（派曲常式 `sub_18AA7` 查不到就 `ret`，音樂繼續放），唯一會停的是玩家關音樂（`MUSICSW`，Ctrl+O）——所以那一欄問的是「按鍵綁上去了沒」，不是「pack 寫了沒」。⚠ `SOUNDHALT`／`SOUNDOFF`／`SOUNDON` **不是狀態格**，是 `SOUNDFX` 的選擇子常數；本來被當成格掃出三個假零，又照「原作沒寫到就不算待辦」印成三項做完的工作。⚠ **PC-98 版面**：DOS 沒有音樂，位址不能套（spec 1187／1192）。⚠ 位元組直掃有偽陽性，所以逐處都印所屬常式。"
     },
     "cell_reachability": {
       "category": "走訪可達性（正常隊伍到得了幾格）",
@@ -241,7 +241,7 @@
     },
     "audio_triggers": {
       "category": "原機音訊：誰決定「什麼時候該響」",
-      "format": "PC-98 六格音訊狀態共 %s 處寫入、%s 處讀取（`MUSICNUM`／`MUSICSW`／`MUSICNO` 與三個音效旗標）",
+      "format": "PC-98 六個音訊位址共 %s 處寫入、%s 處讀取（`MUSICNUM`／`MUSICSW`／`MUSICNO` 與三個 `SOUNDFX` 選擇子常數）",
       "source": "`pc98-audio-state-writers.md`（`cmd/dseg-writers`）",
       "not_proof": "⚠ 這是**分母不是覆蓋率**：它說原作在幾個地方改音訊狀態，**不是** remake 對了幾處。⚠ **這是 PC-98 的版面**——名字由 Borland 除錯符號直接讀出來，而 DOS 版沒有符號，對應的格子要另外認，**不能直接套用位址**。⚠ `cmd/dseg-writers` 是線性位元組掃描：會有偽陽性（剛好長得像 opcode 的立即數），但對它認得的編碼沒有偽陰性。控制流掃描的錯法相反——**要下「沒有人寫這一格」的結論得兩種都跑**。★ 播放常式在程式碼段 2195：`SOUNDFX` `0000h`、`INITSOUND` `010Dh`、`MSCPLAY` `0114h`、`BGMPLAY` `0177h`。⚠ 還沒做的是**下一步**：把這些寫入點對回遊戲事件（進城／開戰／勝敗），以及 DOS 側的對應格子。分母有了，對照還沒做。",
       "report": "pc98-audio-state-writers.md",

@@ -188,6 +188,8 @@ type State struct {
 	pendingSoundEvents      []SoundEvent
 	pendingMusicEvents      []MusicEvent
 	activeMusicTrackID      string
+	musicSwitchOff          bool
+	soundSwitchOff          bool
 	musicPlaybackSnapshot   *pc98music.TrackPCMStreamSnapshot
 	oneShotPlaybackSnapshot *audiostate.Snapshot
 	pendingECLCalls         []uint16

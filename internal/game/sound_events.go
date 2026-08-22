@@ -34,6 +34,12 @@ func (s *State) requestSound(event SoundEvent) {
 func (s *State) ConsumeSoundEvents() []SoundEvent {
 	events := append([]SoundEvent(nil), s.pendingSoundEvents...)
 	s.pendingSoundEvents = nil
+	// 原作是在**播放端**擋掉的：`SOUNDFX`（`sub_18930`）開頭就是
+	// `cmp SOUNDTYPE, 2 / jz 返回`。所以關掉音效不會讓事件不產生，只是不出聲——
+	// 這裡照同一個位置擋，佇列才不會在關著的時候越積越多。
+	if s.soundSwitchOff {
+		return nil
+	}
 	return events
 }
 

@@ -170,10 +170,7 @@ func TestECLBlockTransitionRequestsDestinationMusicOnce(t *testing.T) {
 }
 
 // musicEventForTrack 是選曲／停止的決定點。三個方向都要釘：換曲、不變、停。
-//
-// ⚠ 「停」目前在正式資料上到不了——engine 的 pack 驗證擋掉 `track_id` 是空的
-// binding。`TestEnginePackCannotExpressStopYet` 把那個限制釘住：它一旦鬆綁，
-// 那條測試會紅，提醒把 binding 補上（spec 1192）。
+// 「停」的呼叫端是音樂開關，見 `TestMusicSwitchIsTheOnlyThingThatStopsMusic`。
 func TestMusicEventForTrack(t *testing.T) {
 	for _, item := range []struct {
 		name           string
@@ -205,13 +202,16 @@ func TestMusicEventForTrack(t *testing.T) {
 	}
 }
 
-// ★ 這條釘的是**別人家的限制**：共用 engine 的 pack 驗證不收「這裡不放音樂」的
-// 宣告（`track_id` 空的 binding 會被判成 `references unknown track ""`）。
+// ★ 空的 `track_id` 不是「這裡不放音樂」，它什麼都不是。
 //
-// ⚠ 所以 `musicEventForTrack` 的 `stop` 分支目前在正式資料上**到不了**。
-// 這條測試一旦紅，代表 engine 那邊鬆綁了 —— 那時要做的是把「不放音樂」的
-// binding 補進 game-pack，而不是把這條測試刪掉（spec 1192）。
-func TestEnginePackCannotExpressStopYet(t *testing.T) {
+// ⚠ 這條原本叫 `TestEnginePackCannotExpressStopYet`，寫著「engine 一旦鬆綁就把
+// 不放音樂的 binding 補進 game-pack」。**那是錯的指示**：原作沒有這種資料——
+// 派曲常式（`sub_18AA7`）查不到就 `ret`，音樂繼續放；會停的只有玩家關音樂。
+// 所以 engine 收不收空的 `track_id` 從頭到尾都不是卡點，而照原本那句話做，
+// 只會做出一個原作沒有的行為（spec 1192）。
+//
+// 留著這條是因為**空的 `track_id` 該被擋下來**：它是打錯字，不是一種宣告。
+func TestEmptyTrackIDIsRejectedBecauseItMeansNothing(t *testing.T) {
 	parts := map[string][]byte{"00-core.json": []byte(`{
 	  "schema_version": 1,
 	  "id": "music-lifecycle-test",
@@ -229,10 +229,104 @@ func TestEnginePackCannotExpressStopYet(t *testing.T) {
 		func(name string) ([]byte, error) { return parts[name], nil },
 		[]string{"00-core.json"})
 	if err == nil {
-		t.Fatal("engine 現在收得下空的 track_id 了：把「不放音樂」的 binding 補進 game-pack，" +
-			"讓 `musicEventForTrack` 的 stop 分支真的用得到（spec 1192）")
+		t.Fatal("空的 `track_id` 應該被擋下來——它是打錯字，不是「這裡不放音樂」")
 	}
 	if !strings.Contains(err.Error(), "unknown track") {
 		t.Fatalf("擋下來的理由變了：%v", err)
+	}
+}
+
+// ★ 音樂開關是 `stop` 的**唯一**來源。
+//
+// 原作沒有「這一段不放音樂」這種資料——派曲表查不到就維持現況（`sub_18AA7`
+// 的 default 直接 ret）。真正會停的只有玩家把音樂關掉：`MUSICSW` 翻成 1，
+// 派曲常式第一關就寫 `MUSICNUM := 255` 然後叫驅動程式停（spec 1192）。
+func TestMusicSwitchIsTheOnlyThingThatStopsMusic(t *testing.T) {
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{0x01: {}}, 0x01)
+	state.requestMusicForCurrentBlock("")
+	if got := state.ConsumeMusicEvents(); len(got) != 1 || got[0].Action != "play" {
+		t.Fatalf("一開始應該放這個場景的曲子：%+v", got)
+	}
+
+	state.ToggleMusicSwitch()
+	if !state.MusicSwitchOff() {
+		t.Fatal("翻一次應該是關")
+	}
+	want := []MusicEvent{{Action: "stop"}}
+	if got := state.ConsumeMusicEvents(); !reflect.DeepEqual(got, want) {
+		t.Fatalf("關掉應該立刻停：%+v", got)
+	}
+
+	// 關著的時候換場景不該發出任何東西——原作在派曲常式第一關就 ret 了。
+	state.requestMusicForCurrentBlock("")
+	if got := state.ConsumeMusicEvents(); len(got) != 0 {
+		t.Fatalf("關著的時候還在發音樂事件：%+v", got)
+	}
+
+	// 再開要**立刻**放回這個場景該放的那一首，不是等下一次換場景。
+	state.ToggleMusicSwitch()
+	if state.MusicSwitchOff() {
+		t.Fatal("翻兩次應該回到開")
+	}
+	back := []MusicEvent{{Action: "play", TrackID: "pc98-bgm-selector-03"}}
+	if got := state.ConsumeMusicEvents(); !reflect.DeepEqual(got, back) {
+		t.Fatalf("再開應該放回原本那一首：%+v", got)
+	}
+}
+
+// 關著的時候關第二次不該再發一個 `stop`：沒在放就沒有東西要停。
+func TestTurningMusicOffTwiceOnlyStopsOnce(t *testing.T) {
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{0x01: {}}, 0x01)
+	state.ToggleMusicSwitch() // 從沒放過 → 沒有東西要停
+	if got := state.ConsumeMusicEvents(); len(got) != 0 {
+		t.Fatalf("本來就沒在放，不該發 stop：%+v", got)
+	}
+	state.ToggleMusicSwitch() // 開 → 放
+	if got := state.ConsumeMusicEvents(); len(got) != 1 || got[0].Action != "play" {
+		t.Fatalf("打開應該放：%+v", got)
+	}
+	state.ToggleMusicSwitch() // 關 → 停
+	if got := state.ConsumeMusicEvents(); len(got) != 1 || got[0].Action != "stop" {
+		t.Fatalf("關掉應該停：%+v", got)
+	}
+	state.musicSwitchOff = false
+	state.musicSwitchOff = true
+	state.requestMusicForCurrentBlock("")
+	if got := state.ConsumeMusicEvents(); len(got) != 0 {
+		t.Fatalf("已經停了就不該再停一次：%+v", got)
+	}
+}
+
+// ★ 音效與音樂是**兩個**開關。原作 BGM 走 INT 7Eh（`sub_18BDB`）根本不看
+// `SOUNDTYPE`，所以 Ctrl+S 關掉音效時音樂照放；反過來 Ctrl+O 關掉音樂時
+// 音效照響。綁在一起是很容易犯又不會被任何測試抓到的錯。
+func TestSoundAndMusicSwitchesAreIndependent(t *testing.T) {
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{0x01: {}}, 0x01)
+
+	state.ToggleSoundSwitch()
+	if !state.SoundSwitchOff() {
+		t.Fatal("翻一次應該是關")
+	}
+	state.pendingSoundEvents = []SoundEvent{SoundStep}
+	if got := state.ConsumeSoundEvents(); len(got) != 0 {
+		t.Fatalf("音效關著還出聲：%+v", got)
+	}
+	// 音效關著，音樂照常。
+	state.requestMusicForCurrentBlock("")
+	if got := state.ConsumeMusicEvents(); len(got) != 1 || got[0].Action != "play" {
+		t.Fatalf("關音效不該影響音樂：%+v", got)
+	}
+
+	state.ToggleSoundSwitch()
+	state.pendingSoundEvents = []SoundEvent{SoundStep}
+	if got := state.ConsumeSoundEvents(); len(got) != 1 || got[0] != SoundStep {
+		t.Fatalf("再開音效應該出聲：%+v", got)
+	}
+	// 音樂關著，音效照常。
+	state.ToggleMusicSwitch()
+	state.ConsumeMusicEvents()
+	state.pendingSoundEvents = []SoundEvent{SoundStep}
+	if got := state.ConsumeSoundEvents(); len(got) != 1 {
+		t.Fatalf("關音樂不該影響音效：%+v", got)
 	}
 }
