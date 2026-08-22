@@ -101,7 +101,15 @@ type RunResult struct {
 	// 分三支（spec 1087／1153），所以分支結果由 VM 決定、不是上層猜：沒被列出來的
 	// 槽這一次**完全不動**（`7Fh` 那一支就只碰槽 1）。
 	WallSetAssignments []WallSetAssignment
-	PictureRequested   bool
+	// FinalView 是**這一次頂層執行結束當下**的畫面鏡射。
+	//
+	// ★ 為什麼要它。 原作的 `STOREVALUE` 一寫 `C04B`／`C04C`／`C04D` 就**當場**
+	// 改 `720Fh`／`7210h`／`7211h`——隊伍在那一刻就已經在新格子上了，`2E10h` 只是
+	// 重畫。remake 的投影掛在 `2E10h` 上，所以「寫了座標卻沒重畫」的執行會讓兩邊
+	// 分岔：原作的隊伍搬走了，remake 的還在原地，而髒旗標會跨執行留著
+	// （spec 1172）。收尾投影這一格就是補上那個時間差。
+	FinalView        ViewMirror
+	PictureRequested bool
 	// PictureCloseRequested 為真代表 `0Eh PICTURE` 的運算元是 `0FFh`：把圖關掉。
 	PictureCloseRequested bool
 	// PictureFrameAdvances 是**最後一張圖之後**跑過幾次 `2Dh CALL 6803h`。

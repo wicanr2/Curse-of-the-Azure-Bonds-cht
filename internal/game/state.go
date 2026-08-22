@@ -902,7 +902,7 @@ func (s *State) TurnDungeon(delta int) {
 	s.DungeonDirection = uint8(direction)
 	// ★ 轉向也要同步 `C04D`。原作的引擎每次動到位置或朝向都寫地圖暫存器，
 	// 三格因此永遠等於真實位置；remake 少同步一處，鏡射就會留著舊朝向，
-	// 而下一次重畫會把隊伍轉回去（spec 1172 的 `Written` 補丁就是在補這個洞）。
+	// 而下一次重畫會把隊伍轉回去（spec 1172）。
 	if s.session != nil {
 		s.session.SetMemoryValue(0xC04D, uint16(s.DungeonDirection/2))
 	}
@@ -3952,6 +3952,19 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 			s.requestSound(SoundStep)
 		}
 	}
+	// ★ 收尾投影：補上「原作在寫入那一刻就搬隊伍」的時間差。
+	//
+	// 原作的 `STOREVALUE` 一寫 `C04B`／`C04C`／`C04D` 就當場改 `720Fh`，隊伍在
+	// 那一刻就已經在新格子上；`2E10h` 只是重畫。remake 的投影掛在 `2E10h` 上，
+	// 所以**寫了座標卻沒有重畫**的執行會讓兩邊分岔——原作的隊伍搬走了，remake
+	// 的還在原地，而髒旗標只有重畫會清，於是會跨執行留到下一次重畫才生效
+	// （實例：`ECL3/0x10` 指揮官側門的 `C04B=2`／`C04C=5`／`C04D=1`，spec 1172）。
+	//
+	// ⚠ 這裡不是「再重畫一次」：`2E10h` 已經投影過的執行，髒旗標在 VM 裡就被
+	// 清掉了，`FinalView` 進不來這一段。
+	if s.session != nil && s.Area.InDungeon {
+		s.projectDungeonCoordinatesFromView(result.FinalView)
+	}
 	// 圖片序列的游標。原作換圖時 `LOADSEQUENCE` 會把游標設回第 1 格，
 	// 所以有換圖的執行取代、沒換圖的執行累加（spec 1150）。
 	if result.PictureRequested {
@@ -3980,26 +3993,24 @@ func (s *State) projectDungeonCoordinatesFromView(view ecl.ViewMirror) {
 	if !view.Known || view.Dirty&ecl.ViewDirtyCoords == 0 {
 		return
 	}
-	// ⚠ 座標要是**這一個 block 的腳本**寫的才算。換 block 的進場放置在原作是
-	// 引擎做的、會把那三格覆蓋掉；remake 那一半是 game pack 宣告的 spawn
-	// （`applyDeclaredDungeonSpawn`），沒有回寫暫存器。少了這個比對，舊 block
-	// 留下的座標會贏過新地圖的進場錨點——火刀據點的入口就會落在 `(6,0)`
-	// 而不是 `(6,1)`（spec 1172）。
+	// ⚠ 座標要是**這一個 block 的腳本**寫的才算。原作換地圖時引擎自己會做進場
+	// 放置、把那三格覆蓋掉；remake 那一半是 game pack 宣告的 spawn
+	// （`applyDeclaredDungeonSpawn`），它有回寫暫存器，但**排在投影之前**——
+	// 投影拿的是執行期間的快照，蓋不到。少了這個比對，換 block 那一次執行留在
+	// 鏡射裡的舊座標會贏過新地圖的錨點：下水道入口會落在 `(0,0)`、火刀據點會
+	// 落在 `(6,0)` 而不是 `(6,1)`（spec 1172）。
 	if s.session != nil && view.Block != s.session.CurrentBlockID() {
 		return
 	}
 	// 這次執行的腳本自己指定了座標；宣告的 spawn 只是沒人指定時的錨點，
 	// 不可以再蓋回去（spec 1160）。
 	s.eclProjectedPosition = true
-	if view.Written&ecl.ViewWroteX != 0 {
-		s.DungeonX = int(int16(view.X))
-	}
-	if view.Written&ecl.ViewWroteY != 0 {
-		s.DungeonY = int(int16(view.Y))
-	}
-	if view.Written&ecl.ViewWroteFacing != 0 {
-		s.DungeonDirection = uint8(view.Facing)
-	}
+	// 原作的重畫一律讀滿三格，而三格永遠等於真實位置——引擎每動一步就寫
+	// `720Fh`。remake 這一側現在也是：每一條位置變動都經過 `SetMemoryValue`，
+	// 而「寫了座標卻沒重畫」的執行由收尾投影補上（spec 1172）。
+	s.DungeonX = int(int16(view.X))
+	s.DungeonY = int(int16(view.Y))
+	s.DungeonDirection = uint8(view.Facing)
 	s.MapX, s.MapY = s.DungeonX, s.DungeonY
 	// 原作的重畫連牆面／地形一起重讀；不補這一步，接下來的每格事件會拿
 	// 被搬走前那一格的地形碼去分派（spec 1161）。

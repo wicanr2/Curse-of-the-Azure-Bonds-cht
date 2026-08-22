@@ -74,7 +74,7 @@ func TestRedrawRefreshesTerrainOnlyWhenTheScriptMovedTheParty(t *testing.T) {
 				SessionBlockRangeSet: true,
 				CallRequests: []ecl.CallRequest{
 					{Address: 0x2E10, PC: 0x100C, BlockID: 0x01, Sequence: 3,
-						View: scriptView(0x01, probe.writes...)},
+						View: scriptView(&state, 0x01, probe.writes...)},
 				},
 			})
 			if state.DungeonX != probe.wantX || state.DungeonY != probe.wantY ||

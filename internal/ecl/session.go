@@ -410,18 +410,20 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 	return s.runFromSeedWithPartyContextAndInputs(start, maxSteps, selections, whoSelections, nil, seed, partyContext)
 }
 
+// runFromSeedWithPartyContextAndInputs 是所有頂層執行的共同入口。它只多做一件
+// 事：把**結束當下**的畫面鏡射放進結果。呼叫端要靠它補上「原作在寫入那一刻就
+// 搬隊伍、remake 等到重畫才投影」的時間差（見 `RunResult.FinalView`）。
 func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int, selections, whoSelections []uint16, stringInputs []string, seed int64, partyContext *PartyContext) (RunResult, error) {
+	result, err := s.runAggregate(start, maxSteps, selections, whoSelections, stringInputs, seed, partyContext)
+	result.FinalView = s.View()
+	return result, err
+}
+
+func (s *BlockSession) runAggregate(start, maxSteps int, selections, whoSelections []uint16, stringInputs []string, seed int64, partyContext *PartyContext) (RunResult, error) {
 	aggregate := RunResult{
 		SessionStartBlockID:  s.current,
 		SessionEndBlockID:    s.current,
 		SessionBlockRangeSet: true,
-	}
-	if state := s.states[s.current]; state != nil {
-		// ⚠ `Written` 是 remake 這一側的補丁，不是原作的東西：它記「腳本這一次
-		// 執行寫過三格中的哪幾格」。每一次頂層執行重新起算——原作不需要，因為
-		// 它的引擎每走一步都回寫 `720Fh`，三格永遠與真實位置同步；remake 有
-		// 好幾條位置變動路徑不經過 ECL 暫存器（spec 1172）。
-		state.View.Written = 0
 	}
 	var err error
 	selectionOffset := s.selectionOffset

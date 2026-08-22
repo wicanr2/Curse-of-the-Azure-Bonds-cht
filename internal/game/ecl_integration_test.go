@@ -4948,10 +4948,12 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	// 離開指揮官那一段收尾寫的是 `ECL3/0x10:0185h` 的 `SAVE 4C00 C04D`——
-	// 朝向由劇情變數決定，不是地圖宣告的 spawn。這條路線上是朝西。
+	// ★ 「指揮官帶你走側門」是腳本自己搬的隊伍：`ECL3/0x10:0C7Eh` 連寫
+	// `C04B=2`／`C04C=5`／`C04D=1`，**後面沒有 `CALL 2E10h`**（隔壁那條
+	// `0D24h` 的搶劫結局才有）。原作的 `STOREVALUE` 一寫就當場改 `720Fh`，
+	// 所以這一段結束時隊伍已經在辦公室外面 `(2,5)` 朝東（spec 1172）。
 	if state.Mode != ModeDungeon ||
-		state.DungeonX != 1 || state.DungeonY != 3 || state.DungeonDirection != 6 ||
+		state.DungeonX != 2 || state.DungeonY != 5 || state.DungeonDirection != 2 ||
 		len(state.Choices) != 0 || state.Message != "" {
 		t.Fatalf("Yulash commander exit mode=%v coords=%d,%d,%d originals=%#v choices=%#v message=%q",
 			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,

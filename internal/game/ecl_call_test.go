@@ -40,8 +40,18 @@ func TestApplyECLCallSignalsMovesForwardAndWraps(t *testing.T) {
 
 // scriptView 用 VM 那支 `ViewMirror.Store` 建出鏡射——**不要在測試裡手寫鏡射
 // 的欄位**，那會變成第二份規則，改了 VM 也不會紅（spec 1172）。
-func scriptView(block uint8, writes ...[2]uint16) ecl.ViewMirror {
+// scriptView 造一份 `2Dh` 的鏡射快照：**先把隊伍現在的位置 Adopt 進去**，
+// 再套上腳本這一次的寫入。
+//
+// ⚠ 不要從零值開始。原作的 `720Fh`／`7210h`／`7211h` 永遠等於真實位置——引擎
+// 每動一步就回寫；remake 這一側對應的是 `syncDungeonECLRegisters()`。從零值起
+// 造出來的快照等於假設「腳本沒寫的格子是 `(0,0)` 朝北」，那個狀態在真實執行
+// 裡不存在，用它當輸入會把「只寫一格的重畫該怎麼投影」問錯（spec 1172）。
+func scriptView(state *State, block uint8, writes ...[2]uint16) ecl.ViewMirror {
 	var view ecl.ViewMirror
+	view.Adopt(0xC04B, uint16(state.DungeonX))
+	view.Adopt(0xC04C, uint16(state.DungeonY))
+	view.Adopt(0xC04D, uint16(state.DungeonDirection/2))
 	for _, write := range writes {
 		view.Store(write[0], write[1], block)
 	}
@@ -85,7 +95,7 @@ func TestApplyECLCallSignalsRedrawProjectsSameBlockDungeonRegisters(t *testing.T
 		SessionBlockRangeSet: true,
 		CallRequests: []ecl.CallRequest{
 			{Address: 0x2E10, PC: 0x1096, BlockID: 0x42, Sequence: 4,
-				View: scriptView(0x42,
+				View: scriptView(&state, 0x42,
 					[2]uint16{0xC04B, 11}, [2]uint16{0xC04C, 10}, [2]uint16{0xC04D, 2})},
 		},
 	})
@@ -164,7 +174,10 @@ func TestApplyECLCallSignalsRedrawIgnoresPriorBlockTransaction(t *testing.T) {
 	}
 }
 
-func TestApplyECLCallSignalsRedrawProjectsOnlyFreshRegisters(t *testing.T) {
+// 只寫其中一格的重畫：沒被寫的那兩格沿用鏡射裡的值，而鏡射本來就等於隊伍
+// 目前的位置（引擎每動一步都回寫）。所以結果是「X 換成腳本寫的、Y 與朝向
+// 不變」——原作讀滿三格，不需要「只投影寫過的」這種遮罩（spec 1172）。
+func TestApplyECLCallSignalsRedrawProjectsTheWholeMirror(t *testing.T) {
 	session, err := ecl.NewBlockSession(map[uint8][]byte{
 		0x42: {0, 0},
 	}, 0x42)
@@ -189,7 +202,7 @@ func TestApplyECLCallSignalsRedrawProjectsOnlyFreshRegisters(t *testing.T) {
 		SessionBlockRangeSet: true,
 		CallRequests: []ecl.CallRequest{
 			{Address: 0x2E10, PC: 0x13DB, BlockID: 0x42, Sequence: 3,
-				View: scriptView(0x42, [2]uint16{0xC04B, 10}, [2]uint16{0xC04D, 0})},
+				View: scriptView(&state, 0x42, [2]uint16{0xC04B, 10}, [2]uint16{0xC04D, 0})},
 		},
 	})
 
@@ -228,7 +241,7 @@ func TestApplyECLCallSignalsRedrawWithoutFacingStillMovesTheParty(t *testing.T) 
 		SessionBlockRangeSet: true,
 		CallRequests: []ecl.CallRequest{
 			{Address: 0x2E10, PC: 0x1452, BlockID: 0x01, Sequence: 3,
-				View: scriptView(0x01, [2]uint16{0xC04B, 0}, [2]uint16{0xC04C, 0})},
+				View: scriptView(&state, 0x01, [2]uint16{0xC04B, 0}, [2]uint16{0xC04C, 0})},
 		},
 	})
 
@@ -276,3 +289,60 @@ func TestApplyECLCallSignalsCarriesPictureFrameCursor(t *testing.T) {
 // 執行序這件事現在由 VM 的鏡射結構性地保證（`CALL` 當下複製一份），
 // 回歸擋板搬到 `internal/ecl` 的 `TestViewMirrorSnapshotIsTakenAtTheCall`，
 // 那一支跑的是真的 bytecode 而不是手寫的 fixture（spec 1172）。
+
+// ★ 「寫了座標卻沒有 `2E10h`」的執行也要搬隊伍。
+//
+// 原作的 `STOREVALUE` 一寫 `C04B` 就當場改 `720Fh`——隊伍在那一刻就在新格子上，
+// 重畫只是重畫。remake 的投影掛在 `2Dh CALL 2E10h` 上，所以這種執行要靠
+// `RunResult.FinalView` 在收尾補一次（spec 1172）。
+//
+// 形狀取自 `ECL3/0x10:0C7Eh`「指揮官帶你走側門」：連寫 `C04B=2`／`C04C=5`／
+// `C04D=1` 之後直接 `GOTO` 回主分派器，**沒有** `CALL 2E10h`；隔壁那條搶劫
+// 結局（`0D24h`）寫完同樣三格才有重畫。
+func TestApplyECLCallSignalsProjectsCoordinatesWrittenWithoutARedraw(t *testing.T) {
+	session, err := ecl.NewBlockSession(map[uint8][]byte{0x10: {0, 0}}, 0x10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := State{session: session, DungeonX: 1, DungeonY: 3, DungeonDirection: 6}
+	state.Area.InDungeon = true
+
+	state.applyECLCallSignals(ecl.RunResult{
+		SessionStartBlockID:  0x10,
+		SessionEndBlockID:    0x10,
+		SessionBlockRangeSet: true,
+		FinalView: scriptView(&state, 0x10,
+			[2]uint16{0xC04B, 2}, [2]uint16{0xC04C, 5}, [2]uint16{0xC04D, 1}),
+	})
+
+	if state.DungeonX != 2 || state.DungeonY != 5 || state.DungeonDirection != 2 ||
+		state.MapX != 2 || state.MapY != 5 {
+		t.Fatalf("沒有重畫的座標寫入位置 ＝ (%d,%d,%d) map=(%d,%d)，want (2,5,2)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection, state.MapX, state.MapY)
+	}
+}
+
+// ⚠ 收尾投影**不是「再重畫一次」**：`2E10h` 已經投影過的執行，髒旗標在 VM 裡
+// 就被清掉了，`FinalView` 進不來那一段。用一份乾淨的鏡射確認它不動位置。
+func TestApplyECLCallSignalsFinalViewDoesNotReprojectAfterARedraw(t *testing.T) {
+	session, err := ecl.NewBlockSession(map[uint8][]byte{0x10: {0, 0}}, 0x10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := State{session: session, DungeonX: 4, DungeonY: 7, DungeonDirection: 0}
+	state.Area.InDungeon = true
+
+	view := scriptView(&state, 0x10, [2]uint16{0xC04B, 9}, [2]uint16{0xC04C, 9})
+	view.ClearDirty()
+	state.applyECLCallSignals(ecl.RunResult{
+		SessionStartBlockID:  0x10,
+		SessionEndBlockID:    0x10,
+		SessionBlockRangeSet: true,
+		FinalView:            view,
+	})
+
+	if state.DungeonX != 4 || state.DungeonY != 7 || state.DungeonDirection != 0 {
+		t.Fatalf("重畫過的鏡射不該再投影一次：位置 ＝ (%d,%d,%d)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
+}
