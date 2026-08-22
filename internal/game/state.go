@@ -1915,28 +1915,29 @@ func (s *State) applyLoadPieces(result ecl.RunResult) {
 	}
 	s.LoadPieces = result.LoadPieces
 	s.loadPiecesPending = true
-	s.applyWallSetParams(result.LoadPieces)
+	s.applyWallSetParams(result.WallSetAssignments)
 }
 
-// applyWallSetParams 照原作 `LOADWALLSET` 的收尾把三組牆面參數寫進存檔狀態。
+// applyWallSetParams 照原作 `LOADWALLSET` 的收尾把牆面參數寫進存檔狀態。
 //
-// 走的是 `37h` 的**逐槽迴圈**那一支：`片 <> 0FFh` 就 `LOADWALLSET(槽, 片)`，
-// 而那一支結尾寫 `[7210h ＋ 槽×4] := 片`、`[7212h ＋ 槽×4] := 槽`
-// （DOS `overlay-30:12DEh`）；`= 0FFh` 則由 handler 自己把兩個 word 寫成
-// `0FFFFh`（`overlay-02:0D44h`）。
+// `LOADWALLSET(槽, 片)` 的最後六條寫的是
+// `[7210h ＋ 槽×4] := 片`、`[7212h ＋ 槽×4] := 槽`（DOS `overlay-30:12DEh`）；
+// 哨兵那一路由 handler 自己把兩個 word 都寫成 `0FFFFh`（`overlay-02:0D44h`）。
 //
-// ⚠ 原作另有兩條路沒有照抄：`片[1] = 7Fh` ⇒ `LOADWALLSET(1, 0)`，以及
-// `bank0^[1CEh]` 與 `[1D0h]` 都非零時只載槽 1／3。全 corpus 23 處 `37h`
-// **沒有一處**帶 `7Fh`，而槽 2 每一處都帶著真實片號（`02`／`06`／`0Ah`／
-// `0Fh`／`10h`／`12h`），兩條路都觀察不到，所以不猜。
-func (s *State) applyWallSetParams(pieces [3]uint16) {
-	for index, piece := range pieces {
-		if piece == 0xFF {
+// ★ **要動哪些槽由 VM 決定**（`ecl.wallSetAssignments`，三支分派照抄 handler）。
+// 沒有列出來的槽這一次完全不動——`片[1] = 7Fh` 那一支就只碰槽 1，槽 2／3 維持原值。
+func (s *State) applyWallSetParams(assignments []ecl.WallSetAssignment) {
+	for _, assignment := range assignments {
+		if assignment.Slot < 1 || int(assignment.Slot) > len(s.wallSetParams) {
+			continue
+		}
+		index := int(assignment.Slot) - 1
+		if assignment.Sentinel {
 			s.wallSetParams[index] = partySave.SAVGAMSetBlock{BlockID: 0xFFFF, SetID: 0xFFFF}
 			continue
 		}
 		s.wallSetParams[index] = partySave.SAVGAMSetBlock{
-			BlockID: piece, SetID: uint16(index + 1),
+			BlockID: assignment.Piece, SetID: uint16(assignment.Slot),
 		}
 	}
 }

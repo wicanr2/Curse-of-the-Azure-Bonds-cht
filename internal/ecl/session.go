@@ -513,6 +513,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 		if result.LoadPiecesRequested {
 			aggregate.LoadPiecesRequested = true
 			aggregate.LoadPieces = result.LoadPieces
+			aggregate.WallSetAssignments = result.WallSetAssignments
 		}
 		aggregate.PictureRequested = aggregate.PictureRequested || result.PictureRequested
 		if result.PictureRequested {
