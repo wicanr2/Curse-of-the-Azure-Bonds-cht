@@ -4994,7 +4994,7 @@
     {
       "path": "cmd/ecl-text-coverage/main.go",
       "function": "main",
-      "sha256": "a617f023b742c2da64bc61b26700ea7050d2df07a3b0e9cfe7f901a481555d05",
+      "sha256": "811b1520eb105ff0e34a45c3474822a0acfdafc759d30d7f60989e0abf34551b",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

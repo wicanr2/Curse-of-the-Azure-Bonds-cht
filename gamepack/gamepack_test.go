@@ -1887,6 +1887,12 @@ func TestVariableInsertPagesAreWiredAtRuntime(t *testing.T) {
 		{"野外夜間：胸前紙條的手札編號", []string{
 			"ONE MORNING, THE PARTY SPOTS A NOTE PINNED TO", "ARIBETH",
 			"'S CHEST. YOU READ IT, AND YOU RECORD IT IN JOURNAL ENTRY", "24", "."}},
+		// ★ 酒館傳聞的編號原本被歸在「還沒接」——理由是編號來自 `7F79h`，
+		// 而那一格被許多不相干的流程寫過，所以**推不出可能的編號集合**。
+		// 後來走實跑路線（多種選單策略取聯集）**直接把玩家真的看得到的那些編號
+		// 走了出來**：13 則，逐則補了規則與譯文。
+		// ⇒ 這一類不必先解出編號來源：**列舉不到的東西，用走的走得到**。
+		{"酒館傳聞編號", []string{"YOU OVERHEAR TAVERN TALE", "31", "."}},
 	}
 	for _, test := range handled {
 		if result := pack.MatchText(test.texts, "zh-TW"); !result.Matched {
@@ -1894,15 +1900,12 @@ func TestVariableInsertPagesAreWiredAtRuntime(t *testing.T) {
 		}
 	}
 
-	// 還沒接的四類，各附上為什麼。
+	// 還沒接的三類，各附上為什麼。
 	unhandled := []struct {
 		name   string
 		reason string
 		texts  []string
 	}{
-		{"酒館傳聞編號", "編號來自 7F79h，而那一格在 corpus 裡被許多不相干的流程寫過；" +
-			"要先追出這一頁的寫入來源（RANDOM 或 GETTABLE）才知道可能的編號集合",
-			[]string{"YOU OVERHEAR TAVERN TALE", "31", "."}},
 		{"競技場賭金", "金額是算出來的，無法列舉；要嘛規則支援佔位符，要嘛這一頁維持原文",
 			[]string{"CONGRATULATIONS, YOU HAVE WON", "250", "PLATINUM."}},
 		{"巫師塔光球距離", "距離逐回合遞減，同上",
