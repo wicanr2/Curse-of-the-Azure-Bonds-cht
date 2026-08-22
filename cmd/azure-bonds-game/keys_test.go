@@ -10,6 +10,8 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 )
 
 // scriptedKeys 是測試用的鍵盤來源：一次餵一幀該按的鍵。
@@ -84,5 +86,36 @@ func TestFrontendReadsKeysOnlyThroughTheSeam(t *testing.T) {
 	if len(offenders) > 0 {
 		t.Fatalf("前端要透過 `a.justPressed`／`a.keyDown` 讀鍵盤，直接呼叫的有：\n  %s",
 			strings.Join(offenders, "\n  "))
+	}
+}
+
+// ★ 游標不能停在**已經不存在的選項**上。
+//
+// `choiceCursor` 是前端自己的狀態，而選項是 ECL 換頁時整批換掉的：商店選單有
+// 五十幾項，挪到第 8 項之後換到只有三項的荒野選單，游標還是 8——按下去 `Select`
+// 直接回 `choice 8 is invalid in mode 1`，**玩家看到的是一行錯誤訊息**。
+//
+// ⚠ 重設原本只發生在幾條特定路徑上（選完一項、載入存檔），涵蓋不了所有換頁。
+func TestChoiceCursorIsClampedToTheCurrentChoices(t *testing.T) {
+	for _, item := range []struct {
+		name    string
+		cursor  int
+		choices int
+		want    int
+	}{
+		{name: "選項變少時夾到最後一項", cursor: 8, choices: 3, want: 2},
+		{name: "沒有選項時歸零", cursor: 8, choices: 0, want: 0},
+		{name: "在範圍內就不要動", cursor: 1, choices: 3, want: 1},
+		{name: "負的歸零", cursor: -1, choices: 3, want: 0},
+	} {
+		t.Run(item.name, func(t *testing.T) {
+			state := game.NewState(locale.Catalog{})
+			state.Choices = make([]string, item.choices)
+			application := &app{state: &state, choiceCursor: item.cursor}
+			application.clampChoiceCursor()
+			if application.choiceCursor != item.want {
+				t.Fatalf("游標 ＝ %d，want %d", application.choiceCursor, item.want)
+			}
+		})
 	}
 }

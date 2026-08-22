@@ -114,6 +114,11 @@ func (a *app) canStepForward() bool {
 	return a.state.CanMoveDungeon(*a.geoGrid, deltaX, deltaY, int(direction))
 }
 
+// keyDrivenMenuPatience 是「同一個選單按同一項幾次還在原地，就換下一項」。
+//
+// ⚠ 太小會變成輪流選（實測會自己切斷路線）；太大就等於永遠第一項。
+const keyDrivenMenuPatience = 6
+
 // modeName 讓紀錄看得懂。
 func modeName(mode game.Mode) string {
 	switch mode {
@@ -160,6 +165,8 @@ type keyDrivenSession struct {
 	doorsFound int
 	// menus 是遇到過的選單（選項以「｜」相接），用來看卡在哪一個決定上。
 	menus map[string]bool
+	// menuSeen 記著同一個選單看過幾次，用來判斷「卡住了，換下一項」。
+	menuSeen map[string]int
 }
 
 func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
@@ -168,7 +175,7 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 		app: application, keys: keys,
 		cells: map[[3]int]bool{}, tried: map[[4]int]bool{}, modes: map[game.Mode]bool{},
 		messages: map[string]bool{}, fallbacks: map[string]bool{},
-		blocks: map[uint8]bool{}, menus: map[string]bool{},
+		blocks: map[uint8]bool{}, menus: map[string]bool{}, menuSeen: map[string]int{},
 	}
 }
 
@@ -210,7 +217,9 @@ func (s *keyDrivenSession) observe() {
 		}
 		s.cells[[3]int{block, x, y}] = true
 	}
-	s.blocks[s.app.geoBlock] = true
+	if block, ok := state.CurrentECLBlockID(); ok {
+		s.blocks[block] = true
+	}
 	if len(state.Choices) > 0 {
 		s.menus[strings.Join(state.Choices, "｜")] = true
 	}
@@ -234,10 +243,46 @@ func (s *keyDrivenSession) observe() {
 func (s *keyDrivenSession) step(t *testing.T) {
 	t.Helper()
 	if s.app.state.Mode != game.ModeDungeon || s.app.geoGrid == nil {
-		// ⚠ 選單**一律按第一項**。試過依幀數輪流選：走過的格子從 28 掉到 27、
+		// ⚠ 選單**預設按第一項**。試過依幀數輪流選：走過的格子從 28 掉到 27、
 		// 記到的話從 23 掉到 16——因為輪到「離開」那一項就真的離開了，
 		// 整條路被自己切斷。冷走那邊多策略有效，是因為它**每一種策略各跑一趟**
 		// 再取聯集；這裡是**一條連續的 session**，換選項不是多一條路，是換一條路。
+		//
+		// ★ 但「永遠第一項」會**卡在同一個選單上**：世界地圖的
+		// 「進入城市｜繼續旅程｜紮營」永遠選第一項，隊伍就再也離不開開場那一座城，
+		// 整場 session 停在 ECL `0x01`。
+		//
+		// ⇒ 折衷是**卡住才換**：同一個選單看到第 N 次還在原地，就往下挪一項。
+		// 這不是亂試，是「這條路走過了，換下一條」——而且預設仍然是第一項，
+		// 所以不會像輪流選那樣自己切斷路線。
+		if count := len(s.app.state.Choices); count > 1 {
+			signature := strings.Join(s.app.state.Choices, "｜") + "\x00" + s.app.state.Message
+			s.menuSeen[signature]++
+			want := (s.menuSeen[signature] - 1) / keyDrivenMenuPatience
+			if want >= count {
+				want = count - 1
+			}
+			// ⚠ `a.choiceCursor` **跨模式留著**：在 58 項的商店選單挪到第 8 項之後
+			// 換到只有 3 項的荒野選單，游標還是 8 ⇒ 按下去會拿到
+			// `choice 8 is invalid in mode 1`。所以要**兩個方向都會動**，
+			// 不能只往下挪。
+			for step := 0; step < count+8 && s.app.choiceCursor != want; step++ {
+				key := ebiten.KeyDown
+				if s.app.choiceCursor > want {
+					key = ebiten.KeyUp
+				}
+				tap(t, s.app, s.keys, key)
+				if s.app.state.Mode == game.ModeDungeon {
+					return
+				}
+			}
+			// ⚠ 挪游標的過程中**模式可能已經變了**（某些選項一選就換畫面），
+			// 所以要拿**當下**的選項數再檢查一次，不能用迴圈前抓的那個。
+			if current := len(s.app.state.Choices); s.app.choiceCursor >= current {
+				// 還是挪不進範圍就不要按下去——寧可這一幀什麼都不做。
+				return
+			}
+		}
 		tap(t, s.app, s.keys, ebiten.KeyEnter)
 		return
 	}
@@ -425,7 +470,7 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		t.Fatal("按 D 之後還停在角色建立：完成那條路按不出來")
 	}
 
-	// ⚠ 600 幀就到頂了：跑到 3000 幀走過的格子還是 28。加幀數不會再多，
+	// ⚠ 600 幀就到頂了：跑到 4000 幀還是 28 格、36 句。加幀數不會再多，
 	// 所以不要為了「看起來跑得久」而拖慢整個測試套件。
 	for session.frames = 0; session.frames < 600; session.frames++ {
 		session.observe()
@@ -457,6 +502,12 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	for menu := range session.menus {
 		t.Logf("  選單 %s", menu)
 	}
+	blocks := make([]string, 0, len(session.blocks))
+	for block := range session.blocks {
+		blocks = append(blocks, fmt.Sprintf("0x%02X", block))
+	}
+	sort.Strings(blocks)
+	t.Logf("  走到過的 ECL 段：%s", strings.Join(blocks, " "))
 
 	if path := os.Getenv("COAB_KEY_SESSION_JSON"); path != "" {
 		if err := session.writeReport(path); err != nil {
