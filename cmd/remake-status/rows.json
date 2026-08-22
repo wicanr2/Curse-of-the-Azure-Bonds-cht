@@ -189,12 +189,27 @@
     3,
     4
    ]
+  },
+  "audio_triggers": {
+   "category": "原機音訊：誰決定「什麼時候該響」",
+   "format": "PC-98 六格音訊狀態共 %s 處寫入、%s 處讀取（`MUSICNUM`／`MUSICSW`／`MUSICNO` 與三個音效旗標）",
+   "source": "`pc98-audio-state-writers.md`（`cmd/dseg-writers`）",
+   "not_proof": "⚠ 這是**分母不是覆蓋率**：它說原作在幾個地方改音訊狀態，**不是** remake 對了幾處。⚠ **這是 PC-98 的版面**——名字由 Borland 除錯符號直接讀出來，而 DOS 版沒有符號，對應的格子要另外認，**不能直接套用位址**。⚠ `cmd/dseg-writers` 是線性位元組掃描：會有偽陽性（剛好長得像 opcode 的立即數），但對它認得的編碼沒有偽陰性。控制流掃描的錯法相反——**要下「沒有人寫這一格」的結論得兩種都跑**。★ 播放常式在程式碼段 2195：`SOUNDFX` `0000h`、`INITSOUND` `010Dh`、`MSCPLAY` `0114h`、`BGMPLAY` `0177h`。⚠ 還沒做的是**下一步**：把這些寫入點對回遊戲事件（進城／開戰／勝敗），以及 DOS 側的對應格子。分母有了，對照還沒做。",
+   "report": "pc98-audio-state-writers.md",
+   "patterns": [
+    "##\\s*write\\s*\\n(?:.|\\n)*?\\n(\\d+) site\\(s\\)",
+    "##\\s*read\\s*\\n(?:.|\\n)*?\\n(\\d+) site\\(s\\)"
+   ],
+   "fields": [
+    0,
+    1
+   ]
   }
  },
  "unmeasured": [
   {
    "category": "原機音訊（音樂／音效生命週期）",
-   "not_proof": "PC-98 音樂與音效的 producer 已有規格與 `cmd/pc98-music-audit`／`cmd/pc98-sfx-audit` 驗本機橋接檔，但**播放生命週期與戰鬥 phase 同步**沒有覆蓋率報表——那是「什麼時候該響」的問題，不是「檔案對不對」。"
+   "not_proof": "PC-98 側的**狀態格**已經有分母了（`pc98-audio-state-writers.md`：17 處寫入、39 處讀取，名字由 Borland 符號直接讀出）。**還沒有的是**：把那些寫入點對回遊戲事件（進城／開戰／勝敗），以及 DOS 側的對應格子——DOS 沒有符號，位址不能直接套。播放**生命週期與戰鬥 phase 同步**的覆蓋率報表仍然沒有。"
   },
   {
    "category": "開場到結局的同一 session",
