@@ -42,6 +42,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
@@ -57,6 +58,8 @@ const (
 	// `0x624`。載入端讀的是 Area2 那一份（`area1.GameArea = area2.GameArea`），
 	// 只改容器那一份的話章節看起來變了、實際沒變——而且不會報錯。
 	area2GameAreaOffset = 1 + partySave.SAVGAMArea1Size + 0x624
+	// 三組牆面參數接在 map state 五個位元組與兩個 state 位元組之後。
+	setBlocksOffset = mapPosOffset + partySave.SAVGAMMapStateSize + partySave.SAVGAMStateBytes
 	// ECL 程式碼視窗在存檔的第四塊，接在前三塊之後（spec 1163）。
 	eclWindowOffset = 1 + partySave.SAVGAMArea1Size + partySave.SAVGAMArea2Size +
 		partySave.SAVGAMRuntimeStateSize
@@ -162,7 +165,7 @@ func main() {
 		// 資料**從位移 2 開始**（前兩個 byte 是段頭，不進記憶體）。所以換圖＝把
 		// 另一段的位元組碼換進這個視窗，並把段編號一起改掉。
 		if *eclBlock >= 0 {
-			code, err := eclBlockBytes(*image, *gameArea, uint8(*eclBlock))
+			code, pieces, piecesOK, err := eclBlockBytes(*image, *gameArea, uint8(*eclBlock))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -172,6 +175,25 @@ func main() {
 			}
 			copy(window, code)
 			binary.LittleEndian.PutUint16(patched[area1LastECLOffset:], uint16(*eclBlock))
+			// ⚠ 牆面參數也要一起換。 存檔記著三組「用哪一塊牆磚」，載入時原版會
+			// 拿它們去 `WALLDEF<章>.DAX` 重載。只換地圖不換這個，原版會拿**上一張
+			// 圖的**選圖去新章的檔案裡找，然後印
+			// `Unable to load 1 from WALLDEF4.` 收場（第 679 輪實測）。
+			// 值就取自我們正要裝進去的那一段自己發的 `37h LOAD PIECES`。
+			if piecesOK {
+				for index, piece := range pieces {
+					value := piece
+					if piece == 0xFF {
+						value = 0xFFFF
+					}
+					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4:], value)
+					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4+2:], value)
+				}
+				fmt.Fprintf(os.Stderr, "牆面參數改成 %d,%d,%d（取自該段自己的 LOAD PIECES）\n",
+					pieces[0], pieces[1], pieces[2])
+			} else {
+				fmt.Fprintln(os.Stderr, "⚠ 這一段的 LOAD PIECES 不是常數，牆面參數維持底檔的值")
+			}
 			fmt.Fprintf(os.Stderr, "換入 ECL%d 段 0x%02X 的位元組碼 %d bytes（視窗 %d bytes）\n",
 				*gameArea, *eclBlock, len(code), partySave.SAVGAMECLMemorySize)
 		}
@@ -278,10 +300,10 @@ func main() {
 // ⚠ 前兩個 byte 是段頭，不進記憶體：實測 slot B 的視窗與 `ECL2` 段 `0x01` 的
 // 資料**從位移 2 起**逐 byte 相同。少切這兩個 byte，整段碼會整體偏移兩格，
 // 而 ECL 位元組碼沒有對齊檢查——它會照樣執行，只是執行的是別的東西。
-func eclBlockBytes(imagePath string, area int, block uint8) ([]byte, error) {
+func eclBlockBytes(imagePath string, area int, block uint8) ([]byte, [3]uint16, bool, error) {
 	archive, err := zip.OpenReader(imagePath)
 	if err != nil {
-		return nil, err
+		return nil, [3]uint16{}, false, err
 	}
 	defer archive.Close()
 	name := fmt.Sprintf("ECL%d.DAX", area)
@@ -292,34 +314,35 @@ func eclBlockBytes(imagePath string, area int, block uint8) ([]byte, error) {
 		}
 		handle, openErr := file.Open()
 		if openErr != nil {
-			return nil, openErr
+			return nil, [3]uint16{}, false, openErr
 		}
 		payload, err = io.ReadAll(handle)
 		handle.Close()
 		if err != nil {
-			return nil, err
+			return nil, [3]uint16{}, false, err
 		}
 	}
 	if payload == nil {
-		return nil, fmt.Errorf("image 裡沒有 %s", name)
+		return nil, [3]uint16{}, false, fmt.Errorf("image 裡沒有 %s", name)
 	}
 	blocks, err := dax.Parse(payload)
 	if err != nil {
-		return nil, err
+		return nil, [3]uint16{}, false, err
 	}
 	for _, item := range blocks {
 		if item.Entry.ID != block {
 			continue
 		}
 		if len(item.Data) < 2 {
-			return nil, fmt.Errorf("%s 段 0x%02X 只有 %d bytes", name, block, len(item.Data))
+			return nil, [3]uint16{}, false, fmt.Errorf("%s 段 0x%02X 只有 %d bytes", name, block, len(item.Data))
 		}
 		code := item.Data[2:]
 		if len(code) > partySave.SAVGAMECLMemorySize {
-			return nil, fmt.Errorf("%s 段 0x%02X 的碼 %d bytes 放不進 %d bytes 的視窗",
+			return nil, [3]uint16{}, false, fmt.Errorf("%s 段 0x%02X 的碼 %d bytes 放不進 %d bytes 的視窗",
 				name, block, len(code), partySave.SAVGAMECLMemorySize)
 		}
-		return code, nil
+		pieces, ok := ecl.BlockWallPieces(item.Data)
+		return code, pieces, ok, nil
 	}
-	return nil, fmt.Errorf("%s 裡沒有段 0x%02X", name, block)
+	return nil, [3]uint16{}, false, fmt.Errorf("%s 裡沒有段 0x%02X", name, block)
 }
