@@ -60,6 +60,9 @@ type EquipmentEffect struct {
 	WeaponRange           int
 	MissileWeapon         bool
 	ThrownWeapon          bool
+	// ItemType 是這件物品的類別本身。原作的投射動畫用它選音效（spec 1186），
+	// 所以要一路帶到戰鬥層，不能只留在裝備投影的輸入端。
+	ItemType uint8
 }
 
 // ArmorClassImprovement decodes the reference's packed AC adjustment.
@@ -121,6 +124,7 @@ func (item ItemRecord) Effect(catalog BaseItemCatalog, large bool) (EquipmentEff
 	}
 	effect := EquipmentEffect{
 		Slot:                  base.Slot,
+		ItemType:              item.Type,
 		AttackBonus:           item.Plus,
 		ArmorClassImprovement: base.ArmorClassImprovement(),
 		AmmunitionType:        base.AmmunitionType,

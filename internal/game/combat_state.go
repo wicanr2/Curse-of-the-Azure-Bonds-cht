@@ -452,6 +452,13 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 					s.requestSound(SoundSpellHit)
 				}
 			default:
+				// 投射武器在飛行動畫尾端還有一聲，**不看中不中**
+				// （原作 `SHOWARROW` 的類別分歧，spec 1186）。
+				if event.Kind == combat.VisualMissile {
+					if attacker, ok := s.battle.Fighter(event.ActorID); ok {
+						s.requestSound(missileImpactSound(attacker))
+					}
+				}
 				// ⚠ 沒中**不放音效**。原作的近戰揮空只有揮擊聲（travel 階段那一聲
 				// `SWISHFX`），`MISSFX` 是法術沒中的聲音，不是揮空的聲音——
 				// 這裡以前放 `SoundMiss`，等於在原作從不出聲的時機放了法術音效。
@@ -4321,8 +4328,10 @@ func hasMonsterMagicMissile(fighter combat.Fighter) bool {
 //   - 目標離場放 `DEADFX`（原作在 `SUBTRACTDUDE` 裡）。
 func (s *State) requestAttackSounds(results []combat.AttackResult) {
 	for _, result := range results {
-		if s.attackerUsesMissile(result.AttackerID) {
+		if attacker, ok := s.attacker(result.AttackerID); ok && attacker.MissileWeapon {
+			// 進場一律 `ARROWFX`，飛行動畫尾端再依武器類別一聲。
 			s.requestSound(SoundArrow)
+			s.requestSound(missileImpactSound(attacker))
 		} else {
 			s.requestSound(SoundSwish)
 		}
@@ -4335,14 +4344,13 @@ func (s *State) requestAttackSounds(results []combat.AttackResult) {
 	}
 }
 
-// attackerUsesMissile 回答「這一擊是投射武器嗎」。查不到攻擊者就當近戰——
-// 近戰是絕大多數，而且 `SWISHFX` 在原作裡本來就是最常響的攻擊音。
-func (s *State) attackerUsesMissile(attackerID string) bool {
+// attacker 取出這一擊的攻擊者。查不到就當近戰——近戰是絕大多數，
+// 而且 `SWISHFX` 在原作裡本來就是最常響的攻擊音。
+func (s *State) attacker(attackerID string) (combat.Fighter, bool) {
 	if s.battle == nil || attackerID == "" {
-		return false
+		return combat.Fighter{}, false
 	}
-	fighter, ok := s.battle.Fighter(attackerID)
-	return ok && fighter.MissileWeapon
+	return s.battle.Fighter(attackerID)
 }
 
 func (s *State) queueAttackVisual(attacker, target combat.Fighter, results []combat.AttackResult) bool {

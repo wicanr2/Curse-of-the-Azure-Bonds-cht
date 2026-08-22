@@ -192,6 +192,10 @@ type Fighter struct {
 	WeaponRange       int
 	MissileWeapon     bool
 	ThrownWeapon      bool
+	// WeaponItemType 是架著的那把武器的**物品類別**（`CHARITEMREC.ITEMPTR`，
+	// remake 的 `ItemRecord.Type`）。原作的 `SHOWARROW` 用它決定投射動畫尾端
+	// 放哪一個音效（spec 1186）：投石索類放哨音、擲斧／棍／鎚放揮擊、其餘放箭。
+	WeaponItemType uint8
 	// InitiativeBonus is retained only as a legacy synthetic-fixture ordering
 	// seam. Production party/MON adapters never set it. Nonzero fixture values
 	// replace the rolled delay after the exact d6 draw, while d100 scan traffic
@@ -2535,6 +2539,7 @@ func (b *Battle) ReplaceFighterEquipment(fighterID string, projected Fighter) er
 	fighter.WeaponRange = projected.WeaponRange
 	fighter.MissileWeapon = projected.MissileWeapon
 	fighter.ThrownWeapon = projected.ThrownWeapon
+	fighter.WeaponItemType = projected.WeaponItemType
 	fighter.AmmunitionType = projected.AmmunitionType
 	fighter.AmmunitionCount = projected.AmmunitionCount
 	fighter.MovementAllowance = projected.MovementAllowance
@@ -2721,4 +2726,19 @@ func (b *Battle) CastAreaDamageDice(casterID string, center TilePoint,
 	}
 	b.updateStatus()
 	return result, nil
+}
+
+// UsesSeparateAmmunition 回答「這把武器要另外的彈藥嗎」，照原作自動換裝那一支
+// 的條件（spec 1120 的虛擬碼）：
+//
+//	投擲（`+0Eh` bit 4）        → 自己就是彈藥
+//	`+0Eh` 剛好等於 `0Ah`       → 自給自足（投石索）
+//	其餘有發射位元（bit 3）的   → 要另外的彈藥（弓、弩）
+//
+// ★ 音效那一側要用它（spec 1186）：要另外彈藥的武器，飛出去的是箭或弩矢
+// （類別 `49h`／`1Ch`），**兩個都落在 `SHOWARROW` 的 ARROWFX 分支**——所以
+// 不必知道架著的是哪一件彈藥，結論一樣。
+func (f Fighter) UsesSeparateAmmunition() bool {
+	const selfSufficient = 0x0A
+	return f.MissileWeapon && !f.ThrownWeapon && f.AmmunitionType != selfSufficient
 }

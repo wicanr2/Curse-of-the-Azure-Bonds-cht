@@ -3828,7 +3828,10 @@ func TestActiveCombatSaveResumesMissileDeathFrameWithoutSoundReplay(t *testing.T
 	if err := original.AdvanceCombatVisual(deathAt); err != nil {
 		t.Fatal(err)
 	}
-	if got, want := original.ConsumeSoundEvents(), []SoundEvent{SoundArrow, SoundHit, SoundDead}; !reflect.DeepEqual(got, want) {
+	// 兩聲 `SoundArrow`：進場一聲、飛行動畫尾端依武器類別再一聲。弓要另外的
+	// 彈藥 ⇒ 飛出去的是箭 ⇒ 第二聲也是箭（原作 `SHOWARROW`，spec 1186）。
+	want := []SoundEvent{SoundArrow, SoundArrow, SoundHit, SoundDead}
+	if got := original.ConsumeSoundEvents(); !reflect.DeepEqual(got, want) {
 		t.Fatalf("pre-save missile sounds=%v want=%v", got, want)
 	}
 	path := filepath.Join(t.TempDir(), "missile-death.json")
