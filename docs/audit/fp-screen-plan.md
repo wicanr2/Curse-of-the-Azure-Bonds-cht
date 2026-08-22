@@ -56,7 +56,7 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 
 | # | map | GEO | block | cell | new signatures | still uncovered after |
 |---:|---|---:|---:|---|---:|---:|
-| 1 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(12,7)` | 4 | 474 |
+| 1 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,7)` | 4 | 474 |
 | 2 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,12)` | 4 | 470 |
 | 3 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,13)` | 4 | 466 |
 | 4 | `original.geo5.block-33` | 5 | `0x33` | `(15,0)` | 4 | 462 |
@@ -83,7 +83,7 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | 25 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,10)` | 3 | 385 |
 | 26 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(13,12)` | 3 | 382 |
 | 27 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,14)` | 3 | 379 |
-| 28 | `original.geo5.block-31` | 5 | `0x32` | `(3,7)` | 3 | 376 |
+| 28 | `original.geo5.block-32` | 5 | `0x32` | `(3,7)` | 3 | 376 |
 | 29 | `original.geo5.block-33` | 5 | `0x33` | `(15,4)` | 3 | 373 |
 | 30 | `original.geo5.block-33` | 5 | `0x33` | `(15,5)` | 3 | 370 |
 | 31 | `original.geo5.block-33` | 5 | `0x33` | `(15,7)` | 3 | 367 |
@@ -115,7 +115,7 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | 57 | `original.geo3.block-10` | 3 | `0x10` | `(3,10)` | 2 | 296 |
 | 58 | `original.geo3.block-10` | 3 | `0x10` | `(3,12)` | 2 | 294 |
 | 59 | `original.geo3.block-10` | 3 | `0x10` | `(4,15)` | 2 | 292 |
-| 60 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(10,0)` | 2 | 290 |
+| 60 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(10,0)` | 2 | 290 |
 | 61 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(13,0)` | 2 | 288 |
 | 62 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(4,6)` | 2 | 286 |
 | 63 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,8)` | 2 | 284 |
