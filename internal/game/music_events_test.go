@@ -3,7 +3,10 @@ package game
 import (
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
+
+	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
@@ -163,5 +166,73 @@ func TestECLBlockTransitionRequestsDestinationMusicOnce(t *testing.T) {
 	state.requestMusicIfBlockChanged(0x02)
 	if got := state.ConsumeMusicEvents(); len(got) != 0 {
 		t.Fatalf("unchanged block replayed music: %+v", got)
+	}
+}
+
+// musicEventForTrack 是選曲／停止的決定點。三個方向都要釘：換曲、不變、停。
+//
+// ⚠ 「停」目前在正式資料上到不了——engine 的 pack 驗證擋掉 `track_id` 是空的
+// binding。`TestEnginePackCannotExpressStopYet` 把那個限制釘住：它一旦鬆綁，
+// 那條測試會紅，提醒把 binding 補上（spec 1192）。
+func TestMusicEventForTrack(t *testing.T) {
+	for _, item := range []struct {
+		name           string
+		previous, next string
+		wantAction     string
+		wantTrack      string
+		wantChanged    bool
+	}{
+		{name: "換曲", previous: "a", next: "b", wantAction: "play", wantTrack: "b", wantChanged: true},
+		{name: "同一首不重發", previous: "a", next: "a", wantChanged: false},
+		{name: "空的代表停，不是放一首叫「」的曲子", previous: "a", next: "",
+			wantAction: "stop", wantChanged: true},
+		{name: "本來就沒在放也不用停", previous: "", next: "", wantChanged: false},
+		{name: "從沒放到放", previous: "", next: "b", wantAction: "play", wantTrack: "b", wantChanged: true},
+	} {
+		t.Run(item.name, func(t *testing.T) {
+			event, changed := musicEventForTrack(item.previous, item.next)
+			if changed != item.wantChanged {
+				t.Fatalf("changed ＝ %v，want %v", changed, item.wantChanged)
+			}
+			if !changed {
+				return
+			}
+			if event.Action != item.wantAction || event.TrackID != item.wantTrack {
+				t.Fatalf("得到 %+v，want action=%q track=%q",
+					event, item.wantAction, item.wantTrack)
+			}
+		})
+	}
+}
+
+// ★ 這條釘的是**別人家的限制**：共用 engine 的 pack 驗證不收「這裡不放音樂」的
+// 宣告（`track_id` 空的 binding 會被判成 `references unknown track ""`）。
+//
+// ⚠ 所以 `musicEventForTrack` 的 `stop` 分支目前在正式資料上**到不了**。
+// 這條測試一旦紅，代表 engine 那邊鬆綁了 —— 那時要做的是把「不放音樂」的
+// binding 補進 game-pack，而不是把這條測試刪掉（spec 1192）。
+func TestEnginePackCannotExpressStopYet(t *testing.T) {
+	parts := map[string][]byte{"00-core.json": []byte(`{
+	  "schema_version": 1,
+	  "id": "music-lifecycle-test",
+	  "default_locale": "en",
+	  "locales": {"en": {"music-lifecycle-test.noop": "noop"}},
+	  "music_tracks": [
+	    {"id": "t1", "source_platform": "pc-9801", "reference_selector": 1, "driver_index": 0}
+	  ],
+	  "music_bindings": [
+	    {"ecl_blocks": [1], "track_id": "t1"},
+	    {"ecl_blocks": [2], "track_id": ""}
+	  ]
+	}`)}
+	_, err := goldenbox.LoadPackPartsFS(
+		func(name string) ([]byte, error) { return parts[name], nil },
+		[]string{"00-core.json"})
+	if err == nil {
+		t.Fatal("engine 現在收得下空的 track_id 了：把「不放音樂」的 binding 補進 game-pack，" +
+			"讓 `musicEventForTrack` 的 stop 分支真的用得到（spec 1192）")
+	}
+	if !strings.Contains(err.Error(), "unknown track") {
+		t.Fatalf("擋下來的理由變了：%v", err)
 	}
 }

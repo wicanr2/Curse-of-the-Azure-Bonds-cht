@@ -323,6 +323,14 @@ func (a *app) syncSoundEvents() {
 		a.playSoundEvent(event)
 	}
 	for _, event := range a.state.ConsumeMusicEvents() {
+		// 「這裡不放音樂」要真的停下來（spec 1192）。
+		if event.Action == "stop" {
+			a.currentMusicTrack = ""
+			if a.soundPlayer != nil {
+				a.soundPlayer.StopMusic()
+			}
+			continue
+		}
 		if event.Action == "play" {
 			a.currentMusicTrack = event.TrackID
 			if len(a.pc98MusicDriver) != 0 && a.soundPlayer != nil {
