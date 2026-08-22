@@ -1158,6 +1158,13 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 }
 
 func TestRealNewGameRunsToTheEnding(t *testing.T) {
+	// 接縫盤點要的是**主線實際走出來的段落轉移**，不是註冊表宣告的那個
+	// （spec 1195）。只有設了 `COAB_BLOCK_EDGES` 才會寫檔。
+	t.Cleanup(func() {
+		if err := WriteBlockEdges(""); err != nil {
+			t.Errorf("段落轉移寫不出來：%v", err)
+		}
+	})
 	// ★ 把整條主線的**選擇**錄下來（`COAB_DECISION_LOG` 開啟）。那份路線是
 	// 「開場到結局」缺的那一半：按鍵那一場走不出開場，不是走法的問題，是缺路線
 	// （spec 1191）。⚠ 錄的是選項文字不是索引——索引會隨選單內容錯位。

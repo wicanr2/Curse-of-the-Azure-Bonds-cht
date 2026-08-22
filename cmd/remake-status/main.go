@@ -120,6 +120,20 @@ func main() {
 			text.Summary.RunsOrphan, text.Summary.RunsTruncated)
 	}
 
+	// 分段驗收的**接縫**：直入宣告的前一段 vs 主線實際的前一段（spec 1195）。
+	var seams struct {
+		Segments   int `json:"segments"`
+		Visited    int `json:"visited"`
+		Matched    int `json:"matched"`
+		Mismatched int `json:"mismatched"`
+		NotVisited int `json:"not_visited"`
+		Undeclared int `json:"undeclared_edges"`
+	}
+	if readJSON(*auditDir, "segment-seams.json", &seams) {
+		add("segment_seams", seams.Segments, seams.Visited, seams.Matched,
+			seams.Mismatched, seams.Undeclared)
+	}
+
 	// 按鍵驅動的一場：這是「開場到結局」那一列缺的**輸入那一層**。
 	// 戰役測試直接呼叫 `state.X()`，這一份走的是 `(*app).Update()`。
 	var keySession struct {

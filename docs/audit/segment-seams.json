@@ -1,0 +1,155 @@
+{
+ "schema": "coab-segment-seams/1",
+ "segments": 25,
+ "visited": 18,
+ "matched": 18,
+ "mismatched": 0,
+ "fresh_start": 2,
+ "not_visited": 5,
+ "undeclared_edges": 6,
+ "rows": [
+  {
+   "id": "ECL1/0x50",
+   "declared_enter_from": 81,
+   "observed_from": "BDBR",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL1/0x51",
+   "declared_enter_from": 80,
+   "observed_from": "ESJQ",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL1/0x52",
+   "declared_enter_from": 0,
+   "verdict": "fresh-start"
+  },
+  {
+   "id": "ECL2/0x01",
+   "declared_enter_from": 0,
+   "verdict": "fresh-start"
+  },
+  {
+   "id": "ECL2/0x02",
+   "declared_enter_from": 1,
+   "observed_from": "AQ==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL2/0x03",
+   "declared_enter_from": 2,
+   "observed_from": "Ag==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL2/0x04",
+   "declared_enter_from": 3,
+   "observed_from": "Aw==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL3/0x10",
+   "declared_enter_from": 81,
+   "observed_from": "UQ==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL3/0x11",
+   "declared_enter_from": 16,
+   "observed_from": "EBI=",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL3/0x12",
+   "declared_enter_from": 17,
+   "observed_from": "EQ==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL3/0x15",
+   "declared_enter_from": 81,
+   "verdict": "not-visited"
+  },
+  {
+   "id": "ECL4/0x20",
+   "declared_enter_from": 81,
+   "observed_from": "UQ==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL4/0x21",
+   "declared_enter_from": 32,
+   "observed_from": "IA==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL4/0x22",
+   "declared_enter_from": 33,
+   "observed_from": "IQ==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL4/0x23",
+   "declared_enter_from": 32,
+   "verdict": "not-visited"
+  },
+  {
+   "id": "ECL4/0x25",
+   "declared_enter_from": 80,
+   "verdict": "not-visited"
+  },
+  {
+   "id": "ECL5/0x30",
+   "declared_enter_from": 51,
+   "observed_from": "Mw==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL5/0x31",
+   "declared_enter_from": 80,
+   "observed_from": "UA==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL5/0x32",
+   "declared_enter_from": 49,
+   "observed_from": "MTM=",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL5/0x33",
+   "declared_enter_from": 50,
+   "observed_from": "Mg==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL5/0x35",
+   "declared_enter_from": 80,
+   "verdict": "not-visited"
+  },
+  {
+   "id": "ECL6/0x40",
+   "declared_enter_from": 80,
+   "observed_from": "UA==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL6/0x42",
+   "declared_enter_from": 64,
+   "observed_from": "QA==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL6/0x43",
+   "declared_enter_from": 66,
+   "observed_from": "Qg==",
+   "verdict": "match"
+  },
+  {
+   "id": "ECL6/0x45",
+   "declared_enter_from": 81,
+   "verdict": "not-visited"
+  }
+ ]
+}
