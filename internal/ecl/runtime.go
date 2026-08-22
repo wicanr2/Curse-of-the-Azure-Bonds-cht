@@ -39,30 +39,30 @@ const (
 // RunResult is the observable output of the bounded ECL subset runner.
 // It deliberately exposes text and stop position, not DOS rendering state.
 type RunResult struct {
-	Text                   []string
-	Menus                  []Menu
-	PC                     int
-	Steps                  int
-	Exited                 bool
-	WaitingForMenu         bool
-	WaitingForWho          bool
-	WaitingForString       bool
-	NewECLBlockID          *uint8
-	CombatRequested        bool
-	ShopRequested          bool
-	ShopPriceScale         uint16
-	TempleRequested        bool
-	MonsterSetup           *MonsterSetup
-	MonsterSpawns          []MonsterSpawn
-	ProgramIDs             []uint8
-	ProgramExit            bool
-	CallAddresses          []uint16
-	CallRequests           []CallRequest
-	SaveWrites             []MemoryWrite
+	Text             []string
+	Menus            []Menu
+	PC               int
+	Steps            int
+	Exited           bool
+	WaitingForMenu   bool
+	WaitingForWho    bool
+	WaitingForString bool
+	NewECLBlockID    *uint8
+	CombatRequested  bool
+	ShopRequested    bool
+	ShopPriceScale   uint16
+	TempleRequested  bool
+	MonsterSetup     *MonsterSetup
+	MonsterSpawns    []MonsterSpawn
+	ProgramIDs       []uint8
+	ProgramExit      bool
+	CallAddresses    []uint16
+	CallRequests     []CallRequest
+	SaveWrites       []MemoryWrite
 	// ClearBoxRequested 來自 `3Dh CLEAR BOX`：把文字框清空，且不印新文字。
 	ClearBoxRequested bool
 	// SpriteOffRequested 來自 `31h SPRITE OFF`：關掉畫面上的怪物圖示。
-	SpriteOffRequested bool
+	SpriteOffRequested     bool
 	SessionStartBlockID    uint8
 	SessionEndBlockID      uint8
 	SessionBlockRangeSet   bool
@@ -89,22 +89,26 @@ type RunResult struct {
 	LoadFiles              [3]uint16
 	LoadPiecesRequested    bool
 	LoadPieces             [3]uint16
-	PictureRequested       bool
+	// WallSetAssignments 是這一條 `37h` **實際**要做的事。原作的 handler 自己
+	// 分三支（spec 1087／1153），所以分支結果由 VM 決定、不是上層猜：沒被列出來的
+	// 槽這一次**完全不動**（`7Fh` 那一支就只碰槽 1）。
+	WallSetAssignments []WallSetAssignment
+	PictureRequested   bool
 	// PictureCloseRequested 為真代表 `0Eh PICTURE` 的運算元是 `0FFh`：把圖關掉。
-	PictureCloseRequested  bool
+	PictureCloseRequested bool
 	// PictureFrameAdvances 是**最後一張圖之後**跑過幾次 `2Dh CALL 6803h`。
 	// 原作那一支把圖片序列的游標往前推一格（超過張數回到第 1 格）、畫出那一格
 	// 再等一個 GAMEDELAY；換圖時 LOADSEQUENCE 會把游標設回第 1 格，所以換圖
 	// 之前推的格數不算（spec 1150）。
-	PictureFrameAdvances   int
-	PictureBlock           uint16
-	BigPictureRequested    bool
-	PictureHeadBlock       uint16
-	PictureHeadBlockSet    bool
-	SpellSearches          []SpellSearch
-	ProtectionRequests     []uint16
-	ClockRequests          []ClockRequest
-	TreasureRequests       []TreasureRequest
+	PictureFrameAdvances int
+	PictureBlock         uint16
+	BigPictureRequested  bool
+	PictureHeadBlock     uint16
+	PictureHeadBlockSet  bool
+	SpellSearches        []SpellSearch
+	ProtectionRequests   []uint16
+	ClockRequests        []ClockRequest
+	TreasureRequests     []TreasureRequest
 	// ClearMonstersRequested 為真代表這一次執行跑過 `1Ch CLEARMONSTERS`。
 	// 上層要據此把**跨執行累積**的戰利品堆一起丟掉——`result` 裡的那一份已經
 	// 在指令當下清掉了。
@@ -1656,6 +1660,7 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 					result.LoadPieces[index] = value
 				}
 				result.LoadPiecesRequested = true
+				result.WallSetAssignments = WallSetAssignmentsFor(result.LoadPieces, memory)
 			}
 			if instruction.Command.Opcode == 0x0E {
 				value, err := operandValue(instruction.Operands[0], memory)
@@ -1867,4 +1872,63 @@ func operandText(operand Operand, stringsMemory map[uint16]string) (string, erro
 		return stringsMemory[operand.Word], nil
 	}
 	return "", fmt.Errorf("unsupported string operand code 0x%02X", operand.Code)
+}
+
+// 兩槽分支的閘門是 `bank0^[1CEh]` 與 `[1D0h]`。用 spec 1098／1155 的換算
+// `bank0 + (位址 − 4B00h) × 2` 對回 ECL 格：`1CEh` ⇒ `4BE7h`、`1D0h` ⇒ `4BE8h`。
+const (
+	wallSetTwoSlotGateA uint16 = 0x4BE7
+	wallSetTwoSlotGateB uint16 = 0x4BE8
+	// 片號 `7Fh` 是 handler 的特例，`0FFh` 是「這一槽沒有牆面組」。
+	wallSetPieceSpecial uint16 = 0x7F
+	wallSetPieceNone    uint16 = 0xFF
+)
+
+// WallSetAssignment 是 `37h LOAD PIECES` 對**一個**牆面組槽位做的事。
+type WallSetAssignment struct {
+	// Slot 是 1..3，與運算元同號（原作 `LOADWALLSET(i, o[i])`）。
+	Slot uint8 `json:"slot"`
+	// Piece 是要載的片號；`Sentinel` 為 true 時沒有意義。
+	Piece uint16 `json:"piece"`
+	// Sentinel ＝ 這一槽不呼叫 `LOADWALLSET`，由 handler 自己把
+	// `[7210h+槽×4]` 與 `[7212h+槽×4]` 都寫成 `0FFFFh`。
+	Sentinel bool `json:"sentinel,omitempty"`
+}
+
+// WallSetAssignmentsFor 照抄 `37h LOAD PIECES` 的三支分派（DOS
+// `overlay-02:0C15h`，spec 1087／1153）：
+//
+//	if o[1] = 7Fh then                       LOADWALLSET(1, 0)
+//	else if bank0^[1CEh] <> 0 and [1D0h] <> 0 then
+//	    只載槽 1 與槽 3（各自 <> 0FFh 才載）
+//	else
+//	    for i := 1 to 3：<> 0FFh 就載，= 0FFh 就寫哨兵
+//
+// ★ 前兩支**都不寫哨兵**，也都不碰沒提到的槽——所以回傳的是「這一次要動哪些
+// 槽」而不是三格一次寫滿。全 corpus 23 處都走第三支（`7Fh` 一次都沒出現，
+// 而槽 2 每一處都帶著真實片號），前兩支照 handler 寫、沒有實機路徑背書。
+func WallSetAssignmentsFor(pieces [3]uint16, memory map[uint16]uint16) []WallSetAssignment {
+	if pieces[0] == wallSetPieceSpecial {
+		return []WallSetAssignment{{Slot: 1, Piece: 0}}
+	}
+	if memory[wallSetTwoSlotGateA] != 0 && memory[wallSetTwoSlotGateB] != 0 {
+		out := make([]WallSetAssignment, 0, 2)
+		if pieces[0] != wallSetPieceNone {
+			out = append(out, WallSetAssignment{Slot: 1, Piece: pieces[0]})
+		}
+		if pieces[2] != wallSetPieceNone {
+			out = append(out, WallSetAssignment{Slot: 3, Piece: pieces[2]})
+		}
+		return out
+	}
+	out := make([]WallSetAssignment, 0, 3)
+	for index, piece := range pieces {
+		slot := uint8(index + 1)
+		if piece == wallSetPieceNone {
+			out = append(out, WallSetAssignment{Slot: slot, Sentinel: true})
+			continue
+		}
+		out = append(out, WallSetAssignment{Slot: slot, Piece: piece})
+	}
+	return out
 }

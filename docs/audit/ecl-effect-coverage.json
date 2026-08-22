@@ -1298,8 +1298,8 @@
   {
    "opcode": "0x37",
    "name": "LOAD PIECES",
-   "status": "partial",
-   "note": "與 21h 共用 overlay-02:0C15h..0DA3h 一支 131 條（spec 1087；⚠ IDA 只認到 0D4Ah／104 條，切掉的正是收尾重繪判斷）。三個運算元是三個牆面組槽位的片號，載得進去的槽走 LOADWALLSET(槽, 片)，而那一支收尾寫 [7210h+槽×4] := 片、[7212h+槽×4] := 槽；運算元是 0FFh 的槽由 handler 自己寫成 0FFFFh ⇒ 這三格就是存檔第 9..14 欄（spec 1076／1153）。remake 的資產載入本來就接上了，這一輪補上存檔那一半。partial 剩兩條 corpus 走不到的路：o[1] = 7Fh ⇒ LOADWALLSET(1, 0)，以及 bank0^[1CEh]／[1D0h] 都非零時只載槽 1／3",
+   "status": "done",
+   "note": "與 21h 共用 overlay-02:0C15h..0DA3h 一支 131 條（spec 1087；⚠ IDA 只認到 0D4Ah／104 條，切掉的正是收尾重繪判斷）。三個運算元是三個牆面組槽位的片號，載得進去的槽走 LOADWALLSET(槽, 片)，而那一支收尾寫 [7210h+槽×4] := 片、[7212h+槽×4] := 槽；運算元是 0FFh 的槽由 handler 自己寫成 0FFFFh ⇒ 這三格就是存檔第 9..14 欄（spec 1076／1153）。remake 的資產載入本來就接上了，這一輪補上存檔那一半。★ 三支分派全部照抄了（spec 1153 增補）：`7Fh` ⇒ 只碰槽 1 且片號是 **0**（槽 2／3 連哨兵都不寫）、兩個閘門 `bank0^[1CEh]`／`[1D0h]`（ECL 格 `4BE7h`／`4BE8h`）都非零 ⇒ 只載槽 1／3 且 `0FFh` 整個跳過、否則逐槽迴圈。**分支由 VM 決定**（`WallSetAssignments`）而不是上層猜——沒列出來的槽這一次完全不動。★★ **兩槽分支有四個現場**（`ECL5/0x33`／`0x35`、`ECL6/0x40`／`0x45`）：這四個 block 在自己的 `LOAD PIECES` 之前就把兩個閘門都設成非零，所以**第二個運算元是死資料**——remake 先前把它載進槽 2 並寫進存檔；`7Fh` 那一支 corpus 一次都沒出現，照 handler 寫",
    "occurrences": 23,
    "blocks": [
     "ECL2.DAX/0x01",
@@ -1457,12 +1457,12 @@
   }
  ],
  "instructions_by_status": {
-  "done": 13446,
-  "partial": 731
+  "done": 13469,
+  "partial": 708
  },
  "opcodes_by_status": {
-  "done": 55,
-  "partial": 6
+  "done": 56,
+  "partial": 5
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1496,26 +1496,26 @@
   "ECL1.DAX/0x50": 18,
   "ECL1.DAX/0x51": 17,
   "ECL1.DAX/0x52": 18,
-  "ECL2.DAX/0x01": 38,
-  "ECL2.DAX/0x02": 30,
-  "ECL2.DAX/0x03": 25,
-  "ECL2.DAX/0x04": 19,
-  "ECL3.DAX/0x10": 41,
-  "ECL3.DAX/0x11": 39,
+  "ECL2.DAX/0x01": 37,
+  "ECL2.DAX/0x02": 29,
+  "ECL2.DAX/0x03": 24,
+  "ECL2.DAX/0x04": 18,
+  "ECL3.DAX/0x10": 40,
+  "ECL3.DAX/0x11": 37,
   "ECL3.DAX/0x12": 39,
-  "ECL3.DAX/0x15": 13,
-  "ECL4.DAX/0x20": 47,
-  "ECL4.DAX/0x21": 54,
-  "ECL4.DAX/0x22": 37,
+  "ECL3.DAX/0x15": 12,
+  "ECL4.DAX/0x20": 46,
+  "ECL4.DAX/0x21": 50,
+  "ECL4.DAX/0x22": 36,
   "ECL4.DAX/0x23": 20,
-  "ECL4.DAX/0x25": 57,
-  "ECL5.DAX/0x31": 19,
-  "ECL5.DAX/0x32": 36,
-  "ECL5.DAX/0x33": 39,
-  "ECL5.DAX/0x35": 26,
-  "ECL6.DAX/0x40": 35,
-  "ECL6.DAX/0x42": 27,
-  "ECL6.DAX/0x43": 26,
-  "ECL6.DAX/0x45": 11
+  "ECL4.DAX/0x25": 56,
+  "ECL5.DAX/0x31": 18,
+  "ECL5.DAX/0x32": 35,
+  "ECL5.DAX/0x33": 38,
+  "ECL5.DAX/0x35": 25,
+  "ECL6.DAX/0x40": 34,
+  "ECL6.DAX/0x42": 26,
+  "ECL6.DAX/0x43": 25,
+  "ECL6.DAX/0x45": 10
  }
 }

@@ -34,7 +34,10 @@ func TestLoadPiecesWritesWallSetParams(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			state := NewState(testCatalog())
-			state.applyLoadPieces(ecl.RunResult{LoadPiecesRequested: true, LoadPieces: test.pieces})
+			// ⚠ 分支結果由 VM 算（`37h` 的三支分派在 handler 裡），這裡走同一支
+			// 產生器，才不會變成「測試自己決定要動哪些槽」。
+			state.applyLoadPieces(ecl.RunResult{LoadPiecesRequested: true, LoadPieces: test.pieces,
+				WallSetAssignments: ecl.WallSetAssignmentsFor(test.pieces, nil)})
 			if got := state.WallSetParams(); got != test.want {
 				t.Fatalf("牆面參數 ＝ %+v，預期 %+v", got, test.want)
 			}
@@ -46,8 +49,9 @@ func TestLoadPiecesWritesWallSetParams(t *testing.T) {
 // 只更新 State 上的欄位而沒有進存檔，玩家看不出差別，但拿原版當 oracle 就對不上。
 func TestLoadPiecesWallSetParamsReachTheSave(t *testing.T) {
 	state := NewState(testCatalog())
-	state.applyLoadPieces(ecl.RunResult{
-		LoadPiecesRequested: true, LoadPieces: [3]uint16{0x0E, 0x0F, 0xFF}})
+	pieces := [3]uint16{0x0E, 0x0F, 0xFF}
+	state.applyLoadPieces(ecl.RunResult{LoadPiecesRequested: true, LoadPieces: pieces,
+		WallSetAssignments: ecl.WallSetAssignmentsFor(pieces, nil)})
 	container, err := state.savgamContainerForSave()
 	if err != nil {
 		t.Fatal(err)
@@ -72,5 +76,28 @@ func TestSaveKeepsImportedWallSetParamsWithoutLoadPieces(t *testing.T) {
 	}
 	if container.SetBlocks != imported {
 		t.Fatalf("匯入的牆面參數被蓋掉了：%+v", container.SetBlocks)
+	}
+}
+
+// `7Fh` 那一支只碰槽 1——槽 2／3 維持**原值**，連哨兵都不寫（spec 1153）。
+//
+// ★ 先前的實作一律三格寫滿，那一支下會把既有的牆面組清掉。這條就是擋那個。
+func TestLoadPiecesSpecialPieceLeavesTheOtherSlotsAlone(t *testing.T) {
+	state := NewState(testCatalog())
+	first := [3]uint16{0x0E, 0x0F, 0x10}
+	state.applyLoadPieces(ecl.RunResult{LoadPiecesRequested: true, LoadPieces: first,
+		WallSetAssignments: ecl.WallSetAssignmentsFor(first, nil)})
+
+	second := [3]uint16{0x7F, 0xFF, 0xFF}
+	state.applyLoadPieces(ecl.RunResult{LoadPiecesRequested: true, LoadPieces: second,
+		WallSetAssignments: ecl.WallSetAssignmentsFor(second, nil)})
+
+	want := [3]partySave.SAVGAMSetBlock{
+		{BlockID: 0, SetID: 1},    // 槽 1 換成片號 0
+		{BlockID: 0x0F, SetID: 2}, // 槽 2／3 沒被碰
+		{BlockID: 0x10, SetID: 3},
+	}
+	if got := state.WallSetParams(); got != want {
+		t.Fatalf("牆面參數 ＝ %+v，預期 %+v", got, want)
 	}
 }
