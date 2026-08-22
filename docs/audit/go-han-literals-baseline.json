@@ -744,6 +744,20 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
+      "sha256": "1cd10c830cefdb583947cb31180604dfa2c9296aab1ec63483a7ece9c5222f50",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "1db93ca47c3e42166839a6f230287e8fd73670257723685f0104df01e7ec3556",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
       "sha256": "2019f9645edcfe5965f8b5be1a03700d570fa0396d0de02dd824e30703ba56e7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -779,6 +793,13 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
+      "sha256": "29dae100ad4c47cf62a29927b38739c1ae3c729c1b162ae1b3e80e3c01e8f8d1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
       "sha256": "2a48f9abadd06d002cc15453b0aebcdfb93f473243aa6a48af9349f10e520712",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -801,7 +822,7 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "354b28c85333456866931a77eacdf6cd18d80b79981ccf1f4ca927b84fd99302",
-      "occurrences": 1,
+      "occurrences": 2,
       "category": "runtime_ui_debt"
     },
     {
@@ -870,6 +891,20 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
+      "sha256": "4d4546c37c7cbf203efe76ba3480c26166043652aa239bd3dd7aa0279bf18458",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "4eaa9664a68a8d8c7b7c19f7ca78b9cd1aee659803fdd04a8d4ff4478f9e0844",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
       "sha256": "51cc7aab3588d99f251c12aff9b7e3beaa5f5aa5cb6a6b10ef2d02d498afcf62",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -885,6 +920,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "590f605583808cce4b51b2cdd8337d8fdd9f8ecae758603977de006138aad352",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "5c498f7347073993adc2d25ab5b47278eeeab247c1da189a669c71869a697ce3",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -955,7 +997,7 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "72726d8818f693066ceb69afa364218b692e62ea92b385782363780f47529c21",
-      "occurrences": 1,
+      "occurrences": 2,
       "category": "runtime_ui_debt"
     },
     {
@@ -1031,7 +1073,21 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
+      "sha256": "91e84460d026e183623f236f15c78ab872ce613ffefa1f471aa5415d77052aba",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
       "sha256": "92c00a5d3bbb1a0ce4cb55b0f9958cd9eaa998b6367501dd24575037d6728c40",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "94dab993acc1560286ec57e0e1a68660327ff1be3f71cda1f37fea3ec5f6716d",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1046,6 +1102,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "9c9a4e85c8728a08241797c8d634b8d5a2e8f1b0e1ac81a0e70a363cdb179d4a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "9fae3631b1728d6518f5b4747d4f752426162954ea346686ac25b7398a772863",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1101,6 +1164,20 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
+      "sha256": "b7e74bc63b912696e2fc190dd438d2aade64c4e0751889065241c0ae44966d3b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "c651cd0dc32b4e7a32df323724573c5987ccc55302e597c7dad1a689ca015251",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
       "sha256": "c6c0cb21fd203f82fbdac1c3a36f433a71aa75ca0afdb88d756bac2e2ae9d382",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1109,6 +1186,20 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "cc399f9c1e702633418419db40d7e5660571ee05b82660d7e3e743f9b5823322",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "ccc8ad3294810085448c3e3ad73b2c4fccafbb02f9df5dd5ca51e94441b7d266",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "cf4e5e0fd6c9876317d567479849bb3b485d9485a831802073eede0aa3aab1a7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1150,6 +1241,13 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
+      "sha256": "e00e7042b328fcee0de22f943bfd9fa84956f24ace36e29080cec8a19eba272c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
       "sha256": "e63caf8271240b31e3061368bd3e0d201c71c0907851f44431443974b042f85d",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1179,6 +1277,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "f3f415ce1b469ec91efdd65b9129add25e26721f4c3b7ba282696f51513ba758",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "f4a5b679e388ce9ddd09581ab1d6508d172358f48bdc4379f9914aabebe457e7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1304,6 +1409,13 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "summarise",
+      "sha256": "1db93ca47c3e42166839a6f230287e8fd73670257723685f0104df01e7ec3556",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "summarise",
       "sha256": "2028ba65dbb58896c52c1659f380d732a6ecf84bcffb1eb94992794ca991da99",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1339,6 +1451,13 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "summarise",
+      "sha256": "4d4546c37c7cbf203efe76ba3480c26166043652aa239bd3dd7aa0279bf18458",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "summarise",
       "sha256": "5e63f0393483c74bf32a76bd7f020f79b28dbb7c9faf3d14129dccc9e4c26fc7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1368,6 +1487,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "summarise",
       "sha256": "9c9a4e85c8728a08241797c8d634b8d5a2e8f1b0e1ac81a0e70a363cdb179d4a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "summarise",
+      "sha256": "a93b5a585c5f3e35e7bf0742cfb6598c0d8f290ed37e0d2156d570234d69cc8c",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

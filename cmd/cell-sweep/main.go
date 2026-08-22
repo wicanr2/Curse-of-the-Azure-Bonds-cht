@@ -59,6 +59,11 @@ type cellResult struct {
 	revisit string
 	// revisitKind 是重訪的判定：`同` ／ `只演一次` ／ `不同`。
 	revisitKind string
+	// outcomes 是**同一格、同一組條件、換不同亂數種子**演出來的相異敘述數。
+	// 大於 1 代表這一格有靠骰子分歧的分支（豁免、技能檢定、遭遇表）。
+	outcomes int
+	// otherOutcome 是第二種結果的第一句，讓分歧看得到而不只是個數字。
+	otherOutcome string
 }
 
 // played 為真代表這一格真的演出了字。
@@ -230,6 +235,12 @@ func standOnCell(data corpus, seg segment.Segment, index, x, y int, roof uint8,
 				result.text, result.language = text, languageOf(text)
 				result.search, result.seed, result.facing = search, int64(seed), facing
 				result.revisit, result.revisitKind = revisitOnce(state, text)
+				// ⚠ 傳的是**這一次的 `Message`**，不是 `text`。`text` 走
+				// `playerText`（Message 空就退回 Prompt），把它丟進一組
+				// `Message` 集合裡會**讓每一格都多算一種**——集合裡混了兩種
+				// 語意的字串。第一版就是這樣把 2 種印成 3 種的。
+				result.outcomes, result.otherOutcome = seedOutcomes(
+					data, seg, x, y, roof, facing, search, preset, strings.TrimSpace(state.Message))
 				return result
 			}
 		}
@@ -387,6 +398,9 @@ func summarise(sweeps []blockSweep) map[string]int {
 				counts["要前置"]++
 			}
 			// 重訪只在「有演出來」的格子上才有意義。
+			if cell.played() && cell.outcomes > 1 {
+				counts["換種子演出不同"]++
+			}
 			if cell.played() {
 				switch cell.revisitKind {
 				case "只演一次":
@@ -395,6 +409,8 @@ func summarise(sweeps []blockSweep) map[string]int {
 					counts["重訪：每次都演"]++
 				case "不同":
 					counts["重訪：演出別的"]++
+				case "推不回地城":
+					counts["重訪：推不回地城"]++
 				default:
 					counts["重訪：跑不動"]++
 				}
@@ -481,6 +497,16 @@ func render(sweeps []blockSweep) string {
 			if revisit == "不同" {
 				revisit = "**不同**：" + firstLine(cell.revisit)
 			}
+			if cell.played() && cell.outcomes > 1 {
+				// ⚠ 兩種結果的**第一句可能一樣**（差在後面幾句：擲到的怪、
+				// 金額、成敗）。照樣印第一句會看起來像「兩種一模一樣」，
+				// 讓人以為判定壞掉。
+				other := firstLine(cell.otherOutcome)
+				if other == firstLine(cell.text) {
+					other = "（差異在第一句之後）"
+				}
+				revisit += fmt.Sprintf("<br>骰子分歧 %d 種：%s", cell.outcomes, other)
+			}
 			out.WriteString(fmt.Sprintf("| %d | `%s` | `%02X` | %s | %s | %s | %s |\n",
 				cell.index, cell.cell, cell.roof, condition, cell.language, revisit, text))
 		}
@@ -518,7 +544,21 @@ func render(sweeps []blockSweep) string {
 	out.WriteString(fmt.Sprintf("| 只演一次（第二次沒有新敘述）| %d |\n", counts["重訪：只演一次"]))
 	out.WriteString(fmt.Sprintf("| 每次都演（第二次一樣）| %d |\n", counts["重訪：每次都演"]))
 	out.WriteString(fmt.Sprintf("| 第二次有**不同的敘述** | %d |\n", counts["重訪：演出別的"]))
+	out.WriteString(fmt.Sprintf("| 第一次之後推不回地城（量不到）| %d |\n",
+		counts["重訪：推不回地城"]))
 	out.WriteString(fmt.Sprintf("| 第二次跑不動 | %d |\n", counts["重訪：跑不動"]))
+	out.WriteString("\n### 失敗分支：換亂數種子會不會演出不同的敘述\n\n")
+	out.WriteString("★ 走訪缺的另一個分母。主掃描**找到第一顆演得出來的種子就回來**，" +
+		"所以豁免沒過／技能檢定失敗／遭遇表擲到別側那一半**結構上不會被看到**" +
+		"——報表是滿的，而那一半從來沒跑過。這裡把同一格、同一組條件換每一顆種子" +
+		"各站一次，數相異的敘述。\n\n")
+	out.WriteString("⚠ 這是「**換種子會不會演出不同的敘述**」，不是「有幾條失敗分支」。" +
+		"一格可能有三條分支而種子只打到兩條；也可能敘述相同而只有數值不同（傷害、金額）。" +
+		"⇒ **下界**，而且是「有沒有骰子分歧」的證據，不是分支數。\n\n")
+	out.WriteString(fmt.Sprintf("| 有內容的格子 | %d |\n|---|---:|\n",
+		counts["中文"]+counts["原文"]))
+	out.WriteString(fmt.Sprintf("| 其中換種子會演出**不同敘述**的 | %d |\n",
+		counts["換種子演出不同"]))
 	return out.String()
 }
 
@@ -654,4 +694,50 @@ func settleToDungeon(state *game.State, limit int) ([]string, error) {
 		}
 	}
 	return trail, nil
+}
+
+// seedOutcomes 把**同一格、同一組條件**換不同亂數種子各站一次，數出相異的敘述。
+//
+// ★ 存在的理由：「全城市／全房間走訪」缺的另一個分母是**失敗分支**——豁免沒過、
+// 技能檢定失敗、遭遇表擲到別的那一側。主掃描找到第一顆演得出來的種子就回來了，
+// 所以另一側**結構上不會被看到**：報表滿的，而那一半從來沒跑過。
+//
+// ⚠ 這是「**換種子會不會演出不同的敘述**」，不是「有幾條失敗分支」。一格可能
+// 有三條分支而八顆種子只打到兩條；也可能敘述相同而數值不同（傷害、金額）。
+// ⇒ 這一欄是**下界**，而且是「有沒有骰子分歧」的證據，不是分支數。
+//
+// ⚠ 同樣只看 `Message`：退回 `Prompt` 會把 UI 文字算成劇情（重訪那一欄踩過，
+// 分母灌水近二十倍）。
+func seedOutcomes(data corpus, seg segment.Segment, x, y int, roof, facing uint8,
+	search bool, preset map[uint16]uint16, first string) (int, string) {
+	seen := map[string]bool{}
+	if first != "" {
+		seen[first] = true
+	}
+	other := ""
+	for seed := 1; seed <= data.seeds; seed++ {
+		state, err := enterDungeon(data, seg)
+		if err != nil {
+			continue
+		}
+		state.SetECLSeed(int64(seed))
+		for address, value := range preset {
+			state.SetECLMemoryValue(address, value)
+		}
+		state.SetDungeonGeometryView(x, y, facing)
+		state.DungeonWallRoof = roof
+		state.DungeonSearchEnabled = search
+		if err := state.RunDungeonLifecycle(); err != nil {
+			continue
+		}
+		message := strings.TrimSpace(state.Message)
+		if message == "" || seen[message] {
+			continue
+		}
+		seen[message] = true
+		if other == "" {
+			other = message
+		}
+	}
+	return len(seen), other
 }
