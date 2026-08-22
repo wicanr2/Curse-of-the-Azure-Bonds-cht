@@ -91,7 +91,7 @@ func TestEncounterCarriesMonsterItemsPerFighter(t *testing.T) {
 	result := ecl.RunResult{CombatRequested: true,
 		MonsterSpawns: []ecl.MonsterSpawn{{MonsterID: 7, Count: 2, IconBlock: 81}}}
 	records := map[uint8]monster.Record{
-		7: {Name: "FIRE KNIFE", HitPoints: 8, MaxHitPoints: 8, AttacksPerTurn: 1},
+		7: {Name: "FIRE KNIFE", HitPoints: 8, MaxHitPoints: 8, AttackBlows: [2]uint8{2, 0}},
 	}
 	partyFighters := []combat.Fighter{{ID: "p1", Name: "亞勇",
 		Side: combat.SideParty, HitPoints: 12, MaxHitPoints: 12}}

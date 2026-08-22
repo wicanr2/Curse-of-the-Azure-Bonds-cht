@@ -56,10 +56,13 @@ type Record struct {
 	DamageBonus      int
 	// Raw1A5 preserves an unresolved byte without assigning the disproven
 	// initiative-bonus name. Initiative is derived from Dexterity +17.
-	Raw1A5         uint8
-	AttacksPerTurn int
-	CombatTeam     uint8
-	CombatSize     uint8
+	Raw1A5 uint8
+	// AttackBlows 是 `+11Ch` 的 `BASEATTBLOWS[0..1]`：兩個武器槽的**基準攻擊
+	// 次數**，單位是**半次**（2 ＝ 一回合一次、3 ＝ 一次半、8 ＝ 四次）。
+	// 換成本回合的整數次數要走 `combat.AdjustBlows`（spec 1180）。
+	AttackBlows [2]uint8
+	CombatTeam  uint8
+	CombatSize  uint8
 	// RawSize 是 `+0DEh` 的完整位元組（`SIZE`）。**不要只留 `and 7`**：
 	// 低 3 位是佔格大小，而 **bit 7 是「傷害算大型目標」**——`81h` 的佔格是 1
 	// 但仍算大型（BEHOLDER、BUGBEAR、兩種巨蛛都是這個值，spec 1175）。
@@ -156,7 +159,7 @@ func Parse(data []byte) (Record, error) {
 		DamageDiceSides:  diceSides,
 		DamageBonus:      damageBonus,
 		Raw1A5:           data[0x1A5],
-		AttacksPerTurn:   int(data[0xA1]),
+		AttackBlows:      [2]uint8{data[0x11C], data[0x11D]},
 		CombatTeam:       data[0x198],
 		CombatSize:       data[0xDE] & 7,
 		RawSize:          data[0xDE],
@@ -212,11 +215,11 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		ArmorClassFacing:      r.CombatArmorClassFacing(),
 		ArmorClassFacingKnown: r.ArmorClass != 0 && r.ArmorClassFacing != 0,
 		DamageDiceCount:       r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
-		DamageBonus:    r.DamageBonus,
-		AttacksPerTurn: r.AttacksPerTurn,
-		CombatSize:     r.CombatSize,
-		LargeTarget:    LargeDamageTarget(r.RawSize),
-		SavingThrows:   append([]uint8(nil), r.SavingThrows...), SavingThrowBonus: r.SavingThrowBonus,
+		DamageBonus:  r.DamageBonus,
+		AttackBlows:  [2]int{int(r.AttackBlows[0]), int(r.AttackBlows[1])},
+		CombatSize:   r.CombatSize,
+		LargeTarget:  LargeDamageTarget(r.RawSize),
+		SavingThrows: append([]uint8(nil), r.SavingThrows...), SavingThrowBonus: r.SavingThrowBonus,
 		MonsterSpellIDs: append([]uint8(nil), r.SpellIDs...), MonsterSpellUses: r.MonsterSpellUses,
 	}
 }

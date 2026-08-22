@@ -635,7 +635,7 @@ func TestActiveCombatSaveRestoresCombatantNameInCurrentLocale(t *testing.T) {
 		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
 	}}
 	result := ecl.RunResult{CombatRequested: true, MonsterSpawns: []ecl.MonsterSpawn{{MonsterID: 7, Count: 1, IconBlock: 81}}}
-	records := map[uint8]monster.Record{7: {Name: "HIPPOGRIFF", HitPoints: 8, MaxHitPoints: 8, AttacksPerTurn: 1}}
+	records := map[uint8]monster.Record{7: {Name: "HIPPOGRIFF", HitPoints: 8, MaxHitPoints: 8, AttackBlows: [2]uint8{2, 0}}}
 	partyFighters := []combat.Fighter{{ID: "p1", Name: "亞勇", Side: combat.SideParty, HitPoints: 12, MaxHitPoints: 12}}
 	if err := state.StartEncounter(result, records, partyFighters, 11); err != nil {
 		t.Fatal(err)

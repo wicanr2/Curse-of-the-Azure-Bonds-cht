@@ -16,8 +16,8 @@ var InterpretedAffectKinds = []uint8{
 	0x1B, // 定身家族之一（笨拙術）：與 1Fh／33h／34h／35h 同一支 handler
 	0x1F, // 定身家族之一：MonsterIsHeld
 	0x25, // 使攻擊必失手：MonsterAffectForcesAttackMiss
-	0x27, // 加速：MonsterAffectAttacksPerTurn
-	0x2A, // 緩速：MonsterAffectAttacksPerTurn
+	0x27, // 加速：MonsterAffectAttackBlows
+	0x2A, // 緩速：MonsterAffectAttackBlows
 	0x33, // 定身家族：MonsterIsHeld
 	0x34, // 定身家族：MonsterIsHeld
 	0x35, // 睡眠／定身：MonsterIsHeld 與睡眠判斷

@@ -3553,7 +3553,7 @@ func (s *State) CombatDelay() error {
 // policy. If a target falls, remaining weapon attacks use the next living
 // enemy at the same cursor position, matching the RuleBook's Aim behavior.
 func (s *State) combatAttackSequence(attacker combat.Fighter) ([]combat.AttackResult, error) {
-	attacks := attacker.AttacksPerTurn
+	attacks := s.battle.AttacksThisRound(attacker)
 	if attacks < 1 {
 		attacks = 1
 	}
@@ -3805,7 +3805,7 @@ func (s *State) advanceCombatToParty() error {
 			}
 		}
 		var resolvedResults []combat.AttackResult
-		if fighter.AttacksPerTurn > 1 {
+		if s.battle.AttacksThisRound(fighter) > 1 {
 			results, err := s.battle.AttackSequence(fighter.ID, target.ID)
 			if err != nil {
 				return err
