@@ -249,6 +249,7 @@ func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
 	output := flag.String("output", "", "Markdown output path (empty prints to stdout)")
 	covered := flag.String("covered", "", "index.tsv of already-captured original screens; adds the numerator")
+	only := flag.String("only", "", "restrict the greedy capture plan to map IDs containing this substring")
 	flag.Parse()
 
 	pack, err := gamepack.Default()
@@ -436,8 +437,19 @@ func main() {
 			cell := placement{mapID: spot.mapID, set: spot.set, block: spot.block, x: spot.x, y: spot.y}
 			cells[cell] = append(cells[cell], key)
 		}
-		picks := make([]candidate, 0, 24)
-		for len(remaining) > 0 && len(picks) < 24 {
+		// -only 把貪婪清單限制在**取得到畫面的那張圖**上。跨圖取 oracle 目前
+		// 走不通（原版的第一人稱地圖由存檔裡的 ECL 狀態決定，不是由存檔的地圖
+		// 編號決定，第 675 輪實測），所以「下一格拍哪裡」如果只按全域增益排序，
+		// 排在前面的每一格都拍不到，等於沒有可執行的下一步。
+		if *only != "" {
+			for cell := range cells {
+				if !strings.Contains(cell.mapID, *only) {
+					delete(cells, cell)
+				}
+			}
+		}
+		picks := make([]candidate, 0, 64)
+		for len(remaining) > 0 && len(picks) < 64 {
 			best := candidate{}
 			for cell, keys := range cells {
 				gain, fresh := 0, make([]string, 0, 4)
