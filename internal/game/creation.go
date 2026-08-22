@@ -419,6 +419,11 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 	s.DungeonY = int(container.MapPosY)
 	s.DungeonWallType = container.MapWallType
 	s.DungeonWallRoof = container.MapWallRoof
+	// 存檔裡的三組牆面參數就是「現在每個槽用哪一塊牆磚」，原版載入時照著重載。
+	// 不還原的話 remake 只能靠查表重建，而查表拿不到「兩槽模式」那條規則的執行時
+	// 閘門（`bank0^[1CEh]`／`[1D0h]`，spec 1087）——槽 2 會被填上一個腳本其實
+	// 從來不會去載的選圖。
+	s.wallSetParams = container.SetBlocks
 	s.savgamPrefix = &container
 	if err := s.seedECLBanksFrom(container); err != nil {
 		return err
@@ -447,6 +452,14 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 // 區塊，牆磚選圖卻不同。
 func (s *State) restoreWallPiecesForLoadedBlock() {
 	if s.LoadPieces != [3]uint16{} {
+		return
+	}
+	// ⚠ 存檔已經記著每個槽用哪一塊時，**以存檔為準**：那是原版當時真的載了什麼，
+	// 查表只是「這一段通常會發什麼」。兩者在「兩槽模式」下不同——槽 2 在那個模式
+	// 裡根本不會被載，查表卻會把它填滿。
+	if fromSave, ok := wallPiecesFromParams(s.wallSetParams); ok {
+		s.LoadPieces = fromSave
+		s.loadPiecesPending = true
 		return
 	}
 	// ⚠ 鍵要用**存檔記下來的 ECL 段**（`LastECLBlockID`），不是 session 當下的
@@ -1158,4 +1171,20 @@ func (s *State) CancelCharacterCreation() error {
 	s.CreationEditing = false
 	s.CreationEditingAbilities = false
 	return nil
+}
+
+// wallPiecesFromParams 把存檔的三組牆面參數換回 `LOAD PIECES` 的三元組形狀，
+// 哨兵 `0FFFFh` 對回 `0FFh`（「這一槽不用」）。全部都是哨兵就當作沒有資訊。
+func wallPiecesFromParams(params [3]partySave.SAVGAMSetBlock) ([3]uint16, bool) {
+	var pieces [3]uint16
+	useful := false
+	for index, param := range params {
+		if param.BlockID == 0xFFFF || param.BlockID == 0 {
+			pieces[index] = 0xFF
+			continue
+		}
+		pieces[index] = param.BlockID
+		useful = true
+	}
+	return pieces, useful
 }
