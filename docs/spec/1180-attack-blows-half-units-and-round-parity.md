@@ -107,12 +107,46 @@ for j := 1 to 2 do
   `TestAttackSequenceUsesTheRecordBlows`、
   `TestAttacksThisRoundPrefersTheProjectedMissileRate`。
 
+## 隊伍側的 `BASEATTBLOWS` 從哪來
+
+寫入端全部在 `overlay-25`（角色派生數值），而且**只寫兩個值**：
+
+```pascal
+BASEATTBLOWS[0] := 2;                                  { 預設，一回合一次 }
+if 職業 = 2 and 等級 > 6 then BASEATTBLOWS[0] := 3;    { 戰士 }
+if 職業 = 3 and 等級 > 6 then BASEATTBLOWS[0] := 3;    { 聖武士 }
+if 職業 = 4 and 等級 > 7 then BASEATTBLOWS[0] := 3;    { 遊俠 }
+```
+
+同一組門檻在同一支裡出現三次——現職業迴圈（`042Fh`）、前職業迴圈（`05B6h`）、
+以及直接查 `PREVIOUSLEVEL[2..4]` 的收尾（`062Ch`）——三處完全一致。
+
+⚠ **不要照 AD&D 規則書填**：規則書給聖武士的門檻是 8 級，原作寫的是 7 級。
+
+★★ **整包 overlay 裡寫進 `+11Ch` 的立即數只有 `2` 與 `3`，沒有任何一處寫 `4`。**
+所以 CoAB 的隊員**永遠到不了一回合兩次**——AD&D 13 級那一段的進階在這一款沒有
+實作。這一條有測試擋著，免得有人「照規則書補上」。
+
+## 遠程被彈藥壓住
+
+```pascal
+m := 1;
+if 彈藥^[39h] > m then m := 彈藥^[39h];
+if (m < n) and (彈藥^[39h] > 0) then n := m;
+```
+
+⚠ **數量 0 不會把次數壓成 1**：`m` 這時是 1，但第二個條件把整條擋掉。這個組合
+看起來不像刻意設計，照抄是因為它就是原作的行為（spec 808 已經指出過）。
+
+彈藥數量取的是**架著的那一件彈藥**的原始 `+39h`，不是全身彈藥的合計——原作拿的
+是遠程判斷帶回來的那**一個**物品節點。remake 這一側認的是類別表槽 11／12
+（`+17Dh`／`+181h` 兩個彈藥槽，spec 1120）。
+
 ## 不宣稱
 
-- **彈藥數上限還沒接**：spec 808 的 `彈藥^[39h]` 那一段 remake 這一側沒有實作，
-  遠程攻擊次數目前不受箭矢數量限制。
-- 隊伍側的 `BASEATTBLOWS` 怎麼由職業與等級算出來（`FIGBLOWS`、spec 771 的
-  `overlay-13:1CE2h` ＋2／＋3 累加）沒有接：remake 的隊員仍只從武器射速拿次數，
-  高等級戰士的一次半還沒有。
+- `PREVIOUSLEVEL`（`+111h`）remake 還沒有模型，所以雙職角色靠前職業拿到的一次半
+  目前算不出來；單職與多職（`CURRENTLEVEL`）走 `ClassLevels` 八個槽，與原作一致。
+- spec 771 的 `overlay-13:1CE2h`（`(射程 − 1) div 3` 的門檻，＋2／＋3 累加）是另一
+  個加成來源，還沒有接。
 - `overlay-13:0DD9h` 裡 `15BCh+1`／`15C6h+1` 兩個判斷式的內部沒有讀。
 - `LASTROUND`（`ROUND + 0Fh`）用來限制什麼沒有讀完。

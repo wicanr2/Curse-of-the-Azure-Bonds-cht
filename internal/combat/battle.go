@@ -183,8 +183,11 @@ type Fighter struct {
 	// AttackBlows 是原作的 `BASEATTBLOWS[0..1]`（`+11Ch`）：兩個武器槽的基準
 	// 攻擊次數，單位是**半次**。本回合的整數次數由 `AdjustBlows` 依回合奇偶
 	// 換算（spec 1180）。
-	AttackBlows       [2]int `json:"attack_blows,omitempty"`
-	AmmunitionType    uint8
+	AttackBlows    [2]int `json:"attack_blows,omitempty"`
+	AmmunitionType uint8
+	// AmmunitionCount 是**架著的那一件彈藥**的原始數量（物品 `+39h`）。
+	// 遠程攻擊的次數會被它壓住（spec 808／1180）。
+	AmmunitionCount   int `json:"ammunition_count,omitempty"`
 	MovementAllowance int
 	WeaponRange       int
 	MissileWeapon     bool
@@ -1836,9 +1839,24 @@ func (b *Battle) AttacksThisRound(f Fighter) int {
 	}
 	if f.AttacksPerTurn > 0 {
 		// 遠程武器已經投影成整數次數（射速全是偶數，換算後與原作相同）。
-		return f.AttacksPerTurn
+		return capByAmmunition(f.AttacksPerTurn, f.AmmunitionCount)
 	}
 	return AdjustBlows(blows, b.round)
+}
+
+// capByAmmunition 把遠程攻擊次數壓到剩下的彈藥數。原作寫的是
+//
+//	m := 1;
+//	if 彈藥^[39h] > m then m := 彈藥^[39h];
+//	if (m < n) and (彈藥^[39h] > 0) then n := m;
+//
+// ⚠ **數量 0 不會把次數壓成 1**：`m` 這時是 1，但第二個條件把整條擋掉。
+// 這個組合看起來不像刻意設計，照抄是因為它就是原作的行為（spec 808）。
+func capByAmmunition(attacks, count int) int {
+	if count <= 0 || count >= attacks {
+		return attacks
+	}
+	return count
 }
 
 // AttackSequence resolves how many attacks the attacker gets this round.
@@ -2518,6 +2536,7 @@ func (b *Battle) ReplaceFighterEquipment(fighterID string, projected Fighter) er
 	fighter.MissileWeapon = projected.MissileWeapon
 	fighter.ThrownWeapon = projected.ThrownWeapon
 	fighter.AmmunitionType = projected.AmmunitionType
+	fighter.AmmunitionCount = projected.AmmunitionCount
 	fighter.MovementAllowance = projected.MovementAllowance
 	fighter.ReadiedItemEffects = append([]uint8(nil), projected.ReadiedItemEffects...)
 	b.fighters[fighterID] = fighter
