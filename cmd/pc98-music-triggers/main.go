@@ -38,6 +38,21 @@ const musicNoCell = 0x8BF3
 // 目標段 `0893h`——兩邊對得上。段內位移也直接取自符號表。
 const soundSegment = "0893"
 
+// soundEffectNames 是 `SOUNDFX` 的引數——**音效描述子變數**，不是編號。
+//
+// ★ 名字全部由 PC-98 的 Borland 除錯符號直接讀出（資料段 3113）。DOS 版沒有符號，
+// 所以這一層語意只有 PC-98 給得出來；這正是本專案拿 PC-98 當語意骨幹的理由。
+//
+// ⚠ 呼叫端多半是 `push word [位址]`（`FF 36 <addr>`），不是推立即數——
+// 只找立即數的話 36 處裡只解得出 5 處，會得到「大部分音效查不到」這個假結論。
+var soundEffectNames = map[int]string{
+	0x4838: "SOUNDHALT（停止）", 0x483A: "SOUNDOFF（關）", 0x483C: "SOUNDON（開）",
+	0x483E: "CASTFX（施法）", 0x4844: "DEADFX（死亡）", 0x4846: "WHISTLEFX（哨音）",
+	0x4848: "HITFX（命中）", 0x484A: "LIGHTNINGFX（閃電）", 0x484C: "SWISHFX（揮擊）",
+	0x484E: "PADFX（腳步）", 0x4850: "FIREBALLFX（火球）", 0x4852: "ARROWFX（箭）",
+	0x4854: "OVERTUREFX（序曲）", 0x4856: "COMBATFX（戰鬥）", 0x4858: "CRASHFX（撞擊）",
+}
+
 var soundRoutines = map[int]string{
 	0x0000: "SOUNDFX（音效）",
 	0x010D: "INITSOUND（初始化）",
@@ -156,6 +171,30 @@ func main() {
 			fmt.Fprintf(&report, "| %s | `%04Xh` | %d | %s |\n", name, offset, count, strings.Join(modules, "、"))
 		}
 		fmt.Fprintf(&report, "\n合計 %d 處。\n\n", total)
+		if effects, resolved, unresolved := soundEffectUsage(*farCallMap, *root); resolved+unresolved > 0 {
+			fmt.Fprintf(&report, "### `SOUNDFX` 每一處在放什麼音效\n\n")
+			fmt.Fprintf(&report, "引數是**音效描述子變數**（`push word [位址]`），不是編號；"+
+				"名字由 PC-98 的 Borland 除錯符號直接讀出。\n\n")
+			fmt.Fprintf(&report, "⚠ 只找立即數的話 36 處裡只解得出 5 處——會得到「大部分音效查不到」"+
+				"這個假結論。真正的形狀是推變數。\n\n")
+			fmt.Fprintf(&report, "| 音效 | 呼叫點 | 來源模組 |\n|---|---:|---|\n")
+			keys := make([]string, 0, len(effects))
+			for name := range effects {
+				keys = append(keys, name)
+			}
+			sort.Strings(keys)
+			for _, name := range keys {
+				modules := make([]string, 0, len(effects[name]))
+				count := 0
+				for module, value := range effects[name] {
+					modules = append(modules, fmt.Sprintf("%s×%d", module, value))
+					count += value
+				}
+				sort.Strings(modules)
+				fmt.Fprintf(&report, "| %s | %d | %s |\n", name, count, strings.Join(modules, "、"))
+			}
+			fmt.Fprintf(&report, "\n解出 %d 處，還有 %d 處的引數靜態看不出來。\n\n", resolved, unresolved)
+		}
 		fmt.Fprintf(&report, "★ **交叉印證**：`MSCPLAY` 的呼叫點正好落在上表那五個"+
 			"改寫 `MUSICNO` 的 overlay 上（`GEN`×2、`overlay-01`、`POSTCOM`、`overlay-18`）"+
 			"——兩次獨立的掃描（資料格寫入 vs 函式呼叫）指到同一組地方。\n\n")
@@ -291,4 +330,72 @@ func soundCallSites(path string) (map[int]map[string]int, int) {
 		total++
 	}
 	return routines, total
+}
+
+// soundEffectUsage 解出每一處 `SOUNDFX` 呼叫在放哪一個音效。
+//
+// 兩種形狀都認：`push word [位址]`（`FF 36`，最常見）與 `mov al, imm` ＋ `push ax`。
+func soundEffectUsage(mapPath, root string) (map[string]map[string]int, int, int) {
+	raw, err := os.ReadFile(mapPath)
+	if err != nil {
+		return nil, 0, 0
+	}
+	var table struct {
+		Targets []struct {
+			Module string `json:"module"`
+			EA     string `json:"ea"`
+			Raw    string `json:"raw"`
+		} `json:"targets"`
+	}
+	if err := json.Unmarshal(raw, &table); err != nil {
+		return nil, 0, 0
+	}
+	effects := map[string]map[string]int{}
+	resolved, unresolved := 0, 0
+	cache := map[string][]byte{}
+	for _, call := range table.Targets {
+		if call.Raw != soundSegment+":0000" {
+			continue
+		}
+		data, ok := cache[call.Module]
+		if !ok {
+			data, _ = os.ReadFile(filepath.Join(root, "overlays", call.Module+".bin"))
+			cache[call.Module] = data
+		}
+		var ea int
+		if _, err := fmt.Sscanf(strings.TrimSuffix(call.EA, "h"), "%04X", &ea); err != nil || ea >= len(data) {
+			unresolved++
+			continue
+		}
+		low := ea - 20
+		if low < 0 {
+			low = 0
+		}
+		name := ""
+		for index := ea - 3; index >= low; index-- {
+			if data[index] == 0xFF && data[index+1] == 0x36 {
+				address := int(data[index+2]) | int(data[index+3])<<8
+				if known, found := soundEffectNames[address]; found {
+					name = known
+				} else {
+					name = fmt.Sprintf("（位址 %04Xh，符號表沒有）", address)
+				}
+				break
+			}
+			if data[index] == 0xB0 && data[index+2] == 0x50 {
+				name = fmt.Sprintf("（立即數 %d）", data[index+1])
+				break
+			}
+		}
+		if name == "" {
+			unresolved++
+			continue
+		}
+		if effects[name] == nil {
+			effects[name] = map[string]int{}
+		}
+		effects[name][call.Module]++
+		resolved++
+	}
+	return effects, resolved, unresolved
 }
