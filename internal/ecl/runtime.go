@@ -86,9 +86,13 @@ type RunResult struct {
 	RandomValues           []uint16
 	EncounterActions       []uint16
 	LoadFilesRequested     bool
-	LoadFiles              [3]uint16
-	LoadPiecesRequested    bool
-	LoadPieces             [3]uint16
+	// LoadFilesLoaded3DMap ＝ 這一條 `21h` 真的走了載 3D 地圖那一路
+	// （`o[1]` 不是 `0FFh`／`7Fh`，而且 `bank0^[1CCh]` 非零）。為 false 時
+	// 原作走的是載大圖那一路（spec 1181）。
+	LoadFilesLoaded3DMap bool
+	LoadFiles            [3]uint16
+	LoadPiecesRequested  bool
+	LoadPieces           [3]uint16
 	// WallSetAssignments 是這一條 `37h` **實際**要做的事。原作的 handler 自己
 	// 分三支（spec 1087／1153），所以分支結果由 VM 決定、不是上層猜：沒被列出來的
 	// 槽這一次**完全不動**（`7Fh` 那一支就只碰槽 1）。
@@ -1650,6 +1654,25 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 					result.LoadFiles[index] = value
 				}
 				result.LoadFilesRequested = true
+				// handler 自己會寫兩格 ECL 記憶體（DOS `overlay-02:0C15h`，
+				// spec 1087／1181）：
+				//
+				//	if o[1] <> 0FFh and o[1] <> 7Fh and bank0^[1CCh] <> 0 then
+				//	    bank0^[18Ah] := o[1];   LOAD3DMAP(o[1]);   bank1^[592h] := 0
+				//
+				// ★ 這兩格**腳本讀得到**，所以少寫就是控制流分歧，不是表現層問題。
+				// `7EC9h` 尤其明顯：全 corpus 34 處存取，腳本一路寫 `FFh`，
+				// 只有這個 handler 會把它清成 0（`ECL2/0x03:00F6h` 就在
+				// `COMPARE 7EC9 FF` 上分岔）。
+				piece := result.LoadFiles[0]
+				if piece != loadFilesPieceNone && piece != loadFilesPieceSpecial &&
+					memory[loadFilesThreeDGate] != 0 {
+					memory[loadFilesMapBlockCell] = piece
+					recordStore(loadFilesMapBlockCell, piece, pc)
+					memory[loadFilesMapStaleCell] = 0
+					recordStore(loadFilesMapStaleCell, 0, pc)
+					result.LoadFilesLoaded3DMap = true
+				}
 			}
 			if instruction.Command.Opcode == 0x37 {
 				for index, operand := range instruction.Operands {
@@ -1932,3 +1955,20 @@ func WallSetAssignmentsFor(pieces [3]uint16, memory map[uint16]uint16) []WallSet
 	}
 	return out
 }
+
+// `21h LOAD FILES` 的三格。位址用 spec 1098／1155 的換算對回 ECL 格：
+// bank0 是 `4B00h + 位移 / 2`，bank1 是 `7C00h + 位移 / 2`。
+const (
+	// loadFilesThreeDGate ＝ `bank0^[1CCh]`：非零代表現在是第一人稱（3D 地圖）
+	// 模式，handler 才會去載 3D 地圖；為零時改走載大圖那一路。
+	// 全 corpus 22 處寫入，全部在 ECL1 的三個世界地圖 block（`0x50`／`0x51`／`0x52`）。
+	loadFilesThreeDGate uint16 = 0x4BE6
+	// loadFilesMapBlockCell ＝ `bank0^[18Ah]`：剛載進來的地圖 block 編號。
+	loadFilesMapBlockCell uint16 = 0x4BC5
+	// loadFilesMapStaleCell ＝ `bank1^[592h]`：腳本寫 `FFh` 表示「地圖要重載」，
+	// handler 載完就清成 0。corpus 34 處存取。
+	loadFilesMapStaleCell uint16 = 0x7EC9
+
+	loadFilesPieceNone    uint16 = 0xFF
+	loadFilesPieceSpecial uint16 = 0x7F
+)

@@ -80,7 +80,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x1E: {EffectDone, "CHECKPARTY 六個條件"},
 	0x1F: {EffectConsumed, "UNKNOWN_1F 在 corpus 靜態不可達"},
 	0x20: {EffectDone, "NEWECL 終止本次執行並換 block（spec 1104）"},
-	0x21: {EffectPartial, "LOAD FILES 記下請求；實際換檔由上層做"},
+	0x21: {EffectDone, "原作 0C15h 與 37h 共用一支（spec 1087）：載 3D 地圖那一路 handler **自己寫兩格 ECL 記憶體**（spec 1181）——`bank0^[18Ah] := o[1]`（格 `4BC5h`）與 `bank1^[592h] := 0`（格 `7EC9h`），條件是 `o[1] <> 0FFh`、`<> 7Fh` 且 `bank0^[1CCh] <> 0`（格 `4BE6h`，22 處寫入全在 ECL1 的三個世界地圖 block，形狀是「現在是不是第一人稱畫面」）。★ `7EC9h` **腳本讀得到**：全 corpus 34 處存取，腳本一路寫 `FFh`，唯一的讀取端 `ECL2/0x03:00F6h` 是 `COMPARE 7EC9 FF`，而清掉它的只有這個 handler ⇒ 不寫的話腳本會永遠停在那個分支。remake 現在照條件寫那兩格（都走 `recordStore`，會進 `SaveWrites`），並帶出 `LoadFilesLoaded3DMap` 讓上層知道原作走的是哪一路；實際換檔仍由上層做，那是資產層不是副作用"},
 	0x22: {EffectDone, "隊伍突襲判定"},
 	0x23: {EffectConsumed, "SURPRISE 在 corpus 靜態不可達；原作結果碼 3 也寫不出去（spec 1087）"},
 	0x24: {EffectPartial, "COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；partial 指的是那 46 處在 remake 走的是別的機制，不是 24h 的請求旗標——兩個旗標都沒有 producer"},
