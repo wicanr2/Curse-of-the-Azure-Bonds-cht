@@ -970,8 +970,8 @@
   {
    "opcode": "0x27",
    "name": "TREASURE",
-   "status": "partial",
-   "note": "原作 1B53h 整支 398 條讀完（spec 1151）：前七個運算元以 32-bit **覆寫** DS:6F70h 的戰利品池（1Ch 清的就是它）；第八個 ItemBlock 三選一——\u003c 80h 載 ITEM\u003c片\u003e.DAX 那個區塊並把裡面每一筆都掛上鏈、= 0FFh 不給物品、80h..FEh 隨機產生 n − 80h 件。物品鏈 DS:6F8Ch 的 next 在 +2Ah 且是**前插**，顯示端從鏈頭走（overlay-05:0CF5h），所以清單是反序——remake 已跟上。隨機表的區間 bug 也修了（第二擲 48／49 原作回 59，remake 先前回劍）。隨機那一路已接上 CREATERNDTREASURE（spec 1036）——加值（1d20：1..14 給 ＋1、15..20 給 ＋2）、名稱三段索引、重量、價值、卷軸法術與特殊物品範本都照原作補齊，擲骰順序也對上。partial 只剩一項：remake 把同一次執行的多筆 TREASURE 相加而原作是覆寫（corpus 未觀察到兩筆之間沒有 1Ch 的情形）",
+   "status": "done",
+   "note": "原作 1B53h 整支 398 條讀完（spec 1151）：前七個運算元以 32-bit **覆寫** DS:6F70h 的戰利品池（1Ch 清的就是它）；第八個 ItemBlock 三選一——\u003c 80h 載 ITEM\u003c片\u003e.DAX 那個區塊並把裡面每一筆都掛上鏈、= 0FFh 不給物品、80h..FEh 隨機產生 n − 80h 件。物品鏈 DS:6F8Ch 的 next 在 +2Ah 且是**前插**，顯示端從鏈頭走（overlay-05:0CF5h），所以清單是反序——remake 已跟上。隨機表的區間 bug 也修了（第二擲 48／49 原作回 59，remake 先前回劍）。隨機那一路已接上 CREATERNDTREASURE（spec 1036）——加值（1d20：1..14 給 ＋1、15..20 給 ＋2）、名稱三段索引、重量、價值、卷軸法術與特殊物品範本都照原作補齊，擲骰順序也對上。★ 多筆 TREASURE 的模型也對上了：**錢幣池覆寫、物品鏈累積**——原作那兩側是兩套資料結構，remake 先前把錢幣也當成累加（spec 1151 增補）",
    "occurrences": 63,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1146,8 +1146,8 @@
   {
    "opcode": "0x2E",
    "name": "DAMAGE",
-   "status": "partial",
-   "note": "原作 2942h 整支 305 條讀完（spec 1152）：★ 旗標 bit 7 清空時**整個 byte 是次數**——連打 N 下，每下隨機挑一名隊員、用第五個運算元當攻擊值擲 TRYTOHIT，而且每下之間重擲傷害；bit 7 設定才是旗標（bit 6 全隊、bit 5 不擲豁免、bit 4 豁免成功仍吃**全額**、bit 0..4 豁免調整值——bit 4 與調整值欄位重疊，但 corpus 24 處低 5 位全 0）。目標三選一：全隊／目前角色（第五個運算元 bit 7）／隨機一名。★ 目前角色那一路傳給 MAKESAVE 的種類要**減一**且 0 代表不擲豁免，另外兩路不減一、由 bit 5 決定；兩種讀法在 corpus 上結果相同。正式路徑先前只結算全隊那 14 處，現在三種形式都結算（目標由封包自己帶著發出當下選的角色，否則整隊迴圈裡的傷害會全算到同一位身上）。partial 只剩原作那條 corpus 走不到的「單體但隨機挑一名」沒接",
+   "status": "done",
+   "note": "原作 2942h 整支 305 條讀完（spec 1152）：★ 旗標 bit 7 清空時**整個 byte 是次數**——連打 N 下，每下隨機挑一名隊員、用第五個運算元當攻擊值擲 TRYTOHIT，而且每下之間重擲傷害；bit 7 設定才是旗標（bit 6 全隊、bit 5 不擲豁免、bit 4 豁免成功仍吃**全額**、bit 0..4 豁免調整值——bit 4 與調整值欄位重疊，但 corpus 24 處低 5 位全 0）。目標三選一：全隊／目前角色（第五個運算元 bit 7）／隨機一名。★ 目前角色那一路傳給 MAKESAVE 的種類要**減一**且 0 代表不擲豁免，另外兩路不減一、由 bit 5 決定；兩種讀法在 corpus 上結果相同。正式路徑先前只結算全隊那 14 處，現在三種形式都結算（目標由封包自己帶著發出當下選的角色，否則整隊迴圈裡的傷害會全算到同一位身上）。★ 第三條路「單體但隨機挑一名」也接上了：擲一顆 1..隊伍人數挑人，豁免種類**不減一**、要不要擲由 bit 5 決定（corpus 走不到，照 handler 寫，形狀與全隊那一路共用同一個結算器）",
    "occurrences": 24,
    "blocks": [
     "ECL2.DAX/0x03",
@@ -1457,12 +1457,12 @@
   }
  ],
  "instructions_by_status": {
-  "done": 13359,
-  "partial": 818
+  "done": 13446,
+  "partial": 731
  },
  "opcodes_by_status": {
-  "done": 53,
-  "partial": 8
+  "done": 55,
+  "partial": 6
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1493,29 +1493,29 @@
   "ECL6.DAX/0x45": 320
  },
  "unreproduced_by_block": {
-  "ECL1.DAX/0x50": 20,
-  "ECL1.DAX/0x51": 19,
+  "ECL1.DAX/0x50": 18,
+  "ECL1.DAX/0x51": 17,
   "ECL1.DAX/0x52": 18,
-  "ECL2.DAX/0x01": 40,
-  "ECL2.DAX/0x02": 31,
-  "ECL2.DAX/0x03": 28,
-  "ECL2.DAX/0x04": 23,
-  "ECL3.DAX/0x10": 48,
-  "ECL3.DAX/0x11": 40,
-  "ECL3.DAX/0x12": 41,
-  "ECL3.DAX/0x15": 14,
-  "ECL4.DAX/0x20": 52,
-  "ECL4.DAX/0x21": 56,
-  "ECL4.DAX/0x22": 42,
+  "ECL2.DAX/0x01": 38,
+  "ECL2.DAX/0x02": 30,
+  "ECL2.DAX/0x03": 25,
+  "ECL2.DAX/0x04": 19,
+  "ECL3.DAX/0x10": 41,
+  "ECL3.DAX/0x11": 39,
+  "ECL3.DAX/0x12": 39,
+  "ECL3.DAX/0x15": 13,
+  "ECL4.DAX/0x20": 47,
+  "ECL4.DAX/0x21": 54,
+  "ECL4.DAX/0x22": 37,
   "ECL4.DAX/0x23": 20,
-  "ECL4.DAX/0x25": 70,
-  "ECL5.DAX/0x31": 20,
-  "ECL5.DAX/0x32": 40,
-  "ECL5.DAX/0x33": 46,
-  "ECL5.DAX/0x35": 32,
-  "ECL6.DAX/0x40": 43,
-  "ECL6.DAX/0x42": 32,
-  "ECL6.DAX/0x43": 29,
-  "ECL6.DAX/0x45": 14
+  "ECL4.DAX/0x25": 57,
+  "ECL5.DAX/0x31": 19,
+  "ECL5.DAX/0x32": 36,
+  "ECL5.DAX/0x33": 39,
+  "ECL5.DAX/0x35": 26,
+  "ECL6.DAX/0x40": 35,
+  "ECL6.DAX/0x42": 27,
+  "ECL6.DAX/0x43": 26,
+  "ECL6.DAX/0x45": 11
  }
 }

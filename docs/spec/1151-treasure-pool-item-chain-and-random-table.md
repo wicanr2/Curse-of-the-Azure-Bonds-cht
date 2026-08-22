@@ -96,10 +96,11 @@ a := ROLLDICE(1, 100)
   兩邊共用同一條 seeded 亂數流，擲骰順序也照原作（`plus` 先擲、`15h` 的 1d5 後擲、
   `47h` 的 1d8 在範本選擇裡擲），順序被 `scriptedRolls` 逐顆釘住。
 
-⚠ 仍是 `partial`，剩一項：
-
-1. **多筆 TREASURE 的模型不同**：原作對七個池是**覆寫**，remake 把同一次執行的
-   多筆相加。corpus 沒有觀察到「兩筆之間沒有 `1Ch`」的情形，所以今天看不出差別。
+★ **多筆 TREASURE 的模型也對上了**（`done`）：**錢幣池覆寫、物品鏈累積**。
+那在原作是兩套資料結構——七個池是 `LongInt(...) := 運算元`，而物品是前插進
+`DS:6F8Ch` 的鏈——remake 先前把錢幣也當成累加。corpus 沒有觀察到「兩筆之間沒有
+`1Ch`」的情形，所以今天看不出差別；照抄是因為那就是原作的行為。
+`TestECLTreasureCoinsOverwriteWhileItemsAccumulate` 兩側各釘一半，突變驗過。
 
 ## 明確不宣稱
 

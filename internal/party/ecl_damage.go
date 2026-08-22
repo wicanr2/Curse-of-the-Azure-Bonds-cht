@@ -246,7 +246,25 @@ func (r Roster) ApplyECLDamageWithHitResolver(request ecl.DamageRequest, selecte
 		return outcomes, nil
 	}
 	if request.SaveFlags&0x80 == 0 {
-		return nil, fmt.Errorf("ECL DAMAGE selected target requires saveFlags 0x80")
+		// 第三條路：**單體，但目標是當場擲出來的**
+		// （原作 `p := 隊伍鏈的第 ROLLDICE(1, 隊伍人數) 個`，spec 1152）。
+		//
+		// ⚠ 這一路的豁免種類**不減一**，要不要擲也不看種類是不是 0——
+		// 與全隊那一路一樣由 `Flags` bit 5 決定。減一是**只有**「目前角色」
+		// 那一路才有的事。
+		//
+		// ★ corpus 24 處沒有一處走得到（單體封包的 `SaveFlags` bit 7 都是設定
+		// 的），所以這一段沒有實機路徑背書；它照 handler 寫，形狀與全隊那一路
+		// 共用同一個 `resolveTarget`。
+		targetRoll := rollDie(len(r))
+		if targetRoll < 1 || targetRoll > len(r) {
+			return nil, fmt.Errorf("ECL DAMAGE target roll %d is outside 1..%d", targetRoll, len(r))
+		}
+		outcome, outcomeErr := resolveTarget(targetRoll-1, saveType, request.Flags&0x20 != 0, false)
+		if outcomeErr != nil {
+			return nil, outcomeErr
+		}
+		return []DamageOutcome{outcome}, nil
 	}
 	// The reference uses save type - 1 for the selected-character branch;
 	// type zero is the explicit no-save case.

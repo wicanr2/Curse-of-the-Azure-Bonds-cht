@@ -180,3 +180,35 @@ func TestTreasureMenuCancelAndSkipUseStableLocaleContract(t *testing.T) {
 		t.Fatalf("skip mode=%v message=%q items=%#v", state.Mode, state.Message, state.pendingTreasureItems)
 	}
 }
+
+// 錢幣池是**覆寫**、物品鏈是**累積**——原作那兩側是兩套資料結構（spec 1151）。
+//
+// ★ 這條擋住把兩者一起當成累加的寫法：`27h TREASURE` 對七個池寫的是
+// `LongInt(DS:[6F70h + 4i]) := 運算元`，所以兩筆之間沒有 `1Ch` 的話，
+// 後面那一筆整個蓋掉前面那一筆的錢；而物品是前插進 `DS:6F8Ch` 的鏈，兩筆都在。
+func TestECLTreasureCoinsOverwriteWhileItemsAccumulate(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "fighter", Name: "戰士"}}
+	state.SetTreasureItemBlocks(map[uint16][]monster.ItemRecord{
+		0x02: {{Type: 36, Name: "長劍", Value: 100}},
+		0x03: {{Type: 37, Name: "短劍", Value: 50}},
+	})
+	state.applyECLTreasureSignals(ecl.RunResult{TreasureRequests: []ecl.TreasureRequest{
+		{Coins: [7]uint16{0, 0, 0, 0, 5, 9, 7}, ItemBlock: 0x02},
+		{Coins: [7]uint16{0, 0, 0, 0, 2, 1, 3}, ItemBlock: 0x03},
+	}})
+	if err := state.ResolveTreasureRequests(); err != nil {
+		t.Fatal(err)
+	}
+	// 後面那一筆是 2000 銅 ＝ 10 GP。相加的話會是 7000 銅 ＝ 35 GP。
+	if got := state.MoneyPool(); got != 10 {
+		t.Fatalf("錢幣池 ＝ %d GP，want 10（後面那一筆覆寫前面）", got)
+	}
+	if gems, jewelry := state.TreasurePool(); gems != 1 || jewelry != 3 {
+		t.Fatalf("寶石／珠寶 ＝ (%d, %d)，want (1, 3)", gems, jewelry)
+	}
+	// 物品兩筆都要在。
+	if got := len(state.PendingTreasureItems()); got != 2 {
+		t.Fatalf("待領物品 %d 件，want 2：%#v", got, state.PendingTreasureItems())
+	}
+}

@@ -2224,13 +2224,19 @@ func (s *State) ResolveTreasureRequests() error {
 	var total resolved
 	rng := rand.New(rand.NewSource(s.eclSeed))
 	for _, request := range s.pendingTreasure {
-		total.copper += uint64(request.Coins[0]) +
+		// ★ 錢幣池是**覆寫不是累加**：原作對七個池寫的是
+		// `LongInt(DS:[6F70h + 4i]) := 運算元`（spec 1151），所以連續兩筆
+		// TREASURE 之間沒有 `1Ch` 的話，**後面那一筆整個蓋掉前面那一筆**。
+		//
+		// ⚠ 物品鏈不同：那一側是**前插**（`prependTreasureItem`），會累積。
+		// 兩者在原作是兩套資料結構，remake 先前把錢幣也當成累加。
+		total.copper = uint64(request.Coins[0]) +
 			uint64(request.Coins[1])*10 +
 			uint64(request.Coins[2])*100 +
 			uint64(request.Coins[3])*200 +
 			uint64(request.Coins[4])*1000
-		total.gems += uint32(request.Coins[5])
-		total.jewelry += uint32(request.Coins[6])
+		total.gems = uint32(request.Coins[5])
+		total.jewelry = uint32(request.Coins[6])
 		if request.ItemBlock == 0xFF {
 			continue
 		}
