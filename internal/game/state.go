@@ -1227,6 +1227,8 @@ func (s *State) Select(index int) error {
 	if (s.Mode != ModeWilderness && s.Mode != ModePlace) || index < 0 || index >= len(s.Choices) {
 		return fmt.Errorf("choice %d is invalid in mode %d", index, s.Mode)
 	}
+	// ★ `Select` 是所有玩家層級選擇的唯一入口，所以路線就錄在這裡（spec 1191）。
+	recordDecision(s.Mode, s.Choices, index)
 	originalChoice := ""
 	if index < len(s.currentOriginalChoices) {
 		originalChoice = s.currentOriginalChoices[index]
@@ -5830,6 +5832,8 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 	if direction != 0 && direction != 2 && direction != 4 && direction != 6 {
 		return fmt.Errorf("invalid dungeon movement direction %d", direction)
 	}
+	// ★ 路線的另一半：主線走過哪些格。只錄不擋（spec 1191）。
+	recordMove(s.DungeonX, s.DungeonY, direction)
 	wantDX, wantDY := 0, 0
 	switch direction {
 	case 0:

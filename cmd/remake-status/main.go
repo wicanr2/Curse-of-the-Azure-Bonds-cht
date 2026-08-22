@@ -129,10 +129,14 @@ func main() {
 		Messages  int      `json:"messages"`
 		Fallbacks int      `json:"fallbacks"`
 		Doors     int      `json:"doors_found"`
+		Segments  int      `json:"segments"`
+		RouteHits int      `json:"route_hits"`
+		RouteLen  int      `json:"route_steps"`
 	}
 	if readJSON(*auditDir, "key-driven-session.json", &keySession) {
 		add("key_driven_session", keySession.Frames, keySession.Cells,
-			len(keySession.Modes), keySession.Messages, keySession.Fallbacks)
+			len(keySession.Modes), keySession.Messages, keySession.Fallbacks,
+			keySession.Segments, keySession.RouteHits, keySession.RouteLen)
 	}
 
 	// 原機音訊的**播放生命週期**：原作有幾種動作、remake 發得出幾種、

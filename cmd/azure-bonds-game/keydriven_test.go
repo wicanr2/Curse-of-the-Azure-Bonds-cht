@@ -114,6 +114,81 @@ func (a *app) canStepForward() bool {
 	return a.state.CanMoveDungeon(*a.geoGrid, deltaX, deltaY, int(direction))
 }
 
+// routeChoice 回答「主線在這個選單上選了哪一項」。
+//
+// ⚠ 比對的是**選項文字**不是索引：索引會隨選單內容錯位。而且要**往前找一段**——
+// 按鍵這一場走的路和主線不會完全一樣，中間會多出或少掉一些選單，卡在第一個
+// 對不上的地方就等於沒有路線。
+func (s *keyDrivenSession) routeChoice() (int, bool) {
+	// ⚠ **只有真的岔路才消耗路線**。「請按任意鍵或 Enter 繼續」這種單選項在整條
+	// 主線裡出現幾百次，讓它們也去比對的話，往前找的視窗會被它們吃光——
+	// 路線步數一直增加，隊伍卻一步都沒往前。
+	if len(s.app.state.Choices) < 2 {
+		return 0, false
+	}
+	current := strings.Join(s.app.state.Choices, "｜")
+	for offset := 0; offset < routeLookahead && s.routeAt+offset < len(s.route); offset++ {
+		step := s.route[s.routeAt+offset]
+		if strings.Join(step.Choices, "｜") != current {
+			continue
+		}
+		s.routeAt += offset + 1
+		return step.Index, true
+	}
+	return 0, false
+}
+
+// routeMove 回答「主線站在這一格時往哪個方向走」。
+//
+// ⚠ 比對的是**起點座標**：主線與這一場走的路不會完全一樣，所以要往前找一段，
+// 找到「從我現在這一格出發」的那一步為止。
+func (s *keyDrivenSession) routeMove() (int, bool) {
+	x, y, _ := s.app.state.DungeonGeometryView()
+	for offset := 0; offset < routeLookahead && s.routeAt+offset < len(s.route); offset++ {
+		step := s.route[s.routeAt+offset]
+		if step.Kind != "move" || step.FromX != x || step.FromY != y {
+			continue
+		}
+		s.routeAt += offset + 1
+		return step.Direction, true
+	}
+	return 0, false
+}
+
+// moveCursorTo 用方向鍵把選單游標挪到指定項；挪不到就回 false。
+func (s *keyDrivenSession) moveCursorTo(t *testing.T, want int) bool {
+	t.Helper()
+	if want < 0 || want >= len(s.app.state.Choices) {
+		return false
+	}
+	for step := 0; step < len(s.app.state.Choices)+8 && s.app.choiceCursor != want; step++ {
+		key := ebiten.KeyDown
+		if s.app.choiceCursor > want {
+			key = ebiten.KeyUp
+		}
+		tap(t, s.app, s.keys, key)
+		if s.app.state.Mode == game.ModeDungeon {
+			return false
+		}
+	}
+	return s.app.choiceCursor == want && want < len(s.app.state.Choices)
+}
+
+// routeLookahead 是「往前找幾個決策」。
+//
+// ⚠ 太小會在第一個岔開的地方就跟丟；太大會讓後面的決策被提早消耗掉，
+// 之後真的走到那裡時反而沒有路線可用。**兩邊都不是線性的**，實測：
+//
+//	2  → 28 格／37 句／照路線 0 次（完全跟不上）
+//	4  → 16 格／14 句／2 次
+//	8  → **76 格／63 句／104 次，而且第一次走出 `0x01` 到 `0x02`**
+//	12 → 72 格／57 句／103 次
+//	24 → 41 格／37 句／41 次
+//	100→ 48 格／20 句／62 次
+//
+// ⇒ 8 是實測出來的，不是猜的。改動走法之後要重新量。
+const routeLookahead = 8
+
 // keyDrivenMenuPatience 是「同一個選單按同一項幾次還在原地，就換下一項」。
 //
 // ⚠ 太小會變成輪流選（實測會自己切斷路線）；太大就等於永遠第一項。
@@ -171,11 +246,41 @@ type keyDrivenSession struct {
 	menus map[string]bool
 	// menuSeen 記著同一個選單看過幾次，用來判斷「卡住了，換下一項」。
 	menuSeen map[string]int
+	// route 是主線錄下來的選擇（`COAB_DECISION_LOG`），routeAt 是進度。
+	// ★ 這就是「路線知識」：戰役測試裡逐段寫死的劇情決策，用 `State.Select`
+	// 錄成一份可重放的清單，重放端用**按鍵**把游標挪到那一項（spec 1191）。
+	route   []game.Decision
+	routeAt int
+	// routeHits 是照著路線按下去的次數，用來看路線真的被用到多少。
+	routeHits int
+}
+
+// loadRoute 讀主線錄下來的路線；沒有就回 nil（測試照樣跑，只是沒有路線可循）。
+func loadRoute(t *testing.T) []game.Decision {
+	t.Helper()
+	path := os.Getenv("COAB_ROUTE_JSON")
+	if path == "" {
+		return nil
+	}
+	if !filepath.IsAbs(path) {
+		path = filepath.Join("..", "..", path)
+	}
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Logf("讀不到路線 %s：%v（這一場就沒有路線可循）", path, err)
+		return nil
+	}
+	var route []game.Decision
+	if err := json.Unmarshal(raw, &route); err != nil {
+		t.Fatalf("路線解不開：%v", err)
+	}
+	return route
 }
 
 func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 	application, keys := keyDrivenApp(t)
 	return &keyDrivenSession{
+		route: loadRoute(t),
 		app: application, keys: keys,
 		cells: map[[3]int]bool{}, tried: map[[4]int]bool{}, modes: map[game.Mode]bool{},
 		messages: map[string]bool{}, fallbacks: map[string]bool{},
@@ -259,6 +364,15 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		// ⇒ 折衷是**卡住才換**：同一個選單看到第 N 次還在原地，就往下挪一項。
 		// 這不是亂試，是「這條路走過了，換下一條」——而且預設仍然是第一項，
 		// 所以不會像輪流選那樣自己切斷路線。
+		// ★ 先看**路線**：主線錄下來的下一個決策如果面對的是同一組選項，
+		// 就照它按。路線走完或對不上才退回啟發式。
+		if want, ok := s.routeChoice(); ok {
+			if s.moveCursorTo(t, want) {
+				s.routeHits++
+				tap(t, s.app, s.keys, ebiten.KeyEnter)
+				return
+			}
+		}
 		if count := len(s.app.state.Choices); count > 1 {
 			// ⚠ 簽章**只看選項，不看訊息**：商店每按一項就換一句回應
 			// （「目前沒有可提取的隊伍金幣。」…），把訊息放進簽章的話計數永遠
@@ -297,6 +411,22 @@ func (s *keyDrivenSession) step(t *testing.T) {
 	// 門的選單開著就先處理掉：敲門 → 撬鎖 → 撞門，都失敗就退出。
 	if s.app.dungeonDoorMenu {
 		s.handleDoorMenu(t)
+		return
+	}
+	// ★ 先看路線：主線在這一格往哪走。轉到那個方向再踏出去，全程只用按鍵。
+	if direction, ok := s.routeMove(); ok {
+		for turn := 0; turn < 4; turn++ {
+			_, _, facing := s.app.state.DungeonGeometryView()
+			if int(facing) == direction {
+				break
+			}
+			tap(t, s.app, s.keys, ebiten.KeyM)
+			if s.app.state.Mode != game.ModeDungeon {
+				return
+			}
+		}
+		s.routeHits++
+		tap(t, s.app, s.keys, ebiten.KeyUp)
 		return
 	}
 	target, fresh, ok := s.chooseHeading()
@@ -478,9 +608,9 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		t.Fatal("按 D 之後還停在角色建立：完成那條路按不出來")
 	}
 
-	// ⚠ 600 幀就到頂了：跑到 4000 幀還是 28 格、36 句。加幀數不會再多，
+	// ⚠ 1500 幀就到頂了：跑到 20000 幀還是 76 格、63 句。加幀數不會再多，
 	// 所以不要為了「看起來跑得久」而拖慢整個測試套件。
-	for session.frames = 0; session.frames < 600; session.frames++ {
+	for session.frames = 0; session.frames < 1500; session.frames++ {
 		session.observe()
 		session.step(t)
 	}
@@ -501,9 +631,10 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		}
 		t.Fatalf("按鍵玩到的畫面有 %d 句落回原文", len(session.fallbacks))
 	}
-	t.Logf("按鍵驅動 %d 幀：走過 %d 格、%d 種畫面、記到 %d 句話、撞到門 %d 次，落回原文 0 句",
+	t.Logf("按鍵驅動 %d 幀：走過 %d 格、%d 種畫面、記到 %d 句話、撞到門 %d 次、"+
+		"照路線按 %d 次（路線共 %d 步），落回原文 0 句",
 		session.frames, len(session.cells), len(session.modes), len(session.messages),
-		session.doorsFound)
+		session.doorsFound, session.routeHits, len(session.route))
 	// ★ 卡住的原因記在這裡：整場**沒有出現任何真的選單**（只有「按任意鍵繼續」）。
 	// 所以走不遠不是「選錯了選項」，是幾何上到不了——這兩種成因的處置完全不同，
 	// 分不出來就會往錯的方向修。
@@ -543,10 +674,14 @@ func (s *keyDrivenSession) writeReport(path string) error {
 		Fallbacks int      `json:"fallbacks"`
 		Doors     int      `json:"doors_found"`
 		Menus     int      `json:"menus"`
+		Segments  int      `json:"segments"`
+		RouteHits int      `json:"route_hits"`
+		RouteLen  int      `json:"route_steps"`
 	}{
 		Schema: "coab-key-driven-session/1", Frames: s.frames, Cells: len(s.cells),
 		Modes: modes, Messages: len(s.messages), Fallbacks: len(s.fallbacks),
 		Doors: s.doorsFound, Menus: len(s.menus),
+		Segments: len(s.blocks), RouteHits: s.routeHits, RouteLen: len(s.route),
 	}
 	encoded, err := json.MarshalIndent(report, "", " ")
 	if err != nil {
