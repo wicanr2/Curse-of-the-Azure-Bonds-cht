@@ -35,6 +35,7 @@ __pycache__/
 /geo-probe
 /glossary-audit
 /locale-drift-audit
+/map-spawn-audit
 /monster-roster
 /ovr-manifest
 /pc98-music-audit
