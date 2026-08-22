@@ -120,6 +120,20 @@ func main() {
 			text.Summary.RunsOrphan, text.Summary.RunsTruncated)
 	}
 
+	// 按鍵驅動的一場：這是「開場到結局」那一列缺的**輸入那一層**。
+	// 戰役測試直接呼叫 `state.X()`，這一份走的是 `(*app).Update()`。
+	var keySession struct {
+		Frames    int      `json:"frames"`
+		Cells     int      `json:"cells"`
+		Modes     []string `json:"modes"`
+		Messages  int      `json:"messages"`
+		Fallbacks int      `json:"fallbacks"`
+	}
+	if readJSON(*auditDir, "key-driven-session.json", &keySession) {
+		add("key_driven_session", keySession.Frames, keySession.Cells,
+			len(keySession.Modes), keySession.Messages, keySession.Fallbacks)
+	}
+
 	var save struct {
 		RecordSize    int            `json:"record_size"`
 		BytesByStatus map[string]int `json:"bytes_by_status"`

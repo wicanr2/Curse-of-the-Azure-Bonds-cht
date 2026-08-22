@@ -11,6 +11,7 @@
 | ECL 有序副作用與 external routine | 可達指令 14177 條：`done` 13690／`partial` 487；opcode `done` 58／`partial` 3 | `ecl-effect-coverage.json`（`cmd/ecl-effect-coverage`） | `done` 是「這個 opcode 的原作語意讀完並接上」，**不是**「玩家走得到的每一條都驗過」。可達性來自控制流走訪，跟不到的碼不在分母裡。 |
 | 原作玩家可見文字接線 | 1022 頁：matched 1002、**unmatched 0** | `ecl-text-coverage.json`（`cmd/ecl-text-coverage`） | 「有一條 `text_rule` 命中」不等於譯文正確，也不等於那一頁的事件副作用已還原。 |
 | 原作玩家可見文字接線（以執行路徑計） | 走得到的 run 1375 條：matched 1199、**orphan 0**、截斷 62 | `ecl-text-coverage.json`（`cmd/ecl-text-coverage`） | 上一列是**逐頁**判的，一頁只要被某一條命中的 run 經過就算接上；玩家走的是**一條** run。兄弟句規則（`all_contains` 含了別段的片段）攔不到單獨印的情況，逐頁看不出來，這一列才看得出來。`orphan` 的 0 拿掉任一條規則就會變成非 0（spec 1190）。「截斷」是走訪器在 `IF` 分岔上切出來的半句，不是待辦。 |
+| 按鍵驅動的一場（輸入那一層） | 400 幀：走過 7 格、3 種畫面、6 句話，**落回原文 0** | `key-driven-session.json`（`TestKeysDriveARealSessionFromTheTitle`，需 `COAB_KEY_SESSION_JSON`） | 這是**開場**那一段，不是「按鍵玩到結局」。戰役測試直接呼叫 `state.X()`，這一份從標題畫面開始只按鍵、全程走 `(*app).Update()`，證明的是那一段劇情按得出來而且沒有英文。走得更遠需要門與選項的路線知識，目前停在開場那間房。 |
 | 存檔相容（角色記錄） | 422 bytes：decoded 299／documented 123／unknown 0；remake 實際消費 291 | `dos-save-field-coverage.json`（`cmd/save-field-coverage`） | 欄位讀得懂不等於**往返**得回去。`MOVEPARTY` 跨遊戲轉移、角色刪除／改名尚未 round-trip。 |
 | 反組譯覆蓋（兩平台全模組） | 2874 個函式：已解讀 2137／不阻塞 162／邊界碎片 575／**待解讀 0**；未被 IDA 認成程式碼的位元組 36386 | `coab-function-index.json`（`cmd/re-ledger`） | 狀態是**人工判定**寫在 `re-function-ledger.json` 裡的，工具只讀不寫。「已解讀」是有人讀過並留下 spec，不是自動驗證。「未被 IDA 認成程式碼」的那些位元組多半是資料，但**沒有被逐段判過**。 |
 | 譯名一致性 | 詞條 138 條，未解決的不一致 **0** 筆 | `glossary.json`（`cmd/glossary-audit`） | 閘擋不住「誤用的寫法剛好是別的詞條的正確譯名」。那一半只能逐句對照原文。 |

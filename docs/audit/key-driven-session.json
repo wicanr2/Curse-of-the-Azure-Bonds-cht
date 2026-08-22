@@ -1,0 +1,12 @@
+{
+ "schema": "coab-key-driven-session/1",
+ "frames": 400,
+ "cells": 7,
+ "modes": [
+  "事件",
+  "地城",
+  "荒野"
+ ],
+ "messages": 6,
+ "fallbacks": 0
+}
