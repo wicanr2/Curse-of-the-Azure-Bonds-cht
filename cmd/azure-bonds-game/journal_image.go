@@ -11,7 +11,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
@@ -85,11 +84,11 @@ func (a *app) journalImageCaption() string {
 }
 
 func (a *app) updateJournalImage() error {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyI) {
+	if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyI) {
 		a.journalImageOpen = false
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyZ) {
+	if a.justPressed(ebiten.KeyZ) {
 		a.journalImageZoom = !a.journalImageZoom
 		a.journalImageOffsetX, a.journalImageOffsetY = 0, 0
 		return nil
@@ -99,13 +98,13 @@ func (a *app) updateJournalImage() error {
 		return nil
 	}
 	switch {
-	case inpututil.IsKeyJustPressed(ebiten.KeyLeft):
+	case a.justPressed(ebiten.KeyLeft):
 		a.journalImageOffsetX -= journalPanStep
-	case inpututil.IsKeyJustPressed(ebiten.KeyRight):
+	case a.justPressed(ebiten.KeyRight):
 		a.journalImageOffsetX += journalPanStep
-	case inpututil.IsKeyJustPressed(ebiten.KeyUp):
+	case a.justPressed(ebiten.KeyUp):
 		a.journalImageOffsetY -= journalPanStep
-	case inpututil.IsKeyJustPressed(ebiten.KeyDown):
+	case a.justPressed(ebiten.KeyDown):
 		a.journalImageOffsetY += journalPanStep
 	}
 	a.clampJournalPan()

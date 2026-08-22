@@ -129,6 +129,13 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   （`DOES ANYONE WANT TO…`）的兄弟句**全都是併在前一頁的規則裡**，那就是片段，
   不要替它寫規則。
 
+- **前端讀鍵盤只能走 `a.justPressed`／`a.keyDown`。**
+  直接呼叫 `inpututil.IsKeyJustPressed`／`ebiten.IsKeyPressed` 會被
+  `TestFrontendReadsKeysOnlyThroughTheSeam` 擋下來。理由不是整潔：繞過接縫的
+  那一行在按鍵驅動的測試裡**永遠不會觸發**，而測試會照樣綠——它根本走不到那裡。
+  ⇒ 按鍵驅動的一場是 `TestKeysDriveARealSessionFromTheTitle`（spec 1191），
+  要出報表就設 `COAB_KEY_SESSION_JSON=docs/audit/key-driven-session.json`。
+
 - **「沒到過」有兩種成因，而它們的處置完全相反。**
   可達性報表說主線實跑一格都沒踏到提爾佛頓那三段。那可能是**主線不經過那裡**
   （路線的選擇，沒事）或**那些格子走不進去**（缺陷，玩家會撞到）——而逐格實測

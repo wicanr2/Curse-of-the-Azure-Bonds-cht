@@ -20,7 +20,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
@@ -56,6 +55,9 @@ const (
 )
 
 type app struct {
+	// keys 是鍵盤的來源。nil ＝ 真的 ebiten；測試會換成腳本化的來源，
+	// 讓整條戰役用**按鍵**驅動（見 `keys.go`）。
+	keys                   keySource
 	state                  *game.State
 	imagePath              string
 	face                   font.Face
@@ -415,7 +417,7 @@ func (a *app) saveTarget() string {
 
 func (a *app) Update() error {
 	if a.areaMapPreview {
-		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyA) {
+		if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyA) {
 			a.areaMapPreview = false
 		}
 		return nil
@@ -425,7 +427,7 @@ func (a *app) Update() error {
 	a.syncLoadPiecesRequest()
 	a.syncECLCallRequests()
 	if event, ok := a.state.CombatVisualEvent(); ok {
-		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		if a.justPressed(ebiten.KeySpace) {
 			a.state.CombatManualControl()
 		}
 		if a.combatVisualSerial != event.Serial {
@@ -446,32 +448,32 @@ func (a *app) Update() error {
 		}
 	}
 	if a.tilePreview {
-		if inpututil.IsKeyJustPressed(ebiten.KeyT) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		if a.justPressed(ebiten.KeyT) || a.justPressed(ebiten.KeyEscape) {
 			a.tilePreview = false
 		}
 		return nil
 	}
 	if a.geoPreview {
-		if inpututil.IsKeyJustPressed(ebiten.KeyG) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		if a.justPressed(ebiten.KeyG) || a.justPressed(ebiten.KeyEscape) {
 			a.geoPreview = false
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyUp) && a.geoGrid.CanMove(a.geoX, a.geoY, 0) {
+		if a.justPressed(ebiten.KeyUp) && a.geoGrid.CanMove(a.geoX, a.geoY, 0) {
 			a.geoY--
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyRight) && a.geoGrid.CanMove(a.geoX, a.geoY, 2) {
+		if a.justPressed(ebiten.KeyRight) && a.geoGrid.CanMove(a.geoX, a.geoY, 2) {
 			a.geoX++
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyDown) && a.geoGrid.CanMove(a.geoX, a.geoY, 4) {
+		if a.justPressed(ebiten.KeyDown) && a.geoGrid.CanMove(a.geoX, a.geoY, 4) {
 			a.geoY++
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) && a.geoGrid.CanMove(a.geoX, a.geoY, 6) {
+		if a.justPressed(ebiten.KeyLeft) && a.geoGrid.CanMove(a.geoX, a.geoY, 6) {
 			a.geoX--
 		}
 		return nil
 	}
 	if a.dungeonPreview || a.state.Mode == game.ModeDungeon {
 		productionDungeon := a.state.Mode == game.ModeDungeon
-		if !productionDungeon && (inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyEscape)) {
+		if !productionDungeon && (a.justPressed(ebiten.KeyD) || a.justPressed(ebiten.KeyEscape)) {
 			a.dungeonDoorMenu = false
 			a.dungeonPreview = false
 		}
@@ -480,58 +482,58 @@ func (a *app) Update() error {
 			return nil
 		}
 		if productionDungeon {
-			if inpututil.IsKeyJustPressed(ebiten.KeyA) {
+			if a.justPressed(ebiten.KeyA) {
 				a.areaMapPreview = true
 				return nil
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			if a.justPressed(ebiten.KeyUp) {
 				a.moveDungeonForward()
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyE) {
+			if a.justPressed(ebiten.KeyE) {
 				return a.state.EnterDungeonCamp()
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyS) {
+			if a.justPressed(ebiten.KeyS) {
 				return a.state.ToggleDungeonSearch()
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyL) {
+			if a.justPressed(ebiten.KeyL) {
 				return a.state.LookDungeonLocation()
 			}
 		} else {
-			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			if a.justPressed(ebiten.KeyUp) {
 				a.moveDungeonPreview(0, -1, 0)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+			if a.justPressed(ebiten.KeyRight) {
 				a.moveDungeonPreview(1, 0, 2)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			if a.justPressed(ebiten.KeyDown) {
 				a.moveDungeonPreview(0, 1, 4)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+			if a.justPressed(ebiten.KeyLeft) {
 				a.moveDungeonPreview(-1, 0, 6)
 			}
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyQ) || inpututil.IsKeyJustPressed(ebiten.KeyK) {
+		if a.justPressed(ebiten.KeyQ) || a.justPressed(ebiten.KeyK) {
 			a.turnDungeonGeometry(-2)
 			a.prepareWallPreview()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyR) || inpututil.IsKeyJustPressed(ebiten.KeyM) {
+		if a.justPressed(ebiten.KeyR) || a.justPressed(ebiten.KeyM) {
 			a.turnDungeonGeometry(2)
 			a.prepareWallPreview()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyP) {
+		if a.justPressed(ebiten.KeyP) {
 			a.tryDungeonPickLock()
 		}
-		if (productionDungeon && inpututil.IsKeyJustPressed(ebiten.KeyN)) ||
-			(!productionDungeon && inpututil.IsKeyJustPressed(ebiten.KeyK)) {
+		if (productionDungeon && a.justPressed(ebiten.KeyN)) ||
+			(!productionDungeon && a.justPressed(ebiten.KeyK)) {
 			a.tryDungeonKnock()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyB) {
+		if a.justPressed(ebiten.KeyB) {
 			a.tryDungeonBash()
 		}
 		return nil
 	}
 	if a.state.ECLStringEditing() {
-		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+		if a.justPressed(ebiten.KeyBackspace) {
 			return a.state.BackspaceECLString()
 		}
 		if chars := ebiten.InputChars(); len(chars) > 0 {
@@ -539,16 +541,16 @@ func (a *app) Update() error {
 				a.state.Message = err.Error()
 			}
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		if a.justPressed(ebiten.KeyEnter) {
 			return a.state.SubmitECLString()
 		}
 		return nil
 	}
 	if a.state.RenameEditing() {
-		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		if a.justPressed(ebiten.KeyEscape) {
 			return a.state.CancelRename()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+		if a.justPressed(ebiten.KeyBackspace) {
 			return a.state.BackspaceRenameName()
 		}
 		if chars := ebiten.InputChars(); len(chars) > 0 {
@@ -556,31 +558,31 @@ func (a *app) Update() error {
 				a.state.Message = err.Error()
 			}
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		if a.justPressed(ebiten.KeyEnter) {
 			return a.state.CommitRename()
 		}
 		return nil
 	}
 	if a.state.Mode == game.ModeCharacterCreation && a.state.GuidedActive {
 		// 原版的四段選單（spec 1093 §一）：上下移動、Enter 選定。
-		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		if a.justPressed(ebiten.KeyEscape) {
 			return a.state.CancelGuidedCreation()
 		}
 		if a.state.GuidedStep == game.CreationStepAbilities {
-			if inpututil.IsKeyJustPressed(ebiten.KeyR) {
+			if a.justPressed(ebiten.KeyR) {
 				return a.state.RollGuidedAbilities(time.Now().UnixNano())
 			}
 			// 原作是「重擲到滿意為止」，滿意就往下走決定年齡與 HP。
-			if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			if a.justPressed(ebiten.KeyEnter) {
 				return a.state.AcceptGuidedAbilities(time.Now().UnixNano())
 			}
 			return nil
 		}
 		if a.state.GuidedStep == game.CreationStepName {
-			if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+			if a.justPressed(ebiten.KeyBackspace) {
 				return a.state.BackspaceGuidedName()
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			if a.justPressed(ebiten.KeyEnter) {
 				if err := a.state.CommitGuidedName(); err != nil {
 					a.state.CreationMessage = err.Error()
 				}
@@ -595,10 +597,10 @@ func (a *app) Update() error {
 		}
 		if a.state.GuidedStep == game.CreationStepSave {
 			// 原作只比對 'N'，其餘任何鍵都存檔（spec 1093 §一）。
-			if inpututil.IsKeyJustPressed(ebiten.KeyN) {
+			if a.justPressed(ebiten.KeyN) {
 				return a.state.ConfirmGuidedSave(false)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyY) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			if a.justPressed(ebiten.KeyY) || a.justPressed(ebiten.KeyEnter) {
 				return a.state.ConfirmGuidedSave(true)
 			}
 			return nil
@@ -606,23 +608,23 @@ func (a *app) Update() error {
 		if a.state.GuidedStep == game.CreationStepDone {
 			return nil
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+		if a.justPressed(ebiten.KeyUp) {
 			return a.state.MoveGuidedCursor(-1)
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+		if a.justPressed(ebiten.KeyDown) {
 			return a.state.MoveGuidedCursor(1)
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		if a.justPressed(ebiten.KeyEnter) || a.justPressed(ebiten.KeySpace) {
 			return a.state.SelectGuidedOption(a.state.GuidedCursor)
 		}
 		return nil
 	}
 	if a.state.Mode == game.ModeCharacterCreation {
 		if a.state.CreationEditing {
-			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			if a.justPressed(ebiten.KeyEscape) {
 				return a.state.CancelCreationName()
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+			if a.justPressed(ebiten.KeyBackspace) {
 				return a.state.BackspaceCreationName()
 			}
 			if chars := ebiten.InputChars(); len(chars) > 0 {
@@ -630,78 +632,78 @@ func (a *app) Update() error {
 					a.state.CreationMessage = err.Error()
 				}
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			if a.justPressed(ebiten.KeyEnter) {
 				return a.state.CommitCreationName()
 			}
 			return nil
 		}
 		if a.state.CreationEditingAbilities {
-			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyA) {
+			if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyA) {
 				return a.state.ToggleCreationAbilities()
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+			if a.justPressed(ebiten.KeyLeft) {
 				return a.state.MoveCreationAbility(-1)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+			if a.justPressed(ebiten.KeyRight) {
 				return a.state.MoveCreationAbility(1)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			if a.justPressed(ebiten.KeyUp) {
 				return a.state.AdjustCreationAbility(1)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			if a.justPressed(ebiten.KeyDown) {
 				return a.state.AdjustCreationAbility(-1)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			if a.justPressed(ebiten.KeyEnter) || a.justPressed(ebiten.KeySpace) {
 				return a.state.AddCreationCharacter(a.state.CreationCursor)
 			}
 			return nil
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		if a.justPressed(ebiten.KeyEscape) {
 			return a.state.CancelCharacterCreation()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyG) {
+		if a.justPressed(ebiten.KeyG) {
 			return a.state.BeginGuidedCreation()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyN) {
+		if a.justPressed(ebiten.KeyN) {
 			return a.state.BeginCreationName()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyA) {
+		if a.justPressed(ebiten.KeyA) {
 			return a.state.ToggleCreationAbilities()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyR) {
+		if a.justPressed(ebiten.KeyR) {
 			return a.state.RerollCreationAbilities(time.Now().UnixNano())
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
+		if a.justPressed(ebiten.KeyD) {
 			return a.state.FinishCharacterCreation()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		if a.justPressed(ebiten.KeyEnter) || a.justPressed(ebiten.KeySpace) {
 			return a.state.AddCreationCharacter(a.state.CreationCursor)
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyRight) || inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+		if a.justPressed(ebiten.KeyRight) || a.justPressed(ebiten.KeyDown) {
 			if a.state.CreationCursor+1 < len(a.state.CreationOptions) {
 				a.state.CreationCursor++
 			}
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) || inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+		if a.justPressed(ebiten.KeyLeft) || a.justPressed(ebiten.KeyUp) {
 			if a.state.CreationCursor > 0 {
 				a.state.CreationCursor--
 			}
 		}
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyC) && a.state.Mode != game.ModeCombat {
+	if a.justPressed(ebiten.KeyC) && a.state.Mode != game.ModeCombat {
 		return a.state.OpenCharacterCreation()
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyT) {
+	if a.justPressed(ebiten.KeyT) {
 		a.tilePreview = true
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyG) && a.geoGrid != nil {
+	if a.justPressed(ebiten.KeyG) && a.geoGrid != nil {
 		a.geoPreview = true
 		a.geoX, a.geoY = 0, 0
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyD) && a.dungeonFloor != nil {
+	if a.justPressed(ebiten.KeyD) && a.dungeonFloor != nil {
 		a.dungeonPreview = true
 		a.refreshDungeonPreview()
 		return nil
@@ -710,23 +712,23 @@ func (a *app) Update() error {
 		if a.journalImageOpen {
 			return a.updateJournalImage()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyI) && a.currentJournalImage() != nil {
+		if a.justPressed(ebiten.KeyI) && a.currentJournalImage() != nil {
 			a.journalImageOpen = true
 			a.journalImageZoom = false
 			a.journalImageOffsetX, a.journalImageOffsetY = 0, 0
 			return nil
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyJ) {
+		if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyJ) {
 			return a.state.CloseJournal()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyRight) || inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+		if a.justPressed(ebiten.KeyRight) || a.justPressed(ebiten.KeyDown) {
 			pages := journalDisplayPages(a.state.JournalPages, a.state.JournalText, a.face, 22*faceCellWidth(a.face), 7)
 			if a.journalDisplayPage+1 < len(pages) {
 				a.journalDisplayPage++
 			}
 			return nil
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) || inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+		if a.justPressed(ebiten.KeyLeft) || a.justPressed(ebiten.KeyUp) {
 			if a.journalDisplayPage > 0 {
 				a.journalDisplayPage--
 			}
@@ -734,14 +736,14 @@ func (a *app) Update() error {
 		}
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyJ) {
+	if a.justPressed(ebiten.KeyJ) {
 		if err := a.state.OpenJournal(); err != nil {
 			return err
 		}
 		a.journalDisplayPage = 0
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyF5) {
+	if a.justPressed(ebiten.KeyF5) {
 		if err := a.saveCurrentGame(); err != nil {
 			a.state.Message = a.state.FileOperationMessage(game.FileOperationSave, game.FileOperationFailed, err.Error())
 		} else {
@@ -749,7 +751,7 @@ func (a *app) Update() error {
 		}
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyF9) {
+	if a.justPressed(ebiten.KeyF9) {
 		if err := a.state.LoadPartyFile(a.partyPath); err != nil {
 			a.state.Message = a.state.FileOperationMessage(game.FileOperationLoad, game.FileOperationFailed, err.Error())
 		} else if err := a.restoreAudioSnapshot(); err != nil {
@@ -760,8 +762,8 @@ func (a *app) Update() error {
 		}
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) ||
-		(inpututil.IsKeyJustPressed(ebiten.KeySpace) && a.state.Mode != game.ModeCombat) {
+	if a.justPressed(ebiten.KeyEnter) ||
+		(a.justPressed(ebiten.KeySpace) && a.state.Mode != game.ModeCombat) {
 		switch a.state.Mode {
 		case game.ModeTitle:
 			return a.state.Apply(game.ActionStart)
@@ -804,72 +806,72 @@ func (a *app) Update() error {
 	}
 	if a.state.Mode == game.ModeCombat {
 		if a.combatSpeedMenu {
-			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyE) {
+			if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyE) {
 				a.combatSpeedMenu = false
 				return nil
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyS) {
+			if a.justPressed(ebiten.KeyS) {
 				a.state.CombatSpeedSlower()
 				return nil
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyF) {
+			if a.justPressed(ebiten.KeyF) {
 				a.state.CombatSpeedFaster()
 				return nil
 			}
 			return nil
 		}
 		if a.combatDoneMenu {
-			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyE) {
+			if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyE) {
 				a.combatDoneMenu = false
 				return nil
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyD) {
+			if a.justPressed(ebiten.KeyD) {
 				a.combatDoneMenu = false
 				return a.combatAction(a.state.CombatDelay)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
+			if a.justPressed(ebiten.KeyQ) {
 				a.combatDoneMenu = false
 				return a.combatAction(a.state.CombatDone)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyG) && a.state.CombatCanGuard() {
+			if a.justPressed(ebiten.KeyG) && a.state.CombatCanGuard() {
 				a.combatDoneMenu = false
 				return a.combatAction(a.state.CombatGuard)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyB) && a.state.CombatCanBandage() {
+			if a.justPressed(ebiten.KeyB) && a.state.CombatCanBandage() {
 				a.combatDoneMenu = false
 				return a.combatAction(a.state.CombatBandage)
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyS) {
+			if a.justPressed(ebiten.KeyS) {
 				a.combatSpeedMenu = true
 				return nil
 			}
 			return nil
 		}
 		if a.state.CombatViewActive() {
-			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			if a.justPressed(ebiten.KeyEscape) {
 				a.state.EndCombatView()
 			}
 			return nil
 		}
 		if a.state.CombatMoveMode() {
-			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			if a.justPressed(ebiten.KeyEscape) {
 				a.state.CancelCombatMove()
 				return nil
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			if a.justPressed(ebiten.KeyUp) {
 				return a.combatAction(func() error { return a.combatMove(0, -1) })
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+			if a.justPressed(ebiten.KeyRight) {
 				return a.combatAction(func() error { return a.combatMove(1, 0) })
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			if a.justPressed(ebiten.KeyDown) {
 				return a.combatAction(func() error { return a.combatMove(0, 1) })
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+			if a.justPressed(ebiten.KeyLeft) {
 				return a.combatAction(func() error { return a.combatMove(-1, 0) })
 			}
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) && a.state.CombatCastingSpell() != 0 {
+		if a.justPressed(ebiten.KeyEscape) && a.state.CombatCastingSpell() != 0 {
 			a.state.CancelCombatCast()
 			return nil
 		}
@@ -878,57 +880,57 @@ func (a *app) Update() error {
 			a.state.CombatCastingSpell() == game.FireballSpellID ||
 			a.state.CombatCastingSpell() == game.LightningBoltSpellID ||
 			a.state.CombatCastingSpell() == game.SleepSpellID {
-			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			if a.justPressed(ebiten.KeyUp) {
 				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(0, -1) })
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+			if a.justPressed(ebiten.KeyRight) {
 				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(1, 0) })
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			if a.justPressed(ebiten.KeyDown) {
 				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(0, 1) })
 			}
-			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+			if a.justPressed(ebiten.KeyLeft) {
 				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(-1, 0) })
 			}
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyS) && a.state.CombatCanCastMagicMissile() {
+		if a.justPressed(ebiten.KeyS) && a.state.CombatCanCastMagicMissile() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.MagicMissileSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyZ) && a.state.CombatCanCastSleep() {
+		if a.justPressed(ebiten.KeyZ) && a.state.CombatCanCastSleep() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.SleepSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyF) && a.state.CombatCanCastFireball() {
+		if a.justPressed(ebiten.KeyF) && a.state.CombatCanCastFireball() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.FireballSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyL) && a.state.CombatCanCastLightningBolt() {
+		if a.justPressed(ebiten.KeyL) && a.state.CombatCanCastLightningBolt() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.LightningBoltSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyN) && a.state.CombatCanCastStinkingCloud() {
+		if a.justPressed(ebiten.KeyN) && a.state.CombatCanCastStinkingCloud() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.StinkingCloudSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyK) && a.state.CombatCanCastCloudkill() {
+		if a.justPressed(ebiten.KeyK) && a.state.CombatCanCastCloudkill() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CloudkillSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyH) && a.state.CombatCanCastCureLightWounds() {
+		if a.justPressed(ebiten.KeyH) && a.state.CombatCanCastCureLightWounds() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CureLightWoundsSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyB) && a.state.CombatCanCastBless() {
+		if a.justPressed(ebiten.KeyB) && a.state.CombatCanCastBless() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.BlessSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyC) && a.state.CombatCanCastCurse() {
+		if a.justPressed(ebiten.KeyC) && a.state.CombatCanCastCurse() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CurseSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyW) && a.state.CombatCanCastCauseLightWounds() {
+		if a.justPressed(ebiten.KeyW) && a.state.CombatCanCastCauseLightWounds() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CauseLightWoundsSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyP) && a.state.CombatCanCastProtectionFromEvil() {
+		if a.justPressed(ebiten.KeyP) && a.state.CombatCanCastProtectionFromEvil() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.ProtectionFromEvilSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyG) && a.state.CombatCanCastProtectionFromGood() {
+		if a.justPressed(ebiten.KeyG) && a.state.CombatCanCastProtectionFromGood() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.ProtectionFromGoodSpellID) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyM) {
-			if combatAltPressed() {
+		if a.justPressed(ebiten.KeyM) {
+			if a.combatAltPressed() {
 				return a.combatAction(func() error {
 					_, err := a.state.CombatToggleQuickMagic()
 					return err
@@ -936,45 +938,45 @@ func (a *app) Update() error {
 			}
 			return a.combatAction(a.state.BeginCombatMove)
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
-			if combatAltPressed() {
+		if a.justPressed(ebiten.KeyQ) {
+			if a.combatAltPressed() {
 				return a.combatAction(a.state.CombatQuickAll)
 			}
 			return a.combatAction(a.state.CombatQuick)
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		if a.justPressed(ebiten.KeySpace) {
 			a.state.CombatManualControl()
 			return nil
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
+		if a.justPressed(ebiten.KeyD) {
 			a.combatDoneMenu = true
 			return nil
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyV) {
+		if a.justPressed(ebiten.KeyV) {
 			return a.combatAction(a.state.BeginCombatView)
 		}
 		// 「退散」只有牧師、而且這一場還沒用過才看得到（spec 905）。
-		if inpututil.IsKeyJustPressed(ebiten.KeyT) && a.state.CombatCanTurnUndead() {
+		if a.justPressed(ebiten.KeyT) && a.state.CombatCanTurnUndead() {
 			return a.combatAction(a.state.CombatTurnUndead)
 		}
 		// 「使用」：U 用掉目前選中的那一件，Alt+U 換下一件（spec 1170）；
 		// 選中的是卷軸時 Alt+S 換要唸的法術（spec 1171）。
-		if inpututil.IsKeyJustPressed(ebiten.KeyU) {
-			if combatAltPressed() {
+		if a.justPressed(ebiten.KeyU) {
+			if a.combatAltPressed() {
 				return a.combatAction(func() error { return a.state.CombatSelectItem(1) })
 			}
 			return a.combatAction(a.state.CombatUseItem)
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyS) && combatAltPressed() {
+		if a.justPressed(ebiten.KeyS) && a.combatAltPressed() {
 			return a.combatAction(func() error { return a.state.CombatSelectScrollSpell(1) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+		if a.justPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {
 				return a.combatAction(func() error { return a.state.CombatSelectSpellTarget(1) })
 			}
 			return a.combatAction(func() error { return a.state.CombatSelectTarget(1) })
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+		if a.justPressed(ebiten.KeyLeft) {
 			if a.state.CombatCastingSpell() != 0 {
 				return a.combatAction(func() error { return a.state.CombatSelectSpellTarget(-1) })
 			}
@@ -982,39 +984,35 @@ func (a *app) Update() error {
 		}
 	}
 	if a.state.Mode == game.ModeMap {
-		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		if a.justPressed(ebiten.KeyEscape) {
 			return a.state.LeaveMap()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+		if a.justPressed(ebiten.KeyUp) {
 			return a.state.Move(0, -1)
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+		if a.justPressed(ebiten.KeyDown) {
 			return a.state.Move(0, 1)
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+		if a.justPressed(ebiten.KeyLeft) {
 			return a.state.Move(-1, 0)
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+		if a.justPressed(ebiten.KeyRight) {
 			return a.state.Move(1, 0)
 		}
 	}
 	if a.state.Mode == game.ModeWilderness || a.state.Mode == game.ModePlace {
-		if inpututil.IsKeyJustPressed(ebiten.KeyDown) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+		if a.justPressed(ebiten.KeyDown) || a.justPressed(ebiten.KeyRight) {
 			if a.choiceCursor+1 < len(a.state.Choices) {
 				a.choiceCursor++
 			}
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyUp) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+		if a.justPressed(ebiten.KeyUp) || a.justPressed(ebiten.KeyLeft) {
 			if a.choiceCursor > 0 {
 				a.choiceCursor--
 			}
 		}
 	}
 	return nil
-}
-
-func combatAltPressed() bool {
-	return ebiten.IsKeyPressed(ebiten.KeyAltLeft) || ebiten.IsKeyPressed(ebiten.KeyAltRight)
 }
 
 func (a *app) syncLoadPiecesRequest() {
@@ -1170,7 +1168,7 @@ func (a *app) moveDungeonForward() {
 }
 
 func (a *app) updateDungeonDoorMenu() {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+	if a.justPressed(ebiten.KeyEscape) {
 		a.dungeonDoorMenu = false
 		return
 	}
@@ -1180,12 +1178,12 @@ func (a *app) updateDungeonDoorMenu() {
 		return
 	}
 	options := a.state.DungeonDoorMenuOptions(flags)
-	if inpututil.IsKeyJustPressed(ebiten.KeyB) && options.Bash {
+	if a.justPressed(ebiten.KeyB) && options.Bash {
 		a.tryDungeonBash()
 		a.dungeonDoorMenu = false
 		return
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyP) && options.Pick {
+	if a.justPressed(ebiten.KeyP) && options.Pick {
 		a.tryDungeonPickLock()
 		// Pick is one-shot even when it fails; remaining actions may still be
 		// selected, matching can_pick_door=false in locked_door.
@@ -1194,7 +1192,7 @@ func (a *app) updateDungeonDoorMenu() {
 		}
 		return
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyK) && options.Knock {
+	if a.justPressed(ebiten.KeyK) && options.Knock {
 		a.tryDungeonKnock()
 		a.dungeonDoorMenu = false
 	}
