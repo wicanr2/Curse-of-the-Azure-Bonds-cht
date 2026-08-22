@@ -225,13 +225,21 @@ remake 跑在 Ebiten 事件迴圈上，無法在 opcode handler 內阻塞整場�
 > ⚠ 本規格先前依 spec 1030 的標籤說那一格是「營地」、說 remake 的 `TempleRequested`
 > 語意不符——**反了**，改正見 [spec 1182](1182-overlay-module-names-and-combat-dispatch.md)。
 >
-> ★★★ **這兩格在 1,355 條 ECL 指令裡沒有任何一條寫過**（已全掃確認）。
-> ⇒ 它們是**引擎寫入、ECL 讀取**的共用格子，正是 spec 1096 §五第 2 點指出的
-> 最高風險類別：map 寫入永遠成功，對不上時不會有任何錯誤訊息。
+> ⚠ **本規格先前寫「這兩格在 1,355 條 ECL 指令裡沒有任何一條寫過（已全掃確認）」
+> ——那是假零。** 拿 `cmd/ecl-cell-refs` 掃全 corpus：`7EE2h`（神殿）**4 處**、
+> `7F6Ch`（商店）**9 處**，而且慣用法一模一樣：
 >
-> `0x7EE2` 在 remake 的正式程式碼裡仍然**沒有任何一處寫入**，所以
-> `TempleRequested` 目前走不到；`TestCampRequestFlagHasNoProducer` 繼續釘住
-> 「沒有 producer」這件事。
+> ```
+> CLEARMONSTERS          ← 保證第一支（有怪就打）不成立
+> SAVE 01 <旗標>
+> COMBAT
+> ```
+>
+> ⇒ 兩支服務**都走得到**，而且 remake 本來就接得起來（VM 讀 `memory`，
+> 腳本用 `SAVE` 寫進同一張 map）。`TestRealTavernTempleRequestReachesTheTempleBranch`
+> 與 `TestRealShopRequestReachesTheShopBranch` 直接跑原版資料驗過。
+> 先前那個釘「沒有 producer」的測試已經移除，改成正對照
+> `TestServiceRequestFlagsHaveScriptProducers`（數字對不上就紅，兩個方向都擋）。
 
 ## 明確不宣稱
 
