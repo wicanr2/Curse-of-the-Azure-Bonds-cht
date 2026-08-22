@@ -2,6 +2,7 @@ package gamepack
 
 import (
 	"archive/zip"
+	"image/png"
 	"io"
 	"os"
 	"path/filepath"
@@ -1634,6 +1635,61 @@ func TestJournalImagesMatchTheAssetDirectory(t *testing.T) {
 		if !listed[name] {
 			t.Errorf("assets/journal/%s 沒有任何手札引用它", name)
 		}
+	}
+}
+
+// ★ 圖必須**解得開**，不是只要檔案在。
+//
+// ⚠ renderer 那一側是刻意吞錯的：`loadJournalImage` 解不開就記成「這一則沒有
+// 圖」，往 stderr 印一行然後照常顯示文字（缺圖不該讓遊戲停下來）。代價是**壞掉
+// 的圖不會讓任何東西紅**——玩家只是永遠看不到那張地圖，而清單、locale、
+// 檔案存在檢查全部通過。這一支補上那個洞。
+func TestJournalImagesDecode(t *testing.T) {
+	images, err := JournalImages()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, image := range images {
+		path := filepath.Join("..", "assets", "journal", image.File)
+		file, openErr := os.Open(path)
+		if openErr != nil {
+			t.Errorf("%s: %v", image.File, openErr)
+			continue
+		}
+		decoded, decodeErr := png.Decode(file)
+		file.Close()
+		if decodeErr != nil {
+			t.Errorf("%s 解不開：%v", image.File, decodeErr)
+			continue
+		}
+		bounds := decoded.Bounds()
+		// 手札的圖是掃描頁裁出來的，長邊縮到 1000 px（見 assets/journal/README.md）。
+		// 這裡只擋「小到不可能是那張圖」——例如被截斷成幾列的檔案。
+		if bounds.Dx() < 64 || bounds.Dy() < 64 {
+			t.Errorf("%s 只有 %dx%d，不像裁出來的手札圖", image.File, bounds.Dx(), bounds.Dy())
+		}
+	}
+}
+
+// renderer 是照 `JournalImageFor(messageID)` 取圖的。清單裡有、查詢查不到，
+// 玩家一樣看不到圖——兩邊都要走一次才擋得住。
+func TestJournalImageLookupResolvesEveryListedEntry(t *testing.T) {
+	images, err := JournalImages()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, image := range images {
+		found, ok := JournalImageFor(image.MessageID)
+		if !ok {
+			t.Errorf("%s 在清單裡卻查不到", image.MessageID)
+			continue
+		}
+		if found.File != image.File || found.CaptionID != image.CaptionID {
+			t.Errorf("%s 查到的是 %+v，want %+v", image.MessageID, found, image)
+		}
+	}
+	if _, ok := JournalImageFor("journal.1"); ok {
+		t.Error("沒有圖的手札不該查得到")
 	}
 }
 

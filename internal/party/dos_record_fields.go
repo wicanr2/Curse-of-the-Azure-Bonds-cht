@@ -84,7 +84,7 @@ var DOSPlayerRecordFields = []DOSRecordField{
 	{0x119, 1, "性別", DOSFieldDecoded, "1086"},
 	{0x11A, 1, "種族大類 `RACETYPE`", DOSFieldDocumented, "1164"},
 	{0x11B, 1, "陣營", DOSFieldDecoded, "1102"},
-	{0x11C, 1, "攻擊次數基準的第一個武器槽 `BASEATTBLOWS[0]`；spec 1010 由 DOS 側讀成「武器槽選擇」，兩種讀法待對", DOSFieldDocumented, "1010／1164"},
+	{0x11C, 1, "攻擊次數基準的第一個武器槽 `BASEATTBLOWS[0]`（半次單位）；spec 1010 那句「`= 0` 就用槽 2」是它的一個用法，不是另一種讀法（spec 1180）", DOSFieldDocumented, "1010／1164／1180"},
 	// ⚠ 三組基準值的**陣列基底**是 `+11Dh`／`+11Fh`／`+121h`，但原作寫的是
 	// `基底 ＋ i`（i ＝ 1、2），所以實際的格子從基底的下一個位元組起算。
 	{0x11D, 1, "攻擊次數基準的第二個武器槽 `BASEATTBLOWS[1]`", DOSFieldDocumented, "1164"},
