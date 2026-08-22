@@ -105,10 +105,19 @@ func main() {
 			Groups    int `json:"groups"`
 			Matched   int `json:"matched"`
 			Unmatched int `json:"unmatched"`
+			// run 級的帳：一頁只要被某一條命中的 run 經過就算 matched，
+			// 但玩家走的是**一條** run。兩個數字都要，少了後者會漏掉
+			// 「兄弟句規則攔不到單獨印」那一整類（spec 1190）。
+			Runs          int `json:"runs"`
+			RunsMatched   int `json:"runs_matched"`
+			RunsOrphan    int `json:"runs_orphan"`
+			RunsTruncated int `json:"runs_truncated"`
 		} `json:"summary"`
 	}
 	if readJSON(*auditDir, "ecl-text-coverage.json", &text) {
 		add("ecl_text", text.Summary.Groups, text.Summary.Matched, text.Summary.Unmatched)
+		add("ecl_text_runs", text.Summary.Runs, text.Summary.RunsMatched,
+			text.Summary.RunsOrphan, text.Summary.RunsTruncated)
 	}
 
 	var save struct {
