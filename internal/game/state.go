@@ -3993,12 +3993,14 @@ func (s *State) projectDungeonCoordinatesFromView(view ecl.ViewMirror) {
 	if !view.Known || view.Dirty&ecl.ViewDirtyCoords == 0 {
 		return
 	}
-	// ⚠ 座標要是**這一個 block 的腳本**寫的才算。原作換地圖時引擎自己會做進場
-	// 放置、把那三格覆蓋掉；remake 那一半是 game pack 宣告的 spawn
-	// （`applyDeclaredDungeonSpawn`），它有回寫暫存器，但**排在投影之前**——
-	// 投影拿的是執行期間的快照，蓋不到。少了這個比對，換 block 那一次執行留在
-	// 鏡射裡的舊座標會贏過新地圖的錨點：下水道入口會落在 `(0,0)`、火刀據點會
-	// 落在 `(6,0)` 而不是 `(6,1)`（spec 1172）。
+	// ⚠ 座標要是**這一個 block 的腳本**寫的才算。
+	//
+	// ★ 這一條**不是在模擬引擎行為**。spec 1183 普查過 `720Fh`／`7210h`／`7211h`
+	// 的全部寫入者：`INTERPET`（擁有 `GOECL` 與 block 載入）一次都沒寫，
+	// 所以原作沒有「換 block 的引擎進場放置」——進新地圖的落點是**腳本自己寫的**。
+	// 它實際擋的是：game pack 宣告的 spawn（`applyDeclaredDungeonSpawn`，
+	// 腳本沒寫進場座標時的補值）不要被上一個 block 留在鏡射裡的座標蓋掉。
+	// 少了它，下水道入口會落在 `(0,0)`、火刀據點會落在 `(6,0)` 而不是 `(6,1)`。
 	if s.session != nil && view.Block != s.session.CurrentBlockID() {
 		return
 	}

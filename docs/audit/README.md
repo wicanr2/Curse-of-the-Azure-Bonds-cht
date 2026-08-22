@@ -71,6 +71,24 @@ UI locale、工具訊息）比對。規則與九組已修正的不一致見
 `哈普`，而哈普正是 `Hap`），沒有任何字串比對能分辨，只能逐句對照原文。表的
 〈通用寫法〉一節把這類判準寫成規則。
 
+## 誰寫這個 DS 位址
+
+[`dseg-writers-map-registers.md`](dseg-writers-map-registers.md) 由
+`cmd/dseg-writers` 產生，把 resident 與每個 overlay 掃過一遍，逐處列出對
+`720Fh`／`7210h`／`7211h`（地圖暫存器）的**寫入**、**取位址**與**讀取**。
+結論與方法見 [`spec 1183`](../spec/1183-map-register-writer-census.md)。
+
+工具本身是通用的：`-cells` 換一組位址就能問別的格子。要換遊戲版本就換
+`-root` 與 `-resident`（⚠ PC-98 的資料段位移與 DOS 差 `0x3292`）。
+
+⚠ 它是**位元組線性掃描**，失敗方向與 `cmd/ecl-cell-refs`（走控制流）相反：
+線性掃描有偽陽性、沒有偽陰性；控制流掃描沒有偽陽性、但掃不到沒被認成程式碼
+的部分。要下「沒有人寫」的結論之前兩種都要跑。本專案已經被走控制流那一側的
+假零咬過兩次（spec 1095 的 `7EE2h`、spec 1153 的 `4BE7h`）。
+
+⚠ 報表本體是英文的。`cmd/coab-audit` 的漢字 gate 只准數量下降，而報表就是
+位址與助憶碼的表格；分析文字寫在 spec 1183，工具的推理寫在檔頭註解。
+
 ## Go 漢字字串基線
 
 `go-han-literals-baseline.json` 由 `cmd/coab-audit` 使用 Go AST 產生，只掃正式

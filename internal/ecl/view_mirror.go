@@ -24,10 +24,11 @@ type ViewMirror struct {
 	Dirty uint8
 	// Block 是最後一次寫這三格的腳本所在的 block。
 	//
-	// ⚠ **原作沒有這個**（`720Fh` 是全域，誰寫都算）。remake 需要它是因為
-	// 換 block 的進場放置在原作是引擎做的、會覆蓋那三格，而 remake 那一半是
-	// game pack 宣告的 spawn——不比對 block 的話，舊 block 留下的座標會贏過
-	// 新地圖的進場錨點。要拿掉它得先讓進場放置也回寫暫存器。
+	// ⚠ **原作沒有這個**（`720Fh` 是全域，誰寫都算），而且它擋的不是引擎行為：
+	// spec 1183 普查過這三格的全部寫入者，`INTERPET`（block 載入）一次都沒寫，
+	// 所以原作根本沒有「換 block 的進場放置」——落點是腳本自己寫的。
+	// 這一格擋的是 remake 的**資料缺口**：腳本沒寫進場座標的地圖靠 game pack
+	// 宣告的 spawn 補值，不比對 block 的話會被上一個 block 的座標蓋掉。
 	Block uint8
 }
 
