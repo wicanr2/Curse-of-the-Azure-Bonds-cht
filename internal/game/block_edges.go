@@ -2,7 +2,9 @@ package game
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
+	"path/filepath"
 	"sort"
 	"sync"
 )
@@ -38,6 +40,39 @@ func recordBlockEdge(from, to uint8) {
 	blockEdgeMu.Lock()
 	defer blockEdgeMu.Unlock()
 	blockEdges[[2]uint8{from, to}]++
+}
+
+// arrivalDir 由 `COAB_ARRIVAL_SNAPSHOT_DIR` 開啟：在**剛換到一段的那一刻**存一份。
+//
+// ★ 為什麼不能用既有的段內快照：那一份是隊伍**第一次站上該段地城**時存的，
+// 那時 initial lifecycle 已經跑完、隊伍也走了幾步。要問「交接到底交了什麼」，
+// 取樣點必須是換段的**那一瞬間**，否則量到的是「交接 ＋ 主線又走了一段」。
+var (
+	arrivalDir   = os.Getenv("COAB_ARRIVAL_SNAPSHOT_DIR")
+	arrivalTaken = map[uint8]bool{}
+	// ArrivalFailures 記著哪一段存不出來。⚠ 不能默默吞掉：存不出來會讓那一段
+	// 從報表裡消失，而「消失」和「沒有差異」在合計那一行看起來一樣。
+	ArrivalFailures = map[uint8]string{}
+)
+
+// captureArrival 在剛換到 `block` 的那一刻存一份快照（每段只存第一次）。
+func (s *State) captureArrival(block uint8) {
+	if arrivalDir == "" {
+		return
+	}
+	blockEdgeMu.Lock()
+	if arrivalTaken[block] {
+		blockEdgeMu.Unlock()
+		return
+	}
+	arrivalTaken[block] = true
+	blockEdgeMu.Unlock()
+	path := filepath.Join(arrivalDir, fmt.Sprintf("arrival-block-%02X.json", block))
+	if err := s.SavePartyFile(path); err != nil {
+		blockEdgeMu.Lock()
+		ArrivalFailures[block] = err.Error()
+		blockEdgeMu.Unlock()
+	}
 }
 
 // BlockEdges 回傳錄到的轉移，依 (from, to) 排序。

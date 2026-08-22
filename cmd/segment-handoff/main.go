@@ -54,7 +54,10 @@ type handoffRow struct {
 	Dropped int `json:"dropped"`
 	// Risky 是 Dropped 之中**這一段的碼真的會讀**的那些。
 	Risky []uint16 `json:"risky,omitempty"`
-	Note  string   `json:"note,omitempty"`
+	// Source 是主線那一份的取樣點：`arrival`（剛換到那一段）或 `inside`
+	// （第一次站上地城，晚一些）。⚠ 兩者不可混為一談，見 `snapshotMemory`。
+	Source string `json:"source,omitempty"`
+	Note   string `json:"note,omitempty"`
 }
 
 type report struct {
@@ -66,6 +69,10 @@ type report struct {
 	TotalRisky   int `json:"total_risky"`
 	// RiskySegments 是「漏掉的格子裡有這一段會讀的」段數。
 	RiskySegments int `json:"risky_segments"`
+	// FromArrival／FromInside 是取樣點的分佈。⚠ 一定要分開數：`inside` 那幾段
+	// 量到的是「交接 ＋ 主線又走了一段」，混進總數會讓整份報表看起來比實際緊。
+	FromArrival int `json:"from_arrival"`
+	FromInside  int `json:"from_inside"`
 	// Failed 是**比不成**的段數。⚠ 一定要和 `Segments` 分開：比不成會讓
 	// 「漏掉 0 格」看起來和「完全對得上」一樣，而那兩件事天差地遠。
 	Failed int `json:"failed"`
@@ -76,6 +83,9 @@ func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "遊戲 image")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "語系檔")
 	snapshots := flag.String("snapshots", "workplace/campaign-frames/snapshots", "主線快照目錄")
+	partySize := flag.Int("party", 6, "直入那一側造幾名隊員（主線是 6）")
+	arrivals := flag.String("arrivals", "workplace/campaign-frames/arrivals",
+		"剛換到那一段時的快照目錄（`COAB_ARRIVAL_SNAPSHOT_DIR` 產）")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
 	outputJSON := flag.String("json", "", "JSON 輸出路徑")
 	flag.Parse()
@@ -103,17 +113,18 @@ func main() {
 
 	doc := report{Schema: "coab-segment-handoff/1"}
 	for _, item := range segment.All() {
-		campaign, ok := snapshotMemory(*snapshots, item.Block)
+		campaign, source, ok := snapshotMemory(*arrivals, *snapshots, item.Block)
 		if !ok {
 			continue
 		}
-		row := handoffRow{ID: item.ID, ReadCells: len(readBy[item.Block]), CampaignCells: len(campaign)}
+		row := handoffRow{ID: item.ID, ReadCells: len(readBy[item.Block]),
+			CampaignCells: len(campaign), Source: source}
 
 		state := game.NewStateFromECLBlocks(catalog, eclBlocks, initialECL)
 		// ⚠ 直入要先有隊伍，`cmd/azure-bonds-game -segment` 也是這樣做的。
 		// 少了這一步 `EnterSegment`／`SavePartyFile` 會失敗，而失敗路徑會讓
 		// 「漏掉幾格」印成 **0**——那個零看起來和「完全對得上」一模一樣。
-		if err := createOnePartyMember(&state); err != nil {
+		if err := createParty(&state, *partySize); err != nil {
 			row.Note = fmt.Sprintf("建不出隊伍：%v", err)
 			doc.Failed++
 			doc.Rows = append(doc.Rows, row)
@@ -150,6 +161,11 @@ func main() {
 		}
 		sort.Slice(row.Risky, func(l, r int) bool { return row.Risky[l] < row.Risky[r] })
 		doc.Segments++
+		if row.Source == "arrival" {
+			doc.FromArrival++
+		} else {
+			doc.FromInside++
+		}
 		doc.TotalDropped += row.Dropped
 		doc.TotalRisky += len(row.Risky)
 		if len(row.Risky) > 0 {
@@ -173,8 +189,10 @@ func main() {
 	} else if err := os.WriteFile(*output, []byte(text), 0o644); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Fprintf(os.Stderr, "segments=%d dropped=%d risky=%d riskySegments=%d failed=%d\n",
-		doc.Segments, doc.TotalDropped, doc.TotalRisky, doc.RiskySegments, doc.Failed)
+	fmt.Fprintf(os.Stderr,
+		"segments=%d arrival=%d inside=%d dropped=%d risky=%d riskySegments=%d failed=%d\n",
+		doc.Segments, doc.FromArrival, doc.FromInside,
+		doc.TotalDropped, doc.TotalRisky, doc.RiskySegments, doc.Failed)
 }
 
 // readAddressesByBlock 收集每個 block 的碼**會讀**的記憶體位址。
@@ -229,16 +247,22 @@ func readAddressesByBlock(image string) map[uint8]map[uint16]bool {
 	return out
 }
 
-// snapshotMemory 讀主線走到那一段時的 ECL 記憶體。段內快照優先，沒有就算了。
-func snapshotMemory(dir string, block uint8) (map[uint16]uint16, bool) {
-	for _, name := range []string{
-		fmt.Sprintf("inside-block-%02X.json", block),
-	} {
-		if memory, ok := memoryFromFile(filepath.Join(dir, name)); ok {
-			return memory, true
-		}
+// snapshotMemory 讀主線走到那一段時的 ECL 記憶體。
+//
+// ★ **剛換到那一段的快照優先**（`arrival-block-XX.json`）：那才是交接的取樣點。
+// 段內快照（`inside-block-XX.json`）是隊伍第一次站上地城時存的，那時 initial
+// lifecycle 已經跑完、隊伍也走了幾步 ⇒ 用它量到的是「交接 ＋ 又走了一段」。
+// 兩者都印出來，才看得出取樣點差多少。
+func snapshotMemory(arrivals, inside string, block uint8) (map[uint16]uint16, string, bool) {
+	if memory, ok := memoryFromFile(
+		filepath.Join(arrivals, fmt.Sprintf("arrival-block-%02X.json", block))); ok {
+		return memory, "arrival", true
 	}
-	return nil, false
+	if memory, ok := memoryFromFile(
+		filepath.Join(inside, fmt.Sprintf("inside-block-%02X.json", block))); ok {
+		return memory, "inside", true
+	}
+	return nil, "", false
 }
 
 func memoryFromFile(path string) (map[uint16]uint16, bool) {
@@ -311,16 +335,22 @@ func zipMember(reader *zip.Reader, name string) ([]byte, error) {
 	return nil, fmt.Errorf("%s 不在 image 裡", name)
 }
 
-// createOnePartyMember 造一名隊員，和 `cmd/azure-bonds-game -segment` 同一條路。
-func createOnePartyMember(state *game.State) error {
+// createParty 造一支隊伍。
+//
+// ⚠ **人數要和主線一樣（六人）**：`cmd/azure-bonds-game -segment` 只造一名，
+// 而隊伍大小會讓一整批隊伍相關的 ECL 格子必然不同——那些差異和「交接漏掉了
+// 什麼」無關，只是把上界撐大。
+func createParty(state *game.State, size int) error {
 	if len(state.PartyFighters()) > 0 {
 		return nil
 	}
 	if err := state.OpenCharacterCreation(); err != nil {
 		return err
 	}
-	if err := state.AddCreationCharacter(0); err != nil {
-		return err
+	for i := 0; i < size; i++ {
+		if err := state.AddCreationCharacter(0); err != nil {
+			return fmt.Errorf("第 %d 名：%w", i+1, err)
+		}
 	}
 	return state.FinishCharacterCreation()
 }
@@ -338,16 +368,14 @@ func render(doc report) string {
 	out.WriteString("⚠ 「會讀」由**靜態可達指令**的運算元推出來（`code 01h`／`03h` 是記憶體讀，" +
 		"`02h` 是立即值）。靜態可達是下界 ⇒ **會讀的格子只會少不會多**，" +
 		"所以 `會讀且漏掉` 也是下界。\n\n")
-	out.WriteString("⚠ **比較的時間點不是「剛進段的那一瞬間」。** 主線那一份是隊伍" +
-		"**第一次站上那一段地城**時存的，那時 initial lifecycle 已經跑完、隊伍也走了幾步。" +
-		"所以有些差異只是「主線走得比較前面」，不是交接漏掉的東西——" +
-		"`4BF0h`／`4BF1h`（移動前的座標快照）與 `4BF2h`（`LastECL`）都屬於這一類。" +
-		"這一欄要當成**上界**看：它是「直入與主線在這一段的狀態差多少」，" +
-		"其中一部分才是交接。\n\n")
-	out.WriteString("⚠ 直入這一側只有**一名**隊員（和 `cmd/azure-bonds-game -segment` 同一條路），" +
-		"主線是六人。隊伍相關的格子必然不同。\n\n")
-	out.WriteString("| 段 | 這一段會讀幾格 | 主線走到時有值幾格 | 直入漏掉幾格 | 會讀且漏掉 |\n" +
-		"|---|---:|---:|---:|---|\n")
+	out.WriteString("★ **取樣點**：`剛換到` 是換段的那一瞬間存的（`COAB_ARRIVAL_SNAPSHOT_DIR`），" +
+		"那才是交接。`⚠ 站上地城` 是退而求其次的那一份——隊伍第一次站上該段地城時存的，" +
+		"那時 initial lifecycle 已經跑完、隊伍也走了幾步，量到的是「交接 ＋ 又走了一段」，" +
+		"**是上界不是交接量**。\n\n")
+	out.WriteString("★ **隊伍人數不影響這個數字**——量過：直入那側造一名與造六名，" +
+		"每一段的差異格數完全相同。隊伍資料不在 ECL 記憶體裡。\n\n")
+	out.WriteString("| 段 | 取樣點 | 這一段會讀幾格 | 主線走到時有值幾格 | 直入漏掉幾格 | 會讀且漏掉 |\n" +
+		"|---|---|---:|---:|---:|---|\n")
 	for _, row := range doc.Rows {
 		risky := "—"
 		if len(row.Risky) > 0 {
@@ -360,12 +388,25 @@ func render(doc report) string {
 		if row.Note != "" {
 			risky = row.Note
 		}
-		fmt.Fprintf(&out, "| `%s` | %d | %d | %d | %s |\n",
-			row.ID, row.ReadCells, row.CampaignCells, row.Dropped, risky)
+		source := row.Source
+		if source == "arrival" {
+			source = "剛換到"
+		} else if source == "inside" {
+			source = "⚠ 站上地城"
+		}
+		fmt.Fprintf(&out, "| `%s` | %s | %d | %d | %d | %s |\n",
+			row.ID, source, row.ReadCells, row.CampaignCells, row.Dropped, risky)
 	}
-	fmt.Fprintf(&out, "\n合計 %d 段比得成：直入漏掉 **%d** 格，"+
-		"其中**那一段的碼真的會讀**的有 **%d** 格，分佈在 **%d** 段。\n",
-		doc.Segments, doc.TotalDropped, doc.TotalRisky, doc.RiskySegments)
+	fmt.Fprintf(&out, "\n合計 %d 段比得成（取樣點：剛換到 %d 段、站上地城 %d 段）："+
+		"直入與主線差 **%d** 格，其中**那一段的碼真的會讀**的有 **%d** 格，"+
+		"分佈在 **%d** 段。\n",
+		doc.Segments, doc.FromArrival, doc.FromInside,
+		doc.TotalDropped, doc.TotalRisky, doc.RiskySegments)
+	if doc.FromInside > 0 {
+		out.WriteString("\n⚠ 用 `站上地城` 取樣的那幾段是**上界**（見上）。" +
+			"沒有 `剛換到` 的快照通常是因為主線**不是靠換段進去的**——" +
+			"開場那一段是全新開局，沒有「上一段」。\n")
+	}
 	if doc.Failed > 0 {
 		fmt.Fprintf(&out, "\n⚠ 另有 **%d** 段**比不成**（見上表的備註）。"+
 			"比不成不等於沒有差異——失敗路徑會讓「漏掉 0 格」看起來和「完全對得上」"+

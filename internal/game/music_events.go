@@ -132,6 +132,7 @@ func (s *State) requestMusicIfBlockChanged(previous uint8) {
 	if s.session != nil && s.session.CurrentBlockID() != previous {
 		// 換段的瓶頸就在這裡，所以接縫盤點也搭這班車（`block_edges.go`）。
 		recordBlockEdge(previous, s.session.CurrentBlockID())
+		s.captureArrival(s.session.CurrentBlockID())
 		s.requestMusicForCurrentBlock("")
 	}
 }

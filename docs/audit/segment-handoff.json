@@ -1,38 +1,45 @@
 {
  "schema": "coab-segment-handoff/1",
- "segments": 16,
- "total_dropped": 983,
- "total_risky": 226,
- "risky_segments": 16,
+ "segments": 20,
+ "total_dropped": 1148,
+ "total_risky": 267,
+ "risky_segments": 20,
+ "from_arrival": 19,
+ "from_inside": 1,
  "failed": 0,
  "rows": [
   {
    "id": "ECL1/0x50",
    "read_cells": 133,
-   "campaign_cells": 132,
-   "dropped": 89,
+   "campaign_cells": 67,
+   "dropped": 37,
    "risky": [
-    19458,
-    19459,
-    19460,
-    19461,
-    19462,
-    19464,
     19496,
+    32424,
+    32466,
+    32467,
+    32530,
+    32621,
+    32633,
+    32634,
+    32635,
+    32636,
+    32758
+   ],
+   "source": "arrival"
+  },
+  {
+   "id": "ECL1/0x51",
+   "read_cells": 119,
+   "campaign_cells": 90,
+   "dropped": 62,
+   "risky": [
     19545,
-    19546,
-    19547,
-    19552,
-    19554,
-    19587,
     19598,
-    19602,
     19611,
     19612,
     19613,
     19617,
-    19618,
-    19619,
     32424,
     32459,
     32466,
@@ -41,10 +48,9 @@
     32621,
     32633,
     32634,
-    32635,
-    32642,
     32758
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL2/0x01",
@@ -55,41 +61,88 @@
     32633,
     49230,
     49231
-   ]
+   ],
+   "source": "inside"
   },
   {
    "id": "ECL2/0x02",
    "read_cells": 54,
-   "campaign_cells": 40,
-   "dropped": 14,
+   "campaign_cells": 45,
+   "dropped": 19,
    "risky": [
     19440,
-    19441,
+    32466,
+    32467,
     32481,
+    49227,
+    49228,
     49231
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL2/0x03",
    "read_cells": 93,
-   "campaign_cells": 13,
-   "dropped": 2,
+   "campaign_cells": 56,
+   "dropped": 30,
    "risky": [
+    19440,
+    19441,
+    19472,
+    19495,
+    32000,
+    32424,
+    32457,
+    32466,
+    32467,
+    32481,
+    32486,
     32633,
-    49229
-   ]
+    32634,
+    32635,
+    49227,
+    49228,
+    49229,
+    49231
+   ],
+   "source": "arrival"
+  },
+  {
+   "id": "ECL2/0x04",
+   "read_cells": 74,
+   "campaign_cells": 61,
+   "dropped": 36,
+   "risky": [
+    19440,
+    19441,
+    19472,
+    19475,
+    32000,
+    32457,
+    32466,
+    32467,
+    32481,
+    32486,
+    32633,
+    32634,
+    32635,
+    32640,
+    49227,
+    49228,
+    49229,
+    49231
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL3/0x10",
    "read_cells": 151,
-   "campaign_cells": 102,
-   "dropped": 61,
+   "campaign_cells": 98,
+   "dropped": 62,
    "risky": [
     990,
     19440,
     19441,
-    19460,
-    19520,
     32000,
     32466,
     32467,
@@ -97,16 +150,17 @@
     32486,
     32530,
     32633,
+    32634,
     32635,
-    49228,
     49231
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL3/0x11",
    "read_cells": 106,
    "campaign_cells": 107,
-   "dropped": 65,
+   "dropped": 67,
    "risky": [
     19440,
     19441,
@@ -118,8 +172,10 @@
     32530,
     32633,
     32635,
-    32642
-   ]
+    32642,
+    49231
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL3/0x12",
@@ -139,13 +195,14 @@
     32633,
     32635,
     49231
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL4/0x20",
    "read_cells": 95,
    "campaign_cells": 119,
-   "dropped": 71,
+   "dropped": 72,
    "risky": [
     19441,
     19501,
@@ -158,17 +215,17 @@
     32642,
     32758,
     49231
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL4/0x21",
    "read_cells": 89,
-   "campaign_cells": 124,
-   "dropped": 86,
+   "campaign_cells": 123,
+   "dropped": 84,
    "risky": [
     990,
     19442,
-    19456,
     19683,
     32466,
     32467,
@@ -176,17 +233,18 @@
     32633,
     32634,
     32635,
-    32637,
+    49227,
     49228,
     49229,
     49231
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL4/0x22",
    "read_cells": 76,
    "campaign_cells": 123,
-   "dropped": 82,
+   "dropped": 80,
    "risky": [
     990,
     19440,
@@ -200,9 +258,44 @@
     32633,
     32634,
     32635,
-    49227,
     49231
-   ]
+   ],
+   "source": "arrival"
+  },
+  {
+   "id": "ECL4/0x23",
+   "read_cells": 74,
+   "campaign_cells": 39,
+   "dropped": 21,
+   "risky": [
+    19440,
+    19441,
+    19684,
+    32633,
+    32635,
+    32636,
+    32637,
+    49227,
+    49228
+   ],
+   "source": "arrival"
+  },
+  {
+   "id": "ECL5/0x30",
+   "read_cells": 21,
+   "campaign_cells": 90,
+   "dropped": 66,
+   "risky": [
+    19451,
+    19550,
+    19552,
+    31928,
+    32000,
+    32530,
+    32633,
+    32634
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL5/0x31",
@@ -222,13 +315,14 @@
     32634,
     32758,
     49231
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL5/0x32",
    "read_cells": 91,
    "campaign_cells": 81,
-   "dropped": 52,
+   "dropped": 54,
    "risky": [
     990,
     19442,
@@ -243,7 +337,8 @@
     32635,
     32636,
     49231
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL5/0x33",
@@ -268,16 +363,17 @@
     32635,
     32636,
     32642,
-    49227,
     49228,
+    49229,
     49231
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL6/0x40",
    "read_cells": 129,
    "campaign_cells": 126,
-   "dropped": 83,
+   "dropped": 84,
    "risky": [
     990,
     19440,
@@ -296,14 +392,16 @@
     32634,
     32635,
     32637,
-    32642
-   ]
+    32642,
+    49231
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL6/0x42",
    "read_cells": 95,
    "campaign_cells": 131,
-   "dropped": 94,
+   "dropped": 95,
    "risky": [
     990,
     19440,
@@ -317,6 +415,7 @@
     32459,
     32466,
     32467,
+    32469,
     32481,
     32633,
     32635,
@@ -326,13 +425,14 @@
     49227,
     49228,
     49231
-   ]
+   ],
+   "source": "arrival"
   },
   {
    "id": "ECL6/0x43",
    "read_cells": 94,
    "campaign_cells": 134,
-   "dropped": 98,
+   "dropped": 93,
    "risky": [
     990,
     19440,
@@ -340,25 +440,20 @@
     19454,
     19456,
     19472,
-    19477,
-    19479,
-    19480,
     19643,
     32454,
     32466,
     32467,
     32481,
-    32625,
-    32633,
-    32634,
     32635,
     32637,
+    32638,
     32639,
-    32640,
     49227,
-    49229,
-    49231
-   ]
+    49228,
+    49229
+   ],
+   "source": "arrival"
   }
  ]
 }
