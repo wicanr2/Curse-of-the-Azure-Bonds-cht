@@ -21,6 +21,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -33,6 +34,9 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98sfx"
 )
 
+// mscPlayOffset 是 `MSCPLAY` 在 `SOUNDX` 段內的位移（Borland 符號表）。
+const mscPlayOffset = 0x0114
+
 // musicNoCell 是 PC-98 的 `MUSICNO`（Borland 符號表直接讀出）。
 const musicNoCell = 0x8BF3
 
@@ -40,6 +44,9 @@ const musicNoCell = 0x8BF3
 // `SOUNDFX` 記在 segment 2195 ＝ `0893h`，而 PC-98 的 far-call 表裡正好有一個
 // 目標段 `0893h`——兩邊對得上。段內位移也直接取自符號表。
 const soundSegment = "0893"
+
+// soundSegmentNumber 是同一個段在 Borland 符號表裡的十進位編號。
+const soundSegmentNumber = 0x0893
 
 // soundEffectLabels 給每個 Borland 符號一個中文說明。**名字與位址都不在這裡**
 // ——那兩樣由 `pc98sfx.Selectors()` 推出來（描述子位址 ＝ 基底 ＋ 選擇子×2）。
@@ -71,16 +78,52 @@ func soundEffectName(address int) (string, bool) {
 	return fmt.Sprintf("%s（%s）", info.Symbol, label), true
 }
 
-var soundRoutines = map[int]string{
-	0x0000: "SOUNDFX（音效）",
-	0x010D: "INITSOUND（初始化）",
-	0x0114: "MSCPLAY（放音樂）",
-	0x0177: "BGMPLAY（背景音樂）",
+// soundRoutineLabels 只給中文說明。**名字與位移一律從 Borland 符號表讀**
+// （`loadSoundRoutines`），不在這裡抄第二份。
+//
+// ⚠ 這裡以前是一張手打的「位移 → 名字」表，只有四格，於是 `015Eh` 被印成
+// 「符號表沒有這一格」——而它就在符號表裡，叫 `MSCSTOP`。這是同一個 session
+// 裡**第三次**踩到同一種錯（音效描述子表漏兩格、對照表漏兩列、這裡漏一格）：
+// 手打的對照表漏掉時不會報錯，只會印出一句看起來很有資訊量的「查無」。
+var soundRoutineLabels = map[string]string{
+	"SOUNDFX": "音效", "INITSOUND": "初始化", "MSCPLAY": "放音樂",
+	"MSCSTOP": "停音樂", "BGMPLAY": "背景音樂",
+}
+
+// loadSoundRoutines 從 Borland 符號表讀出 `SOUNDX` 那一段的全部公開程序。
+func loadSoundRoutines(path string, segment int) map[int]string {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return nil
+	}
+	var table struct {
+		Symbols []struct {
+			Name    string `json:"name"`
+			Segment int    `json:"segment"`
+			Offset  int    `json:"offset"`
+		} `json:"symbols"`
+	}
+	if err := json.Unmarshal(raw, &table); err != nil {
+		return nil
+	}
+	routines := map[int]string{}
+	for _, symbol := range table.Symbols {
+		if symbol.Segment != segment {
+			continue
+		}
+		if label, ok := soundRoutineLabels[symbol.Name]; ok {
+			routines[symbol.Offset] = fmt.Sprintf("%s（%s）", symbol.Name, label)
+			continue
+		}
+		routines[symbol.Offset] = symbol.Name
+	}
+	return routines
 }
 
 type trigger struct {
 	module   string
 	unit     string
+	form     string
 	offset   int
 	selector int
 }
@@ -129,9 +172,39 @@ func main() {
 				continue
 			}
 			triggers = append(triggers, trigger{
-				module: name, unit: units[name], offset: offset, selector: int(data[offset+4])})
+				module: name, unit: units[name], offset: offset,
+				selector: int(data[offset+4]), form: "`mov byte [MUSICNO], imm`"})
+		}
+		// ★ 第二種形狀：**直接把曲號推給 `MSCPLAY`**，完全不碰 `MUSICNO`。
+		//
+		// ⚠ 只認第一種的話會漏掉戰鬥音樂：`INITCOMBAT`（COMPREP）用的是
+		// `mov al, imm / push ax / call MSCPLAY`，於是「戰鬥」與「地城二」兩首
+		// 看起來像**沒有任何地方選到**——而報表的警告雖然寫著「不能讀成用不到」，
+		// 也只能停在那裡。掃描面窄一格，兩首曲子就整個消失。
+		for offset := 0; offset+8 <= len(data); offset++ {
+			if data[offset] != 0xB0 || data[offset+2] != 0x50 {
+				continue
+			}
+			if data[offset+3] != 0x9A {
+				continue
+			}
+			if int(binary.LittleEndian.Uint16(data[offset+4:])) != mscPlayOffset {
+				continue
+			}
+			if int(binary.LittleEndian.Uint16(data[offset+6:])) != soundSegmentNumber {
+				continue
+			}
+			triggers = append(triggers, trigger{
+				module: name, unit: units[name], offset: offset + 3,
+				selector: int(data[offset+1]), form: "`push imm` → `MSCPLAY`"})
 		}
 	}
+	sort.SliceStable(triggers, func(left, right int) bool {
+		if triggers[left].module != triggers[right].module {
+			return triggers[left].module < triggers[right].module
+		}
+		return triggers[left].offset < triggers[right].offset
+	})
 
 	used := map[int]bool{}
 	for _, item := range triggers {
@@ -149,22 +222,30 @@ func main() {
 		"DOS 沒有符號，對應的格子要另外認。\n\n")
 
 	fmt.Fprintf(&report, "| 總計 | 數量 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 換曲點（`mov byte [MUSICNO], imm`）| %d |\n", len(triggers))
+	byForm := map[string]int{}
+	for _, item := range triggers {
+		byForm[item.form]++
+	}
+	fmt.Fprintf(&report, "| 換曲點（`mov byte [MUSICNO], imm`）| %d |\n", byForm["`mov byte [MUSICNO], imm`"])
+	fmt.Fprintf(&report, "| 換曲點（曲號直接推給 `MSCPLAY`）| %d |\n", byForm["`push imm` → `MSCPLAY`"])
+	fmt.Fprintf(&report, "| 換曲點合計 | %d |\n", len(triggers))
 	fmt.Fprintf(&report, "| 被選到的相異曲目 | %d |\n", len(used))
 	fmt.Fprintf(&report, "| game pack 宣告的曲目 | %d |\n\n", len(selectors))
 
-	fmt.Fprintf(&report, "| 模組 | 單元 | 位移 | 選擇子 | 曲目 |\n|---|---|---:|---:|---|\n")
+	fmt.Fprintf(&report, "| 模組 | 單元 | 位移 | 形狀 | 選擇子 | 曲目 |\n|---|---|---:|---|---:|---|\n")
 	for _, item := range triggers {
 		unit := item.unit
 		if unit == "" {
 			unit = "—"
 		}
-		fmt.Fprintf(&report, "| `%s` | %s | `%04Xh` | %d | %s |\n",
-			item.module, unit, item.offset, item.selector, titleFor(titles, selectors, item.selector))
+		fmt.Fprintf(&report, "| `%s` | %s | `%04Xh` | %s | %d | %s |\n",
+			item.module, unit, item.offset, item.form, item.selector,
+			titleFor(titles, selectors, item.selector))
 	}
 
 	// 播放常式的呼叫點：音效那一半在這裡。
-	if routines, total := soundCallSites(*farCallMap); total > 0 {
+	soundRoutines := loadSoundRoutines(*symbols, soundSegmentNumber)
+	if routines, total := soundCallSites(*root, *resident); total > 0 {
 		fmt.Fprintf(&report, "\n## 播放常式的呼叫點（音效那一半）\n\n")
 		fmt.Fprintf(&report, "`SOUNDX` 那一組常式在程式碼段 `%sh`，段內位移取自 Borland 符號表。\n\n", soundSegment)
 		fmt.Fprintf(&report, "| 常式 | 位移 | 呼叫點 | 來源模組 |\n|---|---:|---:|---|\n")
@@ -243,11 +324,39 @@ func main() {
 				fmt.Fprintf(&report, "\n")
 			}
 		}
-		fmt.Fprintf(&report, "★ **交叉印證**：`MSCPLAY` 的呼叫點正好落在上表那五個"+
-			"改寫 `MUSICNO` 的 overlay 上（`GEN`×2、`overlay-01`、`POSTCOM`、`overlay-18`）"+
-			"——兩次獨立的掃描（資料格寫入 vs 函式呼叫）指到同一組地方。\n\n")
-		fmt.Fprintf(&report, "⚠ 這裡只數**跨 overlay 的 far call**。常駐自己呼叫 `SOUNDX` 的次數不在裡面"+
-			"（那是段內近呼叫，far-call 表看不到），所以是**下界**。\n")
+		// ★ 交叉印證要**算出來**，不能寫死。 兩次獨立的掃描（換曲點 vs
+		// `MSCPLAY` 呼叫點）指到哪些模組是資料，寫死的話資料變了句子不會變——
+		// 這一句原本寫著「正好落在那五個改寫 `MUSICNO` 的 overlay 上」，
+		// 而改用位元組直掃之後 `MSCPLAY` 多出 `overlay-10`（COMPREP），
+		// 那句話就成了假的。
+		if callers := routines[mscPlayOffset]; len(callers) > 0 {
+			triggerModules := map[string]bool{}
+			for _, item := range triggers {
+				triggerModules[item.module] = true
+			}
+			both, onlyPlay := []string{}, []string{}
+			for module := range callers {
+				if triggerModules[module] {
+					both = append(both, module)
+				} else {
+					onlyPlay = append(onlyPlay, module)
+				}
+			}
+			sort.Strings(both)
+			sort.Strings(onlyPlay)
+			fmt.Fprintf(&report, "★ **交叉印證**：兩次獨立的掃描——換曲點（資料格寫入／推給 "+
+				"`MSCPLAY` 的立即數）與 `MSCPLAY` 的呼叫點——有 **%d** 個模組重合：%s。\n\n",
+				len(both), strings.Join(both, "、"))
+			if len(onlyPlay) > 0 {
+				fmt.Fprintf(&report, "⚠ 另有 **%d** 個模組會叫 `MSCPLAY` 卻不在換曲點表裡：%s。"+
+					"那是**放曲子但不換曲**——沿用 `MUSICNO` 目前的值，或把曲號從變數推進去。"+
+					"⇒ 「哪裡換曲」與「哪裡放曲」是兩件事，不要拿其中一個當另一個的全集。\n\n",
+					len(onlyPlay), strings.Join(onlyPlay, "、"))
+			}
+		}
+		fmt.Fprintf(&report, "⚠ 這一節是**位元組直掃**，涵蓋常駐與全部 overlay。"+
+			"改用直掃之前走的是 far-call 對照表，`SOUNDFX` 少 18 處、`MSCPLAY` 少 2 處"+
+			"（少掉的正是 `COMPREP` 那兩處戰鬥音樂），而**下界看起來和全集一樣合理**。\n")
 	}
 
 	fmt.Fprintf(&report, "\n## 沒有任何換曲點選到的曲目\n\n")
@@ -259,7 +368,18 @@ func main() {
 	}
 	sort.Strings(missing)
 	if len(missing) == 0 {
-		fmt.Fprintf(&report, "（沒有——每一首都有地方會選到）\n")
+		fmt.Fprintf(&report, "（沒有——**宣告的 %d 首每一首都有地方會選到**。）\n\n", len(selectors))
+		fmt.Fprintf(&report, "⚠ 這個 0 是**改寬掃描面之後**才出現的。只認 "+
+			"`mov byte [MUSICNO], imm` 的時候有兩首（戰鬥、地城二）落在外面，"+
+			"報表只能寫「不能讀成用不到」然後停在那裡。真正的形狀是 `INITCOMBAT`"+
+			"（COMPREP）**把曲號直接推給 `MSCPLAY`**，完全不碰 `MUSICNO`：\n\n")
+		fmt.Fprintf(&report, "```\n"+
+			"cmp byte [LOADMONNUM], 47h\n"+
+			"jnz  →  mov al, 07h  ; 戰鬥\n"+
+			"        mov al, 0Bh  ; 地城二\n"+
+			"push ax / call MSCPLAY\n```\n\n")
+		fmt.Fprintf(&report, "⇒ **戰鬥開始換哪一首，取決於載入了哪一組怪物**"+
+			"（`LOADMONNUM` ＝ `8BE2h`，Borland 符號直接讀出）。\n")
 	} else {
 		fmt.Fprintf(&report, "%s\n\n", strings.Join(missing, "、"))
 		fmt.Fprintf(&report, "⚠ 不要直接讀成「這首用不到」：這一支只認 `mov byte [MUSICNO], imm` 這一種形狀。"+
@@ -346,36 +466,50 @@ func loadUnitNames(path string) map[string]string {
 	return names
 }
 
-// soundCallSites 從 far-call 表數出打到 `SOUNDX` 段的呼叫點，依段內位移分組。
-func soundCallSites(path string) (map[int]map[string]int, int) {
-	raw, err := os.ReadFile(path)
-	if err != nil {
+// soundCallSites 統計 `SOUNDX` 那一段每個入口各被叫幾次。
+//
+// ⚠ **位元組直掃，不走 far-call 對照表。** 表只收得到 IDA 認成程式碼的呼叫點，
+// 也不涵蓋常駐：實測 `MSCPLAY` 表列 5 處、直掃 **7** 處（多的兩處在 overlay-10），
+// `SOUNDFX` 表列 36 處、直掃 54 處。**下界看起來和全集一樣合理**，所以這裡不用它。
+func soundCallSites(root, resident string) (map[int]map[string]int, int) {
+	var segment int
+	if _, err := fmt.Sscanf(soundSegment, "%04X", &segment); err != nil {
 		return nil, 0
 	}
-	var table struct {
-		Targets []struct {
-			Module string `json:"module"`
-			Raw    string `json:"raw"`
-		} `json:"targets"`
-	}
-	if err := json.Unmarshal(raw, &table); err != nil {
-		return nil, 0
+	scan := func(name string, data []byte, routines map[int]map[string]int) int {
+		count := 0
+		for ea := 0; ea+4 < len(data); ea++ {
+			if data[ea] != 0x9A {
+				continue
+			}
+			if int(binary.LittleEndian.Uint16(data[ea+3:])) != segment {
+				continue
+			}
+			offset := int(binary.LittleEndian.Uint16(data[ea+1:]))
+			if routines[offset] == nil {
+				routines[offset] = map[string]int{}
+			}
+			routines[offset][name]++
+			count++
+		}
+		return count
 	}
 	routines := map[int]map[string]int{}
 	total := 0
-	for _, call := range table.Targets {
-		if !strings.HasPrefix(call.Raw, soundSegment+":") {
+	entries, _ := os.ReadDir(filepath.Join(root, "overlays"))
+	for _, entry := range entries {
+		name := entry.Name()
+		if !strings.HasPrefix(name, "overlay-") || !strings.HasSuffix(name, ".bin") {
 			continue
 		}
-		var offset int
-		if _, err := fmt.Sscanf(strings.Split(call.Raw, ":")[1], "%04X", &offset); err != nil {
+		data, err := os.ReadFile(filepath.Join(root, "overlays", name))
+		if err != nil {
 			continue
 		}
-		if routines[offset] == nil {
-			routines[offset] = map[string]int{}
-		}
-		routines[offset][call.Module]++
-		total++
+		total += scan(strings.TrimSuffix(name, ".bin"), data, routines)
+	}
+	if data, err := os.ReadFile(filepath.Join(root, resident)); err == nil {
+		total += scan("常駐", data, routines)
 	}
 	return routines, total
 }
