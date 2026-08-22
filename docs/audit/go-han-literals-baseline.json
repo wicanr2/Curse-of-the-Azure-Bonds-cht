@@ -912,6 +912,153 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "0183a2d6b5f35b07c93cd87773ef3516e983318c94de1d6f69b9293ccd9d39ba",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "0265306cd7ab0934a72be1eb1b452401834f55620e4b974458511a199818a383",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "039d40cad7caa3c6a743fa9434bf3a7559dab2317c89edd12fcf06ddabbaaaac",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "10ac0a26a8f90469e46eb2da3b0bfe5912ee2819f73d650dee41ddde75447493",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "13f7896b8a386438f5f00a4f20a29c97277d2332ddea7be976b600479882afdd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "36ea58cfb8079326e0b6eb0c82a06edad2ab7d6688ece1efe7029cb1165069aa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "49374d8d091157f0f2c0c6e929b829bfe0eaaedd0b6af822deb6a7561f68ba85",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "57810450377edf3434c4880d4d6ad3478da19389cb7baffafa67798c5611d367",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "5c4a0b17755c3cdba7dd224c9032a6fe9c1f09061c15f9407a6fcd21c2bfdf8c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "7624b3d48a17abb1c834b8ef80a2565121e046d23acba2bda44a904b56bcdd51",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "89b68e7e3a916bb35fe0b4cc1776690af54769e569e9e58049cda879aa25e106",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "8e2d4ac77e16c842a8473bbcb3207eac4e70d42cf4c65c712bdef7af830e5d26",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "979a91dfab08dc1db9e2f9024aa2273b5a3ef3e4b782c93a80aa88309b955295",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "b2fad9d3ff1b15eae7da14e955ed8b0c5f3c5c5d09014c9789eefaf343cfce55",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "b8df1b08c1ed8aa80fb710f32acef986866bef80ad793f30e007ca4a1c66e309",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "bbe4cbfc6af29f6d26f10eae61c841a556f7e7ab421c01a4d9d2a15f36212516",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "bcfcfa2c255dc7110888cdfb0eab07f89a051f5b256b744e3205f831d886a3ca",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "d8ad8c5fefb0329b2de17a9522cb0cf82dfd3c2cfd4a8127791163bd7d6fdf93",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "e5042e597e0f026094c23e5011a90ed7b6d5fca3cf4e93accbea3cc7d1a03467",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/checkfx-callsites/main.go",
+      "function": "main",
+      "sha256": "e8299b50a18463c1e972ea4e734a287caf7b62395c2ec4db4428632708ca26b8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/combat-spell-coverage-audit/main.go",
       "function": "describeData",
       "sha256": "0c242793a0b6b6fb21f6cf46b5a0650da0731d6f642b6be9a2ab7237691f20bd",
@@ -3882,14 +4029,14 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
-      "sha256": "0de6dfdc44e3aafa642c679e5bc4df33efebc5c758634799d7c5b5b88fb307a0",
+      "sha256": "048dbbd2fafb0cfde6773926b018bbfd3ba51c332b19ebf5c16364aa9b8243a2",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
-      "sha256": "11b7d5136563cb447465f715d3b945a8b8f284934a064f40ad929a0dcab0ca4f",
+      "sha256": "124f12260a1fdb5dcda6c42075489d8c740ec1e6eabd94d44ba4da02d7af76de",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -3904,13 +4051,6 @@
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
       "sha256": "14ca182acf81ee370b3358dec4d131c825825847d7b66f3aec2797f3270588eb",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/monster-ai-coverage/main.go",
-      "function": "main",
-      "sha256": "172d6b97e8df06742666a8740440279cf3bf1eba6d6943cafa345fd8ce9536b7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -3946,6 +4086,13 @@
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
       "sha256": "27974c2ad2d104c74631d59b3b93c76f5987979dc6a30aec6e0348ccce07570b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "2ac051975dfe272722e7fbedb73c33623c0959b928c9fd14725d13211dee66b7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -4099,6 +4246,13 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
+      "sha256": "8afa668227b3787e435706a698c4c80d0ab56578e950507250428e20e160c89a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
       "sha256": "8e42b2dc44dd10fed5c4b511285cb48629e49be4d9bc667334423af85f4b0882",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -4120,7 +4274,35 @@
     {
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
+      "sha256": "a1942e6cd228a0d63cf87f64b3251840e23c063e375e1c202948cd8b4f911749",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
       "sha256": "a5085942f436b8d77eea0b84e93fefeb01f8736d1424ee5b99591c358d852351",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "a8bdf44b8ca65832fd705b6880f352d85d68f12aead251e6272a41223ebfa977",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "b0674f1ab885c4c35d4922bd0292f504042ac1d73feece431b3fc5c6943f52d5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/monster-ai-coverage/main.go",
+      "function": "main",
+      "sha256": "b0b67acbdc2cdb49a8a207e2fef94121d29b81b295ee937e2f58840f76cf0212",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
