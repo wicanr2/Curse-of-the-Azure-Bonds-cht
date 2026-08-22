@@ -135,9 +135,27 @@ CTRL S : Toggles sound on and off (may be used at any time).
 
 `TestSilentSelectorsAreExactlyTheFiveTheOriginalReturnsEarlyOn` 把整個集合釘住。
 
+## DOS 版沒有 BGM
+
+這不是「還沒查」，是**已經答完**的問題，而且是列舉不是搜尋：
+
+- PC-98 的音樂來自一支**獨立的驅動程式** `MSCDRV.EXE`（`internal/pc98music` 靠它的
+  SHA-256 認人）。
+- DOS image 的 **94 個成員逐一列舉**過：沒有那支驅動，也沒有任何音樂資料檔；
+  執行檔只有 `START.EXE` 與 `COPYCURS.EXE`。
+- DOS 段 `0713h` 沒有 `MSCPLAY` 的對應入口——最接近的候選只對上 7 處指紋裡的 2 處，
+  而且一堆並列（spec 1187 的同一次比對）。
+
+⚠ **正對照**：同一份列舉找得到音效實際住的地方（`START.EXE`／`GAME.OVR`），
+所以「找不到音樂」不是因為看不見檔案。`TestDOSImageHasNoMusicData` 把這一組
+（寬判準零命中 ＋ 正對照）釘住；image 裡真的多了音樂檔才會紅。
+
+⇒ 音訊的「DOS 那一半」只有**音效**，而音效的對應格子已經認出來了（spec 1187，
+描述子表 14 格逐模組相同）。
+
 ## 這個數字證明不了什麼
 
-- **PC-98 版面**。DOS 版沒有除錯符號也沒有音樂資料，位址不能套（spec 1187）。
+- **PC-98 版面**。DOS 版沒有除錯符號也沒有音樂，位址不能套（spec 1187）。
 - 位元組直掃有偽陽性（剛好長得像 opcode 的立即數），所以逐處都印所屬常式。
   不走 far-call 對照表是因為表比實際少，而**下界看起來和全集一樣合理**（spec 1186）。
 - 「接上了」只表示 remake 有對應的動作，**不表示在正確的時機發**——那要實機比對。
