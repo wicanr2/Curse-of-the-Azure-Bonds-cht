@@ -4516,10 +4516,19 @@ func (s *State) UnlockJournalEntryForPreview(messageID string) error {
 // JournalMessageID 回傳目前這一頁手札的來源條目 ID（例如 `journal.52`）。
 // 前端用它查有沒有對應的地圖或插圖；沒有開手札或索引越界時回空字串。
 func (s *State) JournalMessageID() string {
-	if s.JournalPage < 0 || s.JournalPage >= len(s.journalMessageIDs) {
+	return s.JournalMessageIDAt(s.JournalPage)
+}
+
+// JournalMessageIDAt 回傳第 index 則手札的來源條目 ID。
+//
+// ★ 為什麼需要指定索引的版本：前端把手札**再切成顯示頁**（一則可能佔好幾頁），
+// 所以它手上的頁碼不是這裡的 `JournalPage`。圖綁在**手札**上，前端要能用自己
+// 算出來的來源索引查，不能只有「目前這一則」這一個入口（spec 1189）。
+func (s *State) JournalMessageIDAt(index int) string {
+	if index < 0 || index >= len(s.journalMessageIDs) {
 		return ""
 	}
-	return s.journalMessageIDs[s.JournalPage]
+	return s.journalMessageIDs[index]
 }
 
 func (s *State) NextJournalPage() error {

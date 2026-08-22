@@ -1708,14 +1708,28 @@ func wrapTextLinesByWidth(value string, face font.Face, maxWidth, maxLines int) 
 }
 
 func journalDisplayPages(sourcePages []string, emptyText string, face font.Face, maxWidth, maxLines int) []string {
+	pages, _ := journalDisplayPagesWithSources(sourcePages, emptyText, face, maxWidth, maxLines)
+	return pages
+}
+
+// journalDisplayPagesWithSources 除了分頁，還回傳**每一個顯示頁來自第幾則手札**。
+//
+// ★ 為什麼需要這個對照：一則手札可能被切成好幾個顯示頁，所以「目前第幾個顯示頁」
+// **不等於**「目前第幾則手札」。圖是綁在**手札**上的，用顯示頁編號去查會查錯。
+//
+// ⚠ 這正是原本的 bug：翻頁走前端自己的 `journalDisplayPage`，而按 `I` 看圖走
+// `state.JournalMessageID()`，那一支讀的是 `State.JournalPage`——而**前端從來
+// 沒有推進過它**。於是不論翻到哪一頁，跳出來的都是第一則的圖（spec 1189）。
+func journalDisplayPagesWithSources(sourcePages []string, emptyText string, face font.Face, maxWidth, maxLines int) ([]string, []int) {
 	if maxWidth < 1 || maxLines < 1 {
-		return nil
+		return nil, nil
 	}
 	if len(sourcePages) == 0 {
 		sourcePages = []string{emptyText}
 	}
 	pages := make([]string, 0, len(sourcePages))
-	for _, source := range sourcePages {
+	sources := make([]int, 0, len(sourcePages))
+	for sourceIndex, source := range sourcePages {
 		// At most one output line can be created per source rune plus explicit
 		// paragraph breaks. Keep allocation bounded instead of using MaxInt as
 		// an artificial "unlimited" capacity.
@@ -1727,9 +1741,10 @@ func journalDisplayPages(sourcePages []string, emptyText string, face font.Face,
 		for start := 0; start < len(lines); start += maxLines {
 			end := min(start+maxLines, len(lines))
 			pages = append(pages, strings.Join(lines[start:end], "\n"))
+			sources = append(sources, sourceIndex)
 		}
 	}
-	return pages
+	return pages, sources
 }
 
 func wrapTextLines(value string, lineRunes, maxLines int) []string {

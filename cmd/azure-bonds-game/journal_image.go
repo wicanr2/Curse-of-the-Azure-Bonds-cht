@@ -35,7 +35,7 @@ const (
 // currentJournalImage 回傳目前這一頁手札的圖；沒有圖回 nil。
 // 找不到檔案時也回 nil 並記負向快取，不讓缺檔變成每一幀都嘗試開檔。
 func (a *app) currentJournalImage() *ebiten.Image {
-	messageID := a.state.JournalMessageID()
+	messageID := a.currentJournalMessageID()
 	if messageID == "" {
 		return nil
 	}
@@ -195,4 +195,18 @@ func journalImageScale(width, height, viewWidth, viewHeight int, zoom bool) floa
 		scale = 1
 	}
 	return scale
+}
+
+// currentJournalMessageID 由**前端自己的顯示頁碼**換算出目前看的是第幾則手札。
+//
+// ⚠ 不要用 `state.JournalMessageID()`：那一支讀的是 `State.JournalPage`，
+// 而前端翻頁走的是 `a.journalDisplayPage`，**從來沒有推進過 `State.JournalPage`**。
+// 用它的話不論翻到哪一頁，按 `I` 跳出來的都是第一則的圖（spec 1189）。
+func (a *app) currentJournalMessageID() string {
+	_, sources := journalDisplayPagesWithSources(
+		a.state.JournalPages, a.state.JournalText, a.face, 22*faceCellWidth(a.face), 7)
+	if a.journalDisplayPage < 0 || a.journalDisplayPage >= len(sources) {
+		return ""
+	}
+	return a.state.JournalMessageIDAt(sources[a.journalDisplayPage])
 }
