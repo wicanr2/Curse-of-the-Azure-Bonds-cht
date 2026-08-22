@@ -55,6 +55,8 @@ type visitedCell struct {
 func main() {
 	sweepPath := flag.String("sweep-indices", "workplace/campaign-frames/sweep-indices.json",
 		"`cmd/cell-sweep -index-json` 輸出的分母")
+	walkPath := flag.String("walk-cells", "workplace/campaign-frames/walk-cells.json",
+		"`cmd/dungeon-walk-probe -cells-json` 輸出的段內可達格子（可省略）")
 	visitedPath := flag.String("visited", "workplace/campaign-frames/visited-cells.json",
 		"主線實跑導出的格子（見本檔頂端）")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
@@ -95,16 +97,32 @@ func main() {
 		log.Fatal("逐格實測的索引清單是空的")
 	}
 
+	// 段內走得到的格子（可省略）。有它才分得出「主線不經過」與「走不進去」。
+	walkable := map[uint8]map[uint8]bool{}
+	if raw, err := os.ReadFile(*walkPath); err == nil {
+		var cells []visitedCell
+		if json.Unmarshal(raw, &cells) == nil {
+			for _, cell := range cells {
+				if walkable[cell.Block] == nil {
+					walkable[cell.Block] = map[uint8]bool{}
+				}
+				walkable[cell.Block][cell.Terrain] = true
+			}
+		}
+	}
+
 	type blockRow struct {
 		id       string
 		block    uint8
 		indices  int
 		reached  int
+		onFoot   int
+		either   int
 		walkedIn int
 	}
 	bySegment := map[string]*blockRow{}
 	order := make([]string, 0, 16)
-	totalIndices, totalReached := 0, 0
+	totalIndices, totalReached, totalOnFoot, totalEither := 0, 0, 0, 0
 	for _, item := range sweep {
 		row, ok := bySegment[item.Segment]
 		if !ok {
@@ -115,12 +133,33 @@ func main() {
 		row.indices++
 		totalIndices++
 		// 主線在這個 block 踏過的地形碼，換算成索引之後對得上嗎。
+		reachedHere := false
 		for terrain := range walked[item.Block] {
 			if int(terrain)&item.Mask == item.Index {
-				row.reached++
-				totalReached++
+				reachedHere = true
 				break
 			}
+		}
+		if reachedHere {
+			row.reached++
+			totalReached++
+		}
+		onFoot := false
+		for terrain := range walkable[item.Block] {
+			if int(terrain)&item.Mask == item.Index {
+				onFoot = true
+				break
+			}
+		}
+		if onFoot {
+			row.onFoot++
+			totalOnFoot++
+		}
+		// ⚠ 兩者**互不涵蓋**：主線有劇情旗標，開得了冷走打不開的門；
+		// 冷走沒有劇情擋路，走得到主線繞過的地方。所以聯集才是目前最好的下界。
+		if onFoot || reachedHere {
+			row.either++
+			totalEither++
 		}
 	}
 	rows := make([]blockRow, 0, len(order))
@@ -148,14 +187,21 @@ func main() {
 	fmt.Fprintf(&report, "| 有地形分派、地圖上也有格子的 block | %d |\n", len(rows))
 	fmt.Fprintf(&report, "| 分派索引（**直接取自逐格實測的輸出**）| %d |\n", totalIndices)
 	fmt.Fprintf(&report, "| **主線實際踏到的** | %d |\n", totalReached)
+	fmt.Fprintf(&report, "| **從段入口用走的走得到的** | %d |\n", totalOnFoot)
+	fmt.Fprintf(&report, "| **兩者的聯集**（目前最好的下界）| %d |\n", totalEither)
 	if totalIndices > 0 {
-		fmt.Fprintf(&report, "| 覆蓋率（下界）| %.0f%% |\n", 100*float64(totalReached)/float64(totalIndices))
+		fmt.Fprintf(&report, "| 聯集覆蓋率（下界）| %.0f%% |\n",
+			100*float64(totalEither)/float64(totalIndices))
 	}
-	fmt.Fprintf(&report, "\n| 段 | ECL block | 分派索引 | 主線踏到 | 該段記到的地形碼 |\n")
-	fmt.Fprintf(&report, "|---|---:|---:|---:|---:|\n")
+	fmt.Fprintf(&report, "\n⚠ **兩把尺互不涵蓋，所以要看聯集。** 主線有劇情旗標，"+
+		"開得了冷走打不開的門（`ECL4/0x22` 主線 6、冷走 1）；冷走沒有劇情擋路，"+
+		"走得到主線繞過的地方（`ECL6/0x40` 主線 2、冷走 22）。"+
+		"只報其中一個都會低估。\n")
+	fmt.Fprintf(&report, "\n| 段 | ECL block | 分派索引 | 主線踏到 | 走得到 | 聯集 |\n")
+	fmt.Fprintf(&report, "|---|---:|---:|---:|---:|---:|\n")
 	for _, row := range rows {
-		fmt.Fprintf(&report, "| `%s` | %d | %d | %d | %d |\n",
-			row.id, row.block, row.indices, row.reached, row.walkedIn)
+		fmt.Fprintf(&report, "| `%s` | %d | %d | %d | %d | %d |\n",
+			row.id, row.block, row.indices, row.reached, row.onFoot, row.either)
 	}
 	fmt.Fprintf(&report, "\n")
 
@@ -180,9 +226,15 @@ func main() {
 		for _, row := range untouched {
 			fmt.Fprintf(&report, "| `%s` | %d | %d |\n", row.id, row.block, row.indices)
 		}
-		fmt.Fprintf(&report, "\n⚠ 這通常有正當理由：主線測試從艾森布拉開始"+
-			"（`runNormalNewGameToEssembra`），提爾佛頓那一段序章不在它的路線上。"+
-			"**要不要補一條走那裡的路線是另一個決定**，這一份只負責把它變成看得見的數字。\n")
+		onFoot := 0
+		for _, row := range untouched {
+			onFoot += row.onFoot
+		}
+		fmt.Fprintf(&report, "\n★ **那不是走不進去。** 同樣這幾段，從段入口用走的走得到 **%d** 個索引"+
+			"（`cmd/dungeon-walk-probe`）。⇒ 成因是**主線不經過那裡**，不是格子不可達："+
+			"主線測試從艾森布拉開始（`runNormalNewGameToEssembra`），提爾佛頓那一段序章"+
+			"不在它的路線上。**要不要補一條走那裡的實跑路線是另一個決定**，"+
+			"這一份負責把「路線的選擇」與「缺陷」分開。\n", onFoot)
 	}
 
 	text := report.String()
