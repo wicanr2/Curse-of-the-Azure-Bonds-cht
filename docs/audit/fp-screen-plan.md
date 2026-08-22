@@ -56,7 +56,7 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 
 | # | map | GEO | block | cell | new signatures | still uncovered after |
 |---:|---|---:|---:|---|---:|---:|
-| 1 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,7)` | 4 | 474 |
+| 1 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(12,7)` | 4 | 474 |
 | 2 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,12)` | 4 | 470 |
 | 3 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,13)` | 4 | 466 |
 | 4 | `original.geo5.block-33` | 5 | `0x33` | `(15,0)` | 4 | 462 |
@@ -75,7 +75,7 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | 17 | `original.geo5.block-33` | 5 | `0x33` | `(8,15)` | 4 | 410 |
 | 18 | `myth-drannor.burial-glen` | 6 | `0x40` | `(2,11)` | 4 | 406 |
 | 19 | `tilverton.sewers.first-person` | 2 | `0x03` | `(7,3)` | 3 | 403 |
-| 20 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(7,9)` | 3 | 400 |
+| 20 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(7,9)` | 3 | 400 |
 | 21 | `original.geo3.block-15` | 3 | `0x15` | `(14,3)` | 3 | 397 |
 | 22 | `original.geo3.block-15` | 3 | `0x15` | `(5,5)` | 3 | 394 |
 | 23 | `original.geo3.block-15` | 3 | `0x15` | `(9,6)` | 3 | 391 |
@@ -115,8 +115,8 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | 57 | `original.geo3.block-10` | 3 | `0x10` | `(3,10)` | 2 | 296 |
 | 58 | `original.geo3.block-10` | 3 | `0x10` | `(3,12)` | 2 | 294 |
 | 59 | `original.geo3.block-10` | 3 | `0x10` | `(4,15)` | 2 | 292 |
-| 60 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(10,0)` | 2 | 290 |
+| 60 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(10,0)` | 2 | 290 |
 | 61 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(13,0)` | 2 | 288 |
-| 62 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(4,6)` | 2 | 286 |
+| 62 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(4,6)` | 2 | 286 |
 | 63 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,8)` | 2 | 284 |
 | 64 | `original.geo3.block-15` | 3 | `0x15` | `(6,0)` | 2 | 282 |

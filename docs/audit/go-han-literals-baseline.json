@@ -1326,6 +1326,34 @@
     },
     {
       "path": "cmd/dos-save-export/main.go",
+      "function": "eclBlockBytes",
+      "sha256": "0a9b2cbd156e7a43fed5c9b808810668dc8c58188c2dbddff501a0e1a029fccd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-save-export/main.go",
+      "function": "eclBlockBytes",
+      "sha256": "13356c0db2887a68db72bd29dca866cfbaa4c905e0d8483cc9ec335d3af1e93a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-save-export/main.go",
+      "function": "eclBlockBytes",
+      "sha256": "447b215558b7efbc622eba4789fe9d08da8269a2d7160b0f0a254384aeaeb1bc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-save-export/main.go",
+      "function": "eclBlockBytes",
+      "sha256": "9f9b830d60ded1706d21b354d24e44bd8c169c2924c2e16038704d07d5fb88d7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-save-export/main.go",
       "function": "main",
       "sha256": "0240b7a5a9afbb72bdf11bb0c76b7763c33e165db21e871f332ccc50bc2b5793",
       "occurrences": 1,
@@ -1355,6 +1383,13 @@
     {
       "path": "cmd/dos-save-export/main.go",
       "function": "main",
+      "sha256": "0f568d071a1e266c3cb9b50af0731b06e7e1e08647ede2e369d48927323ed730",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-save-export/main.go",
+      "function": "main",
       "sha256": "13ac875d952db767e34cded52d47cc9466eb1a5ecccd1faae603194357d3ac46",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1369,13 +1404,6 @@
     {
       "path": "cmd/dos-save-export/main.go",
       "function": "main",
-      "sha256": "383c0518cfdc6cc667dfc927137d5074f54b8e759d6d148b7a54ee846113397d",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/dos-save-export/main.go",
-      "function": "main",
       "sha256": "3acb4079f945838491f3a55daafd340a3cfb8cbaeaaa4f02bf94c9d8f0bd948d",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1384,6 +1412,13 @@
       "path": "cmd/dos-save-export/main.go",
       "function": "main",
       "sha256": "47dfc941fc348354b35afc3bf6fa598892fbb8bcf26a3a4d3b4d1db72d9a95c2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-save-export/main.go",
+      "function": "main",
+      "sha256": "5cf4eb2d806aa50eb99533dca5204a8061c4b0162d9f1b69cb44c99aff2b3802",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1439,6 +1474,13 @@
     {
       "path": "cmd/dos-save-export/main.go",
       "function": "main",
+      "sha256": "a0b1c9fd4655b82d40163feb4ec01572c17b498613edc581d274200688aee24c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-save-export/main.go",
+      "function": "main",
       "sha256": "a0b94969820c5a88d2c8719cc1716c5bc7a7882012350cab1f8d6e8761505f72",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1467,7 +1509,14 @@
     {
       "path": "cmd/dos-save-export/main.go",
       "function": "main",
-      "sha256": "cf45ffce060228516e1c321775d01755a1eb7c3bd47786144d63635de147d2d0",
+      "sha256": "d34603a04141b06d2b2bf9f4cca1108290ce5650dd9d2012decaa4788c10a0dd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dos-save-export/main.go",
+      "function": "main",
+      "sha256": "e027e37473af4c30e9554b5660c20cfb3f77257890391bf10dd83b88a0d0f767",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
