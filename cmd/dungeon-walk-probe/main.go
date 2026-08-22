@@ -141,22 +141,26 @@ func main() {
 			{false, 0}, {true, 0}, {false, 1}, {true, 1},
 			{false, 2}, {true, 2}, {false, -1}, {true, -1},
 		} { // ⚠ 試過再加第 4 項：一個索引都沒多，跑一趟卻多花兩分半 ⇒ 收斂了。
-			pass := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
-			if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &pass, terrains,
-				policy.follow, policy.pick, handoffFor(*arrivals, seg.Block)); err != nil {
-				if walk.note == "" {
-					walk.note = err.Error()
+			// ⚠ 每一份旗標取樣各走一趟：門什麼時候開是**時間點**的問題，
+			// 一份取樣只代表一個時間點（spec 1193）。
+			for _, handoff := range handoffsFor(*arrivals, seg.Block) {
+				pass := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
+				if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &pass, terrains,
+					policy.follow, policy.pick, handoff); err != nil {
+					if walk.note == "" {
+						walk.note = err.Error()
+					}
+					continue
 				}
-				continue
+				for index := range pass.reached {
+					walk.reached[index] = true
+				}
+				if pass.cells > walk.cells {
+					walk.cells = pass.cells
+				}
+				walk.blocked += pass.blocked
+				walk.teleports += pass.teleports
 			}
-			for index := range pass.reached {
-				walk.reached[index] = true
-			}
-			if pass.cells > walk.cells {
-				walk.cells = pass.cells
-			}
-			walk.blocked += pass.blocked
-			walk.teleports += pass.teleports
 		}
 		for terrain := range terrains {
 			records = append(records, cellRecord{Block: seg.Block, Terrain: terrain})
@@ -275,13 +279,34 @@ func main() {
 //
 // ⚠ 只跑其中一種都會低估，而且**兩邊看起來都很合理**——這正是「下界看起來和
 // 全集一樣合理」那個坑（spec 1186）。
-// handoffFor 讀那一段的到達取樣。⚠ 目錄沒給或那一段沒有取樣就回 nil——
-// 冷走照舊，只是那一段的門仍然打不開。
-func handoffFor(dir string, block uint8) map[uint16]uint16 {
+// handoffsFor 讀那一段**所有**的旗標取樣：剛換到那一份，加上段內沿路的幾份。
+//
+// ★ 為什麼不只用到達那一份：主線在一段裡走著走著才會開的門（拿到鑰匙、打完某一
+// 場、觸發某個開關），在**到達那一刻**還沒開。每一份各走一趟再取聯集才問得完。
+//
+// ⚠ 目錄沒給或那一段沒有取樣就回一份 nil——冷走照舊跑一趟，只是門打不開。
+func handoffsFor(dir string, block uint8) []map[uint16]uint16 {
 	if dir == "" {
-		return nil
+		return []map[uint16]uint16{nil}
 	}
-	raw, err := os.ReadFile(filepath.Join(dir, fmt.Sprintf("arrival-block-%02X.json", block)))
+	names, _ := filepath.Glob(filepath.Join(dir, fmt.Sprintf("arrival-block-%02X.json", block)))
+	more, _ := filepath.Glob(filepath.Join(dir, fmt.Sprintf("flags-block-%02X-*.json", block)))
+	names = append(names, more...)
+	sort.Strings(names)
+	out := make([]map[uint16]uint16, 0, len(names)+1)
+	for _, name := range names {
+		if memory := readSample(name); memory != nil {
+			out = append(out, memory)
+		}
+	}
+	if len(out) == 0 {
+		return []map[uint16]uint16{nil}
+	}
+	return out
+}
+
+func readSample(path string) map[uint16]uint16 {
+	raw, err := os.ReadFile(path)
 	if err != nil {
 		return nil
 	}

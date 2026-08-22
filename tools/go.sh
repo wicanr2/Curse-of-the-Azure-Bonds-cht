@@ -47,6 +47,7 @@ exec docker run --rm \
   -e COAB_DECISION_LOG="${COAB_DECISION_LOG:-}" \
   -e COAB_BLOCK_EDGES="${COAB_BLOCK_EDGES:-}" \
   -e COAB_ARRIVAL_SNAPSHOT_DIR="${COAB_ARRIVAL_SNAPSHOT_DIR:-}" \
+  -e COAB_FLAG_SAMPLE_DIR="${COAB_FLAG_SAMPLE_DIR:-}" \
   -e COAB_ROUTE_JSON="${COAB_ROUTE_JSON:-}" \
   `# engine 是私有 repo，容器沒有（也不該有）GitHub 憑證，proxy.golang.org 也取不到。` \
   `# tools/engine-proxy.sh 會把本機那份 commit 打包成檔案型 proxy 放在最前面。` \

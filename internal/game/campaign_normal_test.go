@@ -153,6 +153,71 @@ func captureInsideSegment(state *State) {
 	_ = state.SavePartyFile(filepath.Join(dir, name))
 }
 
+// flagSampleTaken 記著每一段已經取過幾份旗標樣本。
+var flagSampleTaken = map[uint8]int{}
+
+// flagSampleObservations 是這一支**自己的**觀測計數。
+//
+// ⚠ 不能借用 `insideSegmentObservations`：那個計數在快照數達到上限之後就**不再
+// 增加**了，借用它會讓間隔判斷永遠不成立，於是每一段只取得到前幾份
+// （實測 13 份 vs 應有的 60 份）。**借別人的計數器要先看它什麼時候停。**
+var flagSampleObservations = map[uint8]int{}
+
+const (
+	// flagSampleLimit／flagSampleSpacing：每段最多幾份、每份至少隔幾次觀測。
+	flagSampleLimit   = 8
+	flagSampleSpacing = 4
+)
+
+// captureFlagSample 在段內**沿路**取幾份劇情旗標樣本。
+//
+// ★ 為什麼不只有「剛換到那一刻」那一份：主線在一段裡走著走著才會開的門
+// （拿到鑰匙、打完某一場、觸發某個開關），在**到達那一刻**還沒開。冷走鋪上到達
+// 那一份的旗標仍然打不開它們（spec 1193）。
+//
+// ⚠ 和「一段存好幾份**快照**」是不同的問題：那個比的是**入口位置**（同一塊連通
+// 分量裡多存幾份沒用，量過了）；這個比的是**旗標的時間點**，冷走的入口始終是段
+// 入口，只有門開不開會變。
+//
+// ★ **量過了：對可達性那一列沒有用。** 90 份段內取樣讓冷走的分派索引 225 → 228，
+// 但那三個落在可達性分母（259 個索引）之外 ⇒ 聯集仍是 224、未達成仍是 34，
+// 而走訪時間從約 2 分鐘變成約 22 分鐘。⇒ 預設不產生，留著是因為換一組取樣策略
+// 時還用得上（spec 1193）。
+//
+// ⚠ 寫的是**記憶體取樣不是存檔**（和 `ArrivalSample` 同一個 schema）：取樣點在
+// 觀測迴圈上，PC 未必停在指令邊界。
+func captureFlagSample(state *State) {
+	// ⚠ **自己的環境變數**，不跟到達取樣共用：量過了，這些樣本對可達性那一列
+	// **一格都沒加**，而走訪時間會從 2 分鐘變成 22 分鐘（見下）。預設不產生。
+	dir := os.Getenv("COAB_FLAG_SAMPLE_DIR")
+	if dir == "" || state.session == nil {
+		return
+	}
+	block := state.session.CurrentBlockID()
+	taken := flagSampleTaken[block]
+	if taken >= flagSampleLimit {
+		return
+	}
+	flagSampleObservations[block]++
+	if taken > 0 && flagSampleObservations[block] < taken*flagSampleSpacing {
+		return
+	}
+	flagSampleTaken[block] = taken + 1
+	sample := ArrivalSample{
+		Schema: "coab-arrival-sample/1",
+		Block:  block,
+		Memory: state.session.MemorySnapshot(),
+		Note:   "段內沿路的旗標取樣，不是存檔。",
+	}
+	encoded, err := json.MarshalIndent(sample, "", " ")
+	if err != nil {
+		return
+	}
+	// ⚠ 失敗不讓戰役測試紅：這是附帶產出。少了它報表那一側會少幾格。
+	_ = os.WriteFile(filepath.Join(dir,
+		fmt.Sprintf("flags-block-%02X-%d.json", block, taken)), append(encoded, '\n'), 0o644)
+}
+
 func (o *normalCampaignObserver) observe() {
 	if o.state != nil && o.state.Mode == ModeDungeon && o.state.session != nil {
 		campaignVisitedCells[campaignCellKey{
@@ -160,6 +225,7 @@ func (o *normalCampaignObserver) observe() {
 			terrain: o.state.DungeonWallRoof,
 		}] = true
 		captureInsideSegment(o.state)
+		captureFlagSample(o.state)
 	}
 	if o.messages != nil && o.state != nil {
 		// 訊息與提示都要記：遭遇選單的敘述走的是 Prompt 那一行。
