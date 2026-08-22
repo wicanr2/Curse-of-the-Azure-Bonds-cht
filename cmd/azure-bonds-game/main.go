@@ -1018,9 +1018,26 @@ func combatAltPressed() bool {
 }
 
 func (a *app) syncLoadPiecesRequest() {
-	selectors, ok := a.state.ConsumeLoadPiecesRequest()
-	if !ok {
+	if _, ok := a.state.ConsumeLoadPiecesRequest(); !ok {
 		return
+	}
+	// ⚠ 要載的是**每個槽目前的值**，不是這一次 `LOAD PIECES` 的三個運算元。
+	//
+	// ★ 原作的 handler 有一條「兩槽模式」：`bank0^[1CEh]` 與 `bank0^[1D0h]` 都非零
+	// 時**只載槽 1 與槽 3**，槽 2 完全不動（spec 1087）。所以 `ECL6/0x40` 的
+	// `17,18,16` 從來不會去要選圖 18——而 **18 在任何一個 `WALLDEF*.DAX` 裡都不存在**
+	// （`WALLDEF6` 只有 13,16,3,17）。照三個運算元硬載的話會找不到而整批失敗，
+	// 於是 `pieceSets` 維持空的：天空與地板照畫、**牆一面都不畫**，而且不報錯。
+	// 選圖 15 對 `ECL5/0x33`／`0x35` 是同一回事。
+	//
+	// `wallSetParams` 是照同一支 handler 的分派寫進去的，所以直接用它。
+	var selectors [3]uint16
+	for index, param := range a.state.WallSetParams() {
+		if param.BlockID == 0xFFFF {
+			selectors[index] = 0xFF
+			continue
+		}
+		selectors[index] = param.BlockID
 	}
 	wallFile, symbolFile := "", ""
 	if pack, packErr := gamepack.Default(); packErr == nil {
@@ -4829,7 +4846,21 @@ func loadMapPieceSets(imagePath string, areaID uint8, wallFile, symbolFile strin
 		setID := uint8(index + 1)
 		pieceSet, err := gfx.ParsePieceSet(setID, uint8(rawSelector), wallBlocks, symbolBlocks)
 		if err != nil {
-			return nil, fmt.Errorf("piece set %d: %w", setID, err)
+			// ⚠ **一個槽載不到，不能把整組牆都丟掉。** 原作的 handler 有一條
+			// 「兩槽模式」：`bank0^[1CEh]` 與 `bank0^[1D0h]` 都非零時只載槽 1 與
+			// 槽 3，槽 2 完全不動（spec 1087）——所以 `ECL6/0x40` 的 `17,18,16`
+			// 從來不會去要選圖 18，而 **18 在任何一個 `WALLDEF*.DAX` 裡都不存在**
+			// （選圖 15 對 `ECL5/0x33`／`0x35` 同理）。
+			//
+			// 從存檔進來時 remake 不重跑該段的進入碼，拿不到那兩格閘門的執行時值，
+			// 所以會照三個運算元硬載。以前整批 return 的後果是 `pieceSets` 全空：
+			// 天空與地板照畫、**一面牆都不畫**，而且不報錯——第 685 輪就是這樣
+			// 讓四張圖看起來「畫得好好的」卻一面牆都沒有。
+			//
+			// 跳過載不到的那一槽，其餘照載；載不到哪一槽要講出來。
+			log.Printf("wall piece set %d (selector %d) is not in %s: skipping that slot",
+				setID, rawSelector, wallFile)
+			continue
 		}
 		maskWallSymbols(pieceSet)
 		result[setID] = pieceSet

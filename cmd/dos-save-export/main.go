@@ -201,16 +201,26 @@ func main() {
 			// 與 remake 逐格相同。同章之內段自己的 `LOAD PIECES` 會把選圖設對，
 			// 先寫進去反而讓原版走到不一樣的狀態。
 			if piecesOK && *gameArea != int(prefix[0]) {
+				present := wallDefBlocks(*image, *gameArea)
 				for index, piece := range pieces {
 					value := piece
-					if piece == 0xFF {
+					// ⚠ 該章的 `WALLDEF` 沒有這一塊就寫哨兵。原作有一條「兩槽模式」
+					// （只載槽 1／3，槽 2 不動，spec 1087），所以腳本要的
+					// `17,18,16` 裡的 18 從來不會被載——而 **18 在任何一個
+					// `WALLDEF*.DAX` 裡都不存在**。自製存檔硬把它寫進去，等於
+					// 宣告一個載不到的槽，兩邊都只能各自亂猜。
+					if piece == 0xFF || !present[uint8(piece)] {
 						value = 0xFFFF
 					}
 					// ⚠ 第二個欄位是**槽號**（1..3），不是選圖編號。底檔分不出這兩種
 					// 解讀——提爾佛頓的選圖剛好是 1,2,3，與槽號同號。寫成選圖編號的
 					// 話原版會**一面牆都不畫**，而畫面看起來仍然正常（天空與地板都在）。
+					slot := uint16(index + 1)
+					if value == 0xFFFF {
+						slot = 0xFFFF
+					}
 					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4:], value)
-					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4+2:], uint16(index+1))
+					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4+2:], slot)
 				}
 				fmt.Fprintf(os.Stderr, "牆面參數改成 %d,%d,%d（取自該段自己的 LOAD PIECES）\n",
 					pieces[0], pieces[1], pieces[2])
@@ -405,4 +415,37 @@ func mapCellState(imagePath string, area, block, x, y, facing int) (wall, roof u
 		return 0, 0, false
 	}
 	return wallValue, grid.CellWrapped(x, y).Terrain, true
+}
+
+// wallDefBlocks 回報某一章的 `WALLDEF` 檔實際有哪些區塊。
+func wallDefBlocks(imagePath string, area int) map[uint8]bool {
+	present := map[uint8]bool{}
+	archive, err := zip.OpenReader(imagePath)
+	if err != nil {
+		return present
+	}
+	defer archive.Close()
+	name := fmt.Sprintf("WALLDEF%d.DAX", area)
+	for _, file := range archive.File {
+		if !strings.EqualFold(file.Name, name) {
+			continue
+		}
+		handle, openErr := file.Open()
+		if openErr != nil {
+			return present
+		}
+		payload, readErr := io.ReadAll(handle)
+		handle.Close()
+		if readErr != nil {
+			return present
+		}
+		blocks, parseErr := dax.Parse(payload)
+		if parseErr != nil {
+			return present
+		}
+		for _, block := range blocks {
+			present[block.Entry.ID] = true
+		}
+	}
+	return present
 }
