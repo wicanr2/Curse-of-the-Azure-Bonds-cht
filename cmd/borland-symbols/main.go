@@ -20,6 +20,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/borlanddebug"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98ovr"
@@ -94,6 +95,7 @@ func main() {
 	outPath := flag.String("out", "", "輸出 JSON（預設 stdout）")
 	recordName := flag.String("record", "", "改成印一個 record 型別的逐欄位移表（例如 CHARREC）")
 	allRecords := flag.Bool("records", false, "改成印出每一個具名 record 型別的逐欄位移表")
+	overlayNames := flag.Bool("overlay-names", false, "改成印出每個 overlay 的原始單元名（由裡面的符號認）")
 	flag.Parse()
 	if *exePath == "" {
 		flag.Usage()
@@ -224,6 +226,47 @@ func main() {
 				codeSize: overlay.CodeSize,
 			}
 		}
+	}
+
+	if *overlayNames {
+		// ★ overlay 沒有自己的名字欄位，但**裡面的符號有**：Turbo Pascal 每個
+		// overlay 單元的第一個 entry 一律是 `LOADxxx`（overlay manager 的載入
+		// stub），所以那個名字就是單元名。剩下的符號一起列出來當佐證。
+		perModule := map[string][]string{}
+		for _, symbol := range table.Symbols {
+			info, ok := segmentToOverlay[symbol.Segment]
+			if !ok || symbol.Name == "" {
+				continue
+			}
+			perModule[info.module] = append(perModule[info.module], symbol.Name)
+		}
+		modules := make([]string, 0, len(perModule))
+		for module := range perModule {
+			modules = append(modules, module)
+		}
+		sort.Strings(modules)
+		fmt.Printf("# PC-98 除錯符號認出來的 overlay 單元名\n\n")
+		fmt.Printf("由 `cmd/borland-symbols -overlay-names` 產生，不要手改。用法與注意事項見 spec 1182。\n\n")
+		fmt.Printf("⚠ **這張表是 DOS 側規格的對照基準。** DOS 版沒有除錯符號，" +
+			"所以 DOS 的 `overlay-NN` 只能靠內容推——推錯了不會有任何徵兆。" +
+			"兩版的 overlay 編號一致（`overlay-05` ＝ POSTCOM、`overlay-30` ＝ THREED " +
+			"兩處已由 DOS 側規格獨立印證）。\n\n")
+		fmt.Printf("| overlay | 單元 | 符號 |\n|---|---|---|\n")
+		for _, module := range modules {
+			names := perModule[module]
+			unit := ""
+			for _, name := range names {
+				if strings.HasPrefix(name, "LOAD") {
+					unit = strings.TrimPrefix(name, "LOAD")
+					break
+				}
+			}
+			if unit == "" {
+				unit = "—"
+			}
+			fmt.Printf("| `%s` | **%s** | %s |\n", module, unit, strings.Join(names, "、"))
+		}
+		return
 	}
 
 	perSegment := map[uint16]int{}

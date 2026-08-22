@@ -41,7 +41,10 @@ byte，所以 `01h..FFh` 已經是全部。
 紀錄裡存的名字逐字元相同**；基底改成 `1040h ± 15h` 或 `± 2×15h` 的話，相同的件數
 是 **0**。剩下 45 件的差異全部有解釋（見下面「存的那個名字是什麼」）。
 
-## 組名規則（`overlay-24:0467h`）
+## 組名規則（`overlay-24:0467h` ＝ `PRINTITEMNAME`）
+
+> `overlay-24` 的原始單元名是 **GENERIC**，而這一支的 Borland 符號叫
+> `PRINTITEMNAME`（spec 1182 的 overlay 單元名表）。
 
 ```
 if Count(+39h) > 0:            名字 := Str(Count) + ' '
@@ -70,7 +73,7 @@ for N := 3 downto 1:
 
 ## 存的那個名字是什麼：**輸出欄位，不是資料來源**
 
-紀錄的 `+00h..+29h` 是一個 Pascal `string[41]`。`sub_467` 一進來第一件事就是
+紀錄的 `+00h..+29h` 是一個 Pascal `string[41]`。`PRINTITEMNAME` 一進來第一件事就是
 
 ```
 0471  26 C6 05 00     mov byte ptr es:[di], 0     ; 長度 byte := 0 ⇒ 名字清空
@@ -127,7 +130,7 @@ for N := 3 downto 1:
 
 ## 不宣稱
 
-- `sub_467` 開頭那個走 `DS:650Ah` 鏈、決定要不要標 `*` 的判斷（`cs:2396h` 收 `5`
+- `PRINTITEMNAME` 開頭那個走 `DS:650Ah` 鏈、決定要不要標 `*` 的判斷（`cs:2396h` 收 `5`
   這個參數）到底在問什麼。remake 目前沒有 `*` 標記。
 - `ITEM*.DAX` 出廠那份過期快取（`Deck`／`Beaker`…）是哪一版的資料留下來的。
 - PC-98 版的詞表位址（本輪只查了 DOS 版的資料段）。

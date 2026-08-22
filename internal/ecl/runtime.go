@@ -26,7 +26,7 @@ const (
 	// 引擎寫入、24h 讀取並清零的請求旗標（spec 1097 §四）。
 	addrShopRequest    uint16 = 0x7F6C // bank1^[6D8h] 商店
 	addrShopPriceScale uint16 = 0x7F6D // bank1^[6DAh] 商店價格倍率
-	addrCampRequest    uint16 = 0x7EE2 // bank1^[5C4h] 營地（本實作目前當神殿用）
+	addrTempleRequest  uint16 = 0x7EE2 // bank1^[5C4h] 神殿（overlay-04 ＝ TEMPLE，spec 1182）
 
 	// 區 1 低段的一部分位址不是 bank1 記憶體，而是「目前角色」記錄的欄位投影：
 	// 讀取端 overlay-07:007F1h 會攔截這些位址並改讀 DS:6506h 指向的角色
@@ -1134,42 +1134,43 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			saveState(next)
 			return result, nil
 		case 0x24: // COMBAT
-			// 24h 在原作是三選一的服務分派點，不只是「打一場」（spec 1095）：
-			// 先看兩個請求旗標，命中就跑對應服務並跳過戰鬥，否則才進戰鬥。
-			// 旗標讀到就立刻清零，exactly-once 由清零保證。
+			// `24h` 在原作是**四選一**的服務分派點，不只是「打一場」
+			// （spec 1095／1149／1182）。順序照原作 `overlay-02:179Ah`：
 			//
-			// 兩個旗標的位址依 spec 1096 的區 1 映射 (位址-7C00h)*2 換算後，
-			// 與原作 handler 檢查的 bank1 欄位逐格對上（spec 1097 §四）：
-			//   addrShopRequest (7F6Ch) -> bank1^[6D8h]  商店
-			//   addrCampRequest (7EE2h) -> bank1^[5C4h]  營地（overlay-04 entry#1）
-			// 這兩格在 1,355 條 ECL 指令裡從未被寫過，是引擎寫入、24h 讀取的請求旗標。
+			//	8B69h 或 8B56h 非 0                  → 打（overlay-08 GOCOMBAT）
+			//	bank1^[6D8h] ＝ 7F6Ch ＝ 1           → 商店（overlay-06 SHOP）
+			//	bank1^[5C4h] ＝ 7EE2h ＝ 1           → 神殿（overlay-04 TEMPLE）
+			//	以上都不成立                          → 戰後處理（overlay-05 POSTCOM）
 			//
-			// ⚠ 已知差異：原作 7EE2h 是「營地」，本實作目前把它當神殿請求。
-			// 位址正確、語意不符。改正不只是換名字——原作的營地由 24h 觸發且結束後
-			// 回到同一個 ECL 迴圈續跑，而本實作的營地是獨立的引擎功能
-			// (State.Camp/EnterDungeonCamp)，缺的是「營地結束後 ECL 續跑」。
-			// 修正屬於營地流程的範圍，先保留現行行為避免無證據的改動。
-			// ★ 順序照原作（`overlay-02:179Ah`）：**場上有怪就直接打**，
-			// 根本不看商店旗標——
+			// ★ **場上有怪就直接打**，根本不看商店旗標——
 			//
 			//   17A4  cmp byte ptr ds:8B69h, 0 / jz  → 非 0 就 jmp sub_1956（打）
 			//   17AE  cmp byte ptr ds:8B56h, 0 / jz  → 非 0 就 jmp sub_1956（打）
 			//   17B8  cmp word ptr es:[di+6D8h], 1   → 這之後才輪到商店
 			//
 			// `8B69h` 就是 `1Ch CLEARMONSTERS` 清的那個「有怪要打」旗標
-			// （spec 1095／1145），在 remake 對應的是怪物鏈非空。
+			// （spec 1145），在 remake 對應的是怪物鏈非空。旗標讀到就立刻清零，
+			// exactly-once 由清零保證。
 			//
-			// ⚠ 兩個請求旗標目前都沒有 producer，所以這個順序今天觀察不到差別；
-			// 照著寫是為了哪天補上寫入端時不會先走錯支。
+			// ⚠ **`7EE2h` 是神殿不是營地。** spec 1030 把 `overlay-04` 標成營地
+			// 主選單，spec 1095／1149 沿用，還因此說 remake 的 `TempleRequested`
+			// 名字不對——**反了**。PC-98 的 Borland 符號寫著 `LOADTEMPLE`／
+			// `GOTEMPLE`，而 DOS `overlay-04` 的字串是 `how can we help you?`、
+			// `Heal View Pool Appraise Exit`、`Raise Dead` 與「a priest says…」。
+			// 營地是 `overlay-15`（`LOADCAMP`／`DOCAMP`）。詳見 spec 1182。
+			//
+			// ⚠ 第四支（都不成立 ⇒ 戰後處理）remake 走的是別的機制：
+			// 沒擺過怪的 `24h` 目前一律發 `CombatRequested`，由上層決定要不要
+			// 開戰利品畫面。那 46 處的行為等價但入口不同（spec 1182）。
 			monstersPresent := len(result.MonsterSpawns) > 0 ||
 				(runtime != nil && len(runtime.MonsterSpawns) > 0)
 			if !monstersPresent && memory[addrShopRequest] == 1 {
 				result.ShopRequested = true
 				result.ShopPriceScale = memory[addrShopPriceScale]
 				memory[addrShopRequest] = 0
-			} else if !monstersPresent && memory[addrCampRequest] == 1 {
+			} else if !monstersPresent && memory[addrTempleRequest] == 1 {
 				result.TempleRequested = true
-				memory[addrCampRequest] = 0
+				memory[addrTempleRequest] = 0
 			} else {
 				result.CombatRequested = true
 				if runtime != nil {

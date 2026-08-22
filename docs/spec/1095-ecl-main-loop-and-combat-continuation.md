@@ -206,34 +206,32 @@ remake 跑在 Ebiten 事件迴圈上，無法在 opcode handler 內阻塞整場�
    必須在文字輸出**之前**完成，否則 `PRINTCLEAR` 會畫在戰鬥畫面上。
 
 ⚠ **目前 remake 的落差**（`internal/ecl/runtime.go:960`）：
-`0x24` 的三選一是 `memory[0x7F6C]` → Shop、`memory[0x7EE2]` → Temple。
-原作 DOS 的兩格是 `bank1^[6D8h]` → **商店**、`bank1^[5C4h]` → **營地（Camp）**，
-第二格呼叫的是 `overlay-04 entry#1`（營地主選單，spec 1030），不是神殿。
+`0x24` 的分派是 `memory[0x7F6C]` → 商店、`memory[0x7EE2]` → 神殿，
+原作 DOS 的兩格是 `bank1^[6D8h]` → **商店**、`bank1^[5C4h]` → **神殿**
+（`overlay-04` ＝ TEMPLE，spec 1182），兩邊一致。
 ★★★ **映射已由 spec 1096 解出**，兩格精確對上：
 
 | remake | 算式 | 原作 | `24h` handler 的分支 |
 |---|---|---|---|
 | `memory[0x7F6C]` | `(7F6Ch−7C00h)×2 = 6D8h` | `bank1^[6D8h]` | 商店 ✓ |
-| `memory[0x7EE2]` | `(7EE2h−7C00h)×2 = 5C4h` | `bank1^[5C4h]` | **營地（Camp）**，不是神殿 |
+| `memory[0x7EE2]` | `(7EE2h−7C00h)×2 = 5C4h` | `bank1^[5C4h]` | **神殿（Temple）**：`overlay-04` ＝ TEMPLE（spec 1182）|
 
-> ★★★ **remake 選的兩個位址與原作映射一致；但第二格的語意標成 Temple 與原作不符**
-> ——`bank1^[5C4h]` 那一支呼叫的是 `overlay-04 entry#1`（營地主選單，spec 1030）。
+> ★★★ **remake 選的兩個位址與原作映射一致，語意也一致。** `bank1^[5C4h]` 那一支
+> 呼叫的是 `overlay-04`，而 `overlay-04` 的原始單元名是 **TEMPLE**
+> （PC-98 的 Borland 符號 `LOADTEMPLE`／`GOTEMPLE`；DOS 側該 overlay 的字串是
+> `how can we help you?`／`Heal View Pool Appraise Exit`／`Raise Dead` 與
+> 「a priest says…」）。營地是 `overlay-15`。
+>
+> ⚠ 本規格先前依 spec 1030 的標籤說那一格是「營地」、說 remake 的 `TempleRequested`
+> 語意不符——**反了**，改正見 [spec 1182](1182-overlay-module-names-and-combat-dispatch.md)。
 >
 > ★★★ **這兩格在 1,355 條 ECL 指令裡沒有任何一條寫過**（已全掃確認）。
 > ⇒ 它們是**引擎寫入、ECL 讀取**的共用格子，正是 spec 1096 §五第 2 點指出的
 > 最高風險類別：map 寫入永遠成功，對不上時不會有任何錯誤訊息。
 >
-> ★★★ **查完了：語意有等價物，那一格則是一條沒有 producer 的死路。**
->
-> - 「營地跑完 ECL 再回來」在 remake 走的是**另一條路**：`EnterDungeonCamp` 跑
->   lifecycle entry 2（`pre_camp`）、把結果交給 `applyDungeonLifecycleResult`，
->   再開營地選單；中斷走 entry 3（`RunCampInterrupted`）。機制與原作不同
->   （生命週期入口 vs `24h` 旗標），**效果等價**。
-> - `0x7EE2` 在 remake 的正式程式碼裡**沒有任何一處寫入**（ECL 那一側本來就沒寫過）。
->   所以 `TempleRequested` 目前走不到，語意標成 Temple **不會產生錯誤行為**。
->
-> ⚠ 它仍然是個會誤導下一個人的名字。`TestCampRequestFlagHasNoProducer` 釘住
-> 「沒有 producer」這件事：哪天有人補上寫入端，就必須先決定那一格是營地還是神殿。
+> `0x7EE2` 在 remake 的正式程式碼裡仍然**沒有任何一處寫入**，所以
+> `TempleRequested` 目前走不到；`TestCampRequestFlagHasNoProducer` 繼續釘住
+> 「沒有 producer」這件事。
 
 ## 明確不宣稱
 
@@ -247,6 +245,5 @@ remake 跑在 Ebiten 事件迴圈上，無法在 opcode handler 內阻塞整場�
   它是同步呼叫、返回後 PC 不變。
 - 沒有宣稱戰鬥中全隊死亡或逃跑時是否有別的路徑寫入 `47E0h`／`4FC7h`
   ——handler 本身沒有寫這兩格。
-- 沒有宣稱 `memory[0x7EE2]`（remake）對應原作哪一格。
 - 沒有宣稱 `PRINT` 之後 `GOSUB 0x8D04`／`GOTO 0x8CCB` 的目標內容
   （Journal entry 4 的實際登錄端未追）。

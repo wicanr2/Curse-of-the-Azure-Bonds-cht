@@ -130,6 +130,20 @@
     {
       "path": "cmd/borland-symbols/main.go",
       "function": "main",
+      "sha256": "2d7c7a33d88ba57637bb620bbc7bebc6dd4db5d5a7547105479e2350c1da4a82",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/borland-symbols/main.go",
+      "function": "main",
+      "sha256": "390bf90cd4367706926ac4a5e557e3bc7a4d2a4f1a5a53cbb7af7471829eee1b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/borland-symbols/main.go",
+      "function": "main",
       "sha256": "45419c201b6c0ffcab69f493143ccf04841f38159ea7581c13fa60be25b5f04b",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -138,6 +152,13 @@
       "path": "cmd/borland-symbols/main.go",
       "function": "main",
       "sha256": "4ba3342e9c3d56add7dbf2e9f1c9cd0e6ec019f6a0a9ec1271f99763291ed4fd",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/borland-symbols/main.go",
+      "function": "main",
+      "sha256": "4bebf5d1a5876e30900ad4351a302662efb26e51aa0fc55cbf62e0a57a5b2f7b",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -165,6 +186,13 @@
     {
       "path": "cmd/borland-symbols/main.go",
       "function": "main",
+      "sha256": "a1285930d6d0097078cf2c6260b14f69aa40a0e7958879988c15b85ecc844f33",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/borland-symbols/main.go",
+      "function": "main",
       "sha256": "a67d9420f54b1cafe48b8882202a1cc8c8f256dbc8a52a4b07dc5c8df06559ea",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -172,7 +200,35 @@
     {
       "path": "cmd/borland-symbols/main.go",
       "function": "main",
+      "sha256": "a8b04de04339963c43a141bde45630a0a52ed388b5dd661f5f4a9d85a64ae060",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/borland-symbols/main.go",
+      "function": "main",
+      "sha256": "a9a72282beb13d929bf6fd363334e02b63fecd93b3af3a98bf4c5379aa57143c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/borland-symbols/main.go",
+      "function": "main",
+      "sha256": "b7664f5dbc3c2ee9aa3a386efcc117aad2d2b9e7f81213acd81e9188c701df9e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/borland-symbols/main.go",
+      "function": "main",
       "sha256": "eb6661f0d65f56670d68ccc911503dfd9658286696dd93f057455d36ea28905a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/borland-symbols/main.go",
+      "function": "main",
+      "sha256": "f32d14bd843e84d665e721f6234e7ba0ac0b1550ec1c2be080984a0240112637",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
