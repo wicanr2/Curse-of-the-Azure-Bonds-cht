@@ -131,3 +131,62 @@ func scanRemakeActions(dir string) map[string]bool {
 	}
 	return found
 }
+
+// declaresMethod 問「這個套件有沒有宣告這支方法」。
+func declaresMethod(dir, name string) bool {
+	return anyGoFile(dir, func(parsed *ast.File) bool {
+		for _, declaration := range parsed.Decls {
+			function, ok := declaration.(*ast.FuncDecl)
+			if !ok || function.Recv == nil {
+				continue
+			}
+			if function.Name.Name == name {
+				return true
+			}
+		}
+		return false
+	})
+}
+
+// callsSelector 問「這個套件有沒有真的呼叫 `x.名字(...)`」。
+//
+// ⚠ 用 `go/ast` 不用 grep：註解裡寫著方法名不代表有人呼叫它，而「文件說接上了、
+// 其實沒接」正是這份報表要擋的東西。
+func callsSelector(dir, name string) bool {
+	return anyGoFile(dir, func(parsed *ast.File) bool {
+		found := false
+		ast.Inspect(parsed, func(node ast.Node) bool {
+			call, ok := node.(*ast.CallExpr)
+			if !ok {
+				return true
+			}
+			if selector, ok := call.Fun.(*ast.SelectorExpr); ok && selector.Sel.Name == name {
+				found = true
+			}
+			return !found
+		})
+		return found
+	})
+}
+
+func anyGoFile(dir string, predicate func(*ast.File) bool) bool {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return false
+	}
+	fileSet := token.NewFileSet()
+	for _, entry := range entries {
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") {
+			continue
+		}
+		parsed, parseErr := parser.ParseFile(fileSet, filepath.Join(dir, name), nil, parser.ParseComments)
+		if parseErr != nil {
+			continue
+		}
+		if predicate(parsed) {
+			return true
+		}
+	}
+	return false
+}

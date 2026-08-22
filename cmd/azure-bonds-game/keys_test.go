@@ -119,3 +119,55 @@ func TestChoiceCursorIsClampedToTheCurrentChoices(t *testing.T) {
 		})
 	}
 }
+
+// ★ 兩個音訊開關要**真的按得到**：從 `Update()` 走完整條路，不是直接呼叫
+// `state.ToggleXxx()`。原作是在讀鍵的地方攔下來的（`sub_18036`），所以這裡也
+// 一併釘住「按鍵被吃掉」——同一幀的 `S` 不可以再被別的模式當成指令。
+func TestCtrlSAndCtrlOTogglePlayerAudioThroughTheKeySeam(t *testing.T) {
+	state := game.NewState(locale.Catalog{})
+	keys := newScriptedKeys()
+	application := &app{state: &state, keys: keys}
+
+	// 沒按 Ctrl 的話 `S` 不該碰到音訊開關。
+	keys.press(ebiten.KeyS)
+	if application.globalAudioKeys() {
+		t.Fatal("沒按 Ctrl 就被當成音訊開關")
+	}
+	if state.SoundSwitchOff() {
+		t.Fatal("單獨按 S 不該關掉音效")
+	}
+
+	keys.press(ebiten.KeyControlLeft, ebiten.KeyS)
+	if err := application.Update(); err != nil {
+		t.Fatal(err)
+	}
+	if !state.SoundSwitchOff() {
+		t.Fatal("Ctrl+S 應該關掉音效")
+	}
+	if state.MusicSwitchOff() {
+		t.Fatal("Ctrl+S 不該碰到音樂開關")
+	}
+
+	keys.press(ebiten.KeyControlLeft, ebiten.KeyO)
+	if err := application.Update(); err != nil {
+		t.Fatal(err)
+	}
+	if !state.MusicSwitchOff() {
+		t.Fatal("Ctrl+O 應該關掉音樂")
+	}
+
+	// 兩顆都再按一次要回到原狀。
+	keys.press(ebiten.KeyControlLeft, ebiten.KeyS)
+	if err := application.Update(); err != nil {
+		t.Fatal(err)
+	}
+	keys.press(ebiten.KeyControlRight, ebiten.KeyO)
+	if err := application.Update(); err != nil {
+		t.Fatal(err)
+	}
+	if state.SoundSwitchOff() || state.MusicSwitchOff() {
+		t.Fatalf("再按一次應該回到開：音效關=%v 音樂關=%v",
+			state.SoundSwitchOff(), state.MusicSwitchOff())
+	}
+	keys.release()
+}

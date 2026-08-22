@@ -10,19 +10,24 @@
 
 remake 規則層目前發得出來的動作：`play`、`stop`
 
-⚠ **「發得出來」與「有東西會發」是兩件事**，分兩欄問：規則層有這個動作是**能力**，現在有哪一段劇情會發是**有沒有用到**。混成一格會讓「寫了但沒人呼叫」看起來像做完了。
+⚠ **「發得出來」與「玩家碰得到」是兩件事**，分兩欄問：規則層有這個動作是**能力**，實際有沒有東西會觸發它是**有沒有用到**。混成一格會讓「寫了但沒人呼叫」看起來像做完了。
 
-| 動作 | 格 | 意思 | 原作寫入處 | 規則層發得出來 | pack 有用到 | 由誰負責 |
+⚠ 「停止」不是劇情資料。原作沒有「這一段不放音樂」這種宣告——派曲常式（`sub_18AA7`）查不到就 `ret`，音樂繼續放。**唯一**會停的是玩家把音樂關掉（`MUSICSW`，Ctrl+O），所以那一欄問的是「按鍵綁上去了沒」，不是「pack 寫了沒」（spec 1192）。
+
+| 動作 | 格 | 意思 | 原作寫入處 | 規則層發得出來 | 玩家碰得到 | 由誰負責 |
 |---|---|---|---:|---|---|---|
 | `select-track` | `MUSICNO` | 選曲：換成哪一首 | 12 | ✅ | ✅ | `State.requestMusicForCurrentBlock`（game-pack 的 music binding） |
 | `load-track` | `MUSICNUM` | 曲目編號：驅動程式要載哪一份資料 | 1 | ✅ | ✅ | 同上：remake 的 `TrackID` 就是曲目，載入由 adapter 負責 |
-| `stop-track` | `MUSICNUM` | 停止：曲目編號寫 `255`（沒有曲子） | 2 | ✅ | — engine 的 pack 驗證不收 `track_id` 空的 binding，「這裡不放音樂」目前**表達不出來**（`TestEnginePackCannotExpressStopYet`） | `State.requestMusicForCurrentBlock`：binding 的 `TrackID` 是空的就發 `stop` |
-| `music-switch` | `MUSICSW` | 音樂開關：整個音樂要不要響 | 2 | ✅ | — engine 的 pack 驗證不收 `track_id` 空的 binding，「這裡不放音樂」目前**表達不出來**（`TestEnginePackCannotExpressStopYet`） | 同上；開關的「開」由一般的選曲表達 |
-| `sfx-halt` | `SOUNDHALT` | 音效停止 | 0 | ✅ | ✅ | 原作一處都沒寫到這一格 |
-| `sfx-off` | `SOUNDOFF` | 音效關 | 0 | ✅ | ✅ | 原作一處都沒寫到這一格 |
-| `sfx-on` | `SOUNDON` | 音效開 | 0 | ✅ | ✅ | 原作一處都沒寫到這一格 |
+| `stop-track` | `MUSICNUM` | 停止：曲目編號寫 `255`（沒有曲子） | 2 | ✅ | ✅ | `State.ToggleMusicSwitch`（Ctrl+O）：關掉時 `stopMusic` 發 `stop` |
+| `music-switch` | `MUSICSW` | 音樂開關：整個音樂要不要響 | 2 | ✅ | ✅ | 同上；開關的「開」由一般的選曲表達 |
 
-合計 17 處寫入、7 種動作：規則層發得出 **7** 種，game-pack 真的會發的有 **5** 種。
+合計 17 處寫入、4 種動作：規則層發得出 **4** 種，玩家真的碰得到 **4** 種。
+
+## 不在這張表裡的三個名字
+
+`SOUNDHALT`（`4838h`）、`SOUNDOFF`（`483Ah`）、`SOUNDON`（`483Ch`）看起來像三格音訊狀態，**但它們不是狀態**：那是 `SOUNDFX` 的選擇子常數，和 `CASTFX`…`CRASHFX` 排在資料段同一張表裡，值分別寫死成 `255`／`0`／`1`，全程式一處都沒有寫入。
+
+⚠ 這一支本來把它們當狀態格掃，掃出 0 處寫入，然後照「原作沒寫到就不算待辦」的規則印成 ✅ ——**三個假零被當成三項做完的工作**。三個相鄰符號同時掃出零，本身就該當成模型錯了的訊號，不是結論。選擇子的身分與解碼歸 `internal/pc98sfx`；玩家關音效走的是 `SOUNDTYPE := 2`（Ctrl+S），`SOUNDFX` 開頭就擋掉，和音樂開關互不影響。
 
 ## 逐處
 

@@ -444,6 +444,11 @@ func (a *app) clampChoiceCursor() {
 
 func (a *app) Update() error {
 	a.clampChoiceCursor()
+	// 音訊開關「隨時都可以按」，所以擺在所有模式前面（見 `globalAudioKeys`）。
+	if a.globalAudioKeys() {
+		a.syncSoundEvents()
+		return nil
+	}
 	if a.areaMapPreview {
 		if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyA) {
 			a.areaMapPreview = false

@@ -3,31 +3,7 @@
   "findings": [
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
-      "sha256": "0e736f75d7f61c07610a6de53e8b73de1d4f3b0ab8a0eb2dd84996354042306d",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/audio-lifecycle-audit/main.go",
       "sha256": "48b913622502dec7c63c50f98484598e72f0fe98cf86ce0fb86e7c0c0e89f1de",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/audio-lifecycle-audit/main.go",
-      "sha256": "62bfe8d81feff8692e62b99eb0462f76cf206572cc0efbbe081cba3b3c4bfcac",
-      "occurrences": 2,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/audio-lifecycle-audit/main.go",
-      "sha256": "66f1fb44ddfec89adf46f0e86564ace36db4852a86a14089c16b3cb450ad04aa",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/audio-lifecycle-audit/main.go",
-      "sha256": "6908882c628ecedc4645ea99dcdc969082da09426e56ceed3c0c9cb3882bada7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -45,19 +21,13 @@
     },
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
-      "sha256": "b0d738697d00728a493e75469b488b38a62751c4022766207407d74c5c932f28",
+      "sha256": "b6da1e70452c4ba5a3c126a702eb3b8f6ab1a0f80c32e4e2fe38504f30b0c8c7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "sha256": "d83a548325e97e3a5ea7f6f6d31131b24282afcdc3678bc99901fdbdaa533425",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/audio-lifecycle-audit/main.go",
-      "sha256": "d859b5457cdb428861fd31c09e1d266ce4547525fa975fe89e736401bf348b0f",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -82,14 +52,14 @@
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "buildReport",
-      "sha256": "90f834c0c430f31fb4d9f9470ed0952bc2e8cc94713f0fe9dee0d35a032a990a",
+      "sha256": "a9c802f9ce36f396f1bc22a182f5b02a16609ded198d6442d3a9b515ce08187c",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "buildReport",
-      "sha256": "9df359b2b793c310ed25c1f6b22414c7db9e1e8cee5c06e3f90d95e73caee3fe",
+      "sha256": "c734a1201fc8a9d6cd611ebfa5d99ed4c80bf3b1ca93124fcddf5e5bc1089146",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -97,13 +67,6 @@
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "buildReport",
       "sha256": "f8966e9410e28a882f5d3f474764afa9037825ede53b2b18bd59544dcc52b77f",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "cmd/audio-lifecycle-audit/main.go",
-      "function": "main",
-      "sha256": "1d8e820ae7452f2c18c58a21a2526fdee9bb1871d8dcb838e5b64e7434c75150",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -145,6 +108,13 @@
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "main",
+      "sha256": "b2cfe774d76fc8130a09bb6e8478f9fa81b2d743213b50eaf38a51c4ee7d4050",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "main",
       "sha256": "fff5cb9e9bc24edb28f07463425ce11f927f7bc7f2a2d6d86ce8f01d063baaa7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -159,14 +129,28 @@
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "renderMarkdown",
-      "sha256": "144f4af878cc889ede060b66abf53d49725de8d0cfb03b8fe72c28c7988ac494",
+      "sha256": "0d13e6c24112de4877a27b0cfd2be3e47e5c503fae0b944a545d8b4c244d8cd5",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "renderMarkdown",
-      "sha256": "16705b09e6f3c124cae88b3ab0ab1b2e86a4402315cdb9c5dc69407dadc820b7",
+      "sha256": "2b25e85e87d88e992be9ff51506106ff2a955ac34caa427b15ea106eff0988c2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "311e5905eb513e8cf84212a90e44f93ed141c4092ae51e725fd5e1cae8c598f4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "325d2cd3a26ed577dbdcad201fccf2625fd31d1ad4679082a7e27405591956e4",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -180,7 +164,14 @@
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "renderMarkdown",
-      "sha256": "42b03e682d3ee70bb6d5314564a5ed7d2360532c27cbda5e0503439c9f3e3b48",
+      "sha256": "3b9ba87ff5776b85e6863792437c1df8b0c8db91bf19df4d46d5181336d17d89",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "3e47983cee355720f4787fbede5a991a9624bc06e51fa358d0bd5d7c1cc300af",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -194,6 +185,27 @@
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "renderMarkdown",
+      "sha256": "6108a81c26afae432e569f86bb1e41a6ea5f53da28e7f946738a8301786792ec",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "637f9daebe308bdfcdc4ecec514b394b6ad398b9fb55c168a27a0352265e6e6d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "726d3de930e6ecbfff6cc1b031fa2d03d5900711053224abb77b1d44040cfaa2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
       "sha256": "805ad7b6ee0e959bdcc02c5d84593515325a3c2b7caa7395e62eface729ded71",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -201,7 +213,28 @@
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "renderMarkdown",
+      "sha256": "85049007ca2b02f57446b9da1ed3cb4d4ea8c9196ee867b24338540fccc4f88b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "85fb8446978cf20a8aa33b1f6c31a27213780c4c913b95d44b76adfb5128d616",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
       "sha256": "9361c4d2c3de2fb9e3e14edef6e2b4eadd4917ab47a33b960b6c33900c6b1677",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "97409a55249f062ebc7a3a1f057b58475845ebb643b6fb8fc076761a2a81e87d",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -216,6 +249,20 @@
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "renderMarkdown",
       "sha256": "9ef47d96e206431ec0e5696f3f1749b759336b38bb754068d18711f4b70d29f9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "a30fbecf7454eb4ee9461ba21eaa228e84a38a41d1ff2d184a93b4a88bbade28",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "a403a620b84eb190f89d6166bf78c9db3cf5b67e207c072b4ac5af4422924c13",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -243,7 +290,14 @@
     {
       "path": "cmd/audio-lifecycle-audit/main.go",
       "function": "renderMarkdown",
-      "sha256": "f01862dfbd5f82d1baba54e37020842c726bbda6467e291bc9b0456d0b47f4a2",
+      "sha256": "e1d8e22f440951b3999273a793f52e6b3f52ed832e3b6892ca3c6bbc1a63aa5e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/audio-lifecycle-audit/main.go",
+      "function": "renderMarkdown",
+      "sha256": "eff4e3ffb7275b27c20142a69137864eecd09fc835ce2f11d0f1031678ae4f2f",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

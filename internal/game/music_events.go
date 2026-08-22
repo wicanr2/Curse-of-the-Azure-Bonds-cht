@@ -18,6 +18,20 @@ func (s *State) requestMusicForCurrentBlock(context string) {
 	if s.dataPack == nil || s.session == nil {
 		return
 	}
+	// 原作的派曲常式（PC-98 `sub_18AA7`）**第一件事**就是看音樂開關：
+	//
+	//	cmp MUSICSW, 1      ; 1 ＝ 玩家把音樂關掉了
+	//	jnz 照常派曲
+	//	mov MUSICNUM, 0FFh  ; 沒有曲子
+	//	call 停止            ; sub_18A8E
+	//	ret
+	//
+	// 關掉之後 `MUSICNUM` 是 255，所以再開的時候一定和新曲號不同 → 會重放。
+	// 這裡用「把 activeMusicTrackID 清掉」達到同一件事。
+	if s.musicSwitchOff {
+		s.stopMusic()
+		return
+	}
 	binding, found := s.dataPack.FindMusicBinding(s.session.CurrentBlockID(), context)
 	if !found {
 		return
@@ -31,19 +45,19 @@ func (s *State) requestMusicForCurrentBlock(context string) {
 	s.pendingMusicEvents = append(s.pendingMusicEvents, event)
 }
 
-// musicEventForTrack 決定「從這一首換到那一首」要發什麼。抽出來是為了**測得到**：
-// 走 `requestMusicForCurrentBlock` 得先有一份 game-pack，而目前的 engine
-// 根本不收「不放音樂」的宣告（見下），於是那條分支在整合測試裡永遠跑不到。
+// musicEventForTrack 決定「從這一首換到那一首」要發什麼。
 //
-// ★ 空的 `TrackID` ＝**這裡不放音樂**，要把正在放的停掉，不是放一首叫「」的曲子。
-// 原作的停止是在派曲處寫 `MUSICNUM := 255`（PC-98 常駐 `9451h`、初始化 `2F5Ah`），
-// `MUSICSW := 0`（`2F46h`）是同一件事的開關版（spec 1192）。
+// ★ 三條規則都照原作的選曲常式（PC-98 `sub_18A44`）：
 //
-// ⚠ **目前這條分支在正式資料上到不了**：engine 的 pack 驗證會把 `track_id` 是空的
-// binding 擋掉（`music_bindings[i] references unknown track ""`），所以「這裡不放
-// 音樂」在 pack 裡表達不出來。程式碼先擺著是因為少了它，空的 `TrackID` 會發成
-// `play` 然後在 adapter 那裡查無此曲、**只留一行 log**：音樂繼續放著，看不出來。
-// 要真的用上，得在共用 engine 那邊讓 pack 表達得出「停」。
+//	cmp MUSICNUM, 曲號 ; 已經在放同一首就什麼都不做
+//	jz  結束
+//	mov MUSICNUM, 曲號 ; 換：先停再放
+//
+// 「同一首不重發」不是最佳化，是原作行為：少了它，每次重新派曲都會把曲子從頭
+// 播起，走幾步就聽得出來。
+//
+// ★ 目標是空字串 ＝ **停**，不是放一首叫「」的曲子。原作寫 `MUSICNUM := 255`
+// （沒有曲子），呼叫端是音樂開關（`sub_18AA7` 第一關）。
 func musicEventForTrack(previous, next string) (MusicEvent, bool) {
 	if next == previous {
 		return MusicEvent{}, false
@@ -52,6 +66,55 @@ func musicEventForTrack(previous, next string) (MusicEvent, bool) {
 		return MusicEvent{Action: "stop"}, true
 	}
 	return MusicEvent{Action: "play", TrackID: next}, true
+}
+
+// stopMusic 停掉正在放的那一首。**本來就沒在放就什麼都不發**——原作在這條路上
+// 一律呼叫停止常式，但重複停一次在 remake 這一側只會多一個看不出差別的事件。
+func (s *State) stopMusic() {
+	event, changed := musicEventForTrack(s.activeMusicTrackID, "")
+	if !changed {
+		return
+	}
+	s.activeMusicTrackID = ""
+	s.musicPlaybackSnapshot = nil
+	s.pendingMusicEvents = append(s.pendingMusicEvents, event)
+}
+
+// MusicSwitchOff 回答「玩家有沒有把音樂關掉」（原作的 `MUSICSW`）。
+func (s *State) MusicSwitchOff() bool { return s.musicSwitchOff }
+
+// ToggleMusicSwitch 是原作的音樂開關（PC-98 全域按鍵處理 `sub_18036`）：
+//
+//	cmp [bp+key], 0Fh   ; Ctrl+O
+//	jnz ...
+//	mov al, MUSICSW
+//	xor al, 1           ; 翻轉
+//	mov MUSICSW, al
+//	call sub_18AA7      ; 立刻重新派曲
+//
+// ★ 翻完**馬上重新派曲**，不是等下一次換場景：關掉要立刻安靜，打開要立刻放回
+// 這個場景該放的那一首。
+func (s *State) ToggleMusicSwitch() {
+	s.musicSwitchOff = !s.musicSwitchOff
+	s.requestMusicForCurrentBlock("")
+}
+
+// SoundSwitchOff 回答「玩家有沒有把音效關掉」（原作的 `SOUNDTYPE == 2`）。
+func (s *State) SoundSwitchOff() bool { return s.soundSwitchOff }
+
+// ToggleSoundSwitch 是原作的音效開關。參考卡寫得很清楚：
+//
+//	CTRL S : Toggles sound on and off (may be used at any time).
+//
+// 原作把目前的音源存進 `OLDSOUND`、`SOUNDTYPE := 2`（靜音），再開的時候若
+// `OLDSOUND` 還是合法音源（集合 `{0,1}`）就換回去；而 `SOUNDFX`（`sub_18930`）
+// 開頭就是 `cmp SOUNDTYPE, 2 / jz 返回`。
+//
+// ⚠ **音效與音樂是兩個開關**，互不影響：BGM 走的是 INT 7Eh（`sub_18BDB`），
+// 完全不看 `SOUNDTYPE`。把兩者綁在一起會讓 Ctrl+S 連音樂一起關掉——原作不是
+// 這樣（spec 1192）。
+func (s *State) ToggleSoundSwitch() {
+	s.soundSwitchOff = !s.soundSwitchOff
 }
 
 func (s *State) requestMusicForSignal(signal string, value uint16) {

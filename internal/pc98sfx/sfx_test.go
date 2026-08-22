@@ -139,3 +139,42 @@ func TestSelectorEventsAreUniqueWhenPresent(t *testing.T) {
 		t.Fatalf("有事件名的選擇子 %d 個，want 15", len(events))
 	}
 }
+
+// ★ 不作聲的選擇子**剛好這五個**，而且原因不只一處。
+//
+// ⚠ 這條擋的是一次真實的誤讀：`SOUNDFX` 的第一段早退最後一項是 `0FFh`
+// （`SOUNDHALT`，根本不是選擇子），很容易讀成 `0Fh` ＝ 15 ＝ `CRASHFX`，
+// 於是把 15 從清單拿掉「修好」它。**15 的早退在第二處**（`18995h`），
+// 而表格在第 13 格之後就沒有資料了——拿掉之後 `CRASHFX` 只會讀到別人的位元組。
+func TestSilentSelectorsAreExactlyTheFiveTheOriginalReturnsEarlyOn(t *testing.T) {
+	t.Parallel()
+
+	game := make([]byte, tableOffset+selectorCount*wordsPerEffect*2+2)
+	// 每個選擇子都在表格裡放一個音，才分得出「原本就沒資料」與「被判成無聲」。
+	for selector := 0; selector < selectorCount; selector++ {
+		offset := tableOffset + (selector*wordsPerEffect+1)*2
+		game[offset], game[offset+1] = 0xE8, 0x03 // 1000
+	}
+	silent := map[int]bool{}
+	for selector := 0; selector < selectorCount; selector++ {
+		if decodeEffect(game, selector).NoOp {
+			silent[selector] = true
+		}
+	}
+	want := map[int]bool{0: true, 1: true, 13: true, 14: true, 15: true}
+	if len(silent) != len(want) {
+		t.Fatalf("不作聲的選擇子 ＝ %v，want %v", silent, want)
+	}
+	for selector := range want {
+		if !silent[selector] {
+			t.Errorf("選擇子 %d（%s）應該是無聲的", selector, selectorMetadata[selector].symbol)
+		}
+	}
+	// `SOUNDHALT` 不在 0..15 裡：它是「停手上那一個」，不是一個音效。
+	if _, ok := SelectorForEvent("stop"); !ok {
+		t.Fatal("`stop` 應該對到 SOUNDHALT")
+	}
+	if selector, _ := SelectorForEvent("stop"); selector < selectorCount {
+		t.Fatalf("SOUNDHALT ＝ %d，不該落在選擇子範圍內", selector)
+	}
+}

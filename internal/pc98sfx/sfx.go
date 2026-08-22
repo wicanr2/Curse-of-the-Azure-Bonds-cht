@@ -108,6 +108,21 @@ func decodeEffect(game []byte, selector int) Effect {
 		Event:    metadata.event,
 	}
 	switch selector {
+	// `SOUNDFX`（`sub_18930`，PC-98 linear `18930h`）有**兩處**早退，中間隔著
+	// 公式那一段，所以不作聲的選擇子不是連號的一串：
+	//
+	//	18942h  cmp ax,0／1／0Dh／0Eh／0FFh  → 直接返回
+	//	18962h  cmp ax,2／4／6／9            → 走公式
+	//	18995h  cmp ax,0Fh                   → 直接返回   ← **另一處**
+	//	1899Dh  其餘                          → 走表格
+	//
+	// ⚠ 兩件事很容易讀錯，而且錯了都只會安靜、不會報錯：
+	//
+	//   - 第一段最後一個是 **0FFh 不是 0Fh**。`SOUNDHALT` 根本不是選擇子——
+	//     它住在選擇子表前面一格，值就是 255，`Import` 的迴圈碰不到它。
+	//   - `0Fh`＝15＝`CRASHFX` 的早退在**第二處**。只讀第一段會以為 15 有聲音，
+	//     然後把它從這張清單拿掉；實際上表格在 13 之後就沒有資料了
+	//     （第 13／14／15 格讀出來的是 37124、26755 這種不可能是頻率的值）。
 	case 0, 1, 13, 14, 15:
 		effect.NoOp = true
 		effect.Source = "immediate-return"

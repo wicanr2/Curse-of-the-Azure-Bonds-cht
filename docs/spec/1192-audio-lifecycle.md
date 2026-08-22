@@ -1,70 +1,138 @@
 # 1192 — 原機音訊的播放生命週期：從分母到覆蓋率
 
-狀態：`READY`（盤點、對照、限制都已釘住；「停」還接不上，原因在共用 engine）
+狀態：`READY`（動作分類、玩家開關、選擇子常數的身分都已釘住並接上）
 
 ## 問題
 
-`cmd/dseg-writers` 已經盤出「誰決定什麼時候該響」——六格音訊狀態的 17 處寫入。
+`cmd/dseg-writers` 已經盤出「誰決定什麼時候該響」——六個音訊位址的 17 處寫入。
 但那是**分母不是覆蓋率**：它說原作在幾個地方改音訊狀態，沒說 remake 有沒有
 對應的動作。
 
-## 生命週期動作
+## 三格狀態、三個常數
 
-按寫哪一格分（PC-98 版面，名字取自 Borland 除錯符號）：
+掃的六個位址不是同一種東西，而**分錯類會讓報表反過來說話**：
 
-| 動作 | 格 | 意思 | 寫入處 |
-|---|---|---|---:|
-| `select-track` | `MUSICNO` `8BF3h` | 選曲 | 12 |
-| `load-track` | `MUSICNUM` `8BE1h` | 曲目編號 | 1 |
-| `stop-track` | `MUSICNUM` `8BE1h` | **停止**：寫 `255`（沒有曲子） | 2 |
-| `music-switch` | `MUSICSW` `8BE3h` | 音樂開關 | 2 |
-| `sfx-halt`／`sfx-off`／`sfx-on` | `4838h`／`483Ah`／`483Ch` | 音效開關 | 0 |
+| 位址 | 符號 | 是什麼 | 種類 |
+|---|---|---|---|
+| `8BE1h` | `MUSICNUM` | 驅動程式手上的曲目編號（`255` ＝ 沒有曲子）| 狀態 |
+| `8BE3h` | `MUSICSW` | 音樂開關（`1` ＝ 玩家關掉了）| 狀態 |
+| `8BF3h` | `MUSICNO` | 這個場景該放第幾首 | 狀態 |
+| `4838h` | `SOUNDHALT` | `SOUNDFX` 的選擇子 `255` | **常數** |
+| `483Ah` | `SOUNDOFF` | `SOUNDFX` 的選擇子 `0` | **常數** |
+| `483Ch` | `SOUNDON` | `SOUNDFX` 的選擇子 `1` | **常數** |
 
-⚠ **`stop-track` 沒有自己的格，它是一個「值」。** 只按位址分類會把「停止」算成
-「載入」，於是原作明明會停音樂，報表卻說這一類已經接上了。分類要看值。
-
-三處停止的證據（PC-98 常駐）：
+後三個和 `CASTFX`…`CRASHFX` 排在資料段同一張表裡，值在檔案裡就寫死：
 
 ```
-2F46h  c6 06 e3 8b 00   mov byte [8BE3h], 0     MUSICSW  := 0     初始化：音樂關著
-2F5Ah  c6 06 e1 8b ff   mov byte [8BE1h], 0FFh  MUSICNUM := 255   初始化：沒有曲子
-9451h  c6 06 e1 8b ff   mov byte [8BE1h], 0FFh  MUSICNUM := 255   派曲：這裡不放音樂
-8A31h  a2 e3 8b         mov [8BE3h], al         MUSICSW  := AL    開關，接著 far call
-       9a 77 01 93 08   call far 0893:0177      ＝ BGMPLAY
+4838h  ff 00  00 00  01 00  02 00  03 00  04 00 …
+       255    0      1      2      3      4
+       HALT   OFF    ON     CAST   MISS   SPELLHIT …
 ```
 
-`9451h` 落在 `9400h`..`9520h` 這一段——同一段裡有全部 7 處 `MUSICNO` 的寫入，
-所以那是**派曲的常式**：依情境挑一首，挑不到就寫 255。
+所以它們的**寫入次數永遠是零**，有意義的是**讀取**——讀它們的地方就是 `SOUNDFX`
+的呼叫點。選擇子的身分與解碼歸 `internal/pc98sfx`。
 
-## 「發得出來」與「有東西會發」是兩件事
+> ⚠ **三個相鄰符號同時掃出零，是模型錯了的訊號，不是結論。** 這一支本來把它們
+> 當狀態格掃，掃出 0 處寫入，再照「原作沒寫到就不算待辦」的規則印成 ✅ ——
+> 三個假零被當成三項做完的工作。
 
-規則層有這個動作是**能力**，現在有哪一段劇情會發是**有沒有用到**。混成一格會讓
-「寫了但沒人呼叫」看起來像做完了，所以報表分兩欄問。
+## 停止不是劇情資料
 
-目前：規則層發得出 7 種（`musicEventForTrack` 的 `stop` 分支），game-pack 真的
-會發的只有 5 種。
-
-## 為什麼「停」接不上——卡點在共用 engine
-
-不是「還沒有人寫那條 binding」，是**寫不出來**。engine 的 pack 驗證會把
-`track_id` 是空的 binding 擋掉：
+派曲常式是 PC-98 `sub_18AA7`（linear `18AA7h`）：
 
 ```
-music_bindings[1] references unknown track ""
+cmp MUSICSW, 1          ; 玩家關掉音樂了嗎
+jnz 照常派曲
+mov MUSICNUM, 0FFh      ; 沒有曲子
+call 停止驅動            ; sub_18A8E
+ret
+照常派曲:
+cmp WHEREAMI, 5／1／7   ; 這三種狀態不換曲
+jz  ret
+al := CURRENTECL         ; ← 場景碼，就是 ECL 段
+  1／31h                     -> MUSICNO := 3
+  11h 12h 21h 22h 23h 15h 43h 45h -> MUSICNO := 4
+  50h／51h                    -> WLDTWN 非零 ? 6 : 5
+  20h／23h／40h／42h          -> MUSICNO := 8   ⚠ 23h 上面就被吃掉了，這裡到不了
+  2／10h／5／35h              -> MUSICNO := 9
+  3／4／25h／32h／33h         -> MUSICNO := 0Ch
+  30h                         -> 不改 MUSICNO，但仍重新派一次
+  其餘                        -> **ret，音樂繼續放**
+selectTrack(MUSICNO)     ; sub_18A44
 ```
 
-所以「這裡不放音樂」在 pack 裡沒有任何寫法。`TestEnginePackCannotExpressStopYet`
-把這個限制釘住——**它一旦紅，代表 engine 鬆綁了**，那時要做的是把「不放音樂」的
-binding 補進 game-pack，不是把測試刪掉。
+★ **default 是 `ret` 不是停止。** 原作沒有「這一段不放音樂」這種資料——查不到
+就維持現況。真正會停音樂的**只有一處**：玩家把音樂關掉。
 
-⚠ 這兩種卡點的處置差很多：「沒人寫」補一行 JSON 就好，「寫不出來」要動共用 repo。
-報表寫的是後者，而且那句話是**跑出來的**不是手打的（`cmd/audio-lifecycle-audit`
-每次都重驗）。
+`CURRENTECL` 就是 ECL 段編號，所以 game-pack 用 `ecl_blocks` 當 binding 的鍵
+是對的；`WLDTWN` 對應 `context: "pc98-town-services-menu"` 那條。
 
-## 為什麼 `stop` 的程式碼先擺著
+### 選曲常式的兩條規則
 
-少了它，空的 `TrackID` 會發成 `play`，然後在 adapter 那裡查無此曲、**只留一行
-log**：音樂繼續放著，畫面上什麼都看不出來，測試也照樣綠。
+`sub_18A44`（`selectTrack`）：
+
+```
+cmp MUSICSW, 1      ; 關著就什麼都不做
+jz  ret
+dec 曲號             ; 曲號 1 起算，內部 0 起算
+cmp MUSICNUM, 曲號   ; 已經在放同一首就什麼都不做
+jz  ret
+mov MUSICNUM, 曲號
+call 停止 → 延遲 → 開始
+```
+
+「同一首不重發」是**原作行為不是最佳化**：少了它，每次重新派曲都會把曲子從頭
+播起。`musicEventForTrack` 照這條寫。
+
+## 兩個玩家開關，互不影響
+
+全域按鍵處理是 `sub_18036`（讀一個鍵，處理全域熱鍵）：
+
+| 原作鍵 | 內部碼 | 做什麼 | remake |
+|---|---|---|---|
+| Ctrl+S | `13h` | `OLDSOUND := SOUNDTYPE`；`SOUNDTYPE := 2`（靜音），再按換回來 | `State.ToggleSoundSwitch` |
+| Ctrl+O | `0Fh` | `MUSICSW ^= 1`，然後**立刻**重新派曲 | `State.ToggleMusicSwitch` |
+
+Ctrl+S 在 DOS 參考卡上就寫著：
+
+```
+CTRL S : Toggles sound on and off (may be used at any time).
+```
+
+「may be used at any time」是實作要求：這兩顆要擺在所有模式**前面**，連地圖預覽
+那種提早 return 的畫面也管得到，而且**按鍵要被吃掉**——原作是在讀鍵的地方攔下來
+的，不會再傳給任何模式。少了這一步，同一幀的 `S` 會被戰鬥選單當成別的指令。
+
+⚠ **兩個開關是獨立的**：
+
+- 音效走 `SOUNDFX`（`sub_18930`），開頭就是 `cmp SOUNDTYPE, 2 / jz ret`。
+- BGM 走 INT 7Eh（`sub_18BDB`），**完全不看 `SOUNDTYPE`**。
+
+所以 Ctrl+S 關掉音效時音樂照放，Ctrl+O 關掉音樂時音效照響。綁在一起是很容易犯
+又不會被任何測試抓到的錯，`TestSoundAndMusicSwitchesAreIndependent` 擋住它。
+
+★ 原作在**播放端**擋音效（`SOUNDFX` 開頭就返回），不是不產生事件。remake 照同一
+個位置擋（`ConsumeSoundEvents`），佇列才不會在關著的時候越積越多。
+
+## 不作聲的選擇子有五個，而且原因分兩處
+
+`SOUNDFX` 的早退不是連號的一串：
+
+```
+18942h  cmp ax, 0／1／0Dh／0Eh／0FFh  → ret
+18962h  cmp ax, 2／4／6／9            → 走公式
+18995h  cmp ax, 0Fh                   → ret        ← **另一處**
+1899Dh  其餘                          → 走表格
+```
+
+⚠ 兩件事很容易讀錯，而且錯了都只會安靜、不會報錯：
+
+- 第一段最後一個是 **`0FFh` 不是 `0Fh`**。`SOUNDHALT` 根本不是選擇子。
+- `0Fh` ＝ 15 ＝ `CRASHFX` 的早退在**第二處**。只讀第一段會以為 15 有聲音，
+  然後把它從無聲清單拿掉——實際上表格在第 13 格之後就沒有資料了
+  （第 13／14／15 格讀出來的是 37124、26755 這種不可能是頻率的值）。
+
+`TestSilentSelectorsAreExactlyTheFiveTheOriginalReturnsEarlyOn` 把整個集合釘住。
 
 ## 這個數字證明不了什麼
 
@@ -73,9 +141,21 @@ log**：音樂繼續放著，畫面上什麼都看不出來，測試也照樣綠
   不走 far-call 對照表是因為表比實際少，而**下界看起來和全集一樣合理**（spec 1186）。
 - 「接上了」只表示 remake 有對應的動作，**不表示在正確的時機發**——那要實機比對。
 
+## 已被推翻的斷言
+
+- ~~「停」接不上，卡點在共用 engine 不收 `track_id` 是空的 binding~~ ——
+  那條路一開始就不該走：原作沒有「這一段不放音樂」的資料，停止來自**按鍵**。
+  engine 收不收空字串與這件事無關（空的 `track_id` 是打錯字，本來就該被擋）。
+- ~~`sfx-halt`／`sfx-off`／`sfx-on` 原作一處都沒寫到，所以不算待辦~~ ——
+  那三個是常數不是狀態格，見上。
+
 ## 相關
 
 - `cmd/audio-lifecycle-audit`、`docs/audit/audio-lifecycle.md`
-- `internal/game/music_events.go`：`musicEventForTrack`
-- `TestMusicEventForTrack`、`TestEnginePackCannotExpressStopYet`
+- `internal/game/music_events.go`、`internal/game/sound_events.go`
+- `cmd/azure-bonds-game/keys.go`：`globalAudioKeys`
+- `internal/pc98sfx`：選擇子的身分與解碼
+- `TestMusicSwitchIsTheOnlyThingThatStopsMusic`、
+  `TestSoundAndMusicSwitchesAreIndependent`、
+  `TestCtrlSAndCtrlOTogglePlayerAudioThroughTheKeySeam`
 - spec 1183（dseg 掃描）、1186（音效觸發語意）、1187（DOS 音效描述子）
