@@ -4422,7 +4422,16 @@ func (s *State) finishCombat() error {
 	s.EndCombatView()
 	// 戰鬥結束要換回場景曲。原作靠主迴圈重新派曲自然換回去；remake 只有換段會
 	// 派曲，而戰鬥前後段沒有變 ⇒ 少了這一行，戰鬥曲會一直放下去（spec 1192）。
-	s.restoreSceneMusic()
+	//
+	// ⚠ **全滅是例外**：原作的 POSTCOM 在全滅那一條走的是另一支
+	// （PC-98 overlay-05 `18F8h`），印完全滅訊息換成曲目 2 才切回文字模式；
+	// 非全滅那一條**跳過**那個換曲點（`18F6h` 的 `jmp` 直接落到 `1963h`）。
+	// 兩條混用會讓打輸的時候響起場景曲。
+	if s.battle.Status() == combat.StatusEnemyWon {
+		s.requestPartyWipeMusic()
+	} else {
+		s.restoreSceneMusic()
+	}
 	s.Mode = ModeEvent
 	s.syncPartyFromBattle()
 	s.removeTemporaryCombatAllies()

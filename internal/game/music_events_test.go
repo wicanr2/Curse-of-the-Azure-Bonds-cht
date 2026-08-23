@@ -9,6 +9,7 @@ import (
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiomap"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
@@ -446,6 +447,143 @@ func TestEventDrivenMusicCoversEveryECLBlock(t *testing.T) {
 			if _, found := state.dataPack.FindMusicBinding(block, context); !found {
 				t.Errorf("段 0x%02X 沒有 %q 的曲子", block, context)
 			}
+		}
+	}
+}
+
+// ★ 結局過場也有自己那一首（PC-98 overlay-18 `168Dh`：`MUSICNO := 0Ah` 之後
+// 立刻 `MSCPLAY`，才開始印結局文字）。與開戰、開場、角色建立同一類——**不看
+// `CURRENTECL`**，所以每一個有 ECL 的段都要綁得到。
+//
+// ⚠ 這條擋的是「打通關卻沒有結局曲」，而那**不會報錯**：沒有綁定時
+// `requestMusicForCurrentBlock` 直接 return，結局照樣沿用戰鬥曲演完。
+func TestEveryECLBlockHasEndingMusic(t *testing.T) {
+	state := NewState(testCatalog())
+	if state.dataPack == nil {
+		t.Skip("沒有 game pack")
+	}
+	blocks := []uint8{1, 2, 3, 4, 16, 17, 18, 21, 32, 33, 34, 35, 37, 48, 49,
+		50, 51, 53, 64, 66, 67, 69, 80, 81, 82}
+	for _, block := range blocks {
+		binding, found := state.dataPack.FindMusicBinding(block, endingMusicContext)
+		if !found {
+			t.Errorf("段 0x%02X 的結局沒有曲子", block)
+			continue
+		}
+		// 曲目 10（`reference_selector` 10）＝ `pc98-bgm-selector-0a`。
+		if binding.TrackID != "pc98-bgm-selector-0a" {
+			t.Errorf("段 0x%02X 的結局曲是 %q，原作是曲目 10", block, binding.TrackID)
+		}
+	}
+}
+
+// TestEndingSceneSwitchesToTheEndingTrack 釘住換曲點的**位置**：原作在印第一頁
+// 結局文字之前就換好了，所以 `beginEndingScene` 一跑就要發事件。
+func TestEndingSceneSwitchesToTheEndingTrack(t *testing.T) {
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{0x01: {}}, 0x01)
+	state.ConsumeMusicEvents()
+	state.requestCombatMusic(0x01)
+	if got := state.ConsumeMusicEvents(); len(got) == 0 {
+		t.Fatal("先放戰鬥曲，才看得出結局有沒有換曲")
+	}
+
+	state.beginEndingScene()
+	events := state.ConsumeMusicEvents()
+	if len(events) != 1 || events[0].Action != "play" ||
+		events[0].TrackID != "pc98-bgm-selector-0a" {
+		t.Fatalf("結局過場沒有換到結局曲：%+v", events)
+	}
+	if state.endingPageIndex != 0 || !state.endingScene {
+		t.Fatalf("換曲要發生在第一頁之前：endingScene=%v page=%d",
+			state.endingScene, state.endingPageIndex)
+	}
+}
+
+// ★ 全滅也有自己那一首（POSTCOM，PC-98 overlay-05 `1955h`：印完
+// 「モンスターはパーティーを全滅させ、喜んでいる。」之後 `MUSICNO := 2` 再
+// `MSCPLAY`）。非全滅那一條走 `18F6h` 的 `jmp` 直接跳過那個換曲點——**兩條不是
+// 同一首**，混用會讓打輸的時候響起場景曲。
+func TestEveryECLBlockHasPartyWipeMusic(t *testing.T) {
+	state := NewState(testCatalog())
+	if state.dataPack == nil {
+		t.Skip("沒有 game pack")
+	}
+	blocks := []uint8{1, 2, 3, 4, 16, 17, 18, 21, 32, 33, 34, 35, 37, 48, 49,
+		50, 51, 53, 64, 66, 67, 69, 80, 81, 82}
+	for _, block := range blocks {
+		binding, found := state.dataPack.FindMusicBinding(block, partyWipeMusicContext)
+		if !found {
+			t.Errorf("段 0x%02X 的全滅沒有曲子", block)
+			continue
+		}
+		if binding.TrackID != "pc98-bgm-selector-02" {
+			t.Errorf("段 0x%02X 的全滅曲是 %q，原作是曲目 2", block, binding.TrackID)
+		}
+	}
+}
+
+// TestEndingAndPartyWipeTracksAreNotTheSceneTrack 釘住三個事件驅動換曲點彼此
+// 不同，也都不等於場景曲——**綁錯到同一首不會報錯**，只會安靜地沿用。
+func TestEndingAndPartyWipeTracksAreNotTheSceneTrack(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	seen := map[string]string{}
+	for _, context := range []string{
+		combatMusicContext, endingMusicContext, partyWipeMusicContext,
+	} {
+		binding, found := pack.FindMusicBinding(0x01, context)
+		if !found {
+			t.Fatalf("段 0x01 沒有 %q 的綁定", context)
+		}
+		if previous, clash := seen[binding.TrackID]; clash {
+			t.Errorf("%q 與 %q 綁到同一首 %s", context, previous, binding.TrackID)
+		}
+		seen[binding.TrackID] = context
+	}
+	scene, found := pack.FindMusicBinding(0x01, "")
+	if found {
+		if context, clash := seen[scene.TrackID]; clash {
+			t.Errorf("段 0x01 的場景曲 %s 與 %q 同一首", scene.TrackID, context)
+		}
+	}
+}
+
+// ⚠ 這條的表在 `internal/audiomap`，不在測試檔裡：`cmd/music-change-points`
+// 與 `cmd/remake-status` 用同一份，報表與測試才不會各自漂移。
+
+// TestEveryOriginalMusicChangePointHasARemakeCounterpart 釘住 13／13。
+//
+// ⚠ 「接上了」不等於「在原作會發的那一刻發」。這條測的是**有沒有落點**，
+// 時機要實機比對。
+func TestEveryOriginalMusicChangePointHasARemakeCounterpart(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(audiomap.ChangePoints) != 13 {
+		t.Fatalf("原作是 13 個換曲點，表裡有 %d 個", len(audiomap.ChangePoints))
+	}
+	trackBySelector := map[int]string{}
+	for _, track := range pack.MusicTracks {
+		trackBySelector[int(track.ReferenceSelector)] = track.ID
+	}
+	bindings := make([]audiomap.Binding, 0, len(pack.MusicBindings))
+	for _, binding := range pack.MusicBindings {
+		bindings = append(bindings, audiomap.Binding{
+			Context: binding.Context, TrackID: binding.TrackID})
+	}
+	for _, result := range audiomap.Resolve(trackBySelector, bindings) {
+		if result.TrackID == "" {
+			t.Errorf("%s（%s）選的曲目 %d 不在 pack 裡",
+				result.Point.Site, result.Point.Event, result.Point.Selector)
+			continue
+		}
+		if !result.Wired {
+			t.Errorf("%s（%s）沒有落點：context %q ＋ 曲目 %d（%s）",
+				result.Point.Site, result.Point.Event, result.Point.Context,
+				result.Point.Selector, result.TrackID)
 		}
 	}
 }

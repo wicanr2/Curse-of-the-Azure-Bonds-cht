@@ -152,11 +152,55 @@ CTRL S : Toggles sound on and off (may be used at any time).
 | `overlay-10` COMPREP | `1D97h` | 開戰且 `LOADMONNUM == 47h` | 11 地城二 | ✅ `signal: "monster_set"` cue |
 | `overlay-01` | `093Ch` | **開場** | 1 標題 | ✅ `context: "pc98-title"` |
 | `overlay-17` GEN | `0B08h` | **角色建立** | 2 | ✅ `context: "pc98-character-creation"` |
-| `overlay-05` | `1955h` | 戰後回文字選單 | 2 | — remake 沒有這個畫面（見下）|
-| `overlay-18` | `168Dh` | 結局 | 10 結局 | — remake 沒有這個狀態 |
+| `overlay-05` POSTCOM | `1955h` | **全滅** | 2 | ✅ `context: "pc98-party-wipe"` |
+| `overlay-18` | `168Dh` | **結局** | 10 結局 | ✅ `context: "pc98-ending"` |
 
-⇒ 13 個換曲點裡 **11 個接上了**（7 個查表 ＋ 開戰、開戰的 `47h` 分岔、開場、
-角色建立）。剩下兩個是 remake 沒有那個畫面／狀態（戰後文字選單、結局）。
+⇒ 13 個換曲點**全部接上了**。
+
+### 結局那一首（第 751 輪）
+
+PC-98 `overlay-18:167Eh` 那一支就是結局過場，換曲寫在結局文字的**正上方**：
+
+```
+168D  mov  byte [8BF3h], 0Ah    ; MUSICNO := 10（結局）
+1692  mov  al, [8BF3h]
+1695  push ax
+1696  call far 893h:114h        ; MSCPLAY
+169B  …                          ; 第 1 段結局文字 → call far 418h:0E6Ah（等鍵）
+16C4  …                          ; 第 2 段
+16ED  …                          ; 第 3 段
+1716  …                          ; 第 4 段
+```
+
+⇒ 換曲點是「**結局開始演**」那一刻，不是打完最終戰、也不是回主選單。remake 這
+一側掛在 `beginEndingScene()`（`PROGRAM 8` 的第一步，spec 1154）。
+
+### 全滅那一首（第 751 輪）
+
+POSTCOM 的 `sub_1775` 先走一次角色名冊算 `PARTYDEAD`（`7F34h`）：初值 1，
+只要有一位的 `CHARSTATUS`（`+196h`）**不在** `{1 ANIMATED, 2 TEMPGONE,
+6 DEAD, 7 STONED, 8 GONE}` 就清成 0。也就是**還有人 `UNCONC`／`DYING` 就不算
+全滅**（ordinal 見 spec 427）。分岔在 `183Eh`：
+
+```
+183E  cmp  byte [7F34h], 0      ; PARTYDEAD
+1843  jz   184F                 ; 沒全滅 → 另一條
+1845  cmp  byte [0BDE8h], 0     ; ADUEL：決鬥輸掉不算全滅
+184A  jnz  184F
+184C  jmp  18F8                 ; 全滅畫面
+```
+
+全滅那一條印「モンスターはパーティーを全滅させ、喜んでいる。」與
+「何かキーを押してください」，**印完才** `MUSICNO := 2` ＋ `MSCPLAY`，接著
+`TTY := 1`（`7F36h`，切回文字模式）。非全滅那一條在 `18F6h` 直接 `jmp 1963h`，
+**跳過那個換曲點** ⇒ 兩條不是同一首。
+
+⚠ remake 用 `combat.StatusEnemyWon` 當那一刻，**判準不完全相同**：那是戰鬥層的
+「敵方獲勝」，不是逐位查 `CHARSTATUS`。決鬥在 remake 走不到（`GODUEL` 的兩個
+`2Dh CALL` 選擇子 corpus 都沒用到，spec 1150），所以 `ADUEL` 那一半不影響結果。
+
+⚠ **接上換曲點不等於接上那個畫面。** 原作全滅之後回主選單、結局之後問存檔；
+remake 的全滅目前只顯示「戰鬥失敗。」就回到地圖。那是另一條缺口，不在本節。
 
 ### 開戰的 `47h` 分岔（第 750 輪接上）
 

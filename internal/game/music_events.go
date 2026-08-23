@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiomap"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 )
@@ -166,12 +167,45 @@ func (s *State) requestCombatMusic(monsterID uint8) {
 // 推給 `MSCPLAY` 或直接寫 `MUSICNO` 之後派曲），所以 pack 那一側是每一段都列。
 const (
 	// combatMusicContext ＝ 開戰（`INITCOMBAT`，COMPREP）。
-	combatMusicContext = "pc98-combat"
+	combatMusicContext = audiomap.CombatContext
 	// titleMusicContext ＝ 開場（`DOINTRO`，overlay-01 `093Ch`，曲目 1 標題）。
-	titleMusicContext = "pc98-title"
+	titleMusicContext = audiomap.TitleContext
 	// creationMusicContext ＝ 角色建立（`GEN`，overlay-17 `0B08h`，曲目 2）。
-	creationMusicContext = "pc98-character-creation"
+	creationMusicContext = audiomap.CreationContext
+	// endingMusicContext ＝ 結局過場（PC-98 overlay-18 `168Dh`，曲目 10 結局）。
+	//
+	// ★ 原作寫在結局文字的**正上方**：`mov byte [MUSICNO], 0Ah` 之後立刻
+	// `push` 同一格再 `call far 893h:114h`（`MSCPLAY`），才開始逐頁印那四段
+	// 結局文字（每段之後 `call far 418h:0E6Ah` 等鍵）。所以換曲點是「結局開始
+	// 演」那一刻，不是打完最終戰、也不是回主選單。
+	endingMusicContext = audiomap.EndingContext
+	// partyWipeMusicContext ＝ 全滅（POSTCOM，PC-98 overlay-05 `1955h`，曲目 2）。
+	//
+	// ★ 原作的判準是 `PARTYDEAD && !ADUEL`（`7F34h`／`0BDE8h`，符號表直接讀出）：
+	// `PARTYDEAD` 由 POSTCOM 走一次角色名冊算出來——**每一位**的 `CHARSTATUS`
+	// （`+196h`）都落在 `{ANIMATED, TEMPGONE, DEAD, STONED, GONE}` 才算全滅，
+	// 也就是還有人 `UNCONC`／`DYING` 就**不算**（spec 427 的 ordinal）。
+	// 決鬥（`ADUEL`）輸掉不算全滅。
+	//
+	// ⚠ remake 這一側用 `combat.StatusEnemyWon` 當那一刻，**判準不完全相同**：
+	// 那是戰鬥層的「敵方獲勝」，不是逐位查 `CHARSTATUS`。決鬥在 remake 走不到
+	// （`GODUEL` 的兩個 `2Dh CALL` 選擇子 corpus 都沒用到，spec 1150），所以
+	// `ADUEL` 那一半不影響結果。
+	partyWipeMusicContext = audiomap.PartyWipeContext
 )
+
+// requestEndingMusic 是結局過場那一首。與開戰、開場、角色建立同一類：原作
+// **不看 `CURRENTECL`**，所以 pack 那一側 25 段全列。
+func (s *State) requestEndingMusic() {
+	s.requestMusicForCurrentBlock(endingMusicContext)
+}
+
+// requestPartyWipeMusic 是全滅畫面那一首。原作在印
+// 「モンスターはパーティーを全滅させ、喜んでいる。」與等鍵提示**之後**才換曲，
+// 而換完曲才把 `TTY := 1` 切回文字模式。
+func (s *State) requestPartyWipeMusic() {
+	s.requestMusicForCurrentBlock(partyWipeMusicContext)
+}
 
 // RequestTitleMusic 是開場那一首。由前端在**顯示標題畫面時**呼叫。
 //

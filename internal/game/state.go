@@ -3915,6 +3915,9 @@ var endingSceneKeys = []string{
 func (s *State) beginEndingScene() {
 	s.endingScene = true
 	s.endingPageIndex = 0
+	// ★ 原作在印結局文字之前先換曲（PC-98 overlay-18 `168Dh` → `MSCPLAY`，
+	// 曲目 10 結局）。換曲點在這裡而不是最終戰結束或回主選單那一刻。
+	s.requestEndingMusic()
 	s.Mode = ModeWilderness
 	s.OriginalEvent = "PROGRAM 8"
 	s.showEndingPage()

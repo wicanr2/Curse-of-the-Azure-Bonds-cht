@@ -100,6 +100,17 @@ func main() {
 			effects.OpcodesByStatus["done"], effects.OpcodesByStatus["partial"])
 	}
 
+	var music struct {
+		ChangePoints   int `json:"change_points"`
+		Wired          int `json:"wired"`
+		Tracks         int `json:"tracks"`
+		DistinctTracks int `json:"distinct_tracks"`
+	}
+	if readJSON(*auditDir, "music-change-points.json", &music) {
+		add("music_change_points", music.ChangePoints, music.Wired,
+			music.DistinctTracks, music.Tracks)
+	}
+
 	var text struct {
 		Summary struct {
 			Groups    int `json:"groups"`
