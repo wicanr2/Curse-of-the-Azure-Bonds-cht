@@ -405,7 +405,7 @@
    "opcode": "0x0E",
    "name": "PICTURE",
    "status": "partial",
-   "note": "原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n \u003e= 78h 是大圖。remake 三個判準都對得上，0FFh 先前什麼都不做、現在發 PictureCloseRequested。partial 剩表現層：實際載入、頭像與身體的分塊合成、以及 4FBAh/4FBBh 那個不重繪的旁路",
+   "note": "原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n \u003e= 78h 是大圖。remake 三個判準都對得上，0FFh 先前什麼都不做、現在發 PictureCloseRequested。partial 剩表現層：實際載入、頭像與身體的分塊合成、以及 4FBAh/4FBBh 那個不重繪的旁路（旁路的語意已解出：4FBAh 是現在的畫面模式、4FBBh 是上一次的，3 ＝ 非第一人稱、4 ＝ 第一人稱，因為兩者都由 ECL 格 4BE6 的新值 0／非 0 決定，而 4BE6 就是第一人稱模式旗標 ⇒「前後都還在第一人稱就不重繪」；⚠ 旁路連 8B62h/8B65h 的清除一起跳過，所以走旁路時「圖還開著」這個狀態留著。remake 還沒建這個模型）",
    "occurrences": 199,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1116,7 +1116,7 @@
    "opcode": "0x2D",
    "name": "CALL",
    "status": "partial",
-   "note": "原作 2F02h 整支 124 條讀完（spec 1150）：operand − 7FFFh 之後七路分派。corpus 用到四個——2E10h 125 處（重畫）、B200h 19 處（音效）、C01Eh 13 處（MOVEFORWARD）、6803h 11 處（圖片序列推一格）。B200h 的兩支已判定：選號由 ECL 格 03DE 決定，全 corpus 15 次寫入一律是 5 ⇒ 只走得到 10 那一支；6803h 已接成序列游標。2E10h 的髒旗標模型已經建出來（spec 1172）：STOREVALUE 當場把 C04B/C04C/C04D 鏡射到 720Fh/7210h/7211h 並立 8B68h，CALL C01Eh 當場走一步，CALL 2E10h 取快照後把五個旗標清掉——先前那個「回頭掃同一 block、執行序在前的 SaveWrites」的啟發式整支拿掉了。★ 那個「還要有新寫的 C04D」的附加條件也早就拿掉（spec 1158）：只寫 C04B/C04C 的重畫就是真實移動、朝向刻意不變，corpus 23 處全部生效——4BF0/4BF1 的 producer 是地城主迴圈的移動前快照（spec 1155/1045）。★ 七個選擇子已全量普查（`TestDuelCallSelectorsAreUnusedWhileTheOthersAreNot`，先做正對照才讓零算數）：corpus 用四個（125／19／13／11），`C018h`／`8000h`／`8001h` 三個都是 0，而且沒有第八個 ⇒ **未接的目標都走不到**。partial 只剩**兩個 remake 這一側的補丁**（原作沒有，理由寫在 spec 1172）：鏡射多記「這三格是哪個 block 的腳本寫的」並要求與目前 block 相同，以及 Written 遮罩每次頂層執行重新起算。兩者都是因為 remake 改變隊伍位置的路徑不只一條、不是每一條都回寫 ECL 暫存器；原作靠引擎每走一步都寫 720Fh 保持三格同步，不需要這兩個補丁",
+   "note": "原作 2F02h 整支 124 條讀完（spec 1150）：operand − 7FFFh 之後七路分派。corpus 用到四個——2E10h 125 處（重畫）、B200h 19 處（音效）、C01Eh 13 處（MOVEFORWARD）、6803h 11 處（圖片序列推一格）。B200h 的兩支已判定：選號由 ECL 格 03DE 決定，全 corpus 15 次寫入一律是 5 ⇒ 只走得到 10 那一支；6803h 已接成序列游標。2E10h 的髒旗標模型已經建出來（spec 1172）：STOREVALUE 當場把 C04B/C04C/C04D 鏡射到 720Fh/7210h/7211h 並立 8B68h，CALL C01Eh 當場走一步，CALL 2E10h 取快照後把五個旗標清掉——先前那個「回頭掃同一 block、執行序在前的 SaveWrites」的啟發式整支拿掉了。★ 那個「還要有新寫的 C04D」的附加條件也早就拿掉（spec 1158）：只寫 C04B/C04C 的重畫就是真實移動、朝向刻意不變，corpus 23 處全部生效——4BF0/4BF1 的 producer 是地城主迴圈的移動前快照（spec 1155/1045）。★ 七個選擇子已全量普查（`TestDuelCallSelectorsAreUnusedWhileTheOthersAreNot`，先做正對照才讓零算數）：corpus 用四個（125／19／13／11），`C018h`／`8000h`／`8001h` 三個都是 0，而且沒有第八個 ⇒ **未接的目標都走不到**。★ 投影的時機也對上了（spec 1172）：原作的 STOREVALUE 一寫 C04B 就當場改 720Fh，隊伍在那一刻就搬了，2E10h 只是重畫；remake 改成「執行結束時座標還髒著就收尾投影一次」，所以「寫了座標卻沒有 2E10h」的執行也會搬隊伍（實例 ECL3/0x10:0C7Eh 指揮官帶你走側門，隔壁那條搶劫結局 0D24h 才有重畫）。Written 遮罩因此整格移除。partial 只剩**一個 remake 這一側的擋板**：鏡射多記「這三格是哪個 block 的腳本寫的」並要求與目前 block 相同。★ 它擋的不是引擎行為——spec 1183 普查過 720Fh/7210h/7211h 的全部寫入者（STOREVALUE 的鏡射、MOVEFORWARD、INIT、MOVEMENT、LOADSAVE 的 5 byte 區塊，共五處），INTERPET（擁有 GOECL 與 block 載入）一次都沒寫卻讀了 23 次 ⇒ 原作沒有「換 block 的引擎進場放置」，進新地圖的落點是腳本自己寫的（ECL2/0x03:00DBh 甚至還帶條件 4C2A==1）。這一格擋的是 remake 的資料缺口：腳本沒寫進場座標的地圖靠 game pack 宣告的 spawn 補值。所以拿不拿得掉是資料問題，而已知有一處對不上——提爾弗頓下水道腳本說 (0,0) 朝南、宣告的 spawn 是 (0,1)，還沒用原版判過誰對",
    "occurrences": 168,
    "blocks": [
     "ECL1.DAX/0x52",
@@ -1235,8 +1235,8 @@
   {
    "opcode": "0x33",
    "name": "PRINT RETURN",
-   "status": "partial",
-   "note": "原作 2CEAh 整支 14 條讀完（spec 1147）：欄 65A0h := 1、列 65A1h ＋1，兩個分支對游標做的事一樣（8B61h 只決定要不要順手清）。所以它是硬換行——連續兩條會空一行。remake 只記指令邊界（PrintReturnCount），沒有游標模型；缺口在 UI 的行模型，不是 ECL VM",
+   "status": "done",
+   "note": "原作 2CEAh 整支 14 條讀完（spec 1147）：欄 65A0h := 1、列 65A1h ＋1，兩個分支對游標做的事一樣（8B61h 只決定要不要順手清）。所以它是硬換行——連續兩條會空一行。★ 玩家看得到的那一半已經接完（cmd/ecl-print-return-audit，spec 1147）：走得到的 33h 共 120 條、110 個換行段落，其中 10 段連著兩條會空行，而 7 段兩側的文字落在同一個顯示頁裡；兩個語系各七則插 \\n\\n，位置照原作那兩條 33h 前後的段落切，三條回歸測試釘住，清單來自 docs/audit/ecl-print-return.json 不是手寫的 ⇒ 原作多出一處看得見的空行測試就會紅。★ VM 這一側**沒有東西可做**：`65A0h`／`65A1h` 是 DOS 資料段的游標，全 corpus 沒有任何 ECL 指令碰得到它（`cmd/ecl-address-refs -all`，正對照：同一次掃描 `4C2A` 6 處、`7EA8` 6 處、`4BE6` 多處）⇒ 腳本觀察不到游標，沒有可分歧的控制流。⚠ 這個 0 是**修好儀器之後**量的：舊版 `-all` 傳 nil 起點，跟不到只有生命週期入口才進得去的碼，同一個位址在 `-writes` 找得到、在 `-all` 是 0。",
    "occurrences": 120,
    "blocks": [
     "ECL2.DAX/0x01",
@@ -1457,12 +1457,12 @@
   }
  ],
  "instructions_by_status": {
-  "done": 13690,
-  "partial": 487
+  "done": 13810,
+  "partial": 367
  },
  "opcodes_by_status": {
-  "done": 58,
-  "partial": 3
+  "done": 59,
+  "partial": 2
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1496,26 +1496,26 @@
   "ECL1.DAX/0x50": 5,
   "ECL1.DAX/0x51": 3,
   "ECL1.DAX/0x52": 16,
-  "ECL2.DAX/0x01": 31,
-  "ECL2.DAX/0x02": 19,
+  "ECL2.DAX/0x01": 27,
+  "ECL2.DAX/0x02": 17,
   "ECL2.DAX/0x03": 9,
   "ECL2.DAX/0x04": 11,
-  "ECL3.DAX/0x10": 30,
-  "ECL3.DAX/0x11": 29,
-  "ECL3.DAX/0x12": 28,
+  "ECL3.DAX/0x10": 14,
+  "ECL3.DAX/0x11": 12,
+  "ECL3.DAX/0x12": 14,
   "ECL3.DAX/0x15": 5,
-  "ECL4.DAX/0x20": 34,
-  "ECL4.DAX/0x21": 47,
-  "ECL4.DAX/0x22": 32,
-  "ECL4.DAX/0x23": 19,
-  "ECL4.DAX/0x25": 35,
+  "ECL4.DAX/0x20": 13,
+  "ECL4.DAX/0x21": 37,
+  "ECL4.DAX/0x22": 19,
+  "ECL4.DAX/0x23": 9,
+  "ECL4.DAX/0x25": 25,
   "ECL5.DAX/0x31": 13,
   "ECL5.DAX/0x32": 19,
   "ECL5.DAX/0x33": 24,
   "ECL5.DAX/0x35": 13,
-  "ECL6.DAX/0x40": 22,
-  "ECL6.DAX/0x42": 20,
-  "ECL6.DAX/0x43": 20,
+  "ECL6.DAX/0x40": 21,
+  "ECL6.DAX/0x42": 19,
+  "ECL6.DAX/0x43": 19,
   "ECL6.DAX/0x45": 3
  }
 }

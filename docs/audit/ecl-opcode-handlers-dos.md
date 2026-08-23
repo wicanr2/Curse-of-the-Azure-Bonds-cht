@@ -64,7 +64,7 @@ spec 1157）。**收尾一支之前先各自驗一次邊界**，方法是往後 
 | `30h` | OR | 3 | `0DA4h` | `0DA4h`..`0E12h` | 43 | `done` |
 | `31h` | SPRITE OFF | 0 | `2C8Fh` | `2C8Fh`..`2CB5h` | 12 | `done` |
 | `32h` | FIND ITEM | 1 | `2847h` | `2847h`..`28F3h` | 61 | `done` |
-| `33h` | PRINT RETURN | 0 | `2CEAh` | `2CEAh`..`2D15h` | 14 | `partial` |
+| `33h` | PRINT RETURN | 0 | `2CEAh` | `2CEAh`..`2D15h` | 14 | `done` |
 | `34h` | ECL CLOCK | 2 | `2CB5h` | `2CB5h`..`2CEAh` | 22 | `done` |
 | `35h` | SAVE TABLE | 3 | `0E71h` | `0E71h`..`0EBDh` | 29 | `done` |
 | `36h` | ADD NPC | 2 | `2DA9h` | `2DA9h`..`2E16h` | 38 | `done` |
@@ -85,7 +85,7 @@ spec 1157）。**收尾一支之前先各自驗一次邊界**，方法是往後 
 |---|---:|
 | 分派器列出的 opcode | 52 |
 | handler 指令數合計 | 4023 |
-| 其中副作用仍是 `partial` | 3（`0Eh` 77 ＋ `2Dh` 124 ＋ `33h` 14 ＝ 215 條）|
+| 其中副作用仍是 `partial` | 2（`0Eh` 77 ＋ `2Dh` 124 ＝ 201 條）|
 
 ⚠ **`副作用狀態` 這一欄不是手記的。** 它必須與 `internal/ecl.OpcodeEffects`
 逐格相同，由 `TestHandlerReportStatusMatchesOpcodeEffects` 擋住——手記的狀態

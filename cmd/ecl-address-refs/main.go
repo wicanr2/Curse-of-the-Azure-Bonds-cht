@@ -28,6 +28,20 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 )
 
+// entryStarts 把一個 block 的五個生命週期入口換成走訪起點。
+// 解不出來就回 nil（TraceGraph 會退回從位移 0 開始）。
+func entryStarts(data []byte) []int {
+	points, _, err := ecl.EntryPoints(data, 5)
+	if err != nil {
+		return nil
+	}
+	starts := make([]int, 0, len(points))
+	for _, point := range points {
+		starts = append(starts, int(point)-ecl.CodeAddressBase)
+	}
+	return starts
+}
+
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "")
 	member := flag.String("member", "ECL2.DAX", "")
@@ -75,7 +89,15 @@ func main() {
 				continue
 			}
 			for _, entry := range entries {
-				graph, graphErr := ecl.TraceGraph(entry.Data, nil, 200000)
+				// ⚠ 起點要用**五個生命週期入口**，不能傳 nil。傳 nil 時走訪只從
+				// 位移 0 開始，跟不到只有入口才進得去的那幾支——`-writes`
+				// （單一 block）走的是入口，`-all` 走 nil，於是同一個位址在
+				// `-writes` 找得到、在 `-all` 是 0。**那個 0 是儀器的洞，
+				// 不是「沒有人碰」**，而它正好長得像可以下結論的答案。
+				// 實例：`4BE6` 在 `ECL1/0x52:0109h` 有一條 `SAVE 00 4BE6`，
+				// 舊版 `-all` 回 0 處。
+				starts := entryStarts(entry.Data)
+				graph, graphErr := ecl.TraceGraph(entry.Data, starts, 200000)
 				if graphErr != nil {
 					continue
 				}
