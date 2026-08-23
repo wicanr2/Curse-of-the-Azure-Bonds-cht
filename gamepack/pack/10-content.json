@@ -9856,6 +9856,14 @@
    "message_id": "wizard-tower.sphere-distance-70"
   },
   {
+   "id": "tilverton.sewers.ceiling-climb-failed",
+   "all_contains": [
+    "THE WALLS PROVE TOO SLIMY FOR",
+    "TO SUCCEED. HE FALLS."
+   ],
+   "message_id": "tilverton.sewers.ceiling-climb-failed"
+  },
+  {
    "id": "wizard-tower.sphere-moves-toward-member",
    "all_contains": [
     "THE SPHERE MOVES TOWARD",

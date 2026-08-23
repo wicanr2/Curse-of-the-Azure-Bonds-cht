@@ -511,6 +511,7 @@
    "world.tavern-tale-58": "You overhear tavern tale 58: Voonlar hopes to build an arena for criminals, like Zhentil Keep has.",
    "world.tavern-tale-61": "You overhear tavern tale 61: The Stojanow River valley is being converted to farms again. The pyramid is now used as part of the irrigation system.",
    "world.tavern-tale-62": "You overhear tavern tale 62: The previous high priest of Gond, Gharri, was Princess Nacacia's lover for while.",
+   "tilverton.sewers.ceiling-climb-failed": "The walls prove too slimy for {1} to succeed. He falls. Does anyone want to try again?",
    "wizard-tower.sphere-moves-toward-member": "The sphere moves toward {1}. It is now only {4} feet from {6}.",
    "wizard-tower.sphere-moves-toward-mage": "The sphere moves toward the opposing mage.",
    "wizard-tower.option.concentrate-on-sphere": "CONCENTRATE ON THE SPHERE YOURSELF",

@@ -5908,8 +5908,6 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 	if direction != 0 && direction != 2 && direction != 4 && direction != 6 {
 		return fmt.Errorf("invalid dungeon movement direction %d", direction)
 	}
-	// ★ 路線的另一半：主線走過哪些格。只錄不擋（spec 1191）。
-	recordMove(int(s.currentECLBlockForLog()), int(s.GeoMapBlock), s.DungeonX, s.DungeonY, direction)
 	wantDX, wantDY := 0, 0
 	switch direction {
 	case 0:
@@ -5934,6 +5932,15 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 	if !s.CanMoveDungeon(grid, dx, dy, direction) {
 		return fmt.Errorf("dungeon step from (%d,%d) toward %d is blocked", x, y, direction)
 	}
+	// ★ 路線的另一半：主線走過哪些格（spec 1191）。
+	//
+	// ⚠ **錄在驗證之後**：被擋下來的嘗試不該進路線，重放端會忠實地照著再撞一次牆。
+	//
+	// ⚠ 地圖編號取**這一步真的用的那張 grid**（`grid.BlockID`），不是 `State` 的
+	// `GeoMapBlock`。兩者會不一樣——`MoveDungeon` 的 grid 是呼叫端傳進來的，
+	// 而測試與預覽有各自的 grid。拿 State 那一格記，會把某一張圖的走法標成
+	// 另一張圖的，重放時就照著往牆裡走。
+	recordMove(int(s.currentECLBlockForLog()), int(grid.BlockID), x, y, direction)
 	if exitAttempt && hasExternalExit {
 		// The boundary attempt is consumed at the source cell. Do not wrap to
 		// the opposite edge first: ECL2 reads C04B/C04C/C04D to decide which

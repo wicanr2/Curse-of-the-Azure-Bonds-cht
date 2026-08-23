@@ -155,10 +155,24 @@ func (s *keyDrivenSession) routeChoice() (int, bool) {
 func (s *keyDrivenSession) routeMove() (int, bool) {
 	x, y, _ := s.app.state.DungeonGeometryView()
 	block, _ := s.app.state.CurrentECLBlockID()
-	cell := routeCell{int(block), s.routeGeoBlock(int(s.app.state.GeoMapBlock)), x, y}
+	// ⚠ 地圖編號要取**這一步真的會用的那張 grid**（前端手上的那一張），
+	// 不是 `State.GeoMapBlock`——錄的時候取的是 `grid.BlockID`，兩者會不一樣。
+	// 用錯那一格會讓每一次查表都落空，而落空是**安靜地沒有路線**。
+	currentGeo := 0
+	if s.app.geoGrid != nil {
+		currentGeo = int(s.app.geoGrid.BlockID)
+	}
+	cell := routeCell{int(block), s.routeGeoBlock(currentGeo), x, y}
+	candidates := make([]int, 0, len(s.routeMoves[cell]))
+	for _, index := range s.routeMoves[cell] {
+		if s.routeDead[[4]int{cell.segment, cell.x, cell.y, s.route[index].Direction}] >= routeDeadAfter {
+			continue
+		}
+		candidates = append(candidates, index)
+	}
 	index, ok := s.takeRouteStep(
 		fmt.Sprintf("cell:%d/%d/%d/%d", cell.segment, cell.geoBlock, cell.x, cell.y),
-		s.routeMoves[cell])
+		candidates)
 	if !ok {
 		return 0, false
 	}
@@ -197,6 +211,10 @@ func (s *keyDrivenSession) takeRouteStep(key string, candidates []int) (int, boo
 // **兩邊都不是線性的**，而且「走過的格」與「走到多深」會往相反方向動：cap=1 的
 // 格數最多（隊伍把時間花在提爾佛頓）卻走不到世界地圖的第二段。要看的是段序列。
 // ⇒ 不設限最深、句數最多，而且程式最短。改動走法之後要重新量這張表。
+
+// routeDeadAfter 是「同一格同一個方向撞幾次之後不再照路線走」。
+// ⚠ 太小會把還沒撞開的門也劃掉（1 次 ⇒ 245 → 112 格）；量出來再定。
+const routeDeadAfter = 3
 
 // routeMenuPatience 是「同一個選單連續出現幾次都沒有新東西，就不再問路線」。
 const routeMenuPatience = 8
@@ -340,6 +358,17 @@ type keyDrivenSession struct {
 	// ★ 這就是「路線知識」：戰役測試裡逐段寫死的劇情決策，用 `State.Select`
 	// 錄成一份可重放的清單，重放端用**按鍵**把游標挪到那一項（spec 1191）。
 	route []game.Decision
+	// visits 是每一格踏上去過幾次，用來挑「去過最少次」的退路。
+	visits map[[3]int]int
+	// routeDead 數著「這一格往這個方向，路線說走得通但按下去沒動」幾次。
+	//
+	// ★ 早期錄的路線把**被擋下來的嘗試**也記了進去（`recordMove` 錄在驗證之前），
+	// 那些步驟每一次輪到都會再撞一次牆——巫師塔那一段實測撞了 156 次。
+	//
+	// ⚠ **不能撞一次就永久劃掉**：上鎖的門在撞開之前也是「按下去沒動」，
+	// 劃掉之後隊伍就再也不會往那個方向走了（實測 245 → 112 格、只剩兩段）。
+	// 要**撞夠幾次**才算真的走不通。
+	routeDead map[[4]int]int
 	// routeHasGeoBlock 是「這一份路線檔有沒有記地圖編號」。
 	routeHasGeoBlock bool
 	// routeMoves／routeChoices 是路線翻出來的查表（見 `buildRouteIndex`）。
@@ -460,7 +489,7 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 		}
 	}
 	return &keyDrivenSession{
-		routeHasGeoBlock: hasGeoBlock,
+		routeHasGeoBlock: hasGeoBlock, routeDead: map[[4]int]int{}, visits: map[[3]int]int{},
 		route: route, routeCursor: map[string]int{},
 		routeMoves: moves, routeChoices: choices,
 		app: application, keys: keys,
@@ -559,6 +588,7 @@ func (s *keyDrivenSession) observe() {
 		}
 		s.cells[key] = true
 		s.stallCells[key]++
+		s.visits[key]++
 	}
 	if block, ok := state.CurrentECLBlockID(); ok {
 		if !s.blocks[block] {
@@ -754,6 +784,9 @@ func (s *keyDrivenSession) step(t *testing.T) {
 				// （門沒開、旗標不同、或這一格根本不是主線走到的那個狀態）。
 				// 記下來，免得把「路線用完了」與「路線帶不動」混成同一件事。
 				s.routeBlocked++
+				// 撞夠 `routeDeadAfter` 次才不再輪到它——門要先撞開，撞開之前
+				// 也是「按下去沒動」。
+				s.routeDead[[4]int{int(beforeBlock), beforeX, beforeY, direction}]++
 				s.searchForAWayThrough(t)
 			}
 		}
@@ -901,17 +934,23 @@ func (s *keyDrivenSession) chooseHeading() (int, bool, bool) {
 	headings := []int{0, 2, 4, 6}
 	offset := s.frames % len(headings)
 	fallback, hasFallback := 0, false
+	fallbackVisits := 0
 	for index := range headings {
 		heading := headings[(index+offset)%len(headings)]
 		deltaX, deltaY := headingDelta(heading)
 		if !s.app.state.CanMoveDungeon(*s.app.geoGrid, deltaX, deltaY, heading) {
 			continue
 		}
-		if !hasFallback {
-			fallback, hasFallback = heading, true
-		}
 		x, y, _ := s.app.state.DungeonGeometryView()
-		target := [4]int{int(s.app.geoBlock), x + deltaX, y + deltaY, heading}
+		neighbour := [3]int{int(s.app.geoBlock), x + deltaX, y + deltaY}
+		// ⚠ **退路要挑去過最少次的那一格**，不能挑「第一個走得通的」。
+		// 只挑第一個會讓隊伍在兩格之間來回：實測新錄的路線把隊伍帶到下水道
+		// 天花板那一格之後，就在那一格與鄰格之間震盪到跑完，因為那一格有事件、
+		// 每次踏上去都要重答一次。去過次數最少的那一格會把隊伍推離熱點。
+		if visits := s.visits[neighbour]; !hasFallback || visits < fallbackVisits {
+			fallback, hasFallback, fallbackVisits = heading, true, visits
+		}
+		target := [4]int{neighbour[0], neighbour[1], neighbour[2], heading}
 		if !s.tried[target] {
 			s.tried[target] = true
 			return heading, true, true
