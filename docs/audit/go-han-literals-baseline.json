@@ -11465,13 +11465,13 @@
     },
     {
       "path": "internal/party/dos_record_fields.go",
-      "sha256": "1494a0a9aeda7ac7d7a7569fda17d47894720fb2c2b68d09aa6e2cf40706e81e",
+      "sha256": "153f959a23b2530002b7981fa5219a1606eb8f851c2649a30b855a3cf6dba51c",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
     {
       "path": "internal/party/dos_record_fields.go",
-      "sha256": "153f959a23b2530002b7981fa5219a1606eb8f851c2649a30b855a3cf6dba51c",
+      "sha256": "17505dfc26acc35276e015185a05c939cbb75dc846efba1602c1ae33d4cba120",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

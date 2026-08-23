@@ -67,7 +67,7 @@ var DOSPlayerRecordFields = []DOSRecordField{
 	{0x0DF, 5, "五個豁免門檻（毒／石化／法杖／噴吐／法術）", DOSFieldDecoded, "1111"},
 	{0x0E4, 1, "移動力基準（重算時抄進 +1A5h）", DOSFieldDocumented, "1000／683"},
 	{0x0E5, 1, "最高職業等級（0 ＝ 零級生物）", DOSFieldDecoded, "811／815"},
-	{0x0E6, 1, "前一個最高等級 `HIGHESTPREVLEVEL`（spec 185 讀成「多職角色的現行等級」，兩種讀法待對）", DOSFieldDecoded, "185／1164"},
+	{0x0E6, 1, "前一個最高等級 `HIGHESTPREVLEVEL`：雙職角色的舊職等級門檻（spec 1164／1194）", DOSFieldDecoded, "1079／1164"},
 	{0x0E7, 1, "被吸掉的等級數（復原術每次還一級）", DOSFieldDecoded, "1125"},
 	{0x0E8, 1, "被吸掉的 HP 總數（還一級就還其中 1/N）", DOSFieldDecoded, "1125"},
 	{0x0E9, 1, "不死生物種類 1..10（轉化矩陣的列索引）", DOSFieldDocumented, "834"},
