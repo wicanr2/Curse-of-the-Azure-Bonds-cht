@@ -14,6 +14,7 @@
 """
 import os
 import re
+import shutil
 import subprocess
 import sys
 
@@ -25,7 +26,15 @@ EGA = [(0, 0, 0), (0, 0, 170), (0, 170, 0), (0, 170, 170), (170, 0, 0), (170, 0,
        (85, 255, 255), (255, 85, 85), (255, 85, 255), (255, 255, 85), (255, 255, 255)]
 FACING = {"N": 0, "E": 2, "S": 4, "W": 6}
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-SAVE_DIR = "workplace/dos-oracle/game/SAVE"
+# ⚠ **不要與 DOS oracle 共用存檔目錄。** 這一支只是要餵 remake 一份自製存檔，
+# 不需要 DOSBox 看得到它；而 `tools/dos-oracle-*.sh` 會**同時**往
+# `workplace/dos-oracle/game/SAVE` 寫。兩邊一起跑的時候，擷取那一側會在本支
+# 「產生存檔」與「算圖」之間把檔案換掉 ⇒ remake 算的是**別一格**的畫面。
+#
+# 症狀完全看不出來：算出來的還是一張正常的第一人稱畫面，只是內容對不上，
+# 於是差異數字暴增而且無法重現。第 750 輪就是這樣量到 19,939 格，
+# 而單獨重跑同一格是 **0**。
+SAVE_DIR = "workplace/fp-compare/SAVE"
 
 
 def quantize(pixel):
@@ -37,7 +46,22 @@ def viewport(path):
     return [[quantize(tuple(px[48 + y * 2][48 + x * 2][:3])) for x in range(88)] for y in range(88)]
 
 
+def ensure_save_dir():
+    """自己的存檔目錄要有角色檔，否則 remake 會在載入時就失敗。"""
+    target = os.path.join(ROOT, SAVE_DIR)
+    os.makedirs(target, exist_ok=True)
+    source = os.path.join(ROOT, "workplace", "dos-oracle", "game", "SAVE")
+    for name in ("CHRDATA1.sav", "CHRDATA1.FX"):
+        destination = os.path.join(target, name)
+        if os.path.exists(destination):
+            continue
+        origin = os.path.join(source, name)
+        if os.path.exists(origin):
+            shutil.copy2(origin, destination)
+
+
 def main():
+    ensure_save_dir()
     index = sys.argv[1]
     extra = sys.argv[2:]
     folder = os.path.dirname(os.path.abspath(index))
