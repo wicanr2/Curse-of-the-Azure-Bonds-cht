@@ -3829,6 +3829,14 @@ func (s *State) PartyKilled() bool {
 	return s.partyKilled
 }
 
+// programSubFunctionCell 是 `PROGRAM` 的子功能編號（`7EA8h`）。腳本在呼叫
+// `PROGRAM 0` 之前把它擺好；`ECL2/0x01:0228` 還會拿它與 `7Ch` 比較，所以它
+// 也被引擎那一側寫過。
+const (
+	programSubFunctionCell     uint16 = 0x7EA8
+	programSubFunctionTraining uint16 = 0x7F
+)
+
 // applyECLProgram translates the external routines observed in CMD_Program
 // into frontend-neutral State transactions. PROGRAM 8 asks before saving in
 // the reference; the remake keeps that choice but returns to its title screen
@@ -3840,9 +3848,22 @@ func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
 	id := result.ProgramIDs[len(result.ProgramIDs)-1]
 	switch id {
 	case 0:
-		if s.eventReturnMode == ModeDungeon && s.DungeonWallRoof == 0x8C {
-			s.enterTrainingMenu()
-			return true, nil
+		// ★ 判「這一次 `PROGRAM 0` 是不是訓練場」要看 `7EA8h`，不是地形碼。
+		// 全 corpus 四處 `PROGRAM 0` 前面都緊接著 `SAVE 7Fh 7EA8h`：
+		// `ECL1/0x50:0817`、`ECL1/0x51:0665`、`ECL2/0x01:100E`、`ECL2/0x03:0BB9`
+		// ——它是**腳本交給外部常式的子功能編號**，四處一致。
+		//
+		// ⚠ 先前這裡用的是「在地城裡而且腳下地形碼是 `8C`」。`8C` 只對得上
+		// 下水道 `(11,10)` 那一格；同一段的訓練場其實**任何一格隱密房間**
+		// （地形索引 `0Eh`、`(14,6)` 等 17 格）第一次踏進去就會問，而那些格子的
+		// 地形碼是 `8E` ⇒ 條件不成立 ⇒ 落到 `enterProgramTitle`，
+		// 隊伍被丟回主選單、ECL 段變成 `0x00`，之後每一步都在空段上打轉
+		// （實測按鍵重放在第 4,282 幀掉進這個狀態，剩下 7,700 幀全部浪費）。
+		if s.session != nil {
+			if value, ok := s.session.MemoryValue(programSubFunctionCell); ok && value == programSubFunctionTraining {
+				s.enterTrainingMenu()
+				return true, nil
+			}
 		}
 		s.enterProgramTitle(s.catalog.Text("program_main_menu", "program_main_menu"))
 		return true, nil

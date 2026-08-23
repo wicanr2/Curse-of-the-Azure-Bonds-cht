@@ -47,20 +47,65 @@ func TestApplyECLProgramStartMenu(t *testing.T) {
 	}
 }
 
+// TestApplyECLProgramTrainingHall 釘住「`PROGRAM 0` ＋ `7EA8h == 7Fh` ＝ 訓練場」。
+//
+// ⚠ 地形碼**不是**判準。下水道那一段的訓練場任何一格隱密房間（地形 `8E`）
+// 第一次踏進去就會問，而不是只有 `(11,10)` 那格 `8C`；拿地形碼當條件會讓
+// 其餘 16 格落到「回主選單」，隊伍被丟出遊戲而畫面看起來只是回到標題。
 func TestApplyECLProgramTrainingHall(t *testing.T) {
-	state := NewState(trainingTestCatalog(t))
+	for _, terrain := range []uint8{0x8C, 0x8E, 0x00} {
+		state := newProgramState(t)
+		state.Mode = ModeEvent
+		state.eventReturnMode = ModeDungeon
+		state.DungeonWallRoof = terrain
+		state.session.SetMemoryValue(programSubFunctionCell, programSubFunctionTraining)
+		state.partyRoster = party.Roster{{Name: "亞倫", Class: party.ClassFighter, Level: 1}}
+
+		handled, err := state.applyECLProgram(programResult(0))
+		if err != nil || !handled {
+			t.Fatalf("地形 %#X：training PROGRAM 0 handled=%v err=%v", terrain, handled, err)
+		}
+		if state.Mode != ModeWilderness || !state.trainingMenu || len(state.Choices) != 2 {
+			t.Fatalf("地形 %#X：沒有進訓練場 mode=%v menu=%v choices=%v",
+				terrain, state.Mode, state.trainingMenu, state.Choices)
+		}
+	}
+}
+
+// TestApplyECLProgramWithoutTrainingSubFunctionGoesToTitle 是反面：
+// `7EA8h` 不是 `7Fh` 時不可以進訓練場。少了這一條，把條件寫成「一律進訓練場」
+// 也會過。
+func TestApplyECLProgramWithoutTrainingSubFunctionGoesToTitle(t *testing.T) {
+	state := newProgramState(t)
 	state.Mode = ModeEvent
 	state.eventReturnMode = ModeDungeon
 	state.DungeonWallRoof = 0x8C
+	state.session.SetMemoryValue(programSubFunctionCell, 0x7C)
 	state.partyRoster = party.Roster{{Name: "亞倫", Class: party.ClassFighter, Level: 1}}
 
 	handled, err := state.applyECLProgram(programResult(0))
 	if err != nil || !handled {
-		t.Fatalf("training PROGRAM 0: handled=%v err=%v", handled, err)
+		t.Fatalf("PROGRAM 0: handled=%v err=%v", handled, err)
 	}
-	if state.Mode != ModeWilderness || !state.trainingMenu || len(state.Choices) != 2 {
-		t.Fatalf("training hall not entered: mode=%v menu=%v choices=%v", state.Mode, state.trainingMenu, state.Choices)
+	if state.trainingMenu {
+		t.Fatal("`7EA8h` 不是 7Fh 卻進了訓練場")
 	}
+	if state.Mode != ModeTitle {
+		t.Fatalf("PROGRAM 0 沒有回標題：mode=%v", state.Mode)
+	}
+}
+
+// newProgramState 給一個帶 session 的最小 State：`PROGRAM 0` 的判準讀的是
+// ECL 記憶體的 `7EA8h`，沒有 session 就讀不到。
+func newProgramState(t *testing.T) *State {
+	t.Helper()
+	session, err := ecl.NewBlockSession(map[uint8][]byte{0x03: {0, 0}}, 0x03)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := NewState(trainingTestCatalog(t))
+	state.session = session
+	return &state
 }
 
 func TestHallChoiceRecognizesTrainingProgramContext(t *testing.T) {

@@ -1819,7 +1819,17 @@
         "x": 0,
         "y": 3,
         "direction": 2
-      }
+      },
+      "external_exits": [
+        {
+          "id": "yulash.north-to-moander-pit",
+          "x": 11,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        }
+      ]
     },
     {
       "id": "original.geo3.block-11-level-1",

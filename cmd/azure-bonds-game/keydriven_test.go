@@ -13,6 +13,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
@@ -59,6 +60,34 @@ func keyDrivenApp(t *testing.T) (*app, *scriptedKeys) {
 	}
 	if blocks, blockErr := loadTreasureItemBlocks(imagePath); blockErr == nil {
 		state.SetTreasureItemBlocks(blocks)
+	}
+	// ⚠ 六章的 `MON*CHA`／`MON*SPC`／`MON*ITM` 也要載，理由同上一段。
+	// 少了它，走到尤拉什神殿的 `ECL3/0x11:0D0F ADD NPC 16h`（雅麗亞絲）會回
+	// 「ADD NPC 0x16 has no MON3CHA Player record」——記錄其實在原版檔裡好好的
+	// （422 bytes 的玩家記錄），**是測試自己沒載**。這種錯讀起來像 remake 少了
+	// 一段實作，實際上是量測工具的資料缺口。
+	for chapter := uint8(1); chapter <= 6; chapter++ {
+		if data, loadErr := zipMember(imagePath, fmt.Sprintf("MON%dCHA.DAX", chapter)); loadErr == nil {
+			if records, parseErr := loadMonsterRecords(data); parseErr == nil {
+				state.SetMonsterRecordsForECL(chapter, records)
+				if chapter == 1 {
+					state.SetMonsterRecords(records)
+				}
+			}
+		}
+		if data, loadErr := zipMember(imagePath, fmt.Sprintf("MON%dSPC.DAX", chapter)); loadErr == nil {
+			if affects, parseErr := loadMonsterAffects(data); parseErr == nil {
+				state.SetMonsterAffectsForECL(chapter, affects)
+				if chapter == 1 {
+					state.SetMonsterAffects(affects)
+				}
+			}
+		}
+		if data, loadErr := zipMember(imagePath, fmt.Sprintf("MON%dITM.DAX", chapter)); loadErr == nil {
+			if items, parseErr := loadMonsterItems(data); parseErr == nil {
+				state.SetMonsterItemsForECL(chapter, items)
+			}
+		}
 	}
 	keys := newScriptedKeys()
 	return &app{state: &state, keys: keys, geoCatalog: geoCatalog}, keys
@@ -1024,7 +1053,17 @@ func (s *keyDrivenSession) chooseHeading() (int, bool, bool) {
 			continue
 		}
 		x, y, _ := s.app.state.DungeonGeometryView()
-		neighbour := [3]int{int(s.app.geoBlock), x + deltaX, y + deltaY}
+		// ⚠ 鄰格座標要**照移動的規則繞回來**（`geo.WrapCoordinate`）。
+		// 不繞的話，站在 `(15,0)` 往北算出來的是 `(15,−1)`，而隊伍真的踏上去
+		// 之後會在 `(15,15)`；於是 `visits[(15,−1)]` 永遠是 0、
+		// `visits[(15,16)]` 也永遠是 0，兩格互相看起來都是「去得最少的」
+		// ⇒ 隊伍在地圖上下邊界之間乒乓。實測在 `ECL2/0x03` 的
+		// `(15,0)`／`(15,15)` 各繞了 3,500 次、把 7,000 幀花光。
+		neighbour := [3]int{
+			int(s.app.geoBlock),
+			geo.WrapCoordinate(x+deltaX, geo.Width),
+			geo.WrapCoordinate(y+deltaY, geo.Height),
+		}
 		// ⚠ **退路要挑去過最少次的那一格**，不能挑「第一個走得通的」。
 		// 只挑第一個會讓隊伍在兩格之間來回：實測新錄的路線把隊伍帶到下水道
 		// 天花板那一格之後，就在那一格與鄰格之間震盪到跑完，因為那一格有事件、

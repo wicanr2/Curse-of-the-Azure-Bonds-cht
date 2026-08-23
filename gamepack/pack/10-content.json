@@ -9964,6 +9964,11 @@
    "message_id": "option.kill"
   },
   {
+   "id": "option.bargain",
+   "source": "BARGAIN",
+   "message_id": "option.bargain"
+  },
+  {
    "id": "option.flee",
    "source": "FLEE",
    "message_id": "option.flee"
