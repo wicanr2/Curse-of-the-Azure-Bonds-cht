@@ -490,6 +490,10 @@ func (s *State) applyLoadTimeECLWrites() {
 // 把它寫到那幾格追蹤中的常數補上。
 //
 // ⚠ 只收 `SAVE <常數> <追蹤中的格子>`：這一支不是 VM，不執行劇情副作用。
+//
+// ⚠ `ReachableOnLoad*` 回傳的是**依位移排序**的指令，不是執行順序。同一格被寫
+// 兩次而兩次都跑得到時，這裡套的是位移大的那一次——目前 corpus 裡沒有這種
+// 情況（`ECL2/0x04` 那兩條互斥），真的出現時要改成回傳執行序。
 func (s *State) applyLoadTimeECLWritesFromScript(block uint8) {
 	if s.session == nil {
 		return
