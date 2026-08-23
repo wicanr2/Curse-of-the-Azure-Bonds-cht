@@ -278,6 +278,40 @@ func standOnCell(data corpus, seg segment.Segment, index, x, y int, roof uint8,
 	return result
 }
 
+// silentShapes 是 `silentShape` 回得出來的四種形狀，照報表的順序。
+var silentShapes = []string{
+	"守衛比的是移動前快照（這一支是把隊伍放上去，不是走過去）",
+	"擺好的旗標被該段自己的前導覆蓋",
+	"擷取到的守衛跨過了真正的處理常式（開頭就有 EXIT）",
+	"處理常式本來就不講話",
+}
+
+// silentShape 把「沒演出來」歸到 spec 的四種形狀之一。
+//
+// ★ 為什麼要歸類。 只留一個「沒演出來 10」的話，下一輪會把它當待辦重查一次
+// ——而這四種形狀早就判過了，它們是**盤點的限制**不是 remake 的缺口。判過的
+// 結論要留在**產生報表的程式碼裡**，敘述會被讀成歷史，程式碼才會跟著報表一起
+// 每次重生。
+//
+// ⚠ 歸不了類的要留在「還沒歸類」那一格：出現第五種形狀時它才會非零，
+// 那時候才是真的有東西要看。
+func silentShape(guard string) string {
+	if guard == "" {
+		return ""
+	}
+	if strings.Contains(guard, "4BF0") || strings.Contains(guard, "4BF1") {
+		return "守衛比的是移動前快照（這一支是把隊伍放上去，不是走過去）"
+	}
+	compare := strings.Index(guard, "COMPARE")
+	if compare < 0 {
+		return "處理常式本來就不講話"
+	}
+	if exit := strings.Index(guard, "EXIT"); exit >= 0 && exit < compare {
+		return "擷取到的守衛跨過了真正的處理常式（開頭就有 EXIT）"
+	}
+	return "擺好的旗標被該段自己的前導覆蓋"
+}
+
 // maxGuardPresetCells 是一次最多幫幾個守衛格子擺前置狀態。守衛裡比對的格子
 // 通常一到兩個；放寬只會讓組合數爆掉，而且「要擺五個旗標才演得出來」本身就
 // 不是一個有用的結論。
@@ -461,6 +495,11 @@ func summarise(sweeps []blockSweep) map[string]int {
 				counts["原文"]++
 			default:
 				counts["沒演出來"]++
+				if shape := silentShape(cell.guard); shape != "" {
+					counts["沒演出來："+shape]++
+				} else {
+					counts["沒演出來：還沒歸類"]++
+				}
 			}
 			if cell.search {
 				counts["要搜尋"]++
@@ -601,6 +640,11 @@ func render(sweeps []blockSweep) string {
 	out.WriteString(fmt.Sprintf("| 演出來是中文 | %d |\n", counts["中文"]))
 	out.WriteString(fmt.Sprintf("| 演出來落回原文 | %d |\n", counts["原文"]))
 	out.WriteString(fmt.Sprintf("| 沒演出來 | %d |\n", counts["沒演出來"]))
+	for _, shape := range silentShapes {
+		out.WriteString(fmt.Sprintf("| 　其中「%s」| %d |\n", shape, counts["沒演出來："+shape]))
+	}
+	out.WriteString(fmt.Sprintf("| **　其中還沒歸類** | **%d** |\n",
+		counts["沒演出來：還沒歸類"]))
 	out.WriteString(fmt.Sprintf("| 其中要搜尋才演 | %d |\n", counts["要搜尋"]))
 	out.WriteString(fmt.Sprintf("| 其中要面對特定方向才演 | %d |\n", counts["要轉向"]))
 	out.WriteString(fmt.Sprintf("| 其中要換亂數種子才演 | %d |\n", counts["要換種子"]))

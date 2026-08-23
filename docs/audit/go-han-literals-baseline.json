@@ -1680,6 +1680,30 @@
     },
     {
       "path": "cmd/cell-sweep/main.go",
+      "sha256": "59a613ab8858bb6d167f2ec334ff567e882d366476ff82d6b5ed5930905075e9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "sha256": "cace6089a166f63731b7aca8a5e309702969736623e7186512780158f2f2394c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "sha256": "dda6ee401ff2b92cf2d8ff32f85caa49178af11905aeb39f8d959661e371dd9e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "sha256": "fa920a07b092f4d31496f1102ae1ccad9e83823473f3a940667a2cfcef8f2ed3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
       "function": "enterDungeon",
       "sha256": "5e90960fec285924f32075d0822bf70fe38a1f07a5c11f4daa1d5baee43c6e67",
       "occurrences": 1,
@@ -1947,6 +1971,13 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
+      "sha256": "16fbadb6337facfccfee9b924807a4e013094c7c96bdb5dd97e9a7fe86656559",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
       "sha256": "1c1026e5ffe852f730a2d1f194e72541dc01eb5d344610a84a6f838a274bed40",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -2066,6 +2097,13 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
+      "sha256": "3dbc2b54edb270966007ce5c2c6125a006627845ddcaf96255a1eb34f384a8d6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
       "sha256": "3e15dad6efddbe0243c654989e0d0b1968df2f3e1d5068f3ba541fb38f5d87f1",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -2172,6 +2210,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "6968e4d36c11fe9d6ca990db06a066d73895d5298000b42397daa4477d8a2638",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "6b82ea5a970c857c107eeab5fe530f9aa5b78d182845419a4cf19f49b72dd71b",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -2375,6 +2420,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "render",
       "sha256": "b02ab6211076033344b0992620b2ab1da5808a3fafa357670c82fd7ed1ac825a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "render",
+      "sha256": "b3502130a4b3d2501fb1869b3994688efa2dd3c5a04a94305df67de2c624d492",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -2611,6 +2663,34 @@
     },
     {
       "path": "cmd/cell-sweep/main.go",
+      "function": "silentShape",
+      "sha256": "59a613ab8858bb6d167f2ec334ff567e882d366476ff82d6b5ed5930905075e9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "silentShape",
+      "sha256": "cace6089a166f63731b7aca8a5e309702969736623e7186512780158f2f2394c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "silentShape",
+      "sha256": "dda6ee401ff2b92cf2d8ff32f85caa49178af11905aeb39f8d959661e371dd9e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "silentShape",
+      "sha256": "fa920a07b092f4d31496f1102ae1ccad9e83823473f3a940667a2cfcef8f2ed3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
       "function": "standOnCell",
       "sha256": "0ff689f870c64acf345fecafb88513ca7fab5be844994cc26ce8b1812bee1a5a",
       "occurrences": 1,
@@ -2668,6 +2748,13 @@
     {
       "path": "cmd/cell-sweep/main.go",
       "function": "summarise",
+      "sha256": "3dbc2b54edb270966007ce5c2c6125a006627845ddcaf96255a1eb34f384a8d6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "summarise",
       "sha256": "4523332d1adcca9e574c22e47ac788777ebcbcdf2ff1f2215a63cf81583c2516",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -2690,6 +2777,13 @@
       "path": "cmd/cell-sweep/main.go",
       "function": "summarise",
       "sha256": "5e63f0393483c74bf32a76bd7f020f79b28dbb7c9faf3d14129dccc9e4c26fc7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/cell-sweep/main.go",
+      "function": "summarise",
+      "sha256": "6b82ea5a970c857c107eeab5fe530f9aa5b78d182845419a4cf19f49b72dd71b",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
