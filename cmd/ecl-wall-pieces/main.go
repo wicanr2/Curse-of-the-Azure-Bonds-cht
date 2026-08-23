@@ -170,25 +170,21 @@ func main() {
 		len(keys), single, multi, dynamicOnly)
 }
 
+// scanBlock 只收**載入存檔時真的會跑到**的 `37h`。
+//
+// ⚠ 走 `ecl.ReachableOnLoad`，不是整張 trace graph：段的前置常被
+// `COMPARE 4BF2h, <段號>` 的閘門擋著，而那道閘門兩個方向都有人用。
+// 只掃「有沒有這條 `37h`」會收到載檔時根本不會發的選圖，而 remake 拿它去覆蓋
+// 存檔的值，牆就換成另一組——畫面看起來完全正常（spec 1185）。
 func scanBlock(reports map[siteKey]*blockReport, key siteKey, data []byte) {
-	points, _, err := ecl.EntryPoints(data, 5)
+	instructions, err := ecl.ReachableOnLoad(data, key.block)
 	if err != nil {
 		return
 	}
-	starts := make([]int, 0, len(points))
-	for _, point := range points {
-		starts = append(starts, int(point)-ecl.CodeAddressBase)
-	}
-	graph, err := ecl.TraceGraph(data, starts, len(data)*8)
-	if err != nil {
-		return
-	}
-	seen := map[int]bool{}
-	for _, instruction := range graph.Instructions {
-		if instruction.Command.Opcode != 0x37 || seen[instruction.Offset] {
+	for _, instruction := range instructions {
+		if instruction.Command.Opcode != 0x37 {
 			continue
 		}
-		seen[instruction.Offset] = true
 		item := reports[key]
 		if item == nil {
 			item = &blockReport{key: key, constant: map[[3]uint16]int{}}

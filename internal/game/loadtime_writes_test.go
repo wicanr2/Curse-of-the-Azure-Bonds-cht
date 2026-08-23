@@ -24,15 +24,20 @@ func TestECLBlockSkyColoursMatchOriginalWrites(t *testing.T) {
 		{area: 5, block: 0x35, outdoor: -1, indoor: 10},
 		{area: 6, block: 0x45, outdoor: 11, indoor: -1},
 	} {
-		colours, ok := eclBlockSkyColours[eclBlockKey{area: testCase.area, block: testCase.block}]
+		cells, ok := eclBlockLoadTimeWrites[eclBlockKey{area: testCase.area, block: testCase.block}]
 		if !ok {
-			t.Errorf("ECL%d/0x%02X 不在選色表裡", testCase.area, testCase.block)
+			t.Errorf("ECL%d/0x%02X 不在載檔寫入表裡", testCase.area, testCase.block)
 			continue
 		}
-		if colours.Outdoor != testCase.outdoor || colours.Indoor != testCase.indoor {
-			t.Errorf("ECL%d/0x%02X 選色是 室外 %d／室內 %d，預期 室外 %d／室內 %d",
-				testCase.area, testCase.block,
-				colours.Outdoor, colours.Indoor, testCase.outdoor, testCase.indoor)
+		outdoor, hasOutdoor := cells[outdoorSkyColourCell]
+		indoor, hasIndoor := cells[indoorSkyColourCell]
+		if got := optional(outdoor, hasOutdoor); got != testCase.outdoor {
+			t.Errorf("ECL%d/0x%02X 室外選色 %d，預期 %d",
+				testCase.area, testCase.block, got, testCase.outdoor)
+		}
+		if got := optional(indoor, hasIndoor); got != testCase.indoor {
+			t.Errorf("ECL%d/0x%02X 室內選色 %d，預期 %d",
+				testCase.area, testCase.block, got, testCase.indoor)
 		}
 	}
 }
@@ -60,7 +65,7 @@ func TestSkyColourTableExcludesGatedBlocks(t *testing.T) {
 		{area: 3, block: 0x10}, {area: 3, block: 0x11}, {area: 3, block: 0x12},
 		{area: 4, block: 0x21}, {area: 4, block: 0x22}, {area: 4, block: 0x25},
 	} {
-		if colours, ok := eclBlockSkyColours[gated]; ok {
+		if colours, ok := eclBlockLoadTimeWrites[gated]; ok {
 			t.Errorf("ECL%d/0x%02X 的天空寫入被閘門擋著，不該進表（拿到 %+v）",
 				gated.area, gated.block, colours)
 		}
@@ -72,7 +77,7 @@ func TestSkyColourTableExcludesGatedBlocks(t *testing.T) {
 		{area: 5, block: 0x35},
 		{area: 6, block: 0x45},
 	} {
-		if _, ok := eclBlockSkyColours[reachable]; !ok {
+		if _, ok := eclBlockLoadTimeWrites[reachable]; !ok {
 			t.Errorf("ECL%d/0x%02X 載檔時走得到天空寫入，卻不在表裡",
 				reachable.area, reachable.block)
 		}
@@ -89,7 +94,7 @@ func TestRestoreSkyColoursOverridesTheBaseSaveValue(t *testing.T) {
 	state.Area.OutdoorSkyColor, state.Area.IndoorSkyColor = 11, 9
 	state.Area.GameArea = 5
 	state.Area.LastECLBlockID = 0x35
-	state.restoreSkyColoursForLoadedBlock()
+	state.applyLoadTimeECLWrites()
 
 	// `ECL5/0x35` 只寫室內 `0Ah`，沒寫室外 ⇒ 室外要維持底檔的 11。
 	if state.Area.IndoorSkyColor != 10 {
@@ -110,9 +115,37 @@ func TestRestoreSkyColoursLeavesUnknownBlocksAlone(t *testing.T) {
 	state.Area.OutdoorSkyColor, state.Area.IndoorSkyColor = 11, 9
 	state.Area.GameArea = 2
 	state.Area.LastECLBlockID = 0x04 // 執行時才決定，刻意不進表
-	state.restoreSkyColoursForLoadedBlock()
+	state.applyLoadTimeECLWrites()
 	if state.Area.OutdoorSkyColor != 11 || state.Area.IndoorSkyColor != 9 {
 		t.Errorf("表裡沒有的段被改成 室外 %d／室內 %d，應該原封不動",
 			state.Area.OutdoorSkyColor, state.Area.IndoorSkyColor)
+	}
+}
+
+// optional 把「有沒有寫這一格」壓成一個數字：沒寫是 -1。
+func optional(value uint16, present bool) int {
+	if !present {
+		return -1
+	}
+	return int(value)
+}
+
+// TestLoadTimeWritesCarryTheTwoSlotGates 釘住兩槽模式閘門也在這張表裡。
+//
+// ⚠ 少了它們，`WallSetAssignmentsFor` 會拿底檔（提爾佛頓，兩格都是 0）的值去
+// 判斷，於是走三槽分支、把死運算元 `15`／`18` 也當成要載的槽（spec 1087）。
+func TestLoadTimeWritesCarryTheTwoSlotGates(t *testing.T) {
+	for _, identity := range []eclBlockKey{{area: 5, block: 0x35}, {area: 6, block: 0x45}} {
+		cells, ok := eclBlockLoadTimeWrites[identity]
+		if !ok {
+			t.Errorf("ECL%d/0x%02X 不在表裡", identity.area, identity.block)
+			continue
+		}
+		for _, gate := range []uint16{0x4BE7, 0x4BE8} {
+			if value, present := cells[gate]; !present || value == 0 {
+				t.Errorf("ECL%d/0x%02X 的閘門 %04Xh ＝ %d（有值 %v），預期非零",
+					identity.area, identity.block, gate, value, present)
+			}
+		}
 	}
 }

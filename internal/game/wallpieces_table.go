@@ -13,27 +13,16 @@ package game
 // 區塊 `0x32`，牆磚選圖卻不同（`12,255,255` vs `8,255,255`）——照地圖查會在
 // 這兩塊給出自洽但錯的牆。
 //
-// 掃描結果：19 個 block，每一個都只發**一組**常數三元組，沒有任何一個
+// 掃描結果：8 個 block，每一個都只發**一組**常數三元組，沒有任何一個
 // 是多組或記憶體參照——查表在這份 corpus 上才是對的。
 var eclBlockWallPieces = map[eclBlockKey][3]uint16{
 	{area: 2, block: 0x01}: {1, 2, 3},
 	{area: 2, block: 0x02}: {1, 2, 4},
 	{area: 2, block: 0x03}: {1, 2, 4},
 	{area: 2, block: 0x04}: {1, 2, 4},
-	{area: 3, block: 0x10}: {5, 6, 7},
-	{area: 3, block: 0x11}: {3, 6, 7},
 	{area: 3, block: 0x15}: {3, 5, 7},
-	{area: 4, block: 0x20}: {9, 10, 11},
-	{area: 4, block: 0x21}: {3, 10, 11},
-	{area: 4, block: 0x22}: {3, 8, 255},
-	{area: 4, block: 0x25}: {8, 10, 11},
 	{area: 5, block: 0x31}: {12, 255, 255},
-	{area: 5, block: 0x32}: {8, 255, 255},
-	{area: 5, block: 0x33}: {14, 15, 255},
 	{area: 5, block: 0x35}: {14, 15, 8},
-	{area: 6, block: 0x40}: {17, 18, 16},
-	{area: 6, block: 0x42}: {13, 16, 255},
-	{area: 6, block: 0x43}: {13, 16, 3},
 	{area: 6, block: 0x45}: {17, 18, 13},
 }
 

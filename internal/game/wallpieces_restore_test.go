@@ -26,34 +26,48 @@ func newWallPieceState(t *testing.T) *State {
 // 第 675 輪就是這樣把一張沒有牆的畫面拿去跟原版比，差了 37.6%，差點被判成
 // 「第一人稱畫錯了」（spec 1185）。
 
-// 表本身要有內容，而且鍵是 ECL 段。
-func TestECLBlockWallPiecesCoversTheOriginalBlocks(t *testing.T) {
-	if len(eclBlockWallPieces) < 19 {
-		t.Fatalf("牆磚選圖表只有 %d 筆，原版掃出來是 19 筆", len(eclBlockWallPieces))
+// 表收的是「**載檔時真的會重發** `LOAD PIECES` 的段」，鍵是 ECL 段。
+//
+// ⚠ 這不是「所有發過 `37h` 的段」。段的開頭幾乎都有一道
+// `COMPARE 4BF2h, <段號>` 的閘門，載檔時 `4BF2h == 段號` ⇒ 有些段整段前置被
+// 跳過，`LOAD PIECES` 一次都不會發（`ecl.ReachableOnLoad`，spec 1185）。
+// 那些段要**以存檔記的 `OLDWALL` 為準**，不能拿表去蓋。
+func TestECLBlockWallPiecesOnlyCoversLoadTimeReloads(t *testing.T) {
+	want := map[eclBlockKey][3]uint16{
+		{area: 2, block: 0x01}: {1, 2, 3},
+		{area: 2, block: 0x02}: {1, 2, 4},
+		{area: 2, block: 0x03}: {1, 2, 4},
+		{area: 2, block: 0x04}: {1, 2, 4},
+		{area: 3, block: 0x15}: {3, 5, 7},
+		{area: 5, block: 0x31}: {12, 255, 255},
+		{area: 5, block: 0x35}: {14, 15, 8},
+		{area: 6, block: 0x45}: {17, 18, 13},
 	}
-	tilverton, ok := eclBlockWallPieces[eclBlockKey{area: 2, block: 0x01}]
-	if !ok || tilverton != [3]uint16{1, 2, 3} {
-		t.Fatalf("提爾佛頓（ECL2 段 0x01）＝ %v，want [1 2 3]", tilverton)
+	if len(eclBlockWallPieces) != len(want) {
+		t.Fatalf("表有 %d 筆，預期 %d 筆", len(eclBlockWallPieces), len(want))
 	}
-	sewers, ok := eclBlockWallPieces[eclBlockKey{area: 2, block: 0x03}]
-	if !ok || sewers != [3]uint16{1, 2, 4} {
-		t.Fatalf("下水道（ECL2 段 0x03）＝ %v，want [1 2 4]", sewers)
+	for identity, pieces := range want {
+		got, ok := eclBlockWallPieces[identity]
+		if !ok || got != pieces {
+			t.Errorf("ECL%d/0x%02X ＝ %v（有 %v），預期 %v",
+				identity.area, identity.block, got, ok, pieces)
+		}
 	}
 }
 
-// ⚠ 這一支是**查表的鍵為什麼不能用地圖**的理由。GEO5 的 `0x31` 與 `0x32` 共用
-// 同一張幾何區塊 `0x32`，牆磚選圖卻不同。照地圖查會在這兩塊之一給出自洽但錯的
-// 牆——而畫面看起來仍然正常。這兩筆一旦相等，就表示上游資料變了，查表的鍵要
-// 重新檢討，不是把這支測試改掉。
-func TestGeo5BlocksShareGeometryButNotWallPieces(t *testing.T) {
-	first, firstOK := eclBlockWallPieces[eclBlockKey{area: 5, block: 0x31}]
-	second, secondOK := eclBlockWallPieces[eclBlockKey{area: 5, block: 0x32}]
+// ⚠ 這一支是**查表的鍵為什麼不能用地圖**的理由。`ECL2` 的 `0x01`（提爾佛頓）
+// 與 `0x03`（下水道）同屬 GEO2，牆磚選圖卻不同（`1,2,3` vs `1,2,4`）——只差
+// 槽 3 那一塊。第 749 輪就是這一塊：載檔時以存檔為準的話槽 3 會用成提爾佛頓的
+// `3`，44 張畫面每一張差約 2,900 格，而畫面看起來完全正常（spec 1185）。
+func TestSameAreaBlocksDifferInWallPieces(t *testing.T) {
+	tilverton, firstOK := eclBlockWallPieces[eclBlockKey{area: 2, block: 0x01}]
+	sewers, secondOK := eclBlockWallPieces[eclBlockKey{area: 2, block: 0x03}]
 	if !firstOK || !secondOK {
-		t.Fatalf("GEO5 的 0x31／0x32 應該都在表裡：%v %v", firstOK, secondOK)
+		t.Fatalf("ECL2 的 0x01／0x03 應該都在表裡：%v %v", firstOK, secondOK)
 	}
-	if first == second {
-		t.Fatalf("0x31 與 0x32 的牆磚選圖相同（都是 %v）：查表的鍵改用地圖也不會錯了，"+
-			"但那表示上游資料變了，要重新確認", first)
+	if tilverton == sewers {
+		t.Fatalf("0x01 與 0x03 的牆磚選圖相同（都是 %v）：查表的鍵改用地圖也不會錯了，"+
+			"但那表示上游資料變了，要重新確認", tilverton)
 	}
 }
 

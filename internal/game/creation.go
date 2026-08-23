@@ -435,17 +435,21 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 	// 才輪得到腳本去改它（spec 1172）。
 	if s.session != nil {
 		s.syncDungeonECLRegisters()
+		// ⚠ 順序有意義：牆磚選圖的分派要讀兩槽模式的閘門，而那兩格也是進入碼
+		// 寫的 ⇒ 先補格子，再補選圖。
+		s.applyLoadTimeECLWrites()
 		s.restoreWallPiecesForLoadedBlock()
-		s.restoreSkyColoursForLoadedBlock()
 	}
 	return nil
 }
 
-// restoreSkyColoursForLoadedBlock 把該段自己的天空選色補回來。
+// applyLoadTimeECLWrites 把「該段的進入碼在載檔時會寫的那幾格」補回來。
 //
-// ★ 為什麼需要。 `4BFDh`／`4BFEh` 就是存檔 Area1 的 `OutdoorSkyColor`／
-// `IndoorSkyColor`，而**寫它們的是該段 ECL 的進入碼**。原版載檔之後會跑那段
-// 進入碼，remake 不跑（會連帶觸發劇情副作用），於是兩格停在底檔（別章）的值。
+// ★ 為什麼需要。 原版載檔之後會跑該段的進入碼，remake 不跑（會連帶觸發劇情
+// 副作用），於是這幾格停在底檔（別章）的值：
+//
+//	4BE7h／4BE8h  `37h LOAD PIECES` 的兩槽模式閘門（spec 1087）
+//	4BFDh／4BFEh  室外／室內天空選色 ＝ Area1 的 `01FAh`／`01FCh`
 //
 // ⚠ 錯了不會有任何提示：天空是一整片純色，錯的顏色也是一整片純色。第 749 輪
 // 量到 `geo5-b35` 二十張畫面每一張都差 2,000～3,400 格，全部是同一個代換
@@ -453,20 +457,23 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 //
 // ⚠ 鍵要用**存檔記下來的 ECL 段**（`LastECLBlockID`），與牆磚選圖同一個理由：
 // 載入存檔之後 `CurrentBlockID()` 還停在初始化時的世界地圖段。
-func (s *State) restoreSkyColoursForLoadedBlock() {
-	colours, ok := eclBlockSkyColours[eclBlockKey{
+//
+// ⚠ 表裡只有「載檔時真的會跑到」的寫入：段的開頭幾乎都有一道
+// `COMPARE 4BF2h, <段號>` 的閘門，而那道閘門**兩個方向都有人用**。
+func (s *State) applyLoadTimeECLWrites() {
+	cells, ok := eclBlockLoadTimeWrites[eclBlockKey{
 		area: s.Area.GameArea, block: uint8(s.Area.LastECLBlockID)}]
 	if !ok {
 		return
 	}
-	// `-1` ＝ 那一段沒有寫這一格，維持存檔帶進來的值。
-	if colours.Outdoor >= 0 {
-		s.Area.OutdoorSkyColor = uint16(colours.Outdoor)
-		s.session.SetMemoryValue(outdoorSkyColourCell, uint16(colours.Outdoor))
-	}
-	if colours.Indoor >= 0 {
-		s.Area.IndoorSkyColor = uint16(colours.Indoor)
-		s.session.SetMemoryValue(indoorSkyColourCell, uint16(colours.Indoor))
+	for address, value := range cells {
+		s.session.SetMemoryValue(address, value)
+		switch address {
+		case outdoorSkyColourCell:
+			s.Area.OutdoorSkyColor = value
+		case indoorSkyColourCell:
+			s.Area.IndoorSkyColor = value
+		}
 	}
 }
 
@@ -495,24 +502,31 @@ func (s *State) restoreWallPiecesForLoadedBlock() {
 	if s.LoadPieces != [3]uint16{} {
 		return
 	}
-	// ⚠ 存檔已經記著每個槽用哪一塊時，**以存檔為準**：那是原版當時真的載了什麼，
-	// 查表只是「這一段通常會發什麼」。兩者在「兩槽模式」下不同——槽 2 在那個模式
-	// 裡根本不會被載，查表卻會把它填滿。
-	if fromSave, ok := wallPiecesFromParams(s.wallSetParams); ok {
-		s.LoadPieces = fromSave
-		s.loadPiecesPending = true
-		return
-	}
 	// ⚠ 鍵要用**存檔記下來的 ECL 段**（`LastECLBlockID`），不是 session 當下的
 	// 段。載入存檔之後 `CurrentBlockID()` 還停在初始化時的世界地圖段 `0x50`，
 	// 拿它去查一定查不到——而查不到的後果是安靜地不補，牆照樣是空氣。
-	pieces, ok := eclBlockWallPieces[eclBlockKey{
-		area: s.Area.GameArea, block: uint8(s.Area.LastECLBlockID)}]
-	if !ok {
+	//
+	// ★ **段自己的 `LOAD PIECES` 贏過存檔**——但只有它在載檔時真的會跑到時。
+	// `eclBlockWallPieces` 收的就是這一種（`ecl.ReachableOnLoad`）：那一條
+	// `37h` 一跑，原版就把三個槽重設成這一段的值，存檔裡的舊值被蓋掉。
+	//
+	// ⚠ 這個順序**不能反過來**。同一章之內 `dos-save-export` 不改存檔的牆面參數
+	// （改了反而讓原版走到不一樣的狀態，第 679 輪實測），於是存檔帶著的是**上一段**
+	// 的選圖：提爾佛頓的 `1,2,3`。下水道 `ECL2/0x03` 要的是 `1,2,4`，以存檔為準的話
+	// 槽 3 會用錯一塊——44 張畫面每一張差約 2,900 格，而畫面看起來完全正常
+	// （spec 1185）。
+	if pieces, ok := eclBlockWallPieces[eclBlockKey{
+		area: s.Area.GameArea, block: uint8(s.Area.LastECLBlockID)}]; ok {
+		s.applyLoadPieces(ecl.RunResult{LoadPiecesRequested: true, LoadPieces: pieces,
+			WallSetAssignments: ecl.WallSetAssignmentsFor(pieces, s.session.MemorySnapshot())})
 		return
 	}
-	s.applyLoadPieces(ecl.RunResult{LoadPiecesRequested: true, LoadPieces: pieces,
-		WallSetAssignments: ecl.WallSetAssignmentsFor(pieces, s.session.MemorySnapshot())})
+	// 那一段載檔時不重發 `LOAD PIECES` ⇒ 以存檔記的為準。原版在
+	// `overlay-16:4DF3h` 就是照 `OLDWALL` 逐槽重播。
+	if fromSave, ok := wallPiecesFromParams(s.wallSetParams); ok {
+		s.LoadPieces = fromSave
+		s.loadPiecesPending = true
+	}
 }
 
 // encodeECLBanksInto 把 ECL session 的區 0..3 寫進 SAVGAM 的四塊（spec 1163）。
