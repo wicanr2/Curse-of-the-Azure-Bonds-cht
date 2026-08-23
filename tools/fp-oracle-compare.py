@@ -45,6 +45,7 @@ def main():
             if line.strip() and not line.startswith("#")]
     total = 0
     per_map = {}
+    failed = []
     for name, x, y, direction in rows:
         if direction not in FACING:
             print("跳過 %s（讀不到座標）" % name)
@@ -76,12 +77,23 @@ def main():
                   "-out", SAVE_DIR, "-slot", "A", "-area", area,
                   "-ecl-block", block, "-map-block", geoBlock,
                   "-x", x, "-y", y, "-facing", str(FACING[direction])]
-        subprocess.run(author, cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        cmd = ["tools/go.sh", "run", "./cmd/azure-bonds-game",
-               "-savgam-dir", SAVE_DIR, "-savgam-slot", "A", "-savgam-import",
-               "-first-person",
-               "-screenshot", os.path.relpath(shot, ROOT)] + extra
-        subprocess.run(cmd, cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        # ⚠ 單一張失敗**不能中止整批**。五百多張跑到一半掛掉的話，前面那些張的
+        # 數字就沒有小計可看，而失敗往往是暫時的（兩個 go run 搶 Xvfb）。
+        # 失敗的張數要**逐張報出來並計入合計**，不能靜靜跳過——靜靜跳過會讓
+        # 「合計差 N 格」看起來比實際好。
+        try:
+            subprocess.run(author, cwd=ROOT, stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, check=True)
+            cmd = ["tools/go.sh", "run", "./cmd/azure-bonds-game",
+                   "-savgam-dir", SAVE_DIR, "-savgam-slot", "A", "-savgam-import",
+                   "-first-person",
+                   "-screenshot", os.path.relpath(shot, ROOT)] + extra
+            subprocess.run(cmd, cwd=ROOT, stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, check=True)
+        except subprocess.CalledProcessError as failure:
+            failed.append(name)
+            print("%-34s (%s,%s) %s 產不出畫面（%s）" % (name, x, y, direction, failure), flush=True)
+            continue
         a = viewport(os.path.join(folder, name))
         b = viewport(shot)
         classes = {}
@@ -108,8 +120,10 @@ def main():
     for prefix in sorted(per_map):
         cells, frames, exact = per_map[prefix]
         print("小計 %-30s 逐格相同 %2d／%2d，差 %6d 格" % (prefix, exact, frames, cells))
-    print("合計不同格數 %d" % total)
-    return 0 if total == 0 else 1
+    if failed:
+        print("⚠ 有 %d 張產不出畫面，沒有計入上面的數字：%s" % (len(failed), "、".join(failed)))
+    print("合計不同格數 %d（比了 %d／%d 張）" % (total, len(rows) - len(failed), len(rows)))
+    return 0 if total == 0 and not failed else 1
 
 
 if __name__ == "__main__":

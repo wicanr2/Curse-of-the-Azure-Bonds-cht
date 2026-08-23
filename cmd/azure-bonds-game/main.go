@@ -1258,32 +1258,25 @@ func (a *app) prepareWallPreview() {
 	if err != nil {
 		return
 	}
+	// ★ 照原作的形狀：**一條路徑，符號組只看編號**。
+	//
+	// `THREED` 的 `sub_39F`（`overlay-30:039Fh`）拿 `(牆型 − 1) × 156` 去
+	// `THEWALLSET^` 這一整塊平的三槽緩衝取一個位元組，**原封不動**交給
+	// `PUT8X8SYMBOL`；而 `PUT8X8SYMBOL`（`overlay-35:032Ah`）只比編號落在哪一段
+	// （`01h..2Dh` → 0、`2Eh..73h` → 1、`74h..B9h` → 2、`BAh..FFh` → 3）
+	// 去查 `[964Ch + 段 × 4]` 那張遠指標表。**原作裡沒有「這一格出自哪一段
+	// WALLDEF」這個概念**（spec 1185）。
+	//
+	// 先前這裡有兩條路徑：引擎照「這一格出自哪一筆記錄」選區塊，選不到的才回退。
+	// 那條規則會把多段牆面組自己的編號解到別的牆面組去——`geo6-b40` 一格
+	// (2,9) W 的 242 格裡有 132 格就是這樣畫成選圖 16 的圖。
 	for _, call := range view.Calls {
 		setID := uint8((call.WallType-1)/5 + 1)
 		piece, ok := a.pieceSets[setID]
 		if !ok {
 			continue
 		}
-		stamps, err := gfx.BuildWallLayout(piece, call.WallType, call.Layout, call.RowStart, call.ColStart)
-		if err != nil {
-			continue
-		}
-		for _, stamp := range stamps {
-			if _, _, ok := wallStampNativePosition(stamp.Row, stamp.Column); !ok {
-				continue
-			}
-			rgba, err := stamp.Picture.RGBA(stamp.Item, gfx.EGA16)
-			if err != nil {
-				continue
-			}
-			a.traceWallStamp("引擎", call, piece, stamp)
-			a.wallPreview = append(a.wallPreview, wallPreviewStamp{
-				image:  ebiten.NewImageFromImage(rgba),
-				row:    stamp.Row,
-				column: stamp.Column,
-			})
-		}
-		for _, stamp := range unresolvedWallStamps(piece, call) {
+		for _, stamp := range wallLayoutRawStamps(piece, call) {
 			if _, _, ok := wallStampNativePosition(stamp.Row, stamp.Column); !ok {
 				continue
 			}
@@ -1292,7 +1285,7 @@ func (a *app) prepareWallPreview() {
 				a.traceWallStamp("解不開", call, piece, stamp)
 				continue
 			}
-			a.traceWallStamp("回退", call, piece, stamp)
+			a.traceWallStamp("畫", call, piece, stamp)
 			a.wallPreview = append(a.wallPreview, wallPreviewStamp{
 				image:  image,
 				row:    stamp.Row,
@@ -1326,23 +1319,18 @@ func (a *app) traceWallStamp(source string, call gfx.WallLayoutCall, piece gfx.P
 		stamp.Row, stamp.Column, stamp.SymbolID, segment, item, block, piece.SymbolBlockIDs)
 }
 
-// unresolvedWallStamps 取回同一次呼叫裡**那一筆 WALLDEF 自己解不開**的磚。
+// wallLayoutRawStamps 展開一次牆位呼叫，`SymbolID` 是 **WALLDEF 的原始編號**。
 //
-// ★ 作法是拿一份「影子 PieceSet」再跑一次引擎的版面展開：把符號集基準改成 0、
-// 假 Picture 的項目數放到 256，於是每一個非零編號都解得開，`SymbolID` 就是
-// WALLDEF 的原始編號。這樣**牆位版面表只有引擎那一份**，遊戲這一側不必再抄
-// 一份 10 個牆位的欄／列／位移（spec 1006）。
+// ★ 作法是拿一份「影子 PieceSet」去跑引擎的版面展開：把符號集基準改成 0、
+// 假 Picture 的項目數放到 256，於是每一個非零編號都解得開，`SymbolID` 就是原始
+// 編號。這樣**牆位版面表只有引擎那一份**，遊戲這一側不必再抄一份 10 個牆位的
+// 欄／列／位移（spec 1006）。
 //
-// ⚠ 先前這一支只補**第 0 段**（`1..45`）的共用磚，其餘一律當成「上面那一圈已經
-// 畫過」。那個假設是錯的：`PieceSet.WallSymbolItem` 只在**這一筆記錄自己那一段**
-// 裡找符號，編號落在別段時算出來的 `item` 是負的，於是**整格靜默消失**。
-// 提爾佛頓 `0Eh` 的近端右側牆就是這樣少掉兩格——它的 WALLDEF 引用編號 `185`，
-// 那是第 2 段的最後一項（基準 `74h`），而那一筆記錄掛的是第 3 段（基準 `BAh`）
-// ⇒ `185 − 186 = −1`（spec 1185）。
-//
-// 所以這裡改成「引擎解不開的都收」，由 `symbolImageForGlobalID` 依編號落在哪一段
-// 去對應的符號集取圖。
-func unresolvedWallStamps(piece gfx.PieceSet, call gfx.WallLayoutCall) []gfx.WallStamp {
+// ⚠ 引擎自己那條「照這一格出自哪一筆記錄選符號區塊」的解析**不能用**：原作沒有
+// 這個概念（`sub_39F` 從一塊平緩衝取位元組，`PUT8X8SYMBOL` 只看編號）。
+// 照記錄選會把多段牆面組自己的編號解到別的牆面組去，而每個索引仍然落在合法圖片
+// 裡 ⇒ 牆畫在對的位置、用錯的圖，不報錯（spec 1185）。
+func wallLayoutRawStamps(piece gfx.PieceSet, call gfx.WallLayoutCall) []gfx.WallStamp {
 	shadow := piece
 	shadow.SymbolSetIDs = make([]uint8, len(piece.WallDefs))
 	shadow.SymbolBlockIDs = make([]uint8, len(piece.WallDefs))
@@ -1351,20 +1339,7 @@ func unresolvedWallStamps(piece gfx.PieceSet, call gfx.WallLayoutCall) []gfx.Wal
 	if err != nil {
 		return nil
 	}
-	resolved := map[[2]int]bool{}
-	if real, realErr := gfx.BuildWallLayout(piece, call.WallType, call.Layout, call.RowStart, call.ColStart); realErr == nil {
-		for _, stamp := range real {
-			resolved[[2]int{stamp.Row, stamp.Column}] = true
-		}
-	}
-	out := stamps[:0]
-	for _, stamp := range stamps {
-		if resolved[[2]int{stamp.Row, stamp.Column}] {
-			continue
-		}
-		out = append(out, stamp)
-	}
-	return out
+	return stamps
 }
 
 // symbolImageForGlobalID 依全域符號編號落在哪一段取圖。

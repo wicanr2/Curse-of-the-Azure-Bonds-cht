@@ -529,13 +529,16 @@ func TestMaskWallSymbolsReplacesMagentaWithTransparentIndex(t *testing.T) {
 	}
 }
 
-// 第 0 段（編號 1..45）先前整段沒有載入，牆頂的天空格與側牆的斜邊因此全部
-// 消失。這一支釘住「影子展開只回**那一筆記錄自己解不開**的格子，且格子位置與
-// 正規展開同一套」。
+// wallLayoutRawStamps 要回**每一個非零格**，而且 `SymbolID` 是 WALLDEF 的原始
+// 編號——符號組留給 `symbolImageForGlobalID` 照編號去判，與這一格出自第幾段無關。
 //
-// ⚠ 判準從「編號 < 46」改成「正規展開沒有回這一格」：編號落在**別段**的符號
-// 一樣解不開，而先前那個判準會把它們漏掉（spec 1185）。
-func TestUnresolvedWallStampsReturnsWhatTheRecordCannotResolve(t *testing.T) {
+// ★ 這是原作的形狀：`sub_39F` 從一塊平的三槽緩衝取位元組，原封不動交給
+// `PUT8X8SYMBOL`，而後者只比編號落在哪一段（spec 1185）。
+//
+// ⚠ 先前這裡是兩條路徑：引擎照「這一格出自哪一筆記錄」選符號區塊，選不到的才
+// 回退。那條規則會把多段牆面組自己的編號解到別的牆面組去，而每個索引仍然落在
+// 合法圖片裡 ⇒ 牆畫在對的位置、用錯的圖、不報錯。
+func TestWallLayoutRawStampsReturnsEveryCellWithItsRawID(t *testing.T) {
 	piece := gfx.PieceSet{
 		SetID:          1,
 		WallDefs:       make([]gfx.WallDef, 1),
@@ -544,30 +547,26 @@ func TestUnresolvedWallStampsReturnsWhatTheRecordCannotResolve(t *testing.T) {
 		Symbols:        map[uint8]gfx.Picture{1: {ItemCount: 70}},
 	}
 	// 牆位 0 是 1 欄 × 2 列，資料落在 156 bytes 的第 0..1 格。
-	piece.WallDefs[0].Rows[0][0] = 1  // 天空格，第 0 段
+	piece.WallDefs[0].Rows[0][0] = 1  // 天空格，第 0 段（共用）
 	piece.WallDefs[0].Rows[0][1] = 76 // 一般牆磚，第 1 段
 	call := gfx.WallLayoutCall{WallType: 1, Layout: 0, RowStart: 4, ColStart: 5}
 
-	shared := unresolvedWallStamps(piece, call)
-	if len(shared) != 1 {
-		t.Fatalf("shared stamps=%d, want 1 (%+v)", len(shared), shared)
+	stamps := wallLayoutRawStamps(piece, call)
+	if len(stamps) != 2 {
+		t.Fatalf("stamps=%d，want 2（兩格都要回來）：%+v", len(stamps), stamps)
 	}
-	if shared[0].SymbolID != 1 || shared[0].Row != 4 || shared[0].Column != 5 {
-		t.Fatalf("shared stamp=%+v, want symbol 1 at (row 4, column 5)", shared[0])
+	if stamps[0].SymbolID != 1 || stamps[0].Row != 4 || stamps[0].Column != 5 {
+		t.Errorf("第一格＝%+v，want 編號 1 在 (列 4, 欄 5)", stamps[0])
 	}
-
-	normal, err := gfx.BuildWallLayout(piece, call.WallType, call.Layout, call.RowStart, call.ColStart)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(normal) != 1 || normal[0].SymbolID != 76 || normal[0].Row != 5 {
-		t.Fatalf("normal stamps=%+v, want only symbol 76 on the second row", normal)
+	if stamps[1].SymbolID != 76 || stamps[1].Row != 5 {
+		t.Errorf("第二格＝%+v，want 編號 76 在第二列", stamps[1])
 	}
 }
 
-// ⚠ 編號落在**別段**的符號也解不開，也一樣要被收回來。這一支就是提爾佛頓
-// `0Eh` 近端右側牆那兩格的形狀：記錄掛第 3 段，WALLDEF 卻引用第 2 段的 `185`。
-func TestUnresolvedWallStampsCollectsCrossSegmentSymbols(t *testing.T) {
+// ⚠ 編號落在**別段**的格子一樣要回來。這一支就是提爾佛頓 `0Eh` 近端右側牆
+// 那兩格的形狀：記錄掛第 3 段，WALLDEF 卻引用第 2 段的 `185`。舊的兩條路徑
+// 設計會讓引擎那一條把它算成 `185 − 186 = −1` 而整格靜默消失。
+func TestWallLayoutRawStampsKeepsCrossSegmentSymbols(t *testing.T) {
 	piece := gfx.PieceSet{
 		SetID:          3,
 		WallDefs:       make([]gfx.WallDef, 1),
@@ -575,20 +574,17 @@ func TestUnresolvedWallStampsCollectsCrossSegmentSymbols(t *testing.T) {
 		SymbolBlockIDs: []uint8{3},
 		Symbols:        map[uint8]gfx.Picture{3: {ItemCount: 70}},
 	}
-	piece.WallDefs[0].Rows[0][0] = 185 // 第 2 段的最後一項——這一筆記錄解不開
-	piece.WallDefs[0].Rows[0][1] = 200 // 第 3 段，解得開
+	piece.WallDefs[0].Rows[0][0] = 185 // 第 2 段的最後一項
+	piece.WallDefs[0].Rows[0][1] = 200 // 第 3 段
 	call := gfx.WallLayoutCall{WallType: 11, Layout: 0, RowStart: 0, ColStart: 0}
 
-	unresolved := unresolvedWallStamps(piece, call)
-	if len(unresolved) != 1 || unresolved[0].SymbolID != 185 {
-		t.Fatalf("unresolved=%+v，want 只有編號 185 那一格", unresolved)
+	stamps := wallLayoutRawStamps(piece, call)
+	if len(stamps) != 2 {
+		t.Fatalf("stamps=%+v，want 兩格都回來", stamps)
 	}
-	normal, err := gfx.BuildWallLayout(piece, call.WallType, call.Layout, call.RowStart, call.ColStart)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(normal) != 1 || normal[0].SymbolID != 200 {
-		t.Fatalf("normal=%+v，want 只有編號 200 那一格", normal)
+	if stamps[0].SymbolID != 185 || stamps[1].SymbolID != 200 {
+		t.Errorf("編號＝%d／%d，want 185／200（原始編號，不做任何段內換算）",
+			stamps[0].SymbolID, stamps[1].SymbolID)
 	}
 }
 

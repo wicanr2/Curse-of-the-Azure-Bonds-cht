@@ -158,7 +158,11 @@ func TestParsePieceSetUsesReferenceMultiRecordSymbolIDs(t *testing.T) {
 	if got, want := set.WallDefs[0].Rows[0][0], uint8(0x74); got != want {
 		t.Fatalf("first wall symbol = 0x%02X, want 0x%02X", got, want)
 	}
-	if got, want := set.WallDefs[1].Rows[0][0], uint8(0xBB); got != want {
+	// ⚠ rebase **只算一次**，取自起始槽（原作 `LOADWALLSET` 的
+	// `var_A = 符號基底[起始槽] − 符號基底[1]`，overlay-30:1064h）⇒ 兩段都 +46h。
+	// 逐段重算會讓第 2 段變成 `0BBh`，而 `PUT8X8SYMBOL` 只看編號落在哪一段，
+	// 那個編號會被讀成**下一個槽**的符號組（spec 1185）。
+	if got, want := set.WallDefs[1].Rows[0][0], uint8(0x75); got != want {
 		t.Fatalf("second wall symbol = 0x%02X, want 0x%02X", got, want)
 	}
 	if _, id, ok := set.WallSymbol(0, 0, 0); !ok || id != 0x74 {
