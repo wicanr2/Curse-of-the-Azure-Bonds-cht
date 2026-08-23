@@ -59,8 +59,44 @@ spec 1092 那條「`角色^[0E6h] = 0` 才能編輯」是同一個語意的另�
 - **spec 185 從頭到尾沒有提過 `+0E6h`。** `internal/party/dos_record_fields.go`
   先前把「多職角色的現行等級」這個讀法掛在 spec 185 名下，那個出處不存在。
   引用一個規格之前先在那份規格裡 grep 一次。
-- **remake 有一處把 `data[0xE6]` 當成「顯示等級」**
+- **remake 曾經把 `data[0xE6]` 當成「顯示等級」**
   （`internal/party/dos_spell_record.go`，職業碼 8..16 時），而**原版的 15 處
-  沒有一處是拿它去顯示的**，全部是門檻比較。⚠ 目前**沒有改**：純多職角色的
-  `+0E6h` 是 0，那條路本來就落到 `max(職業等級)` 的後備，所以只有雙職角色
-  走得到；要改得先用原版量一個雙職角色的顯示等級。
+  沒有一處是拿它去顯示的**，全部是門檻比較。第 751 輪改掉了，見下一節。
+
+## 原版顯示的等級是 `PREVIOUSLEVEL[槽] + CURRENTLEVEL[槽]`（第 751 輪）
+
+不需要實機量：**顯示常式自己講得很清楚**。`LIBRARY`（`overlay-19`）逐槽跑
+0..7 組角色卡上的等級字串：
+
+```
+0374  cmp  byte es:[di+109h], 0     ; CURRENTLEVEL[槽] > 0 → 直接印
+037A  jg   顯示
+0384  call far …                    ; dl := 由角色算出來的一個門檻
+0395  mov  al, es:[di+111h]         ; PREVIOUSLEVEL[槽]
+039A  cmp  al, dl / jl 繼續判        ; 舊職等級 >= 門檻 → 這一槽不印
+03AB  cmp  byte es:[di+111h], 0
+03B1  jg   顯示 / 否則跳過
+顯示:
+0408  mov  al, es:[di+111h]         ; PREVIOUSLEVEL[槽]
+040D  cbw / mov dx, ax
+041A  mov  al, es:[di+109h]         ; CURRENTLEVEL[槽]
+0420  add  ax, dx                   ; ★ 印出來的就是這個和
+0422  push ax / call 數字轉字串
+```
+
+⇒ **一個槽印一列，數字是 `PREVIOUSLEVEL[槽] + CURRENTLEVEL[槽]`。**
+`+0E6h` 在整支裡一次都沒出現——與上面那張普查表一致（`LIBRARY` 不在名單裡）。
+
+掃描面的佐證（位元組直掃 `26 8A 85 <ofs>`）：
+
+| 欄位 | 讀到的模組 |
+|---|---|
+| `+109h` CURRENTLEVEL | overlay-02、04、13、**19**、17、22、23、24、25 |
+| `+111h` PREVIOUSLEVEL | overlay-02、09、13、**19**、17、22、23、24、25 |
+| `+0E6h` HIGHESTPREVLEVEL | **只有 overlay-23（EFFECTS）** |
+
+remake 這一側因此改成取各槽 `CURRENTLEVEL + PREVIOUSLEVEL` 的最大值當投影
+（`DOSPlayerRecord.Level` 是單一純量，原作沒有這種東西）。純多職角色的
+`PREVIOUSLEVEL` 是 0 ⇒ 結果與舊的 `max(職業等級)` 後備相同；**雙職角色才看得出
+差別**，而那正是舊寫法唯一會錯的地方。`TestDualClassLevelComesFromPreviousPlusCurrent`
+把三種情況（純多職、雙職、`+0E6h` 有值）都釘住。

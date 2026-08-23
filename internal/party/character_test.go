@@ -1080,3 +1080,65 @@ func TestParseDOSPlayerRecordKeepsRemakeWrittenUTF8Name(t *testing.T) {
 		t.Fatalf("name=%q, want %q", record.Name, want)
 	}
 }
+
+// ★ 多職／雙職的等級照**原作顯示常式**算：`LIBRARY` 逐槽跑 0..7，印出來的是
+// `PREVIOUSLEVEL[槽] + CURRENTLEVEL[槽]`（PC-98 `overlay-19:0408h`／`041Ah`，
+// spec 1196）。
+//
+// ⚠ **不是 `+0E6h`**：`HIGHESTPREVLEVEL` 的 15 處讀取全部是雙職門檻比較，
+// `LIBRARY` 一次都沒讀過它。這條測試就是那個結論的守門員——`+0E6h` 對純多職
+// 角色是 0，所以拿它當等級**在多職角色上看不出錯**，只有雙職角色會露餡。
+func TestDualClassLevelComesFromPreviousPlusCurrent(t *testing.T) {
+	base := func() []byte {
+		data := make([]byte, DOSPlayerRecordSize)
+		data[0] = 4
+		copy(data[1:], "TEST")
+		data[0x74] = 7 // 人類
+		data[0x75] = 0x08 // 多職／雙職的類別碼區間
+		data[0x78] = 20
+		data[0x1A4] = 20
+		return data
+	}
+
+	t.Run("純多職：PREVIOUSLEVEL 是 0，等於各槽最大值", func(t *testing.T) {
+		data := base()
+		data[0x109+2] = 5 // CURRENTLEVEL[戰士]
+		data[0x109+5] = 4 // CURRENTLEVEL[法師]
+		record, err := ParseDOSPlayerRecord(data, "a")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if record.Level != 5 {
+			t.Fatalf("等級 ＝ %d，want 5", record.Level)
+		}
+	})
+
+	t.Run("雙職：舊職等級要加進去", func(t *testing.T) {
+		data := base()
+		data[0x109+5] = 3 // CURRENTLEVEL[法師]：轉職後練到 3
+		data[0x111+5] = 6 // PREVIOUSLEVEL[法師]
+		record, err := ParseDOSPlayerRecord(data, "a")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if record.Level != 9 {
+			t.Fatalf("等級 ＝ %d，want 9（3 ＋ 6）", record.Level)
+		}
+	})
+
+	t.Run("`+0E6h` 不參與", func(t *testing.T) {
+		data := base()
+		data[0x109+2] = 5
+		data[0xE6] = 12 // HIGHESTPREVLEVEL：門檻用，不是顯示等級
+		record, err := ParseDOSPlayerRecord(data, "a")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if record.Level != 5 {
+			t.Fatalf("等級 ＝ %d，want 5：`+0E6h` 不該被當成顯示等級", record.Level)
+		}
+		if record.MulticlassLevel != 12 {
+			t.Fatalf("`+0E6h` 的原值要照樣留著：%d", record.MulticlassLevel)
+		}
+	})
+}

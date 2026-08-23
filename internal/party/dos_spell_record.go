@@ -312,12 +312,26 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 	copy(classLevels[:], data[0x109:0x111])
 	level := int(data[0x109+classLevelOffset(data[0x75])])
 	if data[0x75] >= 8 && data[0x75] <= 16 {
-		level = int(data[0xE6])
-		if level == 0 {
-			for _, classLevel := range classLevels {
-				if int(classLevel) > level {
-					level = int(classLevel)
-				}
+		// ★ 多職／雙職的等級照**原作顯示常式**算：`LIBRARY` 逐槽跑 0..7，
+		// 印出來的數字是 `PREVIOUSLEVEL[槽] + CURRENTLEVEL[槽]`
+		// （PC-98 `overlay-19:0408h`／`041Ah`，spec 1196）：
+		//
+		//	0408  mov al, es:[di+111h]   ; PREVIOUSLEVEL[槽]
+		//	040D  cbw / mov dx, ax
+		//	041A  mov al, es:[di+109h]   ; CURRENTLEVEL[槽]
+		//	0420  add ax, dx             ; ← 印的是這個和
+		//
+		// ⚠ **不是 `+0E6h`**：`HIGHESTPREVLEVEL` 的 15 處讀取全部是雙職門檻
+		// 比較，`LIBRARY` 一次都沒讀過它（spec 1196 的普查表）。
+		//
+		// ⚠ 原作**一個槽印一列**，沒有「單一等級」這種東西。這裡取各槽的最大值
+		// 當投影：純多職角色的 `PREVIOUSLEVEL` 是 0，結果與 `max(職業等級)`
+		// 相同；雙職角色才看得出差別。
+		level = 0
+		for slot := 0; slot < len(classLevels); slot++ {
+			total := int(data[0x109+slot]) + int(data[0x111+slot])
+			if total > level {
+				level = total
 			}
 		}
 	}
