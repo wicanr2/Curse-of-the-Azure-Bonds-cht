@@ -80,7 +80,7 @@ var DOSPlayerRecordFields = []DOSRecordField{
 	{0x0FA, 1, "換職前的等級 `OLDLEVEL`", DOSFieldDocumented, "1164"},
 	{0x0FB, 14, "七種貨幣（銅銀琥珀金白金寶石首飾，各一個 word）", DOSFieldDecoded, "1000"},
 	{0x109, 8, "第一職業的八個欄位（等級在前）", DOSFieldDecoded, "728"},
-	{0x111, 8, "第二職業的八個平行欄位（雙職角色才看）", DOSFieldDocumented, "728"},
+	{0x111, 8, "第二職業的八個平行欄位 `PREVIOUSLEVEL`（雙職角色才有值）；顯示等級是 `+109h + +111h` 逐槽相加（spec 1196）", DOSFieldDecoded, "728／1196"},
 	{0x119, 1, "性別", DOSFieldDecoded, "1086"},
 	{0x11A, 1, "種族大類 `RACETYPE`", DOSFieldDocumented, "1164"},
 	{0x11B, 1, "陣營", DOSFieldDecoded, "1102"},
