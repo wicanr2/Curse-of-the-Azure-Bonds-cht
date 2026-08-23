@@ -77,3 +77,44 @@ spec 1183 確定原作沒有引擎側的進場放置——落點是**腳本自�
 - 沒有宣稱提爾弗頓下水道端到端測試裡那個 `(0,1)` 是哪來的。它**不是**宣告值
   （`tilverton.sewers.first-person` 沒有宣告 `spawn`），也不是 game pack 的
   `set_map_position`（area 2 只有一筆，是 `(13,10)`）。還沒查。
+
+## ★★ 四個 `mismatch` 判掉一個：巫師塔的宣告值是對的，證據在**別的段**裡
+
+第一版只掃**目的地那一段**的 `SAVE ... C04B/C04C/C04D`。原作的進場落點確實是
+腳本寫的，但寫它的腳本常常在**來源那一段**：
+
+```
+ECL5/0x32  0513 PRINTCLEAR "YOU ARE HEADING UP INTO THE WIZARD'S TOWER."
+           0537 SAVE 07 → C04B
+           053D SAVE 0F → C04C
+           0543 SAVE 03 → C04D
+           0549 NEWECL 33
+```
+
+`(7, 15, 3×2 = 6)` 與 game pack 宣告的 `(7,15,6)` **逐欄相符**。
+⇒ `cmd/map-spawn-audit` 加掃「`NEWECL <目的地>` 前面 48 bytes 內的座標組」，
+判定多一種 `script-agrees-incoming`。
+
+| 判定 | 張數（第一版 → 現在）|
+|---|---|
+| `script-only` | 11 → 11 |
+| `mismatch` | 4 → **3** |
+| `script-agrees-incoming` | — → **1** |
+| `area-default` | 3 → 3 |
+
+## 剩下三個為什麼沒有 incoming
+
+它們**根本沒有任何 `NEWECL` 切進來**（走訪得到的碼裡一處都沒有）：
+
+| 地圖 | ECL/block | 全成員裡的 `NEWECL <本段>` |
+|---|---|---|
+| `original.geo3.block-10`（尤拉什）| 3/`0x10` | 無 |
+| `original.geo3.block-11-level-2` | 3/`0x12` | 無 |
+| `zhentil-keep.beholder-cave` | 4/`0x22` | 無 |
+
+⇒ 這三張是從**世界地圖那一側**（ECL1 的 `0x50`／`0x51`）換 area 進來的，
+不是同一個成員內的 `NEWECL`。`NEWECL` 的運算元是 block 編號，而編號在成員之間
+會重複，所以這一支刻意只看同一個成員——跨成員的進場要另一條證據。
+
+⚠ 這不是「宣告值錯」的證明，只是「這條路找不到」。spec 1184 原本對尤拉什的
+判讀（宣告的 `(0,3)` 是護送段走完四步之後停的格子，spec 332）仍然成立。

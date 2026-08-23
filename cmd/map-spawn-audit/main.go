@@ -49,6 +49,9 @@ const (
 // placement 是一組相鄰的立即數座標寫入。缺的欄位用 nil 表示「這一組沒寫它」。
 type placement struct {
 	Offset int
+	// End 是這一組最後一條 `SAVE` 的位移。★ 判斷「NEWECL 緊接在這一組後面」
+	// 要用它：只有第一條的位移時，三條 `SAVE` 的長度得用猜的。
+	End    int
 	X      *int
 	Y      *int
 	Facing *int
@@ -136,6 +139,7 @@ func placements(data []byte) ([]placement, error) {
 			out = append(out, placement{Offset: item.offset})
 		}
 		current := &out[len(out)-1]
+		current.End = item.offset
 		switch item.cell {
 		case cellX:
 			current.X = &value
@@ -148,12 +152,99 @@ func placements(data []byte) ([]placement, error) {
 	return out, nil
 }
 
+
+// incomingGroup 是**別的 block** 在 `NEWECL` 切到這一張圖之前寫下的座標。
+//
+// ★ 為什麼需要它。 原作的進場落點是腳本寫的（spec 1183），而寫它的腳本
+// **常常在來源那一段**，不在目的地那一段：
+//
+//	ECL5/0x32  0513 PRINTCLEAR "YOU ARE HEADING UP INTO THE WIZARD'S TOWER."
+//	           0537 SAVE 07 → C04B
+//	           053D SAVE 0F → C04C
+//	           0543 SAVE 03 → C04D
+//	           0549 NEWECL 33
+//
+// 只掃目的地那一段的話，這一組看不到，於是 game pack 宣告的 `(7,15,6)` 會被
+// 判成 `mismatch`——而它其實**逐欄相符**，只是證據在另一段裡（spec 1198）。
+type incomingGroup struct {
+	FromArea  uint8
+	FromBlock uint8
+	NewECLAt  int
+	Group     placement
+}
+
+// incomingGapBytes 是「`NEWECL` 緊接在這一組後面」的容忍度。原作那幾處是
+// 三條 `SAVE`（各 6 bytes）之後就是 `NEWECL`，所以差距很小；放寬到這個值容得下
+// 中間夾一兩條旗標寫入。
+const incomingGapBytes = 48
+
+// incomingPlacements 找出全 corpus 裡「切到 (area, dest) 之前剛寫過座標」的地方。
+//
+// ⚠ 只看**同一個 ECL 成員**：`NEWECL` 的運算元是 block 編號，而 block 編號在
+// 成員之間會重複。跨成員的切換走的是另一條路（area 換檔），不是這一個 opcode。
+func incomingPlacements(blocks map[uint8]map[uint8][]byte, area, dest uint8) []incomingGroup {
+	out := make([]incomingGroup, 0, 2)
+	for source, data := range blocks[area] {
+		if source == dest {
+			continue
+		}
+		groups, err := placements(data)
+		if err != nil || len(groups) == 0 {
+			continue
+		}
+		points, _, err := ecl.EntryPoints(data, 5)
+		if err != nil {
+			continue
+		}
+		starts := make([]int, 0, len(points))
+		for _, point := range points {
+			starts = append(starts, int(point)-ecl.CodeAddressBase)
+		}
+		graph, err := ecl.TraceGraph(data, starts, len(data)*8)
+		if err != nil {
+			continue
+		}
+		seen := map[int]bool{}
+		for _, instruction := range graph.Instructions {
+			if instruction.Command.Opcode != 0x20 || len(instruction.Operands) != 1 {
+				continue
+			}
+			operand := instruction.Operands[0]
+			if operand.WordSet || operand.Low != dest {
+				continue
+			}
+			if seen[instruction.Offset] {
+				continue
+			}
+			seen[instruction.Offset] = true
+			for _, group := range groups {
+				gap := instruction.Offset - group.End
+				if gap <= 0 || gap > incomingGapBytes {
+					continue
+				}
+				out = append(out, incomingGroup{
+					FromArea: area, FromBlock: source,
+					NewECLAt: instruction.Offset, Group: group,
+				})
+			}
+		}
+	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].FromBlock != out[j].FromBlock {
+			return out[i].FromBlock < out[j].FromBlock
+		}
+		return out[i].NewECLAt < out[j].NewECLAt
+	})
+	return out
+}
+
 type row struct {
 	MapID    string
 	Area     uint8
 	Block    uint8
 	Spawn    *goldenbox.MapSpawn
 	Found    []placement
+	Incoming []incomingGroup
 	Verdict  string
 	ScanNote string
 }
@@ -219,6 +310,7 @@ func main() {
 			continue
 		}
 		item.Found = found
+		item.Incoming = incomingPlacements(blocks, definition.AreaID, *definition.ScriptBlock)
 		item.Verdict = verdict(item)
 		rows = append(rows, item)
 	}
@@ -243,7 +335,8 @@ func main() {
 	fmt.Fprintf(&report, "The original has no engine-side placement on ECL block change, so the entry cell "+
 		"is whatever the script writes. This table pairs every declared `spawn` with the immediate "+
 		"`SAVE <imm> C04B|C04C|C04D` groups reachable in the same block.\n\n")
-	fmt.Fprintf(&report, "Verdicts: `script-agrees` the declared spawn equals a script group; "+
+	fmt.Fprintf(&report, "Verdicts: `script-agrees` the declared spawn equals a script group in the same block; "+
+		"`script-agrees-incoming` it equals a group written just before a `NEWECL` into this block from another block; "+
 		"`mismatch` the script writes coordinates but none equals the declared spawn; "+
 		"`declared-only` no immediate script write was reached, the declaration is the only source; "+
 		"`script-only` the script writes coordinates and no spawn is declared; "+
@@ -264,7 +357,7 @@ func main() {
 	}
 	fmt.Fprintf(&report, "| total | %d |\n\n", len(rows))
 
-	fmt.Fprintf(&report, "| map | ECL | block | declared spawn | script groups | verdict |\n|---|---:|---:|---|---|---|\n")
+	fmt.Fprintf(&report, "| map | ECL | block | declared spawn | script groups | incoming NEWECL groups | verdict |\n|---|---:|---:|---|---|---|---|\n")
 	for _, item := range rows {
 		spawn := "-"
 		if item.Spawn != nil {
@@ -286,8 +379,17 @@ func main() {
 		if item.Verdict == "area-default" {
 			block = "-"
 		}
-		fmt.Fprintf(&report, "| `%s` | %d | %s | %s | %s | `%s`%s |\n",
-			item.MapID, item.Area, block, spawn, groups, item.Verdict, note)
+		arrivals := "-"
+		if len(item.Incoming) > 0 {
+			parts := make([]string, 0, len(item.Incoming))
+			for _, group := range item.Incoming {
+				parts = append(parts, fmt.Sprintf("`0x%02X`@`%04Xh`%s",
+					group.FromBlock, group.NewECLAt, group.Group))
+			}
+			arrivals = strings.Join(parts, "<br>")
+		}
+		fmt.Fprintf(&report, "| `%s` | %d | %s | %s | %s | %s | `%s`%s |\n",
+			item.MapID, item.Area, block, spawn, groups, arrivals, item.Verdict, note)
 	}
 
 	text := report.String()
@@ -304,16 +406,23 @@ func main() {
 
 func verdict(item row) string {
 	switch {
-	case item.Spawn == nil && len(item.Found) == 0:
+	case item.Spawn == nil && len(item.Found) == 0 && len(item.Incoming) == 0:
 		return "none"
 	case item.Spawn == nil:
 		return "script-only"
-	case len(item.Found) == 0:
+	case len(item.Found) == 0 && len(item.Incoming) == 0:
 		return "declared-only"
 	}
 	for _, found := range item.Found {
 		if found.matches(*item.Spawn) {
 			return "script-agrees"
+		}
+	}
+	// ⚠ 目的地那一段沒寫**不代表**腳本沒寫。切進來的那一段常常先寫座標再
+	// `NEWECL`，證據在別的 block 裡（spec 1198 的巫師塔）。
+	for _, group := range item.Incoming {
+		if group.Group.matches(*item.Spawn) {
+			return "script-agrees-incoming"
 		}
 	}
 	return "mismatch"
