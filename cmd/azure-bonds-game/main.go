@@ -1254,7 +1254,22 @@ func (a *app) prepareWallPreview() {
 		return
 	}
 	_, _, direction := a.state.DungeonGeometryView()
-	view, err := gfx.TraverseWallViewWrapped(*a.geoGrid, direction, a.dungeonX, a.dungeonY)
+	// ⚠ 這一條路徑**一直是繞回去的**，而 game pack 的地圖有 `wrap` 欄位——
+	// 那個欄位對第一人稱畫面沒有作用。`COAB_FP_NOWRAP` 是量它的開關。
+	//
+	// ★ **量過了：不繞回去比較差。** `geo5-b33` 取 12 張有差異 ＋ 12 張控制組：
+	//
+	//	繞回去（現況）  逐格相同 12／24，差 1,773 格
+	//	不繞回去        逐格相同  7／24，差 7,403 格
+	//
+	// ⇒ 原作**確實會繞回去**，`wrap` 欄位不是那些差異的成因。旗標留著是因為
+	// 這個假設看起來很有道理（差異全部落在「只有繞回去才看得到」的格子上），
+	// 下一個人多半會再想一次——留著就能一分鐘內自己再量一遍。
+	traverse := gfx.TraverseWallViewWrapped
+	if os.Getenv("COAB_FP_NOWRAP") != "" {
+		traverse = gfx.TraverseWallView
+	}
+	view, err := traverse(*a.geoGrid, direction, a.dungeonX, a.dungeonY)
 	if err != nil {
 		return
 	}
