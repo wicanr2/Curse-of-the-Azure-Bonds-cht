@@ -460,6 +460,8 @@
    "creation.class.cleric-thief": "牧師／盜賊",
    "press_button": "請按任意鍵或 Enter 繼續",
    "tell_truth": "如實相告",
+   "tilverton.tavern.ask-injuries": "詢問傷勢",
+   "tilverton.tavern.ignore-injuries": "不理會",
    "tavern_punch": "揍酒保",
    "tavern_drink": "喝一杯",
    "tavern_dragon_breath": "龍息酒",

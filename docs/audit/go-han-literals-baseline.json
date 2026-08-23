@@ -4423,6 +4423,83 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "1da7839df1ed04fa05653f7f677224db1bfa834e25fa40b5d5d84378929aa398",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "22c881af52070edf8cca5e0f573bdeb80118ae23d120e5bf6e2d14f84f2cbaa6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "472dde689eaf564cb4403a282f3cbdb563665ee8ac5ff47a6a33276544ec0364",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "62cbb4675a9b20575b19b7e38e02fdcd0db92c3462fde29f1cc8935ed8744329",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "65e78146e93ad64237757850917805e9a531b21b192a5b10fde9e0d981ed13d8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "733b556cb2a2132f64192ddf04b2dd40702ea21407ffb11d461206c79a20660d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "9edd5e9f2bffd4a0594565aefa4ade6a97384cd26a1faef6f9e4efb12b6fccae",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "a066777439869ddb5fd0f063d94ff6b978d2d951efd37486e9c893d57d4ab885",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "aaee9831d7ddbc3a77062c65eaab9fad5626b626b8ee9ca8f9eb5e0c5f063883",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "bc879d17d6ad251f10ab5c68527d85a521d452708d47d7fc2105c1351e5792f6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-address-refs/main.go",
+      "function": "main",
+      "sha256": "fd89db3c4c90c044b13dad35fe3f391b3c875185944db74b2dcd5dbe3b56ea00",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/ecl-block-graph/main.go",
       "function": "directEntry",
       "sha256": "b1214bdfa2857ee50158e9caefa089f359f75c1e171e000652d936baaf4a5039",

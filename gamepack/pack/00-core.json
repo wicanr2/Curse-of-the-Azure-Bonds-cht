@@ -1370,7 +1370,17 @@
         "x": 7,
         "y": 13,
         "direction": 0
-      }
+      },
+      "external_exits": [
+        {
+          "id": "tilverton.guild.south-to-sewers",
+          "x": 10,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        }
+      ]
     },
     {
       "id": "tilverton.sewers.first-person",

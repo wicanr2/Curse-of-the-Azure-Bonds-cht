@@ -3,9 +3,10 @@
 SSI《Curse of the Azure Bonds》的資料驅動重製專案。目標是讓玩家以繁體中文從
 開場玩到結局。**主線已經從開場走到結局**（同一條 session 的端到端測試，見下表）；
 ⚠ 那是規則層走完，**不等於拿鍵盤從頭玩到結局**——輸入層推得動主線的每一個
-檢查點，但一條連續的按鍵路線目前走到 ECL 段 `0x02`、132 格。缺的是**段與段之間的
-交接**：錄下來的主線路線是用 `EnterSegment` 直接切段的，段界怎麼走過去那份紀錄裡
-沒有（[spec 1197](docs/spec/1197-keyboard-playthrough-door-and-route-replay.md)）。
+檢查點，一條連續的按鍵路線目前走到世界地圖：提爾佛頓 → 盜賊公會 → 下水道 →
+火刀據點 → 世界地圖（ECL 段 `0x01` → `0x02` → `0x03` → `0x04` → `0x50` → `0x51`），
+137 格、124 句話、0 句落回原文
+（[spec 1197](docs/spec/1197-keyboard-playthrough-door-and-route-replay.md)）。
 
 本 repo 負責 CoAB 的 game pack、翻譯、原始素材轉換、攻略與整合測試；可重用的
 ECL／DAX／GEO／戰鬥／存檔引擎在獨立的

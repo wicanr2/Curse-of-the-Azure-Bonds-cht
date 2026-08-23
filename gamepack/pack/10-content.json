@@ -9263,6 +9263,16 @@
    "message_id": "remain_calm"
   },
   {
+   "id": "tilverton.tavern.option.ask-injuries",
+   "source": "ASK ABOUT INJURIES",
+   "message_id": "tilverton.tavern.ask-injuries"
+  },
+  {
+   "id": "tilverton.tavern.option.ignore-injuries",
+   "source": "IGNORE THEM",
+   "message_id": "tilverton.tavern.ignore-injuries"
+  },
+  {
    "id": "ecl-option.enter-it",
    "source": "ENTER IT",
    "message_id": "enter_it"

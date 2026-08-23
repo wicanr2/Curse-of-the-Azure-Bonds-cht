@@ -460,6 +460,8 @@
    "creation.class.cleric-thief": "Cleric/Thief",
    "press_button": "PRESS BUTTON OR RETURN TO CONTINUE.",
    "tell_truth": "TELL THE TRUTH",
+   "tilverton.tavern.ask-injuries": "ASK ABOUT INJURIES",
+   "tilverton.tavern.ignore-injuries": "IGNORE THEM",
    "tavern_punch": "PUNCH BARKEEP",
    "tavern_drink": "HAVE A DRINK",
    "tavern_dragon_breath": "DRAGON'S BREATH",

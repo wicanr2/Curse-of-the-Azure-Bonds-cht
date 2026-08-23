@@ -297,6 +297,9 @@ type keyDrivenSession struct {
 	// routeBlocked 是「路線說往這邊走，按下去卻沒動」的次數——這個數字把
 	// 「路線用完了」與「路線帶不動」分開。
 	routeBlocked int
+	// searchToggles／looks 是被牆擋住之後按 `S`／`L` 的次數。
+	searchToggles int
+	looks         int
 }
 
 // loadRoute 讀主線錄下來的路線；沒有就回 nil（測試照樣跑，只是沒有路線可循）。
@@ -438,6 +441,16 @@ func (s *keyDrivenSession) observe() {
 	if len(state.Choices) > 0 {
 		s.menus[strings.Join(state.Choices, "｜")] = true
 	}
+	// ★ **選項也要查落回原文**。 原本只查 `Message` 與 `Prompt`，於是
+	// 「ASK ABOUT INJURIES｜IGNORE THEM」這種整組英文選單一路演到玩家面前而
+	// 測試全綠——落回原文的判準漏了玩家最常讀的那一塊。
+	for _, option := range state.Choices {
+		trimmed := strings.TrimSpace(option)
+		if trimmed == "" || hasHan(trimmed) || !hasLatinWord(trimmed) {
+			continue
+		}
+		s.fallbacks[trimmed] = true
+	}
 	for _, text := range []string{state.Message, state.Prompt} {
 		trimmed := strings.TrimSpace(text)
 		if trimmed == "" {
@@ -554,6 +567,7 @@ func (s *keyDrivenSession) step(t *testing.T) {
 				// （門沒開、旗標不同、或這一格根本不是主線走到的那個狀態）。
 				// 記下來，免得把「路線用完了」與「路線帶不動」混成同一件事。
 				s.routeBlocked++
+				s.searchForAWayThrough(t)
 			}
 		}
 		return
@@ -590,6 +604,30 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		}
 	}
 	tap(t, s.app, s.keys, ebiten.KeyUp)
+}
+
+// searchForAWayThrough 是「路線說有路、按下去卻是牆」時玩家會做的事：先開搜尋
+// （`S`），再看一眼（`L`）。
+//
+// ★ 為什麼需要這一段。 原作有**搜尋才會出現的邊**——`tilverton.sewers` 的
+// `(10,12)` 往西就是一面要搜尋才過得去的牆（game pack 的 `search_edges`）。
+// 主線的路線紀錄從那裡穿過去，因為錄路線的那條測試是在規則層走的；按鍵這一場
+// 不搜尋就永遠是一面牆，而畫面上看起來只是「走不動」。
+//
+// ⚠ 搜尋只開一次：`ToggleDungeonSearch` 是切換，每次都按會一開一關，
+// 於是**看起來一直在搜尋，實際上有一半的時間是關的**。
+func (s *keyDrivenSession) searchForAWayThrough(t *testing.T) {
+	t.Helper()
+	if s.app.state.Mode != game.ModeDungeon {
+		return
+	}
+	if !s.app.state.DungeonSearchEnabled {
+		tap(t, s.app, s.keys, ebiten.KeyS)
+		s.searchToggles++
+		return
+	}
+	tap(t, s.app, s.keys, ebiten.KeyL)
+	s.looks++
 }
 
 // tryDoors 朝四個方向各撞一次，看有沒有門。撞到門會開選單，交給下一幀處理。
@@ -794,6 +832,7 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	t.Logf("  停在：%s (%d,%d) 朝 %d；最後一次踏上新格子在第 %d 幀；"+
 		"各畫面幀數 %s；路線帶不動 %d 次", modeName(application.state.Mode), x, y, facing,
 		session.lastProgress, strings.Join(spent, "、"), session.routeBlocked)
+	t.Logf("  被牆擋住之後：開搜尋 %d 次、看一眼 %d 次", session.searchToggles, session.looks)
 	t.Logf("  卡住之後在這些格子之間繞：%s", strings.Join(stall, " "))
 	trace := session.segmentTrace
 	if len(trace) > 40 {
