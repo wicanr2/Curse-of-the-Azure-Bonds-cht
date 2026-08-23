@@ -52,30 +52,73 @@ while [ "$#" -ge 2 ]; do
   # ⚠ 位置一定要從畫面讀回來核對。存檔寫進去不等於原版照著站——不核對的話
   # 索引會標成目標格，實際拍的是別格，而畫面本身看起來完全正常。
   # ⚠ 不是每一張圖都顯示座標：提爾佛頓是 `7,13 N 00:00`，GEO3 段 0x15 那類只有
-  # `N 00:00`。這種圖只核對得到朝向，座標只能靠存檔——而存檔的座標是驗過會生效的
-  # （提爾佛頓與下水道共 289 張逐格對得上）。分開處理，不要把「這張圖不顯示座標」
-  # 與「畫面根本不對」混成同一種。
+  # `N 00:00`。這裡對這種圖只核對得到朝向；**座標由下面的區域地圖核對**，
+  # 不是驗不了。分開處理，不要把「這一步讀不到座標」與「畫面根本不對」混成同一種。
   read -r gx gy gd < <(python3 "$ROOT/tools/dos_screen_pos.py" "$ROOT/workplace/dos-oracle/out/_live.png")
   if [ "$gx" = "?" ] && [ "$gd" != "?" ]; then
-    echo "  （這張圖不顯示座標，只核對朝向）"
+    echo "  （這張圖不顯示座標；朝向先核對，座標留給區域地圖）"
   elif [ "$gx" != "$x" ] || [ "$gy" != "$y" ]; then
     echo "  ⚠ 畫面讀到 ($gx,$gy)，不是 ($x,$y)：不收這一格"
     continue
   fi
+  # ⚠ **拍之前要等畫面穩定。** 文字先到、圖形後到：`gate` 只等到文字出現就回，
+  # 這時第一人稱那一塊可能還是**上一格**的畫面。第 750 輪的批次就出現過這種——
+  # `geo5-b33` (8,15) 收到一張看起來完全正常、卻與 remake 差 3,334 格的圖，
+  # 而單獨重跑同一格是**逐格相同**。判準是「連兩張一模一樣才算穩定」。
+  settle() {
+    local i
+    for i in $(seq 6); do
+      "$S" shot "_settle-a.png" >/dev/null
+      sleep 0.6
+      "$S" shot "_settle-b.png" >/dev/null
+      # ⚠ 只比**可視區**：整張畫面永遠不會兩次完全相同（時間、游標一直在動），
+      # 拿整張比會永遠等不到穩定。
+      if python3 "$ROOT/tools/dos_screen_stable.py" \
+           "$ROOT/workplace/dos-oracle/out/_settle-a.png" \
+           "$ROOT/workplace/dos-oracle/out/_settle-b.png"; then return 0; fi
+    done
+    return 1
+  }
+
+  pending=""
+  ok=1
   for d in N E S W; do
     name="$PREFIX-x$(printf '%02d' "$x")-y$(printf '%02d' "$y")-$d.png"
+    settle || { echo "  ⚠ 畫面一直沒穩定下來，不收這一格"; ok=0; break; }
     "$S" shot "$name" >/dev/null
     read -r rx ry rd < <(python3 "$ROOT/tools/dos_screen_pos.py" "$ROOT/workplace/dos-oracle/out/$name")
     if { { [ "$rx" = "$x" ] && [ "$ry" = "$y" ]; } || [ "$rx" = "?" ]; } && [ "$rd" = "$d" ]; then
-      printf '%s\t%s\t%s\t%s\n' "$name" "$x" "$y" "$d" >> "$index"
-      # ⚠ 索引與圖要放在**同一個目錄**：`tools/fp-oracle-compare.py` 是拿索引檔
-      # 的目錄去找圖的。只追加索引不複製圖的話，比對會在那一列停下來，而前面
-      # 幾百張的小計就沒了（第 750 輪踩過）。
-      cp "$ROOT/workplace/dos-oracle/out/$name" "$(dirname "$index")/$name"
-      echo "  收下 $name"
+      pending="$pending$name\t$x\t$y\t$d\n"
     else
-      echo "  ⚠ $name 讀到 ($rx,$ry,$rd)，與預期不符：不收"
+      echo "  ⚠ $name 讀到 ($rx,$ry,$rd)，與預期不符：不收這一格"
+      ok=0; break
     fi
     "$S" key Right 0.6 >/dev/null
+  done
+  [ "$ok" = "1" ] || continue
+
+  # ★ 位置的最後一道核對走**區域地圖**（第 750 輪）。`AREA` 會畫出隊伍標記，
+  # 而地圖是 16×16 開一個 11×11 的視窗、原點 `clamp(隊伍 − 5, 0, 5)` ⇒
+  # 「預測標記該在哪一個字元格、再看那一格是不是箭頭」就是一個**不靠畫面文字**
+  # 的位置驗證（`tools/dos_screen_areamap.py`）。畫面不顯示座標的圖只有這一條路。
+  #
+  # ⚠ **一定要放在拍完之後。** 進出區域地圖會讓第一人稱那一塊留在舊畫面上：
+  # 實測同一格「進區域地圖之前」與 remake 逐格相同、「離開之後」差 5,953 格。
+  "$S" key a 1.2 >/dev/null; sleep 1.5
+  "$S" shot "_areamap.png" >/dev/null
+  if ! python3 "$ROOT/tools/dos_screen_areamap.py" \
+        "$ROOT/workplace/dos-oracle/out/_areamap.png" "$x" "$y" >/dev/null 2>&1; then
+    echo "  ⚠ 區域地圖核對不過：隊伍不在 ($x,$y)，這一格四張都不收"
+    continue
+  fi
+
+  printf "%b" "$pending" >> "$index"
+  # ⚠ 索引與圖要放在**同一個目錄**：`tools/fp-oracle-compare.py` 是拿索引檔
+  # 的目錄去找圖的。只追加索引不複製圖的話，比對會在那一列停下來，而前面
+  # 幾百張的小計就沒了（第 750 輪踩過）。
+  for d in N E S W; do
+    name="$PREFIX-x$(printf '%02d' "$x")-y$(printf '%02d' "$y")-$d.png"
+    cp "$ROOT/workplace/dos-oracle/out/$name" "$(dirname "$index")/$name"
+    echo "  收下 $name"
   done
 done
