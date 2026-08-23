@@ -59,6 +59,9 @@ type handoffRow struct {
 	// 狀態進場，而不是合成的乾淨狀態。
 	SeededDropped int      `json:"seeded_dropped"`
 	SeededRisky   []uint16 `json:"seeded_risky,omitempty"`
+	// ResidueOther 是這一段**歸不了因**的那幾格。★ 逐格印出來才追得下去：
+	// 只有一個總數的話，下一步只能重跑整支工具。
+	ResidueOther []uint16 `json:"residue_other,omitempty"`
 	// Source 是主線那一份的取樣點：`arrival`（剛換到那一段）或 `inside`
 	// （第一次站上地城，晚一些）。⚠ 兩者不可混為一談，見 `snapshotMemory`。
 	Source string `json:"source,omitempty"`
@@ -170,6 +173,7 @@ func main() {
 						doc.ResidueLifecycleOwned++
 					default:
 						doc.ResidueOther++
+						row.ResidueOther = append(row.ResidueOther, address)
 					}
 				}
 			}
