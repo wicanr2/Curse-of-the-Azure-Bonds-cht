@@ -1086,8 +1086,16 @@ func TestResolvePendingECLDamageFinishesActiveCombatWhenPartyFalls(t *testing.T)
 			heroHasPosition = fighter.HasCombatPosition
 		}
 	}
-	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusEnemyWon || state.partyRoster[0].HitPoints != 0 || heroHP != 0 || heroHasPosition {
-		t.Fatalf("mode=%v status=%v roster=%#v fighters=%#v", state.Mode, state.CombatStatus(), state.partyRoster, state.CombatFighters())
+	if state.CombatStatus() != combat.StatusEnemyWon || state.partyRoster[0].HitPoints != 0 || heroHP != 0 || heroHasPosition {
+		t.Fatalf("status=%v hero=%d roster HP=%d position=%v",
+			state.CombatStatus(), heroHP, state.partyRoster[0].HitPoints, heroHasPosition)
+	}
+	// ★ 全隊倒下要落在**全滅畫面**，不是印一句「戰鬥失敗。」就回地圖：原作的
+	// `2Eh DAMAGE` 收尾在全隊都倒下時設 `DS:4FC7h`，兩個主迴圈都以它收尾
+	// （spec 1152／1045／1095），與 `PROGRAM 3` 同一個結局。
+	if !state.PartyKilled() || !state.programEndMenu || state.OriginalEvent != "COMBAT" {
+		t.Fatalf("全滅之後沒有進全滅畫面：killed=%v menu=%v event=%q mode=%v",
+			state.PartyKilled(), state.programEndMenu, state.OriginalEvent, state.Mode)
 	}
 	if len(state.partyRoster[0].Effects) != 2 || state.partyRoster[0].Effects[0].Kind != 0x25 || state.partyRoster[0].Effects[1].Kind != 0x01 {
 		t.Fatalf("combat effects were not removed: %#v", state.partyRoster[0].Effects)

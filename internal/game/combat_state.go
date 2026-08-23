@@ -4445,6 +4445,13 @@ func (s *State) finishCombat() error {
 		s.combatMessage = interrupted + "\n" + s.combatMessage
 	}
 	s.Message = s.combatMessage
+	// ★ 全滅要停下來，不是印一句話就回地圖：原作的 `2Eh DAMAGE` 收尾在全隊
+	// 都倒下時設 `DS:4FC7h`，兩個主迴圈都以它收尾（spec 1152／1045／1095），
+	// 玩家看到的是全滅畫面然後回主選單——與 `PROGRAM 3` 同一個結局。
+	if s.battle.Status() == combat.StatusEnemyWon && s.PartyWipedOut() {
+		s.enterPartyKilled("COMBAT")
+		return nil
+	}
 	if s.battle.Status() == combat.StatusPartyWon {
 		if len(s.pendingTreasure) > 0 {
 			if err := s.ResolveTreasureRequests(); err != nil {

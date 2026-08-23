@@ -315,6 +315,12 @@ type State struct {
 	pendingMemorizedSpells  map[int][]uint8
 	saveRequested           bool
 	programEndMenu          bool
+	// initialECLBlock 是這一局從哪一段開始的。★ 全滅或通關之後回標題要用它把
+	// session 重設回開局狀態；把 session 整個丟掉的話，標題上按「開始」會走進
+	// 一個**沒有 session 的荒野**，接下來每一步移動都回
+	// 「dungeon lifecycle requires an ECL session」（實測按鍵重放就是這樣掛的）。
+	initialECLBlock         uint8
+	hasInitialECLBlock      bool
 	gameWon                 bool
 	partyKilled             bool
 	alterMenu               bool
@@ -390,6 +396,8 @@ func NewStateFromECLBlocks(catalog locale.Catalog, blocks map[uint8][]byte, init
 	if err == nil {
 		state.session = session
 		state.eclBlock = session.CurrentData()
+		state.initialECLBlock = initial
+		state.hasInitialECLBlock = true
 	}
 	state.initializeECL()
 	return state
@@ -3868,15 +3876,7 @@ func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
 		s.enterProgramTitle(s.catalog.Text("program_main_menu", "program_main_menu"))
 		return true, nil
 	case 3:
-		s.requestSound(SoundCrash)
-		s.partyKilled = true
-		s.programEndMenu = true
-		s.Mode = ModeWilderness
-		s.OriginalEvent = "PROGRAM 3"
-		s.Prompt = s.catalog.Text("program_party_killed_prompt", "program_party_killed_prompt")
-		s.Choices = []string{s.catalog.Text("program_return_title", "program_return_title")}
-		s.currentOriginalChoices = []string{"PROGRAM_END"}
-		s.Message = s.catalog.Text("program_party_killed_message", "program_party_killed_message")
+		s.enterPartyKilled("PROGRAM 3")
 		return true, nil
 	case 8:
 		s.gameWon = true
@@ -3900,6 +3900,41 @@ func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
 	default:
 		return false, nil
 	}
+}
+
+// enterPartyKilled 是「隊伍全滅、停掉迴圈」那個畫面。
+//
+// ★ 原作用的是一格旗標 `DS:4FC7h`：`PROGRAM 3` 設它（spec 1154），而 `2Eh DAMAGE`
+// 的收尾在**全隊都倒下**時也設它（spec 1152）；地城主迴圈與 ECL 主迴圈都以
+// `until DS:4FC7h <> 0` 收尾（spec 1045／1095）。⇒ 兩個來源、同一個結局。
+//
+// ⚠ remake 先前只接了 `PROGRAM 3` 那一個來源，戰鬥打輸只印一句「戰鬥失敗。」
+// 就回地圖——隊伍全倒了、遊戲照樣繼續走。而 corpus 裡唯一的 `PROGRAM 3` 在
+// **demo**（`ECL1/0x52`，spec 278）裡，正常遊玩根本走不到 ⇒ 那條路等於沒接。
+func (s *State) enterPartyKilled(event string) {
+	s.requestSound(SoundCrash)
+	s.partyKilled = true
+	s.programEndMenu = true
+	s.Mode = ModeWilderness
+	s.OriginalEvent = event
+	s.Prompt = s.catalog.Text("program_party_killed_prompt", "program_party_killed_prompt")
+	s.Choices = []string{s.catalog.Text("program_return_title", "program_return_title")}
+	s.currentOriginalChoices = []string{"PROGRAM_END"}
+	s.Message = s.catalog.Text("program_party_killed_message", "program_party_killed_message")
+}
+
+// PartyWipedOut 回答「隊伍是不是全倒了」——`2Eh DAMAGE` 收尾判的那一件事
+// （spec 1152）。空隊伍不算全滅：那是還沒建角，不是團滅。
+func (s *State) PartyWipedOut() bool {
+	if len(s.partyRoster) == 0 {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.HitPoints > 0 {
+			return false
+		}
+	}
+	return true
 }
 
 func (s *State) selectProgramEnd(originalChoice string) error {
@@ -3978,6 +4013,12 @@ func (s *State) enterVictoryMenu() {
 	s.Message = s.catalog.Text("program_victory_message", "program_victory_message")
 }
 
+// enterProgramTitle 把遊戲收回標題畫面（全滅、通關、或 `PROGRAM 0` 落到主選單）。
+//
+// ⚠ **不要把 session 丟掉。** 丟掉之後標題上按「開始」會落到
+// `Apply(ActionStart)` 的退路——一個沒有 session 的荒野，而玩家在那裡走一步就
+// 撞上「dungeon lifecycle requires an ECL session」。改成把 session **重設回
+// 開局那一段**並清空隊伍，於是「開始」走的是與第一次開局同一條路（建角）。
 func (s *State) enterProgramTitle(message string) {
 	s.programEndMenu = false
 	s.Mode = ModeTitle
@@ -3986,8 +4027,32 @@ func (s *State) enterProgramTitle(message string) {
 	s.Choices = nil
 	s.currentOriginalChoices = nil
 	s.Message = message
-	s.eclBlock = nil
-	s.session = nil
+	s.resetSessionForNewGame()
+}
+
+// resetSessionForNewGame 把 ECL session 與隊伍收回「還沒開始」的狀態。
+// 沒有 session（單元測試常見）時就照舊清空，行為與先前相同。
+func (s *State) resetSessionForNewGame() {
+	if s.session == nil || !s.hasInitialECLBlock {
+		s.eclBlock = nil
+		s.session = nil
+		return
+	}
+	if err := s.session.Reset(s.initialECLBlock); err != nil {
+		// 重設不了就退回舊行為：寧可停在標題，也不要拿一個半壞的 session 繼續。
+		s.eclBlock = nil
+		s.session = nil
+		return
+	}
+	s.eclBlock = s.session.CurrentData()
+	s.party = nil
+	s.partyRoster = nil
+	s.CreationRoster = nil
+	s.battle = nil
+	s.partyKilled = false
+	s.gameWon = false
+	s.selectionSequence = nil
+	s.whoSelectionSequence = nil
 }
 
 // applyECLCallSignals translates the CALL operands the CoAB ECL image actually

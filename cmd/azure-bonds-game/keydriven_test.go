@@ -538,16 +538,33 @@ func keyDrivenFrames() int {
 	return keyDrivenDefaultFrames
 }
 
-// keyDrivenDefaultFrames 是量出來的（同一份路線，走位放手條件 ＝ 2、
-// `tryDoors` 只撞走不通的方向之後）：
+// ★★ 這張表在「全滅會結束遊戲」之後**整個要重讀**（2026-08-24）。
+//
+// 在那之前，隊伍全倒了遊戲照樣繼續——`finishCombat` 只印一句「戰鬥失敗。」就回
+// 地圖。於是這一場的大半是**一支 HP 全 0 的隊伍**在走（報表裡那些
+// 「戰士（HP 0/0）」就是它），走過的格數因此**被灌水**。現在全滅會落到全滅畫面、
+// 回標題重開，同一份路線從 476 格掉到 105 格。
+//
+// ⇒ **105 才是誠實的數字**，476 不是。掉下來的不是能力，是先前多算的部分。
+// ⚠ 下一個瓶頸因此換成「重放打不贏架」：隊伍是六個一級戰士（HP 10），
+// 而重放的戰鬥處置只會按 Enter（攻擊），實測一場 session 會全滅並重開二十幾次，
+// 路線在第一次全滅之後就對不上了。要往下推得先讓它活著，不是加幀數。
+//
+// 舊表（全滅還不會結束遊戲時量的，留著當對照）：
 //
 //	 2,500 幀   344 格／215 句／ 11 秒
 //	 6,000 幀   457 格／255 句／ 33 秒
-//	12,000 幀   572 格／264 句／ 54 秒   ← 目前這一版
+//	12,000 幀   572 格／264 句／ 54 秒
 //	20,000 幀   602 格／273 句／ 95 秒
 //	40,000 幀   612 格／274 句／174 秒
 //
-// ⇒ 轉折在 12,000：再往上每多一分鐘只多三十幾格。取 12,000。
+// keyDrivenDefaultFrames 是量出來的（同一份路線，走位放手條件 ＝ 2、
+// `tryDoors` 只撞走不通的方向之後）：
+//
+//	12,000 幀（帶路線）  105 格／71 句   ← 目前這一版
+//	12,000 幀（無路線）   97 格／73 句   （測試套件預設就是這一條）
+//
+// ⇒ 幀數不再是瓶頸（全滅重開才是），維持 12,000；等重放打得贏架之後重新量。
 //
 // ⚠ 這個數字會隨走法與譯文缺口改變：補完酒館傳聞之前它是 1,500，那時候 4,000 幀
 // 也只走到 137 格——**不是因為幀數不夠，是因為隊伍撞到一句沒翻的話就停在那裡**。
@@ -763,6 +780,18 @@ func (s *keyDrivenSession) traceMenu(reason string, want int) {
 // 那條路走得通，但因為去過所以被拒絕，於是永遠不動。
 func (s *keyDrivenSession) step(t *testing.T) {
 	t.Helper()
+	// ★ 角色建立在**迴圈裡**也會出現：隊伍全滅之後回標題，按「開始」走的是與
+	// 第一次開局同一條路。開頭那段固定的建角序列只跑一次，所以這裡要有一份
+	// 能重來的版本——少了它，全滅之後每按一次 Enter 就多加一名角色，
+	// 加到第七個回「party already has six characters」，整場 session 就死在那裡。
+	if s.app.state.Mode == game.ModeCharacterCreation {
+		if len(s.app.state.CreationRoster) >= 6 {
+			tap(t, s.app, s.keys, ebiten.KeyD)
+			return
+		}
+		tap(t, s.app, s.keys, ebiten.KeyEnter)
+		return
+	}
 	if s.app.state.Mode != game.ModeDungeon || s.app.geoGrid == nil {
 		// ⚠ 選單**預設按第一項**。試過依幀數輪流選：走過的格子從 28 掉到 27、
 		// 記到的話從 23 掉到 16——因為輪到「離開」那一項就真的離開了，
@@ -905,6 +934,17 @@ func (s *keyDrivenSession) step(t *testing.T) {
 			return
 		}
 	}
+	// ⚠ **踏出去這一步本身就要記一次**，不能只靠 `observe()` 在地城／事件那兩種
+	// 畫面下累加：目的地有事件、而那個事件把隊伍**推回原格並切成荒野畫面**時，
+	// 那一格從頭到尾不會被 `observe()` 看到 ⇒ `visits` 永遠是 0 ⇒ 它永遠是
+	// 「去得最少的」那一格 ⇒ 隊伍在兩格之間乒乓到跑完
+	// （實測 `ECL2/0x01` 的 `(2,15)`／`(1,15)` 各 5,882 次）。
+	deltaX, deltaY := headingDelta(target)
+	s.visits[[3]int{
+		int(s.app.geoBlock),
+		geo.WrapCoordinate(beforeX+deltaX, geo.Width),
+		geo.WrapCoordinate(beforeY+deltaY, geo.Height),
+	}]++
 	tap(t, s.app, s.keys, ebiten.KeyUp)
 	if s.tracing() {
 		afterX, afterY, _ := s.app.state.DungeonGeometryView()
