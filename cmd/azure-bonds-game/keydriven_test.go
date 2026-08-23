@@ -163,6 +163,11 @@ func (s *keyDrivenSession) routeMove() (int, bool) {
 		currentGeo = int(s.app.geoGrid.BlockID)
 	}
 	cell := routeCell{int(block), s.routeGeoBlock(currentGeo), x, y}
+	// 放手條件，與選單那一側同源：這一格從上一次有新東西到現在已經照路線走過
+	// 這麼多次，路線在這一場就是幫不上忙，交給啟發式。
+	if s.moveSinceProgress[cell] > routeMovePatienceValue() {
+		return 0, false
+	}
 	candidates := make([]int, 0, len(s.routeMoves[cell]))
 	for _, index := range s.routeMoves[cell] {
 		if s.routeDead[[4]int{cell.segment, cell.x, cell.y, s.route[index].Direction}] >= routeDeadAfter {
@@ -176,6 +181,7 @@ func (s *keyDrivenSession) routeMove() (int, bool) {
 	if !ok {
 		return 0, false
 	}
+	s.moveSinceProgress[cell]++
 	return s.route[index].Direction, true
 }
 
@@ -218,6 +224,31 @@ const routeDeadAfter = 3
 
 // routeMenuPatience 是「同一個選單連續出現幾次都沒有新東西，就不再問路線」。
 const routeMenuPatience = 8
+
+// routeMovePatience 是走位那一側的同一個數字：同一格連續照路線走這麼多次都
+// 沒有新東西，就不再問路線。
+//
+// 實測（2,600 幀，同一份路線；「段」欄取最深的一段）：
+//
+//	耐心=1   111 格／ 66 句／最深 0x02   ← 太早放手，連提爾佛頓都走不完
+//	耐心=2   342 格／225 句／最深 0x51   ← 目前這一版
+//	耐心=3   335 格／215 句／最深 0x33
+//	耐心=4   280 格／205 句／最深 0x33
+//	耐心=8   279 格／205 句／最深 0x33
+//	耐心=16  274 格／205 句／最深 0x33
+//
+// ⚠ 選單那一側的 8 不適用在這裡：一個選單按錯只浪費一幀，而走位按錯會讓隊伍
+// **離開**原本站對的那一格，代價高得多，所以放手要早。改動走法之後重新量。
+const routeMovePatience = 2
+
+func routeMovePatienceValue() int {
+	if raw := os.Getenv("COAB_KEY_MOVE_PATIENCE"); raw != "" {
+		if value, err := strconv.Atoi(raw); err == nil && value > 0 {
+			return value
+		}
+	}
+	return routeMovePatience
+}
 
 func routeMenuPatienceValue() int {
 	if raw := os.Getenv("COAB_KEY_MENU_PATIENCE"); raw != "" {
@@ -388,6 +419,15 @@ type keyDrivenSession struct {
 	// ★ 這是路線的**放手條件**：路線在某個選單上一直給同一個答案而畫面沒有任何
 	// 新東西時，那個答案在這一場就是錯的，該讓啟發式接手。
 	menuSinceProgress map[string]int
+	// moveSinceProgress 是走位那一側的同一件事：從上一次有新東西到現在，
+	// 路線在這一格接手過幾次。
+	//
+	// ★ **`routeDead` 擋不住這一種卡法**：它數的是「路線說走得通、按下去沒動」，
+	// 而巫師塔那四格的路線每一步都**真的走得動**——(4,2)→東→(5,2)→南→(5,3)→西→
+	// (4,3)→北→(4,2)，四格是一個單向環，路線照著繞永遠不會被判死。實測 15,000 幀
+	// 與 2,600 幀停在同一個地方（245 格、第 1961 幀之後再無新東西），因為那不是
+	// 幀數不夠，是路線自己把隊伍鎖在環裡。⇒ 走位也要有放手條件（spec 1198）。
+	moveSinceProgress map[routeCell]int
 	// modeFrames 是每一種畫面待了幾幀；lastProgress 是最後一次踏上新格子的幀號。
 	// ★ 這兩個回答的是「**停在哪裡**」——沒有它們，「跑到頂了」與「卡在商店裡」
 	// 看起來一模一樣。
@@ -497,7 +537,7 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 		messages: map[string]bool{}, fallbacks: map[string]bool{},
 		blocks: map[uint8]bool{}, menus: map[string]bool{}, menuSeen: map[string]int{},
 		modeFrames: map[game.Mode]int{}, stallCells: map[[3]int]int{},
-		menuSinceProgress: map[string]int{},
+		menuSinceProgress: map[string]int{}, moveSinceProgress: map[routeCell]int{},
 	}
 }
 
@@ -659,6 +699,7 @@ func (s *keyDrivenSession) noteProgress() {
 	s.lastProgress = s.frames
 	s.stallCells = map[[3]int]int{}
 	s.menuSinceProgress = map[string]int{}
+	s.moveSinceProgress = map[routeCell]int{}
 }
 
 // traceMenu 記下這一幀在哪個選單上按了第幾項，以及那是路線給的還是啟發式給的。
