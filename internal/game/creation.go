@@ -436,16 +436,54 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 	if s.session != nil {
 		s.syncDungeonECLRegisters()
 		s.restoreWallPiecesForLoadedBlock()
+		s.restoreSkyColoursForLoadedBlock()
 	}
 	return nil
 }
 
+// restoreSkyColoursForLoadedBlock 把該段自己的天空選色補回來。
+//
+// ★ 為什麼需要。 `4BFDh`／`4BFEh` 就是存檔 Area1 的 `OutdoorSkyColor`／
+// `IndoorSkyColor`，而**寫它們的是該段 ECL 的進入碼**。原版載檔之後會跑那段
+// 進入碼，remake 不跑（會連帶觸發劇情副作用），於是兩格停在底檔（別章）的值。
+//
+// ⚠ 錯了不會有任何提示：天空是一整片純色，錯的顏色也是一整片純色。第 749 輪
+// 量到 `geo5-b35` 二十張畫面每一張都差 2,000～3,400 格，全部是同一個代換
+// （EGA 4 → 15），佔那四張圖總差異的 66%（spec 1185）。
+//
+// ⚠ 鍵要用**存檔記下來的 ECL 段**（`LastECLBlockID`），與牆磚選圖同一個理由：
+// 載入存檔之後 `CurrentBlockID()` 還停在初始化時的世界地圖段。
+func (s *State) restoreSkyColoursForLoadedBlock() {
+	colours, ok := eclBlockSkyColours[eclBlockKey{
+		area: s.Area.GameArea, block: uint8(s.Area.LastECLBlockID)}]
+	if !ok {
+		return
+	}
+	// `-1` ＝ 那一段沒有寫這一格，維持存檔帶進來的值。
+	if colours.Outdoor >= 0 {
+		s.Area.OutdoorSkyColor = uint16(colours.Outdoor)
+		s.session.SetMemoryValue(outdoorSkyColourCell, uint16(colours.Outdoor))
+	}
+	if colours.Indoor >= 0 {
+		s.Area.IndoorSkyColor = uint16(colours.Indoor)
+		s.session.SetMemoryValue(indoorSkyColourCell, uint16(colours.Indoor))
+	}
+}
+
+// 天空選色的兩個 ECL 記憶體格子。Area1 的字組索引是 `位址 − 4B00h`，位元組
+// 位移 `× 2` ⇒ `01FAh`／`01FCh`，正是 `internal/area` 的那兩個欄位。
+const (
+	outdoorSkyColourCell uint16 = 0x4BFD
+	indoorSkyColourCell  uint16 = 0x4BFE
+)
+
 // restoreWallPiecesForLoadedBlock 把牆磚選圖補回來。
 //
-// ★ 為什麼需要。 原版存檔裡**沒有**牆磚選圖，也沒有地圖幾何——整份存檔掃過六個
-// GEO 檔集一塊都找不到（spec 1185）。原版是靠**重跑當前 ECL block 的進入碼**
-// 把 `LOAD FILES`／`LOAD PIECES` 再發一次拿回來的。remake 載入存檔時不重跑那段
-// （會連帶觸發劇情副作用），於是 `LoadPieces` 停在全零。
+// ★ 為什麼需要。 原版存檔的第 9..14 欄就是 `OLDWALL`（每個槽現在用哪一塊牆磚），
+// 載檔時原版在 `overlay-16:4DF3h` 逐槽重播 `LOADWALLSET`，`num <= 0` 的跳過
+// （spec 1185）。**地圖幾何**才是真的不在存檔裡——整份存檔掃過六個 GEO 檔集一塊
+// 都找不到。remake 載入存檔時不重跑該段的進入碼（會連帶觸發劇情副作用），所以
+// 存檔那六欄是空的時候（自製存檔的預設）`LoadPieces` 會停在全零。
 //
 // ⚠ 全零不會報錯，它會把**每一面牆都畫成空氣**，而畫面看起來完全正常：天空、
 // 地板、UI 都在，只是牆不見了。拿這種畫面去跟原版比會得到一個很大的差異數字，

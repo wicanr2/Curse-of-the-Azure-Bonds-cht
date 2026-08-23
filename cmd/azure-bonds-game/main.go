@@ -1068,6 +1068,11 @@ func (a *app) syncLoadPiecesRequest() {
 	// 於是 `pieceSets` 維持空的：天空與地板照畫、**牆一面都不畫**，而且不報錯。
 	// 選圖 15 對 `ECL5/0x33`／`0x35` 是同一回事。
 	//
+	// ★ 15／18 不存在**不代表槽 2 是空的**：選圖 14／17 的 `WALLDEF` 區塊各
+	// 1,560 bytes ＝ 兩個槽，`LOADWALLSET(1, 14)` 自己就把槽 1 與槽 2 一起填滿
+	// （符號區塊 `141`／`142`、`171`／`172`，spec 1185）。`ParsePieceSet` 已經
+	// 照這個形狀切段，所以這裡只要不去載那個死運算元就對了。
+	//
 	// `wallSetParams` 是照同一支 handler 的分派寫進去的，所以直接用它。
 	var selectors [3]uint16
 	for index, param := range a.state.WallSetParams() {
@@ -1355,7 +1360,14 @@ func (a *app) symbolImageForGlobalID(id uint8) (*ebiten.Image, bool) {
 	if !ok || len(piece.SymbolBlockIDs) == 0 {
 		return nil, false
 	}
-	picture, ok := piece.Symbols[piece.SymbolBlockIDs[0]]
+	// ⚠ 不能一律取第 0 塊。 多段牆面組會**同時佔好幾個槽**（選圖 14／17 各兩個），
+	// 於是 `pieceSets[2]` 可能是「從槽 1 起載的那一組」，它的第 0 塊是槽 1 的圖。
+	// 段號減去這一組的起始槽才是它在這一組裡的第幾塊（spec 1185）。
+	block := segment - int(piece.SetID)
+	if block < 0 || block >= len(piece.SymbolBlockIDs) {
+		return nil, false
+	}
+	picture, ok := piece.Symbols[piece.SymbolBlockIDs[block]]
 	if !ok {
 		return nil, false
 	}
@@ -3745,7 +3757,16 @@ func main() {
 	if !ok {
 		log.Fatal("game pack has no first-person map definition")
 	}
-	if exactFirstPerson {
+	// ⚠ **載入存檔時不要套 game pack 的天空選色。** 這一段在存檔匯入（上面的
+	// `-savgam-import`）**之後**執行，會把存檔＋該段 ECL 進入碼決定的值蓋掉；
+	// 而且它查的是 `-geo-set`／`-geo-block` 兩個旗標，比對腳本不帶那兩個旗標，
+	// 於是查到的是**預設地圖**（提爾佛頓）的選色。第 749 輪就是這樣讓
+	// `ECL5/0x35` 的室內選色從正確的 `0Ah` 被蓋回提爾佛頓的 `09h`——天空整片
+	// 從 EGA 4 變成 15，二十張畫面每一張差 2,000～3,400 格（spec 1185）。
+	//
+	// 存檔那條路的真相來源是 `restoreSkyColoursForLoadedBlock`（鍵是 ECL 段）。
+	// pack 這一份只服務沒有存檔的故事流程。
+	if exactFirstPerson && !*savgamImport {
 		if firstPersonDefinition.OutdoorSkyColor != nil {
 			state.Area.OutdoorSkyColor = uint16(*firstPersonDefinition.OutdoorSkyColor)
 		}
@@ -4929,7 +4950,22 @@ func loadMapPieceSets(imagePath string, areaID uint8, wallFile, symbolFile strin
 			continue
 		}
 		maskWallSymbols(pieceSet)
-		result[setID] = pieceSet
+		// ⚠ 一塊 `WALLDEF` 可能**佔連續好幾個槽**：原作的 `LOADWALLSET` 依
+		// `檔案大小 ÷ 780` 把每一段填進 `THEWALLSET^` 的下一個槽（spec 1185）。
+		// 選圖 14／17 各 1,560 bytes ＝ 兩個槽。
+		//
+		// ★ 為什麼要登記到每一個槽。 牆位是用 `(牆型 − 1) / 5 + 1` 去查槽的，
+		// 所以牆型 6..10 會來查槽 2。只登記在起始槽的話那一次查詢落空，
+		// **那些牆整批不畫**——而畫面看起來完全正常，天空從缺口透出來，
+		// 沒有任何錯誤訊息。`BuildWallLayout` 本來就用 `槽 − piece.SetID` 選段，
+		// 所以同一個 `PieceSet` 登記到續段的槽就是對的。
+		for offset := range pieceSet.WallDefs {
+			slot := int(setID) + offset
+			if slot < 1 || slot > len(selectors) {
+				continue
+			}
+			result[uint8(slot)] = pieceSet
+		}
 	}
 	return result, nil
 }

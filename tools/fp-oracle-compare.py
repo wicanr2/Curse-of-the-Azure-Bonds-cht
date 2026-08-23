@@ -44,6 +44,7 @@ def main():
     rows = [line.split("\t") for line in open(index).read().strip().split("\n")
             if line.strip() and not line.startswith("#")]
     total = 0
+    per_map = {}
     for name, x, y, direction in rows:
         if direction not in FACING:
             print("跳過 %s（讀不到座標）" % name)
@@ -93,7 +94,20 @@ def main():
         total += diff
         detail = " ".join("%d→%d×%d" % (k[0], k[1], v) for k, v in
                           sorted(classes.items(), key=lambda kv: -kv[1])[:4])
-        print("(%s,%s) %s 差 %4d %s" % (x, y, direction, diff, detail))
+        # ⚠ 檔名一定要印出來：多張圖一起比的時候，只印座標的話**分不出哪一列是
+        # 哪一張圖**，而每張圖的座標又會重複 ⇒ 數字沒辦法歸因到地圖。
+        # ⚠ `flush` 不能省：輸出導到檔案時 Python 會整段緩衝，五百多張的跑批
+        # 在結束前**看不到任何一列**，讀起來像卡住了。
+        print("%-34s (%s,%s) %s 差 %5d %s" % (name, x, y, direction, diff, detail), flush=True)
+        per_map[name.rsplit("-x", 1)[0]] = per_map.get(name.rsplit("-x", 1)[0], [0, 0, 0])
+        bucket = per_map[name.rsplit("-x", 1)[0]]
+        bucket[0] += diff
+        bucket[1] += 1
+        if diff == 0:
+            bucket[2] += 1
+    for prefix in sorted(per_map):
+        cells, frames, exact = per_map[prefix]
+        print("小計 %-30s 逐格相同 %2d／%2d，差 %6d 格" % (prefix, exact, frames, cells))
     print("合計不同格數 %d" % total)
     return 0 if total == 0 else 1
 

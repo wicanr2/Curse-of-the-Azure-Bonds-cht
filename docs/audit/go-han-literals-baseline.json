@@ -5298,6 +5298,167 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "main",
+      "sha256": "0dd7f41cdcdba9f2ebdee74edf36bfdb4c500677e7db8ff2885a855a52272661",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "main",
+      "sha256": "716496383ea7f3a1f30f3fd9c441653bf9f7dcf9d5bcf2a7fd6f546ecea96764",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "main",
+      "sha256": "79f855c8b433e9bf71b4236e4a173fdc48daa453fd017dfb8a76355503d8eb7f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "0260fdef1745a33dc9e11462918262fa138a67f82a5fb818f75df8e626e48322",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "13aa0b38eced897d3eb41e7555b34472b8166e56d4054d77492f5217647a047f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "33d72690409cf5d648e044cacfb45e2046aa9c48740a42101b721b099215cb0e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "5b4fb9f96b90c58ad85020e611678727121db4c7bf4d6e007ac82bc2e8237b73",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "6af0cb806c24235cb9a0ed48e8f7605826f098d9691d8c174e3d45c483a38d07",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "79ca0ee183bcc59873e9535c51084571b995010327c03e33bda71ee2e2bafef3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "86bd97f07feb06d1532c0c5226c2efb7d0285de029c5daf1e5e41c50f453ea33",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "8b6df1c314dbd26f63569086c974ee1f0952ce60bce28ca072554e6cf565b5ce",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "b4a073283b83f573e7ee2c3550d29e79c08a51a3ab3b96be78831c53de6a6588",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "c1e93ee68800c2bd35b9b73eb138abfd3332cd7f5d4f216d4ffeba28adc366af",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderReport",
+      "sha256": "db84a8177ebb8e0eaaae5dbf4cbe83c25caa4c02fa2644d4589c54cfb8613b6c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderTable",
+      "sha256": "01284bd67c07cedaf8ec9c933e3e5a2e461e10df20a79f6d8b67c0a456770d21",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderTable",
+      "sha256": "091b2f9f67ef57b1598a611b6ffd9e3782e2430c0ef9359e652826e4e060e7aa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderTable",
+      "sha256": "3f629e2a9bd88900b1822711b4c34018cf0ec9d656974001c6c016ae5087cfc1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderTable",
+      "sha256": "86530ad013228a111b1b5a8c0c2adb9cd2a616c9206ee14da2175069e4c0bec1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderTable",
+      "sha256": "8e46c09888892ae7d62b87a127b28b619c4049520afb097e09319f9c568d3ee6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderTable",
+      "sha256": "a6d60b0422f252516c61fdb4a60c124b2fdf1bc48046c0eb971d55e11ccb9365",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderTable",
+      "sha256": "c37fd374ce0ce96f89f6ef46d4d1cdf12d925c45d93349a0b07b9a8b612a1aa7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderTable",
+      "sha256": "cadd7ac4b7baf45b2744913a12eea5cee49a18e88e1beba3a428ad55b80f7621",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderTable",
+      "sha256": "ed069df9bfd6f21bfae3d190d2fa23a5f308f8a9f2e8347427fcc12dbdadb44b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/ecl-table-dispatch/main.go",
       "function": "main",
       "sha256": "104248cbc16657318cd0781776f93e1ac1266da63141585264afa9c8f9a6a65c",
