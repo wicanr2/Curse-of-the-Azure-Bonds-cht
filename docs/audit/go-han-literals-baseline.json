@@ -5503,6 +5503,13 @@
     {
       "path": "cmd/ecl-sky-colours/main.go",
       "function": "main",
+      "sha256": "1a4a2624c41373c19fda4f59a6e2b64575a6b4fb58d9152abe3f01fe77f0c94a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "main",
       "sha256": "716496383ea7f3a1f30f3fd9c441653bf9f7dcf9d5bcf2a7fd6f546ecea96764",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -5511,6 +5518,62 @@
       "path": "cmd/ecl-sky-colours/main.go",
       "function": "main",
       "sha256": "79f855c8b433e9bf71b4236e4a173fdc48daa453fd017dfb8a76355503d8eb7f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderConditional",
+      "sha256": "06b75e1c7e5c1513fe9af698ce5d3eae94a1cfa5429300f8a9575dc2e9c883e1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderConditional",
+      "sha256": "0c76db18381a90fb570e87dcf79024b5240f03ade5f2c5c42e5599ca91d2aca4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderConditional",
+      "sha256": "3836433e4e44f9e8d7f64e8366d9c9618e9df20e600d8dd6d1f8ca5b1c089005",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderConditional",
+      "sha256": "7c4150feb6ab487047949b8d96269283707c6d59487cdbd992f7c3e69c0410b6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderConditional",
+      "sha256": "97756325ef340fb4d35d15c4e2f29f504b758ec371abd1fe71b4814ade42b9d8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderConditional",
+      "sha256": "cac4027948e81ae8670087aa7ff5611a24c6933322b5eec175e3ca82a05cbcda",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderConditional",
+      "sha256": "cc8e6c570508f69742e15b9d10d72d617803a66156fc3c71e22d40162771e713",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-sky-colours/main.go",
+      "function": "renderConditional",
+      "sha256": "d6ccb7ac6911151cf39e195b48147bf5eff0526a420e2dc83543cae6213d1d5f",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

@@ -86,6 +86,7 @@ func main() {
 	defer archive.Close()
 
 	writes := make([]write, 0, 64)
+	conditionals := make([]conditionalBlock, 0, 8)
 	for area := 1; area <= 6; area++ {
 		payload := member(archive, fmt.Sprintf("ECL%d.DAX", area))
 		if payload == nil {
@@ -101,6 +102,11 @@ func main() {
 				log.Fatalf("ECL%d/0x%02X: %v", area, block.Entry.ID, scanErr)
 			}
 			writes = append(writes, found...)
+			conditional, condErr := scanConditional(uint8(area), block.Entry.ID, block.Data)
+			if condErr != nil {
+				log.Fatalf("ECL%d/0x%02X（條件式）: %v", area, block.Entry.ID, condErr)
+			}
+			conditionals = append(conditionals, conditional...)
 		}
 	}
 	sort.SliceStable(writes, func(left, right int) bool {
@@ -119,7 +125,7 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	text := renderReport(writes, table)
+	text := renderReport(writes, table) + renderConditional(conditionals)
 	if *report == "" {
 		fmt.Print(text)
 	} else if err := os.WriteFile(*report, []byte(text), 0o644); err != nil {
@@ -131,7 +137,8 @@ func main() {
 			guarded++
 		}
 	}
-	fmt.Fprintf(os.Stderr, "writes=%d guarded=%d blocks=%d\n", len(writes), guarded, len(table))
+	fmt.Fprintf(os.Stderr, "writes=%d guarded=%d blocks=%d conditional=%d\n",
+		len(writes), guarded, len(table), len(conditionals))
 }
 
 // key 是 ECL 段，不是地圖：GEO5 的 `0x31` 與 `0x32` 共用同一張幾何區塊，選色
@@ -158,6 +165,74 @@ func resolve(writes []write) map[key]map[uint16]uint16 {
 // ⚠ 走訪本身在 `ecl.ReachableOnLoad`（`internal/ecl/loadtime.go`）——**只有一份**。
 // `cmd/ecl-wall-pieces` 走同一支：兩支各抄一份的話，其中一支改了條件，另一支
 // 會安靜地與它分岔，而分岔的後果是兩張表對「載檔時會發生什麼」有不同的答案。
+// terrainProbe 是「拿當下那一格的地形碼去判 `IF`」時試的幾個值。
+//
+// ★ 為什麼要試：`ECL2/0x04` 的進入碼 `GOSUB` 進去之後是
+// `COMPARE C04F 0x95 / IF = / SAVE 0A 4BFE / IF <> / SAVE 09 4BFE`
+// ——天花板顏色由**站在哪一格**決定，靜態的表表達不了（spec 1185）。
+// 這裡不是要把它收進表，是要把**有這種寫法的段**列出來，讓「表是完整的」
+// 這句話不會被誤讀。
+var terrainProbe = []uint16{0x00, 0x80, 0x95, 0xC0}
+
+// conditionalBlock 是一段「載檔時的寫入會隨當下格子而變」的紀錄。
+type conditionalBlock struct {
+	area, block uint8
+	cell        uint16
+	// byTerrain 是地形碼 → 寫進去的值。
+	byTerrain map[uint16]uint16
+}
+
+// scanConditional 找出「同一段、同一格，換個地形碼就寫不同值」的地方。
+func scanConditional(area, block uint8, data []byte) ([]conditionalBlock, error) {
+	perCell := map[uint16]map[uint16]uint16{}
+	for _, terrain := range terrainProbe {
+		value := terrain
+		instructions, err := ecl.ReachableOnLoadWithMemory(data, block,
+			func(address uint16) (uint16, bool) {
+				if address == terrainRegisterCell {
+					return value, true
+				}
+				return 0, false
+			})
+		if err != nil {
+			return nil, err
+		}
+		for _, instruction := range instructions {
+			if instruction.Command.Opcode != saveOpcode {
+				continue
+			}
+			item, ok := skyWrite(instruction, area, block, instruction.Offset)
+			if !ok {
+				continue
+			}
+			if perCell[item.cell] == nil {
+				perCell[item.cell] = map[uint16]uint16{}
+			}
+			perCell[item.cell][terrain] = item.value
+		}
+	}
+	result := make([]conditionalBlock, 0, 2)
+	for cell, byTerrain := range perCell {
+		if len(byTerrain) < len(terrainProbe) {
+			// 有些地形碼下根本沒有寫入 ⇒ 也是「看情況」。
+			result = append(result, conditionalBlock{area: area, block: block, cell: cell, byTerrain: byTerrain})
+			continue
+		}
+		first := byTerrain[terrainProbe[0]]
+		for _, terrain := range terrainProbe {
+			if byTerrain[terrain] != first {
+				result = append(result, conditionalBlock{area: area, block: block, cell: cell, byTerrain: byTerrain})
+				break
+			}
+		}
+	}
+	sort.SliceStable(result, func(left, right int) bool { return result[left].cell < result[right].cell })
+	return result, nil
+}
+
+// terrainRegisterCell 是 `C04Fh`：由隊伍位置推出來的牆頂／地形碼。
+const terrainRegisterCell uint16 = 0xC04F
+
 func scanBlock(area, block uint8, data []byte) ([]write, error) {
 	instructions, err := ecl.ReachableOnLoad(data, block)
 	if err != nil {
@@ -268,6 +343,39 @@ func sortedKeys(table map[key]map[uint16]uint16) []key {
 		return identities[left].block < identities[right].block
 	})
 	return identities
+}
+
+// renderConditional 把「看情況」那幾段列出來。
+//
+// ★ 為什麼要列：這張表宣稱「載檔時真的會跑到的常數寫入」，而**條件式的寫入
+// 進不了表**——不列出來的話，讀者會把「表裡沒有」讀成「原作沒寫」。
+// remake 那一側靠 `applyLoadTimeECLWritesFromScript` 在載檔當下重走一次
+// （`ecl.ReachableOnLoadWithMemory`）處理它們。
+func renderConditional(items []conditionalBlock) string {
+	var report strings.Builder
+	report.WriteString("\n## 看當下站哪一格才知道要寫什麼\n\n")
+	if len(items) == 0 {
+		report.WriteString("沒有。全部的載檔寫入都是常數。\n")
+		return report.String()
+	}
+	fmt.Fprintf(&report, "拿 `C04Fh`（牆頂／地形碼）試 %v 四個值重走進入碼，"+
+		"寫進去的值會變的段：\n\n", terrainProbe)
+	report.WriteString("| 段 | 格子 | 地形 → 值 |\n|---|---|---|\n")
+	for _, item := range items {
+		parts := make([]string, 0, len(terrainProbe))
+		for _, terrain := range terrainProbe {
+			if value, ok := item.byTerrain[terrain]; ok {
+				parts = append(parts, fmt.Sprintf("`%02Xh`→`%02Xh`", terrain, value))
+			} else {
+				parts = append(parts, fmt.Sprintf("`%02Xh`→（不寫）", terrain))
+			}
+		}
+		fmt.Fprintf(&report, "| `ECL%d/0x%02X` | `%04Xh` | %s |\n",
+			item.area, item.block, item.cell, strings.Join(parts, "、"))
+	}
+	report.WriteString("\n⚠ 這幾段**不在上面那張表裡**，而且不能進去：值不是常數。"+
+		"remake 在載檔當下重走一次進入碼（`ecl.ReachableOnLoadWithMemory`）補上。\n")
+	return report.String()
 }
 
 func renderReport(writes []write, table map[key]map[uint16]uint16) string {
