@@ -353,13 +353,6 @@
     {
       "path": "cmd/azure-bonds-game/main.go",
       "function": "main",
-      "sha256": "99ec1ff30868f5cecb9f32a59fb4259778c338b3be08056f31b2cc85cc143552",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "main",
       "sha256": "a18a181fc4d20a963fb311b03a8c87b99db2f0b65615849dd7bd3ecee89a940f",
       "occurrences": 1,
       "category": "frontend_ui_debt"
@@ -396,6 +389,13 @@
       "path": "cmd/azure-bonds-game/main.go",
       "function": "main",
       "sha256": "df79185abfa14be089387f8dfb6256c83be6f395395d884775f0d50677922666",
+      "occurrences": 1,
+      "category": "frontend_ui_debt"
+    },
+    {
+      "path": "cmd/azure-bonds-game/main.go",
+      "function": "main",
+      "sha256": "f7c61cad3e9645db67b59488776cb16169e80a591cac0b9a89f94e59a8a461ed",
       "occurrences": 1,
       "category": "frontend_ui_debt"
     },

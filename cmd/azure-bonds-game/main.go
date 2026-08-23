@@ -1329,8 +1329,9 @@ func (a *app) traceWallStamp(source string, call gfx.WallLayoutCall, piece gfx.P
 	if index := segment - int(piece.SetID); index >= 0 && index < len(piece.SymbolBlockIDs) {
 		block = strconv.Itoa(int(piece.SymbolBlockIDs[index]))
 	}
-	fmt.Fprintf(a.wallTrace, "%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%s\t%v\n",
-		source, call.WallType, piece.SetID, len(piece.WallDefs), call.Layout,
+	fmt.Fprintf(a.wallTrace, "%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%s\t%v\n",
+		source, call.WallType, call.Depth, call.Direction, call.MapX, call.MapY,
+		piece.SetID, len(piece.WallDefs), call.Layout,
 		stamp.Row, stamp.Column, stamp.SymbolID, segment, item, block, piece.SymbolBlockIDs)
 }
 
@@ -4232,7 +4233,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer handle.Close()
-		fmt.Fprintln(handle, "來源\t牆型\t起始槽\t段數\t版面\t列\t欄\t編號\t段\t段內項\t取用區塊\t這組的區塊")
+		fmt.Fprintln(handle, "來源\t牆型\t深度\t朝向\t圖上X\t圖上Y\t起始槽\t段數\t版面\t列\t欄\t編號\t段\t段內項\t取用區塊\t這組的區塊")
 		gameApp.wallTrace = handle
 	}
 	if *innerFinalBattle && *screenshotPath != "" {
