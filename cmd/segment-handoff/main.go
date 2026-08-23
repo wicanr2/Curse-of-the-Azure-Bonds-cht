@@ -90,7 +90,13 @@ type report struct {
 	// ★ 這種格子**不是交接缺口**：它是那一段自己決定的東西，交接給不給都一樣。
 	// 混進「歸不了因」會讓剩下的數字看起來比實際大。
 	ResidueLifecycleOwned int `json:"residue_lifecycle_owned"`
-	ResidueOther          int `json:"residue_other"`
+	// ResidueRouteLookup／ResidueScratch：世界路線查表三格與 ECL 通用工作暫存器。
+	// ⚠ 兩者都**不是交接缺口**：前者是「這一次要去哪」的當下運算值（直入沒有
+	// 「正要去哪」這件事），後者是上一次運算剩下的東西（拿兩段不同執行歷史的
+	// 工作暫存器互比沒有意義）。
+	ResidueRouteLookup int `json:"residue_route_lookup"`
+	ResidueScratch     int `json:"residue_scratch"`
+	ResidueOther       int `json:"residue_other"`
 	// FromArrival／FromInside 是取樣點的分佈。⚠ 一定要分開數：`inside` 那幾段
 	// 量到的是「交接 ＋ 主線又走了一段」，混進總數會讓整份報表看起來比實際緊。
 	FromArrival int `json:"from_arrival"`
@@ -168,6 +174,10 @@ func main() {
 						doc.ResidueEngineSet++
 					case residueKind(address) == "view-cell":
 						doc.ResidueViewCell++
+					case residueKind(address) == "route-lookup":
+						doc.ResidueRouteLookup++
+					case residueKind(address) == "scratch":
+						doc.ResidueScratch++
 					case plain[address] == seeded[address]:
 						// 鋪與不鋪算出來一樣 ⇒ lifecycle 自己算掉了。
 						doc.ResidueLifecycleOwned++
@@ -215,11 +225,11 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Fprintf(os.Stderr,
-		"segments=%d dropped=%d risky=%d | seeded: dropped=%d risky=%d (engine=%d view=%d lifecycle=%d other=%d) failed=%d\n",
+		"segments=%d dropped=%d risky=%d | seeded: dropped=%d risky=%d (engine=%d view=%d lifecycle=%d route=%d scratch=%d other=%d) failed=%d\n",
 		doc.Segments, doc.TotalDropped, doc.TotalRisky,
 		doc.SeededDropped, doc.SeededRisky,
 		doc.ResidueEngineSet, doc.ResidueViewCell, doc.ResidueLifecycleOwned,
-		doc.ResidueOther, doc.Failed)
+		doc.ResidueRouteLookup, doc.ResidueScratch, doc.ResidueOther, doc.Failed)
 }
 
 // readAddressesByBlock 收集每個 block 的碼**會讀**的記憶體位址。
@@ -446,6 +456,22 @@ func residueKind(address uint16) string {
 	switch address {
 	case 0x4BF2, 0x7ED5, 0x7EC9:
 		return "engine-set"
+	// ★ 世界路線的查表三格：`ECL1/0x50:110Ch GETTABLE 9D13 4C9D 4CA1`——
+	// `4C9Bh` 是目的地選擇槽（remake 這一側是 `pendingWorldDestination`），
+	// `4C9Dh` 是查表的索引，`4CA1h` 是查出來的城市（`CurrentCity`，spec 1163）。
+	//
+	// ⚠ 直入**沒有「正要去哪裡」**這件事，所以這三格必然和主線不同。
+	// 它們不是劇情旗標，是「這一次世界移動要去哪」的當下運算值。
+	case 0x4C9B, 0x4C9D, 0x4CA1:
+		return "route-lookup"
+	// ★ ECL 的通用工作暫存器。`7F79h`／`7F7Ah`／`7F7Bh` 是全作最熱的三格
+	// （167／42／20 次），落在「ECL 私有、引擎側查無存取」那一側，而 spec 1096 §四
+	// 說它們**形狀上就是通用工作暫存器**（被算術指令反覆使用）。
+	//
+	// ⚠ 工作暫存器的值是「上一次運算剩下的東西」。拿兩段**不同執行歷史**的
+	// 工作暫存器互比沒有意義——不同不代表少了什麼。
+	case 0x7F79, 0x7F7A, 0x7F7B:
+		return "scratch"
 	}
 	if address >= 0xC04B && address <= 0xC05F {
 		return "view-cell"
@@ -541,11 +567,15 @@ func render(doc report) string {
 		"| 引擎進段時自己設的（`4BF2h` LastECL、`7ED5h`、`7EC9h`）| %d | **不該**：進段這一支自己管 |\n"+
 		"| 由隊伍位置推出來的視圖暫存器（`C04Bh`..`C05Fh`，如 `C04Fh` ＝ 牆頂）| %d | **不該**：引擎自己算的 |\n"+
 		"| 進段的 initial lifecycle 自己算掉的（鋪與不鋪結果一樣）| %d | **不能**：鋪了也沒用 |\n"+
+		"| 世界路線的查表三格（`4C9Bh`／`4C9Dh`／`4CA1h`）| %d | **不該**：直入沒有「正要去哪」 |\n"+
+		"| ECL 通用工作暫存器（`7F79h`／`7F7Ah`／`7F7Bh`）| %d | **不該**：上一次運算剩下的值 |\n"+
 		"| 歸不了因 | %d | 這才是真正剩下來的 |\n\n"+
-		"⚠ 前三類**都不是交接缺口**：前兩類是引擎自己算的，第三類是那一段自己決定的"+
-		"（交接給不給都一樣）。混在一起數會讓剩下的數字看起來比實際大。\n",
+		"⚠ 前五類**都不是交接缺口**：引擎自己算的（前兩類）、那一段自己決定的（第三類）、"+
+		"「這一次要去哪」的當下運算值（第四類）、上一次運算剩下的東西（第五類）。"+
+		"混在一起數會讓剩下的數字看起來比實際大。\n",
 		doc.SeededRisky, doc.ResidueEngineSet, doc.ResidueViewCell,
-		doc.ResidueLifecycleOwned, doc.ResidueOther)
+		doc.ResidueLifecycleOwned, doc.ResidueRouteLookup, doc.ResidueScratch,
+		doc.ResidueOther)
 	if doc.FromInside > 0 {
 		out.WriteString("\n⚠ 用 `站上地城` 取樣的那幾段是**上界**（見上）。" +
 			"沒有 `剛換到` 的快照通常是因為主線**不是靠換段進去的**——" +

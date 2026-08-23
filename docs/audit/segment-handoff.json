@@ -9,8 +9,10 @@
  "seeded_risky_segments": 18,
  "residue_engine_set": 10,
  "residue_view_cell": 18,
- "residue_lifecycle_owned": 6,
- "residue_other": 5,
+ "residue_lifecycle_owned": 4,
+ "residue_route_lookup": 3,
+ "residue_scratch": 4,
+ "residue_other": 0,
  "from_arrival": 19,
  "from_inside": 1,
  "failed": 0,
@@ -67,12 +69,6 @@
     19613,
     19617,
     32633
-   ],
-   "residue_other": [
-    19611,
-    32633,
-    19613,
-    19617
    ],
    "source": "arrival"
   },
@@ -368,9 +364,6 @@
     32530,
     32633,
     32634
-   ],
-   "residue_other": [
-    32633
    ],
    "source": "arrival"
   },

@@ -151,6 +151,7 @@ func main() {
 		add("segment_handoff", handoff.Segments, handoff.TotalRisky,
 			handoff.RiskySegments, handoff.SeededRisky, handoff.ResidueOther,
 			handoff.Failed)
+		_ = handoff.Lifecycle
 	}
 
 	// 按鍵驅動的一場：這是「開場到結局」那一列缺的**輸入那一層**。
