@@ -46,9 +46,9 @@ Caveats: this is the denominator for the **renderer**, not for content, and not 
 
 | item | value |
 |---|---:|
-| captured screens in `index.tsv` | 762 |
+| captured screens in `index.tsv` | 1018 |
 | captures that map to no standable cell | 0 |
-| **distinct signatures covered** | **382 / 585** |
+| **distinct signatures covered** | **466 / 585** |
 
 ### Next cells worth capturing
 
@@ -56,67 +56,67 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 
 | # | map | GEO | block | cell | new signatures | still uncovered after |
 |---:|---|---:|---:|---|---:|---:|
-| 1 | `original.geo5.block-33` | 5 | `0x33` | `(15,12)` | 3 | 200 |
-| 2 | `original.geo5.block-33` | 5 | `0x33` | `(14,13)` | 3 | 197 |
-| 3 | `original.geo5.block-33` | 5 | `0x33` | `(14,14)` | 3 | 194 |
-| 4 | `original.geo5.block-33` | 5 | `0x33` | `(15,14)` | 3 | 191 |
-| 5 | `original.geo5.block-33` | 5 | `0x33` | `(11,15)` | 3 | 188 |
-| 6 | `original.geo5.block-33` | 5 | `0x33` | `(15,15)` | 3 | 185 |
-| 7 | `original.geo5.block-32` | 5 | `0x32` | `(0,15)` | 2 | 183 |
-| 8 | `original.geo5.block-33` | 5 | `0x33` | `(15,11)` | 2 | 181 |
-| 9 | `original.geo5.block-33` | 5 | `0x33` | `(9,13)` | 2 | 179 |
-| 10 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(6,2)` | 2 | 177 |
-| 11 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(10,2)` | 2 | 175 |
-| 12 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(12,7)` | 2 | 173 |
-| 13 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(6,10)` | 2 | 171 |
-| 14 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(7,10)` | 2 | 169 |
-| 15 | `tilverton.sewers.first-person` | 2 | `0x03` | `(7,2)` | 1 | 168 |
-| 16 | `tilverton.sewers.first-person` | 2 | `0x03` | `(2,4)` | 1 | 167 |
-| 17 | `tilverton.sewers.first-person` | 2 | `0x03` | `(4,4)` | 1 | 166 |
-| 18 | `tilverton.sewers.first-person` | 2 | `0x03` | `(7,4)` | 1 | 165 |
-| 19 | `tilverton.sewers.first-person` | 2 | `0x03` | `(13,4)` | 1 | 164 |
-| 20 | `tilverton.sewers.first-person` | 2 | `0x03` | `(7,5)` | 1 | 163 |
-| 21 | `tilverton.sewers.first-person` | 2 | `0x03` | `(13,6)` | 1 | 162 |
-| 22 | `tilverton.sewers.first-person` | 2 | `0x03` | `(3,9)` | 1 | 161 |
-| 23 | `tilverton.sewers.first-person` | 2 | `0x03` | `(7,10)` | 1 | 160 |
-| 24 | `tilverton.sewers.first-person` | 2 | `0x03` | `(10,12)` | 1 | 159 |
-| 25 | `tilverton.sewers.first-person` | 2 | `0x03` | `(12,12)` | 1 | 158 |
-| 26 | `tilverton.sewers.first-person` | 2 | `0x03` | `(5,13)` | 1 | 157 |
-| 27 | `tilverton.sewers.first-person` | 2 | `0x03` | `(7,13)` | 1 | 156 |
-| 28 | `tilverton.sewers.first-person` | 2 | `0x03` | `(8,13)` | 1 | 155 |
-| 29 | `tilverton.fire-knife-hideout.first-person` | 2 | `0x04` | `(11,4)` | 1 | 154 |
-| 30 | `tilverton.fire-knife-hideout.first-person` | 2 | `0x04` | `(12,8)` | 1 | 153 |
-| 31 | `tilverton.fire-knife-hideout.first-person` | 2 | `0x04` | `(15,8)` | 1 | 152 |
-| 32 | `original.geo3.block-10` | 3 | `0x10` | `(2,0)` | 1 | 151 |
-| 33 | `original.geo3.block-10` | 3 | `0x10` | `(11,2)` | 1 | 150 |
-| 34 | `original.geo3.block-10` | 3 | `0x10` | `(6,4)` | 1 | 149 |
-| 35 | `original.geo3.block-10` | 3 | `0x10` | `(14,4)` | 1 | 148 |
-| 36 | `original.geo3.block-10` | 3 | `0x10` | `(3,5)` | 1 | 147 |
-| 37 | `original.geo3.block-10` | 3 | `0x10` | `(11,5)` | 1 | 146 |
-| 38 | `original.geo3.block-10` | 3 | `0x10` | `(11,6)` | 1 | 145 |
-| 39 | `original.geo3.block-10` | 3 | `0x10` | `(3,7)` | 1 | 144 |
-| 40 | `original.geo3.block-10` | 3 | `0x10` | `(6,7)` | 1 | 143 |
-| 41 | `original.geo3.block-10` | 3 | `0x10` | `(13,8)` | 1 | 142 |
-| 42 | `original.geo3.block-10` | 3 | `0x10` | `(3,9)` | 1 | 141 |
-| 43 | `original.geo3.block-10` | 3 | `0x10` | `(13,9)` | 1 | 140 |
-| 44 | `original.geo3.block-10` | 3 | `0x10` | `(0,10)` | 1 | 139 |
-| 45 | `original.geo3.block-10` | 3 | `0x10` | `(3,13)` | 1 | 138 |
-| 46 | `original.geo3.block-10` | 3 | `0x10` | `(3,14)` | 1 | 137 |
-| 47 | `original.geo3.block-10` | 3 | `0x10` | `(7,15)` | 1 | 136 |
-| 48 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(10,1)` | 1 | 135 |
-| 49 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(13,1)` | 1 | 134 |
-| 50 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(10,3)` | 1 | 133 |
-| 51 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(13,3)` | 1 | 132 |
-| 52 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(7,9)` | 1 | 131 |
-| 53 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,15)` | 1 | 130 |
-| 54 | `original.geo3.block-15` | 3 | `0x15` | `(3,0)` | 1 | 129 |
-| 55 | `original.geo3.block-15` | 3 | `0x15` | `(14,1)` | 1 | 128 |
-| 56 | `original.geo3.block-15` | 3 | `0x15` | `(7,2)` | 1 | 127 |
-| 57 | `original.geo3.block-15` | 3 | `0x15` | `(14,2)` | 1 | 126 |
-| 58 | `original.geo3.block-15` | 3 | `0x15` | `(15,3)` | 1 | 125 |
-| 59 | `original.geo3.block-15` | 3 | `0x15` | `(6,4)` | 1 | 124 |
-| 60 | `original.geo3.block-15` | 3 | `0x15` | `(11,4)` | 1 | 123 |
-| 61 | `original.geo3.block-15` | 3 | `0x15` | `(12,4)` | 1 | 122 |
-| 62 | `original.geo3.block-15` | 3 | `0x15` | `(3,5)` | 1 | 121 |
-| 63 | `original.geo3.block-15` | 3 | `0x15` | `(4,5)` | 1 | 120 |
-| 64 | `original.geo3.block-15` | 3 | `0x15` | `(14,5)` | 1 | 119 |
+| 1 | `original.geo3.block-15` | 3 | `0x15` | `(6,7)` | 1 | 118 |
+| 2 | `original.geo3.block-15` | 3 | `0x15` | `(8,7)` | 1 | 117 |
+| 3 | `original.geo3.block-15` | 3 | `0x15` | `(5,8)` | 1 | 116 |
+| 4 | `original.geo3.block-15` | 3 | `0x15` | `(8,10)` | 1 | 115 |
+| 5 | `original.geo3.block-15` | 3 | `0x15` | `(1,11)` | 1 | 114 |
+| 6 | `original.geo3.block-15` | 3 | `0x15` | `(6,12)` | 1 | 113 |
+| 7 | `original.geo3.block-15` | 3 | `0x15` | `(1,15)` | 1 | 112 |
+| 8 | `zhentil-keep.inner-city` | 4 | `0x20` | `(11,5)` | 1 | 111 |
+| 9 | `zhentil-keep.inner-city` | 4 | `0x20` | `(7,9)` | 1 | 110 |
+| 10 | `zhentil-keep.inner-city` | 4 | `0x20` | `(0,11)` | 1 | 109 |
+| 11 | `zhentil-keep.inner-city` | 4 | `0x20` | `(2,11)` | 1 | 108 |
+| 12 | `zhentil-keep.inner-city` | 4 | `0x20` | `(4,11)` | 1 | 107 |
+| 13 | `zhentil-keep.inner-city` | 4 | `0x20` | `(0,12)` | 1 | 106 |
+| 14 | `zhentil-keep.inner-city` | 4 | `0x20` | `(4,12)` | 1 | 105 |
+| 15 | `zhentil-keep.dark-shrine` | 4 | `0x21` | `(7,6)` | 1 | 104 |
+| 16 | `zhentil-keep.dark-shrine` | 4 | `0x21` | `(8,6)` | 1 | 103 |
+| 17 | `zhentil-keep.dark-shrine` | 4 | `0x21` | `(5,7)` | 1 | 102 |
+| 18 | `zhentil-keep.dark-shrine` | 4 | `0x21` | `(7,8)` | 1 | 101 |
+| 19 | `zhentil-keep.dark-shrine` | 4 | `0x21` | `(6,9)` | 1 | 100 |
+| 20 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(0,3)` | 1 | 99 |
+| 21 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(1,3)` | 1 | 98 |
+| 22 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(12,9)` | 1 | 97 |
+| 23 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(14,9)` | 1 | 96 |
+| 24 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(10,10)` | 1 | 95 |
+| 25 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(14,10)` | 1 | 94 |
+| 26 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(15,10)` | 1 | 93 |
+| 27 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(9,11)` | 1 | 92 |
+| 28 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(9,12)` | 1 | 91 |
+| 29 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(14,12)` | 1 | 90 |
+| 30 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(15,12)` | 1 | 89 |
+| 31 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(9,13)` | 1 | 88 |
+| 32 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(9,14)` | 1 | 87 |
+| 33 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(14,14)` | 1 | 86 |
+| 34 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(15,14)` | 1 | 85 |
+| 35 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(9,15)` | 1 | 84 |
+| 36 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,15)` | 1 | 83 |
+| 37 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(15,15)` | 1 | 82 |
+| 38 | `original.geo5.block-32` | 5 | `0x32` | `(2,1)` | 1 | 81 |
+| 39 | `original.geo5.block-31` | 5 | `0x32` | `(15,1)` | 1 | 80 |
+| 40 | `original.geo5.block-31` | 5 | `0x32` | `(0,2)` | 1 | 79 |
+| 41 | `original.geo5.block-32` | 5 | `0x32` | `(1,2)` | 1 | 78 |
+| 42 | `original.geo5.block-31` | 5 | `0x32` | `(6,2)` | 1 | 77 |
+| 43 | `original.geo5.block-32` | 5 | `0x32` | `(13,2)` | 1 | 76 |
+| 44 | `original.geo5.block-32` | 5 | `0x32` | `(13,3)` | 1 | 75 |
+| 45 | `original.geo5.block-32` | 5 | `0x32` | `(3,6)` | 1 | 74 |
+| 46 | `original.geo5.block-31` | 5 | `0x32` | `(0,10)` | 1 | 73 |
+| 47 | `original.geo5.block-32` | 5 | `0x32` | `(11,12)` | 1 | 72 |
+| 48 | `original.geo5.block-31` | 5 | `0x32` | `(14,12)` | 1 | 71 |
+| 49 | `original.geo5.block-33` | 5 | `0x33` | `(0,1)` | 1 | 70 |
+| 50 | `original.geo5.block-33` | 5 | `0x33` | `(3,1)` | 1 | 69 |
+| 51 | `original.geo5.block-33` | 5 | `0x33` | `(2,3)` | 1 | 68 |
+| 52 | `original.geo5.block-33` | 5 | `0x33` | `(4,4)` | 1 | 67 |
+| 53 | `original.geo5.block-33` | 5 | `0x33` | `(15,8)` | 1 | 66 |
+| 54 | `original.geo5.block-33` | 5 | `0x33` | `(10,9)` | 1 | 65 |
+| 55 | `original.geo5.block-33` | 5 | `0x33` | `(15,10)` | 1 | 64 |
+| 56 | `original.geo5.block-33` | 5 | `0x33` | `(10,13)` | 1 | 63 |
+| 57 | `original.geo5.block-33` | 5 | `0x33` | `(11,13)` | 1 | 62 |
+| 58 | `original.geo5.block-33` | 5 | `0x33` | `(9,14)` | 1 | 61 |
+| 59 | `original.geo5.block-33` | 5 | `0x33` | `(10,15)` | 1 | 60 |
+| 60 | `original.geo5.block-33` | 5 | `0x33` | `(13,15)` | 1 | 59 |
+| 61 | `original.geo5.block-35` | 5 | `0x35` | `(2,0)` | 1 | 58 |
+| 62 | `original.geo5.block-35` | 5 | `0x35` | `(1,2)` | 1 | 57 |
+| 63 | `original.geo5.block-35` | 5 | `0x35` | `(8,4)` | 1 | 56 |
+| 64 | `original.geo5.block-35` | 5 | `0x35` | `(9,4)` | 1 | 55 |
