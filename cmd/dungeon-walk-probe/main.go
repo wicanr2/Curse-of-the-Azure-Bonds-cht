@@ -126,6 +126,8 @@ type segmentWalk struct {
 	// fromRoute 是「從主線站過的格子起走」跑了幾趟。0 代表那一段第一輪就走完了
 	// （或根本沒有路線紀錄）。
 	fromRoute int
+	// doorsOpened 是這一段開了幾扇門。⚠ 開門是**盤點**用的：直接解鎖、不擲骰。
+	doorsOpened int
 }
 
 func main() {
@@ -143,6 +145,8 @@ func main() {
 	routePath := flag.String("route", "",
 		"主線路線紀錄（`COAB_DECISION_LOG`）：從隊伍真的站過的格子再走一次，"+
 			"補「幾何上斷開、樓梯／傳送才進得去」那一類缺口")
+	openDoors := flag.Bool("open-doors", true,
+		"撞到門就開（**盤點用：直接解鎖不擲骰**）——門在 `CanMoveDungeon` 眼裡是牆")
 	arrivals := flag.String("arrivals", "",
 		"到達取樣目錄：冷走前先把主線在那一段的劇情旗標鋪上（spec 1195），門才開得了")
 	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
@@ -197,7 +201,7 @@ func main() {
 			for _, handoff := range handoffsFor(*arrivals, seg.Block) {
 				pass := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
 				if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &pass, terrains,
-					policy.follow, policy.pick, handoff, nil); err != nil {
+					policy.follow, policy.pick, handoff, nil, *openDoors); err != nil {
 					if walk.note == "" {
 						walk.note = err.Error()
 					}
@@ -226,7 +230,7 @@ func main() {
 				pass := segmentWalk{id: seg.ID, block: seg.Block, reached: map[int]bool{}}
 				start := at
 				if err := walkSegment(data, seg, grid, dispatch.Mask, *steps, &pass, terrains,
-					follow, 0, handoffsFor(*arrivals, seg.Block)[0], &start); err != nil {
+					follow, 0, handoffsFor(*arrivals, seg.Block)[0], &start, *openDoors); err != nil {
 					continue
 				}
 				for index := range pass.reached {
@@ -403,7 +407,7 @@ func readSample(path string) map[uint16]uint16 {
 
 func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mask, steps int,
 	walk *segmentWalk, terrains map[uint8]bool, followTeleports bool, pick int,
-	handoff map[uint16]uint16, from *point) error {
+	handoff map[uint16]uint16, from *point, openDoors bool) error {
 	state, err := data.NewParty()
 	if err != nil {
 		return err
@@ -481,8 +485,32 @@ func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mas
 			state.SetDungeonGeometryView(current.x, current.y, uint8(direction))
 			state.DungeonWallRoof = grid.CellWrapped(current.x, current.y).Terrain
 			if !state.CanMoveDungeon(grid, deltaX, deltaY, direction) {
-				walk.blocked++
-				continue
+				// ★ **門在 `CanMoveDungeon` 眼裡是牆。** 玩家的做法是撞上去、
+				// 開選單、撬鎖／撞開／唸開鎖術；冷走只問「牆擋不擋得住」，
+				// 於是**門後面的房間永遠走不到**——猶拉什那兩段缺的十幾格，
+				// 有一半是圖上散落的**單格房間**（spec 1193）。
+				//
+				// ⚠ 這裡直接把門解鎖，**不擲骰**：這是**盤點**，問的是
+				// 「門開了之後走得到嗎」，不是「這支隊伍開不開得了這扇門」。
+				// 開鎖成功率是另一件事（`dungeon.PickLock`／`BashDoor`）。
+				if !openDoors {
+					walk.blocked++
+					continue
+				}
+				flags, ok := grid.WallDoorFlagsWrapped(current.x, current.y, direction)
+				if !ok || (flags != 2 && flags != 3) {
+					walk.blocked++
+					continue
+				}
+				if !grid.UnlockDoorWrapped(current.x, current.y, direction) {
+					walk.blocked++
+					continue
+				}
+				walk.doorsOpened++
+				if !state.CanMoveDungeon(grid, deltaX, deltaY, direction) {
+					walk.blocked++
+					continue
+				}
 			}
 			used++
 			if err := state.MoveDungeon(grid, deltaX, deltaY, direction); err != nil {

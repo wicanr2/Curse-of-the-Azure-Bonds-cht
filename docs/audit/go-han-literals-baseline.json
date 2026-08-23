@@ -4278,6 +4278,13 @@
     {
       "path": "cmd/dungeon-walk-probe/main.go",
       "function": "main",
+      "sha256": "9c0de9463b1f638cade3042550ac3e721de5072ca4e21342d7430babb7c22a15",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/dungeon-walk-probe/main.go",
+      "function": "main",
       "sha256": "9c3b4db6568f9a7b84d66e598492d8ef32ad53d69279024f7a2f0d5623c82639",
       "occurrences": 1,
       "category": "runtime_ui_debt"
