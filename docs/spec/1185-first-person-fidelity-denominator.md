@@ -1182,7 +1182,8 @@ geo5-b33 (0,4) 朝南                原版            remake
 
 ## ★★★ 成因：越過地圖邊界的座標，原作是 **clamp** 不是取模
 
-`WALLCODE`（`pc98 overlay-30:060Dh`）在查地圖之前對兩個座標各做一次：
+`WALLCODE`（`pc98 overlay-30:060Dh` ↔ `dos overlay-30:06BDh`）在查地圖之前
+對兩個座標各做一次（下面是 PC-98；DOS 在 `06E8h` 起是同樣的六條，逐位元組相同）：
 
 ```asm
 638:  cmp  byte [bp+0Ah], 0Fh
