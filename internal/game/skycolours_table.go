@@ -17,16 +17,8 @@ package game
 // `-1` ＝ 這一段沒有寫那一格，維持存檔帶進來的值。
 var eclBlockSkyColours = map[eclBlockKey]skyColours{
 	{area: 2, block: 0x01}: {Outdoor: -1, Indoor: 9},
-	{area: 2, block: 0x02}: {Outdoor: -1, Indoor: 10},
-	{area: 2, block: 0x03}: {Outdoor: -1, Indoor: 13},
-	{area: 3, block: 0x10}: {Outdoor: 11, Indoor: 11},
-	{area: 3, block: 0x11}: {Outdoor: 8, Indoor: 8},
-	{area: 3, block: 0x12}: {Outdoor: 8, Indoor: 8},
 	{area: 3, block: 0x15}: {Outdoor: 8, Indoor: 8},
 	{area: 4, block: 0x20}: {Outdoor: 11, Indoor: 13},
-	{area: 4, block: 0x21}: {Outdoor: -1, Indoor: 8},
-	{area: 4, block: 0x22}: {Outdoor: -1, Indoor: 8},
-	{area: 4, block: 0x25}: {Outdoor: 8, Indoor: 8},
 	{area: 5, block: 0x31}: {Outdoor: 11, Indoor: 10},
 	{area: 5, block: 0x32}: {Outdoor: -1, Indoor: 10},
 	{area: 5, block: 0x33}: {Outdoor: 11, Indoor: 10},

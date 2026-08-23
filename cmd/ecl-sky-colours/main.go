@@ -43,9 +43,17 @@ import (
 const (
 	outdoorSkyCell = 0x4BFD
 	indoorSkyCell  = 0x4BFE
-	saveOpcode     = 0x09
-	firstIfOpcode  = 0x16
-	lastIfOpcode   = 0x1B
+	// lastECLCell 是存檔記下來的「上一段 ECL」（Area1 `01E4h`）。段的開頭常拿它
+	// 跟自己的段號比，用來分辨「第一次進來」與「本來就在這一段」。
+	lastECLCell   = 0x4BF2
+	exitOpcode    = 0x00
+	gotoOpcode    = 0x01
+	gosubOpcode   = 0x02
+	compareOpcode = 0x03
+	saveOpcode    = 0x09
+	firstIfOpcode = 0x16
+	lastIfOpcode  = 0x1B
+	walkStepLimit = 4096
 )
 
 type write struct {
@@ -160,10 +168,34 @@ func resolve(writes []write) map[key]*colours {
 	return table
 }
 
+// scanBlock 走一次「載入存檔之後，這一段實際會跑到的路」，收沿路寫進兩格天空
+// 選色的常數。
+//
+// ★ 為什麼不能只掃「有沒有這條指令」。 段的開頭幾乎都有一道
+// `COMPARE 4BF2h, <自己的段號>` 的閘門，而**兩個方向都有人用**：
+//
+//	ECL4/0x21  IF =  → GOTO 8112h   { 本來就在這一段 ⇒ 跳過整段前置 }
+//	ECL3/0x11  IF =  → EXIT         { 本來就在這一段 ⇒ 直接結束 }
+//	ECL5/0x33  IF <> → GOTO 8045h   { 不在這一段才跳走 ⇒ 前置照跑 }
+//	ECL3/0x15  （沒有閘門）          { 一定跑 }
+//
+// `4BF2h` 就是存檔的 `LastECLBlockID`，而 remake 套這張表的時機正是「載入一份
+// 記著這一段的存檔」⇒ 那一刻 `4BF2h == 段號`。所以要在**這個條件成立**的前提下
+// 走一次，才知道那條 `SAVE` 到底會不會被執行。
+//
+// ⚠ 只掃指令存在與否會多收：`ECL4/0x21`／`ECL4/0x25`／`ECL3/0x10`／`ECL3/0x11`／
+// `ECL2/0x03` 五段的天空寫入全都在閘門後面，載檔時**一條都不會跑**。第 749 輪
+// 就是這樣把四張圖的天空改錯——而症狀是整片純色換成另一片純色，看不出異常
+// （spec 1185）。
+//
+// ⚠ 判斷不了的分支一律**停下來**，不要猜。停下來的段會在報表裡標出來。
 func scanBlock(area, block uint8, data []byte) ([]write, error) {
 	points, _, err := ecl.EntryPoints(data, 5)
 	if err != nil {
 		return nil, err
+	}
+	if len(points) == 0 {
+		return nil, nil
 	}
 	starts := make([]int, 0, len(points))
 	for _, point := range points {
@@ -182,39 +214,174 @@ func scanBlock(area, block uint8, data []byte) ([]write, error) {
 		offsets = append(offsets, offset)
 	}
 	sort.Ints(offsets)
+	index := map[int]int{}
+	for position, offset := range offsets {
+		index[offset] = position
+	}
 
+	// ⚠ **五個進入點都要走。** 段的前置不一定掛在第 0 個：`ECL3/0x15` 的
+	// `LOAD FILES` 在 `0x14`，而 `ECL5/0x33` 的 `0x14` 是另一段判斷，
+	// `LOAD FILES` 在 `0x51`。只走第 0 個會漏掉一半的段，而漏掉的後果是那一段
+	// 安靜地沿用別章的天空。
 	found := make([]write, 0, 4)
-	for index, offset := range offsets {
-		instruction := unique[offset]
-		if instruction.Command.Opcode != saveOpcode || len(instruction.Operands) < 2 {
+	seen := map[int]bool{}
+	for _, point := range points {
+		start, ok := index[int(point)-ecl.CodeAddressBase]
+		if !ok {
 			continue
 		}
-		destination := instruction.Operands[1]
-		if !destination.WordSet {
-			continue
-		}
-		if destination.Word != outdoorSkyCell && destination.Word != indoorSkyCell {
-			continue
-		}
-		value, constant := constantOperand(instruction.Operands[0])
-		if !constant {
-			continue
-		}
-		// ⚠ 這一版 ECL 的 `IF` 只守著**下一條**指令（`IF <>` 後面接 `GOTO`
-		// 就是「不等就跳走」）。所以「有沒有被守著」＝ 前一條是不是 `IF`。
-		guarded, guard := false, ""
-		if index > 0 {
-			previous := unique[offsets[index-1]]
-			if previous.Command.Opcode >= firstIfOpcode && previous.Command.Opcode <= lastIfOpcode {
-				guarded, guard = true, previous.Command.Name
+		for _, item := range walkFrom(offsets, index, unique, start, area, block) {
+			if seen[item.offset] {
+				continue
 			}
+			seen[item.offset] = true
+			found = append(found, item)
 		}
-		found = append(found, write{
-			area: area, block: block, offset: offset,
-			cell: destination.Word, value: value, guarded: guarded, guard: guard,
-		})
 	}
 	return found, nil
+}
+
+// walkFrom 從一個進入點走一條路，回沿路收到的天空選色寫入。
+func walkFrom(offsets []int, index map[int]int, unique map[int]ecl.Instruction,
+	position int, area, block uint8) []write {
+	found := make([]write, 0, 4)
+	// compared 記「上一條 COMPARE 是不是拿 4BF2h 跟一個常數比」，以及比的結果。
+	compared, equal := false, false
+	visited := map[int]bool{}
+	for step := 0; step < walkStepLimit && position < len(offsets); step++ {
+		if visited[position] {
+			// 走回頭路就停：這一支只要「載檔那一刻一定會跑到的前置」，
+			// 不是完整的可達性分析。
+			return found
+		}
+		visited[position] = true
+		instruction := unique[offsets[position]]
+		switch instruction.Command.Opcode {
+		case exitOpcode:
+			return found
+		case gotoOpcode:
+			next, jumped := jumpTarget(instruction, index)
+			if !jumped {
+				return found
+			}
+			position = next
+			compared = false
+			continue
+		case compareOpcode:
+			compared, equal = compareAgainstLastECL(instruction, block)
+		case saveOpcode:
+			if item, okWrite := skyWrite(instruction, area, block, offsets[position]); okWrite {
+				found = append(found, item)
+			}
+		}
+		if instruction.Command.Opcode >= firstIfOpcode && instruction.Command.Opcode <= lastIfOpcode {
+			// `IF` 只守著**下一條**指令。
+			if position+1 >= len(offsets) {
+				return found
+			}
+			guarded := unique[offsets[position+1]]
+			take, decided := evaluateIf(instruction.Command.Opcode, compared, equal)
+			compared = false
+			if !decided {
+				// 判斷不了。守的是控制流就停（走哪一條都不確定）；守的是一般
+				// 指令就跳過它，其餘照走——這與原作「條件不成立就跳過那一條」
+				// 的語意一致，而跳過一條 `SAVE` 正是保守的選擇。
+				if isControlFlow(guarded.Command.Opcode) {
+					return found
+				}
+				position += 2
+				continue
+			}
+			if !take {
+				position += 2
+				continue
+			}
+			position++
+			continue
+		}
+		position++
+	}
+	return found
+}
+
+// jumpTarget 把 `GOTO` 的目的地換成指令表裡的位置。
+func jumpTarget(instruction ecl.Instruction, index map[int]int) (int, bool) {
+	if len(instruction.Operands) == 0 || !instruction.Operands[0].WordSet {
+		return 0, false
+	}
+	position, ok := index[int(instruction.Operands[0].Word)-ecl.CodeAddressBase]
+	return position, ok
+}
+
+// compareAgainstLastECL 認得「拿 `4BF2h` 跟一個常數比」這一種 COMPARE。
+func compareAgainstLastECL(instruction ecl.Instruction, block uint8) (compared, equal bool) {
+	if len(instruction.Operands) < 2 {
+		return false, false
+	}
+	if !instruction.Operands[0].WordSet || instruction.Operands[0].Word != lastECLCell {
+		return false, false
+	}
+	value, constant := constantOperand(instruction.Operands[1])
+	if !constant {
+		return false, false
+	}
+	return true, value == uint16(block)
+}
+
+// evaluateIf 在「只知道相不相等」的前提下判斷分支。
+//
+// ⚠ 相等時六個比較都判得出來；**不相等時只判得出 `=` 與 `<>`**，大小關係要看
+// 實際數值，這裡不猜。
+func evaluateIf(opcode uint8, compared, equal bool) (take, decided bool) {
+	if !compared {
+		return false, false
+	}
+	switch opcode {
+	case 0x16: // IF =
+		return equal, true
+	case 0x17: // IF <>
+		return !equal, true
+	case 0x18: // IF <
+		if equal {
+			return false, true
+		}
+	case 0x19: // IF >
+		if equal {
+			return false, true
+		}
+	case 0x1A: // IF <=
+		if equal {
+			return true, true
+		}
+	case 0x1B: // IF >=
+		if equal {
+			return true, true
+		}
+	}
+	return false, false
+}
+
+func isControlFlow(opcode uint8) bool {
+	return opcode == exitOpcode || opcode == gotoOpcode || opcode == gosubOpcode
+}
+
+// skyWrite 認得「把常數寫進兩格天空選色」的 SAVE。
+func skyWrite(instruction ecl.Instruction, area, block uint8, offset int) (write, bool) {
+	if len(instruction.Operands) < 2 {
+		return write{}, false
+	}
+	destination := instruction.Operands[1]
+	if !destination.WordSet {
+		return write{}, false
+	}
+	if destination.Word != outdoorSkyCell && destination.Word != indoorSkyCell {
+		return write{}, false
+	}
+	value, constant := constantOperand(instruction.Operands[0])
+	if !constant {
+		return write{}, false
+	}
+	return write{area: area, block: block, offset: offset, cell: destination.Word, value: value}, true
 }
 
 func constantOperand(operand ecl.Operand) (uint16, bool) {

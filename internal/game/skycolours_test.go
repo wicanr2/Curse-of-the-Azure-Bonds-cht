@@ -37,28 +37,44 @@ func TestECLBlockSkyColoursMatchOriginalWrites(t *testing.T) {
 	}
 }
 
-// TestSkyColourTableCoversEveryWallPieceBlock 釘住兩張表**涵蓋同一批段**，
-// 例外要逐段列名。
+// TestSkyColourTableExcludesGatedBlocks 釘住「被閘門擋掉的段不進表」。
 //
-// ⚠ 兩張表從同一份 ECL corpus、同一條可達性掃出來；其中一張少了某一段，代表
-// 掃描漏了，而漏掉的後果是那一段安靜地沿用別章的天空。
+// ★ 段的開頭幾乎都有一道 `COMPARE 4BF2h, <自己的段號>` 的閘門，而**兩個方向
+// 都有人用**：
 //
-// ★ 唯一的例外是 `ECL2/0x04`：它的兩處寫入是同一個 `COMPARE 0xC04F 0x95` 的
-// 兩條互斥分支（`IF =` → `0Ah`、`IF <>` → `09h`），值要看執行時的狀態，靜態
-// 決定不了 ⇒ 刻意不進表。**這裡列名而不是放寬條件**：放寬的話下一個真的漏掉的
-// 段就不會被抓到。
-func TestSkyColourTableCoversEveryWallPieceBlock(t *testing.T) {
-	runtimeDecided := map[eclBlockKey]bool{{area: 2, block: 0x04}: true}
-	for identity := range eclBlockWallPieces {
-		_, ok := eclBlockSkyColours[identity]
-		if ok == runtimeDecided[identity] {
-			if ok {
-				t.Errorf("ECL%d/0x%02X 標成執行時才決定，卻進了選色表",
-					identity.area, identity.block)
-			} else {
-				t.Errorf("ECL%d/0x%02X 有牆磚選圖卻沒有天空選色",
-					identity.area, identity.block)
-			}
+//	ECL4/0x21  IF =  → GOTO   本來就在這一段 ⇒ 跳過整段前置（含天空）
+//	ECL3/0x11  IF =  → EXIT   本來就在這一段 ⇒ 直接結束
+//	ECL5/0x33  IF <> → GOTO   不在這一段才跳走 ⇒ 前置照跑
+//	ECL3/0x15  （沒有閘門）    一定跑
+//
+// `4BF2h` 是存檔的 `LastECLBlockID`，而套這張表的時機正是「載入一份記著這一段的
+// 存檔」⇒ 那一刻 `4BF2h == 段號`，前兩種的天空寫入**一條都不會跑**。
+//
+// ⚠ 只掃「有沒有這條 SAVE」會多收八段。第 749 輪就是這樣把四張圖的天空改錯
+// （`geo2-b03`／`geo3-b10`／`geo4-b21`／`geo4-b25` 合計 32 萬格），而症狀是
+// 整片純色換成另一片純色——**看不出異常**（spec 1185）。
+func TestSkyColourTableExcludesGatedBlocks(t *testing.T) {
+	// 這幾段有天空 `SAVE`，但載檔時走不到。
+	for _, gated := range []eclBlockKey{
+		{area: 2, block: 0x02}, {area: 2, block: 0x03}, {area: 2, block: 0x04},
+		{area: 3, block: 0x10}, {area: 3, block: 0x11}, {area: 3, block: 0x12},
+		{area: 4, block: 0x21}, {area: 4, block: 0x22}, {area: 4, block: 0x25},
+	} {
+		if colours, ok := eclBlockSkyColours[gated]; ok {
+			t.Errorf("ECL%d/0x%02X 的天空寫入被閘門擋著，不該進表（拿到 %+v）",
+				gated.area, gated.block, colours)
+		}
+	}
+	// 這幾段走得到，一定要在表裡。
+	for _, reachable := range []eclBlockKey{
+		{area: 3, block: 0x15}, // 完全沒有閘門
+		{area: 5, block: 0x33}, // 閘門是 `IF <>` ⇒ 相等時照跑
+		{area: 5, block: 0x35},
+		{area: 6, block: 0x45},
+	} {
+		if _, ok := eclBlockSkyColours[reachable]; !ok {
+			t.Errorf("ECL%d/0x%02X 載檔時走得到天空寫入，卻不在表裡",
+				reachable.area, reachable.block)
 		}
 	}
 }
