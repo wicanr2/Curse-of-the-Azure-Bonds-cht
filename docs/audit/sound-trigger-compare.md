@@ -23,7 +23,7 @@
 | MISSFX（揮空） | 1 | `SoundMiss` | 1 |  |
 | OVERTUREFX（序曲） | 1 | `SoundOverture` | 1 |  |
 | PADFX（腳步） | 7 | `SoundStep` | 4 |  |
-| SOUNDHALT（停止） | 18 | `SoundStop` | 0 | **原版有、remake 從沒發過** |
+| SOUNDHALT（停止） | 18 | `SoundStop` | 0 | 已判定不是缺漏：原作用 `SOUNDUP` 旗標決定要不要停掉**手上那一聲**（`overlay` 內務）；remake 的播放器是逐事件一次性播放，沒有「手上那一聲」可停 ⇒ 這是**原作需要而 remake 的架構不需要**，不對應任何玩法事件。 |
 | SPELLHITFX（法術命中） | 1 | `SoundSpellHit` | 30 |  |
 | SWISHFX（揮擊） | 3 | `SoundSwish` | 4 |  |
 | WHISTLEFX（哨音） | 2 | `SoundWhistle` | 1 |  |
@@ -31,9 +31,12 @@
 ## 結論
 
 - 對照的音效種類：15 種。
-- **原版有、remake 從沒發過**：1 種。
+- **原版有、remake 從沒發過（還沒判的）**：0 種。
+- 原版有、remake 沒有，但**已判定不是缺漏**：1 種。
 - remake 有、原版那一支沒出現在 `SOUNDFX` 的立即呼叫裡：0 種。
 
 ⚠ 第二類**先當成掃描面的問題**：上一版把 `LIGHTNINGFX` 列在這一類，而它其實在 `CASTSPELL` 裡——是 far-call 對照表看不到，不是原版沒有。現在原版那一側改成位元組直掃並且涵蓋常駐，這一類要是還有東西，要先問「是不是又有一個面沒掃到」再問「是不是 remake 多做」。
 
 ⚠ 第一類才是可以動手的：那幾個 `SoundEvent` 常數**宣告了卻從來沒有人送出**——編譯得過、測試全綠、玩起來就是少了那個聲音。
+
+★ 「已判定不是缺漏」是**逐項寫死在 `judgedGaps` 裡**的，不是把數字四捨五入掉。判過的項目就不該再被當成待辦重新打開一次；要推翻它請改那份表並附理由。

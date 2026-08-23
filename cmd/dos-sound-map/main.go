@@ -179,6 +179,16 @@ func scanTargets(modules []module) map[uint32]*candidate {
 	return targets
 }
 
+// judgedPlatformGaps 是「兩版對不上、但已經判定是**平台差異**而不是漏掉」的音效。
+//
+// ★ 存在的理由與 `cmd/sound-trigger-compare` 的 `judgedGaps` 相同：判過的結論要留在
+// 產生報表的程式碼裡。只留一個「1」的話，下一輪會把它當待辦重查一次。
+var judgedPlatformGaps = map[string]string{
+	"CRASHFX": "PC-98 在 `INTERPET` 有一處，DOS 整支執行檔 **0 處**——而那個 0 做過正對照" +
+		"（同一種掃法在 DOS 找得到 `PADFX` 7 處、`SOUNDOFF` 4 處），所以是真的沒有。" +
+		"DOS 走 PC 喇叭、PC-98 走軟體發聲，兩版的音效編制本來就不一樣。",
+}
+
 func main() {
 	dosRoot := flag.String("dos", "workplace/re-sweep/dos", "DOS 反組譯產物目錄")
 	dosResident := flag.String("dos-resident", "START.EXE", "DOS 常駐執行檔")
@@ -322,6 +332,7 @@ func main() {
 	fmt.Fprintf(&report, "|---|---|---|---|---|---|\n")
 
 	agree, disagree, dosOnly := 0, 0, 0
+	judged := 0
 	for _, info := range pc98sfx.Selectors() {
 		dosAddress := dosBase + (info.Descriptor - pc98Base)
 		dosDist := dosByDescriptor[dosAddress]
@@ -339,6 +350,11 @@ func main() {
 		case difference(dosDist, pc98Dist) == 0:
 			agree++
 		case dosDist.total() == 0:
+			if reason, ok := judgedPlatformGaps[info.Symbol]; ok {
+				verdict = "已判定是平台差異：" + reason
+				judged++
+				break
+			}
 			verdict = "**DOS 沒有呼叫點**"
 			disagree++
 		case pc98Dist.total() == 0:
@@ -356,7 +372,8 @@ func main() {
 
 	fmt.Fprintf(&report, "| 指標 | 數字 |\n|---|---:|\n")
 	fmt.Fprintf(&report, "| 兩版分佈**逐模組相同**的格子 | %d |\n", agree)
-	fmt.Fprintf(&report, "| 對不上的格子 | %d |\n", disagree+dosOnly)
+	fmt.Fprintf(&report, "| 對不上的格子（還沒判的）| %d |\n", disagree+dosOnly)
+	fmt.Fprintf(&report, "| 對不上、但**已判定是平台差異** | %d |\n", judged)
 	fmt.Fprintf(&report, "| DOS overlay 呼叫點 | %d |\n", len(dosSites)-residentCount(dosSites))
 	fmt.Fprintf(&report, "| DOS 常駐呼叫點 | %d |\n", residentCount(dosSites))
 	fmt.Fprintf(&report, "| DOS 推不出描述子的 | %d |\n\n", dosUnresolved)

@@ -8,15 +8,15 @@
 
 | 指標 | 數字 |
 |---|---:|
-| 戰役用到的 `State` 進入點 | 57 |
-| 前端直接呼叫的 `State` 方法（輸入側）| 148 |
-| 再沿 `State` 內部呼叫展開後 | 478 |
+| 戰役用到的 `State` 進入點 | 58 |
+| 前端直接呼叫的 `State` 方法（輸入側）| 154 |
+| 再沿 `State` 內部呼叫展開後 | 491 |
 | `Draw()`（顯示）可達閉包裡的 | 129 |
-| `main()` 啟動流程裡的 | 383 |
-| 其中直接寫在 `Update()` 本體的 | 181 |
-| 自動解出的單行別名 | 27 |
-| 判定為**會改狀態**的 `State` 方法 | 344 |
-| **前端沒有路可以到的** | 1 |
+| `main()` 啟動流程裡的 | 394 |
+| 其中直接寫在 `Update()` 本體的 | 183 |
+| 自動解出的單行別名 | 31 |
+| 判定為**會改狀態**的 `State` 方法 | 357 |
+| **前端沒有路可以到的** | 0 |
 
 | `State` 進入點 | 戰役用幾處 | 玩家到得了 | 說明 |
 |---|---:|---|---|
@@ -38,10 +38,11 @@
 | `FinishCharacterCreation` | 1 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
 | `LookDungeonLocation` | 2 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
 | `MoveDungeon` | 31 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
+| `NextJournalPage` | 1 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
 | `OpenJournal` | 1 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
 | `RunDungeonExitLifecycle` | 8 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
 | `RunDungeonLifecycle` | 50 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
-| `SavePartyFile` | 2 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
+| `SavePartyFile` | 3 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
 | `SearchDungeonLocation` | 7 | ✅ 按得出來 | 別名 → `LookDungeonLocation`（單行轉呼叫），前端走那一支 |
 | `Select` | 292 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
 | `SetDungeonGeometryView` | 2 | ✅ 按得出來 | `Update()` 的可達閉包裡有 |
@@ -65,6 +66,7 @@
 | `CombatFighters` | 35 | — 觀測點 | 前端在 `Draw()` 讀它 ⇒ 這是**看**的東西，不是按的東西 |
 | `GameTimeDisplay` | 1 | — 觀測點 | 前端在 `Draw()` 讀它 ⇒ 這是**看**的東西，不是按的東西 |
 | `PartyFighters` | 4 | — 觀測點 | 前端在 `Draw()` 讀它 ⇒ 這是**看**的東西，不是按的東西 |
+| `combatStillRunning` | 1 | — 觀測點 | **未匯出**：前端在別的套件本來就叫不到 ⇒ 戰役拿它當觀測點 |
 | `CombatStatus` | 17 | — 啟動接線 | 前端在 `main()` 的啟動流程呼叫 ⇒ 不是輸入動作 |
 | `MessageContainsGamePackText` | 7 | — 啟動接線 | 前端在 `main()` 的啟動流程呼叫 ⇒ 不是輸入動作 |
 | `OriginalChoiceIndex` | 7 | — 啟動接線 | 前端在 `main()` 的啟動流程呼叫 ⇒ 不是輸入動作 |
@@ -76,5 +78,7 @@
 | `SetMonsterRecordsForECL` | 10 | — 啟動接線 | 前端在 `main()` 的啟動流程呼叫 ⇒ 不是輸入動作 |
 | `SetTreasureItemBlocks` | 4 | — 啟動接線 | 前端在 `main()` 的啟動流程呼叫 ⇒ 不是輸入動作 |
 | `StartDungeonStoryPreview` | 5 | — 啟動接線 | 前端在 `main()` 的啟動流程呼叫 ⇒ 不是輸入動作 |
-| `NextJournalPage` | 1 | **前端沒有這條路** | 會改狀態而前端到不了 ⇒ 玩家按不出來 |
 
+★ **戰役推進劇情用到的每一個匯出方法，前端都有路可以到。**
+
+⚠ 這**不等於**玩得完：可達性不管條件、不管順序，也不管畫面上有沒有提示那個鍵。它排除的是「有一段劇情根本沒有按鍵到得了」這一種硬缺口。

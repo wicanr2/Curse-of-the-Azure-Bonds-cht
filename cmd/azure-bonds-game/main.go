@@ -767,13 +767,13 @@ func (a *app) Update() error {
 			if a.journalDisplayPage+1 < len(pages) {
 				a.journalDisplayPage++
 			}
-			return nil
+			return a.syncJournalSourcePage()
 		}
 		if a.justPressed(ebiten.KeyLeft) || a.justPressed(ebiten.KeyUp) {
 			if a.journalDisplayPage > 0 {
 				a.journalDisplayPage--
 			}
-			return nil
+			return a.syncJournalSourcePage()
 		}
 		return nil
 	}

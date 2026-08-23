@@ -3,7 +3,11 @@ package main
 import (
 	"testing"
 
+	"github.com/hajimehoshi/ebiten/v2"
+
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
 )
@@ -104,5 +108,65 @@ func TestJournalDisplayPageMapsBackToItsSourceEntry(t *testing.T) {
 	// ★ 關鍵：**翻到後面的頁，來源不能還是第 0 則**——那正是原本的行為。
 	if sources[len(sources)-1] == sources[0] {
 		t.Fatal("最後一頁與第一頁來自同一則，對照表沒有作用")
+	}
+}
+
+// TestJournalPagingAdvancesTheStateSourcePage 釘住「翻頁會把 `State.JournalPage`
+// 一起推」。
+//
+// ★ 為什麼值得一支測試。 翻頁走的是前端自己的 `journalDisplayPage`（第幾個顯示
+// 頁），而 `State` 那一側記的是**第幾則**。兩個編號不同步時畫面完全正常——文字
+// 換了、頁碼也換了——只有 `State.JournalPage` 永遠停在 0，於是
+// `NextJournalPage` 這一支**玩家按不出來**（`cmd/player-path-audit` 唯一的硬缺口）。
+func TestJournalPagingAdvancesTheStateSourcePage(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	long := pack.Locales["zh-TW"]["journal.48"]
+	if long == "" {
+		t.Skip("game pack 沒有 journal.48")
+	}
+	face := basicfont.Face7x13
+	state := game.NewState(locale.Catalog{Language: "zh-TW", Strings: map[string]string{}})
+	state.JournalPages = []string{long, "第二則"}
+	state.JournalText = long
+	if err := state.OpenJournal(); err != nil {
+		t.Fatal(err)
+	}
+	// ⚠ 走**真的按鍵**，不要直接呼叫 `syncJournalSourcePage`：直接呼叫的話，
+	// 把按鍵處理那一段的呼叫拿掉這條照樣會過——而缺口正是在那一段。
+	keys := newScriptedKeys()
+	application := &app{state: &state, face: face, keys: keys}
+
+	_, sources := journalDisplayPagesWithSources(
+		state.JournalPages, state.JournalText, face, 22*faceCellWidth(face), 7)
+	if len(sources) < 2 {
+		t.Skipf("這一組測資只有 %d 個顯示頁，測不到翻頁", len(sources))
+	}
+	press := func(key ebiten.Key) {
+		t.Helper()
+		keys.press(key)
+		if err := application.Update(); err != nil {
+			t.Fatal(err)
+		}
+		keys.release()
+		if err := application.Update(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	// 一路按到最後一個顯示頁，`State.JournalPage` 要跟著到最後一則。
+	for index := 0; index+1 < len(sources); index++ {
+		press(ebiten.KeyRight)
+	}
+	if got, want := state.JournalPage, sources[len(sources)-1]; got != want {
+		t.Fatalf("翻到最後一頁之後 State.JournalPage=%d，want %d", got, want)
+	}
+	// 再按回第一頁，也要跟著退回去（不是只會往前）。
+	for index := len(sources) - 1; index > 0; index-- {
+		press(ebiten.KeyLeft)
+	}
+	if state.JournalPage != sources[0] {
+		t.Fatalf("翻回第一頁之後 State.JournalPage=%d，want %d", state.JournalPage, sources[0])
 	}
 }

@@ -201,6 +201,44 @@ func journalImageScale(width, height, viewWidth, viewHeight int, zoom bool) floa
 // ⚠ 不要用 `state.JournalMessageID()`：那一支讀的是 `State.JournalPage`，
 // 而前端翻頁走的是 `a.journalDisplayPage`，**從來沒有推進過 `State.JournalPage`**。
 // 用它的話不論翻到哪一頁，按 `I` 跳出來的都是第一則的圖（spec 1189）。
+// syncJournalSourcePage 把 `State.JournalPage`（**第幾則**手札）推到目前這個
+// 顯示頁所屬的那一則。
+//
+// ★ 為什麼要有這一步。 翻頁是前端自己的 `journalDisplayPage`（**第幾個顯示頁**），
+// 因為一則長手札會被切成好幾頁；而 `State` 那一側記的是第幾則。兩個編號不同步時，
+// `State.JournalPage`／`JournalPageStatus()`／`JournalMessageID()` 讀到的永遠是
+// 第一則——換句話說 `NextJournalPage` 這一支**玩家按不出來**
+// （`cmd/player-path-audit` 唯一列出的硬缺口，spec 1189）。
+//
+// ⚠ 走的是既有的 `NextJournalPage`／`PreviousJournalPage`，不是直接改欄位：
+// 那兩支帶著「手札沒開就回錯」與邊界檢查，繞過去等於把守衛複製一份到前端。
+func (a *app) syncJournalSourcePage() error {
+	_, sources := journalDisplayPagesWithSources(
+		a.state.JournalPages, a.state.JournalText, a.face, 22*faceCellWidth(a.face), 7)
+	if a.journalDisplayPage < 0 || a.journalDisplayPage >= len(sources) {
+		return nil
+	}
+	want := sources[a.journalDisplayPage]
+	// 一次一步，讓兩支自己的邊界檢查決定停在哪裡。
+	for guard := 0; a.state.JournalPage != want && guard <= len(sources); guard++ {
+		before := a.state.JournalPage
+		var err error
+		if a.state.JournalPage < want {
+			err = a.state.NextJournalPage()
+		} else {
+			err = a.state.PreviousJournalPage()
+		}
+		if err != nil {
+			return err
+		}
+		if a.state.JournalPage == before {
+			// 推不動就停：邊界到了，再繞下去只會空轉。
+			break
+		}
+	}
+	return nil
+}
+
 func (a *app) currentJournalMessageID() string {
 	_, sources := journalDisplayPagesWithSources(
 		a.state.JournalPages, a.state.JournalText, a.face, 22*faceCellWidth(a.face), 7)
