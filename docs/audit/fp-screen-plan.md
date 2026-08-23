@@ -62,7 +62,7 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | 4 | `original.geo5.block-33` | 5 | `0x33` | `(15,14)` | 3 | 191 |
 | 5 | `original.geo5.block-33` | 5 | `0x33` | `(11,15)` | 3 | 188 |
 | 6 | `original.geo5.block-33` | 5 | `0x33` | `(15,15)` | 3 | 185 |
-| 7 | `original.geo5.block-31` | 5 | `0x32` | `(0,15)` | 2 | 183 |
+| 7 | `original.geo5.block-32` | 5 | `0x32` | `(0,15)` | 2 | 183 |
 | 8 | `original.geo5.block-33` | 5 | `0x33` | `(15,11)` | 2 | 181 |
 | 9 | `original.geo5.block-33` | 5 | `0x33` | `(9,13)` | 2 | 179 |
 | 10 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(6,2)` | 2 | 177 |
@@ -107,7 +107,7 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | 49 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(13,1)` | 1 | 134 |
 | 50 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(10,3)` | 1 | 133 |
 | 51 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(13,3)` | 1 | 132 |
-| 52 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(7,9)` | 1 | 131 |
+| 52 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(7,9)` | 1 | 131 |
 | 53 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(12,15)` | 1 | 130 |
 | 54 | `original.geo3.block-15` | 3 | `0x15` | `(3,0)` | 1 | 129 |
 | 55 | `original.geo3.block-15` | 3 | `0x15` | `(14,1)` | 1 | 128 |
