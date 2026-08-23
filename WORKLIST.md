@@ -69,9 +69,23 @@
 | **P1** | **手札 producer** | ✅ **接完了**：locale 宣告 **64 則**，全部由 **48 條**內容規則的 `journal_message_ids` 解鎖（分頁的手札一則對多個 id）。✅ 六張原版插圖與地圖（含手札 59 的眼魔洞穴圖）也接完了：清單在 `gamepack/rules/journal-images.json`，檢視器在 `cmd/azure-bonds-game/journal_image.go`（縮放／平移／圖說跟語系走），四條閘門守著（清單↔目錄互為子集、en／zh-TW 內文與圖說、**PNG 解得開**、查詢對得上）| — |
 | **P1** | **存檔剩餘欄位** | ✅ **角色記錄的 `unknown` 歸零**（spec 1164）：422 bytes ＝ decoded 299／documented 123，PC-98 除錯符號展得開 `CHARREC` 的 79 欄。✅ **SAVGAM 的 ECL 記憶體已雙向接上**（spec 1163／1176）：四塊 ＝ 區 0／1／2／3，第四塊是**位元組定址**的程式碼視窗（自己一對 codec、0 照收）——先前新開的遊戲匯出的那一塊整塊是 0。✅ DOS 比 PC-98 少的那一格也定案了（spec 1166：`+14Ch` 的 `MONSTERTYPE`）。⚠ 剩下的是**一處**讀法待對（`+0E6h`：spec 185 讀成「多職角色的現行等級」，PC-98 符號叫 `HIGHESTPREVLEVEL`）與 `MOVEPARTY` 跨遊戲轉移未做。`+11Ch` 已由 spec 1180 對完（`BASEATTBLOWS[0]`），`+192h` 兩種讀法本來就相容（ECL 投影到 Pascal 的保留欄）| 對 `+0E6h`；轉移另開 |
 | **P1** | **怪物側的自動換裝** | ✅ 資料接線完成：`MON*ITM` 已進 `Fighter.MonsterItems`（44 個區塊全部帶物品，最多一隻 5 件）。✅ **那個沒答案的問題已經有答案**（spec 1174）：派生值重算讀的是**槽 0 的裝備中武器**，有就無條件把類別表的小型傷害三連寫進現值 ⇒ 13 隻的記錄骰是**放下武器時**的天生攻擊，不是矛盾。✅ **接線也做完了**（spec 1175）：開戰掛完 `MON*ITM` 就投影槽 0 的裝備中武器（`monster.ProjectMonsterWeapon`），大／小體型的切換集中在 `Fighter.WeaponDamageAgainst(目標)` 一處，自動換裝的重投影也帶新欄位。✅ 遠程那個保留也收掉了：整個戰鬥 overlay **只有一個**大／小切換點，與近戰／遠程無關。⚠ 剩下的是原作 `+1A2h` 那個不冪等的調整（連續兩次大型攻擊之間會不會漂），靜態讀碼分不出來 | 要回答漂不漂：拿原版當 oracle 連打兩隻大型目標量加值 |
-| **P1** | **音樂／音效的 cue 綁定** | 戰鬥開始／全滅的語意已接；每個場景與戰鬥 phase 的 cue、播放生命週期未完成 | 先資料綁定 ＋ 可重播，再對 runtime phase |
+| **P1** | **音樂／音效的 cue 綁定** | ✅ **播放生命週期接完了**（spec 1192）：三格狀態的 17 處寫入收斂成 **4 種動作，4 種都發得出來、4 種玩家都碰得到**。「停」不是劇情資料而是**按鍵**（原作派曲常式查不到就 `ret`，唯一會停的是玩家關音樂）⇒ 補的是 **Ctrl+S 音效／Ctrl+O 音樂**兩個全域開關，不是 pack 裡的 binding。✅ **換曲點對回事件 10／13**：7 個查 `CURRENTECL` 派曲表（`ecl_blocks` binding）＋ 3 個事件驅動（**開戰**、**開場**、**角色建立**，各用 `context` binding，因為原作那幾處**不看場景**）。✅ **DOS 側結案：DOS 版沒有 BGM**（94 個成員逐一列舉，沒有 `MSCDRV.EXE` 也沒有音樂資料檔；配正對照）。⚠ 剩下三個換曲點各有具名理由：`LOADMONNUM == 47h` → 地城二**被共用 engine 擋住**（music cue 只收 `picture` 這一種 signal，`TestEnginePackCannotExpressMonsterSetCueYet` 釘住）；戰後回文字選單與結局是 **remake 沒有那兩個狀態**（前者逐指令看過：`MUSICNO := 2` → `TTY := 1` 切文字模式 → 清 `VARLIST`）| 剩**戰鬥 phase 的音樂同步**；`47h` 分岔要等 engine 收 `monster_set` signal |
 | **P1** | **UI 與原版 fidelity** | 五張 manifest 圖的**圖層對齊**已收（spec 1130／1131／1132）：人像填滿框、地形與戰鬥員同一條相機路徑、佈陣看地面、戰場圖示是 CPIC、第一人稱補齊第 0 段符號與洋紅透明鍵。**逐張與原版比對仍未做**——本機沒有提爾佛頓第一人稱的原版畫面 | 先取原版 oracle（spec 530 的 `START STING Wooden` 測試模式可繞過翻譯輪），再逐格比牆磚選圖與天空層 |
 | **P2** | 三平台打包、README／截圖／推廣片 | 等 P0／P1 收斂 | — |
+
+★ **P2 的閘門是「P0／P1 收斂」，不是一個要人拍板的決定。** P0 兩列都綠了；
+P1 現在還開著的是這五項，每一項都有具名的下一步：
+
+| P1 開著的 | 缺什麼 | 下一步要的東西 |
+|---|---|---|
+| ECL 的 3 個 `partial` opcode | 可達指令 14,177 條裡 `partial` 還有 **487**（`PICTURE` 199／`CALL` 168／`PRINT RETURN` 120）| 三個缺口都收斂到**表現層**（UI 行模型、`2E10h` 髒旗標的四張宣告值）——要原版畫面當 oracle |
+| 存檔剩餘欄位 | `+0E6h` 一處讀法待對；`MOVEPARTY` 跨遊戲轉移未做 | 前者對 PC-98 符號 `HIGHESTPREVLEVEL`；後者另開 |
+| 怪物側的自動換裝 | `+1A2h` 那個不冪等的調整，靜態讀碼分不出來會不會漂 | 拿原版當 oracle 連打兩隻大型目標量加值 |
+| 音樂／音效的 cue 綁定 | 戰鬥 phase 的音樂同步；`47h` 分岔被共用 engine 擋住 | 前者要 phase 層級的原作證據；後者要 engine 收 `monster_set` signal |
+| UI 與原版 fidelity | 逐張與原版比對未做（本機沒有提爾佛頓第一人稱的原版畫面）| 先取原版 oracle（spec 530 的測試模式）|
+
+⚠ **這五項裡有三項要的是同一件事：原版畫面／原版實機當 oracle。** 那是 P1 收斂
+真正的瓶頸，不是還沒開始做的工作量。
 
 ⚠ 一個順手記下的小瑕疵：`cmd/re-ledger` 的「引用」欄掃 `docs/` 找「同時提到某
 overlay 與某個十六進位值」的檔案，而**它自己的輸出就在 `docs/audit/` 底下**
