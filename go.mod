@@ -6,7 +6,7 @@ toolchain go1.24.13
 
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.6.6
-	github.com/wicanr2/golden-box-remake-engine v0.0.0-20260823042554-f1beb0cc2505
+	github.com/wicanr2/golden-box-remake-engine v0.0.0-20260823050005-cc1470302ded
 	golang.org/x/image v0.12.0
 	golang.org/x/text v0.13.0
 )

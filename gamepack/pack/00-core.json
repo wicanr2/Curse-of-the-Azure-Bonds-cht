@@ -2226,6 +2226,37 @@
       ],
       "context": "pc98-character-creation",
       "track_id": "pc98-bgm-selector-02"
+    },
+    {
+      "ecl_blocks": [
+        1,
+        2,
+        3,
+        4,
+        16,
+        17,
+        18,
+        21,
+        32,
+        33,
+        34,
+        35,
+        37,
+        48,
+        49,
+        50,
+        51,
+        53,
+        64,
+        66,
+        67,
+        69,
+        80,
+        81,
+        82
+      ],
+      "context": "pc98-combat-dungeon-two",
+      "track_id": "pc98-bgm-selector-0b"
     }
   ],
   "music_cues": [
@@ -2246,6 +2277,38 @@
       "signal": "picture",
       "value": 121,
       "context": "pc98-world-navigation"
+    },
+    {
+      "ecl_blocks": [
+        1,
+        2,
+        3,
+        4,
+        16,
+        17,
+        18,
+        21,
+        32,
+        33,
+        34,
+        35,
+        37,
+        48,
+        49,
+        50,
+        51,
+        53,
+        64,
+        66,
+        67,
+        69,
+        80,
+        81,
+        82
+      ],
+      "signal": "monster_set",
+      "value": 71,
+      "context": "pc98-combat-dungeon-two"
     }
   ],
   "combat_modifiers": [

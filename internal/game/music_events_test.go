@@ -8,6 +8,7 @@ import (
 
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
@@ -375,50 +376,36 @@ func TestEveryECLBlockHasCombatMusic(t *testing.T) {
 	}
 }
 
-// ⚠ 這條釘的是**別人家的限制，而且這一次是真的**。原作的戰鬥曲有兩首，靠
-// `LOADMONNUM` 分岔：
+// TestMonsterSetCueSelectsTheDungeonTwoCombatTrack 釘住 `47h` 那個分岔真的接上了。
 //
-//	cmp byte [LOADMONNUM], 47h
-//	jnz  →  MSCPLAY(07h) 戰鬥
-//	        MSCPLAY(0Bh) 地城二
+// ★ 原作的 `INITCOMBAT`（COMPREP，`overlay-10:1D8Dh`）是
+// `cmp byte [LOADMONNUM], 47h` / `jnz`：相等時把曲目 `0Bh` 推給 `MSCPLAY`，
+// 否則推 `07h`。**它不看場景**——戰鬥曲是由怪物組決定的（spec 1192）。
 //
-// 共用 engine 的 music cue 目前只收 `picture` 這一種 signal，所以那個分岔在 pack
-// 裡表達不出來，現在所有戰鬥都放「戰鬥」那一首。
-//
-// ⚠ 和先前那條「停音樂被 engine 擋住」的差別要記住：那次是**把停止誤當成劇情
-// 資料**，原作根本沒有那種資料，所以卡點是假的。這次原作明明白白寫著那個 `47h`。
-// 下結論說「被別人擋住」之前，先確認原作真的有那個形狀。
-func TestEnginePackCannotExpressMonsterSetCueYet(t *testing.T) {
-	parts := map[string][]byte{"00-core.json": []byte(`{
-	  "schema_version": 1,
-	  "id": "monster-set-cue-test",
-	  "default_locale": "en",
-	  "locales": {"en": {"monster-set-cue-test.noop": "noop"}},
-	  "music_tracks": [
-	    {"id": "t1", "source_platform": "pc-9801", "reference_selector": 1, "driver_index": 0}
-	  ],
-	  "music_bindings": [
-	    {"ecl_blocks": [1], "track_id": "t1"},
-	    {"ecl_blocks": [1], "context": "combat-two", "track_id": "t1"}
-	  ],
-	  "music_cues": [
-	    {"ecl_blocks": [1], "signal": "monster_set", "value": 71, "context": "combat-two"}
-	  ]
-	}`)}
-	_, err := goldenbox.LoadPackPartsFS(
-		func(name string) ([]byte, error) { return parts[name], nil },
-		[]string{"00-core.json"})
-	if err == nil {
-		t.Fatal("engine 收得下 `monster_set` cue 了：把 `47h` 那個分岔補進 game-pack，" +
-			"讓地城二的戰鬥放它自己的曲子（spec 1192）")
+// ⚠ 是 `jnz`，也就是**恰好相等**才換曲，不是「大於等於」。
+func TestMonsterSetCueSelectsTheDungeonTwoCombatTrack(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
 	}
-	if !strings.Contains(err.Error(), "unsupported signal") {
-		t.Fatalf("擋下來的理由變了：%v", err)
+	blocks := 0
+	for _, binding := range pack.MusicBindings {
+		if binding.Context == "pc98-combat-dungeon-two" {
+			blocks = len(binding.ECLBlocks)
+		}
+	}
+	if blocks == 0 {
+		t.Fatal("game pack 沒有 `pc98-combat-dungeon-two` 的曲目綁定")
+	}
+	cue, ok := pack.FindMusicCue(1, "monster_set", 0x47)
+	if !ok || cue.Context != "pc98-combat-dungeon-two" {
+		t.Fatalf("怪物組 47h 的 cue ＝ %+v（有 %v），預期 `pc98-combat-dungeon-two`", cue, ok)
+	}
+	if _, ok := pack.FindMusicCue(1, "monster_set", 0x46); ok {
+		t.Error("怪物組 46h 也匹配到了：原作是 `jnz`，恰好相等才換曲")
 	}
 }
 
-// ★ 事件驅動的換曲點：開場與角色建立。兩處原作都**不看場景**（各自寫 `MUSICNO`
-// 之後派曲），所以 remake 用每一段都列的 `context` binding 表達。
 func TestTitleAndCreationHaveTheirOwnMusic(t *testing.T) {
 	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{0x01: {}}, 0x01)
 	if got := state.ConsumeMusicEvents(); len(got) != 0 {

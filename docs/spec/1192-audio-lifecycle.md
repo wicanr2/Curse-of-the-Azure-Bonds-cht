@@ -149,13 +149,41 @@ CTRL S : Toggles sound on and off (may be used at any time).
 | 模組 | 位移 | 事件 | 曲目 | remake |
 |---|---|---|---|---|
 | `overlay-10` COMPREP | `1DA1h` | **開戰** | 7 戰鬥 | ✅ `context: "pc98-combat"` |
-| `overlay-10` COMPREP | `1D97h` | 開戰且 `LOADMONNUM == 47h` | 11 地城二 | — engine 擋住（見下）|
+| `overlay-10` COMPREP | `1D97h` | 開戰且 `LOADMONNUM == 47h` | 11 地城二 | ✅ `signal: "monster_set"` cue |
 | `overlay-01` | `093Ch` | **開場** | 1 標題 | ✅ `context: "pc98-title"` |
 | `overlay-17` GEN | `0B08h` | **角色建立** | 2 | ✅ `context: "pc98-character-creation"` |
 | `overlay-05` | `1955h` | 戰後回文字選單 | 2 | — remake 沒有這個畫面（見下）|
 | `overlay-18` | `168Dh` | 結局 | 10 結局 | — remake 沒有這個狀態 |
 
-⇒ 13 個換曲點裡 **10 個接上了**（7 個查表 ＋ 開戰、開場、角色建立）。
+⇒ 13 個換曲點裡 **11 個接上了**（7 個查表 ＋ 開戰、開戰的 `47h` 分岔、開場、
+角色建立）。剩下兩個是 remake 沒有那個畫面／狀態（戰後文字選單、結局）。
+
+### 開戰的 `47h` 分岔（第 750 輪接上）
+
+`INITCOMBAT` 在 `overlay-10:1D8Dh` 分岔：
+
+```
+1D8D  cmp byte [8BE2h], 47h      ; LOADMONNUM
+1D92  jnz  1D9Eh
+1D94  mov  al, 0Bh               ; 11 地城二
+1D96  push ax
+1D97  call far 0893:0114         ; MSCPLAY
+1D9C  jmp  1DA6h
+1D9E  mov  al, 07h               ; 7 戰鬥
+1DA0  push ax
+1DA1  call far 0893:0114
+```
+
+⚠ 是 `jnz`——**恰好等於 `47h`** 才換曲，不是「大於等於」。
+
+共用 engine 先前只收 `signal: "picture"` 的 cue，所以這一條表達不出來。
+第 750 輪把 `monster_set` 加進那張白名單：**引擎仍然不賦予 `71` 任何意義**，
+白名單的用途是讓打錯字在載入時就大聲失敗——一個從來不觸發的 cue，看起來與
+「這個場景本來就沿用上一首」完全一樣，不會有任何錯誤訊息。
+
+game pack 這一側是一條 binding（`pc98-combat-dungeon-two` → 曲目 11，25 段全列）
+加一條 cue（`monster_set` ＝ `47h`）。`requestCombatMusic` 本來就會先查 cue、
+查不到才用 `pc98-combat`，所以遊戲這一側不用改。
 
 ### 開戰換曲
 
