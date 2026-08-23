@@ -46,7 +46,7 @@ Caveats: this is the denominator for the **renderer**, not for content, and not 
 
 | item | value |
 |---|---:|
-| captured screens in `index.tsv` | 766 |
+| captured screens in `index.tsv` | 762 |
 | captures that map to no standable cell | 0 |
 | **distinct signatures covered** | **382 / 585** |
 
@@ -103,12 +103,12 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | 45 | `original.geo3.block-10` | 3 | `0x10` | `(3,13)` | 1 | 138 |
 | 46 | `original.geo3.block-10` | 3 | `0x10` | `(3,14)` | 1 | 137 |
 | 47 | `original.geo3.block-10` | 3 | `0x10` | `(7,15)` | 1 | 136 |
-| 48 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(10,1)` | 1 | 135 |
+| 48 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(10,1)` | 1 | 135 |
 | 49 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(13,1)` | 1 | 134 |
-| 50 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(10,3)` | 1 | 133 |
-| 51 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(13,3)` | 1 | 132 |
-| 52 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(7,9)` | 1 | 131 |
-| 53 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(12,15)` | 1 | 130 |
+| 50 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(10,3)` | 1 | 133 |
+| 51 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(13,3)` | 1 | 132 |
+| 52 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(7,9)` | 1 | 131 |
+| 53 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,15)` | 1 | 130 |
 | 54 | `original.geo3.block-15` | 3 | `0x15` | `(3,0)` | 1 | 129 |
 | 55 | `original.geo3.block-15` | 3 | `0x15` | `(14,1)` | 1 | 128 |
 | 56 | `original.geo3.block-15` | 3 | `0x15` | `(7,2)` | 1 | 127 |

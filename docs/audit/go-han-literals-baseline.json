@@ -8306,6 +8306,13 @@
     {
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
+      "sha256": "02ec25083533b083b27c2992d5213bad03607a2cde9213a19ab7b8d1ec73d7a4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
       "sha256": "07c6e0c180e1dff8732aaf4f37ec23630678355b2da1d1c6a9ed3ea21d3d101b",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -8341,6 +8348,13 @@
     {
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
+      "sha256": "192b449ff84ac123f29f9abf3568914abea575b6cf5e297a29a9f480eafed84b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
       "sha256": "1a332a3387a0145735a79a84c408d421e770950f194a85e1b659d9dad2fa0f0c",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -8356,6 +8370,13 @@
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
       "sha256": "2772b583a21f4c688e670a3707be416937bc9f0625bd5cf58603cbf83bf7b52e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
+      "sha256": "2be47f1e1b6640d74f46d79fd159296f5abdb1b68a4e038f498e868e5440671c",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -8404,6 +8425,27 @@
     {
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
+      "sha256": "398631ba031590fa483cfe9bdaede9a60356140f1e3039b2173bf32f1c3cace8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
+      "sha256": "39c330dd9df713c39d1dddae82e3de9d7c17eedd76ae708dcf325a37d2255374",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
+      "sha256": "3f1673ee4f58ca55c32846d2df8df88c4bfe1f3fb4ab68c7d9a30caf1c850f19",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
       "sha256": "401dbe4b35a16d7f67ecee2d2ac4d2b807680f89659412bbc3e27a22686eead3",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -8432,6 +8474,13 @@
     {
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
+      "sha256": "49885adebe8fe33ecf6522de6cb0ab4bb0ab0b1e306664590d39fb38a892e667",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
       "sha256": "5198002eaba720f743091db657bc74023af52ae4ca571e9a3c5657ff63370b75",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -8447,6 +8496,13 @@
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
       "sha256": "54f42cb556f8139a418c9941ab80a4a72b766615b1ce2a962d8e16d9fb2b6720",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
+      "sha256": "574f2a56da72bb131fa1d3e2562d2c6092c927fb3cf5b6a1b0370b9dcc932528",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -8523,6 +8579,13 @@
     {
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
+      "sha256": "7cd06265c23bcbf132c557fa779259d69ed338a10908fd81c2b73c4d65e1ea52",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
       "sha256": "81c9c51d28620b1bec75a751ea42bbe4f647336a60cbff6c348121ac480de580",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -8586,6 +8649,13 @@
     {
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
+      "sha256": "9caf0e04a334c434a6dddb76686d87c3cf8f808587bb92a3193c9b51e95d69cf",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
       "sha256": "9ee0225ba47242bd0c6ad513ce86bc0f71e5767c12384f470b96982df9f7103f",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -8621,7 +8691,21 @@
     {
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
+      "sha256": "acaff94b123b2411a9423a5138383354196ec4d0a64a826ffcfc03be4803d592",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
       "sha256": "ad19403087ca9bbdf735d6529940333064a4b80e554e5d90db8a58ca4c0b911b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
+      "sha256": "b0fae69041c533eabf29d47b19d8d05f6076b3dfb0057f182a1d05a2ca75050b",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -8643,6 +8727,13 @@
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
       "sha256": "b8c8ccdb862e9e90301d2a94420e9ed53a6418baaf78c24c6d7ff600b26daa0a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
+      "sha256": "c076a2b3ac95c7ace98c0caf06a7415ef7938a219d44de804808edc1c53b9a39",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -8671,6 +8762,13 @@
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
       "sha256": "c8d9d8bf2e80fe5f96a59d868f930e24c00d3fbc3db717781e4f4582ddef461e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
+      "sha256": "cc4c458d86e138a67a94d682cc25ea4098d4ea84921f61787d8114645f5b8bc6",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -8748,6 +8846,13 @@
       "path": "cmd/pc98-music-triggers/main.go",
       "function": "main",
       "sha256": "eae01ecdd928afd9c86cd1c4a1f3d898b79547ace13fd602c09dc534243ed395",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/pc98-music-triggers/main.go",
+      "function": "main",
+      "sha256": "f8f56cd24f2e895bf707311aa82f00ae36156a011ceb5279120e15f5540317b6",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

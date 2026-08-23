@@ -137,6 +137,21 @@
 | WHISTLEFX（哨音） | `overlay-13` | `2BB4h` | **SHOWARROW**＋142h |
 | WHISTLEFX（哨音） | `overlay-13` | `2C01h` | **SHOWARROW**＋18Fh |
 
+### 戰鬥進行中會不會換曲
+
+打起來之後跑的是 `overlay-08` COMBAT、`overlay-13` COMSTUFF、`overlay-32` TACMAP。這幾個模組裡：
+
+| | 處 |
+|---|---:|
+| `MSCPLAY`（換曲）| **0** |
+| `SOUNDFX`（音效）| 12 |
+
+⇒ **原作在戰鬥進行中不換曲**：曲子在 `INITCOMBAT`（COMPREP，開打之前）選定，整場戰鬥只有音效。「戰鬥 phase 的音樂同步」在原作裡**不存在**，不是 remake 還沒做。
+
+★ 那個 0 有正對照：**同一次掃描**在這幾個模組裡找到 12 處 `SOUNDFX` ⇒ 掃描面涵蓋得到它們，0 是原作的 0、不是掃描的假零。
+
+⚠ `MSCSTOP` 也只有常駐那一處（玩家關音樂）⇒ 戰鬥中也不會停曲。
+
 ★ **交叉印證**：兩次獨立的掃描——換曲點（資料格寫入／推給 `MSCPLAY` 的立即數）與 `MSCPLAY` 的呼叫點——有 **5** 個模組重合：overlay-01、overlay-05、overlay-10、overlay-17、overlay-18。
 
 ⚠ 這一節是**位元組直掃**，涵蓋常駐與全部 overlay。改用直掃之前走的是 far-call 對照表，`SOUNDFX` 少 18 處、`MSCPLAY` 少 2 處（少掉的正是 `COMPREP` 那兩處戰鬥音樂），而**下界看起來和全集一樣合理**。

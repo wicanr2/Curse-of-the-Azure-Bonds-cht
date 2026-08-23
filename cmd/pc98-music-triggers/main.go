@@ -324,6 +324,51 @@ func main() {
 				fmt.Fprintf(&report, "\n")
 			}
 		}
+		// ★ **「戰鬥進行中會不會換曲」是這張表答得出來的問題**，而且答案是不會。
+		// 一定要配正對照才算數：同一次掃描在戰鬥模組裡找得到 `SOUNDFX`，
+		// 所以掃描面涵蓋得到那幾個 overlay——0 是原作的 0，不是掃描的假零。
+		{
+			const mscplay = 0x0114
+			combat := map[string]string{
+				"overlay-08": "COMBAT", "overlay-13": "COMSTUFF", "overlay-32": "TACMAP",
+			}
+			music, effects := 0, 0
+			for module, count := range routines[mscplay] {
+				if _, ok := combat[module]; ok {
+					music += count
+				}
+			}
+			for _, site := range sites {
+				if _, ok := combat[site.module]; ok {
+					effects++
+				}
+			}
+			names := make([]string, 0, len(combat))
+			for module, unit := range combat {
+				names = append(names, fmt.Sprintf("`%s` %s", module, unit))
+			}
+			sort.Strings(names)
+			fmt.Fprintf(&report, "### 戰鬥進行中會不會換曲\n\n")
+			fmt.Fprintf(&report, "打起來之後跑的是 %s。這幾個模組裡：\n\n", strings.Join(names, "、"))
+			fmt.Fprintf(&report, "| | 處 |\n|---|---:|\n")
+			fmt.Fprintf(&report, "| `MSCPLAY`（換曲）| **%d** |\n", music)
+			fmt.Fprintf(&report, "| `SOUNDFX`（音效）| %d |\n\n", effects)
+			switch {
+			case music == 0 && effects > 0:
+				fmt.Fprintf(&report, "⇒ **原作在戰鬥進行中不換曲**：曲子在 `INITCOMBAT`"+
+					"（COMPREP，開打之前）選定，整場戰鬥只有音效。"+
+					"「戰鬥 phase 的音樂同步」在原作裡**不存在**，不是 remake 還沒做。\n\n")
+				fmt.Fprintf(&report, "★ 那個 0 有正對照：**同一次掃描**在這幾個模組裡找到 %d 處 "+
+					"`SOUNDFX` ⇒ 掃描面涵蓋得到它們，0 是原作的 0、不是掃描的假零。\n\n", effects)
+			case music > 0:
+				fmt.Fprintf(&report, "⇒ 戰鬥模組裡有 %d 處換曲，要逐處判定是哪一個 phase。\n\n", music)
+			default:
+				fmt.Fprintf(&report, "⚠ 這幾個模組裡連 `SOUNDFX` 都是 0 ⇒ **掃描面沒有涵蓋到它們**，"+
+					"這個 0 不能讀成「原作不換曲」。\n\n")
+			}
+			fmt.Fprintf(&report, "⚠ `MSCSTOP` 也只有常駐那一處（玩家關音樂）"+
+				"⇒ 戰鬥中也不會停曲。\n\n")
+		}
 		// ★ 交叉印證要**算出來**，不能寫死。 兩次獨立的掃描（換曲點 vs
 		// `MSCPLAY` 呼叫點）指到哪些模組是資料，寫死的話資料變了句子不會變——
 		// 這一句原本寫著「正好落在那五個改寫 `MUSICNO` 的 overlay 上」，

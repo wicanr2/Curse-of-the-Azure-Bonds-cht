@@ -157,6 +157,23 @@ CTRL S : Toggles sound on and off (may be used at any time).
 
 ⇒ 13 個換曲點**全部接上了**。
 
+### 戰鬥進行中不換曲（第 751 輪）
+
+打起來之後跑的是 `overlay-08` COMBAT、`overlay-13` COMSTUFF、`overlay-32`
+TACMAP。位元組直掃這三個模組：**`MSCPLAY` 0 處、`SOUNDFX` 12 處**
+（`cmd/pc98-music-triggers`）。`MSCSTOP` 也只有常駐那一處（玩家關音樂）。
+
+⇒ **曲子在 `INITCOMBAT`（COMPREP，開打之前）選定，整場戰鬥只有音效。**
+「戰鬥 phase 的音樂同步」在原作裡**不存在**，不是 remake 還沒做。
+
+★ 那個 0 有正對照：**同一次掃描**在這三個模組裡找到 12 處 `SOUNDFX` ⇒
+掃描面涵蓋得到它們，0 是原作的 0、不是掃描的假零。這一段由工具算出來寫進
+報表，模組清單改了數字會跟著改。
+
+⇒ remake 這一側要做的只有**戰鬥結束換回場景曲**（`finishCombat()` 的
+`restoreSceneMusic()`，全滅那一條改走 `pc98-party-wipe`），戰鬥中不需要任何
+同步。
+
 ### 結局那一首（第 751 輪）
 
 PC-98 `overlay-18:167Eh` 那一支就是結局過場，換曲寫在結局文字的**正上方**：
