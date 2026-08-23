@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"image"
 	"image/color"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -616,4 +618,118 @@ func TestWallSymbolSegmentIsChosenByTheIDNotTheRecord(t *testing.T) {
 				item.id, segment, index, item.segment, item.index)
 		}
 	}
+}
+
+// hasWideRunes 判斷這串字是不是全形（CJK）為主。
+func hasWideRunes(value string) bool {
+	for _, r := range value {
+		if r >= 0x2E80 {
+			return true
+		}
+	}
+	return false
+}
+
+// eventMessageBox 是 `ModeEvent` 那個訊息框的尺寸：
+// `drawWrappedText(..., 22, 32, 5, ...)` ⇒ 一行 22 個字、最多 5 行。
+const (
+	eventMessageRunes    = 22
+	eventMessageMaxLines = 5
+)
+
+// ★ 原作在七則劇情文字中間有**硬換行造成的空行**（`33h PRINT RETURN` 連著兩條，
+// spec 1147／`docs/audit/ecl-print-return.md`）。譯文補上那個空行之後，多推的
+// 那一列可能把後面的字擠出訊息框——而 `wrapTextLines` 是**直接截掉**的，
+// 截掉不會報錯，畫面上只是少一句話。
+//
+// ⚠ 這條測的是**版面容不容得下**，不是譯文對不對。
+func TestBlankLineMessagesStillFitTheEventBox(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// ⚠ **清單不是手寫的。** 它來自 `cmd/ecl-print-return-audit` 的報表：哪幾頁
+	// 有玩家看得到的空行是**掃出來的**，手寫的清單不會在原作多出一處時長大。
+	ids := visibleBlankLineRules(t)
+	if len(ids) == 0 {
+		t.Fatal("報表裡一處看得見的空行都沒有，清單抓錯了")
+	}
+	for _, language := range []string{"zh-TW", "en"} {
+		messages, ok := pack.Locales[language]
+		if !ok {
+			t.Fatalf("game pack 沒有 %s 語系", language)
+		}
+		for _, id := range ids {
+			message := messages[id]
+			if message == "" {
+				t.Errorf("%s／%s 沒有譯文", language, id)
+				continue
+			}
+			if !strings.Contains(message, "\n\n") {
+				t.Errorf("%s／%s 少了那個空行", language, id)
+			}
+			// ⚠ **行寬要按字寬算，不是按字數。** 真正的繪製走
+			// `wrapTextLinesByWidth(值, face, 22 × 全形字寬, ...)`，所以半形的
+			// 英文一行放得下約兩倍的字。拿 22 去量英文會**高估一倍行數**，
+			// 得到「英文全部爆框」這個假結論。
+			budget := eventMessageRunes
+			if !hasWideRunes(message) {
+				budget *= 2
+			}
+			lines := wrapTextLines(message, budget, 99)
+			if len(lines) > eventMessageMaxLines {
+				t.Errorf("%s／%s 佔 %d 行，訊息框只有 %d 行 ⇒ 會被截掉：\n%s",
+					language, id, len(lines), eventMessageMaxLines,
+					strings.Join(lines, "\n"))
+			}
+		}
+	}
+}
+
+// ★ 空行是靠 `\n\n` 產生的：兩個換行之間是一個**空段落**，而兩支換行工具都
+// 把空段落收成一列空字串。這一條釘住那個前提——沒有它，上面那條「容不容得下」
+// 測的就是一件不會發生的事。
+func TestDoubleNewlineProducesABlankLine(t *testing.T) {
+	got := wrapTextLines("上一句\n\n下一句", 8, 9)
+	want := []string{"上一句", "", "下一句"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("wrapTextLines()=%q，want %q", got, want)
+	}
+
+	face := basicfont.Face7x13
+	cell := font.MeasureString(face, "A").Ceil()
+	byWidth := wrapTextLinesByWidth("AB\n\nCD", face, cell*4, 9)
+	if !reflect.DeepEqual(byWidth, []string{"AB", "", "CD"}) {
+		t.Fatalf("wrapTextLinesByWidth()=%q，want [AB \"\" CD]", byWidth)
+	}
+}
+
+// visibleBlankLineRules 讀 `cmd/ecl-print-return-audit` 的 JSON，取出「兩側文字
+// 落在同一顯示頁」的那幾段空行對應的 `text_rule`。
+//
+// ⚠ 報表不在就跳過：這條測的是內容，不是「有沒有跑過那支工具」。
+func visibleBlankLineRules(t *testing.T) []string {
+	t.Helper()
+	raw, err := os.ReadFile("../../docs/audit/ecl-print-return.json")
+	if err != nil {
+		t.Skipf("讀不到硬換行報表：%v", err)
+	}
+	var parsed struct {
+		Visible []struct {
+			Rule string `json:"rule_id"`
+		} `json:"visible_blank_runs"`
+	}
+	if err := json.Unmarshal(raw, &parsed); err != nil {
+		t.Fatalf("硬換行報表解不開：%v", err)
+	}
+	seen := map[string]bool{}
+	ids := make([]string, 0, len(parsed.Visible))
+	for _, item := range parsed.Visible {
+		if item.Rule == "" || seen[item.Rule] {
+			continue
+		}
+		seen[item.Rule] = true
+		ids = append(ids, item.Rule)
+	}
+	return ids
 }

@@ -1,0 +1,70 @@
+{
+  "instructions": 120,
+  "runs": 110,
+  "blank_runs": 10,
+  "visible_blank_runs": [
+    {
+      "member": 3,
+      "block": 16,
+      "offset": 2817,
+      "run": 2,
+      "rule_id": "yulash.commander-business",
+      "before_text": "BUSINESS IN YULASH.",
+      "after_text": "HOW DO YOU RESPOND?"
+    },
+    {
+      "member": 3,
+      "block": 17,
+      "offset": 971,
+      "run": 2,
+      "rule_id": "pit.alias-leaves",
+      "before_text": "WE MUST LEAVE YOU NOW.",
+      "after_text": "ALIAS THANKS YOU FOR YOUR HELP.  SHE WISHES YOU"
+    },
+    {
+      "member": 3,
+      "block": 18,
+      "offset": 4045,
+      "run": 2,
+      "rule_id": "pit.its-your-dead-body",
+      "before_text": "OK, IT'S YOUR DEAD BODY.",
+      "after_text": "ALIAS AND DRAGONBAIT LEAVE."
+    },
+    {
+      "member": 4,
+      "block": 32,
+      "offset": 1035,
+      "run": 2,
+      "rule_id": "zhentil.sign.gorge-and-grog",
+      "before_text": "THE GORGE AND GROG SHOP",
+      "after_text": "ARENA COMBAT BETTING"
+    },
+    {
+      "member": 4,
+      "block": 32,
+      "offset": 3887,
+      "run": 2,
+      "rule_id": "zhentil.fritz-accusation",
+      "before_text": "'YOU KILLED FRITZ!'",
+      "after_text": "HE STARTS GRUNTING INCOHERANTLY AND PUSHING HIMSELF DOWN"
+    },
+    {
+      "member": 4,
+      "block": 33,
+      "offset": 3514,
+      "run": 2,
+      "rule_id": "zhentil.temple.door-below-altar",
+      "before_text": "YOU NOTICE A SMALL DOOR BELOW THE ALTAR.",
+      "after_text": "WHAT DO YOU DO?"
+    },
+    {
+      "member": 4,
+      "block": 34,
+      "offset": 5028,
+      "run": 2,
+      "rule_id": "dexam.departure.dimswart",
+      "before_text": "HAS SOME QUESTIONS FOR YOU.'",
+      "after_text": "OLIVE AND DIMSWART LEAVE."
+    }
+  ]
+}

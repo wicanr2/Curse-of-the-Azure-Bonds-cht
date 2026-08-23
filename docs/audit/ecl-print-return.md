@@ -10,18 +10,20 @@
 
 ⇒ 有 10 個段落會空行。那幾處 remake 目前會把空行擠掉。
 
-| ECL/區塊 | 位移 | 連續幾條 | 位元組上的前一條 | 後一條 |
-|---|---:|---:|---|---|
-| ECL2/0x01 | `1D6Dh` | 2 | PRINTCLEAR | PRINT |
-| ECL2/0x02 | `0CD4h` | 2 | EXIT | PRINT |
-| ECL3/0x10 | `09EEh` | 2 | PRINT | GOSUB |
-| ECL3/0x10 | `0B01h` | 2 | PRINT | PRINT |
-| ECL3/0x11 | `03CBh` | 2 | PRINTCLEAR | PRINT |
-| ECL3/0x12 | `0FCDh` | 2 | PRINTCLEAR | PRINT |
-| ECL4/0x20 | `040Bh` | 2 | PRINTCLEAR | PRINT |
-| ECL4/0x20 | `0F2Fh` | 2 | PRINTCLEAR | PRINT |
-| ECL4/0x21 | `0DBAh` | 2 | PRINTCLEAR | PRINT |
-| ECL4/0x22 | `13A4h` | 2 | PRINT | PRINT |
+其中 **7 段**兩側的文字都落在**同一個顯示頁**裡 ⇒ 玩家真的看得到那個留白；其餘落在頁緣或是被跳進來的，兩側對不上同一頁。
+
+| ECL/區塊 | 位移 | 連續幾條 | 位元組上的前一條 | 後一條 | 同一頁 | 該頁的 `text_rule` |
+|---|---:|---:|---|---|---|---|
+| ECL2/0x01 | `1D6Dh` | 2 | PRINTCLEAR | PRINT | — | — |
+| ECL2/0x02 | `0CD4h` | 2 | EXIT | PRINT | — | tilverton.guild-halfling |
+| ECL3/0x10 | `09EEh` | 2 | PRINT | GOSUB | — | prompt.what-do-you-do |
+| ECL3/0x10 | `0B01h` | 2 | PRINT | PRINT | ✅ | yulash.commander-business |
+| ECL3/0x11 | `03CBh` | 2 | PRINTCLEAR | PRINT | ✅ | pit.alias-leaves |
+| ECL3/0x12 | `0FCDh` | 2 | PRINTCLEAR | PRINT | ✅ | pit.its-your-dead-body |
+| ECL4/0x20 | `040Bh` | 2 | PRINTCLEAR | PRINT | ✅ | zhentil.sign.gorge-and-grog |
+| ECL4/0x20 | `0F2Fh` | 2 | PRINTCLEAR | PRINT | ✅ | zhentil.fritz-accusation |
+| ECL4/0x21 | `0DBAh` | 2 | PRINTCLEAR | PRINT | ✅ | zhentil.temple.door-below-altar |
+| ECL4/0x22 | `13A4h` | 2 | PRINT | PRINT | ✅ | dexam.departure.dimswart |
 
 空行落在哪兩句之間（位元組上最近的兩段文字）：
 

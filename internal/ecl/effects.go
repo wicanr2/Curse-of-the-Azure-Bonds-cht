@@ -98,7 +98,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x30: {EffectDone, "位元運算"},
 	0x31: {EffectDone, "關掉畫面上的怪物圖示；同一次執行又要求新畫面時以新的為準（原作也是先關再畫）"},
 	0x32: {EffectDone, "FIND ITEM"},
-	0x33: {EffectPartial, "原作 2CEAh 整支 14 條讀完（spec 1147）：欄 65A0h := 1、列 65A1h ＋1，兩個分支對游標做的事一樣（8B61h 只決定要不要順手清）。所以它是硬換行——連續兩條會空一行。remake 只記指令邊界（PrintReturnCount），沒有游標模型。★ 缺口已經量出來了（cmd/ecl-print-return-audit，spec 1147）：走得到的 33h 共 120 條、110 個換行段落，其中 10 段連著兩條會空行，而 7 段兩側的文字落在同一個顯示頁裡 ⇒ 玩家看得到。那 7 頁全部由 game pack 的 text_rule 服務，顯示的是譯文而不是把原文 join 起來的結果，而 UI 的 wrapTextLines 本來就把 \n 當段落切 ⇒ **要補的是那七則譯文的版面，不是 ECL VM 也不是行模型**。⚠ 訊息框有 maxLines 上限，多推一列可能截掉後文，要配截圖驗收"},
+	0x33: {EffectPartial, "原作 2CEAh 整支 14 條讀完（spec 1147）：欄 65A0h := 1、列 65A1h ＋1，兩個分支對游標做的事一樣（8B61h 只決定要不要順手清）。所以它是硬換行——連續兩條會空一行。remake 只記指令邊界（PrintReturnCount），沒有游標模型。★ 缺口已經量出來了（cmd/ecl-print-return-audit，spec 1147）：走得到的 33h 共 120 條、110 個換行段落，其中 10 段連著兩條會空行，而 7 段兩側的文字落在同一個顯示頁裡 ⇒ 玩家看得到。那 7 頁全部由 game pack 的 text_rule 服務，顯示的是譯文而不是把原文 join 起來的結果，而 UI 的 wrapTextLines 本來就把 \n 當段落切 ⇒ 要補的是那七則譯文的版面，不是 ECL VM 也不是行模型。★ 第 751 輪補完了：兩個語系各七則插 \n\n，位置照原作那兩條 33h 前後的段落切，並用三條回歸測試釘住（空段落真的會變成一列空字串、七則都還有空行、都沒超出訊息框的五列）；清單來自 docs/audit/ecl-print-return.json 不是手寫的 ⇒ 原作多出一處看得見的空行測試就會紅。⚠ 仍是 partial：VM 這一側還是沒有游標模型，原作的 65A0h/65A1h 只在譯文的版面上被反映出來"},
 	0x34: {EffectDone, "ECL CLOCK"},
 	0x35: {EffectDone, "SAVE TABLE"},
 	0x36: {EffectDone, "ADD NPC 建出隊員"},
