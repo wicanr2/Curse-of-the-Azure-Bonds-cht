@@ -7160,6 +7160,62 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/geo-raw-dump/main.go",
+      "function": "main",
+      "sha256": "2d534566a5fe20236a4df826afcbe9329fdf64f55c510bedf26012e74dc99359",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-raw-dump/main.go",
+      "function": "main",
+      "sha256": "637a28261eeaa0d196c306d7fa662d9ed44f8b49ce5aeea1f0bfd1523659a456",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-raw-dump/main.go",
+      "function": "main",
+      "sha256": "7aaf8dbad92fbd8f37ed2cd2ae6c573e21197a6327e46ddd7af62c64880620b6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-raw-dump/main.go",
+      "function": "main",
+      "sha256": "8c461f6368875395043df580fa9f3a9b940ea4d8a1c31cf5bddfa3b46ddbdab7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-raw-dump/main.go",
+      "function": "main",
+      "sha256": "a22d084f5c7dcab3531923eb9318187bd0e57249a856e34ae64d34e0118edb92",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-raw-dump/main.go",
+      "function": "main",
+      "sha256": "c1da405769bdfaf4a1a73ce3161f3dacf81c8618a5aea85421fe86a14af9028d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-raw-dump/main.go",
+      "function": "main",
+      "sha256": "e3d3f40d66aa63006ee5ea1d80dae91a2b410daa91a30f4a7cc9a9020b77153f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/geo-raw-dump/main.go",
+      "function": "main",
+      "sha256": "fcfd1061f25a06dac6220f36ba0edffe55a75d90580895d0988045071875a80f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/geo-wall-grid/main.go",
       "function": "main",
       "sha256": "79f855c8b433e9bf71b4236e4a173fdc48daa453fd017dfb8a76355503d8eb7f",
