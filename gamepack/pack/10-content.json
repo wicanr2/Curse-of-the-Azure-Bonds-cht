@@ -8924,18 +8924,872 @@
    "message_id": "world.tavern-tale-59"
   },
   {
-   "id": "world.tavern-tale-3",
+   "id": "world.tavern-tale-62.overheard",
    "all_contains": [
-    "YOU OVERHEAR TAVERN TALE 3"
+    "TAVERN TALE 62"
+   ],
+   "message_id": "world.tavern-tale-62"
+  },
+  {
+   "id": "world.tavern-tale-62.told",
+   "all_contains": [
+    "TAVERN TALE # 62"
+   ],
+   "message_id": "world.tavern-tale-62"
+  },
+  {
+   "id": "world.tavern-tale-61.overheard",
+   "all_contains": [
+    "TAVERN TALE 61"
+   ],
+   "message_id": "world.tavern-tale-61"
+  },
+  {
+   "id": "world.tavern-tale-61.told",
+   "all_contains": [
+    "TAVERN TALE # 61"
+   ],
+   "message_id": "world.tavern-tale-61"
+  },
+  {
+   "id": "world.tavern-tale-60.overheard",
+   "all_contains": [
+    "TAVERN TALE 60"
+   ],
+   "message_id": "essembra.tavern-tale-60"
+  },
+  {
+   "id": "world.tavern-tale-60.told",
+   "all_contains": [
+    "TAVERN TALE # 60"
+   ],
+   "message_id": "essembra.tavern-tale-60"
+  },
+  {
+   "id": "world.tavern-tale-59.overheard",
+   "all_contains": [
+    "TAVERN TALE 59"
+   ],
+   "message_id": "world.tavern-tale-59"
+  },
+  {
+   "id": "world.tavern-tale-59.told",
+   "all_contains": [
+    "TAVERN TALE # 59"
+   ],
+   "message_id": "world.tavern-tale-59"
+  },
+  {
+   "id": "world.tavern-tale-58.overheard",
+   "all_contains": [
+    "TAVERN TALE 58"
+   ],
+   "message_id": "world.tavern-tale-58"
+  },
+  {
+   "id": "world.tavern-tale-58.told",
+   "all_contains": [
+    "TAVERN TALE # 58"
+   ],
+   "message_id": "world.tavern-tale-58"
+  },
+  {
+   "id": "world.tavern-tale-57.overheard",
+   "all_contains": [
+    "TAVERN TALE 57"
+   ],
+   "message_id": "world.tavern-tale-57"
+  },
+  {
+   "id": "world.tavern-tale-57.told",
+   "all_contains": [
+    "TAVERN TALE # 57"
+   ],
+   "message_id": "world.tavern-tale-57"
+  },
+  {
+   "id": "world.tavern-tale-56.overheard",
+   "all_contains": [
+    "TAVERN TALE 56"
+   ],
+   "message_id": "world.tavern-tale-56"
+  },
+  {
+   "id": "world.tavern-tale-56.told",
+   "all_contains": [
+    "TAVERN TALE # 56"
+   ],
+   "message_id": "world.tavern-tale-56"
+  },
+  {
+   "id": "world.tavern-tale-55.overheard",
+   "all_contains": [
+    "TAVERN TALE 55"
+   ],
+   "message_id": "world.tavern-tale-55"
+  },
+  {
+   "id": "world.tavern-tale-55.told",
+   "all_contains": [
+    "TAVERN TALE # 55"
+   ],
+   "message_id": "world.tavern-tale-55"
+  },
+  {
+   "id": "world.tavern-tale-54.overheard",
+   "all_contains": [
+    "TAVERN TALE 54"
+   ],
+   "message_id": "world.tavern-tale-54"
+  },
+  {
+   "id": "world.tavern-tale-54.told",
+   "all_contains": [
+    "TAVERN TALE # 54"
+   ],
+   "message_id": "world.tavern-tale-54"
+  },
+  {
+   "id": "world.tavern-tale-53.overheard",
+   "all_contains": [
+    "TAVERN TALE 53"
+   ],
+   "message_id": "world.tavern-tale-53"
+  },
+  {
+   "id": "world.tavern-tale-53.told",
+   "all_contains": [
+    "TAVERN TALE # 53"
+   ],
+   "message_id": "world.tavern-tale-53"
+  },
+  {
+   "id": "world.tavern-tale-52.overheard",
+   "all_contains": [
+    "TAVERN TALE 52"
+   ],
+   "message_id": "world.tavern-tale-52"
+  },
+  {
+   "id": "world.tavern-tale-52.told",
+   "all_contains": [
+    "TAVERN TALE # 52"
+   ],
+   "message_id": "world.tavern-tale-52"
+  },
+  {
+   "id": "world.tavern-tale-51.overheard",
+   "all_contains": [
+    "TAVERN TALE 51"
+   ],
+   "message_id": "world.tavern-tale-51"
+  },
+  {
+   "id": "world.tavern-tale-51.told",
+   "all_contains": [
+    "TAVERN TALE # 51"
+   ],
+   "message_id": "world.tavern-tale-51"
+  },
+  {
+   "id": "world.tavern-tale-50.overheard",
+   "all_contains": [
+    "TAVERN TALE 50"
+   ],
+   "message_id": "world.tavern-tale-50"
+  },
+  {
+   "id": "world.tavern-tale-50.told",
+   "all_contains": [
+    "TAVERN TALE # 50"
+   ],
+   "message_id": "world.tavern-tale-50"
+  },
+  {
+   "id": "world.tavern-tale-49.overheard",
+   "all_contains": [
+    "TAVERN TALE 49"
+   ],
+   "message_id": "world.tavern-tale-49"
+  },
+  {
+   "id": "world.tavern-tale-49.told",
+   "all_contains": [
+    "TAVERN TALE # 49"
+   ],
+   "message_id": "world.tavern-tale-49"
+  },
+  {
+   "id": "world.tavern-tale-48.overheard",
+   "all_contains": [
+    "TAVERN TALE 48"
+   ],
+   "message_id": "world.tavern-tale-48"
+  },
+  {
+   "id": "world.tavern-tale-48.told",
+   "all_contains": [
+    "TAVERN TALE # 48"
+   ],
+   "message_id": "world.tavern-tale-48"
+  },
+  {
+   "id": "world.tavern-tale-47.overheard",
+   "all_contains": [
+    "TAVERN TALE 47"
+   ],
+   "message_id": "world.tavern-tale-47"
+  },
+  {
+   "id": "world.tavern-tale-47.told",
+   "all_contains": [
+    "TAVERN TALE # 47"
+   ],
+   "message_id": "world.tavern-tale-47"
+  },
+  {
+   "id": "world.tavern-tale-46.overheard",
+   "all_contains": [
+    "TAVERN TALE 46"
+   ],
+   "message_id": "world.tavern-tale-46"
+  },
+  {
+   "id": "world.tavern-tale-46.told",
+   "all_contains": [
+    "TAVERN TALE # 46"
+   ],
+   "message_id": "world.tavern-tale-46"
+  },
+  {
+   "id": "world.tavern-tale-45.overheard",
+   "all_contains": [
+    "TAVERN TALE 45"
+   ],
+   "message_id": "world.tavern-tale-45"
+  },
+  {
+   "id": "world.tavern-tale-45.told",
+   "all_contains": [
+    "TAVERN TALE # 45"
+   ],
+   "message_id": "world.tavern-tale-45"
+  },
+  {
+   "id": "world.tavern-tale-44.overheard",
+   "all_contains": [
+    "TAVERN TALE 44"
+   ],
+   "message_id": "essembra.tavern-tale-44"
+  },
+  {
+   "id": "world.tavern-tale-44.told",
+   "all_contains": [
+    "TAVERN TALE # 44"
+   ],
+   "message_id": "essembra.tavern-tale-44"
+  },
+  {
+   "id": "world.tavern-tale-43.overheard",
+   "all_contains": [
+    "TAVERN TALE 43"
+   ],
+   "message_id": "world.tavern-tale-43"
+  },
+  {
+   "id": "world.tavern-tale-43.told",
+   "all_contains": [
+    "TAVERN TALE # 43"
+   ],
+   "message_id": "world.tavern-tale-43"
+  },
+  {
+   "id": "world.tavern-tale-42.overheard",
+   "all_contains": [
+    "TAVERN TALE 42"
+   ],
+   "message_id": "world.tavern-tale-42"
+  },
+  {
+   "id": "world.tavern-tale-42.told",
+   "all_contains": [
+    "TAVERN TALE # 42"
+   ],
+   "message_id": "world.tavern-tale-42"
+  },
+  {
+   "id": "world.tavern-tale-41.overheard",
+   "all_contains": [
+    "TAVERN TALE 41"
+   ],
+   "message_id": "world.tavern-tale-41"
+  },
+  {
+   "id": "world.tavern-tale-41.told",
+   "all_contains": [
+    "TAVERN TALE # 41"
+   ],
+   "message_id": "world.tavern-tale-41"
+  },
+  {
+   "id": "world.tavern-tale-40.overheard",
+   "all_contains": [
+    "TAVERN TALE 40"
+   ],
+   "message_id": "world.tavern-tale-40"
+  },
+  {
+   "id": "world.tavern-tale-40.told",
+   "all_contains": [
+    "TAVERN TALE # 40"
+   ],
+   "message_id": "world.tavern-tale-40"
+  },
+  {
+   "id": "world.tavern-tale-39.overheard",
+   "all_contains": [
+    "TAVERN TALE 39"
+   ],
+   "message_id": "world.tavern-tale-39"
+  },
+  {
+   "id": "world.tavern-tale-39.told",
+   "all_contains": [
+    "TAVERN TALE # 39"
+   ],
+   "message_id": "world.tavern-tale-39"
+  },
+  {
+   "id": "world.tavern-tale-38.overheard",
+   "all_contains": [
+    "TAVERN TALE 38"
+   ],
+   "message_id": "world.tavern-tale-38"
+  },
+  {
+   "id": "world.tavern-tale-38.told",
+   "all_contains": [
+    "TAVERN TALE # 38"
+   ],
+   "message_id": "world.tavern-tale-38"
+  },
+  {
+   "id": "world.tavern-tale-37.overheard",
+   "all_contains": [
+    "TAVERN TALE 37"
+   ],
+   "message_id": "tilverton.tavern-tale-37"
+  },
+  {
+   "id": "world.tavern-tale-37.told",
+   "all_contains": [
+    "TAVERN TALE # 37"
+   ],
+   "message_id": "tilverton.tavern-tale-37"
+  },
+  {
+   "id": "world.tavern-tale-36.overheard",
+   "all_contains": [
+    "TAVERN TALE 36"
+   ],
+   "message_id": "world.tavern-tale-36"
+  },
+  {
+   "id": "world.tavern-tale-36.told",
+   "all_contains": [
+    "TAVERN TALE # 36"
+   ],
+   "message_id": "world.tavern-tale-36"
+  },
+  {
+   "id": "world.tavern-tale-35.overheard",
+   "all_contains": [
+    "TAVERN TALE 35"
+   ],
+   "message_id": "world.tavern-tale-35"
+  },
+  {
+   "id": "world.tavern-tale-35.told",
+   "all_contains": [
+    "TAVERN TALE # 35"
+   ],
+   "message_id": "world.tavern-tale-35"
+  },
+  {
+   "id": "world.tavern-tale-34.overheard",
+   "all_contains": [
+    "TAVERN TALE 34"
+   ],
+   "message_id": "world.tavern-tale-34"
+  },
+  {
+   "id": "world.tavern-tale-34.told",
+   "all_contains": [
+    "TAVERN TALE # 34"
+   ],
+   "message_id": "world.tavern-tale-34"
+  },
+  {
+   "id": "world.tavern-tale-33.overheard",
+   "all_contains": [
+    "TAVERN TALE 33"
+   ],
+   "message_id": "world.tavern-tale-33"
+  },
+  {
+   "id": "world.tavern-tale-33.told",
+   "all_contains": [
+    "TAVERN TALE # 33"
+   ],
+   "message_id": "world.tavern-tale-33"
+  },
+  {
+   "id": "world.tavern-tale-32.overheard",
+   "all_contains": [
+    "TAVERN TALE 32"
+   ],
+   "message_id": "world.tavern-tale-32"
+  },
+  {
+   "id": "world.tavern-tale-32.told",
+   "all_contains": [
+    "TAVERN TALE # 32"
+   ],
+   "message_id": "world.tavern-tale-32"
+  },
+  {
+   "id": "world.tavern-tale-31.overheard",
+   "all_contains": [
+    "TAVERN TALE 31"
+   ],
+   "message_id": "world.tavern-tale-31"
+  },
+  {
+   "id": "world.tavern-tale-31.told",
+   "all_contains": [
+    "TAVERN TALE # 31"
+   ],
+   "message_id": "world.tavern-tale-31"
+  },
+  {
+   "id": "world.tavern-tale-30.overheard",
+   "all_contains": [
+    "TAVERN TALE 30"
+   ],
+   "message_id": "world.tavern-tale-30"
+  },
+  {
+   "id": "world.tavern-tale-30.told",
+   "all_contains": [
+    "TAVERN TALE # 30"
+   ],
+   "message_id": "world.tavern-tale-30"
+  },
+  {
+   "id": "world.tavern-tale-29.overheard",
+   "all_contains": [
+    "TAVERN TALE 29"
+   ],
+   "message_id": "world.tavern-tale-29"
+  },
+  {
+   "id": "world.tavern-tale-29.told",
+   "all_contains": [
+    "TAVERN TALE # 29"
+   ],
+   "message_id": "world.tavern-tale-29"
+  },
+  {
+   "id": "world.tavern-tale-28.overheard",
+   "all_contains": [
+    "TAVERN TALE 28"
+   ],
+   "message_id": "ashabenford.tavern-tale-28"
+  },
+  {
+   "id": "world.tavern-tale-28.told",
+   "all_contains": [
+    "TAVERN TALE # 28"
+   ],
+   "message_id": "ashabenford.tavern-tale-28"
+  },
+  {
+   "id": "world.tavern-tale-27.overheard",
+   "all_contains": [
+    "TAVERN TALE 27"
+   ],
+   "message_id": "world.tavern-tale-27"
+  },
+  {
+   "id": "world.tavern-tale-27.told",
+   "all_contains": [
+    "TAVERN TALE # 27"
+   ],
+   "message_id": "world.tavern-tale-27"
+  },
+  {
+   "id": "world.tavern-tale-26.overheard",
+   "all_contains": [
+    "TAVERN TALE 26"
+   ],
+   "message_id": "world.tavern-tale-26"
+  },
+  {
+   "id": "world.tavern-tale-26.told",
+   "all_contains": [
+    "TAVERN TALE # 26"
+   ],
+   "message_id": "world.tavern-tale-26"
+  },
+  {
+   "id": "world.tavern-tale-25.overheard",
+   "all_contains": [
+    "TAVERN TALE 25"
+   ],
+   "message_id": "world.tavern-tale-25"
+  },
+  {
+   "id": "world.tavern-tale-25.told",
+   "all_contains": [
+    "TAVERN TALE # 25"
+   ],
+   "message_id": "world.tavern-tale-25"
+  },
+  {
+   "id": "world.tavern-tale-24.overheard",
+   "all_contains": [
+    "TAVERN TALE 24"
+   ],
+   "message_id": "world.tavern-tale-24"
+  },
+  {
+   "id": "world.tavern-tale-24.told",
+   "all_contains": [
+    "TAVERN TALE # 24"
+   ],
+   "message_id": "world.tavern-tale-24"
+  },
+  {
+   "id": "world.tavern-tale-23.overheard",
+   "all_contains": [
+    "TAVERN TALE 23"
+   ],
+   "message_id": "world.tavern-tale-23"
+  },
+  {
+   "id": "world.tavern-tale-23.told",
+   "all_contains": [
+    "TAVERN TALE # 23"
+   ],
+   "message_id": "world.tavern-tale-23"
+  },
+  {
+   "id": "world.tavern-tale-22.overheard",
+   "all_contains": [
+    "TAVERN TALE 22"
+   ],
+   "message_id": "world.tavern-tale-22"
+  },
+  {
+   "id": "world.tavern-tale-22.told",
+   "all_contains": [
+    "TAVERN TALE # 22"
+   ],
+   "message_id": "world.tavern-tale-22"
+  },
+  {
+   "id": "world.tavern-tale-21.overheard",
+   "all_contains": [
+    "TAVERN TALE 21"
+   ],
+   "message_id": "world.tavern-tale-21"
+  },
+  {
+   "id": "world.tavern-tale-21.told",
+   "all_contains": [
+    "TAVERN TALE # 21"
+   ],
+   "message_id": "world.tavern-tale-21"
+  },
+  {
+   "id": "world.tavern-tale-20.overheard",
+   "all_contains": [
+    "TAVERN TALE 20"
+   ],
+   "message_id": "world.tavern-tale-20"
+  },
+  {
+   "id": "world.tavern-tale-20.told",
+   "all_contains": [
+    "TAVERN TALE # 20"
+   ],
+   "message_id": "world.tavern-tale-20"
+  },
+  {
+   "id": "world.tavern-tale-19.overheard",
+   "all_contains": [
+    "TAVERN TALE 19"
+   ],
+   "message_id": "world.tavern-tale-19"
+  },
+  {
+   "id": "world.tavern-tale-19.told",
+   "all_contains": [
+    "TAVERN TALE # 19"
+   ],
+   "message_id": "world.tavern-tale-19"
+  },
+  {
+   "id": "world.tavern-tale-18.overheard",
+   "all_contains": [
+    "TAVERN TALE 18"
+   ],
+   "message_id": "world.tavern-tale-18"
+  },
+  {
+   "id": "world.tavern-tale-18.told",
+   "all_contains": [
+    "TAVERN TALE # 18"
+   ],
+   "message_id": "world.tavern-tale-18"
+  },
+  {
+   "id": "world.tavern-tale-17.overheard",
+   "all_contains": [
+    "TAVERN TALE 17"
+   ],
+   "message_id": "world.tavern-tale-17"
+  },
+  {
+   "id": "world.tavern-tale-17.told",
+   "all_contains": [
+    "TAVERN TALE # 17"
+   ],
+   "message_id": "world.tavern-tale-17"
+  },
+  {
+   "id": "world.tavern-tale-16.overheard",
+   "all_contains": [
+    "TAVERN TALE 16"
+   ],
+   "message_id": "world.tavern-tale-16"
+  },
+  {
+   "id": "world.tavern-tale-16.told",
+   "all_contains": [
+    "TAVERN TALE # 16"
+   ],
+   "message_id": "world.tavern-tale-16"
+  },
+  {
+   "id": "world.tavern-tale-15.overheard",
+   "all_contains": [
+    "TAVERN TALE 15"
+   ],
+   "message_id": "world.tavern-tale-15"
+  },
+  {
+   "id": "world.tavern-tale-15.told",
+   "all_contains": [
+    "TAVERN TALE # 15"
+   ],
+   "message_id": "world.tavern-tale-15"
+  },
+  {
+   "id": "world.tavern-tale-14.overheard",
+   "all_contains": [
+    "TAVERN TALE 14"
+   ],
+   "message_id": "world.tavern-tale-14"
+  },
+  {
+   "id": "world.tavern-tale-14.told",
+   "all_contains": [
+    "TAVERN TALE # 14"
+   ],
+   "message_id": "world.tavern-tale-14"
+  },
+  {
+   "id": "world.tavern-tale-13.overheard",
+   "all_contains": [
+    "TAVERN TALE 13"
+   ],
+   "message_id": "world.tavern-tale-13"
+  },
+  {
+   "id": "world.tavern-tale-13.told",
+   "all_contains": [
+    "TAVERN TALE # 13"
+   ],
+   "message_id": "world.tavern-tale-13"
+  },
+  {
+   "id": "world.tavern-tale-12.overheard",
+   "all_contains": [
+    "TAVERN TALE 12"
+   ],
+   "message_id": "world.tavern-tale-12"
+  },
+  {
+   "id": "world.tavern-tale-12.told",
+   "all_contains": [
+    "TAVERN TALE # 12"
+   ],
+   "message_id": "world.tavern-tale-12"
+  },
+  {
+   "id": "world.tavern-tale-11.overheard",
+   "all_contains": [
+    "TAVERN TALE 11"
+   ],
+   "message_id": "world.tavern-tale-11"
+  },
+  {
+   "id": "world.tavern-tale-11.told",
+   "all_contains": [
+    "TAVERN TALE # 11"
+   ],
+   "message_id": "world.tavern-tale-11"
+  },
+  {
+   "id": "world.tavern-tale-10.overheard",
+   "all_contains": [
+    "TAVERN TALE 10"
+   ],
+   "message_id": "world.tavern-tale-10"
+  },
+  {
+   "id": "world.tavern-tale-10.told",
+   "all_contains": [
+    "TAVERN TALE # 10"
+   ],
+   "message_id": "world.tavern-tale-10"
+  },
+  {
+   "id": "world.tavern-tale-9.overheard",
+   "all_contains": [
+    "TAVERN TALE 9"
+   ],
+   "message_id": "world.tavern-tale-9"
+  },
+  {
+   "id": "world.tavern-tale-9.told",
+   "all_contains": [
+    "TAVERN TALE # 9"
+   ],
+   "message_id": "world.tavern-tale-9"
+  },
+  {
+   "id": "world.tavern-tale-8.overheard",
+   "all_contains": [
+    "TAVERN TALE 8"
+   ],
+   "message_id": "world.tavern-tale-8"
+  },
+  {
+   "id": "world.tavern-tale-8.told",
+   "all_contains": [
+    "TAVERN TALE # 8"
+   ],
+   "message_id": "world.tavern-tale-8"
+  },
+  {
+   "id": "world.tavern-tale-7.overheard",
+   "all_contains": [
+    "TAVERN TALE 7"
+   ],
+   "message_id": "world.tavern-tale-7"
+  },
+  {
+   "id": "world.tavern-tale-7.told",
+   "all_contains": [
+    "TAVERN TALE # 7"
+   ],
+   "message_id": "world.tavern-tale-7"
+  },
+  {
+   "id": "world.tavern-tale-6.overheard",
+   "all_contains": [
+    "TAVERN TALE 6"
+   ],
+   "message_id": "world.tavern-tale-6"
+  },
+  {
+   "id": "world.tavern-tale-6.told",
+   "all_contains": [
+    "TAVERN TALE # 6"
+   ],
+   "message_id": "world.tavern-tale-6"
+  },
+  {
+   "id": "world.tavern-tale-5.overheard",
+   "all_contains": [
+    "TAVERN TALE 5"
+   ],
+   "message_id": "world.tavern-tale-5"
+  },
+  {
+   "id": "world.tavern-tale-5.told",
+   "all_contains": [
+    "TAVERN TALE # 5"
+   ],
+   "message_id": "world.tavern-tale-5"
+  },
+  {
+   "id": "world.tavern-tale-4.overheard",
+   "all_contains": [
+    "TAVERN TALE 4"
+   ],
+   "message_id": "world.tavern-tale-4"
+  },
+  {
+   "id": "world.tavern-tale-4.told",
+   "all_contains": [
+    "TAVERN TALE # 4"
+   ],
+   "message_id": "world.tavern-tale-4"
+  },
+  {
+   "id": "world.tavern-tale-3.overheard",
+   "all_contains": [
+    "TAVERN TALE 3"
    ],
    "message_id": "world.tavern-tale-3"
   },
   {
-   "id": "world.tavern-tale-9",
+   "id": "world.tavern-tale-3.told",
    "all_contains": [
-    "YOU OVERHEAR TAVERN TALE 9"
+    "TAVERN TALE # 3"
    ],
-   "message_id": "world.tavern-tale-9"
+   "message_id": "world.tavern-tale-3"
+  },
+  {
+   "id": "world.tavern-tale-2.overheard",
+   "all_contains": [
+    "TAVERN TALE 2"
+   ],
+   "message_id": "world.tavern-tale-2"
+  },
+  {
+   "id": "world.tavern-tale-2.told",
+   "all_contains": [
+    "TAVERN TALE # 2"
+   ],
+   "message_id": "world.tavern-tale-2"
+  },
+  {
+   "id": "world.tavern-tale-1.overheard",
+   "all_contains": [
+    "TAVERN TALE 1"
+   ],
+   "message_id": "world.tavern-tale-1"
+  },
+  {
+   "id": "world.tavern-tale-1.told",
+   "all_contains": [
+    "TAVERN TALE # 1"
+   ],
+   "message_id": "world.tavern-tale-1"
   },
   {
    "id": "world.tavern.and-what-can-i-get-you",

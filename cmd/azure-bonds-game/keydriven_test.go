@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -140,7 +141,7 @@ func (s *keyDrivenSession) routeChoice() (int, bool) {
 	// ⇒ 沒有一種全面贏。取「放手給啟發式」是因為它句數最多而且**不會讓隊伍把
 	// 大半場耗在同一個選單裡**；`0x51` 那一段在另一版是 `0x50` ↔ `0x51` 來回摸到的，
 	// 不是留得住的進度。改動走法之後要重新量這三列。
-	if s.menuSinceProgress[signature] > routeMenuPatienceValue() {
+	if s.menuSinceProgress[stuckSignature(s.app.state.Choices)] > routeMenuPatienceValue() {
 		return 0, false
 	}
 	index, ok := s.takeRouteStep("menu:"+signature, s.routeChoices[signature])
@@ -418,7 +419,13 @@ func keyDrivenFrames() int {
 	return keyDrivenDefaultFrames
 }
 
-const keyDrivenDefaultFrames = 1500
+// keyDrivenDefaultFrames 是量出來的：真正的進展在第 1,937 幀停下，2,500／3,000／
+// 4,000／10,000／25,000 幀的結果**完全相同**（236 格、191 句、同一條段序列）。
+// 2,500 幀跑一次約 10 秒。
+//
+// ⚠ 這個數字會隨走法與譯文缺口改變：補完酒館傳聞之前它是 1,500，那時候 4,000 幀
+// 也只走到 137 格——**不是因為幀數不夠，是因為隊伍撞到一句沒翻的話就停在那裡**。
+const keyDrivenDefaultFrames = 2500
 
 func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 	application, keys := keyDrivenApp(t)
@@ -498,7 +505,7 @@ func (s *keyDrivenSession) observe() {
 		// 於是停滯偵測永遠不會觸發，而報表會寫「最後一次有新東西在第 24672 幀」
 		// 卻和第 1500 幀的格數、句數、段序列一模一樣。
 		s.menus[signature] = true
-		s.menuSinceProgress[signature]++
+		s.menuSinceProgress[stuckSignature(state.Choices)]++
 	}
 	// ★ **選項也要查落回原文**。 原本只查 `Message` 與 `Prompt`，於是
 	// 「ASK ABOUT INJURIES｜IGNORE THEM」這種整組英文選單一路演到玩家面前而
@@ -524,6 +531,21 @@ func (s *keyDrivenSession) observe() {
 		}
 	}
 }
+
+// stuckSignature 是「這是不是同一個選單」用的簽章：把選項裡的**數字**抹掉。
+//
+// ★ 為什麼不能直接用選項原文。 有兩種選單會把會變的值寫進選項——商店與神殿寫
+// 金幣與件數（「戰士（HP 0/0，0 GP）」），肖像編輯器寫目前的編號（「頭部：4D」）。
+// 拿原文當簽章，**每按一次就是一個「沒看過的選單」**，於是「同一個選單看太多次
+// 就換一項」這條停滯偵測完全不會觸發：實測隊伍在肖像編輯器裡按了六百次
+// 「頭部上一個」，把編號從 4D 一路減到 03，而報表看起來只是「停在荒野」。
+//
+// ⚠ 抹掉數字**不能**用在查路線那一邊：那邊要跟錄下來的選項逐字相同。
+func stuckSignature(choices []string) string {
+	return stuckDigits.ReplaceAllString(strings.Join(choices, "｜"), "#")
+}
+
+var stuckDigits = regexp.MustCompile(`[0-9A-F]+`)
 
 // noteProgress 記下「這一幀有新東西」。
 //
@@ -588,7 +610,7 @@ func (s *keyDrivenSession) step(t *testing.T) {
 			// （「目前沒有可提取的隊伍金幣。」…），把訊息放進簽章的話計數永遠
 			// 歸零，**卡住偵測等於沒有**——而商店的「離開商店」是最後一項，
 			// 於是整場 session 就困在店裡。
-			signature := strings.Join(s.app.state.Choices, "｜")
+			signature := stuckSignature(s.app.state.Choices)
 			s.menuSeen[signature]++
 			want := (s.menuSeen[signature] - 1) / keyDrivenMenuPatience
 			if want >= count {

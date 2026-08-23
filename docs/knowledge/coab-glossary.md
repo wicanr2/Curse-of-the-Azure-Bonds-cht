@@ -86,6 +86,7 @@
 | `Tilverton` | 提爾佛頓 | — | |
 | `Zhentil Keep` | 散提爾堡 | 散塔林堡 | 城；與組織「散塔林會」是兩回事 |
 | `Yulash` | 尤拉什 | — | |
+| `Voonlar` | 溫拉爾 | 弗恩拉、沃恩拉 | |
 | `Myth Drannor` | 迷斯卓諾 | — | |
 | `Shadowdale` | 暗影谷 | — | |
 | `Hillsfar` | 希爾斯法 | — | |

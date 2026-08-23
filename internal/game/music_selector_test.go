@@ -92,25 +92,30 @@ func expectedMusicForBlock(block uint8) ([]string, bool) {
 // 第 31 則就會被第 3 則的規則攔走，**而且兩邊都是合法的傳聞、畫面上看不出錯**。
 //
 // ⚠ 這條測試不是在驗「有沒有譯文」，是在驗**順序**：每一則傳聞餵自己的原文，
-// 都要命中自己那一條。
+// 拿到的內容都要與別則不同。
+//
+// ⚠ 這一種說法把編號放在**句尾**（後面沒有空格也沒有句點），所以規則的比對片段
+// 不能靠尾隨空格斷詞——只能靠**降冪排列**。`gamepack/taverntales_test.go` 驗另外
+// 兩種說法。
 func TestTavernTaleRulesDoNotStealEachOther(t *testing.T) {
 	pack, err := gamepack.Default()
 	if err != nil {
 		t.Fatal(err)
 	}
-	numbers := []int{3, 9, 13, 15, 17, 20, 24, 28, 31, 43, 44, 45, 52, 56, 59, 60}
-	for _, number := range numbers {
+	seen := map[string]int{}
+	for number := 1; number <= 62; number++ {
 		text := fmt.Sprintf(
 			"AS YOU CONSUME THE LOCAL EXCUSE FOR FOOD AND DRINK, YOU OVERHEAR TAVERN TALE %d", number)
 		result := pack.MatchText([]string{text}, pack.DefaultLocale)
-		if !result.Matched {
+		if !result.Matched || strings.TrimSpace(result.Message) == "" {
 			t.Errorf("第 %d 則傳聞沒有規則命中", number)
 			continue
 		}
-		want := fmt.Sprintf("tavern-tale-%d", number)
-		if !strings.HasSuffix(result.RuleID, want) {
-			t.Errorf("第 %d 則傳聞命中的是 %q，被別條攔走了（要的是 …%s）",
-				number, result.RuleID, want)
+		if previous, ok := seen[result.Message]; ok {
+			t.Errorf("第 %d 則傳聞拿到的是第 %d 則的內容（rule=%q）：被排在前面的規則攔走了",
+				number, previous, result.RuleID)
+			continue
 		}
+		seen[result.Message] = number
 	}
 }
