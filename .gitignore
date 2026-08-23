@@ -18,56 +18,26 @@ __pycache__/
 # IDA／Go／DOSBox 的本地工作產物；.git 目錄本身也在這裡
 /workplace/
 
-# `tools/go.sh build ./cmd/x` 會把執行檔丟到 repo 根目錄；那是產物不是原始碼
-/azure-bonds
-/azure-bonds-game
-/borland-symbols
-/coab-audit
-/combat-spell-coverage-audit
-/combat-tile-export
-/dos-save-export
-/dseg-export
-/dseg-writers
-/ecl-effect-coverage
-/ecl-event-catalog
-/ecl-text-coverage
-/far-call-map
-/fp-screen-plan
-/geo-probe
-/glossary-audit
-/locale-drift-audit
-/map-spawn-audit
-/monster-roster
-/remake-status
-/ovr-manifest
-/pc98-music-audit
-/pc98-ovr-audit
-/pc98-render-sfx
-/pc98-render-track
-/pc98-s98-audit
-/pc98-sfx-audit
-/pc98-symbol-audit
-/pc98-vfd-audit
-/re-ledger
-/save-field-coverage
-/screenshot-audit
-/spell-table-export
-/symbol-export
-/tmp-pc98-tone-events
-/picture-probe
+# `go build ./cmd/<名字>` 會把執行檔丟在 repo 根目錄，檔名就是 cmd 目錄名。
+#
+# ⚠ **這裡不逐一列名字。** 原本是一條一條列 `/coab-audit`、`/geo-probe`…，
+# 而那份清單漏過至少六次（第 647 輪漏一個，後來 `campaign-snapshot-walk`、
+# `cell-reachability`、`dungeon-walk-probe`、`ecl-sky-colours`、`segment-handoff`
+# 五個執行檔共 28 MB 就這樣被 `git add -A` 收進版控）。**要記得維護的清單一定會漏**。
+#
+# 改成白名單：repo 根目錄只收 Markdown 與 Go 的模組檔，其餘一律不收；
+# `!/*/` 把子目錄放回來，所以 `cmd/`、`internal/`、`docs/` 照常追蹤。
+# 新的 cmd 不必再改這個檔。
+/*
+!/*/
+!/*.md
+!/.gitignore
+!/go.mod
+!/go.sum
 
-# `go build ./cmd/<name>` 會把執行檔丟在 repo 根目錄，檔名就是目錄名。
-# ⚠ 新增 cmd 時要一起加進來——`git add -A` 會把它一起收進去（第 647 輪就漏了一個）。
-/cell-sweep
-/ecl-block-graph
-/ecl-block-text
-/ecl-cell-events
-/ecl-cell-refs
-/ecl-combat-sites
-/ecl-encounter-text
-/ecl-redraw-sites
-/ecl-treasure-clear
-/ecl-window
-/item-use-audit
-/route-sweep
-/segment-coverage
+# ⚠ 上面的 `!/*/` 把**所有**子目錄放回來，包括前面已經擋掉的那幾個——gitignore
+# 是後面的規則覆蓋前面的，所以要在這裡再擋一次，否則 `workplace/` 裡的 IDA 產物
+# 與獨立 history 會整包冒出來。
+/workplace/
+/golden-box-remake-engine/
+/pc98/
