@@ -123,6 +123,7 @@ type app struct {
 	titleMusicRequested    bool
 	currentMusicTrack      string
 	screenshotPath         string
+	wallTrace              io.Writer
 	screenshotDone         bool
 	screenshotFrames       int
 }
@@ -1275,6 +1276,7 @@ func (a *app) prepareWallPreview() {
 			if err != nil {
 				continue
 			}
+			a.traceWallStamp("引擎", call, piece, stamp)
 			a.wallPreview = append(a.wallPreview, wallPreviewStamp{
 				image:  ebiten.NewImageFromImage(rgba),
 				row:    stamp.Row,
@@ -1287,8 +1289,10 @@ func (a *app) prepareWallPreview() {
 			}
 			image, ok := a.symbolImageForGlobalID(stamp.SymbolID)
 			if !ok {
+				a.traceWallStamp("解不開", call, piece, stamp)
 				continue
 			}
+			a.traceWallStamp("回退", call, piece, stamp)
 			a.wallPreview = append(a.wallPreview, wallPreviewStamp{
 				image:  image,
 				row:    stamp.Row,
@@ -1296,6 +1300,30 @@ func (a *app) prepareWallPreview() {
 			})
 		}
 	}
+}
+
+// traceWallStamp 把一格牆磚的解析過程寫進 `-wall-trace` 指定的 TSV。
+//
+// ★ 存在的理由：第 749 輪追「多段牆面組的一格該用哪一塊 8X8D」時，兩條候選規則
+// 各自在某些圖上把差異打到個位數、在另一些圖上打壞（spec 1185 §多槽牆面組）。
+// **靠比總分挑不出對的規則**——兩條都對一半，總分只是把錯誤攤平。要收斂得看
+// 逐格：這一格是哪個牆型、落在哪一段、編號多少、最後取了哪一塊的第幾項。
+//
+// ⚠ 這一支刻意寫在 `prepareWallPreview` 裡而不是另開一支工具：另開一支就得抄一次
+// 選塊邏輯，而**抄出來的那一份會與真正在畫的那一份漂移**，於是追到的不是畫面上
+// 的行為。
+func (a *app) traceWallStamp(source string, call gfx.WallLayoutCall, piece gfx.PieceSet, stamp gfx.WallStamp) {
+	if a.wallTrace == nil {
+		return
+	}
+	segment, item := wallSymbolSegment(stamp.SymbolID)
+	block := "—"
+	if index := segment - int(piece.SetID); index >= 0 && index < len(piece.SymbolBlockIDs) {
+		block = strconv.Itoa(int(piece.SymbolBlockIDs[index]))
+	}
+	fmt.Fprintf(a.wallTrace, "%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%s\t%v\n",
+		source, call.WallType, piece.SetID, len(piece.WallDefs), call.Layout,
+		stamp.Row, stamp.Column, stamp.SymbolID, segment, item, block, piece.SymbolBlockIDs)
 }
 
 // unresolvedWallStamps 取回同一次呼叫裡**那一筆 WALLDEF 自己解不開**的磚。
@@ -3458,6 +3486,7 @@ func main() {
 	dungeonYOverride := flag.Int("dungeon-y", -1, "override dungeon Y (0..15) for deterministic visual verification")
 	dungeonFacingOverride := flag.Int("dungeon-facing", -1, "override dungeon facing (0..7, 0=N) for deterministic visual verification")
 	firstPerson := flag.Bool("first-person", false, "render the scripted flow's final cell as a first-person frame (first-person fidelity comparison)")
+	wallTracePath := flag.String("wall-trace", "", "把每一格牆磚的解析過程寫成 TSV（追多段牆面組用，spec 1185）")
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	characterCreation := flag.Bool("character-creation", false, "show the opening character-creation command as a deterministic renderer checkpoint")
@@ -4210,6 +4239,15 @@ func main() {
 		visualStarted = time.Now().Add(-offset)
 	}
 	*gameApp = app{state: &state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
+	if *wallTracePath != "" {
+		handle, err := os.Create(*wallTracePath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer handle.Close()
+		fmt.Fprintln(handle, "來源\t牆型\t起始槽\t段數\t版面\t列\t欄\t編號\t段\t段內項\t取用區塊\t這組的區塊")
+		gameApp.wallTrace = handle
+	}
 	if *innerFinalBattle && *screenshotPath != "" {
 		// Capture-only boss observation camera. Formal play keeps the RuleBook
 		// active-fighter camera established above.
