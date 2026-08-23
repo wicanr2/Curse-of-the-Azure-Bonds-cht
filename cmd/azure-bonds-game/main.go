@@ -1321,21 +1321,18 @@ func (a *app) traceWallStamp(source string, call gfx.WallLayoutCall, piece gfx.P
 
 // wallLayoutRawStamps 展開一次牆位呼叫，`SymbolID` 是 **WALLDEF 的原始編號**。
 //
-// ★ 作法是拿一份「影子 PieceSet」去跑引擎的版面展開：把符號集基準改成 0、
-// 假 Picture 的項目數放到 256，於是每一個非零編號都解得開，`SymbolID` 就是原始
-// 編號。這樣**牆位版面表只有引擎那一份**，遊戲這一側不必再抄一份 10 個牆位的
-// 欄／列／位移（spec 1006）。
+// ★ 這是原作的形狀：`sub_39F`（`overlay-30:039Fh`）從一塊平的三槽緩衝取位元組，
+// 原封不動交給 `PUT8X8SYMBOL`（`overlay-35:032Ah`），而後者只比編號落在哪一段
+// 決定用哪一組符號（spec 1185）。符號留給 `symbolImageForGlobalID` 去解。
 //
-// ⚠ 引擎自己那條「照這一格出自哪一筆記錄選符號區塊」的解析**不能用**：原作沒有
-// 這個概念（`sub_39F` 從一塊平緩衝取位元組，`PUT8X8SYMBOL` 只看編號）。
-// 照記錄選會把多段牆面組自己的編號解到別的牆面組去，而每個索引仍然落在合法圖片
-// 裡 ⇒ 牆畫在對的位置、用錯的圖，不報錯（spec 1185）。
+// ⚠ 先前這裡是拿一份「影子 PieceSet」（把符號集基準改成 0、假 Picture 的項目數
+// 放到 256）去跑引擎的版面展開。那個技巧在引擎改成「照編號自己的段取基準」之後
+// **安靜地失效**：一組載在槽 3 的牆面組基準是 186，於是共用組的編號（`1..45`）
+// 算出來是負的項次，整格消失——`geo6-b45` 地面邊緣那排裝飾磚就是這樣沒了，
+// 而畫面看起來完全正常（那一格露出地板紋理，本來就是灰階點花）。
+// 現在走引擎的 `RawWallStamps`，它根本不解符號。
 func wallLayoutRawStamps(piece gfx.PieceSet, call gfx.WallLayoutCall) []gfx.WallStamp {
-	shadow := piece
-	shadow.SymbolSetIDs = make([]uint8, len(piece.WallDefs))
-	shadow.SymbolBlockIDs = make([]uint8, len(piece.WallDefs))
-	shadow.Symbols = map[uint8]gfx.Picture{0: {ItemCount: 0xFF}}
-	stamps, err := gfx.BuildWallLayout(shadow, call.WallType, call.Layout, call.RowStart, call.ColStart)
+	stamps, err := gfx.RawWallStamps(piece, call.WallType, call.Layout, call.RowStart, call.ColStart)
 	if err != nil {
 		return nil
 	}

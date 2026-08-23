@@ -81,8 +81,8 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | 23 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(10,10)` | 3 | 260 |
 | 24 | `original.geo3.block-10` | 3 | `0x10` | `(3,11)` | 2 | 258 |
 | 25 | `original.geo3.block-10` | 3 | `0x10` | `(3,12)` | 2 | 256 |
-| 26 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(4,6)` | 2 | 254 |
-| 27 | `original.geo3.block-11-level-2` | 3 | `0x11` | `(12,8)` | 2 | 252 |
+| 26 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(4,6)` | 2 | 254 |
+| 27 | `original.geo3.block-11-level-1` | 3 | `0x11` | `(12,8)` | 2 | 252 |
 | 28 | `original.geo3.block-15` | 3 | `0x15` | `(12,1)` | 2 | 250 |
 | 29 | `original.geo3.block-15` | 3 | `0x15` | `(3,3)` | 2 | 248 |
 | 30 | `original.geo3.block-15` | 3 | `0x15` | `(6,3)` | 2 | 246 |
@@ -98,7 +98,7 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 | 40 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(11,14)` | 2 | 226 |
 | 41 | `zhentil-keep.beholder-cave` | 4 | `0x25` | `(10,15)` | 2 | 224 |
 | 42 | `original.geo5.block-32` | 5 | `0x32` | `(2,3)` | 2 | 222 |
-| 43 | `original.geo5.block-31` | 5 | `0x32` | `(2,4)` | 2 | 220 |
+| 43 | `original.geo5.block-32` | 5 | `0x32` | `(2,4)` | 2 | 220 |
 | 44 | `original.geo5.block-32` | 5 | `0x32` | `(3,9)` | 2 | 218 |
 | 45 | `original.geo5.block-31` | 5 | `0x32` | `(0,15)` | 2 | 216 |
 | 46 | `original.geo5.block-33` | 5 | `0x33` | `(0,4)` | 2 | 214 |

@@ -10,6 +10,7 @@ type WallStamp = enginegfx.WallStamp
 
 var SymbolSetBase = enginegfx.SymbolSetBase
 var BuildWallLayout = enginegfx.BuildWallLayout
+var RawWallStamps = enginegfx.RawWallStamps
 
 func ParsePieceSet(setID, selector uint8, wallBlocks, symbolBlocks []dax.Block) (PieceSet, error) {
 	return enginegfx.ParsePieceSet(setID, selector, decodedBlocks(wallBlocks), decodedBlocks(symbolBlocks))
