@@ -161,6 +161,22 @@ func (s *keyDrivenSession) takeRouteStep(key string, candidates []int) (int, boo
 	return candidates[cursor], true
 }
 
+// ⚠ **不要把重複的選法去掉。** 直覺上該去：紮營選單在路線裡出現 2,011 次，
+// 其中 2,008 次選的是「儲存」——那是錄路線的測試每到一個檢查點就存一份快照留下的
+// 痕跡，不是玩家的意圖，而輪流取候選會被它稀釋掉。實測（1500 幀，同一份路線，
+// cap ＝「同一個選單上同一個選法最多留幾筆」）：
+//
+//	cap=1   168 格／112 句／最深 0x50
+//	cap=2   134 格／ 99 句／最深 0x03
+//	cap=3   114 格／ 87 句／最深 0x03
+//	cap=6   113 格／ 91 句／最深 0x03
+//	cap=12  137 格／120 句／最深 0x51
+//	不設限  137 格／124 句／最深 0x51   ← 目前這一版
+//
+// **兩邊都不是線性的**，而且「走過的格」與「走到多深」會往相反方向動：cap=1 的
+// 格數最多（隊伍把時間花在提爾佛頓）卻走不到世界地圖的第二段。要看的是段序列。
+// ⇒ 不設限最深、句數最多，而且程式最短。改動走法之後要重新量這張表。
+
 // routeCell 是「這一段的這一格」。**段號不能省**：不同段的地圖上都有 (7,13)。
 type routeCell struct{ segment, x, y int }
 
@@ -424,13 +440,15 @@ func (s *keyDrivenSession) observe() {
 		}
 		key := [3]int{block, x, y}
 		if !s.cells[key] {
-			s.lastProgress = s.frames
-			s.stallCells = map[[3]int]int{}
+			s.noteProgress()
 		}
 		s.cells[key] = true
 		s.stallCells[key]++
 	}
 	if block, ok := state.CurrentECLBlockID(); ok {
+		if !s.blocks[block] {
+			s.noteProgress()
+		}
 		s.blocks[block] = true
 		entry := fmt.Sprintf("0x%02X@%d", block, s.frames)
 		if len(s.segmentTrace) == 0 ||
@@ -439,7 +457,11 @@ func (s *keyDrivenSession) observe() {
 		}
 	}
 	if len(state.Choices) > 0 {
-		s.menus[strings.Join(state.Choices, "｜")] = true
+		signature := strings.Join(state.Choices, "｜")
+		if !s.menus[signature] {
+			s.noteProgress()
+		}
+		s.menus[signature] = true
 	}
 	// ★ **選項也要查落回原文**。 原本只查 `Message` 與 `Prompt`，於是
 	// 「ASK ABOUT INJURIES｜IGNORE THEM」這種整組英文選單一路演到玩家面前而
@@ -456,11 +478,40 @@ func (s *keyDrivenSession) observe() {
 		if trimmed == "" {
 			continue
 		}
+		if !s.messages[trimmed] {
+			s.noteProgress()
+		}
 		s.messages[trimmed] = true
 		if !hasHan(trimmed) && hasLatinWord(trimmed) {
 			s.fallbacks[trimmed] = true
 		}
 	}
+}
+
+// noteProgress 記下「這一幀有新東西」。
+//
+// ★ **「有進展」不能只算新格子**：隊伍走到世界地圖之後就不再踏地城的格子，
+// 於是格數凍住、看起來像卡死，實際上劇情還在往前。新的段、新的一句話、
+// 新的選單都算——這一行是判斷「真的停了沒」的唯一依據。
+func (s *keyDrivenSession) noteProgress() {
+	s.lastProgress = s.frames
+	s.stallCells = map[[3]int]int{}
+}
+
+// traceMenu 記下這一幀在哪個選單上按了第幾項，以及那是路線給的還是啟發式給的。
+func (s *keyDrivenSession) traceMenu(reason string, want int) {
+	if !s.tracing() {
+		return
+	}
+	block, _ := s.app.state.CurrentECLBlockID()
+	chosen := ""
+	if want >= 0 && want < len(s.app.state.Choices) {
+		chosen = s.app.state.Choices[want]
+	}
+	s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+		"幀%04d 選單 0x%02X %s 第%d項=%q ← %s｜%s", s.frames, block,
+		modeName(s.app.state.Mode), want, chosen, reason,
+		strings.Join(s.app.state.Choices, "｜")))
 }
 
 // step 依畫面挑一顆鍵按下去。**只用玩家按得到的鍵**，不碰 `state` 的任何方法。
@@ -488,9 +539,11 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		if want, ok := s.routeChoice(); ok {
 			if s.moveCursorTo(t, want) {
 				s.routeHits++
+				s.traceMenu("路線", want)
 				tap(t, s.app, s.keys, ebiten.KeyEnter)
 				return
 			}
+			s.traceMenu("路線挪不到游標", want)
 		}
 		if count := len(s.app.state.Choices); count > 1 {
 			// ⚠ 簽章**只看選項，不看訊息**：商店每按一項就換一句回應
@@ -523,6 +576,7 @@ func (s *keyDrivenSession) step(t *testing.T) {
 				// 還是挪不進範圍就不要按下去——寧可這一幀什麼都不做。
 				return
 			}
+			s.traceMenu("卡住換下一項", want)
 		}
 		tap(t, s.app, s.keys, ebiten.KeyEnter)
 		return
@@ -829,7 +883,7 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	if len(stall) > 12 {
 		stall = append(stall[:12], fmt.Sprintf("…共 %d 格", len(session.stallCells)))
 	}
-	t.Logf("  停在：%s (%d,%d) 朝 %d；最後一次踏上新格子在第 %d 幀；"+
+	t.Logf("  停在：%s (%d,%d) 朝 %d；最後一次有新東西在第 %d 幀；"+
 		"各畫面幀數 %s；路線帶不動 %d 次", modeName(application.state.Mode), x, y, facing,
 		session.lastProgress, strings.Join(spent, "、"), session.routeBlocked)
 	t.Logf("  被牆擋住之後：開搜尋 %d 次、看一眼 %d 次", session.searchToggles, session.looks)

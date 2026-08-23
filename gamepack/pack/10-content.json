@@ -8861,6 +8861,13 @@
    "message_id": "world.tavern-tale-31"
   },
   {
+   "id": "tilverton.tavern-tale-37",
+   "all_contains": [
+    "HE TELLS TAVERN TALE # 37"
+   ],
+   "message_id": "tilverton.tavern-tale-37"
+  },
+  {
    "id": "world.tavern-tale-43",
    "all_contains": [
     "YOU OVERHEAR TAVERN TALE 43"
@@ -9271,6 +9278,21 @@
    "id": "tilverton.tavern.option.ignore-injuries",
    "source": "IGNORE THEM",
    "message_id": "tilverton.tavern.ignore-injuries"
+  },
+  {
+   "id": "tilverton.sewers.option.move-on",
+   "source": "MOVE ON",
+   "message_id": "tilverton.sewers.move-on"
+  },
+  {
+   "id": "tilverton.sewers.option.watch-pieces",
+   "source": "WATCH THE PIECES",
+   "message_id": "tilverton.sewers.watch-pieces"
+  },
+  {
+   "id": "tilverton.sewers.option.burn-pieces",
+   "source": "BURN THEM",
+   "message_id": "tilverton.sewers.burn-pieces"
   },
   {
    "id": "ecl-option.enter-it",
