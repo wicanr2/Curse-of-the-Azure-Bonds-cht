@@ -185,6 +185,7 @@ func main() {
 	order := make([]string, 0, 16)
 	totalIndices, totalReached, totalOnFoot, totalEither := 0, 0, 0, 0
 	totalGated, totalNoEdge, totalNotOnMap, totalStandable := 0, 0, 0, 0
+	totalGatedButPlayed := 0
 	totalWithFlags := 0
 	for _, item := range sweep {
 		row, ok := bySegment[item.Segment]
@@ -241,6 +242,15 @@ func main() {
 			// 或門擋著。要補的是**路線**。
 			row.gatedOff++
 			totalGated++
+			// ★ 走訪走不到，不代表那一格的**事件沒驗過**。逐格實測
+			// （`cmd/cell-sweep`）是直接站上去的，它的 `played` 才是「那一格
+			// 的事件演不演得出來」。兩件事分開數：走訪問的是**路**，
+			// 逐格實測問的是**內容**。
+			//
+			// ⚠ 混在一起看會把「這個儀器記不到」讀成「這一格沒驗過」。
+			if item.Played {
+				totalGatedButPlayed++
+			}
 		case matches(onMap, item.Block, item.Mask, item.Index):
 			// 圖上有這個地形碼，但那些格子四面都不通——走路永遠站不上去。
 			row.noEdge++
@@ -301,8 +311,13 @@ func main() {
 		"**走路永遠站不上去**；要嘛靠事件傳送，要嘛它本來就不是玩家會站的格子 |\n", totalNoEdge)
 	fmt.Fprintf(&report, "| 圖上根本沒有這個地形碼 | %d | 分派表有這一格，地圖上沒有 | "+
 		"分母裡的死索引，補不了也不用補 |\n\n", totalNotOnMap)
-	report.WriteString("⚠ 這一段用的是**純幾何**（`CanMoveDungeon`），不跑 ECL：" +
-		"走過去又被劇情推回來那種不算「走不到」——那是內容不是幾何，混進來會讓分類失去意義。\n")
+	report.WriteString("⚠ 這一段用的是**純幾何**（`CanMoveDungeon` ＋ 撞到門就開），不跑 ECL：" +
+		"走過去又被劇情推回來那種不算「走不到」——那是內容不是幾何，混進來會讓分類失去意義。\n\n")
+	fmt.Fprintf(&report, "★ **走不到 ≠ 沒驗過。** 上面「走不到」的 %d 個索引裡，"+
+		"有 **%d** 個在逐格實測（`cmd/cell-sweep`）裡是 `played`——那支工具是**直接站上去**的，"+
+		"問的是「那一格的事件演不演得出來」。走訪問的是**路**，逐格實測問的是**內容**；"+
+		"混在一起看會把「這個儀器記不到」讀成「這一格沒驗過」。\n",
+		totalGated+totalNoEdge+totalNotOnMap, totalGatedButPlayed)
 
 	fmt.Fprintf(&report, "\n⚠ **「實跑路線踏到」裡有兩種東西**，不要把它讀成「玩到的比例」："+
 		"`TestRealNewGameRunsToTheEnding` 是照劇情走的主線，"+
@@ -384,12 +399,15 @@ func main() {
 			Either    int    `json:"union"`
 			Standable int    `json:"walkable_ceiling"`
 			Gated     int    `json:"gated_off"`
+			// GatedButPlayed 是「走訪走不到，但逐格實測站上去演出來了」。
+			GatedButPlayed int `json:"gated_off_but_played"`
 			NoEdge    int    `json:"no_passable_edge"`
 			NotOnMap  int    `json:"not_on_map"`
 		}{
 			Schema: "coab-cell-reachability/1", Indices: totalIndices, Reached: totalReached,
 			OnFoot: totalOnFoot, Either: totalEither, Standable: totalStandable,
-			Gated: totalGated, NoEdge: totalNoEdge, NotOnMap: totalNotOnMap,
+			Gated: totalGated, GatedButPlayed: totalGatedButPlayed,
+			NoEdge: totalNoEdge, NotOnMap: totalNotOnMap,
 		}, "", " ")
 		if err != nil {
 			log.Fatal(err)
