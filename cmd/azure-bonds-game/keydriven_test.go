@@ -125,6 +125,24 @@ func (s *keyDrivenSession) routeChoice() (int, bool) {
 		return 0, false
 	}
 	signature := strings.Join(s.app.state.Choices, "｜")
+	// ⚠ **路線要有放手條件。** 紮營選單在路線裡出現 2,011 次、其中 2,008 次選
+	// 「儲存」——那是錄路線的測試每到檢查點就存一份快照留下的痕跡。照路線按下去
+	// 畫面永遠不會有新東西，而候選還有兩千筆，隊伍就在那裡存檔存到跑完
+	// （不設這個條件時 1500 幀裡有 700 幀是這樣耗掉的）。同一個選單從上一次有新
+	// 東西到現在出現這麼多次，就當作「路線在這裡幫不上忙」，交給啟發式。
+	//
+	// 實測（4000 幀）三種處置：
+	//
+	//	不放手           137 格／126 句／6 段（多摸到 `0x51`，之後死在紮營選單）
+	//	放手給啟發式     137 格／**131 句**／5 段  ← 目前這一版
+	//	跳到「選法不同」的候選  137 格／103 句／5 段
+	//
+	// ⇒ 沒有一種全面贏。取「放手給啟發式」是因為它句數最多而且**不會讓隊伍把
+	// 大半場耗在同一個選單裡**；`0x51` 那一段在另一版是 `0x50` ↔ `0x51` 來回摸到的，
+	// 不是留得住的進度。改動走法之後要重新量這三列。
+	if s.menuSinceProgress[signature] > routeMenuPatienceValue() {
+		return 0, false
+	}
 	index, ok := s.takeRouteStep("menu:"+signature, s.routeChoices[signature])
 	if !ok {
 		return 0, false
@@ -176,6 +194,18 @@ func (s *keyDrivenSession) takeRouteStep(key string, candidates []int) (int, boo
 // **兩邊都不是線性的**，而且「走過的格」與「走到多深」會往相反方向動：cap=1 的
 // 格數最多（隊伍把時間花在提爾佛頓）卻走不到世界地圖的第二段。要看的是段序列。
 // ⇒ 不設限最深、句數最多，而且程式最短。改動走法之後要重新量這張表。
+
+// routeMenuPatience 是「同一個選單連續出現幾次都沒有新東西，就不再問路線」。
+const routeMenuPatience = 8
+
+func routeMenuPatienceValue() int {
+	if raw := os.Getenv("COAB_KEY_MENU_PATIENCE"); raw != "" {
+		if value, err := strconv.Atoi(raw); err == nil && value > 0 {
+			return value
+		}
+	}
+	return routeMenuPatience
+}
 
 // routeCell 是「這一段的這一格」。**段號不能省**：不同段的地圖上都有 (7,13)。
 type routeCell struct{ segment, x, y int }
@@ -303,6 +333,10 @@ type keyDrivenSession struct {
 	// moveTrace 是逐格的走位紀錄，`COAB_KEY_TRACE` 指定輸出檔才會收集。
 	// 用來回答「隊伍到底有沒有站上那一格、站上去之後路線叫它往哪走」。
 	moveTrace []string
+	// menuSinceProgress 是「從上一次有新東西到現在，這個選單出現過幾次」。
+	// ★ 這是路線的**放手條件**：路線在某個選單上一直給同一個答案而畫面沒有任何
+	// 新東西時，那個答案在這一場就是錯的，該讓啟發式接手。
+	menuSinceProgress map[string]int
 	// modeFrames 是每一種畫面待了幾幀；lastProgress 是最後一次踏上新格子的幀號。
 	// ★ 這兩個回答的是「**停在哪裡**」——沒有它們，「跑到頂了」與「卡在商店裡」
 	// 看起來一模一樣。
@@ -398,6 +432,7 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 		messages: map[string]bool{}, fallbacks: map[string]bool{},
 		blocks: map[uint8]bool{}, menus: map[string]bool{}, menuSeen: map[string]int{},
 		modeFrames: map[game.Mode]int{}, stallCells: map[[3]int]int{},
+		menuSinceProgress: map[string]int{},
 	}
 }
 
@@ -458,10 +493,12 @@ func (s *keyDrivenSession) observe() {
 	}
 	if len(state.Choices) > 0 {
 		signature := strings.Join(state.Choices, "｜")
-		if !s.menus[signature] {
-			s.noteProgress()
-		}
+		// ⚠ **新的選單不算「有進展」。** 商店與神殿的選單把金幣與件數寫進選項
+		// （「戰士（HP 0/0，0 GP）」），數字一變簽章就變 ⇒ 每一幀都是「新選單」，
+		// 於是停滯偵測永遠不會觸發，而報表會寫「最後一次有新東西在第 24672 幀」
+		// 卻和第 1500 幀的格數、句數、段序列一模一樣。
 		s.menus[signature] = true
+		s.menuSinceProgress[signature]++
 	}
 	// ★ **選項也要查落回原文**。 原本只查 `Message` 與 `Prompt`，於是
 	// 「ASK ABOUT INJURIES｜IGNORE THEM」這種整組英文選單一路演到玩家面前而
@@ -496,6 +533,7 @@ func (s *keyDrivenSession) observe() {
 func (s *keyDrivenSession) noteProgress() {
 	s.lastProgress = s.frames
 	s.stallCells = map[[3]int]int{}
+	s.menuSinceProgress = map[string]int{}
 }
 
 // traceMenu 記下這一幀在哪個選單上按了第幾項，以及那是路線給的還是啟發式給的。

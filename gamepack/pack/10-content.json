@@ -4617,6 +4617,27 @@
    "message_id": "essembra.branching-oak"
   },
   {
+   "id": "ashabenford.ashabenford-arms",
+   "all_contains": [
+    "WELCOME TO THE ASHABENFORD ARMS"
+   ],
+   "message_id": "ashabenford.ashabenford-arms"
+  },
+  {
+   "id": "world.inn-old-skull",
+   "all_contains": [
+    "WELCOME TO THE OLD SKULL"
+   ],
+   "message_id": "world.inn-old-skull"
+  },
+  {
+   "id": "world.inn-keen-blade",
+   "all_contains": [
+    "WELCOME TO THE KEEN BLADE"
+   ],
+   "message_id": "world.inn-keen-blade"
+  },
+  {
    "id": "essembra.outdoor-bar",
    "all_contains": [
     "YOU ARE IN A N OUTDOOR BAR",
