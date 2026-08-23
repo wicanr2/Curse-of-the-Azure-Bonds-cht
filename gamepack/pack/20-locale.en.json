@@ -577,6 +577,8 @@
    "zhentil_keep": "ZHENTIL KEEP",
    "myth_drannor": "MYTH DRANNOR",
    "sneak_in": "SNEAK IN",
+   "yulash.checkpoint.sneak-past": "ATTEMPT TO SNEAK PAST",
+   "yulash.checkpoint.move-normally": "MOVE NORMALLY",
    "ask_permission": "ASK PERMISSION",
    "run_away": "RUN AWAY",
    "fight": "FIGHT",

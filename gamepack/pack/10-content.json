@@ -10334,6 +10334,16 @@
    "message_id": "sneak_in"
   },
   {
+   "id": "ecl-option.attempt-to-sneak-past",
+   "source": "ATTEMPT TO SNEAK PAST",
+   "message_id": "yulash.checkpoint.sneak-past"
+  },
+  {
+   "id": "ecl-option.move-normally",
+   "source": "MOVE NORMALLY",
+   "message_id": "yulash.checkpoint.move-normally"
+  },
+  {
    "id": "ecl-option.ask-permission",
    "source": "ASK PERMISSION",
    "message_id": "ask_permission"

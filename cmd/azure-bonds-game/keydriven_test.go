@@ -509,13 +509,22 @@ func keyDrivenFrames() int {
 	return keyDrivenDefaultFrames
 }
 
-// keyDrivenDefaultFrames 是量出來的：真正的進展在第 1,937 幀停下，2,500／3,000／
-// 4,000／10,000／25,000 幀的結果**完全相同**（236 格、191 句、同一條段序列）。
-// 2,500 幀跑一次約 10 秒。
+// keyDrivenDefaultFrames 是量出來的（同一份路線，走位放手條件 ＝ 2、
+// `tryDoors` 只撞走不通的方向之後）：
+//
+//	 2,500 幀   344 格／215 句／ 11 秒
+//	 6,000 幀   457 格／255 句／ 33 秒
+//	12,000 幀   572 格／264 句／ 54 秒   ← 目前這一版
+//	20,000 幀   602 格／273 句／ 95 秒
+//	40,000 幀   612 格／274 句／174 秒
+//
+// ⇒ 轉折在 12,000：再往上每多一分鐘只多三十幾格。取 12,000。
 //
 // ⚠ 這個數字會隨走法與譯文缺口改變：補完酒館傳聞之前它是 1,500，那時候 4,000 幀
 // 也只走到 137 格——**不是因為幀數不夠，是因為隊伍撞到一句沒翻的話就停在那裡**。
-const keyDrivenDefaultFrames = 2500
+// 修好巫師塔的單向環之前它是 2,500，那時候 15,000 幀也停在 245 格（spec 1198）。
+// **換掉走法之後要重新量這張表**，不要沿用。
+const keyDrivenDefaultFrames = 12000
 
 func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 	application, keys := keyDrivenApp(t)
@@ -905,11 +914,28 @@ func (s *keyDrivenSession) searchForAWayThrough(t *testing.T) {
 	s.looks++
 }
 
-// tryDoors 朝四個方向各撞一次，看有沒有門。撞到門會開選單，交給下一幀處理。
+// tryDoors 朝**走不通**的方向各撞一次，看那裡是不是門。撞到門會開選單，
+// 交給 `handleDoorMenu`。
+//
+// ⚠ **不能對走得通的方向按前進**：那只會把隊伍帶走。舊版是「轉一圈、每一面
+// 按一次前進」，於是站在只有一面是門的死角時，第一次前進就沿著開著的那一面
+// 離開了，門永遠不會被碰到——尤拉什 `(4,7)(4,8)(5,7)` 那個死角實測繞了 1,700 幀、
+// 門選單一次都沒開，而出口就是 `(4,8)` 東面那一道上鎖的門（spec 1198）。
+//
+// ⚠ 也**不能**只看目前朝向：門可能在背後。四個方向都要輪，只是先過濾掉
+// 走得通的那些。
 func (s *keyDrivenSession) tryDoors(t *testing.T) {
 	t.Helper()
-	for turn := 0; turn < 4; turn++ {
+	for _, heading := range []int{0, 2, 4, 6} {
 		if s.app.state.Mode != game.ModeDungeon {
+			return
+		}
+		deltaX, deltaY := headingDelta(heading)
+		if s.app.state.CanMoveDungeon(*s.app.geoGrid, deltaX, deltaY, heading) {
+			// 走得通就不是門，按下去只會離開這一格。
+			continue
+		}
+		if !s.faceHeading(t, heading) {
 			return
 		}
 		tap(t, s.app, s.keys, ebiten.KeyUp)
@@ -923,8 +949,23 @@ func (s *keyDrivenSession) tryDoors(t *testing.T) {
 			// 撞出去了（門本來就開著或劇情把隊伍搬走）。
 			return
 		}
-		tap(t, s.app, s.keys, ebiten.KeyM)
 	}
+}
+
+// faceHeading 用 `M`（順時針轉 2）把隊伍轉到指定朝向；轉不過去或中途離開地城
+// 就回 false。
+func (s *keyDrivenSession) faceHeading(t *testing.T, heading int) bool {
+	t.Helper()
+	for turn := 0; turn < 4; turn++ {
+		if _, _, facing := s.app.state.DungeonGeometryView(); int(facing) == heading {
+			return true
+		}
+		tap(t, s.app, s.keys, ebiten.KeyM)
+		if s.app.state.Mode != game.ModeDungeon {
+			return false
+		}
+	}
+	return false
 }
 
 // handleDoorMenu 依原作提供的選項按鍵：能敲就敲、能撬就撬、能撞就撞。
@@ -1085,12 +1126,6 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	if len(session.cells) < 2 {
 		t.Fatalf("只站上過 %d 格：走不動", len(session.cells))
 	}
-	if len(session.fallbacks) > 0 {
-		for text := range session.fallbacks {
-			t.Errorf("落回原文：%q", text)
-		}
-		t.Fatalf("按鍵玩到的畫面有 %d 句落回原文", len(session.fallbacks))
-	}
 	t.Logf("按鍵驅動 %d 幀：走過 %d 格、%d 種畫面、記到 %d 句話、撞到門 %d 次、"+
 		"照路線按 %d 次（路線共 %d 步，查表覆蓋 %d 格／%d 種選單），落回原文 0 句",
 		session.frames, len(session.cells), len(session.modes), len(session.messages),
@@ -1146,6 +1181,16 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		if err := session.writeReport(path); err != nil {
 			t.Fatalf("報表寫不出來：%v", err)
 		}
+	}
+
+	// ⚠ 這一條**排在報表後面**：落回原文代表隊伍走到了還沒翻的新內容，
+	// 那一刻最想知道的是「走到哪裡才碰到的」。排在前面的話 t.Fatalf 會把
+	// 走過幾格、段序列、選單清單全部吃掉，只剩兩行英文，看不出是哪一段的內容。
+	if len(session.fallbacks) > 0 {
+		for text := range session.fallbacks {
+			t.Errorf("落回原文：%q", text)
+		}
+		t.Fatalf("按鍵玩到的畫面有 %d 句落回原文", len(session.fallbacks))
 	}
 }
 

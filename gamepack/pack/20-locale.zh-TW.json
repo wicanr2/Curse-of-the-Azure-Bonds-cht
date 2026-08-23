@@ -577,6 +577,8 @@
    "zhentil_keep": "散提爾堡",
    "myth_drannor": "迷斯卓諾",
    "sneak_in": "潛入",
+   "yulash.checkpoint.sneak-past": "試著溜過去",
+   "yulash.checkpoint.move-normally": "照常前進",
    "ask_permission": "請求許可",
    "run_away": "逃走",
    "fight": "戰鬥",
