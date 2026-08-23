@@ -1,6 +1,9 @@
 package game
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // PlayerUILabel identifies static player-facing chrome without exposing
 // locale keys to Ebiten.
@@ -348,7 +351,14 @@ func (s *State) FileOperationMessage(operation FileOperation, result FileOperati
 	case FileOperationAudioRestore:
 		key = "audio_restore_failed"
 	}
-	return fmt.Sprintf(s.catalog.Text(key, key+": %s"), detail)
+	text := s.catalog.Text(key, key+": %s")
+	// ⚠ **失敗訊息不要把 Go 的錯誤字串端到玩家面前。** `open : no such file or
+	// directory` 是給開發者看的英文，而它會整句出現在畫面上。譯文裡沒有 `%s`
+	// 就代表這一條不吃細節——照樣 `Sprintf` 會補上 `%!(EXTRA string=…)`。
+	if !strings.Contains(text, "%s") {
+		return text
+	}
+	return fmt.Sprintf(text, detail)
 }
 
 // RenameInputText and RenameInputHelp form the renderer-neutral ALTER rename

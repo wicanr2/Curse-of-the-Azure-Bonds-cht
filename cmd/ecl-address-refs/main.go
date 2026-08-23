@@ -35,6 +35,7 @@ func main() {
 	before := flag.Int("before", 24, "NEWECL 前面印幾條")
 	writes := flag.String("writes", "", "改成列出這一段裡所有碰到這個位址（十六進位）的指令，讀與寫都算")
 	all := flag.String("all", "", "在全部 ECL 成員裡找碰到這個位址的指令")
+	findText := flag.String("text", "", "找內嵌文字含這個片段的指令，並印出它後面幾條")
 	opcode := flag.Int("opcode", -1, "改成列出這個 opcode 的每一處與前後文")
 	from := flag.Int("from", -1, "只印這個位移之後的指令")
 	to := flag.Int("to", 0x10000, "只印到這個位移為止")
@@ -134,6 +135,28 @@ func main() {
 		}
 		return
 	}
+	if *findText != "" {
+		for index, instruction := range list {
+			hit := false
+			for _, operand := range instruction.Operands {
+				if operand.Code == 0x80 && strings.Contains(ecl.DecodePackedText(operand.Packed), *findText) {
+					hit = true
+				}
+			}
+			if !hit {
+				continue
+			}
+			fmt.Printf("=== 內嵌文字命中於 %04X ===\n", instruction.Offset)
+			end := index + *before
+			if end > len(list) {
+				end = len(list)
+			}
+			for _, near := range list[index:end] {
+				fmt.Printf("  %04X %-16s %s\n", near.Offset, near.Command.Name, format(near))
+			}
+		}
+		return
+	}
 	if *opcode >= 0 {
 		for index, instruction := range list {
 			if int(instruction.Command.Opcode) != *opcode {
@@ -169,6 +192,16 @@ func main() {
 func format(instruction ecl.Instruction) string {
 	parts := make([]string, 0, len(instruction.Operands))
 	for _, operand := range instruction.Operands {
+		// ★ `code=80` 是**內嵌的壓縮文字**，解出來才看得懂這一條在演什麼。
+		// 只印 `low` 會得到一個沒有意義的序號。
+		if operand.Code == 0x80 && len(operand.Packed) > 0 {
+			text := ecl.DecodePackedText(operand.Packed)
+			if len(text) > 60 {
+				text = text[:60] + "…"
+			}
+			parts = append(parts, fmt.Sprintf("「%s」", strings.ReplaceAll(text, "\n", "⏎")))
+			continue
+		}
 		parts = append(parts, fmt.Sprintf("[code=%02X low=%02X high=%02X word=%04X set=%v]", operand.Code, operand.Low, operand.High, operand.Word, operand.WordSet))
 	}
 	return strings.Join(parts, " ")

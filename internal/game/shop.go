@@ -1,6 +1,7 @@
 package game
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
@@ -117,6 +118,10 @@ func (s *State) ShareGold() error {
 }
 
 // BuyShopOffer follows CityShop's payment order: the selected character's
+// ErrShopCannotAfford 是「錢不夠」——這是**玩家會遇到**的失敗，要有自己的譯文。
+// 其餘的錯誤是程式錯誤，不該端到畫面上。
+var ErrShopCannotAfford = errors.New("character and money pool cannot pay")
+
 // five coin fields are used first by gold worth, then the pooled GP fallback.
 func (s *State) BuyShopOffer(characterIndex, offerIndex int) error {
 	if characterIndex < 0 || characterIndex >= len(s.partyRoster) {
@@ -132,7 +137,7 @@ func (s *State) BuyShopOffer(characterIndex, offerIndex int) error {
 	} else if uint32(offer.Price) <= s.moneyPool {
 		s.moneyPool -= uint32(offer.Price)
 	} else {
-		return fmt.Errorf("character and money pool cannot pay %d gold", offer.Price)
+		return fmt.Errorf("%w: %d gold", ErrShopCannotAfford, offer.Price)
 	}
 	item := offer.Item
 	item.Readied = false

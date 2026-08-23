@@ -9856,6 +9856,15 @@
    "message_id": "wizard-tower.sphere-distance-70"
   },
   {
+   "id": "wizard-tower.sphere-moves-toward-member",
+   "all_contains": [
+    "THE SPHERE MOVES TOWARD",
+    ". IT IS NOW ONLY",
+    "FEET FROM"
+   ],
+   "message_id": "wizard-tower.sphere-moves-toward-member"
+  },
+  {
    "id": "wizard-tower.sphere-moves-toward-mage",
    "all_contains": [
     "THE SPHERE MOVES TOWARD THE OPPOSING MAGE"

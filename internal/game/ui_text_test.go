@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -25,9 +26,20 @@ func TestPlayerFileAndTextInputContractUsesFormalCatalog(t *testing.T) {
 	for _, test := range fileCases {
 		t.Run(test.name, func(t *testing.T) {
 			got := state.FileOperationMessage(test.operation, test.result, test.detail)
-			want := fmt.Sprintf(catalog.Text(test.key, test.key), test.detail)
+			text := catalog.Text(test.key, test.key)
+			// ⚠ **失敗訊息不代入細節。** `detail` 是 Go 的錯誤字串
+			// （`open : no such file or directory`），端到畫面上就是一句英文。
+			// 譯文裡沒有 `%s` 就整句照用；照樣 `Sprintf` 會補上
+			// `%!(EXTRA string=…)`，那反而更難看。
+			want := text
+			if strings.Contains(text, "%s") {
+				want = fmt.Sprintf(text, test.detail)
+			}
 			if got != want {
 				t.Fatalf("message=%q want=%q", got, want)
+			}
+			if test.result == FileOperationFailed && strings.Contains(got, test.detail) {
+				t.Fatalf("失敗訊息不該帶著細節 %q：%q", test.detail, got)
 			}
 		})
 	}

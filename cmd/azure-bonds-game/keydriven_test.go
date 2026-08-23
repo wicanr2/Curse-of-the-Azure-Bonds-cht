@@ -484,18 +484,62 @@ func hasHan(text string) bool {
 }
 
 func hasLatinWord(text string) bool {
-	run := 0
+	return latinWordRun(text) >= 1
+}
+
+// latinWordRun 回傳**最長一串連續的英文單字**有幾個（中間只隔空白或標點才算連續）。
+//
+// ★ 為什麼需要這個而不是「有沒有漢字」。 原作有一整類句子是**英文骨架 ＋ 中間插一個
+// 中文名字**：`THE WALLS PROVE TOO SLIMY FOR 戰士 TO SUCCEED.`。這種句子有漢字，
+// 於是「有漢字就算翻好了」的判準直接放行——它一路演到玩家面前而測試全綠。
+// 逐格走訪找到它，是因為走到了那一場，不是因為判準抓得到。
+func latinWordRun(text string) int {
+	// ⚠ **一個字母不算一個單字。** 遊戲內的操作提示是
+	// 「↑：前進　K／M：轉向　S：搜尋　L：查看　E：紮營」——那是**翻好的中文**，
+	// 但按鍵名稱本來就是英文字母。把單一字母算成單字，這一行會被判成「連續五個
+	// 英文單字」而誤報。要兩個字母以上才算。
+	best, run, length := 0, 0, 0
+	closeWord := func() {
+		if length >= 2 {
+			run++
+			if run > best {
+				best = run
+			}
+		} else if length == 1 {
+			// 單一字母**不打斷**整串（`a`、`I` 之類），但也不算一個單字。
+			_ = length
+		}
+		length = 0
+	}
 	for _, r := range text {
 		if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') {
-			run++
-			if run >= 2 {
-				return true
-			}
+			length++
 			continue
 		}
-		run = 0
+		closeWord()
+		// 漢字、數字、全形標點都不打斷這一串——插在句子中間的名字與數字正是
+		// 這個判準要抓的形狀。
 	}
-	return false
+	closeWord()
+	return best
+}
+
+// latinSentenceRun 是「幾個連續英文單字才算一句沒翻的話」。
+//
+// ⚠ 不能訂成 1 或 2：畫面上合法的英文碎片是有的（`GP`、`HP`、原作代號、
+// `1 GP` 這種單位）。實測 3 是分界——`THE WALLS PROVE TOO SLIMY FOR` 有 6 個。
+const latinSentenceRun = 3
+
+// looksUntranslated 是「這一句落回原文了嗎」。
+//
+// 兩種都算：**整句沒有漢字而且有英文字**（原本的判準），以及**句子裡有連續
+// 三個以上的英文單字**——後者專門抓「英文骨架 ＋ 插一個中文名字」那一類，
+// 它有漢字，舊判準會放行。
+func looksUntranslated(text string) bool {
+	if !hasHan(text) {
+		return hasLatinWord(text)
+	}
+	return latinWordRun(text) >= latinSentenceRun
 }
 
 // observe 記下這一幀玩家看得到的東西。
@@ -541,7 +585,7 @@ func (s *keyDrivenSession) observe() {
 	// 測試全綠——落回原文的判準漏了玩家最常讀的那一塊。
 	for _, option := range state.Choices {
 		trimmed := strings.TrimSpace(option)
-		if trimmed == "" || hasHan(trimmed) || !hasLatinWord(trimmed) {
+		if trimmed == "" || !looksUntranslated(trimmed) {
 			continue
 		}
 		s.fallbacks[trimmed] = true
@@ -555,7 +599,7 @@ func (s *keyDrivenSession) observe() {
 			s.noteProgress()
 		}
 		s.messages[trimmed] = true
-		if !hasHan(trimmed) && hasLatinWord(trimmed) {
+		if looksUntranslated(trimmed) {
 			s.fallbacks[trimmed] = true
 		}
 	}
@@ -716,6 +760,7 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		return
 	}
 	target, fresh, ok := s.chooseHeading()
+	freshTarget := fresh
 	// ⚠ 沒有**新**格子可走時就先去撞門，不要直接退回舊路。`chooseHeading` 只要
 	// 有任何一個方向走得通就會給出退路，所以把「撞門」掛在「四面都是牆」底下
 	// 等於永遠不會執行——隊伍會沿著已走過的路來回，而門一次都沒被碰過。
@@ -736,6 +781,8 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		return
 	}
 	// M 是順時針轉 2；轉到面向目標為止（最多三次）。
+	beforeX, beforeY, _ := s.app.state.DungeonGeometryView()
+	beforeBlock, _ := s.app.state.CurrentECLBlockID()
 	for turn := 0; turn < 4; turn++ {
 		_, _, facing := s.app.state.DungeonGeometryView()
 		if int(facing) == target {
@@ -747,6 +794,17 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		}
 	}
 	tap(t, s.app, s.keys, ebiten.KeyUp)
+	if s.tracing() {
+		afterX, afterY, _ := s.app.state.DungeonGeometryView()
+		fresh := "退路"
+		if freshTarget {
+			fresh = "新格"
+		}
+		s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+			"幀%04d 啟發式 0x%02X(%d,%d)→%d（%s）⇒ (%d,%d) %s",
+			s.frames, beforeBlock, beforeX, beforeY, target, fresh,
+			afterX, afterY, modeName(s.app.state.Mode)))
+	}
 }
 
 // searchForAWayThrough 是「路線說有路、按下去卻是牆」時玩家會做的事：先開搜尋

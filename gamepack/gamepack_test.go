@@ -1898,6 +1898,12 @@ func TestVariableInsertPagesAreWiredAtRuntime(t *testing.T) {
 		// 按鍵推主線快照時把玩家真的看得到的那幾個走了出來，逐個寫規則就結案了。
 		// ⇒ 又一次「列舉不到的東西，用走的走得到」（spec 1191）。
 		{"巫師塔光球距離", []string{"IT IS NOW ONLY", "20", "FEET FROM THE RED WIZARD."}},
+		// ★ **隊員名字那一頁接上了**，靠的是 `text_rules` 的 `{n}` 佔位符：
+		// 骨架翻成中文，`{1}`／`{6}` 是名字、`{4}` 是距離，直接取原作那一頁的第
+		// n 段。⚠ 索引指的是**段**不是第幾個變數；這一頁實際上是八段
+		// （`.` 自己一段），原本測試裡那個七段的樣本是錯的。
+		{"巫師塔光球：隊員名字與距離", []string{
+			"THE SPHERE MOVES TOWARD", "KIVAN", ".", "IT IS NOW ONLY", "10", "FEET FROM", "KIVAN", "."}},
 	}
 	for _, test := range handled {
 		if result := pack.MatchText(test.texts, "zh-TW"); !result.Matched {
@@ -1913,12 +1919,7 @@ func TestVariableInsertPagesAreWiredAtRuntime(t *testing.T) {
 	}{
 		{"競技場賭金", "金額是算出來的，無法列舉；要嘛規則支援佔位符，要嘛這一頁維持原文",
 			[]string{"CONGRATULATIONS, YOU HAVE WON", "250", "PLATINUM."}},
-		// ⚠ 第一段是 `THE SPHERE MOVES TOWARD`，**不含** `THE OPPOSING MAGE.`——
-		// 那兩句是原作的兩個獨立字串，目標是隊員時只會出現前者。原本的樣本把兩者
-		// 併在一起，於是這一列同時代表「隊員名字」與「對手法師」兩種頁面，
-		// 補上對手法師那一句的譯文之後就自相矛盾了。
-		{"隊員名字", "玩家自己取的名字，無法列舉",
-			[]string{"THE SPHERE MOVES TOWARD", "KIVAN", ". IT IS NOW ONLY", "10", "FEET FROM", "KIVAN", "."}},
+
 	}
 	for _, test := range unhandled {
 		if result := pack.MatchText(test.texts, "zh-TW"); result.Matched {

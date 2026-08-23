@@ -4887,7 +4887,14 @@ func (s *State) selectShop(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModePlace
 			s.OriginalEvent = "BUY"
-			s.Message = fmt.Sprintf(s.catalog.Text("shop_purchase_failed", "shop_purchase_failed: %s"), err)
+			// ⚠ **不要把 Go 的錯誤字串端到玩家面前**：`character and money pool
+			// cannot pay 5 gold` 是給開發者看的。玩家會遇到的只有「錢不夠」，
+			// 那一種有自己的譯文；其餘是程式錯誤，用不帶細節的通用訊息。
+			if errors.Is(err, ErrShopCannotAfford) {
+				s.Message = s.catalog.Text("shop_purchase_unaffordable", "shop_purchase_unaffordable")
+			} else {
+				s.Message = s.catalog.Text("shop_purchase_failed", "shop_purchase_failed")
+			}
 			return nil
 		}
 		item := s.shopOffers[value].Item
