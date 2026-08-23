@@ -116,8 +116,8 @@
    "wizard-tower.hidden-button": "你們找到紙條上提到的隱藏按鈕，避開了尖刺陷阱。",
    "wizard-tower.sphere-kills-wizard": "光球逼近紅袍法師時，他驚慌地舉起法杖。兩者相撞爆出巨響，震得整棟建築搖晃，光球與人都沒有留下任何東西。",
    "wizard-tower.chests-valuables": "沿牆排開的箱子裡裝著不少值錢的東西。",
-   "wizard-tower.spoils-for-the-victor": "光球停在你們之間。紅袍法師要你們交出一些物品和錢，笑著說：「勝者的戰利品。」下一刻你們已經在外頭。",
-   "wizard-tower.sucked-into-sphere": "光球捲上其中一名隊員，把人吸了進去，再也回不來。一隻伊弗利特領著一隊黑暗精靈殺向你們。",
+   "wizard-tower.spoils-for-the-victor": "法球停在你們之間。紅袍法師要你們交出一些物品和錢，笑著說：「勝者的戰利品。」下一刻你們已經在外頭。",
+   "wizard-tower.sucked-into-sphere": "法球捲上其中一名隊員，把人吸了進去，再也回不來。一隻伊弗利特領著一隊黑暗精靈殺向你們。",
    "journal.15.1": "手札條目 15（1/2）：德拉坎德羅斯對龍群宣稱，你們是伊爾明斯特為報復龍群飛襲、意圖消滅所有龍族的棋子；他願把這些「刺客」交給龍群，以證明自己的善意。他又指著你們手臂上的印記，誣稱那是奴役巨龍的提朗瑟克斯之標誌。",
    "journal.15.2": "手札條目 15（2/2）：一隻黑龍並不相信。牠見過相似的發光枷印控制戰士，認定真正操縱你們的人是德拉坎德羅斯，要求先解除枷印再審判你們。黑龍以冒煙的酸液威嚇他；德拉坎德羅斯只得念咒，讓自己那枚枷印逐漸消失。",
    "zhentil.hooded_offer": "一名兜帽女子忽然現身。「跟我來，我能帶你們離開！你們已被困在這裡；我的主人能幫助你們。」",
@@ -511,6 +511,9 @@
    "world.tavern-tale-58": "你們無意間聽見一則酒館傳聞：溫拉爾想蓋一座關犯人的競技場，就像散提爾堡那樣。",
    "world.tavern-tale-61": "你們無意間聽見一則酒館傳聞：斯托亞諾河谷又要改回農田了，那座金字塔現在成了灌溉系統的一部分。",
    "world.tavern-tale-62": "你們無意間聽見一則酒館傳聞：前任剛德高階祭司加里，曾經有一陣子是娜卡西亞公主的情人。",
+   "wizard-tower.sphere-moves-toward-mage": "法球朝對手法師移動。",
+   "wizard-tower.option.concentrate-on-sphere": "自己集中心神操縱法球",
+   "ecl-option.surrender": "認輸",
    "tilverton.tavern-tale-37": "他說了一則酒館傳聞：科米爾的阿祖恩國王正在提爾佛頓找他那個離家出走的女兒。",
    "tilverton.tavern.ask-injuries": "詢問傷勢",
    "tilverton.tavern.ignore-injuries": "不理會",
@@ -1580,7 +1583,7 @@
    "wizard-tower.sphere-distance-50": "光球離紅袍法師只剩 50 呎。",
    "wizard-tower.sphere-distance-60": "光球離紅袍法師只剩 60 呎。",
    "wizard-tower.sphere-distance-70": "光球離紅袍法師只剩 70 呎。",
-   "wizard-tower.sphere-opponent-focuses": "對手把心神集中在光球上。"
+   "wizard-tower.sphere-opponent-focuses": "對手把心神集中在法球上。"
   }
  },
  "events": []

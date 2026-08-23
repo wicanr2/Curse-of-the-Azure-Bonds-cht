@@ -5902,7 +5902,7 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 		return fmt.Errorf("invalid dungeon movement direction %d", direction)
 	}
 	// ★ 路線的另一半：主線走過哪些格。只錄不擋（spec 1191）。
-	recordMove(int(s.currentECLBlockForLog()), s.DungeonX, s.DungeonY, direction)
+	recordMove(int(s.currentECLBlockForLog()), int(s.GeoMapBlock), s.DungeonX, s.DungeonY, direction)
 	wantDX, wantDY := 0, 0
 	switch direction {
 	case 0:

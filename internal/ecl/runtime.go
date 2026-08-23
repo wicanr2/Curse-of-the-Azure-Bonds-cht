@@ -1499,6 +1499,17 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 					selectedPlayerIndex = int(request.Selected)
 					selectedPlayerSet = true
 					stringsMemory[0x7C00] = workingPartyContext.Members[selectedPlayerIndex].Name
+					// ★ **選完人要把「有選到人」投影出去。** `7D00h` 不是普通格子，
+					// 是**目前選中角色**的欄位投影（spec 624：
+					// `if char^[197h] <> 0 then 1 else 80h`，另有一個一次性旗標
+					// 讓它讀成 0）。原作腳本靠它判斷「玩家真的挑了一個人」。
+					//
+					// ⚠ 少了這一行會**卡死在腳本自己的迴圈裡**：`ECL5/0x33:0C52`
+					// 是 `WHO` → `COMPARE 7D00h,1` → 不等就印一句話再 `GOTO` 回
+					// `WHO`。remake 原本讓 `7D00h` 留著上一次 `LOAD CHARACTER`
+					// 的值，於是巫師塔那一場永遠問不完（實測按鍵重放在那裡按了
+					// 五百多次都出不來，而畫面上只是同一個「請選擇角色」）。
+					memory[0x7D00] = 1
 				}
 			}
 			result.WhoRequests = append(result.WhoRequests, request)

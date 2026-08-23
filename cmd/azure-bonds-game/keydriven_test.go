@@ -155,8 +155,10 @@ func (s *keyDrivenSession) routeChoice() (int, bool) {
 func (s *keyDrivenSession) routeMove() (int, bool) {
 	x, y, _ := s.app.state.DungeonGeometryView()
 	block, _ := s.app.state.CurrentECLBlockID()
-	cell := routeCell{int(block), x, y}
-	index, ok := s.takeRouteStep(fmt.Sprintf("cell:%d/%d/%d", cell.segment, cell.x, cell.y), s.routeMoves[cell])
+	cell := routeCell{int(block), s.routeGeoBlock(int(s.app.state.GeoMapBlock)), x, y}
+	index, ok := s.takeRouteStep(
+		fmt.Sprintf("cell:%d/%d/%d/%d", cell.segment, cell.geoBlock, cell.x, cell.y),
+		s.routeMoves[cell])
 	if !ok {
 		return 0, false
 	}
@@ -208,8 +210,13 @@ func routeMenuPatienceValue() int {
 	return routeMenuPatience
 }
 
-// routeCell 是「這一段的這一格」。**段號不能省**：不同段的地圖上都有 (7,13)。
-type routeCell struct{ segment, x, y int }
+// routeCell 是「這一段、這一張圖的這一格」。
+//
+// ⚠ **段號不能省**：不同段的地圖上都有 (7,13)。
+// ⚠ **地圖編號也不能省**：段與地圖不是一對一——實測 16,048 個移動裡有 2,905 個
+// 的段號與地圖編號不同。只記段號的話，同一個座標會混到另一張圖的走法，
+// 重放時就往牆裡走。
+type routeCell struct{ segment, geoBlock, x, y int }
 
 // buildRouteIndex 把路線翻成兩張查得到的表。
 //
@@ -221,13 +228,25 @@ type routeCell struct{ segment, x, y int }
 // 查表式沒有這個假設：**站在哪就查哪一格**，路線裡曾經從這一格走出去的步驟一定
 // 找得到，跟中間繞了多遠無關。代價是同一格被走過很多次時，只能照錄下來的順序
 // 一個一個用——那是現有資料能給的最好答案。
+// routeGeoBlock 決定查表要不要帶地圖編號。
+//
+// ⚠ **看路線檔有沒有這一欄，不要無條件帶**：`geo_block` 是後來才加的，早期錄的
+// 路線沒有這一欄，反序列化之後全是 0。無條件帶著查，每一格都會查不到，
+// 而查不到的後果是**安靜地沒有路線**——報表上看起來只是「走得比較短」。
+func (s *keyDrivenSession) routeGeoBlock(current int) int {
+	if !s.routeHasGeoBlock {
+		return 0
+	}
+	return current
+}
+
 func buildRouteIndex(route []game.Decision) (map[routeCell][]int, map[string][]int) {
 	moves := map[routeCell][]int{}
 	choices := map[string][]int{}
 	for index, step := range route {
 		switch step.Kind {
 		case "move":
-			key := routeCell{step.Segment, step.FromX, step.FromY}
+			key := routeCell{step.Segment, step.GeoBlock, step.FromX, step.FromY}
 			moves[key] = append(moves[key], index)
 		case "select":
 			if len(step.Choices) < 2 {
@@ -321,6 +340,8 @@ type keyDrivenSession struct {
 	// ★ 這就是「路線知識」：戰役測試裡逐段寫死的劇情決策，用 `State.Select`
 	// 錄成一份可重放的清單，重放端用**按鍵**把游標挪到那一項（spec 1191）。
 	route []game.Decision
+	// routeHasGeoBlock 是「這一份路線檔有沒有記地圖編號」。
+	routeHasGeoBlock bool
 	// routeMoves／routeChoices 是路線翻出來的查表（見 `buildRouteIndex`）。
 	routeMoves   map[routeCell][]int
 	routeChoices map[string][]int
@@ -431,7 +452,15 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 	application, keys := keyDrivenApp(t)
 	route := loadRoute(t)
 	moves, choices := buildRouteIndex(route)
+	hasGeoBlock := false
+	for _, step := range route {
+		if step.Kind == "move" && step.GeoBlock != 0 {
+			hasGeoBlock = true
+			break
+		}
+	}
 	return &keyDrivenSession{
+		routeHasGeoBlock: hasGeoBlock,
 		route: route, routeCursor: map[string]int{},
 		routeMoves: moves, routeChoices: choices,
 		app: application, keys: keys,
@@ -569,9 +598,9 @@ func (s *keyDrivenSession) traceMenu(reason string, want int) {
 		chosen = s.app.state.Choices[want]
 	}
 	s.moveTrace = append(s.moveTrace, fmt.Sprintf(
-		"幀%04d 選單 0x%02X %s 第%d項=%q ← %s｜%s", s.frames, block,
-		modeName(s.app.state.Mode), want, chosen, reason,
-		strings.Join(s.app.state.Choices, "｜")))
+		"幀%04d 選單 0x%02X %s 第%d項=%q ← %s｜%s｜訊息=%.60q 提示=%.40q",
+		s.frames, block, modeName(s.app.state.Mode), want, chosen, reason,
+		strings.Join(s.app.state.Choices, "｜"), s.app.state.Message, s.app.state.Prompt))
 }
 
 // step 依畫面挑一顆鍵按下去。**只用玩家按得到的鍵**，不碰 `state` 的任何方法。

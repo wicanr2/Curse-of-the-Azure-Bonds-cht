@@ -35,6 +35,7 @@ func main() {
 	before := flag.Int("before", 24, "NEWECL 前面印幾條")
 	writes := flag.String("writes", "", "改成列出這一段裡所有碰到這個位址（十六進位）的指令，讀與寫都算")
 	all := flag.String("all", "", "在全部 ECL 成員裡找碰到這個位址的指令")
+	opcode := flag.Int("opcode", -1, "改成列出這個 opcode 的每一處與前後文")
 	from := flag.Int("from", -1, "只印這個位移之後的指令")
 	to := flag.Int("to", 0x10000, "只印到這個位移為止")
 	flag.Parse()
@@ -130,6 +131,22 @@ func main() {
 				continue
 			}
 			fmt.Printf("  %04X %-12s %s\n", instruction.Offset, instruction.Command.Name, format(instruction))
+		}
+		return
+	}
+	if *opcode >= 0 {
+		for index, instruction := range list {
+			if int(instruction.Command.Opcode) != *opcode {
+				continue
+			}
+			fmt.Printf("=== %s 於 %04X ===\n", instruction.Command.Name, instruction.Offset)
+			start := index - *before
+			if start < 0 {
+				start = 0
+			}
+			for _, previous := range list[start : index+*before/2+1] {
+				fmt.Printf("  %04X %-12s %s\n", previous.Offset, previous.Command.Name, format(previous))
+			}
 		}
 		return
 	}

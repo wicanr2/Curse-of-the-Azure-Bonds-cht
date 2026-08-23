@@ -9856,6 +9856,13 @@
    "message_id": "wizard-tower.sphere-distance-70"
   },
   {
+   "id": "wizard-tower.sphere-moves-toward-mage",
+   "all_contains": [
+    "THE SPHERE MOVES TOWARD THE OPPOSING MAGE"
+   ],
+   "message_id": "wizard-tower.sphere-moves-toward-mage"
+  },
+  {
    "id": "wizard-tower.sphere-opponent-focuses",
    "all_contains": [
     "YOUR OPPONENT FOCUSES ON THE SPHERE"
@@ -10153,6 +10160,16 @@
    "id": "tilverton.tavern.option.ignore-injuries",
    "source": "IGNORE THEM",
    "message_id": "tilverton.tavern.ignore-injuries"
+  },
+  {
+   "id": "wizard-tower.option.concentrate-on-sphere",
+   "source": "CONCENTRATE ON THE SPHERE YOURSELF",
+   "message_id": "wizard-tower.option.concentrate-on-sphere"
+  },
+  {
+   "id": "ecl-option.surrender",
+   "source": "SURRENDER",
+   "message_id": "ecl-option.surrender"
   },
   {
    "id": "tilverton.sewers.option.move-on",
