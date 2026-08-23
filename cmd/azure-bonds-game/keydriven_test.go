@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -116,94 +117,80 @@ func (a *app) canStepForward() bool {
 
 // routeChoice 回答「主線在這個選單上選了哪一項」。
 //
-// ⚠ 比對的是**選項文字**不是索引：索引會隨選單內容錯位。而且要**往前找一段**——
-// 按鍵這一場走的路和主線不會完全一樣，中間會多出或少掉一些選單，卡在第一個
-// 對不上的地方就等於沒有路線。
+// ⚠ 比對的是**選項文字**不是索引：索引會隨選單內容錯位。
 func (s *keyDrivenSession) routeChoice() (int, bool) {
-	// ⚠ **只有真的岔路才消耗路線**。「請按任意鍵或 Enter 繼續」這種單選項在整條
-	// 主線裡出現幾百次，讓它們也去比對的話，往前找的視窗會被它們吃光——
-	// 路線步數一直增加，隊伍卻一步都沒往前。
+	// ⚠ **只有真的岔路才查路線**。「請按任意鍵或 Enter 繼續」這種單選項在整條
+	// 主線裡出現幾千次，讓它們也去查表只會把紀錄用光，隊伍卻一步都沒往前。
 	if len(s.app.state.Choices) < 2 {
 		return 0, false
 	}
-	current := strings.Join(s.app.state.Choices, "｜")
-	for offset := 0; offset < routeLookahead && s.routeAt+offset < len(s.route); offset++ {
-		step := s.route[s.routeAt+offset]
-		if strings.Join(step.Choices, "｜") != current {
-			continue
-		}
-		s.routeAt += offset + 1
-		return step.Index, true
+	signature := strings.Join(s.app.state.Choices, "｜")
+	index, ok := s.takeRouteStep("menu:"+signature, s.routeChoices[signature])
+	if !ok {
+		return 0, false
 	}
-	return 0, false
+	return s.route[index].Index, true
 }
 
 // routeMove 回答「主線站在這一格時往哪個方向走」。
-//
-// ⚠ 比對的是**起點座標**：主線與這一場走的路不會完全一樣，所以要往前找一段，
-// 找到「從我現在這一格出發」的那一步為止。
 func (s *keyDrivenSession) routeMove() (int, bool) {
 	x, y, _ := s.app.state.DungeonGeometryView()
 	block, _ := s.app.state.CurrentECLBlockID()
-	// ⚠ 視窗要算的是「往前看幾個**移動**」，不是「往前看幾筆紀錄」。路線裡的
-	// `select` 佔了一半（783／1607），照筆數算的話它們會把視窗塞滿，
-	// 下一個 `move` 被擠到範圍外 ⇒ 看起來像跟丟，其實只是沒看到。
-	seen := 0
-	for offset := 0; s.routeAt+offset < len(s.route) && seen < routeLookahead; offset++ {
-		step := s.route[s.routeAt+offset]
-		if step.Kind != "move" {
-			continue
-		}
-		seen++
-		if step.FromX != x || step.FromY != y {
-			continue
-		}
-		s.routeAt += offset + 1
-		return step.Direction, true
+	cell := routeCell{int(block), x, y}
+	index, ok := s.takeRouteStep(fmt.Sprintf("cell:%d/%d/%d", cell.segment, cell.x, cell.y), s.routeMoves[cell])
+	if !ok {
+		return 0, false
 	}
-	// ★ 視窗裡找不到就**重新對齊**：拿「現在在哪一段的哪一格」去整條路線裡找。
-	//
-	// ⚠ 重新對齊是**有代價的**，實測（1500 幀）：
-	//
-	//	不對齊          76 格／63 句／照路線 104 步
-	//	對齊＋跳指標    41 格／18 句／34 步   ← 中間的步驟被整批丟掉
-	//	對齊＋不跳指標  57 格／47 句／759 步  ← 同一步一直被重用，原地震盪
-	//	對齊＋用過就記  **82 格／57 句／123 步** ← 目前這一版
-	//
-	// ⇒ 格子多了 6 個、話少了 6 句。**兩邊都不是免費的**，換走法要重新量。
-	//
-	// ⚠ 一定要**帶段號**：不同段的地圖上都有 (7,13)，只比座標會對齊到完全不相干
-	// 的地方，然後照著那裡的方向亂走。
-	//
-	// ⚠ 只往**後**找（`routeAt` 之後）：往回對齊會讓重放在同一段裡繞圈，
-	// 走過的格子看起來還在增加，實際上永遠到不了下一段。
-	if aligned, ok := s.realignRoute(int(block), x, y); ok {
-		s.routeRealigns++
-		// ⚠ **不要把 `routeAt` 跳到對齊的位置**：那會把中間還沒用到的步驟整批
-		// 丟掉，實測走過的格子從 76 掉到 41、記到的話從 63 掉到 18。
-		// 對齊只是「這一步照它走」，指標留在原地讓正常的視窗繼續往前爬。
-		return s.route[aligned].Direction, true
-	}
-	return 0, false
+	return s.route[index].Direction, true
 }
 
-// realignRoute 在 `routeAt` 之後找「從這一段的這一格出發」的下一步。
-func (s *keyDrivenSession) realignRoute(block, x, y int) (int, bool) {
-	for index := s.routeAt; index < len(s.route); index++ {
-		step := s.route[index]
-		if step.Kind != "move" || step.Segment != block || step.FromX != x || step.FromY != y {
-			continue
-		}
-		// ⚠ **同一步不能重複用**：指標留在原地時，下一幀會在同一格再對齊到
-		// 同一步，於是一直按同一個方向——實測會在原地震盪（照路線按 759 次
-		// 卻只走 57 格）。用過就記起來，換下一個對得上的。
-		if s.routeUsed[index] {
-			continue
-		}
-		s.routeUsed[index] = true
-		return index, true
+// takeRouteStep 從一串候選裡輪流拿一個。
+//
+// ⚠ **不能每次都拿第一個**：那會讓隊伍站在同一格一直按同一個方向，原地震盪
+// （舊的指標式重放實測「照路線按 759 次卻只走 57 格」就是這個成因）。
+//
+// ⚠ 也**不要用過就永久劃掉**：主線在同一格會來回經過很多次，一格的候選用完之後
+// 隊伍就再也拿不到路線——實測會在 16 格之間繞掉整整 762 幀。輪流拿兩邊都避開：
+// 候選有幾個就輪幾個，回到同一格會換下一個方向。
+func (s *keyDrivenSession) takeRouteStep(key string, candidates []int) (int, bool) {
+	if len(candidates) == 0 {
+		return 0, false
 	}
-	return 0, false
+	cursor := s.routeCursor[key] % len(candidates)
+	s.routeCursor[key]++
+	return candidates[cursor], true
+}
+
+// routeCell 是「這一段的這一格」。**段號不能省**：不同段的地圖上都有 (7,13)。
+type routeCell struct{ segment, x, y int }
+
+// buildRouteIndex 把路線翻成兩張查得到的表。
+//
+// ★ 為什麼要換掉往前找的視窗。 原本的重放是「從目前的進度往前找 N 個決策」，
+// 而 N 兩邊都不是線性的：太小在第一個岔開的地方就跟丟，太大會把後面的決策提早
+// 消耗掉。更根本的問題是**它假設重放和主線走的順序一樣**——按鍵這一場會多走一些
+// 冤枉路、少走一些捷徑，順序一旦錯開，視窗再大也只是把錯的步驟吃掉。
+//
+// 查表式沒有這個假設：**站在哪就查哪一格**，路線裡曾經從這一格走出去的步驟一定
+// 找得到，跟中間繞了多遠無關。代價是同一格被走過很多次時，只能照錄下來的順序
+// 一個一個用——那是現有資料能給的最好答案。
+func buildRouteIndex(route []game.Decision) (map[routeCell][]int, map[string][]int) {
+	moves := map[routeCell][]int{}
+	choices := map[string][]int{}
+	for index, step := range route {
+		switch step.Kind {
+		case "move":
+			key := routeCell{step.Segment, step.FromX, step.FromY}
+			moves[key] = append(moves[key], index)
+		case "select":
+			if len(step.Choices) < 2 {
+				continue
+			}
+			signature := strings.Join(step.Choices, "｜")
+			choices[signature] = append(choices[signature], index)
+		}
+	}
+	return moves, choices
 }
 
 // moveCursorTo 用方向鍵把選單游標挪到指定項；挪不到就回 false。
@@ -225,23 +212,6 @@ func (s *keyDrivenSession) moveCursorTo(t *testing.T, want int) bool {
 	return s.app.choiceCursor == want && want < len(s.app.state.Choices)
 }
 
-// routeLookahead 是「往前找幾個決策」。
-//
-// ⚠ 太小會在第一個岔開的地方就跟丟；太大會讓後面的決策被提早消耗掉，
-// 之後真的走到那裡時反而沒有路線可用。**兩邊都不是線性的**，而且**視窗算的是
-// 往前看幾個「移動」不是幾筆紀錄**——路線裡 `select` 佔了一半（783／1607），
-// 照筆數算會把視窗塞滿，下一個 `move` 被擠到範圍外。
-//
-// 實測（1500 幀，視窗以移動計）：
-//
-//	3  → 82 格／57 句／照路線 122 次
-//	8  → 82 格／57 句／123 次
-//	20 → **83 格／66 句／76 次** ← 目前這一版
-//	40 → 83 格／66 句／81 次（與 20 相同）
-//	80 → 43 格／10 句／60 次，而且退回只有 `0x01`
-//
-// ⇒ 20 是實測出來的。改動走法之後要重新量。
-const routeLookahead = 20
 
 // keyDrivenMenuPatience 是「同一個選單按同一項幾次還在原地，就換下一項」。
 //
@@ -300,17 +270,33 @@ type keyDrivenSession struct {
 	menus map[string]bool
 	// menuSeen 記著同一個選單看過幾次，用來判斷「卡住了，換下一項」。
 	menuSeen map[string]int
-	// route 是主線錄下來的選擇（`COAB_DECISION_LOG`），routeAt 是進度。
+	// route 是主線錄下來的選擇（`COAB_DECISION_LOG`）。
 	// ★ 這就是「路線知識」：戰役測試裡逐段寫死的劇情決策，用 `State.Select`
 	// 錄成一份可重放的清單，重放端用**按鍵**把游標挪到那一項（spec 1191）。
-	route   []game.Decision
-	routeAt int
+	route []game.Decision
+	// routeMoves／routeChoices 是路線翻出來的查表（見 `buildRouteIndex`）。
+	routeMoves   map[routeCell][]int
+	routeChoices map[string][]int
 	// routeHits 是照著路線按下去的次數，用來看路線真的被用到多少。
 	routeHits int
-	// routeRealigns 是「視窗裡找不到、靠段號＋座標重新對齊」的次數。
-	routeRealigns int
-	// routeUsed 記著哪些路線步驟已經用過，避免對齊到同一步而原地震盪。
-	routeUsed map[int]bool
+	// routeCursor 記著每一格／每一個選單輪到第幾個候選。
+	routeCursor map[string]int
+	// segmentTrace 是 ECL 段的**變化**序列（含幀號），用來看劇情走到哪一步、
+	// 又是在哪一幀被拉回去的。只記變化，不記每一幀。
+	segmentTrace []string
+	// moveTrace 是逐格的走位紀錄，`COAB_KEY_TRACE` 指定輸出檔才會收集。
+	// 用來回答「隊伍到底有沒有站上那一格、站上去之後路線叫它往哪走」。
+	moveTrace []string
+	// modeFrames 是每一種畫面待了幾幀；lastProgress 是最後一次踏上新格子的幀號。
+	// ★ 這兩個回答的是「**停在哪裡**」——沒有它們，「跑到頂了」與「卡在商店裡」
+	// 看起來一模一樣。
+	modeFrames   map[game.Mode]int
+	lastProgress int
+	// stallCells 是「最後一次踏上新格子之後」還在原地繞的那些格子。
+	stallCells map[[3]int]int
+	// routeBlocked 是「路線說往這邊走，按下去卻沒動」的次數——這個數字把
+	// 「路線用完了」與「路線帶不動」分開。
+	routeBlocked int
 }
 
 // loadRoute 讀主線錄下來的路線；沒有就回 nil（測試照樣跑，只是沒有路線可循）。
@@ -335,14 +321,64 @@ func loadRoute(t *testing.T) []game.Decision {
 	return route
 }
 
+// passability 把四個方向通不通印成一行；`doorNote` 補上門的選單有沒有開。
+func (s *keyDrivenSession) passability() string {
+	if s.app.geoGrid == nil {
+		return "沒有地圖"
+	}
+	names := []string{"北", "東", "南", "西"}
+	parts := make([]string, 0, 4)
+	for index, direction := range []int{0, 2, 4, 6} {
+		deltaX, deltaY := headingDelta(direction)
+		mark := "牆"
+		if s.app.state.CanMoveDungeon(*s.app.geoGrid, deltaX, deltaY, direction) {
+			mark = "通"
+		}
+		parts = append(parts, names[index]+mark)
+	}
+	return strings.Join(parts, "")
+}
+
+func (s *keyDrivenSession) doorNote() string {
+	if !s.app.dungeonDoorMenu {
+		return ""
+	}
+	flags, ok := s.app.dungeonDoorFlags()
+	if !ok {
+		return "／門選單開著（讀不到 flags）"
+	}
+	options := s.app.state.DungeonDoorMenuOptions(flags)
+	return fmt.Sprintf("／門選單開著 flags=%d 敲=%v 撬=%v 撞=%v",
+		flags, options.Knock, options.Pick, options.Bash)
+}
+
+// tracing 回答「這一場要不要收逐格紀錄」。
+func (s *keyDrivenSession) tracing() bool { return os.Getenv("COAB_KEY_TRACE") != "" }
+
+// keyDrivenFrames 是這一場要跑幾幀；`COAB_KEY_FRAMES` 可以覆蓋掉，用來量上限。
+func keyDrivenFrames() int {
+	if raw := os.Getenv("COAB_KEY_FRAMES"); raw != "" {
+		if value, err := strconv.Atoi(raw); err == nil && value > 0 {
+			return value
+		}
+	}
+	return keyDrivenDefaultFrames
+}
+
+const keyDrivenDefaultFrames = 1500
+
 func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 	application, keys := keyDrivenApp(t)
+	route := loadRoute(t)
+	moves, choices := buildRouteIndex(route)
 	return &keyDrivenSession{
-		route: loadRoute(t), routeUsed: map[int]bool{},
+		route: route, routeCursor: map[string]int{},
+		routeMoves: moves, routeChoices: choices,
 		app: application, keys: keys,
 		cells: map[[3]int]bool{}, tried: map[[4]int]bool{}, modes: map[game.Mode]bool{},
 		messages: map[string]bool{}, fallbacks: map[string]bool{},
 		blocks: map[uint8]bool{}, menus: map[string]bool{}, menuSeen: map[string]int{},
+		modeFrames: map[game.Mode]int{}, stallCells: map[[3]int]int{},
 	}
 }
 
@@ -376,16 +412,28 @@ func hasLatinWord(text string) bool {
 func (s *keyDrivenSession) observe() {
 	state := s.app.state
 	s.modes[state.Mode] = true
+	s.modeFrames[state.Mode]++
 	if state.Mode == game.ModeDungeon || state.Mode == game.ModeEvent {
 		x, y, _ := state.DungeonGeometryView()
 		block := 0
 		if s.app.geoGrid != nil {
 			block = int(s.app.geoBlock)
 		}
-		s.cells[[3]int{block, x, y}] = true
+		key := [3]int{block, x, y}
+		if !s.cells[key] {
+			s.lastProgress = s.frames
+			s.stallCells = map[[3]int]int{}
+		}
+		s.cells[key] = true
+		s.stallCells[key]++
 	}
 	if block, ok := state.CurrentECLBlockID(); ok {
 		s.blocks[block] = true
+		entry := fmt.Sprintf("0x%02X@%d", block, s.frames)
+		if len(s.segmentTrace) == 0 ||
+			strings.SplitN(s.segmentTrace[len(s.segmentTrace)-1], "@", 2)[0] != fmt.Sprintf("0x%02X", block) {
+			s.segmentTrace = append(s.segmentTrace, entry)
+		}
 	}
 	if len(state.Choices) > 0 {
 		s.menus[strings.Join(state.Choices, "｜")] = true
@@ -473,6 +521,8 @@ func (s *keyDrivenSession) step(t *testing.T) {
 	}
 	// ★ 先看路線：主線在這一格往哪走。轉到那個方向再踏出去，全程只用按鍵。
 	if direction, ok := s.routeMove(); ok {
+		beforeX, beforeY, _ := s.app.state.DungeonGeometryView()
+		beforeBlock, _ := s.app.state.CurrentECLBlockID()
 		for turn := 0; turn < 4; turn++ {
 			_, _, facing := s.app.state.DungeonGeometryView()
 			if int(facing) == direction {
@@ -485,6 +535,27 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		}
 		s.routeHits++
 		tap(t, s.app, s.keys, ebiten.KeyUp)
+		if s.tracing() {
+			afterX, afterY, _ := s.app.state.DungeonGeometryView()
+			afterBlock, _ := s.app.state.CurrentECLBlockID()
+			note := ""
+			if afterX == beforeX && afterY == beforeY && s.app.state.Mode == game.ModeDungeon {
+				note = " 沒動：" + s.passability() + s.doorNote()
+			}
+			s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+				"幀%04d 路線 0x%02X(%d,%d)→%d ⇒ 0x%02X(%d,%d) %s%s",
+				s.frames, beforeBlock, beforeX, beforeY, direction,
+				afterBlock, afterX, afterY, modeName(s.app.state.Mode), note))
+		}
+		if s.app.state.Mode == game.ModeDungeon {
+			afterX, afterY, _ := s.app.state.DungeonGeometryView()
+			if afterX == beforeX && afterY == beforeY {
+				// ⚠ 路線說往這邊走、按下去卻沒動：那一步在這一場**用不出來**
+				// （門沒開、旗標不同、或這一格根本不是主線走到的那個狀態）。
+				// 記下來，免得把「路線用完了」與「路線帶不動」混成同一件事。
+				s.routeBlocked++
+			}
+		}
 		return
 	}
 	target, fresh, ok := s.chooseHeading()
@@ -555,15 +626,26 @@ func (s *keyDrivenSession) handleDoorMenu(t *testing.T) {
 		return
 	}
 	options := s.app.state.DungeonDoorMenuOptions(flags)
+	action := "退出"
 	switch {
 	case options.Knock:
+		action = "敲門"
 		tap(t, s.app, s.keys, ebiten.KeyK)
 	case options.Pick:
+		action = "撬鎖"
 		tap(t, s.app, s.keys, ebiten.KeyP)
 	case options.Bash:
+		action = "撞門"
 		tap(t, s.app, s.keys, ebiten.KeyB)
 	default:
 		tap(t, s.app, s.keys, ebiten.KeyEscape)
+	}
+	if s.tracing() {
+		x, y, facing := s.app.state.DungeonGeometryView()
+		s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+			"幀%04d 門 (%d,%d)朝%d flags=%d %s ⇒ %.30q 選單%v",
+			s.frames, x, y, facing, flags, action, s.app.state.Message,
+			s.app.dungeonDoorMenu))
 	}
 }
 
@@ -666,9 +748,10 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		t.Fatal("按 D 之後還停在角色建立：完成那條路按不出來")
 	}
 
-	// ⚠ 1500 幀就到頂了：跑到 10000 幀還是 82 格、57 句。加幀數不會再多，
-	// 所以不要為了「看起來跑得久」而拖慢整個測試套件。
-	for session.frames = 0; session.frames < 1500; session.frames++ {
+	// ⚠ 幀數上限是**量出來的不是猜的**：換掉走法之後要重新量一次到頂的位置，
+	// 用 `COAB_KEY_FRAMES` 掃一遍再把預設值訂在轉折點上（見 spec 1197）。
+	// 不要為了「看起來跑得久」而拖慢整個測試套件。
+	for session.frames = 0; session.frames < keyDrivenFrames(); session.frames++ {
 		session.observe()
 		session.step(t)
 	}
@@ -690,9 +773,33 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		t.Fatalf("按鍵玩到的畫面有 %d 句落回原文", len(session.fallbacks))
 	}
 	t.Logf("按鍵驅動 %d 幀：走過 %d 格、%d 種畫面、記到 %d 句話、撞到門 %d 次、"+
-		"照路線按 %d 次（路線共 %d 步、重新對齊 %d 次），落回原文 0 句",
+		"照路線按 %d 次（路線共 %d 步，查表覆蓋 %d 格／%d 種選單），落回原文 0 句",
 		session.frames, len(session.cells), len(session.modes), len(session.messages),
-		session.doorsFound, session.routeHits, len(session.route), session.routeRealigns)
+		session.doorsFound, session.routeHits, len(session.route),
+		len(session.routeMoves), len(session.routeChoices))
+	x, y, facing := application.state.DungeonGeometryView()
+	spent := make([]string, 0, len(session.modeFrames))
+	for mode, frames := range session.modeFrames {
+		spent = append(spent, fmt.Sprintf("%s %d", modeName(mode), frames))
+	}
+	sort.Strings(spent)
+	stall := make([]string, 0, len(session.stallCells))
+	for cell, count := range session.stallCells {
+		stall = append(stall, fmt.Sprintf("0x%02X(%d,%d)×%d", cell[0], cell[1], cell[2], count))
+	}
+	sort.Strings(stall)
+	if len(stall) > 12 {
+		stall = append(stall[:12], fmt.Sprintf("…共 %d 格", len(session.stallCells)))
+	}
+	t.Logf("  停在：%s (%d,%d) 朝 %d；最後一次踏上新格子在第 %d 幀；"+
+		"各畫面幀數 %s；路線帶不動 %d 次", modeName(application.state.Mode), x, y, facing,
+		session.lastProgress, strings.Join(spent, "、"), session.routeBlocked)
+	t.Logf("  卡住之後在這些格子之間繞：%s", strings.Join(stall, " "))
+	trace := session.segmentTrace
+	if len(trace) > 40 {
+		trace = append(append([]string{}, trace[:20]...), append([]string{"…"}, trace[len(trace)-20:]...)...)
+	}
+	t.Logf("  ECL 段的變化序列（段@幀）：%s", strings.Join(trace, " → "))
 	// ★ 卡住的原因記在這裡：整場**沒有出現任何真的選單**（只有「按任意鍵繼續」）。
 	// 所以走不遠不是「選錯了選項」，是幾何上到不了——這兩種成因的處置完全不同，
 	// 分不出來就會往錯的方向修。
@@ -706,6 +813,15 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	sort.Strings(blocks)
 	t.Logf("  走到過的 ECL 段：%s", strings.Join(blocks, " "))
 
+	if path := os.Getenv("COAB_KEY_TRACE"); path != "" {
+		if !filepath.IsAbs(path) {
+			path = filepath.Join("..", "..", path)
+		}
+		if err := os.WriteFile(path,
+			[]byte(strings.Join(session.moveTrace, "\n")+"\n"), 0o644); err != nil {
+			t.Fatalf("逐格紀錄寫不出來：%v", err)
+		}
+	}
 	if path := os.Getenv("COAB_KEY_SESSION_JSON"); path != "" {
 		if err := session.writeReport(path); err != nil {
 			t.Fatalf("報表寫不出來：%v", err)

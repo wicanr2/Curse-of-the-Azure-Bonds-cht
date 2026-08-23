@@ -26,6 +26,23 @@ XVFB=""
 if [ "$IMAGE" = "$DEFAULT_IMAGE" ]; then
   XVFB="with-xvfb"
 fi
+# COAB_* 是本專案自己的測試開關（例如把戰役快照導出到 workplace/、指定路線檔）。
+#
+# ⚠ **一律整批轉發，不要逐一列名字。** 原本是一條一條寫 `-e COAB_ROUTE_JSON=...`，
+# 而那份清單漏過——`COAB_KEY_FRAMES` 加進測試之後忘了登記，於是主機設了值、
+# 容器裡讀不到，測試照預設值跑完還印出「已經到頂」的結論。**沒轉發的環境變數
+# 不會報錯，只會安靜地變成預設值**，這種失敗看起來就像實驗做完了。
+COAB_ENV=()
+while IFS='=' read -r name _; do
+  case "$name" in
+    COAB_*) COAB_ENV+=(-e "$name") ;;
+  esac
+done < <(env)
+# 一個都沒有時 `"${COAB_ENV[@]}"` 在舊 bash 會展開成空字串引數，塞一個無害的佔位。
+if [ ${#COAB_ENV[@]} -eq 0 ]; then
+  COAB_ENV=(-e COAB_UNUSED=)
+fi
+
 mkdir -p "$ROOT/workplace/go-build-cache" "$ROOT/workplace/go-mod-cache"
 exec docker run --rm \
   --log-opt max-size=10m --log-opt max-file=3 \
@@ -37,18 +54,7 @@ exec docker run --rm \
   -e GOFLAGS="-mod=mod -buildvcs=false" \
   -e GOPROXY="file:///src/workplace/engine-proxy,https://proxy.golang.org,direct" \
   -e GOSUMDB=off \
-  `# COAB_* 是本專案自己的測試開關（例如把戰役快照導出到 workplace/），` \
-  `# 沒設就是空字串，對容器內沒有影響。` \
-  -e COAB_CAMPAIGN_SNAPSHOT_DIR="${COAB_CAMPAIGN_SNAPSHOT_DIR:-}" \
-  -e COAB_CAMPAIGN_CELLS_PATH="${COAB_CAMPAIGN_CELLS_PATH:-}" \
-  -e COAB_KEY_EXPLORE="${COAB_KEY_EXPLORE:-}" \
-  -e COAB_KEY_SESSION_JSON="${COAB_KEY_SESSION_JSON:-}" \
-  -e COAB_KEY_SNAPSHOT_JSON="${COAB_KEY_SNAPSHOT_JSON:-}" \
-  -e COAB_DECISION_LOG="${COAB_DECISION_LOG:-}" \
-  -e COAB_BLOCK_EDGES="${COAB_BLOCK_EDGES:-}" \
-  -e COAB_ARRIVAL_SNAPSHOT_DIR="${COAB_ARRIVAL_SNAPSHOT_DIR:-}" \
-  -e COAB_FLAG_SAMPLE_DIR="${COAB_FLAG_SAMPLE_DIR:-}" \
-  -e COAB_ROUTE_JSON="${COAB_ROUTE_JSON:-}" \
+  "${COAB_ENV[@]}" \
   `# engine 是私有 repo，容器沒有（也不該有）GitHub 憑證，proxy.golang.org 也取不到。` \
   `# tools/engine-proxy.sh 會把本機那份 commit 打包成檔案型 proxy 放在最前面。` \
   `# ⚠ 不要改用 GOPRIVATE：它會強制走 direct，正好繞過這個 proxy。` \

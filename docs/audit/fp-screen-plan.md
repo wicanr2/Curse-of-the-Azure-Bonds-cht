@@ -46,9 +46,9 @@ Caveats: this is the denominator for the **renderer**, not for content, and not 
 
 | item | value |
 |---|---:|
-| captured screens in `index.tsv` | 1274 |
+| captured screens in `index.tsv` | 1470 |
 | captures that map to no standable cell | 0 |
-| **distinct signatures covered** | **530 / 585** |
+| **distinct signatures covered** | **579 / 585** |
 
 ### Next cells worth capturing
 
@@ -56,58 +56,9 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 
 | # | map | GEO | block | cell | new signatures | still uncovered after |
 |---:|---|---:|---:|---|---:|---:|
-| 1 | `original.geo5.block-35` | 5 | `0x35` | `(11,9)` | 1 | 54 |
-| 2 | `original.geo5.block-35` | 5 | `0x35` | `(11,10)` | 1 | 53 |
-| 3 | `original.geo5.block-35` | 5 | `0x35` | `(13,10)` | 1 | 52 |
-| 4 | `original.geo5.block-35` | 5 | `0x35` | `(3,11)` | 1 | 51 |
-| 5 | `original.geo5.block-35` | 5 | `0x35` | `(8,11)` | 1 | 50 |
-| 6 | `original.geo5.block-35` | 5 | `0x35` | `(9,11)` | 1 | 49 |
-| 7 | `original.geo5.block-35` | 5 | `0x35` | `(11,13)` | 1 | 48 |
-| 8 | `myth-drannor.burial-glen` | 6 | `0x40` | `(5,1)` | 1 | 47 |
-| 9 | `myth-drannor.burial-glen` | 6 | `0x40` | `(10,3)` | 1 | 46 |
-| 10 | `myth-drannor.burial-glen` | 6 | `0x40` | `(5,4)` | 1 | 45 |
-| 11 | `myth-drannor.burial-glen` | 6 | `0x40` | `(12,5)` | 1 | 44 |
-| 12 | `myth-drannor.burial-glen` | 6 | `0x40` | `(10,6)` | 1 | 43 |
-| 13 | `myth-drannor.burial-glen` | 6 | `0x40` | `(11,6)` | 1 | 42 |
-| 14 | `myth-drannor.burial-glen` | 6 | `0x40` | `(13,6)` | 1 | 41 |
-| 15 | `myth-drannor.burial-glen` | 6 | `0x40` | `(14,6)` | 1 | 40 |
-| 16 | `myth-drannor.burial-glen` | 6 | `0x40` | `(4,7)` | 1 | 39 |
-| 17 | `myth-drannor.burial-glen` | 6 | `0x40` | `(4,8)` | 1 | 38 |
-| 18 | `myth-drannor.burial-glen` | 6 | `0x40` | `(3,9)` | 1 | 37 |
-| 19 | `myth-drannor.burial-glen` | 6 | `0x40` | `(2,10)` | 1 | 36 |
-| 20 | `myth-drannor.burial-glen` | 6 | `0x40` | `(1,11)` | 1 | 35 |
-| 21 | `myth-drannor.burial-glen` | 6 | `0x40` | `(7,11)` | 1 | 34 |
-| 22 | `myth-drannor.burial-glen` | 6 | `0x40` | `(9,11)` | 1 | 33 |
-| 23 | `myth-drannor.burial-glen` | 6 | `0x40` | `(11,11)` | 1 | 32 |
-| 24 | `myth-drannor.burial-glen` | 6 | `0x40` | `(4,12)` | 1 | 31 |
-| 25 | `myth-drannor.burial-glen` | 6 | `0x40` | `(11,12)` | 1 | 30 |
-| 26 | `myth-drannor.burial-glen` | 6 | `0x40` | `(1,13)` | 1 | 29 |
-| 27 | `myth-drannor.burial-glen` | 6 | `0x40` | `(2,13)` | 1 | 28 |
-| 28 | `myth-drannor.burial-glen` | 6 | `0x40` | `(3,13)` | 1 | 27 |
-| 29 | `myth-drannor.burial-glen` | 6 | `0x40` | `(13,13)` | 1 | 26 |
-| 30 | `myth-drannor.burial-glen` | 6 | `0x40` | `(2,14)` | 1 | 25 |
-| 31 | `myth-drannor.burial-glen` | 6 | `0x40` | `(3,14)` | 1 | 24 |
-| 32 | `myth-drannor.burial-glen` | 6 | `0x40` | `(12,14)` | 1 | 23 |
-| 33 | `myth-drannor.burial-glen` | 6 | `0x40` | `(2,15)` | 1 | 22 |
-| 34 | `myth-drannor.burial-glen` | 6 | `0x40` | `(3,15)` | 1 | 21 |
-| 35 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(2,2)` | 1 | 20 |
-| 36 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(3,2)` | 1 | 19 |
-| 37 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(5,2)` | 1 | 18 |
-| 38 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(3,3)` | 1 | 17 |
-| 39 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(6,5)` | 1 | 16 |
-| 40 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(6,6)` | 1 | 15 |
-| 41 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(13,6)` | 1 | 14 |
-| 42 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(6,7)` | 1 | 13 |
-| 43 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(6,8)` | 1 | 12 |
-| 44 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(12,8)` | 1 | 11 |
-| 45 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(3,9)` | 1 | 10 |
-| 46 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(6,9)` | 1 | 9 |
-| 47 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(12,9)` | 1 | 8 |
-| 48 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(9,10)` | 1 | 7 |
-| 49 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(12,10)` | 1 | 6 |
-| 50 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(7,11)` | 1 | 5 |
-| 51 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(12,11)` | 1 | 4 |
-| 52 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(12,12)` | 1 | 3 |
-| 53 | `myth-drannor.outer-ruins` | 6 | `0x42` | `(15,12)` | 1 | 2 |
-| 54 | `myth-drannor.inner-ruins` | 6 | `0x43` | `(7,8)` | 1 | 1 |
-| 55 | `original.geo6.block-45` | 6 | `0x45` | `(9,9)` | 1 | 0 |
+| 1 | `original.geo5.block-35` | 5 | `0x35` | `(11,9)` | 1 | 5 |
+| 2 | `original.geo5.block-35` | 5 | `0x35` | `(3,11)` | 1 | 4 |
+| 3 | `original.geo5.block-35` | 5 | `0x35` | `(8,11)` | 1 | 3 |
+| 4 | `myth-drannor.burial-glen` | 6 | `0x40` | `(5,4)` | 1 | 2 |
+| 5 | `myth-drannor.burial-glen` | 6 | `0x40` | `(11,6)` | 1 | 1 |
+| 6 | `myth-drannor.burial-glen` | 6 | `0x40` | `(4,7)` | 1 | 0 |
