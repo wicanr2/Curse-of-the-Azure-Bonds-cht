@@ -605,9 +605,28 @@ end;
 `geo5-b35`／`geo6-b45` 在那個變體下變差，要在改成平表之後重量，
 不能拿舊形狀的量測去否定這條規則。
 
-⚠ 編號 `100h..127h` 那一組 remake 沒有模型（`SymbolSetBase` 只有四項）。
+那張分段表在資料段裡有名字，兩份都是 **5 組**：
+
+| 符號 | 位址 | 內容 |
+|---|---|---|
+| `SETFIRST` | `488Ah` | `1, 46, 116, 186, 256` |
+| `SETLAST` | `4894h` | `45, 115, 185, 255, …` |
+
+`LOADWALLSET` 的 rebase 就是 `SETFIRST[起始槽] − SETFIRST[1]`（`overlay-30:1064h`），
+而套用的條件是 `編號 >= SETLAST[0]`（`116Bh`，＝ **45**）。
+
+⚠ **門檻是 45 不是 46**，所以編號 `45` 會被 rebase——即使 45 屬於共用組
+（`SETFIRST[0]=1`..`SETLAST[0]=45`）。這是原作自己的行為，remake 的
+`OffsetSymbols` 用 `value < 0x2D` 跳過，剛好一致；**改成「跳過整個共用組」
+會與原作不同**。
+
+⚠ 編號 `100h..127h`（第 4 組）remake 沒有模型（`SymbolSetBase` 只有四項）。
 WALLDEF 的格子是**位元組**，放不下 `>= 256`，所以那一組不會從 WALLDEF 進來——
-但它證明符號組不是只有四個，抄 `SymbolSetBase` 時不要當成上界。
+但 `SETFIRST` 有五項，抄 `SymbolSetBase` 時不要把四當成上界。
+
+⚠ `SymbolSetBase[0]` 是 `0`，而 `SETFIRST[0]` 是 **1**。remake 這一邊由
+`wallSharedFirstID` 擔任 `SETFIRST[0]`，所以目前沒有出事；但兩個常數表的第 0 項
+語意不同，合併它們之前要先確認。
 ⚠ 三個已經站得住的事實，下一輪不必重推：
 
   - 原作的 rebase **只算一次**，取自呼叫時指定的起始槽
