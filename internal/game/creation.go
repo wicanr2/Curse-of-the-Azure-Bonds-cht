@@ -461,20 +461,85 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 // ⚠ 表裡只有「載檔時真的會跑到」的寫入：段的開頭幾乎都有一道
 // `COMPARE 4BF2h, <段號>` 的閘門，而那道閘門**兩個方向都有人用**。
 func (s *State) applyLoadTimeECLWrites() {
-	cells, ok := eclBlockLoadTimeWrites[eclBlockKey{
-		area: s.Area.GameArea, block: uint8(s.Area.LastECLBlockID)}]
+	block := uint8(s.Area.LastECLBlockID)
+	if cells, ok := eclBlockLoadTimeWrites[eclBlockKey{
+		area: s.Area.GameArea, block: block}]; ok {
+		for address, value := range cells {
+			s.setLoadTimeCell(address, value)
+		}
+	}
+	// ★ 靜態表表達不了「看情況」。 `ECL2/0x04` 的進入碼在 `LOAD FILES`／
+	// `LOAD PIECES` 之後 `GOSUB` 一支子程式，那支拿**當下站的那一格**的地形碼
+	// 決定天花板顏色：
+	//
+	//	16F4  COMPARE C04F 0x95
+	//	16FA  IF =   → 16FB  SAVE 0A 4BFE   { 紅 }
+	//	1701  IF <>  → 1702  SAVE 09 4BFE   { 白 }
+	//	1708  CALL   2E10                   { 重畫 }
+	//
+	// 少了它，火刀據點裡地形碼 `95h` 那幾格的天花板在 remake 是白的、原版是紅的
+	// ——八張畫面差 13,748 格，而**每一格的差異都是同一個代換**（EGA 4 → 15），
+	// 看起來就是一張正常的畫面（spec 1185）。
+	//
+	// ⚠ 這一步一定要在 `syncDungeonECLRegisters()` **之後**：那支子程式讀的
+	// `C04Fh` 就是那裡寫進去的。
+	s.applyLoadTimeECLWritesFromScript(block)
+}
+
+// applyLoadTimeECLWritesFromScript 拿**載檔當下的記憶體**重走一次該段的進入碼，
+// 把它寫到那幾格追蹤中的常數補上。
+//
+// ⚠ 只收 `SAVE <常數> <追蹤中的格子>`：這一支不是 VM，不執行劇情副作用。
+func (s *State) applyLoadTimeECLWritesFromScript(block uint8) {
+	if s.session == nil {
+		return
+	}
+	data, ok := s.session.BlockData(block)
 	if !ok {
 		return
 	}
-	for address, value := range cells {
-		s.session.SetMemoryValue(address, value)
-		switch address {
-		case outdoorSkyColourCell:
-			s.Area.OutdoorSkyColor = value
-		case indoorSkyColourCell:
-			s.Area.IndoorSkyColor = value
-		}
+	reached, err := ecl.ReachableOnLoadWithMemory(data, block, s.session.MemoryValue)
+	if err != nil {
+		return
 	}
+	for _, instruction := range reached {
+		if instruction.Command.Opcode != loadTimeSaveOpcode ||
+			len(instruction.Operands) != 2 {
+			continue
+		}
+		target := instruction.Operands[1]
+		if !target.WordSet || !loadTimeTrackedCell(target.Word) {
+			continue
+		}
+		value, valueOK := ecl.ConstantOperandValue(instruction.Operands[0])
+		if !valueOK {
+			continue
+		}
+		s.setLoadTimeCell(target.Word, value)
+	}
+}
+
+func (s *State) setLoadTimeCell(address, value uint16) {
+	s.session.SetMemoryValue(address, value)
+	switch address {
+	case outdoorSkyColourCell:
+		s.Area.OutdoorSkyColor = value
+	case indoorSkyColourCell:
+		s.Area.IndoorSkyColor = value
+	}
+}
+
+// loadTimeSaveOpcode 是 `09h SAVE`。
+const loadTimeSaveOpcode = 0x09
+
+// loadTimeTrackedCell 是「remake 需要而原作靠跑進入碼才有」的那幾格。
+// 與 `cmd/ecl-sky-colours` 的 `trackedCells` 是同一組。
+func loadTimeTrackedCell(address uint16) bool {
+	switch address {
+	case 0x4BE7, 0x4BE8, outdoorSkyColourCell, indoorSkyColourCell:
+		return true
+	}
+	return false
 }
 
 // 天空選色的兩個 ECL 記憶體格子。Area1 的字組索引是 `位址 − 4B00h`，位元組

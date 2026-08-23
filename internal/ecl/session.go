@@ -69,6 +69,18 @@ func (s *BlockSession) CurrentData() []byte {
 	return append([]byte(nil), s.blocks[s.current]...)
 }
 
+// BlockData 取任意一段的位元組碼。
+//
+// ★ 為什麼不是 `CurrentData`：載入存檔之後 `current` 還停在初始化時的世界地圖
+// 段，而要重走進入碼的是**存檔記著的那一段**（`LastECLBlockID`）。
+func (s *BlockSession) BlockData(id uint8) ([]byte, bool) {
+	data, ok := s.blocks[id]
+	if !ok {
+		return nil, false
+	}
+	return append([]byte(nil), data...), true
+}
+
 // MemoryValue exposes one word from the shared ECL VM memory for the work
 // adapter. Addresses such as 0xC04B..0xC04D are reference engine registers
 // written by scripts before control returns to the world loop.

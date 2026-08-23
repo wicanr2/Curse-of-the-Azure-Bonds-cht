@@ -27,6 +27,11 @@ const (
 	gotoOpcode    = 0x01
 	gosubOpcode   = 0x02
 	compareOpcode = 0x03
+	returnOpcode  = 0x13
+
+	// cellOperandCode 是「這個運算元是一個記憶體格子」。`0x00` 是立即位元組、
+	// `0x02` 是立即字組，兩者都是常數（`ConstantOperandValue`）。
+	cellOperandCode = 0x01
 
 	firstIfOpcode = 0x16
 	lastIfOpcode  = 0x1B
@@ -47,7 +52,23 @@ const (
 //
 // 五個進入點都會走：段的前置不一定掛在第 0 個（`ECL3/0x15` 的 `LOAD FILES` 在
 // `0x14`，而 `ECL5/0x33` 的在 `0x51`）。
+// LoadTimeMemory 讓呼叫端把**載檔當下的記憶體**餵進來，於是 `IF` 不只判得出
+// 「是不是這一段」，也判得出腳本拿別的格子做的比較。
+//
+// ★ 為什麼需要。 有些段的進入碼會依**當下站在哪一格**決定要寫什麼：
+// `ECL2/0x04` 的 `0x0022 GOSUB 0x96F4` 進去之後是
+// `COMPARE C04F 0x95 / IF = / SAVE 0A 4BFE / IF <> / SAVE 09 4BFE`——
+// 天花板顏色由那一格的地形碼決定（`C04Fh` ＝ 牆頂）。靜態的表表達不了
+// 「看情況」，所以那一格的紅色天花板在 remake 是白的（差 13,748 格，spec 1185）。
+type LoadTimeMemory func(address uint16) (uint16, bool)
+
+// ReachableOnLoad 是不帶記憶體的版本：只判得出 `4BF2h` 的那一道閘門。
 func ReachableOnLoad(data []byte, block uint8) ([]Instruction, error) {
+	return ReachableOnLoadWithMemory(data, block, nil)
+}
+
+// ReachableOnLoadWithMemory 同上，但 `IF` 會拿 `memory` 去判。
+func ReachableOnLoadWithMemory(data []byte, block uint8, memory LoadTimeMemory) ([]Instruction, error) {
 	points, _, err := EntryPoints(data, loadTimeEntries)
 	if err != nil {
 		return nil, err
@@ -80,7 +101,8 @@ func ReachableOnLoad(data []byte, block uint8) ([]Instruction, error) {
 		if !ok {
 			continue
 		}
-		walkOnLoad(offsets, position, byOffset, start, block, reached)
+		walkOnLoad(offsets, position, byOffset, start,
+			loadTimeContext{block: block, memory: memory}, reached)
 	}
 	result := make([]Instruction, 0, len(reached))
 	for _, offset := range offsets {
@@ -91,9 +113,42 @@ func ReachableOnLoad(data []byte, block uint8) ([]Instruction, error) {
 	return result, nil
 }
 
+// loadTimeContext 是判斷 `IF` 時知道的東西。
+type loadTimeContext struct {
+	block  uint8
+	memory LoadTimeMemory
+}
+
+// resolve 把一個運算元換成值。常數直接用；`4BF2h` 用段號（載檔當下就是它）；
+// 其餘格子交給呼叫端餵進來的記憶體。
+func (c loadTimeContext) resolve(operand Operand) (uint16, bool) {
+	if value, ok := ConstantOperandValue(operand); ok {
+		return value, true
+	}
+	if operand.Code != cellOperandCode || !operand.WordSet {
+		return 0, false
+	}
+	if operand.Word == lastECLBlockCell {
+		return uint16(c.block), true
+	}
+	if c.memory == nil {
+		return 0, false
+	}
+	return c.memory(operand.Word)
+}
+
+// loadTimeComparison 是一次 `COMPARE` 的結果。
+type loadTimeComparison struct {
+	known       bool
+	left, right uint16
+}
+
 func walkOnLoad(offsets []int, position map[int]int, byOffset map[int]Instruction,
-	index int, block uint8, reached map[int]Instruction) {
-	compared, equal := false, false
+	index int, context loadTimeContext, reached map[int]Instruction) {
+	var comparison loadTimeComparison
+	// ⚠ `GOSUB` 要跟進去：`ECL2/0x04` 的進入碼在 `LOAD FILES`／`LOAD PIECES`
+	// 之後就 `GOSUB` 一支設天花板顏色的子程式。不跟的話那一段的寫入整個看不到。
+	stack := make([]int, 0, 8)
 	visited := map[int]bool{}
 	for step := 0; step < loadTimeStepLimit && index >= 0 && index < len(offsets); step++ {
 		if visited[index] {
@@ -112,10 +167,27 @@ func walkOnLoad(offsets []int, position map[int]int, byOffset map[int]Instructio
 				return
 			}
 			index = target
-			compared = false
+			comparison = loadTimeComparison{}
+			continue
+		case gosubOpcode:
+			target, ok := loadTimeJumpTarget(instruction, position)
+			if !ok {
+				return
+			}
+			stack = append(stack, index+1)
+			index = target
+			comparison = loadTimeComparison{}
+			continue
+		case returnOpcode:
+			if len(stack) == 0 {
+				return
+			}
+			index = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			comparison = loadTimeComparison{}
 			continue
 		case compareOpcode:
-			compared, equal = comparesLastECLBlock(instruction, block)
+			comparison = compareOnLoad(instruction, context)
 		}
 
 		if instruction.Command.Opcode >= firstIfOpcode && instruction.Command.Opcode <= lastIfOpcode {
@@ -123,8 +195,11 @@ func walkOnLoad(offsets []int, position map[int]int, byOffset map[int]Instructio
 				return
 			}
 			guarded := byOffset[offsets[index+1]]
-			take, decided := evaluateLoadTimeIf(instruction.Command.Opcode, compared, equal)
-			compared = false
+			// ⚠ **一個 `COMPARE` 後面可以跟好幾個 `IF`**，那是原作的慣用法：
+			// `ECL2/0x04` 的 `COMPARE C04F 0x95` 之後接 `IF =`（紅）與
+			// `IF <>`（白）。判完就把比較結果清掉的話，第二個 `IF` 會變成
+			// 「判不出來」而被跳過——於是那一段永遠只收得到一半。
+			take, decided := evaluateLoadTimeIf(instruction.Command.Opcode, comparison)
 			if !decided {
 				if isLoadTimeControlFlow(guarded.Command.Opcode) {
 					return
@@ -151,42 +226,39 @@ func loadTimeJumpTarget(instruction Instruction, position map[int]int) (int, boo
 	return index, ok
 }
 
-// comparesLastECLBlock 認得「拿 `4BF2h` 跟一個常數比」這一種 COMPARE。
-func comparesLastECLBlock(instruction Instruction, block uint8) (compared, equal bool) {
+// compareOnLoad 把一次 `COMPARE` 的兩邊都換成值；換不出來就標成不知道。
+func compareOnLoad(instruction Instruction, context loadTimeContext) loadTimeComparison {
 	if len(instruction.Operands) < 2 {
-		return false, false
+		return loadTimeComparison{}
 	}
-	if !instruction.Operands[0].WordSet || instruction.Operands[0].Word != lastECLBlockCell {
-		return false, false
+	left, leftOK := context.resolve(instruction.Operands[0])
+	right, rightOK := context.resolve(instruction.Operands[1])
+	if !leftOK || !rightOK {
+		return loadTimeComparison{}
 	}
-	value, ok := ConstantOperandValue(instruction.Operands[1])
-	if !ok {
-		return false, false
-	}
-	return true, value == uint16(block)
+	return loadTimeComparison{known: true, left: left, right: right}
 }
 
-// evaluateLoadTimeIf 在「只知道相不相等」的前提下判斷分支。
-//
-// ⚠ 相等時六個比較都判得出來；**不相等時只判得出 `=` 與 `<>`**，大小關係要看
-// 實際數值，這裡不猜。
-func evaluateLoadTimeIf(opcode uint8, compared, equal bool) (take, decided bool) {
-	if !compared {
+// evaluateLoadTimeIf 判斷分支。兩邊的值都知道時六個比較都判得出來；
+// 有一邊不知道就不猜。
+func evaluateLoadTimeIf(opcode uint8, comparison loadTimeComparison) (take, decided bool) {
+	if !comparison.known {
 		return false, false
 	}
+	left, right := comparison.left, comparison.right
 	switch opcode {
 	case 0x16: // IF =
-		return equal, true
+		return left == right, true
 	case 0x17: // IF <>
-		return !equal, true
-	case 0x18, 0x19: // IF < / IF >
-		if equal {
-			return false, true
-		}
-	case 0x1A, 0x1B: // IF <= / IF >=
-		if equal {
-			return true, true
-		}
+		return left != right, true
+	case 0x18: // IF <
+		return left < right, true
+	case 0x19: // IF >
+		return left > right, true
+	case 0x1A: // IF <=
+		return left <= right, true
+	case 0x1B: // IF >=
+		return left >= right, true
 	}
 	return false, false
 }
