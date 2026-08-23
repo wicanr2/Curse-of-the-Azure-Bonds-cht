@@ -19,6 +19,15 @@
 ⚠ 42 張逐張重驗**不等於**全量比對；第三次全量比對跑到 913／1,474 就停掉了
 （時間成本），所以可以引用的全量數字仍是上表那一列。
 
+**例行只重驗那 42 張**（約 10 分鐘），清單在
+[`docs/reference/original-dos/first-person/regression-sample.tsv`](../reference/original-dos/first-person/regression-sample.tsv)：
+
+```
+tools/fp-oracle-compare.py docs/reference/original-dos/first-person/regression-sample.tsv
+```
+
+什麼時候要跑完整版、樣本擋不住什麼，見 `AGENTS.md` §8「長跑驗證的降級指引」。
+
 ## 問題
 
 原版截圖 oracle 第 572 輪就建好了（`tools/dos-oracle-session.sh` 那六支），

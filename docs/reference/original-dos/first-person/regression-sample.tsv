@@ -1,0 +1,53 @@
+# 第一人稱回歸樣本：改牆面算圖之後要重驗的 42 張（AGENTS §8「長跑驗證的降級指引」）
+#
+# 13 張是第二次全量比對裡有差異的（成因：出界沒清「上一段」，spec 1185）；
+# 29 張是那個修法把「內側」取錯邊時被弄壞的。兩類合起來蓋住這一支算圖
+# 已知會出錯的兩個方向。
+#
+# ⚠ 這 42 張全綠**不等於**全量正確——取錯邊的那一版 13 張樣本全部 0 格，
+# 而全量跑到 913 張時是變好 7、變壞 29。要宣稱 fidelity 數字得跑完整版。
+#
+# 用法（索引要與 PNG 同一個目錄，本檔已經是）：
+#   tools/fp-oracle-compare.py docs/reference/original-dos/first-person/regression-sample.tsv
+geo2-b01-x01-y05-W.png	1	5	W
+geo2-b01-x02-y01-E.png	2	1	E
+geo2-b01-x02-y01-W.png	2	1	W
+geo2-b04-x01-y00-S.png	1	0	S
+geo2-b04-x02-y01-W.png	2	1	W
+geo5-b33-x15-y01-S.png	15	1	S
+geo5-b33-x15-y02-N.png	15	2	N
+geo5-b35-x14-y01-S.png	14	1	S
+geo6-b40-x02-y08-S.png	2	8	S
+geo5-b32-x02-y03-S.png	2	3	S
+geo5-b32-x02-y04-S.png	2	4	S
+geo2-b01-x01-y07-W.png	1	7	W
+geo5-b32-x00-y13-S.png	0	13	S
+geo5-b33-x01-y04-S.png	1	4	S
+geo5-b33-x02-y04-S.png	2	4	S
+geo5-b33-x09-y15-E.png	9	15	E
+geo5-b33-x09-y15-W.png	9	15	W
+geo5-b33-x13-y14-S.png	13	14	S
+geo5-b33-x14-y07-N.png	14	7	N
+geo5-b33-x14-y07-E.png	14	7	E
+geo5-b33-x14-y15-N.png	14	15	N
+geo5-b33-x14-y15-W.png	14	15	W
+geo5-b33-x15-y04-S.png	15	4	S
+geo5-b33-x15-y07-N.png	15	7	N
+geo5-b33-x15-y09-N.png	15	9	N
+geo5-b33-x15-y13-S.png	15	13	S
+geo5-e31-b32-x00-y15-N.png	0	15	N
+geo5-b33-x14-y13-E.png	14	13	E
+geo5-b33-x14-y13-S.png	14	13	S
+geo5-b33-x14-y14-E.png	14	14	E
+geo5-b33-x14-y14-W.png	14	14	W
+geo5-b33-x15-y14-S.png	15	14	S
+geo5-b33-x11-y15-E.png	11	15	E
+geo5-b33-x11-y15-W.png	11	15	W
+geo5-b33-x15-y15-N.png	15	15	N
+geo5-b32-x00-y15-N.png	0	15	N
+geo5-b33-x00-y01-N.png	0	1	N
+geo5-b33-x00-y01-S.png	0	1	S
+geo6-b40-x14-y06-E.png	14	6	E
+geo6-b40-x02-y14-S.png	2	14	S
+geo6-b40-x03-y14-S.png	3	14	S
+geo6-b40-x12-y14-S.png	12	14	S
