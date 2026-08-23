@@ -118,7 +118,15 @@ def main():
             failed.append(name)
             print("%-34s (%s,%s) %s 產不出畫面（%s）" % (name, x, y, direction, failure), flush=True)
             continue
-        a = viewport(os.path.join(folder, name))
+        # ⚠ 索引有一列、參考圖卻不在**同一個目錄**是常見狀況：
+        # `tools/dos-oracle-*.sh` 把 PNG 收在 `workplace/dos-oracle/out/`，
+        # 只有索引那一列會被追加進來。缺圖要當成這一張失敗，不能讓整批中止。
+        reference = os.path.join(folder, name)
+        if not os.path.exists(reference):
+            failed.append(name)
+            print("%-34s (%s,%s) %s 參考圖不在 %s" % (name, x, y, direction, folder), flush=True)
+            continue
+        a = viewport(reference)
         b = viewport(shot)
         classes = {}
         for row in range(88):

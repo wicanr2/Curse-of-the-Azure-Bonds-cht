@@ -68,6 +68,10 @@ while [ "$#" -ge 2 ]; do
     read -r rx ry rd < <(python3 "$ROOT/tools/dos_screen_pos.py" "$ROOT/workplace/dos-oracle/out/$name")
     if { { [ "$rx" = "$x" ] && [ "$ry" = "$y" ]; } || [ "$rx" = "?" ]; } && [ "$rd" = "$d" ]; then
       printf '%s\t%s\t%s\t%s\n' "$name" "$x" "$y" "$d" >> "$index"
+      # ⚠ 索引與圖要放在**同一個目錄**：`tools/fp-oracle-compare.py` 是拿索引檔
+      # 的目錄去找圖的。只追加索引不複製圖的話，比對會在那一列停下來，而前面
+      # 幾百張的小計就沒了（第 750 輪踩過）。
+      cp "$ROOT/workplace/dos-oracle/out/$name" "$(dirname "$index")/$name"
       echo "  收下 $name"
     else
       echo "  ⚠ $name 讀到 ($rx,$ry,$rd)，與預期不符：不收"
