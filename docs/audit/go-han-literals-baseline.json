@@ -5284,6 +5284,132 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "54d347782b96f2d636ec1af78eee1194fd2cf5e86548ab874019610a50c45186",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "6407375837e204e3b42f9461d9f4e9febbc88a52ec1aa060a17cab4ce663e0c6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "6afc3e516e8bc926ac974de18bf48f3fdd56e1ef71a4277b73b71f062e0a0f09",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "7c454bdf08091668a6094f9e33ad72ec36c11832d39828690f97c49556c9b5d7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "943ebc7e980cf0a4bd39d74de2f211f254c4a82af2822ef4784a2d70e17bca22",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "97ca48347bd7e5bb804a2505a78f2468bb58f099cfcd011442475f4875b17c06",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "9860b1e031d6491b0ff1d7f74c04ac1b6cf559bc9d4a4ce8f2026d3d8f886b9e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "b4c715133f8be2dc0756e4320042f312f941a0934269b740a30816afb47c32c6",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "c9e115dc63dfc53f1c57d34de40be1e444ffcea17fbc71bd73478ae0da795408",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "cac23a8e78b220d8a3a75ce6a576ef034716083f7fc03a780ea2780b11b70038",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "cd3b87273d9191542245d5af713a62c9c9da7a7a991acfb6881e5cc5b9e83c7b",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "d1c752bfa04e25dbb1493e8a88cc8ba38f6416ca9015da694b2429bca00b5941",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "e0951dee28d9f995c53aad81c1655be8d728fde19d18a0f97e2576913ae09998",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "e1595eec91b376efbd50f62d3ddd4197233075fd2c53ea00ff043dd668840fb8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "e811720ed9a3cb4ca3514e039f85641b763bbc518376475e260f6e58be844c17",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "f392252d307ee406f1c77c1e5fa7af8151b857175878dc7a763c3e478e0201a4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/ecl-print-return-audit/main.go",
+      "function": "main",
+      "sha256": "f74a43cb81d6f138f8c51f592dde346b3b84f238b06af4472abf52a155aa5971",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/ecl-redraw-sites/main.go",
       "function": "main",
       "sha256": "5729cf8cd821f8543dd40331665d5aba3fb09a9d5e653c5a8eb6d1001fb63a89",
@@ -7895,6 +8021,111 @@
       "path": "cmd/monster-ai-coverage/main.go",
       "function": "main",
       "sha256": "f8c349bcf02772186f6edb733c418e2a24ff412eaa216ce7d5840ff91bd6944e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "3473de6fe825450cbaa98a1fd8a92063e1605a351efd73c4d43071477b96ca7d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "37c6d52044b10f5f7881106d945322300adc87d6911aba03fae237874d4c42e4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "558b94319f3f4d57bb7cfb23b8427c2cb28d1d607fc81a316cc3c23fca26ede1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "63b44d9315a0798123a2bc91511443d0d392c25ae22e6d00c5730d973af3903a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "665ef4d19c47705d5ca8c5ec2bd3f36c02b049b8b260026f3e865a9c2bb93e23",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "78eb014c79000dc50c6ca3c57d53fdd274f8bf08de35a87e4c1e99c6c5b4f6d2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "7a81abbd938efe7ccd4e76bdb99b030b71842ff91e48b544587f090b80899343",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "7dccd6fc1ae3d303357d2a7eccaa9c31183158abbd84c351f31b601cfc8adabf",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "7e28bef717b3635165e75caf79390b86454e4df3c97be44295451e4824649f79",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "865b7f882270fba9962d23dc3001a77a92246f583d0a4baa30d7706b2226d12f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "964d430663059a7348c99bd7a65aee0827c9bc2fd8b7b69acbe79d49695303dc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "aaa3eb5d99fd392060b3bfe772d4a5849841bf1ce223f00a79fe6405e029bf54",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "ce75b3757941adab6b37d26057008d6185c103358e9bfb7f202f8c407d5dcbc5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "e811720ed9a3cb4ca3514e039f85641b763bbc518376475e260f6e58be844c17",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/music-change-points/main.go",
+      "function": "main",
+      "sha256": "f3d550613e4eb1e905362bffdf697f851b115bfea167a14cedd10f67792ceb67",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -10835,8 +11066,122 @@
       "category": "runtime_ui_debt"
     },
     {
-      "path": "internal/ecl/effects.go",
-      "sha256": "009affa6fbe8bd4875c68923fd9f3454dbc52f108920301928da3589de0dd5b3",
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "01cb6b71822930b8197bc5423e9d4f33e424f37492c3f65c3cc62aaf8344b9a1",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "28c3432b625703c2e32eac213eb2870f6f28462f4c33a20335413d44bda77287",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "5bcecbadc726850aa1973c5fc53d22e55dc53951209542f880634c0f1acd198c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "5bd04fc436ecff220b6d02086e81f2a45c7ff1c84db3608ca9eafae60848b946",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "6615f4549cd1c238f313eadb93ca2d42f4778c55e3fefcff7779bc276f8b9762",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "7042af1ec5b6a90d45f0150fdff41a9d599d3b21990f53715b93099a9eb4b72c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "7888920cc340f663673902bbed6c592e27f685e423a8ef214eef1bd48981b5d8",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "7de3b9fbad0aab437b464b00c06f89107c5582f3004fe37a79bd6157d6653b5d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "83fe968333e2d3358cf997090e5578a7b39ea174cffb83dfa61ae76fe44f81de",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "9a3017542ef8e9629c9dcef0ba3132eb2ebf633d400e85dd9710868bd6353326",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "9f4f985c6502f9c015e59ca7e49f1b83d374b9ae8fc1da845af29b9d7c8da143",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "a2b6506d0466de2d587b3d9bd755edfa58467dc1d62f0ede539b8bddcc2b0caa",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "aa93793158b2461ef4c514747bcdee7527bc69e5f1fbf06180431c5638d7ffab",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "b284cba9a97954b3b62bd05d9a7519faad753df984c2e0176fca75033bf1d7b4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "b581670ab8706735fb167eb69facc2700dc6660439797906ca7ca1bde594f26e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "d1b8e0129732989de5ac09c457ef033ea7d8bad99aa2b00de5232350ee9bae8d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "d9d43a1eb5c8beefffdb50f045aed8ee5f2924e39b95c3c9e05e66d80620b719",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "f337a03bc2e37fa78f31c34c5a62be67ec037f8edde46cb317a64c9a0d710cc4",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "f4006cf27d32d43e394860a44afbe6345f7375fe0f113efac0580fd7d7e1eca2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/audiomap/changepoints.go",
+      "sha256": "f7865e52f8b7d4b7eae42b3e23c0dcc4c8875e2b8d25cf88a20c81b09ac04400",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -10950,12 +11295,6 @@
     },
     {
       "path": "internal/ecl/effects.go",
-      "sha256": "4957123ae659625708e2384ab946e6f1dc7cad45474503aa882da48894e4bb3e",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/ecl/effects.go",
       "sha256": "4bd10192efe1cdf2887461eabf13db7f26f12828636b4448c16761f56bd82ce2",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -11058,6 +11397,12 @@
     },
     {
       "path": "internal/ecl/effects.go",
+      "sha256": "9d4666601021892188b5ebca18642ffd5945afd5b6bb03b509d5d8492714fc67",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/ecl/effects.go",
       "sha256": "a052a869056938115d30d87dbb32e7b9660021052b489dae0f569541e440047d",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -11083,6 +11428,12 @@
     {
       "path": "internal/ecl/effects.go",
       "sha256": "b28a09b784838c666e7195354bf92e938855c301af230e4e6176400cf05243df",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/ecl/effects.go",
+      "sha256": "ba6b4e39f35ae0683f1afea6c05aa318b4065848a9914078dadd160ddcd94eb4",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
