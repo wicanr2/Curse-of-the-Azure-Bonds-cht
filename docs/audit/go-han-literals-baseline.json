@@ -7832,6 +7832,205 @@
       "category": "runtime_ui_debt"
     },
     {
+      "path": "cmd/map-atlas/main.go",
+      "sha256": "01bc01b32975b903cf2b9402e6307327f5fc72b4ca762ac6de2bb2039f0a4cb3",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "sha256": "469e009b15a00cf1b308259866d5855699e71385d383faf289db85597db28f83",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "sha256": "b2f94b1034506f37163aad2674a55705a27173aa22114de7c4906cafe4c592a0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "sha256": "b9f0c815459caa83d43d49643d76e70468a1306ad668d3a5e0759bedb5fb1f1d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "edgeMarks",
+      "sha256": "87a26a58ee6ae9ef1f4606881d16ef3c5b220dc97b62c457f82c090c42c96d6c",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "loadECLBlock",
+      "sha256": "0792508a3d56179d0da1eadd4cd9b5de3bfcdc5925e15c3eee1dfe8200ffae50",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "loadECLBlock",
+      "sha256": "f74a43cb81d6f138f8c51f592dde346b3b84f238b06af4472abf52a155aa5971",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "loadGrid",
+      "sha256": "13356c0db2887a68db72bd29dca866cfbaa4c905e0d8483cc9ec335d3af1e93a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "loadGrid",
+      "sha256": "99998dd4110c5308a2ac88d8fdda41656dfc86239c2975ce1051e5c6a38f0c73",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "main",
+      "sha256": "6c847f084c2341d095e31f6849d51ce5735ceee764dd6f7ab995dfc4574a08e5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "main",
+      "sha256": "90f916a91fdcbd1d7971a918a687dc8192db3710d90691981448f26952fca008",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "main",
+      "sha256": "ad40dcc50989c7f5ac7ad48a3f7db1d68803cb34564204a57f20751f82cf130f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "render",
+      "sha256": "26119babd0a87df82cb1040af3a4be6609e0a8a0f409efecd97b3af82f15a518",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "render",
+      "sha256": "9203bfed8d5609a5a623d63bae362ebb4aa28091168fceb4fabcb466e90da6bc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "render",
+      "sha256": "a8fe4e9d9aa77956824ee72a1c6c3acb464ace1fa5da37c0332b92f5da7f647a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "render",
+      "sha256": "cc6ecfae6e23c33d0cfb337f1938d46144a880f3c65eec275d9fb818f0d0faea",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "render",
+      "sha256": "ee582dc71d4bcdb43c066e26e4231c7c8f243ffa8a114ae0668ed795b26a583f",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderEvents",
+      "sha256": "2ad8c345d2f53a54e1ce02720e0a8c1ebc26dc73dbf67796ae09688d41ebc753",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderEvents",
+      "sha256": "3aebbef6996c0e37bc5a1e71d0e724fbde6ab157102e2e29ec3b069853e44230",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderEvents",
+      "sha256": "3ba5e7ed488e22426326ba51778e68a9229140231e7dc87ecb88fabd405abe62",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderEvents",
+      "sha256": "6b8e33403fd58a27a346d08c5c909d9e4e3639a854b79422f45529175b42b19d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderEvents",
+      "sha256": "d66a8da75fab8fc65eca83ae39d05896b8aa707a2df081eb96f68715b0bf469a",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderEvents",
+      "sha256": "f907f5573582ad9ed7bdd1009fdea8daa9eac3611f99598b2d60a946f0492c1d",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderExits",
+      "sha256": "42a54e92260ee801b85c76a1c789987b70004876d70e269970432e839d021581",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderExits",
+      "sha256": "5c760f792076761a98c1673e36cf5d107dd9eddb2582625e4227ff8ce17d45bc",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderExits",
+      "sha256": "88e0d3f66db9f8a025f8253875c81cd3012a37f034e4af8378ffbd6a877583c5",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderExits",
+      "sha256": "8bbdac7005382f2f101a8ea76e9153c145c676ced399379fd1f55145c40daaaf",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderExits",
+      "sha256": "925f7140dfcd8c657133cedb051e69869dd7b8eec26ac4885fc99d4361ba0922",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/map-atlas/main.go",
+      "function": "renderExits",
+      "sha256": "d1255bec9b7aefc7d8fac12da48b1a7432b55d28df5f8ff6b3c39e7e8e0289ea",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
       "path": "cmd/missile-sound-classes/main.go",
       "sha256": "480855709c0615a4c016924521e6ca7127cf2966577544a0505bb9a9e4002bb6",
       "occurrences": 2,
