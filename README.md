@@ -5,8 +5,10 @@ SSI《Curse of the Azure Bonds》的資料驅動重製專案。目標是讓玩�
 ⚠ 那是規則層走完，**不等於拿鍵盤從頭玩到結局**——輸入層推得動主線的每一個
 檢查點，一條連續的按鍵路線目前走到巫師塔：提爾佛頓 → 盜賊公會 → 下水道 →
 火刀據點 → 世界地圖 → 哈普村 → 古熔岩洞 → 巫師塔（ECL 段 `0x01`、`0x02`、`0x03`、
-`0x04`、`0x50`、`0x31`、`0x32`、`0x33`），246 格、200 句話、0 句落回原文
-（[spec 1197](docs/spec/1197-keyboard-playthrough-door-and-route-replay.md)）。
+`0x04`、`0x50`、`0x31`、`0x32`、`0x33`），314 格、253 句話、0 句落回原文
+（[spec 1197](docs/spec/1197-keyboard-playthrough-door-and-route-replay.md)、
+[spec 1201](docs/spec/1201-key-menu-wraparound.md)）。下一個瓶頸：回訪下水道的
+爬牆事件（盜賊技能的閘，六個預設戰士永遠爬不上去）。
 
 本 repo 負責 CoAB 的 game pack、翻譯、原始素材轉換、攻略與整合測試；可重用的
 ECL／DAX／GEO／戰鬥／存檔引擎在獨立的

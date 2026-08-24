@@ -594,13 +594,16 @@ func keyDrivenFrames() int {
 //	20,000 幀   602 格／273 句／ 95 秒
 //	40,000 幀   612 格／274 句／174 秒
 //
-// keyDrivenDefaultFrames 是量出來的（同一份路線，走位放手條件 ＝ 2、
-// `tryDoors` 只撞走不通的方向之後）：
+// keyDrivenDefaultFrames 是量出來的（第 710 輪：卡住換下一項改成**環繞**、
+// 路線 `route-clean-709` 之後）：
 //
-//	12,000 幀（帶路線）  390 格／233 句   ← 目前這一版
-//	12,000 幀（無路線）   94 格／ 92 句   （測試套件預設就是這一條）
+//	12,000 幀（帶路線）  314 格／253 句／8 段（到巫師塔 0x31..0x33）
+//	12,000 幀（無路線）  309 格／171 句／4 段（測試套件預設就是這一條）
 //
-// ⇒ 幀數不是瓶頸：帶路線那一場的最後一次進展在第 6,504 幀。維持 12,000。
+// ⇒ 幀數不是瓶頸：帶路線那一場的最後一次進展在第 9,984 幀。維持 12,000。
+// ⚠ 環繞修掉之前（夾在最後一項）帶路線只有 137 格／5 段：紮營的「修改」與
+// 「改名」兩個選單互踢，「離開」永遠輪不到（spec 1201）。無路線那條同時從
+// 94 格跳到 309——啟發式終於能把每一個選單的出口輪到。
 // ⚠ 兩條差這麼多是因為**沒有路線就沒有路線知識**：主線的決策點要走到那裡才會
 // 出現，而啟發式找不到出城的那一步。路線檔在 `workplace/`（gitignore），
 // 所以測試套件預設跑的是無路線那一條——引用數字時要說是哪一條。
@@ -910,10 +913,11 @@ func (s *keyDrivenSession) step(t *testing.T) {
 			// 於是整場 session 就困在店裡。
 			signature := stuckSignature(s.app.state.Choices)
 			s.menuSeen[signature]++
-			want := (s.menuSeen[signature] - 1) / keyDrivenMenuPatience
-			if want >= count {
-				want = count - 1
-			}
+			// ★ 環繞而不是夾在最後一項。夾住的死法（第 753 輪實測）：紮營的
+			// 「修改」選單escalate 到最後一項「改名」，改名子選單又escalate 到
+			// 「返回修改選單」，兩個選單互踢，「離開」永遠輪不到——12,000 幀
+			// 有 11,000 幀在這個環裡。環繞讓每一項（含出口）都週期性被試到。
+			want := ((s.menuSeen[signature] - 1) / keyDrivenMenuPatience) % count
 			// 上一次按這一項之後整隊全滅過就換下一項。全部都試死過就照原樣按
 			// ——那代表這個選單怎麼選都會死，硬停在這裡也沒有比較好。
 			for probe := 0; probe < count && s.fatalPicks[menuPick{signature, want}]; probe++ {
