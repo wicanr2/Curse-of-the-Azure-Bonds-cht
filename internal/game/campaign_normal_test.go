@@ -1658,8 +1658,9 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			state.GeoMapSet != 3 || state.GeoMapBlock != 0x10 ||
 			// 進猶拉什是腳本演的走位：`ECL3/0x10:006Ch` 先落在 `(0,8)` 朝西，
 			// `0127h` 移到 `(1,0)` 朝南，接著一串 `CALL C01Eh` 往南再往西走到
-			// `(0,3)`——**收尾朝西**，不是地圖宣告的 spawn 那個朝東。
-			state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 6 {
+			// `(0,3)`；走位**之後** `1991h` 再 `SAVE 01 C04D`（收尾朝向，朝東），
+			// 與第 707 輪刪掉的宣告抄本 `(0,3,2)` 一致（spec 1184）。
+			state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 2 {
 			t.Fatalf("normal Yulash entry mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) coverage=%v",
 				state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
 				state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)

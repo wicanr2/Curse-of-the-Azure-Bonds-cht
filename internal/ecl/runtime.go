@@ -70,6 +70,11 @@ type RunResult struct {
 	SessionStartBlockID    uint8
 	SessionEndBlockID      uint8
 	SessionBlockRangeSet   bool
+	// SessionRanBlockIDs 是這一次頂層執行實際跑過的 block（含 NEWECL 鏈上的
+	// 每一段，依執行順序）。座標投影靠它判斷「這個座標是本次執行的腳本寫的」
+	// ——原作的地圖暫存器是全域，跨 NEWECL 存活，來源段在交接前寫好的落點
+	// 在目的段生效（spec 1183／1184）。
+	SessionRanBlockIDs []uint8
 	DamageRequests         []DamageRequest
 	PrintReturnCount       int
 	ApproachCount          int

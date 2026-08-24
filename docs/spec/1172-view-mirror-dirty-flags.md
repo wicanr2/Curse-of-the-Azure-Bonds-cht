@@ -49,9 +49,13 @@ STOREVALUE 寫 4BFD/4BFE       →  立 8B6Ah
 
 ## ⚠ 剩下一個 remake 這一側的補丁
 
-`ViewMirror.Block` 記「三格是哪個 block 的腳本寫的」，投影時要求與目前 block
-相同。少了這個比對，換 block 那一次執行留在鏡射裡的座標會贏過 game pack 宣告
-的 `spawn`：下水道入口落在 `(0,0)`、火刀據點落在 `(6,0)` 而不是 `(6,1)`。
+`ViewMirror.Block` 記「三格是哪個 block 的腳本寫的」，投影時要求它是
+**本次執行跑過的 block**（`RunResult.SessionRanBlockIDs`，含 NEWECL 交接鏈上
+的每一段）。原作的地圖暫存器是全域、跨 NEWECL 存活，來源段在交接前寫好的
+落點就是目的段的進場座標——第 711 輪 oracle 判定下水道入口落 `(0,0)`、
+火刀據點落 `(8,0)`，都是來源段寫的值（spec 1184）。
+擋板真正要擋的是**更早的執行**殘留在鏡射裡的舊座標，不要蓋掉載檔／直入
+路徑上 game pack 宣告的 `spawn` 補值。
 
 ★ **它不是在模擬引擎行為。** spec 1183 對 `720Fh`／`7210h`／`7211h` 做了全域
 寫入者普查：DOS 版只有五處寫它（`STOREVALUE` 的鏡射、`MOVEFORWARD`、`INIT`、

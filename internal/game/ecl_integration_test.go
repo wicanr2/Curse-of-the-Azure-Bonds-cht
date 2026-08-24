@@ -1659,8 +1659,10 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY, state.DungeonDirection,
 			state.GeoMapSet, state.GeoMapBlock, state.DungeonWallRoof, state.Message, state.Choices)
 	}
+	// ★ 落點 (0,0) 是第 711 輪用原版判定的：交接腳本在 `CALL C01Eh` 之後
+	// 才寫最終座標，原版落在腳本寫的第 0 列（spec 1184）。
 	if state.Mode != ModeWilderness || state.GeoMapSet != 2 || state.GeoMapBlock != 3 ||
-		state.DungeonX != 0 || state.DungeonY != 1 || state.DungeonDirection != 4 ||
+		state.DungeonX != 0 || state.DungeonY != 0 || state.DungeonDirection != 4 ||
 		state.Message != requireGamePackText(t, &state, "tilverton.sewers-entry") {
 		t.Fatalf("sewer entry mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
@@ -1676,6 +1678,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	for index, step := range []struct {
 		dx, dy, direction int
 	}{
+		{0, 1, 4},  // (0,0) -> (0,1)
 		{1, 0, 2},  // (0,1) -> (1,1)
 		{0, 1, 4},  // (1,1) -> (1,2)
 		{0, 1, 4},  // (1,2) -> (1,3)
@@ -1833,7 +1836,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	}
 	if state.Mode != ModeWilderness || state.session.CurrentBlockID() != 4 ||
 		state.GeoMapSet != 2 || state.GeoMapBlock != 4 ||
-		state.DungeonX != 8 || state.DungeonY != 1 || state.DungeonDirection != 4 ||
+		state.DungeonX != 8 || state.DungeonY != 0 || state.DungeonDirection != 4 ||
 		state.LoadPieces != [3]uint16{1, 2, 4} ||
 		state.Message != requireGamePackText(t, &state, "fire-knife.hideout-entry") {
 		t.Fatalf("Fire Knife hideout entry mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d pieces=%v message=%q choices=%v",
@@ -1944,7 +1947,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			}
 		}
 	}
-	// This is the raw GEO2 block-4 route from the E2 entrance at (8,1) to
+	// This is the raw GEO2 block-4 route from the E2 entrance at (8,0) to
 	// terrain 87 at (3,13), the Fire Knife leader encounter.  It intentionally
 	// crosses the blade barrier and frozen-room cells instead of injecting a
 	// coordinate or ECL selector, so every transition is driven by MoveDungeon
@@ -1952,6 +1955,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	leaderRoute := []struct {
 		dx, dy, direction int
 	}{
+		{0, 1, 4},  // (8,0) -> (8,1)
 		{-1, 0, 6}, // (8,1) -> (7,1)
 		{0, 1, 4},  // (7,1) -> (7,2)
 		{-1, 0, 6}, // (7,2) -> (6,2)
@@ -4893,8 +4897,9 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		!state.geoMapPending ||
 		// 進猶拉什是腳本演的走位：`ECL3/0x10:006Ch` 先落在 `(0,8)` 朝西，
 		// `0127h` 移到 `(1,0)` 朝南，接著一串 `CALL C01Eh` 往南再往西走到
-		// `(0,3)`——**收尾朝西**，不是地圖宣告的 spawn 那個朝東。
-		state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 6 {
+		// `(0,3)`；走位**之後** `1991h` 再 `SAVE 01 C04D`（收尾朝向，朝東），
+		// 與第 707 輪刪掉的宣告抄本 `(0,3,2)` 一致（spec 1184）。
+		state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 2 {
 		t.Fatalf("Yulash waiting room transition mode=%v block=0x%02X area=%+v geo=%d/%d pending=%v coords=%d,%d,%d message=%q",
 			state.Mode, session.CurrentBlockID(), state.Area, state.GeoMapSet, state.GeoMapBlock,
 			state.geoMapPending, state.DungeonX, state.DungeonY, state.DungeonDirection,

@@ -443,6 +443,7 @@ func (s *BlockSession) runAggregate(start, maxSteps int, selections, whoSelectio
 	sequenceBase := 0
 	for transitions := 0; transitions < 8; transitions++ {
 		aggregate.SessionEndBlockID = s.current
+		aggregate.SessionRanBlockIDs = append(aggregate.SessionRanBlockIDs, s.current)
 		remaining := selections
 		if selectionOffset < len(selections) {
 			remaining = selections[selectionOffset:]

@@ -4136,7 +4136,7 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 			// （`NEWECL`）照樣看得到，盜賊公會的抓捕動畫就整段在新 block 裡跑
 			// （spec 1160）。
 			if s.session != nil && s.Area.InDungeon && index < len(result.CallRequests) {
-				s.projectDungeonCoordinatesFromView(result.CallRequests[index].View)
+				s.projectDungeonCoordinatesFromView(result.CallRequests[index].View, result.SessionRanBlockIDs)
 			}
 		case 0xC01E:
 			// ★ 朝向要用**腳本當下寫進 `C04D` 的值**，不是 remake 的
@@ -4184,7 +4184,7 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 	// ⚠ 這裡不是「再重畫一次」：`2E10h` 已經投影過的執行，髒旗標在 VM 裡就被
 	// 清掉了，`FinalView` 進不來這一段。
 	if s.session != nil && s.Area.InDungeon {
-		s.projectDungeonCoordinatesFromView(result.FinalView)
+		s.projectDungeonCoordinatesFromView(result.FinalView, result.SessionRanBlockIDs)
 	}
 	// 圖片序列的游標。原作換圖時 `LOADSEQUENCE` 會把游標設回第 1 格，
 	// 所以有換圖的執行取代、沒換圖的執行累加（spec 1150）。
@@ -4210,19 +4210,25 @@ func (s *State) PictureFrameAdvances() int { return s.pictureFrameAdvances }
 // ⚠ 也不要再加「這張圖宣告了 spawn 就整張跳過」。宣告的 spawn 是**進場錨點**，
 // 不是「這張圖的腳本不會搬隊伍」——提爾弗頓、贊提爾暗黑神殿與巫師塔都宣告了
 // spawn，而三張圖上都有玩家看得見的腳本位移（spec 1159／1160）。
-func (s *State) projectDungeonCoordinatesFromView(view ecl.ViewMirror) {
+func (s *State) projectDungeonCoordinatesFromView(view ecl.ViewMirror, ranBlocks []uint8) {
 	if !view.Known || view.Dirty&ecl.ViewDirtyCoords == 0 {
 		return
 	}
-	// ⚠ 座標要是**這一個 block 的腳本**寫的才算。
+	// ⚠ 座標要是**本次執行跑過的 block 的腳本**寫的才算。
 	//
 	// ★ 這一條**不是在模擬引擎行為**。spec 1183 普查過 `720Fh`／`7210h`／`7211h`
 	// 的全部寫入者：`INTERPET`（擁有 `GOECL` 與 block 載入）一次都沒寫，
 	// 所以原作沒有「換 block 的引擎進場放置」——進新地圖的落點是**腳本自己寫的**。
 	// 它實際擋的是：game pack 宣告的 spawn（`applyDeclaredDungeonSpawn`，
-	// 腳本沒寫進場座標時的補值）不要被上一個 block 留在鏡射裡的座標蓋掉。
-	// 少了它，下水道入口會落在 `(0,0)`、火刀據點會落在 `(6,0)` 而不是 `(6,1)`。
-	if s.session != nil && view.Block != s.session.CurrentBlockID() {
+	// 腳本沒寫進場座標時的補值）不要被**更早的執行**留在鏡射裡的舊座標蓋掉。
+	//
+	// ★ 「本次執行跑過的 block」包含 NEWECL 交接的來源段——原作的地圖暫存器
+	// 是全域、跨 NEWECL 存活，來源段在交接前寫好的落點就是目的段的進場座標
+	// （第 711 輪 oracle：下水道入口落 (0,0)、火刀據點落 (8,0)，都是來源段
+	// 寫的值，spec 1184）。先前只認「目前 block」會把這種交接落點擋掉，
+	// 讓 apply 期補走的 `C01Eh` 一步蓋在最終座標上（(0,1)／(8,1) 那個偏差）。
+	if s.session != nil && view.Block != s.session.CurrentBlockID() &&
+		!blockRanInResult(ranBlocks, view.Block) {
 		return
 	}
 	// 這次執行的腳本自己指定了座標；宣告的 spawn 只是沒人指定時的錨點，
@@ -4238,6 +4244,19 @@ func (s *State) projectDungeonCoordinatesFromView(view ecl.ViewMirror) {
 	// 原作的重畫連牆面／地形一起重讀；不補這一步，接下來的每格事件會拿
 	// 被搬走前那一格的地形碼去分派（spec 1161）。
 	s.refreshDungeonTerrainFromMap()
+	// 三格寫回暫存器：apply 期先套用的 `C01Eh` 一步可能已把舊值同步進
+	// `C04B..C04D`，投影之後不回寫會留下「state 與暫存器不一致」的空窗。
+	s.syncDungeonECLRegisters()
+}
+
+// blockRanInResult 回答「這個 block 是不是本次頂層執行的一段」。
+func blockRanInResult(ranBlocks []uint8, block uint8) bool {
+	for _, ran := range ranBlocks {
+		if ran == block {
+			return true
+		}
+	}
+	return false
 }
 
 // applyECLNPCSignals mirrors load_npc: resolve the current chapter's shared
