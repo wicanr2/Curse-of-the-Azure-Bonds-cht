@@ -1,6 +1,6 @@
 # 專案現況
 
-更新日期：2026-08-25（第 756 輪：**四張宣告 spawn 判掉並刪除**。spec 1184 的四張 `mismatch`（猶拉什、地下二層、眼魔洞穴、巫師塔）用執行期判掉：拆宣告整套行為測試不變綠、主線落點斷言照樣成立 ⇒ 宣告值是腳本執行期落點的抄寫，靜態掃描跟不到走位迴圈／GETTABLE 分派／跨成員換 area 才誤判成 mismatch。四張已刪，`map-spawn-sources` 收斂成 `script-only 15／area-default 3`。`ViewMirror.Block` 仍保護 `area-default` 與下水道／火刀入口，`CALL` 維持 `partial`。前一輪（755）：`PICTURE` 旁路建模＋關閉接線，ECL `partial` 367 → 168。）
+更新日期：2026-08-25（第 757 輪：**戰鬥佈陣演算法解讀完＋轉錄**（spec 1200：模板＝每列欄範圍表、起點＝(0,0) 與距離×方向 delta、狀態機找空位、放不下移出戰鬥；`internal/combat.Deployment`），接線留待下一輪。第 708 輪：段內支線接進主線（墓園盜墓者、外城下水道口），段 subtest 23 → 25；手札 59 的過期「未完成」斷言修掉。第 756 輪：四張宣告 spawn 判掉並刪除，`map-spawn-sources` 收斂 `script-only 15／area-default 3`。）
 
 本檔只保留**目前有效的現況與入口**。歷史敘述已分冊到
 [`docs/context/`](docs/context/)，逐行保留原文，不再放在這裡。
