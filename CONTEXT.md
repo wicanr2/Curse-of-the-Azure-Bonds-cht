@@ -1,6 +1,6 @@
 # 專案現況
 
-更新日期：2026-08-25（第 755 輪：**`PICTURE` 收掉，ECL `partial` 只剩 `CALL`**。`4FBAh`／`4FBBh`（前後兩次畫面模式）建進 `ViewMirror`（`ScreenMode`/`PrevScreenMode`，`4BE6h` 換值才輪替）；`PICTURE 0FFh` 關閉照原作 `08E9h` 的旁路——前後都在第一人稱就不立即重繪、`8B62h`/`8B65h` 不清（「圖還開著」留著），其餘情況圖開著才重繪並清旗標（`RunResult.PictureCloseRedraw`）。關閉訊號第一次接進 game 側（`applyPictureClose`，三個套用點）：腳本關圖畫面就收掉；同一次執行「先關後開」收尾是開，session 聚合層同一套規則（先前 `PictureCloseRequested` 在聚合層整個被丟掉）。`0Eh` 轉 `done`：可達 14,177 條裡 `partial` 367 → **168**，opcode `done` 60／`partial` 1。測試：`TestPictureCloseRedrawBypass` 五條、game 側兩條、handler 報表一致性閘同步。）
+更新日期：2026-08-25（第 756 輪：**四張宣告 spawn 判掉並刪除**。spec 1184 的四張 `mismatch`（猶拉什、地下二層、眼魔洞穴、巫師塔）用執行期判掉：拆宣告整套行為測試不變綠、主線落點斷言照樣成立 ⇒ 宣告值是腳本執行期落點的抄寫，靜態掃描跟不到走位迴圈／GETTABLE 分派／跨成員換 area 才誤判成 mismatch。四張已刪，`map-spawn-sources` 收斂成 `script-only 15／area-default 3`。`ViewMirror.Block` 仍保護 `area-default` 與下水道／火刀入口，`CALL` 維持 `partial`。前一輪（755）：`PICTURE` 旁路建模＋關閉接線，ECL `partial` 367 → 168。）
 
 本檔只保留**目前有效的現況與入口**。歷史敘述已分冊到
 [`docs/context/`](docs/context/)，逐行保留原文，不再放在這裡。

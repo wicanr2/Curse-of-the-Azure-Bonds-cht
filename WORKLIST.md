@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-25（第 706 輪：**`PICTURE` 的不重繪旁路建模、關閉訊號接進畫面，ECL `partial` 收到只剩 `CALL`**。（1）`4FBAh`／`4FBBh` 的模型建進 VM（`ViewMirror.ScreenMode`/`PrevScreenMode`，由 `4BE6h` 換值輪替，同值重寫不動）；`PICTURE 0FFh` 關閉那一支照原作 `08E9h`——圖真的開著且不在「前後都是第一人稱」旁路上才立即重繪並清 `8B62h`/`8B65h`，走旁路時旗標留著（`PictureCloseRedraw` 新欄位）。（2）關閉訊號第一次有了消費端：`applyPictureClose` 接進 game 側三個套用點，腳本關圖畫面就收掉（先前圖停在畫面上直到玩家按下一頁）；「先關後開」收尾是開、「先開後關」收尾是關，session 聚合層同一套規則——順帶修掉 close 欄位在聚合層整個被丟掉的缺陷。（3）`0Eh` 轉 `done`：可達 14,177 條裡 `partial` 367 → **168**（只剩 `CALL`），`TestPictureCloseRedrawBypass` 五條＋game 側兩條釘住，handler 報表狀態欄同步。（4）AGENTS.md 補「根目錄沒有 `.git`」的現況與「不要 clone 一份接上去」的警示。）
+更新日期：2026-08-25（第 707 輪：**四張宣告 spawn 判掉並刪除；`PICTURE` 前一輪已收掉**。（1）spec 1184 的四張 `mismatch` 用執行期判掉：把宣告全部拆掉，整套行為測試不變綠——23 段主線、47 條交接、114 份快照走訪，主線裡釘著的落點斷言（地下二層 `(15,14,4)`、眼魔洞穴 E1 `(5,7)`）在無宣告下照樣成立 ⇒ 宣告值是把腳本執行期產生的落點抄了一份，「mismatch」是靜態掃描跟不到走位迴圈／GETTABLE 分派／跨成員換 area 的盲區。依 spec 1184 自己的判準刪除四張（`00-core.json`），schema 測試改鎖「不宣告」，`map-spawn-sources` 收斂成 `script-only 15／area-default 3／mismatch 0`。（2）`ViewMirror.Block` 還不能拆：仍保護三張 `area-default` 退回值與下水道／火刀據點的入口落點——要拆得先用原版判那兩個入口，`CALL` 因此維持 `partial`。（3）第 706 輪：`PICTURE` 的 `4FBAh`/`4FBBh` 不重繪旁路建模、關閉訊號接進畫面，ECL `partial` 367 → 168。）
 
 ## 目前執行順序（使用者 2026-08-16 指定，優先於下方所有舊清單）
 
@@ -53,7 +53,7 @@
 
 | 級 | 還開著的 | 量到的缺口 | 缺什麼才收得掉 |
 |---|---|---|---|
-| **P1** | ECL 的 1 個 `partial` opcode | 可達 14,177 條裡 **168**（`CALL`；`PICTURE` 第 706 輪收掉——旁路模型建進 `ViewMirror.ScreenMode`/`PrevScreenMode`，關閉訊號接進 game 側，`TestPictureCloseRedrawBypass` 釘住）| `CALL` 要原版當 oracle 判掉 `ViewMirror.Block` 保護的那幾張宣告 spawn（spec 1184 量出是四張）|
+| **P1** | ECL 的 1 個 `partial` opcode | 可達 14,177 條裡 **168**（`CALL`；`PICTURE` 第 706 輪收掉）| 四張宣告 spawn **第 707 輪判掉並刪除**（拆宣告整套測試不變綠 ⇒ 宣告值是腳本執行期落點的抄寫，spec 1184 增補）。`CALL` 剩 `ViewMirror.Block` 這一格：仍保護三張 `area-default` 退回值與下水道／火刀據點的入口落點，要拆得先用原版把**那兩個入口**判掉 |
 | **P1** | 第一人稱 fidelity | 585 種牆面配置**已比過 579** | 剩 6 種沒有原版畫面可比 ⇒ 補擷取，不是補渲染 |
 | **P1** | 怪物側的自動換裝 | `+1A2h` 那個不冪等的調整 | 拿原版當 oracle 連打兩隻大型目標量加值 |
 | **P1** | UI 與原版 fidelity（非第一人稱）| SPRIT 畫布相對戰場格的錨點沒量 | 原版 oracle 擷取（現在只在沒有 CPIC 時走得到）|
@@ -135,7 +135,7 @@ P1 現在還開著的是這五項，每一項都有具名的下一步：
 
 | P1 開著的 | 缺什麼 | 下一步要的東西 |
 |---|---|---|
-| ECL 的 1 個 `partial` opcode | 可達指令 14,177 條裡 `partial` 還有 **168**（`CALL`）。`PICTURE` 第 706 輪收掉（旁路模型＋關閉接線）；`PRINT RETURN` 玩家看得到的七頁譯文版面早已接完；`CALL` 剩 `2E10h` 髒旗標的**四張宣告值** | `PRINT RETURN` 那七頁全部由 `text_rule` 服務、UI 的 `wrapTextLines` 本來就把 `\n` 當段落切 ⇒ **改的是那七則譯文的版面**，要配截圖驗收（訊息框有 `maxLines` 上限）。`CALL` 的四張宣告值仍要原版畫面當 oracle |
+| ECL 的 1 個 `partial` opcode | 可達指令 14,177 條裡 `partial` 還有 **168**（`CALL`）。`PICTURE` 第 706 輪收掉（旁路模型＋關閉接線）；四張宣告值第 707 輪判掉並刪除；`CALL` 剩 `ViewMirror.Block`（護 `area-default` 與下水道／火刀入口）| `PRINT RETURN` 那七頁全部由 `text_rule` 服務、UI 的 `wrapTextLines` 本來就把 `\n` 當段落切 ⇒ **改的是那七則譯文的版面**，要配截圖驗收（訊息框有 `maxLines` 上限）。`CALL` 的四張宣告值仍要原版畫面當 oracle |
 | 存檔剩餘欄位 | `+0E6h` **已對完**（spec 1196：`HIGHESTPREVLEVEL`，兩平台各 15 處讀取、逐模組逐數量相同，全部是雙職門檻比較，沒有一處拿去顯示）；✅ **remake 那一處誤用也改掉了**：原版的顯示常式（`LIBRARY`，PC-98 `overlay-19:0408h`／`041Ah`）印的是 `PREVIOUSLEVEL[槽] + CURRENTLEVEL[槽]`，`+0E6h` 在整支裡一次都沒出現；`MOVEPARTY` 跨遊戲轉移未做 | `MOVEPARTY`（跨 Gold Box 的角色轉移工具，spec 534）另開，它需要 Pool of Radiance／Hillsfar 的資料，不在 CoAB 的玩家路徑上 |
 | 怪物側的自動換裝 | `+1A2h` 那個不冪等的調整，靜態讀碼分不出來會不會漂 | 拿原版當 oracle 連打兩隻大型目標量加值 |
 | 音樂／音效的 cue 綁定 | **13 個換曲點全部有落點**（`cmd/music-change-points`，分母在 `internal/audiomap`）：7 個查 `CURRENTECL` 派曲表 ＋ 6 個事件驅動（開戰、開戰的 `47h` 分岔、開場、角色建立、全滅、結局）| 「戰鬥 phase 同步」已查掉——原作戰鬥中不換曲也不停曲（`MSCPLAY` 0 處，配 12 處 `SOUNDFX` 正對照）。剩下的是**時機**：「接上了」不等於「在原作會發的那一刻發」，那要實機比對 |

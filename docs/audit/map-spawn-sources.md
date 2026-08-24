@@ -11,9 +11,7 @@ Caveats: the walk follows control flow from the five lifecycle entries, so an un
 | verdict | maps |
 |---|---:|
 | `area-default` | 3 |
-| `mismatch` | 3 |
-| `script-agrees-incoming` | 1 |
-| `script-only` | 11 |
+| `script-only` | 15 |
 | total | 18 |
 
 | map | ECL | block | declared spawn | script groups | incoming NEWECL groups | verdict |
@@ -21,16 +19,16 @@ Caveats: the walk follows control flow from the five lifecycle entries, so an un
 | `tilverton.first-person` | 2 | - | (7,13,0) | - | - | `area-default` no script_block |
 | `tilverton.sewers.first-person` | 2 | `0x03` | - | `00DBh`(0,0,2(=4))<br>`0119h`(9,0,-)<br>`0138h`(15,-,-)<br>`016Ah`(-,15,-)<br>`0189h`(2,-,-)<br>`0963h`(-,-,0(=0))<br>`0992h`(-,-,1(=2))<br>`09F1h`(-,-,2(=4)) | `0x02`@`00BFh`(-,0,-)<br>`0x04`@`006Fh`(-,15,-) | `script-only` |
 | `tilverton.fire-knife-hideout.first-person` | 2 | `0x04` | - | `0069h`(-,15,-)<br>`02D7h`(2,12,-)<br>`067Ah`(-,-,3(=6)) | `0x03`@`0179h`(15,-,-) | `script-only` |
-| `original.geo3.block-10` | 3 | `0x10` | (0,3,2) | `006Ch`(0,8,3(=6))<br>`0127h`(1,0,2(=4))<br>`014Ch`(0,6,1(=2))<br>`0C7Eh`(2,5,1(=2))<br>`0D24h`(1,5,1(=2))<br>`1569h`(5,4,3(=6))<br>`1991h`(-,-,1(=2)) | - | `mismatch` |
+| `original.geo3.block-10` | 3 | `0x10` | - | `006Ch`(0,8,3(=6))<br>`0127h`(1,0,2(=4))<br>`014Ch`(0,6,1(=2))<br>`0C7Eh`(2,5,1(=2))<br>`0D24h`(1,5,1(=2))<br>`1569h`(5,4,3(=6))<br>`1991h`(-,-,1(=2)) | - | `script-only` |
 | `original.geo3.block-11-level-1` | 3 | `0x11` | - | `0050h`(0,0,1(=2))<br>`0219h`(7,14,0(=0))<br>`0253h`(0,11,1(=2)) | - | `script-only` |
-| `original.geo3.block-11-level-2` | 3 | `0x12` | (15,14,4) | `0039h`(11,14,2(=4))<br>`0055h`(-,1,0(=0)) | - | `mismatch` |
+| `original.geo3.block-11-level-2` | 3 | `0x12` | - | `0039h`(11,14,2(=4))<br>`0055h`(-,1,0(=0)) | - | `script-only` |
 | `original.geo3.block-15` | 3 | `0x15` | - | `0068h`(8,12,1(=2))<br>`00B3h`(4,13,3(=6)) | - | `script-only` |
 | `zhentil-keep.dark-shrine` | 4 | - | (10,6,0) | - | - | `area-default` no script_block |
 | `zhentil-keep.inner-city` | 4 | - | (2,0,4) | - | - | `area-default` no script_block |
-| `zhentil-keep.beholder-cave` | 4 | `0x22` | (5,7,6) | `0029h`(12,7,3(=6))<br>`061Bh`(13,1,3(=6)) | - | `mismatch` |
+| `zhentil-keep.beholder-cave` | 4 | `0x22` | - | `0029h`(12,7,3(=6))<br>`061Bh`(13,1,3(=6)) | - | `script-only` |
 | `original.geo5.block-31` | 5 | `0x31` | - | `0036h`(3,0,2(=4)) | - | `script-only` |
 | `original.geo5.block-32` | 5 | `0x32` | - | `0050h`(15,5,3(=6))<br>`0537h`(7,15,3(=6))<br>`092Ch`(-,-,0(=0)) | `0x33`@`08A3h`(6,15,-) | `script-only` |
-| `original.geo5.block-33` | 5 | `0x33` | (7,15,6) | `022Bh`(3,1,2(=4))<br>`088Bh`(6,15,-)<br>`11F2h`(8,-,2(=4))<br>`154Dh`(7,-,1(=2))<br>`1725h`(7,-,1(=2)) | `0x32`@`0549h`(7,15,3(=6)) | `script-agrees-incoming` |
+| `original.geo5.block-33` | 5 | `0x33` | - | `022Bh`(3,1,2(=4))<br>`088Bh`(6,15,-)<br>`11F2h`(8,-,2(=4))<br>`154Dh`(7,-,1(=2))<br>`1725h`(7,-,1(=2)) | `0x32`@`0549h`(7,15,3(=6)) | `script-only` |
 | `original.geo5.block-35` | 5 | `0x35` | - | `011Dh`(2,8,3(=6))<br>`0169h`(2,4,0(=0))<br>`01B2h`(2,4,0(=0)) | - | `script-only` |
 | `myth-drannor.burial-glen` | 6 | `0x40` | - | `0061h`(2,15,1(=2))<br>`015Bh`(0,12,-)<br>`0177h`(0,6,-)<br>`1199h`(4,2,3(=6))<br>`12E1h`(2,-,3(=6))<br>`151Bh`(5,2,3(=6)) | - | `script-only` |
 | `myth-drannor.outer-ruins` | 6 | `0x42` | - | `00FFh`(6,15,-)<br>`0D87h`(3,6,-)<br>`1084h`(11,10,2(=4))<br>`13CFh`(10,-,0(=0))<br>`15F4h`(15,15,-) | `0x40`@`0167h`(0,12,-)<br>`0x40`@`0183h`(0,12,-)<br>`0x40`@`0183h`(0,6,-) | `script-only` |

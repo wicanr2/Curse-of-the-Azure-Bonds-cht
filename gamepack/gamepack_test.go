@@ -341,11 +341,13 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		t.Fatalf("Zhentil Dark Shrine map definition=%+v found=%v", shrine, found)
 	}
 	cave, found := pack.FindMapByKindScript("first_person", 4, 0x22)
+	// ⚠ 這張圖**不宣告 `spawn`**：進場落點由腳本在執行期自己寫（第 706 輪
+	// 實測——整套主線在無宣告下照樣落在 E1 (5,7)；先前的宣告值只是把執行期
+	// 結果抄了一份，spec 1184 增補）。
 	if !found || cave.ID != "zhentil-keep.beholder-cave" ||
 		cave.GeometryFile != "GEO4.DAX" || cave.ScriptBlock == nil ||
 		*cave.ScriptBlock != 0x22 || cave.GeometryBlock != 0x25 ||
-		cave.Spawn == nil || cave.Spawn.X != 5 || cave.Spawn.Y != 7 ||
-		cave.Spawn.Direction != 6 || len(cave.SearchEdges) != 2 ||
+		cave.Spawn != nil || len(cave.SearchEdges) != 2 ||
 		cave.SearchEdges[0].ID != "zhentil-keep.beholder-cave.dexam-east" ||
 		cave.SearchEdges[0].X != 14 || cave.SearchEdges[0].Y != 1 ||
 		cave.SearchEdges[0].Direction != 2 || cave.SearchEdges[0].WallType != 9 ||
@@ -392,7 +394,10 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		t.Fatalf("Hap external exit definition=%+v", hap.ExternalExits)
 	}
 	tower, found := pack.FindMapByKindScript("first_person", 5, 0x33)
-	if !found || tower.Spawn == nil || tower.Spawn.X != 7 || tower.Spawn.Y != 15 || tower.Spawn.Direction != 6 {
+	// ⚠ 塔也不宣告 `spawn`：落點由 `0x32→0x33` 交接前的腳本寫入 `(7,15,6)`
+	// 決定（`0x32@0549h`，spec 1184 的 `script-agrees-incoming`——先前的宣告值
+	// 與它完全相同，是冗餘）。
+	if !found || tower.Spawn != nil {
 		t.Fatalf("Hap wizard-tower spawn definition=%+v found=%v", tower, found)
 	}
 	overland, found := pack.FindMapByKind("overland")

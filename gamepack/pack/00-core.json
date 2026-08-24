@@ -1869,12 +1869,7 @@
           "discovery": "search_or_look",
           "confidence": "strong inference"
         }
-      ],
-      "spawn": {
-        "x": 5,
-        "y": 7,
-        "direction": 6
-      }
+      ]
     },
     {
       "id": "original.geo3.block-10",
@@ -1894,11 +1889,6 @@
       "indoor_sky_color": 0,
       "wrap": true,
       "scale": 2,
-      "spawn": {
-        "x": 0,
-        "y": 3,
-        "direction": 2
-      },
       "external_exits": [
         {
           "id": "yulash.north-to-moander-pit",
@@ -1946,12 +1936,7 @@
       ],
       "indoor_sky_color": 0,
       "wrap": true,
-      "scale": 2,
-      "spawn": {
-        "x": 15,
-        "y": 14,
-        "direction": 4
-      }
+      "scale": 2
     },
     {
       "id": "original.geo3.block-15",
@@ -2038,12 +2023,7 @@
       ],
       "indoor_sky_color": 0,
       "wrap": true,
-      "scale": 2,
-      "spawn": {
-        "x": 7,
-        "y": 15,
-        "direction": 6
-      }
+      "scale": 2
     },
     {
       "id": "original.geo5.block-35",
