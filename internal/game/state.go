@@ -4074,6 +4074,17 @@ func (s *State) resetSessionForNewGame() {
 	s.gameWon = false
 	s.selectionSequence = nil
 	s.whoSelectionSequence = nil
+	// ★ 章節與地圖狀態也要收回開局值（seg001.Init，與 NewState 同一組）。
+	// 只重設 session 不重設 Area 的話，全滅重開的新隊伍會帶著上一局的章節走進
+	// 提爾佛頓：block 0x01 的 LOAD FILES 拿舊章去載 GEO（畫面出「找不到 GEO6
+	// block 0x01」），商店的 TREASURE 拿舊章去查 ITEM 區塊而整個 Update 回錯。
+	// 全新開局不經過「ENTER CITY」那條會改章的路（BeginAdventure 直接 Reset 到
+	// 0x01），所以章節只能在這裡歸位。
+	s.Area = area.State{GameArea: 2}
+	s.GeoMapSet = 2
+	s.GeoMapBlock = 1
+	s.geoMapPending = true
+	s.DungeonX, s.DungeonY, s.DungeonDirection = 7, 13, 0
 }
 
 // applyECLCallSignals translates the CALL operands the CoAB ECL image actually

@@ -296,3 +296,46 @@ func TestEndingSceneTextIsDistinctPerPage(t *testing.T) {
 		seen[text] = index
 	}
 }
+
+// 全滅回標題之後再開新局，章節與地圖狀態要收回開局值（seg001.Init）。
+//
+// ★ 這條釘住的缺陷：`resetSessionForNewGame` 先前只重設 session 與隊伍，
+// `Area.GameArea` 留著上一局的章。全新開局不經過「ENTER CITY」那條會改章的路
+// （`BeginAdventure` 直接 Reset 到 0x01），於是重開的新隊伍帶著章 6 走進提爾佛頓：
+// GEO 載成「找不到 GEO6 block 0x01」、商店 TREASURE 拿章 6 查 ITEM 區塊 1 而整個
+// `Update()` 回錯（實測擋住五份 `inside-block-42-*` 快照走訪）。
+func TestReturnToTitleAfterPartyKilledResetsCampaignArea(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	state := NewStateFromECLBlocks(catalog, map[uint8][]byte{0x01: {}}, 0x01)
+
+	// 模擬一局走到密斯卓諾（章 6）時全滅的狀態。
+	state.Area.GameArea = 6
+	state.Area.InDungeon = true
+	state.GeoMapSet = 6
+	state.GeoMapBlock = 0x42
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 4, 9, 2
+
+	if handled, err := state.applyECLProgram(programResult(3)); err != nil || !handled {
+		t.Fatalf("PROGRAM 3: handled=%v err=%v", handled, err)
+	}
+	if err := state.Select(0); err != nil || state.Mode != ModeTitle {
+		t.Fatalf("返回標題：mode=%v err=%v", state.Mode, err)
+	}
+
+	if state.Area.GameArea != 2 || state.Area.InDungeon {
+		t.Fatalf("章節沒有收回開局值：GameArea=%d InDungeon=%v",
+			state.Area.GameArea, state.Area.InDungeon)
+	}
+	if state.GeoMapSet != 2 || state.GeoMapBlock != 1 {
+		t.Fatalf("GEO 檔集沒有收回開局值：set=%d block=%02X",
+			state.GeoMapSet, state.GeoMapBlock)
+	}
+	if set, block, ok := state.ConsumeGeoMapRequest(); !ok || set != 2 || block != 1 {
+		t.Fatalf("前端沒有收到重載 GEO2/0x01 的請求：set=%d block=%02X ok=%v",
+			set, block, ok)
+	}
+	if state.DungeonX != 7 || state.DungeonY != 13 || state.DungeonDirection != 0 {
+		t.Fatalf("隊伍座標沒有收回開局值：(%d,%d) dir=%d",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
+}

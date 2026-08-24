@@ -1669,16 +1669,17 @@ func TestKeysDriveEveryCampaignSnapshot(t *testing.T) {
 	}
 	t.Logf("按鍵推得動的快照 %d／%d，落回原文 %d 句，推到一半回錯 %d 份",
 		driven, len(names), len(fallbacks), len(blocked))
-	// ⚠ 閘釘在**相異成因**不是份數。份數會隨快照數量漂（同一個缺陷擋住五份
-	// `inside-block-42-*`），而要人去判的是**成因**。目前宣告 1 種：
-	// `ECL6/0x45:0557h` 的 `TREASURE ... 7F80` 讀到 1（見 `WORKLIST.md`）。
-	// 多一種就紅。不要為了讓測試綠而把它調大。
+	// ⚠ 閘釘在**相異成因**不是份數。份數會隨快照數量漂（先前同一個缺陷就擋住
+	// 五份 `inside-block-42-*`：全滅重開沒把章節收回開局值，新隊伍帶著章 6 走進
+	// 提爾佛頓，商店 TREASURE 拿章 6 查 ITEM 區塊 1 而回錯——已修在
+	// `resetSessionForNewGame`）。目前宣告 0 種，多一種就紅。
+	// 不要為了讓測試綠而把它調大。
 	causes := map[string]int{}
 	for _, reason := range blocked {
 		causes[reason]++
 	}
-	if len(causes) > 1 {
-		t.Errorf("推到一半回錯的相異成因有 %d 種，宣告的上限是 1：%v", len(causes), causes)
+	if len(causes) > 0 {
+		t.Errorf("推到一半回錯的相異成因有 %d 種，宣告的上限是 0：%v", len(causes), causes)
 	}
 	if path := os.Getenv("COAB_KEY_SNAPSHOT_JSON"); path != "" {
 		report := struct {
