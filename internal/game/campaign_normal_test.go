@@ -2463,6 +2463,45 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		t.FailNow()
 	}
 
+	if !t.Run("ECL6/0x40 墓園：盜墓者", func(t *testing.T) {
+		// ★ 段內支線接進主線：挖墓的螳螂人（`(10,4)`，`RANDOM` 100 抽 32）與
+		// 牠身後那具精靈骸骨。事件由 observer 依正典解：戰鬥打完、骸骨選
+		// REBURY SKELETON（`0D28h`，不打也不搶）。
+		//
+		// ⚠ 螳螂人**營地**那三格（`(10,7)`／`(9,9)`／`(7,9)`）刻意不走：
+		// 入口一場就是十二隻螳螂人，是攻略明寫可避開的高風險選配內容，
+		// 逐格取樣（`segment_side_branch_test`／`burial_glen_cells_test`）已
+		// 各自涵蓋那三場的敘述。
+		observer.stopAtMessageID = ""
+		digText := requireGamePackText(t, state, "myth-drannor.grave.thri-kreen")
+		// 100 抽 32：走開再走回來重抽。種子固定，重試只是把亂數流往前推，
+		// 結果可重現。
+		for attempt := 0; attempt < 24 && !observer.messages[digText]; attempt++ {
+			walkNormalDungeonTo(t, state, &burialGrid, 10, 5, observer)
+			walkNormalDungeonTo(t, state, &burialGrid, 10, 4, observer)
+		}
+		if !observer.messages[digText] {
+			t.Fatalf("挖墓的螳螂人 24 次都沒出現：pos=(%d,%d) mode=%v msg=%q",
+				state.DungeonX, state.DungeonY, state.Mode, state.Message)
+		}
+		if !observer.messages[requireGamePackText(t, state, "myth-drannor.grave.skeleton")] {
+			t.Fatalf("打完盜墓者沒有看到骸骨選單：mode=%v msg=%q choices=%v",
+				state.Mode, state.Message, state.currentOriginalChoices)
+		}
+		if state.PartyWipedOut() {
+			t.Fatal("盜墓者那一場把隊伍打光了")
+		}
+		// 回到外城段的出發格，讓後面的段照原路啟程。
+		walkNormalDungeonTo(t, state, &burialGrid, 13, 14, observer)
+		if state.Mode != ModeDungeon || state.DungeonX != 13 || state.DungeonY != 14 {
+			t.Fatalf("盜墓者之後回不到 (13,14)：mode=%v pos=(%d,%d,%d)", state.Mode,
+				state.DungeonX, state.DungeonY, state.DungeonDirection)
+		}
+		captureSegmentEnd(t, "ECL6/0x40 墓園：盜墓者")
+	}) {
+		t.FailNow()
+	}
+
 	if !t.Run("ECL6/0x42 密斯卓諾：外城遺跡", func(t *testing.T) {
 		// ★ block 0x40 的邊界處理是 `ON GOTO C04D`（面向／2）：只有朝東跨出邊界
 		// 才會走到「更多遺跡」那個選單，其餘方向都回世界地圖。
@@ -2493,6 +2532,56 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 				state.DungeonX, state.DungeonY, state.DungeonDirection, state.Mode, state.Message)
 		}
 		captureSegmentEnd(t, "ECL6/0x42 密斯卓諾：外城遺跡")
+	}) {
+		t.FailNow()
+	}
+
+	if !t.Run("ECL6/0x42 外城：下水道口", func(t *testing.T) {
+		// ★ 段內支線接進主線：下水道口 `(5,6)`。落單的石像鬼放走（YES）、
+		// 柵口**不進去**（NO）——下水道是進內城的**另一條路**（一進去就塌，
+		// `myth_drannor_test` 的直入測試整條走過），與這條正門路線互斥，
+		// 一條連續 session 只能走一邊。這裡把「看得到的那兩場」演進主線。
+		outerGrid := loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x42)
+		observer.stopAtMessageID = "myth-drannor.outer.sewer-margoyle"
+		walkNormalDungeonTo(t, state, &outerGrid, 5, 6, observer)
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "myth-drannor.outer.sewer-margoyle") {
+			t.Fatalf("石像鬼台詞=%q pos=(%d,%d,%d)", state.Message,
+				state.DungeonX, state.DungeonY, state.DungeonDirection)
+		}
+		observer.stopAtMessageID = ""
+		yes, found := state.OriginalChoiceIndex("YES")
+		if !found {
+			t.Fatalf("石像鬼選單沒有 YES：%v", state.currentOriginalChoices)
+		}
+		if err := state.Select(yes); err != nil {
+			t.Fatalf("放走石像鬼：%v", err)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "myth-drannor.outer.sewer-escape") {
+			t.Fatalf("石像鬼跑掉的台詞=%q", state.Message)
+		}
+		if err := state.Select(0); err != nil {
+			t.Fatalf("石像鬼跑掉之後推不動：%v", err)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, "myth-drannor.outer.sewer-grate") {
+			t.Fatalf("柵口台詞=%q", state.Message)
+		}
+		no, found := state.OriginalChoiceIndex("NO")
+		if !found {
+			t.Fatalf("柵口選單沒有 NO：%v", state.currentOriginalChoices)
+		}
+		if err := state.Select(no); err != nil {
+			t.Fatalf("拒絕柵口：%v", err)
+		}
+		if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x42 ||
+			state.DungeonX != 5 || state.DungeonY != 6 {
+			t.Fatalf("拒絕柵口之後 mode=%v blk=%#02x pos=(%d,%d,%d)", state.Mode,
+				state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+				state.DungeonDirection)
+		}
+		captureSegmentEnd(t, "ECL6/0x42 外城：下水道口")
 	}) {
 		t.FailNow()
 	}
@@ -3143,8 +3232,10 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 	})
 
 	t.Run("段界快照往返", func(t *testing.T) {
-		if len(segmentEnds) != 23 {
-			t.Fatalf("存到 %d 份段界快照，應該是 23 份", len(segmentEnds))
+		// 23 段主線 ＋ 2 段接進主線的段內支線（墓園盜墓者、外城下水道口，
+		// 第 708 輪）。
+		if len(segmentEnds) != 25 {
+			t.Fatalf("存到 %d 份段界快照，應該是 25 份", len(segmentEnds))
 		}
 		blocks := map[uint8][]byte{}
 		for member := 1; member <= 6; member++ {
