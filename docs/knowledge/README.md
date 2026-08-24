@@ -41,6 +41,7 @@
 | 音訊 | [`gold-box-audio.md`](gold-box-audio.md) | PC-98 研究深度高，但完整播放生命週期尚未閉合。 |
 | 中文長文與攻略 | [`golden-box-remake-for-chinese-readers.md`](golden-box-remake-for-chinese-readers.md) | Journal producer、顯示與翻譯 coverage 分開追蹤。 |
 | 跨 SSI 專案經驗 | [`ssi-rpg-cross-project-lessons.md`](ssi-rpg-cross-project-lessons.md) | 第二款遊戲實證前，不升格為共用 engine 事實。 |
+| engine／作品的實際切線 | [`engine-title-split.md`](engine-title-split.md) | 內容界線守住了、程式碼界線沒有；「按性質屬於共用層」是推論不是證據。 |
 
 ## 新增或訂正文件的最低要求
 
