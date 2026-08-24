@@ -148,6 +148,13 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.combatVisual = nil
 	s.combatVisualElapsed = 0
 	s.combatMessage = s.catalog.Text("combat_started", "combat_started")
+	// ⚠ 進戰鬥要把上一個畫面的選單收掉。戰鬥畫面**不看 `Choices`**，所以留著
+	// 不會畫錯，但它是一份**還活著的舊狀態**：按鍵重放看到 `len(Choices) > 1`
+	// 就照選單處置（實測整場戰鬥都在「揍酒保｜喝一杯｜離開」上打轉，
+	// 而那是上一格酒館留下來的），停滯偵測的簽章也跟著被那份舊選單污染。
+	// 其餘每一次換畫面都有清，就這裡漏了。
+	s.Choices = nil
+	s.currentOriginalChoices = nil
 	s.Mode = ModeCombat
 	return s.advanceCombatToParty()
 }

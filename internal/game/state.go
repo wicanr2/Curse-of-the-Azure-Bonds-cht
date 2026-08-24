@@ -750,6 +750,10 @@ func cloneMonsterAffects(source map[uint8][]monster.AffectRecord) map[uint8][]mo
 // monsterChapterForBlock follows the observed global ECL block namespaces:
 // ECL2 uses 0x00..0x0F, ECL3 0x10..0x1F, through ECL6 0x40..0x4F, while
 // ECL1 occupies 0x50..0x5F and its additional blocks.
+// worldMapBlockFloor 是「這個 ECL 段是世界地圖」的門檻：`0x50` 以上是 ECL1 的
+// 三個世界地圖段，以下是各章的地城段。
+const worldMapBlockFloor uint8 = 0x50
+
 func monsterChapterForBlock(blockID uint8) uint8 {
 	switch {
 	case blockID >= 0x50:
@@ -1477,6 +1481,20 @@ func (s *State) Select(index int) error {
 		if s.session != nil && blockBefore != s.session.CurrentBlockID() &&
 			s.Area.InDungeon && s.dataPack != nil {
 			currentBlock := s.session.CurrentBlockID()
+			// ⚠ **章要跟著目的地走。** 這一段原本拿 `s.Area.GameArea` 去查表，
+			// 而那是**來源**那一段的章。從巫師塔（章 5）經世界地圖回提爾佛頓
+			// （`0x01`，章 2）時，用章 5 查 `0x01` 一定查不到 ⇒ 不發新的 GEO 請求
+			// ⇒ 前端手上的 `geoGrid` 還是巫師塔那張。畫面照常、也不報錯，
+			// 隊伍卻在提爾佛頓的座標上撞巫師塔的牆（實測按鍵重放因此在
+			// 24 格之間繞掉 9,000 幀）。
+			if currentBlock < worldMapBlockFloor {
+				if chapter := monsterChapterForBlock(currentBlock); chapter != s.Area.GameArea {
+					s.Area.GameArea = chapter
+					s.GeoMapSet = chapter
+					s.GeoMapBlock = currentBlock
+					s.geoMapPending = true
+				}
+			}
 			// A title pack can prove that a NEWECL destination owns a
 			// matching first-person geometry block. Prefer that declaration
 			// over stale LOAD FILES aggregation from the source ECL; areas
@@ -6557,14 +6575,27 @@ func (s *State) Continue() error {
 }
 
 func (s *State) syncCurrentECLDungeonArea() {
-	if s.session == nil || s.Area.InDungeon {
+	if s.session == nil {
 		return
 	}
 	blockID := s.session.CurrentBlockID()
-	if blockID >= 0x50 {
+	if blockID >= worldMapBlockFloor {
 		return
 	}
 	gameArea := monsterChapterForBlock(blockID)
+	// ⚠ 條件是「**這一章**已經同步過了」，不是「還在地城裡」。
+	// 原本寫成 `s.Area.InDungeon` 就 return，於是**換章**的時候整支被跳過：
+	// 巫師塔（章 5）演完劇情把隊伍送回提爾佛頓（`0x01`，章 2）時，
+	// `Area.InDungeon` 還是真 ⇒ 不發新的 GEO 請求 ⇒ 前端手上的 `geoGrid`
+	// 還是巫師塔那張。畫面照常、也不報錯，隊伍卻在提爾佛頓的座標上撞巫師塔的牆
+	// （實測按鍵重放因此在 24 格之間繞掉 9,000 幀）。
+	//
+	// ⚠ 同章之內**不要**在這裡重設：段與幾何不是一對一（盜賊公會 `0x02` 與
+	// 提爾佛頓共用 `GEO2/0x01`、巫師塔五層樓共用一張圖），那幾種由 game pack 的
+	// 宣告與 `LOAD FILES` 決定，這裡插手會把它們指到錯的圖。
+	if s.Area.InDungeon && s.Area.GameArea == gameArea {
+		return
+	}
 	s.Area.GameArea = gameArea
 	s.Area.InDungeon = true
 	s.GeoMapSet = gameArea

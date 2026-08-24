@@ -482,6 +482,16 @@ type Character struct {
 	// 只記級數的話還不出正確的 HP，只記 HP 的話不知道要還幾次。
 	DrainedLevels    int `json:"drained_levels,omitempty"`
 	DrainedHitPoints int `json:"drained_hit_points,omitempty"`
+	// BaseMovement／Movement 是 `+0E4h`／`+1A5h`（spec 683／1000）：基準移動力
+	// 與目前移動力。負重重算把基準抄進目前，再依階梯降成 `9`／`6`／`3`；
+	// 未負重就是基準值本身，而階梯的上限 `12` 正是 AD&D 的未負重移動力。
+	//
+	// ⚠ **0 不是「不能動」，是「這份資料沒有帶」**。先前兩格都沒解碼，於是
+	// 每一名隊員的 `MovementAllowance` 都是 0 ⇒ 戰鬥裡整隊**不能移動**，
+	// 快速戰鬥的 AI 也挪不動人。`Fighter()` 因此在兩格都是 0 時退回
+	// `DefaultBaseMovement`。
+	BaseMovement int `json:"base_movement,omitempty"`
+	Movement     int `json:"movement,omitempty"`
 	HealthStatus    HealthStatus           `json:"health_status,omitempty"`
 	Bleeding        int                    `json:"bleeding,omitempty"`
 	Copper          uint16                 `json:"copper,omitempty"`
@@ -1063,8 +1073,28 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		SavingThrows: append([]uint8(nil), c.SavingThrows...), SavingThrowBonus: int(c.SavingThrowBonus),
 		ClericLevel:  c.turnUndeadLevel(),
+		MovementAllowance: c.movementAllowance(),
 	}
 	return c.applyKnownEffects(fighter), nil
+}
+
+// DefaultBaseMovement 是「這份角色資料沒有帶移動力」時用的值。
+//
+// ★ 12 是 AD&D 未負重的移動力，也是原作負重階梯（`12`／`9`／`6`／`3`）的頂端，
+// 而 `021Dh` 的 `+3` 補償有 `<= 9` 的上限檢查、最多補到 12（spec 683）。
+// ⚠ 這是**退路不是規則**：帶了 `+0E4h`／`+1A5h` 的角色一律以資料為準。
+const DefaultBaseMovement = 12
+
+// movementAllowance 是這名角色目前走得動幾格：優先用 `+1A5h`（目前值），
+// 沒有就用 `+0E4h`（基準），兩格都沒有才退回 `DefaultBaseMovement`。
+func (c Character) movementAllowance() int {
+	if c.Movement > 0 {
+		return c.Movement
+	}
+	if c.BaseMovement > 0 {
+		return c.BaseMovement
+	}
+	return DefaultBaseMovement
 }
 
 // applyKnownEffects projects only unconditional attack and AC modifiers documented

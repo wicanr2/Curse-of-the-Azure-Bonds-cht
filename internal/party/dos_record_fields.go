@@ -65,7 +65,7 @@ var DOSPlayerRecordFields = []DOSRecordField{
 	{0x0DD, 1, "橫掃上限的來源（回合初始化抄進戰鬥狀態 +5）", DOSFieldDocumented, "806／833"},
 	{0x0DE, 1, "體型 `SIZE`", DOSFieldDocumented, "1164"},
 	{0x0DF, 5, "五個豁免門檻（毒／石化／法杖／噴吐／法術）", DOSFieldDecoded, "1111"},
-	{0x0E4, 1, "移動力基準（重算時抄進 +1A5h）", DOSFieldDocumented, "1000／683"},
+	{0x0E4, 1, "移動力基準（重算時抄進 +1A5h）", DOSFieldDecoded, "1000／683"},
 	{0x0E5, 1, "最高職業等級（0 ＝ 零級生物）", DOSFieldDecoded, "811／815"},
 	{0x0E6, 1, "前一個最高等級 `HIGHESTPREVLEVEL`：雙職角色的舊職等級門檻（spec 1164／1194）", DOSFieldDecoded, "1079／1164"},
 	{0x0E7, 1, "被吸掉的等級數（復原術每次還一級）", DOSFieldDecoded, "1125"},
@@ -133,7 +133,7 @@ var DOSPlayerRecordFields = []DOSRecordField{
 	{0x1A0, 2, "攻擊面數 現值", DOSFieldDocumented, "1000／795"},
 	{0x1A2, 2, "傷害加值 現值（有號）", DOSFieldDocumented, "1000／795"},
 	{0x1A4, 1, "目前 HP", DOSFieldDecoded, "185"},
-	{0x1A5, 1, "目前移動力（重算時由 +0E4h 抄過來）", DOSFieldDocumented, "1000／683"},
+	{0x1A5, 1, "目前移動力（重算時由 +0E4h 抄過來）", DOSFieldDecoded, "1000／683"},
 }
 
 // ValidateDOSPlayerRecordFields 檢查台帳蓋滿整份記錄、沒有洞也沒有重疊。

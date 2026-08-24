@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
@@ -391,6 +392,18 @@ func modeName(mode game.Mode) string {
 	return "?"
 }
 
+// fatalPickWindow 是「按下這一項之後幾幀內開打，才算是這一項引起的」。
+//
+// ★ 量出來的：酒館的「揍酒保」是**下一幀**就進戰鬥模式，而「離開商店」到隨機
+// 遭遇之間隔著好幾步移動。3 幀足以蓋住前者、擋掉後者。
+const fatalPickWindow = 3
+
+// menuPick 是「哪一個選單的第幾項」。簽章與 `stuckSignature` 同一套。
+type menuPick struct {
+	signature string
+	index     int
+}
+
 // keyDrivenSession 是一次「只用按鍵」的遊玩紀錄。
 type keyDrivenSession struct {
 	app    *app
@@ -470,6 +483,29 @@ type keyDrivenSession struct {
 	// searchToggles／looks 是被牆擋住之後按 `S`／`L` 的次數。
 	searchToggles int
 	looks         int
+	// combatTurns 是按了幾次「快速戰鬥」；wipes 是全滅重開幾次。
+	// ★ 這兩個一起看才知道「走不遠」是因為打不贏還是因為找不到路。
+	combatTurns    int
+	wipes          int
+	partyWasKilled bool
+	// lastMenuPick 是最後一次真的按下去的選單（簽章與項次）。
+	// fatalPicks 是「按下去之後整隊全滅」的那些，之後不再選。
+	//
+	// ★ 這不是遊戲知識，是「別重複殺死自己的那一步」。少了它，重放每次進酒館
+	// 都選第 0 項「揍酒保」——十個酒館客人對六個一級戰士，必輸——然後全滅重開、
+	// 計數歸零、再選一次；實測 12,000 幀裡重開 32 次，整場走不出提爾佛頓。
+	lastMenuPick   menuPick
+	lastMenuFrame  int
+	hasLastMenu    bool
+	// combatStartPick 是**這一場戰鬥開打之前**按的那一項。全滅時標的是它，
+	// 不是「全滅之前最後按的那一項」——後者的因果太鬆：離開商店之後走幾步遇上
+	// 隨機遭遇再全滅，會把「離開商店」標成致命，於是隊伍再也離不開商店
+	// （實測 9,613 幀停在場所畫面）。
+	combatStartPick menuPick
+	inCombatFrom    bool
+	fatalPicks      map[menuPick]bool
+	// boosted 記著這一場的隊伍有沒有被撐起來，報表要照實印出來。
+	boosted bool
 }
 
 // loadRoute 讀主線錄下來的路線；沒有就回 nil（測試照樣跑，只是沒有路線可循）。
@@ -561,10 +597,13 @@ func keyDrivenFrames() int {
 // keyDrivenDefaultFrames 是量出來的（同一份路線，走位放手條件 ＝ 2、
 // `tryDoors` 只撞走不通的方向之後）：
 //
-//	12,000 幀（帶路線）  105 格／71 句   ← 目前這一版
-//	12,000 幀（無路線）   97 格／73 句   （測試套件預設就是這一條）
+//	12,000 幀（帶路線）  390 格／233 句   ← 目前這一版
+//	12,000 幀（無路線）   94 格／ 92 句   （測試套件預設就是這一條）
 //
-// ⇒ 幀數不再是瓶頸（全滅重開才是），維持 12,000；等重放打得贏架之後重新量。
+// ⇒ 幀數不是瓶頸：帶路線那一場的最後一次進展在第 6,504 幀。維持 12,000。
+// ⚠ 兩條差這麼多是因為**沒有路線就沒有路線知識**：主線的決策點要走到那裡才會
+// 出現，而啟發式找不到出城的那一步。路線檔在 `workplace/`（gitignore），
+// 所以測試套件預設跑的是無路線那一條——引用數字時要說是哪一條。
 //
 // ⚠ 這個數字會隨走法與譯文缺口改變：補完酒館傳聞之前它是 1,500，那時候 4,000 幀
 // 也只走到 137 格——**不是因為幀數不夠，是因為隊伍撞到一句沒翻的話就停在那裡**。
@@ -593,6 +632,7 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 		blocks: map[uint8]bool{}, menus: map[string]bool{}, menuSeen: map[string]int{},
 		modeFrames: map[game.Mode]int{}, stallCells: map[[3]int]int{},
 		menuSinceProgress: map[string]int{}, moveSinceProgress: map[routeCell]int{},
+		fatalPicks: map[menuPick]bool{},
 	}
 }
 
@@ -671,6 +711,31 @@ func (s *keyDrivenSession) observe() {
 	state := s.app.state
 	s.modes[state.Mode] = true
 	s.modeFrames[state.Mode]++
+	// 全滅由假轉真才算一次；全滅畫面會停好幾幀，逐幀累加會把它算成幾十次。
+	if killed := state.PartyKilled(); killed && !s.partyWasKilled {
+		s.wipes++
+		if s.inCombatFrom {
+			s.fatalPicks[s.combatStartPick] = true
+			s.inCombatFrom = false
+		}
+	} else if !killed {
+		s.partyWasKilled = false
+	}
+	if state.PartyKilled() {
+		s.partyWasKilled = true
+	}
+	// 進戰鬥的那一幀把「開打前按的那一項」釘住；離開戰鬥就放掉。
+	if state.Mode == game.ModeCombat {
+		// ⚠ 只認**當場**開打的那一項。離開商店之後走了幾步才遇上隨機遭遇，
+		// 中間沒有任何選單，於是「開打前按的那一項」還是「離開商店」——
+		// 標下去隊伍就再也離不開商店（實測 9,613 幀停在場所畫面）。
+		// 「揍酒保」是下一幀就開打；差別在這裡。
+		if !s.inCombatFrom && s.hasLastMenu && s.frames-s.lastMenuFrame <= fatalPickWindow {
+			s.combatStartPick, s.inCombatFrom = s.lastMenuPick, true
+		}
+	} else if !state.PartyKilled() {
+		s.inCombatFrom = false
+	}
 	if state.Mode == game.ModeDungeon || state.Mode == game.ModeEvent {
 		x, y, _ := state.DungeonGeometryView()
 		block := 0
@@ -787,9 +852,29 @@ func (s *keyDrivenSession) step(t *testing.T) {
 	if s.app.state.Mode == game.ModeCharacterCreation {
 		if len(s.app.state.CreationRoster) >= 6 {
 			tap(t, s.app, s.keys, ebiten.KeyD)
+			// ⚠ 重開的隊伍也要撐。撐隊伍原本只做在開頭那段固定的建角序列裡，
+			// 於是**第一次全滅之後就沒有了**——實測撐過的一場仍然重開 26 次。
+			if s.app.state.Mode != game.ModeCharacterCreation {
+				s.boostParty(t)
+			}
 			return
 		}
 		tap(t, s.app, s.keys, ebiten.KeyEnter)
+		return
+	}
+	// ★ 戰鬥交給原作自己的「快速戰鬥」（`Q`）。
+	//
+	// ⚠ 先前這裡**沒有**戰鬥處置：`step()` 落到選單那一支，看到 `len(Choices) > 1`
+	// 就照選單按——而那份 `Choices` 是上一個畫面留下來的（實測整場戰鬥都在
+	// 「揍酒保｜喝一杯｜離開」上打轉）。`Update()` 在戰鬥模式把 Enter 導到
+	// `CombatAct`，所以隊伍**只會站著平砍**：不移動、不施法、不撤退，
+	// 一場 session 全滅重開二十幾次。
+	//
+	// ⚠ 不要自己寫戰術。`Q` 是原作就有的選項（QUICK），玩家按得出來，
+	// 而且它把行動交給引擎自己的 AI ⇒ 這一場量到的是「remake 的戰鬥規則帶得動
+	// 這支隊伍嗎」，不是「測試的戰術好不好」。
+	if s.app.state.Mode == game.ModeCombat {
+		s.playCombatTurn(t)
 		return
 	}
 	if s.app.state.Mode != game.ModeDungeon || s.app.geoGrid == nil {
@@ -811,6 +896,8 @@ func (s *keyDrivenSession) step(t *testing.T) {
 			if s.moveCursorTo(t, want) {
 				s.routeHits++
 				s.traceMenu("路線", want)
+				s.lastMenuPick = menuPick{stuckSignature(s.app.state.Choices), want}
+				s.lastMenuFrame, s.hasLastMenu = s.frames, true
 				tap(t, s.app, s.keys, ebiten.KeyEnter)
 				return
 			}
@@ -826,6 +913,11 @@ func (s *keyDrivenSession) step(t *testing.T) {
 			want := (s.menuSeen[signature] - 1) / keyDrivenMenuPatience
 			if want >= count {
 				want = count - 1
+			}
+			// 上一次按這一項之後整隊全滅過就換下一項。全部都試死過就照原樣按
+			// ——那代表這個選單怎麼選都會死，硬停在這裡也沒有比較好。
+			for probe := 0; probe < count && s.fatalPicks[menuPick{signature, want}]; probe++ {
+				want = (want + 1) % count
 			}
 			// ⚠ `a.choiceCursor` **跨模式留著**：在 58 項的商店選單挪到第 8 項之後
 			// 換到只有 3 項的荒野選單，游標還是 8 ⇒ 按下去會拿到
@@ -848,6 +940,7 @@ func (s *keyDrivenSession) step(t *testing.T) {
 				return
 			}
 			s.traceMenu("卡住換下一項", want)
+			s.lastMenuPick, s.lastMenuFrame, s.hasLastMenu = menuPick{signature, want}, s.frames, true
 		}
 		tap(t, s.app, s.keys, ebiten.KeyEnter)
 		return
@@ -953,9 +1046,93 @@ func (s *keyDrivenSession) step(t *testing.T) {
 			fresh = "新格"
 		}
 		s.moveTrace = append(s.moveTrace, fmt.Sprintf(
-			"幀%04d 啟發式 0x%02X(%d,%d)→%d（%s）⇒ (%d,%d) %s",
-			s.frames, beforeBlock, beforeX, beforeY, target, fresh,
+			"幀%04d 啟發式 ECL0x%02X/GEO0x%02X(%d,%d)→%d（%s）⇒ (%d,%d) %s",
+			s.frames, beforeBlock, s.app.geoBlock, beforeX, beforeY, target, fresh,
 			afterX, afterY, modeName(s.app.state.Mode)))
+	}
+}
+
+
+
+// keyDrivenBoost 決定要不要把隊伍撐起來（`COAB_KEY_BOOST=0` 關掉）。
+//
+// ★★ **為什麼預設要撐。** 這一場問的是「按鍵到得了多少內容」，而擋在前面的是
+// **戰術**不是內容：六個一級戰士（HP 10、AC 9）在提爾佛頓就打不贏十個酒館客人，
+// 而重放的戰鬥處置只有原作的「快速戰鬥」。實測未撐的隊伍在 12,000 幀裡全滅重開
+// 三十幾次，路線在第一次全滅之後就對不上，整場走不出開場那一段。
+// `cmd/cell-sweep`／`cmd/dungeon-walk-probe` 早就是這樣做的（`gamecorpus.BoostParty`）。
+//
+// ⚠ **所以這一場的數字不能讀成「正常隊伍走得到這麼多」。** 它證明的是
+// 「這些內容按鍵到得了、而且演出來是中文」；「正常隊伍打不打得贏」是另一把尺，
+// 由戰鬥那一側的測試負責。報表會把這件事印出來，不要只引用格數。
+func keyDrivenBoost() bool { return os.Getenv("COAB_KEY_BOOST") != "0" }
+
+// boostNote 把「隊伍撐過」這件事印在數字旁邊，免得格數被引用成「正常隊伍走得到」。
+func boostNote(boosted bool) string {
+	if !boosted {
+		return "（隊伍**沒有**撐過：這一場連戰術一起量）"
+	}
+	return "（⚠ 隊伍撐過：量的是內容按鍵到不到得了，**不是**正常隊伍打不打得贏）"
+}
+
+// boostParty 把隊伍撐到足以走完內容盤點的程度，欄位與 `gamecorpus.BoostParty`
+// 同一組。⚠ 這裡不能直接用那一支：它吃 `*game.State`，而這一場的 State 在 app 裡。
+func (s *keyDrivenSession) boostParty(t *testing.T) {
+	t.Helper()
+	if !keyDrivenBoost() {
+		return
+	}
+	party := s.app.state.PartyFighters()
+	if len(party) == 0 {
+		t.Fatal("建角完成之後隊伍是空的")
+	}
+	for index := range party {
+		party[index].HitPoints, party[index].MaxHitPoints = 999, 999
+		party[index].ArmorClass = -10
+		party[index].AttackBonus = 100
+		party[index].DamageDiceCount, party[index].DamageDiceSides = 1, 1
+		party[index].DamageBonus = 100
+		party[index].AttacksPerTurn = 8
+		party[index].InitiativeBonus = 100
+	}
+	if err := s.app.state.SetParty(party); err != nil {
+		t.Fatalf("撐隊伍失敗：%v", err)
+	}
+	s.boosted = true
+}
+
+// playCombatTurn 走一次戰鬥的按鍵。子選單／子模式先收掉，再按 `Q`。
+//
+// ⚠ 順序不能反：`Q` 在移動模式或施法選目標時是別的意思，先收掉才按得對。
+func (s *keyDrivenSession) playCombatTurn(t *testing.T) {
+	t.Helper()
+	switch {
+	case s.app.combatSpeedMenu, s.app.combatDoneMenu:
+		tap(t, s.app, s.keys, ebiten.KeyEscape)
+	case s.app.state.CombatViewActive():
+		tap(t, s.app, s.keys, ebiten.KeyEscape)
+	case s.app.state.CombatMoveMode(), s.app.state.CombatCastingSpell() != 0:
+		tap(t, s.app, s.keys, ebiten.KeyEscape)
+	default:
+		s.combatTurns++
+		tap(t, s.app, s.keys, ebiten.KeyQ)
+	}
+	if s.tracing() {
+		alive, hp, enemies := 0, 0, 0
+		for _, fighter := range s.app.state.CombatFighters() {
+			if fighter.HitPoints <= 0 {
+				continue
+			}
+			if fighter.Side == combat.SideParty {
+				alive++
+				hp += fighter.HitPoints
+			} else {
+				enemies++
+			}
+		}
+		s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+			"幀%04d 戰鬥 我方 %d 人／HP %d，敵方 %d 人 ⇒ %.40q",
+			s.frames, alive, hp, enemies, s.app.state.CombatMessage()))
 	}
 }
 
@@ -1186,6 +1363,7 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	if application.state.Mode == game.ModeCharacterCreation {
 		t.Fatal("按 D 之後還停在角色建立：完成那條路按不出來")
 	}
+	session.boostParty(t)
 
 	// ⚠ 幀數上限是**量出來的不是猜的**：換掉走法之後要重新量一次到頂的位置，
 	// 用 `COAB_KEY_FRAMES` 掃一遍再把預設值訂在轉折點上（見 spec 1197）。
@@ -1206,10 +1384,13 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		t.Fatalf("只站上過 %d 格：走不動", len(session.cells))
 	}
 	t.Logf("按鍵驅動 %d 幀：走過 %d 格、%d 種畫面、記到 %d 句話、撞到門 %d 次、"+
-		"照路線按 %d 次（路線共 %d 步，查表覆蓋 %d 格／%d 種選單），落回原文 0 句",
+		"照路線按 %d 次（路線共 %d 步，查表覆蓋 %d 格／%d 種選單），"+
+		"快速戰鬥 %d 次、全滅重開 %d 次（記住 %d 個致命選項），落回原文 0 句%s",
 		session.frames, len(session.cells), len(session.modes), len(session.messages),
 		session.doorsFound, session.routeHits, len(session.route),
-		len(session.routeMoves), len(session.routeChoices))
+		len(session.routeMoves), len(session.routeChoices),
+		session.combatTurns, session.wipes, len(session.fatalPicks),
+		boostNote(session.boosted))
 	x, y, facing := application.state.DungeonGeometryView()
 	spent := make([]string, 0, len(session.modeFrames))
 	for mode, frames := range session.modeFrames {
@@ -1227,6 +1408,9 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	t.Logf("  停在：%s (%d,%d) 朝 %d；最後一次有新東西在第 %d 幀；"+
 		"各畫面幀數 %s；路線帶不動 %d 次", modeName(application.state.Mode), x, y, facing,
 		session.lastProgress, strings.Join(spent, "、"), session.routeBlocked)
+	for pick := range session.fatalPicks {
+		t.Logf("  致命選項：第 %d 項 於 %.60s", pick.index, pick.signature)
+	}
 	t.Logf("  被牆擋住之後：開搜尋 %d 次、看一眼 %d 次", session.searchToggles, session.looks)
 	t.Logf("  卡住之後在這些格子之間繞：%s", strings.Join(stall, " "))
 	trace := session.segmentTrace

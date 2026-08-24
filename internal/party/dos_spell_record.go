@@ -154,6 +154,11 @@ type DOSPlayerRecord struct {
 	// 復原術每次還一級與其中 1/N 的 HP（spec 1125）。
 	DrainedLevels    int
 	DrainedHitPoints int
+	// BaseMovement／Movement 是 `+0E4h`／`+1A5h`：基準移動力與目前移動力
+	// （spec 683／1000）。重算負重時 `021Dh` 把基準抄進目前，再依負重階梯
+	// 降成 `9`／`6`／`3`；未負重就是角色自己的基準值。
+	BaseMovement int
+	Movement     int
 	Age              int16
 	Experience       uint32
 	ControlMorale    uint8
@@ -394,6 +399,8 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		BaseMaxHitPoints: int(data[0x12C]),
 		DrainedLevels:    int(data[0x0E7]),
 		DrainedHitPoints: int(data[0x0E8]),
+		BaseMovement:     int(data[0x0E4]),
+		Movement:         int(data[0x1A5]),
 		Age:              int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
 		Experience:       binary.LittleEndian.Uint32(data[0x127:0x12B]),
 		ControlMorale:    data[0xF7], ECLFlag192: data[0x192], Gender: data[0x119],
@@ -431,6 +438,8 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		BaseMaxHitPoints: r.BaseMaxHitPoints,
 		DrainedLevels:    r.DrainedLevels,
 		DrainedHitPoints: r.DrainedHitPoints,
+		BaseMovement:     r.BaseMovement,
+		Movement:         r.Movement,
 		NPC:              r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale, ECLFlag192: r.ECLFlag192,
 		Gender:      Gender(r.Gender),
 		ClassLevels: r.ClassLevels, HitDice: r.HitDice, MulticlassLevel: r.MulticlassLevel,
