@@ -46,9 +46,9 @@ Caveats: this is the denominator for the **renderer**, not for content, and not 
 
 | item | value |
 |---|---:|
-| captured screens in `index.tsv` | 1470 |
+| captured screens in `index.tsv` | 1494 |
 | captures that map to no standable cell | 0 |
-| **distinct signatures covered** | **579 / 585** |
+| **distinct signatures covered** | **585 / 585** |
 
 ### Next cells worth capturing
 
@@ -56,9 +56,3 @@ Greedy order: each row is the cell that knocks out the most still-uncovered sign
 
 | # | map | GEO | block | cell | new signatures | still uncovered after |
 |---:|---|---:|---:|---|---:|---:|
-| 1 | `original.geo5.block-35` | 5 | `0x35` | `(11,9)` | 1 | 5 |
-| 2 | `original.geo5.block-35` | 5 | `0x35` | `(3,11)` | 1 | 4 |
-| 3 | `original.geo5.block-35` | 5 | `0x35` | `(8,11)` | 1 | 3 |
-| 4 | `myth-drannor.burial-glen` | 6 | `0x40` | `(5,4)` | 1 | 2 |
-| 5 | `myth-drannor.burial-glen` | 6 | `0x40` | `(11,6)` | 1 | 1 |
-| 6 | `myth-drannor.burial-glen` | 6 | `0x40` | `(4,7)` | 1 | 0 |
