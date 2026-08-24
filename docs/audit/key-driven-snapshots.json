@@ -1,7 +1,8 @@
 {
  "schema": "coab-key-driven-snapshots/1",
  "snapshots": 114,
- "driven": 114,
+ "driven": 109,
  "fallbacks": 0,
- "known_variable_insert": 1
+ "known_variable_insert": 1,
+ "blocked": 5
 }

@@ -205,10 +205,11 @@ func main() {
 		Driven    int `json:"driven"`
 		Fallbacks int `json:"fallbacks"`
 		Known     int `json:"known_variable_insert"`
+		Blocked   int `json:"blocked"`
 	}
 	if readJSON(*auditDir, "key-driven-snapshots.json", &keySnapshots) {
 		add("key_driven_snapshots", keySnapshots.Snapshots, keySnapshots.Driven,
-			keySnapshots.Fallbacks, keySnapshots.Known)
+			keySnapshots.Fallbacks, keySnapshots.Known, keySnapshots.Blocked)
 	}
 
 	var save struct {

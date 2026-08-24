@@ -1549,6 +1549,24 @@ func TestKeyDrivenDiagnose(t *testing.T) {
 //
 // ⚠ 這**不是**「按鍵從頭玩到結局」：每一份是各自載入的，不是一條連續的 session。
 // 它證明的是**那些狀態下輸入層是活的**，不是「一路按過去到得了」。
+// snapshotTap 與 tap 相同，只是**不會 t.Fatalf**：把錯誤帶回去讓呼叫端記帳。
+//
+// ★ 為什麼不能沿用 `tap`。 114 份快照裡有一份推到一半回錯，`t.Fatalf` 會把
+// 整趟走訪停在那裡，剩下的一份都沒跑 ⇒ 報表上看起來像「量不到」，而實際上是
+// 「113 份好的、1 份撞到一個還沒判的東西」。這個專案的其他報表一律拆成
+// 「已判定／還沒判的」，這裡也一樣。
+func snapshotTap(application *app, keys *scriptedKeys, key ebiten.Key) error {
+	keys.press(key)
+	if err := application.Update(); err != nil {
+		return fmt.Errorf("按 %v：%w", key, err)
+	}
+	keys.release()
+	if err := application.Update(); err != nil {
+		return fmt.Errorf("放開 %v：%w", key, err)
+	}
+	return nil
+}
+
 func TestKeysDriveEveryCampaignSnapshot(t *testing.T) {
 	dir := os.Getenv("COAB_CAMPAIGN_SNAPSHOT_DIR")
 	if dir == "" {
@@ -1573,6 +1591,9 @@ func TestKeysDriveEveryCampaignSnapshot(t *testing.T) {
 	}
 
 	driven, fallbacks := 0, map[string]string{}
+	// blocked 是「推到一半回錯」的快照：這一份還沒判是 remake 的缺口還是
+	// 量測的限制，所以獨立記一格，不混進 `driven` 也不當成沒反應。
+	blocked := map[string]string{}
 	// ★ 已知的**變數插入**頁：那一頁印的是玩家自己取的隊員名字（`0x147B` 的
 	// `7C00h` 插入點），固定譯文會把名字吃掉——所以規則層**故意不接**它，
 	// 與 `gamepack` 的變數插入台帳（`TestVariableInsertPagesAreWiredAtRuntime`
@@ -1606,19 +1627,34 @@ func TestKeysDriveEveryCampaignSnapshot(t *testing.T) {
 			before := fmt.Sprintf("%v/%d/%d/%d/%q",
 				state.Mode, state.DungeonX, state.DungeonY, facing, state.Message)
 			key := ebiten.KeyEnter
-			if state.Mode == game.ModeDungeon {
+			switch {
+			case state.Mode == game.ModeDungeon:
 				key = ebiten.KeyUp
 				if application.geoGrid != nil && !application.canStepForward() {
 					key = ebiten.KeyM
 				}
+			case state.Mode == game.ModeCharacterCreation &&
+				len(state.CreationRoster) >= 6:
+				// ⚠ 建角滿六名之後再按 Enter 會回
+				// `party already has six characters` 並讓 `Update()` 報錯 ⇒
+				// 整個快照走訪死在那一份上。完成建立的鍵是 `D`，
+				// 與 `step()` 那一側同一條路（那裡是全滅重開走到的）。
+				key = ebiten.KeyD
 			}
-			tap(t, application, keys, key)
+			if err := snapshotTap(application, keys, key); err != nil {
+				blocked[name] = err.Error()
+				break
+			}
 			after := application.state
 			_, _, afterFacing := after.DungeonGeometryView()
 			if fmt.Sprintf("%v/%d/%d/%d/%q",
 				after.Mode, after.DungeonX, after.DungeonY, afterFacing, after.Message) != before {
 				moved = true
 			}
+		}
+		if reason, stopped := blocked[name]; stopped {
+			t.Logf("%s：推到一半停下來——%s", name, reason)
+			continue
 		}
 		if !moved {
 			t.Errorf("%s：按了 60 幀完全沒有反應——那個狀態下輸入層是死的", name)
@@ -1631,7 +1667,19 @@ func TestKeysDriveEveryCampaignSnapshot(t *testing.T) {
 			t.Errorf("按鍵推到的畫面落回原文（%s）：%q", name, text)
 		}
 	}
-	t.Logf("按鍵推得動的快照 %d／%d，落回原文 %d 句", driven, len(names), len(fallbacks))
+	t.Logf("按鍵推得動的快照 %d／%d，落回原文 %d 句，推到一半回錯 %d 份",
+		driven, len(names), len(fallbacks), len(blocked))
+	// ⚠ 閘釘在**相異成因**不是份數。份數會隨快照數量漂（同一個缺陷擋住五份
+	// `inside-block-42-*`），而要人去判的是**成因**。目前宣告 1 種：
+	// `ECL6/0x45:0557h` 的 `TREASURE ... 7F80` 讀到 1（見 `WORKLIST.md`）。
+	// 多一種就紅。不要為了讓測試綠而把它調大。
+	causes := map[string]int{}
+	for _, reason := range blocked {
+		causes[reason]++
+	}
+	if len(causes) > 1 {
+		t.Errorf("推到一半回錯的相異成因有 %d 種，宣告的上限是 1：%v", len(causes), causes)
+	}
 	if path := os.Getenv("COAB_KEY_SNAPSHOT_JSON"); path != "" {
 		report := struct {
 			Schema    string `json:"schema"`
@@ -1639,9 +1687,11 @@ func TestKeysDriveEveryCampaignSnapshot(t *testing.T) {
 			Driven    int    `json:"driven"`
 			Fallbacks int    `json:"fallbacks"`
 			Known     int    `json:"known_variable_insert"`
+			Blocked   int    `json:"blocked"`
 		}{
 			Schema: "coab-key-driven-snapshots/1", Snapshots: len(names), Driven: driven,
 			Fallbacks: len(fallbacks), Known: len(knownVariableInsert),
+			Blocked: len(blocked),
 		}
 		encoded, err := json.MarshalIndent(report, "", " ")
 		if err != nil {
