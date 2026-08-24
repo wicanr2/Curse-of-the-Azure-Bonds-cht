@@ -31,10 +31,10 @@ func TestCellSweepHasNoUntranslatedOrUnexplainedCells(t *testing.T) {
 	}
 	counts := summarise(sweeps)
 
-	// ⚠ 14 而不是 16：`ECL4/0x25`（莊園）與 `ECL5/0x33`（法師塔）有分派表，但從
+	// ⚠ 15 而不是 17：`ECL4/0x25`（莊園）與 `ECL5/0x33`（法師塔）有分派表，但從
 	// 註冊表宣告的入口進去分別是魔法商店與塔前庭院，到不了它們那張地圖。
-	if counts["block"] != 14 {
-		t.Errorf("掃到 %d 個 block，宣告的是 14 個", counts["block"])
+	if counts["block"] != 15 {
+		t.Errorf("掃到 %d 個 block，宣告的是 15 個", counts["block"])
 	}
 	if counts["原文"] != 0 {
 		t.Errorf("有 %d 格演出來是原文", counts["原文"])

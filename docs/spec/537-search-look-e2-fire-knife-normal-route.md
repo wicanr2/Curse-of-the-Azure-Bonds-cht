@@ -11,8 +11,8 @@
 開啟 persistent SEARCH
   → (13,10) 沿 GEO2 block 3 正常移動
   → 搜尋發現 wall=09 的候選邊
-  → 抵達 (8,15,S) 並以 external-exit transaction 進入 ECL2 block 4
-  → 火刀據點入口 (6,1,S)
+  → 抵達 (10,15,S) 並以 external-exit transaction 進入 ECL2 block 4
+  → 火刀據點入口 (8,1,S)
   → 處理據點前的 ECL 單鍵事件／刀刃等待
   → 抵達北側 E1 候選 (8,0,N)，再次北行越界
   → ECL 回到下水道 (10,15,N)
@@ -29,7 +29,7 @@
 | `curseoftheazurebonds.zip` | `exact` 輸入 | SHA-256 `c98698a6271c17177dfdb27f34b0389b7d34f58ef206e92575393f4655f5b26d` |
 | `GEO2.DAX` block 3／4 的四平面 record | `exact` | 原始 archive 解碼；wall／detail／terrain 的位址空間分開保存 |
 | `wall=09/detail=0` 是唯一橋接候選 | `strong inference` | GEO graph、手冊 SEARCH 語意與攻略圖例一致；沒有同版 writer→consumer trace |
-| `(8,15,S)` E2 → `NEWECL 4`、`LOAD PIECES 1,2,4` | `exact` raw branch／remake trace | ECL branch 與正常 State 交易均有回歸 |
+| `(10,15,S)` E2 → `NEWECL 4`、`LOAD PIECES 1,2,4` | `exact` raw branch／remake trace | 去程 `X := X − 2`、回程 `X := X + 2`；來源格與回程落點同一格（spec 1199）|
 | 火刀北側 `(8,0,N)`、`(11,0,N)`、`(13,0,N)` | `strong inference` | GEO boundary 候選與攻略「E1 全部可用」交叉支持；仍非原版逐指令座標證明 |
 | E1 runtime 回到 GEO2 block 3 `(10,15,N)` | `exact` remake／ECL trace | 由實際 block 4 移動與 boundary lifecycle 產生，不是直接設定座標 |
 | 首領勝利 → 世界地圖 → save/load | `exact` remake integration | 同一 ECL session、世界選單與 save v12 狀態回歸 |
@@ -50,8 +50,8 @@ CoAB `pit-of-moander.json` 宣告：
 
 - `tilverton.sewers.wall-09-west`：`(10,12,W)`、`wall_type=09`、
   `search_or_look`、`strong inference`；
-- `tilverton.sewers.e2-south-boundary`：`(8,15,S)`、作品
-  `ecl-boundary`、`strong inference`；
+- 下水道十一個走得出圖外的邊界格（`ecl-boundary`、`exact`）；逐格的落點與
+  `4C2A` 打完之後的封條分支見 [spec 1199](./1199-tilverton-sewers-map-edge-handoffs.md)；
 - `tilverton.fire-knife-hideout.e1-north-west／centre／east`：北側三個 E1
   候選，均為 `strong inference`。
 

@@ -1798,12 +1798,12 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		{-1, 0, 6}, // (12,10) -> (11,10)
 		{-1, 0, 6}, // (11,10) -> (10,10)
 		{0, 1, 4},  // (10,10) -> (10,11)
-		{0, 1, 4},  // (10,11) -> (10,12)
-		{-1, 0, 6}, // searched wall=09: (10,12) -> (9,12)
-		{0, 1, 4},  // (9,12) -> (9,13)
-		{0, 1, 4},  // (9,13) -> (9,14)
-		{0, 1, 4},  // (9,14) -> (9,15)
-		{-1, 0, 6}, // (9,15) -> (8,15)
+		{0, 1, 4},  // (10,11) -> (10,12)：持續 SEARCH 在這一格發現 wall=09 密門
+		{1, 0, 2},  // (10,12) -> (11,12)
+		{0, 1, 4},  // (11,12) -> (11,13)
+		{0, 1, 4},  // (11,13) -> (11,14)
+		{0, 1, 4},  // (11,14) -> (11,15)
+		{-1, 0, 6}, // (11,15) -> (10,15)：南緣唯一走得到的火刀交接格
 	} {
 		if err := state.MoveDungeon(sewerGrid, step.dx, step.dy, step.direction); err != nil {
 			t.Fatalf("normal sewer Search route step %d: %v", index, err)
@@ -1833,7 +1833,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	}
 	if state.Mode != ModeWilderness || state.session.CurrentBlockID() != 4 ||
 		state.GeoMapSet != 2 || state.GeoMapBlock != 4 ||
-		state.DungeonX != 6 || state.DungeonY != 1 || state.DungeonDirection != 4 ||
+		state.DungeonX != 8 || state.DungeonY != 1 || state.DungeonDirection != 4 ||
 		state.LoadPieces != [3]uint16{1, 2, 4} ||
 		state.Message != requireGamePackText(t, &state, "fire-knife.hideout-entry") {
 		t.Fatalf("Fire Knife hideout entry mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d pieces=%v message=%q choices=%v",
@@ -1944,15 +1944,17 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 			}
 		}
 	}
-	// This is the raw GEO2 block-4 route from the E2 entrance at (6,1) to
+	// This is the raw GEO2 block-4 route from the E2 entrance at (8,1) to
 	// terrain 87 at (3,13), the Fire Knife leader encounter.  It intentionally
 	// crosses the blade barrier and frozen-room cells instead of injecting a
 	// coordinate or ECL selector, so every transition is driven by MoveDungeon
 	// and the normal SEARCH/LOOK lifecycle.
-	for index, step := range []struct {
+	leaderRoute := []struct {
 		dx, dy, direction int
 	}{
-		{0, 1, 4},  // (6,1) -> (6,2)
+		{-1, 0, 6}, // (8,1) -> (7,1)
+		{0, 1, 4},  // (7,1) -> (7,2)
+		{-1, 0, 6}, // (7,2) -> (6,2)
 		{-1, 0, 6}, // (6,2) -> (5,2), blade barrier
 		{-1, 0, 6}, // (5,2) -> (4,2), frozen room
 		{0, 1, 4},  // (4,2) -> (4,3)
@@ -1981,11 +1983,15 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		{-1, 0, 6}, // (5,12) -> (4,12)
 		{0, 1, 4},  // (4,12) -> (4,13)
 		{-1, 0, 6}, // (4,13) -> (3,13), leader
-	} {
+	}
+	// ⚠ 最後一步是首領那一格，它的暫停由下面的首領段自己收；其餘每一步都要
+	// 就地把事件收乾淨。**用 `len(leaderRoute)` 算，不要寫死步數**——路線一改
+	// 長度就對不上，而症狀是「首領選項在 mode 2 無效」這種看不出成因的錯。
+	for index, step := range leaderRoute {
 		if err := state.MoveDungeon(hideoutGrid, step.dx, step.dy, step.direction); err != nil {
 			t.Fatalf("normal Fire Knife hideout leader route step %d: %v", index, err)
 		}
-		if index+1 < 29 {
+		if index+1 < len(leaderRoute) {
 			continueHideoutEvent(index)
 		}
 	}
@@ -2074,6 +2080,17 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 	for turn := 0; turn < 100 && state.Mode == ModeCombat; turn++ {
 		if err := state.CombatAct(); err != nil {
 			t.Fatalf("normal Fire Knife patrol victory turn %d: %v", turn, err)
+		}
+	}
+	// 巡邏戰打完可能留下一份戰利品服務。關掉它是正常玩家動作，不是繞過流程；
+	// 沒關就會拿財寶選單去跟世界選單比對。
+	if state.treasureMenu {
+		exit, ok := state.OriginalChoiceIndex("TREASURE_EXIT")
+		if !ok {
+			t.Fatalf("Tilverton patrol loot service has no exit: %v", state.currentOriginalChoices)
+		}
+		if err := state.Select(exit); err != nil {
+			t.Fatalf("close Tilverton patrol loot service: %v", err)
 		}
 	}
 	if state.Mode != ModeWilderness || !reflect.DeepEqual(state.currentOriginalChoices, []string{"PATROL FOREST", "JOURNEY ON", "CAMP"}) {

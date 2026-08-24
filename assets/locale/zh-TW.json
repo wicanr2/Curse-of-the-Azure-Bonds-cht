@@ -700,7 +700,7 @@
   "alter_pics_exit": "返回修改選單",
   "alter_rename": "改名",
   "alter_rename_prompt": "選擇要改名的角色",
-  "alter_rename_character": "%s（%s）",
+  "alter_rename_character": "第%d位：%s",
   "alter_rename_exit": "返回修改選單",
   "alter_rename_edit_prompt": "輸入 %s 的新名稱",
   "alter_rename_done": "%s 已改名為 %s。",

@@ -59,8 +59,9 @@ func TestCellEventTableShape(t *testing.T) {
 			dispatchers++
 		}
 	}
-	if dispatchers != 16 {
-		t.Errorf("有地形分派的 block 是 %d 個，宣告的是 16 個", dispatchers)
+	// ⚠ 17 而不是 16：火刀據點（`ECL2/0x04`）的遮罩住在 `GOSUB` 進去的子程式裡。
+	if dispatchers != 17 {
+		t.Errorf("有地形分派的 block 是 %d 個，宣告的是 17 個", dispatchers)
 	}
 	// ⚠ 遮罩不是固定的：`0x7F` 與 `0x3F` 都量到過。寫死一種會讓另一種整個落空。
 	masks := map[int]int{}

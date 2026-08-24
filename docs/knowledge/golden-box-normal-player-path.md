@@ -45,16 +45,20 @@ script 空間；日後其他 Gold Box 作品若有不同鏡像／局部地圖，
 
 ```text
 (13,10) → (12,10) → (11,10) → (10,10) → (10,11) → (10,12)
-        -- wall=09/detail=0 候選橋接 --
-        → (9,12) → (9,13) → (9,14) → (9,15) → (8,15)
-        -- (8,15,S) wall=0C/detail=0 的 E2 boundary --
+        → (11,12) → (11,13) → (11,14) → (11,15) → (10,15)
+        -- (10,15,S) 的 E2 boundary → block 4 (8,1,S) --
 ```
 
-關閉 `wall=09` 候選時，GEO 普通圖不可達；開啟候選時才可到達。這是 route
-evidence，不是把 raw wall nibble 命名成秘密門的證據。正常玩家驗收必須分成：
+⚠ 往火刀據點的來源格是 `(10,15)` 不是 `(8,15)`：`(8,15)` 的南面走不出去
+（移動遮罩 `3`），而腳本去程 `X := X − 2`、回程 `X := X + 2`，回程落點正是
+`(10,15)`。逐格證據與下水道三塊區域的圖緣傳送見
+[spec 1199](../spec/1199-tilverton-sewers-map-edge-handoffs.md)。
+
+`wall=09/detail=0`（`(10,12)↔(9,12)`）是另一件事：它通往下水道**中間那一塊
+區域**（X 5..9），不在往據點的路上。正常玩家驗收必須分成：
 
 1. Search／Look 輸入如何讓 `(10,12)↔(9,12)` 成為可走邊；
-2. 走到 `(8,15)` 後如何發出 E2 boundary attempt；
+2. 走到 `(10,15)` 後如何發出 E2 boundary attempt；
 3. block 4 初始化、返回與 save-load 持久性。
 
 原版手冊的 `SEARCH` 是持續 toggle，`LOOK` 是目前格子的單次檢查；第 537 輪
@@ -187,8 +191,9 @@ handoff 移入 engine `MapPositionTransition` 與 CoAB JSON event；State 不再
 但 DOS ECL work address 與 overlay 22 `[di+4BF0h]` indexed table 的
 writer→projection→consumer 尚未 exact 閉合。不能只因看見同一張
 GEO map 就假設左右 component 有開路相連，也不可用 BFS 穿過實心牆。騎士後到
-block 4 `(8,15)` 的第二個外部 handoff 已由 engine＋JSON 的 `strong inference`
-external-exit 候選接成正常玩家路徑；原版 wall writer 仍未 exact 閉合。
+往 block 4 的第二個外部 handoff（下水道 `(10,15,S)`）已接成正常玩家路徑，
+逐格落點由 `ECL2/0x03` 的圖緣處理常式直接讀出（spec 1199）；`wall=09` 的原版
+writer 仍未 exact 閉合。
 
 ## 下水道 E2 與火刀 E1 回返
 
@@ -197,9 +202,9 @@ external-exit 候選接成正常玩家路徑；原版 wall writer 仍未 exact �
 ```text
 (13,10) W→(12,10) W→(11,10) W→(10,10)
          S→(10,11) S→(10,12)
-         W→(9,12)  ← game-pack wall=09 候選，搜尋後可走
-         S→(9,13) S→(9,14) S→(9,15) W→(8,15)
-         S→E2 → block 4 (6,1,S)
+         （持續 SEARCH 在 (10,12) 發現 game-pack 的 wall=09 候選邊）
+         E→(11,12) S→(11,13) S→(11,14) S→(11,15) W→(10,15)
+         S→E2 → block 4 (8,1,S)
 ```
 
 E2 不是前端先包裝的 teleport：`MoveDungeon` 先驗證 pack external exit，再把

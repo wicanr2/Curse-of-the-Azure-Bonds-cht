@@ -48,8 +48,11 @@ func TestAnalyzeFindsBothMaskShapes(t *testing.T) {
 	if blocks != 25 {
 		t.Fatalf("掃到 %d 個 block，應該是 25 個", blocks)
 	}
-	if found != 16 {
-		t.Errorf("有地形分派的 block 是 %d 個，宣告的是 16 個", found)
+	// ⚠ 17 而不是 16：火刀據點（`ECL2/0x04`）的遮罩住在 `GOSUB` 進去的子程式裡
+	// （`0x170D`），位置在 `ON GOTO` 後面。只往位移小的方向找遮罩會漏掉它，
+	// 而漏掉的樣子跟「這個 block 沒有每格事件」一模一樣。
+	if found != 17 {
+		t.Errorf("有地形分派的 block 是 %d 個，宣告的是 17 個", found)
 	}
 	// ⚠ 遮罩不是固定的：`0x7F` 與 `0x3F` 都量到過。寫死一種會讓另一種整批落空。
 	if masks[0x7F] == 0 || masks[0x3F] == 0 {

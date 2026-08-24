@@ -1413,13 +1413,92 @@
       ],
       "external_exits": [
         {
-          "id": "tilverton.sewers.e2-south-boundary",
-          "x": 8,
+          "id": "tilverton.sewers.north-00-to-guild",
+          "x": 0,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.north-04-to-guild",
+          "x": 4,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.north-09-wrap-west",
+          "x": 9,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.north-11-wrap-west",
+          "x": 11,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.north-15-wrap-west",
+          "x": 15,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.south-02-wrap-east",
+          "x": 2,
           "y": 15,
           "direction": 4,
-          "wall_type": 12,
           "event_id": "ecl-boundary",
-          "confidence": "strong inference"
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.south-05-wrap-east",
+          "x": 5,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.south-09-wrap-east",
+          "x": 9,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.south-10-to-hideout",
+          "x": 10,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.south-13-to-hideout",
+          "x": 13,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
+        },
+        {
+          "id": "tilverton.sewers.south-15-to-hideout",
+          "x": 15,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "exact"
         }
       ]
     },

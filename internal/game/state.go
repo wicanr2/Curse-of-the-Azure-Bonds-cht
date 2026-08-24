@@ -3509,7 +3509,10 @@ func (s *State) enterAlterRenameMenu() {
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("alter_rename_character", "alter_rename_character"), character.Name, character.ID))
+		// ⚠ 第二個參數是**隊列位置**，不是 `character.ID`。ID 是內部識別字
+		// （`creation.human.fighter-3` 這種），玩家不該看到；六個新角色又都叫
+		// 同一個名字，所以要靠位置區分——原作的順序／移除選單也是這樣列的。
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("alter_rename_character", "alter_rename_character"), index+1, character.Name))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_RENAME_CHARACTER_"+strconv.Itoa(index))
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("alter_rename_exit", "alter_rename_exit"))

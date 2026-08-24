@@ -189,7 +189,7 @@ func findTerrainDispatcher(data []byte, unique map[int]ecl.Instruction, offsets 
 		if !ok {
 			continue
 		}
-		mask, ok := maskFeeding(unique, offsets, cell, offset)
+		mask, ok := maskFeeding(data, unique, offsets, cell, offset)
 		if !ok {
 			continue
 		}
@@ -208,13 +208,13 @@ func findTerrainDispatcher(data []byte, unique map[int]ecl.Instruction, offsets 
 //
 // ⚠ 同一格會被好幾條 `AND C04F, <遮罩>` 寫過（`0x3F`、`0x7F`、`0x80` 都有），
 // 取最近的那一條才會拿到餵給這個 `ON GOTO` 的遮罩。
-func maskFeeding(unique map[int]ecl.Instruction, offsets []int,
+//
+// ⚠ 「之前」要照**執行順序**算，不是位移大小：遮罩可以藏在 `GOSUB` 進去的
+// 子程式裡（見 scanOrderBefore）。
+func maskFeeding(data []byte, unique map[int]ecl.Instruction, offsets []int,
 	cell uint16, before int) (int, bool) {
 	mask, found := 0, false
-	for _, offset := range offsets {
-		if offset >= before {
-			break
-		}
+	for _, offset := range scanOrderBefore(data, unique, offsets, before) {
 		instruction := unique[offset]
 		if instruction.Command.Name != "AND" || len(instruction.Operands) < 3 {
 			continue
@@ -240,6 +240,57 @@ func maskFeeding(unique map[int]ecl.Instruction, offsets []int,
 		}
 	}
 	return mask, found
+}
+
+// maxSubroutineBody 是往子程式裡看時最多看幾條指令。子程式一律短（設幾個
+// 格子就 `RETURN`），上限只是避免解錯時整段掃下去。
+const maxSubroutineBody = 24
+
+// scanOrderBefore 回傳「跑到 `before` 之前執行過的指令」的位移，順序照執行順序
+// 近似：線性往下，遇到 `GOSUB` 就把被呼叫的那一段插在它後面。
+//
+// ★ 為什麼不能只用位移大小比較。 火刀據點（`ECL2/0x04`）的分派器是
+// `GOSUB 0x970D` ＋ `ON GOTO 4C05`，而 `AND 3Fh, C04F → 4C05` 住在位移 `0x170D`
+// 的子程式裡——位置在 `ON GOTO`（`0x00F5`）**後面** 5,656 個位元組。用「位移比
+// `ON GOTO` 小」去找遮罩，這個 block 會落空，而落空跟「這個 block 沒有每格事件」
+// 在報表上長得一模一樣。那張表原本就這樣少了 33 個索引的一整層。
+//
+// ⚠ 只往下看一層：目前語料裡遮罩都在被直接呼叫的那一支，多層遞迴只會多撈到
+// 執行上無關的 `AND`。
+func scanOrderBefore(data []byte, unique map[int]ecl.Instruction, offsets []int,
+	before int) []int {
+	order := make([]int, 0, len(offsets))
+	for _, offset := range offsets {
+		if offset >= before {
+			break
+		}
+		order = append(order, offset)
+		instruction := unique[offset]
+		if instruction.Command.Opcode != 0x02 || len(instruction.Operands) != 1 {
+			continue
+		}
+		target, ok := ecl.CodeTarget(instruction.Operands[0], len(data))
+		if !ok {
+			continue
+		}
+		order = append(order, subroutineBody(unique, offsets, target)...)
+	}
+	return order
+}
+
+// subroutineBody 回傳子程式從 `start` 到第一條 `RETURN`／`EXIT` 為止的位移。
+func subroutineBody(unique map[int]ecl.Instruction, offsets []int, start int) []int {
+	index := sort.SearchInts(offsets, start)
+	body := make([]int, 0, maxSubroutineBody)
+	for cursor := index; cursor < len(offsets) && len(body) < maxSubroutineBody; cursor++ {
+		offset := offsets[cursor]
+		body = append(body, offset)
+		opcode := unique[offset].Command.Opcode
+		if opcode == 0x13 || opcode == 0x00 {
+			break
+		}
+	}
+	return body
 }
 
 // onGotoSize 回傳 `ON GOTO` 宣告的索引個數。

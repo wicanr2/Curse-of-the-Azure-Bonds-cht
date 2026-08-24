@@ -141,7 +141,43 @@
 
 ## ECL2／`0x04`
 
-沒有以地形碼分派的每格事件
+地圖：`GEO2/0x04`；索引 ＝ 地形碼 `& 0x3F`
+
+| 索引 | 遮罩後 | 格子 | 那一場的第一句 |
+|---:|---|---|---|
+| 0 | `00` | — | — |
+| 1 | `01` | `(8,0)` | 「YOU SEE THE REMAINS OF A FIRE KNIFE CHECKPOINT.」 |
+| 2 | `02` | `(11,0)` | 「THERE ARE SIGNS THAT THIS IS NORMALLY A」 |
+| 3 | `03` | — | 「YOU ARE AT A CHECKPOINT.」 |
+| 4 | `04` | `(4,12)` | 「YOU ARE AT A CHECKPOINT.」 |
+| 5 | `05` | `(2,9)` | 「YOU SPOT A CHECKPOINT TO THE」 |
+| 6 | `06` | `(6,12)` | 「YOU SPOT A CHECKPOINT TO THE」 |
+| 7 | `07` | `(3,13)` | 「YOU MEET THE LEADER OF THE FIRE KNIVES.」 |
+| 8 | `08` | `(6,13)`、`(6,15)` | 「YOU FOUND THE ARMORY.」 |
+| 9 | `09` | `(15,2)` | — |
+| 10 | `0A` | `(14,4)` | — |
+| 11 | `0B` | `(14,7)` | — |
+| 12 | `0C` | — | — |
+| 13 | `0D` | `(13,11)` | — |
+| 14 | `0E` | `(12,9)` | — |
+| 15 | `0F` | `(11,7)` | — |
+| 16 | `10` | — | — |
+| 17 | `11` | `(9,6)` | — |
+| 18 | `12` | `(8,8)` | — |
+| 19 | `13` | `(7,6)` | — |
+| 20 | `14` | `(5,7)` | — |
+| 21 | `15` | `(15,3)`、`(15,4)`、`(15,5)`、`(15,6)`、`(6,7)`、`(7,7)`、`(8,7)`、`(9,7)`、`(15,7)`、`(9,8)`、`(10,8)`、`(11,8)`、`(12,8)`、`(13,8)`、`(14,8)`、`(15,8)`、`(13,9)`、`(13,10)` | — |
+| 22 | `16` | `(7,13)`、`(8,13)`、`(9,13)`、`(7,14)`、`(8,14)`、`(9,14)`、`(7,15)`、`(8,15)`、`(9,15)` | 「THE ROOM HAS BEEN CONVERTED TO A HOSPITAL.」 |
+| 23 | `17` | `(5,10)`、`(6,10)`、`(7,10)`、`(5,11)`、`(6,11)`、`(7,11)` | 「THE ROOM SEEMS TO BE USED AS A STORAGE AREA.」 |
+| 24 | `18` | `(0,9)`、`(1,9)`、`(0,10)`、`(1,10)`、`(0,11)`、`(1,11)` | 「THIS DARK AND SMOKY ROOM IS ADORNED WITH ALL」 |
+| 25 | `19` | `(5,1)`、`(5,2)`、`(7,2)` | 「YOU STOP AT THE ENTRANCE TO THIS ROOM. IN FRONT」 |
+| 26 | `1A` | `(3,1)`、`(2,2)`、`(4,2)`、`(3,3)` | 「ABOUT THE ROOM ARE A NUMBER OF PEOPLE FROZEN IN」 |
+| 27 | `1B` | `(14,11)` | 「THIS IS AN ORNATE ROOM, APPARENTLY THE OFFICE OF」 |
+| 28 | `1C` | `(15,12)` | 「AS YOU ENTER THIS HALLWAY, YOU DETECT A STRANGE」 |
+| 29 | `1D` | `(15,15)` | 「THIS IS AN EXTREMELY WELL ORDERED BEDROOM,」 |
+| 30 | `1E` | `(14,13)` | 「THIS ROOM WAS ONCE A LIBRARY, BUT THE SHELVES」 |
+| 31 | `1F` | `(12,14)` | 「THIS WAS ONCE A LAB, BUT THE SAME INTENSE FLAME」 |
+| 32 | `20` | `(1,6)`、`(2,6)`、`(0,8)` | 「WITHIN THE ROOM ARE TWO ROWS OF SHROUDED BODIES.」 |
 
 ## ECL3／`0x10`
 
