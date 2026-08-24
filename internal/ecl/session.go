@@ -543,6 +543,15 @@ func (s *BlockSession) runAggregate(start, maxSteps int, selections, whoSelectio
 		} else {
 			aggregate.PictureFrameAdvances += result.PictureFrameAdvances
 		}
+		// 關閉訊號要跨段接：sub-run 各自已把「先關後開」收成開，這裡只要
+		// 「後面那段又開了圖」就把前面的關閉蓋掉（最後一個 PICTURE 決定收尾
+		// 狀態）。重繪是事件不是狀態，取 OR。
+		if result.PictureCloseRequested {
+			aggregate.PictureCloseRequested = true
+		} else if result.PictureRequested {
+			aggregate.PictureCloseRequested = false
+		}
+		aggregate.PictureCloseRedraw = aggregate.PictureCloseRedraw || result.PictureCloseRedraw
 		aggregate.SpellSearches = append(aggregate.SpellSearches, result.SpellSearches...)
 		aggregate.ProtectionRequests = append(aggregate.ProtectionRequests, result.ProtectionRequests...)
 		aggregate.ClockRequests = append(aggregate.ClockRequests, result.ClockRequests...)

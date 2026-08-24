@@ -1084,6 +1084,7 @@ func (s *State) BeginAdventure() error {
 		s.PictureRequested = false
 		s.SceneCharacterRequested = false
 	}
+	s.applyPictureClose(result)
 	if result.WaitingForString && len(result.StringInputRequests) > 0 {
 		s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
 		return nil
@@ -1641,6 +1642,7 @@ func (s *State) Select(index int) error {
 			s.Mode = ModeWilderness
 			return nil
 		}
+		s.applyPictureClose(result)
 		if result.WaitingForString && len(result.StringInputRequests) > 0 {
 			s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
 			return nil
@@ -1987,6 +1989,29 @@ func (s *State) applyGeoMapLoad(result ecl.RunResult) {
 	s.GeoMapSet = s.Area.GameArea
 	s.GeoMapBlock = *effect.GeoMapBlock
 	s.geoMapPending = true
+}
+
+// applyPictureClose 接 `0Eh PICTURE 0FFh` 的關閉訊號（spec 1148）。
+//
+// ★ 只在**收尾狀態是關的**時候清（同一次執行後面又開了圖的話，聚合層已把
+// 關閉訊號讓給後來的開圖）。沒圖開著時什麼都不做——原作 `08E9h` 那一支在
+// `8B62h`／`8B65h` 都是 0 時同樣直接跳過。
+//
+// ⚠ 旁路（前後都在第一人稱，`PictureCloseRedraw` 為假）在原作只是**不立即
+// 重繪**，畫面等主迴圈自己把 3D 視窗畫回去；remake 每一幀都重畫，所以 UI 的
+// 收尾狀態一樣是關——旁路留在 VM 的髒旗標模型裡（`8B62h`／`8B65h` 不清）。
+func (s *State) applyPictureClose(result ecl.RunResult) {
+	if !result.PictureCloseRequested || result.PictureRequested {
+		return
+	}
+	if !s.PictureRequested {
+		return
+	}
+	s.PictureRequested = false
+	s.PictureBlock = 0
+	s.BigPictureRequested = false
+	s.SceneCharacterRequested = false
+	s.SceneBodyBlock = 0
 }
 
 // ConsumeGeoMapRequest transfers the bounded ECL LOAD FILES effect to the
@@ -6140,6 +6165,7 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	}
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon
+	s.applyPictureClose(result)
 	if result.WaitingForString && len(result.StringInputRequests) > 0 {
 		s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
 		return true, nil

@@ -1,6 +1,6 @@
 # 專案現況
 
-更新日期：2026-08-24（第 754 輪：**修掉「全滅重開帶著上一局章節」的缺陷，主線快照走訪收到 114／114**。上一輪的 P1「快照走訪 5 份推不動」查清並修掉，但成因與上一輪寫的完全不同：不是 `ECL6/0x45:0557h` 的 `7F80`——那一段靜態上沒有任何一條繞過 `0x047D` 的路（無直接跳入、六個 `ON GOTO` 表、五個生命週期入口逐一排除），runtime trace 也顯示那條指令根本沒跑過。真正的失敗鏈：那五份快照的走訪打輸**全滅 → 返回標題 → 重開新局**，`resetSessionForNewGame` 只重設 session 與隊伍、`Area.GameArea` 留著章 6；全新開局不經過「ENTER CITY」那條會改章的路（`BeginAdventure` 直接 Reset 到 0x01），新隊伍帶著章 6 走進提爾佛頓——GEO 載成「找不到 GEO6 block 0x01」、商店 TREASURE（`ECL2/0x01:03FF`，第八運算元是**立即值** 0x01）拿章 6 查 ITEM 區塊 1 而整個 `Update()` 回錯。修在 `resetSessionForNewGame`（收回 seg001.Init 開局值：章 2、GEO2/0x01、(7,13) 朝北，並發 GEO 重載請求），回歸測試 `TestReturnToTitleAfterPartyKilledResetsCampaignArea` 釘住；走訪測試的「相異成因上限」從 1 收緊到 0，整套 114 份實測 114 推得動、落回原文 0。教訓進 AGENTS.md §3：錯誤訊息裡的位址是消費失敗的位置，不是值寫錯的位置。）
+更新日期：2026-08-25（第 755 輪：**`PICTURE` 收掉，ECL `partial` 只剩 `CALL`**。`4FBAh`／`4FBBh`（前後兩次畫面模式）建進 `ViewMirror`（`ScreenMode`/`PrevScreenMode`，`4BE6h` 換值才輪替）；`PICTURE 0FFh` 關閉照原作 `08E9h` 的旁路——前後都在第一人稱就不立即重繪、`8B62h`/`8B65h` 不清（「圖還開著」留著），其餘情況圖開著才重繪並清旗標（`RunResult.PictureCloseRedraw`）。關閉訊號第一次接進 game 側（`applyPictureClose`，三個套用點）：腳本關圖畫面就收掉；同一次執行「先關後開」收尾是開，session 聚合層同一套規則（先前 `PictureCloseRequested` 在聚合層整個被丟掉）。`0Eh` 轉 `done`：可達 14,177 條裡 `partial` 367 → **168**，opcode `done` 60／`partial` 1。測試：`TestPictureCloseRedrawBypass` 五條、game 側兩條、handler 報表一致性閘同步。）
 
 本檔只保留**目前有效的現況與入口**。歷史敘述已分冊到
 [`docs/context/`](docs/context/)，逐行保留原文，不再放在這裡。
@@ -318,7 +318,7 @@ remake 自己的槽使用，光看檔案分不出來源，所以由呼叫端明�
 > [`docs/audit/remake-status.md`](docs/audit/remake-status.md)**——它由
 > `cmd/remake-status` 從既有的覆蓋率報表重生，每一列都附「這個數字證明不了什麼」。
 
-量得到的部分：ECL 可達指令 `partial` 只剩 **2 個 opcode／367 條**、原作文字頁
+量得到的部分：ECL 可達指令 `partial` 只剩 **1 個 opcode／168 條**（`CALL`）、原作文字頁
 unmatched 0、角色記錄 unknown 0、兩平台函式台帳待解讀 0、譯名不一致 0、
 逐格實測 288 個索引裡演出來是中文 276／落回原文 0、走訪可達性 287／288。
 

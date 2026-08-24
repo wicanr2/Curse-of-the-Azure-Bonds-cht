@@ -1119,9 +1119,12 @@ go.sum 仍然逐版本鎖雜湊）。
 - CoAB 使用：
   `git --git-dir=workplace/azure-bonds-git --work-tree=.`
   （2026-08-13 由 `/tmp/azure-bonds-git` 搬入 repo 底下並列入 `.gitignore`；
-  原位置一次重開機就會連同未推送的 commit 全部消失。根目錄的 `.git` 是
-  root 擁有的空目錄，不要當成本 repo 的 git 目錄，也因此 Go 建置要帶
-  `-buildvcs=false`。）
+  原位置一次重開機就會連同未推送的 commit 全部消失。**根目錄沒有 `.git`**
+  （2026-08-25 起：先前那個 root 擁有的空目錄已移除），所以在根目錄直接打
+  `git` 會報「不是版本庫」——那是正常的，一律用上面的 `--git-dir` 形式；
+  Go 建置也因此要帶 `-buildvcs=false`。⚠ 不要因為看到「不是版本庫」就從遠端
+  clone 一份接到根目錄——2026-08-24 有一個 session 這樣「修復」過，
+  兩個 git 目錄指著同一個工作樹會分裂。）
 - Engine 使用：
   `git -C golden-box-remake-engine`
 - 不丟棄使用者或不相關變更；先檢查 dirty worktree。

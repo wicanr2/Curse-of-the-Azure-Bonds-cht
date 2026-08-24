@@ -11,8 +11,8 @@
 
 | 狀態 | 指令數 | opcode 數 | 意思 |
 |---|---:|---:|---|
-| `done` | 13810 | 59 | 副作用已產生，且有回歸測試或實機路徑驗過 |
-| `partial` | 367 | 2 | 只做了一部分，多半是把請求記進 result 讓上層處理 |
+| `done` | 14009 | 60 | 副作用已產生，且有回歸測試或實機路徑驗過 |
+| `partial` | 168 | 1 | 只做了一部分，多半是把請求記進 result 讓上層處理 |
 | **`consumed`** | **0** | **0** | **只讀掉運算元——原作有效果，remake 沒有** |
 | 合計（靜態可達指令）| 14177 | 61 | |
 
@@ -20,7 +20,6 @@
 
 | opcode | 名稱 | 狀態 | 可達出現次數 | 出現在幾個 block | 還差什麼 |
 |---|---|---|---:|---:|---|
-| `0x0E` | PICTURE | `partial` | 199 | 23 | 原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n >= 78h 是大圖。remake 三個判準都對得上，0FFh 先前什麼都不做、現在發 PictureCloseRequested。partial 剩表現層：實際載入、頭像與身體的分塊合成、以及 4FBAh/4FBBh 那個不重繪的旁路（旁路的語意已解出：4FBAh 是現在的畫面模式、4FBBh 是上一次的，3 ＝ 非第一人稱、4 ＝ 第一人稱，因為兩者都由 ECL 格 4BE6 的新值 0／非 0 決定，而 4BE6 就是第一人稱模式旗標 ⇒「前後都還在第一人稱就不重繪」；⚠ 旁路連 8B62h/8B65h 的清除一起跳過，所以走旁路時「圖還開著」這個狀態留著。remake 還沒建這個模型） |
 | `0x2D` | CALL | `partial` | 168 | 22 | 原作 2F02h 整支 124 條讀完（spec 1150）：operand − 7FFFh 之後七路分派。corpus 用到四個——2E10h 125 處（重畫）、B200h 19 處（音效）、C01Eh 13 處（MOVEFORWARD）、6803h 11 處（圖片序列推一格）。B200h 的兩支已判定：選號由 ECL 格 03DE 決定，全 corpus 15 次寫入一律是 5 ⇒ 只走得到 10 那一支；6803h 已接成序列游標。2E10h 的髒旗標模型已經建出來（spec 1172）：STOREVALUE 當場把 C04B/C04C/C04D 鏡射到 720Fh/7210h/7211h 並立 8B68h，CALL C01Eh 當場走一步，CALL 2E10h 取快照後把五個旗標清掉——先前那個「回頭掃同一 block、執行序在前的 SaveWrites」的啟發式整支拿掉了。★ 那個「還要有新寫的 C04D」的附加條件也早就拿掉（spec 1158）：只寫 C04B/C04C 的重畫就是真實移動、朝向刻意不變，corpus 23 處全部生效——4BF0/4BF1 的 producer 是地城主迴圈的移動前快照（spec 1155/1045）。★ 七個選擇子已全量普查（`TestDuelCallSelectorsAreUnusedWhileTheOthersAreNot`，先做正對照才讓零算數）：corpus 用四個（125／19／13／11），`C018h`／`8000h`／`8001h` 三個都是 0，而且沒有第八個 ⇒ **未接的目標都走不到**。★ 投影的時機也對上了（spec 1172）：原作的 STOREVALUE 一寫 C04B 就當場改 720Fh，隊伍在那一刻就搬了，2E10h 只是重畫；remake 改成「執行結束時座標還髒著就收尾投影一次」，所以「寫了座標卻沒有 2E10h」的執行也會搬隊伍（實例 ECL3/0x10:0C7Eh 指揮官帶你走側門，隔壁那條搶劫結局 0D24h 才有重畫）。Written 遮罩因此整格移除。partial 只剩**一個 remake 這一側的擋板**：鏡射多記「這三格是哪個 block 的腳本寫的」並要求與目前 block 相同。★ 它擋的不是引擎行為——spec 1183 普查過 720Fh/7210h/7211h 的全部寫入者（STOREVALUE 的鏡射、MOVEFORWARD、INIT、MOVEMENT、LOADSAVE 的 5 byte 區塊，共五處），INTERPET（擁有 GOECL 與 block 載入）一次都沒寫卻讀了 23 次 ⇒ 原作沒有「換 block 的引擎進場放置」，進新地圖的落點是腳本自己寫的（ECL2/0x03:00DBh 甚至還帶條件 4C2A==1）。這一格擋的是 remake 的資料缺口：腳本沒寫進場座標的地圖靠 game pack 宣告的 spawn 補值。所以拿不拿得掉是資料問題，而已知有一處對不上——提爾弗頓下水道腳本說 (0,0) 朝南、宣告的 spawn 是 (0,1)，還沒用原版判過誰對 |
 | `0x09` | SAVE | `done` | 1916 | 25 | 數值與字串記憶體都寫得進去 |
 | `0x01` | GOTO | `done` | 1777 | 24 | 控制流 |
@@ -36,6 +35,7 @@
 | `0x13` | RETURN | `done` | 269 | 24 | 控制流 |
 | `0x19` | IF > | `done` | 216 | 23 | 同上 |
 | `0x1C` | CLEARMONSTERS | `done` | 206 | 24 | 原作 120Eh 逐條讀完（37 條）：清怪物鏈與已放置數（47E6h）、清「有怪要打」旗標（8B69h，spec 1095）、把 6F70h 起 28 bytes 的戰利品池歸零（七種貨幣／寶石／珠寶，spec 1059）、沿 6F8Ch 鏈逐節點 FreeMem(63) 釋放 27h 串進去的物品節點（spec 1087），並把 7603h 設成 8。remake 這一側全部對上——怪物鏈、跨執行累積的戰利品堆都清（docs/audit/ecl-treasure-clear.md）。7603h 設成 8 的語意也讀出來了（spec 1173）：它是**下一批怪物的圖示槽**（`+143h` ＝ `ICONINDEX`，`overlay-33 entry#5` 拿它與 `CPIC` 組檔名），`inc` 在放置迴圈**結束後**才做一次 ⇒ 同一批共用一張圖，而 0..7 是隊伍成員的圖示，所以重設值是 8 不是 0。它是**快取索引不是遊戲狀態**——remake 的每個戰鬥員自己帶 SpriteBlock，可觀察行為相同，因此沒有對應動作、也不該有 |
+| `0x0E` | PICTURE | `done` | 199 | 23 | 原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n >= 78h 是大圖。三個判準都對得上；0FFh 先前是什麼都不做，現在完整接上：關閉訊號會把畫面上的圖收掉（applyPictureClose，三個套用點），且 08E9h 的不重繪旁路已建模——4FBAh/4FBBh 是前後兩次的畫面模式（3 ＝ 非第一人稱、4 ＝ 第一人稱），由 STOREVALUE 發現 4BE6h 換值時輪替（overlay-07:0DA0h，ViewMirror.ScreenMode/PrevScreenMode），前後都是 4 就不立即重繪、8B62h/8B65h 不清（「圖還開著」留著），其餘情況圖真的開著才重繪並清那兩格（PictureCloseRedraw）。同一次執行先關後開收尾是開、先開後關收尾是關，session 聚合層同一套規則（先前 close 欄位在聚合層整個被丟掉）。TestPictureCloseRedrawBypass 五條釘住。★ 實際的載入與頭像＋身體分塊合成在 UI 資產層（SceneHeadBlock/SceneBodyBlock 已接，round-83/84），逐像素對照歸第一人稱／UI fidelity 那條 P1，不是 VM 副作用的缺口 |
 | `0x24` | COMBAT | `done` | 199 | 24 | COMBAT 是三選一的服務分派點（spec 1095）。分派順序已照抄原作（spec 1149：179Ah 先看 8B69h／8B56h，有怪就直接打，商店旗標排在後面）。199 處分成 153 處真的要打與 46 處走服務分派（docs/audit/ecl-combat-sites.md）；★★ **第四支已經解出來並接上**（spec 1182）：`sub_184B` 讀完是「`bank1^[5C4h] = 1` ⇒ 神殿（overlay-04 ＝ TEMPLE），否則 ⇒ 戰後處理（overlay-05 ＝ DOPOSTCOMBAT）」——那正是那 46 處「沒擺過怪的 24h」的去向，腳本先用 `27h TREASURE` 堆好戰利品再用 `24h` 開分配畫面。remake 因此把零隻怪的 `24h` 改成發 `PostCombatRequested` 而不是 `CombatRequested`（原作的 `24h` 沒有「零隻怪的戰鬥」，有怪才走 `sub_1956`）。★★★ 四支全部接上而且都有實機路徑：打（怪物鏈非空 ＝ 原作的 `8B69h`，spec 1145）、商店、神殿（後兩者的 producer 是腳本自己，`7F6Ch` 9 處／`7EE2h` 4 處，已用原版資料跑過）、戰後處理。★★ 第一支的另一個條件 `DS:8B56h` ＝ **決鬥旗標**，整個執行檔只有 `GODUEL`（`overlay-07 entry#25`）設它，而 `GODUEL` 只有 `2Dh CALL` 的 `8000h`／`8001h` 到得了——**corpus 兩個都沒用到**（spec 1150），所以那一支在 CoAB 走不到，remake 用怪物鏈非空覆蓋了整個可達條件 |
 | `0x0C` | SETUP MONSTER | `done` | 197 | 24 | 怪物編成請求交給戰鬥層 |
 | `0x25` | ON GOTO | `done` | 179 | 23 | 動態分支，目的地是字面位址（spec 1110） |
@@ -86,28 +86,28 @@
 
 | Block | 可達指令 | 其中未完整還原 |
 |---|---:|---:|
-| `ECL4.DAX/0x21` | 563 | 37 |
-| `ECL2.DAX/0x01` | 659 | 27 |
-| `ECL4.DAX/0x25` | 745 | 25 |
-| `ECL5.DAX/0x33` | 709 | 24 |
-| `ECL6.DAX/0x40` | 766 | 21 |
-| `ECL4.DAX/0x22` | 526 | 19 |
-| `ECL5.DAX/0x32` | 634 | 19 |
-| `ECL6.DAX/0x42` | 603 | 19 |
-| `ECL6.DAX/0x43` | 525 | 19 |
-| `ECL2.DAX/0x02` | 374 | 17 |
-| `ECL1.DAX/0x52` | 86 | 16 |
-| `ECL3.DAX/0x10` | 913 | 14 |
-| `ECL3.DAX/0x12` | 840 | 14 |
-| `ECL4.DAX/0x20` | 722 | 13 |
-| `ECL5.DAX/0x31` | 388 | 13 |
-| `ECL5.DAX/0x35` | 598 | 13 |
-| `ECL3.DAX/0x11` | 788 | 12 |
-| `ECL2.DAX/0x04` | 482 | 11 |
-| `ECL2.DAX/0x03` | 703 | 9 |
-| `ECL4.DAX/0x23` | 303 | 9 |
-| `ECL1.DAX/0x50` | 798 | 5 |
-| `ECL3.DAX/0x15` | 334 | 5 |
-| `ECL1.DAX/0x51` | 726 | 3 |
+| `ECL4.DAX/0x25` | 745 | 18 |
+| `ECL2.DAX/0x02` | 374 | 13 |
+| `ECL4.DAX/0x21` | 563 | 13 |
+| `ECL6.DAX/0x42` | 603 | 12 |
+| `ECL1.DAX/0x52` | 86 | 11 |
+| `ECL3.DAX/0x10` | 913 | 10 |
+| `ECL6.DAX/0x43` | 525 | 10 |
+| `ECL5.DAX/0x32` | 634 | 9 |
+| `ECL5.DAX/0x33` | 709 | 9 |
+| `ECL2.DAX/0x01` | 659 | 8 |
+| `ECL6.DAX/0x40` | 766 | 8 |
+| `ECL2.DAX/0x03` | 703 | 7 |
+| `ECL4.DAX/0x22` | 526 | 7 |
+| `ECL4.DAX/0x23` | 303 | 6 |
+| `ECL5.DAX/0x35` | 598 | 5 |
+| `ECL2.DAX/0x04` | 482 | 4 |
+| `ECL3.DAX/0x11` | 788 | 4 |
+| `ECL3.DAX/0x15` | 334 | 4 |
+| `ECL4.DAX/0x20` | 722 | 3 |
+| `ECL5.DAX/0x31` | 388 | 3 |
 | `ECL6.DAX/0x45` | 320 | 3 |
+| `ECL3.DAX/0x12` | 840 | 1 |
+| `ECL1.DAX/0x50` | 798 | 0 |
+| `ECL1.DAX/0x51` | 726 | 0 |
 | `ECL5.DAX/0x30` | 72 | 0 |

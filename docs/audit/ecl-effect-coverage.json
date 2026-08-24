@@ -404,8 +404,8 @@
   {
    "opcode": "0x0E",
    "name": "PICTURE",
-   "status": "partial",
-   "note": "原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n \u003e= 78h 是大圖。remake 三個判準都對得上，0FFh 先前什麼都不做、現在發 PictureCloseRequested。partial 剩表現層：實際載入、頭像與身體的分塊合成、以及 4FBAh/4FBBh 那個不重繪的旁路（旁路的語意已解出：4FBAh 是現在的畫面模式、4FBBh 是上一次的，3 ＝ 非第一人稱、4 ＝ 第一人稱，因為兩者都由 ECL 格 4BE6 的新值 0／非 0 決定，而 4BE6 就是第一人稱模式旗標 ⇒「前後都還在第一人稱就不重繪」；⚠ 旁路連 8B62h/8B65h 的清除一起跳過，所以走旁路時「圖還開著」這個狀態留著。remake 還沒建這個模型）",
+   "status": "done",
+   "note": "原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n \u003e= 78h 是大圖。三個判準都對得上；0FFh 先前是什麼都不做，現在完整接上：關閉訊號會把畫面上的圖收掉（applyPictureClose，三個套用點），且 08E9h 的不重繪旁路已建模——4FBAh/4FBBh 是前後兩次的畫面模式（3 ＝ 非第一人稱、4 ＝ 第一人稱），由 STOREVALUE 發現 4BE6h 換值時輪替（overlay-07:0DA0h，ViewMirror.ScreenMode/PrevScreenMode），前後都是 4 就不立即重繪、8B62h/8B65h 不清（「圖還開著」留著），其餘情況圖真的開著才重繪並清那兩格（PictureCloseRedraw）。同一次執行先關後開收尾是開、先開後關收尾是關，session 聚合層同一套規則（先前 close 欄位在聚合層整個被丟掉）。TestPictureCloseRedrawBypass 五條釘住。★ 實際的載入與頭像＋身體分塊合成在 UI 資產層（SceneHeadBlock/SceneBodyBlock 已接，round-83/84），逐像素對照歸第一人稱／UI fidelity 那條 P1，不是 VM 副作用的缺口",
    "occurrences": 199,
    "blocks": [
     "ECL1.DAX/0x50",
@@ -1457,12 +1457,12 @@
   }
  ],
  "instructions_by_status": {
-  "done": 13810,
-  "partial": 367
+  "done": 14009,
+  "partial": 168
  },
  "opcodes_by_status": {
-  "done": 59,
-  "partial": 2
+  "done": 60,
+  "partial": 1
  },
  "reachable_instructions": 14177,
  "reachable_by_block": {
@@ -1493,29 +1493,27 @@
   "ECL6.DAX/0x45": 320
  },
  "unreproduced_by_block": {
-  "ECL1.DAX/0x50": 5,
-  "ECL1.DAX/0x51": 3,
-  "ECL1.DAX/0x52": 16,
-  "ECL2.DAX/0x01": 27,
-  "ECL2.DAX/0x02": 17,
-  "ECL2.DAX/0x03": 9,
-  "ECL2.DAX/0x04": 11,
-  "ECL3.DAX/0x10": 14,
-  "ECL3.DAX/0x11": 12,
-  "ECL3.DAX/0x12": 14,
-  "ECL3.DAX/0x15": 5,
-  "ECL4.DAX/0x20": 13,
-  "ECL4.DAX/0x21": 37,
-  "ECL4.DAX/0x22": 19,
-  "ECL4.DAX/0x23": 9,
-  "ECL4.DAX/0x25": 25,
-  "ECL5.DAX/0x31": 13,
-  "ECL5.DAX/0x32": 19,
-  "ECL5.DAX/0x33": 24,
-  "ECL5.DAX/0x35": 13,
-  "ECL6.DAX/0x40": 21,
-  "ECL6.DAX/0x42": 19,
-  "ECL6.DAX/0x43": 19,
+  "ECL1.DAX/0x52": 11,
+  "ECL2.DAX/0x01": 8,
+  "ECL2.DAX/0x02": 13,
+  "ECL2.DAX/0x03": 7,
+  "ECL2.DAX/0x04": 4,
+  "ECL3.DAX/0x10": 10,
+  "ECL3.DAX/0x11": 4,
+  "ECL3.DAX/0x12": 1,
+  "ECL3.DAX/0x15": 4,
+  "ECL4.DAX/0x20": 3,
+  "ECL4.DAX/0x21": 13,
+  "ECL4.DAX/0x22": 7,
+  "ECL4.DAX/0x23": 6,
+  "ECL4.DAX/0x25": 18,
+  "ECL5.DAX/0x31": 3,
+  "ECL5.DAX/0x32": 9,
+  "ECL5.DAX/0x33": 9,
+  "ECL5.DAX/0x35": 5,
+  "ECL6.DAX/0x40": 8,
+  "ECL6.DAX/0x42": 12,
+  "ECL6.DAX/0x43": 10,
   "ECL6.DAX/0x45": 3
  }
 }

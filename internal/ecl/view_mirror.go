@@ -30,6 +30,17 @@ type ViewMirror struct {
 	// 這一格擋的是 remake 的**資料缺口**：腳本沒寫進場座標的地圖靠 game pack
 	// 宣告的 spawn 補值，不比對 block 的話會被上一個 block 的座標蓋掉。
 	Block uint8
+	// ScreenMode／PrevScreenMode 對應 `4FBAh`／`4FBBh`（spec 1148／1150）：
+	// `STOREVALUE` 發現 ECL 格 `4BE6h`（第一人稱模式旗標）的新值與舊值不同時，
+	// 先 `4FBBh := 4FBAh`，再依新值是 0 或非 0 把 `4FBAh` 設成 3（非第一人稱）
+	// 或 4（第一人稱）（DOS `overlay-07:0DA0h`..`0DC9h`）。
+	// 0 是 BSS 開機值——兩格都是 0 時 `PICTURE 0FFh` 的旁路條件不成立，走重繪。
+	ScreenMode     uint16
+	PrevScreenMode uint16
+	// threeDGate 是上一次寫進 `4BE6h` 的值，判「換值」用。原作比的是記憶體格
+	// 本身的舊值；`Store` 在寫入之後才被呼叫、拿不到舊值，所以自己留一份。
+	// 開機值 0 與原作 BSS 相同。
+	threeDGate uint16
 }
 
 // 五個髒旗標，各自的生產者見 spec 1150。
@@ -56,6 +67,9 @@ const (
 	viewCellWall    uint16 = 0xC05F
 	viewCellPartyA  uint16 = 0x4BFD
 	viewCellPartyB  uint16 = 0x4BFE
+	// viewCellThreeD 是第一人稱模式旗標（`4BE6h`，引擎側同一格是
+	// `bank0^[1CCh]`，spec 1096／1181）；`ScreenMode` 的來源。
+	viewCellThreeD uint16 = 0x4BE6
 )
 
 // Store 重現 `STOREVALUE` 的鏡射那一段：**當場**寫三格並立旗標。
@@ -89,6 +103,18 @@ func (m *ViewMirror) Store(address, value uint16, block uint8) {
 		m.Dirty |= ViewDirtyCell
 	case viewCellPartyA, viewCellPartyB:
 		m.Dirty |= ViewDirtyPartyCell
+	case viewCellThreeD:
+		// `4FBAh`／`4FBBh` 只在**換值**時輪替（`overlay-07:0DA0h`）：
+		// 同值重寫不動它們——ECL1 的世界地圖 block 會反覆寫 0。
+		if value != m.threeDGate {
+			m.PrevScreenMode = m.ScreenMode
+			if value == 0 {
+				m.ScreenMode = 3
+			} else {
+				m.ScreenMode = 4
+			}
+			m.threeDGate = value
+		}
 	}
 }
 

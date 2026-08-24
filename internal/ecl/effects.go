@@ -61,7 +61,7 @@ var OpcodeEffects = map[byte]OpcodeEffect{
 	0x0B: {EffectDone, "怪物載入請求交給戰鬥層"},
 	0x0C: {EffectDone, "怪物編成請求交給戰鬥層"},
 	0x0D: {EffectDone, "原作 0801h 逐條讀完（22 條）：距離（bank1^[582h] ＝ ECL 格 7EC1h）大於 0 就減一並用新距離重畫遭遇圖，是 0 就什麼都不做。remake 兩件都做：ApproachEncounter 減格子、ApproachCount 給上層重畫。⚠ 這個減一不影響遭遇選單——29h 進門會重新設一次距離把它蓋回去（spec 1146）"},
-	0x0E: {EffectPartial, "原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n >= 78h 是大圖。remake 三個判準都對得上，0FFh 先前什麼都不做、現在發 PictureCloseRequested。partial 剩表現層：實際載入、頭像與身體的分塊合成、以及 4FBAh/4FBBh 那個不重繪的旁路（旁路的語意已解出：4FBAh 是現在的畫面模式、4FBBh 是上一次的，3 ＝ 非第一人稱、4 ＝ 第一人稱，因為兩者都由 ECL 格 4BE6 的新值 0／非 0 決定，而 4BE6 就是第一人稱模式旗標 ⇒「前後都還在第一人稱就不重繪」；⚠ 旁路連 8B62h/8B65h 的清除一起跳過，所以走旁路時「圖還開著」這個狀態留著。remake 還沒建這個模型）"},
+	0x0E: {EffectDone, "原作 0841h 整支 77 條讀完（spec 1148）：三層分岔——0FFh 關閉、bank1^[5C2h]（＝7EE1h 頭像）非 0FFh 走頭像合成、n >= 78h 是大圖。三個判準都對得上；0FFh 先前是什麼都不做，現在完整接上：關閉訊號會把畫面上的圖收掉（applyPictureClose，三個套用點），且 08E9h 的不重繪旁路已建模——4FBAh/4FBBh 是前後兩次的畫面模式（3 ＝ 非第一人稱、4 ＝ 第一人稱），由 STOREVALUE 發現 4BE6h 換值時輪替（overlay-07:0DA0h，ViewMirror.ScreenMode/PrevScreenMode），前後都是 4 就不立即重繪、8B62h/8B65h 不清（「圖還開著」留著），其餘情況圖真的開著才重繪並清那兩格（PictureCloseRedraw）。同一次執行先關後開收尾是開、先開後關收尾是關，session 聚合層同一套規則（先前 close 欄位在聚合層整個被丟掉）。TestPictureCloseRedrawBypass 五條釘住。★ 實際的載入與頭像＋身體分塊合成在 UI 資產層（SceneHeadBlock/SceneBodyBlock 已接，round-83/84），逐像素對照歸第一人稱／UI fidelity 那條 P1，不是 VM 副作用的缺口"},
 	0x0F: {EffectConsumed, "INPUT NUMBER 在 corpus 靜態不可達，沒有輸入通道"},
 	0x10: {EffectDone, "字串輸入，退格以 rune 為單位（CHT-02）"},
 	0x11: {EffectDone, "文字累積進 result.Text"},

@@ -112,6 +112,11 @@ type RunResult struct {
 	PictureRequested bool
 	// PictureCloseRequested 為真代表 `0Eh PICTURE` 的運算元是 `0FFh`：把圖關掉。
 	PictureCloseRequested bool
+	// PictureCloseRedraw 為真代表這次關閉走到了原作 `08E9h` 的**立即重繪**：
+	// 圖真的開著（`8B62h` 或 `8B65h` 非 0）而且不在「前後都還在第一人稱」的
+	// 旁路上（`not (4FBBh = 4 and 4FBAh = 4)`，spec 1148）。走旁路時原作不重繪
+	// 也不清那兩格——畫面等主迴圈自己把 3D 視窗畫回去。
+	PictureCloseRedraw bool
 	// PictureFrameAdvances 是**最後一張圖之後**跑過幾次 `2Dh CALL 6803h`。
 	// 原作那一支把圖片序列的游標往前推一格（超過張數回到第 1 格）、畫出那一格
 	// 再等一個 GAMEDELAY；換圖時 LOADSEQUENCE 會把游標設回第 1 格，所以換圖
@@ -1735,11 +1740,23 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				// ★ 先前 `0FFh` 是**什麼都不做**——原作在那裡是把圖關掉。
 				if value == 0xFF {
 					result.PictureCloseRequested = true
-					// 關圖那一支（`08E9h`）清 `8B62h`／`8B65h` 再重繪。
-					runtime.View.Dirty &^= ViewDirtyPicture | ViewDirtyWindow
+					// 關圖那一支（`08E9h`）有一個不重繪旁路（spec 1148）：
+					// `not ((4FBBh = 4) and (4FBAh = 4))` ＝ 前後都還在第一人稱
+					// 就跳過整個 if——不重繪、也不清 `8B62h`／`8B65h`，
+					// 「圖還開著」這個狀態留著。模式變過（3→4 或 4→3）或現在
+					// 是大圖，而且圖真的開著，才重繪並清那兩格。
+					bypass := runtime.View.PrevScreenMode == 4 &&
+						runtime.View.ScreenMode == 4
+					open := runtime.View.Dirty&(ViewDirtyPicture|ViewDirtyWindow) != 0
+					if !bypass && open {
+						result.PictureCloseRedraw = true
+						runtime.View.Dirty &^= ViewDirtyPicture | ViewDirtyWindow
+					}
 				} else {
-					// 開圖立 `8B62h`。
+					// 開圖立 `8B62h`。同一次執行「先關後開」時，收尾狀態是
+					// 開著——關閉訊號讓給後來的開圖。
 					runtime.View.Dirty |= ViewDirtyPicture
+					result.PictureCloseRequested = false
 					result.PictureRequested = true
 					result.PictureBlock = value
 					result.BigPictureRequested = value >= 0x78

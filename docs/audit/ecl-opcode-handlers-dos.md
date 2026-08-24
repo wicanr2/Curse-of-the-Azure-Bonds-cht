@@ -36,7 +36,7 @@ spec 1157）。**收尾一支之前先各自驗一次邊界**，方法是往後 
 | `0Bh` | LOAD MONSTER | 3 | `0466h` | `0466h`..`06D5h` | 284 | `done` |
 | `0Ch` | SETUP MONSTER | 3 | `03CAh` | `03CAh`..`0461h` | 52 | `done` |
 | `0Dh` | APPROACH | 0 | `0801h` | `0801h`..`083Dh` | 22 | `done` |
-| `0Eh` | PICTURE | 1 | `0841h` | `0841h`..`092Ch` | 77 | `partial` |
+| `0Eh` | PICTURE | 1 | `0841h` | `0841h`..`092Ch` | 77 | `done` |
 | `0Fh` | INPUT NUMBER | 2 | `092Ch` | `092Ch`..`0970h` | 28 | `consumed` |
 | `10h` | INPUT STRING | 2 | `0972h` | `0972h`..`09EAh` | 51 | `done` |
 | `12h` | PRINTCLEAR | 1 | `09EAh` | `09EAh`..`0A86h` | 69 | `done` |
@@ -85,7 +85,7 @@ spec 1157）。**收尾一支之前先各自驗一次邊界**，方法是往後 
 |---|---:|
 | 分派器列出的 opcode | 52 |
 | handler 指令數合計 | 4023 |
-| 其中副作用仍是 `partial` | 2（`0Eh` 77 ＋ `2Dh` 124 ＝ 201 條）|
+| 其中副作用仍是 `partial` | 1（`2Dh` 124 條）|
 
 ⚠ **`副作用狀態` 這一欄不是手記的。** 它必須與 `internal/ecl.OpcodeEffects`
 逐格相同，由 `TestHandlerReportStatusMatchesOpcodeEffects` 擋住——手記的狀態
