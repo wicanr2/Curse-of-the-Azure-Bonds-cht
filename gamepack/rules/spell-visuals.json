@@ -10,50 +10,72 @@
    "comspr_block": 5
   }
  ],
- "unattributed": [
+ "special_attacks": [
   {
    "address": 22720,
    "slot": 19,
    "comspr_block": 6,
-   "entry": 109
+   "entry": 109,
+   "effect_codes": [
+    88
+   ]
   },
   {
    "address": 23038,
    "slot": 23,
    "comspr_block": 10,
-   "entry": 110
+   "entry": 110,
+   "effect_codes": [
+    86
+   ]
   },
   {
    "address": 23454,
    "slot": 18,
    "comspr_block": 5,
-   "entry": 111
+   "entry": 111,
+   "effect_codes": [
+    90
+   ]
   },
   {
    "address": 23849,
    "slot": 18,
    "comspr_block": 5,
-   "entry": 112
+   "entry": 112,
+   "effect_codes": [
+    128
+   ]
   },
   {
    "address": 24233,
    "slot": 23,
    "comspr_block": 10,
-   "entry": 113
+   "entry": 113,
+   "effect_codes": [
+    131
+   ]
   },
   {
    "address": 24472,
    "slot": 19,
    "comspr_block": 6,
-   "entry": 114
+   "entry": 114,
+   "effect_codes": [
+    132
+   ]
   },
   {
    "address": 24717,
    "slot": 18,
    "comspr_block": 5,
-   "entry": 115
+   "entry": 115,
+   "effect_codes": [
+    126
+   ]
   }
  ],
+ "unattributed": [],
  "effects": [
   {
    "address": 6819,

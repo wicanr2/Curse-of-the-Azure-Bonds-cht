@@ -91,11 +91,11 @@
 | 83 | `overlay-12:01A65h`（entry#82） | `overlay-12:01ABCh`（entry#82） | 已解讀 | 832 |
 | 84 | `overlay-12:01C1Ch`（entry#83） | `overlay-12:01C86h`（entry#83） | 已解讀 | 641 |
 | 85 | `overlay-12:01C4Fh`（entry#84） | `overlay-12:01CB9h`（entry#84） | 已解讀 | 641 |
-| 86 | *（未指定，維持 NIL）* | *（未指定，維持 NIL）* | — | — |
+| 86 | `overlay-22:05974h`（entry#110）（INITSPELLS，spec 1202） | `overlay-22:05D17h`（entry#111）（INITSPELLS，spec 1202） | 已解讀 | 723 |
 | 87 | `overlay-13:042FDh`（entry#29） | `overlay-13:0426Bh`（entry#29） | 已解讀 | 842 |
-| 88 | *（未指定，維持 NIL）* | *（未指定，維持 NIL）* | — | — |
+| 88 | `overlay-22:057E3h`（entry#109）（INITSPELLS，spec 1202） | `overlay-22:05B90h`（entry#110）（INITSPELLS，spec 1202） | 已解讀 | 847 |
 | 89 | `overlay-12:01C90h`（entry#85） | `overlay-12:01CFAh`（entry#85） | 已解讀 | 641 |
-| 90 | *（未指定，維持 NIL）* | *（未指定，維持 NIL）* | — | — |
+| 90 | `overlay-22:05AA8h`（entry#111）（INITSPELLS，spec 1202） | `overlay-22:05E32h`（entry#112）（INITSPELLS，spec 1202） | 已解讀 | 725 |
 | 91 | `overlay-12:01CF6h`（entry#86） | `overlay-12:01D5Eh`（entry#86） | 已解讀 | 748 |
 | 92 | `overlay-12:02E33h`（entry#135） | `overlay-12:02ECBh`（entry#135） | 已解讀 | 569 |
 | 93 | `overlay-12:01FC4h`（entry#87） | `overlay-12:0202Ch`（entry#87） | 已解讀 | 573 |
@@ -131,13 +131,13 @@
 | 123 | `overlay-12:027FAh`（entry#117） | `overlay-12:02868h`（entry#117） | 已解讀 | 738 |
 | 124 | `overlay-12:0282Fh`（entry#118） | `overlay-12:0289Dh`（entry#118） | 已解讀 | 573 |
 | 125 | `overlay-12:02855h`（entry#119） | `overlay-12:028C3h`（entry#119） | 已解讀 | 585 |
-| 126 | `overlay-12:0289Ch`（entry#120） | `overlay-12:0290Ch`（entry#120） | 已解讀 | 747 |
+| 126 | `overlay-12:0289Ch`（entry#120） ⚠ INITSPELLS 又寫成 `overlay-22:06022h`（entry#115），生效者未判定（spec 1202） | `overlay-12:0290Ch`（entry#120） | 已解讀 | 747 |
 | 127 | `overlay-12:02E33h`（entry#135） | `overlay-12:02ECBh`（entry#135） | 已解讀 | 569 |
-| 128 | *（未指定，維持 NIL）* | *（未指定，維持 NIL）* | — | — |
+| 128 | `overlay-22:05C86h`（entry#112）（INITSPELLS，spec 1202） | `overlay-22:06019h`（entry#113）（INITSPELLS，spec 1202） | 已解讀 | 735 |
 | 129 | `overlay-12:0297Ah`（entry#121） | `overlay-12:029F2h`（entry#121） | 已解讀 | 573 |
 | 130 | `overlay-12:0299Ch`（entry#122） | `overlay-12:02A14h`（entry#122） | 已解讀 | 742 |
-| 131 | *（未指定，維持 NIL）* | *（未指定，維持 NIL）* | — | — |
-| 132 | *（未指定，維持 NIL）* | *（未指定，維持 NIL）* | — | — |
+| 131 | `overlay-22:05E11h`（entry#113）（INITSPELLS，spec 1202） | `overlay-22:061ADh`（entry#114）（INITSPELLS，spec 1202） | 已解讀 | 720 |
+| 132 | `overlay-22:05F2Fh`（entry#114）（INITSPELLS，spec 1202） | `overlay-22:062D7h`（entry#115）（INITSPELLS，spec 1202） | 已解讀 | 981 |
 | 133 | `overlay-12:02AA8h`（entry#124） | `overlay-12:02B20h`（entry#124） | 已解讀 | 573 |
 | 134 | `overlay-12:02AD6h`（entry#125） | `overlay-12:02B4Eh`（entry#125） | 已解讀 | 738 |
 | 135 | `overlay-12:02B0Fh`（entry#126） | `overlay-12:02B87h`（entry#126） | 已解讀 | 573 |

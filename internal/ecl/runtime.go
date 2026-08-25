@@ -726,6 +726,7 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			result.PC = pc
 			return result, err
 		}
+		recordRunCoverage(runtime, pc)
 		result.Steps++
 		next := instruction.Next
 		switch instruction.Command.Opcode {

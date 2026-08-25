@@ -34,6 +34,12 @@ PLATFORMS = {
     "dos": ("START.EXE", "overlay-12", "02E3C", 0x6FA6),
     "pc98": ("PC98-GAME.EXE", "overlay-12", "02ED4", 0xA040),
 }
+# 第二支會寫這張表的初始化：`INITSPELLS` 的尾段（spec 1202）。
+# 它把七個特殊攻擊效果碼指到 overlay-22 尾端的 handler。
+SECOND_WRITER = {
+    "dos": ("overlay-22", "0630B"),
+    "pc98": ("overlay-22", "066EB"),
+}
 
 
 def stub_index(platform, executable):
@@ -82,7 +88,18 @@ def decode(platform):
         code = (slot - base) // 4
         linear = (0x1000 + seg) * 0x10 + off
         out[code] = stubs[linear]
-    return out, base, max(raw)
+    second_module, second_ea = SECOND_WRITER[platform]
+    second = {}
+    for slot, (seg, off) in slots(platform, second_module, second_ea).items():
+        if not base <= slot:
+            continue
+        code = (slot - base) // 4
+        if code > (max(raw) - base) // 4 + 8:
+            continue
+        linear = (0x1000 + seg) * 0x10 + off
+        if linear in stubs:
+            second[code] = stubs[linear]
+    return out, second, base, max(raw)
 
 
 def ledger():
@@ -94,8 +111,8 @@ def ledger():
 
 def main():
     rows = ledger()
-    dos, dos_base, dos_last = decode("dos")
-    pc98, pc98_base, _ = decode("pc98")
+    dos, dos2, dos_base, dos_last = decode("dos")
+    pc98, pc982, pc98_base, _ = decode("pc98")
     codes = range(1, (dos_last - dos_base) // 4 + 1)
 
     lines = [
@@ -112,17 +129,27 @@ def main():
     ]
     for code in codes:
         a, b = dos.get(code), pc98.get(code)
-        if a is None and b is None:
+        a2, b2 = dos2.get(code), pc982.get(code)
+        if a is None and a2 is None and b is None and b2 is None:
             lines.append(f"| {code} | *（未指定，維持 NIL）* | "
                          f"*（未指定，維持 NIL）* | — | — |")
             continue
-        row = rows.get(("dos", a[0], a[2])) if a else None
+        note = ""
+        if a is not None and a2 is not None:
+            # 雙重寫入：本支之外 INITSPELLS 也寫了這一格；生效者看執行順序
+            # （spec 1202 的宣稱邊界）。
+            note = (f" ⚠ INITSPELLS 又寫成 `{a2[0]}:{a2[2]:05X}h`"
+                    f"（entry#{a2[1]}），生效者未判定（spec 1202）")
+        primary = a or a2
+        primary_b = b or b2
+        row = rows.get(("dos", primary[0], primary[2])) if primary else None
         state = row["state"] if row else "無列"
         spec = (row or {}).get("spec", "") or ""
         spec = os.path.basename(spec).split("-")[0] if spec else ""
+        source = "" if a is not None else "（INITSPELLS，spec 1202）"
         lines.append(
-            f"| {code} | `{a[0]}:{a[2]:05X}h`（entry#{a[1]}） | "
-            f"`{b[0]}:{b[2]:05X}h`（entry#{b[1]}） | {state} | {spec} |")
+            f"| {code} | `{primary[0]}:{primary[2]:05X}h`（entry#{primary[1]}）{source}{note} | "
+            f"`{primary_b[0]}:{primary_b[2]:05X}h`（entry#{primary_b[1]}）{source} | {state} | {spec} |")
 
     text = "\n".join(lines) + "\n"
     if "--write" in sys.argv:

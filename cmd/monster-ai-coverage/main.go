@@ -129,11 +129,34 @@ func main() {
 	table, tableErr := gamepack.EffectModifiers()
 	usable, inert, unread, uncatalogued, dead, missing := 0, 0, 0, 0, 0, 0
 	inertRecords, unreadRecords, uncataloguedRecords, deadRecords, missingRecords := 0, 0, 0, 0, 0
+	// 特殊攻擊走 CALLEFFECT 分派（spec 1202），不在 CHECKFX 修正表裡——
+	// 用修正表查它們會得到「不知道」，而它們的原作語意其實已經讀完。
+	// wiredBy 非空＝remake 已用該機制接上；空＝原作有動作、remake 沒有。
+	specialAttacks := map[uint8]struct{ spec, wiredBy string }{
+		0x56: {spec: tooltext.Text("monster_ai_coverage.special_56")},
+		0x58: {spec: tooltext.Text("monster_ai_coverage.special_58")},
+		0x5A: {spec: tooltext.Text("monster_ai_coverage.special_5a")},
+		0x7E: {spec: tooltext.Text("monster_ai_coverage.special_7e")},
+		0x80: {spec: tooltext.Text("monster_ai_coverage.special_80")},
+		0x83: {spec: tooltext.Text("monster_ai_coverage.special_83")},
+		0x84: {spec: tooltext.Text("monster_ai_coverage.special_84"), wiredBy: "MonsterSpellRules"},
+	}
 	status := map[uint8]string{}
 	for _, kind := range ids {
 		if combat.AffectKindIsInterpreted(kind) {
 			usable++
 			status[kind] = tooltext.Text("h.f8c349bcf027")
+			continue
+		}
+		if attack, ok := specialAttacks[kind]; ok {
+			if attack.wiredBy != "" {
+				usable++
+				status[kind] = tooltext.Format("monster_ai_coverage.special_attack_wired", attack.wiredBy)
+			} else {
+				missing++
+				missingRecords += kinds[kind]
+				status[kind] = tooltext.Format("monster_ai_coverage.special_attack_missing", attack.spec)
+			}
 			continue
 		}
 		state, found := "", false

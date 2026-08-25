@@ -1,0 +1,235 @@
+{
+ "schema": "coab-ecl-run-coverage/1",
+ "reachable_instructions": 14177,
+ "executed_instructions": 7932,
+ "off_graph_executed": 0,
+ "by_block": [
+  {
+   "label": "ECL2.DAX/0x01",
+   "reachable": 659,
+   "executed": 590
+  },
+  {
+   "label": "ECL2.DAX/0x02",
+   "reachable": 374,
+   "executed": 312
+  },
+  {
+   "label": "ECL2.DAX/0x03",
+   "reachable": 703,
+   "executed": 460
+  },
+  {
+   "label": "ECL2.DAX/0x04",
+   "reachable": 482,
+   "executed": 282
+  },
+  {
+   "label": "ECL3.DAX/0x10",
+   "reachable": 913,
+   "executed": 624
+  },
+  {
+   "label": "ECL3.DAX/0x11",
+   "reachable": 788,
+   "executed": 471
+  },
+  {
+   "label": "ECL3.DAX/0x12",
+   "reachable": 840,
+   "executed": 470
+  },
+  {
+   "label": "ECL3.DAX/0x15",
+   "reachable": 334,
+   "executed": 0
+  },
+  {
+   "label": "ECL4.DAX/0x20",
+   "reachable": 722,
+   "executed": 520
+  },
+  {
+   "label": "ECL4.DAX/0x21",
+   "reachable": 563,
+   "executed": 276
+  },
+  {
+   "label": "ECL4.DAX/0x22",
+   "reachable": 526,
+   "executed": 343
+  },
+  {
+   "label": "ECL4.DAX/0x23",
+   "reachable": 303,
+   "executed": 54
+  },
+  {
+   "label": "ECL4.DAX/0x25",
+   "reachable": 745,
+   "executed": 1
+  },
+  {
+   "label": "ECL5.DAX/0x30",
+   "reachable": 72,
+   "executed": 56
+  },
+  {
+   "label": "ECL5.DAX/0x31",
+   "reachable": 388,
+   "executed": 298
+  },
+  {
+   "label": "ECL5.DAX/0x32",
+   "reachable": 634,
+   "executed": 441
+  },
+  {
+   "label": "ECL5.DAX/0x33",
+   "reachable": 709,
+   "executed": 414
+  },
+  {
+   "label": "ECL5.DAX/0x35",
+   "reachable": 598,
+   "executed": 0
+  },
+  {
+   "label": "ECL6.DAX/0x40",
+   "reachable": 766,
+   "executed": 668
+  },
+  {
+   "label": "ECL6.DAX/0x42",
+   "reachable": 603,
+   "executed": 503
+  },
+  {
+   "label": "ECL6.DAX/0x43",
+   "reachable": 525,
+   "executed": 457
+  },
+  {
+   "label": "ECL6.DAX/0x45",
+   "reachable": 320,
+   "executed": 0
+  },
+  {
+   "label": "ECL1.DAX/0x50",
+   "reachable": 798,
+   "executed": 436
+  },
+  {
+   "label": "ECL1.DAX/0x51",
+   "reachable": 726,
+   "executed": 256
+  },
+  {
+   "label": "ECL1.DAX/0x52",
+   "reachable": 86,
+   "executed": 0
+  }
+ ],
+ "largest_uncovered_clusters": [
+  {
+   "label": "ECL4.DAX/0x25",
+   "start_address": "0x822E",
+   "size": 667
+  },
+  {
+   "label": "ECL5.DAX/0x35",
+   "start_address": "0x8014",
+   "size": 598
+  },
+  {
+   "label": "ECL3.DAX/0x15",
+   "start_address": "0x8014",
+   "size": 334
+  },
+  {
+   "label": "ECL6.DAX/0x45",
+   "start_address": "0x8014",
+   "size": 320
+  },
+  {
+   "label": "ECL1.DAX/0x51",
+   "start_address": "0x8DFD",
+   "size": 189
+  },
+  {
+   "label": "ECL5.DAX/0x33",
+   "start_address": "0x91AF",
+   "size": 148
+  },
+  {
+   "label": "ECL4.DAX/0x23",
+   "start_address": "0x8054",
+   "size": 122
+  },
+  {
+   "label": "ECL4.DAX/0x23",
+   "start_address": "0x86EE",
+   "size": 98
+  },
+  {
+   "label": "ECL1.DAX/0x52",
+   "start_address": "0x8014",
+   "size": 86
+  },
+  {
+   "label": "ECL4.DAX/0x21",
+   "start_address": "0x8FCE",
+   "size": 85
+  },
+  {
+   "label": "ECL2.DAX/0x04",
+   "start_address": "0x872E",
+   "size": 84
+  },
+  {
+   "label": "ECL4.DAX/0x21",
+   "start_address": "0x8A5F",
+   "size": 82
+  },
+  {
+   "label": "ECL4.DAX/0x25",
+   "start_address": "0x8014",
+   "size": 77
+  },
+  {
+   "label": "ECL3.DAX/0x12",
+   "start_address": "0x8C60",
+   "size": 74
+  },
+  {
+   "label": "ECL1.DAX/0x50",
+   "start_address": "0x94AB",
+   "size": 73
+  },
+  {
+   "label": "ECL1.DAX/0x50",
+   "start_address": "0x8853",
+   "size": 72
+  },
+  {
+   "label": "ECL3.DAX/0x10",
+   "start_address": "0x916D",
+   "size": 64
+  },
+  {
+   "label": "ECL3.DAX/0x12",
+   "start_address": "0x87F9",
+   "size": 64
+  },
+  {
+   "label": "ECL3.DAX/0x11",
+   "start_address": "0x832E",
+   "size": 54
+  },
+  {
+   "label": "ECL4.DAX/0x20",
+   "start_address": "0x8A55",
+   "size": 53
+  }
+ ]
+}

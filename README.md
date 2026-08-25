@@ -114,6 +114,9 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 
 判讀見 [spec 1126](docs/spec/1126-spell-visual-slots.md) 與
 [spec 1128](docs/spec/1128-cloud-areas-are-the-obstacle-terrain.md)。
+怪物的特殊攻擊（吐酸、龍息、凝視、丟電光）也走同三組圖——那七支 handler
+由 `INITSPELLS` 尾段接進效果分派表，見
+[spec 1202](docs/spec/1202-initspells-effect-table-tail.md)。
 兩種雲同時是戰術地圖的**障礙格**（地形碼 `1Eh`／`1Ch`）——低階角色繞開毒雲、
 七級以上的老手硬闖。
 

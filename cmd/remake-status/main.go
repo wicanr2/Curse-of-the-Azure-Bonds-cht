@@ -100,6 +100,27 @@ func main() {
 			effects.OpcodesByStatus["done"], effects.OpcodesByStatus["partial"])
 	}
 
+	var runCoverage struct {
+		Reachable int `json:"reachable_instructions"`
+		Executed  int `json:"executed_instructions"`
+		OffGraph  int `json:"off_graph_executed"`
+		ByBlock   []struct {
+			Reachable int `json:"reachable"`
+			Executed  int `json:"executed"`
+		} `json:"by_block"`
+	}
+	if readJSON(*auditDir, "ecl-run-coverage.json", &runCoverage) && runCoverage.Reachable > 0 {
+		zeroBlocks := 0
+		for _, block := range runCoverage.ByBlock {
+			if block.Executed == 0 && block.Reachable > 0 {
+				zeroBlocks++
+			}
+		}
+		add("ecl_run_coverage", runCoverage.Reachable, runCoverage.Executed,
+			float64(runCoverage.Executed)*100/float64(runCoverage.Reachable),
+			runCoverage.OffGraph, zeroBlocks)
+	}
+
 	var music struct {
 		ChangePoints   int `json:"change_points"`
 		Wired          int `json:"wired"`

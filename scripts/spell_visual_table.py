@@ -44,6 +44,10 @@ STANDALONE_SLOT = 25
 
 DISPATCH_BASE = 0x72A0
 DISPATCH_COUNT = 101
+# 效果分派表（CALLEFFECT，spec 1005）：基底 6FA6h、效果碼從 1 起算。
+# `INITSPELLS`（630Bh）尾端會往這張表寫七格——就是先前「未歸屬」那七支。
+EFFECT_DISPATCH_BASE = 0x6FA6
+EFFECT_DISPATCH_COUNT = 147
 SEGMENT_DELTA = 0x7B
 STUB_TABLE_OFFSET = 0x20
 STUB_SIZE = 5
@@ -160,8 +164,8 @@ def reachable(graph, start, depth):
     return seen
 
 
-def dispatch_table():
-    """法術編號 → (entry, code offset)。與 spell_damage_table.py 同一條路。"""
+def _pointer_stores(base, count):
+    """掃 overlay-22 對 `[base, base+count*4)` 的 far pointer 賦值，回 index → entry。"""
     body = instructions(22)
     registers, slots = {}, {}
     for _, text in body:
@@ -173,10 +177,10 @@ def dispatch_table():
         if not found:
             continue
         address = int(found.group(1), 16)
-        if not DISPATCH_BASE <= address < DISPATCH_BASE + DISPATCH_COUNT * 4:
+        if not base <= address < base + count * 4:
             continue
-        index = (address - DISPATCH_BASE) // 4
-        half = "offset" if (address - DISPATCH_BASE) % 4 == 0 else "segment"
+        index = (address - base) // 4
+        half = "offset" if (address - base) % 4 == 0 else "segment"
         slots.setdefault(index, {})[half] = registers.get(found.group(2))
     handlers = {}
     for index, slot in slots.items():
@@ -186,9 +190,20 @@ def dispatch_table():
         if stub < 0 or stub % STUB_SIZE:
             continue
         handlers[index] = stub // STUB_SIZE
+    return handlers
+
+
+def dispatch_table():
+    """法術編號 → entry。與 spell_damage_table.py 同一條路。"""
+    handlers = _pointer_stores(DISPATCH_BASE, DISPATCH_COUNT)
     if not handlers:
         raise SystemExit("法術分派表解不出任何一筆")
     return handlers
+
+
+def effect_assignments():
+    """效果碼 → entry：`INITSPELLS` 對 CALLEFFECT 分派表（6FA6h）的賦值。"""
+    return _pointer_stores(EFFECT_DISPATCH_BASE, EFFECT_DISPATCH_COUNT)
 
 
 def comspr_block(slot):
@@ -240,23 +255,34 @@ def main():
             per_spell[spell_id] = found
 
     # 剩下的演出點：既不在 `CASTSPELL`、也搆不到任何法術 handler。
-    # ★ 一定要列出來。丟掉的話這張表看起來就像「法術的演出全在這裡了」，
-    # 而實際上還有七支常式沒歸屬。
+    # ★ `INITSPELLS` 尾端另外把七支寫進 CALLEFFECT 分派表（6FA6h，spec 1005）
+    # ——那就是「特殊攻擊」的效果 handler（吐酸、龍息、凝視、丟電光，
+    # spec 1202）。先用它歸屬；真的誰都不指的才進 orphans。
     attributed = {cast_entry}
     for spell_id, entry in handlers.items():
         attributed |= reachable(graph, entry, CALL_DEPTH)
+    effect_entries = effect_assignments()
+    by_effect_entry = {}
+    for code, entry in effect_entries.items():
+        by_effect_entry.setdefault(entry, []).append(code)
+    special = []
     orphans = []
     for entry in sorted(sites):
         if entry in attributed:
             continue
+        codes = by_effect_entry.get(entry)
         for item in sites[entry]:
-            orphans.append(dict(item, entry=entry))
+            if codes:
+                special.append(dict(item, entry=entry, effect_codes=sorted(codes)))
+            else:
+                orphans.append(dict(item, entry=entry))
 
     effects = [{"address": address, "slot": slot, "comspr_block": comspr_block(slot)}
                for address, slot in animation_sites(12)]
 
-    print("共用施法路 %d 處、法術自己的 %d 支、效果 handler %d 處、未歸屬 %d 處"
-          % (len(shared), len(per_spell), len(effects), len(orphans)))
+    print("共用施法路 %d 處、法術自己的 %d 支、效果 handler %d 處、"
+          "特殊攻擊 %d 處、未歸屬 %d 處"
+          % (len(shared), len(per_spell), len(effects), len(special), len(orphans)))
     used = sorted({item["slot"] for item in shared + effects
                    + [row for rows in per_spell.values() for row in rows]
                    if item["slot"] is not None} if True else set())
@@ -271,6 +297,7 @@ def main():
                "spec": "docs/spec/1126-spell-visual-slots.md",
                "slot_base": SLOT_BASE,
                "shared": shared,
+               "special_attacks": special,
                "unattributed": orphans,
                "effects": effects,
                "spells": {str(key): value for key, value in sorted(per_spell.items())}}
@@ -304,15 +331,28 @@ def main():
                 spell_id, entry.get("name", "—"), item["address"],
                 item["slot"] if item["slot"] is not None else "（算出來的）",
                 item["comspr_block"] if item["comspr_block"] is not None else "—"))
-    lines += ["", "## 未歸屬的演出常式", "",
-              "overlay-22 尾端這幾支也播演出，但**沒有任何 overlay 呼叫它們**"
-              "——呼叫端在常駐段或 ECL 那一側，還沒歸屬。", "",
-              "| overlay-22 位址 | entry | 槽 | COMSPR 區塊 |", "|---|---:|---:|---:|"]
-    for item in orphans:
-        lines.append("| `%04Xh` | %d | %s | %s |" % (
+    lines += ["", "## 特殊攻擊效果 handler 裡的", "",
+              "overlay-22 尾端這幾支由 `INITSPELLS` 尾段寫進 CALLEFFECT 分派表"
+              "（`6FA6h`，效果碼從 1 起算），是怪物特殊攻擊的演出"
+              "（吐酸／龍息／凝視／丟電光，spec 1202；各 handler 的語意見"
+              " spec 720／722／723／725／735／847／981）。", "",
+              "| 效果碼 | overlay-22 位址 | entry | 槽 | COMSPR 區塊 |",
+              "|---|---|---:|---:|---:|"]
+    for item in special:
+        lines.append("| %s | `%04Xh` | %d | %s | %s |" % (
+            "／".join("%d (0x%02X)" % (code, code) for code in item["effect_codes"]),
             item["address"], item["entry"],
             item["slot"] if item["slot"] is not None else "（算出來的）",
             item["comspr_block"] if item["comspr_block"] is not None else "—"))
+    if orphans:
+        lines += ["", "## 未歸屬的演出常式", "",
+                  "兩張分派表都不指、也沒有任何 overlay 呼叫端。", "",
+                  "| overlay-22 位址 | entry | 槽 | COMSPR 區塊 |", "|---|---:|---:|---:|"]
+        for item in orphans:
+            lines.append("| `%04Xh` | %d | %s | %s |" % (
+                item["address"], item["entry"],
+                item["slot"] if item["slot"] is not None else "（算出來的）",
+                item["comspr_block"] if item["comspr_block"] is not None else "—"))
     lines += ["", "## 效果 handler 裡的", "",
               "這幾格由效果碼觸發，不是法術直接播的（`overlay-12`）。", "",
               "| overlay-12 位址 | 槽 | COMSPR 區塊 |", "|---|---:|---:|"]
