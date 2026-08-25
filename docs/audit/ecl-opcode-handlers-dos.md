@@ -58,7 +58,7 @@ spec 1157）。**收尾一支之前先各自驗一次邊界**，方法是往後 
 | `2Ah` | GETTABLE | 3 | `0E13h` | `0E13h`..`0E71h` | 35 | `done` |
 | `2Bh` | HORIZONTAL MENU | 0 | `1082h` | `1082h`..`120Eh` | 161 | `done` |
 | `2Ch` | PARLAY | 6 | `27A8h` | `27A8h`..`2847h` | 66 | `done` |
-| `2Dh` | CALL | 1 | `2F02h` | `2F02h`..`3073h` | 124 | `partial` |
+| `2Dh` | CALL | 1 | `2F02h` | `2F02h`..`3073h` | 124 | `done` |
 | `2Eh` | DAMAGE | 5 | `2942h` | `2942h`..`2C8Fh` | 305 | `done` |
 | `2Fh` | AND | 3 | `0DA4h` | `0DA4h`..`0E12h` | 43 | `done` |
 | `30h` | OR | 3 | `0DA4h` | `0DA4h`..`0E12h` | 43 | `done` |
@@ -85,7 +85,7 @@ spec 1157）。**收尾一支之前先各自驗一次邊界**，方法是往後 
 |---|---:|
 | 分派器列出的 opcode | 52 |
 | handler 指令數合計 | 4023 |
-| 其中副作用仍是 `partial` | 1（`2Dh` 124 條）|
+| 其中副作用仍是 `partial` | 0 |
 
 ⚠ **`副作用狀態` 這一欄不是手記的。** 它必須與 `internal/ecl.OpcodeEffects`
 逐格相同，由 `TestHandlerReportStatusMatchesOpcodeEffects` 擋住——手記的狀態
