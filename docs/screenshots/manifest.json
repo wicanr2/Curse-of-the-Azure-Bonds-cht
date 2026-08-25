@@ -30,8 +30,8 @@
       "file": "docs/screenshots/gold-box-layout-combat.png",
       "width": 640,
       "height": 480,
-      "sha256": "0d172fc5a03d34c24cb5992412bfd5ff0f87f50f1dd35faa57519b41a42b3f37",
-      "generation_mode": "Docker/Xvfb -encounter；戰鬥 vertical slice checkpoint",
+      "sha256": "3bee4cba0e1c138601b2b54fc6e61933a3faf1272afee69fd128ff87a650578d",
+      "generation_mode": "Docker/Xvfb -encounter；戰鬥 vertical slice checkpoint（spec 1200 佈署演算法的原生座標）",
       "evidence_level": "material-exact/layout-reconstructed",
       "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
     },
@@ -50,8 +50,8 @@
       "file": "docs/screenshots/burial-glen-red-web-spiders.png",
       "width": 640,
       "height": 480,
-      "sha256": "aae04c208ba9f1fd95bbaea1dc2364f77c091ef722bea9ca483a074e4d65701b",
-      "generation_mode": "Docker/Xvfb -burial-red-web-battle；Burial Glen 正常戰鬥切片",
+      "sha256": "3e306c4743676874c8e317c642f420bd13b548c17e808078b25ad0d64a8e8e8d",
+      "generation_mode": "Docker/Xvfb -burial-red-web-battle；Burial Glen 正常戰鬥切片（spec 1200 佈署演算法的原生座標）",
       "evidence_level": "material-exact/layout-reconstructed",
       "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
     },

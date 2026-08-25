@@ -91,7 +91,7 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 
 ![原版四段建角的名字輸入段](docs/screenshots/guided-creation-name.png)
 
-![繁中戰鬥：兩隊各在視野一側，地形與戰鬥員走同一條相機座標](docs/screenshots/gold-box-layout-combat.png)
+![繁中戰鬥：原作佈署演算法放的開場隊形，遠距離遭遇的敵隊要逐回合逼近才入鏡](docs/screenshots/gold-box-layout-combat.png)
 
 ![提爾佛頓第一人稱：木板牆、石牆與逐格收斂的側牆，原版 88×88 場景內框](docs/screenshots/tilverton-first-person-remake.png)
 
