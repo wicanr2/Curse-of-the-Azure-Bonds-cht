@@ -2876,18 +2876,27 @@ func TestStartCombatPreservesPlacementCoordinateNamespace(t *testing.T) {
 		state := NewState(testCatalog())
 		return &state
 	}
-	fallback := newState()
-	if err := fallback.StartCombat(
+	// 沒有任何預置座標的開戰走 spec 1200 的佈署演算法，產出的是原生
+	// CombatMap 座標（隊伍區塊在 x≈22..32、y≈10..15），整場戰鬥因此是
+	// reference 座標模式。
+	deployed := newState()
+	if err := deployed.StartCombat(
 		[]combat.Fighter{{ID: "hero", Side: combat.SideParty, HitPoints: 5, MaxHitPoints: 5}},
 		[]combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 5, MaxHitPoints: 5}},
 		1,
 	); err != nil {
 		t.Fatal(err)
 	}
-	if fallback.CombatUsesReferenceCoordinates() {
-		t.Fatal("generated formation was mistaken for original CombatMap coordinates")
+	if !deployed.CombatUsesReferenceCoordinates() {
+		t.Fatal("deployed formation must use original CombatMap coordinates (spec 1200)")
+	}
+	for _, fighter := range deployed.CombatFighters() {
+		if !fighter.HasCombatPosition || fighter.CombatX < 16 {
+			t.Fatalf("deployed fighter is not in the original coordinate namespace: %+v", fighter)
+		}
 	}
 
+	// 帶預置座標的開戰維持呼叫端的座標命名空間：原生座標照舊標成 reference。
 	reference := newState()
 	if err := reference.StartCombat(
 		[]combat.Fighter{{ID: "hero", Side: combat.SideParty, HitPoints: 5, MaxHitPoints: 5, HasCombatPosition: true, CombatX: 22, CombatY: 10}},

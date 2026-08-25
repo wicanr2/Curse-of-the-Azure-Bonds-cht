@@ -41,6 +41,9 @@ func useItemState(t *testing.T, items []monster.ItemRecord, raceType uint8) *Sta
 		t.Fatal(err)
 	}
 	user.HitPoints, user.MaxHitPoints, user.InitiativeBonus = 30, 40, 99
+	// 釘住使用者的座標讓敵人落在 fallback 縱帶（比克魔杖的半徑幾何靠這個
+	// 相對距離）；不釘的話會走 spec 1200 的佈署，兩隊距離跟著遭遇距離變。
+	user.HasCombatPosition, user.CombatX, user.CombatY = true, 0, 2
 	if err := state.StartEncounter(result, records, []combat.Fighter{user}, 11); err != nil {
 		t.Fatal(err)
 	}

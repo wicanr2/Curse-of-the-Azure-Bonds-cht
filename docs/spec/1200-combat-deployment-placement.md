@@ -1,6 +1,6 @@
 # 1200 — 戰鬥佈陣：兩隊的起點、模板與找空位
 
-- 狀態：`READY`（演算法與資料表已解讀；remake 接線見「實作邊界」）
+- 狀態：`READY`（演算法與資料表已解讀；第 712 輪接進 remake，見「七、remake 接線」）
 - 證據等級：`exact`（PC-98 COMPREP＝overlay-10 逐指令讀完：`17EEh..1C18h`
   佈署主流程、`1364h` 找空位、`1220h` 放格子、`1C28h` INITCOMBAT；
   DSEG 資料表逐 byte 取自 `pc98-dseg-dseg.bin`）
@@ -138,3 +138,25 @@ end;
   remake 照表轉錄即可。
 - DOS 側未逐指令重讀（台帳記載兩平台此模組同構、差異僅資料位址）；
   若行為對不上，先回來比對 DOS overlay-10 同位置的 bytes。
+
+## 七、remake 接線（第 712 輪）
+
+`internal/combat/deployment.go`（`NewDeployment`／`Place`）接進
+`StartCombat`（`internal/game/combat_state.go`），輸入對照：
+
+| 原作 | remake |
+|---|---|
+| `A2ABh` 地圖朝向 | `State.DungeonDirection` |
+| `player^[582h]` 遭遇距離 | session 記憶體 `EncounterDistanceCell`（`0x7EC1`，spec 1146）|
+| TACMAP entry#19 地面檢查 | `combatMovementTerrain`（移動地形投影）＋ 戰鬥地圖邊界 50×25 |
+| `378h` 牆面查詢 | `geo.Grid.CanMoveDungeonWrapped`（非地城交 nil ＝ 原作跳過查詢當被擋）|
+| 放不下 → 移出戰鬥 | 該戰鬥員不加入 `Battle` |
+
+- 產出的是**原生戰鬥地圖座標**（隊伍區塊 x≈22..32、y≈10..15，與
+  `mapdata.DungeonFloor` 的窗口公式同族），整場戰鬥切到 reference 座標模式。
+- **只有「全部戰鬥員都沒有預置座標」的開戰**（ECL 遭遇的正常路徑）走佈署；
+  帶預置座標的呼叫（存檔還原、測試自組）維持呼叫端的座標命名空間與
+  `combatFormationTile` fallback——混用會把兩個座標系疊在同一場戰鬥。
+- 沒有 session 的呼叫端（單元測試自組戰鬥）距離取 1；有 session 照實讀，
+  含腳本寫 0（兩隊同一個區塊、貼臉遭遇）——下水道巨魔房實測距離 0，
+  佈出來的形狀與原版擷取定性一致（巨魔貼臉一排、鱷魚第二排）。

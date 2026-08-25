@@ -39,9 +39,64 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			break
 		}
 	}
-	// 佈陣要避開站不上去的格：原作 `try_place_combatant` 是在候選格通過
-	// occupancy 與 ground 檢查之後才寫座標（spec 88）。先前的 fallback 只算
-	// 格號不看地面，開場就會有人站在牆裡或樹叢上。
+	// ★ 佈陣分兩條路（spec 1200）：
+	//
+	// 1. **全部沒有預置座標**（ECL 遭遇的正常開戰）走原作 COMPREP 的佈署演算法
+	//    （`combat.NewDeployment`／`Place`）——起點由地圖朝向與遭遇距離決定，
+	//    模板、occupancy 掃描與座標公式照 `17EEh`／`1364h`／`1220h` 轉錄，
+	//    產出的是**原生戰鬥地圖座標**（隊伍區塊在 x≈22..32、y≈10..15），
+	//    所以整場戰鬥切到 reference 座標模式。
+	// 2. 有任何一名戰鬥員帶預置座標（存檔還原、測試自組）就維持原本的
+	//    fallback（`combatFormationTile`）——預置座標的命名空間由呼叫端決定，
+	//    混用佈署的原生座標會把兩個座標系疊在同一場戰鬥裡。
+	deployment := (*combat.Deployment)(nil)
+	if !s.combatReferenceCoords {
+		presetPositions := false
+		for _, fighter := range append(append([]combat.Fighter(nil), party...), enemies...) {
+			if fighter.HasCombatPosition {
+				presetPositions = true
+				break
+			}
+		}
+		if !presetPositions {
+			// 遭遇距離是 `0Ch SETUP MONSTER` 寫的 `player^[582h]`（spec 1146）；
+			// 地圖朝向是 `A2ABh`。沒有 session 的呼叫端（單元測試自組戰鬥）
+			// 沒有那格記憶體，取 1 讓兩隊各佔相鄰的佈署區塊；有 session 就
+			// 照實讀，包含腳本真的寫 0（兩隊同一個區塊）的情況。
+			distance := 1
+			if s.session != nil {
+				if value, ok := s.session.MemoryValue(ecl.EncounterDistanceCell); ok {
+					distance = int(value)
+				}
+			}
+			deployment = combat.NewDeployment(s.DungeonDirection, distance, len(party), len(enemies))
+			deployment.DungeonX, deployment.DungeonY = s.DungeonX, s.DungeonY
+			s.combatReferenceCoords = true
+		}
+	}
+	// GroundCheck ＝ 原作 TACMAP entry#19 的障礙判定（spec 1119）。remake 的
+	// 對應物就是移動地形投影；沒裝地形（headless 測試）時只擋戰鬥地圖邊界
+	// （原作的地圖是 50×25，`×32h` 一列）。
+	deploymentGround := func(x, y int) bool {
+		if x < 0 || x >= 50 || y < 0 || y >= 25 {
+			return false
+		}
+		if s.combatMovementTerrain == nil {
+			return true
+		}
+		cost, ok := s.combatMovementTerrain(x, y)
+		return ok && cost > 0
+	}
+	// WallCheck ＝ 原作 `378h`「隊伍地城格朝這個方向有沒有被牆擋住」；
+	// 非地城（`7F27h = 3`）交 nil，`Place` 會照原作跳過查詢當被擋。
+	var deploymentWalls combat.WallCheck
+	if s.Area.InDungeon {
+		if grid, ok := s.currentDungeonGrid(); ok {
+			deploymentWalls = func(direction int) bool {
+				return grid.CanMoveDungeonWrapped(s.DungeonX, s.DungeonY, direction)
+			}
+		}
+	}
 	taken := map[combat.TilePoint]bool{}
 	for _, fighter := range append(append([]combat.Fighter(nil), party...), enemies...) {
 		if fighter.HasCombatPosition {
@@ -54,9 +109,19 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			return fmt.Errorf("fighter %q is not marked as party", fighter.ID)
 		}
 		if !fighter.HasCombatPosition {
-			tile := s.combatFormationTile(fighter.Side, partyIndex, taken)
-			taken[tile] = true
-			fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, tile.X, tile.Y
+			if deployment != nil {
+				x, y, ok := deployment.Place(0, deploymentGround, deploymentWalls)
+				if !ok {
+					// 原作對四個組都放不下的戰鬥員是**移出戰鬥**（spec 1200）。
+					// 隊員缺席會讓玩家看不懂自己的隊伍，這裡照原作語意跳過。
+					continue
+				}
+				fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, x, y
+			} else {
+				tile := s.combatFormationTile(fighter.Side, partyIndex, taken)
+				taken[tile] = true
+				fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, tile.X, tile.Y
+			}
 		}
 		if fighter.CombatSize == 0 {
 			fighter.CombatSize = 1
@@ -73,9 +138,17 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			return fmt.Errorf("fighter %q is not marked as enemy", fighter.ID)
 		}
 		if !fighter.HasCombatPosition {
-			tile := s.combatFormationTile(fighter.Side, enemyIndex, taken)
-			taken[tile] = true
-			fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, tile.X, tile.Y
+			if deployment != nil {
+				x, y, ok := deployment.Place(1, deploymentGround, deploymentWalls)
+				if !ok {
+					continue
+				}
+				fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, x, y
+			} else {
+				tile := s.combatFormationTile(fighter.Side, enemyIndex, taken)
+				taken[tile] = true
+				fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, tile.X, tile.Y
+			}
 		}
 		if fighter.CombatSize == 0 {
 			fighter.CombatSize = 1
