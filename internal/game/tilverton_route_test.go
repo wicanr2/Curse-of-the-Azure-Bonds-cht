@@ -36,9 +36,13 @@ import (
 var walkableRouteSegments = []string{
 	"ECL2/0x01", "ECL2/0x02", "ECL2/0x03", // 提爾佛頓：開場
 	"ECL3/0x10", "ECL3/0x11", // 猶拉什
+	"ECL3/0x15",              // 猶拉什：戰火街區（實跑覆蓋原本 0%，第 718 輪補走）
 	"ECL4/0x20", "ECL4/0x22", // 散提爾堡、眼魔洞穴
+	"ECL4/0x25",              // 魔法商店＋地城（實跑覆蓋原本 0.1%，第 718 輪補走）
 	"ECL5/0x31", "ECL5/0x32", // 哈普村、古熔岩洞
+	"ECL5/0x35",              // 洞窟（同上，原本 0%）
 	"ECL6/0x40", "ECL6/0x42", "ECL6/0x43", // 密斯卓諾
+	"ECL6/0x45",              // （同上，原本 0%）
 }
 
 func TestTilvertonRouteIsWalkableAndLocalized(t *testing.T) {

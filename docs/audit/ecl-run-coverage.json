@@ -1,7 +1,7 @@
 {
  "schema": "coab-ecl-run-coverage/1",
  "reachable_instructions": 14177,
- "executed_instructions": 7932,
+ "executed_instructions": 8588,
  "off_graph_executed": 0,
  "by_block": [
   {
@@ -42,7 +42,7 @@
   {
    "label": "ECL3.DAX/0x15",
    "reachable": 334,
-   "executed": 0
+   "executed": 145
   },
   {
    "label": "ECL4.DAX/0x20",
@@ -62,12 +62,12 @@
   {
    "label": "ECL4.DAX/0x23",
    "reachable": 303,
-   "executed": 54
+   "executed": 58
   },
   {
    "label": "ECL4.DAX/0x25",
    "reachable": 745,
-   "executed": 1
+   "executed": 29
   },
   {
    "label": "ECL5.DAX/0x30",
@@ -92,7 +92,7 @@
   {
    "label": "ECL5.DAX/0x35",
    "reachable": 598,
-   "executed": 0
+   "executed": 323
   },
   {
    "label": "ECL6.DAX/0x40",
@@ -112,7 +112,7 @@
   {
    "label": "ECL6.DAX/0x45",
    "reachable": 320,
-   "executed": 0
+   "executed": 156
   },
   {
    "label": "ECL1.DAX/0x50",
@@ -134,22 +134,7 @@
   {
    "label": "ECL4.DAX/0x25",
    "start_address": "0x822E",
-   "size": 667
-  },
-  {
-   "label": "ECL5.DAX/0x35",
-   "start_address": "0x8014",
-   "size": 598
-  },
-  {
-   "label": "ECL3.DAX/0x15",
-   "start_address": "0x8014",
-   "size": 334
-  },
-  {
-   "label": "ECL6.DAX/0x45",
-   "start_address": "0x8014",
-   "size": 320
+   "size": 661
   },
   {
    "label": "ECL1.DAX/0x51",
@@ -172,6 +157,11 @@
    "size": 98
   },
   {
+   "label": "ECL5.DAX/0x35",
+   "start_address": "0x8F79",
+   "size": 93
+  },
+  {
    "label": "ECL1.DAX/0x52",
    "start_address": "0x8014",
    "size": 86
@@ -192,9 +182,14 @@
    "size": 82
   },
   {
-   "label": "ECL4.DAX/0x25",
-   "start_address": "0x8014",
-   "size": 77
+   "label": "ECL3.DAX/0x15",
+   "start_address": "0x8711",
+   "size": 78
+  },
+  {
+   "label": "ECL3.DAX/0x15",
+   "start_address": "0x811B",
+   "size": 75
   },
   {
    "label": "ECL3.DAX/0x12",
@@ -204,6 +199,11 @@
   {
    "label": "ECL1.DAX/0x50",
    "start_address": "0x94AB",
+   "size": 73
+  },
+  {
+   "label": "ECL6.DAX/0x45",
+   "start_address": "0x810A",
    "size": 73
   },
   {

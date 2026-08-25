@@ -234,6 +234,7 @@ func main() {
 	}
 	fmt.Fprintf(&md, tooltext.Text("ecl_run_coverage.md_total_row"),
 		result.Reachable, result.Executed, float64(result.Executed)*100/float64(result.Reachable))
+	md.WriteString(tooltext.Text("ecl_run_coverage.md_block_notes"))
 	fmt.Fprintf(&md, tooltext.Text("ecl_run_coverage.md_clusters_header"), *top)
 	for _, entry := range result.Clusters {
 		fmt.Fprintf(&md, "| `%s` | `%s` | %d |\n", entry.Label, entry.Address, entry.Size)
