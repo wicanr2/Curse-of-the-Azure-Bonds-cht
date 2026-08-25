@@ -115,7 +115,14 @@ func (s *State) autoEquipBeforeAITurn(fighterID string) (bool, error) {
 			break
 		}
 	}
-	if index < 0 || len(s.partyRoster[index].Equipment) == 0 {
+	if index < 0 {
+		// 不在隊伍名冊裡的是怪物（含暫時盟友）：走物品鏈那一側。
+		if fighter, ok := s.fighter(fighterID); ok {
+			return s.autoEquipMonster(fighter)
+		}
+		return false, nil
+	}
+	if len(s.partyRoster[index].Equipment) == 0 {
 		return false, nil
 	}
 	fighter, ok := s.fighter(fighterID)
@@ -168,6 +175,88 @@ func (s *State) autoEquipBeforeAITurn(fighterID string) (bool, error) {
 		return false, fmt.Errorf("auto-equip re-projection for %q: %w", fighterID, err)
 	}
 	if err := s.battle.ReplaceFighterEquipment(fighterID, updated); err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// autoEquipMonster 是同一支換裝的怪物側（spec 1004／1120）：候選來自
+// `MonsterItems` 物品鏈、可用性遮罩用記錄的 `+12Bh`。取捨與隊員側同一支
+// `ChooseAutoEquipWeapon`——相鄰時遠程不會被選；近戰候選為 nil 時**照樣換**：
+// 把槽 0 武器放下，空手用記錄的天生攻擊（spec 1174 的基準骰）。
+// 全遊戲帶「發射型」槽 0 武器的怪只有四隻（CENTAUR、GRENDEL、MONKEY、
+// RAKSHASA），牠們貼身時的收弓就是走這條。
+func (s *State) autoEquipMonster(fighter combat.Fighter) (bool, error) {
+	if !s.itemCatalogReady || len(fighter.MonsterItems) == 0 {
+		return false, nil
+	}
+	records := make([]monster.ItemRecord, len(fighter.MonsterItems))
+	for position, item := range fighter.MonsterItems {
+		records[position] = monster.ItemRecord{
+			Name: item.Name, Type: item.Type, Plus: item.Plus,
+			Readied: item.Readied, Cursed: item.Cursed, Count: item.Count,
+			Weight: item.Weight, Value: item.Value, Affects: item.Affects,
+		}
+	}
+	context := monster.AutoEquipCharacter{
+		ClassUsabilityMask: fighter.ClassUsabilityMask,
+		Alignment:          fighter.Alignment,
+		HandsInUse:         0,
+		EnemyAdjacent:      s.autoEquipEnemyAdjacent(fighter),
+	}
+	for _, item := range fighter.MonsterItems {
+		if !item.Readied {
+			continue
+		}
+		if base, ok := s.itemCatalog.Lookup(item.Type); ok {
+			switch base.Slot {
+			case autoEquipAmmunitionSlotA:
+				context.AmmunitionSlotA = true
+			case autoEquipAmmunitionSlotB:
+				context.AmmunitionSlotB = true
+			}
+		}
+	}
+	choice := monster.ChooseAutoEquipWeapon(records, s.itemCatalog, context)
+	chosen := -1
+	if choice.Chosen != nil {
+		for position := range records {
+			if choice.Chosen == &records[position] {
+				chosen = position
+				break
+			}
+		}
+	}
+	current := -1
+	for position, item := range fighter.MonsterItems {
+		base, ok := s.itemCatalog.Lookup(item.Type)
+		if !ok || base.Slot != 0 || !item.Readied {
+			continue
+		}
+		current = position
+		break
+	}
+	if current == chosen {
+		return false, nil
+	}
+	if current >= 0 && fighter.MonsterItems[current].Cursed {
+		// 詛咒的裝備換不掉（spec 1004 §四）。
+		return false, nil
+	}
+	items := append([]combat.MonsterItem(nil), fighter.MonsterItems...)
+	if current >= 0 {
+		items[current].Readied = false
+	}
+	if chosen >= 0 {
+		items[chosen].Readied = true
+	}
+	updated := fighter
+	updated.MonsterItems = items
+	updated = monster.ReprojectMonsterWeapon(updated, s.itemCatalog)
+	if err := s.battle.ReplaceMonsterItems(fighter.ID, items); err != nil {
+		return false, err
+	}
+	if err := s.battle.ReplaceFighterEquipment(fighter.ID, updated); err != nil {
 		return false, err
 	}
 	return true, nil

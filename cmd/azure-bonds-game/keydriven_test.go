@@ -91,7 +91,16 @@ func keyDrivenApp(t *testing.T) (*app, *scriptedKeys) {
 		}
 	}
 	keys := newScriptedKeys()
-	return &app{state: &state, keys: keys, geoCatalog: geoCatalog}, keys
+	application := &app{state: &state, keys: keys, geoCatalog: geoCatalog}
+	// ⚠ 三支戰鬥地形投影跟正式執行檔一樣要裝（`main.go` 在 RunGame 之前裝）。
+	// 少了它們，這一場的每場戰鬥都沒有地形（佈陣不看地面、AI 不算成本），
+	// 而怪物的快速面殺法術（火刀法師的臭雲）一出手就是
+	// 「TACTICALMAP projection is unavailable」——看起來像輸入層壞了，
+	// 其實是**測試自己少裝投影**（同上面少載資料那兩段的形狀）。
+	application.state.SetCombatLineTerrain(application.combatLineTerrain())
+	application.state.SetCombatMovementTerrain(application.combatMovementTerrain())
+	application.state.SetCombatScanMapProvider(application.combatScanTacticalMap)
+	return application, keys
 }
 
 // tap 按一顆鍵、跑一幀、再放開跑一幀。
@@ -594,13 +603,15 @@ func keyDrivenFrames() int {
 //	20,000 幀   602 格／273 句／ 95 秒
 //	40,000 幀   612 格／274 句／174 秒
 //
-// keyDrivenDefaultFrames 是量出來的（第 710 輪：卡住換下一項改成**環繞**、
-// 路線 `route-clean-709` 之後）：
+// keyDrivenDefaultFrames 是量出來的（第 715 輪：佈署牆檢極性修正＋怪物側
+// 自動換裝之後，路線 `route-clean-716`）：
 //
-//	12,000 幀（帶路線）  314 格／253 句／8 段（到巫師塔 0x31..0x33）
-//	12,000 幀（無路線）  309 格／171 句／4 段（測試套件預設就是這一條）
+//	12,000 幀（帶路線）  636 格／269 句／11 段（穿過猶拉什入口 0x10，第 10,665 幀）
+//	12,000 幀（無路線）  522 格／214 句（測試套件預設就是這一條）
 //
-// ⇒ 幀數不是瓶頸：帶路線那一場的最後一次進展在第 9,984 幀。維持 12,000。
+// ⇒ 幀數用滿、沒有死環：全滅 0、落回原文 0、快速戰鬥 31 場。維持 12,000。
+// 第 710 輪（環繞剛修完）同幀數是 314 格／8 段；差異來自戰鬥變真——佈署極性
+// 修正後領袖戰是完整的 21 隻，戰鬥吃掉更多幀，但走得更遠。
 // ⚠ 環繞修掉之前（夾在最後一項）帶路線只有 137 格／5 段：紮營的「修改」與
 // 「改名」兩個選單互踢，「離開」永遠輪不到（spec 1201）。無路線那條同時從
 // 94 格跳到 309——啟發式終於能把每一個選單的出口輪到。
@@ -848,6 +859,7 @@ func (s *keyDrivenSession) traceMenu(reason string, want int) {
 // 那條路走得通，但因為去過所以被拒絕，於是永遠不動。
 func (s *keyDrivenSession) step(t *testing.T) {
 	t.Helper()
+	s.reassertBoost(t)
 	// ★ 角色建立在**迴圈裡**也會出現：隊伍全滅之後回標題，按「開始」走的是與
 	// 第一次開局同一條路。開頭那段固定的建角序列只跑一次，所以這裡要有一份
 	// 能重來的版本——少了它，全滅之後每按一次 Enter 就多加一名角色，
@@ -1079,12 +1091,69 @@ func boostNote(boosted bool) string {
 	return "（⚠ 隊伍撐過：量的是內容按鍵到不到得了，**不是**正常隊伍打不打得贏）"
 }
 
+// reassertBoost 在每一幀（非戰鬥時）檢查撐過的隊伍還在不在。
+//
+// ★ 為什麼需要。 撐隊伍只在建角完成那一刻做一次是不夠的：**任何從 roster
+// 重投影隊伍的事件都會把它洗掉**——實測開場序幕（「所有裝備都不見了」）在
+// 第 33 幀就把 999×6 打回 10×6，之後整場都是六個一級戰士在打，全滅重開
+// 二十幾次、路線在第一次全滅之後就對不上（第 715 輪）。
+// 戰鬥中不重套：戰鬥裡的 HP 變化是戰鬥規則的結果，蓋掉會偽造戰局。
+func (s *keyDrivenSession) reassertBoost(t *testing.T) {
+	t.Helper()
+	if !s.boosted || s.app.state.Mode == game.ModeCombat {
+		return
+	}
+	party := s.app.state.PartyFighters()
+	if len(party) == 0 {
+		return
+	}
+	// 兩個破口都要看：投影把撐過的欄位打回原形（開場序幕、換裝、施法解除），
+	// 以及**戰利品把武器塞回 roster**——下一場的自動換裝會拿它重投影，
+	// 撐過的攻擊欄位就沒了（HP 留著、輸出掉回 1d8，實測 41 回合被磨死）。
+	need := false
+	for _, fighter := range party {
+		if fighter.MaxHitPoints < 999 || fighter.AttackBonus < 100 || fighter.AttacksPerTurn < 8 {
+			need = true
+			break
+		}
+	}
+	if !need {
+		for _, character := range s.app.state.PartyRoster() {
+			if len(character.Equipment) > 0 {
+				need = true
+				break
+			}
+		}
+	}
+	if need {
+		s.boostParty(t)
+	}
+}
+
 // boostParty 把隊伍撐到足以走完內容盤點的程度，欄位與 `gamecorpus.BoostParty`
 // 同一組。⚠ 這裡不能直接用那一支：它吃 `*game.State`，而這一場的 State 在 app 裡。
 func (s *keyDrivenSession) boostParty(t *testing.T) {
 	t.Helper()
 	if !keyDrivenBoost() {
 		return
+	}
+	// ★ 裝備要一併清掉。撐上去的攻擊／傷害欄位是**裝備衍生欄位**，戰鬥中
+	// 快速戰鬥隊員的自動換裝（spec 1120）會從 roster 的裝備重投影、把它們
+	// 蓋回真實武器的值——實測 999 HP 的隊伍拿著 1d8 在奧提尤格金字塔被
+	// 磨了 41 回合全滅（第 715 輪）。roster 沒有裝備，自動換裝就是 no-op，
+	// 撐過的欄位才活得過戰鬥。這也呼應開場劇情：「所有裝備都不見了」。
+	roster := s.app.state.PartyRoster()
+	stripped := false
+	for index := range roster {
+		if len(roster[index].Equipment) > 0 {
+			roster[index].Equipment = nil
+			stripped = true
+		}
+	}
+	if stripped {
+		if err := s.app.state.SetPartyRoster(roster); err != nil {
+			t.Fatalf("清裝備失敗：%v", err)
+		}
 	}
 	party := s.app.state.PartyFighters()
 	if len(party) == 0 {
@@ -1119,7 +1188,18 @@ func (s *keyDrivenSession) playCombatTurn(t *testing.T) {
 		tap(t, s.app, s.keys, ebiten.KeyEscape)
 	default:
 		s.combatTurns++
-		tap(t, s.app, s.keys, ebiten.KeyQ)
+		// ⚠ 不是自己活著的隊員回合就按 Enter（`CombatAct` 那顆鍵），不是 `Q`。
+		// 排程中的快速施法（「開始吟唱…」）會把回合表走到盡頭再把控制交回
+		// 玩家，這時 `Q`（快速戰鬥切換）的第一步就是「要有隊員回合」——
+		// 永遠回「it is not a living party turn」，而推進戰局的
+		// `advanceCombatToParty` 只有動作成功才會被叫到 ⇒ 整場停格。
+		// 真人玩家按 Enter 就過得去；重放照做（第 715 輪）。
+		if fighter, ok := s.app.state.CombatActiveFighter(); ok &&
+			fighter.Side == combat.SideParty && fighter.HitPoints > 0 && !fighter.QuickFight {
+			tap(t, s.app, s.keys, ebiten.KeyQ)
+		} else {
+			tap(t, s.app, s.keys, ebiten.KeyEnter)
+		}
 	}
 	if s.tracing() {
 		alive, hp, enemies := 0, 0, 0

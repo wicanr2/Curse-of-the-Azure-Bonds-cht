@@ -38,10 +38,12 @@ var (
 // nil 一律當可站。
 type GroundCheck func(x, y int) bool
 
-// WallCheck 回答「隊伍地城格朝這個方向有沒有被牆擋住」——原作 `378h`
-// 「牆面從兩側各查一次」，回 true ＝ 走得過。nil ＝ 原作 `7F27h = 3`
-// （非地城）那條路：一律當被擋（原作跳過查詢直接立旗標）。
-type WallCheck func(direction int) bool
+// WallCheck 回答「地城格 (x,y) 朝這個方向走不走得過」——原作 `378h`
+// 「牆面從兩側各查一次」，回 true ＝ 走得過（`378h` 回 1 ＝ 被擋）。
+// 查詢的格子是**隊伍地城格＋該隊的 team 位移**（`A2A9h + 7ABAh[隊]`），
+// 不是固定隊伍格。nil ＝ 原作 `7F27h = 3`（非地城）：跳過查詢——
+// 首次失敗那條視為「要多推一步」，組升級那條視為「一律取用」。
+type WallCheck func(x, y, direction int) bool
 
 // Deployment 對應原作佈署期間的全域（`7ABAh..7AC8h` 與 `78AAh`）。
 type Deployment struct {
@@ -122,12 +124,10 @@ func (d *Deployment) Place(team int, ground GroundCheck, walls WallCheck) (int, 
 	tx, ty := d.teamX[team], d.teamY[team]
 	var seedCol, seedRow, col, row, ring, steps int
 	placed := false
-	wallOpen := func(direction int) bool {
-		if walls == nil {
-			return false // 7F27h = 3：跳過查詢，視為被擋
-		}
-		return walls(direction)
-	}
+	// 牆檢的格子＝隊伍地城格＋該隊 team 位移（`161Fh`／`16E8h` 都讀
+	// `A2A9h + 7ABAh[隊]`，用的是 base 不是掃描中位移過的 tx）。
+	wallCellX := d.DungeonX + d.teamX[team]
+	wallCellY := d.DungeonY + d.teamY[team]
 	// ⚠ 迴圈上限是 harness 的保險，不是原作語意：原作靠「步數上限 → 換組 →
 	// 四組用盡」收斂。掃描空間是 4 組 × 6×11 格加上重設，遠小於這個數。
 	for iteration := 0; iteration < 4096; iteration++ {
@@ -168,15 +168,17 @@ func (d *Deployment) Place(team int, ground GroundCheck, walls WallCheck) (int, 
 				fail := func() {
 					fails++
 					if team == 0 && d.dirGroup[team]%2 == 0 && group == 0 && fails == 1 {
-						// 161F：第一次失敗時查隊伍地城格四周的牆，
-						// 有任何一個方向被擋就再多推一步。
-						blocked := false
-						for k := 1; k <= 3; k++ {
-							if !wallOpen(deployWallDirs[d.dirGroup[team]][k]) {
-								blocked = true
+						// 161F：第一次失敗時查隊伍地城格三個方向的牆，
+						// **有任何一個方向走得過**（`378h <> 1` 才立 var_6）
+						// 就再多推一步；非地城（walls nil ＝ `7F27h = 3`）
+						// 跳過查詢、一律多推。
+						push := walls == nil
+						for k := 1; !push && k <= 3; k++ {
+							if walls(wallCellX, wallCellY, deployWallDirs[d.dirGroup[team]][k]) {
+								push = true
 							}
 						}
-						if blocked {
+						if push {
 							fails++
 						}
 					}
@@ -198,7 +200,9 @@ func (d *Deployment) Place(team int, ground GroundCheck, walls WallCheck) (int, 
 				}
 			}
 		}
-		// 16AF：完全出界時嘗試升級到下一個組（把起點往開著的方向移）。
+		// 16AF：完全出界時嘗試升級到下一個組——起點往**走得過**的方向移
+		// （`378h = 1`（被擋）就跳過該組；非地城（walls nil）跳過查詢、
+		// 一律取用）。
 		if outOfBlock {
 			fullyOut := (col < 0 || col >= 11) && (row < 0 || row >= 6)
 			if fullyOut {
@@ -207,7 +211,7 @@ func (d *Deployment) Place(team int, ground GroundCheck, walls WallCheck) (int, 
 				for group < 3 && state != 1 {
 					group++
 					dir := deployWallDirs[d.dirGroup[team]][group]
-					if !wallOpen(dir) {
+					if walls == nil || walls(wallCellX, wallCellY, dir) {
 						tx = d.teamX[team] + deployDX[dir]
 						ty = d.teamY[team] + deployDY[dir]
 						fails = 0

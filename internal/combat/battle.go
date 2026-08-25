@@ -192,6 +192,13 @@ type Fighter struct {
 	WeaponRange       int
 	MissileWeapon     bool
 	ThrownWeapon      bool
+	// NaturalDamage* 是放下武器時的天生攻擊（怪物記錄的基準骰，spec 1174）。
+	// AI 換裝把槽 0 武器收起來之後，重投影用它還原現值。
+	NaturalDamageDiceCount int
+	NaturalDamageDiceSides int
+	NaturalDamageBonus     int
+	// ClassUsabilityMask 是記錄 `+12Bh`：能用哪些物品類別（spec 1004 §二）。
+	ClassUsabilityMask uint8
 	// WeaponItemType 是架著的那把武器的**物品類別**（`CHARITEMREC.ITEMPTR`，
 	// remake 的 `ItemRecord.Type`）。原作的 `SHOWARROW` 用它決定投射動畫尾端
 	// 放哪一個音效（spec 1186）：投石索類放哨音、擲斧／棍／鎚放揮擊、其餘放箭。
@@ -2544,6 +2551,21 @@ func (b *Battle) ReplaceFighterEquipment(fighterID string, projected Fighter) er
 	fighter.AmmunitionCount = projected.AmmunitionCount
 	fighter.MovementAllowance = projected.MovementAllowance
 	fighter.ReadiedItemEffects = append([]uint8(nil), projected.ReadiedItemEffects...)
+	b.fighters[fighterID] = fighter
+	return nil
+}
+
+// ReplaceMonsterItems 換掉怪物的隨身物品鏈。AI 換裝（spec 1004）動的是
+// Readied 旗標；衍生值另外走 ReplaceFighterEquipment。
+func (b *Battle) ReplaceMonsterItems(fighterID string, items []MonsterItem) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	fighter.MonsterItems = append([]MonsterItem(nil), items...)
 	b.fighters[fighterID] = fighter
 	return nil
 }

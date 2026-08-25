@@ -37,6 +37,22 @@ func ProjectMonsterWeapon(fighter combat.Fighter, catalog BaseItemCatalog) comba
 	return fighter
 }
 
+// ReprojectMonsterWeapon 重跑一次武器投影：先還原成「沒有槽 0 裝備中武器」
+// 的天生攻擊（記錄的基準骰，spec 1174），再讓現在裝備中的槽 0 武器（若有）
+// 無條件蓋掉。AI 換裝（spec 1004／1120）動過 Readied 旗標之後用它取得新的
+// 衍生值。
+func ReprojectMonsterWeapon(fighter combat.Fighter, catalog BaseItemCatalog) combat.Fighter {
+	fighter.DamageDiceCount = fighter.NaturalDamageDiceCount
+	fighter.DamageDiceSides = fighter.NaturalDamageDiceSides
+	fighter.DamageBonus = fighter.NaturalDamageBonus
+	fighter.LargeDamageDiceCount, fighter.LargeDamageDiceSides, fighter.LargeDamageBonus = 0, 0, 0
+	fighter.HasSlotZeroWeapon = false
+	fighter.WeaponRange = 0
+	fighter.MissileWeapon, fighter.ThrownWeapon = false, false
+	fighter.AmmunitionType = 0
+	return ProjectMonsterWeapon(fighter, catalog)
+}
+
 // readiedSlotZeroWeapon 找出裝備中、類別表的槽是 0 的那一件。
 //
 // ⚠ 判準是**槽**不是「有沒有傷害骰」：弓與彈藥常常排在鏈的前面，

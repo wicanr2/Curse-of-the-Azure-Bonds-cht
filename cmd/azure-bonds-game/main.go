@@ -270,6 +270,16 @@ func (a *app) combatScanTacticalMap() (enginescan.TacticalMap, error) {
 				tileID, ok = a.state.WildernessFloor.TileID(sourceX, sourceY)
 			}
 			if ok {
+				// ★ reference 座標模式蓋整張 50×25，而 DUNGCOM 地板只生成隊伍
+				// 周圍的窗口——窗外的格子是 0（沒有地形）。投影成 TD 1
+				// （原表的不可通行哨兵 `0xFF`）：SCAN 拿到的是合法而且擋路的
+				// 地形，與移動端「MoveCost 0 不可站」的判定一致。留 0 會讓
+				// 站在窗邊的掃描來源直接回錯。非 reference 的窗口是全生成的，
+				// 0 仍然是投影壞掉的訊號，保留 fail-closed。
+				if tileID == 0 && referenceCoordinates {
+					tiles[y*width+x] = 1
+					continue
+				}
 				if tileID == 0 || int(tileID) > len(definitions) {
 					return enginescan.TacticalMap{}, fmt.Errorf("TACTICALMAP (%d,%d) has invalid one-based TD %d", x, y, tileID)
 				}

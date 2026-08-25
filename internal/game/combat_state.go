@@ -92,8 +92,8 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	var deploymentWalls combat.WallCheck
 	if s.Area.InDungeon {
 		if grid, ok := s.currentDungeonGrid(); ok {
-			deploymentWalls = func(direction int) bool {
-				return grid.CanMoveDungeonWrapped(s.DungeonX, s.DungeonY, direction)
+			deploymentWalls = func(x, y, direction int) bool {
+				return grid.CanMoveDungeonWrapped(x, y, direction)
 			}
 		}
 	}
@@ -3917,7 +3917,9 @@ func (s *State) advanceCombatToParty() error {
 		if s.battle.AttacksThisRound(fighter) > 1 {
 			results, err := s.battle.AttackSequence(fighter.ID, target.ID)
 			if err != nil {
-				return err
+				return fmt.Errorf("AI attack %q(%d,%d) -> %q(%d,%d): %w",
+					fighter.ID, fighter.CombatX, fighter.CombatY,
+					target.ID, target.CombatX, target.CombatY, err)
 			}
 			if len(results) == 1 {
 				target, ok := s.fighter(results[0].TargetID)
@@ -3932,7 +3934,9 @@ func (s *State) advanceCombatToParty() error {
 		} else {
 			result, err := s.battle.Attack(fighter.ID, target.ID)
 			if err != nil {
-				return err
+				return fmt.Errorf("AI attack %q(%d,%d) -> %q(%d,%d): %w",
+					fighter.ID, fighter.CombatX, fighter.CombatY,
+					target.ID, target.CombatX, target.CombatY, err)
 			}
 			resolvedTarget, ok := s.fighter(result.TargetID)
 			if !ok {
@@ -4796,6 +4800,14 @@ func (s *State) syncPartyFromBattle() {
 	}
 	for index := range s.party {
 		if fighter, ok := s.fighter(s.party[index].ID); ok {
+			// ★ 戰場座標是**那一場**的狀態，不跟著隊員離開戰鬥（原作每一場
+			// 都由 INITCOMBAT 重新佈署，spec 1200）。留著會在下一場被
+			// `StartCombat` 當成「預置座標」跳過佈署——上一場的原生座標
+			// 配上這一場 fallback 的 local 座標，兩個座標系疊在同一張圖：
+			// 實測隊伍站在 (25..30,10..15)、敵人在 (4..6,2..8)，隊伍的
+			// 快速戰鬥 AI 走不到人，41 回合被磨死（第 715 輪）。
+			fighter.HasCombatPosition = false
+			fighter.CombatX, fighter.CombatY = 0, 0
 			s.party[index] = fighter
 			for rosterIndex := range s.partyRoster {
 				if s.partyRoster[rosterIndex].ID == fighter.ID {

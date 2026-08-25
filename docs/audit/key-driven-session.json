@@ -1,21 +1,19 @@
 {
  "schema": "coab-key-driven-session/1",
  "frames": 12000,
- "cells": 137,
+ "cells": 636,
  "modes": [
   "事件",
   "地城",
   "場所",
   "戰鬥",
-  "標題",
-  "荒野",
-  "角色建立"
+  "荒野"
  ],
- "messages": 164,
+ "messages": 269,
  "fallbacks": 0,
- "doors_found": 0,
- "menus": 79,
- "segments": 5,
- "route_hits": 773,
- "route_steps": 24317
+ "doors_found": 19,
+ "menus": 138,
+ "segments": 11,
+ "route_hits": 4898,
+ "route_steps": 24370
 }

@@ -36,6 +36,10 @@ type Record struct {
 	// DOS 的 `+14Ch` 是 `NUMITEMS`、`+14Dh`..`+150h` 才是物品鏈指標（spec 1166）。
 	// 遊戲資料裡它一律是 0，這個欄位只是原樣保留，沒有任何規則讀它。
 	RawItemCount uint8
+	// ClassUsabilityMask 是 `+12Bh`：這個記錄能用哪些物品類別的位元遮罩，
+	// 與類別表 `+0Dh` 做 `and`（spec 1004 §二）。隊員側由職業組出；
+	// 怪物側直接用記錄裡存的值。
+	ClassUsabilityMask uint8
 	// UndeadType 是 `+0E9h`（`UNDEADLEVEL`）：1..10 是驅散不死矩陣的列，
 	// 0 代表不是不死生物（spec 834／1164）。
 	UndeadType     uint8
@@ -174,6 +178,7 @@ func Parse(data []byte) (Record, error) {
 		MonsterType:      data[0x11A],
 		Alignment:        data[0x11B],
 		AlignmentKnown:   true,
+		ClassUsabilityMask: data[0x12B],
 		RawItemCount:     data[0x14C],
 		Dexterity:        data[0x17],
 		// `+0E9h` ＝ `UNDEADLEVEL`：1..10 是驅散矩陣的列，0 代表不是不死生物
@@ -202,6 +207,7 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		RaceTypeKnown: true,
 		MonsterType:   r.MonsterType,
 		Alignment:     r.Alignment, AlignmentKnown: r.AlignmentKnown,
+		ClassUsabilityMask: r.ClassUsabilityMask,
 		RawItemCount: r.RawItemCount,
 		UndeadType:   r.UndeadType,
 		Dexterity:    r.Dexterity,
@@ -216,6 +222,9 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		ArmorClassFacingKnown: r.ArmorClass != 0 && r.ArmorClassFacing != 0,
 		DamageDiceCount:       r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
 		DamageBonus:  r.DamageBonus,
+		NaturalDamageDiceCount: r.DamageDiceCount,
+		NaturalDamageDiceSides: r.DamageDiceSides,
+		NaturalDamageBonus:     r.DamageBonus,
 		AttackBlows:  [2]int{int(r.AttackBlows[0]), int(r.AttackBlows[1])},
 		CombatSize:   r.CombatSize,
 		LargeTarget:  LargeDamageTarget(r.RawSize),

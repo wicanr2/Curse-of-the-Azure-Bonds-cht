@@ -158,3 +158,108 @@ func TestAutoEquipReprojectsTheFightersDamage(t *testing.T) {
 		t.Fatal("換武器把生命或位置也一起換掉了")
 	}
 }
+
+// 怪物側的戰鬥狀態：一隻帶物品鏈的怪、一名隊員在指定距離。
+func autoEquipMonsterState(t *testing.T, items []combat.MonsterItem, mask uint8, partyX int) *State {
+	t.Helper()
+	value := NewState(testCatalog())
+	state := &value
+	state.SetItemCatalog(autoEquipTestCatalog(t))
+	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, MovementAllowance: 6,
+		HasCombatPosition: true, CombatX: partyX, CombatY: 1}}
+	archer := combat.Fighter{ID: "archer", Name: "弓手", Side: combat.SideEnemy,
+		HitPoints: 12, MaxHitPoints: 12, ArmorClass: 10, MovementAllowance: 6,
+		HasCombatPosition: true, CombatX: 1, CombatY: 1,
+		ClassUsabilityMask:     mask,
+		NaturalDamageDiceCount: 1, NaturalDamageDiceSides: 4,
+		MonsterItems: items}
+	archer = monster.ProjectMonsterWeapon(archer, state.itemCatalog)
+	if err := state.StartCombat(partyFighters, []combat.Fighter{archer}, 3); err != nil {
+		t.Fatal(err)
+	}
+	return state
+}
+
+func monsterFighter(t *testing.T, state *State, id string) combat.Fighter {
+	t.Helper()
+	fighter, ok := state.fighter(id)
+	if !ok {
+		t.Fatalf("fighter %q disappeared", id)
+	}
+	return fighter
+}
+
+// 敵人貼身、鏈上只有弓（測試目錄類別 2 是自足彈藥的發射武器嗎？不是——
+// 它要彈藥槽 A；這裡直接帶一件槽 11 的箭讓遠距時弓站得住）：
+// 相鄰時弓被放下，怪物回到天生攻擊（spec 1004 §三的 `entry#32` 分支）。
+func TestAutoEquipMonsterStowsMissileWeaponWhenAdjacent(t *testing.T) {
+	state := autoEquipMonsterState(t, []combat.MonsterItem{
+		{Name: "弓", Type: 2, Readied: true, Count: 1},
+		{Name: "箭", Type: 11, Readied: true, Count: 20},
+	}, 0xFF, 2)
+	// StartCombat 的開場推進已經跑過這隻怪的 AI 回合，換裝在那裡生效；
+	// 再叫一次必須是冪等的 no-op。
+	swapped, err := state.autoEquipBeforeAITurn("archer")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if swapped {
+		t.Fatal("a second auto-equip pass must be a no-op")
+	}
+	fighter := monsterFighter(t, state, "archer")
+	if fighter.MissileWeapon || fighter.HasSlotZeroWeapon {
+		t.Fatalf("stowed archer still projects a weapon: %+v", fighter)
+	}
+	if fighter.DamageDiceCount != 1 || fighter.DamageDiceSides != 4 {
+		t.Fatalf("stowed archer damage %dd%d, want natural 1d4",
+			fighter.DamageDiceCount, fighter.DamageDiceSides)
+	}
+	for _, item := range fighter.MonsterItems {
+		if item.Type == 2 && item.Readied {
+			t.Fatal("bow is still readied in the monster item chain")
+		}
+	}
+}
+
+// 敵人在遠距：弓留著不動。
+func TestAutoEquipMonsterKeepsMissileWeaponAtRange(t *testing.T) {
+	state := autoEquipMonsterState(t, []combat.MonsterItem{
+		{Name: "弓", Type: 2, Readied: true, Count: 1},
+		{Name: "箭", Type: 11, Readied: true, Count: 20},
+	}, 0xFF, 8)
+	swapped, err := state.autoEquipBeforeAITurn("archer")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if swapped {
+		t.Fatal("ranged archer must keep the bow")
+	}
+	fighter := monsterFighter(t, state, "archer")
+	if !fighter.MissileWeapon {
+		t.Fatal("ranged archer lost the missile projection")
+	}
+}
+
+// 敵人貼身、鏈上有近戰替代：換成近戰武器（GRENDEL 的形狀）。
+func TestAutoEquipMonsterSwapsToMeleeWhenAdjacent(t *testing.T) {
+	state := autoEquipMonsterState(t, []combat.MonsterItem{
+		{Name: "弓", Type: 2, Readied: true, Count: 1},
+		{Name: "箭", Type: 11, Readied: true, Count: 20},
+		{Name: "長劍", Type: 1, Count: 1},
+	}, 0xFF, 2)
+	swapped, err := state.autoEquipBeforeAITurn("archer")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if swapped {
+		t.Fatal("a second auto-equip pass must be a no-op")
+	}
+	fighter := monsterFighter(t, state, "archer")
+	if fighter.MissileWeapon || !fighter.HasSlotZeroWeapon {
+		t.Fatalf("adjacent archer projection: %+v", fighter)
+	}
+	if fighter.DamageDiceSides != 8 {
+		t.Fatalf("adjacent archer damage d%d, want the longsword d8", fighter.DamageDiceSides)
+	}
+}

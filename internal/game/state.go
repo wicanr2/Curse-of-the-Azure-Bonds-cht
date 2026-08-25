@@ -4621,6 +4621,11 @@ func (s *State) SetParty(party []combat.Fighter) error {
 	return nil
 }
 
+// PartyRoster 回傳持久 roster 的複本，給存讀檔邊界與盤點 harness 用。
+func (s *State) PartyRoster() party.Roster {
+	return append(party.Roster(nil), s.partyRoster...)
+}
+
 // SetPartyRoster installs typed characters through the same conversion used
 // by save loading. Frontends and deterministic integration oracles can use
 // this boundary without reaching into State's roster internals.
