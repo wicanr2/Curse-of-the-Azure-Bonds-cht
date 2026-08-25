@@ -23,6 +23,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"sort"
@@ -31,10 +32,10 @@ import (
 )
 
 func main() {
-	zhPath := flag.String("zh", "gamepack/pack/20-locale.zh-TW.json", "中文語系檔")
-	enPath := flag.String("en", "gamepack/pack/20-locale.en.json", "英文語系檔")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
-	limit := flag.Int("limit", 20, "每一類最多列幾筆")
+	zhPath := flag.String("zh", "gamepack/pack/20-locale.zh-TW.json", tooltext.Text("h.18a8248f0745"))
+	enPath := flag.String("en", "gamepack/pack/20-locale.en.json", tooltext.Text("h.88ad2e9a2d36"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
+	limit := flag.Int("limit", 20, tooltext.Text("h.996b58182f3c"))
 	flag.Parse()
 
 	zh := loadLocale(*zhPath)
@@ -66,7 +67,7 @@ func main() {
 			fullWidth++
 		}
 		if mark, found := halfWidthInHan(text); found {
-			punctuation = append(punctuation, fmt.Sprintf("`%s` — %s（半形 `%s`）", key, trim(text), mark))
+			punctuation = append(punctuation, tooltext.Format("h.9e3ddaedd64a", key, trim(text), mark))
 		}
 		source, ok := en[key]
 		if !ok || strings.TrimSpace(source) == "" || !hasHan(text) {
@@ -99,27 +100,27 @@ func main() {
 	sort.Strings(inconsistent)
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 中文校對：機械查得到的待看清單\n\n")
-	fmt.Fprintf(&report, "由 `cmd/cht-proofread-audit` 產生，不要手改。\n\n")
-	fmt.Fprintf(&report, "⚠ 這是**待看清單，不是缺陷數**。三類都有合理的例外："+
-		"專有名詞可以保留原文、同一句英文在不同語境本來就該有不同譯法、"+
-		"數字與代號旁邊的半形標點是對的。**把它當缺陷數會逼出「為了讓數字歸零而改壞翻譯」。**\n\n")
-	fmt.Fprintf(&report, "⚠ 這一支不做語感判斷——通順、語氣、在地化程度都不在裡面，那不是靜態工具的事。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.fc444386e10e"))
+	fmt.Fprint(&report, tooltext.Format("h.d4232137f59c"))
+	fmt.Fprint(&report, tooltext.Text("h.5e1d82de481c")+
+		tooltext.Text("h.9bb815523620")+
+		tooltext.Text("h.d96ad9ceb160"))
+	fmt.Fprint(&report, tooltext.Format("h.7cd6773fb760"))
 
-	fmt.Fprintf(&report, "| 項目 | 數量 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 中文語系條目 | %d |\n", len(zh))
-	fmt.Fprintf(&report, "| **整段沒有漢字**（疑似未翻）| **%d** |\n", len(untranslated))
-	fmt.Fprintf(&report, "| **同一句英文有多種譯法** | **%d** |\n", len(inconsistent))
-	fmt.Fprintf(&report, "| **中文句子裡混半形標點** | **%d** |\n", len(punctuation))
-	fmt.Fprintf(&report, "| 正對照：帶全形標點的條目 | %d |\n\n", fullWidth)
+	fmt.Fprint(&report, tooltext.Format("h.74b2b2b87498"))
+	fmt.Fprint(&report, tooltext.Format("h.b0b238f92a40", len(zh)))
+	fmt.Fprint(&report, tooltext.Format("h.369657f07944", len(untranslated)))
+	fmt.Fprint(&report, tooltext.Format("h.3b7dd4ad3e15", len(inconsistent)))
+	fmt.Fprint(&report, tooltext.Format("h.ef81b587fc92", len(punctuation)))
+	fmt.Fprint(&report, tooltext.Format("h.18efdde42412", fullWidth))
 	if len(punctuation) == 0 && fullWidth > len(zh)/4 {
-		fmt.Fprintf(&report, "半形標點 0 筆，而且**正對照成立**（%d／%d 條帶全形標點）"+
-			"⇒ 這個 0 是真的沒有，不是檢查沒生效。\n\n", fullWidth, len(zh))
+		fmt.Fprintf(&report, tooltext.Text("h.9455efc07579")+
+			tooltext.Text("h.2a77e8ea84ce"), fullWidth, len(zh))
 	}
 
-	section(&report, "整段沒有漢字（疑似未翻）", untranslated, *limit)
-	section(&report, "同一句英文有多種譯法", inconsistent, *limit)
-	section(&report, "中文句子裡混半形標點", punctuation, *limit)
+	section(&report, tooltext.Text("h.c03e2f87b88f"), untranslated, *limit)
+	section(&report, tooltext.Text("h.daada28c10a7"), inconsistent, *limit)
+	section(&report, tooltext.Text("h.f3a2b18be509"), punctuation, *limit)
 
 	text := report.String()
 	if *output == "" {
@@ -133,13 +134,13 @@ func main() {
 
 func section(report *strings.Builder, title string, items []string, limit int) {
 	if len(items) == 0 {
-		fmt.Fprintf(report, "## %s\n\n（沒有）\n\n", title)
+		fmt.Fprint(report, tooltext.Format("h.6a914315b1be", title))
 		return
 	}
-	fmt.Fprintf(report, "## %s（%d 筆）\n\n", title, len(items))
+	fmt.Fprint(report, tooltext.Format("h.cae965c94fb5", title, len(items)))
 	for index, item := range items {
 		if index >= limit {
-			fmt.Fprintf(report, "\n…另有 %d 筆，用 `-limit` 調整。\n", len(items)-limit)
+			fmt.Fprint(report, tooltext.Format("h.da2dee540ba3", len(items)-limit))
 			break
 		}
 		fmt.Fprintf(report, "- %s\n", item)

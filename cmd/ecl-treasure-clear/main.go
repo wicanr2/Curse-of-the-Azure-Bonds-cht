@@ -23,6 +23,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -34,13 +35,13 @@ import (
 )
 
 const (
-	opExit           = 0x00
-	opGoto           = 0x01
-	opReturn         = 0x13
-	opClearMonsters  = 0x1C
-	opCombat         = 0x24
-	opTreasure       = 0x27
-	maxForwardSteps  = 8192
+	opExit          = 0x00
+	opGoto          = 0x01
+	opReturn        = 0x13
+	opClearMonsters = 0x1C
+	opCombat        = 0x24
+	opTreasure      = 0x27
+	maxForwardSteps = 8192
 )
 
 // pair 是一處「`27h` 之後走得到的 `1Ch`」。
@@ -55,7 +56,7 @@ type pair struct {
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	out := flag.String("out", "docs/audit/ecl-treasure-clear.md", "輸出的 markdown")
+	out := flag.String("out", "docs/audit/ecl-treasure-clear.md", tooltext.Text("h.aff4479ab1b9"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -69,7 +70,7 @@ func main() {
 	for member := 1; member <= 6; member++ {
 		payload := memberPayload(archive, fmt.Sprintf("ECL%d.DAX", member))
 		if payload == nil {
-			log.Fatalf("image 裡沒有 ECL%d.DAX", member)
+			log.Fatal(tooltext.Format("h.f74a43cb81d6", member))
 		}
 		blocks, err := dax.Parse(payload)
 		if err != nil {
@@ -105,8 +106,7 @@ func main() {
 			viaCombat++
 		}
 	}
-	fmt.Printf("TREASURE=%d 之後走得到 CLEARMONSTERS 的配對=%d（其中經過 COMBAT=%d）→ %s\n",
-		treasures, len(pairs), viaCombat, *out)
+	fmt.Print(tooltext.Format("h.f1cb7c639d3d", treasures, len(pairs), viaCombat, *out))
 }
 
 // fallsThrough 回答「這條指令跑完會不會接著跑下一條」。
@@ -218,23 +218,23 @@ func forwardClears(unique map[int]ecl.Instruction, outgoing map[int][]int,
 
 func render(pairs []pair, treasures int) string {
 	var out strings.Builder
-	out.WriteString("# `27h TREASURE` 之後走得到的 `1Ch CLEARMONSTERS`\n\n" +
-		"由 `cmd/ecl-treasure-clear` 產生，不要手改。\n\n" +
-		"`1Ch` 的名字只講了一半。原作（DOS `overlay-02:120Eh`）除了釋放節點鏈與清\n" +
-		"「有怪要打」旗標（`8B69h`，spec 1095），還把 `DS:6F70h` 起的 28 個位元組歸零、\n" +
-		"沿 `DS:6F8Ch` 鏈逐節點 `FreeMem(63)`。那兩塊正是戰利品——\n" +
-		"`DS:6F70h + i × 4`（`i = 0..6`）是七種貨幣／寶石／珠寶的池（spec 1059），\n" +
-		"`DS:6F8Ch` 是 `27h` 串進去的物品節點鏈（spec 1087）。\n\n" +
-		"⇒ **`1Ch` 會把還沒領走的戰利品整堆丟掉。** 這份表列的是 corpus 裡真的走得到\n" +
-		"那條路的地方。\n\n" +
-		"⚠ 前向走訪同時收跳躍邊與循序後繼；只用跳躍邊會得到假零。\n" +
-		"⚠ 「經過 `COMBAT`」是**存在某一條路經過**，不是每一條都經過。\n\n")
-	out.WriteString("| 段 | `27h` 位移 | 走得到的 `1Ch` | 路上經過 `24h` |\n")
+	out.WriteString(tooltext.Text("h.19799b730979") +
+		tooltext.Text("h.7952ae885648") +
+		tooltext.Text("h.6f06d4c903ae") +
+		tooltext.Text("h.28fb98227d6b") +
+		tooltext.Text("h.63bf65c5183f") +
+		tooltext.Text("h.0f46be96a542") +
+		tooltext.Text("h.e69a60c6ece6") +
+		tooltext.Text("h.d2f6b4b6f196") +
+		tooltext.Text("h.5658acb8076e") +
+		tooltext.Text("h.ace5d3535246") +
+		tooltext.Text("h.878133765430"))
+	out.WriteString(tooltext.Text("h.19220a6c51b1"))
 	out.WriteString("|---|---|---|---|\n")
 	for _, item := range pairs {
-		via := "否"
+		via := tooltext.Text("h.0c70665b6eb6")
 		if item.viaCombat {
-			via = "是"
+			via = tooltext.Text("h.b5141d3d19e9")
 		}
 		out.WriteString(fmt.Sprintf("| `ECL%d/0x%02X` | `%#04x` | `%#04x` | %s |\n",
 			item.member, item.block, item.treasure, item.clear, via))
@@ -248,10 +248,10 @@ func render(pairs []pair, treasures int) string {
 			viaCombat++
 		}
 	}
-	out.WriteString(fmt.Sprintf("\n## 摘要\n\n| 項目 | 數 |\n|---|---:|\n"+
-		"| `27h TREASURE` 的處數 | %d |\n"+
-		"| 之後走得到 `1Ch` 的配對 | %d |\n"+
-		"| 其中路上經過 `24h COMBAT` | %d |\n", treasures, len(pairs), viaCombat))
+	out.WriteString(fmt.Sprintf(tooltext.Text("h.e3b2a4f11e09")+
+		tooltext.Text("h.2d5ea3fb42bc")+
+		tooltext.Text("h.12afc256d77a")+
+		tooltext.Text("h.ab65e3aa9869"), treasures, len(pairs), viaCombat))
 	return out.String()
 }
 

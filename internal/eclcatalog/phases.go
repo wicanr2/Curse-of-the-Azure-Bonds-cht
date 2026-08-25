@@ -346,8 +346,7 @@ func EncodePhaseMarkdown(ledger PhaseLedger) []byte {
 			row.Confidence, reference, row.Note)
 	}
 	fmt.Fprintln(&output)
-	fmt.Fprintf(&output, tooltext.Text("ecl_phases.progress_line"),
-		countPhase(ledger.Rows, false), len(ledger.Rows), countPhase(ledger.Rows, true))
+	fmt.Fprint(&output, tooltext.Format("ecl_phases.progress_line", countPhase(ledger.Rows, false), len(ledger.Rows), countPhase(ledger.Rows, true)))
 	return []byte(output.String())
 }
 

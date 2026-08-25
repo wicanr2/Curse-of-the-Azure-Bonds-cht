@@ -25,6 +25,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -51,8 +52,8 @@ const moraleOffset = 0xF7
 var deadTimings = map[uint8]bool{0x02: true, 0x03: true}
 
 func main() {
-	imagePath := flag.String("image", "curseoftheazurebonds.zip", "原版 image ZIP")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	imagePath := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.79f855c8b433"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*imagePath)
@@ -132,7 +133,7 @@ func main() {
 	for _, kind := range ids {
 		if combat.AffectKindIsInterpreted(kind) {
 			usable++
-			status[kind] = "已接"
+			status[kind] = tooltext.Text("h.f8c349bcf027")
 			continue
 		}
 		state, found := "", false
@@ -145,69 +146,69 @@ func main() {
 		case tableErr == nil && onlyDeadTimings(table, kind):
 			dead++
 			deadRecords += kinds[kind]
-			status[kind] = "只出現在死時機"
+			status[kind] = tooltext.Text("h.496420dcda95")
 		case !found:
 			// ⚠ **表裡根本沒有這個碼 ≠ remake 少做了什麼。** 它代表原作那一支
 			// 還沒被反組譯登記過，和 `unread` 同一類（不知道），不是「已知缺口」。
 			// 第 688 輪把這一格算進缺口，於是 9 個裡有 5 個是假的。
 			uncatalogued++
 			uncataloguedRecords += kinds[kind]
-			status[kind] = "修正表裡還沒有這個碼"
+			status[kind] = tooltext.Text("h.31f728323bcd")
 		case state == "inert":
 			inert++
 			inertRecords += kinds[kind]
-			status[kind] = "原作就沒動作"
+			status[kind] = tooltext.Text("h.edafa9e8419a")
 		case state == "unread":
 			unread++
 			unreadRecords += kinds[kind]
-			status[kind] = "還沒解讀"
+			status[kind] = tooltext.Text("h.9d429bdc87c5")
 		default:
 			missing++
 			missingRecords += kinds[kind]
-			status[kind] = "缺口"
+			status[kind] = tooltext.Text("h.245cdcd5fad2")
 		}
 	}
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 敵方 AI 的輸入齊不齊：原版怪物資料逐筆盤點\n\n")
-	fmt.Fprintf(&report, "由 `cmd/monster-ai-coverage` 產生，不要手改。理由與讀法見該檔的註解。\n\n")
-	fmt.Fprintf(&report, "量的是**決策層的輸入**，不是「AI 打得像不像」——後者要對照原版實機，這裡不宣稱。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.f6ae980276c6"))
+	fmt.Fprint(&report, tooltext.Format("h.9cfbb2304e50"))
+	fmt.Fprint(&report, tooltext.Format("h.69c6530f87c0"))
 
-	fmt.Fprintf(&report, "| 項目 | 數量 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 原版怪物記錄 | %d |\n", total)
-	fmt.Fprintf(&report, "| 士氣位元組有效（bit 7 已設）| %d |\n", moraleValid)
-	fmt.Fprintf(&report, "| 士氣位元組無效 | %d |\n", moraleBroken)
-	fmt.Fprintf(&report, "| **身上帶記憶法術的怪物** | **%d** |\n", withSpells)
-	fmt.Fprintf(&report, "| `MON*SPC` 特殊能力記錄 | %d |\n", affects)
-	fmt.Fprintf(&report, "| 其中相異的效果碼 | %d |\n", len(ids))
-	fmt.Fprintf(&report, "| **戰鬥規則會理的** | **%d** |\n", usable)
-	fmt.Fprintf(&report, "| 原作那一支就沒動作（`inert`，碼／記錄）| %d／%d |\n", inert, inertRecords)
-	fmt.Fprintf(&report, "| 還沒解讀（`unread`，碼／記錄）| %d／%d |\n", unread, unreadRecords)
-	fmt.Fprintf(&report, "| 修正表裡還沒有這個碼（碼／記錄）| %d／%d |\n", uncatalogued, uncataloguedRecords)
-	fmt.Fprintf(&report, "| **只出現在死時機**（原作永遠不會執行；碼／記錄）| %d／%d |\n", dead, deadRecords)
-	fmt.Fprintf(&report, "| **真的缺口**（原作有動作、remake 沒有；碼／記錄）| **%d／%d** |\n\n", missing, missingRecords)
+	fmt.Fprint(&report, tooltext.Format("h.74b2b2b87498"))
+	fmt.Fprint(&report, tooltext.Format("h.331975a22dda", total))
+	fmt.Fprint(&report, tooltext.Format("h.db9ec0bd2dcc", moraleValid))
+	fmt.Fprint(&report, tooltext.Format("h.c6c414bf7fd8", moraleBroken))
+	fmt.Fprint(&report, tooltext.Format("h.6a3327330d4d", withSpells))
+	fmt.Fprint(&report, tooltext.Format("h.79222bd6baed", affects))
+	fmt.Fprint(&report, tooltext.Format("h.144ee8386c22", len(ids)))
+	fmt.Fprint(&report, tooltext.Format("h.d831ff3a546d", usable))
+	fmt.Fprint(&report, tooltext.Format("h.b83576d9cf8f", inert, inertRecords))
+	fmt.Fprint(&report, tooltext.Format("h.25f3644c9c1e", unread, unreadRecords))
+	fmt.Fprint(&report, tooltext.Format("h.a5085942f436", uncatalogued, uncataloguedRecords))
+	fmt.Fprint(&report, tooltext.Format("h.dff2889b9a93", dead, deadRecords))
+	fmt.Fprint(&report, tooltext.Format("h.380a095840a3", missing, missingRecords))
 
-	fmt.Fprintf(&report, "⚠ 四者不能混在一起數。`inert` 是**原作自己什麼都沒做**——"+
-		"remake 也不做才是對的；`unread` 與「表裡還沒有這個碼」則是**不知道**，"+
-		"同樣不是已知缺口。把它們算進缺口會憑空生出一個永遠補不完的待辦。\n\n")
+	fmt.Fprint(&report, tooltext.Text("h.489c17d501d5")+
+		tooltext.Text("h.bad98c8bc29f")+
+		tooltext.Text("h.e82fcfbb066d"))
 
-	fmt.Fprintf(&report, "## ★ 這一款遊戲裡，怪物的 AI 施法路徑**沒有資料可跑**\n\n")
-	fmt.Fprintf(&report, "全部 %d 隻怪物的記憶法術槽（角色記錄 `+33h..+6Ah`）**逐位元組都是 0**。\n", total)
-	fmt.Fprintf(&report, "也就是說 `AIChooseSpell` 那條路（門檻掃描、每輪抽 3 個、士氣閘門，"+
-		"spec 835／836／1116）在 CoAB **一次都不會被觸發**——規則實作了，但這一款遊戲沒有用到它。\n\n")
-	fmt.Fprintf(&report, "⚠ 這不是「AI 壞了」，也不是「規則白做了」：同一顆引擎要跑別的 Gold Box 遊戲，"+
-		"而那些遊戲的怪物是有法術清單的。這裡只是把**本作的分母**講清楚——"+
-		"拿 CoAB 當樣本去驗證施法 AI，會得到一個永遠全綠而且什麼都沒驗到的測試。\n\n")
-	fmt.Fprintf(&report, "⇒ 本作的敵方行為分母落在 `MON*SPC` 的特殊能力上，不在法術清單上。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.2595539ad018"))
+	fmt.Fprint(&report, tooltext.Format("h.ba03b02dea46", total))
+	fmt.Fprint(&report, tooltext.Text("h.14ca182acf81")+
+		tooltext.Text("h.2d045b11e6c5"))
+	fmt.Fprint(&report, tooltext.Text("h.8ab6d779800d")+
+		tooltext.Text("h.26c279e7b3cb")+
+		tooltext.Text("h.6c4c9aa11a81"))
+	fmt.Fprint(&report, tooltext.Format("h.dc3d349f5b83"))
 
 	if missing > 0 && tableErr == nil {
-		fmt.Fprintf(&report, "## 真的缺口：每一個卡在哪\n\n")
-		fmt.Fprintf(&report, "這四個碼在修正表裡**有解出來的動作**，但 `AffectKindIsInterpreted` "+
-			"仍然回 false。三個條件（列在某個 timing 裡、那個 timing remake 有查、"+
-			"它動的那一格 remake 有讀）少了哪一條，決定了要補的是什麼工。\n\n")
-		fmt.Fprintf(&report, "| 效果碼 | 出現在 timing | 動什麼 | 卡在哪 |\n|---:|---|---|---|\n")
+		fmt.Fprint(&report, tooltext.Format("h.31731a0a46ba"))
+		fmt.Fprint(&report, tooltext.Text("h.48dd82e8d59d")+
+			tooltext.Text("h.2c736614739a")+
+			tooltext.Text("h.365c359598fa"))
+		fmt.Fprint(&report, tooltext.Format("h.8e42b2dc44dd"))
 		for _, kind := range ids {
-			if status[kind] != "缺口" {
+			if status[kind] != tooltext.Text("h.245cdcd5fad2") {
 				continue
 			}
 			handler, _ := table.Handler(kind)
@@ -220,32 +221,32 @@ func main() {
 					}
 				}
 			}
-			action, blocker := "（沒有解出來的動作）", "修正表裡沒有動作"
+			action, blocker := tooltext.Text("h.d00fa7b349a1"), tooltext.Text("h.7af3e2e2aecf")
 			if len(handler.Modifiers) > 0 {
 				modifier := handler.Modifiers[0]
 				if modifier.Record != "" {
-					action = fmt.Sprintf("寫 `%s` 的第 %d 格", modifier.Record, modifier.Field)
-					blocker = "那一格 remake 還沒對應到 `Fighter` 的欄位"
+					action = tooltext.Format("h.27974c2ad2d1", modifier.Record, modifier.Field)
+					blocker = tooltext.Text("h.7a1d0120174e")
 				} else {
-					action = fmt.Sprintf("設暫存全域 `%s`", table.ScratchName(modifier.Global))
-					blocker = "那些 timing **找不到任何呼叫端**（`checkfx-callsites.md`）"
+					action = tooltext.Format("h.46ef0e82bf0b", table.ScratchName(modifier.Global))
+					blocker = tooltext.Text("h.b0674f1ab885")
 				}
 			}
 			fmt.Fprintf(&report, "| `%02Xh` | %s | %s | %s |\n",
 				kind, strings.Join(timings, "／"), action, blocker)
 		}
-		fmt.Fprintf(&report, "\n⇒ 四個都**卡在反組譯，不是卡在接線**。\n\n")
-		fmt.Fprintf(&report, "⚠ 其中三個（`4Fh`／`50h`／`7Bh`）落在時機 `02h`／`03h` 上，"+
-			"而 `cmd/checkfx-callsites` 掃過 30 處呼叫點之後，**這兩個時機一處呼叫端都沒有**。"+
-			"如果它們真的不會被問到，那這三個就**不是缺口**——原作也不會跑到。\n\n")
-		fmt.Fprintf(&report, "⚠⚠ 但**現在還不能這樣結論**：那一支只看得到兩種呼叫形狀，"+
-			"常駐執行檔那一側因為重定位掃不到。**先把常駐側排除掉，再決定這三個是缺口還是死碼**——"+
-			"直接當成缺口去實作，等於為一段原作永遠不會執行的路寫程式。\n\n")
+		fmt.Fprint(&report, tooltext.Format("h.8afa668227b3"))
+		fmt.Fprint(&report, tooltext.Text("h.048dbbd2fafb")+
+			tooltext.Text("h.a1942e6cd228")+
+			tooltext.Text("h.a8bdf44b8ca6"))
+		fmt.Fprint(&report, tooltext.Text("h.2ac051975dfe")+
+			tooltext.Text("h.b0b67acbdc2c")+
+			tooltext.Text("h.124f12260a1f"))
 	}
 
 	if missing+inert+unread+uncatalogued+dead > 0 {
-		fmt.Fprintf(&report, "## 逐碼\n\n")
-		fmt.Fprintf(&report, "| 效果碼 | 出現次數 | 狀態 |\n|---:|---:|---|\n")
+		fmt.Fprint(&report, tooltext.Format("h.793cd407235d"))
+		fmt.Fprint(&report, tooltext.Format("h.f72314607a05"))
 		for _, kind := range ids {
 			fmt.Fprintf(&report, "| `%02Xh` | %d | %s |\n", kind, kinds[kind], status[kind])
 		}

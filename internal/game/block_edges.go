@@ -3,6 +3,7 @@ package game
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"os"
 	"path/filepath"
 	"sort"
@@ -88,7 +89,7 @@ func (s *State) captureArrival(block uint8) {
 		Schema: "coab-arrival-sample/1",
 		Block:  block,
 		Memory: s.session.MemorySnapshot(),
-		Note:   "換段那一刻的記憶體取樣，不是存檔：PC 在指令中間，載回來會解不出指令。",
+		Note:   tooltext.Text("h.8197a5b4cd86"),
 	}
 	encoded, err := json.MarshalIndent(sample, "", " ")
 	if err == nil {

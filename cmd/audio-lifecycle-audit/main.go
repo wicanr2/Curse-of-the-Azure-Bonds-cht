@@ -33,6 +33,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -49,13 +50,13 @@ type cell struct {
 }
 
 var cells = []cell{
-	{0x8BF3, "MUSICNO", "select-track", "選曲：換成哪一首"},
-	{0x8BE1, "MUSICNUM", "load-track", "曲目編號：驅動程式要載哪一份資料"},
+	{0x8BF3, "MUSICNO", "select-track", tooltext.Text("h.f7c22d2c0a4a")},
+	{0x8BE1, "MUSICNUM", "load-track", tooltext.Text("h.f1c005cd581b")},
 	// ⚠ `stop-track` 沒有自己的格：它是 `MUSICNUM := 255` 這個**值**。
 	// 只按位址分類會把「停止」算成「載入」，於是原作明明會停音樂，
 	// 報表卻說這一類已經接上了。分類要看值。
-	{0x8BE1, "MUSICNUM", "stop-track", "停止：曲目編號寫 `255`（沒有曲子）"},
-	{0x8BE3, "MUSICSW", "music-switch", "音樂開關：整個音樂要不要響"},
+	{0x8BE1, "MUSICNUM", "stop-track", tooltext.Text("h.f5f3ae981fba")},
+	{0x8BE3, "MUSICSW", "music-switch", tooltext.Text("h.d83a548325e9")},
 }
 
 // site 是一處寫入。
@@ -73,13 +74,13 @@ type site struct {
 }
 
 func main() {
-	root := flag.String("root", "workplace/re-sweep/pc98", "PC-98 掃描產物目錄")
-	resident := flag.String("resident", "PC98-GAME.EXE", "常駐執行檔（相對 root）")
-	symbols := flag.String("symbols", "workplace/re-sweep/pc98/borland-symbols.json", "Borland 符號表")
-	remake := flag.String("remake", "internal/game", "remake 規則層目錄")
-	frontend := flag.String("frontend", "cmd/azure-bonds-game", "前端目錄（按鍵綁在這裡）")
-	output := flag.String("output", "", "Markdown 輸出路徑")
-	outputJSON := flag.String("json", "", "JSON 輸出路徑")
+	root := flag.String("root", "workplace/re-sweep/pc98", tooltext.Text("h.6f34d54efdfd"))
+	resident := flag.String("resident", "PC98-GAME.EXE", tooltext.Text("h.a70cfce00962"))
+	symbols := flag.String("symbols", "workplace/re-sweep/pc98/borland-symbols.json", tooltext.Text("h.33ca57ae26bd"))
+	remake := flag.String("remake", "internal/game", tooltext.Text("h.82c568be0082"))
+	frontend := flag.String("frontend", "cmd/azure-bonds-game", tooltext.Text("h.b2cfe774d76f"))
+	output := flag.String("output", "", tooltext.Text("h.fff5cb9e9bc2"))
+	outputJSON := flag.String("json", "", tooltext.Text("h.7299c956bbb9"))
 	flag.Parse()
 
 	index := loadSymbolIndex(*symbols)
@@ -184,18 +185,18 @@ func scanFile(path, file, module string, wanted map[uint16]cell, index symbolInd
 
 // actionRow 是一種生命週期動作的處置。
 type actionRow struct {
-	Action  string   `json:"action"`
-	Symbol  string   `json:"symbol"`
-	Meaning string   `json:"meaning"`
-	Sites   int      `json:"sites"`
-	Wired   bool     `json:"wired"`
+	Action  string `json:"action"`
+	Symbol  string `json:"symbol"`
+	Meaning string `json:"meaning"`
+	Sites   int    `json:"sites"`
+	Wired   bool   `json:"wired"`
 	// Used 是「game-pack 真的有東西會觸發它」。⚠ 和 `Wired` 分開問：
 	// 規則層發得出這個動作（能力）不等於現在有哪一段劇情會發（有沒有用到）。
 	// 混成一格會讓「寫了但沒人呼叫」看起來像做完了。
-	Used     bool    `json:"used"`
-	UsedNote string  `json:"used_note,omitempty"`
-	RemakeBy string  `json:"remake_by,omitempty"`
-	Values  []int    `json:"values,omitempty"`
+	Used     bool     `json:"used"`
+	UsedNote string   `json:"used_note,omitempty"`
+	RemakeBy string   `json:"remake_by,omitempty"`
+	Values   []int    `json:"values,omitempty"`
 	Routines []string `json:"routines,omitempty"`
 }
 
@@ -217,10 +218,10 @@ var remakeCounterpart = map[string]struct {
 	action string
 	by     string
 }{
-	"select-track": {"play", "`State.requestMusicForCurrentBlock`（game-pack 的 music binding）"},
-	"load-track":   {"play", "同上：remake 的 `TrackID` 就是曲目，載入由 adapter 負責"},
-	"stop-track":   {"stop", "`State.ToggleMusicSwitch`（Ctrl+O）：關掉時 `stopMusic` 發 `stop`"},
-	"music-switch": {"stop", "同上；開關的「開」由一般的選曲表達"},
+	"select-track": {"play", tooltext.Text("h.9be517378512")},
+	"load-track":   {"play", tooltext.Text("h.8aa109986bc4")},
+	"stop-track":   {"stop", tooltext.Text("h.b6da1e70452c")},
+	"music-switch": {"stop", tooltext.Text("h.48b913622502")},
 }
 
 // playerCanStopMusic 問「玩家真的按得到停止嗎」。
@@ -270,8 +271,8 @@ func buildReport(sites []site, byAction map[string][]site, emitted map[string]bo
 			case "stop":
 				row.Used = stopUsed
 				if !stopUsed {
-					row.UsedNote = "規則層要有 `ToggleMusicSwitch`，前端要把它綁到按鍵上；" +
-						"缺一個玩家就按不到"
+					row.UsedNote = tooltext.Text("h.a9c802f9ce36") +
+						tooltext.Text("h.c734a1201fc8")
 				}
 			default:
 				row.Used = row.Wired
@@ -280,7 +281,7 @@ func buildReport(sites []site, byAction map[string][]site, emitted map[string]bo
 		// ⚠ 原作**一處都沒寫**的格子不算待辦：沒有那個動作就沒有要接的東西。
 		if row.Sites == 0 {
 			row.Wired, row.Used = true, true
-			row.RemakeBy = "原作一處都沒寫到這一格"
+			row.RemakeBy = tooltext.Text("h.f8966e9410e2")
 		}
 		if row.Wired {
 			doc.Wired++
@@ -299,23 +300,22 @@ func buildReport(sites []site, byAction map[string][]site, emitted map[string]bo
 
 func renderMarkdown(doc reportDoc, byAction map[string][]site) string {
 	var out strings.Builder
-	out.WriteString("# 原機音訊的播放生命週期：原作有幾種動作，remake 對上幾種\n\n")
-	out.WriteString("由 `cmd/audio-lifecycle-audit` 產生，不要手改。\n\n")
-	out.WriteString("`cmd/dseg-writers` 盤的是**分母**（誰決定什麼時候該響）；這一份把那些寫入點按" +
-		"**生命週期動作**分類，再拿去對 remake 真的會發出來的動作。差額就是待辦。\n\n")
-	out.WriteString("⚠ **這是 PC-98 的版面**，名字取自 Borland 除錯符號。DOS 版沒有符號，" +
-		"位址不能直接套（spec 1187）。\n\n")
-	out.WriteString("⚠ 位元組直掃，不走 far-call 對照表——表比實際少，而**下界看起來和全集一樣合理**。" +
-		"代價是偽陽性，所以每一處都印出所屬常式讓人看得出合不合理。\n\n")
-	fmt.Fprintf(&out, "remake 規則層目前發得出來的動作：`%s`\n\n",
-		strings.Join(doc.Emitted, "`、`"))
-	out.WriteString("⚠ **「發得出來」與「玩家碰得到」是兩件事**，分兩欄問：規則層有這個動作是**能力**，" +
-		"實際有沒有東西會觸發它是**有沒有用到**。混成一格會讓「寫了但沒人呼叫」看起來像做完了。\n\n")
-	out.WriteString("⚠ 「停止」不是劇情資料。原作沒有「這一段不放音樂」這種宣告——派曲常式" +
-		"（`sub_18AA7`）查不到就 `ret`，音樂繼續放。**唯一**會停的是玩家把音樂關掉" +
-		"（`MUSICSW`，Ctrl+O），所以那一欄問的是「按鍵綁上去了沒」，不是「pack 寫了沒」" +
+	out.WriteString(tooltext.Text("h.0bfb3ba682c4"))
+	out.WriteString(tooltext.Text("h.d219533ee3a9"))
+	out.WriteString(tooltext.Text("h.a536125fe2f4") +
+		tooltext.Text("h.5f992d4f0d5c"))
+	out.WriteString(tooltext.Text("h.37abc71d59cc") +
+		tooltext.Text("h.9e79f707b264"))
+	out.WriteString(tooltext.Text("h.805ad7b6ee0e") +
+		tooltext.Text("h.f66564471c5c"))
+	fmt.Fprint(&out, tooltext.Format("h.ac2fd653402c", strings.Join(doc.Emitted, "`、`")))
+	out.WriteString(tooltext.Text("h.e1d8e22f4409") +
+		tooltext.Text("h.3b9ba87ff577"))
+	out.WriteString(tooltext.Text("h.eff4e3ffb727") +
+		tooltext.Text("h.325d2cd3a26e") +
+		tooltext.Text("h.726d3de930e6") +
 		"（spec 1192）。\n\n")
-	fmt.Fprintf(&out, "| 動作 | 格 | 意思 | 原作寫入處 | 規則層發得出來 | 玩家碰得到 | 由誰負責 |\n"+
+	fmt.Fprint(&out, tooltext.Text("h.97409a55249f")+
 		"|---|---|---|---:|---|---|---|\n")
 	for _, row := range doc.Actions {
 		mark, used := "—", "—"
@@ -330,22 +330,22 @@ func renderMarkdown(doc reportDoc, byAction map[string][]site) string {
 		fmt.Fprintf(&out, "| `%s` | `%s` | %s | %d | %s | %s | %s |\n",
 			row.Action, row.Symbol, row.Meaning, row.Sites, mark, used, row.RemakeBy)
 	}
-	fmt.Fprintf(&out, "\n合計 %d 處寫入、%d 種動作：規則層發得出 **%d** 種，"+
-		"玩家真的碰得到 **%d** 種。\n\n",
+	fmt.Fprintf(&out, tooltext.Text("h.9361c4d2c3de")+
+		tooltext.Text("h.311e5905eb51"),
 		doc.Sites, len(doc.Actions), doc.Wired, doc.Used)
 
-	out.WriteString("## 不在這張表裡的三個名字\n\n")
+	out.WriteString(tooltext.Text("h.85049007ca2b"))
 	out.WriteString("`SOUNDHALT`（`4838h`）、`SOUNDOFF`（`483Ah`）、`SOUNDON`（`483Ch`）" +
-		"看起來像三格音訊狀態，**但它們不是狀態**：那是 `SOUNDFX` 的選擇子常數，" +
-		"和 `CASTFX`…`CRASHFX` 排在資料段同一張表裡，值分別寫死成 `255`／`0`／`1`，" +
-		"全程式一處都沒有寫入。\n\n")
-	out.WriteString("⚠ 這一支本來把它們當狀態格掃，掃出 0 處寫入，然後照「原作沒寫到就不算待辦」" +
-		"的規則印成 ✅ ——**三個假零被當成三項做完的工作**。三個相鄰符號同時掃出零，" +
-		"本身就該當成模型錯了的訊號，不是結論。選擇子的身分與解碼歸 `internal/pc98sfx`；" +
-		"玩家關音效走的是 `SOUNDTYPE := 2`（Ctrl+S），`SOUNDFX` 開頭就擋掉，" +
-		"和音樂開關互不影響。\n\n")
+		tooltext.Text("h.3e47983cee35") +
+		tooltext.Text("h.a403a620b84e") +
+		tooltext.Text("h.a30fbecf7454"))
+	out.WriteString(tooltext.Text("h.85fb8446978c") +
+		tooltext.Text("h.637f9daebe30") +
+		tooltext.Text("h.6108a81c26af") +
+		tooltext.Text("h.0d13e6c24112") +
+		tooltext.Text("h.2b25e85e87d8"))
 
-	out.WriteString("## 逐處\n\n| 檔案 | 常式 | 位移 | 格 | 形式 | 值 |\n|---|---|---|---|---|---|\n")
+	out.WriteString(tooltext.Text("h.9ef47d96e206"))
 	for _, item := range cells {
 		for _, one := range byAction[item.Action] {
 			value := "—"

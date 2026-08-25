@@ -27,6 +27,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -47,8 +48,8 @@ type site struct {
 }
 
 func main() {
-	imagePath := flag.String("image", "curseoftheazurebonds.zip", "原版 image ZIP")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	imagePath := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.79f855c8b433"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*imagePath)
@@ -86,12 +87,12 @@ func main() {
 	fixedBlocks := map[string]bool{}
 	for _, item := range sites {
 		switch item.kind {
-		case "固定區塊":
+		case tooltext.Text("h.77507364a169"):
 			fixed++
 			fixedBlocks[fmt.Sprintf("%s#%d", item.member, item.payload)] = true
-		case "隨機":
+		case tooltext.Text("h.3941bb44df5c"):
 			random++
-		case "不給物品":
+		case tooltext.Text("h.64e4db8efc50"):
 			none++
 		default:
 			dynamic++
@@ -102,31 +103,31 @@ func main() {
 	}
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 原版在哪裡發寶物：`27h TREASURE` 逐處盤點\n\n")
-	fmt.Fprintf(&report, "由 `cmd/ecl-treasure-census` 產生，不要手改。分類依據見 spec 1087 的 `27h` handler。\n\n")
-	fmt.Fprintf(&report, "⚠ 這是**分母**：它說原作總共會在幾個地方發寶物，不是 remake 發對了幾處。"+
-		"⚠ 只數靜態追得到的發放點，所以是**下界**。\n\n")
-	fmt.Fprintf(&report, "| 分類 | 處數 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| **發放點合計** | **%d** |\n", len(sites))
-	fmt.Fprintf(&report, "| 固定物品區塊（`n < 80h`）| %d |\n", fixed)
-	fmt.Fprintf(&report, "| 　其中相異的 `ITEM<章>` 區塊 | %d |\n", len(fixedBlocks))
-	fmt.Fprintf(&report, "| 隨機生成（`n >= 80h`）| %d |\n", random)
-	fmt.Fprintf(&report, "| 不給物品（`n = 0FFh`）| %d |\n", none)
-	fmt.Fprintf(&report, "| `n` 來自記憶體、靜態看不出來 | %d |\n", dynamic)
-	fmt.Fprintf(&report, "| 有帶貨幣／寶石池的 | %d |\n\n", withMoney)
+	fmt.Fprint(&report, tooltext.Format("h.4e6bdfcbfd87"))
+	fmt.Fprint(&report, tooltext.Format("h.c1ae1cbd9d02"))
+	fmt.Fprint(&report, tooltext.Text("h.57bcbbd61eed")+
+		tooltext.Text("h.d1f38f832155"))
+	fmt.Fprint(&report, tooltext.Format("h.0eff7af55886"))
+	fmt.Fprint(&report, tooltext.Format("h.7872c79e9548", len(sites)))
+	fmt.Fprint(&report, tooltext.Format("h.7c6b37f45270", fixed))
+	fmt.Fprint(&report, tooltext.Format("h.834f66664793", len(fixedBlocks)))
+	fmt.Fprint(&report, tooltext.Format("h.651e662f3007", random))
+	fmt.Fprint(&report, tooltext.Format("h.7acfd3a53f4a", none))
+	fmt.Fprint(&report, tooltext.Format("h.ff7d418f0d40", dynamic))
+	fmt.Fprint(&report, tooltext.Format("h.8224f938c4bd", withMoney))
 
-	fmt.Fprintf(&report, "| ECL 檔 | 段 | 位移 | 物品 | 帶錢 |\n|---|---:|---:|---|---|\n")
+	fmt.Fprint(&report, tooltext.Format("h.8077481925b6"))
 	for _, item := range sites {
 		detail := item.kind
 		switch item.kind {
-		case "固定區塊":
-			detail = fmt.Sprintf("固定區塊 %d", item.payload)
-		case "隨機":
-			detail = fmt.Sprintf("隨機 %d 件", item.payload)
+		case tooltext.Text("h.77507364a169"):
+			detail = tooltext.Format("h.bb934e321868", item.payload)
+		case tooltext.Text("h.3941bb44df5c"):
+			detail = tooltext.Format("h.aed4460fb32d", item.payload)
 		}
 		money := "—"
 		if item.money {
-			money = "是"
+			money = tooltext.Text("h.b5141d3d19e9")
 		}
 		fmt.Fprintf(&report, "| `%s` | `0x%02X` | `%04Xh` | %s | %s |\n",
 			item.member, item.block, item.offset, detail, money)
@@ -162,16 +163,16 @@ func scan(member string, block uint8, data []byte) []site {
 			continue
 		}
 		seen[instruction.Offset] = true
-		item := site{member: member, block: block, offset: instruction.Offset, kind: "動態"}
+		item := site{member: member, block: block, offset: instruction.Offset, kind: tooltext.Text("h.fcca5a4d1c91")}
 		if len(instruction.Operands) >= 8 {
 			if value, ok := constantOperand(instruction.Operands[7]); ok {
 				switch {
 				case value == 0xFF:
-					item.kind = "不給物品"
+					item.kind = tooltext.Text("h.64e4db8efc50")
 				case value >= 0x80:
-					item.kind, item.payload = "隨機", int(value-0x80)
+					item.kind, item.payload = tooltext.Text("h.3941bb44df5c"), int(value-0x80)
 				default:
-					item.kind, item.payload = "固定區塊", int(value)
+					item.kind, item.payload = tooltext.Text("h.77507364a169"), int(value)
 				}
 			}
 			// 貨幣／寶石池是**第 2..7 個**運算元，不是前六個。

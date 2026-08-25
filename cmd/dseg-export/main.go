@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 )
@@ -87,13 +88,13 @@ var raceSizes = map[int]int{1: 1, 2: 2, 3: 1, 4: 2, 5: 1, 6: 2, 7: 2}
 // 這也是程式碼裡的 case 分支，不是資料段的表。
 // 六個位置依序是力、智、睿、敏、體、魅；地精／半精靈／人類走 else，全 0。
 var raceAbilityAdjustments = map[int][6]int{
-	1: {0, 0, 0, 0, 1, -1},  // 矮人
-	2: {0, 0, 0, 1, -1, 0},  // 精靈
-	3: {},                   // 地精
-	4: {},                   // 半精靈
-	5: {-1, 0, 0, 1, 0, 0},  // 半身人
-	6: {1, 0, 0, 0, 1, -2},  // 半獸人
-	7: {},                   // 人類
+	1: {0, 0, 0, 0, 1, -1}, // 矮人
+	2: {0, 0, 0, 1, -1, 0}, // 精靈
+	3: {},                  // 地精
+	4: {},                  // 半精靈
+	5: {-1, 0, 0, 1, 0, 0}, // 半身人
+	6: {1, 0, 0, 0, 1, -2}, // 半獸人
+	7: {},                  // 人類
 }
 
 type abilityRange struct {
@@ -122,14 +123,14 @@ type raceRules struct {
 	// Size 是 +144h：1 小體型、2 中體型（spec 1093 §七）。
 	Size int `json:"size"`
 	// AbilityAdjustments 依力、智、睿、敏、體、魅六個位置（spec 1103 §三）。
-	AbilityAdjustments []int         `json:"ability_adjustments"`
-	StrengthMale    strengthLimits `json:"strength_male"`
-	StrengthFemale  strengthLimits `json:"strength_female"`
-	Intelligence    abilityRange   `json:"intelligence"`
-	Wisdom          abilityRange   `json:"wisdom"`
-	Dexterity       abilityRange   `json:"dexterity"`
-	Constitution    abilityRange   `json:"constitution"`
-	Charisma        abilityRange   `json:"charisma"`
+	AbilityAdjustments []int          `json:"ability_adjustments"`
+	StrengthMale       strengthLimits `json:"strength_male"`
+	StrengthFemale     strengthLimits `json:"strength_female"`
+	Intelligence       abilityRange   `json:"intelligence"`
+	Wisdom             abilityRange   `json:"wisdom"`
+	Dexterity          abilityRange   `json:"dexterity"`
+	Constitution       abilityRange   `json:"constitution"`
+	Charisma           abilityRange   `json:"charisma"`
 	// ClassChoices 是「選單第 n 項 → 職業組合編號」的對照（spec 1093）。
 	// 用 []int 而不是 []uint8：encoding/json 會把 []uint8 編成 base64。
 	ClassChoices []int         `json:"class_choices"`
@@ -231,8 +232,8 @@ var (
 
 func main() {
 	dsegPath := flag.String("dseg", "workplace/re-sweep/dos/dseg/dos-dseg-dseg.bin",
-		"常駐資料段的原始 dump")
-	output := flag.String("output", "", "輸出 JSON 路徑；空字串印到 stdout")
+		tooltext.Text("h.721c8d5ef615"))
+	output := flag.String("output", "", tooltext.Text("h.e114c26aade1"))
 	flag.Parse()
 
 	blob, err := os.ReadFile(*dsegPath)
@@ -245,7 +246,7 @@ func main() {
 	}
 
 	rules := characterRules{
-		Source: "DOS START.EXE 常駐資料段",
+		Source: tooltext.Text("h.1040debcb867"),
 		Spec:   "docs/spec/1099-character-creation-data-tables.md, 1101, 1102",
 	}
 	for race := firstRace; race <= lastRace; race++ {

@@ -28,6 +28,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -69,7 +70,9 @@ type cellResult struct {
 }
 
 // played 為真代表這一格真的演出了字。
-func (c cellResult) played() bool { return c.language == "中文" || c.language == "原文" }
+func (c cellResult) played() bool {
+	return c.language == tooltext.Text("h.72726d8818f6") || c.language == tooltext.Text("h.354b28c85333")
+}
 
 type blockSweep struct {
 	id       string
@@ -96,16 +99,16 @@ type corpus struct {
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
-	out := flag.String("out", "docs/audit/cell-sweep.md", "輸出的 markdown")
+	out := flag.String("out", "docs/audit/cell-sweep.md", tooltext.Text("h.aff4479ab1b9"))
 	// ★ 機器可讀的分母。 走訪可達性要拿「實測試過哪些索引」當分母，
 	// 兩邊各自重算一定會漂——第一版就是這樣得到 299 而實測是 250，
 	// **兩個數都自洽，放在一起就是假的覆蓋率**。所以分母由這一支輸出，
 	// `cmd/cell-reachability` 只消費、不重算。
-	indexJSON := flag.String("index-json", "", "把「逐格試過哪些索引」寫成 JSON（可達性盤點用）")
-	seeds := flag.Int("seeds", 8, "演不出來時要換幾顆 ECL 亂數種子再試")
-	only := flag.String("only", "", "只掃這一段（`ECL4/0x25`）；留白就掃全部")
+	indexJSON := flag.String("index-json", "", tooltext.Text("h.5a44f43df721"))
+	seeds := flag.Int("seeds", 8, tooltext.Text("h.1686177b156b"))
+	only := flag.String("only", "", tooltext.Text("h.3151e083a021"))
 	snapshots := flag.String("snapshots", "workplace/campaign-frames/snapshots",
-		"主線段內快照目錄；冷進不去的段改從這裡進（可省略）")
+		tooltext.Text("h.72010d5e943b"))
 	flag.Parse()
 	snapshotDir = *snapshots
 
@@ -117,7 +120,7 @@ func main() {
 	if *only != "" {
 		picked, ok := segment.Lookup(*only)
 		if !ok {
-			log.Fatalf("註冊表沒有 %q", *only)
+			log.Fatal(tooltext.Format("h.6728cf22b7af", *only))
 		}
 		segments = []segment.Segment{picked}
 	}
@@ -134,9 +137,7 @@ func main() {
 		log.Fatal(err)
 	}
 	counts := summarise(sweeps)
-	fmt.Printf("block=%d 逐格試過=%d 中文=%d 落回原文=%d 沒演出來=%d → %s\n",
-		counts["block"], counts["試過"], counts["中文"], counts["原文"],
-		counts["沒演出來"], *out)
+	fmt.Print(tooltext.Format("h.1db1f23a7ba1", counts["block"], counts[tooltext.Text("h.9c9a4e85c872")], counts[tooltext.Text("h.72726d8818f6")], counts[tooltext.Text("h.354b28c85333")], counts[tooltext.Text("h.0ff689f870c6")], *out))
 }
 
 func loadCorpus(imagePath, localePath string, seeds int) (corpus, error) {
@@ -151,15 +152,15 @@ func sweepBlock(data corpus, seg segment.Segment) blockSweep {
 	sweep := blockSweep{id: seg.ID, eclBlock: seg.Block}
 	payload, ok := data.Blocks[seg.Block]
 	if !ok {
-		sweep.note = "image 裡沒有這個 block"
+		sweep.note = tooltext.Text("h.488ecde7b0b1")
 		return sweep
 	}
 	dispatch := eclcells.Analyze(payload)
 	if !dispatch.Found {
-		sweep.note = "沒有以地形碼分派的每格事件"
+		sweep.note = tooltext.Text("h.c58d07204221")
 		if dispatch.TableForm {
-			sweep.note += "；改用 `GETTABLE` ＋ `ON GOTO` 查表分派——那一種解得出來，" +
-				"但不在本工具的範圍內，見 `cmd/ecl-cell-events`"
+			sweep.note += tooltext.Text("h.2a24418bbe10") +
+				tooltext.Text("h.dc050ed3e9c0")
 		}
 		return sweep
 	}
@@ -182,13 +183,13 @@ func sweepBlock(data corpus, seg segment.Segment) blockSweep {
 		}
 	}
 	if !hasCatalog {
-		sweep.note = fmt.Sprintf("讀不到 GEO%d", sweep.geoSet)
+		sweep.note = tooltext.Format("h.39cb0957d471", sweep.geoSet)
 		return sweep
 	}
 	// 先確認這一段進得去。進不去就整段記一次原因——每一格重複同一句只是雜訊，
 	// 而且會讓「沒演出來」的數字被一個進不去的段灌爆。
 	if _, err := enterDungeon(data, seg); err != nil {
-		sweep.note = "進不去：" + err.Error()
+		sweep.note = tooltext.Text("h.1e5d9d1f7560") + err.Error()
 		return sweep
 	}
 	// ⚠ **不要寫進 `note`**：`note` 的意思是「這一段掃不了」，渲染時看到它就
@@ -203,7 +204,7 @@ func sweepBlock(data corpus, seg segment.Segment) blockSweep {
 		cell, ok := firstCell[index]
 		if !ok {
 			sweep.cells = append(sweep.cells, cellResult{
-				index: index, note: "地圖上沒有這個地形碼",
+				index: index, note: tooltext.Text("h.5e63f0393483"),
 			})
 			continue
 		}
@@ -271,19 +272,19 @@ func standOnCell(data corpus, seg segment.Segment, index, x, y int, roof uint8,
 		}
 	}
 	result.language = "—"
-	result.note = "沒演出來"
+	result.note = tooltext.Text("h.0ff689f870c6")
 	if lastErr != nil {
-		result.note = "跑不動：" + lastErr.Error()
+		result.note = tooltext.Text("h.883dcdb58171") + lastErr.Error()
 	}
 	return result
 }
 
 // silentShapes 是 `silentShape` 回得出來的四種形狀，照報表的順序。
 var silentShapes = []string{
-	"守衛比的是移動前快照（這一支是把隊伍放上去，不是走過去）",
-	"擺好的旗標被該段自己的前導覆蓋",
-	"擷取到的守衛跨過了真正的處理常式（開頭就有 EXIT）",
-	"處理常式本來就不講話",
+	tooltext.Text("h.dda6ee401ff2"),
+	tooltext.Text("h.fa920a07b092"),
+	tooltext.Text("h.59a613ab8858"),
+	tooltext.Text("h.cace6089a166"),
 }
 
 // silentShape 把「沒演出來」歸到 spec 的四種形狀之一。
@@ -300,16 +301,16 @@ func silentShape(guard string) string {
 		return ""
 	}
 	if strings.Contains(guard, "4BF0") || strings.Contains(guard, "4BF1") {
-		return "守衛比的是移動前快照（這一支是把隊伍放上去，不是走過去）"
+		return tooltext.Text("h.dda6ee401ff2")
 	}
 	compare := strings.Index(guard, "COMPARE")
 	if compare < 0 {
-		return "處理常式本來就不講話"
+		return tooltext.Text("h.cace6089a166")
 	}
 	if exit := strings.Index(guard, "EXIT"); exit >= 0 && exit < compare {
-		return "擷取到的守衛跨過了真正的處理常式（開頭就有 EXIT）"
+		return tooltext.Text("h.59a613ab8858")
 	}
-	return "擺好的旗標被該段自己的前導覆蓋"
+	return tooltext.Text("h.fa920a07b092")
 }
 
 // maxGuardPresetCells 是一次最多幫幾個守衛格子擺前置狀態。守衛裡比對的格子
@@ -397,7 +398,7 @@ func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
 		if fromSnapshot, snapErr := enterFromSnapshot(data, seg); snapErr == nil {
 			return fromSnapshot, nil
 		}
-		return nil, fmt.Errorf("進 %s：%w", seg.ID, err)
+		return nil, tooltext.Errorf("h.8e8a76bdd692", seg.ID, err)
 	}
 	// ⚠ 盤點用的隊伍一律撐起來：有的段一進去就開打（古熔岩洞的伏擊），臨時建的
 	// 一名角色會死在入口，後面一格都盤點不到。**只給盤點用**。
@@ -406,14 +407,13 @@ func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
 	}
 	trail, err := settleToDungeon(&state, 16)
 	if err != nil {
-		return nil, fmt.Errorf("%s 的入口：%w", seg.ID, err)
+		return nil, tooltext.Errorf("h.be4cbbc76969", seg.ID, err)
 	}
 	if state.Mode != game.ModeDungeon {
 		if fromSnapshot, snapErr := enterFromSnapshot(data, seg); snapErr == nil {
 			return fromSnapshot, nil
 		}
-		return nil, fmt.Errorf("進 %s 之後停在%s，不是地城；推進軌跡：%s",
-			seg.ID, modeName(state.Mode), strings.Join(trail, " → "))
+		return nil, tooltext.Errorf("h.5e90960fec28", seg.ID, modeName(state.Mode), strings.Join(trail, " → "))
 	}
 	return &state, nil
 }
@@ -428,7 +428,7 @@ func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
 // 報表要標明那一段是從快照進的，不要混在一起讀。
 func enterFromSnapshot(data corpus, seg segment.Segment) (*game.State, error) {
 	if snapshotDir == "" {
-		return nil, fmt.Errorf("沒有指定快照目錄")
+		return nil, tooltext.Errorf("h.168af957deb3")
 	}
 	path := filepath.Join(snapshotDir, fmt.Sprintf("inside-block-%02X.json", seg.Block))
 	state, err := data.NewParty()
@@ -446,10 +446,10 @@ func enterFromSnapshot(data corpus, seg segment.Segment) (*game.State, error) {
 		return nil, err
 	}
 	if state.Mode != game.ModeDungeon {
-		return nil, fmt.Errorf("快照讀回來停在%s", modeName(state.Mode))
+		return nil, tooltext.Errorf("h.c44dec34df4b", modeName(state.Mode))
 	}
 	if block, ok := state.CurrentECLBlockID(); !ok || block != seg.Block {
-		return nil, fmt.Errorf("快照的段是 0x%02X，要的是 0x%02X", block, seg.Block)
+		return nil, tooltext.Errorf("h.25eaa92efb12", block, seg.Block)
 	}
 	return &state, nil
 }
@@ -468,9 +468,9 @@ func languageOf(text string) string {
 	}
 	switch {
 	case hasHan:
-		return "中文"
+		return tooltext.Text("h.72726d8818f6")
 	case hasLatin:
-		return "原文"
+		return tooltext.Text("h.354b28c85333")
 	}
 	return "—"
 }
@@ -483,52 +483,52 @@ func summarise(sweeps []blockSweep) map[string]int {
 		}
 		counts["block"]++
 		for _, cell := range sweep.cells {
-			if cell.note == "地圖上沒有這個地形碼" {
-				counts["沒有地形碼"]++
+			if cell.note == tooltext.Text("h.5e63f0393483") {
+				counts[tooltext.Text("h.cfe926ec77bf")]++
 				continue
 			}
-			counts["試過"]++
+			counts[tooltext.Text("h.9c9a4e85c872")]++
 			switch {
-			case cell.language == "中文":
-				counts["中文"]++
-			case cell.language == "原文":
-				counts["原文"]++
+			case cell.language == tooltext.Text("h.72726d8818f6"):
+				counts[tooltext.Text("h.72726d8818f6")]++
+			case cell.language == tooltext.Text("h.354b28c85333"):
+				counts[tooltext.Text("h.354b28c85333")]++
 			default:
-				counts["沒演出來"]++
+				counts[tooltext.Text("h.0ff689f870c6")]++
 				if shape := silentShape(cell.guard); shape != "" {
-					counts["沒演出來："+shape]++
+					counts[tooltext.Text("h.6b82ea5a970c")+shape]++
 				} else {
-					counts["沒演出來：還沒歸類"]++
+					counts[tooltext.Text("h.3dbc2b54edb2")]++
 				}
 			}
 			if cell.search {
-				counts["要搜尋"]++
+				counts[tooltext.Text("h.2028ba65dbb5")]++
 			}
 			if cell.facing != 0 {
-				counts["要轉向"]++
+				counts[tooltext.Text("h.8047ab192f95")]++
 			}
 			if cell.seed > 1 {
-				counts["要換種子"]++
+				counts[tooltext.Text("h.f5e3d0b240ef")]++
 			}
 			if cell.precondition != "" {
-				counts["要前置"]++
+				counts[tooltext.Text("h.aea4a28d595c")]++
 			}
 			// 重訪只在「有演出來」的格子上才有意義。
 			if cell.played() && cell.outcomes > 1 {
-				counts["換種子演出不同"]++
+				counts[tooltext.Text("h.1db93ca47c3e")]++
 			}
 			if cell.played() {
 				switch cell.revisitKind {
-				case "只演一次":
-					counts["重訪：只演一次"]++
-				case "同":
-					counts["重訪：每次都演"]++
-				case "不同":
-					counts["重訪：演出別的"]++
-				case "推不回地城":
-					counts["重訪：推不回地城"]++
+				case tooltext.Text("h.82619569592c"):
+					counts[tooltext.Text("h.dccfd35e55fd")]++
+				case tooltext.Text("h.4a7e9a926adb"):
+					counts[tooltext.Text("h.0bea72afb1f4")]++
+				case tooltext.Text("h.f2632a784b0d"):
+					counts[tooltext.Text("h.27d7edd5bc39")]++
+				case tooltext.Text("h.a93b5a585c5f"):
+					counts[tooltext.Text("h.4d4546c37c7c")]++
 				default:
-					counts["重訪：跑不動"]++
+					counts[tooltext.Text("h.4523332d1adc")]++
 				}
 			}
 		}
@@ -538,25 +538,25 @@ func summarise(sweeps []blockSweep) map[string]int {
 
 func render(sweeps []blockSweep) string {
 	var out strings.Builder
-	out.WriteString("# 逐格實測（站上去真的演了什麼）\n\n" +
-		"由 `cmd/cell-sweep` 產生，不要手改。\n\n" +
-		"對每個有地形分派的 block、每一個分派索引，直接進段、把隊伍放到那個地形碼\n" +
-		"的第一格上、跑一次地城生命週期，記下玩家真的看到的字。對照表\n" +
-		"（`docs/audit/ecl-cell-events.md`）只讀 bytecode，回答「會跳到哪支處理\n" +
-		"常式」；這一份回答「跳過去之後演不演得出來、是不是中文」。\n\n" +
-		"⚠ 每一格都重新進段，once-only 旗標不互相污染。\n" +
-		"⚠ 盤點用的隊伍被撐起來過，好讓入口戰鬥不擋住盤點。**「演得出來」不等於\n" +
-		"「正常隊伍走得到」**——可達性由主線分段測試負責。\n" +
-		"⚠ 「前置」欄是**第二次站上去**的結果：守衛裡 `COMPARE <格子> <值> / IF <op> /\n" +
-		"EXIT` 那幾條拆得出來，把格子設成避開 `EXIT` 的值再站一次。演得出來就代表\n" +
-		"這一格**有接、只是缺前置劇情**（spec 1177）。⚠ 那是**滿足守衛**不是重現劇情，\n" +
-		"擺出來的狀態不保證正常玩下來會有。\n" +
-		"⚠ 剩下的「沒演出來」四種形狀，都是**盤點的限制**不是 remake 的缺口：\n" +
-		"（1）守衛比的是移動前快照（`4BF0`／`4BF1`）——這支是把隊伍放上去不是走過去；\n" +
-		"（2）擺好的旗標被該段自己的前導覆蓋（`4C01` 這一類）；\n" +
-		"（3）擷取到的守衛跨過了真正的處理常式（開頭就有 `EXIT` 的那幾格）；\n" +
-		"（4）處理常式本來就不講話（`PICTURE FF` 只是把圖關掉）。\n" +
-		"⚠ 索引 0 是「沒有事件的地面」，不列。\n\n")
+	out.WriteString(tooltext.Text("h.733e35bac38c") +
+		tooltext.Text("h.1c1026e5ffe8") +
+		tooltext.Text("h.37470b1b1a1b") +
+		tooltext.Text("h.c6c0cb21fd20") +
+		tooltext.Text("h.88dc906ad62e") +
+		tooltext.Text("h.51cc7aab3588") +
+		tooltext.Text("h.7163a81533a2") +
+		tooltext.Text("h.6968e4d36c11") +
+		tooltext.Text("h.7764430013eb") +
+		tooltext.Text("h.5efd81768d99") +
+		tooltext.Text("h.f9f834c38cea") +
+		tooltext.Text("h.0e110e5eab83") +
+		tooltext.Text("h.99e223cfc96a") +
+		tooltext.Text("h.a6a3345c3d0b") +
+		tooltext.Text("h.82b39604fd54") +
+		tooltext.Text("h.d2d470c863d5") +
+		tooltext.Text("h.8453f541cb15") +
+		tooltext.Text("h.8cd4cbfa2e43") +
+		tooltext.Text("h.7123ad6aa2bb"))
 	for _, sweep := range sweeps {
 		out.WriteString(fmt.Sprintf("## `%s`\n\n", sweep.id))
 		if sweep.note != "" {
@@ -564,40 +564,39 @@ func render(sweeps []blockSweep) string {
 			continue
 		}
 		if sweep.fromSnapshot {
-			out.WriteString("⚠ **這一段是從主線的段內快照進的**（冷開一支隊伍走完入口會停在" +
-				"世界地圖，不是地城）。所以這一段的隊伍**帶著主線那一刻的旗標**，" +
-				"和其他段冷進的隊伍不是同一個起點——不要混在一起讀成「冷開就走得到」。\n\n")
+			out.WriteString(tooltext.Text("h.bbdc6360e91c") +
+				tooltext.Text("h.33894862d14d") +
+				tooltext.Text("h.ee5268c4e060"))
 		}
-		out.WriteString(fmt.Sprintf("地圖：`GEO%d/0x%02X`；索引 ＝ 地形碼 `& 0x%02X`\n\n",
-			sweep.geoSet, sweep.geoBlock, sweep.mask))
-		out.WriteString("| 索引 | 格子 | 地形碼 | 條件 | 語言 | 重訪 | 演出來的第一句／沒演的守衛 |\n")
+		out.WriteString(tooltext.Format("h.3e15dad6efdd", sweep.geoSet, sweep.geoBlock, sweep.mask))
+		out.WriteString(tooltext.Text("h.af0e128b1082"))
 		out.WriteString("|---:|---|---|---|---|---|---|\n")
 		for _, cell := range sweep.cells {
-			if cell.note == "地圖上沒有這個地形碼" {
+			if cell.note == tooltext.Text("h.5e63f0393483") {
 				out.WriteString(fmt.Sprintf("| %d | — | — | — | — | %s |\n",
 					cell.index, cell.note))
 				continue
 			}
 			extra := make([]string, 0, 3)
 			if cell.search {
-				extra = append(extra, "要搜尋")
+				extra = append(extra, tooltext.Text("h.2028ba65dbb5"))
 			}
 			if cell.facing != 0 {
-				extra = append(extra, "面向"+facingName(cell.facing))
+				extra = append(extra, tooltext.Text("h.2019f9645edc")+facingName(cell.facing))
 			}
 			if cell.seed > 1 {
-				extra = append(extra, fmt.Sprintf("第 %d 顆種子", cell.seed))
+				extra = append(extra, tooltext.Format("h.3668e46d5caa", cell.seed))
 			}
 			if cell.precondition != "" {
-				extra = append(extra, "前置 `"+cell.precondition+"`")
+				extra = append(extra, tooltext.Text("h.5c7e2bf7e64f")+cell.precondition+"`")
 			}
-			condition := "站上去"
+			condition := tooltext.Text("h.47b0a29e00eb")
 			if len(extra) > 0 {
 				condition = strings.Join(extra, "＋")
 			}
 			text := cell.note
 			if !cell.played() && cell.guard != "" {
-				text += "（守衛：`" + cell.guard + "`）"
+				text += tooltext.Text("h.53559cef3d6d") + cell.guard + "`）"
 			}
 			if cell.played() {
 				text = "「" + firstLine(cell.text) + "」"
@@ -605,7 +604,7 @@ func render(sweeps []blockSweep) string {
 					text += "（" + cell.note + "）"
 				}
 				if cell.precondition != "" {
-					text += "（守衛：`" + cell.guard + "`）"
+					text += tooltext.Text("h.53559cef3d6d") + cell.guard + "`）"
 				}
 			}
 			if !cell.played() {
@@ -615,8 +614,8 @@ func render(sweeps []blockSweep) string {
 			if !cell.played() || revisit == "" {
 				revisit = "—"
 			}
-			if revisit == "不同" {
-				revisit = "**不同**：" + firstLine(cell.revisit)
+			if revisit == tooltext.Text("h.f2632a784b0d") {
+				revisit = tooltext.Text("h.590f60558380") + firstLine(cell.revisit)
 			}
 			if cell.played() && cell.outcomes > 1 {
 				// ⚠ 兩種結果的**第一句可能一樣**（差在後面幾句：擲到的怪、
@@ -624,9 +623,9 @@ func render(sweeps []blockSweep) string {
 				// 讓人以為判定壞掉。
 				other := firstLine(cell.otherOutcome)
 				if other == firstLine(cell.text) {
-					other = "（差異在第一句之後）"
+					other = tooltext.Text("h.ccc8ad329481")
 				}
-				revisit += fmt.Sprintf("<br>骰子分歧 %d 種：%s", cell.outcomes, other)
+				revisit += tooltext.Format("h.b7e74bc63b91", cell.outcomes, other)
 			}
 			out.WriteString(fmt.Sprintf("| %d | `%s` | `%02X` | %s | %s | %s | %s |\n",
 				cell.index, cell.cell, cell.roof, condition, cell.language, revisit, text))
@@ -634,57 +633,52 @@ func render(sweeps []blockSweep) string {
 		out.WriteString("\n")
 	}
 	counts := summarise(sweeps)
-	out.WriteString("## 摘要\n\n| 項目 | 數 |\n|---|---:|\n")
-	out.WriteString(fmt.Sprintf("| 有地形分派的 block | %d |\n", counts["block"]))
-	out.WriteString(fmt.Sprintf("| 逐格試過的索引 | %d |\n", counts["試過"]))
-	out.WriteString(fmt.Sprintf("| 演出來是中文 | %d |\n", counts["中文"]))
-	out.WriteString(fmt.Sprintf("| 演出來落回原文 | %d |\n", counts["原文"]))
-	out.WriteString(fmt.Sprintf("| 沒演出來 | %d |\n", counts["沒演出來"]))
+	out.WriteString(tooltext.Text("h.6bbcc6239f03"))
+	out.WriteString(tooltext.Format("h.2b84e540005b", counts["block"]))
+	out.WriteString(tooltext.Format("h.413125d75db1", counts[tooltext.Text("h.9c9a4e85c872")]))
+	out.WriteString(tooltext.Format("h.7b4bfb3dbd00", counts[tooltext.Text("h.72726d8818f6")]))
+	out.WriteString(tooltext.Format("h.afbfaaf5cb13", counts[tooltext.Text("h.354b28c85333")]))
+	out.WriteString(tooltext.Format("h.efd4a0b96e7b", counts[tooltext.Text("h.0ff689f870c6")]))
 	for _, shape := range silentShapes {
-		out.WriteString(fmt.Sprintf("| 　其中「%s」| %d |\n", shape, counts["沒演出來："+shape]))
+		out.WriteString(tooltext.Format("h.16fbadb6337f", shape, counts[tooltext.Text("h.6b82ea5a970c")+shape]))
 	}
-	out.WriteString(fmt.Sprintf("| **　其中還沒歸類** | **%d** |\n",
-		counts["沒演出來：還沒歸類"]))
-	out.WriteString(fmt.Sprintf("| 其中要搜尋才演 | %d |\n", counts["要搜尋"]))
-	out.WriteString(fmt.Sprintf("| 其中要面對特定方向才演 | %d |\n", counts["要轉向"]))
-	out.WriteString(fmt.Sprintf("| 其中要換亂數種子才演 | %d |\n", counts["要換種子"]))
-	out.WriteString(fmt.Sprintf("| 其中要先擺好守衛的旗標才演 | %d |\n", counts["要前置"]))
-	out.WriteString(fmt.Sprintf("| 分派表有、地圖上沒有那個地形碼 | %d |\n",
-		counts["沒有地形碼"]))
-	out.WriteString("\n### 重訪：同一格再跑一次生命週期\n\n")
-	out.WriteString("★ 這一支本來每一格都**重新進段**（once-only 旗標會互相污染）。" +
-		"那個設計是對的，副作用是**第二次踏上同一格從來沒被觀察過**——" +
-		"而「全城市／全房間走訪」缺的分母之一正是重訪分支：原作大量用 " +
-		"`SAVE <旗標>` ＋ `IF <旗標>` 讓事件只演一次。\n\n")
-	out.WriteString("⚠ 「只演一次」**不是缺陷**：原作本來就有大量一次性事件。" +
-		"這裡給的是分母，不是待辦清單。\n\n")
-	out.WriteString("⚠ 量的是「同一格再跑一次生命週期」，**不是「走開再走回來」**。" +
-		"once-only 旗標的機制與移動無關，所以對那一類是準的；" +
-		"靠移動事件觸發的處理常式會被低估。**這是重訪的代理指標，不是重訪本身。**\n\n")
-	out.WriteString("⚠ 第二次**只看 `Message`**（新的敘述），不退回 `Prompt`。" +
-		"第一版退回 Prompt，於是 74 格被判成「演出別的字」——拆開來 53 格是" +
-		"「請按任意鍵繼續」、12 格是撿寶物的提示、5 格是地城 HUD，**真的有新敘述的只有 4 格**。" +
-		"退回 Prompt 會把 UI 文字算成劇情，分母灌水近二十倍。" +
-		"代價是把「旁白放在 Prompt 上」的那一類算成沒有新敘述 ⇒ **這一欄是下界**。\n\n")
-	out.WriteString("| 第二次的行為 | 數 |\n|---|---:|\n")
-	out.WriteString(fmt.Sprintf("| 只演一次（第二次沒有新敘述）| %d |\n", counts["重訪：只演一次"]))
-	out.WriteString(fmt.Sprintf("| 每次都演（第二次一樣）| %d |\n", counts["重訪：每次都演"]))
-	out.WriteString(fmt.Sprintf("| 第二次有**不同的敘述** | %d |\n", counts["重訪：演出別的"]))
-	out.WriteString(fmt.Sprintf("| 第一次之後推不回地城（量不到）| %d |\n",
-		counts["重訪：推不回地城"]))
-	out.WriteString(fmt.Sprintf("| 第二次跑不動 | %d |\n", counts["重訪：跑不動"]))
-	out.WriteString("\n### 失敗分支：換亂數種子會不會演出不同的敘述\n\n")
-	out.WriteString("★ 走訪缺的另一個分母。主掃描**找到第一顆演得出來的種子就回來**，" +
-		"所以豁免沒過／技能檢定失敗／遭遇表擲到別側那一半**結構上不會被看到**" +
-		"——報表是滿的，而那一半從來沒跑過。這裡把同一格、同一組條件換每一顆種子" +
-		"各站一次，數相異的敘述。\n\n")
-	out.WriteString("⚠ 這是「**換種子會不會演出不同的敘述**」，不是「有幾條失敗分支」。" +
-		"一格可能有三條分支而種子只打到兩條；也可能敘述相同而只有數值不同（傷害、金額）。" +
-		"⇒ **下界**，而且是「有沒有骰子分歧」的證據，不是分支數。\n\n")
-	out.WriteString(fmt.Sprintf("| 有內容的格子 | %d |\n|---|---:|\n",
-		counts["中文"]+counts["原文"]))
-	out.WriteString(fmt.Sprintf("| 其中換種子會演出**不同敘述**的 | %d |\n",
-		counts["換種子演出不同"]))
+	out.WriteString(tooltext.Format("h.b3502130a4b3", counts[tooltext.Text("h.3dbc2b54edb2")]))
+	out.WriteString(tooltext.Format("h.f3f415ce1b46", counts[tooltext.Text("h.2028ba65dbb5")]))
+	out.WriteString(tooltext.Format("h.92c00a5d3bbb", counts[tooltext.Text("h.8047ab192f95")]))
+	out.WriteString(tooltext.Format("h.e63caf827124", counts[tooltext.Text("h.f5e3d0b240ef")]))
+	out.WriteString(tooltext.Format("h.747efa696546", counts[tooltext.Text("h.aea4a28d595c")]))
+	out.WriteString(tooltext.Format("h.7017ae52195b", counts[tooltext.Text("h.cfe926ec77bf")]))
+	out.WriteString(tooltext.Text("h.a82214d20ded"))
+	out.WriteString(tooltext.Text("h.f9168c45c622") +
+		tooltext.Text("h.b02ab6211076") +
+		tooltext.Text("h.487481824449") +
+		tooltext.Text("h.3f429bf0a03b"))
+	out.WriteString(tooltext.Text("h.d282507df6f3") +
+		tooltext.Text("h.cc399f9c1e70"))
+	out.WriteString(tooltext.Text("h.078719e7005f") +
+		tooltext.Text("h.ffad29f86a64") +
+		tooltext.Text("h.6d61a1fc665b"))
+	out.WriteString(tooltext.Text("h.a50220beba0e") +
+		tooltext.Text("h.2a48f9abadd0") +
+		tooltext.Text("h.f1f6e4543c0f") +
+		tooltext.Text("h.3c5c59d5e5c6") +
+		tooltext.Text("h.f8639528c609"))
+	out.WriteString(tooltext.Text("h.25ce02601826"))
+	out.WriteString(tooltext.Format("h.3257b93d5caa", counts[tooltext.Text("h.dccfd35e55fd")]))
+	out.WriteString(tooltext.Format("h.24881ef9d582", counts[tooltext.Text("h.0bea72afb1f4")]))
+	out.WriteString(tooltext.Format("h.8f6d0eb96243", counts[tooltext.Text("h.27d7edd5bc39")]))
+	out.WriteString(tooltext.Format("h.e00e7042b328", counts[tooltext.Text("h.4d4546c37c7c")]))
+	out.WriteString(tooltext.Format("h.dc5fed61be76", counts[tooltext.Text("h.4523332d1adc")]))
+	out.WriteString(tooltext.Text("h.29dae100ad4c"))
+	out.WriteString(tooltext.Text("h.9fae3631b172") +
+		tooltext.Text("h.94dab993acc1") +
+		tooltext.Text("h.91e84460d026") +
+		tooltext.Text("h.c651cd0dc32b"))
+	out.WriteString(tooltext.Text("h.4eaa9664a68a") +
+		tooltext.Text("h.f4a5b679e388") +
+		tooltext.Text("h.5c498f734707"))
+	out.WriteString(tooltext.Format("h.1cd10c830cef", counts[tooltext.Text("h.72726d8818f6")]+counts[tooltext.Text("h.354b28c85333")]))
+	out.WriteString(tooltext.Format("h.cf4e5e0fd6c9", counts[tooltext.Text("h.1db93ca47c3e")]))
 	return out.String()
 }
 
@@ -692,13 +686,13 @@ func render(sweeps []blockSweep) string {
 func facingName(facing uint8) string {
 	switch facing / 2 {
 	case 0:
-		return "北"
+		return tooltext.Text("h.01bc01b32975")
 	case 1:
-		return "東"
+		return tooltext.Text("h.469e009b15a0")
 	case 2:
-		return "南"
+		return tooltext.Text("h.b2f94b103450")
 	case 3:
-		return "西"
+		return tooltext.Text("h.b9f0c815459c")
 	}
 	return "?"
 }
@@ -706,23 +700,23 @@ func facingName(facing uint8) string {
 func modeName(mode game.Mode) string {
 	switch mode {
 	case game.ModeTitle:
-		return "標題"
+		return tooltext.Text("h.6fe38ed1ee10")
 	case game.ModeWilderness:
-		return "世界地圖"
+		return tooltext.Text("h.58f78bc6a875")
 	case game.ModeEvent:
-		return "事件"
+		return tooltext.Text("h.c560201b331c")
 	case game.ModeMap:
-		return "地圖"
+		return tooltext.Text("h.90e1b1b8a537")
 	case game.ModePlace:
-		return "地點"
+		return tooltext.Text("h.af2cfdb525ff")
 	case game.ModeCombat:
-		return "戰鬥"
+		return tooltext.Text("h.625dd417c2c3")
 	case game.ModeJournal:
-		return "手札"
+		return tooltext.Text("h.53ce36b5da9e")
 	case game.ModeCharacterCreation:
-		return "建角"
+		return tooltext.Text("h.894d0b190ab5")
 	case game.ModeDungeon:
-		return "地城"
+		return tooltext.Text("h.c014266366bb")
 	}
 	return "?"
 }
@@ -758,13 +752,13 @@ func revisitOnce(state *game.State, first string) (string, string) {
 	// ⚠ 第一次跑完畫面停在事件上，**要先推回地城**再跑第二次。少了這一步
 	// `RunDungeonLifecycle` 會正確地拒絕，而那個拒絕看起來像「remake 跑不動」。
 	if _, err := settleToDungeon(state, 24); err != nil {
-		return "", "推不回地城"
+		return "", tooltext.Text("h.a93b5a585c5f")
 	}
 	if state.Mode != game.ModeDungeon {
-		return "", "推不回地城"
+		return "", tooltext.Text("h.a93b5a585c5f")
 	}
 	if err := state.RunDungeonLifecycle(); err != nil {
-		return "", "跑不動"
+		return "", tooltext.Text("h.91e450980f03")
 	}
 	// ⚠ 第二次**只看 `Message`**，不用 `playerText`。
 	//
@@ -779,11 +773,11 @@ func revisitOnce(state *game.State, first string) (string, string) {
 	second := strings.TrimSpace(state.Message)
 	switch {
 	case second == "":
-		return "", "只演一次"
+		return "", tooltext.Text("h.82619569592c")
 	case second == first:
-		return second, "同"
+		return second, tooltext.Text("h.4a7e9a926adb")
 	default:
-		return second, "不同"
+		return second, tooltext.Text("h.f2632a784b0d")
 	}
 }
 
@@ -796,12 +790,11 @@ func revisitOnce(state *game.State, first string) (string, string) {
 func settleToDungeon(state *game.State, limit int) ([]string, error) {
 	trail := make([]string, 0, limit)
 	for step := 0; step < limit && state.Mode != game.ModeDungeon; step++ {
-		trail = append(trail, fmt.Sprintf("%s／%d 選項／%s",
-			modeName(state.Mode), len(state.Choices), firstLine(playerText(state))))
+		trail = append(trail, tooltext.Format("h.e0fe457c0fcc", modeName(state.Mode), len(state.Choices), firstLine(playerText(state))))
 		if state.CombatActive() {
 			for turn := 0; turn < 400 && state.CombatActive(); turn++ {
 				if err := state.CombatAct(); err != nil {
-					return trail, fmt.Errorf("戰鬥：%w", err)
+					return trail, tooltext.Errorf("h.effbedd6d7bb", err)
 				}
 			}
 			continue
@@ -815,7 +808,7 @@ func settleToDungeon(state *game.State, limit int) ([]string, error) {
 		}
 		if err := state.Continue(); err != nil {
 			if selectErr := state.Select(choice); selectErr != nil {
-				return trail, fmt.Errorf("推不動：continue=%v select=%v", err, selectErr)
+				return trail, tooltext.Errorf("h.503ee730e545", err, selectErr)
 			}
 		}
 	}
@@ -889,7 +882,7 @@ func writeIndexJSON(path string, sweeps []blockSweep) error {
 			continue
 		}
 		for _, cell := range sweep.cells {
-			if cell.note == "地圖上沒有這個地形碼" {
+			if cell.note == tooltext.Text("h.5e63f0393483") {
 				continue
 			}
 			records = append(records, record{

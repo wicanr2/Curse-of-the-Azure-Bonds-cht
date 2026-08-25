@@ -28,6 +28,7 @@ import (
 	"encoding/binary"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -104,7 +105,7 @@ func loadModules(root, resident string) []module {
 	sort.Slice(modules, func(left, right int) bool { return modules[left].name < modules[right].name })
 	// 常駐排最後：報表裡它是「不是 overlay 的那一塊」。
 	if data, err := os.ReadFile(filepath.Join(root, resident)); err == nil {
-		modules = append(modules, module{name: "常駐", data: data})
+		modules = append(modules, module{name: tooltext.Text("h.4671035ec213"), data: data})
 	}
 	return modules
 }
@@ -160,7 +161,7 @@ type candidate struct {
 func scanTargets(modules []module) map[uint32]*candidate {
 	targets := map[uint32]*candidate{}
 	for _, item := range modules {
-		if item.name == "常駐" {
+		if item.name == tooltext.Text("h.4671035ec213") {
 			continue
 		}
 		for ea := 0; ea+4 < len(item.data); ea++ {
@@ -184,23 +185,23 @@ func scanTargets(modules []module) map[uint32]*candidate {
 // ★ 存在的理由與 `cmd/sound-trigger-compare` 的 `judgedGaps` 相同：判過的結論要留在
 // 產生報表的程式碼裡。只留一個「1」的話，下一輪會把它當待辦重查一次。
 var judgedPlatformGaps = map[string]string{
-	"CRASHFX": "PC-98 在 `INTERPET` 有一處，DOS 整支執行檔 **0 處**——而那個 0 做過正對照" +
-		"（同一種掃法在 DOS 找得到 `PADFX` 7 處、`SOUNDOFF` 4 處），所以是真的沒有。" +
-		"DOS 走 PC 喇叭、PC-98 走軟體發聲，兩版的音效編制本來就不一樣。",
+	"CRASHFX": tooltext.Text("h.b8d284553d9e") +
+		tooltext.Text("h.3629d25a5aa1") +
+		tooltext.Text("h.a2dbcbee0b7c"),
 }
 
 func main() {
-	dosRoot := flag.String("dos", "workplace/re-sweep/dos", "DOS 反組譯產物目錄")
-	dosResident := flag.String("dos-resident", "START.EXE", "DOS 常駐執行檔")
-	pc98Root := flag.String("pc98", "workplace/re-sweep/pc98", "PC-98 反組譯產物目錄")
-	pc98Resident := flag.String("pc98-resident", "PC98-GAME.EXE", "PC-98 常駐執行檔")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	dosRoot := flag.String("dos", "workplace/re-sweep/dos", tooltext.Text("h.00e3ccc00e4c"))
+	dosResident := flag.String("dos-resident", "START.EXE", tooltext.Text("h.a5242f33d486"))
+	pc98Root := flag.String("pc98", "workplace/re-sweep/pc98", tooltext.Text("h.a51d2488a6c1"))
+	pc98Resident := flag.String("pc98-resident", "PC98-GAME.EXE", tooltext.Text("h.6709b9cff31d"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	pc98Modules := loadModules(*pc98Root, *pc98Resident)
 	dosModules := loadModules(*dosRoot, *dosResident)
 	if len(pc98Modules) == 0 || len(dosModules) == 0 {
-		log.Fatal("反組譯產物讀不到（overlays/*.bin 與常駐執行檔）")
+		log.Fatal(tooltext.Text("h.b1407f24e720"))
 	}
 
 	// PC-98 那一側：段 0893h 位移 0000h 是 SOUNDFX（符號表直接讀出來的）。
@@ -211,11 +212,11 @@ func main() {
 	pc98Resident2 := distribution{}
 	for _, site := range pc98Sites {
 		info, known := pc98sfx.SelectorForDescriptor(site.descriptor)
-		name := fmt.Sprintf("（描述子 %04Xh）", site.descriptor)
+		name := tooltext.Format("h.1a9a9b2900a6", site.descriptor)
 		if known {
 			name = info.Symbol
 		}
-		if site.module == "常駐" {
+		if site.module == tooltext.Text("h.4671035ec213") {
 			pc98Resident2[name]++
 			continue
 		}
@@ -243,17 +244,16 @@ func main() {
 	best := ranked[0]
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# DOS 側的音效格子：不靠符號，靠形狀認出來\n\n")
-	fmt.Fprintf(&report, "由 `cmd/dos-sound-map` 產生，不要手改。方法與判讀見 spec 1187。\n\n")
-	fmt.Fprintf(&report, "音效的語意全部來自 PC-98 的 Borland 除錯符號，而**行為 oracle 是 DOS**。"+
-		"DOS 沒有符號，所以要先在 DOS 這一側把同一組格子認出來，spec 1186 的結論才算在 oracle 上成立。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.1db040ca5da2"))
+	fmt.Fprint(&report, tooltext.Format("h.7d222ffc4098"))
+	fmt.Fprint(&report, tooltext.Text("h.44ee0db72be1")+
+		tooltext.Text("h.7a290a0dcefa"))
 
-	fmt.Fprintf(&report, "## 一、`SOUNDFX` 在 DOS 的哪裡\n\n")
-	fmt.Fprintf(&report, "指紋是 **PC-98 `SOUNDFX` 的 overlay 呼叫點分佈**（跨 %d 個模組、共 %d 處）：\n\n",
-		len(pc98Overlay), pc98Overlay.total())
+	fmt.Fprint(&report, tooltext.Format("h.bfc28e6a742f"))
+	fmt.Fprint(&report, tooltext.Format("h.f11e338d1195", len(pc98Overlay), pc98Overlay.total()))
 	fmt.Fprintf(&report, "> %s\n\n", pc98Overlay)
-	fmt.Fprintf(&report, "拿它去比 DOS 全部 %d 個相異 far-call 目標，前五名：\n\n", len(targets))
-	fmt.Fprintf(&report, "| 名次 | DOS 目標 | 差 | 呼叫點 | 分佈 |\n|---:|---|---:|---:|---|\n")
+	fmt.Fprint(&report, tooltext.Format("h.9f71c7628809", len(targets)))
+	fmt.Fprint(&report, tooltext.Format("h.5fb769376c23"))
 	for index := 0; index < 5 && index < len(ranked); index++ {
 		item := ranked[index]
 		fmt.Fprintf(&report, "| %d | `%04X:%04X` | %d | %d | %s |\n",
@@ -264,8 +264,8 @@ func main() {
 	if len(ranked) > 1 {
 		runnerUp = difference(ranked[1].dist, pc98Overlay)
 	}
-	fmt.Fprintf(&report, "\n第一名 `%04X:%04X` 的差是 **%d**，第二名是 **%d**。"+
-		"★ **差距本身就是證據**：如果前兩名咬得很近，那就不是指紋而是巧合。\n\n",
+	fmt.Fprintf(&report, tooltext.Text("h.806660e43527")+
+		tooltext.Text("h.abeffed39b5b"),
 		best.segment, best.offset, difference(best.dist, pc98Overlay), runnerUp)
 
 	// DOS 描述子。
@@ -278,7 +278,7 @@ func main() {
 			dosUnresolved++
 			continue
 		}
-		if site.module == "常駐" {
+		if site.module == tooltext.Text("h.4671035ec213") {
 			dosResidentByDescriptor[site.descriptor]++
 			continue
 		}
@@ -298,7 +298,7 @@ func main() {
 	}
 	sort.Ints(descriptors)
 	if len(descriptors) == 0 {
-		log.Fatal("DOS 那一側一個描述子都推不出來")
+		log.Fatal(tooltext.Text("h.c62d847e6923"))
 	}
 
 	// 表的基底不是用猜的。 兩版的描述子都是 `基底 ＋ 選擇子×2`，所以只要定出
@@ -312,23 +312,22 @@ func main() {
 	dosBase, bestBaseScore, secondBaseScore := pickBase(descriptors, dosByDescriptor, pc98ByEffect)
 	// 對不上一半就不要印一張看起來很合理的表。
 	if bestBaseScore*2 < len(descriptors) {
-		log.Fatalf("最佳基底 %04Xh 只對上 %d 格（共 %d 個描述子）——這不是對照，是巧合",
-			dosBase, bestBaseScore, len(descriptors))
+		log.Fatal(tooltext.Format("h.9e487de640f0", dosBase, bestBaseScore, len(descriptors)))
 	}
 
-	fmt.Fprintf(&report, "## 二、描述子表逐格對照\n\n")
-	fmt.Fprintf(&report, "兩版的描述子都是 `基底 ＋ 選擇子×2`，順序相同。"+
-		"DOS 基底 `%04Xh`、PC-98 基底 `%04Xh`（差 %04Xh）。\n\n",
+	fmt.Fprint(&report, tooltext.Format("h.b0736c40c381"))
+	fmt.Fprintf(&report, tooltext.Text("h.7971e279e5fa")+
+		tooltext.Text("h.01b65629678e"),
 		dosBase, pc98Base, pc98Base-dosBase)
-	fmt.Fprintf(&report, "★ 基底不是用猜的：**每一個觀察到的描述子都試過一次**當錨點，"+
-		"用「有幾格的 overlay 分佈與 PC-98 逐模組相同」計分。最佳基底 `%04Xh` 對上 **%d** 格，"+
-		"第二名只對上 **%d** 格。整張表平移一格的話位址仍然連續、名字仍然一一對應，"+
-		"**只有分佈會整排錯開**——所以這個差距就是「沒有偏移」的證據。\n\n",
+	fmt.Fprintf(&report, tooltext.Text("h.65ca4d3dd247")+
+		tooltext.Text("h.8e8bc709fa8a")+
+		tooltext.Text("h.4243c2b05ae2")+
+		tooltext.Text("h.1aaa32e78ee1"),
 		dosBase, bestBaseScore, secondBaseScore)
-	fmt.Fprintf(&report, "`分佈相同` 那一欄是**獨立的第二個訊號**：位置對上之後，"+
-		"兩邊那一格的 overlay 呼叫點分佈還必須逐模組一致。"+
-		"整張表平移一格的話位置全部說得通，但分佈會整排錯開。\n\n")
-	fmt.Fprintf(&report, "| PC-98 | DOS | 名稱 | DOS overlay 分佈 | PC-98 overlay 分佈 | 分佈相同 |\n")
+	fmt.Fprint(&report, tooltext.Text("h.0de1cfc05f9b")+
+		tooltext.Text("h.2d6dce111721")+
+		tooltext.Text("h.a90dc78e0250"))
+	fmt.Fprint(&report, tooltext.Format("h.347975fec7ef"))
 	fmt.Fprintf(&report, "|---|---|---|---|---|---|\n")
 
 	agree, disagree, dosOnly := 0, 0, 0
@@ -346,22 +345,22 @@ func main() {
 		verdict := "✅"
 		switch {
 		case dosDist.total() == 0 && pc98Dist.total() == 0:
-			verdict = "—（兩邊都沒有呼叫點）"
+			verdict = tooltext.Text("h.7299ee1f3676")
 		case difference(dosDist, pc98Dist) == 0:
 			agree++
 		case dosDist.total() == 0:
 			if reason, ok := judgedPlatformGaps[info.Symbol]; ok {
-				verdict = "已判定是平台差異：" + reason
+				verdict = tooltext.Text("h.fed8783c191e") + reason
 				judged++
 				break
 			}
-			verdict = "**DOS 沒有呼叫點**"
+			verdict = tooltext.Text("h.aea12fe06c96")
 			disagree++
 		case pc98Dist.total() == 0:
-			verdict = "**只有 DOS 有**"
+			verdict = tooltext.Text("h.5651fb26d0c3")
 			dosOnly++
 		default:
-			verdict = fmt.Sprintf("差 %d", difference(dosDist, pc98Dist))
+			verdict = tooltext.Format("h.b1184e3b06c3", difference(dosDist, pc98Dist))
 			disagree++
 		}
 		fmt.Fprintf(&report, "| `%04Xh` | `%04Xh` | %s | %s | %s | %s |\n",
@@ -370,17 +369,17 @@ func main() {
 	}
 	fmt.Fprintf(&report, "\n")
 
-	fmt.Fprintf(&report, "| 指標 | 數字 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 兩版分佈**逐模組相同**的格子 | %d |\n", agree)
-	fmt.Fprintf(&report, "| 對不上的格子（還沒判的）| %d |\n", disagree+dosOnly)
-	fmt.Fprintf(&report, "| 對不上、但**已判定是平台差異** | %d |\n", judged)
-	fmt.Fprintf(&report, "| DOS overlay 呼叫點 | %d |\n", len(dosSites)-residentCount(dosSites))
-	fmt.Fprintf(&report, "| DOS 常駐呼叫點 | %d |\n", residentCount(dosSites))
-	fmt.Fprintf(&report, "| DOS 推不出描述子的 | %d |\n\n", dosUnresolved)
+	fmt.Fprint(&report, tooltext.Format("h.13c83a8a875e"))
+	fmt.Fprint(&report, tooltext.Format("h.e6a2acd59bfe", agree))
+	fmt.Fprint(&report, tooltext.Format("h.e2482603babb", disagree+dosOnly))
+	fmt.Fprint(&report, tooltext.Format("h.fcaf5cdee2d1", judged))
+	fmt.Fprint(&report, tooltext.Format("h.6ca7133d0e2e", len(dosSites)-residentCount(dosSites)))
+	fmt.Fprint(&report, tooltext.Format("h.384460dd29fe", residentCount(dosSites)))
+	fmt.Fprint(&report, tooltext.Format("h.151f324913c7", dosUnresolved))
 
 	// 常駐那一半：兩版都只放引擎內務那三個。
-	fmt.Fprintf(&report, "## 三、常駐那一半\n\n")
-	fmt.Fprintf(&report, "| 名稱 | DOS 常駐 | PC-98 常駐 |\n|---|---:|---:|\n")
+	fmt.Fprint(&report, tooltext.Format("h.b450823f6dc0"))
+	fmt.Fprint(&report, tooltext.Format("h.26f435678c9e"))
 	for _, info := range pc98sfx.Selectors() {
 		dosAddress := dosBase + (info.Descriptor - pc98Base)
 		dosCount := dosResidentByDescriptor[dosAddress]
@@ -390,9 +389,9 @@ func main() {
 		}
 		fmt.Fprintf(&report, "| %s | %d | %d |\n", info.Symbol, dosCount, pc98Count)
 	}
-	fmt.Fprintf(&report, "\n★ 兩版的常駐都**只**放 `SOUNDHALT`／`SOUNDOFF`／`SOUNDON`——"+
-		"沒有任何一個玩法音效。這是 spec 1186「`SoundStop` 是引擎內務、不對應玩法事件」"+
-		"那句話的**第二次獨立印證**：換一個執行檔、換一組編譯結果，結論一樣。\n")
+	fmt.Fprint(&report, tooltext.Text("h.f141c38802a0")+
+		tooltext.Text("h.452d76a1be29")+
+		tooltext.Text("h.b993b4afad77"))
 
 	text := report.String()
 	if *output == "" {
@@ -408,7 +407,7 @@ func main() {
 func residentCount(sites []callSite) int {
 	count := 0
 	for _, site := range sites {
-		if site.module == "常駐" {
+		if site.module == tooltext.Text("h.4671035ec213") {
 			count++
 		}
 	}

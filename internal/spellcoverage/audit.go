@@ -5,6 +5,7 @@
 package spellcoverage
 
 import (
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -183,19 +184,19 @@ func Build(pack *goldenbox.Pack, sourceFile string) (Report, error) {
 			item.Sound.Status = "observed"
 		}
 		if item.Handler.Status != "observed" {
-			item.Limitations = append(item.Limitations, "runtime handler 尚未由 source callsite 完整觀察")
+			item.Limitations = append(item.Limitations, tooltext.Text("h.56f3ba806136"))
 		}
 		if item.Visual.Status != "observed" {
-			item.Limitations = append(item.Limitations, "pack／runtime 視覺 binding 不完整；不代表原版動畫已還原")
+			item.Limitations = append(item.Limitations, tooltext.Text("h.4050dedd47a5"))
 		}
 		if item.Sound.Status != "observed" {
-			item.Limitations = append(item.Limitations, "未觀察到該 behavior 的 requestSound intent")
+			item.Limitations = append(item.Limitations, tooltext.Text("h.1e920b3167ca"))
 		}
 		if len(item.Limitations) == 0 {
-			item.Limitations = []string{"僅證明目前 remake callsite 與 binding 存在，不證明完整原版規則、時序或音訊素材"}
+			item.Limitations = []string{tooltext.Text("h.3093991dae14")}
 		}
 		if item.Sound.SharedVisualTimeline {
-			item.Limitations = append(item.Limitations, "音效由共用 AdvanceCombatVisual 時間軸觀察，未宣稱每個原版 cue 已 exact")
+			item.Limitations = append(item.Limitations, tooltext.Text("h.d66e10677b70"))
 		}
 		report.Spells = append(report.Spells, item)
 	}

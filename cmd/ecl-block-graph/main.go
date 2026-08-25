@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -40,7 +41,7 @@ type blockGraph struct {
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	out := flag.String("out", "docs/audit/ecl-block-graph.md", "輸出的 markdown")
+	out := flag.String("out", "docs/audit/ecl-block-graph.md", tooltext.Text("h.aff4479ab1b9"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -54,7 +55,7 @@ func main() {
 		member := fmt.Sprintf("ECL%d.DAX", chapter)
 		payload := memberPayload(archive, member)
 		if payload == nil {
-			log.Fatalf("image 裡沒有 %s", member)
+			log.Fatal(tooltext.Format("h.13356c0db288", member))
 		}
 		blocks, err := daxParse(payload)
 		if err != nil {
@@ -78,25 +79,7 @@ func main() {
 	})
 
 	var report strings.Builder
-	report.WriteString(`# ECL block 轉移圖
-
-由 ` + "`cmd/ecl-block-graph`" + ` 產生，不要手改。
-
-- 出邊是 ` + "`20h NEWECL`" + ` 的立即運算元。
-- 「3D 地圖」是寫進 ` + "`4BC5h`" + `（` + "`bank0 +18Ah`" + `，目前的 3D 地圖區塊編號）
-  的立即值，也就是**這個 block 會把玩家放進哪一張地城地圖**。空白代表它不換地圖
-  （世界地圖 hub、純劇情 block 都是這樣）。
-- ` + "`InDungeon`" + ` 是 ` + "`4BE6h`" + `（` + "`bank0 +1CCh`" + `）：
-  0 是野外／世界地圖，非 0 是地城。
-- ` + "`LOAD FILES`" + ` 的三個運算元決定那一段用哪一組 DAX 檔。
-- ` + "`SAVE→4BF2h`" + ` 是寫進 ` + "`bank0 +1E4h`" + `（LastECL）的立即值。引擎主迴圈
-  （` + "`overlay-02:3772`" + `）載入的就是這一格指的 block，並在載完之後把它寫回去，
-  所以 block 寫自己的編號是「記錄我是誰」，不是轉移。
-- ⚠ 可達性用 ` + "`ecl.TraceGraph`" + `，**會跟 ` + "`ON GOTO`" + ` 的每一個目的地**。
-  ` + "`docs/audit/ecl-event-catalog.md`" + ` 那份不跟，它看到的邊只有這裡的一小部分。
-  拿那一份判斷「這個 block 沒有出口」會得到假零。
-
-| member | block | 可達指令 | ` + "`NEWECL`" + ` 出邊 | ` + "`SAVE→4BF2h`" + ` | 3D 地圖（` + "`4BC5h`" + `） | InDungeon（` + "`4BE6h`" + `） | ` + "`LOAD FILES`" + ` |
+	report.WriteString(tooltext.Text("h.56256ea9dbb3") + "`cmd/ecl-block-graph`" + tooltext.Text("h.aa34a3e3052f") + "`20h NEWECL`" + tooltext.Text("h.5f3865c53821") + "`4BC5h`" + `（` + "`bank0 +18Ah`" + tooltext.Text("h.df57d8d76920") + "`InDungeon`" + tooltext.Text("h.706db06dc4ea") + "`4BE6h`" + `（` + "`bank0 +1CCh`" + tooltext.Text("h.7d86078027dc") + "`LOAD FILES`" + tooltext.Text("h.34fe51559a25") + "`SAVE→4BF2h`" + tooltext.Text("h.885c90eef9fa") + "`bank0 +1E4h`" + tooltext.Text("h.5363dfc6b178") + "`overlay-02:3772`" + tooltext.Text("h.f85dc7ec444e") + "`ecl.TraceGraph`" + tooltext.Text("h.1756481663c4") + "`ON GOTO`" + tooltext.Text("h.c312f675e35d") + "`docs/audit/ecl-event-catalog.md`" + tooltext.Text("h.12d85edc7978") + "`NEWECL`" + tooltext.Text("h.d29b0d280d13") + "`SAVE→4BF2h`" + tooltext.Text("h.b143e4d55950") + "`4BC5h`" + `） | InDungeon（` + "`4BE6h`" + `） | ` + "`LOAD FILES`" + ` |
 |---|---|---:|---|---|---|---|---|
 `)
 	edges, noExit := 0, []string{}
@@ -112,15 +95,15 @@ func main() {
 			formatTargets(g.mapBlock), formatTargets(g.inDungeon), formatStrings(g.loadFiles)))
 	}
 	report.WriteString(segmentTable(keys, graphs))
-	report.WriteString(fmt.Sprintf("\n## 摘要\n\n| 項目 | 數量 |\n|---|---:|\n| block | %d |\n"+
-		"| 不重複 `NEWECL` 出邊 | %d |\n| 沒有出邊的 block | %d（%s）|\n",
+	report.WriteString(fmt.Sprintf(tooltext.Text("h.ac62af5e767c")+
+		tooltext.Text("h.a50a9a5d8f27"),
 		len(keys), edges, len(noExit), strings.Join(noExit, "、")))
-	report.WriteString("\n沒有出邊的 block 是開場與結局，不是資料缺漏。\n")
+	report.WriteString(tooltext.Text("h.2ff1c1d14b49"))
 
 	if err := os.WriteFile(*out, []byte(report.String()), 0o644); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("block=%d NEWECL 出邊=%d 沒有出邊=%d → %s\n", len(keys), edges, len(noExit), *out)
+	fmt.Print(tooltext.Format("h.ec7719d0da1c", len(keys), edges, len(noExit), *out))
 }
 
 // daxParse 只是把 dax.Parse 包一層，讓測試不必再 import 一次。
@@ -201,7 +184,7 @@ func traceBlock(data []byte) *blockGraph {
 func segmentTable(keys []blockKey, graphs map[blockKey]*blockGraph) string {
 	pack, err := gamepack.Default()
 	if err != nil {
-		return "\n（讀不到 game pack，略過段落清單）\n"
+		return tooltext.Text("h.39034aa22360")
 	}
 	byBlock := map[[2]int][]string{}
 	for _, m := range pack.Maps {
@@ -219,16 +202,16 @@ func segmentTable(keys []blockKey, graphs map[blockKey]*blockGraph) string {
 	}
 	var out strings.Builder
 	labels := segmentLabels()
-	out.WriteString("\n## 段落清單（block ↔ 地圖）\n\n" +
-		"`area_id` 就是 ECL 成員編號、`script_block` 就是 block 編號，所以 game pack 的\n" +
-		"地圖宣告與轉移圖 join 得起來。**沒有地圖的 block 不是缺漏**：世界地圖 hub 與\n" +
-		"開場不需要 3D 地圖（`LOAD FILES` 是 `7F/7F/7F`），另外幾個沿用上一段的檔案。\n\n" +
-		"段的 id 一律是 `ECL{成員}/0x{block}`（機械且穩定）；標籤取自\n" +
-		"`docs/plan/segment-labels.json`，證據見 `docs/plan/seg-03-verification-report.md`。\n\n" +
-		"「直入」是 `-segment <id>` 這一段用的 `LastECL`（`0x00` ＝ 全新開局），\n" +
-		"括號裡是仍然保留的專用旗標；註冊表在 `internal/segment`，\n" +
-		"證據見 `docs/plan/seg-04-verification-report.md`。\n\n" +
-		"| 段 | 標籤 | 進入自 | 離開到 | 直入 | game pack 地圖 |\n|---|---|---|---|---|---|\n")
+	out.WriteString(tooltext.Text("h.fb90911f9cee") +
+		tooltext.Text("h.0a1d368fe30d") +
+		tooltext.Text("h.37092482129c") +
+		tooltext.Text("h.edfbb0ed8961") +
+		tooltext.Text("h.c2b281db8047") +
+		tooltext.Text("h.de92ff942337") +
+		tooltext.Text("h.6d1150d6ec74") +
+		tooltext.Text("h.3523ef0370c3") +
+		tooltext.Text("h.676629fa9857") +
+		tooltext.Text("h.47cf4b491bda"))
 	for _, key := range keys {
 		member := 0
 		fmt.Sscanf(key.member, "ECL%d.DAX", &member)
@@ -266,7 +249,7 @@ func directEntry(id string) string {
 		text += fmt.Sprintf("（`-%s`）", found.LegacyFlag)
 	}
 	if found.SettlesAt != 0 {
-		text += fmt.Sprintf("，過場到 `0x%02X`", found.SettlesAt)
+		text += tooltext.Format("h.b1214bdfa285", found.SettlesAt)
 	}
 	return text
 }

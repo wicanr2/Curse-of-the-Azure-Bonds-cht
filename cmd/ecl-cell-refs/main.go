@@ -19,6 +19,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"sort"
@@ -43,10 +44,10 @@ type reference struct {
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	cell := flag.String("cell", "", "要查的格子位址（十六進位，如 `4C06`）")
-	cellRange := flag.String("range", "", "要查的位址區間（如 `4C00-4C1F`）")
+	cell := flag.String("cell", "", tooltext.Text("h.72f6fff50970"))
+	cellRange := flag.String("range", "", tooltext.Text("h.cee99cc2005d"))
 	onlyBefore := flag.Bool("before-load-files", false,
-		"只列出在該 block 第一個 `LOAD FILES` 之前的存取")
+		tooltext.Text("h.3394d9c8cd7c"))
 	flag.Parse()
 
 	low, high, err := parseTargets(*cell, *cellRange)
@@ -79,7 +80,7 @@ func main() {
 	for _, value := range cells {
 		list := byCell[uint16(value)]
 		total += len(list)
-		fmt.Printf("=== %04X（%d 處）\n", value, len(list))
+		fmt.Print(tooltext.Format("h.f999a736c08f", value, len(list)))
 		for _, ref := range list {
 			marker := " "
 			if ref.beforeLoadFiles {
@@ -89,7 +90,7 @@ func main() {
 				marker, ref.member, ref.block, ref.offset, ref.name, ref.operands)
 		}
 	}
-	fmt.Printf("合計 %d 處（`!` ＝ 在該 block 的第一個 LOAD FILES 之前）\n", total)
+	fmt.Print(tooltext.Format("h.8147a75e678d", total))
 }
 
 func parseTargets(cell, cellRange string) (uint16, uint16, error) {
@@ -97,7 +98,7 @@ func parseTargets(cell, cellRange string) (uint16, uint16, error) {
 	case cellRange != "":
 		parts := strings.SplitN(cellRange, "-", 2)
 		if len(parts) != 2 {
-			return 0, 0, fmt.Errorf("區間要寫成 `4C00-4C1F`，收到 %q", cellRange)
+			return 0, 0, tooltext.Errorf("h.a207ba3d940f", cellRange)
 		}
 		low, err := strconv.ParseUint(strings.TrimPrefix(parts[0], "0x"), 16, 16)
 		if err != nil {
@@ -115,7 +116,7 @@ func parseTargets(cell, cellRange string) (uint16, uint16, error) {
 		}
 		return uint16(value), uint16(value), nil
 	}
-	return 0, 0, fmt.Errorf("要給 -cell 或 -range")
+	return 0, 0, tooltext.Errorf("h.1f6196ba6530")
 }
 
 func collect(archive *zip.ReadCloser, low, high uint16) ([]reference, error) {
@@ -123,7 +124,7 @@ func collect(archive *zip.ReadCloser, low, high uint16) ([]reference, error) {
 	for member := 1; member <= 6; member++ {
 		payload := memberPayload(archive, fmt.Sprintf("ECL%d.DAX", member))
 		if payload == nil {
-			return nil, fmt.Errorf("image 裡沒有 ECL%d.DAX", member)
+			return nil, tooltext.Errorf("h.f74a43cb81d6", member)
 		}
 		blocks, err := dax.Parse(payload)
 		if err != nil {

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"image"
 	"image/color"
 	"image/png"
@@ -1297,10 +1298,10 @@ func (a *app) prepareWallPreview() {
 			}
 			image, ok := a.symbolImageForGlobalID(stamp.SymbolID)
 			if !ok {
-				a.traceWallStamp("解不開", call, piece, stamp)
+				a.traceWallStamp(tooltext.Text("h.0f707ec7e3c2"), call, piece, stamp)
 				continue
 			}
-			a.traceWallStamp("畫", call, piece, stamp)
+			a.traceWallStamp(tooltext.Text("h.7d6f28597524"), call, piece, stamp)
 			a.wallPreview = append(a.wallPreview, wallPreviewStamp{
 				image:  image,
 				row:    stamp.Row,
@@ -3474,7 +3475,7 @@ func main() {
 	dungeonYOverride := flag.Int("dungeon-y", -1, "override dungeon Y (0..15) for deterministic visual verification")
 	dungeonFacingOverride := flag.Int("dungeon-facing", -1, "override dungeon facing (0..7, 0=N) for deterministic visual verification")
 	firstPerson := flag.Bool("first-person", false, "render the scripted flow's final cell as a first-person frame (first-person fidelity comparison)")
-	wallTracePath := flag.String("wall-trace", "", "把每一格牆磚的解析過程寫成 TSV（追多段牆面組用，spec 1185）")
+	wallTracePath := flag.String("wall-trace", "", tooltext.Text("h.a7256865b459"))
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	characterCreation := flag.Bool("character-creation", false, "show the opening character-creation command as a deterministic renderer checkpoint")
@@ -3526,14 +3527,14 @@ func main() {
 	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
 	dosCharacterInventory := flag.String("dos-character-inventory", "", "optional DOS .SWG path for direct character import")
 	screenshotPath := flag.String("screenshot", "", "write one deterministic 640x480 frame to PNG and exit")
-	journalImageEntry := flag.String("journal-image", "", "開手札並直接彈出某則的圖，例如 journal.52（分段驗收用）")
-	journalImageZoom := flag.Bool("journal-image-zoom", false, "彈窗直接以原尺寸開啟（分段驗收用）")
+	journalImageEntry := flag.String("journal-image", "", tooltext.Text("h.a18a181fc4d2"))
+	journalImageZoom := flag.Bool("journal-image-zoom", false, tooltext.Text("h.70cfc7b45f7f"))
 	segmentEntry := flag.String("segment", "",
-		"直接進入主線的某一段：ECL{成員}/0x{block}、只給 block 編號、或既有旗標名；給 list 就列出全部")
+		tooltext.Text("h.d2dfc3f15f41"))
 	segmentSnapshot := flag.String("segment-snapshot", "",
-		"進到 -segment 指定的那一段之後把存檔寫到這個路徑就結束，供下一段用 -party-load 當入口")
+		tooltext.Text("h.b4187fb831f4"))
 	segmentHandoff := flag.String("segment-handoff", "",
-		"到達取樣的目錄：進 -segment 之前先鋪上主線在那一段的交接狀態（spec 1195）")
+		tooltext.Text("h.20ed0dcbbb08"))
 	flag.Parse()
 	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
@@ -3568,7 +3569,7 @@ func main() {
 		}
 		found, ok := segment.Lookup(trimmed)
 		if !ok {
-			log.Fatalf("-segment %q 不在註冊表裡；用 -segment list 看有哪些段", trimmed)
+			log.Fatal(tooltext.Format("h.f87e9476f2d6", trimmed))
 		}
 		chosenSegment = &found
 	}
@@ -3846,11 +3847,11 @@ func main() {
 			state.SeedHandoffMemory(memory)
 		}
 		if err := state.EnterSegment(*chosenSegment); err != nil {
-			log.Fatalf("-segment %s 進不去：%v", chosenSegment.ID, err)
+			log.Fatal(tooltext.Format("h.df79185abfa1", chosenSegment.ID, err))
 		}
 		if *segmentSnapshot != "" {
 			if err := state.SavePartyFile(*segmentSnapshot); err != nil {
-				log.Fatalf("寫 -segment-snapshot 失敗：%v", err)
+				log.Fatal(tooltext.Format("h.cceb344f7314", err))
 			}
 			fmt.Printf("%s → %s\n", chosenSegment.ID, *segmentSnapshot)
 			return
@@ -4233,7 +4234,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer handle.Close()
-		fmt.Fprintln(handle, "來源\t牆型\t深度\t朝向\t圖上X\t圖上Y\t起始槽\t段數\t版面\t列\t欄\t編號\t段\t段內項\t取用區塊\t這組的區塊")
+		fmt.Fprintln(handle, tooltext.Text("h.f7c61cad3e96"))
 		gameApp.wallTrace = handle
 	}
 	if *innerFinalBattle && *screenshotPath != "" {
@@ -4318,17 +4319,17 @@ func main() {
 // printSegmentRegistry 把 `-segment` 收得下的段落列出來，欄位與
 // `docs/audit/ecl-block-graph.md` 的段落清單同一份宣告。
 func printSegmentRegistry() {
-	fmt.Println(padColumn("段", 12) + padColumn("block", 7) + padColumn("進入自", 10) +
-		padColumn("GEO 檔集", 10) + padColumn("位置", 10) + "既有旗標")
+	fmt.Println(padColumn(tooltext.Text("h.0477dbbdee99"), 12) + padColumn("block", 7) + padColumn(tooltext.Text("h.4643227ad5ba"), 10) +
+		padColumn(tooltext.Text("h.7aaf8dbad92f"), 10) + padColumn(tooltext.Text("h.1fb4d574da92"), 10) + tooltext.Text("h.b92f67a3a3cd"))
 	for _, entry := range segment.All() {
 		area := fmt.Sprintf("%d", entry.GameArea)
-		place := "地城"
+		place := tooltext.Text("h.c014266366bb")
 		if entry.Overland {
-			area, place = "-", "世界地圖"
+			area, place = "-", tooltext.Text("h.58f78bc6a875")
 		}
 		from := fmt.Sprintf("0x%02X", entry.EnterFrom)
 		if entry.EnterFrom == 0 {
-			from = "全新開局"
+			from = tooltext.Text("h.1f79c2264b48")
 		}
 		fmt.Println(padColumn(entry.ID, 12) + padColumn(fmt.Sprintf("0x%02X", entry.Block), 7) +
 			padColumn(from, 10) + padColumn(area, 10) + padColumn(place, 10) + entry.LegacyFlag)

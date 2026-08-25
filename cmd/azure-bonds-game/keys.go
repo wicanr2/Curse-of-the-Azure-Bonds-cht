@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -94,17 +95,17 @@ func loadArrivalSample(dir string, block uint8) (map[uint16]uint16, error) {
 	path := filepath.Join(dir, fmt.Sprintf("arrival-block-%02X.json", block))
 	raw, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("讀不到 %s：%w", path, err)
+		return nil, tooltext.Errorf("h.a00d90de1b46", path, err)
 	}
 	var file struct {
 		Schema string            `json:"schema"`
 		Memory map[string]uint16 `json:"memory"`
 	}
 	if err := json.Unmarshal(raw, &file); err != nil {
-		return nil, fmt.Errorf("%s 解不開：%w", path, err)
+		return nil, tooltext.Errorf("h.08dac61fa54f", path, err)
 	}
 	if file.Schema != "coab-arrival-sample/1" {
-		return nil, fmt.Errorf("%s 的 schema 是 %q，不是到達取樣", path, file.Schema)
+		return nil, tooltext.Errorf("h.10fe7782f115", path, file.Schema)
 	}
 	out := make(map[uint16]uint16, len(file.Memory))
 	for key, value := range file.Memory {
@@ -115,7 +116,7 @@ func loadArrivalSample(dir string, block uint8) (map[uint16]uint16, error) {
 		out[uint16(address)] = value
 	}
 	if len(out) == 0 {
-		return nil, fmt.Errorf("%s 裡沒有記憶體", path)
+		return nil, tooltext.Errorf("h.11c612e118ee", path)
 	}
 	return out, nil
 }

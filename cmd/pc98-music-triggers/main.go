@@ -25,6 +25,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -57,12 +58,12 @@ const soundSegmentNumber = 0x0893
 // 少了兩列——正好是 remake 用得最兇的 `SoundSpellHit` 與 `SoundMiss`。
 // 位址改成用推的之後，「漏一格」在結構上就不可能發生。
 var soundEffectLabels = map[string]string{
-	"SOUNDHALT": "停止", "SOUNDOFF": "關", "SOUNDON": "開",
-	"CASTFX": "施法", "MISSFX": "揮空", "SPELLHITFX": "法術命中",
-	"DEADFX": "死亡", "WHISTLEFX": "哨音", "HITFX": "命中",
-	"LIGHTNINGFX": "閃電", "SWISHFX": "揮擊", "PADFX": "腳步",
-	"FIREBALLFX": "火球", "ARROWFX": "箭", "OVERTUREFX": "序曲",
-	"COMBATFX": "戰鬥", "CRASHFX": "撞擊",
+	"SOUNDHALT": tooltext.Text("h.ca4d973c0b00"), "SOUNDOFF": tooltext.Text("h.94ffcbc4a678"), "SOUNDON": tooltext.Text("h.320d1ab4f80f"),
+	"CASTFX": tooltext.Text("h.e377c6152522"), "MISSFX": tooltext.Text("h.d7aa5b20173e"), "SPELLHITFX": tooltext.Text("h.0118c5026c62"),
+	"DEADFX": tooltext.Text("h.82d3130fa582"), "WHISTLEFX": tooltext.Text("h.d0928210330c"), "HITFX": tooltext.Text("h.393df9bb13ea"),
+	"LIGHTNINGFX": tooltext.Text("h.48693c8fd90b"), "SWISHFX": tooltext.Text("h.692fbefa6024"), "PADFX": tooltext.Text("h.9f18c28a4e63"),
+	"FIREBALLFX": tooltext.Text("h.010568a02690"), "ARROWFX": tooltext.Text("h.674650b36c70"), "OVERTUREFX": tooltext.Text("h.3df5903dbdcd"),
+	"COMBATFX": tooltext.Text("h.625dd417c2c3"), "CRASHFX": tooltext.Text("h.b15e09c78fd2"),
 }
 
 // soundEffectName 是報表裡那個「符號（說明）」字串。
@@ -86,8 +87,8 @@ func soundEffectName(address int) (string, bool) {
 // 裡**第三次**踩到同一種錯（音效描述子表漏兩格、對照表漏兩列、這裡漏一格）：
 // 手打的對照表漏掉時不會報錯，只會印出一句看起來很有資訊量的「查無」。
 var soundRoutineLabels = map[string]string{
-	"SOUNDFX": "音效", "INITSOUND": "初始化", "MSCPLAY": "放音樂",
-	"MSCSTOP": "停音樂", "BGMPLAY": "背景音樂",
+	"SOUNDFX": tooltext.Text("h.5e9d80d0e3c3"), "INITSOUND": tooltext.Text("h.65622e8ee9fb"), "MSCPLAY": tooltext.Text("h.a9ddbaf5be7f"),
+	"MSCSTOP": tooltext.Text("h.90a41433b9d4"), "BGMPLAY": tooltext.Text("h.fb7df1d56430"),
 }
 
 // loadSoundRoutines 從 Borland 符號表讀出 `SOUNDX` 那一段的全部公開程序。
@@ -129,13 +130,13 @@ type trigger struct {
 }
 
 func main() {
-	root := flag.String("root", "workplace/re-sweep/pc98", "PC-98 反組譯產物目錄")
-	resident := flag.String("resident", "PC98-GAME.EXE", "常駐執行檔檔名")
-	corePath := flag.String("core", "gamepack/pack/00-core.json", "game pack 核心宣告")
-	localePath := flag.String("locale", "gamepack/pack/20-locale.zh-TW.json", "中文語系檔")
-	farCallMap := flag.String("far-call-map", "docs/audit/far-call-map-pc98.json", "PC-98 far call 對照表")
-	symbols := flag.String("symbols", "workplace/re-sweep/pc98/borland-symbols.json", "PC-98 Borland 除錯符號表")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	root := flag.String("root", "workplace/re-sweep/pc98", tooltext.Text("h.a51d2488a6c1"))
+	resident := flag.String("resident", "PC98-GAME.EXE", tooltext.Text("h.c33c386f5bc7"))
+	corePath := flag.String("core", "gamepack/pack/00-core.json", tooltext.Text("h.e93e76cafe80"))
+	localePath := flag.String("locale", "gamepack/pack/20-locale.zh-TW.json", tooltext.Text("h.18a8248f0745"))
+	farCallMap := flag.String("far-call-map", "docs/audit/far-call-map-pc98.json", tooltext.Text("h.441d3f0b84bd"))
+	symbols := flag.String("symbols", "workplace/re-sweep/pc98/borland-symbols.json", tooltext.Text("h.d3ff39c17343"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	titles, selectors := loadTracks(*corePath, *localePath)
@@ -212,27 +213,27 @@ func main() {
 	}
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 原作在哪裡換曲，換成哪一首（PC-98）\n\n")
-	fmt.Fprintf(&report, "由 `cmd/pc98-music-triggers` 產生，不要手改。\n\n")
-	fmt.Fprintf(&report, "⚠ **`MUSICNO` 是 1 起算的**：12 首曲子、寫入值最大 12，"+
-		"直接當 0 起算索引會在最後一首溢位。game pack 的 `reference_selector` 正是 1..12，"+
-		"`driver_index` 才是 0 起算。抄錯一邊會讓每一首都差一格，"+
-		"而**每一格都還是合法曲名**，所以不會有任何錯誤訊息。\n\n")
-	fmt.Fprintf(&report, "⚠ 這是 **PC-98** 的版面（名字由 Borland 除錯符號直接讀出）。"+
-		"DOS 沒有符號，對應的格子要另外認。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.2fb54fab6005"))
+	fmt.Fprint(&report, tooltext.Format("h.c5036ad81cf9"))
+	fmt.Fprint(&report, tooltext.Text("h.d42b996ab403")+
+		tooltext.Text("h.c695d120f5c2")+
+		tooltext.Text("h.a52b410b22b7")+
+		tooltext.Text("h.73b69f9c4fac"))
+	fmt.Fprint(&report, tooltext.Text("h.587276721795")+
+		tooltext.Text("h.f92eb9453f3b"))
 
-	fmt.Fprintf(&report, "| 總計 | 數量 |\n|---|---:|\n")
+	fmt.Fprint(&report, tooltext.Format("h.91130546f2ec"))
 	byForm := map[string]int{}
 	for _, item := range triggers {
 		byForm[item.form]++
 	}
-	fmt.Fprintf(&report, "| 換曲點（`mov byte [MUSICNO], imm`）| %d |\n", byForm["`mov byte [MUSICNO], imm`"])
-	fmt.Fprintf(&report, "| 換曲點（曲號直接推給 `MSCPLAY`）| %d |\n", byForm["`push imm` → `MSCPLAY`"])
-	fmt.Fprintf(&report, "| 換曲點合計 | %d |\n", len(triggers))
-	fmt.Fprintf(&report, "| 被選到的相異曲目 | %d |\n", len(used))
-	fmt.Fprintf(&report, "| game pack 宣告的曲目 | %d |\n\n", len(selectors))
+	fmt.Fprint(&report, tooltext.Format("h.7b799cde9e3a", byForm["`mov byte [MUSICNO], imm`"]))
+	fmt.Fprint(&report, tooltext.Format("h.ce1a2c9705ed", byForm["`push imm` → `MSCPLAY`"]))
+	fmt.Fprint(&report, tooltext.Format("h.9f9c0365b7bf", len(triggers)))
+	fmt.Fprint(&report, tooltext.Format("h.63b44d9315a0", len(used)))
+	fmt.Fprint(&report, tooltext.Format("h.37c6d52044b1", len(selectors)))
 
-	fmt.Fprintf(&report, "| 模組 | 單元 | 位移 | 形狀 | 選擇子 | 曲目 |\n|---|---|---:|---|---:|---|\n")
+	fmt.Fprint(&report, tooltext.Format("h.83e64ff0b57a"))
 	for _, item := range triggers {
 		unit := item.unit
 		if unit == "" {
@@ -246,9 +247,9 @@ func main() {
 	// 播放常式的呼叫點：音效那一半在這裡。
 	soundRoutines := loadSoundRoutines(*symbols, soundSegmentNumber)
 	if routines, total := soundCallSites(*root, *resident); total > 0 {
-		fmt.Fprintf(&report, "\n## 播放常式的呼叫點（音效那一半）\n\n")
-		fmt.Fprintf(&report, "`SOUNDX` 那一組常式在程式碼段 `%sh`，段內位移取自 Borland 符號表。\n\n", soundSegment)
-		fmt.Fprintf(&report, "| 常式 | 位移 | 呼叫點 | 來源模組 |\n|---|---:|---:|---|\n")
+		fmt.Fprint(&report, tooltext.Format("h.1a332a3387a0"))
+		fmt.Fprint(&report, tooltext.Format("h.df84acefda75", soundSegment))
+		fmt.Fprint(&report, tooltext.Format("h.9b07ea04d8a4"))
 		offsets := make([]int, 0, len(routines))
 		for offset := range routines {
 			offsets = append(offsets, offset)
@@ -257,7 +258,7 @@ func main() {
 		for _, offset := range offsets {
 			name, known := soundRoutines[offset]
 			if !known {
-				name = "（符號表沒有這一格）"
+				name = tooltext.Text("h.788f39d8378b")
 			}
 			modules := make([]string, 0, len(routines[offset]))
 			for module, count := range routines[offset] {
@@ -270,27 +271,26 @@ func main() {
 			}
 			fmt.Fprintf(&report, "| %s | `%04Xh` | %d | %s |\n", name, offset, count, strings.Join(modules, "、"))
 		}
-		fmt.Fprintf(&report, "\n合計 %d 處。\n\n", total)
+		fmt.Fprint(&report, tooltext.Format("h.d1c34d08a667", total))
 		sites := scanSoundFXSites(*root, *resident, *symbols)
 		if effects, resolved, unresolved := tallySites(sites); resolved+unresolved > 0 {
-			fmt.Fprintf(&report, "### `SOUNDFX` 每一處在放什麼音效\n\n")
-			fmt.Fprintf(&report, "引數是**音效描述子變數**（`push word [位址]`），不是編號；"+
-				"名字由 PC-98 的 Borland 除錯符號直接讀出。\n\n")
-			fmt.Fprintf(&report, "⚠ 只找立即數的話只解得出 5 處——會得到「大部分音效查不到」"+
-				"這個假結論。真正的形狀是推變數。\n\n")
-			fmt.Fprintf(&report, "⚠ 這一節**直掃位元組**（`9A 00 00 93 08`），不走 far-call 對照表。"+
-				"表只收得到 IDA 認成程式碼的呼叫點，比實際少 12 處，而且其中一處會改結論："+
-				"`LIGHTNINGFX` 在表裡是 0 處，看起來像「remake 有、原版沒有」，"+
-				"實際上它在 `CASTSPELL` 裡。**假零的來源是掃描面，不是原作。**\n\n")
+			fmt.Fprint(&report, tooltext.Format("h.a2687669cf08"))
+			fmt.Fprint(&report, tooltext.Text("h.47aecdbf90b9")+
+				tooltext.Text("h.81c9c51d2862"))
+			fmt.Fprint(&report, tooltext.Text("h.3064ea53271c")+
+				tooltext.Text("h.0981e4937a0a"))
+			fmt.Fprint(&report, tooltext.Text("h.9ee0225ba472")+
+				tooltext.Text("h.7ccda174345f")+
+				tooltext.Text("h.2d17f50b39e3")+
+				tooltext.Text("h.d860808f8768"))
 			if mapped, subset := crossCheckFarCallMap(*farCallMap, sites); mapped > 0 {
-				verdict := "**表裡有而直掃沒有**——直掃漏了，要查"
+				verdict := tooltext.Text("h.53529448ec78")
 				if subset {
-					verdict = "表裡那些是直掃的真子集"
+					verdict = tooltext.Text("h.10fc258e58a2")
 				}
-				fmt.Fprintf(&report, "★ **交叉檢查**：far-call 對照表列 %d 處、直掃 %d 處；%s。\n\n",
-					mapped, len(sites), verdict)
+				fmt.Fprint(&report, tooltext.Format("h.401dbe4b35a1", mapped, len(sites), verdict))
 			}
-			fmt.Fprintf(&report, "| 音效 | 呼叫點 | 來源模組 |\n|---|---:|---|\n")
+			fmt.Fprint(&report, tooltext.Format("h.5198002eaba7"))
 			keys := make([]string, 0, len(effects))
 			for name := range effects {
 				keys = append(keys, name)
@@ -306,17 +306,17 @@ func main() {
 				sort.Strings(modules)
 				fmt.Fprintf(&report, "| %s | %d | %s |\n", name, count, strings.Join(modules, "、"))
 			}
-			fmt.Fprintf(&report, "\n解出 %d 處，還有 %d 處的引數靜態看不出來。\n\n", resolved, unresolved)
+			fmt.Fprint(&report, tooltext.Format("h.837f8054fad9", resolved, unresolved))
 
 			// 逐處攤開：**「幾處」回答不了「什麼時候響」**，而後者才是 remake
 			// 接得上接不上的依據。所在常式由 Borland 符號表推（同段裡位移不大於
 			// 呼叫點的最後一個符號）。
 			if len(sites) > 0 {
-				fmt.Fprintf(&report, "#### 逐處：哪一支常式在放\n\n")
-				fmt.Fprintf(&report, "所在常式取**同段裡位移不大於呼叫點的最後一個符號**。"+
-					"符號表只收得到公開程序，所以模組內部的靜態常式會掛在前一個公開名字底下"+
-					"——標成 `A＋n`，那個 `n` 就是它離公開入口多遠，不要當成「就是 A」。\n\n")
-				fmt.Fprintf(&report, "| 音效 | 模組 | 位移 | 所在常式 |\n|---|---|---:|---|\n")
+				fmt.Fprint(&report, tooltext.Format("h.42b1afe221f7"))
+				fmt.Fprint(&report, tooltext.Text("h.8a764bd0b916")+
+					tooltext.Text("h.7715c0ba97b5")+
+					tooltext.Text("h.eae01ecdd928"))
+				fmt.Fprint(&report, tooltext.Format("h.b27432477059"))
 				for _, site := range sites {
 					fmt.Fprintf(&report, "| %s | `%s` | `%04Xh` | %s |\n",
 						site.effect, site.module, site.ea, site.routine)
@@ -348,26 +348,26 @@ func main() {
 				names = append(names, fmt.Sprintf("`%s` %s", module, unit))
 			}
 			sort.Strings(names)
-			fmt.Fprintf(&report, "### 戰鬥進行中會不會換曲\n\n")
-			fmt.Fprintf(&report, "打起來之後跑的是 %s。這幾個模組裡：\n\n", strings.Join(names, "、"))
-			fmt.Fprintf(&report, "| | 處 |\n|---|---:|\n")
-			fmt.Fprintf(&report, "| `MSCPLAY`（換曲）| **%d** |\n", music)
-			fmt.Fprintf(&report, "| `SOUNDFX`（音效）| %d |\n\n", effects)
+			fmt.Fprint(&report, tooltext.Format("h.acaff94b123b"))
+			fmt.Fprint(&report, tooltext.Format("h.3f1673ee4f58", strings.Join(names, "、")))
+			fmt.Fprint(&report, tooltext.Format("h.39c330dd9df7"))
+			fmt.Fprint(&report, tooltext.Format("h.7cd06265c23b", music))
+			fmt.Fprint(&report, tooltext.Format("h.574f2a56da72", effects))
 			switch {
 			case music == 0 && effects > 0:
-				fmt.Fprintf(&report, "⇒ **原作在戰鬥進行中不換曲**：曲子在 `INITCOMBAT`"+
-					"（COMPREP，開打之前）選定，整場戰鬥只有音效。"+
-					"「戰鬥 phase 的音樂同步」在原作裡**不存在**，不是 remake 還沒做。\n\n")
-				fmt.Fprintf(&report, "★ 那個 0 有正對照：**同一次掃描**在這幾個模組裡找到 %d 處 "+
-					"`SOUNDFX` ⇒ 掃描面涵蓋得到它們，0 是原作的 0、不是掃描的假零。\n\n", effects)
+				fmt.Fprint(&report, tooltext.Text("h.c076a2b3ac95")+
+					tooltext.Text("h.f8f56cd24f2e")+
+					tooltext.Text("h.cc4c458d86e1"))
+				fmt.Fprintf(&report, tooltext.Text("h.2be47f1e1b66")+
+					tooltext.Text("h.02ec25083533"), effects)
 			case music > 0:
-				fmt.Fprintf(&report, "⇒ 戰鬥模組裡有 %d 處換曲，要逐處判定是哪一個 phase。\n\n", music)
+				fmt.Fprint(&report, tooltext.Format("h.192b449ff84a", music))
 			default:
-				fmt.Fprintf(&report, "⚠ 這幾個模組裡連 `SOUNDFX` 都是 0 ⇒ **掃描面沒有涵蓋到它們**，"+
-					"這個 0 不能讀成「原作不換曲」。\n\n")
+				fmt.Fprint(&report, tooltext.Text("h.398631ba0315")+
+					tooltext.Text("h.49885adebe8f"))
 			}
-			fmt.Fprintf(&report, "⚠ `MSCSTOP` 也只有常駐那一處（玩家關音樂）"+
-				"⇒ 戰鬥中也不會停曲。\n\n")
+			fmt.Fprint(&report, tooltext.Text("h.b0fae69041c5")+
+				tooltext.Text("h.9caf0e04a334"))
 		}
 		// ★ 交叉印證要**算出來**，不能寫死。 兩次獨立的掃描（換曲點 vs
 		// `MSCPLAY` 呼叫點）指到哪些模組是資料，寫死的話資料變了句子不會變——
@@ -389,22 +389,22 @@ func main() {
 			}
 			sort.Strings(both)
 			sort.Strings(onlyPlay)
-			fmt.Fprintf(&report, "★ **交叉印證**：兩次獨立的掃描——換曲點（資料格寫入／推給 "+
-				"`MSCPLAY` 的立即數）與 `MSCPLAY` 的呼叫點——有 **%d** 個模組重合：%s。\n\n",
+			fmt.Fprintf(&report, tooltext.Text("h.91faae770999")+
+				tooltext.Text("h.d7fb57b06437"),
 				len(both), strings.Join(both, "、"))
 			if len(onlyPlay) > 0 {
-				fmt.Fprintf(&report, "⚠ 另有 **%d** 個模組會叫 `MSCPLAY` 卻不在換曲點表裡：%s。"+
-					"那是**放曲子但不換曲**——沿用 `MUSICNO` 目前的值，或把曲號從變數推進去。"+
-					"⇒ 「哪裡換曲」與「哪裡放曲」是兩件事，不要拿其中一個當另一個的全集。\n\n",
+				fmt.Fprintf(&report, tooltext.Text("h.32012bf3fdf3")+
+					tooltext.Text("h.c8d9d8bf2e80")+
+					tooltext.Text("h.fe8b176bd295"),
 					len(onlyPlay), strings.Join(onlyPlay, "、"))
 			}
 		}
-		fmt.Fprintf(&report, "⚠ 這一節是**位元組直掃**，涵蓋常駐與全部 overlay。"+
-			"改用直掃之前走的是 far-call 對照表，`SOUNDFX` 少 18 處、`MSCPLAY` 少 2 處"+
-			"（少掉的正是 `COMPREP` 那兩處戰鬥音樂），而**下界看起來和全集一樣合理**。\n")
+		fmt.Fprint(&report, tooltext.Text("h.8d1ee822633e")+
+			tooltext.Text("h.ad19403087ca")+
+			tooltext.Text("h.07c6e0c180e1"))
 	}
 
-	fmt.Fprintf(&report, "\n## 沒有任何換曲點選到的曲目\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.22ea335e446f"))
 	missing := make([]string, 0, 4)
 	for selector := range selectors {
 		if !used[selector] {
@@ -413,22 +413,22 @@ func main() {
 	}
 	sort.Strings(missing)
 	if len(missing) == 0 {
-		fmt.Fprintf(&report, "（沒有——**宣告的 %d 首每一首都有地方會選到**。）\n\n", len(selectors))
-		fmt.Fprintf(&report, "⚠ 這個 0 是**改寬掃描面之後**才出現的。只認 "+
-			"`mov byte [MUSICNO], imm` 的時候有兩首（戰鬥、地城二）落在外面，"+
-			"報表只能寫「不能讀成用不到」然後停在那裡。真正的形狀是 `INITCOMBAT`"+
-			"（COMPREP）**把曲號直接推給 `MSCPLAY`**，完全不碰 `MUSICNO`：\n\n")
-		fmt.Fprintf(&report, "```\n"+
+		fmt.Fprint(&report, tooltext.Format("h.54f42cb556f8", len(selectors)))
+		fmt.Fprint(&report, tooltext.Text("h.ce900d389385")+
+			tooltext.Text("h.16516383f7cb")+
+			tooltext.Text("h.b8c8ccdb862e")+
+			tooltext.Text("h.6527445c688f"))
+		fmt.Fprint(&report, "```\n"+
 			"cmp byte [LOADMONNUM], 47h\n"+
-			"jnz  →  mov al, 07h  ; 戰鬥\n"+
-			"        mov al, 0Bh  ; 地城二\n"+
+			tooltext.Text("h.2772b583a21f")+
+			tooltext.Text("h.31f4a8dc7609")+
 			"push ax / call MSCPLAY\n```\n\n")
-		fmt.Fprintf(&report, "⇒ **戰鬥開始換哪一首，取決於載入了哪一組怪物**"+
-			"（`LOADMONNUM` ＝ `8BE2h`，Borland 符號直接讀出）。\n")
+		fmt.Fprint(&report, tooltext.Text("h.d9445a32c88e")+
+			tooltext.Text("h.5f4074f7ccd5"))
 	} else {
 		fmt.Fprintf(&report, "%s\n\n", strings.Join(missing, "、"))
-		fmt.Fprintf(&report, "⚠ 不要直接讀成「這首用不到」：這一支只認 `mov byte [MUSICNO], imm` 這一種形狀。"+
-			"從暫存器或變數寫進去的換曲點看不到——**要下「沒有人選它」的結論得先排除那些形狀**。\n")
+		fmt.Fprint(&report, tooltext.Text("h.b44aedfd37b9")+
+			tooltext.Text("h.9740ebf5d834"))
 	}
 
 	text := report.String()
@@ -444,7 +444,7 @@ func main() {
 func titleFor(titles map[string]string, selectors map[int]string, selector int) string {
 	titleID, ok := selectors[selector]
 	if !ok {
-		return fmt.Sprintf("（選擇子 %d 不在 game pack 裡）", selector)
+		return tooltext.Format("h.74e4d1121349", selector)
 	}
 	if title, found := titles[titleID]; found {
 		return title
@@ -554,11 +554,10 @@ func soundCallSites(root, resident string) (map[int]map[string]int, int) {
 		total += scan(strings.TrimSuffix(name, ".bin"), data, routines)
 	}
 	if data, err := os.ReadFile(filepath.Join(root, resident)); err == nil {
-		total += scan("常駐", data, routines)
+		total += scan(tooltext.Text("h.4671035ec213"), data, routines)
 	}
 	return routines, total
 }
-
 
 // effectSite 是一處 `SOUNDFX` 呼叫點的完整身分。
 type effectSite struct {
@@ -567,7 +566,6 @@ type effectSite struct {
 	ea      int
 	routine string
 }
-
 
 // descriptorAt 往前掃出這一處推的是哪一個音效描述子。
 func descriptorAt(data []byte, ea int) string {
@@ -581,10 +579,10 @@ func descriptorAt(data []byte, ea int) string {
 			if known, found := soundEffectName(address); found {
 				return known
 			}
-			return fmt.Sprintf("（描述子 %04Xh 不在 SOUNDFX 的表裡）", address)
+			return tooltext.Format("h.a0c98a430541", address)
 		}
 		if data[index] == 0xB0 && data[index+2] == 0x50 {
-			return fmt.Sprintf("（立即數 %d）", data[index+1])
+			return tooltext.Format("h.db85e3591778", data[index+1])
 		}
 	}
 	return ""
@@ -654,7 +652,7 @@ func (index symbolIndex) routineAt(module string, ea int) string {
 		best = position
 	}
 	if best < 0 {
-		return "（這一段前面沒有符號）"
+		return tooltext.Text("h.50083effc596")
 	}
 	delta := ea - list[best].offset
 	if delta == 0 {
@@ -714,7 +712,7 @@ func scanSoundFXSites(root, resident, symbolPath string) []effectSite {
 	// 常駐：far-call 對照表不涵蓋，但它自己也叫 `SOUNDFX`（SOUNDHALT／
 	// SOUNDOFF／SOUNDON），不掃就會少 12 處。
 	if data, err := os.ReadFile(filepath.Join(root, resident)); err == nil {
-		collect("常駐", data)
+		collect(tooltext.Text("h.4671035ec213"), data)
 	}
 
 	sort.SliceStable(sites, func(left, right int) bool {

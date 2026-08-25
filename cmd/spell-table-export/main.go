@@ -22,6 +22,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"strings"
@@ -133,18 +134,18 @@ type durationCoefficients struct {
 }
 
 type spellTableFile struct {
-	SchemaVersion int    `json:"schema_version"`
-	Source        string `json:"source"`
-	Spec          string `json:"spec"`
-	NameBase      string `json:"name_table_base"`
-	AttrBase      string `json:"attribute_table_base"`
+	SchemaVersion int           `json:"schema_version"`
+	Source        string        `json:"source"`
+	Spec          string        `json:"spec"`
+	NameBase      string        `json:"name_table_base"`
+	AttrBase      string        `json:"attribute_table_base"`
 	Spells        []spellRecord `json:"spells"`
 }
 
 func main() {
 	dsegPath := flag.String("dseg", "workplace/re-sweep/dos/dseg/dos-dseg-dseg.bin",
-		"常駐資料段的原始 dump")
-	output := flag.String("output", "", "輸出 JSON 路徑；空字串印到 stdout")
+		tooltext.Text("h.721c8d5ef615"))
+	output := flag.String("output", "", tooltext.Text("h.e114c26aade1"))
 	flag.Parse()
 
 	blob, err := os.ReadFile(*dsegPath)
@@ -158,7 +159,7 @@ func main() {
 
 	file := spellTableFile{
 		SchemaVersion: 1,
-		Source:        "DOS START.EXE 常駐資料段（DS:27BDh 名稱、DS:37DAh 屬性）",
+		Source:        tooltext.Text("h.7cf56f518132"),
 		Spec:          "docs/spec/1111-spell-attribute-table.md",
 		NameBase:      fmt.Sprintf("DS:%04Xh", nameBase),
 		AttrBase:      fmt.Sprintf("DS:%04Xh", attrBase),

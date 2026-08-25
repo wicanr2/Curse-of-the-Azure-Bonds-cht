@@ -21,6 +21,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -56,7 +57,7 @@ type blockReport struct {
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	out := flag.String("out", "docs/audit/ecl-cell-events.md", "輸出的 markdown")
+	out := flag.String("out", "docs/audit/ecl-cell-events.md", tooltext.Text("h.aff4479ab1b9"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -82,7 +83,7 @@ func main() {
 	for member := 1; member <= 6; member++ {
 		payload := memberPayload(archive, fmt.Sprintf("ECL%d.DAX", member))
 		if payload == nil {
-			log.Fatalf("image 裡沒有 ECL%d.DAX", member)
+			log.Fatal(tooltext.Format("h.f74a43cb81d6", member))
 		}
 		blocks, err := dax.Parse(payload)
 		if err != nil {
@@ -113,8 +114,7 @@ func main() {
 			}
 		}
 	}
-	fmt.Printf("block=%d 有地形分派=%d 對到格子的場景=%d → %s\n",
-		len(reports), dispatchers, mapped, *out)
+	fmt.Print(tooltext.Format("h.f958a7817e90", len(reports), dispatchers, mapped, *out))
 }
 
 func describe(catalogs map[uint8]geo.Catalog, member int, id uint8, data []byte) blockReport {
@@ -135,7 +135,7 @@ func describe(catalogs map[uint8]geo.Catalog, member int, id uint8, data []byte)
 		return report
 	}
 	if !dispatch.Found {
-		report.note = "沒有以地形碼分派的每格事件"
+		report.note = tooltext.Text("h.c58d07204221")
 		return report
 	}
 	report.found = true
@@ -179,14 +179,14 @@ func terrainIndexCells(catalogs map[uint8]geo.Catalog, set, block uint8, mask in
 
 func render(reports []blockReport) string {
 	var out strings.Builder
-	out.WriteString("# 每格事件對照表（哪一格演哪一場）\n\n" +
-		"由 `cmd/ecl-cell-events` 產生，不要手改。\n\n" +
-		"原作地城 block 的每格事件是 `AND C04F, <遮罩>` ＋ `ON GOTO`：**地形碼就是\n" +
-		"索引**（0 起算）。這張表把 `ON GOTO` 的目的地與 GEO 的地形碼 join 起來。\n\n" +
-		"⚠ 有對照**不等於**走過去就會演：處理常式自己可能還有守衛（once-only 旗標、\n" +
-		"`RANDOM`、前置劇情、`SEARCH`）。實際站上去演出來的敘述見\n" +
+	out.WriteString(tooltext.Text("h.f1fd5664bebd") +
+		tooltext.Text("h.61e768b795ec") +
+		tooltext.Text("h.29ea0bae75c3") +
+		tooltext.Text("h.a1bd3dff539b") +
+		tooltext.Text("h.4e554cc19d76") +
+		tooltext.Text("h.2b0041f944db") +
 		"`docs/audit/cell-sweep.md`。\n\n" +
-		"⚠ 索引 0 是「沒有事件的地面」，格子欄一律留白（那是全圖大半）。\n\n")
+		tooltext.Text("h.d8f549c9e819"))
 	for _, report := range reports {
 		out.WriteString(fmt.Sprintf("## ECL%d／`0x%02X`\n\n", report.member, report.block))
 		if report.tableForm {
@@ -197,9 +197,8 @@ func render(reports []blockReport) string {
 			out.WriteString(report.note + "\n\n")
 			continue
 		}
-		out.WriteString(fmt.Sprintf("地圖：`GEO%d/0x%02X`；索引 ＝ 地形碼 `& 0x%02X`\n\n",
-			report.geoSet, report.geoBlock, report.mask))
-		out.WriteString("| 索引 | 遮罩後 | 格子 | 那一場的第一句 |\n|---:|---|---|---|\n")
+		out.WriteString(tooltext.Format("h.3e15dad6efdd", report.geoSet, report.geoBlock, report.mask))
+		out.WriteString(tooltext.Text("h.dd17d8ff5fef"))
 		for _, event := range report.events {
 			cells := "—"
 			if len(event.cells) > 0 {
@@ -223,10 +222,10 @@ func render(reports []blockReport) string {
 func renderTableForm(report blockReport) string {
 	var out strings.Builder
 	out.WriteString(fmt.Sprintf(
-		"查表分派：索引取自 `%04X`，查 block 自己的表得到 `ON GOTO` 的索引。\n"+
-			"⚠ 索引**不是地形碼**，所以這裡沒有「哪一格」——那要看索引那一格是誰在寫。\n\n",
+		tooltext.Text("h.f1e99fb82599")+
+			tooltext.Text("h.0e52779d2c11"),
 		report.tableIndexCell))
-	out.WriteString("| 值 | 那一場的第一句 |\n|---:|---|\n")
+	out.WriteString(tooltext.Text("h.10ec43b3f94c"))
 	for _, event := range report.events {
 		text := event.text
 		if text == "" {
@@ -237,9 +236,9 @@ func renderTableForm(report blockReport) string {
 		out.WriteString(fmt.Sprintf("| %d | %s |\n", event.index, text))
 	}
 	if len(report.tableValues) > 0 {
-		out.WriteString("\n查表內容（⚠ 表沒有宣告長度，這是探測前 " +
-			fmt.Sprintf("%d", len(report.tableValues)) + " 個索引，" +
-			"超出表尾的部分是相鄰資料）：\n\n")
+		out.WriteString(tooltext.Text("h.3265a3a4e087") +
+			fmt.Sprintf("%d", len(report.tableValues)) + tooltext.Text("h.a1f9a79ddde5") +
+			tooltext.Text("h.b6e278ba0fba"))
 		parts := make([]string, 0, len(report.tableValues))
 		for index, value := range report.tableValues {
 			parts = append(parts, fmt.Sprintf("%d→%d", index, value))

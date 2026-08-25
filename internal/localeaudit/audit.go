@@ -6,6 +6,7 @@ package localeaudit
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -259,7 +260,7 @@ func referencedMessageIDs(pack rawPack) (map[string]bool, []Issue) {
 	for index, rule := range pack.OptionRules {
 		path := fmt.Sprintf("gamepack/events/pit-of-moander.json:option_rules[%d]", index)
 		if rule.ID == "" || rule.Source == "" || rule.MessageID == "" {
-			issues = append(issues, Issue{"violation", "invalid-option-rule", path, "id/source/message_id 必須全部存在"})
+			issues = append(issues, Issue{"violation", "invalid-option-rule", path, tooltext.Text("h.c7a03000c800")})
 		}
 		if previous, ok := seenIDs[rule.ID]; ok && rule.ID != "" {
 			issues = append(issues, Issue{"violation", "duplicate-option-id", path, rule.ID + " also at " + previous})

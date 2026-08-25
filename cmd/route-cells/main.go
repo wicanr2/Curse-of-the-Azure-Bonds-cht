@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"sort"
@@ -43,15 +44,15 @@ type decision struct {
 }
 
 func main() {
-	image := flag.String("image", "curseoftheazurebonds.zip", "遊戲 image")
-	localePath := flag.String("locale", "assets/locale/zh-TW.json", "語系檔")
-	routePath := flag.String("route", "workplace/campaign-frames/route.json", "主線錄下來的路線")
-	cellsOut := flag.String("cells-json", "", "輸出 (block, 地形碼) JSON")
+	image := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.33c48eb91ff0"))
+	localePath := flag.String("locale", "assets/locale/zh-TW.json", tooltext.Text("h.9c3b4db6568f"))
+	routePath := flag.String("route", "workplace/campaign-frames/route.json", tooltext.Text("h.cae25a9066c3"))
+	cellsOut := flag.String("cells-json", "", tooltext.Text("h.2f3a88c275e1"))
 	flag.Parse()
 
 	raw, err := os.ReadFile(*routePath)
 	if err != nil {
-		log.Fatalf("讀不到路線 %s：%v", *routePath, err)
+		log.Fatal(tooltext.Format("h.d6f74fdf6629", *routePath, err))
 	}
 	var route []decision
 	if err := json.Unmarshal(raw, &route); err != nil {
@@ -129,5 +130,5 @@ func main() {
 		blocks = append(blocks, fmt.Sprintf("0x%02X×%d", block, missing[block]))
 	}
 	sort.Strings(blocks)
-	fmt.Fprintf(os.Stderr, "moves=%d cells=%d 查不到圖的段=%v\n", moves, len(records), blocks)
+	fmt.Fprint(os.Stderr, tooltext.Format("h.fa60d931eafe", moves, len(records), blocks))
 }

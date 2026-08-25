@@ -17,6 +17,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"sort"
@@ -29,19 +30,19 @@ import (
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	member := flag.String("member", "ECL6.DAX", "ECL 成員")
-	block := flag.String("block", "40", "block 編號（十六進位）")
-	opcode := flag.String("opcode", "20", "要找的 opcode（十六進位）")
-	operand := flag.String("operand", "", "第一個運算元要等於這個值（十六進位）；留白就不限")
-	text := flag.String("text", "", "改成找「打包文字裡含有這個子字串」的指令；設了就不看 opcode")
-	into := flag.String("into", "", "改成列出「跳到這個位移」的指令（十六進位）；用來找某段程式碼的守衛")
-	table := flag.String("table", "", "改成把這個位移的 `ON GOTO` 表拆開，逐個索引印出目的地與那裡的第一句文字")
-	getTable := flag.String("gettable", "", "改成把這個位移的 `GETTABLE` 查表拆開：逐個索引印出查到的值；後面緊接 `ON GOTO` 時一併印出那個值對到哪一支處理常式")
-	getCount := flag.Int("gettable-count", 32, "`-gettable` 要印幾個索引")
-	at := flag.String("at", "", "改成從這個位移開始往下印（十六進位）；`-after` 決定印幾條")
-	raw := flag.Bool("raw", false, "每一條額外印出原始位元組（變長指令用）")
-	before := flag.Int("before", 8, "往前印幾條")
-	after := flag.Int("after", 2, "往後印幾條")
+	member := flag.String("member", "ECL6.DAX", tooltext.Text("h.7fc9c661ba53"))
+	block := flag.String("block", "40", tooltext.Text("h.2713767dcc40"))
+	opcode := flag.String("opcode", "20", tooltext.Text("h.a707fee6b434"))
+	operand := flag.String("operand", "", tooltext.Text("h.6bf8bcc70c7f"))
+	text := flag.String("text", "", tooltext.Text("h.b8048ccd0252"))
+	into := flag.String("into", "", tooltext.Text("h.50dca18a4330"))
+	table := flag.String("table", "", tooltext.Text("h.34b9ecb021e2"))
+	getTable := flag.String("gettable", "", tooltext.Text("h.8667ce09b72d"))
+	getCount := flag.Int("gettable-count", 32, tooltext.Text("h.9e1e87318ff2"))
+	at := flag.String("at", "", tooltext.Text("h.7f56596244b1"))
+	raw := flag.Bool("raw", false, tooltext.Text("h.a44eb63d8142"))
+	before := flag.Int("before", 8, tooltext.Text("h.a5f00ce09029"))
+	after := flag.Int("after", 2, tooltext.Text("h.13950847a639"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -51,7 +52,7 @@ func main() {
 	defer archive.Close()
 	payload := memberPayload(archive, *member)
 	if payload == nil {
-		log.Fatalf("image 裡沒有 %s", *member)
+		log.Fatal(tooltext.Format("h.13356c0db288", *member))
 	}
 	blocks, err := dax.Parse(payload)
 	if err != nil {
@@ -68,7 +69,7 @@ func main() {
 		}
 	}
 	if data == nil {
-		log.Fatalf("%s 沒有區塊 0x%02X", *member, wanted)
+		log.Fatal(tooltext.Format("h.99998dd4110c", *member, wanted))
 	}
 	target, err := strconv.ParseUint(strings.TrimPrefix(*opcode, "0x"), 16, 8)
 	if err != nil {
@@ -117,7 +118,7 @@ func main() {
 		}
 		instruction, ok := unique[int(wantOffset)]
 		if !ok {
-			log.Fatalf("位移 %#04x 不在可達指令裡", wantOffset)
+			log.Fatal(tooltext.Format("h.e0979e0a37a8", wantOffset))
 		}
 		end := instruction.Next
 		for _, offset := range offsets {
@@ -128,8 +129,7 @@ func main() {
 		}
 		// ⚠ 走訪用的位移與 payload 差兩個位元組（區塊標頭）。
 		raw := data[int(wantOffset)+2 : end+2]
-		fmt.Printf("%s 區塊 0x%02X 的 %s 表（位移 %#04x）：% x\n\n",
-			*member, wanted, instruction.Command.Name, wantOffset, raw)
+		fmt.Print(tooltext.Format("h.ba85062756eb", *member, wanted, instruction.Command.Name, wantOffset, raw))
 		// 版面是：opcode、被分派的運算元、個數、然後每個索引一個 word 目的地。
 		cursor := 1
 		cursor += operandWidth(raw[cursor:])
@@ -139,8 +139,7 @@ func main() {
 			target := int(raw[cursor+1]) | int(raw[cursor+2])<<8
 			cursor += 3
 			payloadOffset := target - ecl.CodeAddressBase
-			fmt.Printf("索引 %2d → %#04x  %s\n", index, payloadOffset,
-				firstTextAt(unique, offsets, payloadOffset))
+			fmt.Print(tooltext.Format("h.6c0bbe56e1b2", index, payloadOffset, firstTextAt(unique, offsets, payloadOffset)))
 			if index+1 >= count {
 				break
 			}
@@ -170,7 +169,7 @@ func main() {
 			if low < 0 {
 				low = 0
 			}
-			fmt.Printf("=== 跳進 %#04x 的來源：%#04x ===\n", wantOffset, source)
+			fmt.Print(tooltext.Format("h.a484cb752d50", wantOffset, source))
 			for cursor := low; cursor <= index && cursor < len(offsets); cursor++ {
 				marker := "   "
 				if cursor == index {
@@ -180,7 +179,7 @@ func main() {
 			}
 			fmt.Println()
 		}
-		fmt.Printf("%s 區塊 0x%02X：跳進 %#04x 的來源 %d 處\n", *member, wanted, wantOffset, len(keys))
+		fmt.Print(tooltext.Format("h.4e2cf09eeb9b", *member, wanted, wantOffset, len(keys)))
 		return
 	}
 
@@ -191,7 +190,7 @@ func main() {
 		}
 		index := sort.SearchInts(offsets, int(wantOffset))
 		if index >= len(offsets) {
-			log.Fatalf("位移 %#04x 之後沒有可達指令", wantOffset)
+			log.Fatal(tooltext.Format("h.a25b0fb3fee9", wantOffset))
 		}
 		low := index - *before
 		if low < 0 {
@@ -227,7 +226,7 @@ func main() {
 			}
 		}
 		hits++
-		fmt.Printf("=== 命中 #%d：位移 %#04x %s ===\n", hits, offset, instruction.Command.Name)
+		fmt.Print(tooltext.Format("h.46f1794923ea", hits, offset, instruction.Command.Name))
 		low := index - *before
 		if low < 0 {
 			low = 0
@@ -252,13 +251,13 @@ func main() {
 				// 所以印原始位元組要補回來。
 				low, high := instruction.Offset+2, end+2
 				if low >= 0 && high <= len(data) && high > low {
-					fmt.Printf("        原始 % x\n", data[low:high])
+					fmt.Print(tooltext.Format("h.d2f692e229bd", data[low:high]))
 				}
 			}
 		}
 		fmt.Println()
 	}
-	fmt.Printf("%s 區塊 0x%02X：可達指令 %d 條，命中 %d 處\n", *member, wanted, len(offsets), hits)
+	fmt.Print(tooltext.Format("h.181715c2f368", *member, wanted, len(offsets), hits))
 }
 
 // operandWidth 回傳一個運算元佔幾個位元組。0x00 是位元組運算元（`00 vv`），
@@ -284,7 +283,7 @@ func firstTextAt(unique map[int]ecl.Instruction, offsets []int, start int) strin
 			}
 		}
 	}
-	return "（前 12 條裡沒有文字）"
+	return tooltext.Text("h.5c3ffe87c47a")
 }
 
 func containsText(instruction ecl.Instruction, needle string) bool {
@@ -327,16 +326,15 @@ func dumpGetTable(member string, block uint8, data []byte,
 	}
 	instruction, ok := unique[int(wantOffset)]
 	if !ok {
-		log.Fatalf("位移 %#04x 不在可達指令裡", wantOffset)
+		log.Fatal(tooltext.Format("h.e0979e0a37a8", wantOffset))
 	}
 	if instruction.Command.Name != "GETTABLE" || len(instruction.Operands) < 3 {
-		log.Fatalf("位移 %#04x 是 %s，不是 GETTABLE", wantOffset, instruction.Command.Name)
+		log.Fatal(tooltext.Format("h.a4e3b4b7097e", wantOffset, instruction.Command.Name))
 	}
 	base := int(instruction.Operands[0].Word) - ecl.CodeAddressBase
 	source := operandLabel(instruction.Operands[1])
 	dest := operandLabel(instruction.Operands[2])
-	fmt.Printf("%s 區塊 0x%02X 的 GETTABLE（位移 %#04x）：表在 %#04x，索引取自 %s，結果存進 %s\n\n",
-		member, block, wantOffset, base, source, dest)
+	fmt.Print(tooltext.Format("h.c40c8f04b93d", member, block, wantOffset, base, source, dest))
 
 	// 後面緊接的 `ON GOTO` 決定「查到的值」能對到哪一支處理常式。
 	targets := map[int]int{}
@@ -350,17 +348,15 @@ func dumpGetTable(member string, block uint8, data []byte,
 				continue
 			}
 			targets, onGotoCount = decodeOnGoto(data, unique, offsets, offsets[cursor])
-			fmt.Printf("後面緊接 `ON GOTO`（位移 %#04x，%d 個索引）\n\n",
-				offsets[cursor], onGotoCount)
+			fmt.Print(tooltext.Format("h.3753a22d7e7d", offsets[cursor], onGotoCount))
 		}
 		break
 	}
 	if onGotoCount > 0 && count > onGotoCount {
 		// 表的長度沒有宣告，但值必須落在 `ON GOTO` 的範圍內才有意義。
-		fmt.Printf("⚠ `ON GOTO` 只有 %d 個索引，查到的值超過它就沒有對應的處理常式。\n\n",
-			onGotoCount)
+		fmt.Print(tooltext.Format("h.276ebc1f2eb6", onGotoCount))
 	}
-	fmt.Println("| 索引 | 查到的值 | 對到的處理常式 |")
+	fmt.Println(tooltext.Text("h.963e8c6ab149"))
 	fmt.Println("|---:|---:|---|")
 	for index := 0; index < count; index++ {
 		cell := base + index + 2 // ⚠ payload 與走訪位移差兩個位元組（區塊標頭）
@@ -373,7 +369,7 @@ func dumpGetTable(member string, block uint8, data []byte,
 			text := firstTextAt(unique, offsets, target)
 			handler = fmt.Sprintf("%#04x %s", target, text)
 		} else if onGotoCount > 0 {
-			handler = "（超出 `ON GOTO` 的範圍）"
+			handler = tooltext.Text("h.f13af05aecb8")
 		}
 		fmt.Printf("| %d | %d | %s |\n", index, value, handler)
 	}

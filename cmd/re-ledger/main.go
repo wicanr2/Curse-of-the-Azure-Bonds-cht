@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -135,9 +136,9 @@ type outFunction struct {
 type moduleStat struct {
 	Platform, Module, Unit                       string
 	Functions, Read, NotBlocking, Todo, Fragment int
-	CodeBytes, Undefined, SegmentBytes int
-	Instructions                       int
-	SHA256                             string
+	CodeBytes, Undefined, SegmentBytes           int
+	Instructions                                 int
+	SHA256                                       string
 }
 
 func die(err error) {
@@ -204,12 +205,12 @@ func docCitations(root string) (map[string]map[int][]string, error) {
 }
 
 func main() {
-	sweepDir := flag.String("sweep", "workplace/re-sweep", "全掃輸出根目錄")
-	docsDir := flag.String("docs", "docs", "掃描引用的文件根目錄")
-	ledgerPath := flag.String("ledger", "docs/audit/re-function-ledger.json", "人工判定台帳")
+	sweepDir := flag.String("sweep", "workplace/re-sweep", tooltext.Text("h.c8c406146286"))
+	docsDir := flag.String("docs", "docs", tooltext.Text("h.deff32f5f98a"))
+	ledgerPath := flag.String("ledger", "docs/audit/re-function-ledger.json", tooltext.Text("h.8538b0861458"))
 	outJSON := flag.String("out-json", "docs/audit/coab-function-index.json", "")
 	outMD := flag.String("out-md", "docs/audit/coab-function-index.md", "")
-	outDetail := flag.String("out-detail", "docs/audit/function-index", "每個模組的明細目錄")
+	outDetail := flag.String("out-detail", "docs/audit/function-index", tooltext.Text("h.8692b60fe460"))
 	flag.Parse()
 
 	var ledger ledgerFile
@@ -310,7 +311,7 @@ func main() {
 					Instr: function.Instructions, Callers: len(function.Callers),
 					Calls: len(function.Calls), IsEntry: entrySeeds[function.EA],
 					Symbol: symbolByModule[name][function.EA],
-					State:  "待解讀",
+					State:  tooltext.Text("h.5f65ebe71610"),
 				}
 				if rule, ok := rulesByKey[platform+"/"+name]; ok {
 					record.State, record.Note = rule.State, rule.Reason
@@ -328,11 +329,11 @@ func main() {
 					record.Citations = uniqueStrings(hits)
 				}
 				switch record.State {
-				case "已解讀":
+				case tooltext.Text("h.4e0bb7d0bf17"):
 					stat.Read++
-				case "不阻塞":
+				case tooltext.Text("h.0c629c21d625"):
 					stat.NotBlocking++
-				case "邊界碎片":
+				case tooltext.Text("h.6b1ebedfaf86"):
 					// IDA 在 raw overlay 上建錯的函式邊界；不是真的函式，
 					// 單獨計數才不會讓分母與待解讀數失真。
 					stat.Fragment++
@@ -388,14 +389,12 @@ func main() {
 	}
 	orphanRead := 0
 	for _, entry := range orphans {
-		if entry.State == "已解讀" {
+		if entry.State == tooltext.Text("h.4e0bb7d0bf17") {
 			orphanRead++
 		}
 	}
-	fmt.Fprintf(os.Stderr, "functions=%d 已解讀=%d 不阻塞=%d 邊界碎片=%d 待解讀=%d → %s\n",
-		total, read, notBlocking, fragment, todo, *outMD)
-	fmt.Fprintf(os.Stderr, "台帳孤兒=%d（其中掛「已解讀」=%d）：位址對不上目前的函式起點，不計入上面的數字\n",
-		len(orphans), orphanRead)
+	fmt.Fprint(os.Stderr, tooltext.Format("h.d38280e35b6c", total, read, notBlocking, fragment, todo, *outMD))
+	fmt.Fprint(os.Stderr, tooltext.Format("h.8cb28ebf9135", len(orphans), orphanRead))
 }
 
 func uniqueStrings(values []string) []string {
@@ -416,12 +415,12 @@ func uniqueStrings(values []string) []string {
 
 func writeMarkdown(indexPath, detailDir string, stats []moduleStat, functions []outFunction, orphans []ledgerEntry) {
 	var builder strings.Builder
-	builder.WriteString("# CoAB 全函式覆蓋台帳\n\n")
-	builder.WriteString("本檔由 `cmd/re-ledger` 產生，不要手改。狀態來源是\n")
-	builder.WriteString("`docs/audit/re-function-ledger.json`（人工判定），預設 `待解讀`。\n")
-	builder.WriteString("函式全集來自 `tools/re-sweep.sh` 的 IDA 匯出，可重跑重生。\n\n")
-	builder.WriteString("`引用` 欄只是提示：有文件提到同一個 overlay 與同一個十六進位值，\n")
-	builder.WriteString("**不等於**該函式已被解讀；沒命中也不代表沒人寫過。\n\n")
+	builder.WriteString(tooltext.Text("h.7b50aa6a444f"))
+	builder.WriteString(tooltext.Text("h.9a505e811528"))
+	builder.WriteString(tooltext.Text("h.404652a093e8"))
+	builder.WriteString(tooltext.Text("h.1bb9aed8b116"))
+	builder.WriteString(tooltext.Text("h.be8a73fd2a10"))
+	builder.WriteString(tooltext.Text("h.d5ada40132b1"))
 
 	byPlatform := map[string][]int{}
 	for index, stat := range stats {
@@ -443,36 +442,33 @@ func writeMarkdown(indexPath, detailDir string, stats []moduleStat, functions []
 			undefined += stats[i].Undefined
 		}
 		fmt.Fprintf(&builder, "## %s\n\n", strings.ToUpper(platform))
-		fmt.Fprintf(&builder, "模組 %d／函式 %d：已解讀 %d、不阻塞 %d、邊界碎片 %d、"+
-			"待解讀 %d；已定義程式碼 %d bytes，未定義 %d bytes。\n\n",
+		fmt.Fprintf(&builder, tooltext.Text("h.89e98f0623d2")+
+			tooltext.Text("h.8c3e88ac01e2"),
 			len(indexes), functionCount, read, notBlocking, fragment, todo, code, undefined)
-		builder.WriteString("| 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |\n")
+		builder.WriteString(tooltext.Text("h.0e3bf3837130"))
 		builder.WriteString("|---|---|---:|---:|---:|---:|---:|---:|---:|---|\n")
 		for _, i := range indexes {
 			stat := stats[i]
 			detail := fmt.Sprintf("%s-%s.md", stat.Platform, stat.Module)
-			fmt.Fprintf(&builder, "| %s | %s | %d | %d | %d | %d | %d | %d | %d | [明細](function-index/%s) |\n",
-				stat.Module, orDash(stat.Unit), stat.Functions, stat.Read,
-				stat.NotBlocking, stat.Fragment, stat.Todo, stat.CodeBytes,
-				stat.Undefined, detail)
+			fmt.Fprint(&builder, tooltext.Format("h.93eb52077cff", stat.Module, orDash(stat.Unit), stat.Functions, stat.Read, stat.NotBlocking, stat.Fragment, stat.Todo, stat.CodeBytes, stat.Undefined, detail))
 		}
 		builder.WriteString("\n")
 	}
 	if len(orphans) > 0 {
 		orphanRead := 0
 		for _, entry := range orphans {
-			if entry.State == "已解讀" {
+			if entry.State == tooltext.Text("h.4e0bb7d0bf17") {
 				orphanRead++
 			}
 		}
-		builder.WriteString("## 台帳孤兒\n\n")
-		fmt.Fprintf(&builder, "人工台帳有 %d 列的位址對不上目前任何函式起點，"+
-			"其中 %d 列掛著「已解讀」。\n", len(orphans), orphanRead)
-		builder.WriteString("上面的統計**不包含**它們——這些列不會出現在任何模組明細裡，\n")
-		builder.WriteString("所以它們宣告的解讀成果目前沒有對應的函式。成因通常是 IDA 重掃後\n")
-		builder.WriteString("函式邊界改變；處置是逐列判定「搬到新的起點」或「刪除」，\n")
-		builder.WriteString("不要靠改統計數字掩蓋。\n\n")
-		builder.WriteString("| 平台 | 模組 | 位址 | 狀態 | 規格／理由 |\n")
+		builder.WriteString(tooltext.Text("h.4b2a4d9681d5"))
+		fmt.Fprintf(&builder, tooltext.Text("h.f871566c85fb")+
+			tooltext.Text("h.df8e06ebd4ae"), len(orphans), orphanRead)
+		builder.WriteString(tooltext.Text("h.d5413c310ba6"))
+		builder.WriteString(tooltext.Text("h.5f724c4e4ddf"))
+		builder.WriteString(tooltext.Text("h.dbe524438171"))
+		builder.WriteString(tooltext.Text("h.ff1c78f63d39"))
+		builder.WriteString(tooltext.Text("h.68acfa2b6d4b"))
 		builder.WriteString("|---|---|---|---|---|\n")
 		for _, entry := range orphans {
 			fmt.Fprintf(&builder, "| %s | %s | `%04X` | %s | %s |\n",
@@ -493,10 +489,10 @@ func writeMarkdown(indexPath, detailDir string, stats []moduleStat, functions []
 	for key, list := range perModule {
 		sort.Slice(list, func(i, j int) bool { return list[i].EA < list[j].EA })
 		var detail strings.Builder
-		fmt.Fprintf(&detail, "# %s 函式明細\n\n", key)
-		detail.WriteString("由 `cmd/re-ledger` 產生。位址是模組內位址：overlay 為 code-local\n")
-		detail.WriteString("offset（base 0），resident executable 為 IDA linear address。\n\n")
-		detail.WriteString("| 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |\n")
+		fmt.Fprint(&detail, tooltext.Format("h.ca8817ca2e95", key))
+		detail.WriteString(tooltext.Text("h.4ceffa855ba3"))
+		detail.WriteString(tooltext.Text("h.08c576e8d99a"))
+		detail.WriteString(tooltext.Text("h.7ebe1e90de31"))
 		detail.WriteString("|---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|\n")
 		for _, function := range list {
 			entry := ""

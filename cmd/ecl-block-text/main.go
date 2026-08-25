@@ -8,6 +8,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"sort"
@@ -20,10 +21,10 @@ import (
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	member := flag.String("member", "", "ECL 成員，例如 ECL5.DAX；留白就全部")
-	block := flag.String("block", "", "block 編號（十六進位，例如 32）；留白就全部")
-	limit := flag.Int("limit", 6, "每個 block 印幾條")
-	minLength := flag.Int("min-length", 24, "片段最短長度")
+	member := flag.String("member", "", tooltext.Text("h.d24bc0bf05b6"))
+	block := flag.String("block", "", tooltext.Text("h.c4722a3ca230"))
+	limit := flag.Int("limit", 6, tooltext.Text("h.3b119290b495"))
+	minLength := flag.Int("min-length", 24, tooltext.Text("h.3a244cf8a197"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -63,7 +64,7 @@ func main() {
 			if *block != "" {
 				wanted, err := strconv.ParseUint(*block, 16, 8)
 				if err != nil {
-					log.Fatalf("block 不是十六進位：%v", err)
+					log.Fatal(tooltext.Format("h.a85d8c7962b3", err))
 				}
 				if uint64(raw.Entry.ID) != wanted {
 					continue

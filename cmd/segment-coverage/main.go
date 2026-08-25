@@ -19,6 +19,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -47,7 +48,7 @@ type coverage struct {
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
-	out := flag.String("out", "docs/audit/segment-coverage.md", "輸出的 markdown")
+	out := flag.String("out", "docs/audit/segment-coverage.md", tooltext.Text("h.aff4479ab1b9"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -107,11 +108,11 @@ func main() {
 	}
 	wired := 0
 	for _, row := range rows {
-		if row.translated == "中文" {
+		if row.translated == tooltext.Text("h.72726d8818f6") {
 			wired++
 		}
 	}
-	fmt.Printf("段=%d 入口文字已中文化=%d → %s\n", len(rows), wired, *out)
+	fmt.Print(tooltext.Format("h.da6f2ccbbc48", len(rows), wired, *out))
 }
 
 func measure(catalog locale.Catalog, blocks map[uint8][]byte,
@@ -137,7 +138,7 @@ func measure(catalog locale.Catalog, blocks map[uint8][]byte,
 		return row
 	}
 	if err := state.EnterSegment(seg); err != nil {
-		row.note = "進不去：" + err.Error()
+		row.note = tooltext.Text("h.1e5d9d1f7560") + err.Error()
 		return row
 	}
 	row.art = artKind(&state)
@@ -152,11 +153,11 @@ func measure(catalog locale.Catalog, blocks map[uint8][]byte,
 func artKind(state *game.State) string {
 	switch {
 	case state.SceneCharacterRequested:
-		return "人物圖層"
+		return tooltext.Text("h.b6c8b0528e55")
 	case state.BigPictureRequested:
-		return "大圖"
+		return tooltext.Text("h.ba6130decfe8")
 	case state.PictureRequested:
-		return "事件圖"
+		return tooltext.Text("h.e099d7c4c13a")
 	}
 	return "—"
 }
@@ -175,9 +176,9 @@ func languageOf(text string) string {
 	}
 	switch {
 	case hasHan:
-		return "中文"
+		return tooltext.Text("h.72726d8818f6")
 	case hasLatin:
-		return "原文"
+		return tooltext.Text("h.354b28c85333")
 	}
 	return "—"
 }
@@ -190,14 +191,14 @@ func advanceOnce(state *game.State) string {
 	case state.Mode == game.ModeEvent:
 		// 事件模式的選單要按繼續，`Select` 只在世界地圖與地點模式收得下去。
 		if err := state.Continue(); err != nil {
-			return "繼續失敗：" + err.Error()
+			return tooltext.Text("h.2e2a749825c6") + err.Error()
 		}
 	case len(state.Choices) > 0:
 		if err := state.Select(0); err != nil {
-			return "選第一項失敗：" + err.Error()
+			return tooltext.Text("h.a1460ec5be6f") + err.Error()
 		}
 	default:
-		return "入口沒有可走的下一步"
+		return tooltext.Text("h.2b6b63b752d8")
 	}
 	return fmt.Sprintf("%s → %s／%s", modeName(before), modeName(state.Mode),
 		languageOf(state.Message))
@@ -206,23 +207,23 @@ func advanceOnce(state *game.State) string {
 func modeName(mode game.Mode) string {
 	switch mode {
 	case game.ModeTitle:
-		return "標題"
+		return tooltext.Text("h.6fe38ed1ee10")
 	case game.ModeWilderness:
-		return "世界地圖"
+		return tooltext.Text("h.58f78bc6a875")
 	case game.ModeEvent:
-		return "事件"
+		return tooltext.Text("h.c560201b331c")
 	case game.ModeMap:
-		return "地圖"
+		return tooltext.Text("h.90e1b1b8a537")
 	case game.ModePlace:
-		return "地點"
+		return tooltext.Text("h.af2cfdb525ff")
 	case game.ModeCombat:
-		return "戰鬥"
+		return tooltext.Text("h.625dd417c2c3")
 	case game.ModeJournal:
-		return "手札"
+		return tooltext.Text("h.53ce36b5da9e")
 	case game.ModeCharacterCreation:
-		return "建角"
+		return tooltext.Text("h.894d0b190ab5")
 	case game.ModeDungeon:
-		return "地城"
+		return tooltext.Text("h.c014266366bb")
 	}
 	return "?"
 }
@@ -241,18 +242,18 @@ func firstLine(text string) string {
 
 func render(rows []coverage) string {
 	var out strings.Builder
-	out.WriteString("# 主線分段的接線盤點\n\n" +
-		"由 `cmd/segment-coverage` 產生，不要手改。\n\n" +
-		"每一段用 `-segment <id>` 直接進入之後量的：入口畫面出了什麼、" +
-		"入口文字與選項是中文還是落回原文、從入口再走一步會到哪裡。\n\n" +
-		"⚠ 「中文／原文」是**看有沒有漢字**判定的。原作文字整段是英文，" +
-		"所以沒有漢字而有英文字母就是落回原文；兩者都沒有代表那裡不出文字。\n" +
-		"⚠ 量的是**段的入口**。入口中文不代表整段的文字都接好了——" +
-		"段內的逐頁覆蓋看 `cmd/ecl-text-coverage`。\n" +
-		"⚠ 「入口不出文字」不等於那一段沒接：有幾段是從別段被帶進來的" +
-		"（神殿牢房、城區共用地圖、地下第二層），劇情在前一段的轉移與" +
-		"每回合／搜尋生命週期裡，不在 `initial`。\n\n")
-	out.WriteString("| 段 | 入口畫面 | 入口文字 | 語言 | 選項 | 選項語言 | 再走一步 |\n")
+	out.WriteString(tooltext.Text("h.f945c41aa7de") +
+		tooltext.Text("h.abe421dba89d") +
+		tooltext.Text("h.752b39680d1b") +
+		tooltext.Text("h.f829f7c8448d") +
+		tooltext.Text("h.0a8538915c86") +
+		tooltext.Text("h.05d34a36f74a") +
+		tooltext.Text("h.fa19d9d59bf3") +
+		tooltext.Text("h.f8c7e7b29462") +
+		tooltext.Text("h.1d23b3e74926") +
+		tooltext.Text("h.bc7c19a1b4c7") +
+		tooltext.Text("h.41091c0396c3"))
+	out.WriteString(tooltext.Text("h.fd2a35a9d136"))
 	out.WriteString("|---|---|---|---|---:|---|---|\n")
 	for _, row := range rows {
 		if row.note != "" {
@@ -267,9 +268,9 @@ func render(rows []coverage) string {
 	for _, row := range rows {
 		counts[row.translated]++
 	}
-	out.WriteString(fmt.Sprintf("\n## 摘要\n\n| 入口文字 | 段數 |\n|---|---:|\n"+
-		"| 中文 | %d |\n| 落回原文 | %d |\n| 入口不出文字 | %d |\n",
-		counts["中文"], counts["原文"], counts["—"]))
+	out.WriteString(fmt.Sprintf(tooltext.Text("h.3048482cced7")+
+		tooltext.Text("h.2534211b920a"),
+		counts[tooltext.Text("h.72726d8818f6")], counts[tooltext.Text("h.354b28c85333")], counts["—"]))
 	return out.String()
 }
 

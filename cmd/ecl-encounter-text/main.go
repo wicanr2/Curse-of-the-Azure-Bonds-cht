@@ -22,6 +22,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -59,8 +60,8 @@ type prompt struct {
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	out := flag.String("out", "docs/audit/ecl-encounter-menu-text.md", "輸出的 markdown")
-	localeName := flag.String("locale", "zh-TW", "要查的語系")
+	out := flag.String("out", "docs/audit/ecl-encounter-menu-text.md", tooltext.Text("h.aff4479ab1b9"))
+	localeName := flag.String("locale", "zh-TW", tooltext.Text("h.c1fc2dc11c41"))
 	flag.Parse()
 
 	pack, err := gamepack.Default()
@@ -77,7 +78,7 @@ func main() {
 	for member := 1; member <= 6; member++ {
 		payload := memberPayload(archive, fmt.Sprintf("ECL%d.DAX", member))
 		if payload == nil {
-			log.Fatalf("image 裡沒有 ECL%d.DAX", member)
+			log.Fatal(tooltext.Format("h.f74a43cb81d6", member))
 		}
 		blocks, err := dax.Parse(payload)
 		if err != nil {
@@ -117,8 +118,7 @@ func main() {
 			hiddenGap++
 		}
 	}
-	fmt.Printf("旁白=%d 演得到=%d 演得到但沒接=%d 演不到且沒接=%d → %s\n",
-		len(prompts), shown, shownGap, hiddenGap, *out)
+	fmt.Print(tooltext.Format("h.afea08a6dbc5", len(prompts), shown, shownGap, hiddenGap, *out))
 }
 
 func scanBlock(pack *goldenbox.Pack, localeName string, member int, id uint8,
@@ -206,24 +206,24 @@ func textOf(operand ecl.Operand) string {
 
 func render(prompts []prompt, localeName string) string {
 	var out strings.Builder
-	out.WriteString("# `29h ENCOUNTER MENU` 的旁白有沒有接上譯文\n\n" +
-		"由 `cmd/ecl-encounter-text` 產生，不要手改。\n\n" +
-		"`29h` 帶三句旁白（運算元 9、10、11），原作依距離挑一句。remake 目前只取\n" +
-		"**第一句非空的**（`internal/ecl/runtime.go` 的 `0x29`）。所以缺口分兩種：\n\n" +
-		"- **演得到但沒接**：玩家真的會看到原文，是中文化缺口。\n" +
-		"- **演不到且沒接**：remake 現在演不到那一句，是還原度的缺口。\n\n" +
-		"⚠ 一句一句比對 `all_contains`，不是把三句合起來比——合起來比會讓沒接上的\n" +
-		"那兩句被第一句的規則蓋掉。\n\n" +
-		"⚠ `cmd/ecl-text-coverage` 的分母裡**沒有這個 opcode**，所以那份報告的\n" +
-		"「未接上 0 群」與這一份不衝突：那裡從來沒數過這批文字。\n\n")
-	out.WriteString("| 段 | 位移 | 距離上限 | 旁白 | remake 演得到 | 規則 | 原文 |\n")
+	out.WriteString(tooltext.Text("h.db273f18b616") +
+		tooltext.Text("h.574901e47140") +
+		tooltext.Text("h.cdcfd65c332b") +
+		tooltext.Text("h.6722a82da117") +
+		tooltext.Text("h.3da9caa58c36") +
+		tooltext.Text("h.a410d9f1619c") +
+		tooltext.Text("h.8cf95adabf5b") +
+		tooltext.Text("h.8b6d3c5d6d2c") +
+		tooltext.Text("h.e3b19141a71e") +
+		tooltext.Text("h.3dda84c83c41"))
+	out.WriteString(tooltext.Text("h.6f3a8bde7553"))
 	out.WriteString("|---|---|---:|---:|---|---|---|\n")
 	for _, item := range prompts {
-		shown := "否"
+		shown := tooltext.Text("h.0c70665b6eb6")
 		if item.shown {
-			shown = "是"
+			shown = tooltext.Text("h.b5141d3d19e9")
 		}
-		rule := "**沒有規則**"
+		rule := tooltext.Text("h.cfe26c149eb6")
 		if item.ruleID != "" {
 			rule = "`" + item.ruleID + "`"
 		}
@@ -233,7 +233,7 @@ func render(prompts []prompt, localeName string) string {
 		}
 		distance := fmt.Sprintf("%d", item.distance)
 		if item.distance < 0 {
-			distance = "動態"
+			distance = tooltext.Text("h.fcca5a4d1c91")
 		}
 		out.WriteString(fmt.Sprintf("| `ECL%d/0x%02X` | `%#04x` | %s | %d | %s | %s | %s |\n",
 			item.member, item.block, item.offset, distance, item.slot, shown, rule, text))
@@ -253,10 +253,10 @@ func render(prompts []prompt, localeName string) string {
 			hiddenGap++
 		}
 	}
-	out.WriteString(fmt.Sprintf("\n## 摘要（語系 `%s`）\n\n| 項目 | 數 |\n|---|---:|\n"+
-		"| `29h` 的處數 | %d |\n| 旁白總句數 | %d |\n"+
-		"| remake 演得到的句數 | %d |\n| **演得到但沒接上譯文** | **%d** |\n"+
-		"| remake 演不到的句數 | %d |\n| 其中沒接上譯文 | %d |\n",
+	out.WriteString(fmt.Sprintf(tooltext.Text("h.81f8a83c6e48")+
+		tooltext.Text("h.54c4d7110117")+
+		tooltext.Text("h.96ab4aef1087")+
+		tooltext.Text("h.9bae139fd26c"),
 		localeName, len(sites), len(prompts), shown, shownGap, hidden, hiddenGap))
 	return out.String()
 }

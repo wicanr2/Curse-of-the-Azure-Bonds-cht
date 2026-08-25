@@ -29,11 +29,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"sort"
 	"strings"
-
 )
 
 // sweepIndex 是逐格實測輸出的一筆分母。**這一支不重算分母**——
@@ -54,34 +54,34 @@ type visitedCell struct {
 
 func main() {
 	sweepPath := flag.String("sweep-indices", "workplace/campaign-frames/sweep-indices.json",
-		"`cmd/cell-sweep -index-json` 輸出的分母")
+		tooltext.Text("h.91b16ee690c4"))
 	walkPath := flag.String("walk-cells", "workplace/campaign-frames/walk-cells.json",
-		"`cmd/dungeon-walk-probe -cells-json` 輸出的段內可達格子（可省略）")
+		tooltext.Text("h.195ebca98b59"))
 	// ★ 這兩份把「沒被踏到」拆成三種完全不同的成因。少了它們，未達成只是一個
 	// 數字，看不出**要補路線、要補劇情旗標、還是根本補不了**。
 	walkablePath := flag.String("walkable-cells", "workplace/campaign-frames/walkable-cells.json",
-		"`-walkable-json` 輸出的「站得上去」格子（走路的上限，可省略）")
+		tooltext.Text("h.78d6363f0eef"))
 	onMapPath := flag.String("on-map-cells", "workplace/campaign-frames/on-map-cells.json",
-		"`-on-map-json` 輸出的「圖上出現過」格子（可省略）")
+		tooltext.Text("h.dbbbfd29f5ec"))
 	// ★ 帶著劇情旗標走出來的格子（`cmd/campaign-snapshot-walk`）。冷走沒有旗標，
 	// 門對它永遠是牆；主線有旗標，但只走它要走的路。這一份是兩者的交集能力：
 	// **從主線快照出發、把那一段走遍**。
 	snapshotPath := flag.String("snapshot-cells", "workplace/campaign-frames/snapshot-cells.json",
-		"`cmd/campaign-snapshot-walk -cells-json` 輸出的格子（可省略）")
+		tooltext.Text("h.750ea14b4ebe"))
 	// ★ 主線**每一步移動**換算出來的格子（`cmd/route-cells`）。實跑那一欄本來
 	// 只採樣觀測迴圈，「走過去又馬上被劇情推走」的格子沒被記到——這一份補上。
 	routeCellsPath := flag.String("route-cells", "workplace/campaign-frames/route-cells.json",
-		"`cmd/route-cells` 輸出的格子（可省略）")
+		tooltext.Text("h.12b4b740c9cb"))
 	visitedPath := flag.String("visited", "workplace/campaign-frames/visited-cells.json",
-		"主線實跑導出的格子（見本檔頂端）")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
-	outputJSON := flag.String("json", "", "JSON 輸出路徑，給 `cmd/remake-status` 取用")
+		tooltext.Text("h.e4e3d23ed386"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
+	outputJSON := flag.String("json", "", tooltext.Text("h.fa63314394ca"))
 	flag.Parse()
 
 	raw, err := os.ReadFile(*visitedPath)
 	if err != nil {
-		log.Fatalf("讀不到實跑資料 %s：%v\n"+
-			"先跑：COAB_CAMPAIGN_CELLS_PATH=/src/%s tools/go.sh test ./internal/game/ "+
+		log.Fatalf(tooltext.Text("h.98410c4dd11a")+
+			tooltext.Text("h.8d0c6b4ee725")+
 			"-run TestRealNewGameRunsToTheEnding -count=1", *visitedPath, err, *visitedPath)
 	}
 	var visited []visitedCell
@@ -89,7 +89,7 @@ func main() {
 		log.Fatal(err)
 	}
 	if len(visited) == 0 {
-		log.Fatal("實跑資料是空的——記錄點沒被叫到")
+		log.Fatal(tooltext.Text("h.4245ef915653"))
 	}
 	// block → 踏過的地形碼。
 	walked := map[uint8]map[uint8]bool{}
@@ -102,15 +102,15 @@ func main() {
 
 	sweepRaw, err := os.ReadFile(*sweepPath)
 	if err != nil {
-		log.Fatalf("讀不到逐格實測的索引清單 %s：%v\n"+
-			"先跑：tools/go.sh run ./cmd/cell-sweep -index-json %s", *sweepPath, err, *sweepPath)
+		log.Fatalf(tooltext.Text("h.8ae705333376")+
+			tooltext.Text("h.902f6353b92c"), *sweepPath, err, *sweepPath)
 	}
 	var sweep []sweepIndex
 	if err := json.Unmarshal(sweepRaw, &sweep); err != nil {
 		log.Fatal(err)
 	}
 	if len(sweep) == 0 {
-		log.Fatal("逐格實測的索引清單是空的")
+		log.Fatal(tooltext.Text("h.95a80cf8a993"))
 	}
 
 	// 段內走得到的格子（可省略）。有它才分得出「主線不經過」與「走不進去」。
@@ -175,9 +175,9 @@ func main() {
 		either   int
 		walkedIn int
 		// 未達成的三種成因（見報表說明）。
-		gatedOff  int
-		noEdge    int
-		notOnMap  int
+		gatedOff int
+		noEdge   int
+		notOnMap int
 		// withFlags 是「只有帶著劇情旗標才走得到」的索引數。
 		withFlags int
 	}
@@ -270,62 +270,59 @@ func main() {
 	sort.Slice(rows, func(left, right int) bool { return rows[left].id < rows[right].id })
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 走訪可達性：主線實際踏到了逐格實測的哪些格子\n\n")
-	fmt.Fprintf(&report, "由 `cmd/cell-reachability` 產生，不要手改。\n\n")
-	fmt.Fprintf(&report, "★ 走訪那一列最後缺的問題是**可達性**。`cmd/cell-sweep` 把隊伍"+
-		"**直接放**到目標格上、還把隊伍撐起來，所以它答的是「這一格演不演得出來」，"+
-		"不是「正常隊伍走不走得到」。可達性只有實跑資料答得了——"+
-		"而 `TestRealNewGameRunsToTheEnding`（從角色建立打到提朗瑟克斯）與 "+
-		"`TestTilvertonRouteIsWalkableAndLocalized`（開場那三段）就是實跑資料。\n\n")
-	fmt.Fprintf(&report, "⚠ **「沒被踏到」不等於「走不到」。** 實跑路線只走它要走的路："+
-		"支線房間、可選對話、另一條分歧本來就不會被踏到。這一份能證明「這些走得到」，"+
-		"**不能證明「其餘走不到」** ⇒ 覆蓋率是**下界**。\n\n")
-	fmt.Fprintf(&report, "⚠ 記錄點是觀測迴圈不是每一步移動，走過去又馬上被劇情推走的"+
-		"可能沒被取樣；同樣是下界。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.743e62f813d8"))
+	fmt.Fprint(&report, tooltext.Format("h.c21a2e90c97c"))
+	fmt.Fprint(&report, tooltext.Text("h.2bbbb28f9713")+
+		tooltext.Text("h.c707d2a9f63c")+
+		tooltext.Text("h.b91268717948")+
+		tooltext.Text("h.51df12757a90")+
+		tooltext.Text("h.384107b0f75d"))
+	fmt.Fprint(&report, tooltext.Text("h.01ca755e0101")+
+		tooltext.Text("h.adf453a1f1c2")+
+		tooltext.Text("h.4a90648f0242"))
+	fmt.Fprint(&report, tooltext.Text("h.3b487f729f82")+
+		tooltext.Text("h.01075088acb3"))
 
-	fmt.Fprintf(&report, "| 指標 | 數字 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 有地形分派、地圖上也有格子的 block | %d |\n", len(rows))
-	fmt.Fprintf(&report, "| 分派索引（**直接取自逐格實測的輸出**）| %d |\n", totalIndices)
-	fmt.Fprintf(&report, "| **實跑路線踏到的** | %d |\n", totalReached)
-	fmt.Fprintf(&report, "| **從段入口用走的走得到的** | %d |\n", totalOnFoot)
-	fmt.Fprintf(&report, "| 　其中**只有帶著劇情旗標才走得到**的 | %d |\n", totalWithFlags)
-	fmt.Fprintf(&report, "| **兩者的聯集**（目前最好的下界）| %d |\n", totalEither)
-	fmt.Fprintf(&report, "| **走路的上限**（站得上去的格子，不限從入口走得到）| %d |\n",
-		totalStandable)
+	fmt.Fprint(&report, tooltext.Format("h.13c83a8a875e"))
+	fmt.Fprint(&report, tooltext.Format("h.f8daf874df0e", len(rows)))
+	fmt.Fprint(&report, tooltext.Format("h.aaa6e7eb79a2", totalIndices))
+	fmt.Fprint(&report, tooltext.Format("h.ed23a40b68ac", totalReached))
+	fmt.Fprint(&report, tooltext.Format("h.67f8bafad4cc", totalOnFoot))
+	fmt.Fprint(&report, tooltext.Format("h.fad72b478a27", totalWithFlags))
+	fmt.Fprint(&report, tooltext.Format("h.3e0adabfa550", totalEither))
+	fmt.Fprint(&report, tooltext.Format("h.943386f9ac34", totalStandable))
 	if totalIndices > 0 {
-		fmt.Fprintf(&report, "| 聯集覆蓋率（下界）| %.0f%% |\n",
-			100*float64(totalEither)/float64(totalIndices))
-		fmt.Fprintf(&report, "| 佔走路上限的比例 | %.0f%% |\n",
-			100*float64(totalEither)/float64(totalStandable))
+		fmt.Fprint(&report, tooltext.Format("h.f154c5107d25", 100*float64(totalEither)/float64(totalIndices)))
+		fmt.Fprint(&report, tooltext.Format("h.ef2026cf4698", 100*float64(totalEither)/float64(totalStandable)))
 	}
-	report.WriteString("\n★ **「走路的上限」才是走訪這條路的天花板**：它是站得上去的格子，" +
-		"不管要不要靠事件才進得去那一塊。分母 250 裡差的那一格站不上去（見下），" +
-		"所以走訪能做到的最好就是這個數字——**不是 250**。\n")
-	fmt.Fprintf(&report, "\n## 沒達成的那些，是哪一種沒達成\n\n")
-	report.WriteString("★ 未達成只是一個數字的話，看不出**要補路線、要補劇情旗標、還是根本補不了**。" +
-		"這三種的處置完全不同：\n\n")
-	fmt.Fprintf(&report, "| 成因 | 索引 | 意思 | 要做什麼 |\n|---|---:|---|---|\n")
-	fmt.Fprintf(&report, "| 站得上去，但從段入口走不到 | %d | 幾何上斷開（樓梯／傳送**事件**才進得去，"+
-		"巫師塔每一層都是獨立房間）或門擋著 | 補路線：從那一塊的入口格另外走一趟 |\n", totalGated)
-	fmt.Fprintf(&report, "| 圖上有，但四面都不通 | %d | 那個地形碼只出現在沒有任何可通行邊的格子上 | "+
-		"**走路永遠站不上去**；要嘛靠事件傳送，要嘛它本來就不是玩家會站的格子 |\n", totalNoEdge)
-	fmt.Fprintf(&report, "| 圖上根本沒有這個地形碼 | %d | 分派表有這一格，地圖上沒有 | "+
-		"分母裡的死索引，補不了也不用補 |\n\n", totalNotOnMap)
-	report.WriteString("⚠ 這一段用的是**純幾何**（`CanMoveDungeon` ＋ 撞到門就開），不跑 ECL：" +
-		"走過去又被劇情推回來那種不算「走不到」——那是內容不是幾何，混進來會讓分類失去意義。\n\n")
-	fmt.Fprintf(&report, "★ **走不到 ≠ 沒驗過。** 上面「走不到」的 %d 個索引裡，"+
-		"有 **%d** 個在逐格實測（`cmd/cell-sweep`）裡是 `played`——那支工具是**直接站上去**的，"+
-		"問的是「那一格的事件演不演得出來」。走訪問的是**路**，逐格實測問的是**內容**；"+
-		"混在一起看會把「這個儀器記不到」讀成「這一格沒驗過」。\n",
+	report.WriteString(tooltext.Text("h.c2995cc05231") +
+		tooltext.Text("h.3ea3670e51cd") +
+		tooltext.Text("h.3aaedda66d7f"))
+	fmt.Fprint(&report, tooltext.Format("h.098f75165049"))
+	report.WriteString(tooltext.Text("h.76c3222d68a4") +
+		tooltext.Text("h.0e14bcd80d0d"))
+	fmt.Fprint(&report, tooltext.Format("h.e0a2af8fb33f"))
+	fmt.Fprintf(&report, tooltext.Text("h.61c40e5468e7")+
+		tooltext.Text("h.a1af13331f14"), totalGated)
+	fmt.Fprintf(&report, tooltext.Text("h.e14d0183596a")+
+		tooltext.Text("h.04268a94e089"), totalNoEdge)
+	fmt.Fprintf(&report, tooltext.Text("h.8a87b9c18848")+
+		tooltext.Text("h.9408ac835ebe"), totalNotOnMap)
+	report.WriteString(tooltext.Text("h.95e3e73f5ed4") +
+		tooltext.Text("h.6585e4c47bc3"))
+	fmt.Fprintf(&report, tooltext.Text("h.a4f73064e697")+
+		tooltext.Text("h.18937e5b4810")+
+		tooltext.Text("h.f2c8c20e94ae")+
+		tooltext.Text("h.7fec156e0938"),
 		totalGated+totalNoEdge+totalNotOnMap, totalGatedButPlayed)
 
-	fmt.Fprintf(&report, "\n⚠ **「實跑路線踏到」裡有兩種東西**，不要把它讀成「玩到的比例」："+
-		"`TestRealNewGameRunsToTheEnding` 是照劇情走的主線，"+
-		"而 `TestTilvertonRouteIsWalkableAndLocalized` 是**廣度優先的走訪**——"+
-		"後者用的方法和下面那個「冷走」一樣，所以它一加進來，這一欄就會往冷走那一欄收斂，"+
-		"而**它一加進來這一欄就往冷走收斂，聯集卻幾乎不動**。"+
-		"⇒ 那條路線的價值不在數字，在於它是**帶著語系不變量的測試**："+
-		"第一次跑就抓到兩句玩家看得到的英文。\n")
+	fmt.Fprint(&report, tooltext.Text("h.e49cff34933b")+
+		tooltext.Text("h.7b084696b3e0")+
+		tooltext.Text("h.384e2d29c510")+
+		tooltext.Text("h.7dedc919fe86")+
+		tooltext.Text("h.fd2d2b9fca3d")+
+		tooltext.Text("h.cadc31e49143")+
+		tooltext.Text("h.4d5b49c8e879"))
 	// ⚠ 這兩個例子要**算出來**，不能寫死：走法一改動它們就變了，而寫死的數字
 	// 不會有任何東西提醒你它已經不對。
 	campaignWins, footWins := rows[0], rows[0]
@@ -337,20 +334,20 @@ func main() {
 			footWins = row
 		}
 	}
-	fmt.Fprintf(&report, "\n⚠ **兩把尺互不涵蓋，所以要看聯集。** 主線有劇情旗標，"+
-		"開得了冷走打不開的門（差最多的是 `%s`：主線 %d、冷走 %d）；冷走沒有劇情擋路，"+
-		"走得到主線繞過的地方（差最多的是 `%s`：主線 %d、冷走 %d）。"+
-		"只報其中一個都會低估。\n",
+	fmt.Fprintf(&report, tooltext.Text("h.dfd4f5b2e22f")+
+		tooltext.Text("h.f1ce795e73c0")+
+		tooltext.Text("h.a2f2ba844099")+
+		tooltext.Text("h.539eaa7a0abe"),
 		campaignWins.id, campaignWins.reached, campaignWins.onFoot,
 		footWins.id, footWins.reached, footWins.onFoot)
-	report.WriteString("\n★ **冷走要跑好幾種策略再取聯集。** 單一策略的結果看起來都很合理，" +
-		"但每一種都會被某一類岔路擋住：選單挑第一項會被**收費關卡**擋在外面" +
-		"（下水道的奧提尤格要食物），挑最後一項會在「要離開嗎」那種提示上直接走人；" +
-		"而**踏上去被事件搬走時不從落點繼續**，等於把「走上樓」記成「走到樓梯口」，" +
-		"靠樓梯才進得去的樓層永遠不會被走到（spec 1161）。" +
-		"目前跑 8 種（選第 1／2／3／最後項 × 跟不跟傳送）——" +
-		"再加第 4 項一個索引都沒多，所以就停在這裡。\n")
-	fmt.Fprintf(&report, "\n| 段 | ECL block | 分派索引 | 實跑踏到 | 走得到 | 聯集 |\n")
+	report.WriteString(tooltext.Text("h.fab697dcc323") +
+		tooltext.Text("h.b8d3454bb420") +
+		tooltext.Text("h.59359ab2e940") +
+		tooltext.Text("h.848a49ef1b3b") +
+		tooltext.Text("h.f28d49603ad9") +
+		tooltext.Text("h.f47614da56e3") +
+		tooltext.Text("h.c085c7a78e2a"))
+	fmt.Fprint(&report, tooltext.Format("h.50a28011d14a"))
 	fmt.Fprintf(&report, "|---|---:|---:|---:|---:|---:|\n")
 	for _, row := range rows {
 		fmt.Fprintf(&report, "| `%s` | %d | %d | %d | %d | %d |\n",
@@ -367,15 +364,15 @@ func main() {
 			missing += row.indices
 		}
 	}
-	fmt.Fprintf(&report, "## 實跑路線一格都沒踏到的段\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.7feed5b93a1b"))
 	if len(untouched) == 0 {
-		fmt.Fprintf(&report, "（沒有。）\n")
+		fmt.Fprint(&report, tooltext.Format("h.be6c71d35815"))
 	} else {
-		fmt.Fprintf(&report, "這幾段**整段沒被任何實跑路線走過**，共 %d 個分派索引"+
-			"（占分母的 %.0f%%）。那不是「覆蓋率低」，是這條路線根本沒去過那裡——"+
-			"逐格實測驗過它們演得出來，但**沒有任何一條實跑路徑經過**。\n\n",
+		fmt.Fprintf(&report, tooltext.Text("h.4e30334a12b4")+
+			tooltext.Text("h.697958203959")+
+			tooltext.Text("h.aa3f6e760237"),
 			missing, 100*float64(missing)/float64(totalIndices))
-		fmt.Fprintf(&report, "| 段 | ECL block | 分派索引 |\n|---|---:|---:|\n")
+		fmt.Fprint(&report, tooltext.Format("h.74f97624b4dd"))
 		for _, row := range untouched {
 			fmt.Fprintf(&report, "| `%s` | %d | %d |\n", row.id, row.block, row.indices)
 		}
@@ -383,11 +380,11 @@ func main() {
 		for _, row := range untouched {
 			onFoot += row.onFoot
 		}
-		fmt.Fprintf(&report, "\n★ **那不是走不進去。** 同樣這幾段，從段入口用走的走得到 **%d** 個索引"+
-			"（`cmd/dungeon-walk-probe`）。⇒ 成因是**主線不經過那裡**，不是格子不可達："+
-			"主線測試從艾森布拉開始（`runNormalNewGameToEssembra`），提爾佛頓那一段序章"+
-			"不在它的路線上。**要不要補一條走那裡的實跑路線是另一個決定**，"+
-			"這一份負責把「路線的選擇」與「缺陷」分開。\n", onFoot)
+		fmt.Fprintf(&report, tooltext.Text("h.3df96eb5a1c7")+
+			tooltext.Text("h.ed1129c15d4c")+
+			tooltext.Text("h.3c50c395efba")+
+			tooltext.Text("h.feee90fb18ae")+
+			tooltext.Text("h.8bf4af94b7ee"), onFoot)
 	}
 
 	if *outputJSON != "" {
@@ -401,8 +398,8 @@ func main() {
 			Gated     int    `json:"gated_off"`
 			// GatedButPlayed 是「走訪走不到，但逐格實測站上去演出來了」。
 			GatedButPlayed int `json:"gated_off_but_played"`
-			NoEdge    int    `json:"no_passable_edge"`
-			NotOnMap  int    `json:"not_on_map"`
+			NoEdge         int `json:"no_passable_edge"`
+			NotOnMap       int `json:"not_on_map"`
 		}{
 			Schema: "coab-cell-reachability/1", Indices: totalIndices, Reached: totalReached,
 			OnFoot: totalOnFoot, Either: totalEither, Standable: totalStandable,

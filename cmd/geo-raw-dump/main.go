@@ -27,6 +27,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"strings"
@@ -36,8 +37,8 @@ import (
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	set := flag.Int("set", 5, "GEO 檔集")
-	block := flag.Int("block", 0x33, "區塊編號")
+	set := flag.Int("set", 5, tooltext.Text("h.7aaf8dbad92f"))
+	block := flag.Int("block", 0x33, tooltext.Text("h.e3d3f40d66aa"))
 	flag.Parse()
 	archive, err := zip.OpenReader(*image)
 	if err != nil {
@@ -66,13 +67,13 @@ func main() {
 			continue
 		}
 		data := b.Data
-		fmt.Printf("區塊 0x%02X：%d bytes\n", b.Entry.ID, len(data))
+		fmt.Print(tooltext.Format("h.2d534566a5fe", b.Entry.ID, len(data)))
 		body := data
 		if len(data) == 0x402 {
-			fmt.Printf("前兩個 byte：%02X %02X\n", data[0], data[1])
+			fmt.Print(tooltext.Format("h.a22d084f5c7d", data[0], data[1]))
 			body = data[2:]
 		}
-		names := []string{"平面0（北/東 nibble）", "平面1（南/西 nibble）", "平面2（地形）", "平面3（細節）"}
+		names := []string{tooltext.Text("h.fcfd1061f25a"), tooltext.Text("h.8c461f636887"), tooltext.Text("h.637a28261eea"), tooltext.Text("h.c1da405769bd")}
 		for plane := 0; plane < 4; plane++ {
 			fmt.Printf("== %s ==\n", names[plane])
 			for y := 0; y < 16; y++ {

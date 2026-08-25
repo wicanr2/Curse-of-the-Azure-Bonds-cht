@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"strings"
@@ -35,8 +36,8 @@ type summary struct {
 }
 
 func main() {
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
-	jsonPath := flag.String("json", "", "JSON 輸出路徑（給 cmd/remake-status 用）")
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
+	jsonPath := flag.String("json", "", tooltext.Text("h.665ef4d19c47"))
 	flag.Parse()
 
 	pack, err := gamepack.Default()
@@ -68,23 +69,23 @@ func main() {
 	}
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 原作的換曲點，remake 接上幾個\n\n")
-	fmt.Fprintf(&report, "由 `cmd/music-change-points` 產生，不要手改。"+
-		"換曲點的來源是 `docs/audit/pc98-music-triggers.md`（PC-98 的 Borland 符號表），"+
-		"對照表在 `internal/audiomap`。\n\n")
-	fmt.Fprintf(&report, "| 項目 | 數 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 原作換曲點 | %d |\n", stats.ChangePoints)
-	fmt.Fprintf(&report, "| remake 有落點 | %d |\n", stats.Wired)
-	fmt.Fprintf(&report, "| 被選到的相異曲目 | %d |\n", stats.DistinctTracks)
-	fmt.Fprintf(&report, "| game pack 宣告的曲目 | %d |\n\n", stats.Tracks)
-	fmt.Fprintf(&report, "⚠ 「有落點」＝ pack 有那首曲子而且有一條指向它的綁定。"+
-		"**不表示**在原作會發的那一刻發——那要實機比對。\n\n")
-	fmt.Fprintf(&report, "| 位置 | 事件 | 曲目 | remake 的 context | 有落點 |\n")
+	fmt.Fprint(&report, tooltext.Format("h.558b94319f3f"))
+	fmt.Fprint(&report, tooltext.Text("h.964d43066305")+
+		tooltext.Text("h.7e28bef717b3")+
+		tooltext.Text("h.ce75b3757941"))
+	fmt.Fprint(&report, tooltext.Format("h.e811720ed9a3"))
+	fmt.Fprint(&report, tooltext.Format("h.f3d550613e4e", stats.ChangePoints))
+	fmt.Fprint(&report, tooltext.Format("h.3473de6fe825", stats.Wired))
+	fmt.Fprint(&report, tooltext.Format("h.63b44d9315a0", stats.DistinctTracks))
+	fmt.Fprint(&report, tooltext.Format("h.37c6d52044b1", stats.Tracks))
+	fmt.Fprint(&report, tooltext.Text("h.aaa3eb5d99fd")+
+		tooltext.Text("h.865b7f882270"))
+	fmt.Fprint(&report, tooltext.Format("h.7dccd6fc1ae3"))
 	fmt.Fprintf(&report, "|---|---|---:|---|---|\n")
 	for _, result := range results {
 		context := result.Point.Context
 		if context == "" {
-			context = "（照 ECL 段綁）"
+			context = tooltext.Text("h.7a81abbd938e")
 		} else {
 			context = "`" + context + "`"
 		}

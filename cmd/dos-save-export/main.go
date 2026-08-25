@@ -33,6 +33,7 @@ import (
 	"encoding/binary"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -68,8 +69,8 @@ const (
 	// ECL 程式碼視窗在存檔的第四塊，接在前三塊之後（spec 1163）。
 	eclWindowOffset = 1 + partySave.SAVGAMArea1Size + partySave.SAVGAMArea2Size +
 		partySave.SAVGAMRuntimeStateSize
-	area1LastXOffset    = 1 + 0x1E0
-	area1LastYOffset    = 1 + 0x1E2
+	area1LastXOffset = 1 + 0x1E0
+	area1LastYOffset = 1 + 0x1E2
 )
 
 // setFlags 回報使用者實際打了哪些旗標。`-base` 模式只覆寫打過的欄位，
@@ -81,25 +82,25 @@ func setFlags() map[string]bool {
 }
 
 func main() {
-	out := flag.String("out", "", "輸出目錄（原版的存檔路徑，預設是 C:\\SAVE）")
-	slot := flag.String("slot", "A", "存檔槽 A..J")
-	name := flag.String("name", "ORACLE", "角色名（1..15 bytes）")
-	gameArea := flag.Int("area", 2, "GameArea／章節（1..6）")
-	mapBlock := flag.Int("map-block", 1, "Current3DMapBlockID：第一人稱地圖的 GEO 區塊")
-	posX := flag.Int("x", 7, "地圖座標 X")
-	posY := flag.Int("y", 13, "地圖座標 Y")
-	facing := flag.Int("facing", 0, "朝向 0..7（0 為北、2 東、4 南、6 西）")
-	wallType := flag.Int("wall-type", -1, "MapWallType；負值表示沿用 -base 的值")
-	wallRoof := flag.Int("wall-roof", -1, "MapWallRoof（>= 0x80 為室內）；負值表示沿用 -base 的值")
-	gameState := flag.Int("game-state", 0, "GameState（只在沒有 -base 時使用）")
-	lastGameState := flag.Int("last-game-state", 0, "LastGameState（只在沒有 -base 時使用）")
-	inDungeon := flag.Bool("in-dungeon", true, "InDungeon：第一人稱地圖為真（只在沒有 -base 時使用）")
-	city := flag.Int("city", 0, "CurrentCity（只在沒有 -base 時使用）")
-	charRef := flag.String("char-ref", "", "存檔裡記的角色檔名；留空用 CHRDAT<槽>1 並一併寫出該檔")
-	base := flag.String("base", "", "以既有的原版 savgam?.dat 為底，只覆寫座標／朝向")
-	eclBlock := flag.Int("ecl-block", -1, "把這一段 ECL 的位元組碼換進存檔的程式碼視窗（換圖用；-1 不動）")
-	twoSlot := flag.Bool("two-slot-walls", false, "把兩槽模式的兩格閘門設成 1（只載槽 1／3，槽 2 不動）")
-	image := flag.String("image", "curseoftheazurebonds.zip", "原版 image ZIP（-ecl-block 要用）")
+	out := flag.String("out", "", tooltext.Text("h.941ddb63a5bd"))
+	slot := flag.String("slot", "A", tooltext.Text("h.688ed29a3780"))
+	name := flag.String("name", "ORACLE", tooltext.Text("h.c956ab4ea507"))
+	gameArea := flag.Int("area", 2, tooltext.Text("h.a0b94969820c"))
+	mapBlock := flag.Int("map-block", 1, tooltext.Text("h.5d621aa20c5d"))
+	posX := flag.Int("x", 7, tooltext.Text("h.0bf57044490f"))
+	posY := flag.Int("y", 13, tooltext.Text("h.25880971a607"))
+	facing := flag.Int("facing", 0, tooltext.Text("h.0240b7a5a9af"))
+	wallType := flag.Int("wall-type", -1, tooltext.Text("h.687ef761ec47"))
+	wallRoof := flag.Int("wall-roof", -1, tooltext.Text("h.e998a96d5872"))
+	gameState := flag.Int("game-state", 0, tooltext.Text("h.13ac875d952d"))
+	lastGameState := flag.Int("last-game-state", 0, tooltext.Text("h.ebd1877048d4"))
+	inDungeon := flag.Bool("in-dungeon", true, tooltext.Text("h.a4345a011682"))
+	city := flag.Int("city", 0, tooltext.Text("h.0843f2200bac"))
+	charRef := flag.String("char-ref", "", tooltext.Text("h.f507f314d2dc"))
+	base := flag.String("base", "", tooltext.Text("h.716b390a2c5e"))
+	eclBlock := flag.Int("ecl-block", -1, tooltext.Text("h.0f568d071a1e"))
+	twoSlot := flag.Bool("two-slot-walls", false, tooltext.Text("h.40c1338eeada"))
+	image := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.a0b1c9fd4655"))
 	flag.Parse()
 
 	if *out == "" {
@@ -110,10 +111,10 @@ func main() {
 		key -= 'a' - 'A'
 	}
 	if key < 'A' || key > 'J' {
-		log.Fatalf("-slot %q 不在 A..J", *slot)
+		log.Fatal(tooltext.Format("h.0dfb5e67dd56", *slot))
 	}
 	if *facing < 0 || *facing > 7 {
-		log.Fatalf("-facing %d 不在 0..7", *facing)
+		log.Fatal(tooltext.Format("h.98635bb94f42", *facing))
 	}
 
 	prefixName := fmt.Sprintf("savgam%c.dat", key+('a'-'A'))
@@ -127,7 +128,7 @@ func main() {
 			log.Fatal(err)
 		}
 		if len(prefix) != partySave.SAVGAMFixedPrefixSize {
-			log.Fatalf("-base %s 長度 %d，不是原版的 %d", *base, len(prefix), partySave.SAVGAMFixedPrefixSize)
+			log.Fatal(tooltext.Format("h.3acb4079f945", *base, len(prefix), partySave.SAVGAMFixedPrefixSize))
 		}
 		patched := append([]byte(nil), prefix...)
 		given := setFlags()
@@ -147,8 +148,8 @@ func main() {
 			//
 			// remake 這一側反而**認**這個位元組（`Current3DMapBlockID`），
 			// 所以兩邊會指向不同的圖而且都不會報錯——這正是最危險的形狀。
-			fmt.Fprintln(os.Stderr, "⚠ -map-block 只改存檔裡的標記；原版的第一人稱地圖由 ECL 狀態決定。"+
-				"要換圖請加 -ecl-block（同一個 GEO 檔集內有效；跨檔集實測無效，見 spec 1185）。")
+			fmt.Fprintln(os.Stderr, tooltext.Text("h.5cf4eb2d806a")+
+				tooltext.Text("h.e027e37473af"))
 		}
 		// Area1 的 LastX／LastY 與地圖那五格都要改：前者是「上一個座標」，
 		// 後者才是載入之後站的位置，只改一邊會在畫面與地圖標記之間打架。
@@ -227,13 +228,11 @@ func main() {
 					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4:], value)
 					binary.LittleEndian.PutUint16(patched[setBlocksOffset+index*4+2:], slot)
 				}
-				fmt.Fprintf(os.Stderr, "牆面參數改成 %d,%d,%d（取自該段自己的 LOAD PIECES）\n",
-					pieces[0], pieces[1], pieces[2])
+				fmt.Fprint(os.Stderr, tooltext.Format("h.a1222811b0d6", pieces[0], pieces[1], pieces[2]))
 			} else if !piecesOK {
-				fmt.Fprintln(os.Stderr, "⚠ 這一段的 LOAD PIECES 不是常數，牆面參數維持底檔的值")
+				fmt.Fprintln(os.Stderr, tooltext.Text("h.dea529b46e24"))
 			}
-			fmt.Fprintf(os.Stderr, "換入 ECL%d 段 0x%02X 的位元組碼 %d bytes（視窗 %d bytes）\n",
-				*gameArea, *eclBlock, len(code), partySave.SAVGAMECLMemorySize)
+			fmt.Fprint(os.Stderr, tooltext.Format("h.d34603a04141", *gameArea, *eclBlock, len(code), partySave.SAVGAMECLMemorySize))
 		}
 		// -two-slot-walls 把兩槽模式的閘門打開。
 		//
@@ -247,19 +246,17 @@ func main() {
 		if *twoSlot {
 			binary.LittleEndian.PutUint16(patched[area1WallGateAOffset:], 1)
 			binary.LittleEndian.PutUint16(patched[area1WallGateBOffset:], 1)
-			fmt.Fprintln(os.Stderr, "兩槽模式閘門已設為 1（只載槽 1／3）")
+			fmt.Fprintln(os.Stderr, tooltext.Text("h.6c7ea2909e9c"))
 		}
 		if err := os.WriteFile(filepath.Join(*out, prefixName), patched, 0o644); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%s（%d bytes，以 %s 為底）area=%d block=0x%02X 位置=(%d,%d) 朝向=%d wallType=0x%02X wallRoof=0x%02X\n",
-			prefixName, len(patched), *base, patched[0], patched[area1MapBlockOffset],
-			*posX, *posY, *facing, patched[mapPosOffset+3], patched[mapPosOffset+4])
+		fmt.Print(tooltext.Format("h.47dfc941fc34", prefixName, len(patched), *base, patched[0], patched[area1MapBlockOffset], *posX, *posY, *facing, patched[mapPosOffset+3], patched[mapPosOffset+4]))
 		return
 	}
 
 	if len(*name) < 1 || len(*name) > 15 {
-		log.Fatalf("-name 要 1..15 bytes，給的是 %d", len(*name))
+		log.Fatal(tooltext.Format("h.9e23580e56b0", len(*name)))
 	}
 	state := area.State{
 		GameArea:            uint8(*gameArea),
@@ -341,10 +338,8 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	fmt.Printf("%s（%d bytes）與 %s.sav／.FX 已寫到 %s\n",
-		prefixName, len(prefix), baseName, *out)
-	fmt.Printf("槽 %c：area=%d block=0x%02X 位置=(%d,%d) 朝向=%d in-dungeon=%v\n",
-		key, *gameArea, *mapBlock, *posX, *posY, *facing, *inDungeon)
+	fmt.Print(tooltext.Format("h.c96203fcb94b", prefixName, len(prefix), baseName, *out))
+	fmt.Print(tooltext.Format("h.e3b374e6bb25", key, *gameArea, *mapBlock, *posX, *posY, *facing, *inDungeon))
 }
 
 // eclBlockBytes 取出一段 ECL 要放進存檔程式碼視窗的位元組。
@@ -375,7 +370,7 @@ func eclBlockBytes(imagePath string, area int, block uint8) ([]byte, [3]uint16, 
 		}
 	}
 	if payload == nil {
-		return nil, [3]uint16{}, false, fmt.Errorf("image 裡沒有 %s", name)
+		return nil, [3]uint16{}, false, tooltext.Errorf("h.13356c0db288", name)
 	}
 	blocks, err := dax.Parse(payload)
 	if err != nil {
@@ -386,17 +381,16 @@ func eclBlockBytes(imagePath string, area int, block uint8) ([]byte, [3]uint16, 
 			continue
 		}
 		if len(item.Data) < 2 {
-			return nil, [3]uint16{}, false, fmt.Errorf("%s 段 0x%02X 只有 %d bytes", name, block, len(item.Data))
+			return nil, [3]uint16{}, false, tooltext.Errorf("h.0a9b2cbd156e", name, block, len(item.Data))
 		}
 		code := item.Data[2:]
 		if len(code) > partySave.SAVGAMECLMemorySize {
-			return nil, [3]uint16{}, false, fmt.Errorf("%s 段 0x%02X 的碼 %d bytes 放不進 %d bytes 的視窗",
-				name, block, len(code), partySave.SAVGAMECLMemorySize)
+			return nil, [3]uint16{}, false, tooltext.Errorf("h.447b215558b7", name, block, len(code), partySave.SAVGAMECLMemorySize)
 		}
 		pieces, ok := ecl.BlockWallPieces(item.Data)
 		return code, pieces, ok, nil
 	}
-	return nil, [3]uint16{}, false, fmt.Errorf("%s 裡沒有段 0x%02X", name, block)
+	return nil, [3]uint16{}, false, tooltext.Errorf("h.9f9b830d60de", name, block)
 }
 
 // mapCellState 從目標地圖算出這一格的牆型與地形位元組。

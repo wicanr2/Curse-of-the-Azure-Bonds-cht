@@ -27,6 +27,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -40,10 +41,10 @@ import (
 func main() {
 	campaignFiles := flag.String("campaign",
 		"internal/game/campaign_normal_test.go,internal/game/ecl_integration_test.go",
-		"戰役驅動程式（逗號分隔）")
-	frontend := flag.String("frontend", "cmd/azure-bonds-game", "前端目錄")
-	gameDir := flag.String("game", "internal/game", "State 所在的套件目錄")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+		tooltext.Text("h.0134cff5cbf0"))
+	frontend := flag.String("frontend", "cmd/azure-bonds-game", tooltext.Text("h.4dd9dafdc2eb"))
+	gameDir := flag.String("game", "internal/game", tooltext.Text("h.90e3e5bb35c3"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	campaign := map[string]int{}
@@ -51,14 +52,14 @@ func main() {
 		collectStateCalls(strings.TrimSpace(path), campaign)
 	}
 	if len(campaign) == 0 {
-		log.Fatal("戰役側一個呼叫都掃不到——先確認路徑")
+		log.Fatal(tooltext.Text("h.14da327cbd21"))
 	}
 
 	input, updateCalls := frontendReachable(*frontend, "Update")
 	display, _ := frontendReachable(*frontend, "Draw")
 	startup := frontendStartup(*frontend)
 	if len(input) == 0 {
-		log.Fatal("前端側一個呼叫都掃不到——先確認 (*app).Update 找得到")
+		log.Fatal(tooltext.Text("h.63fae04dd90e"))
 	}
 	aliases := delegationAliases(*gameDir)
 	mutating, stateGraph := mutatingMethods(*gameDir)
@@ -107,26 +108,26 @@ func main() {
 		alias := aliases[name]
 		switch {
 		case input[name]:
-			item.verdict = "✅ 按得出來"
-			item.note = "`Update()` 的可達閉包裡有"
+			item.verdict = tooltext.Text("h.a68c53840416")
+			item.note = tooltext.Text("h.9763350880cc")
 		case alias != "" && input[alias]:
-			item.verdict = "✅ 按得出來"
-			item.note = fmt.Sprintf("別名 → `%s`（單行轉呼叫），前端走那一支", alias)
+			item.verdict = tooltext.Text("h.a68c53840416")
+			item.note = tooltext.Format("h.5b46ce513556", alias)
 		case !ast.IsExported(name):
-			item.verdict = "— 觀測點"
-			item.note = "**未匯出**：前端在別的套件本來就叫不到 ⇒ 戰役拿它當觀測點"
+			item.verdict = tooltext.Text("h.60af2e27eac4")
+			item.note = tooltext.Text("h.310ca83b43b0")
 		case display[name] || (alias != "" && display[alias]):
-			item.verdict = "— 觀測點"
-			item.note = "前端在 `Draw()` 讀它 ⇒ 這是**看**的東西，不是按的東西"
+			item.verdict = tooltext.Text("h.60af2e27eac4")
+			item.note = tooltext.Text("h.41e6e3671c2f")
 		case startup[name] || (alias != "" && startup[alias]):
-			item.verdict = "— 啟動接線"
-			item.note = "前端在 `main()` 的啟動流程呼叫 ⇒ 不是輸入動作"
+			item.verdict = tooltext.Text("h.a8a2516f8e0f")
+			item.note = tooltext.Text("h.4f1f95a89eab")
 		case !mutating[name]:
-			item.verdict = "— 讀取器差異"
-			item.note = "**不改狀態**：前端用別的方式讀同一件事（讀欄位、或它已經被投影進 `Choices`）"
+			item.verdict = tooltext.Text("h.5a71cc757cf2")
+			item.note = tooltext.Text("h.c3a675068e00")
 		default:
-			item.verdict = "**前端沒有這條路**"
-			item.note = "會改狀態而前端到不了 ⇒ 玩家按不出來"
+			item.verdict = tooltext.Text("h.6ad94d97fc24")
+			item.note = tooltext.Text("h.0b45e155f441")
 			gaps++
 		}
 		rows = append(rows, item)
@@ -139,34 +140,34 @@ func main() {
 	})
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 戰役測試走的每一步，玩家按得出來嗎\n\n")
-	fmt.Fprintf(&report, "由 `cmd/player-path-audit` 產生，不要手改。方法與判讀見 spec 1189。\n\n")
-	fmt.Fprintf(&report, "★ 補的是「開場到結局」剩下的那半個缺口：spec 1188 已經讓真的前端把戰役的"+
-		"每個檢查點**畫**了一張，但**輸入那一層**還沒有證明——戰役直接呼叫 `state.X()`，"+
-		"玩家按的是鍵盤。前端的 `Update()` 到不了的方法，就沒有任何按鍵組合到得了。\n\n")
-	fmt.Fprintf(&report, "⚠ **方向不對稱，不要反著讀。** 這是靜態可達性：證明得了「前端**沒有**那條路」"+
-		"（硬缺口），證明不了「有那條路所以玩得到」——那一行可能藏在永遠不成立的條件底下。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.9cd629461429"))
+	fmt.Fprint(&report, tooltext.Format("h.10506e8fda21"))
+	fmt.Fprint(&report, tooltext.Text("h.40332390b068")+
+		tooltext.Text("h.8c7bb62a9c36")+
+		tooltext.Text("h.31a95fbbf4e2"))
+	fmt.Fprint(&report, tooltext.Text("h.17d6005f490b")+
+		tooltext.Text("h.166c74ae35e5"))
 
-	fmt.Fprintf(&report, "| 指標 | 數字 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 戰役用到的 `State` 進入點 | %d |\n", len(campaign))
-	fmt.Fprintf(&report, "| 前端直接呼叫的 `State` 方法（輸入側）| %d |\n", directInput)
-	fmt.Fprintf(&report, "| 再沿 `State` 內部呼叫展開後 | %d |\n", len(input))
-	fmt.Fprintf(&report, "| `Draw()`（顯示）可達閉包裡的 | %d |\n", len(display))
-	fmt.Fprintf(&report, "| `main()` 啟動流程裡的 | %d |\n", len(startup))
-	fmt.Fprintf(&report, "| 其中直接寫在 `Update()` 本體的 | %d |\n", updateCalls)
-	fmt.Fprintf(&report, "| 自動解出的單行別名 | %d |\n", len(aliases))
-	fmt.Fprintf(&report, "| 判定為**會改狀態**的 `State` 方法 | %d |\n", len(mutating))
-	fmt.Fprintf(&report, "| **前端沒有路可以到的** | %d |\n\n", gaps)
+	fmt.Fprint(&report, tooltext.Format("h.13c83a8a875e"))
+	fmt.Fprint(&report, tooltext.Format("h.d57783b259d0", len(campaign)))
+	fmt.Fprint(&report, tooltext.Format("h.345ad4ef62ee", directInput))
+	fmt.Fprint(&report, tooltext.Format("h.3532e77115b8", len(input)))
+	fmt.Fprint(&report, tooltext.Format("h.a1e3cf4bf458", len(display)))
+	fmt.Fprint(&report, tooltext.Format("h.de56a5137c1c", len(startup)))
+	fmt.Fprint(&report, tooltext.Format("h.7669aae3bd6b", updateCalls))
+	fmt.Fprint(&report, tooltext.Format("h.5619ba8db37b", len(aliases)))
+	fmt.Fprint(&report, tooltext.Format("h.9f4251a78a7f", len(mutating)))
+	fmt.Fprint(&report, tooltext.Format("h.83e8e95eb1bd", gaps))
 
-	fmt.Fprintf(&report, "| `State` 進入點 | 戰役用幾處 | 玩家到得了 | 說明 |\n|---|---:|---|---|\n")
+	fmt.Fprint(&report, tooltext.Format("h.d2f1c8231fb9"))
 	for _, item := range rows {
 		fmt.Fprintf(&report, "| `%s` | %d | %s | %s |\n", item.name, item.uses, item.verdict, item.note)
 	}
 	fmt.Fprintf(&report, "\n")
 	if gaps == 0 {
-		fmt.Fprintf(&report, "★ **戰役推進劇情用到的每一個匯出方法，前端都有路可以到。**\n\n")
-		fmt.Fprintf(&report, "⚠ 這**不等於**玩得完：可達性不管條件、不管順序，也不管畫面上有沒有"+
-			"提示那個鍵。它排除的是「有一段劇情根本沒有按鍵到得了」這一種硬缺口。\n")
+		fmt.Fprint(&report, tooltext.Format("h.4537f947f31b"))
+		fmt.Fprint(&report, tooltext.Text("h.e5bceee9bffd")+
+			tooltext.Text("h.460b2a1f095d"))
 	}
 
 	text := report.String()

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"sort"
@@ -45,8 +46,8 @@ func main() {
 		}
 	}
 	fmt.Fprintf(os.Stderr,
-		"declared=%d covered=%d incomplete=%d｜可宣告 %d 支中已宣告 %d 支"+
-			"（戰鬥可施放 %d，其中 %d 支職業模型不支援）\n",
+		tooltext.Text("h.96329173ba49")+
+			tooltext.Text("h.773f451f2f1f"),
 		report.SpellCount, report.CoveredCount, report.MissingCount,
 		report.Original.Declarable, report.Original.Declared,
 		report.Original.CombatCastable, report.Original.UnsupportedClass)
@@ -68,41 +69,38 @@ func renderMarkdown(report spellcoverage.Report) ([]byte, error) {
 	}
 
 	var out strings.Builder
-	out.WriteString("# 玩家法術覆蓋（原作 100 筆 → remake）\n\n")
-	out.WriteString("由 `cmd/combat-spell-coverage-audit -output` 產生，不要手改。\n\n")
-	out.WriteString("- 分母是原作法術主表的 **100 筆**（`gamepack/rules/spell-table.json`，" +
-		"由 `cmd/spell-table-export` 從常駐資料段量出來，spec 1111）。\n")
-	out.WriteString("- **占位**：沒有名字的 13 筆，玩家取不到。" +
-		"**紮營**：`+0Bh = 0` 的 8 支，不會出現在戰鬥選單（spec 827）。\n")
-	out.WriteString("- `handler`／`visual`／`sound` 三欄是 game pack 宣告與 runtime callsite 的機器觀察，" +
-		"**不代表原版規則、時序或素材已還原**。\n")
-	out.WriteString("- 「資料」欄一律有值：施法時間、目標形狀、豁免、持續時間係數整張表都在，" +
-		"沒有 handler 的法術缺的是**效果**，不是資料。\n\n")
+	out.WriteString(tooltext.Text("h.f6433cd125ea"))
+	out.WriteString(tooltext.Text("h.e8b3da3bc176"))
+	out.WriteString(tooltext.Text("h.b6fb04f4914a") +
+		tooltext.Text("h.d73eba3498cf"))
+	out.WriteString(tooltext.Text("h.1beae0403b79") +
+		tooltext.Text("h.cc02bb12bdb7"))
+	out.WriteString(tooltext.Text("h.e1e119766432") +
+		tooltext.Text("h.7aeaa6433af5"))
+	out.WriteString(tooltext.Text("h.86e0f965bc77") +
+		tooltext.Text("h.10872e04ecbb"))
 
 	original := report.Original
-	fmt.Fprintf(&out, "## 摘要\n\n| 分類 | 支數 |\n|---|---:|\n")
-	fmt.Fprintf(&out, "| 表的筆數 | %d |\n", original.TableSpells)
-	fmt.Fprintf(&out, "| ├ 占位（玩家取不到）| %d |\n", original.Placeholders)
-	fmt.Fprintf(&out, "| └ 玩家取得到 | %d |\n", original.Playable)
-	fmt.Fprintf(&out, "| 　├ 只能紮營施放 | %d |\n", original.CampOnly)
-	fmt.Fprintf(&out, "| 　└ **戰鬥可施放（真正的分母）** | **%d** |\n", original.CombatCastable)
-	fmt.Fprintf(&out, "| 　　├ 職業模型不支援（德魯伊／表裡沒有職業）| %d |\n",
-		original.UnsupportedClass)
-	fmt.Fprintf(&out, "| 　　├ **可宣告（能收斂到 0 的分母）** | **%d** |\n", original.Declarable)
-	fmt.Fprintf(&out, "| 　　├ game pack 已宣告 | %d |\n", original.Declared)
-	fmt.Fprintf(&out, "| 　　├ 其中 runtime handler 已觀察到 | %d |\n", original.HandlerObserved)
-	fmt.Fprintf(&out, "| 　　└ **尚未宣告** | **%d** |\n", original.Declarable-original.Declared)
+	fmt.Fprint(&out, tooltext.Format("h.082c81548ffe"))
+	fmt.Fprint(&out, tooltext.Format("h.7e27e2a01918", original.TableSpells))
+	fmt.Fprint(&out, tooltext.Format("h.3f555fcdab09", original.Placeholders))
+	fmt.Fprint(&out, tooltext.Format("h.0a4df91b176f", original.Playable))
+	fmt.Fprint(&out, tooltext.Format("h.0910816097f1", original.CampOnly))
+	fmt.Fprint(&out, tooltext.Format("h.d9007af1f6c0", original.CombatCastable))
+	fmt.Fprint(&out, tooltext.Format("h.dd58c83eb108", original.UnsupportedClass))
+	fmt.Fprint(&out, tooltext.Format("h.e43f0dbc53ff", original.Declarable))
+	fmt.Fprint(&out, tooltext.Format("h.31a132405c46", original.Declared))
+	fmt.Fprint(&out, tooltext.Format("h.62a7a40517ec", original.HandlerObserved))
+	fmt.Fprint(&out, tooltext.Format("h.e4601f10b654", original.Declarable-original.Declared))
 
-	fmt.Fprintf(&out, "| 　　　├ 效果碼 remake 已判讀（只差宣告） | %d |\n", original.MissingEffectReady)
-	fmt.Fprintf(&out, "| 　　　├ 效果碼 remake 還看不懂 | %d |\n", original.MissingEffectUnhandled)
-	fmt.Fprintf(&out, "| 　　　└ 傷害類（`+0Ah = 0`，骰數不在屬性表裡） | %d |\n", original.MissingDamageClass)
-	fmt.Fprintf(&out, "\n全表用到 %d 個相異效果碼，remake 判讀得了其中 %d 個。\n",
-		original.EffectKindsUsed, original.EffectKindsInterpreted)
-	out.WriteString("★ **記得上去不等於解讀得了**：`CastEffectSpell` 可以把任何碼寫進效果串列，\n")
-	out.WriteString("但只有已判讀的那幾個會改變戰鬥規則。上面兩列就是這條界線。\n")
+	fmt.Fprint(&out, tooltext.Format("h.61baa020fc07", original.MissingEffectReady))
+	fmt.Fprint(&out, tooltext.Format("h.02fb830488b5", original.MissingEffectUnhandled))
+	fmt.Fprint(&out, tooltext.Format("h.6a58faaadd4a", original.MissingDamageClass))
+	fmt.Fprint(&out, tooltext.Format("h.5449f67adc5d", original.EffectKindsUsed, original.EffectKindsInterpreted))
+	out.WriteString(tooltext.Text("h.435d8aed43b4"))
+	out.WriteString(tooltext.Text("h.cd8c188c4ccc"))
 	if len(original.MissingEffectReadyNames) > 0 {
-		fmt.Fprintf(&out, "\n只差宣告的：%s。\n",
-			strings.Join(original.MissingEffectReadyNames, "、"))
+		fmt.Fprint(&out, tooltext.Format("h.2bdcf08f037e", strings.Join(original.MissingEffectReadyNames, "、")))
 	}
 
 	levels := make([]int, 0, len(original.MissingByLevel))
@@ -111,25 +109,25 @@ func renderMarkdown(report spellcoverage.Report) ([]byte, error) {
 	}
 	sort.Ints(levels)
 	if len(levels) == 0 {
-		out.WriteString("\n可宣告的分母已經歸零：戰鬥可施放而職業模型支援的法術全部宣告了。\n")
+		out.WriteString(tooltext.Text("h.b844f287874c"))
 	} else {
-		out.WriteString("\n未宣告的戰鬥法術，依環數：")
+		out.WriteString(tooltext.Text("h.461d077e3e11"))
 		for index, level := range levels {
 			if index > 0 {
 				out.WriteString("、")
 			}
-			fmt.Fprintf(&out, "%d 環 %d 支", level, original.MissingByLevel[level])
+			fmt.Fprint(&out, tooltext.Format("h.c4ebc3a62035", level, original.MissingByLevel[level]))
 		}
 		out.WriteString("。\n")
 	}
-	out.WriteString("\n## 逐支\n\n")
-	out.WriteString("| 編號 | 名稱 | 職業 | 環 | 資料 | handler | visual | sound |\n")
+	out.WriteString(tooltext.Text("h.acf1c15ce9c1"))
+	out.WriteString(tooltext.Text("h.351c02f9019f"))
 	out.WriteString("|---:|---|---|---:|---|---|---|---|\n")
 	for _, spell := range table.Spells {
 		name := spell.Name
 		class := spell.CasterClass
 		if spell.Placeholder {
-			name = "（占位）"
+			name = tooltext.Text("h.72ca4342dab7")
 			class = "—"
 		}
 		data := describeData(spell)
@@ -139,11 +137,11 @@ func renderMarkdown(report spellcoverage.Report) ([]byte, error) {
 			visual = item.Visual.Status
 			sound = item.Sound.Status
 		} else if spell.CampOnly {
-			handler = "紮營法術"
+			handler = tooltext.Text("h.7521f10ebf82")
 		} else if spell.Placeholder {
-			handler = "取不到"
+			handler = tooltext.Text("h.335fa0b90d1a")
 		} else {
-			handler = "未宣告"
+			handler = tooltext.Text("h.11b8e2909fa5")
 		}
 		fmt.Fprintf(&out, "| %d | %s | %s | %d | %s | %s | %s | %s |\n",
 			spell.SpellID, name, class, spell.Level, data, handler, visual, sound)
@@ -153,24 +151,24 @@ func renderMarkdown(report spellcoverage.Report) ([]byte, error) {
 
 // describeData 把資料側已知的東西壓成一格，讓「缺的是效果不是資料」看得出來。
 func describeData(spell gamepack.SpellEntry) string {
-	parts := []string{fmt.Sprintf("%d 節", spell.CastingTimeSegments)}
+	parts := []string{tooltext.Format("h.4ce12bfd0cc0", spell.CastingTimeSegments)}
 	switch spell.TargetModeKind {
 	case "self":
-		parts = append(parts, "自己")
+		parts = append(parts, tooltext.Text("h.fb43354d2aae"))
 	case "fixed":
-		parts = append(parts, fmt.Sprintf("%d 個目標", spell.TargetCount))
+		parts = append(parts, tooltext.Format("h.3e18e8bcd8d3", spell.TargetCount))
 	case "area":
-		parts = append(parts, fmt.Sprintf("半徑 %d", spell.AreaRadius))
+		parts = append(parts, tooltext.Format("h.0c242793a0b6", spell.AreaRadius))
 	case "weighted-picks":
-		parts = append(parts, "逐一點選")
+		parts = append(parts, tooltext.Text("h.25a1d4282753"))
 	case "locked-or-area":
-		parts = append(parts, "鎖定目標")
+		parts = append(parts, tooltext.Text("h.833edd624755"))
 	}
 	if spell.RequiresSave() {
-		parts = append(parts, fmt.Sprintf("豁免 %s", spell.SaveCategoryName))
+		parts = append(parts, tooltext.Format("h.d94dfd9df3af", spell.SaveCategoryName))
 	}
 	if spell.EffectID != 0 {
-		parts = append(parts, fmt.Sprintf("效果 %d", spell.EffectID))
+		parts = append(parts, tooltext.Format("h.c7df37db55e7", spell.EffectID))
 	}
 	return strings.Join(parts, "／")
 }

@@ -9,6 +9,7 @@ package gamecorpus
 import (
 	"archive/zip"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"os"
 	"strings"
@@ -46,7 +47,7 @@ func Load(imagePath, localePath string) (Corpus, error) {
 	for chapter := 1; chapter <= 6; chapter++ {
 		payload := memberPayload(archive, fmt.Sprintf("ECL%d.DAX", chapter))
 		if payload == nil {
-			return Corpus{}, fmt.Errorf("image 裡沒有 ECL%d.DAX", chapter)
+			return Corpus{}, tooltext.Errorf("h.f74a43cb81d6", chapter)
 		}
 		parsed, err := dax.Parse(payload)
 		if err != nil {
@@ -112,7 +113,7 @@ func (c Corpus) NewParty() (game.State, error) {
 func BoostParty(state *game.State) error {
 	party := state.PartyFighters()
 	if len(party) == 0 {
-		return fmt.Errorf("盤點用的隊伍是空的")
+		return tooltext.Errorf("h.b54a6a6a8b20")
 	}
 	for index := range party {
 		party[index].HitPoints, party[index].MaxHitPoints = 999, 999

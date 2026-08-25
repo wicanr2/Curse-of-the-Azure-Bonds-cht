@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"os"
 	"path/filepath"
 
@@ -83,11 +84,11 @@ func digest(data []byte) string {
 }
 
 func main() {
-	exePath := flag.String("exe", "", "resident MZ executable（含 overlay control records）")
+	exePath := flag.String("exe", "", tooltext.Text("h.a13b7622a11c"))
 	ovrPath := flag.String("ovr", "", "TPOV overlay container")
-	platform := flag.String("platform", "", "dos 或 pc98（只作標籤，不影響解析）")
-	codeDir := flag.String("code-dir", "", "把每段 overlay code 寫成 overlay-NN.bin 的目錄")
-	outPath := flag.String("out", "", "輸出 JSON 路徑（預設 stdout）")
+	platform := flag.String("platform", "", tooltext.Text("h.1216ae8efa13"))
+	codeDir := flag.String("code-dir", "", tooltext.Text("h.4a60c79f0702"))
+	outPath := flag.String("out", "", tooltext.Text("h.1c7540a07a98"))
 	flag.Parse()
 
 	if *exePath == "" || *ovrPath == "" {

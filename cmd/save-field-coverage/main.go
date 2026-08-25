@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"reflect"
@@ -53,19 +54,19 @@ type sidecarReport struct {
 }
 
 type report struct {
-	Schema      string         `json:"schema"`
-	RecordSize  int            `json:"record_size"`
-	Baselines   int            `json:"baselines"`
-	ByStatus    map[string]int `json:"bytes_by_status"`
-	ConsumedAll int            `json:"consumed_bytes"`
-	Fields      []fieldRow     `json:"fields"`
-	Mismatches  []string       `json:"mismatches"`
+	Schema      string          `json:"schema"`
+	RecordSize  int             `json:"record_size"`
+	Baselines   int             `json:"baselines"`
+	ByStatus    map[string]int  `json:"bytes_by_status"`
+	ConsumedAll int             `json:"consumed_bytes"`
+	Fields      []fieldRow      `json:"fields"`
+	Mismatches  []string        `json:"mismatches"`
 	Sidecars    []sidecarReport `json:"sidecars"`
 }
 
 func main() {
-	output := flag.String("output", "", "Markdown 輸出路徑")
-	outputJSON := flag.String("json", "", "JSON 輸出路徑")
+	output := flag.String("output", "", tooltext.Text("h.fff5cb9e9bc2"))
+	outputJSON := flag.String("json", "", tooltext.Text("h.7299c956bbb9"))
 	flag.Parse()
 
 	result, err := analyze()
@@ -87,10 +88,7 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	fmt.Fprintf(os.Stderr,
-		"record=%d decoded=%d documented=%d unknown=%d 量到有讀=%d 對帳不符=%d\n",
-		result.RecordSize, result.ByStatus["decoded"], result.ByStatus["documented"],
-		result.ByStatus["unknown"], result.ConsumedAll, len(result.Mismatches))
+	fmt.Fprint(os.Stderr, tooltext.Format("h.7a01b550fd79", result.RecordSize, result.ByStatus["decoded"], result.ByStatus["documented"], result.ByStatus["unknown"], result.ConsumedAll, len(result.Mismatches)))
 	if len(result.Mismatches) > 0 {
 		for _, line := range result.Mismatches {
 			fmt.Fprintln(os.Stderr, "  ", line)
@@ -110,7 +108,7 @@ func analyze() (report, error) {
 	for _, baseline := range baselines {
 		base, baseErr := party.ParseOriginalDOSPlayerRecord(baseline.data, "probe")
 		if baseErr != nil {
-			return report{}, fmt.Errorf("基準記錄 %q 解析不過：%w", baseline.name, baseErr)
+			return report{}, tooltext.Errorf("h.af0c63659919", baseline.name, baseErr)
 		}
 		for offset := 0; offset < party.DOSPlayerRecordSize; offset++ {
 			if consumed[offset] {
@@ -151,15 +149,13 @@ func analyze() (report, error) {
 		result.ByStatus[string(field.Status)] += field.Size
 		// 對帳：量到有讀，台帳卻沒說 decoded ⇒ 台帳低估了，硬錯。
 		if row.Consumed > 0 && field.Status != party.DOSFieldDecoded {
-			result.Mismatches = append(result.Mismatches, fmt.Sprintf(
-				"+%03Xh（%s）量到 %d 個位元組有讀，台帳卻標成 %s",
-				field.Offset, field.Name, row.Consumed, field.Status))
+			result.Mismatches = append(result.Mismatches, tooltext.Format("h.86de433776c8", field.Offset, field.Name, row.Consumed, field.Status))
 		}
 		// 台帳說 decoded，卻沒有任何基準記錄量到 ⇒ 補基準記錄，別改台帳。
 		if row.Consumed == 0 && field.Status == party.DOSFieldDecoded {
 			result.Mismatches = append(result.Mismatches, fmt.Sprintf(
-				"+%03Xh（%s）台帳標 decoded，但沒有任何基準記錄量到它——"+
-					"補一份能觸發它的基準記錄", field.Offset, field.Name))
+				tooltext.Text("h.37066a8f88d7")+
+					tooltext.Text("h.dcb099c34d2b"), field.Offset, field.Name))
 		}
 		result.Fields = append(result.Fields, row)
 	}
@@ -170,8 +166,8 @@ func analyze() (report, error) {
 		fields []monster.RecordField
 		size   int
 	}{
-		{".SWG 物品記錄", monster.ItemRecordFields, monster.ItemRecordSize},
-		{".FX 效果記錄", monster.AffectRecordFields, monster.AffectRecordSize},
+		{tooltext.Text("h.aa095065b9d9"), monster.ItemRecordFields, monster.ItemRecordSize},
+		{tooltext.Text("h.9a96e67a7e7b"), monster.AffectRecordFields, monster.AffectRecordSize},
 	} {
 		if err := monster.ValidateRecordFields(sidecar.name, sidecar.fields, sidecar.size); err != nil {
 			return report{}, err
@@ -251,38 +247,37 @@ func makeRecord(name string, race, classCombo byte, classSlot int) []byte {
 
 func renderMarkdown(result report) []byte {
 	var out strings.Builder
-	out.WriteString("# DOS 角色記錄的逐位元組覆蓋（`CHARREC`，1A6h bytes）\n\n")
-	out.WriteString("由 `cmd/save-field-coverage` 產生，不要手改。\n\n")
-	out.WriteString("- **狀態**來自 `internal/party.DOSPlayerRecordFields` 的人工台帳，" +
-		"每一段都必須有出處；`unknown` 是「還沒查到」，不是「沒有用」。\n")
-	out.WriteString("- **量到有讀**是機器量的：改一個位元組、重新解析、比對結果，" +
-		"有差別就是有讀。掃程式碼會漏掉算出來的索引，量測不會。\n")
-	out.WriteString("- 量測是**下界**：只在某些職業／種族才被讀的位元組，" +
-		"基準記錄沒涵蓋就會被判成沒讀。所以基準有多份，而且「台帳說 decoded 卻沒量到」" +
-		"會讓這支回非零離開碼。\n")
-	out.WriteString("- ⚠ **匯入不會因為 `unknown` 而遺失資料**：`LoadSAVGAMSlot` 保留整份原始" +
-		"記錄，寫回時只動已知位移（spec 185）。這份報告衡量的是**理解程度**，不是保真度。\n")
-	out.WriteString("- 對帳的粒度是**每一段**，不是每一個位元組：長度可變的內容" +
-		"（名字尾巴、沒用到的法術槽）在單一份基準記錄裡本來就量不到，" +
-		"逐位元組要求會產生一堆假警報。\n\n")
+	out.WriteString(tooltext.Text("h.900e8e3d36e1"))
+	out.WriteString(tooltext.Text("h.961a46bf1039"))
+	out.WriteString(tooltext.Text("h.5341046d8624") +
+		tooltext.Text("h.b4046823dbc7"))
+	out.WriteString(tooltext.Text("h.ae311b79f57a") +
+		tooltext.Text("h.3a22d28bbf51"))
+	out.WriteString(tooltext.Text("h.0805f40e9349") +
+		tooltext.Text("h.4dadea83e94b") +
+		tooltext.Text("h.d43ef8c03413"))
+	out.WriteString(tooltext.Text("h.03dfffb541b0") +
+		tooltext.Text("h.d5e41bb036a6"))
+	out.WriteString(tooltext.Text("h.663d2c28008a") +
+		tooltext.Text("h.d4697a03be54") +
+		tooltext.Text("h.c2027ef6bbb6"))
 
-	fmt.Fprintf(&out, "## 摘要\n\n| 狀態 | 位元組 | 佔比 |\n|---|---:|---:|\n")
+	fmt.Fprint(&out, tooltext.Format("h.5a9885a1c455"))
 	for _, status := range []string{"decoded", "documented", "unknown"} {
 		count := result.ByStatus[status]
 		fmt.Fprintf(&out, "| `%s` | %d | %d%% |\n", status, count, count*100/result.RecordSize)
 	}
-	fmt.Fprintf(&out, "| 合計 | %d | 100%% |\n", result.RecordSize)
-	fmt.Fprintf(&out, "\n解析器實際讀到的位元組（%d 份基準記錄的聯集）：**%d／%d**。\n\n",
-		result.Baselines, result.ConsumedAll, result.RecordSize)
+	fmt.Fprint(&out, tooltext.Format("h.7482263f1fa2", result.RecordSize))
+	fmt.Fprint(&out, tooltext.Format("h.10ec9931c77e", result.Baselines, result.ConsumedAll, result.RecordSize))
 
-	out.WriteString("## Sidecar 記錄\n\n")
-	out.WriteString("`.SWG`（物品）與 `.FX`（效果）沒有突變探針：兩者的解析器逐欄直讀、" +
-		"沒有算出來的索引，台帳蓋滿就足以說明覆蓋。\n\n")
+	out.WriteString(tooltext.Text("h.e0eb54a1c9cc"))
+	out.WriteString(tooltext.Text("h.693b6853416c") +
+		tooltext.Text("h.0d1a8dd925d8"))
 	for _, sidecar := range result.Sidecars {
 		fmt.Fprintf(&out, "### %s（%d bytes）\n\n", sidecar.Name, sidecar.Size)
 		fmt.Fprintf(&out, "`decoded` %d／`documented` %d／`unknown` %d\n\n",
 			sidecar.ByStatus["decoded"], sidecar.ByStatus["documented"], sidecar.ByStatus["unknown"])
-		out.WriteString("| 位移 | 長度 | 欄位 | 狀態 | 出處 |\n|---|---:|---|---|---|\n")
+		out.WriteString(tooltext.Text("h.08ba5269af27"))
 		for _, row := range sidecar.Fields {
 			fmt.Fprintf(&out, "| `%s` | %d | %s | `%s` | spec %s |\n",
 				row.Offset, row.Size, row.Name, row.Status, row.Spec)
@@ -290,7 +285,7 @@ func renderMarkdown(result report) []byte {
 		out.WriteString("\n")
 	}
 
-	out.WriteString("## 角色記錄逐段\n\n| 位移 | 長度 | 欄位 | 狀態 | 出處 | 量到有讀 |\n|---|---:|---|---|---|---:|\n")
+	out.WriteString(tooltext.Text("h.fc0d0475192c"))
 	for _, row := range result.Fields {
 		spec := row.Spec
 		if spec != "" {

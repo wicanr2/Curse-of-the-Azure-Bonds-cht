@@ -24,6 +24,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -70,7 +71,7 @@ type site struct {
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	out := flag.String("out", "docs/audit/ecl-combat-sites.md", "輸出的 markdown")
+	out := flag.String("out", "docs/audit/ecl-combat-sites.md", tooltext.Text("h.aff4479ab1b9"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -83,7 +84,7 @@ func main() {
 	for member := 1; member <= 6; member++ {
 		payload := memberPayload(archive, fmt.Sprintf("ECL%d.DAX", member))
 		if payload == nil {
-			log.Fatalf("image 裡沒有 ECL%d.DAX", member)
+			log.Fatal(tooltext.Format("h.f74a43cb81d6", member))
 		}
 		blocks, err := dax.Parse(payload)
 		if err != nil {
@@ -115,8 +116,7 @@ func main() {
 			armed++
 		}
 	}
-	fmt.Printf("COMBAT=%d 前面擺過怪=%d 沒擺過=%d → %s\n",
-		len(sites), armed, len(sites)-armed, *out)
+	fmt.Print(tooltext.Format("h.ae8f7d746f14", len(sites), armed, len(sites)-armed, *out))
 }
 
 func scanBlock(member int, id uint8, data []byte) ([]site, error) {
@@ -224,16 +224,16 @@ func firstTextAt(unique map[int]ecl.Instruction, offsets []int, start int) strin
 
 func render(sites []site) string {
 	var out strings.Builder
-	out.WriteString("# `24h COMBAT` 逐處盤點（三選一走哪一支）\n\n" +
-		"由 `cmd/ecl-combat-sites` 產生，不要手改。\n\n" +
-		"`24h` 沒有運算元。它是**服務分派點**（spec 1095）：先看兩個引擎寫的請求旗標，\n" +
-		"命中就跑商店或營地並跳過戰鬥，否則才進戰鬥。所以這裡分的是「前面有沒有把怪物\n" +
-		"擺上去」——沿控制流**往回走**找 `0Bh LOAD MONSTER`／`0Ch SETUP MONSTER`，\n" +
-		"碰到 `1Ch CLEARMONSTERS` 就停在那一條路上。\n\n" +
-		"⚠ 往回走用的是 `TraceGraph` 的邊，不是位址順序。\n" +
-		"⚠ **「沒擺過怪」不等於「一定是商店或營地」**：也可能是前一段留在場上的怪，\n" +
-		"或走訪跟不到的路徑。這份表只把兩堆分開，不替沒擺過的那一堆下結論。\n\n")
-	out.WriteString("| 段 | 位移 | 前面擺過怪 | 來源 | 那一段的下一句 |\n")
+	out.WriteString(tooltext.Text("h.9a862ceda69b") +
+		tooltext.Text("h.e3266f22fa28") +
+		tooltext.Text("h.6c18eb21b24d") +
+		tooltext.Text("h.670df3d7fbb9") +
+		tooltext.Text("h.7d57b2d68b44") +
+		tooltext.Text("h.d9d46162e0ff") +
+		tooltext.Text("h.df91786fc98c") +
+		tooltext.Text("h.84a95e4fc910") +
+		tooltext.Text("h.36011f32180a"))
+	out.WriteString(tooltext.Text("h.73ef9e2c00d9"))
 	out.WriteString("|---|---|---|---|---|\n")
 	for _, item := range sites {
 		source := "—"
@@ -245,11 +245,11 @@ func render(sites []site) string {
 		case item.viaLoad:
 			source = "`LOAD MONSTER`"
 		case item.cleared:
-			source = "路上有 `CLEARMONSTERS`"
+			source = tooltext.Text("h.25ad0121d8b2")
 		}
-		armed := "否"
+		armed := tooltext.Text("h.0c70665b6eb6")
 		if item.armed {
-			armed = "是"
+			armed = tooltext.Text("h.b5141d3d19e9")
 		}
 		text := item.firstText
 		if text == "" {
@@ -271,10 +271,10 @@ func render(sites []site) string {
 			cleared++
 		}
 	}
-	out.WriteString(fmt.Sprintf("\n## 摘要\n\n| 項目 | 數 |\n|---|---:|\n"+
-		"| `24h COMBAT` 的處數 | %d |\n| 分佈在幾個 block | %d |\n"+
-		"| 前面擺過怪（走戰鬥那一支）| %d |\n| 沒擺過 | %d |\n"+
-		"| 其中路上有 `CLEARMONSTERS` | %d |\n",
+	out.WriteString(fmt.Sprintf(tooltext.Text("h.e3b2a4f11e09")+
+		tooltext.Text("h.f5e1d1e87120")+
+		tooltext.Text("h.e1e77582ffac")+
+		tooltext.Text("h.dc2349e37dc8"),
 		len(sites), len(blocks), armed, len(sites)-armed, cleared))
 	return out.String()
 }

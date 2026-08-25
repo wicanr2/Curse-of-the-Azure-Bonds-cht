@@ -111,7 +111,7 @@
       "category": "玩家文字資料分離（Go 漢字 literal 債）",
       "format": "合計 %d 次（%s）",
       "source": "`go-han-literals-baseline.json`（`cmd/coab-audit`）",
-      "not_proof": "這是**債務**不是進度：數字要往下降。⚠ **分類只是路徑 heuristic，不要當缺陷數讀。**`frontend_ui_debt` 的判準是「檔案在 `cmd/azure-bonds-game/` 底下」，而那 24 筆逐筆看過（2026-08-24）全部是**開發者才看得到的字**：`flag.String` 的旗標說明、`log.Fatalf`／`fmt.Errorf` 的診斷、`-wall-trace` 那份 TSV 的表頭。⚠ **玩家看得到的那一半早就是 0**：`localization_debt` 0、逐格實測落回原文 0、按鍵重放落回原文 0、中文校對疑似未翻 0。⚠ 不要為了讓這個數字歸零而改分類——那會把「還沒搬的開發者字串」變成看不見的東西，而它本來就是遷移排序用的清單。"
+      "not_proof": "第 714 輪遷移完成歸零（1,938 → 0）：工具與 runtime 的漢字 literal 全部移進 `internal/tooltext` 的內嵌 catalog（stable ID `h.<sha256 前 12 碼>`），printf 家族改走 `tooltext.Format`／`Errorf`，報表輸出逐位元組不變（monster-ai-coverage／dos-sound-map／ecl-sky-colours／cell-sweep 重生零 diff）。閘門維持 fail-closed：新的 Go 漢字 literal 會讓 baseline 測試變紅，玩家文字照舊走 locale／game-pack，開發者字串走 tooltext。⚠ 歸零不代表翻譯完成或報表正確——它只保證「中文字不再寫死在 Go 裡」。"
     },
     "charged_items": {
       "category": "戰鬥中可用物品（充能效果）",

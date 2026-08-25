@@ -15,6 +15,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"image"
 	"image/color"
 	"image/png"
@@ -28,15 +29,15 @@ import (
 )
 
 func main() {
-	imagePath := flag.String("image", "curseoftheazurebonds.zip", "原版 DOS image ZIP")
-	member := flag.String("member", "SKY.DAX", "要看的 DAX 成員")
-	block := flag.Int("block", 252, "區塊編號")
-	item := flag.Int("item", 0, "區塊內的第幾張圖")
-	maskIndex := flag.Int("mask", 13, "遮罩索引；負值表示不遮罩")
-	probeX := flag.Int("x", -1, "要印索引的像素 X")
-	probeY := flag.Int("y", -1, "要印索引的像素 Y")
-	radius := flag.Int("radius", 3, "以探測點為中心印出多大的方塊")
-	pngPath := flag.String("png", "", "順便輸出 PNG")
+	imagePath := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.5d993e050e0a"))
+	member := flag.String("member", "SKY.DAX", tooltext.Text("h.ad0d12f74987"))
+	block := flag.Int("block", 252, tooltext.Text("h.e3d3f40d66aa"))
+	item := flag.Int("item", 0, tooltext.Text("h.7f351c62aa76"))
+	maskIndex := flag.Int("mask", 13, tooltext.Text("h.846b8c0fbbce"))
+	probeX := flag.Int("x", -1, tooltext.Text("h.cc4562afdad5"))
+	probeY := flag.Int("y", -1, tooltext.Text("h.29e36b86b08f"))
+	radius := flag.Int("radius", 3, tooltext.Text("h.6d4b02329cb9"))
+	pngPath := flag.String("png", "", tooltext.Text("h.6d8e6733e5d6"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*imagePath)
@@ -61,7 +62,7 @@ func main() {
 		break
 	}
 	if payload == nil {
-		log.Fatalf("%s 不在 %s 裡", *member, *imagePath)
+		log.Fatal(tooltext.Format("h.f04182cf799c", *member, *imagePath))
 	}
 	blocks, err := dax.Parse(payload)
 	if err != nil {
@@ -75,7 +76,7 @@ func main() {
 		}
 	}
 	if data == nil {
-		log.Fatalf("%s 沒有區塊 0x%02X", *member, *block)
+		log.Fatal(tooltext.Format("h.99998dd4110c", *member, *block))
 	}
 	masked := *maskIndex >= 0
 	key := uint8(0)
@@ -88,12 +89,10 @@ func main() {
 	}
 	width := int(picture.WidthUnits) * 8
 	height := int(picture.HeightUnits)
-	fmt.Printf("%s 區塊 0x%02X：%d×%d（WidthUnits=%d HeightUnits=%d）item=%d 像素=%d\n",
-		*member, *block, width, height, picture.WidthUnits, picture.HeightUnits,
-		picture.ItemCount, len(picture.Pixels))
+	fmt.Print(tooltext.Format("h.fde27ae385c5", *member, *block, width, height, picture.WidthUnits, picture.HeightUnits, picture.ItemCount, len(picture.Pixels)))
 
 	if *probeX >= 0 && *probeY >= 0 {
-		fmt.Printf("以 (%d,%d) 為中心的索引（透明是 16）：\n", *probeX, *probeY)
+		fmt.Print(tooltext.Format("h.23536a7aa40a", *probeX, *probeY))
 		for y := *probeY - *radius; y <= *probeY+*radius; y++ {
 			if y < 0 || y >= height {
 				continue
@@ -143,6 +142,6 @@ func main() {
 		if err := png.Encode(handle, img); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("已寫出 %s\n", *pngPath)
+		fmt.Print(tooltext.Format("h.d77032aa340c", *pngPath))
 	}
 }

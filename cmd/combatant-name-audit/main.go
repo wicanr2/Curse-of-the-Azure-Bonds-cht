@@ -15,6 +15,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -38,11 +39,11 @@ type localeFile struct {
 }
 
 func main() {
-	image := flag.String("image", "curseoftheazurebonds.zip", "遊戲 image zip")
+	image := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.90f916a91fdc"))
 	core := flag.String("core", "gamepack/pack/00-core.json", "game pack core JSON")
-	zhFile := flag.String("zh", "gamepack/pack/20-locale.zh-TW.json", "繁中語系檔")
-	enFile := flag.String("en", "gamepack/pack/20-locale.en.json", "英文語系檔")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	zhFile := flag.String("zh", "gamepack/pack/20-locale.zh-TW.json", tooltext.Text("h.01d3b4025afa"))
+	enFile := flag.String("en", "gamepack/pack/20-locale.en.json", tooltext.Text("h.88ad2e9a2d36"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	roster, err := CollectRoster(*image)
@@ -75,10 +76,10 @@ func main() {
 
 	undeclared, untranslated := 0, 0
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 戰鬥員名字逐種對照\n\n")
-	fmt.Fprintf(&report, "由 `cmd/combatant-name-audit` 產生，不要手改。對照機制見 spec 1179。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.d3cdca52641f"))
+	fmt.Fprint(&report, tooltext.Format("h.8ebf9c663851"))
 	var body strings.Builder
-	fmt.Fprintf(&body, "| 原始名 | 出現處 | 繁中 | 英文 |\n|---|---|---|---|\n")
+	fmt.Fprint(&body, tooltext.Format("h.a46881497473"))
 	for _, name := range names {
 		rule, declared := bySource[name]
 		chinese, english := "—", "—"
@@ -100,10 +101,10 @@ func main() {
 			name, strings.Join(roster[name], " "), chinese, english)
 	}
 
-	fmt.Fprintf(&report, "| 指標 | 數字 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 相異戰鬥員 | %d |\n", len(names))
-	fmt.Fprintf(&report, "| 沒宣告 | %d |\n", undeclared)
-	fmt.Fprintf(&report, "| 宣告了但缺譯 | %d |\n\n", untranslated)
+	fmt.Fprint(&report, tooltext.Format("h.13c83a8a875e"))
+	fmt.Fprint(&report, tooltext.Format("h.6389882aa39a", len(names)))
+	fmt.Fprint(&report, tooltext.Format("h.7ab35f1c602c", undeclared))
+	fmt.Fprint(&report, tooltext.Format("h.8cc53c8b7eca", untranslated))
 	report.WriteString(body.String())
 
 	text := report.String()
@@ -170,7 +171,7 @@ func LoadLocale(path, language string) (map[string]string, error) {
 	}
 	table, ok := file.Locales[language]
 	if !ok {
-		return nil, fmt.Errorf("%s 裡沒有 %q", path, language)
+		return nil, tooltext.Errorf("h.639ff7bf1d3a", path, language)
 	}
 	return table, nil
 }

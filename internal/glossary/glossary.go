@@ -14,6 +14,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -77,7 +78,7 @@ const TablePath = "docs/knowledge/coab-glossary.md"
 // exceptionHeading is the table whose rows waive missingRendering for one
 // message. The parser switches on the heading, so renaming it here and in the
 // document must happen together.
-const exceptionHeading = "例外：譯文可以不出現的名字"
+var exceptionHeading = tooltext.Text("h.13f6c30c2ea2")
 
 // exception waives one (message, term) pair.
 type exception struct {
@@ -178,8 +179,7 @@ func audit(terms []Term, items []scanned) []Issue {
 			}
 			sort.Strings(list)
 			issues = append(issues, Issue{Code: "conflicting_rendering", Term: source,
-				Detail: fmt.Sprintf("原文 %s 有 %d 種譯名：%s（譯名表與 combatant_name_rules 要對齊）",
-					source, len(list), strings.Join(list, "、"))})
+				Detail: tooltext.Format("h.44656795e39c", source, len(list), strings.Join(list, "、"))})
 		}
 	}
 	for chinese, sources := range byChinese {
@@ -192,27 +192,25 @@ func audit(terms []Term, items []scanned) []Issue {
 		}
 		sort.Strings(list)
 		issues = append(issues, Issue{Code: "duplicate_rendering", Term: chinese,
-			Detail: fmt.Sprintf("繁中 %q 同時是 %s 的譯名", chinese, strings.Join(list, "、"))})
+			Detail: tooltext.Format("h.fa70698379fb", chinese, strings.Join(list, "、"))})
 	}
 	for _, term := range terms {
 		if term.Uses == 0 {
 			issues = append(issues, Issue{Code: "unused_term", Term: term.Source,
-				Detail: fmt.Sprintf("%s ＝ %q 在任何繁中字串裡都沒出現", term.Source, term.Chinese)})
+				Detail: tooltext.Format("h.f1cdf9508bdf", term.Source, term.Chinese)})
 		}
 		for _, variant := range term.Forbidden {
 			// 一個禁用寫法若是某個詞條譯名的一部分，這條規則永遠無法滿足。
 			for _, other := range terms {
 				if strings.Contains(other.Chinese, variant) {
 					issues = append(issues, Issue{Code: "unsatisfiable_ban", Term: term.Source,
-						Detail: fmt.Sprintf("禁用寫法 %q 是 %s ＝ %q 的一部分",
-							variant, other.Source, other.Chinese)})
+						Detail: tooltext.Format("h.a1fa5ebfc87e", variant, other.Source, other.Chinese)})
 				}
 			}
 			for _, item := range items {
 				if strings.Contains(item.value, variant) {
 					issues = append(issues, Issue{Code: "forbidden_variant", Term: term.Source,
-						Detail: fmt.Sprintf("%s 應寫 %q，但 %s 的 %s 出現 %q",
-							term.Source, term.Chinese, item.path, item.key, variant)})
+						Detail: tooltext.Format("h.09262ec458d1", term.Source, term.Chinese, item.path, item.key, variant)})
 				}
 			}
 		}
@@ -337,14 +335,13 @@ func auditRenderings(terms []Term, english, chinese map[string]string, exception
 				continue
 			}
 			issues = append(issues, Issue{Code: "missing_rendering", Term: term.Source,
-				Detail: fmt.Sprintf("%s 的英文釋義提到 %s，繁中卻沒有 %q",
-					key, term.Source, term.Chinese)})
+				Detail: tooltext.Format("h.dd902f50f5bf", key, term.Source, term.Chinese)})
 		}
 	}
 	for item := range waived {
 		if !used[item] {
 			issues = append(issues, Issue{Code: "stale_exception", Term: item.Source,
-				Detail: fmt.Sprintf("例外 %s／%s 已經不成立，從表裡刪掉", item.MessageID, item.Source)})
+				Detail: tooltext.Format("h.3f24dea9fd1c", item.MessageID, item.Source)})
 		}
 	}
 	return issues
@@ -361,7 +358,7 @@ func trimAll(values []string) []string {
 }
 
 // aliasPattern 抓備註欄的「原文另作 `X`」，可以連寫多個。
-var aliasPattern = regexp.MustCompile("原文另作((?:\\s*`[^`]+`、?)+)")
+var aliasPattern = regexp.MustCompile(tooltext.Text("h.3077d5894ce7"))
 
 func parseAliases(note string) []string {
 	match := aliasPattern.FindStringSubmatch(note)
@@ -422,7 +419,7 @@ func importCombatantNames(root string) ([]Term, error) {
 		}
 		terms = append(terms, Term{
 			Source: rule.Source, Chinese: chinese,
-			Category: "怪物（由 combatant_name_rules 匯入）", Imported: true,
+			Category: tooltext.Text("h.1544fa8410f5"), Imported: true,
 		})
 	}
 	return terms, nil

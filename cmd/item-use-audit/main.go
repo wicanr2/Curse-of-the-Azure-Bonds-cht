@@ -22,6 +22,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -45,7 +46,7 @@ type chargedItem struct {
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -57,7 +58,7 @@ func main() {
 	// 卷軸的判別要查類別表（`ITEMS`），不是物品類別本身（spec 1171）。
 	catalogBytes := member(archive, "ITEMS")
 	if catalogBytes == nil {
-		log.Fatal("遊戲 image 裡沒有 ITEMS")
+		log.Fatal(tooltext.Text("h.844bd129f953"))
 	}
 	catalog, err := monster.ParseBaseItems(catalogBytes)
 	if err != nil {
@@ -108,13 +109,13 @@ func main() {
 	})
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 戰鬥裡按 USE 會走到哪：原版物品逐件分類\n\n")
-	fmt.Fprintf(&report, "由 `cmd/item-use-audit` 產生，不要手改。分類依據見 spec 1168。\n\n")
-	fmt.Fprintf(&report, "| 類別 | 件數 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 卷軸（類別表的槽 `0Bh`..`0Dh`）| %d |\n", scrolls)
-	fmt.Fprintf(&report, "| 充能物品 | %d |\n", len(charged))
-	fmt.Fprintf(&report, "| 按了不會有事 | %d |\n", inert)
-	fmt.Fprintf(&report, "| 合計 | %d |\n\n", total)
+	fmt.Fprint(&report, tooltext.Format("h.3b4a6e4f3eb0"))
+	fmt.Fprint(&report, tooltext.Format("h.f59c959ac726"))
+	fmt.Fprint(&report, tooltext.Format("h.9d2e31df3ce2"))
+	fmt.Fprint(&report, tooltext.Format("h.c1a5390be5b7", scrolls))
+	fmt.Fprint(&report, tooltext.Format("h.ac2c10d5afb4", len(charged)))
+	fmt.Fprint(&report, tooltext.Format("h.52504cdec8ba", inert))
+	fmt.Fprint(&report, tooltext.Format("h.f497da0201f5", total))
 
 	missing := map[uint8]int{}
 	for _, item := range charged {
@@ -122,12 +123,12 @@ func main() {
 			missing[item.Effect]++
 		}
 	}
-	fmt.Fprintf(&report, "充能物品的效果編號就是**法術主表的列**：目標模式（`+6`）、"+
-		"豁免（`+8`）、效果碼（`+0Ah`）都在表裡，骰子在各自的 handler 裡"+
-		"（spec 1169）。`已接` ＝ remake 的 `internal/combat` 有那一支 handler 的"+
-		"行為讀法；%d 件裡還有 %d 個效果沒接。\n\n", len(charged), len(missing))
+	fmt.Fprintf(&report, tooltext.Text("h.ea81fc3a7013")+
+		tooltext.Text("h.1871ae238d5c")+
+		tooltext.Text("h.3ad65d00beb3")+
+		tooltext.Text("h.ef93f3221b73"), len(charged), len(missing))
 
-	fmt.Fprintf(&report, "| 章 | 區塊 | 名稱 | 類別 | 充能 | 效果 | 已接 |\n")
+	fmt.Fprint(&report, tooltext.Format("h.4470eac5f59c"))
 	fmt.Fprintf(&report, "|---:|---:|---|---|---:|---|---|\n")
 	for _, item := range charged {
 		mark := "✅"

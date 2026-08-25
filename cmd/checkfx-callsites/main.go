@@ -26,6 +26,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -56,11 +57,11 @@ type site struct {
 }
 
 func main() {
-	mapPath := flag.String("far-call-map", "docs/audit/far-call-map-dos.json", "far call 對照表")
-	overlays := flag.String("overlays", "workplace/re-sweep/dos/overlays", "overlay 二進位所在目錄")
-	window := flag.Int("window", 32, "往回找 `mov al,imm`＋`push ax` 的窗口大小")
-	resident := flag.String("resident", "workplace/re-sweep/dos/START.EXE", "常駐執行檔（用來排除常駐側呼叫）")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	mapPath := flag.String("far-call-map", "docs/audit/far-call-map-dos.json", tooltext.Text("h.b8df1b08c1ed"))
+	overlays := flag.String("overlays", "workplace/re-sweep/dos/overlays", tooltext.Text("h.d8ad8c5fefb0"))
+	window := flag.Int("window", 32, tooltext.Text("h.57810450377e"))
+	resident := flag.String("resident", "workplace/re-sweep/dos/START.EXE", tooltext.Text("h.698d7d6a1916"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	raw, err := os.ReadFile(*mapPath)
@@ -136,20 +137,20 @@ func main() {
 	sort.Ints(timings)
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# `CHECKFX` 的呼叫點：每個時機是誰在什麼時候問的\n\n")
-	fmt.Fprintf(&report, "由 `cmd/checkfx-callsites` 產生，不要手改。理由與兩種呼叫的差別見該檔註解。\n\n")
-	fmt.Fprintf(&report, "`CHECKFX` ＝ `overlay-23 entry#4`（模組內位移 `%04Xh`）。"+
-		"時機清單見 [`checkfx-timing-table.md`](checkfx-timing-table.md)。\n\n", checkfxEntry)
-	fmt.Fprintf(&report, "| 時機 | 呼叫點數 | 在哪 |\n|---|---:|---|\n")
+	fmt.Fprint(&report, tooltext.Format("h.49374d8d0911"))
+	fmt.Fprint(&report, tooltext.Format("h.10ac0a26a8f9"))
+	fmt.Fprintf(&report, tooltext.Text("h.5c4a0b17755c")+
+		tooltext.Text("h.e5042e597e0f"), checkfxEntry)
+	fmt.Fprint(&report, tooltext.Format("h.bbe4cbfc6af2"))
 	for _, timing := range timings {
 		fmt.Fprintf(&report, "| `%02Xh` | %d | %s |\n",
 			timing, len(byTiming[timing]), strings.Join(byTiming[timing], "、"))
 	}
-	fmt.Fprintf(&report, "\n共 %d 處呼叫點。\n\n", len(sites))
+	fmt.Fprint(&report, tooltext.Format("h.13f7896b8a38", len(sites)))
 	if len(unresolved) > 0 {
-		fmt.Fprintf(&report, "## 沒解出時機的呼叫點\n\n")
-		fmt.Fprintf(&report, "時機不是用 `mov al, imm` 推進去的（可能來自變數或暫存器）。"+
-			"**這些不代表時機不存在**，只代表這一支靜態掃不出來。\n\n")
+		fmt.Fprint(&report, tooltext.Format("h.b2fad9d3ff1b"))
+		fmt.Fprint(&report, tooltext.Text("h.89b68e7e3a91")+
+			tooltext.Text("h.e8299b50a184"))
 		for _, where := range unresolved {
 			fmt.Fprintf(&report, "- %s\n", where)
 		}
@@ -182,19 +183,17 @@ func main() {
 				residentStubs++
 			}
 		}
-		fmt.Fprintf(&report, "## 常駐執行檔那一側\n\n")
-		fmt.Fprintf(&report, "| 檢查 | 結果 |\n|---|---:|\n")
-		fmt.Fprintf(&report, "| 常駐側呼叫 `CHECKFX` 的 stub 位移 `%02Xh` 幾次 | **%d** |\n",
-			checkfxStubOffset, residentCalls)
-		fmt.Fprintf(&report, "| 正對照：常駐側叫得到幾種 overlay stub 位移 | %d／%d |\n\n",
-			residentStubs, len(stubs))
+		fmt.Fprint(&report, tooltext.Format("h.a1a62b373fae"))
+		fmt.Fprint(&report, tooltext.Format("h.4070aec90129"))
+		fmt.Fprint(&report, tooltext.Format("h.1164bb6cc580", checkfxStubOffset, residentCalls))
+		fmt.Fprint(&report, tooltext.Format("h.6c5db18e036b", residentStubs, len(stubs)))
 		if residentCalls == 0 && residentStubs > 0 {
-			fmt.Fprintf(&report, "正對照成立（常駐側**確實會**用 far call 叫 overlay），"+
-				"而 `CHECKFX` 的 stub 位移一次都沒出現 ⇒ **常駐側不呼叫 `CHECKFX`**。\n\n")
+			fmt.Fprint(&report, tooltext.Text("h.39726e7e798f")+
+				tooltext.Text("h.8f10bba438aa"))
 		}
 	}
 
-	fmt.Fprintf(&report, "## 沒有呼叫點的時機\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.039d40cad7ca"))
 	missing := make([]string, 0, 4)
 	for timing := 0; timing <= 0x16; timing++ {
 		if len(byTiming[timing]) == 0 {
@@ -202,19 +201,19 @@ func main() {
 		}
 	}
 	if len(missing) == 0 {
-		fmt.Fprintf(&report, "（沒有）\n")
+		fmt.Fprint(&report, tooltext.Format("h.bcfcfa2c255d"))
 	} else {
-		fmt.Fprintf(&report, "%s ——分派表裡有效果碼，但找不到任何呼叫端。\n\n", strings.Join(missing, "、"))
+		fmt.Fprint(&report, tooltext.Format("h.3c3dd92b5464", strings.Join(missing, "、")))
 		if len(unresolved) == 0 && residentCalls == 0 && residentStubs > 0 {
-			fmt.Fprintf(&report, "三個方向都排除掉了：跨 overlay 的 far call、"+
-				"overlay-23 內部的近呼叫、常駐執行檔（正對照成立）。"+
-				"而且 %d 處呼叫點的時機**全部**是 `mov al, imm` 推進去的，沒有一處來自變數。\n\n",
+			fmt.Fprintf(&report, tooltext.Text("h.7d3e32818971")+
+				tooltext.Text("h.cf9ec99d68d4")+
+				tooltext.Text("h.cd92e94a9692"),
 				len(sites))
-			fmt.Fprintf(&report, "⇒ 可以說：**這兩個時機在 DOS 版是死的**。"+
-				"只在它們底下出現的效果碼，原作永遠不會執行——remake 不實作它們**是對的**，"+
-				"把它們算成缺口反而會為死碼寫程式。\n")
+			fmt.Fprint(&report, tooltext.Text("h.b48f946eb11f")+
+				tooltext.Text("h.31118bbefd60")+
+				tooltext.Text("h.ef3fa4c9a5a9"))
 		} else {
-			fmt.Fprintf(&report, "⚠ 還不能讀成「原作不會用到」：仍有沒排除掉的呼叫形狀。\n")
+			fmt.Fprint(&report, tooltext.Format("h.85dddb7e9c26"))
 		}
 	}
 

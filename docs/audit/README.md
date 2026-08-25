@@ -154,6 +154,13 @@ UI locale、工具訊息）比對。規則與九組已修正的不一致見
 法術、選項、手札與玩家可見 UI 都由 stable ID＋locale／game-pack 驅動；Go 只
 保留 action、format contract、layout 與必要技術診斷。
 
+第 714 輪起 baseline 是 **0**（第 492 輪之後累積的 1,938 次工具與 runtime
+字串全部移進 `internal/tooltext` 的內嵌 catalog，stable ID 形如
+`h.<內容 sha256 前 12 碼>`；printf 家族改走 `tooltext.Format`／`Errorf`，
+報表輸出逐位元組不變）。閘門照舊 fail-closed：新的 Go 漢字 literal 會讓
+`TestRepositoryGoHanLiteralBaselineIsExact` 變紅——玩家文字進 locale／
+game-pack，開發者字串進 tooltext，兩條路都不經過 baseline 豁免。
+
 每次遷移流程：
 
 1. 先把正式文字移入 locale／game-pack，接通 stable ID 並測正常玩家路徑。

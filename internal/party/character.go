@@ -5,6 +5,7 @@ package party
 
 import (
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"math/rand"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -216,7 +217,6 @@ func RollStartingAgeFrom(tables StartingAgeLookup, race Race, class Class, seed 
 	}
 	return int16(age), nil
 }
-
 
 // WithAgeEffects applies the reference new-character age brackets to a base
 // ability roll. DOS player records already contain the resulting stats, so
@@ -466,12 +466,12 @@ type Character struct {
 	ECLFlag192 uint8 `json:"ecl_flag_192,omitempty"`
 	// IconSize follows Player.icon_size: 1 is small and 2 is normal.
 	// Zero means derive the original default from Race for old save files.
-	IconSize        uint8                  `json:"icon_size,omitempty"`
-	IconHeadBlock   uint8                  `json:"icon_head,omitempty"`
-	IconWeaponBlock uint8                  `json:"icon_weapon,omitempty"`
-	IconID          uint8                  `json:"icon_id,omitempty"`
-	HitPoints       int                    `json:"hit_points,omitempty"`
-	MaxHitPoints    int                    `json:"max_hit_points,omitempty"`
+	IconSize        uint8 `json:"icon_size,omitempty"`
+	IconHeadBlock   uint8 `json:"icon_head,omitempty"`
+	IconWeaponBlock uint8 `json:"icon_weapon,omitempty"`
+	IconID          uint8 `json:"icon_id,omitempty"`
+	HitPoints       int   `json:"hit_points,omitempty"`
+	MaxHitPoints    int   `json:"max_hit_points,omitempty"`
 	// BaseMaxHitPoints 是原作的 +12Ch：**不含**體質加值的最大 HP。
 	// 屬性重算時 +78h 會先回到這一格再重新加上加值（spec 1079）。
 	BaseMaxHitPoints int `json:"base_max_hit_points,omitempty"`
@@ -490,19 +490,19 @@ type Character struct {
 	// 每一名隊員的 `MovementAllowance` 都是 0 ⇒ 戰鬥裡整隊**不能移動**，
 	// 快速戰鬥的 AI 也挪不動人。`Fighter()` 因此在兩格都是 0 時退回
 	// `DefaultBaseMovement`。
-	BaseMovement int `json:"base_movement,omitempty"`
-	Movement     int `json:"movement,omitempty"`
-	HealthStatus    HealthStatus           `json:"health_status,omitempty"`
-	Bleeding        int                    `json:"bleeding,omitempty"`
-	Copper          uint16                 `json:"copper,omitempty"`
-	Silver          uint16                 `json:"silver,omitempty"`
-	Electrum        uint16                 `json:"electrum,omitempty"`
-	Gold            uint16                 `json:"gold,omitempty"`
-	Platinum        uint16                 `json:"platinum,omitempty"`
-	Gems            uint16                 `json:"gems,omitempty"`
-	Jewelry         uint16                 `json:"jewelry,omitempty"`
-	Equipment       []monster.ItemRecord   `json:"equipment,omitempty"`
-	Effects         []monster.AffectRecord `json:"effects,omitempty"`
+	BaseMovement int                    `json:"base_movement,omitempty"`
+	Movement     int                    `json:"movement,omitempty"`
+	HealthStatus HealthStatus           `json:"health_status,omitempty"`
+	Bleeding     int                    `json:"bleeding,omitempty"`
+	Copper       uint16                 `json:"copper,omitempty"`
+	Silver       uint16                 `json:"silver,omitempty"`
+	Electrum     uint16                 `json:"electrum,omitempty"`
+	Gold         uint16                 `json:"gold,omitempty"`
+	Platinum     uint16                 `json:"platinum,omitempty"`
+	Gems         uint16                 `json:"gems,omitempty"`
+	Jewelry      uint16                 `json:"jewelry,omitempty"`
+	Equipment    []monster.ItemRecord   `json:"equipment,omitempty"`
+	Effects      []monster.AffectRecord `json:"effects,omitempty"`
 	// SpellSlots is the data-neutral ordered spell-slot list used by ECL
 	// SPELL resolution. It is optional until original DOS player offsets are
 	// decoded; old saves therefore remain valid.
@@ -1072,7 +1072,7 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		Dexterity:   uint8(c.Abilities.Dexterity),
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		SavingThrows: append([]uint8(nil), c.SavingThrows...), SavingThrowBonus: int(c.SavingThrowBonus),
-		ClericLevel:  c.turnUndeadLevel(),
+		ClericLevel:       c.turnUndeadLevel(),
 		MovementAllowance: c.movementAllowance(),
 	}
 	return c.applyKnownEffects(fighter), nil
@@ -1362,7 +1362,7 @@ type CombatBaseLookup interface {
 // 讀成 break 會在槽 0 就結束、算不出任何值。
 func AttackAbilityFrom(tables CombatBaseLookup, classLevels [8]uint8) (uint8, error) {
 	if tables == nil {
-		return 0, fmt.Errorf("命中能力表沒有注入")
+		return 0, tooltext.Errorf("h.9d9335f12272")
 	}
 	best := 0
 	for slot, level := range classLevels {
@@ -1371,14 +1371,14 @@ func AttackAbilityFrom(tables CombatBaseLookup, classLevels [8]uint8) (uint8, er
 		}
 		value, ok := tables.ClassAttackValue(slot, int(level))
 		if !ok {
-			return 0, fmt.Errorf("命中能力表查不到職業槽 %d 等級 %d", slot, level)
+			return 0, tooltext.Errorf("h.360b406e76b4", slot, level)
 		}
 		if value > best {
 			best = value
 		}
 	}
 	if best == 0 {
-		return 0, fmt.Errorf("這個角色八個職業槽都是 0 級")
+		return 0, tooltext.Errorf("h.7f87d1619692")
 	}
 	return uint8(best), nil
 }
@@ -1392,7 +1392,7 @@ func CreationCombatBase(tables CombatBaseLookup, classLevels [8]uint8) (attackAb
 	}
 	armorStored, _, ok := tables.CreationDefaults()
 	if !ok {
-		return 0, 0, fmt.Errorf("game pack 沒有建角預設值")
+		return 0, 0, tooltext.Errorf("h.31f861512ecf")
 	}
 	return attack, uint8(armorStored), nil
 }

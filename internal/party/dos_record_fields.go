@@ -1,6 +1,6 @@
 package party
 
-import "fmt"
+import "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 
 // DOSRecordFieldStatus 是一段位元組在 remake 這側的狀態。
 //
@@ -38,102 +38,102 @@ type DOSRecordField struct {
 // 記錄，`PatchDOSPlayerRecord` 只寫已知位移（spec 185）。這張表衡量的是
 // **理解程度**，不是保真度。
 var DOSPlayerRecordFields = []DOSRecordField{
-	{0x000, 1, "名字長度", DOSFieldDecoded, "185"},
-	{0x001, 15, "名字（Pascal 短字串本體）", DOSFieldDecoded, "185"},
-	{0x010, 1, "力量 基準", DOSFieldDecoded, "1079"},
-	{0x011, 1, "力量 現值", DOSFieldDecoded, "1079"},
-	{0x012, 1, "智力 基準", DOSFieldDecoded, "1079"},
-	{0x013, 1, "智力 現值", DOSFieldDecoded, "1079"},
-	{0x014, 1, "睿智 基準", DOSFieldDecoded, "1079"},
-	{0x015, 1, "睿智 現值", DOSFieldDecoded, "1079"},
-	{0x016, 1, "敏捷 基準", DOSFieldDecoded, "1079"},
-	{0x017, 1, "敏捷 現值", DOSFieldDecoded, "1079"},
-	{0x018, 1, "體質 基準", DOSFieldDecoded, "1079"},
-	{0x019, 1, "體質 現值", DOSFieldDecoded, "1079"},
-	{0x01A, 1, "魅力 基準", DOSFieldDecoded, "1079"},
-	{0x01B, 1, "魅力 現值", DOSFieldDecoded, "1079"},
-	{0x01C, 1, "特殊力量 現值（18/xx 的百分位）", DOSFieldDecoded, "1086"},
-	{0x01D, 1, "特殊力量 基準", DOSFieldDecoded, "1086"},
-	{0x01E, 84, "記憶法術清單 84 格（最高位 ＝ 還在記憶中）", DOSFieldDecoded, "1016／792"},
-	{0x072, 1, "最短休息時數 `MINREST`", DOSFieldDocumented, "1164"},
-	{0x073, 1, "命中能力（八個職業槽查表取最大；重算時抄進 +199h）", DOSFieldDecoded, "1000／1140"},
-	{0x074, 1, "種族編號 1..7", DOSFieldDecoded, "998／1084"},
-	{0x075, 1, "職業組合編號 0..10h", DOSFieldDecoded, "1093"},
-	{0x076, 2, "年齡（word）", DOSFieldDecoded, "1099"},
-	{0x078, 1, "最大 HP", DOSFieldDecoded, "185"},
-	{0x079, 100, "每法術旗標 100 格（法術編號 1..100）", DOSFieldDecoded, "815"},
-	{0x0DD, 1, "橫掃上限的來源（回合初始化抄進戰鬥狀態 +5）", DOSFieldDocumented, "806／833"},
-	{0x0DE, 1, "體型 `SIZE`", DOSFieldDocumented, "1164"},
-	{0x0DF, 5, "五個豁免門檻（毒／石化／法杖／噴吐／法術）", DOSFieldDecoded, "1111"},
-	{0x0E4, 1, "移動力基準（重算時抄進 +1A5h）", DOSFieldDecoded, "1000／683"},
-	{0x0E5, 1, "最高職業等級（0 ＝ 零級生物）", DOSFieldDecoded, "811／815"},
-	{0x0E6, 1, "前一個最高等級 `HIGHESTPREVLEVEL`：雙職角色的舊職等級門檻（spec 1164／1194）", DOSFieldDecoded, "1079／1164"},
-	{0x0E7, 1, "被吸掉的等級數（復原術每次還一級）", DOSFieldDecoded, "1125"},
-	{0x0E8, 1, "被吸掉的 HP 總數（還一級就還其中 1/N）", DOSFieldDecoded, "1125"},
-	{0x0E9, 1, "不死生物種類 1..10（轉化矩陣的列索引）", DOSFieldDocumented, "834"},
-	{0x0EA, 8, "盜賊技能八項", DOSFieldDecoded, "185"},
-	{0x0F2, 4, "效果鏈頭（遠指標）", DOSFieldDecoded, "185"},
-	{0x0F6, 1, "被復活過 `RAISED`", DOSFieldDocumented, "1164"},
-	{0x0F7, 1, "控制／士氣（>= 80h 是 NPC）", DOSFieldDecoded, "758"},
-	{0x0F8, 1, "派生值已重算 `MODIFIED`", DOSFieldDocumented, "1164"},
-	{0x0F9, 1, "換職前的職業 `OLDCLASS`", DOSFieldDocumented, "1164"},
-	{0x0FA, 1, "換職前的等級 `OLDLEVEL`", DOSFieldDocumented, "1164"},
-	{0x0FB, 14, "七種貨幣（銅銀琥珀金白金寶石首飾，各一個 word）", DOSFieldDecoded, "1000"},
-	{0x109, 8, "第一職業的八個欄位（等級在前）", DOSFieldDecoded, "728"},
-	{0x111, 8, "第二職業的八個平行欄位 `PREVIOUSLEVEL`（雙職角色才有值）；顯示等級是 `+109h + +111h` 逐槽相加（spec 1196）", DOSFieldDecoded, "728／1196"},
-	{0x119, 1, "性別", DOSFieldDecoded, "1086"},
-	{0x11A, 1, "種族大類 `RACETYPE`", DOSFieldDocumented, "1164"},
-	{0x11B, 1, "陣營", DOSFieldDecoded, "1102"},
-	{0x11C, 1, "攻擊次數基準的第一個武器槽 `BASEATTBLOWS[0]`（半次單位）；spec 1010 那句「`= 0` 就用槽 2」是它的一個用法，不是另一種讀法（spec 1180）", DOSFieldDocumented, "1010／1164／1180"},
+	{0x000, 1, tooltext.Text("h.a0d9d9952154"), DOSFieldDecoded, "185"},
+	{0x001, 15, tooltext.Text("h.e134154c0699"), DOSFieldDecoded, "185"},
+	{0x010, 1, tooltext.Text("h.7516d9f135ec"), DOSFieldDecoded, "1079"},
+	{0x011, 1, tooltext.Text("h.123b5d1e3f23"), DOSFieldDecoded, "1079"},
+	{0x012, 1, tooltext.Text("h.2a465a0924f7"), DOSFieldDecoded, "1079"},
+	{0x013, 1, tooltext.Text("h.58adf2d5ce12"), DOSFieldDecoded, "1079"},
+	{0x014, 1, tooltext.Text("h.881e685108f8"), DOSFieldDecoded, "1079"},
+	{0x015, 1, tooltext.Text("h.961fa5f18fe0"), DOSFieldDecoded, "1079"},
+	{0x016, 1, tooltext.Text("h.68b7af260181"), DOSFieldDecoded, "1079"},
+	{0x017, 1, tooltext.Text("h.7a81780969b9"), DOSFieldDecoded, "1079"},
+	{0x018, 1, tooltext.Text("h.297256db5435"), DOSFieldDecoded, "1079"},
+	{0x019, 1, tooltext.Text("h.87eb78bfed12"), DOSFieldDecoded, "1079"},
+	{0x01A, 1, tooltext.Text("h.881a17e66aff"), DOSFieldDecoded, "1079"},
+	{0x01B, 1, tooltext.Text("h.d295951be8e2"), DOSFieldDecoded, "1079"},
+	{0x01C, 1, tooltext.Text("h.0f2cc6f829c8"), DOSFieldDecoded, "1086"},
+	{0x01D, 1, tooltext.Text("h.072b5650b7f9"), DOSFieldDecoded, "1086"},
+	{0x01E, 84, tooltext.Text("h.8ac9643659a9"), DOSFieldDecoded, "1016／792"},
+	{0x072, 1, tooltext.Text("h.44b3331abe25"), DOSFieldDocumented, "1164"},
+	{0x073, 1, tooltext.Text("h.508bd10b607c"), DOSFieldDecoded, "1000／1140"},
+	{0x074, 1, tooltext.Text("h.aaa493f24fdf"), DOSFieldDecoded, "998／1084"},
+	{0x075, 1, tooltext.Text("h.995bcdf667d4"), DOSFieldDecoded, "1093"},
+	{0x076, 2, tooltext.Text("h.09d6a87d4c6c"), DOSFieldDecoded, "1099"},
+	{0x078, 1, tooltext.Text("h.3abe5d68a83d"), DOSFieldDecoded, "185"},
+	{0x079, 100, tooltext.Text("h.0a4636557ab8"), DOSFieldDecoded, "815"},
+	{0x0DD, 1, tooltext.Text("h.390d9cc5a973"), DOSFieldDocumented, "806／833"},
+	{0x0DE, 1, tooltext.Text("h.e6d900b06c75"), DOSFieldDocumented, "1164"},
+	{0x0DF, 5, tooltext.Text("h.e7635cfb8d9f"), DOSFieldDecoded, "1111"},
+	{0x0E4, 1, tooltext.Text("h.7f4d48012e13"), DOSFieldDecoded, "1000／683"},
+	{0x0E5, 1, tooltext.Text("h.fbc7bbd0bb4e"), DOSFieldDecoded, "811／815"},
+	{0x0E6, 1, tooltext.Text("h.17505dfc26ac"), DOSFieldDecoded, "1079／1164"},
+	{0x0E7, 1, tooltext.Text("h.6ffa0b3e4b78"), DOSFieldDecoded, "1125"},
+	{0x0E8, 1, tooltext.Text("h.059ba5bdae57"), DOSFieldDecoded, "1125"},
+	{0x0E9, 1, tooltext.Text("h.ebd46e349ff6"), DOSFieldDocumented, "834"},
+	{0x0EA, 8, tooltext.Text("h.f8036258fa4f"), DOSFieldDecoded, "185"},
+	{0x0F2, 4, tooltext.Text("h.ab1f8140b600"), DOSFieldDecoded, "185"},
+	{0x0F6, 1, tooltext.Text("h.8c744e30507f"), DOSFieldDocumented, "1164"},
+	{0x0F7, 1, tooltext.Text("h.655e442d40f0"), DOSFieldDecoded, "758"},
+	{0x0F8, 1, tooltext.Text("h.5ebee22aa84a"), DOSFieldDocumented, "1164"},
+	{0x0F9, 1, tooltext.Text("h.c2c22b508f0e"), DOSFieldDocumented, "1164"},
+	{0x0FA, 1, tooltext.Text("h.0a25ad3e4542"), DOSFieldDocumented, "1164"},
+	{0x0FB, 14, tooltext.Text("h.153f959a23b2"), DOSFieldDecoded, "1000"},
+	{0x109, 8, tooltext.Text("h.fda2e58708a6"), DOSFieldDecoded, "728"},
+	{0x111, 8, tooltext.Text("h.f8b50d054da9"), DOSFieldDecoded, "728／1196"},
+	{0x119, 1, tooltext.Text("h.5f276e7a9b0a"), DOSFieldDecoded, "1086"},
+	{0x11A, 1, tooltext.Text("h.96832340eb55"), DOSFieldDocumented, "1164"},
+	{0x11B, 1, tooltext.Text("h.35a45173039d"), DOSFieldDecoded, "1102"},
+	{0x11C, 1, tooltext.Text("h.694ecdbe1591"), DOSFieldDocumented, "1010／1164／1180"},
 	// ⚠ 三組基準值的**陣列基底**是 `+11Dh`／`+11Fh`／`+121h`，但原作寫的是
 	// `基底 ＋ i`（i ＝ 1、2），所以實際的格子從基底的下一個位元組起算。
-	{0x11D, 1, "攻擊次數基準的第二個武器槽 `BASEATTBLOWS[1]`", DOSFieldDocumented, "1164"},
-	{0x11E, 2, "攻擊骰數 基準（兩個武器槽）", DOSFieldDocumented, "1000／795"},
-	{0x120, 2, "攻擊面數 基準", DOSFieldDocumented, "1000／795"},
-	{0x122, 2, "傷害加值 基準（有號）", DOSFieldDocumented, "1000／795"},
-	{0x124, 1, "護甲起點（重算時抄進 +19Ah；建角寫 32h ＝ AC 10）", DOSFieldDecoded, "1000／1140"},
+	{0x11D, 1, tooltext.Text("h.405b2132c139"), DOSFieldDocumented, "1164"},
+	{0x11E, 2, tooltext.Text("h.d5130220c575"), DOSFieldDocumented, "1000／795"},
+	{0x120, 2, tooltext.Text("h.8a4458b23f2f"), DOSFieldDocumented, "1000／795"},
+	{0x122, 2, tooltext.Text("h.c566305039c3"), DOSFieldDocumented, "1000／795"},
+	{0x124, 1, tooltext.Text("h.bb54296e8cb0"), DOSFieldDecoded, "1000／1140"},
 	// `+125h` 為 0 時力量的命中／傷害調整直接回 0（spec 694／697）。
 	// `MON*CHA` 的 81 筆裡 61 筆是 0、20 筆是 1，所以它不是「玩家角色」的同義詞。
-	{0x125, 1, "力量調整的開關（0 ＝ 不套用命中／傷害調整）", DOSFieldDecoded, "694／697"},
-	{0x126, 1, "角色亂數種子 `RANDOMID`", DOSFieldDocumented, "1164"},
-	{0x127, 4, "經驗值（dword）", DOSFieldDecoded, "185"},
-	{0x12B, 1, "職業可用性遮罩（與物品類別表 `+0Dh` 做 and）", DOSFieldDocumented, "1120"},
-	{0x12C, 1, "基準最大 HP（不含裝備加成）", DOSFieldDecoded, "185"},
-	{0x12D, 15, "每環可施放次數：牧師／德魯伊／法師各五環", DOSFieldDecoded, "1016"},
-	{0x13C, 2, "基準經驗值 `BASEEXP`（word）", DOSFieldDocumented, "1164"},
-	{0x13E, 1, "每點 HP 的經驗 `EXPPERHP`", DOSFieldDocumented, "1164"},
-	{0x13F, 1, "頭部造型 `HEAD`", DOSFieldDocumented, "1164"},
-	{0x140, 1, "身體造型 `BODY`", DOSFieldDocumented, "1164"},
-	{0x141, 1, "頭像 block `ICONHEAD`", DOSFieldDecoded, "185／1164"},
-	{0x142, 1, "身體圖示 block `ICONBODY`", DOSFieldDecoded, "185／1164"},
-	{0x143, 1, "圖示編號 `ICONINDEX`", DOSFieldDecoded, "185／1164"},
-	{0x144, 1, "人像高度 `ICONHEIGHT`（1 小／2 中）", DOSFieldDecoded, "1093／1164"},
-	{0x145, 7, "人像配色表 `COLORLIST`（7 格，每格是 EGA 色號對）", DOSFieldDocumented, "1164"},
-	{0x14C, 1, "物品件數（重算時數出來）", DOSFieldDocumented, "1000"},
-	{0x14D, 4, "物品鏈頭（遠指標）", DOSFieldDecoded, "1000"},
-	{0x151, 52, "13 個裝備槽遠指標（槽 9 雙持佔兩格）", DOSFieldDocumented, "1000"},
-	{0x185, 1, "已裝備物品佔用的手數（上限 2）", DOSFieldDocumented, "1000／1004"},
-	{0x186, 1, "豁免加值（派生欄位，重算時先歸零）", DOSFieldDecoded, "1000"},
-	{0x187, 2, "總重（含硬幣枚數）", DOSFieldDocumented, "1000／974"},
-	{0x189, 4, "隊伍／戰鬥員鏈的 next（遠指標）", DOSFieldDocumented, "689／815"},
-	{0x18D, 4, "戰鬥狀態記錄的遠指標（22 bytes 的那一份）", DOSFieldDocumented, "806"},
-	{0x191, 1, "解除詛咒的來源標記 `PDLNREMOVECURSE`", DOSFieldDocumented, "1164"},
-	{0x192, 1, "ECL 旗標（投影位址 7CE4h）；Pascal 那邊叫保留欄 `DUM1`", DOSFieldDecoded, "1098／1164"},
-	{0x193, 1, "保留欄 `DUM2`", DOSFieldDocumented, "1164"},
-	{0x194, 1, "保留欄 `DUM3`", DOSFieldDocumented, "1164"},
-	{0x195, 1, "狀態碼（8 ＝ 被摧毀）", DOSFieldDocumented, "833／1010"},
-	{0x196, 1, "站著且能行動（1 ＝ 可以）", DOSFieldDocumented, "1010"},
-	{0x197, 1, "隊號（0 是一邊，非 0 是另一邊）", DOSFieldDocumented, "777／1112"},
-	{0x198, 1, "畫圖示時用的旗標（決定圖號 3 或 1）", DOSFieldDocumented, "837"},
-	{0x199, 1, "重算時由 +73h 抄過來", DOSFieldDocumented, "1000"},
-	{0x19A, 1, "護甲值（重算時由 +124h 起算；顯示是 60 − 它）", DOSFieldDocumented, "1000"},
-	{0x19B, 1, "護甲值第二格（背後攻擊用；＝ +19Ah − 敏捷防禦調整 − 盾牌槽 − 2）", DOSFieldDocumented, "1000／1137"},
-	{0x19C, 2, "兩個武器槽本回合的攻擊次數（spec 1010 寫 +19Bh ＋ 槽）", DOSFieldDocumented, "808／1010"},
-	{0x19E, 2, "攻擊骰數 現值（兩個武器槽）", DOSFieldDocumented, "1000／795"},
-	{0x1A0, 2, "攻擊面數 現值", DOSFieldDocumented, "1000／795"},
-	{0x1A2, 2, "傷害加值 現值（有號）", DOSFieldDocumented, "1000／795"},
-	{0x1A4, 1, "目前 HP", DOSFieldDecoded, "185"},
-	{0x1A5, 1, "目前移動力（重算時由 +0E4h 抄過來）", DOSFieldDecoded, "1000／683"},
+	{0x125, 1, tooltext.Text("h.efbd770d168a"), DOSFieldDecoded, "694／697"},
+	{0x126, 1, tooltext.Text("h.fc6af97a554d"), DOSFieldDocumented, "1164"},
+	{0x127, 4, tooltext.Text("h.56e5ec26629f"), DOSFieldDecoded, "185"},
+	{0x12B, 1, tooltext.Text("h.410bcc642f04"), DOSFieldDocumented, "1120"},
+	{0x12C, 1, tooltext.Text("h.d1250b53804a"), DOSFieldDecoded, "185"},
+	{0x12D, 15, tooltext.Text("h.ffacb7d658a1"), DOSFieldDecoded, "1016"},
+	{0x13C, 2, tooltext.Text("h.aaf688c52cf1"), DOSFieldDocumented, "1164"},
+	{0x13E, 1, tooltext.Text("h.2b11240d2f61"), DOSFieldDocumented, "1164"},
+	{0x13F, 1, tooltext.Text("h.605305329bf1"), DOSFieldDocumented, "1164"},
+	{0x140, 1, tooltext.Text("h.a1e87c23dd0f"), DOSFieldDocumented, "1164"},
+	{0x141, 1, tooltext.Text("h.1dc2fac1934c"), DOSFieldDecoded, "185／1164"},
+	{0x142, 1, tooltext.Text("h.83b7b2d5ffa8"), DOSFieldDecoded, "185／1164"},
+	{0x143, 1, tooltext.Text("h.a40b9187f6a5"), DOSFieldDecoded, "185／1164"},
+	{0x144, 1, tooltext.Text("h.f5e0f6f4d0bc"), DOSFieldDecoded, "1093／1164"},
+	{0x145, 7, tooltext.Text("h.5b2075dd4db1"), DOSFieldDocumented, "1164"},
+	{0x14C, 1, tooltext.Text("h.b463ad2a025d"), DOSFieldDocumented, "1000"},
+	{0x14D, 4, tooltext.Text("h.0f12b114d156"), DOSFieldDecoded, "1000"},
+	{0x151, 52, tooltext.Text("h.87640e5aaae6"), DOSFieldDocumented, "1000"},
+	{0x185, 1, tooltext.Text("h.b1567be44efe"), DOSFieldDocumented, "1000／1004"},
+	{0x186, 1, tooltext.Text("h.80ede011ff3f"), DOSFieldDecoded, "1000"},
+	{0x187, 2, tooltext.Text("h.df9e6f38aa25"), DOSFieldDocumented, "1000／974"},
+	{0x189, 4, tooltext.Text("h.0ad20698c452"), DOSFieldDocumented, "689／815"},
+	{0x18D, 4, tooltext.Text("h.ca508efc3c7f"), DOSFieldDocumented, "806"},
+	{0x191, 1, tooltext.Text("h.64fd0db7c2c0"), DOSFieldDocumented, "1164"},
+	{0x192, 1, tooltext.Text("h.07ead3cd4ead"), DOSFieldDecoded, "1098／1164"},
+	{0x193, 1, tooltext.Text("h.7cbdafc0deec"), DOSFieldDocumented, "1164"},
+	{0x194, 1, tooltext.Text("h.b95ac63362f3"), DOSFieldDocumented, "1164"},
+	{0x195, 1, tooltext.Text("h.60f33c31115a"), DOSFieldDocumented, "833／1010"},
+	{0x196, 1, tooltext.Text("h.2e69a502b8e6"), DOSFieldDocumented, "1010"},
+	{0x197, 1, tooltext.Text("h.deae298a72f5"), DOSFieldDocumented, "777／1112"},
+	{0x198, 1, tooltext.Text("h.5a09e30ae71a"), DOSFieldDocumented, "837"},
+	{0x199, 1, tooltext.Text("h.64f76db77fff"), DOSFieldDocumented, "1000"},
+	{0x19A, 1, tooltext.Text("h.d7cfb51a2c88"), DOSFieldDocumented, "1000"},
+	{0x19B, 1, tooltext.Text("h.2493435a54c5"), DOSFieldDocumented, "1000／1137"},
+	{0x19C, 2, tooltext.Text("h.cab30c3ebe65"), DOSFieldDocumented, "808／1010"},
+	{0x19E, 2, tooltext.Text("h.c2ded79d8588"), DOSFieldDocumented, "1000／795"},
+	{0x1A0, 2, tooltext.Text("h.e1190769655a"), DOSFieldDocumented, "1000／795"},
+	{0x1A2, 2, tooltext.Text("h.1bbc36beacd6"), DOSFieldDocumented, "1000／795"},
+	{0x1A4, 1, tooltext.Text("h.6ec628b29160"), DOSFieldDecoded, "185"},
+	{0x1A5, 1, tooltext.Text("h.c75066a5b3b0"), DOSFieldDecoded, "1000／683"},
 }
 
 // ValidateDOSPlayerRecordFields 檢查台帳蓋滿整份記錄、沒有洞也沒有重疊。
@@ -144,31 +144,30 @@ func ValidateDOSPlayerRecordFields() error {
 	next := 0
 	for index, field := range DOSPlayerRecordFields {
 		if field.Size < 1 {
-			return fmt.Errorf("第 %d 段 +%03Xh 的長度是 %d", index, field.Offset, field.Size)
+			return tooltext.Errorf("h.1cb01188f695", index, field.Offset, field.Size)
 		}
 		if field.Offset != next {
-			return fmt.Errorf("第 %d 段從 +%03Xh 開始，前一段結束於 +%03Xh：中間有洞或重疊",
-				index, field.Offset, next)
+			return tooltext.Errorf("h.e13070aaee20", index, field.Offset, next)
 		}
 		if field.Name == "" {
-			return fmt.Errorf("第 %d 段 +%03Xh 沒有名字", index, field.Offset)
+			return tooltext.Errorf("h.16f47dbab574", index, field.Offset)
 		}
 		switch field.Status {
 		case DOSFieldDecoded, DOSFieldDocumented:
 			if field.Spec == "" {
-				return fmt.Errorf("+%03Xh 是 %s 卻沒有出處", field.Offset, field.Status)
+				return tooltext.Errorf("h.e71b1f46af1c", field.Offset, field.Status)
 			}
 		case DOSFieldUnknown:
 			if field.Spec != "" {
-				return fmt.Errorf("+%03Xh 是 unknown 卻附了出處 %q", field.Offset, field.Spec)
+				return tooltext.Errorf("h.eeef2792bdd5", field.Offset, field.Spec)
 			}
 		default:
-			return fmt.Errorf("+%03Xh 的狀態 %q 不是三種之一", field.Offset, field.Status)
+			return tooltext.Errorf("h.b91921c0176b", field.Offset, field.Status)
 		}
 		next = field.Offset + field.Size
 	}
 	if next != DOSPlayerRecordSize {
-		return fmt.Errorf("台帳只蓋到 +%03Xh，記錄是 %#X bytes", next, DOSPlayerRecordSize)
+		return tooltext.Errorf("h.318d402ef9fe", next, DOSPlayerRecordSize)
 	}
 	return nil
 }

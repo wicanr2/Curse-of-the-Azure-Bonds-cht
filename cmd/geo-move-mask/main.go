@@ -21,6 +21,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"strconv"
@@ -30,11 +31,11 @@ import (
 )
 
 func main() {
-	set := flag.Int("set", 2, "GEO 檔集（1..6）")
-	block := flag.Int("block", 1, "區塊編號")
-	all := flag.Bool("all", false, "列出目錄裡每一張圖")
-	cells := flag.String("cells", "", "只算這幾格，格式 x,y 以 : 分隔（例如 7,13:3,3）")
-	imagePath := flag.String("image", "curseoftheazurebonds.zip", "原版 image ZIP")
+	set := flag.Int("set", 2, tooltext.Text("h.cfd9421a6aad"))
+	block := flag.Int("block", 1, tooltext.Text("h.e3d3f40d66aa"))
+	all := flag.Bool("all", false, tooltext.Text("h.39ee1d20af32"))
+	cells := flag.String("cells", "", tooltext.Text("h.2c17ad557326"))
+	imagePath := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.79f855c8b433"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*imagePath)
@@ -70,12 +71,12 @@ func main() {
 		for _, item := range strings.Split(*cells, ":") {
 			parts := strings.Split(item, ",")
 			if len(parts) != 2 {
-				log.Fatalf("格式錯誤：%q", item)
+				log.Fatal(tooltext.Format("h.604f9ddffb26", item))
 			}
 			x, err1 := strconv.Atoi(parts[0])
 			y, err2 := strconv.Atoi(parts[1])
 			if err1 != nil || err2 != nil {
-				log.Fatalf("格式錯誤：%q", item)
+				log.Fatal(tooltext.Format("h.604f9ddffb26", item))
 			}
 			wanted = append(wanted, [2]int{x, y})
 		}
@@ -95,10 +96,10 @@ func main() {
 			for _, cell := range wanted {
 				parts = append(parts, fmt.Sprintf("(%d,%d)=%X", cell[0], cell[1], mask(grid, cell[0], cell[1])))
 			}
-			fmt.Printf("GEO%d 段 0x%02X  %s\n", ref.Set, ref.BlockID, strings.Join(parts, " "))
+			fmt.Print(tooltext.Format("h.65884ddead2e", ref.Set, ref.BlockID, strings.Join(parts, " ")))
 			continue
 		}
-		fmt.Printf("== GEO%d 段 0x%02X ==\n", ref.Set, ref.BlockID)
+		fmt.Print(tooltext.Format("h.09c8a5a38e78", ref.Set, ref.BlockID))
 		for y := 0; y < geo.Height; y++ {
 			row := make([]string, 0, geo.Width)
 			for x := 0; x < geo.Width; x++ {

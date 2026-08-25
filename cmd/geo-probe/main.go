@@ -13,6 +13,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"strings"
@@ -22,11 +23,11 @@ import (
 )
 
 func main() {
-	imagePath := flag.String("image", "curseoftheazurebonds.zip", "原版 DOS image ZIP")
-	set := flag.Int("set", 2, "GEO 檔號（2..6）")
-	block := flag.Int("block", 1, "GEO 區塊編號")
-	minOpen := flag.Int("open", 2, "只列出至少有這麼多個可走方向的格子")
-	prefix := flag.Bool("prefix", false, "只列出每個 GEO 區塊被 Parse 丟掉的兩個標頭位元組")
+	imagePath := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.5d993e050e0a"))
+	set := flag.Int("set", 2, tooltext.Text("h.d23c7c76b5e0"))
+	block := flag.Int("block", 1, tooltext.Text("h.b96a27801725"))
+	minOpen := flag.Int("open", 2, tooltext.Text("h.285d53102035"))
+	prefix := flag.Bool("prefix", false, tooltext.Text("h.082b2fe926e4"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*imagePath)
@@ -52,7 +53,7 @@ func main() {
 		break
 	}
 	if payload == nil {
-		log.Fatalf("%s 不在 %s 裡", name, *imagePath)
+		log.Fatal(tooltext.Format("h.f04182cf799c", name, *imagePath))
 	}
 	if *prefix {
 		blocks, parseErr := dax.Parse(payload)
@@ -63,9 +64,7 @@ func main() {
 			if len(block.Data) < 2 {
 				continue
 			}
-			fmt.Printf("GEO%d 區塊 0x%02X（%3d）標頭 = %02X %02X（%d, %d）長度 %d\n",
-				*set, block.Entry.ID, block.Entry.ID,
-				block.Data[0], block.Data[1], block.Data[0], block.Data[1], len(block.Data))
+			fmt.Print(tooltext.Format("h.fd0ca3bcde27", *set, block.Entry.ID, block.Entry.ID, block.Data[0], block.Data[1], block.Data[0], block.Data[1], len(block.Data)))
 		}
 		return
 	}
@@ -75,14 +74,14 @@ func main() {
 	}
 	grid, ok := catalog.Lookup(geo.MapRef{Set: uint8(*set), BlockID: uint8(*block)})
 	if !ok {
-		log.Fatalf("GEO%d 沒有區塊 0x%02X", *set, *block)
+		log.Fatal(tooltext.Format("h.a0f15ebb36d3", *set, *block))
 	}
 
 	// 方向編號與遊戲一致：0=北、2=東、4=南、6=西。
 	dirs := []int{0, 2, 4, 6}
 	letters := []string{"N", "E", "S", "W"}
-	fmt.Printf("GEO%d 區塊 0x%02X（%d×%d）\n", *set, *block, geo.Width, geo.Height)
-	fmt.Println("地圖（. 四面全通、# 全封、數字為可走方向數）：")
+	fmt.Print(tooltext.Format("h.1ae2ba52c9d5", *set, *block, geo.Width, geo.Height))
+	fmt.Println(tooltext.Text("h.01f1a8d27227"))
 	for y := 0; y < geo.Height; y++ {
 		var row strings.Builder
 		for x := 0; x < geo.Width; x++ {
@@ -103,7 +102,7 @@ func main() {
 		}
 		fmt.Printf("%2d %s\n", y, row.String())
 	}
-	fmt.Printf("\n可走方向 >= %d 的格子：\n", *minOpen)
+	fmt.Print(tooltext.Format("h.050c2a99c800", *minOpen))
 	for y := 0; y < geo.Height; y++ {
 		for x := 0; x < geo.Width; x++ {
 			var open []string
@@ -116,8 +115,7 @@ func main() {
 				continue
 			}
 			cell := grid.CellWrapped(x, y)
-			fmt.Printf("  (%2d,%2d) terrain=0x%02X 牆=%v 通=%s\n",
-				x, y, cell.Terrain, cell.WallDirections, strings.Join(open, ""))
+			fmt.Print(tooltext.Format("h.dc42b523d5ec", x, y, cell.Terrain, cell.WallDirections, strings.Join(open, "")))
 		}
 	}
 }

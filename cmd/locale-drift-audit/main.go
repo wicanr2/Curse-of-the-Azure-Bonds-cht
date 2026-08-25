@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 
@@ -12,7 +13,7 @@ import (
 
 func main() {
 	root := flag.String("root", ".", "CoAB repository root")
-	jsonOutput := flag.Bool("json", false, "輸出完整 JSON 報告")
+	jsonOutput := flag.Bool("json", false, tooltext.Text("h.5f5ebcca8586"))
 	flag.Parse()
 	report, err := localeaudit.Run(*root)
 	if err != nil {

@@ -19,6 +19,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"sort"
@@ -46,13 +47,13 @@ func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "")
 	member := flag.String("member", "ECL2.DAX", "")
 	block := flag.Int("block", 2, "")
-	before := flag.Int("before", 24, "NEWECL 前面印幾條")
-	writes := flag.String("writes", "", "改成列出這一段裡所有碰到這個位址（十六進位）的指令，讀與寫都算")
-	all := flag.String("all", "", "在全部 ECL 成員裡找碰到這個位址的指令")
-	findText := flag.String("text", "", "找內嵌文字含這個片段的指令，並印出它後面幾條")
-	opcode := flag.Int("opcode", -1, "改成列出這個 opcode 的每一處與前後文")
-	from := flag.Int("from", -1, "只印這個位移之後的指令")
-	to := flag.Int("to", 0x10000, "只印到這個位移為止")
+	before := flag.Int("before", 24, tooltext.Text("h.62cbb4675a9b"))
+	writes := flag.String("writes", "", tooltext.Text("h.bc879d17d6ad"))
+	all := flag.String("all", "", tooltext.Text("h.a06677743986"))
+	findText := flag.String("text", "", tooltext.Text("h.57795b7720e3"))
+	opcode := flag.Int("opcode", -1, tooltext.Text("h.645313783795"))
+	from := flag.Int("from", -1, tooltext.Text("h.1da7839df1ed"))
+	to := flag.Int("to", 0x10000, tooltext.Text("h.fd89db3c4c90"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -71,7 +72,7 @@ func main() {
 	if *all != "" {
 		var want uint16
 		fmt.Sscanf(*all, "%x", &want)
-		fmt.Printf("=== 全 corpus 碰到 %04X 的指令 ===\n", want)
+		fmt.Print(tooltext.Format("h.9edd5e9f2bff", want))
 		for _, name := range []string{"ECL1.DAX", "ECL2.DAX", "ECL3.DAX", "ECL4.DAX", "ECL5.DAX", "ECL6.DAX"} {
 			var raw []byte
 			for _, file := range archive.File {
@@ -106,8 +107,7 @@ func main() {
 						if operand.Code != 0x01 || operand.Word != want {
 							continue
 						}
-						fmt.Printf("  %s/0x%02X %04X %-12s 第%d個 %s\n", name, entry.Entry.ID,
-							instruction.Offset, instruction.Command.Name, position, format(instruction))
+						fmt.Print(tooltext.Format("h.22c881af5207", name, entry.Entry.ID, instruction.Offset, instruction.Command.Name, position, format(instruction)))
 					}
 				}
 			}
@@ -125,7 +125,7 @@ func main() {
 		}
 	}
 	if data == nil {
-		log.Fatalf("找不到 block %d", *block)
+		log.Fatal(tooltext.Format("h.65e78146e93a", *block))
 	}
 	graph, err := ecl.TraceGraph(data, nil, 200000)
 	if err != nil {
@@ -136,14 +136,13 @@ func main() {
 	if *writes != "" {
 		var want uint16
 		fmt.Sscanf(*writes, "%x", &want)
-		fmt.Printf("=== 這一段裡碰到 %04X 的指令（讀與寫都算）===\n", want)
+		fmt.Print(tooltext.Format("h.aaee9831d7dd", want))
 		for _, instruction := range list {
 			for position, operand := range instruction.Operands {
 				if operand.Code != 0x01 || operand.Word != want {
 					continue
 				}
-				fmt.Printf("  %04X %-12s 第%d個運算元 %s\n", instruction.Offset,
-					instruction.Command.Name, position, format(instruction))
+				fmt.Print(tooltext.Format("h.733b556cb2a2", instruction.Offset, instruction.Command.Name, position, format(instruction)))
 			}
 		}
 		return
@@ -168,7 +167,7 @@ func main() {
 			if !hit {
 				continue
 			}
-			fmt.Printf("=== 內嵌文字命中於 %04X ===\n", instruction.Offset)
+			fmt.Print(tooltext.Format("h.664f9bd7572d", instruction.Offset))
 			end := index + *before
 			if end > len(list) {
 				end = len(list)
@@ -184,7 +183,7 @@ func main() {
 			if int(instruction.Command.Opcode) != *opcode {
 				continue
 			}
-			fmt.Printf("=== %s 於 %04X ===\n", instruction.Command.Name, instruction.Offset)
+			fmt.Print(tooltext.Format("h.fb851e9cce6f", instruction.Command.Name, instruction.Offset))
 			start := index - *before
 			if start < 0 {
 				start = 0
@@ -199,7 +198,7 @@ func main() {
 		if instruction.Command.Opcode != 0x20 {
 			continue
 		}
-		fmt.Printf("=== NEWECL 於 %04X ===\n", instruction.Offset)
+		fmt.Print(tooltext.Format("h.472dde689eaf", instruction.Offset))
 		start := index - *before
 		if start < 0 {
 			start = 0

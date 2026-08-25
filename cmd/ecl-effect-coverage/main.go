@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -40,14 +41,14 @@ type opcodeRow struct {
 }
 
 type report struct {
-	Schema      string           `json:"schema"`
-	Limitations []string         `json:"limitations"`
-	Rows        []opcodeRow      `json:"opcodes"`
-	Summary     map[string]int   `json:"instructions_by_status"`
-	Opcodes     map[string]int   `json:"opcodes_by_status"`
-	Reached     int              `json:"reachable_instructions"`
-	ByBlock     map[string]int   `json:"reachable_by_block"`
-	Unreproduced map[string]int  `json:"unreproduced_by_block"`
+	Schema       string         `json:"schema"`
+	Limitations  []string       `json:"limitations"`
+	Rows         []opcodeRow    `json:"opcodes"`
+	Summary      map[string]int `json:"instructions_by_status"`
+	Opcodes      map[string]int `json:"opcodes_by_status"`
+	Reached      int            `json:"reachable_instructions"`
+	ByBlock      map[string]int `json:"reachable_by_block"`
+	Unreproduced map[string]int `json:"unreproduced_by_block"`
 }
 
 func main() {
@@ -67,10 +68,10 @@ func main() {
 	result := report{
 		Schema: "coab-ecl-effect-coverage/1",
 		Limitations: []string{
-			"分母是**靜態可達的指令**：`TraceGraph` 跟循序、`GOTO`／`GOSUB`／`RETURN`、`IF` 的兩條路與 `25h ON GOTO`／`26h ON GOSUB` 的每一個目的地；變長指令的長度用 `ecl.RecordEnd`（spec 1110）。同一條指令只算一次，不管玩家會跑過幾遍。",
-			"狀態來自 `internal/ecl.OpcodeEffects` 的人工判定，不是自動推出來的。`done` 表示副作用已產生**且**有回歸測試或實機路徑驗過；`partial` 表示只做了一部分（多半是把請求記進 result 讓上層處理）；`consumed` 表示只把運算元讀掉——**那是明確的缺口，不是 no-op**。",
-			"這份報告不看**參數**對不對。`24h COMBAT` 標 `partial` 說的是戰鬥服務分派點已接、回合生命週期未接（`RE-06`），不是說每一場遭遇的編成都對。",
-			"出現次數是**指令數**不是事件數。一個 `27h TREASURE` 出現在 12 個地方，代表 12 處寶物流程缺口，不代表 12 種不同的寶物規則。",
+			tooltext.Text("h.1ad6e7ec8949"),
+			tooltext.Text("h.6d3c6d9fd3a5"),
+			tooltext.Text("h.6096175df7ec"),
+			tooltext.Text("h.be28b8856b31"),
 		},
 		Summary:      map[string]int{},
 		Opcodes:      map[string]int{},
@@ -117,8 +118,8 @@ func main() {
 				result.ByBlock[label]++
 				effect, ok := ecl.OpcodeEffects[opcode]
 				if !ok {
-					log.Fatalf("%s +%04Xh opcode 0x%02X 沒有登記在 ecl.OpcodeEffects，"+
-						"新增 opcode 必須先寫下它的副作用還原狀態", label, instruction.Offset, opcode)
+					log.Fatalf(tooltext.Text("h.1318ee02f82d")+
+						tooltext.Text("h.ede1980f60af"), label, instruction.Offset, opcode)
 				}
 				result.Summary[string(effect.Status)]++
 				if effect.Status != ecl.EffectDone {
@@ -174,21 +175,18 @@ func main() {
 
 func renderMarkdown(result report) []byte {
 	var out strings.Builder
-	out.WriteString("# ECL 副作用覆蓋（原作可達指令 → remake runtime）\n\n")
-	out.WriteString("由 `cmd/ecl-effect-coverage` 產生，不要手改。\n\n")
+	out.WriteString(tooltext.Text("h.375750fcde7b"))
+	out.WriteString(tooltext.Text("h.1524d84e5e25"))
 	for _, limitation := range result.Limitations {
 		fmt.Fprintf(&out, "- %s\n", limitation)
 	}
-	fmt.Fprintf(&out, "\n## 摘要\n\n| 狀態 | 指令數 | opcode 數 | 意思 |\n|---|---:|---:|---|\n")
-	fmt.Fprintf(&out, "| `done` | %d | %d | 副作用已產生，且有回歸測試或實機路徑驗過 |\n",
-		result.Summary["done"], result.Opcodes["done"])
-	fmt.Fprintf(&out, "| `partial` | %d | %d | 只做了一部分，多半是把請求記進 result 讓上層處理 |\n",
-		result.Summary["partial"], result.Opcodes["partial"])
-	fmt.Fprintf(&out, "| **`consumed`** | **%d** | **%d** | **只讀掉運算元——原作有效果，remake 沒有** |\n",
-		result.Summary["consumed"], result.Opcodes["consumed"])
-	fmt.Fprintf(&out, "| 合計（靜態可達指令）| %d | %d | |\n", result.Reached, len(result.Rows))
+	fmt.Fprint(&out, tooltext.Format("h.95ec57dada54"))
+	fmt.Fprint(&out, tooltext.Format("h.8c0af6ac737f", result.Summary["done"], result.Opcodes["done"]))
+	fmt.Fprint(&out, tooltext.Format("h.d8c488e7c0f4", result.Summary["partial"], result.Opcodes["partial"]))
+	fmt.Fprint(&out, tooltext.Format("h.f92778f6ba60", result.Summary["consumed"], result.Opcodes["consumed"]))
+	fmt.Fprint(&out, tooltext.Format("h.ca832ad3777b", result.Reached, len(result.Rows)))
 
-	out.WriteString("\n## 逐 opcode\n\n| opcode | 名稱 | 狀態 | 可達出現次數 | 出現在幾個 block | 還差什麼 |\n|---|---|---|---:|---:|---|\n")
+	out.WriteString(tooltext.Text("h.2ab171c6b700"))
 	rows := append([]opcodeRow(nil), result.Rows...)
 	sort.Slice(rows, func(i, j int) bool {
 		if rows[i].Status != rows[j].Status {
@@ -204,7 +202,7 @@ func renderMarkdown(result report) []byte {
 			row.Opcode, row.Name, row.Status, row.Occurrences, len(row.Blocks), row.Note)
 	}
 
-	out.WriteString("\n## 尚未還原的指令，依 block\n\n| Block | 可達指令 | 其中未完整還原 |\n|---|---:|---:|\n")
+	out.WriteString(tooltext.Text("h.fd65723c7d44"))
 	labels := make([]string, 0, len(result.ByBlock))
 	for label := range result.ByBlock {
 		labels = append(labels, label)

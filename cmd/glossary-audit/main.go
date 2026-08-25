@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"os"
 	"sort"
 	"strings"
@@ -60,20 +61,20 @@ func main() {
 
 func renderMarkdown(report glossary.Report) []byte {
 	var out strings.Builder
-	out.WriteString("# 譯名一致性稽核\n\n")
-	out.WriteString("由 `cmd/glossary-audit` 產生，不要手改。表在 " +
+	out.WriteString(tooltext.Text("h.9137082673f5"))
+	out.WriteString(tooltext.Text("h.81ed26c4db2f") +
 		"[`../knowledge/coab-glossary.md`](../knowledge/coab-glossary.md)。\n\n")
-	out.WriteString("## 掃描範圍\n\n| 檔案 | 字串數 |\n|---|---:|\n")
+	out.WriteString(tooltext.Text("h.a55b2834f9a5"))
 	for _, source := range report.Sources {
 		fmt.Fprintf(&out, "| `%s` | %d |\n", source.Path, source.Count)
 	}
 
-	fmt.Fprintf(&out, "\n## 結果\n\n| 項目 | 數量 |\n|---|---:|\n")
-	fmt.Fprintf(&out, "| 詞條 | %d |\n", len(report.Terms))
-	fmt.Fprintf(&out, "| **不一致** | **%d** |\n", len(report.Issues))
+	fmt.Fprint(&out, tooltext.Format("h.fdbec7290a7f"))
+	fmt.Fprint(&out, tooltext.Format("h.a2e3db92cbe4", len(report.Terms)))
+	fmt.Fprint(&out, tooltext.Format("h.e91815f54eec", len(report.Issues)))
 
 	if len(report.Issues) > 0 {
-		out.WriteString("\n## 不一致\n\n| 代碼 | 詞條 | 說明 |\n|---|---|---|\n")
+		out.WriteString(tooltext.Text("h.8c0ccd9edada"))
 		for _, issue := range report.Issues {
 			fmt.Fprintf(&out, "| `%s` | `%s` | %s |\n", issue.Code, issue.Term, issue.Detail)
 		}
@@ -88,11 +89,11 @@ func renderMarkdown(report glossary.Report) []byte {
 		categories = append(categories, category)
 	}
 	sort.Strings(categories)
-	out.WriteString("\n## 逐詞條\n\n")
+	out.WriteString(tooltext.Text("h.830b313707a0"))
 	for _, category := range categories {
 		terms := byCategory[category]
 		sort.Slice(terms, func(i, j int) bool { return terms[i].Source < terms[j].Source })
-		fmt.Fprintf(&out, "### %s\n\n| 原文 | 繁中 | 出現次數 | 禁用寫法 |\n|---|---|---:|---|\n", category)
+		fmt.Fprint(&out, tooltext.Format("h.3ea6b930ce13", category))
 		for _, term := range terms {
 			forbidden := "—"
 			if len(term.Forbidden) > 0 {

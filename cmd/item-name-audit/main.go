@@ -14,6 +14,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -34,10 +35,10 @@ const (
 )
 
 func main() {
-	image := flag.String("image", "curseoftheazurebonds.zip", "遊戲 image zip")
-	dseg := flag.String("dseg", "workplace/re-sweep/dos/dseg/dos-dseg-dseg.bin", "DOS 資料段 dump")
-	localePath := flag.String("locale", "assets/locale/zh-TW.json", "語系檔")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	image := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.90f916a91fdc"))
+	dseg := flag.String("dseg", "workplace/re-sweep/dos/dseg/dos-dseg-dseg.bin", tooltext.Text("h.d34d401b7c1e"))
+	localePath := flag.String("locale", "assets/locale/zh-TW.json", tooltext.Text("h.9c3b4db6568f"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	english, err := loadWordTable(*dseg)
@@ -107,21 +108,21 @@ func main() {
 	sort.Strings(keys)
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 原版物品名稱逐件對照\n\n")
-	fmt.Fprintf(&report, "由 `cmd/item-name-audit` 產生，不要手改。組名規則見 spec 1178。\n\n")
-	fmt.Fprintf(&report, "| 指標 | 數字 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 物品件數 | %d |\n", len(items))
-	fmt.Fprintf(&report, "| 相異名稱 | %d |\n", len(keys))
-	fmt.Fprintf(&report, "| 用到的名稱編號 | %d |\n", len(usedNumbers))
-	fmt.Fprintf(&report, "| 其中缺譯 | %d |\n\n", len(missing))
+	fmt.Fprint(&report, tooltext.Format("h.22a52663cfa7"))
+	fmt.Fprint(&report, tooltext.Format("h.7cf8f4f45835"))
+	fmt.Fprint(&report, tooltext.Format("h.13c83a8a875e"))
+	fmt.Fprint(&report, tooltext.Format("h.12d6ac28007e", len(items)))
+	fmt.Fprint(&report, tooltext.Format("h.44847bf1638d", len(keys)))
+	fmt.Fprint(&report, tooltext.Format("h.bfba84ddb361", len(usedNumbers)))
+	fmt.Fprint(&report, tooltext.Format("h.38cc18336fd6", len(missing)))
 	if len(missing) > 0 {
-		fmt.Fprintf(&report, "缺譯的名稱編號：")
+		fmt.Fprint(&report, tooltext.Format("h.5fa65a91ef09"))
 		for _, number := range missing {
 			fmt.Fprintf(&report, " `%02Xh`", number)
 		}
 		report.WriteString("\n\n")
 	}
-	fmt.Fprintf(&report, "| 件數 | 原文 | 繁中 |\n|---:|---|---|\n")
+	fmt.Fprint(&report, tooltext.Format("h.a0173ca80dde"))
 	for _, key := range keys {
 		fmt.Fprintf(&report, "| %d | %s | %s |\n", rows[key].count, rows[key].english, rows[key].chinese)
 	}
@@ -146,11 +147,11 @@ func loadWordTable(path string) (map[uint8]string, error) {
 	for number := 1; number <= wordTableCount; number++ {
 		offset := wordTableBase + number*wordTableStride
 		if offset+wordTableStride > len(data) {
-			return nil, fmt.Errorf("資料段只有 %d 位元組，放不下第 %d 筆", len(data), number)
+			return nil, tooltext.Errorf("h.32746fa945af", len(data), number)
 		}
 		length := int(data[offset])
 		if length >= wordTableStride {
-			return nil, fmt.Errorf("第 %d 筆的長度位元組是 %d，超過 %d", number, length, wordTableStride-1)
+			return nil, tooltext.Errorf("h.0a429cb1e19d", number, length, wordTableStride-1)
 		}
 		words[uint8(number)] = string(data[offset+1 : offset+1+length])
 	}

@@ -6,6 +6,8 @@
 // 由 game pack 現場查出來。
 package audiomap
 
+import "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
+
 // 事件驅動換曲點在 game pack 那一側的 context。原作那幾處都**不看
 // `CURRENTECL`**（各自把曲號推給 `MSCPLAY` 或直接寫 `MUSICNO` 之後派曲），
 // 所以 pack 那一側是每一段都列。
@@ -44,19 +46,19 @@ type ChangePoint struct {
 // ⚠ 位移是 **PC-98** 的。DOS 版沒有音樂——沒有驅動也沒有音樂資料檔
 // （`TestDOSImageHasNoMusicData`），這一格整個是 PC-98 專屬。
 var ChangePoints = []ChangePoint{
-	{"常駐 9486h", "派曲表：城鎮", 3, ""},
-	{"常駐 94AEh", "派曲表：地城三", 4, ""},
-	{"常駐 94C4h", "派曲表：村莊", 6, TownServicesContext},
-	{"常駐 94CBh", "派曲表：荒野", 5, ""},
-	{"常駐 94E2h", "派曲表：散提爾堡城壁", 8, ""},
-	{"常駐 94F9h", "派曲表：盜賊公會", 9, ""},
-	{"常駐 9514h", "派曲表：地城", 12, ""},
-	{"overlay-01 093Ch", "開場", 1, TitleContext},
-	{"overlay-17 GEN 0B08h", "角色建立", 2, CreationContext},
-	{"overlay-10 COMPREP 1DA1h", "開戰", 7, CombatContext},
-	{"overlay-10 COMPREP 1D97h", "開戰且 LOADMONNUM == 47h", 11, CombatDungeonTwoContext},
-	{"overlay-05 POSTCOM 1955h", "全滅", 2, PartyWipeContext},
-	{"overlay-18 168Dh", "結局", 10, EndingContext},
+	{tooltext.Text("h.aa93793158b2"), tooltext.Text("h.5bcecbadc726"), 3, ""},
+	{tooltext.Text("h.7888920cc340"), tooltext.Text("h.d9d43a1eb5c8"), 4, ""},
+	{tooltext.Text("h.5bd04fc436ec"), tooltext.Text("h.f337a03bc2e3"), 6, TownServicesContext},
+	{tooltext.Text("h.f4006cf27d32"), tooltext.Text("h.7042af1ec5b6"), 5, ""},
+	{tooltext.Text("h.a2b6506d0466"), tooltext.Text("h.83fe968333e2"), 8, ""},
+	{tooltext.Text("h.6615f4549cd1"), tooltext.Text("h.01cb6b718229"), 9, ""},
+	{tooltext.Text("h.b581670ab870"), tooltext.Text("h.d1b8e0129732"), 12, ""},
+	{"overlay-01 093Ch", tooltext.Text("h.28c3432b6257"), 1, TitleContext},
+	{"overlay-17 GEN 0B08h", tooltext.Text("h.f7865e52f8b7"), 2, CreationContext},
+	{"overlay-10 COMPREP 1DA1h", tooltext.Text("h.b284cba9a979"), 7, CombatContext},
+	{"overlay-10 COMPREP 1D97h", tooltext.Text("h.9f4f985c6502"), 11, CombatDungeonTwoContext},
+	{"overlay-05 POSTCOM 1955h", tooltext.Text("h.7de3b9fbad0a"), 2, PartyWipeContext},
+	{"overlay-18 168Dh", tooltext.Text("h.9a3017542ef8"), 10, EndingContext},
 }
 
 // Binding 是 pack 那一側的一條曲目綁定，由呼叫端從 game pack 餵進來。

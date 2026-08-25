@@ -45,6 +45,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -114,12 +115,12 @@ func dungeonDelta(direction int) (int, int) {
 }
 
 type segmentWalk struct {
-	id       string
-	block    uint8
-	note     string
-	reached  map[int]bool
-	cells    int
-	blocked  int
+	id      string
+	block   uint8
+	note    string
+	reached map[int]bool
+	cells   int
+	blocked int
 	// teleports 是「踏上去之後被事件搬到別處」的次數——樓梯與傳送就是這樣進到
 	// 別的連通分量的。
 	teleports int
@@ -131,25 +132,25 @@ type segmentWalk struct {
 }
 
 func main() {
-	image := flag.String("image", "curseoftheazurebonds.zip", "遊戲 image")
-	localePath := flag.String("locale", "assets/locale/zh-TW.json", "語系檔")
-	steps := flag.Int("steps", 4000, "每一段最多走幾步")
-	cellsOut := flag.String("cells-json", "", "把走得到的 (block, 地形碼) 寫成 JSON")
+	image := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.33c48eb91ff0"))
+	localePath := flag.String("locale", "assets/locale/zh-TW.json", tooltext.Text("h.9c3b4db6568f"))
+	steps := flag.Int("steps", 4000, tooltext.Text("h.a4b2b3b609e8"))
+	cellsOut := flag.String("cells-json", "", tooltext.Text("h.e8ede599d47b"))
 	// ★ 「走得到的」與「圖上有的」是兩件事。沒有後者就分不出「走不進去」與
 	// **「這個地形碼在這張圖上根本不存在」**——後者不論誰來走都踏不到，
 	// 把它算進未達成會讓覆蓋率永遠差一截，而且看起來像還有事情可做。
-	onMapOut := flag.String("on-map-json", "", "把**圖上出現過**的 (block, 地形碼) 寫成 JSON")
+	onMapOut := flag.String("on-map-json", "", tooltext.Text("h.7f35ec967547"))
 	// ★ 「站得上去的」比「從入口走得到的」多：地圖常常分成好幾塊互不相連的區域
 	// （巫師塔每一層都是獨立房間）。這一份是**走路能到的上限**。
-	componentsOut := flag.String("walkable-json", "", "把**站得上去**（任一連通分量內）的 (block, 地形碼) 寫成 JSON")
+	componentsOut := flag.String("walkable-json", "", tooltext.Text("h.be997767e3d4"))
 	routePath := flag.String("route", "",
-		"主線路線紀錄（`COAB_DECISION_LOG`）：從隊伍真的站過的格子再走一次，"+
-			"補「幾何上斷開、樓梯／傳送才進得去」那一類缺口")
+		tooltext.Text("h.e4b296cacf91")+
+			tooltext.Text("h.568c10d11786"))
 	openDoors := flag.Bool("open-doors", true,
-		"撞到門就開（**盤點用：直接解鎖不擲骰**）——門在 `CanMoveDungeon` 眼裡是牆")
+		tooltext.Text("h.9c0de9463b1f"))
 	arrivals := flag.String("arrivals", "",
-		"到達取樣目錄：冷走前先把主線在那一段的劇情旗標鋪上（spec 1195），門才開得了")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+		tooltext.Text("h.91be5c4e0f06"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	data, err := gamecorpus.Load(*image, *localePath)
@@ -308,18 +309,18 @@ func main() {
 	}
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 段內可達性：從入口用走的，走得到哪些格子\n\n")
-	fmt.Fprintf(&report, "由 `cmd/dungeon-walk-probe` 產生，不要手改。\n\n")
-	fmt.Fprintf(&report, "★ 可達性報表說主線實跑只踏到 250 個分派索引裡的 81 個，"+
-		"其中提爾佛頓整整三段一格都沒踏到。那句話有兩種完全不同的成因："+
-		"**主線不經過那裡**（路線的選擇）或**那些格子走不進去**（缺陷）。"+
-		"逐格實測分不出來——它把隊伍**直接放**到目標格上。這一支從入口出發，"+
-		"只用 `CanMoveDungeon`／`MoveDungeon` 廣度優先地走。\n\n")
-	fmt.Fprintf(&report, "⚠ 這**不是**「從新遊戲玩到那裡」：進段是直接進的。"+
-		"它答的是**段內**可達性——人已經在這張地圖上，走得到幾格。\n\n")
-	fmt.Fprintf(&report, "⚠ 走的時候會踩到事件、戰鬥、被劇情推走；推不回地城就停在那條分支上。"+
-		"⇒ **下界**：走不到不代表不可達，可能只是被某個事件擋在半路。\n\n")
-	fmt.Fprintf(&report, "| 段 | ECL block | 走到的格子 | 走到的分派索引 | 撞牆次數 | 備註 |\n")
+	fmt.Fprint(&report, tooltext.Format("h.2d19b349e7c0"))
+	fmt.Fprint(&report, tooltext.Format("h.50e05aa24d1a"))
+	fmt.Fprint(&report, tooltext.Text("h.bae03125c423")+
+		tooltext.Text("h.8b6fdcd68b20")+
+		tooltext.Text("h.8f92a3021262")+
+		tooltext.Text("h.60b199c668b8")+
+		tooltext.Text("h.5baa801bcfec"))
+	fmt.Fprint(&report, tooltext.Text("h.f6d5a3553dbc")+
+		tooltext.Text("h.4cb1f3b235b2"))
+	fmt.Fprint(&report, tooltext.Text("h.4163a74ed02d")+
+		tooltext.Text("h.3a1d755d0503"))
+	fmt.Fprint(&report, tooltext.Format("h.f6da30621600"))
 	fmt.Fprintf(&report, "|---|---:|---:|---:|---:|---|\n")
 	totalIndices := 0
 	for _, walk := range walks {
@@ -331,7 +332,7 @@ func main() {
 			walk.id, walk.block, walk.cells, len(walk.reached), walk.blocked, note)
 		totalIndices += len(walk.reached)
 	}
-	fmt.Fprintf(&report, "\n合計走得到 **%d** 個分派索引。\n", totalIndices)
+	fmt.Fprint(&report, tooltext.Format("h.a85946afe153", totalIndices))
 
 	text := report.String()
 	if *output == "" {
@@ -421,14 +422,14 @@ func walkSegment(data gamecorpus.Corpus, seg segment.Segment, grid geo.Grid, mas
 		state.SeedHandoffMemory(handoff)
 	}
 	if err := state.EnterSegment(seg); err != nil {
-		return fmt.Errorf("進不去：%v", err)
+		return tooltext.Errorf("h.ee93bb777f83", err)
 	}
 	// ⚠ 隊伍要撐起來：入口伏擊會讓臨時角色死在門口，整段就走不了。**只給盤點用。**
 	if err := gamecorpus.BoostParty(&state); err != nil {
 		return err
 	}
 	if err := settleWith(&state, pick); err != nil {
-		return fmt.Errorf("入口推不動：%v", err)
+		return tooltext.Errorf("h.5e896a22eb6f", err)
 	}
 	// ★ `from` 非 nil 就從**主線真的站過的那一格**開始走。
 	//
@@ -587,7 +588,7 @@ func settleWith(state *game.State, pick int) error {
 		}
 	}
 	if state.Mode != game.ModeDungeon {
-		return fmt.Errorf("停在%v", state.Mode)
+		return tooltext.Errorf("h.7da71c92d849", state.Mode)
 	}
 	return nil
 }

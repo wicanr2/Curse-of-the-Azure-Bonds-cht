@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -111,9 +112,9 @@ type orphanRun struct {
 }
 
 type summary struct {
-	Groups         int            `json:"groups"`
-	Matched        int            `json:"matched"`
-	Unmatched      int            `json:"unmatched"`
+	Groups    int `json:"groups"`
+	Matched   int `json:"matched"`
+	Unmatched int `json:"unmatched"`
 	// GosubInsert／BranchInsert 是**註記的計數**（有多少頁帶著插入點），
 	// 不是狀態桶。它們與 Matched／Unmatched 有重疊，加起來不等於 Groups。
 	GosubInsert    int            `json:"gosub_insert_notes"`
@@ -206,7 +207,7 @@ func main() {
 	output := flag.String("output", "", "write the Markdown report to this path")
 	outputJSON := flag.String("json", "", "write the machine-readable report to this path")
 	block := flag.String("block", "", "limit to one block, e.g. ECL3.DAX/0x10")
-	debugPages := flag.Bool("debug-pages", false, "列出 offset 線性切法有、控制流走訪沒走到的頁")
+	debugPages := flag.Bool("debug-pages", false, tooltext.Text("h.4d3b7a0f753f"))
 	flag.Parse()
 
 	pack, err := gamepack.Default()
@@ -222,15 +223,15 @@ func main() {
 	result := report{
 		Schema: "coab-ecl-text-coverage/1",
 		Limitations: []string{
-			"分母是**控制流走訪**得到的頁，不是位址順序切出來的段：從五個 lifecycle entry 出發，跟循序、`GOTO`／`GOSUB`／`RETURN`、`IF` 的兩條路（spec 1106）、以及 `25h ON GOTO`／`26h ON GOSUB` 的每一個目的地。`15h`／`2Bh` 選單與 `25h`／`26h` 是變長指令，長度一律用 `ecl.RecordEnd`——它們的 `Instruction.Next` 指向自己的第一個運算元，信它會把資料當程式解而且不報錯。",
-			"分母與比對**走兩趟**：`walkPages` 不帶文字（狀態只有位址、子程式摘要與一個位元），整份 corpus 都走得完，所以「有哪些頁」是完整的；`walkRuns` 帶文字用來比對，碰到狀態上限只會**少判**，不會讓頁從分母裡消失。兩者的差額由 `TestPageWalkCoversEveryPageTheRunWalkFinds` 印出來（目前 0 頁）。",
-			"比對以 **run** 為單位：runtime 把一次執行累積的文字**一次**交給 `MatchText`，所以一條規則可以橫跨好幾頁（開場捲軸就是七頁一條）。run 在會 `return result` 的指令處結束（選單、戰鬥、寶物、輸入、換 block、離開）。",
-			"一條 run 命中，它經過的每一頁就都算接上了——規則命中的是那一整份文字，不是其中某一頁。反過來，同一份文字可能印在好幾個位址上，那些位址一律算進同一條 run。",
-			"`variable-insert` 是**唯一**還無法靜態驗證的一類：頁裡印的是執行期的值（城名、酒館傳聞編號、隊員名），靜態文字裡沒有那幾個字，規則要靠它才會命中。逐城的 `*.edge`、`*.tavern-tale-*`、`world-route.*`、`world.night-note.*` 都屬於這一類，要靠實機路徑驗——而**實機路徑真的驗得到**：酒館傳聞的編號本來推不出可能的集合（來源 `7F79h` 被許多不相干的流程寫過），改用多種選單策略走實跑路線就把玩家看得到的 13 則走了出來。**列舉不到的東西，用走的走得到。**",
-			"`subroutine` 是共用子程式的片段（`WHAT DO YOU DO?`、`UP`／`DOWN`）。判準是「落在被 `GOSUB` 呼叫的範圍內」**且**「從來沒有和別的頁同屬一份 run」——實機它一定被併進呼叫端那一頁。**不要**替它們寫規則：只有一兩個字的 `all_contains` 會攔截到別的文字。",
-			"`gosub_inserts`／`dynamic_branch` 只是**註記**，不是狀態：那兩種插入已經在走訪時展開，展開後沒命中就照樣算 `unmatched`。兩個計數與 `matched`／`unmatched` 有重疊，加起來不等於 `groups`。",
-			"⚠ `ECL1.DAX/0x50`／`0x51` 的**比對**走訪會碰到狀態上限（4,000,000）而提早停：世界地圖那一段 `IF` 分岔多又長。碰到上限會在 stderr 印一行，**沒有靜默截斷**；分母不受影響（見上一條），代價只是那個 block 可能有頁比對不到而算成待辦。實測目前兩趟走訪找到的頁完全相同，代價為 0。",
-			"『已接上』只表示有一條 text_rule 的 all_contains 全部命中，不代表譯文正確或事件副作用已還原。",
+			tooltext.Text("h.fbe078e1ab27"),
+			tooltext.Text("h.fa64c409b7f0"),
+			tooltext.Text("h.ad4976f51b6f"),
+			tooltext.Text("h.f20e4cb5d793"),
+			tooltext.Text("h.811b1520eb10"),
+			tooltext.Text("h.d6be44be96a5"),
+			tooltext.Text("h.d703b4e3c535"),
+			tooltext.Text("h.450bca06483d"),
+			tooltext.Text("h.b39186829581"),
 		},
 		Summary: summary{ByBlock: map[string]int{}, OrphanByBlock: map[string]int{}},
 	}
@@ -462,11 +463,7 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	fmt.Fprintf(os.Stderr,
-		"text_groups=%d matched=%d unmatched=%d variable-insert=%d subroutine=%d（註記：gosub-insert=%d branch-insert=%d）\n",
-		result.Summary.Groups, result.Summary.Matched, result.Summary.Unmatched,
-		result.Summary.VariableInsert, result.Summary.Subroutine,
-		result.Summary.GosubInsert, result.Summary.BranchInsert)
+	fmt.Fprint(os.Stderr, tooltext.Format("h.7a34e313b90d", result.Summary.Groups, result.Summary.Matched, result.Summary.Unmatched, result.Summary.VariableInsert, result.Summary.Subroutine, result.Summary.GosubInsert, result.Summary.BranchInsert))
 }
 
 // blockGroups collects the reachable PRINTCLEAR/PRINT runs of one block, plus
@@ -1033,26 +1030,21 @@ func readMember(reader *zip.Reader, name string) ([]byte, error) {
 
 func renderMarkdown(result report) []byte {
 	var out strings.Builder
-	out.WriteString("# ECL 文字覆蓋（原作文字段落 → game pack）\n\n")
-	out.WriteString("由 `cmd/ecl-text-coverage` 產生，不要手改。\n\n")
+	out.WriteString(tooltext.Text("h.7e7bcf7694d4"))
+	out.WriteString(tooltext.Text("h.e33806e5d28a"))
 	for _, limitation := range result.Limitations {
 		fmt.Fprintf(&out, "- %s\n", limitation)
 	}
-	fmt.Fprintf(&out, "\n## 摘要\n\n| 處置 | 數量 | 意思 |\n|---|---:|---|\n")
-	fmt.Fprintf(&out, "| 控制流可達的頁 | %d | 分母 |\n", result.Summary.Groups)
-	fmt.Fprintf(&out, "| `matched` | %d | 有規則命中它所在的 run |\n", result.Summary.Matched)
-	fmt.Fprintf(&out, "| **`unmatched`** | **%d** | **還沒寫規則——這才是待辦** |\n",
-		result.Summary.Unmatched)
-	fmt.Fprintf(&out, "| `variable-insert` | %d | 頁裡印的是執行期的值（城名、傳聞編號、隊員名），靜態驗不到 |\n",
-		result.Summary.VariableInsert)
-	fmt.Fprintf(&out, "| `subroutine` | %d | 共用子程式的片段，實機一定被併進呼叫端那一頁 |\n",
-		result.Summary.Subroutine)
-	out.WriteString("\n下面兩欄是**註記**不是狀態：它們與上表重疊，不要加總。\n\n")
-	fmt.Fprintf(&out, "| 註記 | 數量 | 意思 |\n|---|---:|---|\n")
-	fmt.Fprintf(&out, "| `gosub_inserts` | %d | 這一頁的文字被 `GOSUB` 進去的子程式插過一段（走訪時已展開） |\n",
-		result.Summary.GosubInsert)
-	fmt.Fprintf(&out, "| `dynamic_branch` | %d | 這一頁所在的 run 有 `ON GOTO`／`ON GOSUB`（走訪時已展開每個目的地） |\n",
-		result.Summary.BranchInsert)
+	fmt.Fprint(&out, tooltext.Format("h.10af87ec2e4b"))
+	fmt.Fprint(&out, tooltext.Format("h.a7d38a8ee7ed", result.Summary.Groups))
+	fmt.Fprint(&out, tooltext.Format("h.969ccd1ebc9c", result.Summary.Matched))
+	fmt.Fprint(&out, tooltext.Format("h.3683b87494bd", result.Summary.Unmatched))
+	fmt.Fprint(&out, tooltext.Format("h.e54664af3947", result.Summary.VariableInsert))
+	fmt.Fprint(&out, tooltext.Format("h.ffac0daf9c8f", result.Summary.Subroutine))
+	out.WriteString(tooltext.Text("h.c259e43fd5a9"))
+	fmt.Fprint(&out, tooltext.Format("h.87c105b12a3b"))
+	fmt.Fprint(&out, tooltext.Format("h.c37e771df231", result.Summary.GosubInsert))
+	fmt.Fprint(&out, tooltext.Format("h.8230e70169b4", result.Summary.BranchInsert))
 
 	blocks := make([]string, 0, len(result.Summary.ByBlock))
 	for key := range result.Summary.ByBlock {
@@ -1064,32 +1056,27 @@ func renderMarkdown(result report) []byte {
 		}
 		return blocks[i] < blocks[j]
 	})
-	out.WriteString("\n## 未接上的段落，依 block\n\n| Block | 未接上 |\n|---|---:|\n")
+	out.WriteString(tooltext.Text("h.5d246149be56"))
 	for _, key := range blocks {
 		fmt.Fprintf(&out, "| `%s` | %d |\n", key, result.Summary.ByBlock[key])
 	}
 
-	fmt.Fprintf(&out, "\n## 沒有規則的執行路徑（run）\n\n")
-	out.WriteString("上面那張表是**逐頁**判的，而一頁只要曾經被某一條命中的 run 經過就算 `matched`。" +
-		"玩家走的是**一條** run，不是所有 run 的聯集：同一頁在 A 路徑上和兄弟句一起印（規則命中）、" +
-		"在 B 路徑上單獨印（沒有規則），逐頁的算法只看得到 A。\n\n")
-	out.WriteString("這不是假想的失誤。`wizard-tower.efreet-band` 與 " +
-		"`tilverton.sewers.spoils-and-master-alone` 是實機走出來才發現要補的規則；" +
-		"把它們從 pack 拿掉重跑，逐頁的 `unmatched` **仍然是 0**，而下面這個數字從 93 變成 95，" +
-		"新增的正好是那兩份文字。`TestOrphanRunAccountingCatchesTheAloneSiblingBug` 釘住這個差別。\n\n")
-	fmt.Fprintf(&out, "| 處置 | run 數 | 意思 |\n|---|---:|---|\n")
-	fmt.Fprintf(&out, "| 控制流走得到的 run | %d | 分母（文字相同的只算一次）|\n", result.Summary.Runs)
-	fmt.Fprintf(&out, "| `matched` | %d | 有規則命中這一整條 |\n", result.Summary.RunsMatched)
-	fmt.Fprintf(&out, "| **`orphan`** | **%d** | **走得到、文字完整、沒有任何規則命中——這才是待辦** |\n",
-		result.Summary.RunsOrphan)
-	fmt.Fprintf(&out, "| `variable-insert` | %d | run 裡有頁印執行期的值，靜態比對不到 |\n",
-		result.Summary.RunsVariableInsert)
-	fmt.Fprintf(&out, "| `subroutine` | %d | 整條就是一頁共用子程式片段，實機會被併進呼叫端 |\n",
-		result.Summary.RunsSubroutine)
-	fmt.Fprintf(&out, "| `gosub-insert` | %d | run 裡有插入點，手上這份文字不完整，不能當缺陷 |\n", 
-		result.Summary.RunsGosubInsert)
-	fmt.Fprintf(&out, "| `truncated` | %d | 停在句子中間或是別條的前綴——走訪器在 `IF` 分岔上切出來的半截 |\n\n",
-		result.Summary.RunsTruncated)
+	fmt.Fprint(&out, tooltext.Format("h.3b827aa6eec5"))
+	out.WriteString(tooltext.Text("h.6594090a6501") +
+		tooltext.Text("h.6bd68b0a97c2") +
+		tooltext.Text("h.c60b95adad5e"))
+	out.WriteString(tooltext.Text("h.2ed9df2c8c0e") +
+		tooltext.Text("h.3d58f6511ecf") +
+		tooltext.Text("h.efacba4510e4") +
+		tooltext.Text("h.1d099a62e5f2"))
+	fmt.Fprint(&out, tooltext.Format("h.92f593c42d61"))
+	fmt.Fprint(&out, tooltext.Format("h.317feaa4937d", result.Summary.Runs))
+	fmt.Fprint(&out, tooltext.Format("h.31f9b4f0eb3f", result.Summary.RunsMatched))
+	fmt.Fprint(&out, tooltext.Format("h.67b223c410da", result.Summary.RunsOrphan))
+	fmt.Fprint(&out, tooltext.Format("h.5bcdd8bed616", result.Summary.RunsVariableInsert))
+	fmt.Fprint(&out, tooltext.Format("h.6d3f8d0484cf", result.Summary.RunsSubroutine))
+	fmt.Fprint(&out, tooltext.Format("h.59a85fe53434", result.Summary.RunsGosubInsert))
+	fmt.Fprint(&out, tooltext.Format("h.b8146d0bd562", result.Summary.RunsTruncated))
 
 	orphanBlocks := make([]string, 0, len(result.Summary.OrphanByBlock))
 	for key := range result.Summary.OrphanByBlock {
@@ -1107,11 +1094,11 @@ func renderMarkdown(result report) []byte {
 		fmt.Fprintf(&out, "| `%s` | %d |\n", key, result.Summary.OrphanByBlock[key])
 	}
 
-	out.WriteString("\n⚠ 這是**候選清單不是缺陷清單**：走訪器把 `IF` 的兩條路都走，" +
-		"其中一條在實機可能永遠不成立。判一條是不是真的缺陷，要看**兄弟句**——" +
-		"若有另一條規則的 `all_contains` 含了這份文字的片段**再加上**別段的片段，" +
-		"那條規則就攔不到單獨印的情況，缺的就是這一條。\n\n")
-	out.WriteString("| Block | 起始頁 | 頁數 | 這條 run 的文字 |\n|---|---|---:|---|\n")
+	out.WriteString(tooltext.Text("h.7eed76896cd2") +
+		tooltext.Text("h.da3ebb355058") +
+		tooltext.Text("h.12cc03399aba") +
+		tooltext.Text("h.b6cdf7d0bed3"))
+	out.WriteString(tooltext.Text("h.4fed16ba219d"))
 	for _, item := range result.OrphanRuns {
 		start := ""
 		if len(item.Pages) > 0 {
@@ -1121,7 +1108,7 @@ func renderMarkdown(result report) []byte {
 			item.Member, item.Block, start, len(item.Pages), markdownCell(item.Text))
 	}
 
-	out.WriteString("\n## 逐段\n\n| Block | offset | 處置 | 已接上的規則 | 原作文字 |\n|---|---|---|---|---|\n")
+	out.WriteString(tooltext.Text("h.a6b7b0aa6256"))
 	for _, item := range result.Groups {
 		rule := "—"
 		if item.RuleID != "" {
@@ -1132,7 +1119,7 @@ func renderMarkdown(result report) []byte {
 			text = text[:160] + "…"
 		}
 		if len(item.GosubInserts) > 0 {
-			text += " ⚠ 另有 `GOSUB " + strings.Join(item.GosubInserts, "`／`") + "` 印出的一段"
+			text += tooltext.Text("h.0e4f348ce2b3") + strings.Join(item.GosubInserts, "`／`") + tooltext.Text("h.5ab59d4f32d6")
 		}
 		fmt.Fprintf(&out, "| `%s/%s` | `%s` | `%s` | %s | %s |\n",
 			item.Member, item.Block, item.Offset, item.Status, rule, text)

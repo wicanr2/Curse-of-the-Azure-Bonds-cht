@@ -27,6 +27,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -36,9 +37,9 @@ import (
 
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/eclcells"
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 )
 
@@ -50,16 +51,16 @@ var headings = []struct {
 	mark      byte
 	name      string
 }{
-	{0, 0, -1, '^', "北"},
-	{2, 1, 0, '>', "東"},
-	{4, 0, 1, 'v', "南"},
-	{6, -1, 0, '<', "西"},
+	{0, 0, -1, '^', tooltext.Text("h.01bc01b32975")},
+	{2, 1, 0, '>', tooltext.Text("h.469e009b15a0")},
+	{4, 0, 1, 'v', tooltext.Text("h.b2f94b103450")},
+	{6, -1, 0, '<', tooltext.Text("h.b9f0c815459c")},
 }
 
 func main() {
-	image := flag.String("image", "curseoftheazurebonds.zip", "遊戲 image zip")
-	out := flag.String("out", "docs/reference/maps", "輸出目錄")
-	only := flag.String("only", "", "只畫這一張地圖（pack 的 map id）")
+	image := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.90f916a91fdc"))
+	out := flag.String("out", "docs/reference/maps", tooltext.Text("h.6c847f084c23"))
+	only := flag.String("only", "", tooltext.Text("h.ad40dcc50989"))
 	flag.Parse()
 
 	pack, err := gamepack.Default()
@@ -135,17 +136,17 @@ func render(archive *zip.ReadCloser, pack *goldenbox.Pack,
 
 	var report strings.Builder
 	fmt.Fprintf(&report, "# %s\n\n", definition.ID)
-	fmt.Fprintf(&report, "由 `cmd/map-atlas` 產生，不要手改。"+
-		"`GEO%d` 區塊 `0x%02X`", definition.AreaID, definition.GeometryBlock)
+	fmt.Fprintf(&report, tooltext.Text("h.ee582dc71d4b")+
+		tooltext.Text("h.a8fe4e9d9aa7"), definition.AreaID, definition.GeometryBlock)
 	if definition.ScriptBlock != nil {
-		fmt.Fprintf(&report, "；腳本 `ECL%d/0x%02X`", definition.AreaID, *definition.ScriptBlock)
+		fmt.Fprint(&report, tooltext.Format("h.cc6ecfae6e23", definition.AreaID, *definition.ScriptBlock))
 	}
 	report.WriteString("。\n\n")
 	report.WriteString("```text\n")
 	report.WriteString(renderGrid(grid, definition, cellIndex))
 	report.WriteString("```\n\n")
-	report.WriteString("`.` 沒有事件的地面　`#` 四面都走不出去　" +
-		"`^v<>` 這一格往那個方向走得出地圖　`@` 宣告的進場錨點\n\n")
+	report.WriteString(tooltext.Text("h.26119babd0a8") +
+		tooltext.Text("h.9203bfed8d56"))
 
 	report.WriteString(renderExits(grid, definition))
 	report.WriteString(renderEvents(dispatch, indexCells))
@@ -192,7 +193,7 @@ func edgeMarks(grid geo.Grid, _ int, y int) string {
 	if len(parts) == 0 {
 		return ""
 	}
-	return "← 走得出去：" + strings.Join(parts, " ")
+	return tooltext.Text("h.87a26a58ee6a") + strings.Join(parts, " ")
 }
 
 func cellGlyph(grid geo.Grid, definition goldenbox.MapDefinition,
@@ -244,16 +245,16 @@ func renderExits(grid geo.Grid, definition goldenbox.MapDefinition) string {
 		}
 	}
 	var out strings.Builder
-	out.WriteString("## 離開這張圖的格子\n\n")
+	out.WriteString(tooltext.Text("h.d1255bec9b7a"))
 	if len(rows) == 0 {
-		out.WriteString("這張圖沒有走得出去的邊界格。\n\n")
+		out.WriteString(tooltext.Text("h.8bbdac700538"))
 		return out.String()
 	}
-	out.WriteString("⚠ **走得出去 ≠ 已經接上**：`external_exit` 沒宣告的那幾格，" +
-		"remake 會照 `wrap` 繞回對邊，走不到腳本安排的目的地。\n\n")
-	out.WriteString("| 格子 | 方向 | game pack 宣告 |\n|---|---|---|\n")
+	out.WriteString(tooltext.Text("h.42a54e92260e") +
+		tooltext.Text("h.925f7140dfcd"))
+	out.WriteString(tooltext.Text("h.88e0d3f66db9"))
 	for _, item := range rows {
-		mark := "**沒宣告**"
+		mark := tooltext.Text("h.5c760f792076")
 		if item.id != "" {
 			mark = "`" + item.id + "`"
 		}
@@ -265,15 +266,15 @@ func renderExits(grid geo.Grid, definition goldenbox.MapDefinition) string {
 
 func renderEvents(dispatch eclcells.Dispatch, indexCells map[int][][2]int) string {
 	var out strings.Builder
-	out.WriteString("## 每格事件\n\n")
+	out.WriteString(tooltext.Text("h.d66a8da75fab"))
 	if !dispatch.Found {
-		out.WriteString("這張圖沒有以地形碼分派的每格事件。\n")
+		out.WriteString(tooltext.Text("h.6b8e33403fd5"))
 		return out.String()
 	}
-	out.WriteString("⚠ **有索引不等於站上去就會演**：處理常式自己可能還有守衛" +
-		"（一次性旗標、`RANDOM`、前置劇情、`SEARCH`）。實際演出來什麼看" +
+	out.WriteString(tooltext.Text("h.f907f5573582") +
+		tooltext.Text("h.3ba5e7ed488e") +
 		"[`cell-sweep`](../../audit/cell-sweep.md)。\n\n")
-	out.WriteString("| 圖上的字 | 索引 | 格子 | 守衛 | 那一場的第一句 |\n|---|---:|---|---|---|\n")
+	out.WriteString(tooltext.Text("h.3aebbef6996c"))
 	for _, index := range dispatch.Indexes {
 		if index == 0 {
 			continue
@@ -291,7 +292,7 @@ func renderEvents(dispatch eclcells.Dispatch, indexCells map[int][][2]int) strin
 		}
 		where := strings.Join(names, "、")
 		if where == "" {
-			where = "圖上沒有這個地形碼"
+			where = tooltext.Text("h.2ad8c345d2f5")
 		}
 		glyph := string(rune(cellGlyphForIndex(index)))
 		text := dispatch.Texts[index]
@@ -320,7 +321,7 @@ func cellGlyphForIndex(index int) byte {
 func loadGrid(archive *zip.ReadCloser, member string, block uint8) (geo.Grid, error) {
 	payload := memberBytes(archive, member)
 	if payload == nil {
-		return geo.Grid{}, fmt.Errorf("image 裡沒有 %s", member)
+		return geo.Grid{}, tooltext.Errorf("h.13356c0db288", member)
 	}
 	blocks, err := dax.Parse(payload)
 	if err != nil {
@@ -332,13 +333,13 @@ func loadGrid(archive *zip.ReadCloser, member string, block uint8) (geo.Grid, er
 		}
 		return geo.Parse(candidate.Entry.ID, candidate.Data)
 	}
-	return geo.Grid{}, fmt.Errorf("%s 沒有區塊 0x%02X", member, block)
+	return geo.Grid{}, tooltext.Errorf("h.99998dd4110c", member, block)
 }
 
 func loadECLBlock(archive *zip.ReadCloser, area, block uint8) ([]byte, error) {
 	payload := memberBytes(archive, fmt.Sprintf("ECL%d.DAX", area))
 	if payload == nil {
-		return nil, fmt.Errorf("image 裡沒有 ECL%d.DAX", area)
+		return nil, tooltext.Errorf("h.f74a43cb81d6", area)
 	}
 	blocks, err := dax.Parse(payload)
 	if err != nil {
@@ -349,7 +350,7 @@ func loadECLBlock(archive *zip.ReadCloser, area, block uint8) ([]byte, error) {
 			return candidate.Data, nil
 		}
 	}
-	return nil, fmt.Errorf("ECL%d.DAX 沒有區塊 0x%02X", area, block)
+	return nil, tooltext.Errorf("h.0792508a3d56", area, block)
 }
 
 func memberBytes(archive *zip.ReadCloser, name string) []byte {

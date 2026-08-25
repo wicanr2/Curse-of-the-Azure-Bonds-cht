@@ -20,6 +20,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"sort"
@@ -50,9 +51,9 @@ type site struct {
 }
 
 func main() {
-	imagePath := flag.String("image", "curseoftheazurebonds.zip", "原版 DOS image ZIP")
-	window := flag.Int("window", 6, "往前看幾條指令（spec 1155 用 6）")
-	only := flag.String("kind", "", "只列這一類：move／restore／picture／none／facing")
+	imagePath := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.5d993e050e0a"))
+	window := flag.Int("window", 6, tooltext.Text("h.c7f54d879493"))
+	only := flag.String("kind", "", tooltext.Text("h.bdfba9db51e7"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*imagePath)
@@ -88,13 +89,13 @@ func main() {
 		fmt.Printf("%s/%#02x:%04Xh  %-8s  %s\n", found.member, found.block, found.offset,
 			found.kind, strings.Join(found.writes, "; "))
 		if found.guard != "" {
-			fmt.Printf("        守衛：%s\n", found.guard)
+			fmt.Print(tooltext.Format("h.5729cf8cd821", found.guard))
 		}
 		if found.preview != "" {
-			fmt.Printf("        文字：%s\n", found.preview)
+			fmt.Print(tooltext.Format("h.bd6406896edd", found.preview))
 		}
 	}
-	fmt.Printf("\n可達的 CALL 2E10h 共 %d 處：", len(sites))
+	fmt.Print(tooltext.Format("h.f02352aaeea7", len(sites)))
 	kinds := make([]string, 0, len(counts))
 	for kind := range counts {
 		kinds = append(kinds, kind)

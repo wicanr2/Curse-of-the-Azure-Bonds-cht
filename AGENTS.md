@@ -1633,6 +1633,14 @@ go.sum 仍然逐版本鎖雜湊）。
   控制流、原始 bytes、位址與報告欄位不變。exact AST baseline `77→0`，
   `ROUND492_SOURCE_AUDIT=0`、`ROUND492_FORMAL_EXIT=0`；READY spec 492 是
   權威。這只表示工具鏈資料分離完成，不代表完整遊戲已通關或完整中文化。
+- 第 714 輪把第 492 輪之後累積的 1,938 次工具與 runtime 漢字 literal（71 個
+  檔案：cmd/* 稽核工具 1,690、internal/* 表格與敘述 224、前端旗標說明 24）
+  全部移進 `internal/tooltext` 的內嵌 catalog，stable ID 形如
+  `h.<內容 sha256 前 12 碼>`；printf 家族的格式字串改走 `tooltext.Format`／
+  `Errorf`（vet 的 printf 檢查因此全綠），報表輸出逐位元組不變
+  （monster-ai-coverage／dos-sound-map／ecl-sky-colours／cell-sweep 重生零
+  diff）。baseline `1,938→0`。之後新工具的中文輸出**一開始就走 tooltext**，
+  不要再寫 Go 字串 literal 讓 baseline 長回來。
 - 第 493 輪依 PC-98 overlay 09 的非破壞性 IDA report 接通 Quick AI 第一個
   `MinRange>0` 區域法術 `Sleep (15h)`：State 以 game-pack `min_range`、
   `TACTICALMAP`、敵人格建立 bounded `SCAN` center，重用既有 Sleep effect／

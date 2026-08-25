@@ -1,6 +1,6 @@
 package monster
 
-import "fmt"
+import "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 
 // RecordFieldStatus 與 `internal/party` 的三態同義：`decoded` 解析器真的讀它、
 // `documented` 有出處但解析器沒讀、`unknown` 還沒查到。
@@ -32,28 +32,28 @@ type RecordField struct {
 // 當右側補白的字串一起讀。兩種讀法在現有資料上結果相同（名字沒有長到 40 字），
 // 但 `+29h` 到底是不是名字的一部分還沒對過（spec 1165）。
 var ItemRecordFields = []RecordField{
-	{0x00, 42, "名稱（右側補 NUL／空白）；PC-98 是 `NAME: STR40` ＋ `TITLE`", FieldDecoded, "185／1165"},
-	{0x2A, 4, "物品鏈的 next（遠指標）`NEXT`", FieldDocumented, "1000／832"},
-	{0x2E, 1, "物品類型 `ITEMPTR`（索引 DS:5CF6h 那張 16 bytes 的類別表）", FieldDecoded, "1000／832"},
-	{0x2F, 3, "名稱編號三格 `NAMENUM`（未鑑定時顯示用）", FieldDecoded, "1036"},
-	{0x32, 1, "加值 `PLUS`（有號）", FieldDecoded, "1036"},
-	{0x33, 1, "豁免用的加值 `PLUSSAVE`", FieldDecoded, "1036"},
-	{0x34, 1, "裝備中 `READY`（非 0 ＝ 已裝備）", FieldDecoded, "1000／832"},
-	{0x35, 1, "鑑定位元 `IDENTIFIED`（remake 當成「哪幾格名稱要藏起來」的遮罩）", FieldDecoded, "1036／1165"},
-	{0x36, 1, "詛咒 `CURSED`", FieldDecoded, "1036"},
-	{0x37, 2, "單位重量 `ENCUMBERANCE`（word）", FieldDecoded, "1000／762"},
-	{0x39, 1, "數量 `NUMITEMS`（重量與價值都要乘它）", FieldDecoded, "1000／762"},
-	{0x3A, 2, "價值 `VALUE`（word，有號）", FieldDecoded, "1035"},
-	{0x3C, 3, "三個效果槽 `SPECIAL`（`+3Ch`／`+3Dh`／`+3Eh`）", FieldDecoded, "803／807"},
+	{0x00, 42, tooltext.Text("h.380c6e56be01"), FieldDecoded, "185／1165"},
+	{0x2A, 4, tooltext.Text("h.8051f1fd954a"), FieldDocumented, "1000／832"},
+	{0x2E, 1, tooltext.Text("h.584bb84381eb"), FieldDecoded, "1000／832"},
+	{0x2F, 3, tooltext.Text("h.87f8c62a9afb"), FieldDecoded, "1036"},
+	{0x32, 1, tooltext.Text("h.e8a0ee7f269d"), FieldDecoded, "1036"},
+	{0x33, 1, tooltext.Text("h.793db5e6efcc"), FieldDecoded, "1036"},
+	{0x34, 1, tooltext.Text("h.b10838e60aa8"), FieldDecoded, "1000／832"},
+	{0x35, 1, tooltext.Text("h.0e4e929fb8a6"), FieldDecoded, "1036／1165"},
+	{0x36, 1, tooltext.Text("h.9cb5c84762e2"), FieldDecoded, "1036"},
+	{0x37, 2, tooltext.Text("h.03a77167a463"), FieldDecoded, "1000／762"},
+	{0x39, 1, tooltext.Text("h.ed882b5da2a8"), FieldDecoded, "1000／762"},
+	{0x3A, 2, tooltext.Text("h.508f30d856d0"), FieldDecoded, "1035"},
+	{0x3C, 3, tooltext.Text("h.146516db986e"), FieldDecoded, "803／807"},
 }
 
 // AffectRecordFields 是 `.FX` 效果記錄（9 bytes）的逐段台帳。
 var AffectRecordFields = []RecordField{
-	{0x00, 1, "效果碼 `EFFECTNUM`", FieldDecoded, "1005"},
-	{0x01, 2, "持續時間 `DURATION`（word，分鐘）", FieldDecoded, "712"},
-	{0x03, 1, "`SPECIAL`（spec 441 讀成強度，`0FFh` ＝ 永久；兩種讀法待對）", FieldDecoded, "441／1165"},
-	{0x04, 1, "生效旗標 `SPECIALOFF`", FieldDecoded, "441／1165"},
-	{0x05, 4, "效果鏈的 next `NEXT`（遠指標，原樣保留）", FieldDocumented, "1000"},
+	{0x00, 1, tooltext.Text("h.5355e3997b24"), FieldDecoded, "1005"},
+	{0x01, 2, tooltext.Text("h.ccc6543ac468"), FieldDecoded, "712"},
+	{0x03, 1, tooltext.Text("h.1bb0cdbbe288"), FieldDecoded, "441／1165"},
+	{0x04, 1, tooltext.Text("h.199cb8a07c55"), FieldDecoded, "441／1165"},
+	{0x05, 4, tooltext.Text("h.7c871a69b652"), FieldDocumented, "1000"},
 }
 
 // ValidateRecordFields 檢查台帳蓋滿整份記錄、沒有洞也沒有重疊。
@@ -61,31 +61,30 @@ func ValidateRecordFields(name string, fields []RecordField, size int) error {
 	next := 0
 	for index, field := range fields {
 		if field.Size < 1 {
-			return fmt.Errorf("%s 第 %d 段 +%02Xh 的長度是 %d", name, index, field.Offset, field.Size)
+			return tooltext.Errorf("h.8c523dae0060", name, index, field.Offset, field.Size)
 		}
 		if field.Offset != next {
-			return fmt.Errorf("%s 第 %d 段從 +%02Xh 開始，前一段結束於 +%02Xh：中間有洞或重疊",
-				name, index, field.Offset, next)
+			return tooltext.Errorf("h.b99176242db2", name, index, field.Offset, next)
 		}
 		if field.Name == "" {
-			return fmt.Errorf("%s 第 %d 段沒有名字", name, index)
+			return tooltext.Errorf("h.9078bac3e49a", name, index)
 		}
 		switch field.Status {
 		case FieldDecoded, FieldDocumented:
 			if field.Spec == "" {
-				return fmt.Errorf("%s +%02Xh 是 %s 卻沒有出處", name, field.Offset, field.Status)
+				return tooltext.Errorf("h.9e926c0d48d4", name, field.Offset, field.Status)
 			}
 		case FieldUnknown:
 			if field.Spec != "" {
-				return fmt.Errorf("%s +%02Xh 是 unknown 卻附了出處", name, field.Offset)
+				return tooltext.Errorf("h.4982a6c18f8d", name, field.Offset)
 			}
 		default:
-			return fmt.Errorf("%s +%02Xh 的狀態 %q 不是三種之一", name, field.Offset, field.Status)
+			return tooltext.Errorf("h.9b4f49eed35b", name, field.Offset, field.Status)
 		}
 		next = field.Offset + field.Size
 	}
 	if next != size {
-		return fmt.Errorf("%s 台帳只蓋到 +%02Xh，記錄是 %#X bytes", name, next, size)
+		return tooltext.Errorf("h.c91599ffd9ae", name, next, size)
 	}
 	return nil
 }

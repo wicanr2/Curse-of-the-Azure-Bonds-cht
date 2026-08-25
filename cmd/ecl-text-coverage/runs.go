@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"hash/fnv"
 	"os"
 	"sort"
@@ -308,7 +309,7 @@ func walkRuns(label string, data []byte) ([]runPath, map[string]string, error) {
 	}
 	if truncated {
 		// 沉默的截斷會讓「走完了」與「走到一半就放棄」長得一模一樣。
-		fmt.Fprintf(os.Stderr, "walkRuns: %s 狀態數達到上限 %d，沒走完\n", label, maxWalkStates)
+		fmt.Fprint(os.Stderr, tooltext.Format("h.0b29221f51b3", label, maxWalkStates))
 	}
 	sort.Slice(paths, func(i, j int) bool {
 		return strings.Join(paths[i].Texts, " ") < strings.Join(paths[j].Texts, " ")

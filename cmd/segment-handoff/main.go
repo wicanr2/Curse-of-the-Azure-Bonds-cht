@@ -27,6 +27,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -103,19 +104,19 @@ type report struct {
 	FromInside  int `json:"from_inside"`
 	// Failed 是**比不成**的段數。⚠ 一定要和 `Segments` 分開：比不成會讓
 	// 「漏掉 0 格」看起來和「完全對得上」一樣，而那兩件事天差地遠。
-	Failed int `json:"failed"`
-	Rows          []handoffRow `json:"rows"`
+	Failed int          `json:"failed"`
+	Rows   []handoffRow `json:"rows"`
 }
 
 func main() {
-	image := flag.String("image", "curseoftheazurebonds.zip", "遊戲 image")
-	localePath := flag.String("locale", "assets/locale/zh-TW.json", "語系檔")
-	snapshots := flag.String("snapshots", "workplace/campaign-frames/snapshots", "主線快照目錄")
-	partySize := flag.Int("party", 6, "直入那一側造幾名隊員（主線是 6）")
+	image := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.33c48eb91ff0"))
+	localePath := flag.String("locale", "assets/locale/zh-TW.json", tooltext.Text("h.9c3b4db6568f"))
+	snapshots := flag.String("snapshots", "workplace/campaign-frames/snapshots", tooltext.Text("h.c2472b3d6b25"))
+	partySize := flag.Int("party", 6, tooltext.Text("h.02936fb74120"))
 	arrivals := flag.String("arrivals", "workplace/campaign-frames/arrivals",
-		"剛換到那一段時的快照目錄（`COAB_ARRIVAL_SNAPSHOT_DIR` 產）")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
-	outputJSON := flag.String("json", "", "JSON 輸出路徑")
+		tooltext.Text("h.3fb0d0c8faa5"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
+	outputJSON := flag.String("json", "", tooltext.Text("h.7299c956bbb9"))
 	flag.Parse()
 
 	readBy := readAddressesByBlock(*image)
@@ -396,7 +397,7 @@ func loadECLBlocks(image string) (map[uint8][]byte, uint8, error) {
 		}
 	}
 	if !found {
-		return nil, 0, fmt.Errorf("%s 裡沒有 ECL 區塊", image)
+		return nil, 0, tooltext.Errorf("h.e201a34780b4", image)
 	}
 	return blocks, first, nil
 }
@@ -413,7 +414,7 @@ func zipMember(reader *zip.Reader, name string) ([]byte, error) {
 		defer handle.Close()
 		return io.ReadAll(handle)
 	}
-	return nil, fmt.Errorf("%s 不在 image 裡", name)
+	return nil, tooltext.Errorf("h.844fa35500c5", name)
 }
 
 // directMemory 造一個直入那一段的狀態，回傳正規化過的 ECL 記憶體。
@@ -428,20 +429,20 @@ func directMemory(catalog locale.Catalog, blocks map[uint8][]byte, initial uint8
 	// 少了這一步 `EnterSegment` 會失敗，而失敗路徑會讓「漏掉幾格」印成 **0**
 	// ——那個零看起來和「完全對得上」一模一樣。
 	if err := createParty(&state, partySize); err != nil {
-		return nil, fmt.Errorf("建不出隊伍：%w", err)
+		return nil, tooltext.Errorf("h.c28594bfaffd", err)
 	}
 	if seed != nil {
 		state.SeedHandoffMemory(seed)
 	}
 	if err := state.EnterSegment(item); err != nil {
-		return nil, fmt.Errorf("直入進不去：%w", err)
+		return nil, tooltext.Errorf("h.3cd21f238059", err)
 	}
 	// ⚠ 兩側走**同一個存取器**：到達取樣是 `MemorySnapshot()`，這裡也是。
 	// 一邊走存檔編碼器會讓定義域不同（不收 0、程式碼另存），差異暴增兩個
 	// 數量級——而那個數字看起來一樣像個結果。
 	memory := normalise(state.ECLMemorySnapshot())
 	if len(memory) == 0 {
-		return nil, fmt.Errorf("直入之後記憶體是空的")
+		return nil, tooltext.Errorf("h.a085e513f65b")
 	}
 	return memory, nil
 }
@@ -493,7 +494,7 @@ func createParty(state *game.State, size int) error {
 	}
 	for i := 0; i < size; i++ {
 		if err := state.AddCreationCharacter(0); err != nil {
-			return fmt.Errorf("第 %d 名：%w", i+1, err)
+			return tooltext.Errorf("h.4d919dc48068", i+1, err)
 		}
 	}
 	return state.FinishCharacterCreation()
@@ -501,27 +502,27 @@ func createParty(state *game.State, size int) error {
 
 func render(doc report) string {
 	var out strings.Builder
-	out.WriteString("# 分段驗收漏掉多少交接：直入的狀態 vs 主線走到時的狀態\n\n")
-	out.WriteString("由 `cmd/segment-handoff` 產生，不要手改。\n\n")
-	out.WriteString("★ `cmd/segment-seams` 比的是接縫的 `LastECL` 一個欄位（18／18 對得上）。" +
-		"這一份比的是**整包 ECL 記憶體**：主線真的走到那一段時的快照，對上直入那一段" +
-		"之後的狀態。\n\n")
-	out.WriteString("⚠ **差異本身不是缺陷**——直入本來就沒有前面的劇情。有意義的是" +
-		"**其中哪幾格那一段的程式碼真的會讀**（`會讀且漏掉` 那一欄）：那些才是" +
-		"「直入驗過了，但驗的不是主線會遇到的情況」。\n\n")
-	out.WriteString("⚠ 「會讀」由**靜態可達指令**的運算元推出來（`code 01h`／`03h` 是記憶體讀，" +
-		"`02h` 是立即值）。靜態可達是下界 ⇒ **會讀的格子只會少不會多**，" +
-		"所以 `會讀且漏掉` 也是下界。\n\n")
-	out.WriteString("★ **取樣點**：`剛換到` 是換段的那一瞬間存的（`COAB_ARRIVAL_SNAPSHOT_DIR`），" +
-		"那才是交接。`⚠ 站上地城` 是退而求其次的那一份——隊伍第一次站上該段地城時存的，" +
-		"那時 initial lifecycle 已經跑完、隊伍也走了幾步，量到的是「交接 ＋ 又走了一段」，" +
-		"**是上界不是交接量**。\n\n")
-	out.WriteString("★ **隊伍人數不影響這個數字**——量過：直入那側造一名與造六名，" +
-		"每一段的差異格數完全相同。隊伍資料不在 ECL 記憶體裡。\n\n")
-	out.WriteString("★ **修法在同一份報表裡**：`鋪上交接` 那兩欄是把量到的交接狀態" +
-		"鋪回直入那一側（`State.SeedHandoffMemory`，鋪在 initial lifecycle **之前**）" +
-		"之後還剩多少。有沒有用不靠敘述，靠這兩欄。\n\n")
-	out.WriteString("| 段 | 取樣點 | 這一段會讀幾格 | 主線有值 | 直入差 | 會讀且差 | 鋪上交接後差 | 鋪上後會讀且差 |\n" +
+	out.WriteString(tooltext.Text("h.59f18c557cc1"))
+	out.WriteString(tooltext.Text("h.95349d4856f7"))
+	out.WriteString(tooltext.Text("h.4f17098667a5") +
+		tooltext.Text("h.99ebe84d85ac") +
+		tooltext.Text("h.20b4362ffd39"))
+	out.WriteString(tooltext.Text("h.2868e9aed2fd") +
+		tooltext.Text("h.2ec3dc8ccedf") +
+		tooltext.Text("h.41700d4e55a0"))
+	out.WriteString(tooltext.Text("h.2628b6dcd71f") +
+		tooltext.Text("h.25c3a8630e1a") +
+		tooltext.Text("h.2c9975f89333"))
+	out.WriteString(tooltext.Text("h.3bceddd7c6b5") +
+		tooltext.Text("h.50ed660b50e3") +
+		tooltext.Text("h.57113ce6fc71") +
+		tooltext.Text("h.37eba446b1c3"))
+	out.WriteString(tooltext.Text("h.a10baf9369e2") +
+		tooltext.Text("h.4585f60cfaa2"))
+	out.WriteString(tooltext.Text("h.bd479e441fc9") +
+		tooltext.Text("h.2854ed0a6ab5") +
+		tooltext.Text("h.7e2c91d6ed97"))
+	out.WriteString(tooltext.Text("h.f05ea5517a68") +
 		"|---|---|---:|---:|---:|---|---:|---|\n")
 	for _, row := range doc.Rows {
 		risky := "—"
@@ -537,9 +538,9 @@ func render(doc report) string {
 		}
 		source := row.Source
 		if source == "arrival" {
-			source = "剛換到"
+			source = tooltext.Text("h.3e6ac92fe2dc")
 		} else if source == "inside" {
-			source = "⚠ 站上地城"
+			source = tooltext.Text("h.4c19bf484f18")
 		}
 		seededRisky := "—"
 		if len(row.SeededRisky) > 0 {
@@ -553,38 +554,38 @@ func render(doc report) string {
 			row.ID, source, row.ReadCells, row.CampaignCells, row.Dropped, risky,
 			row.SeededDropped, seededRisky)
 	}
-	fmt.Fprintf(&out, "\n合計 %d 段比得成（取樣點：剛換到 %d 段、站上地城 %d 段）："+
-		"直入與主線差 **%d** 格，其中**那一段的碼真的會讀**的有 **%d** 格，"+
-		"分佈在 **%d** 段。\n",
+	fmt.Fprintf(&out, tooltext.Text("h.bdbf082c9d34")+
+		tooltext.Text("h.c48c79220480")+
+		tooltext.Text("h.dcd46adce27b"),
 		doc.Segments, doc.FromArrival, doc.FromInside,
 		doc.TotalDropped, doc.TotalRisky, doc.RiskySegments)
-	fmt.Fprintf(&out, "\n**把交接狀態鋪回直入那一側之後**：差 **%d** 格（原本 %d），"+
-		"其中會讀的 **%d** 格（原本 %d），分佈在 %d 段（原本 %d）。\n\n",
+	fmt.Fprintf(&out, tooltext.Text("h.78c328b7540d")+
+		tooltext.Text("h.39db215a70fe"),
 		doc.SeededDropped, doc.TotalDropped, doc.SeededRisky, doc.TotalRisky,
 		doc.SeededRiskySegments, doc.RiskySegments)
-	fmt.Fprintf(&out, "剩下的 %d 格按成因分：\n\n"+
-		"| 成因 | 格數 | 該不該補 |\n|---|---:|---|\n"+
-		"| 引擎進段時自己設的（`4BF2h` LastECL、`7ED5h`、`7EC9h`）| %d | **不該**：進段這一支自己管 |\n"+
-		"| 由隊伍位置推出來的視圖暫存器（`C04Bh`..`C05Fh`，如 `C04Fh` ＝ 牆頂）| %d | **不該**：引擎自己算的 |\n"+
-		"| 進段的 initial lifecycle 自己算掉的（鋪與不鋪結果一樣）| %d | **不能**：鋪了也沒用 |\n"+
-		"| 世界路線的查表三格（`4C9Bh`／`4C9Dh`／`4CA1h`）| %d | **不該**：直入沒有「正要去哪」 |\n"+
-		"| ECL 通用工作暫存器（`7F79h`／`7F7Ah`／`7F7Bh`）| %d | **不該**：上一次運算剩下的值 |\n"+
-		"| 歸不了因 | %d | 這才是真正剩下來的 |\n\n"+
-		"⚠ 前五類**都不是交接缺口**：引擎自己算的（前兩類）、那一段自己決定的（第三類）、"+
-		"「這一次要去哪」的當下運算值（第四類）、上一次運算剩下的東西（第五類）。"+
-		"混在一起數會讓剩下的數字看起來比實際大。\n",
+	fmt.Fprintf(&out, tooltext.Text("h.b6e52d920240")+
+		tooltext.Text("h.70b76f50f66b")+
+		tooltext.Text("h.d85de8b2d654")+
+		tooltext.Text("h.f6534dc2960d")+
+		tooltext.Text("h.bc94c4430a33")+
+		tooltext.Text("h.a4c17a90f36c")+
+		tooltext.Text("h.045f3be5334b")+
+		tooltext.Text("h.72489c47680c")+
+		tooltext.Text("h.b1d3291a561e")+
+		tooltext.Text("h.c7a0914181ef")+
+		tooltext.Text("h.15baca7c7821"),
 		doc.SeededRisky, doc.ResidueEngineSet, doc.ResidueViewCell,
 		doc.ResidueLifecycleOwned, doc.ResidueRouteLookup, doc.ResidueScratch,
 		doc.ResidueOther)
 	if doc.FromInside > 0 {
-		out.WriteString("\n⚠ 用 `站上地城` 取樣的那幾段是**上界**（見上）。" +
-			"沒有 `剛換到` 的快照通常是因為主線**不是靠換段進去的**——" +
-			"開場那一段是全新開局，沒有「上一段」。\n")
+		out.WriteString(tooltext.Text("h.e8e7d88ec22a") +
+			tooltext.Text("h.2f8e97034b7d") +
+			tooltext.Text("h.c69cb87f20a7"))
 	}
 	if doc.Failed > 0 {
-		fmt.Fprintf(&out, "\n⚠ 另有 **%d** 段**比不成**（見上表的備註）。"+
-			"比不成不等於沒有差異——失敗路徑會讓「漏掉 0 格」看起來和「完全對得上」"+
-			"一模一樣，所以兩者分開數。\n", doc.Failed)
+		fmt.Fprintf(&out, tooltext.Text("h.670e220eb8a9")+
+			tooltext.Text("h.fa98f99f9b5d")+
+			tooltext.Text("h.1a30b82661f9"), doc.Failed)
 	}
 	return out.String()
 }

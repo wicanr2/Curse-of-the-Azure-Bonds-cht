@@ -32,6 +32,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"sort"
@@ -46,12 +47,12 @@ import (
 // leg 是一段路：從哪個地點、選第幾個方向、演了什麼。
 type leg struct {
 	// origin 是這一輪掃描的起點地點（`ArriveAtWorldLocation` 的參數）。
-	origin   uint8
-	original string
-	from     uint8
-	choice   int
-	option   string
-	to       uint8
+	origin         uint8
+	original       string
+	from           uint8
+	choice         int
+	option         string
+	to             uint8
 	text           string
 	language       string
 	optionLanguage string
@@ -69,8 +70,8 @@ func main() {
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
 	// ⚠ 預設寫到 workplace/（不進版控）：這一支的覆蓋是**下界**（見檔頭），
 	// 把下界當 audit 產物擺進 repo 會讓人誤以為那就是全集。
-	out := flag.String("out", "workplace/route-sweep.md", "輸出的 markdown")
-	depth := flag.Int("depth", 6, "從開局最多走幾段路")
+	out := flag.String("out", "workplace/route-sweep.md", tooltext.Text("h.aff4479ab1b9"))
+	depth := flag.Int("depth", 6, tooltext.Text("h.970c065f50e6"))
 	flag.Parse()
 
 	data, err := gamecorpus.Load(*image, *localePath)
@@ -85,9 +86,7 @@ func main() {
 		log.Fatal(err)
 	}
 	counts := summarise(legs)
-	fmt.Printf("分支=%d 中文=%d 落回原文=%d 不出文字=%d 選項落回原文=%d → %s\n",
-		len(legs), counts["中文"], counts["原文"], counts["—"],
-		counts["選項原文"], *out)
+	fmt.Print(tooltext.Format("h.48a548f607fd", len(legs), counts[tooltext.Text("h.72726d8818f6")], counts[tooltext.Text("h.354b28c85333")], counts["—"], counts[tooltext.Text("h.709c3a8fbaf8")], *out))
 }
 
 // sweepAllLocations 對 game pack 宣告的每一個世界地圖地點各掃一次。
@@ -101,7 +100,7 @@ func sweepAllLocations(data gamecorpus.Corpus, depth int) ([]leg, int, error) {
 	}
 	points := probe.WorldLocations()
 	if len(points) == 0 {
-		return nil, 0, fmt.Errorf("game pack 沒有宣告世界地圖地點")
+		return nil, 0, tooltext.Errorf("h.7cddf61d1229")
 	}
 	legs, unreached := []leg(nil), 0
 	for _, point := range points {
@@ -245,7 +244,7 @@ func originalMenu(state *game.State) bool {
 }
 
 func isContinue(option string) bool {
-	return strings.Contains(option, "繼續") || strings.Contains(option, "CONTINUE")
+	return strings.Contains(option, tooltext.Text("h.d9d1f08fa5ce")) || strings.Contains(option, "CONTINUE")
 }
 
 // travel 重走一條路徑的前段，然後走最後一步並把那一步演的字記下來。
@@ -351,9 +350,9 @@ func languageOf(text string) string {
 	}
 	switch {
 	case hasHan:
-		return "中文"
+		return tooltext.Text("h.72726d8818f6")
 	case hasLatin:
-		return "原文"
+		return tooltext.Text("h.354b28c85333")
 	}
 	return "—"
 }
@@ -362,8 +361,8 @@ func summarise(legs []leg) map[string]int {
 	counts := map[string]int{}
 	for _, item := range legs {
 		counts[item.language]++
-		if item.optionLanguage == "原文" {
-			counts["選項原文"]++
+		if item.optionLanguage == tooltext.Text("h.354b28c85333") {
+			counts[tooltext.Text("h.709c3a8fbaf8")]++
 		}
 	}
 	return counts
@@ -371,16 +370,16 @@ func summarise(legs []leg) map[string]int {
 
 func render(legs []leg, unreached, depth int) string {
 	var out strings.Builder
-	out.WriteString("# 世界地圖的路段盤點（走這一段路會演什麼）\n\n" +
-		"由 `cmd/route-sweep` 產生，不要手改。\n\n" +
-		"原作的旅途事件是「出發地 × 4 ＋ 選的方向」查表分派（`4C9D`），"+
-		"所以這一份是用走的：直接抵達每一個宣告的地點，再把原作選單的每個選項都選一次，"+
-		"記下演出來的字。\n\n" +
-		"⚠ 每一段路都**從頭重走**，once-only 旗標與旅行時鐘不互相污染。\n" +
-		"⚠ 量的是**內容與語系**，不是可達性——隊伍被撐起來以免路上的戰鬥擋住盤點。\n" +
-		fmt.Sprintf("⚠ 從開局最多走 %d 段（`-depth`）。走不到的路段不會出現在表裡，"+
-			"**這一份是下界不是全集**。\n\n", depth))
-	out.WriteString("| 起點 | 地點 | 原文選項 | 選項 | 選項語言 | 到達 | 語言 | 演出來的字 |\n")
+	out.WriteString(tooltext.Text("h.3ba896c878f6") +
+		tooltext.Text("h.e5aaa37c2e99") +
+		tooltext.Text("h.2226c95212f7") +
+		tooltext.Text("h.90f0fbab9f11") +
+		tooltext.Text("h.f193a1277f60") +
+		tooltext.Text("h.57382d55cb1d") +
+		tooltext.Text("h.bc9f99b146e0") +
+		fmt.Sprintf(tooltext.Text("h.176163fed48a")+
+			tooltext.Text("h.32f2cdafaec4"), depth))
+	out.WriteString(tooltext.Text("h.3f7bdd933998"))
 	out.WriteString("|---:|---:|---|---|---|---:|---|---|\n")
 	for _, item := range legs {
 		out.WriteString(fmt.Sprintf("| %d | %d | %s | %s | %s | %d | %s | %s |\n",
@@ -388,10 +387,10 @@ func render(legs []leg, unreached, depth int) string {
 			item.to, item.language, firstLine(item.text)))
 	}
 	counts := summarise(legs)
-	out.WriteString(fmt.Sprintf("\n## 摘要\n\n| 項目 | 數 |\n|---|---:|\n"+
-		"| 走到的路段 | %d |\n| 演出來是中文 | %d |\n| 演出來落回原文 | %d |\n"+
-		"| 走這一段不出文字 | %d |\n| 推不動的分支 | %d |\n",
-		len(legs), counts["中文"], counts["原文"], counts["—"], unreached))
+	out.WriteString(fmt.Sprintf(tooltext.Text("h.e3b2a4f11e09")+
+		tooltext.Text("h.e5ec89148fc1")+
+		tooltext.Text("h.14f421dfc1da"),
+		len(legs), counts[tooltext.Text("h.72726d8818f6")], counts[tooltext.Text("h.354b28c85333")], counts["—"], unreached))
 	return out.String()
 }
 

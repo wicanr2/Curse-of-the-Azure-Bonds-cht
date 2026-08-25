@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"os"
 	"path/filepath"
 
@@ -21,10 +22,10 @@ func main() {
 	if err := screenshotmanifest.Validate(manifest, root); err != nil {
 		fail(err)
 	}
-	fmt.Printf("截圖 manifest 驗證通過：%d 張現有圖片、%d 項 planned 缺口\n", len(manifest.Screenshots), len(manifest.Planned))
+	fmt.Print(tooltext.Format("h.a91cf8eb75e4", len(manifest.Screenshots), len(manifest.Planned)))
 }
 
 func fail(err error) {
-	fmt.Fprintf(os.Stderr, "截圖 manifest 驗證失敗：%v\n", err)
+	fmt.Fprint(os.Stderr, tooltext.Format("h.2ae6e26c8170", err))
 	os.Exit(1)
 }

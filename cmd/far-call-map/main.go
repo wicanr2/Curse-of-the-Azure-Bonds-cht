@@ -28,6 +28,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -114,9 +115,9 @@ type report struct {
 
 func main() {
 	platform := flag.String("platform", "dos", "dos or pc98")
-	root := flag.String("root", "workplace/re-sweep", "re-sweep 產物根目錄")
-	output := flag.String("output", "", "Markdown 輸出路徑")
-	outputJSON := flag.String("json", "", "JSON 輸出路徑")
+	root := flag.String("root", "workplace/re-sweep", tooltext.Text("h.b0a80c708155"))
+	output := flag.String("output", "", tooltext.Text("h.fff5cb9e9bc2"))
+	outputJSON := flag.String("json", "", tooltext.Text("h.7299c956bbb9"))
 	flag.Parse()
 
 	base := filepath.Join(*root, *platform)
@@ -147,12 +148,12 @@ func main() {
 		log.Fatal(err)
 	}
 	if len(calls) == 0 {
-		log.Fatal("一個 far call 都沒收集到；full body dump 可能不存在")
+		log.Fatal(tooltext.Text("h.f7cbe32a3373"))
 	}
 
 	delta, hits := bestDelta(calls, records)
 	if hits == 0 {
-		log.Fatal("沒有任何 delta 讓 far call 落在 stub 邊界上；控制記錄的假設不成立")
+		log.Fatal(tooltext.Text("h.e0a80a0db55c"))
 	}
 
 	result := report{
@@ -301,24 +302,24 @@ func collectFarCalls(dir, platform string) ([]callSite, error) {
 
 func renderMarkdown(result report, records []record, delta int) []byte {
 	var out strings.Builder
-	out.WriteString("# Overlay far call → `overlay-NN entry#K` 對照\n\n")
-	out.WriteString("由 `cmd/far-call-map` 產生，不要手改。\n\n")
-	fmt.Fprintf(&out, "IDA 把每個 overlay 的 `.bin` 從位址 0 載入，所以 `call far ptr` 的目標會被"+
-		"「解析」成同一個 `.bin` 裡的標籤（`loc_1584+2`、`sub_1590` 之類）。"+
-		"**那些標籤與真正的目標無關**，規格裡的 `<far 1590h>` 就是這樣來的。\n\n")
-	fmt.Fprintf(&out, "真正的目標是常駐段裡的 TPOV 控制記錄：段選 overlay、位移選 entry"+
-		"（`(位移 − 20h) / 5`，stub 每筆 5 bytes）。段與檔案位移差 **%#x 個段**"+
-		"（＝ EXE header 的長度），這個常數是**量出來的**：掃過全部 far call、"+
-		"對每個候選值數有幾個目標正好落在 stub 邊界，取命中最多的那個。\n\n", delta)
-	fmt.Fprintf(&out, "| 指標 | 數字 |\n|---|---:|\n")
-	fmt.Fprintf(&out, "| far call 總數 | %d |\n", result.FarCalls)
-	fmt.Fprintf(&out, "| 解出 `overlay-NN entry#K` | %d |\n", result.Resolved)
-	fmt.Fprintf(&out, "| 目標是常駐程式碼（段不是任何控制記錄）| %d |\n", result.Resident)
-	fmt.Fprintf(&out, "| 段對得上但位移不在 stub 邊界 | %d |\n\n", result.Unresolved)
+	out.WriteString(tooltext.Text("h.459f6021ab07"))
+	out.WriteString(tooltext.Text("h.875d85c8c66e"))
+	fmt.Fprint(&out, tooltext.Text("h.19d06c7650bd")+
+		tooltext.Text("h.7ef00e2f3772")+
+		tooltext.Text("h.6668473d970d"))
+	fmt.Fprintf(&out, tooltext.Text("h.788eb6848b9b")+
+		tooltext.Text("h.d281e7784702")+
+		tooltext.Text("h.28189a5481ff")+
+		tooltext.Text("h.40e2168246c1"), delta)
+	fmt.Fprint(&out, tooltext.Format("h.13c83a8a875e"))
+	fmt.Fprint(&out, tooltext.Format("h.a30ac1014cea", result.FarCalls))
+	fmt.Fprint(&out, tooltext.Format("h.356307303e23", result.Resolved))
+	fmt.Fprint(&out, tooltext.Format("h.8144948a5436", result.Resident))
+	fmt.Fprint(&out, tooltext.Format("h.2f7c1bfc04a4", result.Unresolved))
 
-	out.WriteString("## 每個 overlay 的 entry 被叫了幾次\n\n")
-	out.WriteString("`0` 代表沒有任何 overlay 呼叫它——那種 entry 只會被常駐程式碼或 ECL 叫到。\n\n")
-	out.WriteString("| overlay | entry 數 | 有呼叫端 | 沒有呼叫端 |\n|---|---:|---:|---:|\n")
+	out.WriteString(tooltext.Text("h.a26541153689"))
+	out.WriteString(tooltext.Text("h.459d83222c48"))
+	out.WriteString(tooltext.Text("h.692e2b57286c"))
 	sorted := append([]record(nil), records...)
 	sort.Slice(sorted, func(i, j int) bool { return sorted[i].Index < sorted[j].Index })
 	for _, entry := range sorted {
@@ -332,10 +333,10 @@ func renderMarkdown(result report, records []record, delta int) []byte {
 			entry.Module, entry.EntryCount, used, entry.EntryCount-used)
 	}
 
-	out.WriteString("\n## 每個 entry 的呼叫端\n\n")
-	out.WriteString("讀某一支 overlay 函式時要問的是「這個 far call 打到哪」——" +
-		"那個方向逐筆列在 JSON 裡（每個呼叫點一列）。這裡是**反向**：" +
-		"某個 entry 是被誰叫的，用來回答「改這支會影響誰」。\n\n")
+	out.WriteString(tooltext.Text("h.76f00c64beb8"))
+	out.WriteString(tooltext.Text("h.ea44e542857c") +
+		tooltext.Text("h.c881c758a4ea") +
+		tooltext.Text("h.b198af74b85f"))
 	callers := map[string][]string{}
 	for _, item := range result.Targets {
 		if item.Entry < 0 {
@@ -354,7 +355,7 @@ func renderMarkdown(result report, records []record, delta int) []byte {
 	sort.Slice(keys, func(i, j int) bool {
 		return entrySortKey(keys[i]) < entrySortKey(keys[j])
 	})
-	out.WriteString("| entry | code | 呼叫端 |\n|---|---|---|\n")
+	out.WriteString(tooltext.Text("h.aea4f359fd3a"))
 	for _, key := range keys {
 		unique := uniqueStrings(callers[key])
 		code := ""

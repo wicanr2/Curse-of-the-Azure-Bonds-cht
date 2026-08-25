@@ -23,6 +23,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -70,12 +71,12 @@ func buildPairing() []soundPair {
 
 // soundEffectLabels 只給中文說明；名字與位址都在 `pc98sfx` 那一份。
 var soundEffectLabels = map[string]string{
-	"SOUNDHALT": "停止", "SOUNDOFF": "關", "SOUNDON": "開",
-	"CASTFX": "施法", "MISSFX": "揮空", "SPELLHITFX": "法術命中",
-	"DEADFX": "死亡", "WHISTLEFX": "哨音", "HITFX": "命中",
-	"LIGHTNINGFX": "閃電", "SWISHFX": "揮擊", "PADFX": "腳步",
-	"FIREBALLFX": "火球", "ARROWFX": "箭", "OVERTUREFX": "序曲",
-	"COMBATFX": "戰鬥", "CRASHFX": "撞擊",
+	"SOUNDHALT": tooltext.Text("h.ca4d973c0b00"), "SOUNDOFF": tooltext.Text("h.94ffcbc4a678"), "SOUNDON": tooltext.Text("h.320d1ab4f80f"),
+	"CASTFX": tooltext.Text("h.e377c6152522"), "MISSFX": tooltext.Text("h.d7aa5b20173e"), "SPELLHITFX": tooltext.Text("h.0118c5026c62"),
+	"DEADFX": tooltext.Text("h.82d3130fa582"), "WHISTLEFX": tooltext.Text("h.d0928210330c"), "HITFX": tooltext.Text("h.393df9bb13ea"),
+	"LIGHTNINGFX": tooltext.Text("h.48693c8fd90b"), "SWISHFX": tooltext.Text("h.692fbefa6024"), "PADFX": tooltext.Text("h.9f18c28a4e63"),
+	"FIREBALLFX": tooltext.Text("h.010568a02690"), "ARROWFX": tooltext.Text("h.674650b36c70"), "OVERTUREFX": tooltext.Text("h.3df5903dbdcd"),
+	"COMBATFX": tooltext.Text("h.625dd417c2c3"), "CRASHFX": tooltext.Text("h.b15e09c78fd2"),
 }
 
 // constantName 把事件字串轉成 remake 的常數名（`spell_hit` → `SoundSpellHit`）。
@@ -98,15 +99,15 @@ func constantName(event string) string {
 // 當成待辦重新查一次。判過的結論要留在**產生報表的程式碼裡**，不是留在某一輪的
 // 敘述裡——敘述會被讀成歷史，表才會跟著每次重生的報表一起出現。
 var judgedGaps = map[string]string{
-	"SOUNDHALT": "原作用 `SOUNDUP` 旗標決定要不要停掉**手上那一聲**（`overlay` 內務）；" +
-		"remake 的播放器是逐事件一次性播放，沒有「手上那一聲」可停 ⇒ " +
-		"這是**原作需要而 remake 的架構不需要**，不對應任何玩法事件。",
+	"SOUNDHALT": tooltext.Text("h.3d8de43a7173") +
+		tooltext.Text("h.12c9e18e12c6") +
+		tooltext.Text("h.1784b7da1d5a"),
 }
 
 func main() {
-	report := flag.String("triggers", "docs/audit/pc98-music-triggers.md", "原版音效觸發報表")
-	source := flag.String("source", "internal", "remake 原始碼目錄")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	report := flag.String("triggers", "docs/audit/pc98-music-triggers.md", tooltext.Text("h.abacf712d389"))
+	source := flag.String("source", "internal", tooltext.Text("h.90a2533b98a1"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	original := parseOriginal(*report)
@@ -129,26 +130,25 @@ func main() {
 		}
 	}
 	if len(uncovered) > 0 {
-		log.Fatalf("這些 SoundEvent 常數沒有對照列，報表會漏掉它們：%s",
-			strings.Join(uncovered, "、"))
+		log.Fatal(tooltext.Format("h.16741c936afb", strings.Join(uncovered, "、")))
 	}
 
 	var out strings.Builder
-	fmt.Fprintf(&out, "# 音效觸發點：原版 vs remake\n\n")
-	fmt.Fprintf(&out, "由 `cmd/sound-trigger-compare` 產生，不要手改。\n\n")
-	fmt.Fprintf(&out, "⚠ remake 那一側數的是 `requestSound(SoundXxx)` **與** `return SoundXxx`"+
-		"（由挑選器回傳的也算一條路）。只數前者會讓 `SoundWhistle` 印成 0——"+
-		"它是 `missileImpactSound` 依武器類別挑出來的，一處直接呼叫都沒有。\n\n")
-	fmt.Fprintf(&out, "⚠ **處數不等於播放次數**，兩邊都是：一處在迴圈裡可以響很多次，"+
-		"而同一個音效在原版可能由一支共用常式依武器種類分歧（`SHOWARROW` 就同時放箭／揮擊／哨音）。"+
-		"這張表回答的是「**有沒有這條路**」，不是「響幾次」。逐處的時機在 spec 1186。\n\n")
-	fmt.Fprintf(&out, "⚠ 對照關係由 `internal/pc98sfx` 的選擇子表推出來（`SWISHFX` 帶著 `swish`，"+
-		"`swish` 對應 `SoundSwish`），不是另外抄一份。名字**判讀**仍然是人做的——"+
-		"`MISSFX` 到底是揮空還是法術沒中，要看呼叫端；那一題的答案在 spec 1186。\n\n")
-	fmt.Fprintf(&out, "⚠ 原版處數來自**位元組直掃**（見 `pc98-music-triggers.md`），"+
-		"不是 far-call 對照表——表比實際少 12 處，而且會把 `LIGHTNINGFX` 印成 0。\n\n")
+	fmt.Fprint(&out, tooltext.Format("h.4503f49c11aa"))
+	fmt.Fprint(&out, tooltext.Format("h.b8421d3efe4c"))
+	fmt.Fprint(&out, tooltext.Text("h.f975cc008699")+
+		tooltext.Text("h.a8a5957a920d")+
+		tooltext.Text("h.66cf4dc87dd2"))
+	fmt.Fprint(&out, tooltext.Text("h.7be774eba0d4")+
+		tooltext.Text("h.ce265e423e6e")+
+		tooltext.Text("h.3a0883da1285"))
+	fmt.Fprint(&out, tooltext.Text("h.a917245539cf")+
+		tooltext.Text("h.3212e2c7cc17")+
+		tooltext.Text("h.27610e57ffc9"))
+	fmt.Fprint(&out, tooltext.Text("h.5b9cf8590d39")+
+		tooltext.Text("h.d2e76307e732"))
 
-	fmt.Fprintf(&out, "| 原版音效 | 原版處數 | remake 事件 | remake 處數 | 落差 |\n")
+	fmt.Fprint(&out, tooltext.Format("h.9226baf238d5"))
 	fmt.Fprintf(&out, "|---|---:|---|---:|---|\n")
 	missing, extra, judged := 0, 0, 0
 	for _, pair := range pairing {
@@ -158,14 +158,14 @@ func main() {
 		switch {
 		case left > 0 && right == 0:
 			if reason, ok := judgedGaps[pair.symbol]; ok {
-				note = "已判定不是缺漏：" + reason
+				note = tooltext.Text("h.75d39151abed") + reason
 				judged++
 				break
 			}
-			note = "**原版有、remake 從沒發過**"
+			note = tooltext.Text("h.03decb8a605d")
 			missing++
 		case left == 0 && right > 0:
-			note = "remake 有、原版這一支沒出現在 `SOUNDFX` 立即呼叫裡"
+			note = tooltext.Text("h.fdd4335812bd")
 			extra++
 		}
 		fmt.Fprintf(&out, "| %s | %d | `%s` | %d | %s |\n",
@@ -173,19 +173,19 @@ func main() {
 	}
 	fmt.Fprintf(&out, "\n")
 
-	fmt.Fprintf(&out, "## 結論\n\n")
-	fmt.Fprintf(&out, "- 對照的音效種類：%d 種。\n", len(pairing))
-	fmt.Fprintf(&out, "- **原版有、remake 從沒發過（還沒判的）**：%d 種。\n", missing)
-	fmt.Fprintf(&out, "- 原版有、remake 沒有，但**已判定不是缺漏**：%d 種。\n", judged)
-	fmt.Fprintf(&out, "- remake 有、原版那一支沒出現在 `SOUNDFX` 的立即呼叫裡：%d 種。\n\n", extra)
-	fmt.Fprintf(&out, "⚠ 第二類**先當成掃描面的問題**：上一版把 `LIGHTNINGFX` 列在這一類，"+
-		"而它其實在 `CASTSPELL` 裡——是 far-call 對照表看不到，不是原版沒有。"+
-		"現在原版那一側改成位元組直掃並且涵蓋常駐，這一類要是還有東西，"+
-		"要先問「是不是又有一個面沒掃到」再問「是不是 remake 多做」。\n\n")
-	fmt.Fprintf(&out, "⚠ 第一類才是可以動手的：那幾個 `SoundEvent` 常數**宣告了卻從來沒有人送出**"+
-		"——編譯得過、測試全綠、玩起來就是少了那個聲音。\n\n")
-	fmt.Fprintf(&out, "★ 「已判定不是缺漏」是**逐項寫死在 `judgedGaps` 裡**的，不是把數字四捨五入掉。"+
-		"判過的項目就不該再被當成待辦重新打開一次；要推翻它請改那份表並附理由。\n")
+	fmt.Fprint(&out, tooltext.Format("h.548e4db4f8a3"))
+	fmt.Fprint(&out, tooltext.Format("h.38cf3e7ea3ea", len(pairing)))
+	fmt.Fprint(&out, tooltext.Format("h.9fcd94b333d0", missing))
+	fmt.Fprint(&out, tooltext.Format("h.38a5a46c1b4e", judged))
+	fmt.Fprint(&out, tooltext.Format("h.a155cc48aae8", extra))
+	fmt.Fprint(&out, tooltext.Text("h.78854eacdbfb")+
+		tooltext.Text("h.f88cd37d4ef3")+
+		tooltext.Text("h.64ed5b694cde")+
+		tooltext.Text("h.e2412c278435"))
+	fmt.Fprint(&out, tooltext.Text("h.68fc313006e8")+
+		tooltext.Text("h.00cc8867ca74"))
+	fmt.Fprint(&out, tooltext.Text("h.8d9661b0c176")+
+		tooltext.Text("h.5226489b68a3"))
 
 	text := out.String()
 	if *output == "" {
@@ -253,7 +253,6 @@ func scanRemake(root string) map[string]int {
 	})
 	return counts
 }
-
 
 // scanDeclaredEvents 讀出 remake **宣告**了哪些 `SoundEvent` 常數。
 //

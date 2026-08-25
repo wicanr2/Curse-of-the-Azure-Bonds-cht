@@ -23,6 +23,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -43,8 +44,8 @@ type blockStat struct {
 }
 
 func main() {
-	imagePath := flag.String("image", "curseoftheazurebonds.zip", "原版 image ZIP")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	imagePath := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.79f855c8b433"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*imagePath)
@@ -86,18 +87,18 @@ func main() {
 	}
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# ECL 的查表分派：`ON GOTO`／`ON GOSUB` 與 `GETTABLE`\n\n")
-	fmt.Fprintf(&report, "由 `cmd/ecl-table-dispatch` 產生，不要手改。\n\n")
-	fmt.Fprintf(&report, "⚠ 這是**分母**，不是覆蓋率。要知道玩家實際走到幾條分支，"+
-		"得有實跑資料——這一支不宣稱那件事。⚠ 只數靜態追得到的分派點，所以是**下界**。\n\n")
-	fmt.Fprintf(&report, "| 總計 | 數量 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 有查表分派的 ECL 段 | %d |\n", len(stats))
-	fmt.Fprintf(&report, "| `25h`／`26h` 分派點 | %d |\n", totalOn)
-	fmt.Fprintf(&report, "| 分支目標（含重複）| %d |\n", totalTargets)
-	fmt.Fprintf(&report, "| **相異的分支目標** | **%d** |\n", totalDistinct)
-	fmt.Fprintf(&report, "| `2Ah GETTABLE` 取值點 | %d |\n\n", totalGet)
+	fmt.Fprint(&report, tooltext.Format("h.ab3be6d86174"))
+	fmt.Fprint(&report, tooltext.Format("h.2e8a98ce336d"))
+	fmt.Fprint(&report, tooltext.Text("h.f1289ad4f110")+
+		tooltext.Text("h.d2af60564e2e"))
+	fmt.Fprint(&report, tooltext.Format("h.91130546f2ec"))
+	fmt.Fprint(&report, tooltext.Format("h.104248cbc166", len(stats)))
+	fmt.Fprint(&report, tooltext.Format("h.43a694a88da6", totalOn))
+	fmt.Fprint(&report, tooltext.Format("h.94325a2013fc", totalTargets))
+	fmt.Fprint(&report, tooltext.Format("h.b58df8b08975", totalDistinct))
+	fmt.Fprint(&report, tooltext.Format("h.81447009bc9f", totalGet))
 
-	fmt.Fprintf(&report, "| ECL 檔 | 段 | 分派點 | 目標 | 相異目標 | `GETTABLE` |\n")
+	fmt.Fprint(&report, tooltext.Format("h.4aac8092125d"))
 	fmt.Fprintf(&report, "|---|---:|---:|---:|---:|---:|\n")
 	for _, stat := range stats {
 		fmt.Fprintf(&report, "| `%s` | `0x%02X` | %d | %d | %d | %d |\n",

@@ -16,6 +16,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"strings"
@@ -24,11 +25,11 @@ import (
 )
 
 func main() {
-	set := flag.Int("set", 2, "GEO 檔集（1..6）")
-	block := flag.Int("block", 1, "區塊編號")
-	all := flag.Bool("all", false, "列出目錄裡每一張圖的指紋")
-	types := flag.Bool("types", false, "改印每一面牆的**牆型值**（兩位十六進位，四面以 / 分隔）")
-	imagePath := flag.String("image", "curseoftheazurebonds.zip", "原版 image ZIP")
+	set := flag.Int("set", 2, tooltext.Text("h.cfd9421a6aad"))
+	block := flag.Int("block", 1, tooltext.Text("h.e3d3f40d66aa"))
+	all := flag.Bool("all", false, tooltext.Text("h.ebcf1a9e2f2b"))
+	types := flag.Bool("types", false, tooltext.Text("h.92988a09a577"))
+	imagePath := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.79f855c8b433"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*imagePath)
@@ -71,9 +72,9 @@ func main() {
 func printGrid(catalog geo.Catalog, ref geo.MapRef, types bool) {
 	grid, ok := catalog.Lookup(ref)
 	if !ok {
-		log.Fatalf("目錄裡沒有 GEO%d 段 0x%02X", ref.Set, ref.BlockID)
+		log.Fatal(tooltext.Format("h.d29b0e862636", ref.Set, ref.BlockID))
 	}
-	fmt.Printf("== GEO%d 段 0x%02X ==\n", ref.Set, ref.BlockID)
+	fmt.Print(tooltext.Format("h.09c8a5a38e78", ref.Set, ref.BlockID))
 	if types {
 		// ⚠ 牆「有沒有」與「擋不擋得住」是兩件事：實測提爾佛頓 (7,13) 四面都有牆，
 		// 但往西走得出去——那一面是門。要用走得動與否當地圖指紋，得看牆型值。

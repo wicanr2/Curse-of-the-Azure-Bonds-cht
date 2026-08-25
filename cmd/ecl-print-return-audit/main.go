@@ -26,6 +26,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -78,10 +79,10 @@ type coveragePage struct {
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	coverage := flag.String("coverage", "docs/audit/ecl-text-coverage.json",
-		"文字覆蓋率報表；用來判斷空行落在哪一個顯示頁")
-	jsonPath := flag.String("json", "", "JSON 輸出路徑（給回歸測試用）")
+		tooltext.Text("h.e387de426580"))
+	jsonPath := flag.String("json", "", tooltext.Text("h.0572347d71ad"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -94,7 +95,7 @@ func main() {
 	for member := 1; member <= 6; member++ {
 		payload := memberPayload(archive, fmt.Sprintf("ECL%d.DAX", member))
 		if payload == nil {
-			log.Fatalf("image 裡沒有 ECL%d.DAX", member)
+			log.Fatal(tooltext.Format("h.f74a43cb81d6", member))
 		}
 		blocks, parseErr := dax.Parse(payload)
 		if parseErr != nil {
@@ -112,7 +113,7 @@ func main() {
 	if pages, loadErr := loadCoveragePages(*coverage); loadErr == nil {
 		attachPages(sites, pages)
 	} else {
-		fmt.Fprintf(os.Stderr, "⚠ 讀不到 %s：%v（不做頁面對照）\n", *coverage, loadErr)
+		fmt.Fprint(os.Stderr, tooltext.Format("h.8a966de19f86", *coverage, loadErr))
 	}
 
 	total, blank := 0, 0
@@ -124,29 +125,29 @@ func main() {
 	}
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 原作的硬換行落在哪裡（`33h PRINT RETURN`）\n\n")
-	fmt.Fprintf(&report, "由 `cmd/ecl-print-return-audit` 產生，不要手改。"+
-		"語意見 spec 1147：`65A0h := 1`、`inc 65A1h` ⇒ 欄歸位、列前進。\n\n")
-	fmt.Fprintf(&report, "| 項目 | 數 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 走得到的 `33h` 指令 | %d |\n", total)
-	fmt.Fprintf(&report, "| 其中連著兩條以上的段落（**會空行**）| %d |\n", blank)
-	fmt.Fprintf(&report, "| 換行段落合計 | %d |\n\n", len(sites))
+	fmt.Fprint(&report, tooltext.Format("h.6407375837e2"))
+	fmt.Fprint(&report, tooltext.Text("h.d1c752bfa04e")+
+		tooltext.Text("h.e1595eec91b3"))
+	fmt.Fprint(&report, tooltext.Format("h.e811720ed9a3"))
+	fmt.Fprint(&report, tooltext.Format("h.97ca48347bd7", total))
+	fmt.Fprint(&report, tooltext.Format("h.6afc3e516e8b", blank))
+	fmt.Fprint(&report, tooltext.Format("h.cac23a8e78b2", len(sites)))
 
 	if blank == 0 {
-		fmt.Fprintf(&report, "⇒ **走得到的碼裡沒有任何一處連續換行**，"+
-			"所以「連續 `33h` 會空行」在原作的劇情文字上碰不到；"+
-			"remake 缺游標模型看不出差別。\n\n")
+		fmt.Fprint(&report, tooltext.Text("h.cd3b87273d91")+
+			tooltext.Text("h.b4c715133f8b")+
+			tooltext.Text("h.9860b1e031d6"))
 	} else {
-		fmt.Fprintf(&report, "⇒ 有 %d 個段落會空行。那幾處 remake 目前會把空行擠掉。\n\n", blank)
+		fmt.Fprint(&report, tooltext.Format("h.c9e115dc63df", blank))
 		visible := 0
 		for _, item := range sites {
 			if item.Run > 1 && item.InPage {
 				visible++
 			}
 		}
-		fmt.Fprintf(&report, "其中 **%d 段**兩側的文字都落在**同一個顯示頁**裡 ⇒ "+
-			"玩家真的看得到那個留白；其餘落在頁緣或是被跳進來的，兩側對不上同一頁。\n\n", visible)
-		fmt.Fprintf(&report, "| ECL/區塊 | 位移 | 連續幾條 | 位元組上的前一條 | 後一條 | 同一頁 | 該頁的 `text_rule` |\n")
+		fmt.Fprintf(&report, tooltext.Text("h.ec34dd756579")+
+			tooltext.Text("h.08b822b88015"), visible)
+		fmt.Fprint(&report, tooltext.Format("h.9818638c4453"))
 		fmt.Fprintf(&report, "|---|---:|---:|---|---|---|---|\n")
 		for _, item := range sites {
 			if item.Run < 2 {
@@ -160,20 +161,18 @@ func main() {
 				item.Member, item.Block, item.Offset, item.Run,
 				label(item.Before), label(item.After), mark, label(item.PageRule))
 		}
-		report.WriteString("\n空行落在哪兩句之間（位元組上最近的兩段文字）：\n\n")
+		report.WriteString(tooltext.Text("h.943ebc7e980c"))
 		for _, item := range sites {
 			if item.Run < 2 {
 				continue
 			}
-			fmt.Fprintf(&report, "- **ECL%d/0x%02X `%04Xh`**\n  - 前：%s\n  - 後：%s\n",
-				item.Member, item.Block, item.Offset,
-				label(item.BeforeText), label(item.AfterText))
+			fmt.Fprint(&report, tooltext.Format("h.54d347782b96", item.Member, item.Block, item.Offset, label(item.BeforeText), label(item.AfterText)))
 		}
 		report.WriteString("\n")
 		report.WriteString("\n")
 	}
-	fmt.Fprintf(&report, "⚠ 走訪跟不到的碼不在分母裡，而且「連續」只認**位元組相鄰**"+
-		"（中間夾著跳躍、執行序上仍相鄰的算不到）⇒ 兩個方向都是**下界**。\n")
+	fmt.Fprint(&report, tooltext.Text("h.7c454bdf0809")+
+		tooltext.Text("h.f392252d307e"))
 
 	if *jsonPath != "" {
 		type visibleRun struct {
@@ -232,7 +231,7 @@ func loadCoveragePages(path string) ([]coveragePage, error) {
 		return nil, err
 	}
 	if len(parsed.Groups) == 0 {
-		return nil, fmt.Errorf("報表裡沒有 groups")
+		return nil, tooltext.Errorf("h.dbc19fa8aa18")
 	}
 	return parsed.Groups, nil
 }

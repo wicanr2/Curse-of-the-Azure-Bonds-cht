@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"os"
 	"path/filepath"
 	"sort"
@@ -91,11 +92,11 @@ type segJSON struct {
 
 func main() {
 	exePath := flag.String("exe", "", "resident MZ executable")
-	ovrPath := flag.String("ovr", "", "TPOV overlay 容器（可省略；提供才做 segment→overlay 歸屬）")
-	outPath := flag.String("out", "", "輸出 JSON（預設 stdout）")
-	recordName := flag.String("record", "", "改成印一個 record 型別的逐欄位移表（例如 CHARREC）")
-	allRecords := flag.Bool("records", false, "改成印出每一個具名 record 型別的逐欄位移表")
-	overlayNames := flag.Bool("overlay-names", false, "改成印出每個 overlay 的原始單元名（由裡面的符號認）")
+	ovrPath := flag.String("ovr", "", tooltext.Text("h.657ad409401b"))
+	outPath := flag.String("out", "", tooltext.Text("h.5b913c9420b2"))
+	recordName := flag.String("record", "", tooltext.Text("h.45419c201b6c"))
+	allRecords := flag.Bool("records", false, tooltext.Text("h.142f2364d416"))
+	overlayNames := flag.Bool("overlay-names", false, tooltext.Text("h.a9a72282beb1"))
 	flag.Parse()
 	if *exePath == "" {
 		flag.Usage()
@@ -124,17 +125,17 @@ func main() {
 			ordered = append(ordered, name)
 		}
 		sort.Strings(ordered)
-		fmt.Printf("# PC-98 除錯符號裡的 record 版面\n\n")
-		fmt.Printf("由 `cmd/borland-symbols -records` 產生，不要手改。連法與注意事項見 spec 1164。\n\n")
+		fmt.Print(tooltext.Format("h.9574ed5b94e5"))
+		fmt.Print(tooltext.Format("h.29df8fab5955"))
 		for _, name := range ordered {
 			fields, layoutErr := table.RecordLayout(name)
 			if layoutErr != nil {
-				fmt.Printf("## %s\n\n展不開：%v\n\n", name, layoutErr)
+				fmt.Print(tooltext.Format("h.eb6661f0d65f", name, layoutErr))
 				continue
 			}
 			total := fields[len(fields)-1].Offset + fields[len(fields)-1].Size
-			fmt.Printf("## %s（%d 欄，%d bytes）\n\n", name, len(fields), total)
-			fmt.Printf("| 位移 | 長度 | 欄位 | 型別 |\n|---|---:|---|---|\n")
+			fmt.Print(tooltext.Format("h.4ba3342e9c3d", name, len(fields), total))
+			fmt.Print(tooltext.Format("h.130a40e36193"))
 			for _, field := range fields {
 				typeName := field.TypeName
 				if typeName == "" {
@@ -153,7 +154,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "borland-symbols: %v\n", layoutErr)
 			os.Exit(1)
 		}
-		fmt.Printf("record %s：%d 欄，共 %d bytes\n", *recordName, len(fields), fields[len(fields)-1].Offset+fields[len(fields)-1].Size)
+		fmt.Print(tooltext.Format("h.a67d9420f54b", *recordName, len(fields), fields[len(fields)-1].Offset+fields[len(fields)-1].Size))
 		for _, field := range fields {
 			typeName := field.TypeName
 			if typeName == "" {
@@ -245,13 +246,13 @@ func main() {
 			modules = append(modules, module)
 		}
 		sort.Strings(modules)
-		fmt.Printf("# PC-98 除錯符號認出來的 overlay 單元名\n\n")
-		fmt.Printf("由 `cmd/borland-symbols -overlay-names` 產生，不要手改。用法與注意事項見 spec 1182。\n\n")
-		fmt.Printf("⚠ **這張表是 DOS 側規格的對照基準。** DOS 版沒有除錯符號，" +
-			"所以 DOS 的 `overlay-NN` 只能靠內容推——推錯了不會有任何徵兆。" +
-			"兩版的 overlay 編號一致（`overlay-05` ＝ POSTCOM、`overlay-30` ＝ THREED " +
-			"兩處已由 DOS 側規格獨立印證）。\n\n")
-		fmt.Printf("| overlay | 單元 | 符號 |\n|---|---|---|\n")
+		fmt.Print(tooltext.Format("h.2d7c7a33d88b"))
+		fmt.Print(tooltext.Format("h.a8b04de04339"))
+		fmt.Print(tooltext.Text("h.a1285930d6d0") +
+			tooltext.Text("h.390bf90cd436") +
+			tooltext.Text("h.4bebf5d1a587") +
+			tooltext.Text("h.f32d14bd843e"))
+		fmt.Print(tooltext.Format("h.b7664f5dbc3c"))
 		for _, module := range modules {
 			names := perModule[module]
 			unit := ""

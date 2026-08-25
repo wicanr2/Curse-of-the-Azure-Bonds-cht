@@ -37,6 +37,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"path/filepath"
@@ -44,8 +45,8 @@ import (
 	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/eclcells"
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gamecorpus"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gamecorpus"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 )
 
@@ -57,12 +58,12 @@ type cellRecord struct {
 type point struct{ x, y int }
 
 func main() {
-	image := flag.String("image", "curseoftheazurebonds.zip", "遊戲 image")
-	localePath := flag.String("locale", "assets/locale/zh-TW.json", "語系檔")
-	dir := flag.String("snapshots", "workplace/campaign-frames/snapshots", "主線快照目錄")
-	steps := flag.Int("steps", 4000, "每一份快照最多走幾步")
-	cellsOut := flag.String("cells-json", "", "把走得到的 (block, 地形碼) 寫成 JSON")
-	output := flag.String("output", "", "Markdown 輸出路徑")
+	image := flag.String("image", "curseoftheazurebonds.zip", tooltext.Text("h.33c48eb91ff0"))
+	localePath := flag.String("locale", "assets/locale/zh-TW.json", tooltext.Text("h.9c3b4db6568f"))
+	dir := flag.String("snapshots", "workplace/campaign-frames/snapshots", tooltext.Text("h.c2472b3d6b25"))
+	steps := flag.Int("steps", 4000, tooltext.Text("h.a8d37b952bb4"))
+	cellsOut := flag.String("cells-json", "", tooltext.Text("h.e8ede599d47b"))
+	output := flag.String("output", "", tooltext.Text("h.fff5cb9e9bc2"))
 	flag.Parse()
 
 	data, err := gamecorpus.Load(*image, *localePath)
@@ -71,8 +72,8 @@ func main() {
 	}
 	entries, err := os.ReadDir(*dir)
 	if err != nil {
-		log.Fatalf("讀不到快照目錄 %s：%v\n"+
-			"先跑：COAB_CAMPAIGN_SNAPSHOT_DIR=/src/%s tools/go.sh test ./internal/game/ "+
+		log.Fatalf(tooltext.Text("h.1fae7603507d")+
+			tooltext.Text("h.a4928128088f")+
 			"-run TestRealNewGameRunsToTheEnding -count=1", *dir, err, *dir)
 	}
 	names := make([]string, 0, len(entries))
@@ -83,15 +84,15 @@ func main() {
 	}
 	sort.Strings(names)
 	if len(names) == 0 {
-		log.Fatalf("%s 裡沒有快照", *dir)
+		log.Fatal(tooltext.Format("h.a86ca3931b6b", *dir))
 	}
 
 	type row struct {
-		name    string
-		block   uint8
-		cells   int
+		name     string
+		block    uint8
+		cells    int
 		terrains int
-		note    string
+		note     string
 	}
 	rows := make([]row, 0, len(names))
 	terrains := map[uint8]map[uint8]bool{}
@@ -148,18 +149,18 @@ func main() {
 	}
 
 	var report strings.Builder
-	report.WriteString("# 帶著劇情旗標走：從主線快照出發的段內走訪\n\n")
-	report.WriteString("由 `cmd/campaign-snapshot-walk` 產生，不要手改。\n\n")
-	report.WriteString("★ 走訪未達成的那幾十個索引，成因幾乎全是「站得上去，但從段入口走不到」" +
-		"——門要**劇情旗標**才開得了（spec 1193）。冷走每一段都開一支新隊伍、沒有旗標，" +
-		"所以那些門對它永遠是牆；主線有旗標，但**主線只走它要走的路**。" +
-		"這一份拿主線各段的快照，**帶著那一刻的旗標**把那一段走遍。\n\n")
-	report.WriteString("⚠ 這**不是**「玩家走得到」的證明，是**帶著劇情旗標的幾何可達性**：" +
-		"快照那一刻隊伍真的在那一段、旗標真的是那樣，所以那些門真的開得了；" +
-		"但走訪本身仍是機器的走法，不是劇情路線。\n\n")
-	report.WriteString("⚠ 選單策略跑四種取聯集（第 1／2／3／最後項）：挑第一項會被收費關卡擋在門外，" +
-		"挑最後一項會在「要離開嗎」直接走人。**單一策略的結果看起來都很合理。**\n\n")
-	report.WriteString("| 快照 | block | 走到的格子 | 走到的地形碼 | 備註 |\n|---|---:|---:|---:|---|\n")
+	report.WriteString(tooltext.Text("h.91e45177645e"))
+	report.WriteString(tooltext.Text("h.d4cdb89ecf6e"))
+	report.WriteString(tooltext.Text("h.0a73e134f4fa") +
+		tooltext.Text("h.ed179f78660c") +
+		tooltext.Text("h.2e580521aed2") +
+		tooltext.Text("h.feba0fd3b63d"))
+	report.WriteString(tooltext.Text("h.d69fd850e3d2") +
+		tooltext.Text("h.6f1739a2c455") +
+		tooltext.Text("h.ea1d71050053"))
+	report.WriteString(tooltext.Text("h.0b85e69294b9") +
+		tooltext.Text("h.f9934c0e3ab4"))
+	report.WriteString(tooltext.Text("h.2326be823184"))
 	totalIndices := 0
 	for _, item := range rows {
 		note := item.note
@@ -170,8 +171,7 @@ func main() {
 			item.name, item.block, item.cells, item.terrains, note)
 		totalIndices += item.terrains
 	}
-	fmt.Fprintf(&report, "\n合計 %d 份快照、%d 個 (block, 地形碼) 組合。\n",
-		len(rows), len(records))
+	fmt.Fprint(&report, tooltext.Format("h.99e53a718517", len(rows), len(records)))
 
 	text := report.String()
 	if *output == "" {
@@ -189,25 +189,25 @@ func walkSnapshot(data gamecorpus.Corpus, path string, steps, pick int) (uint8, 
 		return 0, 0, nil, err
 	}
 	if err := state.LoadPartyFile(path); err != nil {
-		return 0, 0, nil, fmt.Errorf("讀不回來：%v", err)
+		return 0, 0, nil, tooltext.Errorf("h.54ab820605a0", err)
 	}
 	if err := settleWith(&state, pick); err != nil {
-		return 0, 0, nil, fmt.Errorf("讀回來推不進地城：%v", err)
+		return 0, 0, nil, tooltext.Errorf("h.efde05804847", err)
 	}
 	// ⚠ **不要用 `Area.LastECLBlockID`**：那一格是存檔格式裡的欄位，遊戲跑的時候
 	// 從來沒有人寫它，讀出來是 0——而 0 是一個**合法的 block 編號**，查下去會拿到
 	// 完全不相干的地圖而且不會報錯。存檔有帶 ECL session，段要跟 session 拿。
 	block, ok := state.CurrentECLBlockID()
 	if !ok {
-		return 0, 0, nil, fmt.Errorf("沒有 ECL session")
+		return 0, 0, nil, tooltext.Errorf("h.ed2a74f62893")
 	}
 	payload, hasBlock := data.Blocks[block]
 	if !hasBlock {
-		return block, 0, nil, fmt.Errorf("corpus 裡沒有 block 0x%02X", block)
+		return block, 0, nil, tooltext.Errorf("h.696a0918679f", block)
 	}
 	dispatch := eclcells.Analyze(payload)
 	if !dispatch.Found {
-		return block, 0, nil, fmt.Errorf("block 0x%02X 沒有地形分派", block)
+		return block, 0, nil, tooltext.Errorf("h.1225d592a364", block)
 	}
 	// 地圖同理用存檔記下來的那一張。
 	geoBlock := state.Area.Current3DMapBlockID
@@ -216,7 +216,7 @@ func walkSnapshot(data gamecorpus.Corpus, path string, steps, pick int) (uint8, 
 	}
 	grid, has := gridFor(data, block, geoBlock)
 	if !has {
-		return block, 0, nil, fmt.Errorf("讀不到 GEO")
+		return block, 0, nil, tooltext.Errorf("h.0d2862e90fc2")
 	}
 
 	terrains := map[uint8]bool{}
@@ -337,7 +337,7 @@ func settleWith(state *game.State, pick int) error {
 		}
 	}
 	if state.Mode != game.ModeDungeon {
-		return fmt.Errorf("停在%v", state.Mode)
+		return tooltext.Errorf("h.7da71c92d849", state.Mode)
 	}
 	return nil
 }

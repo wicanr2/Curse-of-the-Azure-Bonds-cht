@@ -22,6 +22,7 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"io"
 	"log"
 	"os"
@@ -39,18 +40,18 @@ var showArrowBranch = []struct {
 	at    string
 	types []uint8
 }{
-	{"ARROWFX（箭）", "2B4Ah", []uint8{0x09, 0x15, 0x64, 0x1C, 0x1F, 0x49}},
-	{"SWISHFX（揮擊）", "2B81h", []uint8{0x02, 0x07, 0x14}},
-	{"WHISTLEFX（哨音）", "2BB4h", []uint8{0x55, 0x56}},
-	{"WHISTLEFX（哨音）", "2C01h", []uint8{0x65, 0x2F, 0x62}},
+	{tooltext.Text("h.c15994e31215"), "2B4Ah", []uint8{0x09, 0x15, 0x64, 0x1C, 0x1F, 0x49}},
+	{tooltext.Text("h.58aaabcbb8d4"), "2B81h", []uint8{0x02, 0x07, 0x14}},
+	{tooltext.Text("h.480855709c06"), "2BB4h", []uint8{0x55, 0x56}},
+	{tooltext.Text("h.480855709c06"), "2C01h", []uint8{0x65, 0x2F, 0x62}},
 }
 
 // fallbackSound 是分歧鏈全部落空時走的那一條（`2C48h`）。
-const fallbackSound = "SWISHFX（揮擊）"
+var fallbackSound = tooltext.Text("h.58aaabcbb8d4")
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "game image zip")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	archive, err := zip.OpenReader(*image)
@@ -61,7 +62,7 @@ func main() {
 
 	catalogBytes := member(archive, "ITEMS")
 	if catalogBytes == nil {
-		log.Fatal("遊戲 image 裡沒有 ITEMS")
+		log.Fatal(tooltext.Text("h.844bd129f953"))
 	}
 	catalog, err := monster.ParseBaseItems(catalogBytes)
 	if err != nil {
@@ -97,17 +98,17 @@ func main() {
 	}
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 投射武器的第二聲：`SHOWARROW` 依物品類別分歧\n\n")
-	fmt.Fprintf(&report, "由 `cmd/missile-sound-classes` 產生，不要手改。分歧鏈的位元組證據見 spec 1186。\n\n")
-	fmt.Fprintf(&report, "`SHOWARROW` 進場**無條件**放 `ARROWFX`，之後依 `CHARITEMREC.ITEMPTR`"+
-		"（＝物品類別，remake 的 `ItemRecord.Type`）在飛行動畫尾端再放一聲。\n\n")
-	fmt.Fprintf(&report, "⚠ **類別表有一列不代表遊戲裡有那件東西**。`實例` 是六章 `ITEM*.DAX` 裡"+
-		"真的存在的件數；0 就表示那條分支玩家走不到，是「不必接」而不是「還沒接」。\n\n")
-	fmt.Fprintf(&report, "⚠ `射程` 與 `MISSLETYPE` 取自類別表（`ITEMREC` 的 `+0Ch`／`+0Eh`）。"+
-		"原作的 `USINGMISSLEWEAPON` 用的是 `射程 > 1`，`USINGHURLEDWEAPON` 用的是"+
-		"`MISSLETYPE and 14h ＝ 14h`——**兩個判斷式不同**，不要拿其中一個去解釋另一個。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.79a04ac08d1c"))
+	fmt.Fprint(&report, tooltext.Format("h.42e41a9ba4d3"))
+	fmt.Fprint(&report, tooltext.Text("h.499f532c1928")+
+		tooltext.Text("h.a9f51c598988"))
+	fmt.Fprint(&report, tooltext.Text("h.e9b5ea1247a9")+
+		tooltext.Text("h.9162c41b76ca"))
+	fmt.Fprint(&report, tooltext.Text("h.de7658d28950")+
+		tooltext.Text("h.7dba2bff1e67")+
+		tooltext.Text("h.8e80eb1a52c0"))
 
-	fmt.Fprintf(&report, "| 第二聲 | 位移 | 類別 | 名稱 | 實例 | 射程 | `MISSLETYPE` |\n")
+	fmt.Fprint(&report, tooltext.Format("h.fb0be82b8f13"))
 	fmt.Fprintf(&report, "|---|---:|---:|---|---:|---:|---|\n")
 	listed := map[uint8]bool{}
 	reachable, unreachable := 0, 0
@@ -131,12 +132,12 @@ func main() {
 				nameList(names[itemType]), instances[itemType], rangeText, flagText)
 		}
 	}
-	fmt.Fprintf(&report, "| %s | `2C48h` | 其餘全部 | — | — | — | — |\n\n", fallbackSound)
+	fmt.Fprint(&report, tooltext.Format("h.4cedcc0fe8af", fallbackSound))
 
-	fmt.Fprintf(&report, "| 指標 | 數字 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 分歧鏈點名的類別 | %d |\n", len(listed))
-	fmt.Fprintf(&report, "| 其中遊戲裡真的有物品的 | %d |\n", reachable)
-	fmt.Fprintf(&report, "| 其中一件都沒有的（走不到）| %d |\n\n", unreachable)
+	fmt.Fprint(&report, tooltext.Format("h.13c83a8a875e"))
+	fmt.Fprint(&report, tooltext.Format("h.9bfedd79bc5f", len(listed)))
+	fmt.Fprint(&report, tooltext.Format("h.144820bbf9f7", reachable))
+	fmt.Fprint(&report, tooltext.Format("h.7d16a2ab0f9a", unreachable))
 
 	// 反向：有 `MISSLETYPE` 發射位元、卻沒被分歧鏈點名的類別 → 落到 `2C48h`。
 	var fallthroughTypes []uint8
@@ -149,14 +150,14 @@ func main() {
 	sort.Slice(fallthroughTypes, func(left, right int) bool {
 		return fallthroughTypes[left] < fallthroughTypes[right]
 	})
-	fmt.Fprintf(&report, "## 落到預設分支的發射武器\n\n")
-	fmt.Fprintf(&report, "有發射位元（`MISSLETYPE` bit 3）、遊戲裡也真的有，但**分歧鏈沒點名**"+
-		"⇒ 走 `2C48h` 的 `SWISHFX`。這一份是「預設分支不是空的」的證據："+
-		"少了它會以為沒被點名的類別不會走到 `SHOWARROW`。\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.82835cd68200"))
+	fmt.Fprint(&report, tooltext.Text("h.58c6aa793615")+
+		tooltext.Text("h.c35af4d8389e")+
+		tooltext.Text("h.2d3ce3ba8eb0"))
 	if len(fallthroughTypes) == 0 {
-		fmt.Fprintf(&report, "（沒有。）\n")
+		fmt.Fprint(&report, tooltext.Format("h.be6c71d35815"))
 	} else {
-		fmt.Fprintf(&report, "| 類別 | 名稱 | 實例 | 射程 |\n|---:|---|---:|---:|\n")
+		fmt.Fprint(&report, tooltext.Format("h.479f862ca788"))
 		for _, itemType := range fallthroughTypes {
 			base, _ := catalog.Lookup(itemType)
 			fmt.Fprintf(&report, "| `%02Xh`（%d）| %s | %d | %d |\n",
@@ -177,10 +178,10 @@ func main() {
 func flagNotes(base monster.BaseItem) string {
 	notes := make([]string, 0, 2)
 	if base.IsMissileWeapon() {
-		notes = append(notes, "發射")
+		notes = append(notes, tooltext.Text("h.9ad588bf2ad5"))
 	}
 	if base.IsThrownWeapon() {
-		notes = append(notes, "投擲")
+		notes = append(notes, tooltext.Text("h.99c07d6310ea"))
 	}
 	if len(notes) == 0 {
 		return ""
@@ -192,7 +193,7 @@ func flagNotes(base monster.BaseItem) string {
 // 只印第一個會讓「這一類到底是什麼」變成看運氣。
 func nameList(observed map[string]int) string {
 	if len(observed) == 0 {
-		return "**（遊戲裡沒有這一類的物品）**"
+		return tooltext.Text("h.ec98869750dd")
 	}
 	list := make([]string, 0, len(observed))
 	for name := range observed {

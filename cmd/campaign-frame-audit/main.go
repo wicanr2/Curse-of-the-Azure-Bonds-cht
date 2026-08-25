@@ -25,6 +25,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"image"
 	_ "image/png"
 	"log"
@@ -36,8 +37,8 @@ import (
 
 // modeNames 是 `game.Mode` 的名字。存檔存的是數字，報表要讓人看得懂。
 var modeNames = map[int]string{
-	0: "標題", 1: "荒野", 2: "事件", 3: "地圖", 4: "場所",
-	5: "戰鬥", 6: "手札", 7: "角色建立", 8: "地城",
+	0: tooltext.Text("h.6fe38ed1ee10"), 1: tooltext.Text("h.b549e3f43fcb"), 2: tooltext.Text("h.c560201b331c"), 3: tooltext.Text("h.90e1b1b8a537"), 4: tooltext.Text("h.828d4cec1f3c"),
+	5: tooltext.Text("h.625dd417c2c3"), 6: tooltext.Text("h.53ce36b5da9e"), 7: tooltext.Text("h.f7865e52f8b7"), 8: tooltext.Text("h.c014266366bb"),
 }
 
 type frame struct {
@@ -55,14 +56,14 @@ type frame struct {
 }
 
 func main() {
-	saveDir := flag.String("saves", "workplace/campaign-frames/saves", "戰役檢查點存檔目錄")
-	pngDir := flag.String("png", "workplace/campaign-frames/png", "前端畫出來的 PNG 目錄")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
+	saveDir := flag.String("saves", "workplace/campaign-frames/saves", tooltext.Text("h.bf6191f67bbd"))
+	pngDir := flag.String("png", "workplace/campaign-frames/png", tooltext.Text("h.ad9578556818"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
 	flag.Parse()
 
 	entries, err := os.ReadDir(*saveDir)
 	if err != nil {
-		log.Fatalf("讀不到檢查點目錄 %s：%v（先跑 tools/campaign-frames.sh）", *saveDir, err)
+		log.Fatal(tooltext.Format("h.32f913ef9506", *saveDir, err))
 	}
 	frames := make([]frame, 0, 32)
 	for _, entry := range entries {
@@ -103,31 +104,31 @@ func main() {
 	}
 
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 開場到結局：每個檢查點由**真的前端**畫出來長什麼樣\n\n")
-	fmt.Fprintf(&report, "由 `cmd/campaign-frame-audit` 產生，不要手改。畫面由 "+
-		"`tools/campaign-frames.sh` 用 `cmd/azure-bonds-game -party-load -screenshot` 產生。\n\n")
-	fmt.Fprintf(&report, "★ 這一份補的是「**測試路徑不是玩家路徑**」那個缺口："+
-		"`TestRealNewGameRunsToTheEnding` 驅動 `*State` 一路打到提朗瑟克斯，"+
-		"但畫面那一層一次都沒被跑到。這裡讓玩家真正會執行的那支程式把每個檢查點載入並畫一張。\n\n")
-	fmt.Fprintf(&report, "| 指標 | 數字 |\n|---|---:|\n")
-	fmt.Fprintf(&report, "| 劇情檢查點 | %d |\n", len(frames))
-	fmt.Fprintf(&report, "| 前端畫得出來 | %d |\n", rendered)
-	fmt.Fprintf(&report, "| 判定為空白／幾乎空白 | %d |\n\n", blank)
+	fmt.Fprint(&report, tooltext.Format("h.d2ff81ecba32"))
+	fmt.Fprint(&report, tooltext.Text("h.863aa9d1e1f3")+
+		tooltext.Text("h.c56d6264d1fe"))
+	fmt.Fprint(&report, tooltext.Text("h.43420567f3c2")+
+		tooltext.Text("h.9f824029e160")+
+		tooltext.Text("h.40b7577514ac"))
+	fmt.Fprint(&report, tooltext.Format("h.13c83a8a875e"))
+	fmt.Fprint(&report, tooltext.Format("h.1699a61010f4", len(frames)))
+	fmt.Fprint(&report, tooltext.Format("h.f95bb44c1835", rendered))
+	fmt.Fprint(&report, tooltext.Format("h.d5a867e544ae", blank))
 
-	fmt.Fprintf(&report, "⚠ **「畫得出來」不等於「畫對了」。** 像素統計驗得到「不是空白」，"+
-		"驗不到字型有沒有載入（少了 `-eten-font` 每個字都是豆腐框，而畫面其他部分完全正常）、"+
-		"也驗不到畫的是不是**那一段**該有的畫面。\n\n")
+	fmt.Fprint(&report, tooltext.Text("h.6d8daf9e80f3")+
+		tooltext.Text("h.9ed82e0b9822")+
+		tooltext.Text("h.a4eaa55ec852"))
 
-	fmt.Fprintf(&report, "| 檢查點 | 模式 | 地城 | block | 非背景像素 | 佔用掃描列 | 覆蓋率 | 判定 |\n")
+	fmt.Fprint(&report, tooltext.Format("h.50a6361592c4"))
 	fmt.Fprintf(&report, "|---|---|---|---:|---:|---:|---:|---|\n")
 	for _, item := range frames {
 		dungeon := "—"
 		if item.inDungeon {
-			dungeon = "是"
+			dungeon = tooltext.Text("h.b5141d3d19e9")
 		}
 		verdict := "✅"
 		if !item.rendered {
-			verdict = "**沒有畫面**"
+			verdict = tooltext.Text("h.f785cc62d4e2")
 		} else if item.verdict != "" {
 			verdict = "**" + item.verdict + "**"
 		}
@@ -155,15 +156,15 @@ func main() {
 		}
 	}
 	sort.Strings(duplicates)
-	fmt.Fprintf(&report, "## 畫出來一模一樣的檢查點\n\n")
+	fmt.Fprint(&report, tooltext.Format("h.2221fe2d902e"))
 	if len(duplicates) == 0 {
-		fmt.Fprintf(&report, "（沒有。）\n")
+		fmt.Fprint(&report, tooltext.Format("h.be6c71d35815"))
 	} else {
-		fmt.Fprintf(&report, "⚠ **一樣不等於壞掉。** 世界地圖那一張只由 `Area.CurrentCity` 決定"+
-			"（`drawOverlandMap` 標的是目前城市，不是 `MapX`／`MapY`），"+
-			"所以同城市的兩個檢查點畫出來本來就一樣。"+
-			"要判斷是不是缺陷，看下表的 `CurrentCity` 是不是也相同。\n\n")
-		fmt.Fprintf(&report, "| 雜湊 | 檢查點 | 模式 | `CurrentCity` | 判讀 |\n|---|---|---|---:|---|\n")
+		fmt.Fprint(&report, tooltext.Text("h.595c18804d34")+
+			tooltext.Text("h.2d1be78f79d9")+
+			tooltext.Text("h.1db2a580b6d1")+
+			tooltext.Text("h.dfdc72ae9122"))
+		fmt.Fprint(&report, tooltext.Format("h.902cf4104bcb"))
 		for _, digest := range duplicates {
 			list := groups[digest]
 			same := true
@@ -172,9 +173,9 @@ func main() {
 					same = false
 				}
 			}
-			note := "**同城市 ⇒ 畫面本來就該一樣**"
+			note := tooltext.Text("h.5a99f7e301be")
 			if !same {
-				note = "**城市不同卻畫出同一張——要查**"
+				note = tooltext.Text("h.4bdbae6b818d")
 			}
 			names := make([]string, 0, len(list))
 			modes := make([]string, 0, len(list))
@@ -253,9 +254,9 @@ func measure(item *frame, path string) {
 	// 一張只有幾行字的正常畫面覆蓋率就是個位數百分比。
 	switch {
 	case total == 0:
-		item.verdict = "整張單色"
+		item.verdict = tooltext.Text("h.048744588782")
 	case rows < 8:
-		item.verdict = fmt.Sprintf("只有 %d 條掃描列有東西", rows)
+		item.verdict = tooltext.Format("h.78ba8371c616", rows)
 	}
 }
 

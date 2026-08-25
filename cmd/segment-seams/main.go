@@ -27,6 +27,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 	"log"
 	"os"
 	"sort"
@@ -73,15 +74,15 @@ type report struct {
 
 func main() {
 	edgesPath := flag.String("edges", "workplace/campaign-frames/block-edges.json",
-		"主線錄下來的段落轉移")
-	output := flag.String("output", "", "Markdown 輸出路徑（留白就印到 stdout）")
-	outputJSON := flag.String("json", "", "JSON 輸出路徑，給 `cmd/remake-status` 取用")
+		tooltext.Text("h.88cb80b6da27"))
+	output := flag.String("output", "", tooltext.Text("h.78eb014c7900"))
+	outputJSON := flag.String("json", "", tooltext.Text("h.fa63314394ca"))
 	flag.Parse()
 
 	raw, err := os.ReadFile(*edgesPath)
 	if err != nil {
-		log.Fatalf("讀不到段落轉移 %s：%v\n"+
-			"先跑：COAB_BLOCK_EDGES=/src/%s tools/go.sh test ./internal/game/ "+
+		log.Fatalf(tooltext.Text("h.4d7cc47cc5c0")+
+			tooltext.Text("h.1ce8361a318f")+
 			"-run TestRealNewGameRunsToTheEnding -count=1", *edgesPath, err, *edgesPath)
 	}
 	var edges []edge
@@ -89,7 +90,7 @@ func main() {
 		log.Fatal(err)
 	}
 	if len(edges) == 0 {
-		log.Fatal("段落轉移是空的：錄製沒有開起來")
+		log.Fatal(tooltext.Text("h.6221d232aba8"))
 	}
 
 	// 主線實際走進每一段的來源。
@@ -177,18 +178,18 @@ func classify(declared uint8, visited bool, from map[uint8]bool) string {
 
 func render(doc report, undeclared []edge, total int) string {
 	var out strings.Builder
-	out.WriteString("# 分段驗收的接縫：直入宣告的前一段，和主線實際的前一段對得上嗎\n\n")
-	out.WriteString("由 `cmd/segment-seams` 產生，不要手改。\n\n")
-	out.WriteString("★ 使用者 2026-08-16 決定分階段驗收算數：每一段用 debug 進入點直入、" +
-		"各自對 reference 驗證無誤即算該段完成，不必跑一次連續全程。同一條決定也寫著" +
-		"**段與段之間的狀態交接本身就是一段**——直入注入的是合成起始狀態，" +
-		"未必等於上一段真的跑出來的結束狀態。這一份就是那句話的分母。\n\n")
-	out.WriteString("⚠ **只比 `LastECL` 這一個欄位**（`4BF2h`，直入時寫進去的 `EnterFrom`）。" +
-		"隊伍、旗標、攜帶物、ECL 記憶體的交接還沒有對照。選它先是因為它是" +
-		"**唯一一個直入時被明文合成出來的**，其餘欄位直入是沿用當下的狀態。\n\n")
-	out.WriteString("⚠ 主線的轉移是**下界**：只錄得到經過換段派曲那個瓶頸的轉移。" +
-		"漏掉的轉移音樂也會跟著錯，所以這兩件事共用同一個訊號、不是各自獨立的假設。\n\n")
-	fmt.Fprintf(&out, "| 段 | 宣告的前一段 | 主線實際的前一段 | 結果 |\n|---|---|---|---|\n")
+	out.WriteString(tooltext.Text("h.1947760486e0"))
+	out.WriteString(tooltext.Text("h.47fdb6333d38"))
+	out.WriteString(tooltext.Text("h.aa25e8479159") +
+		tooltext.Text("h.247561b638a4") +
+		tooltext.Text("h.2f9a5f8efb91") +
+		tooltext.Text("h.00f327af72c4"))
+	out.WriteString(tooltext.Text("h.2171d2787a21") +
+		tooltext.Text("h.f8c90a60b905") +
+		tooltext.Text("h.760a6fe2755a"))
+	out.WriteString(tooltext.Text("h.39a7fecfa95b") +
+		tooltext.Text("h.0aaf246a7f77"))
+	fmt.Fprint(&out, tooltext.Format("h.3ad9cef66da9"))
 	for _, row := range doc.Rows {
 		observed := "—"
 		if len(row.Observed) > 0 {
@@ -201,20 +202,19 @@ func render(doc report, undeclared []edge, total int) string {
 		fmt.Fprintf(&out, "| `%s` | `%02Xh` | %s | %s |\n",
 			row.ID, row.Declared, observed, verdictText(row.Verdict))
 	}
-	fmt.Fprintf(&out, "\n合計 %d 段：對得上 **%d**、對不上 **%d**、"+
-		"全新開局 %d（沒有前一段可比）、主線沒走到 %d。\n\n",
+	fmt.Fprintf(&out, tooltext.Text("h.03dc4b7c50e8")+
+		tooltext.Text("h.1d5fdf261c05"),
 		doc.Segments, doc.Matched, doc.Mismatched, doc.FreshStart, doc.NotVisited)
 
-	fmt.Fprintf(&out, "## 主線走出來、卻沒有任何段宣告的轉移（%d／%d）\n\n",
-		len(undeclared), total)
-	out.WriteString("⚠ 這些**不是錯誤**：一段可以有好幾個入口，而 `EnterFrom` 只挑" +
-		"「最順著劇情的那一個」。列出來是因為**直入永遠走不到這些入口**——" +
-		"如果某一段的行為會因為從哪裡進來而不同，那個差異在分段驗收裡看不見。\n\n")
+	fmt.Fprint(&out, tooltext.Format("h.d417fa3f1b15", len(undeclared), total))
+	out.WriteString(tooltext.Text("h.27d4b137e4a7") +
+		tooltext.Text("h.cb654b7d4d2d") +
+		tooltext.Text("h.3513aaa9f055"))
 	if len(undeclared) == 0 {
-		out.WriteString("（沒有。）\n")
+		out.WriteString(tooltext.Text("h.be6c71d35815"))
 		return out.String()
 	}
-	out.WriteString("| 從 | 到 | 主線走過幾次 |\n|---|---|---:|\n")
+	out.WriteString(tooltext.Text("h.10c0470d9e50"))
 	for _, one := range undeclared {
 		fmt.Fprintf(&out, "| `%02Xh` | `%02Xh` | %d |\n", one.From, one.To, one.Count)
 	}
@@ -224,12 +224,12 @@ func render(doc report, undeclared []edge, total int) string {
 func verdictText(verdict string) string {
 	switch verdict {
 	case "match":
-		return "✅ 對得上"
+		return tooltext.Text("h.22ef1b3f681c")
 	case "mismatch":
-		return "⚠ **對不上**"
+		return tooltext.Text("h.47a668b4902b")
 	case "fresh-start":
-		return "— 全新開局（`00h`）"
+		return tooltext.Text("h.15fbcc75ee85")
 	default:
-		return "— 主線沒走到"
+		return tooltext.Text("h.b235c9ed6810")
 	}
 }
