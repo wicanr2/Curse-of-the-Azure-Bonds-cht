@@ -21,6 +21,7 @@ var packDerivedFighterFields = map[string]string{
 	"MagicResistanceRules":     "SetMagicResistanceRules",
 	"PostHitRules":             "SetPostHitRules",
 	"MonsterSpellRules":        "SetMonsterSpellRules",
+	"SpecialAttackRules":       "SetMonsterSpecialAttacks",
 }
 
 // 存檔完整性的閘：`Fighter` 的**每一個**匯出欄位都要能存進快照、再讀回來。

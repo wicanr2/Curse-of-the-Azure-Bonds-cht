@@ -48,9 +48,12 @@ PC-98 的 entry 號整齊地比 DOS 大 1（尾端 stub 表多一筆）；
    初始化函式，沒有掃到 overlay-22 這一段）。spec 1005 正文已改。
 3. **CoAB 的載體**（`MON*SPC`，見 `docs/audit/monster-ai-coverage.md`）：
    `56h`×1、`5Ah`×2、`7Eh`×2、`80h`×2、`83h`×1、`84h`×1；`58h` 沒有怪帶。
-   `84h`（丟電光）remake 已接（spec 415 的 MonsterSpellRules）；
-   **其餘五碼 remake 尚未實作**——原作有動作、remake 沒有，是已知缺口
-   （吐酸／區域吐酸／噴火／龍息火／凝視）。
+   載體：巨型蛞蝓（`56h`）、黑龍（`5Ah`）、屍龍（`80h`＋`7Eh`）、
+   地獄犬（`83h`）、提朗瑟克斯（`84h`）。**六碼全部已接**：`84h` 走
+   spec 415 的 MonsterSpellRules；其餘五碼由 `internal/combat/special_attack.go`
+   照各 handler 控制流轉錄（`gamepack/rules/special-attacks.json` 宣告常數；
+   選目標與範圍形狀是近似，pack 註記），AI 回合在一般攻擊之前分派
+   （`internal/game/special_attack.go`）。
 
 ## 明確不宣稱
 
@@ -58,9 +61,11 @@ PC-98 的 entry 號整齊地比 DOS 大 1（尾端 stub 表多一筆）；
   （`289Ch`，第三處麻痺凝視，spec 747），`INITSPELLS` 又指到 `6022h`
   （凝視攻擊，spec 722）。兩個都是凝視家族，但**哪一個最後生效取決於兩支
   初始化的執行順序**，本輪沒有從常駐 init 鏈判定；要下結論需 runtime 驗證。
-- 沒有宣稱五個未實作特殊攻擊的完整 remake 行為——handler 語意在各自 spec
-  裡是 `exact`，但選目標模式（`41h`／`3Dh`／`33h`／`24h`）與傷害旗標的
-  轉錄是實作工作，不在本規格。
+- remake 的選目標與範圍形狀是**近似**：模式碼（`41h`／`3Dh`／`24h`）與
+  `sub_175Bh` 的射線形狀未讀，remake 用「射程內最近的對方」與近似半徑
+  （宣告在 pack）。同類檢查（`entry#30`／`+197h`）以「範圍內有攻擊者
+  同側就取消」近似。凝視另加一道原作沒有的檢查：已麻痺的目標不再凝視
+  （避免無傷害攻擊對永凍目標的僵局）。
 - 沒有宣稱 `INITSPELLS` 尾段與 overlay-12 的初始化（spec 1005）之外
   還有沒有第三處寫效果表。本輪對「entry#109..115 的呼叫端」掃過：
   全部 overlay 的 far call（far-call-map）、DOS 常駐段的 far call 與

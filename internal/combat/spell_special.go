@@ -206,8 +206,8 @@ func (b *Battle) RemoveCurseAffect(targetID string) (bool, error) {
 // 原作跳一個選單讓玩家選 `H`（熱）或 `C`（冷），由電腦操作時改成擲 `1d10`
 // 大於 5 選熱、否則選冷。兩種形態各掛兩個效果，第二個是共用的。
 const (
-	fireShieldHotAffect  uint8 = 0x32
-	fireShieldColdAffect uint8 = 0x36
+	fireShieldHotAffect    uint8 = 0x32
+	fireShieldColdAffect   uint8 = 0x36
 	fireShieldSharedAffect uint8 = 0x8F
 	// fireShieldHotThreshold 是那一顆 `1d10` 的門檻：**大於** 5 才是熱的。
 	fireShieldHotThreshold = 5

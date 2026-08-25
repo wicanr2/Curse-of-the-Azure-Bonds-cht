@@ -22,7 +22,7 @@ type MoraleCheckResult struct {
 	Checked bool `json:"checked"`
 	Morale  int  `json:"morale,omitempty"`
 	// Threshold 是 `100 − 目前HP佔最大HP的百分比`：傷得越重門檻越高。
-	Threshold int `json:"threshold,omitempty"`
+	Threshold int  `json:"threshold,omitempty"`
 	Passed    bool `json:"passed"`
 	// Withdrew 是 `+18Dh^[14h] := 1`（PC-98 叫 `ROUTING`）：士氣崩了而且跑得掉。
 	Withdrew bool `json:"withdrew,omitempty"`
@@ -211,9 +211,9 @@ func (b *Battle) ResolveMoraleFailure(fighterID string) (MoraleFailureResult, er
 
 // AreaMoraleBreakResult 是一次範圍士氣崩潰（混亂術，效果碼 `23h`）。
 type AreaMoraleBreakResult struct {
-	CasterID string                `json:"caster_id"`
-	Center   TilePoint             `json:"center"`
-	Impacts  []AreaMoraleBreakHit  `json:"impacts"`
+	CasterID string               `json:"caster_id"`
+	Center   TilePoint            `json:"center"`
+	Impacts  []AreaMoraleBreakHit `json:"impacts"`
 }
 
 // AreaMoraleBreakHit 是一個目標的結果。

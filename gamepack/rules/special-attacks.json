@@ -1,0 +1,70 @@
+{
+ "schema_version": 1,
+ "source": "DOS overlay-22 的五支特殊攻擊 handler（INITSPELLS 尾段接進 CALLEFFECT 分派表）",
+ "spec": "docs/spec/1202-initspells-effect-table-tail.md",
+ "notes": [
+  "數字全部出自 asm 立即數（spec 720／722／723／725／735）。",
+  "⚠ 選目標模式碼（41h／3Dh／24h）與 sub_175Bh 的射線形狀未讀：target_range 與 area_radius 是 remake 的近似，不是原作值。",
+  "⚠ 效果 88h（龍息通用，spec 847）沒有宣告：CoAB 的 MON*SPC 沒有任何怪帶它，而它的形狀與 83h 不同，沒有載體就不轉錄。",
+  "效果 84h（丟電光）在 combat_monster_spell_rules（00-core.json）那一側，不在這裡。"
+ ],
+ "attacks": [
+  {
+   "id": "coab.special_attack_56.spit-acid",
+   "effect_kind": 86,
+   "form": "spit_single",
+   "miss_chance": 30,
+   "max_distance": 7,
+   "damage_mask": 48,
+   "save_category": 3,
+   "target_range": 6,
+   "message": "combat_spits_acid",
+   "miss_message": "combat_spits_acid_miss"
+  },
+  {
+   "id": "coab.special_attack_83.breathes-fire",
+   "effect_kind": 131,
+   "form": "breath_touch",
+   "miss_chance": 50,
+   "max_distance": 2,
+   "damage_mask": 1,
+   "constant_damage": 7,
+   "save_category": 3,
+   "target_range": 1,
+   "message": "combat_breathes_fire"
+  },
+  {
+   "id": "coab.special_attack_5a.breathes-acid-area",
+   "effect_kind": 90,
+   "form": "breath_area_same_side",
+   "uses": 3,
+   "damage_mask": 48,
+   "save_category": 3,
+   "target_range": 6,
+   "area_radius": 1,
+   "message": "combat_breathes_acid"
+  },
+  {
+   "id": "coab.special_attack_80.breathes-fire-area",
+   "effect_kind": 128,
+   "form": "breath_area",
+   "uses": 3,
+   "damage_mask": 33,
+   "save_category": 3,
+   "target_range": 9,
+   "area_radius": 2,
+   "message": "combat_breathes_fire_area"
+  },
+  {
+   "id": "coab.special_attack_7e.gaze",
+   "effect_kind": 126,
+   "form": "gaze",
+   "save_category": 1,
+   "target_range": 6,
+   "paralysis_effect": 52,
+   "paralysis_duration": 60,
+   "message": "combat_gazes",
+   "paralyzed_message": "combat_gaze_paralyzed"
+  }
+ ]
+}

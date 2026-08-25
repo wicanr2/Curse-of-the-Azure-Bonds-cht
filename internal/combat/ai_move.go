@@ -40,7 +40,7 @@ type ApproachResult struct {
 	// InWeaponRange 是「停下來的時候打得到目標」。
 	InWeaponRange bool
 	// Blocked 是「五個候選方向都走不了」——沒有移動力、被擋、或地形不可通行。
-	Blocked bool
+	Blocked    bool
 	Iterations int
 }
 

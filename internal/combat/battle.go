@@ -265,6 +265,12 @@ type Fighter struct {
 	// PostHitRules are immutable game-pack capabilities. They are excluded from
 	// save JSON and reattached after loading the active battle.
 	PostHitRules []engineposthit.Rule `json:"-"`
+	// SpecialAttackRules 是 pack 宣告的特殊攻擊（spec 1202），掛法同
+	// MonsterSpellRules；SpecialAttackUses 對應 `arg_2^[3]` 的每場次數欄
+	//（區域吐息類 3 次，最後成功才扣）。
+	SpecialAttackRules   []SpecialAttackRule `json:"-"`
+	SpecialAttackUses    int                 `json:"special_attack_uses,omitempty"`
+	SpecialAttackUsesSet bool                `json:"special_attack_uses_set,omitempty"`
 	// MonsterSpellRules are immutable game-pack capabilities for innate special
 	// spell actions. They are excluded from save JSON and reattached after load.
 	MonsterSpellRules []enginespell.Rule `json:"-"`

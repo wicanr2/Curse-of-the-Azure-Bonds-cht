@@ -171,8 +171,8 @@ func TestMoraleThresholdTracksHowHurtTheFighterIs(t *testing.T) {
 		passed    bool
 	}{
 		{"滿血", 20, 0, true},
-		{"半血", 10, 50, true},   // 士氣 102 ≥ 50
-		{"剩一成", 2, 90, true},  // 102 ≥ 90
+		{"半血", 10, 50, true}, // 士氣 102 ≥ 50
+		{"剩一成", 2, 90, true}, // 102 ≥ 90
 	} {
 		battle := moraleCheckBattle(t, 0xB3, item.hp, 20, 6, 6)
 		result, err := battle.CheckMorale("orc")

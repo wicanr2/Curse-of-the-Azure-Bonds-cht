@@ -50,11 +50,11 @@ const (
 	// scratchModifier 是共用的修正暫存（原作 `DS:6F9Fh`）。**它不是「命中修正」**
 	// ——同一支 handler 無條件寫它，意思由讀它的 timing 決定：`0Ah`／`10h` 是
 	// 命中、`0Bh` 是護甲、`0Dh` 是死亡後。取中性的名字才不會在某一條路上說錯。
-	scratchModifier = "modifier"
-	scratchSavingThrow    = "saving_throw"
-	scratchMorale         = "morale"
-	scratchMovement       = "movement"
-	scratchDamage         = "damage"
+	scratchModifier    = "modifier"
+	scratchSavingThrow = "saving_throw"
+	scratchMorale      = "morale"
+	scratchMovement    = "movement"
+	scratchDamage      = "damage"
 	// scratchDamageElement 是傷害屬性旗標：bit 0 火、bit 1 冷、bit 2 電。
 	// 三個位元各有兩個獨立證人——抗性法術的守衛遮罩，與傷害法術推進
 	// `sub_F06` 的那個值（spec 1124）。

@@ -133,12 +133,12 @@ func main() {
 	// 用修正表查它們會得到「不知道」，而它們的原作語意其實已經讀完。
 	// wiredBy 非空＝remake 已用該機制接上；空＝原作有動作、remake 沒有。
 	specialAttacks := map[uint8]struct{ spec, wiredBy string }{
-		0x56: {spec: tooltext.Text("monster_ai_coverage.special_56")},
+		0x56: {spec: tooltext.Text("monster_ai_coverage.special_56"), wiredBy: "SpecialAttackRules"},
 		0x58: {spec: tooltext.Text("monster_ai_coverage.special_58")},
-		0x5A: {spec: tooltext.Text("monster_ai_coverage.special_5a")},
-		0x7E: {spec: tooltext.Text("monster_ai_coverage.special_7e")},
-		0x80: {spec: tooltext.Text("monster_ai_coverage.special_80")},
-		0x83: {spec: tooltext.Text("monster_ai_coverage.special_83")},
+		0x5A: {spec: tooltext.Text("monster_ai_coverage.special_5a"), wiredBy: "SpecialAttackRules"},
+		0x7E: {spec: tooltext.Text("monster_ai_coverage.special_7e"), wiredBy: "SpecialAttackRules"},
+		0x80: {spec: tooltext.Text("monster_ai_coverage.special_80"), wiredBy: "SpecialAttackRules"},
+		0x83: {spec: tooltext.Text("monster_ai_coverage.special_83"), wiredBy: "SpecialAttackRules"},
 		0x84: {spec: tooltext.Text("monster_ai_coverage.special_84"), wiredBy: "MonsterSpellRules"},
 	}
 	status := map[uint8]string{}

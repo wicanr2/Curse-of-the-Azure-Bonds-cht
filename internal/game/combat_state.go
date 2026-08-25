@@ -189,6 +189,11 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			return fmt.Errorf("resolve combat monster spell rules: %w", err)
 		}
 		battle.SetMonsterSpellRules(monsterSpellRules)
+		specialAttacks, err := combat.SpecialAttackRulesFromPack()
+		if err != nil {
+			return fmt.Errorf("resolve combat special attacks: %w", err)
+		}
+		battle.SetMonsterSpecialAttacks(specialAttacks)
 	} else {
 		battle.SetDamageRules([]enginedamage.Rule(nil))
 		battle.SetConditionalModifierRules([]enginemodifier.Rule(nil))
@@ -3861,6 +3866,19 @@ func (s *State) advanceCombatToParty() error {
 				return err
 			}
 			return nil
+		}
+		// 特殊攻擊（spec 1202）：與丟電光同屬特殊行動階段，在一般攻擊之前。
+		// 靜默放棄（Refrained）不消耗回合，AI 照走正常行動。
+		if handled, queued, err := s.monsterSpecialAttack(fighter, targetSide); err != nil {
+			return err
+		} else if handled {
+			if queued {
+				return nil
+			}
+			if s.battle.Status() != combat.StatusActive {
+				return s.finishCombat()
+			}
+			continue
 		}
 		// 原作先看射程內有沒有人（spec 838 §五）：有就從候選裡均勻隨機挑一個，
 		// 不必移動；沒有才輪到既有的 SCAN 規則挑一個遠目標再走過去。

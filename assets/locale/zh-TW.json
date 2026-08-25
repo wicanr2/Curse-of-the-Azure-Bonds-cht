@@ -1143,6 +1143,14 @@
   "spell_cleric_56": "復原術",
   "spell_cleric_68": "毒素術",
   "spell_cleric_70": "木棒化蛇",
-  "spell_cleric_73": "驅逐邪惡"
+  "spell_cleric_73": "驅逐邪惡",
+  "combat_spits_acid": "%s 噴出酸液，命中 %s，造成 %d 點傷害。",
+  "combat_spits_acid_miss": "%s 噴出酸液，但沒有命中。",
+  "combat_breathes_fire": "%s 對 %s 吐出火息，造成 %d 點傷害。",
+  "combat_breathes_acid": "%s 吐出大片酸息，命中 %d 名目標，共 %d 點傷害。",
+  "combat_breathes_fire_area": "%s 吐出大片火息，命中 %d 名目標，共 %d 點傷害。",
+  "combat_gazes": "%s 凝視著 %s……",
+  "combat_gaze_paralyzed": "%s 被凝視麻痺了！",
+  "combat_gaze_resisted": "%s 抵抗住了凝視。"
  }
 }

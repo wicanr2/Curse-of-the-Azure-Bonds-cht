@@ -1205,6 +1205,11 @@ func (s *State) restoreActiveCombat(snapshot partySave.CombatSnapshot) error {
 			return fmt.Errorf("resolve combat monster spell rules after load: %w", err)
 		}
 		battle.SetMonsterSpellRules(monsterSpellRules)
+		specialAttacks, err := combat.SpecialAttackRulesFromPack()
+		if err != nil {
+			return fmt.Errorf("resolve combat special attacks after load: %w", err)
+		}
+		battle.SetMonsterSpecialAttacks(specialAttacks)
 	}
 	if snapshot.TurnIndex < 0 || snapshot.TurnIndex > len(snapshot.Turns) {
 		return fmt.Errorf("combat turn index %d outside 0..%d", snapshot.TurnIndex, len(snapshot.Turns))
