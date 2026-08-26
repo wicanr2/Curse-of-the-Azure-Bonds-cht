@@ -166,6 +166,8 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   驗證門檻、compact 恢復流程）。
 - [剩餘工作盤點](docs/knowledge/coab-remake-todo.md)：逐項可執行的 TODO，
   含現況實測數字與建議順序。
+- [完成度自評](docs/knowledge/remake-completeness-assessment.md)：逐層自評與
+  「到可交付還差的四步」，數字取自 `docs/audit/remake-status.md`。
 - [共用 engine 抽取盤點](docs/knowledge/engine-extraction-review.md)：`internal/combat`
   逐檔對「作品中立」界線比一次，標出該搬、要參數化、以及不該搬的部分。
 - [完整度矩陣](docs/knowledge/coab-re-coverage-matrix.md)：全遊戲 RE／重建完整度的
