@@ -2,6 +2,7 @@ package game
 
 import (
 	"archive/zip"
+	"fmt"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/segment"
 )
@@ -155,6 +157,7 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 	t.Helper()
 	state := NewStateFromECLBlocks(trainingTestCatalog(t), blocks, seg.Block)
 	state.SetGeoCatalog(catalog)
+	installShopFixtures(t, &state)
 	// ⚠ `ECL2/0x01` 是**開場**，走的是 `BeginAdventure`，它要的是**角色名冊**
 	// 不只是戰鬥員——少了名冊會回「adventure requires a created or loaded party」，
 	// 那一段就整段被跳過（第一版就是這樣漏掉開場那一張圖的）。
@@ -177,10 +180,6 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 	if err := state.EnterSegment(seg); err != nil {
 		t.Skipf("%s 進不去：%v", seg.ID, err)
 	}
-	grid, ok := catalog.Lookup(geo.MapRef{Set: seg.Member, BlockID: state.Area.Current3DMapBlockID})
-	if !ok {
-		t.Skipf("%s 讀不到 GEO", seg.ID)
-	}
 	collect := func() {
 		if state.Message != "" {
 			messages[state.Message] = true
@@ -200,9 +199,20 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 	settle := func() bool {
 		for step := 0; step < 60 && state.Mode != ModeDungeon; step++ {
 			collect()
+			if state.session != nil && state.session.CurrentBlockID() != seg.Block {
+				// 這個策略把隊伍帶出段外（0x25 選單有「回城」那一類出口）：
+				// 這一輪作罷，讓下一個策略試別條路。
+				return false
+			}
+			if testing.Verbose() {
+				t.Logf("settle step %d: mode=%d choices=%v msg=%.40q", step, state.Mode, state.Choices, state.Message)
+			}
 			if state.CombatActive() {
 				for turn := 0; turn < 400 && state.CombatActive(); turn++ {
 					if err := state.CombatAct(); err != nil {
+						if testing.Verbose() {
+							t.Logf("settle combat err: %v", err)
+						}
 						return false
 					}
 				}
@@ -229,7 +239,18 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 		return state.Mode == ModeDungeon
 	}
 	if !settle() {
-		t.Skipf("%s 入口推不回地城（停在 %v）", seg.ID, state.Mode)
+		// ⚠ 只放棄**這一個選單策略**，不能 Skip 整個子測試：0x25 的第一項
+		// 是 SHOP（要寶物區塊才開得起來），第一策略失敗就 Skip 會讓
+		// EXPLORE 那條路永遠沒機會（第 719 輪就是這樣整段漏掉的）。
+		t.Logf("%s（pick=%d）入口推不回地城（停在 %v）", seg.ID, pick, state.Mode)
+		return 0
+	}
+	// ⚠ GEO 要在 settle **之後**查：0x25 進段當下 3D 圖還沒載
+	//（要選 EXPLORE 才進地城），提早查會拿到錯的圖、BFS 四面都撞牆。
+	grid, ok := catalog.Lookup(geo.MapRef{Set: seg.Member, BlockID: state.Area.Current3DMapBlockID})
+	if !ok {
+		t.Logf("%s（pick=%d）讀不到 GEO（block=%d）", seg.ID, pick, state.Area.Current3DMapBlockID)
+		return 0
 	}
 
 	type point struct{ x, y int }
@@ -243,6 +264,16 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 		direction int
 	}
 	start := point{state.DungeonX, state.DungeonY}
+	if testing.Verbose() {
+		open := ""
+		for _, direction := range []int{0, 2, 4, 6} {
+			dx, dy := normalDungeonDelta(direction)
+			state.SetDungeonGeometryView(start.x, start.y, uint8(direction))
+			open += fmt.Sprintf(" %d:%v", direction, state.CanMoveDungeon(grid, dx, dy, direction))
+		}
+		t.Logf("%s（pick=%d）落點 (%d,%d) map=%d 四向:%s",
+			seg.ID, pick, start.x, start.y, state.Area.Current3DMapBlockID, open)
+	}
 	seen := map[point]bool{start: true}
 	tried := map[entry]bool{}
 	queue := []point{start}
@@ -252,10 +283,11 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 		queue = queue[1:]
 		for _, direction := range []int{0, 2, 4, 6} {
 			deltaX, deltaY := normalDungeonDelta(direction)
-			next := point{current.x + deltaX, current.y + deltaY}
-			if next.x < 0 || next.x >= geo.Width || next.y < 0 || next.y >= geo.Height {
-				continue
-			}
+			// ⚠ 地城圖是環繞的（`CanMoveDungeonWrapped` 一族）：0x25 的落點在
+			// (3,0)、唯一開的方向朝北跨過圖邊——用邊界檢查擋掉環繞會讓整段
+			// 只剩 1 格（第 719 輪）。
+			next := point{(current.x + deltaX + geo.Width) % geo.Width,
+				(current.y + deltaY + geo.Height) % geo.Height}
 			if tried[entry{next, direction}] {
 				continue
 			}
@@ -312,4 +344,27 @@ var routeKnownFragments = map[string]bool{
 	// 沒有獨立規則。⚠ 這一句是否真的只會併著出現**還沒有實機確認**——
 	// 確認之前不替它寫規則（寫短片段規則會攔截別的文字），也不讓它擋住測試。
 	"DOES ANYONE WANT TO GO AND OPEN ONE?": true,
+}
+
+// installShopFixtures 把物品目錄與寶物區塊掛上走訪 state：0x25 魔法商店的
+// SHOP 分支走 `enterECLShop` → `ResolveTreasureRequests`，沒有這兩份就整條
+// 分支進不去（覆蓋因此少掉商店貨架那一叢集）。讀不到 image 時安靜跳過——
+// 走訪照舊，只是 SHOP 那條分支不開。
+func installShopFixtures(t *testing.T, state *State) {
+	t.Helper()
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		return
+	}
+	defer image.Close()
+	if catalog, err := monster.ParseBaseItems(zipData(t, image, "ITEMS")); err == nil {
+		state.SetItemCatalog(catalog)
+	}
+	areaData := make(map[uint8][]byte)
+	for area := 1; area <= 6; area++ {
+		areaData[uint8(area)] = zipData(t, image, fmt.Sprintf("ITEM%d.DAX", area))
+	}
+	if blocks, err := ParseTreasureItemBlocks(areaData); err == nil {
+		state.SetTreasureItemBlocks(blocks)
+	}
 }
