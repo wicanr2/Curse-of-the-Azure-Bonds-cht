@@ -1,0 +1,271 @@
+{
+ "schema": "coab-re-gap-manual/1",
+ "verdicts": [
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "start": 1952,
+   "end": 1956,
+   "verdict": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "start": 1960,
+   "end": 1963,
+   "verdict": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "start": 2000,
+   "end": 2003,
+   "verdict": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "start": 2016,
+   "end": 2020,
+   "verdict": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "start": 2024,
+   "end": 2027,
+   "verdict": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "start": 2032,
+   "end": 2042,
+   "verdict": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "start": 2072,
+   "end": 2075,
+   "verdict": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "start": 2096,
+   "end": 2099,
+   "verdict": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "start": 2144,
+   "end": 2147,
+   "verdict": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "start": 968,
+   "end": 972,
+   "verdict": "目前角色 +195h/+196h 狀態檢查與訊息組字的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "start": 1064,
+   "end": 1067,
+   "verdict": "目前角色 +195h/+196h 狀態檢查與訊息組字的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "start": 1166,
+   "end": 1169,
+   "verdict": "目前角色 +195h/+196h 狀態檢查與訊息組字的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "start": 13872,
+   "end": 13881,
+   "verdict": "職業(+143h) set-membership 走名冊鏈(+189h)的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "start": 13928,
+   "end": 13962,
+   "verdict": "職業(+143h) set-membership 走名冊鏈(+189h)的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "start": 13968,
+   "end": 13985,
+   "verdict": "職業(+143h) set-membership 走名冊鏈(+189h)的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "start": 13992,
+   "end": 13997,
+   "verdict": "職業(+143h) set-membership 走名冊鏈(+189h)的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "start": 3232,
+   "end": 3241,
+   "verdict": "3EBEh 8-byte 表查找的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "start": 3264,
+   "end": 3267,
+   "verdict": "3EBEh 8-byte 表查找的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "start": 3288,
+   "end": 3299,
+   "verdict": "3EBEh 8-byte 表查找的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "start": 3304,
+   "end": 3313,
+   "verdict": "3EBEh 8-byte 表查找的函式中段碼條紋"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "start": 3352,
+   "end": 3357,
+   "verdict": "3EBEh 8-byte 表查找的函式中段碼條紋"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "start": 7447,
+   "end": 7501,
+   "verdict": "截斷函式的延續段：189h:6Bh/70h 回傳值 −3 寫進 9F2Ch^[2]/[3]（碼）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-11",
+   "start": 1901,
+   "end": 1997,
+   "verdict": "96-byte 資料表（0Eh×5,00h,0Bh,0Bh,0Ch… 小編號清單，緊接 retf 之後；INIT 模組的載入參數表）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 3687,
+   "end": 3716,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 3770,
+   "end": 3852,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 3853,
+   "end": 3935,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 3936,
+   "end": 4018,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 4019,
+   "end": 4037,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 4064,
+   "end": 4087,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 4102,
+   "end": 4122,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 4179,
+   "end": 4184,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 4185,
+   "end": 4267,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 4268,
+   "end": 4290,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 4351,
+   "end": 4433,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 4434,
+   "end": 4468,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "start": 4517,
+   "end": 4551,
+   "verdict": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "start": 6301,
+   "end": 6319,
+   "verdict": "手寫組語的近呼叫包裝小函式（save regs、call 17F3h、ret；已逐條讀過）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "start": 5178,
+   "end": 5181,
+   "verdict": "Shift-JIS 字串的 3-byte 切片（前後文是「…された…」句子，文字判定因段太短沒收）"
+  }
+ ]
+}

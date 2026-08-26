@@ -98,8 +98,27 @@ Shift-JIS 雙位元組（lead `81h..9Fh`／`E0h..EFh`＋trail `40h..FCh` 去
 | PC-98 | 63 段／3,807 B | 46 段／3,041 B | **17 段／766 B** |
 
 三刀合計把 36,386 bytes 的 undefined 收到 **38 段／914 bytes** 真正沒有
-機械解釋的殘餘（DOS 全部 ≤34 B 的碼碎片形狀；PC-98 最大是
-`overlay-11 076Dh` 的 96 B byte 表與 `overlay-17` 一批 82 B 段）。
+機械解釋的殘餘。
+
+## 第四刀（同輪收尾）：38 段逐段人工判定，無判定歸零
+
+殘餘 38 段全部一手反組譯讀過，判定寫在
+`docs/audit/re-gap-manual.json`（工具讀入、報表帶「人工已判」欄）：
+
+- **33 段＝函式中段碼條紋**（DOS 四個模組的 21 段＋PC-98 overlay-10 的
+  截斷延續段＋overlay-17 的 13 段）。overlay-17 那批是 `FINAL` 符號之前
+  被 IDA 打碎的**選法術選單常式本體**——`0DE5..1213h` 整窗逐條讀過：
+  職業×14 的計數表 `708Dh`、35-byte 名稱記錄 `1C5Ah`、選項寫 `+119h`、
+  case 依選單值套效果／物品並寫 `+144h := 1/2`。
+- **1 段＝手寫組語的近呼叫包裝**（PC-98 overlay-18 `189Dh`，save regs →
+  `call 17F3h` → ret；ENDING 模組的繪圖 helper）。
+- **1 段＝96-byte 資料表**（PC-98 overlay-11 `076Dh`，緊接 `retf` 之後的
+  小編號清單，INIT 模組的載入參數）。
+- **1 段＝Shift-JIS 字串的 3-byte 切片**（PC-98 overlay-22 `143Ah`，
+  前後文是完整的 SJIS 句子；段太短讓文字判定沒收）。
+
+⇒ **兩平台「無判定」0 段／0 bytes**：36,386 bytes 的 undefined 每一個
+位元組都有機械分類或一手人工判定，RE-11 關閉。
 
 逐段清單（≥16 B、函式外優先、依大小排、附台帳欄與前 16 bytes hex）在
 `docs/audit/re-gap-audit.md` 的「待人工段」表；全量含 <16 B 的在

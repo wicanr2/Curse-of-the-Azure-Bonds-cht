@@ -99,7 +99,7 @@
    "category": "反組譯覆蓋（兩平台全模組）",
    "format": "%d 個函式：已解讀 %d／不阻塞 %d／邊界碎片 %d／**待解讀 %d**；未被 IDA 認成程式碼的位元組 %d",
    "source": "`coab-function-index.json`（`cmd/re-ledger`）",
-   "not_proof": "狀態是**人工判定**寫在 `re-function-ledger.json` 裡的，工具只讀不寫。「已解讀」是有人讀過並留下 spec，不是自動驗證。「未被 IDA 認成程式碼」的位元組已逐段形狀分類並對回函式台帳（`cmd/re-gap-audit`，spec 1203）：大半是碎屑／填充／文字或已解讀函式的中段，**真正待人工（函式外且無碼內引用）DOS 21 段／148 B·PC-98 17 段／766 B**——形狀分類不證明語意，那些段仍未逐段判定。"
+   "not_proof": "狀態是**人工判定**寫在 `re-function-ledger.json` 裡的，工具只讀不寫。「已解讀」是有人讀過並留下 spec，不是自動驗證。「未被 IDA 認成程式碼」的位元組已逐段形狀分類並對回函式台帳（`cmd/re-gap-audit`，spec 1203）：大半是碎屑／填充／文字或已解讀函式的中段，最後 38 段（914 B）已逐段一手判定（`re-gap-manual.json`）——**兩平台「無判定」0 段**，undefined 位元組全數有機械分類或人工判定。"
   },
   "glossary": {
    "category": "譯名一致性",

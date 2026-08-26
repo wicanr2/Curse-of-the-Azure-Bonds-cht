@@ -626,7 +626,8 @@
    "end": 1956,
    "size": 4,
    "class": "pending",
-   "preview": "80 BD 09 01"
+   "preview": "80 BD 09 01",
+   "manual": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -635,7 +636,8 @@
    "end": 1963,
    "size": 3,
    "class": "pending",
-   "preview": "BE F7 FE"
+   "preview": "BE F7 FE",
+   "manual": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -676,7 +678,8 @@
    "end": 2003,
    "size": 3,
    "class": "pending",
-   "preview": "00 86 F8"
+   "preview": "00 86 F8",
+   "manual": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -693,7 +696,8 @@
    "end": 2020,
    "size": 4,
    "class": "pending",
-   "preview": "19 8A 86 F7"
+   "preview": "19 8A 86 F7",
+   "manual": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -702,7 +706,8 @@
    "end": 2027,
    "size": 3,
    "class": "pending",
-   "preview": "F3 FE 03"
+   "preview": "F3 FE 03",
+   "manual": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -711,7 +716,8 @@
    "end": 2042,
    "size": 10,
    "class": "pending",
-   "preview": "01 98 D1 E0 00 86 F8 FE EB 14"
+   "preview": "01 98 D1 E0 00 86 F8 FE EB 14",
+   "manual": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -744,7 +750,8 @@
    "end": 2075,
    "size": 3,
    "class": "pending",
-   "preview": "80 BE F8"
+   "preview": "80 BE F8",
+   "manual": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -769,7 +776,8 @@
    "end": 2099,
    "size": 3,
    "class": "pending",
-   "preview": "88 86 F9"
+   "preview": "88 86 F9",
+   "manual": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -818,7 +826,8 @@
    "end": 2147,
    "size": 3,
    "class": "pending",
-   "preview": "86 F9 FE"
+   "preview": "86 F9 FE",
+   "manual": "成員迴圈加值計算（+19h 能力值 vs 0Eh/0Fh 門檻）的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -2336,7 +2345,8 @@
    "end": 972,
    "size": 4,
    "class": "pending",
-   "preview": "26 80 BD 95"
+   "preview": "26 80 BD 95",
+   "manual": "目前角色 +195h/+196h 狀態檢查與訊息組字的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -2433,7 +2443,8 @@
    "end": 1067,
    "size": 3,
    "class": "pending",
-   "preview": "00 75 2A"
+   "preview": "00 75 2A",
+   "manual": "目前角色 +195h/+196h 狀態檢查與訊息組字的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -2530,7 +2541,8 @@
    "end": 1169,
    "size": 3,
    "class": "pending",
-   "preview": "C6 46 FF"
+   "preview": "C6 46 FF",
+   "manual": "目前角色 +195h/+196h 狀態檢查與訊息組字的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -3842,7 +3854,8 @@
    "end": 13881,
    "size": 9,
    "class": "pending",
-   "preview": "89 46 FC 89 56 FE 8B 46 FC"
+   "preview": "89 46 FC 89 56 FE 8B 46 FC",
+   "manual": "職業(+143h) set-membership 走名冊鏈(+189h)的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -3891,7 +3904,8 @@
    "end": 13962,
    "size": 34,
    "class": "pending",
-   "preview": "85 89 01 8C C2 89 46 FC 89 56 FE EB C1 C4 3E 06"
+   "preview": "85 89 01 8C C2 89 46 FC 89 56 FE EB C1 C4 3E 06",
+   "manual": "職業(+143h) set-membership 走名冊鏈(+189h)的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -3900,7 +3914,8 @@
    "end": 13985,
    "size": 17,
    "class": "pending",
-   "preview": "08 73 1C C4 7E F0 26 8A 85 43 01 30 E4 8B F8 80"
+   "preview": "08 73 1C C4 7E F0 26 8A 85 43 01 30 E4 8B F8 80",
+   "manual": "職業(+143h) set-membership 走名冊鏈(+189h)的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -3909,7 +3924,8 @@
    "end": 13997,
    "size": 5,
    "class": "pending",
-   "preview": "26 FE 85 43 01"
+   "preview": "26 FE 85 43 01",
+   "manual": "職業(+143h) set-membership 走名冊鏈(+189h)的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -7481,7 +7497,8 @@
    "end": 3241,
    "size": 9,
    "class": "pending",
-   "preview": "8B D0 8A 46 FE 30 E4 03 C2"
+   "preview": "8B D0 8A 46 FE 30 E4 03 C2",
+   "manual": "3EBEh 8-byte 表查找的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -7514,7 +7531,8 @@
    "end": 3267,
    "size": 3,
    "class": "pending",
-   "preview": "8A 46 FF"
+   "preview": "8A 46 FF",
+   "manual": "3EBEh 8-byte 表查找的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -7539,7 +7557,8 @@
    "end": 3299,
    "size": 11,
    "class": "pending",
-   "preview": "F9 8A 85 31 3F 98 8B D0 8A 46 FF"
+   "preview": "F9 8A 85 31 3F 98 8B D0 8A 46 FF",
+   "manual": "3EBEh 8-byte 表查找的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -7548,7 +7567,8 @@
    "end": 3313,
    "size": 9,
    "class": "pending",
-   "preview": "03 F8 26 8A 85 E9 00 30 E4"
+   "preview": "03 F8 26 8A 85 E9 00 30 E4",
+   "manual": "3EBEh 8-byte 表查找的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -7589,7 +7609,8 @@
    "end": 3357,
    "size": 5,
    "class": "pending",
-   "preview": "00 0A 8A 46 FB"
+   "preview": "00 0A 8A 46 FB",
+   "manual": "3EBEh 8-byte 表查找的函式中段碼條紋"
   },
   {
    "platform": "dos",
@@ -8471,7 +8492,8 @@
    "end": 7501,
    "size": 54,
    "class": "pending",
-   "preview": "98 2D 03 00 C4 3E 2C 9F 26 88 45 02 FF 36 9A 95"
+   "preview": "98 2D 03 00 C4 3E 2C 9F 26 88 45 02 FF 36 9A 95",
+   "manual": "截斷函式的延續段：189h:6Bh/70h 回傳值 −3 寫進 9F2Ch^[2]/[3]（碼）"
   },
   {
    "platform": "pc98",
@@ -8496,7 +8518,8 @@
    "end": 1997,
    "size": 96,
    "class": "pending",
-   "preview": "0E 0E 0E 0E 0E 00 0B 0B 0C 0C 00 00 09 0D 05 00"
+   "preview": "0E 0E 0E 0E 0E 00 0B 0B 0C 0C 00 00 09 0D 05 00",
+   "manual": "96-byte 資料表（0Eh×5,00h,0Bh,0Bh,0Ch… 小編號清單，緊接 retf 之後；INIT 模組的載入參數表）"
   },
   {
    "platform": "pc98",
@@ -9294,7 +9317,8 @@
    "end": 3716,
    "size": 29,
    "class": "pending",
-   "preview": "85 44 01 02 FF 76 FE FF 76 FC B0 6B 50 31 C0 50"
+   "preview": "85 44 01 02 FF 76 FE FF 76 FC B0 6B 50 31 C0 50",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9311,7 +9335,8 @@
    "end": 3852,
    "size": 82,
    "class": "pending",
-   "preview": "00 64 01 B8 03 00 50 8D 7E F4 16 57 9A 4D 00 64"
+   "preview": "00 64 01 B8 03 00 50 8D 7E F4 16 57 9A 4D 00 64",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9320,7 +9345,8 @@
    "end": 3935,
    "size": 82,
    "class": "pending",
-   "preview": "0A 0A 0E 57 9A 2F 06 65 0A 8A 46 E8 98 BA 05 00"
+   "preview": "0A 0A 0E 57 9A 2F 06 65 0A 8A 46 E8 98 BA 05 00",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9329,7 +9355,8 @@
    "end": 4018,
    "size": 82,
    "class": "pending",
-   "preview": "0E 57 BF 62 A3 1E 57 B8 06 00 50 9A 49 06 65 0A"
+   "preview": "0E 57 BF 62 A3 1E 57 B8 06 00 50 9A 49 06 65 0A",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9338,7 +9365,8 @@
    "end": 4037,
    "size": 18,
    "class": "pending",
-   "preview": "7E F0 16 57 9A 43 00 64 01 88 46 EA 80 7E EA 00"
+   "preview": "7E F0 16 57 9A 43 00 64 01 88 46 EA 80 7E EA 00",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9347,7 +9375,8 @@
    "end": 4087,
    "size": 23,
    "class": "pending",
-   "preview": "80 7E EA 53 74 03 E9 6F FF 8B 46 EE 48 C4 7E FC"
+   "preview": "80 7E EA 53 74 03 E9 6F FF 8B 46 EE 48 C4 7E FC",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9375,7 +9404,8 @@
    "end": 4122,
    "size": 20,
    "class": "pending",
-   "preview": "98 BA 0E 00 F7 E2 8B F8 8A 85 8D 70 88 46 E4 8A"
+   "preview": "98 BA 0E 00 F7 E2 8B F8 8A 85 8D 70 88 46 E4 8A",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9384,7 +9414,8 @@
    "end": 4184,
    "size": 5,
    "class": "pending",
-   "preview": "FE 46 ED 8A 46"
+   "preview": "FE 46 ED 8A 46",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9393,7 +9424,8 @@
    "end": 4267,
    "size": 82,
    "class": "pending",
-   "preview": "30 E4 50 FF 76 F6 FF 76 F4 9A 25 00 64 01 89 46"
+   "preview": "30 E4 50 FF 76 F6 FF 76 F4 9A 25 00 64 01 89 46",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9402,7 +9434,8 @@
    "end": 4290,
    "size": 22,
    "class": "pending",
-   "preview": "C4 7E F0 06 57 B8 50 00 50 9A 49 06 65 0A 8A 46"
+   "preview": "C4 7E F0 06 57 B8 50 00 50 9A 49 06 65 0A 8A 46",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9419,7 +9452,8 @@
    "end": 4433,
    "size": 82,
    "class": "pending",
-   "preview": "16 57 BF 45 0A 0E 57 9A 2F 06 65 0A B0 0D 50 B0"
+   "preview": "16 57 BF 45 0A 0E 57 9A 2F 06 65 0A B0 0D 50 B0",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9428,7 +9462,8 @@
    "end": 4468,
    "size": 34,
    "class": "pending",
-   "preview": "7E FC 16 57 B8 A7 01 50 9A A2 01 1F 08 E9 26 16"
+   "preview": "7E FC 16 57 B8 A7 01 50 9A A2 01 1F 08 E9 26 16",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9445,7 +9480,8 @@
    "end": 4551,
    "size": 34,
    "class": "pending",
-   "preview": "75 C4 7E AB 26 C6 85 E5 00 01 C4 7E AB 26 8A 45"
+   "preview": "75 C4 7E AB 26 C6 85 E5 00 01 C4 7E AB 26 8A 45",
+   "manual": "FINAL 前被 IDA 打碎的選法術選單常式本體（0DE5..1213 整窗已逐條讀過：職業×14 表 708Dh、35-byte 記錄 1C5Ah、選項寫 +119h、效果套用 case 寫 +144h）"
   },
   {
    "platform": "pc98",
@@ -9578,7 +9614,8 @@
    "end": 6319,
    "size": 18,
    "class": "pending",
-   "preview": "55 8B EC 53 51 8B 4E 06 8B 5E 08 E8 48 FF 59 5B"
+   "preview": "55 8B EC 53 51 8B 4E 06 8B 5E 08 E8 48 FF 59 5B",
+   "manual": "手寫組語的近呼叫包裝小函式（save regs、call 17F3h、ret；已逐條讀過）"
   },
   {
    "platform": "pc98",
@@ -10064,7 +10101,8 @@
    "end": 5181,
    "size": 3,
    "class": "pending",
-   "preview": "EA 82 BD"
+   "preview": "EA 82 BD",
+   "manual": "Shift-JIS 字串的 3-byte 切片（前後文是「…された…」句子，文字判定因段太短沒收）"
   },
   {
    "platform": "pc98",

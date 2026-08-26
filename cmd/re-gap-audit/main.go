@@ -48,6 +48,8 @@ type gap struct {
 	// CodeRefs：defined 程式碼裡「mov di, offset；push cs；push di」指進這一段
 	// 的次數。非零代表這一段是被引用的碼內常數（Pascal 字串等），不是漏碼。
 	CodeRefs int `json:"code_refs,omitempty"`
+	// Manual：docs/audit/re-gap-manual.json 的人工判定（逐段一手讀過的結論）。
+	Manual string `json:"manual,omitempty"`
 }
 
 // ledgerFunc 是 coab-function-index.json 的一列（只取需要的欄位）。
@@ -138,6 +140,29 @@ func main() {
 		tooltext.Text("re_gap_audit.usage_ledger"))
 	flag.Parse()
 
+	manualKey := func(platform, module string) string { return platform + "/" + module }
+	manualByModule := map[string]map[[2]int]string{}
+	if raw, err := os.ReadFile("docs/audit/re-gap-manual.json"); err == nil {
+		var parsed struct {
+			Verdicts []struct {
+				Platform string `json:"platform"`
+				Module   string `json:"module"`
+				Start    int    `json:"start"`
+				End      int    `json:"end"`
+				Verdict  string `json:"verdict"`
+			} `json:"verdicts"`
+		}
+		if err := json.Unmarshal(raw, &parsed); err != nil {
+			log.Fatalf("re-gap-manual.json: %v", err)
+		}
+		for _, verdict := range parsed.Verdicts {
+			key := manualKey(verdict.Platform, verdict.Module)
+			if manualByModule[key] == nil {
+				manualByModule[key] = map[[2]int]string{}
+			}
+			manualByModule[key][[2]int{verdict.Start, verdict.End}] = verdict.Verdict
+		}
+	}
 	ledger := map[string][]ledgerFunc{}
 	if raw, err := os.ReadFile(*ledgerPath); err == nil {
 		var parsed struct {
@@ -226,6 +251,9 @@ func main() {
 							record.CodeRefs++
 						}
 					}
+					if verdicts := manualByModule[manualKey(platform, module)]; verdicts != nil {
+						record.Manual = verdicts[[2]int{entry.Start, entry.End}]
+					}
 				}
 				gaps = append(gaps, record)
 			}
@@ -251,13 +279,17 @@ func main() {
 			case classPending:
 				bucket.pending++
 				bucket.pendingBytes += entry.Size
-				if entry.LedgerState != "" {
+				switch {
+				case entry.LedgerState != "":
 					bucket.pendingRead++
 					bucket.pendingReadBytes += entry.Size
-				} else if entry.CodeRefs > 0 {
+				case entry.CodeRefs > 0:
 					bucket.pendingReferenced++
 					bucket.pendingReferencedBytes += entry.Size
-				} else {
+				case entry.Manual != "":
+					bucket.pendingManual++
+					bucket.pendingManualBytes += entry.Size
+				default:
 					bucket.pendingOutside++
 					bucket.pendingOutsideBytes += entry.Size
 				}
@@ -280,11 +312,12 @@ func main() {
 	md.WriteString(tooltext.Text("re_gap_audit.md_class_header"))
 	for _, platform := range []string{"dos", "pc98"} {
 		bucket := perPlatform[platform]
-		fmt.Fprintf(&md, "| %s | %d | %d | %d | %d | %d | %d／%d | %d／%d | %d／%d | **%d／%d** |\n",
+		fmt.Fprintf(&md, "| %s | %d | %d | %d | %d | %d | %d／%d | %d／%d | %d／%d | %d／%d | **%d／%d** |\n",
 			platform, bucket.ranges, bucket.bytes, bucket.crumb, bucket.fill,
 			bucket.text, bucket.pending, bucket.pendingBytes,
 			bucket.pendingRead, bucket.pendingReadBytes,
 			bucket.pendingReferenced, bucket.pendingReferencedBytes,
+			bucket.pendingManual, bucket.pendingManualBytes,
 			bucket.pendingOutside, bucket.pendingOutsideBytes)
 	}
 	md.WriteString(tooltext.Text("re_gap_audit.md_module_header"))
@@ -324,9 +357,12 @@ func main() {
 	}
 	rank := func(entry gap) int {
 		if entry.LedgerState != "" {
-			return 2
+			return 3
 		}
 		if entry.CodeRefs > 0 {
+			return 2
+		}
+		if entry.Manual != "" {
 			return 1
 		}
 		return 0
@@ -343,6 +379,8 @@ func main() {
 			ledgerCell = fmt.Sprintf("%s（`%s`）", entry.LedgerState, entry.LedgerFunction)
 		} else if entry.CodeRefs > 0 {
 			ledgerCell = tooltext.Format("re_gap_audit.referenced_constant", entry.CodeRefs)
+		} else if entry.Manual != "" {
+			ledgerCell = entry.Manual
 		}
 		fmt.Fprintf(&md, "| %s | `%s` | `%04X..%04X` | %d | %s | `%s` |\n",
 			entry.Platform, entry.Module, entry.Start, entry.End, entry.Size,
@@ -357,6 +395,7 @@ func main() {
 			bucket.ranges, bucket.bytes, bucket.crumb, bucket.fill,
 			bucket.text, bucket.pending, bucket.pendingBytes,
 			bucket.pendingReferenced, bucket.pendingReferencedBytes,
+			bucket.pendingManual, bucket.pendingManualBytes,
 			bucket.pendingOutside, bucket.pendingOutsideBytes)
 	}
 }
@@ -372,6 +411,7 @@ type stats struct {
 	ranges, bytes, crumb, fill, text, pending, pendingBytes int
 	pendingRead, pendingReadBytes                           int
 	pendingReferenced, pendingReferencedBytes               int
+	pendingManual, pendingManualBytes                       int
 	pendingOutside, pendingOutsideBytes                     int
 }
 
