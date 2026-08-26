@@ -39,6 +39,22 @@ type gap struct {
 	// FillByte 只在同值填充時有意義。
 	FillByte byte   `json:"fill_byte,omitempty"`
 	Preview  string `json:"preview,omitempty"`
+	// LedgerState／LedgerFunction：待人工段完整落在台帳某函式範圍內時，
+	// 記下那支函式的解讀狀態與名字。「已解讀」「邊界碎片」代表那幾個
+	// bytes 其實已被人讀過（IDA 匯出把函式中段標成 undefined 而已），
+	// 不是漏碼——overlay-14 0044h 那 258 bytes 就是這一種。
+	LedgerState    string `json:"ledger_state,omitempty"`
+	LedgerFunction string `json:"ledger_function,omitempty"`
+}
+
+// ledgerFunc 是 coab-function-index.json 的一列（只取需要的欄位）。
+type ledgerFunc struct {
+	Platform string `json:"platform"`
+	Module   string `json:"module"`
+	EA       int    `json:"ea"`
+	Size     int    `json:"size"`
+	Name     string `json:"ida_name"`
+	State    string `json:"state"`
 }
 
 const (
@@ -115,7 +131,25 @@ func main() {
 	jsonPath := flag.String("json", "docs/audit/re-gap-audit.json", tooltext.Text("re_gap_audit.usage_json"))
 	mdPath := flag.String("md", "docs/audit/re-gap-audit.md", tooltext.Text("re_gap_audit.usage_md"))
 	pendingMin := flag.Int("pending-min", 16, tooltext.Text("re_gap_audit.usage_pending_min"))
+	ledgerPath := flag.String("ledger", "docs/audit/coab-function-index.json",
+		tooltext.Text("re_gap_audit.usage_ledger"))
 	flag.Parse()
+
+	ledger := map[string][]ledgerFunc{}
+	if raw, err := os.ReadFile(*ledgerPath); err == nil {
+		var parsed struct {
+			Functions []ledgerFunc `json:"functions"`
+		}
+		if err := json.Unmarshal(raw, &parsed); err != nil {
+			log.Fatalf("%s: %v", *ledgerPath, err)
+		}
+		for _, fn := range parsed.Functions {
+			key := fn.Platform + "/" + fn.Module
+			ledger[key] = append(ledger[key], fn)
+		}
+	} else {
+		log.Printf("ledger unavailable (%v); pending gaps will not be cross-checked", err)
+	}
 
 	gaps := []gap{}
 	for _, platform := range []string{"dos", "pc98"} {
@@ -158,9 +192,19 @@ func main() {
 					}
 					preview = fmt.Sprintf("% X", data[:limit])
 				}
-				gaps = append(gaps, gap{Platform: platform, Module: module,
+				record := gap{Platform: platform, Module: module,
 					Start: entry.Start, End: entry.End, Size: len(data),
-					Class: class, FillByte: fill, Preview: preview})
+					Class: class, FillByte: fill, Preview: preview}
+				if class == classPending {
+					for _, fn := range ledger[platform+"/"+module] {
+						if fn.EA <= entry.Start && entry.End <= fn.EA+fn.Size {
+							record.LedgerState = fn.State
+							record.LedgerFunction = fn.Name
+							break
+						}
+					}
+				}
+				gaps = append(gaps, record)
 			}
 		}
 	}
@@ -184,6 +228,13 @@ func main() {
 			case classPending:
 				bucket.pending++
 				bucket.pendingBytes += entry.Size
+				if entry.LedgerState == "" {
+					bucket.pendingOutside++
+					bucket.pendingOutsideBytes += entry.Size
+				} else {
+					bucket.pendingRead++
+					bucket.pendingReadBytes += entry.Size
+				}
 			}
 		}
 	}
@@ -203,9 +254,11 @@ func main() {
 	md.WriteString(tooltext.Text("re_gap_audit.md_class_header"))
 	for _, platform := range []string{"dos", "pc98"} {
 		bucket := perPlatform[platform]
-		fmt.Fprintf(&md, "| %s | %d | %d | %d | %d | %d | %d／%d |\n",
+		fmt.Fprintf(&md, "| %s | %d | %d | %d | %d | %d | %d／%d | %d／%d | **%d／%d** |\n",
 			platform, bucket.ranges, bucket.bytes, bucket.crumb, bucket.fill,
-			bucket.text, bucket.pending, bucket.pendingBytes)
+			bucket.text, bucket.pending, bucket.pendingBytes,
+			bucket.pendingRead, bucket.pendingReadBytes,
+			bucket.pendingOutside, bucket.pendingOutsideBytes)
 	}
 	md.WriteString(tooltext.Text("re_gap_audit.md_module_header"))
 	moduleKeys := make([]moduleKey, 0, len(perModule))
@@ -242,10 +295,21 @@ func main() {
 			pending = append(pending, entry)
 		}
 	}
-	sort.Slice(pending, func(i, j int) bool { return pending[i].Size > pending[j].Size })
+	sort.Slice(pending, func(i, j int) bool {
+		outsideI, outsideJ := pending[i].LedgerState == "", pending[j].LedgerState == ""
+		if outsideI != outsideJ {
+			return outsideI
+		}
+		return pending[i].Size > pending[j].Size
+	})
 	for _, entry := range pending {
-		fmt.Fprintf(&md, "| %s | `%s` | `%04X..%04X` | %d | `%s` |\n",
-			entry.Platform, entry.Module, entry.Start, entry.End, entry.Size, entry.Preview)
+		ledgerCell := tooltext.Text("re_gap_audit.outside_function")
+		if entry.LedgerState != "" {
+			ledgerCell = fmt.Sprintf("%s（`%s`）", entry.LedgerState, entry.LedgerFunction)
+		}
+		fmt.Fprintf(&md, "| %s | `%s` | `%04X..%04X` | %d | %s | `%s` |\n",
+			entry.Platform, entry.Module, entry.Start, entry.End, entry.Size,
+			ledgerCell, entry.Preview)
 	}
 	if err := os.WriteFile(*mdPath, []byte(md.String()), 0o644); err != nil {
 		log.Fatal(err)
@@ -254,7 +318,8 @@ func main() {
 		bucket := perPlatform[platform]
 		fmt.Printf(tooltext.Text("re_gap_audit.summary"), platform,
 			bucket.ranges, bucket.bytes, bucket.crumb, bucket.fill,
-			bucket.text, bucket.pending, bucket.pendingBytes)
+			bucket.text, bucket.pending, bucket.pendingBytes,
+			bucket.pendingOutside, bucket.pendingOutsideBytes)
 	}
 }
 
@@ -265,7 +330,11 @@ func ensure(m map[string]*stats, key string) *stats {
 	return m[key]
 }
 
-type stats struct{ ranges, bytes, crumb, fill, text, pending, pendingBytes int }
+type stats struct {
+	ranges, bytes, crumb, fill, text, pending, pendingBytes int
+	pendingRead, pendingReadBytes                           int
+	pendingOutside, pendingOutsideBytes                     int
+}
 
 func ensureModule(m map[moduleKey]*stats, key moduleKey) *stats {
 	if m[key] == nil {

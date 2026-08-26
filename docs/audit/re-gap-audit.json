@@ -15,7 +15,9 @@
    "end": 96,
    "size": 3,
    "class": "pending",
-   "preview": "89 16 C6"
+   "preview": "89 16 C6",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_51"
   },
   {
    "platform": "dos",
@@ -144,7 +146,9 @@
    "end": 1004,
    "size": 28,
    "class": "pending",
-   "preview": "8D 7E D0 16 57 BF D7 00 0E 57 9A 34 06 54 0A B0"
+   "preview": "8D 7E D0 16 57 BF D7 00 0E 57 9A 34 06 54 0A B0",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11A"
   },
   {
    "platform": "dos",
@@ -153,7 +157,9 @@
    "end": 1094,
    "size": 88,
    "class": "pending",
-   "preview": "8A 46 FE 3A 46 FD 74 09 80 7E FF 02 77 03 E9 C5"
+   "preview": "8A 46 FE 3A 46 FD 74 09 80 7E FF 02 77 03 E9 C5",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11A"
   },
   {
    "platform": "dos",
@@ -162,7 +168,9 @@
    "end": 41,
    "size": 3,
    "class": "pending",
-   "preview": "9A 9D 00"
+   "preview": "9A 9D 00",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_0"
   },
   {
    "platform": "dos",
@@ -203,7 +211,9 @@
    "end": 152,
    "size": 4,
    "class": "pending",
-   "preview": "9A 3E 00 67"
+   "preview": "9A 3E 00 67",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_47"
   },
   {
    "platform": "dos",
@@ -252,7 +262,9 @@
    "end": 203,
    "size": 3,
    "class": "pending",
-   "preview": "2E 0D 70"
+   "preview": "2E 0D 70",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_47"
   },
   {
    "platform": "dos",
@@ -301,7 +313,9 @@
    "end": 593,
    "size": 3,
    "class": "pending",
-   "preview": "9A 84 00"
+   "preview": "9A 84 00",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_F3"
   },
   {
    "platform": "dos",
@@ -495,7 +509,9 @@
    "end": 1511,
    "size": 5,
    "class": "pending",
-   "preview": "41 01 80 7E FE"
+   "preview": "41 01 80 7E FE",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_43D"
   },
   {
    "platform": "dos",
@@ -923,7 +939,9 @@
    "end": 2803,
    "size": 3,
    "class": "pending",
-   "preview": "16 2C 20"
+   "preview": "16 2C 20",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_A63"
   },
   {
    "platform": "dos",
@@ -1323,7 +1341,9 @@
    "end": 1752,
    "size": 703,
    "class": "pending",
-   "preview": "16 72 01 00 C6 06 1C 4A 02 EB 04 FE 06 1C 4A A0"
+   "preview": "16 72 01 00 C6 06 1C 4A 02 EB 04 FE 06 1C 4A A0",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_56"
   },
   {
    "platform": "dos",
@@ -1696,7 +1716,9 @@
    "end": 333,
    "size": 265,
    "class": "pending",
-   "preview": "8A 46 06 30 E4 3D 06 00 75 3D 8A 46 0A 98 8B D0"
+   "preview": "8A 46 06 30 E4 3D 06 00 75 3D 8A 46 0A 98 8B D0",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3E"
   },
   {
    "platform": "dos",
@@ -1722,7 +1744,9 @@
    "end": 42,
    "size": 4,
    "class": "pending",
-   "preview": "9A 2A 00 75"
+   "preview": "9A 2A 00 75",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_0"
   },
   {
    "platform": "dos",
@@ -1779,7 +1803,9 @@
    "end": 146,
    "size": 10,
    "class": "pending",
-   "preview": "FD 76 06 8A 46 F4 88 46 FD 8A"
+   "preview": "FD 76 06 8A 46 F4 88 46 FD 8A",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -1788,7 +1814,9 @@
    "end": 157,
    "size": 5,
    "class": "pending",
-   "preview": "7E F5 53 75 B3"
+   "preview": "7E F5 53 75 B3",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -1805,7 +1833,9 @@
    "end": 179,
    "size": 11,
    "class": "pending",
-   "preview": "46 F6 89 56 F8 8B 46 F6 0B 46 F8"
+   "preview": "46 F6 89 56 F8 8B 46 F6 0B 46 F8",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -1814,7 +1844,9 @@
    "end": 187,
    "size": 3,
    "class": "pending",
-   "preview": "FF 76 F6"
+   "preview": "FF 76 F6",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -1831,7 +1863,9 @@
    "end": 210,
    "size": 10,
    "class": "pending",
-   "preview": "EB 03 FE 46 F5 8A 46 F5 30 E4"
+   "preview": "EB 03 FE 46 F5 8A 46 F5 30 E4",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -1840,7 +1874,9 @@
    "end": 219,
    "size": 3,
    "class": "pending",
-   "preview": "80 7D 3B"
+   "preview": "80 7D 3B",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -1881,7 +1917,9 @@
    "end": 260,
    "size": 4,
    "class": "pending",
-   "preview": "3A 46 FC 76"
+   "preview": "3A 46 FC 76",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -1890,7 +1928,9 @@
    "end": 268,
    "size": 4,
    "class": "pending",
-   "preview": "88 46 FC 8A"
+   "preview": "88 46 FC 8A",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -1899,7 +1939,9 @@
    "end": 276,
    "size": 4,
    "class": "pending",
-   "preview": "FA 80 7E F5"
+   "preview": "FA 80 7E F5",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -1916,7 +1958,9 @@
    "end": 291,
    "size": 3,
    "class": "pending",
-   "preview": "89 46 F6"
+   "preview": "89 46 F6",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_34"
   },
   {
    "platform": "dos",
@@ -2005,7 +2049,9 @@
    "end": 675,
    "size": 3,
    "class": "pending",
-   "preview": "26 80 7D"
+   "preview": "26 80 7D",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_282"
   },
   {
    "platform": "dos",
@@ -2046,7 +2092,9 @@
    "end": 721,
    "size": 9,
    "class": "pending",
-   "preview": "25 8A 46 FD 30 E4 C4 3E 06"
+   "preview": "25 8A 46 FD 30 E4 C4 3E 06",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_282"
   },
   {
    "platform": "dos",
@@ -2071,7 +2119,9 @@
    "end": 748,
    "size": 4,
    "class": "pending",
-   "preview": "06 75 03 FE"
+   "preview": "06 75 03 FE",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_282"
   },
   {
    "platform": "dos",
@@ -2080,7 +2130,9 @@
    "end": 755,
    "size": 3,
    "class": "pending",
-   "preview": "FD 53 75"
+   "preview": "FD 53 75",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_282"
   },
   {
    "platform": "dos",
@@ -2596,7 +2648,9 @@
    "end": 1765,
    "size": 3,
    "class": "pending",
-   "preview": "8A 46 A5"
+   "preview": "8A 46 A5",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_5CA"
   },
   {
    "platform": "dos",
@@ -2621,7 +2675,9 @@
    "end": 1794,
    "size": 10,
    "class": "pending",
-   "preview": "4E 06 54 0A EB 30 3C 01 75 15"
+   "preview": "4E 06 54 0A EB 30 3C 01 75 15",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_5CA"
   },
   {
    "platform": "dos",
@@ -2630,7 +2686,9 @@
    "end": 1809,
    "size": 9,
    "class": "pending",
-   "preview": "7E D6 16 57 B8 28 00 50 9A"
+   "preview": "7E D6 16 57 B8 28 00 50 9A",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_5CA"
   },
   {
    "platform": "dos",
@@ -2639,7 +2697,9 @@
    "end": 1819,
    "size": 3,
    "class": "pending",
-   "preview": "02 75 13"
+   "preview": "02 75 13",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_5CA"
   },
   {
    "platform": "dos",
@@ -2664,7 +2724,9 @@
    "end": 1847,
    "size": 7,
    "class": "pending",
-   "preview": "50 8A 46 A2 30 E4 05"
+   "preview": "50 8A 46 A2 30 E4 05",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_5CA"
   },
   {
    "platform": "dos",
@@ -2689,7 +2751,9 @@
    "end": 1870,
    "size": 6,
    "class": "pending",
-   "preview": "42 05 C6 46 A3 13"
+   "preview": "42 05 C6 46 A3 13",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_5CA"
   },
   {
    "platform": "dos",
@@ -2738,7 +2802,9 @@
    "end": 1915,
    "size": 3,
    "class": "pending",
-   "preview": "8A 46 A4"
+   "preview": "8A 46 A4",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_5CA"
   },
   {
    "platform": "dos",
@@ -2787,7 +2853,9 @@
    "end": 2128,
    "size": 4,
    "class": "pending",
-   "preview": "9A E0 1A 54"
+   "preview": "9A E0 1A 54",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7B2"
   },
   {
    "platform": "dos",
@@ -3108,7 +3176,9 @@
    "end": 3357,
    "size": 13,
    "class": "pending",
-   "preview": "0A 9A 7F 00 4D 01 C6 46 F3 01 80 7E FA"
+   "preview": "0A 9A 7F 00 4D 01 C6 46 F3 01 80 7E FA",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_B9B"
   },
   {
    "platform": "dos",
@@ -3414,7 +3484,9 @@
    "end": 5330,
    "size": 32,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_11DE"
   },
   {
    "platform": "dos",
@@ -3507,7 +3579,9 @@
    "end": 1073,
    "size": 4,
    "class": "pending",
-   "preview": "9A 50 01 7F"
+   "preview": "9A 50 01 7F",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_8D"
   },
   {
    "platform": "dos",
@@ -3695,7 +3769,9 @@
    "end": 13698,
    "size": 33,
    "class": "pending",
-   "preview": "8D 7E F2 16 57 BF 17 35 0E 57 9A 34 06 54 0A 8A"
+   "preview": "8D 7E F2 16 57 BF 17 35 0E 57 9A 34 06 54 0A 8A",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_351C"
   },
   {
    "platform": "dos",
@@ -3878,7 +3954,9 @@
    "end": 15321,
    "size": 11,
    "class": "pending",
-   "preview": "0E E8 71 CA 08 C0 75 03 E9 5B 01"
+   "preview": "0E E8 71 CA 08 C0 75 03 E9 5B 01",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3748"
   },
   {
    "platform": "dos",
@@ -3968,7 +4046,9 @@
    "end": 1407,
    "size": 4,
    "class": "pending",
-   "preview": "00 00 EA 06"
+   "preview": "00 00 EA 06",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -3985,7 +4065,9 @@
    "end": 1486,
    "size": 41,
    "class": "pending",
-   "preview": "07 00 74 6A A1 0A 65 0B 06 0C 65 75 07 80 3E BC"
+   "preview": "07 00 74 6A A1 0A 65 0B 06 0C 65 75 07 80 3E BC",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -3994,7 +4076,9 @@
    "end": 1528,
    "size": 41,
    "class": "pending",
-   "preview": "BA 4F 03 75 07 9A 52 02 A0 01 EB 05 9A 36 01 A0"
+   "preview": "BA 4F 03 75 07 9A 52 02 A0 01 EB 05 9A 36 01 A0",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4003,7 +4087,9 @@
    "end": 1558,
    "size": 29,
    "class": "pending",
-   "preview": "75 05 9A 36 01 A0 01 9A 34 00 67 01 C4 3E 9D 4F"
+   "preview": "75 05 9A 36 01 A0 01 9A 34 00 67 01 C4 3E 9D 4F",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4020,7 +4106,9 @@
    "end": 1612,
    "size": 41,
    "class": "pending",
-   "preview": "E2 16 57 BF 8E 01 0E 57 9A 34 06 54 0A B0 0E 50"
+   "preview": "E2 16 57 BF 8E 01 0E 57 9A 34 06 54 0A B0 0E 50",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4029,7 +4117,9 @@
    "end": 1654,
    "size": 41,
    "class": "pending",
-   "preview": "65 74 32 80 3E F1 5C 00 75 2B 8D 7E D0 16 57 BF"
+   "preview": "65 74 32 80 3E F1 5C 00 75 2B 8D 7E D0 16 57 BF",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4038,7 +4128,9 @@
    "end": 1677,
    "size": 22,
    "class": "pending",
-   "preview": "80 7E FE 4E 75 05 9A 57 00 E5 00 80 7E FE 59 75"
+   "preview": "80 7E FE 4E 75 05 9A 57 00 E5 00 80 7E FE 59 75",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4047,7 +4139,9 @@
    "end": 1696,
    "size": 3,
    "class": "pending",
-   "preview": "9A F4 1A"
+   "preview": "9A F4 1A",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4056,7 +4150,9 @@
    "end": 1738,
    "size": 41,
    "class": "pending",
-   "preview": "0A BF 80 8C 1E 57 9A 24 07 54 0A 75 43 80 3E 87"
+   "preview": "0A BF 80 8C 1E 57 9A 24 07 54 0A 75 43 80 3E 87",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4065,7 +4161,9 @@
    "end": 1780,
    "size": 41,
    "class": "pending",
-   "preview": "BF BA 01 0E 57 9A 34 06 54 0A 9A 7F 00 4D 01 EB"
+   "preview": "BF BA 01 0E 57 9A 34 06 54 0A 9A 7F 00 4D 01 EB",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4074,7 +4172,9 @@
    "end": 1822,
    "size": 38,
    "class": "pending",
-   "preview": "89 EC 5D CB 09 50 69 63 6B 20 52 61 63 65 02 20"
+   "preview": "89 EC 5D CB 09 50 69 63 6B 20 52 61 63 65 02 20",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4083,7 +4183,9 @@
    "end": 1864,
    "size": 41,
    "class": "pending",
-   "preview": "69 63 6B 20 43 6C 61 73 73 0E 50 69 63 6B 20 41"
+   "preview": "69 63 6B 20 43 6C 61 73 73 0E 50 69 63 6B 20 41",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4092,7 +4194,9 @@
    "end": 1922,
    "size": 57,
    "class": "pending",
-   "preview": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 2F"
+   "preview": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 2F",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1DD"
   },
   {
    "platform": "dos",
@@ -4166,7 +4270,9 @@
    "end": 20410,
    "size": 25,
    "class": "pending",
-   "preview": "46 E7 FE C0 98 D1 E0 D1 E0 8B C8 8A 46 ED 98 BA"
+   "preview": "46 E7 FE C0 98 D1 E0 D1 E0 8B C8 8A 46 ED 98 BA",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_4D2A"
   },
   {
    "platform": "dos",
@@ -4175,7 +4281,9 @@
    "end": 20424,
    "size": 13,
    "class": "pending",
-   "preview": "91 42 8C C2 C4 7E D8 26 3B 95 29 01 7C"
+   "preview": "91 42 8C C2 C4 7E D8 26 3B 95 29 01 7C",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_4D2A"
   },
   {
    "platform": "dos",
@@ -4184,7 +4292,9 @@
    "end": 20454,
    "size": 29,
    "class": "pending",
-   "preview": "7F 07 26 3B 85 27 01 76 0A 80 3E 87 75 00 75 03"
+   "preview": "7F 07 26 3B 85 27 01 76 0A 80 3E 87 75 00 75 03",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_4D2A"
   },
   {
    "platform": "dos",
@@ -4201,7 +4311,9 @@
    "end": 20758,
    "size": 298,
    "class": "pending",
-   "preview": "BA 63 00 F7 E2 8B F8 03 F9 83 BD 93 42 00 7F 0F"
+   "preview": "BA 63 00 F7 E2 8B F8 03 F9 83 BD 93 42 00 7F 0F",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_4D2A"
   },
   {
    "platform": "dos",
@@ -5144,7 +5256,9 @@
    "end": 20410,
    "size": 29,
    "class": "pending",
-   "preview": "8C C2 3B 16 08 65 75 09 3B 06 06 65 75 03 FE 46"
+   "preview": "8C C2 3B 16 08 65 75 09 3B 06 06 65 75 03 FE 46",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_4F3E"
   },
   {
    "platform": "dos",
@@ -5153,7 +5267,9 @@
    "end": 20415,
    "size": 4,
    "class": "pending",
-   "preview": "56 FA EB CB"
+   "preview": "56 FA EB CB",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_4F3E"
   },
   {
    "platform": "dos",
@@ -5274,7 +5390,9 @@
    "end": 26789,
    "size": 919,
    "class": "pending",
-   "preview": "73 89 16 36 73 B8 33 01 BA 1A 01 A3 38 73 89 16"
+   "preview": "73 89 16 36 73 B8 33 01 BA 1A 01 A3 38 73 89 16",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_630B"
   },
   {
    "platform": "dos",
@@ -5472,7 +5590,9 @@
    "end": 73,
    "size": 9,
    "class": "pending",
-   "preview": "08 FF 76 06 0E E8 74 13 08"
+   "preview": "08 FF 76 06 0E E8 74 13 08",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5481,7 +5601,9 @@
    "end": 97,
    "size": 17,
    "class": "pending",
-   "preview": "C4 7E F2 03 F8 26 80 BD 11 01 00 74 13 8A 46 FF"
+   "preview": "C4 7E F2 03 F8 26 80 BD 11 01 00 74 13 8A 46 FF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5498,7 +5620,9 @@
    "end": 115,
    "size": 3,
    "class": "pending",
-   "preview": "8A 46 FF"
+   "preview": "8A 46 FF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5539,7 +5663,9 @@
    "end": 158,
    "size": 6,
    "class": "pending",
-   "preview": "FE 85 2D 01 8A 46"
+   "preview": "FE 85 2D 01 8A 46",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5556,7 +5682,9 @@
    "end": 186,
    "size": 18,
    "class": "pending",
-   "preview": "44 88 46 FD EB 03 FE 46 FD C6 46 FB 01 EB 03 FE"
+   "preview": "44 88 46 FD EB 03 FE 46 FD C6 46 FB 01 EB 03 FE",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5565,7 +5693,9 @@
    "end": 195,
    "size": 3,
    "class": "pending",
-   "preview": "8A 46 FD"
+   "preview": "8A 46 FD",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5590,7 +5720,9 @@
    "end": 233,
    "size": 17,
    "class": "pending",
-   "preview": "03 F8 26 00 95 2C 01 80 7E FB 05 75 D2 8A 46 FD"
+   "preview": "03 F8 26 00 95 2C 01 80 7E FB 05 75 D2 8A 46 FD",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5607,7 +5739,9 @@
    "end": 253,
    "size": 5,
    "class": "pending",
-   "preview": "77 05 C6 46 FA"
+   "preview": "77 05 C6 46 FA",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5616,7 +5750,9 @@
    "end": 259,
    "size": 3,
    "class": "pending",
-   "preview": "FE 46 FA"
+   "preview": "FE 46 FA",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5633,7 +5769,9 @@
    "end": 297,
    "size": 25,
    "class": "pending",
-   "preview": "DA 37 89 7E EE 8C 5E F0 C4 7E EE 26 80 3D 00 75"
+   "preview": "DA 37 89 7E EE 8C 5E F0 C4 7E EE 26 80 3D 00 75",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5642,7 +5780,9 @@
    "end": 307,
    "size": 3,
    "class": "pending",
-   "preview": "BD 2C 01"
+   "preview": "BD 2C 01",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5651,7 +5791,9 @@
    "end": 313,
    "size": 5,
    "class": "pending",
-   "preview": "76 15 80 7E FA"
+   "preview": "76 15 80 7E FA",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5668,7 +5810,9 @@
    "end": 332,
    "size": 4,
    "class": "pending",
-   "preview": "45 78 01 80"
+   "preview": "45 78 01 80",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5709,7 +5853,9 @@
    "end": 386,
    "size": 18,
    "class": "pending",
-   "preview": "44 88 46 FD EB 03 FE 46 FD C6 46 FB 01 EB 03 FE"
+   "preview": "44 88 46 FD EB 03 FE 46 FD C6 46 FB 01 EB 03 FE",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5718,7 +5864,9 @@
    "end": 395,
    "size": 3,
    "class": "pending",
-   "preview": "8A 46 FD"
+   "preview": "8A 46 FD",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5743,7 +5891,9 @@
    "end": 433,
    "size": 17,
    "class": "pending",
-   "preview": "03 F8 26 00 95 2C 01 80 7E FB 05 75 D2 8A 46 FD"
+   "preview": "03 F8 26 00 95 2C 01 80 7E FB 05 75 D2 8A 46 FD",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5752,7 +5902,9 @@
    "end": 449,
    "size": 9,
    "class": "pending",
-   "preview": "01 EB 03 FE 46 FA 8A 46 FA"
+   "preview": "01 EB 03 FE 46 FA 8A 46 FA",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5761,7 +5913,9 @@
    "end": 489,
    "size": 33,
    "class": "pending",
-   "preview": "E7 81 C7 DA 37 89 7E EE 8C 5E F0 C4 7E EE 26 80"
+   "preview": "E7 81 C7 DA 37 89 7E EE 8C 5E F0 C4 7E EE 26 80",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5778,7 +5932,9 @@
    "end": 515,
    "size": 11,
    "class": "pending",
-   "preview": "F2 03 F8 26 C6 45 78 01 80 7E FA"
+   "preview": "F2 03 F8 26 C6 45 78 01 80 7E FA",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5787,7 +5943,9 @@
    "end": 523,
    "size": 3,
    "class": "pending",
-   "preview": "01 3C 04"
+   "preview": "01 3C 04",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5796,7 +5954,9 @@
    "end": 531,
    "size": 3,
    "class": "pending",
-   "preview": "80 7E FE"
+   "preview": "80 7E FE",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5805,7 +5965,9 @@
    "end": 540,
    "size": 4,
    "class": "pending",
-   "preview": "00 8A 46 FE"
+   "preview": "00 8A 46 FE",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5822,7 +5984,9 @@
    "end": 561,
    "size": 9,
    "class": "pending",
-   "preview": "00 88 46 FD EB 03 FE 46 FD"
+   "preview": "00 88 46 FD EB 03 FE 46 FD",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5839,7 +6003,9 @@
    "end": 579,
    "size": 3,
    "class": "pending",
-   "preview": "8A 46 FD"
+   "preview": "8A 46 FD",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5864,7 +6030,9 @@
    "end": 609,
    "size": 9,
    "class": "pending",
-   "preview": "03 F8 26 00 95 31 01 80 7E"
+   "preview": "03 F8 26 00 95 31 01 80 7E",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5873,7 +6041,9 @@
    "end": 625,
    "size": 9,
    "class": "pending",
-   "preview": "04 EB 03 FE 46 FB 8A 46 FB"
+   "preview": "04 EB 03 FE 46 FB 8A 46 FB",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5882,7 +6052,9 @@
    "end": 635,
    "size": 3,
    "class": "pending",
-   "preview": "8A 46 FB"
+   "preview": "8A 46 FB",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5939,7 +6111,9 @@
    "end": 685,
    "size": 5,
    "class": "pending",
-   "preview": "F1 75 83 C6 46"
+   "preview": "F1 75 83 C6 46",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -5980,7 +6154,9 @@
    "end": 726,
    "size": 6,
    "class": "pending",
-   "preview": "26 C6 45 78 01 80"
+   "preview": "26 C6 45 78 01 80",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -6005,7 +6181,9 @@
    "end": 748,
    "size": 4,
    "class": "pending",
-   "preview": "01 8A 46 FE"
+   "preview": "01 8A 46 FE",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -6022,7 +6200,9 @@
    "end": 778,
    "size": 18,
    "class": "pending",
-   "preview": "FD EB 03 FE 46 FD C6 46 FB 01 EB 03 FE 46 FB 8A"
+   "preview": "FD EB 03 FE 46 FD C6 46 FB 01 EB 03 FE 46 FB 8A",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -6087,7 +6267,9 @@
    "end": 843,
    "size": 3,
    "class": "pending",
-   "preview": "85 4D 01"
+   "preview": "85 4D 01",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -6096,7 +6278,9 @@
    "end": 857,
    "size": 9,
    "class": "pending",
-   "preview": "89 56 F8 8B 46 F6 0B 46 F8"
+   "preview": "89 56 F8 8B 46 F6 0B 46 F8",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -6121,7 +6305,9 @@
    "end": 891,
    "size": 11,
    "class": "pending",
-   "preview": "46 FB 01 EB 03 FE 46 FB 8A 46 FB"
+   "preview": "46 FB 01 EB 03 FE 46 FB 8A 46 FB",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -6146,7 +6332,9 @@
    "end": 921,
    "size": 9,
    "class": "pending",
-   "preview": "00 95 36 01 80 7E FB 03 75"
+   "preview": "00 95 36 01 80 7E FB 03 75",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_11"
   },
   {
    "platform": "dos",
@@ -6195,7 +6383,9 @@
    "end": 1307,
    "size": 3,
    "class": "pending",
-   "preview": "06 03 F8"
+   "preview": "06 03 F8",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3B1"
   },
   {
    "platform": "dos",
@@ -6292,7 +6482,9 @@
    "end": 1403,
    "size": 3,
    "class": "pending",
-   "preview": "06 03 F8"
+   "preview": "06 03 F8",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3B1"
   },
   {
    "platform": "dos",
@@ -6301,7 +6493,9 @@
    "end": 1418,
    "size": 10,
    "class": "pending",
-   "preview": "26 C6 45 34 00 80 7E FA 0C 75"
+   "preview": "26 C6 45 34 00 80 7E FA 0C 75",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3B1"
   },
   {
    "platform": "dos",
@@ -6318,7 +6512,9 @@
    "end": 1439,
    "size": 3,
    "class": "pending",
-   "preview": "C6 46 FF"
+   "preview": "C6 46 FF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3B1"
   },
   {
    "platform": "dos",
@@ -6327,7 +6523,9 @@
    "end": 1445,
    "size": 5,
    "class": "pending",
-   "preview": "EB 03 FE 46 FF"
+   "preview": "EB 03 FE 46 FF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3B1"
   },
   {
    "platform": "dos",
@@ -6376,7 +6574,9 @@
    "end": 1492,
    "size": 4,
    "class": "pending",
-   "preview": "EB 13 3C 04"
+   "preview": "EB 13 3C 04",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3B1"
   },
   {
    "platform": "dos",
@@ -6393,7 +6593,9 @@
    "end": 1508,
    "size": 4,
    "class": "pending",
-   "preview": "C6 85 1C 01"
+   "preview": "C6 85 1C 01",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3B1"
   },
   {
    "platform": "dos",
@@ -6490,7 +6692,9 @@
    "end": 1588,
    "size": 4,
    "class": "pending",
-   "preview": "80 BD 13 01"
+   "preview": "80 BD 13 01",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3B1"
   },
   {
    "platform": "dos",
@@ -6523,7 +6727,9 @@
    "end": 1622,
    "size": 6,
    "class": "pending",
-   "preview": "26 C6 85 1C 01 03"
+   "preview": "26 C6 85 1C 01 03",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3B1"
   },
   {
    "platform": "dos",
@@ -6564,7 +6770,9 @@
    "end": 1779,
    "size": 3,
    "class": "pending",
-   "preview": "FE 46 FF"
+   "preview": "FE 46 FF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_671"
   },
   {
    "platform": "dos",
@@ -6589,7 +6797,9 @@
    "end": 1803,
    "size": 3,
    "class": "pending",
-   "preview": "00 F7 E2"
+   "preview": "00 F7 E2",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_671"
   },
   {
    "platform": "dos",
@@ -6598,7 +6808,9 @@
    "end": 1818,
    "size": 10,
    "class": "pending",
-   "preview": "95 BA 42 8A 46 FE 98 C4 7E F9"
+   "preview": "95 BA 42 8A 46 FE 98 C4 7E F9",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_671"
   },
   {
    "platform": "dos",
@@ -6607,7 +6819,9 @@
    "end": 1827,
    "size": 3,
    "class": "pending",
-   "preview": "01 80 7E"
+   "preview": "01 80 7E",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_671"
   },
   {
    "platform": "dos",
@@ -6616,7 +6830,9 @@
    "end": 1839,
    "size": 7,
    "class": "pending",
-   "preview": "46 FF 3A 46 F8 75 C1"
+   "preview": "46 FF 3A 46 F8 75 C1",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_671"
   },
   {
    "platform": "dos",
@@ -6625,7 +6841,9 @@
    "end": 2132,
    "size": 3,
    "class": "pending",
-   "preview": "FE 46 FF"
+   "preview": "FE 46 FF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -6762,7 +6980,9 @@
    "end": 2460,
    "size": 4,
    "class": "pending",
-   "preview": "BC 45 8A 46"
+   "preview": "BC 45 8A 46",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -6795,7 +7015,9 @@
    "end": 2491,
    "size": 3,
    "class": "pending",
-   "preview": "01 74 13"
+   "preview": "01 74 13",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -6812,7 +7034,9 @@
    "end": 2507,
    "size": 3,
    "class": "pending",
-   "preview": "00 75 03"
+   "preview": "00 75 03",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -6869,7 +7093,9 @@
    "end": 2555,
    "size": 3,
    "class": "pending",
-   "preview": "00 7F 11"
+   "preview": "00 7F 11",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -6886,7 +7112,9 @@
    "end": 2571,
    "size": 3,
    "class": "pending",
-   "preview": "00 02 EB"
+   "preview": "00 02 EB",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -6911,7 +7139,9 @@
    "end": 2595,
    "size": 3,
    "class": "pending",
-   "preview": "80 85 DF"
+   "preview": "80 85 DF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -6968,7 +7198,9 @@
    "end": 2644,
    "size": 4,
    "class": "pending",
-   "preview": "26 80 85 DF"
+   "preview": "26 80 85 DF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -6985,7 +7217,9 @@
    "end": 2659,
    "size": 3,
    "class": "pending",
-   "preview": "8A 45 19"
+   "preview": "8A 45 19",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -7010,7 +7244,9 @@
    "end": 2684,
    "size": 4,
    "class": "pending",
-   "preview": "26 FE 85 DF"
+   "preview": "26 FE 85 DF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -7091,7 +7327,9 @@
    "end": 2755,
    "size": 3,
    "class": "pending",
-   "preview": "06 03 F8"
+   "preview": "06 03 F8",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_7E3"
   },
   {
    "platform": "dos",
@@ -7116,7 +7354,9 @@
    "end": 2989,
    "size": 3,
    "class": "pending",
-   "preview": "FE 46 FF"
+   "preview": "FE 46 FF",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_AD8"
   },
   {
    "platform": "dos",
@@ -7157,7 +7397,9 @@
    "end": 3153,
    "size": 9,
    "class": "pending",
-   "preview": "03 FA 8A 85 BE 3E 30 E4 3B"
+   "preview": "03 FA 8A 85 BE 3E 30 E4 3B",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_AD8"
   },
   {
    "platform": "dos",
@@ -7174,7 +7416,9 @@
    "end": 3175,
    "size": 7,
    "class": "pending",
-   "preview": "85 E9 00 00 E9 9D 00"
+   "preview": "85 E9 00 00 E9 9D 00",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_AD8"
   },
   {
    "platform": "dos",
@@ -7528,7 +7772,9 @@
    "end": 2864,
    "size": 19,
    "class": "pending",
-   "preview": "FE 30 E4 8B F8 8A 85 9D 26 98 03 46 F1 89 46 F1"
+   "preview": "FE 30 E4 8B F8 8A 85 9D 26 98 03 46 F1 89 46 F1",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_841"
   },
   {
    "platform": "dos",
@@ -8090,7 +8336,9 @@
    "end": 4685,
    "size": 65,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_11C7"
   },
   {
    "platform": "pc98",
@@ -8578,7 +8826,9 @@
    "end": 18529,
    "size": 13,
    "class": "pending",
-   "preview": "7A 00 89 01 50 B0 01 50 9A 57 00 3E 01"
+   "preview": "7A 00 89 01 50 B0 01 50 9A 57 00 3E 01",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_478B"
   },
   {
    "platform": "pc98",
@@ -8595,7 +8845,9 @@
    "end": 326,
    "size": 258,
    "class": "pending",
-   "preview": "8A 46 06 3C 06 75 3D 8A 46 0A 98 8B D0 8A 46 08"
+   "preview": "8A 46 06 3C 06 75 3D 8A 46 0A 98 8B D0 8A 46 08",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3E"
   },
   {
    "platform": "pc98",
@@ -8668,7 +8920,9 @@
    "end": 5243,
    "size": 32,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_11C7"
   },
   {
    "platform": "pc98",
@@ -8939,7 +9193,9 @@
    "end": 3607,
    "size": 3,
    "class": "pending",
-   "preview": "00 3E 01"
+   "preview": "00 3E 01",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_AFB"
   },
   {
    "platform": "pc98",
@@ -9114,7 +9370,9 @@
    "end": 5095,
    "size": 531,
    "class": "pending",
-   "preview": "3C 05 7C 1A 3C 07 7F 16 C4 7E AB 26 8A 45 75 98"
+   "preview": "3C 05 7C 1A 3C 07 7F 16 C4 7E AB 26 8A 45 75 98",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_11C7"
   },
   {
    "platform": "pc98",
@@ -9339,7 +9597,9 @@
    "end": 7325,
    "size": 71,
    "class": "pending",
-   "preview": "8A 45 1E 30 E4 8B F8 B1 04 D3 E7 8A 85 B5 61 88"
+   "preview": "8A 45 1E 30 E4 8B F8 B1 04 D3 E7 8A 85 B5 61 88",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_1A8F"
   },
   {
    "platform": "pc98",
@@ -9348,7 +9608,9 @@
    "end": 7785,
    "size": 4,
    "class": "pending",
-   "preview": "0E 8E F4 82"
+   "preview": "0E 8E F4 82",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_1A8F"
   },
   {
    "platform": "pc98",
@@ -9601,7 +9863,9 @@
    "end": 7250,
    "size": 147,
    "class": "pending",
-   "preview": "FF 36 96 95 FF 36 94 95 B0 01 50 B0 01 50 B0 00"
+   "preview": "FF 36 96 95 FF 36 94 95 B0 01 50 B0 01 50 B0 00",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_1A3E"
   },
   {
    "platform": "pc98",
@@ -9610,7 +9874,9 @@
    "end": 8965,
    "size": 1711,
    "class": "pending",
-   "preview": "BD 07 01 00 74 18 BF 9D 19 0E 57 BF 69 A3 1E 57"
+   "preview": "BD 07 01 00 74 18 BF 9D 19 0E 57 BF 69 A3 1E 57",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_1A3E"
   },
   {
    "platform": "pc98",
@@ -9652,7 +9918,9 @@
    "end": 4229,
    "size": 40,
    "class": "pending",
-   "preview": "FF 36 96 95 FF 36 94 95 FF 76 D3 FF 76 D1 C4 7E"
+   "preview": "FF 36 96 95 FF 36 94 95 FF 76 D3 FF 76 D1 C4 7E",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_F62"
   },
   {
    "platform": "pc98",
@@ -9782,7 +10050,9 @@
    "end": 9197,
    "size": 46,
    "class": "pending",
-   "preview": "FF 76 FA FF 76 F8 B0 00 50 9A 98 00 3E 01 FF 76"
+   "preview": "FF 76 FA FF 76 F8 B0 00 50 9A 98 00 3E 01 FF 76",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_235E"
   },
   {
    "platform": "pc98",
@@ -9863,7 +10133,9 @@
    "end": 10266,
    "size": 24,
    "class": "pending",
-   "preview": "FF 76 FA FF 76 F8 B0 0F 50 B8 0A 00 50 B0 FF 50"
+   "preview": "FF 76 FA FF 76 F8 B0 0F 50 B8 0A 00 50 B0 FF 50",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_2776"
   },
   {
    "platform": "pc98",
@@ -9952,7 +10224,9 @@
    "end": 13067,
    "size": 22,
    "class": "pending",
-   "preview": "FF 36 23 A5 FF 36 21 A5 B0 1F 50 31 C0 31 D2 52"
+   "preview": "FF 36 23 A5 FF 36 21 A5 B0 1F 50 31 C0 31 D2 52",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_32A0"
   },
   {
    "platform": "pc98",
@@ -9977,7 +10251,9 @@
    "end": 13656,
    "size": 4,
    "class": "pending",
-   "preview": "C6 46 F9 01"
+   "preview": "C6 46 F9 01",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_345B"
   },
   {
    "platform": "pc98",
@@ -10010,7 +10286,9 @@
    "end": 14625,
    "size": 6,
    "class": "pending",
-   "preview": "C6 46 FA 00 EB 03"
+   "preview": "C6 46 FA 00 EB 03",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_3879"
   },
   {
    "platform": "pc98",
@@ -10131,7 +10409,9 @@
    "end": 17735,
    "size": 97,
    "class": "pending",
-   "preview": "FF 76 FE FF 76 FC B0 16 50 31 C0 31 D2 52 50 9A"
+   "preview": "FF 76 FE FF 76 FC B0 16 50 31 C0 31 D2 52 50 9A",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_4477"
   },
   {
    "platform": "pc98",
@@ -10189,7 +10469,9 @@
    "end": 18494,
    "size": 35,
    "class": "pending",
-   "preview": "FF 76 FE FF 76 FC B0 37 50 31 C0 31 D2 52 50 9A"
+   "preview": "FF 76 FE FF 76 FC B0 37 50 31 C0 31 D2 52 50 9A",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_47BD"
   },
   {
    "platform": "pc98",
@@ -10198,7 +10480,9 @@
    "end": 18506,
    "size": 10,
    "class": "pending",
-   "preview": "26 C6 85 97 01 01 C4 7E FC 26"
+   "preview": "26 C6 85 97 01 01 C4 7E FC 26",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_47BD"
   },
   {
    "platform": "pc98",
@@ -10207,7 +10491,9 @@
    "end": 18512,
    "size": 4,
    "class": "pending",
-   "preview": "18 FF 76 FE"
+   "preview": "18 FF 76 FE",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_47BD"
   },
   {
    "platform": "pc98",
@@ -10216,7 +10502,9 @@
    "end": 18564,
    "size": 50,
    "class": "pending",
-   "preview": "FC B0 04 50 9A 98 00 3E 01 C4 7E FC 26 C6 85 A5"
+   "preview": "FC B0 04 50 9A 98 00 3E 01 C4 7E FC 26 C6 85 A5",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_47BD"
   },
   {
    "platform": "pc98",
@@ -10282,7 +10570,9 @@
    "end": 19715,
    "size": 20,
    "class": "pending",
-   "preview": "FF 76 FA FF 76 F8 B0 8B 50 31 C0 31 D2 52 50 9A"
+   "preview": "FF 76 FA FF 76 F8 B0 8B 50 31 C0 31 D2 52 50 9A",
+   "ledger_state": "已解讀",
+   "ledger_function": "sub_4BF7"
   },
   {
    "platform": "pc98",
