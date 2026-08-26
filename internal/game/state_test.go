@@ -1093,12 +1093,94 @@ func TestResolvePendingECLDamageFinishesActiveCombatWhenPartyFalls(t *testing.T)
 	// ★ 全隊倒下要落在**全滅畫面**，不是印一句「戰鬥失敗。」就回地圖：原作的
 	// `2Eh DAMAGE` 收尾在全隊都倒下時設 `DS:4FC7h`，兩個主迴圈都以它收尾
 	// （spec 1152／1045／1095），與 `PROGRAM 3` 同一個結局。
-	if !state.PartyKilled() || !state.programEndMenu || state.OriginalEvent != "COMBAT" {
+	//
+	// 事件名是 DAMAGE 不是 COMBAT：唯一的成員只是**昏迷**，戰後 POSTCOM 的
+	// `PARTYDEAD` 不算全滅（spec 1204），畫面是 DAMAGE 收尾「沒有人能行動」
+	// 那一條進的。
+	if !state.PartyKilled() || !state.programEndMenu || state.OriginalEvent != "DAMAGE" {
 		t.Fatalf("全滅之後沒有進全滅畫面：killed=%v menu=%v event=%q mode=%v",
 			state.PartyKilled(), state.programEndMenu, state.OriginalEvent, state.Mode)
 	}
 	if len(state.partyRoster[0].Effects) != 2 || state.partyRoster[0].Effects[0].Kind != 0x25 || state.partyRoster[0].Effects[1].Kind != 0x01 {
 		t.Fatalf("combat effects were not removed: %#v", state.partyRoster[0].Effects)
+	}
+}
+
+// ★ 兩個全滅判準是**不同的**（spec 1204，皆一手 asm）：
+//   - POSTCOM 的 `PARTYDEAD`：CHARSTATUS 全部在 {ANIMATED, TEMPGONE, DEAD,
+//     STONED, GONE} 才算——**昏迷／瀕死不算**，隊伍活下去。
+//   - ECL `2Eh DAMAGE` 收尾：「站著且能行動」旗標全部是 0 就算——昏迷也算倒。
+// remake 的投影各走各的，這裡逐格釘住差異。
+func TestPartyWipeCriteriaFollowOriginalAsm(t *testing.T) {
+	state := NewState(testCatalog())
+	if state.postCombatPartyDead() || state.partyCannotAct() {
+		t.Fatal("空隊伍不是團滅")
+	}
+	state.partyRoster = party.Roster{
+		{ID: "a", HitPoints: 0, MaxHitPoints: 8, HealthStatus: party.HealthStatusDead},
+		{ID: "b", HitPoints: 0, MaxHitPoints: 8, HealthStatus: party.HealthStatusUnconscious},
+	}
+	if state.postCombatPartyDead() {
+		t.Fatal("POSTCOM：還有人昏迷就不算全滅")
+	}
+	if !state.partyCannotAct() {
+		t.Fatal("DAMAGE 收尾：昏迷也算倒下，全隊倒了")
+	}
+	state.partyRoster[1].HealthStatus = party.HealthStatusStoned
+	if !state.postCombatPartyDead() {
+		t.Fatal("POSTCOM：死亡＋石化＝全滅")
+	}
+	// 戰鬥擊倒目前不寫狀態階梯：POSTCOM 那一側對狀態 OK 而 HP 歸零的成員
+	// 退回 HP 判定（1204 邊界）；DAMAGE 那一側只看旗標語意——沒被明確放倒
+	// 的算還站著（沒鋪 HP 的走訪名冊不可被判成團滅）。
+	state.partyRoster = party.Roster{{ID: "a", HitPoints: 0, MaxHitPoints: 8}}
+	if !state.postCombatPartyDead() {
+		t.Fatal("POSTCOM：狀態 OK＋HP 0 退回 HP 判定")
+	}
+	if state.partyCannotAct() {
+		t.Fatal("DAMAGE 收尾：狀態 OK 沒被放倒過，不算倒下")
+	}
+	state.partyRoster[0].HitPoints = 3
+	if state.postCombatPartyDead() || state.partyCannotAct() {
+		t.Fatal("站著的人在，兩個判準都不算全滅")
+	}
+	// ANIMATED 站著也算全滅成員：它在 POSTCOM 的集合 {1,2,6,7,8} 裡。
+	state.partyRoster[0].HealthStatus = party.HealthStatusAnimated
+	if !state.postCombatPartyDead() {
+		t.Fatal("POSTCOM：只剩活死人＝全滅")
+	}
+	if state.partyCannotAct() {
+		t.Fatal("DAMAGE 收尾：活死人還站著，能行動")
+	}
+}
+
+// 戰鬥打輸但成員只是昏迷：原作 POSTCOM 走**非全滅**那一條（`18F6h` 跳過全滅
+// 畫面與換曲點），隊伍帶著倒地的人回到地圖（spec 1204）。
+func TestCombatDefeatWithUnconsciousMemberIsNotAWipe(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 0, MaxHitPoints: 8,
+		HealthStatus: party.HealthStatusUnconscious}}
+	if err := state.StartCombat(
+		[]combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 1, MaxHitPoints: 8, ArmorClass: 10}},
+		[]combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10}}, 7); err != nil {
+		t.Fatal(err)
+	}
+	// Status 是行動後才刷新的欄位，直接把唯一的隊員打到 0 讓敗戰成立。
+	if err := state.battle.SetHitPoints("hero", 0); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatStatus() != combat.StatusEnemyWon {
+		t.Fatalf("status=%v，want 敵方獲勝", state.CombatStatus())
+	}
+	if err := state.finishCombat(); err != nil {
+		t.Fatal(err)
+	}
+	if state.PartyKilled() || state.programEndMenu {
+		t.Fatalf("昏迷不是全滅，卻進了全滅畫面：killed=%v menu=%v",
+			state.PartyKilled(), state.programEndMenu)
+	}
+	if state.OriginalEvent != "COMBAT" {
+		t.Fatalf("event=%q，want 一般戰後收尾", state.OriginalEvent)
 	}
 }
 

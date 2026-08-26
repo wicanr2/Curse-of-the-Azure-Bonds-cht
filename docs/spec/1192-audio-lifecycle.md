@@ -212,12 +212,14 @@ POSTCOM 的 `sub_1775` 先走一次角色名冊算 `PARTYDEAD`（`7F34h`）：�
 `TTY := 1`（`7F36h`，切回文字模式）。非全滅那一條在 `18F6h` 直接 `jmp 1963h`，
 **跳過那個換曲點** ⇒ 兩條不是同一首。
 
-⚠ remake 用 `combat.StatusEnemyWon` 當那一刻，**判準不完全相同**：那是戰鬥層的
-「敵方獲勝」，不是逐位查 `CHARSTATUS`。決鬥在 remake 走不到（`GODUEL` 的兩個
-`2Dh CALL` 選擇子 corpus 都沒用到，spec 1150），所以 `ADUEL` 那一半不影響結果。
+remake 的換曲點掛在 `StatusEnemyWon && postCombatPartyDead()`——後者就是上面
+`PARTYDEAD` 的逐位狀態判準（spec 1204），打輸但有人只是昏迷不放這一首。
+決鬥在 remake 走不到（`GODUEL` 的兩個 `2Dh CALL` 選擇子 corpus 都沒用到，
+spec 1150），所以 `ADUEL` 那一半不影響結果。
 
-⚠ **接上換曲點不等於接上那個畫面。** 原作全滅之後回主選單、結局之後問存檔；
-remake 的全滅目前只顯示「戰鬥失敗。」就回到地圖。那是另一條缺口，不在本節。
+全滅畫面本身由 `enterPartyKilled` 接（全滅畫面 → 回主選單；三個來源
+`PROGRAM 3`／戰後 PARTYDEAD／ECL DAMAGE 收尾，見 spec 1204），結局之後的
+存檔詢問由 `beginEndingScene` 的五頁過場收尾（spec 1154）。
 
 ### 開戰的 `47h` 分岔（第 750 輪接上）
 

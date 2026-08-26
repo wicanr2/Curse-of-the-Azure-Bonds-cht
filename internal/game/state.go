@@ -1540,6 +1540,11 @@ func (s *State) Select(index int) error {
 		// 那種封包就會改用本次執行最後選到的人——那是錯的。
 		if _, err := s.resolveAutomaticECLDamage(); err != nil {
 			return err
+		} else if s.PartyKilled() {
+			// DAMAGE 收尾判定全滅（resolvePendingECLDamage 內，spec 1152／1204）
+			// 之後，本次執行剩餘的訊號不再套用，直接停在全滅畫面
+			//（宣稱邊界：原作是跑完整段才由主迴圈收尾）。
+			return nil
 		}
 		s.applyECLLoadCharacterSignals(result)
 		if err := s.applyECLNPCSignals(result); err != nil {
@@ -2771,6 +2776,13 @@ func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave fun
 			}
 		}
 	}
+	// 原作 `2Eh` handler 的收尾（spec 1152／1204）：全隊「站著且能行動」旗標都
+	// 是 0 就印 The entire party is killed! 並設 `DS:4FC7h`——**昏迷／瀕死也算
+	// 倒下**，與戰後 POSTCOM 的判準不同。finishCombat 已進全滅畫面時不覆寫
+	//（那一條的事件名照原作是戰後結局，不是 DAMAGE）。
+	if len(outcomes) > 0 && !s.PartyKilled() && s.partyCannotAct() {
+		s.enterPartyKilled("DAMAGE")
+	}
 	return outcomes, nil
 }
 
@@ -3969,8 +3981,9 @@ func (s *State) enterPartyKilled(event string) {
 	s.Message = s.catalog.Text("program_party_killed_message", "program_party_killed_message")
 }
 
-// PartyWipedOut 回答「隊伍是不是全倒了」——`2Eh DAMAGE` 收尾判的那一件事
-// （spec 1152）。空隊伍不算全滅：那是還沒建角，不是團滅。
+// PartyWipedOut 是「全員 HP 歸零」的樸素視角，給報表與測試用。
+// 兩個全滅畫面的閘各自走原作的判準：戰鬥後是 postCombatPartyDead
+// （POSTCOM 的 `PARTYDEAD`）、ECL DAMAGE 收尾是 partyCannotAct（spec 1204）。
 func (s *State) PartyWipedOut() bool {
 	if len(s.partyRoster) == 0 {
 		return false
@@ -3978,6 +3991,56 @@ func (s *State) PartyWipedOut() bool {
 	for _, character := range s.partyRoster {
 		if character.HitPoints > 0 {
 			return false
+		}
+	}
+	return true
+}
+
+// partyCannotAct 是原作 ECL `2Eh DAMAGE` 收尾的全滅判準（spec 1204）：每一位的
+// 「站著且能行動」旗標（DOS `+196h`／PC-98 `+197h`——KILLDUDE 放倒任何形式都
+// 清 0、STANDUP 站起來才設回 1）都是 0 才印 The entire party is killed! 並設
+// `DS:4FC7h`。昏迷／瀕死**也算**倒下——這一點與戰後 POSTCOM 的判準不同。
+// remake 的投影：狀態在 {OK, Animated} 就算能行動——旗標只被明確的放倒
+// 轉換清掉（ECL 傷害路徑的階梯會把倒下的人標成昏迷／瀕死／死亡），
+// 不拿 HP 數字倒推；HP 0 而狀態 OK 的視同還站著（與原作旗標語意一致，
+// 也讓沒鋪 HP 的走訪名冊不會被誤判成團滅）。
+// 空隊伍不算全滅：那是還沒建角，不是團滅。
+func (s *State) partyCannotAct() bool {
+	if len(s.partyRoster) == 0 {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		status := character.HealthStatus
+		if status == party.HealthStatusOK || status == party.HealthStatusAnimated {
+			return false
+		}
+	}
+	return true
+}
+
+// postCombatPartyDead 是原作 POSTCOM 的 `PARTYDEAD`（PC-98 overlay-05
+// `17D0h..183Eh`，spec 1204）：每一位的 CHARSTATUS 都在 {ANIMATED, TEMPGONE,
+// DEAD, STONED, GONE} 才算全滅——**還有人昏迷／瀕死就不算**，隊伍帶著倒地的
+// 成員活下去。remake 的狀態集合沒有 TEMPGONE／GONE（沒有對應機制），取交集
+// {Animated, Dead, Stoned}。
+//
+// ⚠ 戰鬥擊倒目前不寫狀態階梯（KILLDUDE 的 new_state 由誰帶什麼值未讀，
+// spec 1204「明確不宣稱」），所以狀態還是 OK 而 HP 歸零的成員暫時視同全滅
+// 成員；被 ECL DAMAGE 階梯明確標成昏迷／瀕死的照原作不算。
+func (s *State) postCombatPartyDead() bool {
+	if len(s.partyRoster) == 0 {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		switch character.HealthStatus {
+		case party.HealthStatusAnimated, party.HealthStatusDead, party.HealthStatusStoned:
+			continue
+		case party.HealthStatusUnconscious, party.HealthStatusDying:
+			return false
+		default:
+			if character.HitPoints > 0 {
+				return false
+			}
 		}
 	}
 	return true

@@ -161,6 +161,9 @@ DS:6506h := <進 handler 時存下來的目前角色>;            { ★ 還原 }
 ```
 
 - `+196h ≠ 0 ＝ 還能動` 與 [spec 828](828-drop-from-party.md) 的兩句道別同一個判準。
+  ⚠ 這是 **DOS** 的 `+196h`（站著且能行動旗標）；PC-98 的 `+196h` 是
+  `CHARSTATUS`——兩平台差一格 offset（spec 1166），對照表與這面旗標的
+  生產者（KILLDUDE／STANDUP）見 [spec 1204](1204-party-wipe-criteria.md)。
 - 游標欄 `65A0h`／列 `65A1h` 的角色由 [spec 1147](1147-ecl-print-return-hard-newline.md) 定案。
 - ⚠ **handler 會把 `DS:6506h` 還原**，所以 `2Eh` 不改變「目前角色」。
 

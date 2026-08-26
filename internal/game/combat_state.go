@@ -4528,8 +4528,9 @@ func (s *State) finishCombat() error {
 	// ⚠ **全滅是例外**：原作的 POSTCOM 在全滅那一條走的是另一支
 	// （PC-98 overlay-05 `18F8h`），印完全滅訊息換成曲目 2 才切回文字模式；
 	// 非全滅那一條**跳過**那個換曲點（`18F6h` 的 `jmp` 直接落到 `1963h`）。
-	// 兩條混用會讓打輸的時候響起場景曲。
-	if s.battle.Status() == combat.StatusEnemyWon {
+	// 兩條混用會讓打輸的時候響起場景曲。全滅與否照 POSTCOM 的 `PARTYDEAD`
+	// 判準（spec 1204）——打輸但還有人只是昏迷／瀕死，不放全滅那一首。
+	if s.battle.Status() == combat.StatusEnemyWon && s.postCombatPartyDead() {
 		s.requestPartyWipeMusic()
 	} else {
 		s.restoreSceneMusic()
@@ -4550,7 +4551,7 @@ func (s *State) finishCombat() error {
 	// ★ 全滅要停下來，不是印一句話就回地圖：原作的 `2Eh DAMAGE` 收尾在全隊
 	// 都倒下時設 `DS:4FC7h`，兩個主迴圈都以它收尾（spec 1152／1045／1095），
 	// 玩家看到的是全滅畫面然後回主選單——與 `PROGRAM 3` 同一個結局。
-	if s.battle.Status() == combat.StatusEnemyWon && s.PartyWipedOut() {
+	if s.battle.Status() == combat.StatusEnemyWon && s.postCombatPartyDead() {
 		s.enterPartyKilled("COMBAT")
 		return nil
 	}
