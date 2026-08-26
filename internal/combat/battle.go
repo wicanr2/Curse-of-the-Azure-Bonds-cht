@@ -111,6 +111,11 @@ type Fighter struct {
 	// flash but does not restore combat placement; combat_heal/placement must
 	// clear this marker separately.
 	DownedCorpse bool
+	// DownOverkill 是把這名戰鬥員打倒的那一擊的**溢出量**（傷害 − 當時 HP）。
+	// 原作的 SAVEDAMAGE（PC-98 `overlay-24:2658h`，spec 1205）用它決定倒下的
+	// 形式：>9 死亡、1..9 瀕死（並記出血）、0 昏迷。倒下後的追擊不覆寫；
+	// 治療站起來後再倒會重記。
+	DownOverkill int `json:"down_overkill,omitempty"`
 	CombatAction ActionState
 	// 原作戰鬥狀態記錄（`+18Dh` 指到的 22 bytes）的三格，spec 1137：
 	// `+09h` 面向、`+0Fh` 這一回合轉向過幾次、`+12h` 累計轉向（0..7 環狀）。
@@ -819,6 +824,11 @@ func (b *Battle) SetCombatTerrainCodes(lookup CombatTerrainCode) {
 func (b *Battle) applyPositiveDamage(target *Fighter, damage int) int {
 	if b == nil || target == nil || damage <= 0 {
 		return 0
+	}
+	if target.HitPoints > 0 && damage >= target.HitPoints {
+		// 這一擊放倒目標：記下溢出量給 SAVEDAMAGE 階梯（spec 1205）。
+		// 追擊（HP 已是 0）不覆寫——原作倒下者已離開戰鬥不再被選中。
+		target.DownOverkill = damage - target.HitPoints
 	}
 	if damage > target.HitPoints {
 		damage = target.HitPoints

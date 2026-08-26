@@ -3494,10 +3494,48 @@ func (s *State) turnUndeadMessage(cleric combat.Fighter, result combat.TurnUndea
 	return strings.Join(lines, "\n")
 }
 
+// syncCombatDownStatuses 把戰鬥擊倒投影成名冊狀態。原作只有一支共用的
+// SAVEDAMAGE（PC-98 `overlay-24:2658h`，Borland 符號同名；spec 1205）在做這
+// 件事：溢出 >9 → 死亡；原狀態 ANIMATED 且倒下 → 死亡；溢出 1..9 → 瀕死並
+// 記出血（包紮會清掉，spec 696）；剛好歸零 → 昏迷。remake 的 ECL 傷害路徑
+// 早已照這個階梯寫（`party.ApplyDamageWithHealthStatus`），這裡補上戰鬥
+// 路徑那一半。已經倒過的（狀態不在 {OK, Animated}）不重判。
+func (s *State) syncCombatDownStatuses() {
+	if s.battle == nil {
+		return
+	}
+	for index := range s.partyRoster {
+		character := &s.partyRoster[index]
+		status := character.HealthStatus
+		if status != party.HealthStatusOK && status != party.HealthStatusAnimated {
+			continue
+		}
+		fighter, ok := s.fighter(character.ID)
+		if !ok || fighter.Side != combat.SideParty || fighter.HitPoints > 0 || fighter.MaxHitPoints <= 0 {
+			continue
+		}
+		next := party.HealthStatusUnconscious
+		switch {
+		case fighter.DownOverkill > 9 || status == party.HealthStatusAnimated:
+			next = party.HealthStatusDead
+		case fighter.DownOverkill > 0:
+			next = party.HealthStatusDying
+		}
+		character.HealthStatus = next
+		if next == party.HealthStatusDying {
+			character.Bleeding = fighter.DownOverkill
+		} else {
+			character.Bleeding = 0
+		}
+		character.HitPoints = 0
+	}
+}
+
 func (s *State) CombatCanBandage() bool {
 	if !s.CombatActive() {
 		return false
 	}
+	s.syncCombatDownStatuses()
 	for _, character := range s.partyRoster {
 		if character.HealthStatus != party.HealthStatusDying {
 			continue
@@ -4530,6 +4568,8 @@ func (s *State) finishCombat() error {
 	// 非全滅那一條**跳過**那個換曲點（`18F6h` 的 `jmp` 直接落到 `1963h`）。
 	// 兩條混用會讓打輸的時候響起場景曲。全滅與否照 POSTCOM 的 `PARTYDEAD`
 	// 判準（spec 1204）——打輸但還有人只是昏迷／瀕死，不放全滅那一首。
+	// 判之前先把戰鬥擊倒投影成名冊狀態（SAVEDAMAGE 階梯，spec 1205）。
+	s.syncCombatDownStatuses()
 	if s.battle.Status() == combat.StatusEnemyWon && s.postCombatPartyDead() {
 		s.requestPartyWipeMusic()
 	} else {

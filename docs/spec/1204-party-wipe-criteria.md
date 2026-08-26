@@ -96,11 +96,10 @@ spec 1166 的位移表**；語意衝突時第一個檢查就是「是不是同�
 
 ## 明確不宣稱
 
-- **戰鬥擊倒的狀態階梯未接**：誰呼叫 KILLDUDE、new_state 依什麼門檻選
-  UNCONC／DYING／DEAD（PC-98 的傷害主體在常駐 `14Ah:0ACh`，未讀）。
-  remake 戰鬥扣血 clamp 在 0、不寫名冊狀態；`postCombatPartyDead` 對狀態
-  OK 而 HP 歸零的成員**退回 HP 判定**，是文件化的近似。階梯接上後這個
-  退回應該拿掉。
+- 傷害放倒的狀態階梯已由 [spec 1205](1205-savedamage-down-ladder.md) 收掉
+  （`14Ah:0ACh` ＝ overlay-24 的 `SAVEDAMAGE`，戰鬥與 ECL 共用；remake 的
+  戰鬥路徑同輪接上）。`postCombatPartyDead` 對狀態 OK 而 HP 歸零的成員仍
+  退回 HP 判定——理由與純化條件見 1205 的「明確不宣稱」。
 - 非全滅敗戰的清理細節（POSTCOM `184Fh..18F6h` 的兩條暫存鏈、
   `sub_1506`／`sub_A5C`／`sub_1072`）未逐支解讀；remake 的敗戰收尾不對照
   這幾支的內部行為。
