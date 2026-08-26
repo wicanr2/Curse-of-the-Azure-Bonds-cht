@@ -264,7 +264,8 @@
    "class": "pending",
    "preview": "2E 0D 70",
    "ledger_state": "已解讀",
-   "ledger_function": "sub_47"
+   "ledger_function": "sub_47",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -404,7 +405,8 @@
    "end": 1025,
    "size": 4,
    "class": "pending",
-   "preview": "11 43 75 72"
+   "preview": "11 43 75 72",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -825,7 +827,8 @@
    "end": 2162,
    "size": 3,
    "class": "pending",
-   "preview": "10 69 73"
+   "preview": "10 69 73",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -866,7 +869,8 @@
    "end": 2403,
    "size": 4,
    "class": "pending",
-   "preview": "0E 69 73 20"
+   "preview": "0E 69 73 20",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -941,7 +945,8 @@
    "class": "pending",
    "preview": "16 2C 20",
    "ledger_state": "已解讀",
-   "ledger_function": "sub_A63"
+   "ledger_function": "sub_A63",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -1006,7 +1011,8 @@
    "end": 3413,
    "size": 3,
    "class": "pending",
-   "preview": "08 7E 59"
+   "preview": "08 7E 59",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -1143,7 +1149,8 @@
    "end": 5821,
    "size": 10,
    "class": "pending",
-   "preview": "00 00 00 00 00 00 FF 03 FE FF"
+   "preview": "00 00 00 00 00 00 FF 03 FE FF",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -1160,7 +1167,10 @@
    "end": 6122,
    "size": 32,
    "class": "pending",
-   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00"
+   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_17C4+",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -1201,7 +1211,8 @@
    "end": 1864,
    "size": 28,
    "class": "pending",
-   "preview": "00 00 09 00 00 20 04 00 80 AB 03 00 00 00 00 00"
+   "preview": "00 00 09 00 00 20 04 00 80 AB 03 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -1242,7 +1253,8 @@
    "end": 4072,
    "size": 71,
    "class": "pending",
-   "preview": "06 47 75 61 72 64 20 0B 44 65 6C 61 79 20 51 75"
+   "preview": "06 47 75 61 72 64 20 0B 44 65 6C 61 79 20 51 75",
+   "code_refs": 6
   },
   {
    "platform": "dos",
@@ -1251,7 +1263,8 @@
    "end": 4537,
    "size": 33,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "code_refs": 2
   },
   {
    "platform": "dos",
@@ -1260,7 +1273,8 @@
    "end": 4569,
    "size": 25,
    "class": "pending",
-   "preview": "65 64 20 28 03 29 20 3A 01 20 07 53 6C 6F 77 65"
+   "preview": "65 64 20 28 03 29 20 3A 01 20 07 53 6C 6F 77 65",
+   "code_refs": 4
   },
   {
    "platform": "dos",
@@ -1584,7 +1598,8 @@
    "end": 797,
    "size": 199,
    "class": "pending",
-   "preview": "0B 2D 42 61 63 6B 73 74 61 62 73 2D 0E 73 6C 61"
+   "preview": "0B 2D 42 61 63 6B 73 74 61 62 73 2D 0E 73 6C 61",
+   "code_refs": 15
   },
   {
    "platform": "dos",
@@ -1617,7 +1632,8 @@
    "end": 7670,
    "size": 32,
    "class": "pending",
-   "preview": "C0 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "C0 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -1658,7 +1674,8 @@
    "end": 13228,
    "size": 83,
    "class": "pending",
-   "preview": "01 20 00 00 00 00 00 00 20 00 10 00 00 00 00 00"
+   "preview": "01 20 00 00 00 00 00 00 20 00 10 00 00 00 00 00",
+   "code_refs": 6
   },
   {
    "platform": "dos",
@@ -1667,7 +1684,8 @@
    "end": 15128,
    "size": 33,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "code_refs": 3
   },
   {
    "platform": "dos",
@@ -1727,7 +1745,8 @@
    "end": 2314,
    "size": 10,
    "class": "pending",
-   "preview": "00 08 4E 6F 74 20 48 65 72 65"
+   "preview": "00 08 4E 6F 74 20 48 65 72 65",
+   "code_refs": 2
   },
   {
    "platform": "dos",
@@ -3307,7 +3326,8 @@
    "end": 3939,
    "size": 3,
    "class": "pending",
-   "preview": "64 0C 52"
+   "preview": "64 0C 52",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -3486,7 +3506,8 @@
    "class": "pending",
    "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
    "ledger_state": "邊界碎片",
-   "ledger_function": "sub_11DE"
+   "ledger_function": "sub_11DE",
+   "code_refs": 2
   },
   {
    "platform": "dos",
@@ -3495,7 +3516,8 @@
    "end": 6128,
    "size": 28,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -3520,7 +3542,8 @@
    "end": 6989,
    "size": 103,
    "class": "pending",
-   "preview": "0D 47 61 6D 65 20 53 70 65 65 64 20 3D 20 16 20"
+   "preview": "0D 47 61 6D 65 20 53 70 65 65 64 20 3D 20 16 20",
+   "code_refs": 7
   },
   {
    "platform": "dos",
@@ -3529,7 +3552,8 @@
    "end": 7434,
    "size": 97,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "code_refs": 9
   },
   {
    "platform": "dos",
@@ -3538,7 +3562,8 @@
    "end": 9212,
    "size": 79,
    "class": "pending",
-   "preview": "17 54 68 65 20 70 61 72 74 79 20 6D 61 6B 65 73"
+   "preview": "17 54 68 65 20 70 61 72 74 79 20 6D 61 6B 65 73",
+   "code_refs": 5
   },
   {
    "platform": "dos",
@@ -3622,7 +3647,8 @@
    "end": 1485,
    "size": 3,
    "class": "pending",
-   "preview": "05 43 55"
+   "preview": "05 43 55",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -3719,7 +3745,8 @@
    "end": 3474,
    "size": 119,
    "class": "pending",
-   "preview": "22 43 61 6E 27 74 20 73 61 76 65 2E 20 20 4E 6F"
+   "preview": "22 43 61 6E 27 74 20 73 61 76 65 2E 20 20 4E 6F",
+   "code_refs": 8
   },
   {
    "platform": "dos",
@@ -3744,7 +3771,8 @@
    "end": 8846,
    "size": 100,
    "class": "pending",
-   "preview": "11 50 75 74 20 73 61 76 65 20 64 69 73 6B 20 69"
+   "preview": "11 50 75 74 20 73 61 76 65 20 64 69 73 6B 20 69",
+   "code_refs": 15
   },
   {
    "platform": "dos",
@@ -3780,7 +3808,8 @@
    "end": 13736,
    "size": 32,
    "class": "pending",
-   "preview": "FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -3945,7 +3974,8 @@
    "end": 14152,
    "size": 56,
    "class": "pending",
-   "preview": "00 00 00 00 11 50 75 74 20 73 61 76 65 20 64 69"
+   "preview": "00 00 00 00 11 50 75 74 20 73 61 76 65 20 64 69",
+   "code_refs": 6
   },
   {
    "platform": "dos",
@@ -3965,7 +3995,8 @@
    "end": 15928,
    "size": 63,
    "class": "pending",
-   "preview": "11 53 61 76 65 20 57 68 69 63 68 20 47 61 6D 65"
+   "preview": "11 53 61 76 65 20 57 68 69 63 68 20 47 61 6D 65",
+   "code_refs": 3
   },
   {
    "platform": "dos",
@@ -4174,7 +4205,8 @@
    "class": "pending",
    "preview": "89 EC 5D CB 09 50 69 63 6B 20 52 61 63 65 02 20",
    "ledger_state": "邊界碎片",
-   "ledger_function": "sub_1DD"
+   "ledger_function": "sub_1DD",
+   "code_refs": 17
   },
   {
    "platform": "dos",
@@ -4185,7 +4217,8 @@
    "class": "pending",
    "preview": "69 63 6B 20 43 6C 61 73 73 0E 50 69 63 6B 20 41",
    "ledger_state": "邊界碎片",
-   "ledger_function": "sub_1DD"
+   "ledger_function": "sub_1DD",
+   "code_refs": 2
   },
   {
    "platform": "dos",
@@ -4196,7 +4229,8 @@
    "class": "pending",
    "preview": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 2F",
    "ledger_state": "邊界碎片",
-   "ledger_function": "sub_1DD"
+   "ledger_function": "sub_1DD",
+   "code_refs": 5
   },
   {
    "platform": "dos",
@@ -4245,7 +4279,8 @@
    "end": 16099,
    "size": 114,
    "class": "pending",
-   "preview": "03 6F 6C 64 0E 72 65 61 64 79 20 20 20 61 63 74"
+   "preview": "03 6F 6C 64 0E 72 65 61 64 79 20 20 20 61 63 74",
+   "code_refs": 15
   },
   {
    "platform": "dos",
@@ -4378,7 +4413,8 @@
    "end": 2856,
    "size": 32,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "code_refs": 2
   },
   {
    "platform": "dos",
@@ -4411,7 +4447,8 @@
    "end": 5395,
    "size": 32,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "code_refs": 2
   },
   {
    "platform": "dos",
@@ -4436,7 +4473,8 @@
    "end": 5455,
    "size": 45,
    "class": "pending",
-   "preview": "61 64 65 05 20 44 72 6F 70 06 20 48 61 6C 76 65"
+   "preview": "61 64 65 05 20 44 72 6F 70 06 20 48 61 6C 76 65",
+   "code_refs": 7
   },
   {
    "platform": "dos",
@@ -4581,7 +4619,8 @@
    "end": 1810,
    "size": 72,
    "class": "pending",
-   "preview": "00 26 52 65 73 74 20 44 61 79 73 20 48 6F 75 72"
+   "preview": "00 26 52 65 73 74 20 44 61 79 73 20 48 6F 75 72",
+   "code_refs": 3
   },
   {
    "platform": "dos",
@@ -4670,7 +4709,8 @@
    "end": 456,
    "size": 57,
    "class": "pending",
-   "preview": "04 43 61 73 74 08 4D 65 6D 6F 72 69 7A 65 06 53"
+   "preview": "04 43 61 73 74 08 4D 65 6D 6F 72 69 7A 65 06 53",
+   "code_refs": 5
   },
   {
    "platform": "dos",
@@ -5119,7 +5159,8 @@
    "end": 17458,
    "size": 13,
    "class": "pending",
-   "preview": "00 0B 69 73 20 61 66 66 65 63 74 65 64"
+   "preview": "00 0B 69 73 20 61 66 66 65 63 74 65 64",
+   "code_refs": 2
   },
   {
    "platform": "dos",
@@ -5401,7 +5442,8 @@
    "end": 617,
    "size": 32,
    "class": "pending",
-   "preview": "00 00 20 00 00 60 02 00 00 00 00 00 00 00 00 00"
+   "preview": "00 00 20 00 00 60 02 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -5426,7 +5468,8 @@
    "end": 8150,
    "size": 189,
    "class": "pending",
-   "preview": "06 74 61 6B 65 73 20 12 20 70 6F 69 6E 74 73 20"
+   "preview": "06 74 61 6B 65 73 20 12 20 70 6F 69 6E 74 73 20",
+   "code_refs": 13
   },
   {
    "platform": "dos",
@@ -5443,7 +5486,8 @@
    "end": 9211,
    "size": 32,
    "class": "pending",
-   "preview": "33 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "33 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -5516,7 +5560,8 @@
    "end": 9249,
    "size": 32,
    "class": "pending",
-   "preview": "03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -5557,7 +5602,8 @@
    "end": 11882,
    "size": 47,
    "class": "pending",
-   "preview": "05 20 45 78 69 74 00 20 00 08 00 00 00 00 20 00"
+   "preview": "05 20 45 78 69 74 00 20 00 08 00 00 00 00 20 00",
+   "code_refs": 4
   },
   {
    "platform": "dos",
@@ -7600,7 +7646,8 @@
    "end": 213,
    "size": 32,
    "class": "pending",
-   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00"
+   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -7609,7 +7656,8 @@
    "end": 485,
    "size": 32,
    "class": "pending",
-   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00"
+   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "dos",
@@ -7618,7 +7666,8 @@
    "end": 952,
    "size": 36,
    "class": "pending",
-   "preview": "00 00 00 00 01 00 FF 03 FE FF FF 07 00 00 00 00"
+   "preview": "00 00 00 00 01 00 FF 03 FE FF FF 07 00 00 00 00",
+   "code_refs": 2
   },
   {
    "platform": "dos",
@@ -7651,7 +7700,8 @@
    "end": 4394,
    "size": 39,
    "class": "pending",
-   "preview": "06 59 65 73 20 4E 6F 00 00 00 00 00 00 00 00 00"
+   "preview": "06 59 65 73 20 4E 6F 00 00 00 00 00 00 00 00 00",
+   "code_refs": 2
   },
   {
    "platform": "dos",
@@ -7855,7 +7905,8 @@
    "end": 71,
    "size": 39,
    "class": "pending",
-   "preview": "00 00 00 00 00 00 00 04 38 78 38 64 0F 55 6E 61"
+   "preview": "00 00 00 00 00 00 00 04 38 78 38 64 0F 55 6E 61",
+   "code_refs": 3
   },
   {
    "platform": "dos",
@@ -8120,7 +8171,8 @@
    "end": 4210,
    "size": 80,
    "class": "pending",
-   "preview": "8F 57 D2 D9 06 94 B2 82 AF 82 E9 06 C3 DE A8 C3"
+   "preview": "8F 57 D2 D9 06 94 B2 82 AF 82 E9 06 C3 DE A8 C3",
+   "code_refs": 7
   },
   {
    "platform": "pc98",
@@ -8129,7 +8181,8 @@
    "end": 5317,
    "size": 8,
    "class": "pending",
-   "preview": "1E 82 CD 8E A9 95 AA 82"
+   "preview": "1E 82 CD 8E A9 95 AA 82",
+   "code_refs": 2
   },
   {
    "platform": "pc98",
@@ -8186,7 +8239,8 @@
    "end": 1700,
    "size": 46,
    "class": "pending",
-   "preview": "50 20 20 20 20 20 94 83 82 A4 20 20 B7 AC D7 B8"
+   "preview": "50 20 20 20 20 20 94 83 82 A4 20 20 B7 AC D7 B8",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -8235,7 +8289,8 @@
    "end": 5737,
    "size": 32,
    "class": "pending",
-   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00"
+   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -8244,7 +8299,8 @@
    "end": 6016,
    "size": 32,
    "class": "pending",
-   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00"
+   "preview": "00 00 00 00 00 00 FF 03 FE FF FF 07 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -8277,7 +8333,8 @@
    "end": 1904,
    "size": 84,
    "class": "pending",
-   "preview": "06 20 88 DA 93 AE 20 06 B7 AC D7 B8 C0 B0 06 20"
+   "preview": "06 20 88 DA 93 AE 20 06 B7 AC D7 B8 C0 B0 06 20",
+   "code_refs": 10
   },
   {
    "platform": "pc98",
@@ -8318,7 +8375,8 @@
    "end": 4057,
    "size": 10,
    "class": "pending",
-   "preview": "06 20 96 68 8C E4 20 06 20 91"
+   "preview": "06 20 96 68 8C E4 20 06 20 91",
+   "code_refs": 2
   },
   {
    "platform": "pc98",
@@ -8327,7 +8385,8 @@
    "end": 4136,
    "size": 67,
    "class": "pending",
-   "preview": "8E E8 93 96 82 C4 06 20 91 AC 93 78 20 06 94 B2"
+   "preview": "8E E8 93 96 82 C4 06 20 91 AC 93 78 20 06 94 B2",
+   "code_refs": 5
   },
   {
    "platform": "pc98",
@@ -8338,7 +8397,8 @@
    "class": "pending",
    "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
    "ledger_state": "邊界碎片",
-   "ledger_function": "sub_11C7"
+   "ledger_function": "sub_11C7",
+   "code_refs": 7
   },
   {
    "platform": "pc98",
@@ -8549,7 +8609,8 @@
    "end": 5220,
    "size": 4,
    "class": "pending",
-   "preview": "0E 82 CD 93"
+   "preview": "0E 82 CD 93",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -8566,7 +8627,8 @@
    "end": 5397,
    "size": 3,
    "class": "pending",
-   "preview": "0C 82 CD"
+   "preview": "0C 82 CD",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -8711,7 +8773,8 @@
    "end": 7728,
    "size": 32,
    "class": "pending",
-   "preview": "C0 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "C0 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -8752,7 +8815,8 @@
    "end": 12959,
    "size": 94,
    "class": "pending",
-   "preview": "01 20 00 00 00 00 00 00 20 00 10 00 00 00 00 00"
+   "preview": "01 20 00 00 00 00 00 00 20 00 10 00 00 00 00 00",
+   "code_refs": 7
   },
   {
    "platform": "pc98",
@@ -8761,7 +8825,8 @@
    "end": 14936,
    "size": 36,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "code_refs": 3
   },
   {
    "platform": "pc98",
@@ -8922,7 +8987,8 @@
    "class": "pending",
    "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
    "ledger_state": "邊界碎片",
-   "ledger_function": "sub_11C7"
+   "ledger_function": "sub_11C7",
+   "code_refs": 2
   },
   {
    "platform": "pc98",
@@ -8931,7 +8997,10 @@
    "end": 6080,
    "size": 30,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_1799+",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -8940,7 +9009,8 @@
    "end": 6134,
    "size": 14,
    "class": "pending",
-   "preview": "00 00 00 0A 82 F0 91 49 82 F1 82 BE 81 42"
+   "preview": "00 00 00 0A 82 F0 91 49 82 F1 82 BE 81 42",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -8957,7 +9027,8 @@
    "end": 7060,
    "size": 92,
    "class": "pending",
-   "preview": "06 91 AC 82 B3 81 81 18 81 40 81 69 82 4F 81 81"
+   "preview": "06 91 AC 82 B3 81 81 18 81 40 81 69 82 4F 81 81",
+   "code_refs": 7
   },
   {
    "platform": "pc98",
@@ -8966,7 +9037,8 @@
    "end": 7500,
    "size": 98,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "code_refs": 10
   },
   {
    "platform": "pc98",
@@ -8975,7 +9047,8 @@
    "end": 9303,
    "size": 67,
    "class": "pending",
-   "preview": "1E 83 70 81 5B 83 65 83 42 81 5B 82 CD 83 4C 83"
+   "preview": "1E 83 70 81 5B 83 65 83 42 81 5B 82 CD 83 4C 83",
+   "code_refs": 4
   },
   {
    "platform": "pc98",
@@ -8992,7 +9065,8 @@
    "end": 356,
    "size": 21,
    "class": "pending",
-   "preview": "04 2E 53 41 56 0D 83 5A 81 5B 83 75 83 51 81 5B"
+   "preview": "04 2E 53 41 56 0D 83 5A 81 5B 83 75 83 51 81 5B",
+   "code_refs": 4
   },
   {
    "platform": "pc98",
@@ -9025,7 +9099,8 @@
    "end": 2895,
    "size": 166,
    "class": "pending",
-   "preview": "1A 83 66 83 42 83 58 83 4E 82 C9 88 D9 8F ED 82"
+   "preview": "1A 83 66 83 42 83 58 83 4E 82 C9 88 D9 8F ED 82",
+   "code_refs": 6
   },
   {
    "platform": "pc98",
@@ -9074,7 +9149,8 @@
    "end": 10861,
    "size": 128,
    "class": "pending",
-   "preview": "2C 83 68 83 89 83 43 83 75 82 51 82 C9 83 5A 81"
+   "preview": "2C 83 68 83 89 83 43 83 75 82 51 82 C9 83 5A 81",
+   "code_refs": 16
   },
   {
    "platform": "pc98",
@@ -9099,7 +9175,8 @@
    "end": 16011,
    "size": 32,
    "class": "pending",
-   "preview": "FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -9116,7 +9193,8 @@
    "end": 17025,
    "size": 4,
    "class": "pending",
-   "preview": "06 73 61 76"
+   "preview": "06 73 61 76",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -9125,7 +9203,8 @@
    "end": 17150,
    "size": 124,
    "class": "pending",
-   "preview": "61 6D 04 2E 64 61 74 03 20 20 87 02 20 20 1C 82"
+   "preview": "61 6D 04 2E 64 61 74 03 20 20 87 02 20 20 1C 82",
+   "code_refs": 10
   },
   {
    "platform": "pc98",
@@ -9134,7 +9213,8 @@
    "end": 18126,
    "size": 204,
    "class": "pending",
-   "preview": "50 20 20 20 20 20 20 87 40 20 20 20 20 20 87 41"
+   "preview": "50 20 20 20 20 20 20 87 40 20 20 20 20 20 87 41",
+   "code_refs": 8
   },
   {
    "platform": "pc98",
@@ -9151,7 +9231,8 @@
    "end": 20488,
    "size": 198,
    "class": "pending",
-   "preview": "06 73 61 76 67 61 6D 04 2E 64 61 74 30 83 66 83"
+   "preview": "06 73 61 76 67 61 6D 04 2E 64 61 74 30 83 66 83",
+   "code_refs": 13
   },
   {
    "platform": "pc98",
@@ -9176,7 +9257,8 @@
    "end": 2811,
    "size": 262,
    "class": "pending",
-   "preview": "14 8E ED 91 B0 82 F0 91 49 82 F1 82 C5 82 AD 82"
+   "preview": "14 8E ED 91 B0 82 F0 91 49 82 F1 82 C5 82 AD 82",
+   "code_refs": 25
   },
   {
    "platform": "pc98",
@@ -9274,7 +9356,9 @@
    "end": 4092,
    "size": 4,
    "class": "pending",
-   "preview": "16 57 9A 52"
+   "preview": "16 57 9A 52",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_FF7+"
   },
   {
    "platform": "pc98",
@@ -9389,7 +9473,8 @@
    "end": 11047,
    "size": 73,
    "class": "pending",
-   "preview": "28 20 20 20 82 CD 82 A2 20 20 20 20 20 20 20 20"
+   "preview": "28 20 20 20 82 CD 82 A2 20 20 20 20 20 20 20 20",
+   "code_refs": 2
   },
   {
    "platform": "pc98",
@@ -9422,7 +9507,8 @@
    "end": 17808,
    "size": 99,
    "class": "pending",
-   "preview": "0C 8C C3 82 A2 83 41 83 43 83 52 83 93 1B 20 8F"
+   "preview": "0C 8C C3 82 A2 83 41 83 43 83 52 83 93 1B 20 8F",
+   "code_refs": 10
   },
   {
    "platform": "pc98",
@@ -9431,7 +9517,8 @@
    "end": 17866,
    "size": 26,
    "class": "pending",
-   "preview": "00 00 00 00 00 1A 82 B1 82 CC 83 41 83 43 83 52"
+   "preview": "00 00 00 00 00 1A 82 B1 82 CC 83 41 83 43 83 52",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -9448,7 +9535,9 @@
    "end": 21615,
    "size": 7,
    "class": "pending",
-   "preview": "83 FA 00 7C 07 7F 37"
+   "preview": "83 FA 00 7C 07 7F 37",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_5420+"
   },
   {
    "platform": "pc98",
@@ -9522,7 +9611,8 @@
    "end": 2864,
    "size": 31,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "code_refs": 2
   },
   {
    "platform": "pc98",
@@ -9555,7 +9645,10 @@
    "end": 5347,
    "size": 39,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 20 00 00 00 00 00 00 00",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_147D+",
+   "code_refs": 3
   },
   {
    "platform": "pc98",
@@ -9564,7 +9657,10 @@
    "end": 5387,
    "size": 30,
    "class": "pending",
-   "preview": "6E 82 B7 20 06 8E CC 82 C4 82 E9 06 95 AA 82 AF"
+   "preview": "6E 82 B7 20 06 8E CC 82 C4 82 E9 06 95 AA 82 AF",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_14E8+",
+   "code_refs": 4
   },
   {
    "platform": "pc98",
@@ -9610,7 +9706,8 @@
    "class": "pending",
    "preview": "0E 8E F4 82",
    "ledger_state": "已解讀",
-   "ledger_function": "sub_1A8F"
+   "ledger_function": "sub_1A8F",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -9723,7 +9820,8 @@
    "end": 1850,
    "size": 114,
    "class": "pending",
-   "preview": "00 50 20 20 20 20 20 20 93 FA 20 20 20 20 20 8E"
+   "preview": "00 50 20 20 20 20 20 20 93 FA 20 20 20 20 20 8E",
+   "code_refs": 3
   },
   {
    "platform": "pc98",
@@ -9772,7 +9870,9 @@
    "end": 27,
    "size": 4,
    "class": "pending",
-   "preview": "89 EC 5D CB"
+   "preview": "89 EC 5D CB",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_0+"
   },
   {
    "platform": "pc98",
@@ -9829,7 +9929,9 @@
    "end": 3577,
    "size": 5,
    "class": "pending",
-   "preview": "31 C0 89 46 EC"
+   "preview": "31 C0 89 46 EC",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_DE8+"
   },
   {
    "platform": "pc98",
@@ -9885,7 +9987,8 @@
    "end": 424,
    "size": 25,
    "class": "pending",
-   "preview": "1E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "1E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -10428,7 +10531,10 @@
    "end": 17905,
    "size": 52,
    "class": "pending",
-   "preview": "80 3E 2D A0 40 75 19 B0 40 50 FF 36 96 95 FF 36"
+   "preview": "80 3E 2D A0 40 75 19 B0 40 50 FF 36 96 95 FF 36",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_456C+",
+   "code_refs": 2
   },
   {
    "platform": "pc98",
@@ -10521,7 +10627,10 @@
    "end": 18795,
    "size": 151,
    "class": "pending",
-   "preview": "80 3E 2E A0 00 74 5B FF 76 FE FF 76 FC B0 04 50"
+   "preview": "80 3E 2E A0 00 74 5B FF 76 FE FF 76 FC B0 04 50",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_48AA+",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -10741,7 +10850,9 @@
    "end": 22,
    "size": 4,
    "class": "pending",
-   "preview": "89 EC 5D CB"
+   "preview": "89 EC 5D CB",
+   "ledger_state": "邊界碎片",
+   "ledger_function": "sub_0+"
   },
   {
    "platform": "pc98",
@@ -10750,7 +10861,8 @@
    "end": 617,
    "size": 32,
    "class": "pending",
-   "preview": "00 00 20 00 00 60 02 00 00 00 00 00 00 00 00 00"
+   "preview": "00 00 20 00 00 60 02 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -10767,7 +10879,8 @@
    "end": 5671,
    "size": 4,
    "class": "pending",
-   "preview": "0C 82 CD 8E"
+   "preview": "0C 82 CD 8E",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -10784,7 +10897,8 @@
    "end": 8189,
    "size": 235,
    "class": "pending",
-   "preview": "1C 83 7C 83 43 83 93 83 67 82 CC 83 5F 83 81 81"
+   "preview": "1C 83 7C 83 43 83 93 83 67 82 CC 83 5F 83 81 81",
+   "code_refs": 12
   },
   {
    "platform": "pc98",
@@ -10801,7 +10915,8 @@
    "end": 9241,
    "size": 32,
    "class": "pending",
-   "preview": "33 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "33 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -10882,7 +10997,8 @@
    "end": 9816,
    "size": 32,
    "class": "pending",
-   "preview": "03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -10923,7 +11039,8 @@
    "end": 12619,
    "size": 46,
    "class": "pending",
-   "preview": "06 94 B2 82 AF 82 E9 06 20 8C 88 92 E8 20 01 20"
+   "preview": "06 94 B2 82 AF 82 E9 06 20 8C 88 92 E8 20 01 20",
+   "code_refs": 3
   },
   {
    "platform": "pc98",
@@ -10948,7 +11065,8 @@
    "end": 307,
    "size": 34,
    "class": "pending",
-   "preview": "01 00 00 00 00 00 00 00 8A 02 00 00 00 00 00 00"
+   "preview": "01 00 00 00 00 00 00 00 8A 02 00 00 00 00 00 00",
+   "code_refs": 5
   },
   {
    "platform": "pc98",
@@ -10973,7 +11091,8 @@
    "end": 3736,
    "size": 26,
    "class": "pending",
-   "preview": "00 00 00 00 01 00 00 00 00 40 00 00 00 00 00 00"
+   "preview": "00 00 00 00 01 00 00 00 00 40 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -10982,7 +11101,8 @@
    "end": 3795,
    "size": 19,
    "class": "pending",
-   "preview": "00 00 00 00 00 06 81 40 91 4F 81 40 06 94 B2 82"
+   "preview": "00 00 00 00 00 06 81 40 91 4F 81 40 06 94 B2 82",
+   "code_refs": 2
   },
   {
    "platform": "pc98",
@@ -10999,7 +11119,8 @@
    "end": 4765,
    "size": 73,
    "class": "pending",
-   "preview": "28 20 20 20 82 CD 82 A2 20 20 20 20 20 20 20 20"
+   "preview": "28 20 20 20 82 CD 82 A2 20 20 20 20 20 20 20 20",
+   "code_refs": 2
   },
   {
    "platform": "pc98",
@@ -11040,7 +11161,8 @@
    "end": 3983,
    "size": 75,
    "class": "pending",
-   "preview": "07 57 41 4C 4C 44 45 46 04 2E 64 61 78 0F 55 6E"
+   "preview": "07 57 41 4C 4C 44 45 46 04 2E 64 61 78 0F 55 6E",
+   "code_refs": 5
   },
   {
    "platform": "pc98",
@@ -11073,7 +11195,8 @@
    "end": 744,
    "size": 32,
    "class": "pending",
-   "preview": "FF E0 FF 03 00 00 00 00 00 00 00 00 00 00 00 00"
+   "preview": "FF E0 FF 03 00 00 00 00 00 00 00 00 00 00 00 00",
+   "code_refs": 1
   },
   {
    "platform": "pc98",
@@ -11082,7 +11205,8 @@
    "end": 911,
    "size": 51,
    "class": "pending",
-   "preview": "05 43 48 45 41 44 05 43 42 4F 44 59 06 43 4F 4D"
+   "preview": "05 43 48 45 41 44 05 43 42 4F 44 59 06 43 4F 4D",
+   "code_refs": 4
   },
   {
    "platform": "pc98",
@@ -11099,7 +11223,8 @@
    "end": 76,
    "size": 44,
    "class": "pending",
-   "preview": "00 00 00 00 00 00 00 04 38 78 38 64 04 2E 64 61"
+   "preview": "00 00 00 00 00 00 00 04 38 78 38 64 04 2E 64 61",
+   "code_refs": 4
   },
   {
    "platform": "pc98",

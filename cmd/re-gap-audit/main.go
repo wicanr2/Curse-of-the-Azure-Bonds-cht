@@ -45,6 +45,9 @@ type gap struct {
 	// 不是漏碼——overlay-14 0044h 那 258 bytes 就是這一種。
 	LedgerState    string `json:"ledger_state,omitempty"`
 	LedgerFunction string `json:"ledger_function,omitempty"`
+	// CodeRefs：defined 程式碼裡「mov di, offset；push cs；push di」指進這一段
+	// 的次數。非零代表這一段是被引用的碼內常數（Pascal 字串等），不是漏碼。
+	CodeRefs int `json:"code_refs,omitempty"`
 }
 
 // ledgerFunc 是 coab-function-index.json 的一列（只取需要的欄位）。
@@ -202,6 +205,26 @@ func main() {
 							record.LedgerFunction = fn.Name
 							break
 						}
+						// 邊界碎片的台帳註記一律是「IDA 建錯邊界，真正的函式體要以
+						// 位址範圍重讀」——緊接在它終點後的 undefined 段就是被截掉
+						// 的函式後半（overlay-22 48D4h 即此類）。
+						if fn.EA+fn.Size == entry.Start && fn.State == tooltext.Text("re_gap_audit.state_fragment") {
+							record.LedgerState = fn.State
+							record.LedgerFunction = fn.Name + "+"
+						}
+					}
+					// 碼內字串常數：Pascal 常數由 `mov di, offset；push cs；push di`
+					// 引用（BF xx xx 0E 57）。有 defined 程式碼指進來的 pending 段
+					// 是資料常數，不是漏碼。掃整份 bytes——引用一定在 defined 區，
+					// pending 區裡不會有這個五位元組形狀的活指令被漏掉判斷。
+					for offset := 0; offset+5 <= len(code); offset++ {
+						if code[offset] != 0xBF || code[offset+3] != 0x0E || code[offset+4] != 0x57 {
+							continue
+						}
+						target := int(code[offset+1]) | int(code[offset+2])<<8
+						if target >= entry.Start && target < entry.End {
+							record.CodeRefs++
+						}
 					}
 				}
 				gaps = append(gaps, record)
@@ -228,12 +251,15 @@ func main() {
 			case classPending:
 				bucket.pending++
 				bucket.pendingBytes += entry.Size
-				if entry.LedgerState == "" {
-					bucket.pendingOutside++
-					bucket.pendingOutsideBytes += entry.Size
-				} else {
+				if entry.LedgerState != "" {
 					bucket.pendingRead++
 					bucket.pendingReadBytes += entry.Size
+				} else if entry.CodeRefs > 0 {
+					bucket.pendingReferenced++
+					bucket.pendingReferencedBytes += entry.Size
+				} else {
+					bucket.pendingOutside++
+					bucket.pendingOutsideBytes += entry.Size
 				}
 			}
 		}
@@ -254,10 +280,11 @@ func main() {
 	md.WriteString(tooltext.Text("re_gap_audit.md_class_header"))
 	for _, platform := range []string{"dos", "pc98"} {
 		bucket := perPlatform[platform]
-		fmt.Fprintf(&md, "| %s | %d | %d | %d | %d | %d | %d／%d | %d／%d | **%d／%d** |\n",
+		fmt.Fprintf(&md, "| %s | %d | %d | %d | %d | %d | %d／%d | %d／%d | %d／%d | **%d／%d** |\n",
 			platform, bucket.ranges, bucket.bytes, bucket.crumb, bucket.fill,
 			bucket.text, bucket.pending, bucket.pendingBytes,
 			bucket.pendingRead, bucket.pendingReadBytes,
+			bucket.pendingReferenced, bucket.pendingReferencedBytes,
 			bucket.pendingOutside, bucket.pendingOutsideBytes)
 	}
 	md.WriteString(tooltext.Text("re_gap_audit.md_module_header"))
@@ -295,10 +322,18 @@ func main() {
 			pending = append(pending, entry)
 		}
 	}
+	rank := func(entry gap) int {
+		if entry.LedgerState != "" {
+			return 2
+		}
+		if entry.CodeRefs > 0 {
+			return 1
+		}
+		return 0
+	}
 	sort.Slice(pending, func(i, j int) bool {
-		outsideI, outsideJ := pending[i].LedgerState == "", pending[j].LedgerState == ""
-		if outsideI != outsideJ {
-			return outsideI
+		if rank(pending[i]) != rank(pending[j]) {
+			return rank(pending[i]) < rank(pending[j])
 		}
 		return pending[i].Size > pending[j].Size
 	})
@@ -306,6 +341,8 @@ func main() {
 		ledgerCell := tooltext.Text("re_gap_audit.outside_function")
 		if entry.LedgerState != "" {
 			ledgerCell = fmt.Sprintf("%s（`%s`）", entry.LedgerState, entry.LedgerFunction)
+		} else if entry.CodeRefs > 0 {
+			ledgerCell = tooltext.Format("re_gap_audit.referenced_constant", entry.CodeRefs)
 		}
 		fmt.Fprintf(&md, "| %s | `%s` | `%04X..%04X` | %d | %s | `%s` |\n",
 			entry.Platform, entry.Module, entry.Start, entry.End, entry.Size,
@@ -319,6 +356,7 @@ func main() {
 		fmt.Printf(tooltext.Text("re_gap_audit.summary"), platform,
 			bucket.ranges, bucket.bytes, bucket.crumb, bucket.fill,
 			bucket.text, bucket.pending, bucket.pendingBytes,
+			bucket.pendingReferenced, bucket.pendingReferencedBytes,
 			bucket.pendingOutside, bucket.pendingOutsideBytes)
 	}
 }
@@ -333,6 +371,7 @@ func ensure(m map[string]*stats, key string) *stats {
 type stats struct {
 	ranges, bytes, crumb, fill, text, pending, pendingBytes int
 	pendingRead, pendingReadBytes                           int
+	pendingReferenced, pendingReferencedBytes               int
 	pendingOutside, pendingOutsideBytes                     int
 }
 
