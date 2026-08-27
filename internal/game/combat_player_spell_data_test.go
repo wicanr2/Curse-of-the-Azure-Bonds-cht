@@ -48,3 +48,28 @@ func TestCombatPlayerSpellContractDrivesTargetAndMessageLookup(t *testing.T) {
 		t.Fatal("mutated player target mode was ignored by the combat state")
 	}
 }
+
+func TestCombatSpellChoicesFollowActiveCasterSlotOrderAndFoldDuplicates(t *testing.T) {
+	state := NewState(combatVisualCatalog(t))
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "mage", Class: party.ClassMagicUser, Level: 5,
+		SpellSlots: []uint8{BurningHandsSpellID, MagicMissileSpellID, BurningHandsSpellID, 0xff},
+	}}
+	if err := state.StartCombat(
+		[]combat.Fighter{{ID: "mage", Name: "mage", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20}},
+		[]combat.Fighter{{ID: "target", Name: "target", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20}},
+		17,
+	); err != nil {
+		t.Fatal(err)
+	}
+	choices := state.CombatSpellChoices()
+	if len(choices) != 2 {
+		t.Fatalf("CAST choices=%v, want two declared unique memorized spells", choices)
+	}
+	if choices[0].SpellID != BurningHandsSpellID || choices[1].SpellID != MagicMissileSpellID {
+		t.Fatalf("CAST choice order=%v, want [%d %d]", choices, BurningHandsSpellID, MagicMissileSpellID)
+	}
+	if choices[0].Label == "" || choices[1].Label == "" {
+		t.Fatalf("CAST choices must carry localized labels: %v", choices)
+	}
+}

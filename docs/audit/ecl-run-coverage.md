@@ -15,7 +15,7 @@ rm -f workplace/ecl-run-coverage.lines
 COAB_ECL_COVERAGE=/src/workplace/ecl-run-coverage.lines \
   ./tools/go.sh test ./internal/game -run 'TestReal|TestTilvertonRoute' -count=1
 COAB_ECL_COVERAGE=/src/workplace/ecl-run-coverage.lines \
-  COAB_ROUTE_JSON=/src/workplace/campaign-frames/route-clean-716.json \
+  COAB_ROUTE_JSON=/src/workplace/campaign-frames/route-current.json \
   ./tools/go.sh test ./cmd/azure-bonds-game -run TestKeysDriveARealSessionFromTheTitle -count=1
 ./tools/go.sh run ./cmd/ecl-run-coverage -coverage workplace/ecl-run-coverage.lines
 ```
@@ -27,31 +27,31 @@ COAB_ECL_COVERAGE=/src/workplace/ecl-run-coverage.lines \
 | 段 | 可達指令 | 實跑執行 | 覆蓋 |
 |---|---:|---:|---:|
 | `ECL2.DAX/0x01` | 659 | 590 | 89.5% |
-| `ECL2.DAX/0x02` | 374 | 307 | 82.1% |
-| `ECL2.DAX/0x03` | 703 | 437 | 62.2% |
-| `ECL2.DAX/0x04` | 482 | 282 | 58.5% |
-| `ECL3.DAX/0x10` | 913 | 624 | 68.3% |
-| `ECL3.DAX/0x11` | 788 | 471 | 59.8% |
-| `ECL3.DAX/0x12` | 840 | 470 | 56.0% |
+| `ECL2.DAX/0x02` | 374 | 336 | 89.8% |
+| `ECL2.DAX/0x03` | 703 | 441 | 62.7% |
+| `ECL2.DAX/0x04` | 482 | 300 | 62.2% |
+| `ECL3.DAX/0x10` | 913 | 661 | 72.4% |
+| `ECL3.DAX/0x11` | 788 | 542 | 68.8% |
+| `ECL3.DAX/0x12` | 840 | 478 | 56.9% |
 | `ECL3.DAX/0x15` | 334 | 145 | 43.4% |
-| `ECL4.DAX/0x20` | 722 | 413 | 57.2% |
-| `ECL4.DAX/0x21` | 563 | 261 | 46.4% |
-| `ECL4.DAX/0x22` | 526 | 343 | 65.2% |
-| `ECL4.DAX/0x23` | 303 | 58 | 19.1% |
-| `ECL4.DAX/0x25` | 745 | 73 | 9.8% |
+| `ECL4.DAX/0x20` | 722 | 497 | 68.8% |
+| `ECL4.DAX/0x21` | 563 | 275 | 48.8% |
+| `ECL4.DAX/0x22` | 526 | 439 | 83.5% |
+| `ECL4.DAX/0x23` | 303 | 168 | 55.4% |
+| `ECL4.DAX/0x25` | 745 | 481 | 64.6% |
 | `ECL5.DAX/0x30` | 72 | 56 | 77.8% |
-| `ECL5.DAX/0x31` | 388 | 299 | 77.1% |
-| `ECL5.DAX/0x32` | 634 | 460 | 72.6% |
-| `ECL5.DAX/0x33` | 709 | 377 | 53.2% |
+| `ECL5.DAX/0x31` | 388 | 289 | 74.5% |
+| `ECL5.DAX/0x32` | 634 | 468 | 73.8% |
+| `ECL5.DAX/0x33` | 709 | 471 | 66.4% |
 | `ECL5.DAX/0x35` | 598 | 321 | 53.7% |
-| `ECL6.DAX/0x40` | 766 | 661 | 86.3% |
+| `ECL6.DAX/0x40` | 766 | 671 | 87.6% |
 | `ECL6.DAX/0x42` | 603 | 503 | 83.4% |
-| `ECL6.DAX/0x43` | 525 | 454 | 86.5% |
+| `ECL6.DAX/0x43` | 525 | 456 | 86.9% |
 | `ECL6.DAX/0x45` | 320 | 156 | 48.8% |
-| `ECL1.DAX/0x50` | 798 | 432 | 54.1% |
-| `ECL1.DAX/0x51` | 726 | 255 | 35.1% |
+| `ECL1.DAX/0x50` | 798 | 433 | 54.3% |
+| `ECL1.DAX/0x51` | 726 | 430 | 59.2% |
 | `ECL1.DAX/0x52` | 86 | 0 | 0.0% |
-| **合計** | **14177** | **8448** | **59.6%** |
+| **合計** | **14177** | **9607** | **67.8%** |
 
 ### 已判定的 0%
 
@@ -65,11 +65,7 @@ COAB_ECL_COVERAGE=/src/workplace/ecl-run-coverage.lines \
 
 | 段 | 起點位址 | 連續未執行指令數 |
 |---|---|---:|
-| `ECL4.DAX/0x25` | `0x84C6` | 409 |
-| `ECL1.DAX/0x51` | `0x8DFD` | 189 |
-| `ECL4.DAX/0x25` | `0x920F` | 149 |
-| `ECL5.DAX/0x33` | `0x91AF` | 148 |
-| `ECL4.DAX/0x23` | `0x8054` | 122 |
+| `ECL4.DAX/0x25` | `0x8521` | 111 |
 | `ECL4.DAX/0x23` | `0x86EE` | 98 |
 | `ECL5.DAX/0x35` | `0x8F79` | 93 |
 | `ECL1.DAX/0x52` | `0x8014` | 86 |
@@ -82,9 +78,13 @@ COAB_ECL_COVERAGE=/src/workplace/ecl-run-coverage.lines \
 | `ECL1.DAX/0x50` | `0x94AB` | 73 |
 | `ECL6.DAX/0x45` | `0x810A` | 73 |
 | `ECL1.DAX/0x50` | `0x8853` | 72 |
-| `ECL4.DAX/0x20` | `0x979B` | 71 |
-| `ECL4.DAX/0x25` | `0x82CF` | 71 |
 | `ECL3.DAX/0x10` | `0x916D` | 64 |
+| `ECL3.DAX/0x12` | `0x87F9` | 64 |
+| `ECL3.DAX/0x11` | `0x832E` | 54 |
+| `ECL4.DAX/0x20` | `0x8A55` | 53 |
+| `ECL6.DAX/0x45` | `0x86D6` | 49 |
+| `ECL1.DAX/0x51` | `0x86B0` | 48 |
+| `ECL2.DAX/0x03` | `0x99F6` | 48 |
 
 ## 圖外執行
 

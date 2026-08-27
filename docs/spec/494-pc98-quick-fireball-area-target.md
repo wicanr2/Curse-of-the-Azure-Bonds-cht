@@ -19,8 +19,8 @@ Quick Area 法術與原版候選排序仍未完成）
    damage／death visual pipeline 並消耗法術格。
 
 這是可玩的 Quick Fireball 戰鬥進度，不代表 PC-98 的 target linked-list、
-`1..7` random helper、完整 area-safety predicate 或所有 Quick Area 法術已逐
-指令還原。
+`1..7` random helper 或所有 Quick Area 法術已逐指令還原。Fireball 的
+area-safety predicate 已由 spec 1239 接通；其他範圍法術仍不在此聲明內。
 
 ## 非破壞性輸入與位址空間
 
@@ -66,8 +66,8 @@ offset 混用。
   火焰抗性、逐目標 visual impact、傷害文字與死亡 overlay 不在本輪重寫。
   Quick 只負責把原版候選中心安全地交給同一條正式 pipeline。
 - 原始 runtime 尚未提供本輪 Quick Fireball 固定戰場的逐鍵／逐幀 oracle，
-  因此 palette、sound cadence、target tie、friendly-fire area safety 與
-  所有 NPC Quick 行為仍不得標為 `exact`。
+  因此 palette、sound cadence、target tie 與所有 NPC Quick 行為仍不得標為
+  `exact`。友軍範圍安全的原版控制流與 remake 回歸另見 spec 1239。
 
 ## 驗證
 
@@ -87,7 +87,7 @@ offset 混用。
 
 1. 以 PC-98／DOSBox 固定戰場關閉 Quick target linked-list 的排序與
    `1..7` random helper。
-2. 逐一閉合 Fireball 的 area-safety、Lightning Bolt 的 line target、
+2. 逐一閉合 Lightning Bolt 的 line target、
    Stinking Cloud／Cloudkill 的 persistent area、save／中斷與延遲演出。
 3. 完成全敵方 AI、完整 ECL 玩家路徑與 DOS／PC-98／remake 的動態戰鬥逐幀
    對照。

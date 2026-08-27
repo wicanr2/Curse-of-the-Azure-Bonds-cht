@@ -556,6 +556,7 @@ func (s *BlockSession) runAggregate(start, maxSteps int, selections, whoSelectio
 		aggregate.SpellSearches = append(aggregate.SpellSearches, result.SpellSearches...)
 		aggregate.ProtectionRequests = append(aggregate.ProtectionRequests, result.ProtectionRequests...)
 		aggregate.ClockRequests = append(aggregate.ClockRequests, result.ClockRequests...)
+		treasureStart := len(aggregate.TreasureRequests)
 		aggregate.TreasureRequests = append(aggregate.TreasureRequests, result.TreasureRequests...)
 		aggregate.RobRequests = append(aggregate.RobRequests, result.RobRequests...)
 		aggregate.PartyStrengthRequests = append(aggregate.PartyStrengthRequests, result.PartyStrengthRequests...)
@@ -576,6 +577,12 @@ func (s *BlockSession) runAggregate(start, maxSteps int, selections, whoSelectio
 			aggregate.WaitingForWho = result.WaitingForWho
 			aggregate.WaitingForString = result.WaitingForString
 			return aggregate, nil
+		}
+		// 同段內的既有呼叫端仍可依目前章節解析；只有真的跨過 NEWECL 時，
+		// 才必須把交接前發出的請求釘在來源段，避免目的段的章節覆蓋它。
+		for index := treasureStart; index < len(aggregate.TreasureRequests); index++ {
+			aggregate.TreasureRequests[index].SourceBlockID = s.current
+			aggregate.TreasureRequests[index].SourceBlockSet = true
 		}
 		if err := s.ApplyResult(result); err != nil {
 			return aggregate, err

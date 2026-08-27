@@ -186,5 +186,5 @@ ECL entry／resume PC、旗標前後、戰鬥／寶物／手札及離開再進�
    每個 handoff 都保留圖片／選單／戰鬥／旗標／重訪的正常輸入證據。
 3. 完成全城市／全地城房間與結局 gate 前，維持固定夾具、coordinate-assisted 與
    normal session 分層；不能用既有 `PROGRAM 8` fixture 代替新遊戲到結局。
-4. 每完成一個區域就更新 `WORKLIST.md`、`docs/project-status.md`、本表與
+4. 每完成一個區域就更新 `WORKLIST.md`、`docs/audit/remake-status.md` 的可重生來源、本表與
    coverage 測試；在全主線通過前，不做「完成 remake」或三平台／推廣片聲明。

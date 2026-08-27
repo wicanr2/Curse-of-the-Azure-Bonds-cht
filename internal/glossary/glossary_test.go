@@ -43,8 +43,8 @@ func TestGlossaryTableIsWellFormed(t *testing.T) {
 	}
 }
 
-// 掃描範圍不可以悄悄縮水。少掃一份繁中目錄，稽核仍會綠，但漂移擋不住。
-func TestGlossaryScansEveryChineseCatalog(t *testing.T) {
+// 掃描範圍不可以悄悄縮水。少掃一份繁中目錄或玩家攻略，稽核仍會綠，但漂移擋不住。
+func TestGlossaryScansEveryPlayerFacingChineseSource(t *testing.T) {
 	report, err := Run(repoRoot)
 	if err != nil {
 		t.Fatal(err)
@@ -53,6 +53,7 @@ func TestGlossaryScansEveryChineseCatalog(t *testing.T) {
 		filepath.Join("gamepack", "pack", "20-locale.zh-TW.json"):       false,
 		filepath.Join("assets", "locale", "zh-TW.json"):                 false,
 		filepath.Join("internal", "tooltext", "messages", "zh-TW.json"): false,
+		filepath.Join("docs", "guide", "main-story-zh-TW.md"):           false,
 	}
 	for _, source := range report.Sources {
 		if _, ok := want[source.Path]; !ok {

@@ -388,7 +388,7 @@ func TestLocalizedCityMenuOptions(t *testing.T) {
 func TestLocalizedEncounterMenuOptions(t *testing.T) {
 	catalog := testCatalog()
 	state := NewState(catalog)
-	for _, original := range []string{"COMBAT", "WAIT", "FLEE", "ADVANCE", "PARLAY"} {
+	for _, original := range []string{"COMBAT", "WAIT", "FLEE", "ADVANCE", "PARLAY", "JOIN", "REFUSE", "SNEAK PAST", "APPROACH", "SNEAK UP"} {
 		want, ok := state.dataPack.LocalizeOption(original, catalog.Language)
 		if !ok {
 			t.Fatalf("game pack is missing option %q", original)
@@ -1110,6 +1110,7 @@ func TestResolvePendingECLDamageFinishesActiveCombatWhenPartyFalls(t *testing.T)
 //   - POSTCOM 的 `PARTYDEAD`：CHARSTATUS 全部在 {ANIMATED, TEMPGONE, DEAD,
 //     STONED, GONE} 才算——**昏迷／瀕死不算**，隊伍活下去。
 //   - ECL `2Eh DAMAGE` 收尾：「站著且能行動」旗標全部是 0 就算——昏迷也算倒。
+//
 // remake 的投影各走各的，這裡逐格釘住差異。
 func TestPartyWipeCriteriaFollowOriginalAsm(t *testing.T) {
 	state := NewState(testCatalog())
@@ -1158,6 +1159,11 @@ func TestPartyWipeCriteriaFollowOriginalAsm(t *testing.T) {
 // 畫面與換曲點），隊伍帶著倒地的人回到地圖（spec 1204）。
 func TestCombatDefeatWithUnconsciousMemberIsNotAWipe(t *testing.T) {
 	state := NewState(testCatalog())
+	session, err := ecl.NewBlockSession(map[uint8][]byte{0x42: {0, 0}}, 0x42)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.session = session
 	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 0, MaxHitPoints: 8,
 		HealthStatus: party.HealthStatusUnconscious}}
 	if err := state.StartCombat(
@@ -1181,6 +1187,9 @@ func TestCombatDefeatWithUnconsciousMemberIsNotAWipe(t *testing.T) {
 	}
 	if state.OriginalEvent != "COMBAT" {
 		t.Fatalf("event=%q，want 一般戰後收尾", state.OriginalEvent)
+	}
+	if got, ok := session.MemoryValue(0x7EC7); !ok || got != 0x80 {
+		t.Fatalf("7EC7h=%#x,%v，want 非全滅敗戰結果 0x80", got, ok)
 	}
 }
 
@@ -1533,6 +1542,61 @@ func TestShopMoneyPoolAndInjectedOffer(t *testing.T) {
 	}
 }
 
+func TestMoneyPoolSurvivesEnteringAnotherShopOrTemple(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 1, Platinum: 100,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	if err := state.PoolPartyGold(); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.MoneyPool(); got != 500 {
+		t.Fatalf("initial pool=%d, want 500", got)
+	}
+	if err := state.enterECLTemple(); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.MoneyPool(); got != 500 {
+		t.Fatalf("pool after temple entry=%d, want 500", got)
+	}
+	if err := state.enterECLShop(ecl.RunResult{ShopRequested: true}); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.MoneyPool(); got != 500 {
+		t.Fatalf("pool after shop entry=%d, want 500", got)
+	}
+}
+
+func TestShopBuyLetsPlayerChooseTheReceivingCharacter(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.partyRoster = party.Roster{
+		{ID: "one", Name: "一號", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1, Gold: 20},
+		{ID: "two", Name: "二號", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1, Gold: 20},
+	}
+	state.SetShopOffers([]ShopOffer{{Item: monster.ItemRecord{Type: 36, Name: "長劍"}, Price: 15}})
+	state.enterShopMenu()
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.shopBuyCharacterMenu || len(state.Choices) != 3 {
+		t.Fatalf("buy character menu=%t choices=%#v", state.shopBuyCharacterMenu, state.Choices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !state.shopStockMenu || state.shopCharacterIndex != 1 {
+		t.Fatalf("stock menu=%t buyer=%d", state.shopStockMenu, state.shopCharacterIndex)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].Equipment) != 0 || len(state.partyRoster[1].Equipment) != 1 {
+		t.Fatalf("equipment counts=%d/%d, want 0/1", len(state.partyRoster[0].Equipment), len(state.partyRoster[1].Equipment))
+	}
+}
+
 func TestShopPurchaseUsesTypedCoinsAndDoesNotDepleteStock(t *testing.T) {
 	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{
@@ -1584,6 +1648,44 @@ func TestTempleCureLightWoundsUsesReferenceCostAndTypedCoins(t *testing.T) {
 	}
 }
 
+func TestTempleOriginalCharacterCycleKeysSelectTheCureTarget(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
+	state.partyRoster = party.Roster{
+		{ID: "first", Name: "甲", HitPoints: 10, MaxHitPoints: 10, Platinum: 21},
+		{ID: "second", Name: "乙", HitPoints: 1, MaxHitPoints: 10, Platinum: 21},
+		{ID: "last", Name: "丙", HitPoints: 10, MaxHitPoints: 10, Platinum: 21},
+	}
+	state.fixSeed = 1
+	if err := state.enterECLTemple(); err != nil {
+		t.Fatal(err)
+	}
+	if !state.TempleCycleCharacter(true) || state.templeCharacterIndex != 2 {
+		t.Fatalf("G previous index=%d, want first -> last wrap", state.templeCharacterIndex)
+	}
+	if !state.TempleCycleCharacter(false) || state.templeCharacterIndex != 2 {
+		t.Fatalf("O next index=%d, want last to stay last", state.templeCharacterIndex)
+	}
+	if !state.TempleCycleCharacter(true) || state.templeCharacterIndex != 1 {
+		t.Fatalf("G previous index=%d, want second character", state.templeCharacterIndex)
+	}
+	if err := state.Select(0); err != nil { // Heal.
+		t.Fatal(err)
+	}
+	if state.TempleCycleCharacter(false) {
+		t.Fatal("character cycle must be disabled inside the cure list")
+	}
+	if err := state.Select(2); err != nil { // Cure Light Wounds.
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil { // Confirm.
+		t.Fatal(err)
+	}
+	if state.partyRoster[1].HitPoints <= 1 || state.partyRoster[0].HitPoints != 10 || state.partyRoster[2].HitPoints != 10 {
+		t.Fatalf("cure target roster=%+v, want only second character healed", state.partyRoster)
+	}
+}
+
 func TestTempleRemoveCurseClearsEffectAndCursedEquipment(t *testing.T) {
 	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{
@@ -1603,7 +1705,7 @@ func TestTempleRemoveCurseClearsEffectAndCursedEquipment(t *testing.T) {
 func TestTempleCatalogCoversEveryDisplayedStableID(t *testing.T) {
 	catalog := trainingTestCatalog(t)
 	uiKeys := []string{
-		"temple_prompt", "temple_heal", "temple_view", "temple_pool", "temple_share",
+		"temple_prompt", "temple_character_prompt", "temple_heal", "temple_view", "temple_pool", "temple_share",
 		"temple_appraise", "temple_exit", "temple_heal_prompt", "temple_cure_choice",
 		"temple_cure_exit", "temple_confirm_prompt", "temple_confirm", "temple_cancel",
 		"temple_view_summary", "temple_pool_done", "temple_share_done",
@@ -2354,6 +2456,84 @@ func TestCombatQuickAndManualControlUseProjectedControlMorale(t *testing.T) {
 	}
 }
 
+func TestCombatSpecificCastGatesAreRepresentedInCASTMenu(t *testing.T) {
+	state := NewState(testCatalog())
+	cleric := combat.Fighter{
+		ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10,
+		MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20,
+	}
+	state.partyRoster = party.Roster{{
+		ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 5,
+		HitPoints: 10, MaxHitPoints: 10, SpellSlots: []uint8{BlessSpellID},
+	}}
+	if err := state.StartCombat([]combat.Fighter{cleric}, []combat.Fighter{{
+		ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, InitiativeBonus: 1,
+	}}, 424); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastBless() {
+		t.Fatal("祝福快捷 gate 沒有打開")
+	}
+	for _, choice := range state.CombatSpellChoices() {
+		if choice.SpellID == BlessSpellID {
+			return
+		}
+	}
+	t.Fatalf("祝福快捷 gate 已打開，但 CAST 選單沒有祝福：%+v", state.CombatSpellChoices())
+}
+
+func TestStartCombatYieldsBeforePersistentQuickCanResolveNewEncounter(t *testing.T) {
+	state := NewState(testCatalog())
+	hero := combat.Fighter{
+		ID: "hero", Side: combat.SideParty, ControlMorale: 0, QuickFight: true,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+		AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 20,
+	}
+	enemy := combat.Fighter{
+		ID: "enemy", Side: combat.SideEnemy, HitPoints: 1, MaxHitPoints: 1,
+		ArmorClass: 10, InitiativeBonus: 1,
+	}
+	if err := state.StartCombat([]combat.Fighter{hero}, []combat.Fighter{enemy}, 421); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatStatus() != combat.StatusActive {
+		t.Fatalf("persistent QUICK resolved the encounter before first frame: %v", state.CombatStatus())
+	}
+	if changed := state.CombatManualControl(); changed != 1 {
+		t.Fatalf("Space changed=%d want 1", changed)
+	}
+	got, ok := state.fighter("hero")
+	if !ok || got.QuickFight {
+		t.Fatalf("new encounter did not permit manual recovery: fighter=%+v ok=%v", got, ok)
+	}
+}
+
+func TestStartCombatClearsPreviousEncounterCloudIncapacitation(t *testing.T) {
+	state := NewState(testCatalog())
+	hero := combat.Fighter{
+		ID: "hero", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, CoughingTurns: 1, HelplessTurns: 4,
+	}
+	enemy := combat.Fighter{
+		ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, CoughingTurns: 1, HelplessTurns: 3,
+	}
+	if err := state.StartCombat([]combat.Fighter{hero}, []combat.Fighter{enemy}, 425); err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range []string{"hero", "enemy"} {
+		fighter, ok := state.fighter(id)
+		if !ok {
+			t.Fatalf("new encounter is missing %q", id)
+		}
+		if fighter.CoughingTurns != 0 || fighter.HelplessTurns != 0 {
+			t.Fatalf("%s inherited cloud incapacitation: coughing=%d helpless=%d",
+				id, fighter.CoughingTurns, fighter.HelplessTurns)
+		}
+	}
+}
+
 func TestCombatQuickAllCanBeInterruptedDuringVisualHandoff(t *testing.T) {
 	state := NewState(testCatalog())
 	state.EnableCombatVisualTimeline(true)
@@ -2378,6 +2558,37 @@ func TestCombatQuickAllCanBeInterruptedDuringVisualHandoff(t *testing.T) {
 	npc, _ := state.fighter("npc")
 	if pc.QuickFight || !npc.QuickFight {
 		t.Fatalf("manual interruption pc=%v npc=%v", pc.QuickFight, npc.QuickFight)
+	}
+}
+
+func TestCombatQuickPartyApproachesBeforeMakingAMeleeAttack(t *testing.T) {
+	state := NewState(testCatalog())
+	state.EnableCombatVisualTimeline(true)
+	hero := combat.Fighter{
+		ID: "hero", Name: "英雄", Side: combat.SideParty, ControlMorale: 0,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 7, MovementAllowance: 6,
+		AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 20,
+		HasCombatPosition: true, CombatX: 1, CombatY: 1,
+	}
+	enemy := combat.Fighter{
+		ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, MovementAllowance: 0,
+		DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 1,
+		HasCombatPosition: true, CombatX: 10, CombatY: 1,
+	}
+	if err := state.StartCombat([]combat.Fighter{hero}, []combat.Fighter{enemy}, 423); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatQuick(); err != nil {
+		t.Fatal(err)
+	}
+	moved, _ := state.fighter("hero")
+	untouched, _ := state.fighter("enemy")
+	if moved.CombatX == hero.CombatX && moved.CombatY == hero.CombatY {
+		t.Fatalf("QUICK hero attacked without approaching: hero=%+v enemy=%+v", moved, untouched)
+	}
+	if untouched.HitPoints != enemy.HitPoints {
+		t.Fatalf("QUICK hero dealt melee damage before reaching range: enemy HP=%d, want %d", untouched.HitPoints, enemy.HitPoints)
 	}
 }
 
@@ -2420,6 +2631,42 @@ func TestCombatAltMEnablesQuickMagicMissileFromGlobalSpellSlot(t *testing.T) {
 	}
 	if !found {
 		t.Fatal("no deterministic seed reached the original priority-4 Magic Missile selection")
+	}
+}
+
+func TestCombatAltMMissingMetadataReturnsManualAndDisablesQuickMagic(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5,
+		// 偵測魔法可合法記憶，但不是 combat_ai_spells 候選。這正是一般
+		// 玩家 loadout 曾觸發的死環，不可用測試專用假 spell ID 取代。
+		SpellSlots: []uint8{11},
+	}}
+	heroes := []combat.Fighter{{
+		ID: "mage", Name: "法師", Side: combat.SideParty, ControlMorale: 0,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20,
+		DamageDiceCount: 1, DamageDiceSides: 1,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 1,
+	}}
+	if err := state.StartCombat(heroes, enemies, 1); err != nil {
+		t.Fatal(err)
+	}
+	if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+		t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+	}
+	if err := state.CombatQuick(); err != nil {
+		t.Fatal(err)
+	}
+	mage, _ := state.fighter("mage")
+	if mage.QuickFight || state.CombatQuickMagicEnabled() {
+		t.Fatalf("metadata failure must return manual control and disable ALT+M: fighter=%+v quickMagic=%v",
+			mage, state.CombatQuickMagicEnabled())
+	}
+	if len(state.partyRoster[0].SpellSlots) != 1 || state.partyRoster[0].SpellSlots[0] != 11 {
+		t.Fatalf("metadata failure changed memorized spells: %v", state.partyRoster[0].SpellSlots)
 	}
 }
 
@@ -2540,6 +2787,56 @@ func TestCombatAltMQuickCurePreservesAdjacentTargetAcrossPendingAction(t *testin
 	}
 	if !found {
 		t.Fatal("no deterministic seed reached the original priority-1 Cure selection")
+	}
+}
+
+func TestPendingQuickCureTargetDownedBeforeResolutionDoesNotStallCombat(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.partyRoster = party.Roster{
+			{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 5, HitPoints: 20, MaxHitPoints: 20, SpellSlots: []uint8{CureLightWoundsSpellID}},
+			{ID: "target", Name: "隊友", Class: party.ClassFighter, Level: 5, HitPoints: 2, MaxHitPoints: 20},
+		}
+		heroes := []combat.Fighter{
+			{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: -10, InitiativeBonus: 8, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+			{ID: "target", Name: "隊友", Side: combat.SideParty, HitPoints: 2, MaxHitPoints: 20, ArmorClass: -10, InitiativeBonus: 2, HasCombatPosition: true, CombatX: 2, CombatY: 1},
+		}
+		enemies := []combat.Fighter{{ID: "enemy", Name: "敵人", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10, InitiativeBonus: 6, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 10, CombatY: 10}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, _ := state.fighter("cleric")
+		if caster.CombatAction.SpellID != CureLightWoundsSpellID {
+			continue
+		}
+		found = true
+		if err := state.battle.SetHitPoints("target", 0); err != nil {
+			t.Fatal(err)
+		}
+		state.CombatManualControl()
+		for action := 0; action < 16; action++ {
+			caster, _ = state.fighter("cleric")
+			if caster.CombatAction.SpellID == 0 {
+				break
+			}
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		caster, _ = state.fighter("cleric")
+		if caster.CombatAction.SpellID != 0 || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("失效治療沒有消耗並清除：action=%+v slots=%v", caster.CombatAction, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached pending Cure Light Wounds")
 	}
 }
 
@@ -2992,6 +3289,41 @@ func TestStartCombatPreservesPlacementCoordinateNamespace(t *testing.T) {
 	}
 }
 
+func TestReferenceCombatUsesOriginalFiftyByTwentyFiveBoundary(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.StartCombat(
+		[]combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty,
+			HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20,
+			MovementAllowance: 6, HasCombatPosition: true, CombatX: 31, CombatY: 12}},
+		[]combat.Fighter{{ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+			HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: -20,
+			HasCombatPosition: true, CombatX: 40, CombatY: 12}},
+		1200,
+	); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatUsesReferenceCoordinates() {
+		t.Fatal("pre-positioned TACMAP coordinates must select reference mode")
+	}
+	if err := state.BeginCombatMove(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatMove(1, 0); err != nil {
+		t.Fatal(err)
+	}
+	hero, ok := state.battle.Fighter("hero")
+	if !ok || hero.Escaped || hero.CombatX != 32 || hero.CombatY != 12 {
+		t.Fatalf("moving from x=31 to the valid TACMAP tile x=32 escaped or misplaced hero: %+v", hero)
+	}
+	if state.leavesCombatMap(hero, 1, 0) {
+		t.Fatal("reference tile x=33 was incorrectly treated as outside the old 32×16 map")
+	}
+	hero.CombatX, hero.CombatY = 49, 24
+	if !state.leavesCombatMap(hero, 1, 0) || !state.leavesCombatMap(hero, 0, 1) {
+		t.Fatal("reference combat must end at x=49/y=24 on the original 50×25 TACMAP")
+	}
+}
+
 func TestStartCombatRebuildsOneBasedLegacyObjectIDsInCharacterListOrder(t *testing.T) {
 	state := NewState(testCatalog())
 	partyMembers := []combat.Fighter{
@@ -3227,6 +3559,48 @@ func TestCombatAltMQuickFireballUsesAreaCenterAndPendingDelay(t *testing.T) {
 	}
 	if !found {
 		t.Fatal("no deterministic seed reached the original priority-7 Quick Fireball selection")
+	}
+}
+
+func TestQuickFireballRejectsCenterWhenFriendlyFailsOriginalSafetySave(t *testing.T) {
+	rejected := false
+	for seed := int64(0); seed < 64 && !rejected; seed++ {
+		state := NewState(testCatalog())
+		tiles := make([]uint8, 8)
+		for index := range tiles {
+			tiles[index] = 1
+		}
+		state.SetCombatScanMapProvider(func() (enginescan.TacticalMap, error) {
+			return enginescan.TacticalMap{
+				Width: 8, Height: 1, Tiles: tiles,
+				Definitions: []enginescan.TerrainDefinition{{LOS: 1}},
+			}, nil
+		})
+		heroes := []combat.Fighter{
+			{ID: "mage", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20,
+				HasCombatPosition: true, CombatX: 0, CombatY: 0,
+				SavingThrows: []uint8{20, 20, 20, 20, 20}},
+			{ID: "ally", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20,
+				HasCombatPosition: true, CombatX: 4, CombatY: 0,
+				SavingThrows: []uint8{99, 99, 99, 99, 99}},
+		}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20,
+			HasCombatPosition: true, CombatX: 5, CombatY: 0,
+			SavingThrows: []uint8{20, 20, 20, 20, 20},
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		caster, _ := state.battle.Fighter("mage")
+		legal, err := state.quickAreaTargetLegal(caster, FireballSpellID, 3, enemies[0])
+		if err != nil {
+			t.Fatal(err)
+		}
+		rejected = !legal
+	}
+	if !rejected {
+		t.Fatal("no deterministic seed exercised the original failed friendly-save rejection")
 	}
 }
 
@@ -3513,6 +3887,114 @@ func TestCombatAltMQuickCurseUsesPendingEnemyTarget(t *testing.T) {
 	}
 	if !found {
 		t.Fatal("no deterministic seed reached the original priority-3 Quick Curse selection")
+	}
+}
+
+func TestCombatAltMQuickHoldPersonUsesDataDrivenEnemyTarget(t *testing.T) {
+	const holdPersonSpellID uint8 = 23
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.partyRoster = party.Roster{{
+			ID: "cleric", Class: party.ClassCleric, Level: 5,
+			SpellSlots: []uint8{holdPersonSpellID},
+		}}
+		heroes := []combat.Fighter{{
+			ID: "cleric", Side: combat.SideParty, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 0, InitiativeBonus: 30, HasCombatPosition: true,
+			CombatX: 1, CombatY: 1,
+		}}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 10, InitiativeBonus: 1, HasCombatPosition: true,
+			CombatX: 4, CombatY: 1,
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, ok := state.fighter("cleric")
+		if !ok || caster.CombatAction.SpellID != holdPersonSpellID {
+			continue
+		}
+		found = true
+		if caster.CombatAction.Delay <= 0 || caster.CombatAction.TargetID != "enemy" {
+			t.Fatalf("pending Quick Hold Person caster=%+v", caster)
+		}
+		if changed := state.CombatManualControl(); changed != 1 {
+			t.Fatalf("pending Hold Person manual handoff changed=%d", changed)
+		}
+		for action := 0; action < 12 && len(state.partyRoster[0].SpellSlots) != 0; action++ {
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		caster, _ = state.fighter("cleric")
+		if caster.CombatAction.SpellID != 0 || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("resolved Quick Hold Person caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached Quick Hold Person selection")
+	}
+}
+
+func TestCombatAltMQuickPrayerUsesPendingNoTargetAction(t *testing.T) {
+	const prayerSpellID uint8 = 42
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.partyRoster = party.Roster{{
+			ID: "cleric", Class: party.ClassCleric, Level: 5,
+			SpellSlots: []uint8{prayerSpellID},
+		}}
+		heroes := []combat.Fighter{{
+			ID: "cleric", Side: combat.SideParty, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 0, InitiativeBonus: 30, HasCombatPosition: true,
+			CombatX: 1, CombatY: 1,
+		}}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 10, InitiativeBonus: 1, HasCombatPosition: true,
+			CombatX: 4, CombatY: 1,
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, ok := state.fighter("cleric")
+		if !ok || caster.CombatAction.SpellID != prayerSpellID {
+			continue
+		}
+		found = true
+		if caster.CombatAction.Delay <= 0 || caster.CombatAction.TargetID != "" {
+			t.Fatalf("pending Quick Prayer caster=%+v", caster)
+		}
+		if changed := state.CombatManualControl(); changed != 1 {
+			t.Fatalf("pending Prayer manual handoff changed=%d", changed)
+		}
+		for action := 0; action < 12 && len(state.partyRoster[0].SpellSlots) != 0; action++ {
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		caster, _ = state.fighter("cleric")
+		if caster.CombatAction.SpellID != 0 || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("resolved Quick Prayer caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached Quick Prayer selection")
 	}
 }
 
@@ -4284,6 +4766,57 @@ func TestCombatPositiveDamageConsumesInterruptedPendingSpellByStableID(t *testin
 	}
 }
 
+func TestPendingBlessWithoutMemorizedSlotFinishesInsteadOfRetryingForever(t *testing.T) {
+	state := NewState(combatVisualCatalog(t))
+	state.partyRoster = party.Roster{{
+		ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1,
+		SpellSlots: []uint8{BlessSpellID},
+	}}
+	heroes := []combat.Fighter{{
+		ID: "cleric", Name: "牧師", Side: combat.SideParty,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 8,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, InitiativeBonus: 6,
+	}}
+	if err := state.StartCombat(heroes, enemies, 429); err != nil {
+		t.Fatal(err)
+	}
+	turn, ok := state.combatPartyTurn()
+	if !ok || turn.ID != "cleric" {
+		t.Fatalf("party turn=%+v ok=%v", turn, ok)
+	}
+	if err := state.battle.BeginPendingSpellAction("cleric", BlessSpellID, 1); err != nil {
+		t.Fatal(err)
+	}
+	state.combatDelayedTurns[state.combatTurnIndex] = true
+	state.combatTurnIndex++
+	caster, _ := state.fighter("cleric")
+	if caster.CombatAction.SpellID != BlessSpellID {
+		t.Fatalf("Bless did not enter pending state: %+v", caster.CombatAction)
+	}
+	// Reproduce the route failure's cross-layer state: the delayed Battle action
+	// survives, but the title-owned memorized slot has already been consumed.
+	state.partyRoster[0].SpellSlots = nil
+	for action := 0; action < 8; action++ {
+		caster, _ = state.fighter("cleric")
+		if caster.CombatAction.SpellID == 0 {
+			break
+		}
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	caster, _ = state.fighter("cleric")
+	if caster.CombatAction.SpellID != 0 {
+		t.Fatalf("pending spell was not cleared: %+v", caster.CombatAction)
+	}
+	if caster.Blessed {
+		t.Fatalf("interrupted pending Bless unexpectedly resolved: %+v", caster)
+	}
+}
+
 func TestCombatCloudkillDirectDeathConsumesInterruptedPendingSpellByStableID(t *testing.T) {
 	state := NewState(combatVisualCatalog(t))
 	state.partyRoster = party.Roster{{
@@ -4689,13 +5222,13 @@ func TestCampMenuViewCharacterAndReturn(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.OriginalEvent != "VIEW" || !strings.Contains(state.Message, "阿明") || !strings.Contains(state.Message, "寶石 2") {
+	if state.Mode != ModeWilderness || !state.campViewItemMenu || len(state.Choices) != 1 || !strings.Contains(state.Message, "阿明") || !strings.Contains(state.Message, "寶石 2") {
 		t.Fatalf("camp view summary state=%#v", state)
 	}
-	if err := state.Continue(); err != nil {
+	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !state.campViewMenu {
+	if state.Mode != ModeWilderness || !state.campViewMenu || state.campViewItemMenu {
 		t.Fatalf("camp view return state=%#v", state)
 	}
 	if err := state.Select(1); err != nil {
@@ -4860,9 +5393,171 @@ func TestCampMagicMemorizeAppliesAtRest(t *testing.T) {
 	}
 }
 
+func TestCampMagicMemorizeAllowsDuplicateSlotsAndShowsCount(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	mage := party.Character{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5,
+		ClassLevels: [8]uint8{5: 5}, KnownSpells: []uint8{BurningHandsSpellID},
+		SpellSlots: []uint8{BurningHandsSpellID, BurningHandsSpellID, BurningHandsSpellID, BurningHandsSpellID},
+	}
+	mage.SpellCastCount[2][0] = 4
+	state.partyRoster = party.Roster{mage}
+	state.campMenu = true
+	state.campMagicMemorizeMenu = true
+	state.enterCampMagicMemorizeSpellMenu(0)
+	for count := 1; count <= 4; count++ {
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+		if got := len(state.pendingMemorizedSpells[0]); got != count {
+			t.Fatalf("selection %d produced %d slots choices=%v originals=%v message=%q capacity=%d",
+				count, got, state.Choices, state.currentOriginalChoices, state.Message,
+				firstLevelMemorizedCapacity(state.partyRoster[0]))
+		}
+	}
+	if got := state.Choices[0]; !strings.Contains(got, "(4)") {
+		t.Fatalf("duplicate spell row %q does not show original-style count", got)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.pendingMemorizedSpells[0]; len(got) != 4 ||
+		got[0] != BurningHandsSpellID || got[3] != BurningHandsSpellID {
+		t.Fatalf("capacity overflow changed duplicate slots: %v", got)
+	}
+	if !strings.Contains(state.Message, "4") {
+		t.Fatalf("capacity message %q does not identify the four-slot limit", state.Message)
+	}
+}
+
+func TestCampMagicNewClericCanMemorizeFromClericalList(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.catalog.Strings["spell_cleric_1"] = "祝福"
+	state.Mode = ModeWilderness
+	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1}}
+	state.enterCampMenu()
+	if err := state.Select(2); err != nil { // MAGIC
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil { // MEMORIZE
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil { // 牧師
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 10 || state.Choices[0] != "  祝福" {
+		t.Fatalf("cleric memorize choices=%#v", state.Choices)
+	}
+	if err := state.Select(0); err != nil { // 祝福
+		t.Fatal(err)
+	}
+	if err := state.Select(8); err != nil { // 完成選擇
+		t.Fatal(err)
+	}
+	if got := state.pendingMemorizedSpells[0]; len(got) != 1 || got[0] != BlessSpellID {
+		t.Fatalf("pending cleric spells=%v", got)
+	}
+}
+
+func TestCampMagicLevelFiveClericUsesEachSpellLevelCapacity(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.catalog.Strings["spell.cleric.find-traps"] = "偵測陷阱"
+	state.catalog.Strings["spell.cleric.cure-disease"] = "治療疾病"
+	cleric := party.Character{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 5,
+		ClassLevels: [8]uint8{0: 5}, Abilities: party.Abilities{Wisdom: 12}}
+	recalculateTrainingSpellCounts(&cleric)
+	state.partyRoster = party.Roster{cleric}
+	state.campMenu = true
+	state.campMagicMemorizeMenu = true
+	state.enterCampMagicMemorizeSpellMenu(0)
+	for _, choice := range state.Choices {
+		if strings.Contains(choice, "未知法術") {
+			t.Fatalf("level-five cleric menu contains untranslated spell: %q", choice)
+		}
+	}
+
+	candidates := memorizationCandidates(cleric)
+	find := func(level int) int {
+		t.Helper()
+		for index, spellID := range candidates {
+			spell, ok := gamepack.SpellByID(int(spellID))
+			if ok && spell.CasterClassID == 0 && spell.Level == level {
+				return index
+			}
+		}
+		t.Fatalf("no cleric level-%d candidate in %v", level, candidates)
+		return -1
+	}
+	levelOne, levelTwo, levelThree := find(1), find(2), find(3)
+	for count := 0; count < 3; count++ {
+		if err := state.Select(levelOne); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := state.Select(levelOne); err != nil {
+		t.Fatal(err)
+	}
+	if got := len(state.pendingMemorizedSpells[0]); got != 3 {
+		t.Fatalf("level-one overflow produced %d selections", got)
+	}
+	for count := 0; count < 3; count++ {
+		if err := state.Select(levelTwo); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := state.Select(levelThree); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := len(state.pendingMemorizedSpells[0]), 7; got != want {
+		t.Fatalf("multi-level selection has %d slots, want %d: %v", got, want, state.pendingMemorizedSpells[0])
+	}
+	state.enterCampMagicMemorizeCharacterMenu()
+	if !strings.Contains(state.Choices[0], "7/7") {
+		t.Fatalf("character capacity row=%q, want all seven level-five cleric slots", state.Choices[0])
+	}
+}
+
+func TestCampMagicLevelFiveMageOffersKnownHigherLevelSpells(t *testing.T) {
+	mage := party.Character{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5,
+		ClassLevels: [8]uint8{5: 5}, KnownSpells: []uint8{BurningHandsSpellID, 29, FireballSpellID}}
+	recalculateTrainingSpellCounts(&mage)
+	if got, want := memorizationCandidates(mage), []uint8{BurningHandsSpellID, 29, FireballSpellID}; !slices.Equal(got, want) {
+		t.Fatalf("mage candidates=%v, want known level 1/2/3 spells %v", got, want)
+	}
+}
+
+func TestRecalculateTrainingSpellCountsUsesExactLevelFiveTables(t *testing.T) {
+	cleric := party.Character{Class: party.ClassCleric, Level: 5,
+		Abilities: party.Abilities{Wisdom: 12}}
+	recalculateTrainingSpellCounts(&cleric)
+	if got, want := cleric.SpellCastCount[0], ([5]uint8{3, 3, 1, 0, 0}); got != want {
+		t.Fatalf("level-five cleric slots=%v, want %v", got, want)
+	}
+	if got := firstLevelMemorizedCapacity(cleric); got != 3 {
+		t.Fatalf("level-five cleric first-level capacity=%d, want 3", got)
+	}
+	cleric.Abilities.Wisdom = 18
+	recalculateTrainingSpellCounts(&cleric)
+	if got, want := cleric.SpellCastCount[0], ([5]uint8{5, 5, 2, 0, 0}); got != want {
+		t.Fatalf("wisdom-18 level-five cleric slots=%v, want %v", got, want)
+	}
+
+	mage := party.Character{Class: party.ClassMagicUser, Level: 5}
+	recalculateTrainingSpellCounts(&mage)
+	if got, want := mage.SpellCastCount[2], ([5]uint8{4, 2, 1, 0, 0}); got != want {
+		t.Fatalf("level-five magic-user slots=%v, want %v", got, want)
+	}
+	if got := firstLevelMemorizedCapacity(mage); got != 4 {
+		t.Fatalf("level-five magic-user first-level capacity=%d, want 4", got)
+	}
+}
+
 func TestCampMagicMemorizeRequiresPreparationTime(t *testing.T) {
-	if got := firstLevelMemorizationHours(map[int][]uint8{0: {1}}); got != 5 {
+	if got := memorizationHours(map[int][]uint8{0: {1}}); got != 5 {
 		t.Fatalf("one first-level spell requires %d hours, want 5", got)
+	}
+	if got := memorizationHours(map[int][]uint8{0: {1, 23, FireballSpellID}}); got != 8 {
+		t.Fatalf("level 1+2+3 preparation requires %d hours, want 8", got)
 	}
 	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{0x09}}}
@@ -4878,6 +5573,25 @@ func TestCampMagicMemorizeRequiresPreparationTime(t *testing.T) {
 	}
 	if !strings.Contains(state.Message, "至少需要 5 小時") || state.pendingMemorizedSpells[0][0] != MagicMissileSpellID {
 		t.Fatalf("short rest state=%#v", state)
+	}
+}
+
+func TestRestInterruptionAdvancesItsDeterministicStream(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.restEncounterPeriod = 1
+	state.restEncounterPercent = 50
+	foundDifferentConsecutiveResults := false
+	for seed := int64(1); seed < 1000; seed++ {
+		state.restSeed = seed
+		_, first := state.restInterruption(1)
+		_, second := state.restInterruption(1)
+		if first != second {
+			foundDifferentConsecutiveResults = true
+			break
+		}
+	}
+	if !foundDifferentConsecutiveResults {
+		t.Fatal("consecutive rest attempts reused an indistinguishable random stream")
 	}
 }
 
@@ -5028,6 +5742,57 @@ func TestCampAlterDropRequiresConfirmationAndRemovesCharacter(t *testing.T) {
 	}
 	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.alterMenu {
 		t.Fatalf("drop continuation state=%#v err=%v", state, err)
+	}
+}
+
+func TestCampAlterRenameAndDropSurvivePartySaveRoundTrip(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.Mode = ModeWilderness
+	state.partyRoster = party.Roster{
+		{
+			ID: "a", Name: "甲", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+			Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+		},
+		{
+			ID: "b", Name: "乙", Race: party.RaceHuman, Class: party.ClassCleric, Level: 1,
+			Abilities: party.Abilities{Strength: 12, Intelligence: 10, Wisdom: 16, Dexterity: 10, Constitution: 14, Charisma: 12},
+		},
+	}
+	state.party = []combat.Fighter{
+		{ID: "a", Name: "甲", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10},
+		{ID: "b", Name: "乙", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10},
+	}
+	if err := state.BeginRenameCharacter(1); err != nil {
+		t.Fatal(err)
+	}
+	for state.RenameText() != "" {
+		if err := state.BackspaceRenameName(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := state.AppendRenameName([]rune("新乙")); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CommitRename(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.dropPartyCharacter(0); err != nil {
+		t.Fatal(err)
+	}
+
+	path := filepath.Join(t.TempDir(), "alter-roundtrip.json")
+	if err := state.SavePartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	loaded := NewState(trainingTestCatalog(t))
+	if err := loaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	if len(loaded.partyRoster) != 1 || loaded.partyRoster[0].ID != "b" || loaded.partyRoster[0].Name != "新乙" {
+		t.Fatalf("loaded roster=%+v, want only renamed character b", loaded.partyRoster)
+	}
+	if fighters := loaded.PartyFighters(); len(fighters) != 1 || fighters[0].ID != "b" || fighters[0].Name != "新乙" {
+		t.Fatalf("loaded fighter projection=%+v, want only renamed character b", fighters)
 	}
 }
 
@@ -5335,6 +6100,10 @@ func TestCharacterCreationListsVerifiedClassOptions(t *testing.T) {
 	if len(state.CreationOptions) != 40 {
 		t.Fatalf("creation options=%d, want 40 verified single/multi-class combinations", len(state.CreationOptions))
 	}
+	tables, err := gamepack.Tables()
+	if err != nil {
+		t.Fatal(err)
+	}
 	multiClassCount := 0
 	for index, character := range state.CreationOptions {
 		if err := character.Validate(); err != nil {
@@ -5347,6 +6116,13 @@ func TestCharacterCreationListsVerifiedClassOptions(t *testing.T) {
 		if _, err := party.StartingAgeSpecFrom(ageLookup, character.Race, character.Class); err != nil {
 			t.Fatalf("option %d has no starting-age evidence: %v", index, err)
 		}
+		combination, ok := tables.CombinationByID(int(character.RawClassID))
+		if !ok || character.Experience != uint32(combination.StartingExperience) {
+			t.Fatalf("option %d starting experience=%d, combination=%+v", index, character.Experience, combination)
+		}
+		if character.Platinum != 300 {
+			t.Fatalf("option %d platinum=%d, want original NEWCHAR value 300", index, character.Platinum)
+		}
 		if character.RawClassID >= 8 {
 			multiClassCount++
 			levels := uint8(0)
@@ -5357,9 +6133,40 @@ func TestCharacterCreationListsVerifiedClassOptions(t *testing.T) {
 				t.Fatalf("multi-class option %d has no preserved class levels: %#v", index, character)
 			}
 		}
+		if character.HitPoints <= 0 || character.MaxHitPoints <= 0 ||
+			character.HitPoints != character.MaxHitPoints || character.BaseMaxHitPoints <= 0 ||
+			int(character.HitDice) != character.Level || character.AttackAbility == 0 || character.BaseArmorClass == 0 {
+			t.Fatalf("option %d has incomplete persistent creation fields: %#v", index, character)
+		}
 	}
 	if multiClassCount != 18 {
 		t.Fatalf("multi-class options=%d, want 18 reference race/class entries", multiClassCount)
+	}
+}
+
+func TestQuickCreationFinalizesOriginalStartingLevels(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	want := map[party.Class]int{
+		party.ClassFighter: 5, party.ClassCleric: 5, party.ClassMagicUser: 5,
+		party.ClassRanger: 5, party.ClassPaladin: 5, party.ClassThief: 6,
+	}
+	seen := map[party.Class]bool{}
+	for _, character := range state.CreationOptions {
+		level, ok := want[character.Class]
+		if !ok || seen[character.Class] || character.RawClassID >= 8 {
+			continue
+		}
+		seen[character.Class] = true
+		if character.Level != level || character.ClassLevel(character.Class) != level ||
+			int(character.HitDice) != level || character.MaxHitPoints <= level {
+			t.Fatalf("starting %v=%#v, want finalized level %d", character.Class, character, level)
+		}
+	}
+	if len(seen) != len(want) {
+		t.Fatalf("verified starting classes=%v, want all six", seen)
 	}
 }
 
@@ -5469,7 +6276,7 @@ func TestPartySaveLoadRoundTrip(t *testing.T) {
 	if err := state.FinishCharacterCreation(); err != nil {
 		t.Fatal(err)
 	}
-	path := t.TempDir() + "/party.json"
+	path := filepath.Join(t.TempDir(), "new", "nested", "party.json")
 	if err := state.SavePartyFile(path); err != nil {
 		t.Fatal(err)
 	}
@@ -5524,6 +6331,67 @@ func TestItemCatalogFeedsCharacterCreationFighterProjection(t *testing.T) {
 	fighters := state.PartyFighters()
 	if len(fighters) != 1 || fighters[0].DamageDiceCount != 2 || fighters[0].DamageDiceSides != 4 || fighters[0].DamageBonus != 1 || fighters[0].AttackBonus != 4 {
 		t.Fatalf("equipped creation fighter=%#v", fighters)
+	}
+}
+
+func TestCampViewReadiesEquipmentAndReprojectsArmorClass(t *testing.T) {
+	catalog := monster.BaseItemCatalog{Items: []monster.BaseItem{
+		{Type: 0, Slot: 2, ACAdjustment: 184, ClassUsabilityMask: 0xFF},
+		{Type: 1, Slot: 1, ACAdjustment: 179, ClassUsabilityMask: 0xFF},
+	}}
+	character := party.Character{
+		ID: "p1", Name: "戰士", Race: party.RaceHuman, Class: party.ClassFighter, Level: 2,
+		ClassLevels: [8]uint8{2: 2}, BaseArmorClass: 50, HitPoints: 14, MaxHitPoints: 14,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 10, Constitution: 14, Charisma: 10},
+		Equipment: []monster.ItemRecord{
+			{Name: "板甲", Type: 0, Count: 1},
+			{Name: "盾牌", Type: 1, Count: 1},
+		},
+	}
+	localeCatalog := testCatalog()
+	localeCatalog.Strings["camp_view_item_failed"] = "這件物品目前無法整備或卸下。"
+	value := NewState(localeCatalog)
+	state := &value
+	state.SetItemCatalog(catalog)
+	state.partyRoster = party.Roster{character}
+	fighter, err := state.fighterForCharacter(character)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.party = []combat.Fighter{fighter}
+
+	state.enterCampMenu()
+	if err := state.selectCamp(1, "VIEW"); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.selectCamp(0, "CAMP_VIEW_0"); err != nil {
+		t.Fatal(err)
+	}
+	if !state.campViewItemMenu || len(state.Choices) != 3 {
+		t.Fatalf("item menu=%t choices=%#v", state.campViewItemMenu, state.Choices)
+	}
+	if err := state.selectCamp(0, "CAMP_VIEW_ITEM_0"); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.selectCamp(1, "CAMP_VIEW_ITEM_1"); err != nil {
+		t.Fatal(err)
+	}
+	if !state.partyRoster[0].Equipment[0].Readied || !state.partyRoster[0].Equipment[1].Readied {
+		t.Fatalf("equipment was not readied: %#v", state.partyRoster[0].Equipment)
+	}
+	if got := state.party[0].ArmorClass; got != 3 {
+		t.Fatalf("projected armor class=%d, want 3", got)
+	}
+
+	state.partyRoster[0].Equipment[0].Cursed = true
+	if err := state.selectCamp(0, "CAMP_VIEW_ITEM_0"); err != nil {
+		t.Fatal(err)
+	}
+	if !state.partyRoster[0].Equipment[0].Readied {
+		t.Fatal("cursed plate armor was unequipped")
+	}
+	if state.Message != "這件物品目前無法整備或卸下。" {
+		t.Fatalf("failure message=%q", state.Message)
 	}
 }
 

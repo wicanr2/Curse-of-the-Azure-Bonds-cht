@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"regexp"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -17,6 +18,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 // keyDrivenApp 建一個**只有 `Update()` 需要的欄位**的 app，狀態走的是和正式
@@ -59,9 +61,11 @@ func keyDrivenApp(t *testing.T) (*app, *scriptedKeys) {
 			state.SetItemCatalog(catalog)
 		}
 	}
-	if blocks, blockErr := loadTreasureItemBlocks(imagePath); blockErr == nil {
-		state.SetTreasureItemBlocks(blocks)
+	treasureBlocks, blockErr := loadTreasureItemBlocks(imagePath)
+	if blockErr != nil {
+		t.Fatalf("load the production ITEM*.DAX catalog: %v", blockErr)
 	}
+	state.SetTreasureItemBlocks(treasureBlocks)
 	// ⚠ 六章的 `MON*CHA`／`MON*SPC`／`MON*ITM` 也要載，理由同上一段。
 	// 少了它，走到尤拉什神殿的 `ECL3/0x11:0D0F ADD NPC 16h`（雅麗亞絲）會回
 	// 「ADD NPC 0x16 has no MON3CHA Player record」——記錄其實在原版檔裡好好的
@@ -91,7 +95,17 @@ func keyDrivenApp(t *testing.T) (*app, *scriptedKeys) {
 		}
 	}
 	keys := newScriptedKeys()
-	application := &app{state: &state, keys: keys, geoCatalog: geoCatalog}
+	// 戰鬥動畫在正式前端以 wall-clock 推進；鍵盤測試的「幀」則是緊密迴圈，
+	// 不能讓主機快慢決定同一顆 Q 是否被動畫吞掉。每次前端取時固定前進十秒，
+	// 只替代 renderer clock，不直呼任何遊戲動作或狀態轉移。
+	combatClock := time.Unix(0, 0)
+	application := &app{
+		state: &state, keys: keys, geoCatalog: geoCatalog,
+		combatNow: func() time.Time {
+			combatClock = combatClock.Add(10 * time.Second)
+			return combatClock
+		},
+	}
 	// ⚠ 三支戰鬥地形投影跟正式執行檔一樣要裝（`main.go` 在 RunGame 之前裝）。
 	// 少了它們，這一場的每場戰鬥都沒有地形（佈陣不看地面、AI 不算成本），
 	// 而怪物的快速面殺法術（火刀法師的臭雲）一出手就是
@@ -111,11 +125,29 @@ func tap(t *testing.T, application *app, keys *scriptedKeys, key ebiten.Key) {
 	t.Helper()
 	keys.press(key)
 	if err := application.Update(); err != nil {
-		t.Fatalf("按 %v：%v", key, err)
+		block, _ := application.state.CurrentECLBlockID()
+		t.Fatalf("按 %v：mode=%s block=0x%02X area=%d message=%q: %v",
+			key, modeName(application.state.Mode), block,
+			application.state.Area.GameArea, application.state.Message, err)
 	}
 	keys.release()
 	if err := application.Update(); err != nil {
 		t.Fatalf("放開 %v：%v", key, err)
+	}
+}
+
+// tapWithModifier 走與真人相同的「按住修飾鍵並敲命令鍵、全部放開」。
+// ALT+M 的 gate 讀的是 Pressed，而 M 讀 JustPressed；scriptedKeys 的 press
+// 會替換整個當幀集合，所以兩顆必須在同一次 press 送入。
+func tapWithModifier(t *testing.T, application *app, keys *scriptedKeys, modifier, key ebiten.Key) {
+	t.Helper()
+	keys.press(modifier, key)
+	if err := application.Update(); err != nil {
+		t.Fatalf("按 %v+%v：%v", modifier, key, err)
+	}
+	keys.release()
+	if err := application.Update(); err != nil {
+		t.Fatalf("放開 %v+%v：%v", modifier, key, err)
 	}
 }
 
@@ -183,17 +215,67 @@ func (s *keyDrivenSession) routeChoice() (int, bool) {
 	if s.menuSinceProgress[stuckSignature(s.app.state.Choices)] > routeMenuPatienceValue() {
 		return 0, false
 	}
-	index, ok := s.takeRouteStep("menu:"+signature, s.routeChoices[signature])
+	candidates := s.routeChoices[signature]
+	destinationMenu := s.app.state.Prompt == "從這裡可以前往"
+	if destinationMenu && s.previousWorldOrigin != "" {
+		filtered := make([]int, 0, len(candidates))
+		for _, candidate := range candidates {
+			choice := s.route[candidate].Index
+			if choice >= 0 && choice < len(s.app.state.Choices) &&
+				s.app.state.Choices[choice] != s.previousWorldOrigin {
+				filtered = append(filtered, candidate)
+			}
+		}
+		candidates = filtered
+	}
+	// The recorded campaign file is a union of per-segment decisions, not one
+	// literal end-to-end itinerary. Its travel-method menus therefore include
+	// exploratory EXIT choices. Replaying EXIT in a continuous session cancels
+	// arrival and leaves ECL paused at a branch that the next JOURNEY ON cannot
+	// resume as a destination menu. Keep recorded TRAIL/ROAD/WILDERNESS choices,
+	// but discard only this non-progressing travel cancellation.
+	if len(s.app.state.Choices) >= 2 && s.app.state.Choices[len(s.app.state.Choices)-1] == "離開" {
+		hasWilderness := false
+		for _, choice := range s.app.state.Choices {
+			if choice == "荒野" {
+				hasWilderness = true
+				break
+			}
+		}
+		if hasWilderness {
+			filtered := make([]int, 0, len(candidates))
+			for _, candidate := range candidates {
+				if s.route[candidate].Index != len(s.app.state.Choices)-1 {
+					filtered = append(filtered, candidate)
+				}
+			}
+			candidates = filtered
+		}
+	}
+	index, ok := s.takeRouteStep("menu:"+signature, candidates)
 	if !ok {
 		return 0, false
 	}
-	return s.route[index].Index, true
+	choice := s.route[index].Index
+	if destinationMenu {
+		s.previousWorldOrigin = s.app.state.LocationName
+	}
+	return choice, true
 }
 
 // routeMove 回答「主線站在這一格時往哪個方向走」。
 func (s *keyDrivenSession) routeMove() (int, bool) {
 	x, y, _ := s.app.state.DungeonGeometryView()
 	block, _ := s.app.state.CurrentECLBlockID()
+	// 一般強度路徑在下水道南界與火刀據點入口採原版已驗證的有向交接：
+	// `0x03 (10,15) S` → `0x04 (8,0) S`（spec 1184）。純探索啟發式把入口
+	// 視為剛走過的舊格，會立刻往北退回下水道，之後在兩段間反覆；固定的只是
+	// 玩家剛選擇「往火刀據點前進」這一步，不注入座標，也不封死其他出口。
+	if !keyDrivenBoost() {
+		if (block == 0x03 && x == 10 && y == 15) || (block == 0x04 && x == 8 && y == 0) {
+			return 4, true
+		}
+	}
 	// ⚠ 地圖編號要取**這一步真的會用的那張 grid**（前端手上的那一張），
 	// 不是 `State.GeoMapBlock`——錄的時候取的是 `grid.BlockID`，兩者會不一樣。
 	// 用錯那一格會讓每一次查表都落空，而落空是**安靜地沒有路線**。
@@ -366,7 +448,6 @@ func (s *keyDrivenSession) moveCursorTo(t *testing.T, want int) bool {
 	return s.app.choiceCursor == want && want < len(s.app.state.Choices)
 }
 
-
 // keyDrivenMenuPatience 是「同一個選單按同一項幾次還在原地，就換下一項」。
 //
 // ⚠ 太小會變成輪流選（實測會自己切斷路線）；太大就等於永遠第一項。
@@ -418,6 +499,8 @@ type keyDrivenSession struct {
 	app    *app
 	keys   *scriptedKeys
 	frames int
+	// wonAt 是第一次由正常按鍵路徑走到正式結局的幀；-1 代表尚未通關。
+	wonAt int
 	// cells 是實際站上過的地城格（含 ECL 段），跨段不會互相蓋掉。
 	cells map[[3]int]bool
 	// tried 是「從這個方向踏進這一格」試過沒有——見 `chooseHeading` 的說明。
@@ -497,15 +580,17 @@ type keyDrivenSession struct {
 	combatTurns    int
 	wipes          int
 	partyWasKilled bool
+	wasCombat      bool
+	combatNumber   int
 	// lastMenuPick 是最後一次真的按下去的選單（簽章與項次）。
 	// fatalPicks 是「按下去之後整隊全滅」的那些，之後不再選。
 	//
 	// ★ 這不是遊戲知識，是「別重複殺死自己的那一步」。少了它，重放每次進酒館
 	// 都選第 0 項「揍酒保」——十個酒館客人對六個一級戰士，必輸——然後全滅重開、
 	// 計數歸零、再選一次；實測 12,000 幀裡重開 32 次，整場走不出提爾佛頓。
-	lastMenuPick   menuPick
-	lastMenuFrame  int
-	hasLastMenu    bool
+	lastMenuPick  menuPick
+	lastMenuFrame int
+	hasLastMenu   bool
 	// combatStartPick 是**這一場戰鬥開打之前**按的那一項。全滅時標的是它，
 	// 不是「全滅之前最後按的那一項」——後者的因果太鬆：離開商店之後走幾步遇上
 	// 隨機遭遇再全滅，會把「離開商店」標成致命，於是隊伍再也離不開商店
@@ -514,7 +599,66 @@ type keyDrivenSession struct {
 	inCombatFrom    bool
 	fatalPicks      map[menuPick]bool
 	// boosted 記著這一場的隊伍有沒有被撐起來，報表要照實印出來。
-	boosted bool
+	boosted                   bool
+	normalGearStage           int
+	normalGearShopFound       bool
+	normalReadyStage          int
+	normalReadyNeedsCharacter bool
+	normalReadyDone           bool
+	normalSpellStage          int
+	normalSpellDone           bool
+	normalSkipGearShop        bool
+	normalAvoidedFee          bool
+	normalMoneyPooled         bool
+	normalMoneyTaken          bool
+	normalTempleActive        bool
+	normalTempleCharacter     int
+	normalTempleTreated       map[int]bool
+	normalRecoveryActive      bool
+	normalRecoveryDaysAdded   int
+	// normalInnAttempts records cities where the visible INN action already
+	// returned the still-injured party to the same service menu. Some world
+	// points expose an INN label but do not route it through PROGRAM 9; retrying
+	// forever is a replay-policy loop, not healing. After one attempt, leave the
+	// city and use the universally visible CAMP action at the edge.
+	normalInnAttempts map[uint8]int
+	// previousWorldOrigin prevents a union of per-segment route decisions from
+	// sending one continuous session straight back to the world point it just
+	// left. It affects only the test driver, never the game's travel graph.
+	previousWorldOrigin string
+	// lastNarrative 保留角色選擇器前一頁的敘述。ECL 進入「請選擇角色」時會清空
+	// Message；若不保留前文，通用卡住策略只看得到六個名字，無法知道攀爬事件
+	// 明確要求盜賊。
+	lastNarrative string
+}
+
+var normalPreparationPurchaseItems = []string{
+	"板甲（400 GP）", "盾牌（15 GP）", "長劍（15 GP）",
+	"板甲（400 GP）", "盾牌（15 GP）", "釘頭錘（8 GP）",
+	"四尺杖（1 GP）",
+	"板甲（400 GP）", "盾牌（15 GP）", "長劍（15 GP）",
+	"板甲（400 GP）", "盾牌（15 GP）", "長劍（15 GP）",
+	"皮甲（5 GP）", "短劍（8 GP）",
+}
+
+var normalPreparationReadyItems = []string{
+	"未裝備：板甲", "未裝備：盾牌", "未裝備：長劍",
+	"未裝備：板甲", "未裝備：盾牌", "未裝備：釘頭錘",
+	"未裝備：四尺杖",
+	"未裝備：板甲", "未裝備：盾牌", "未裝備：長劍",
+	"未裝備：板甲", "未裝備：盾牌", "未裝備：長劍",
+	"未裝備：皮甲", "未裝備：短劍",
+}
+
+// 法師不能穿甲持盾，盜賊也不能持盾；不能再用「每人固定三件」推買家。
+// 這張索引與 ITEMS 的 class-mask 一致，讓採買與整備都走合法的玩家交易。
+var normalPreparationCharacterIndices = []int{
+	0, 0, 0,
+	1, 1, 1,
+	2,
+	3, 3, 3,
+	4, 4, 4,
+	5, 5,
 }
 
 // loadRoute 讀主線錄下來的路線；沒有就回 nil（測試照樣跑，只是沒有路線可循）。
@@ -535,6 +679,12 @@ func loadRoute(t *testing.T) []game.Decision {
 	var route []game.Decision
 	if err := json.Unmarshal(raw, &route); err != nil {
 		t.Fatalf("路線解不開：%v", err)
+	}
+	// route-current 是完整 internal/game 玩家路徑聯集的唯一現行入口。歷史上
+	// route-clean-716 曾被窄測試安靜覆寫成 1,684 步，重放只會走短、不會報錯。
+	// 這個寬鬆下界不宣稱覆蓋完整度，只阻止同一種損毀再次冒充正式 oracle。
+	if filepath.Base(path) == "route-current.json" && len(route) < 10000 {
+		t.Fatalf("現行路線只有 %d 步（最低 10000）；請執行 tools/rebuild-key-route.sh 完整重生", len(route))
 	}
 	return route
 }
@@ -637,6 +787,7 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 		}
 	}
 	return &keyDrivenSession{
+		wonAt:            -1,
 		routeHasGeoBlock: hasGeoBlock, routeDead: map[[4]int]int{}, visits: map[[3]int]int{},
 		route: route, routeCursor: map[string]int{},
 		routeMoves: moves, routeChoices: choices,
@@ -646,7 +797,9 @@ func newKeyDrivenSession(t *testing.T) *keyDrivenSession {
 		blocks: map[uint8]bool{}, menus: map[string]bool{}, menuSeen: map[string]int{},
 		modeFrames: map[game.Mode]int{}, stallCells: map[[3]int]int{},
 		menuSinceProgress: map[string]int{}, moveSinceProgress: map[routeCell]int{},
-		fatalPicks: map[menuPick]bool{},
+		fatalPicks:          map[menuPick]bool{},
+		normalTempleTreated: map[int]bool{},
+		normalInnAttempts:   map[uint8]int{},
 	}
 }
 
@@ -725,9 +878,41 @@ func (s *keyDrivenSession) observe() {
 	state := s.app.state
 	s.modes[state.Mode] = true
 	s.modeFrames[state.Mode]++
+	if state.Mode == game.ModeCombat && !s.wasCombat {
+		s.combatNumber++
+		if s.tracing() {
+			block, _ := state.CurrentECLBlockID()
+			s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+				"幀%04d 戰鬥#%d 開始 ECL0x%02X", s.frames, s.combatNumber, block))
+			for _, fighter := range state.CombatFighters() {
+				s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+					"幀%04d 戰鬥#%d 開場 %s side=%d HP=%d/%d AC=%d AB=%d damage=%dd%d%+d attacks=%d quick=%t pos=(%d,%d)",
+					s.frames, s.combatNumber, fighter.Name, fighter.Side,
+					fighter.HitPoints, fighter.MaxHitPoints,
+					fighter.ArmorClass, fighter.AttackBonus, fighter.DamageDiceCount,
+					fighter.DamageDiceSides, fighter.DamageBonus, fighter.AttacksPerTurn,
+					fighter.QuickFight, fighter.CombatX, fighter.CombatY))
+			}
+		}
+	}
+	s.wasCombat = state.Mode == game.ModeCombat
 	// 全滅由假轉真才算一次；全滅畫面會停好幾幀，逐幀累加會把它算成幾十次。
 	if killed := state.PartyKilled(); killed && !s.partyWasKilled {
 		s.wipes++
+		if s.tracing() {
+			block, _ := state.CurrentECLBlockID()
+			s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+				"幀%04d 全滅#%d 戰鬥#%d ECL0x%02X message=%.100q",
+				s.frames, s.wipes, s.combatNumber, block, state.Message))
+			for _, character := range state.PartyRoster() {
+				s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+					"幀%04d 全滅名冊 %s HP=%d/%d health=%d bleeding=%d coins=%d/%d/%d/%d/%d slots=%v",
+					s.frames, character.Name, character.HitPoints, character.MaxHitPoints,
+					character.HealthStatus, character.Bleeding, character.Copper,
+					character.Silver, character.Electrum, character.Gold,
+					character.Platinum, character.SpellSlots))
+			}
+		}
 		if s.inCombatFrom {
 			s.fatalPicks[s.combatStartPick] = true
 			s.inCombatFrom = false
@@ -773,6 +958,12 @@ func (s *keyDrivenSession) observe() {
 		if len(s.segmentTrace) == 0 ||
 			strings.SplitN(s.segmentTrace[len(s.segmentTrace)-1], "@", 2)[0] != fmt.Sprintf("0x%02X", block) {
 			s.segmentTrace = append(s.segmentTrace, entry)
+			if s.tracing() {
+				s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+					"幀%04d 進段 0x%02X %s｜訊息=%.100q 提示=%.80q 選項=%s",
+					s.frames, block, modeName(state.Mode), state.Message, state.Prompt,
+					strings.Join(state.Choices, "｜")))
+			}
 		}
 	}
 	if len(state.Choices) > 0 {
@@ -789,7 +980,7 @@ func (s *keyDrivenSession) observe() {
 	// 測試全綠——落回原文的判準漏了玩家最常讀的那一塊。
 	for _, option := range state.Choices {
 		trimmed := strings.TrimSpace(option)
-		if trimmed == "" || !looksUntranslated(trimmed) {
+		if trimmed == "" || keyDrivenFormattedValue.MatchString(trimmed) || !looksUntranslated(trimmed) {
 			continue
 		}
 		s.fallbacks[trimmed] = true
@@ -799,15 +990,49 @@ func (s *keyDrivenSession) observe() {
 		if trimmed == "" {
 			continue
 		}
+		if text == state.Message {
+			s.lastNarrative = trimmed
+			if strings.Contains(trimmed, "戰鬥失敗。") {
+				s.normalRecoveryActive = true
+				s.normalRecoveryDaysAdded = 0
+			}
+		}
 		if !s.messages[trimmed] {
 			s.noteProgress()
+			if s.tracing() {
+				block, _ := state.CurrentECLBlockID()
+				s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+					"幀%04d 新文字 0x%02X %s｜%.160q", s.frames, block, modeName(state.Mode), trimmed))
+				if trimmed == "戰鬥勝利！" || trimmed == "戰鬥失敗。" {
+					for _, character := range state.PartyRoster() {
+						s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+							"幀%04d 戰後名冊 %s HP=%d/%d health=%d bleeding=%d",
+							s.frames, character.Name, character.HitPoints, character.MaxHitPoints,
+							character.HealthStatus, character.Bleeding))
+					}
+				}
+			}
 		}
 		s.messages[trimmed] = true
-		if looksUntranslated(trimmed) {
+		if looksUntranslated(trimmed) && !keyDrivenKnownFragments[trimmed] {
 			s.fallbacks[trimmed] = true
 		}
 	}
 }
+
+// keyDrivenKnownFragments 是 ECL 共用問句子程式被走訪器單獨吐出時的量測例外。
+// 原版正常執行會把它們併進呼叫端的同一份文字 run；替短句另寫 all_contains
+// 規則反而會因 first-match-wins 攔截完整頁面。這份清單只作用於 Message／Prompt，
+// 選項仍逐項接受落回原文檢查。來源契約見 cmd/ecl-text-coverage 與 spec 395／397。
+var keyDrivenKnownFragments = map[string]bool{
+	"WHAT DO YOU DO ?": true,
+	"WHAT DO YOU DO":   true,
+	"DO YOU CONTINUE?": true,
+}
+
+// 純金額是 locale 自己產生的格式化數值，不是英文原文。限定整串只能是數字與
+// `GP`，避免把含 GP 的英文句子一併放過。
+var keyDrivenFormattedValue = regexp.MustCompile(`^[0-9]+ GP$`)
 
 // stuckSignature 是「這是不是同一個選單」用的簽章：把選項裡的**數字**抹掉。
 //
@@ -847,8 +1072,10 @@ func (s *keyDrivenSession) traceMenu(reason string, want int) {
 		chosen = s.app.state.Choices[want]
 	}
 	s.moveTrace = append(s.moveTrace, fmt.Sprintf(
-		"幀%04d 選單 0x%02X %s 第%d項=%q ← %s｜%s｜訊息=%.60q 提示=%.40q",
-		s.frames, block, modeName(s.app.state.Mode), want, chosen, reason,
+		"幀%04d 選單 0x%02X %s 地點=%d/%q 原文=%q 城市=%d 第%d項=%q ← %s｜%s｜訊息=%.60q 提示=%.40q",
+		s.frames, block, modeName(s.app.state.Mode),
+		s.app.state.Location, s.app.state.LocationName, s.app.state.OriginalLocation,
+		s.app.state.Area.CurrentCity, want, chosen, reason,
 		strings.Join(s.app.state.Choices, "｜"), s.app.state.Message, s.app.state.Prompt))
 }
 
@@ -874,6 +1101,10 @@ func (s *keyDrivenSession) step(t *testing.T) {
 			}
 			return
 		}
+		if !keyDrivenBoost() && s.app.state.CreationCursor < len(s.app.state.CreationRoster) {
+			tap(t, s.app, s.keys, ebiten.KeyDown)
+			return
+		}
 		tap(t, s.app, s.keys, ebiten.KeyEnter)
 		return
 	}
@@ -892,6 +1123,57 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		s.playCombatTurn(t)
 		return
 	}
+	if !keyDrivenBoost() && s.normalSafeDungeonRecovery(t) {
+		return
+	}
+	if !keyDrivenBoost() && s.normalTempleRecovery(t) {
+		return
+	}
+	// 地城的正式紮營鍵是 E（C 是角色建立）。指定裝備買完後，先沿原始 GEO
+	// 從武器店出口走回已驗證為 `0/0` 的安全紮營格 `(7,13)`，再走
+	// TryEncamp／營地查看／整備；不能在出口直接按 E，那格是每小時 100% 遭遇，
+	// 休息必然被皇家衛兵中斷（spec 281／ecl_integration_test）。
+	if !keyDrivenBoost() && s.normalGearStage >= len(normalPreparationPurchaseItems) && (!s.normalReadyDone || !s.normalSpellDone) &&
+		s.app.state.Mode == game.ModeDungeon {
+		x, y, _ := s.app.state.DungeonGeometryView()
+		if x == 7 && y == 13 {
+			tap(t, s.app, s.keys, ebiten.KeyE)
+			return
+		}
+		// 兩個可見出口都要接：從 `(3,12)` 是 E,E,E,S,E；由西側入口進店則
+		// continuation 回 `(5,11)`，路線是 S,E,S,E。兩條都由 GEO2/0x01
+		// 的實際移動遮罩驗證；轉身與前進仍各用正常鍵盤幀（spec 1233）。
+		heading := 2
+		if (x == 5 && y == 11) || (x == 6 && y == 12) {
+			heading = 4
+		}
+		if !s.faceHeading(t, heading) {
+			return
+		}
+		tap(t, s.app, s.keys, ebiten.KeyUp)
+		return
+	}
+	// 商店交易結果是 ModeEvent，但仍保留上一層商品 Choices；那份選單不可操作。
+	// 每一筆指定購買後都先按 Enter 回商店，尤其第二件不能讓商品殘影落入通用
+	// 啟發式；舊策略正是從這裡開始誤買武器、最後把盾牌賣掉。
+	if !keyDrivenBoost() && s.app.state.Mode == game.ModeEvent &&
+		(s.app.state.OriginalEvent == "BUY" || s.app.state.OriginalEvent == "POOL") &&
+		(s.normalGearStage > 0 || s.normalMoneyPooled) {
+		tap(t, s.app, s.keys, ebiten.KeyEnter)
+		return
+	}
+	// REST 的完成事件是正式交易結果；只有它明確回報至少一名角色完成記憶，
+	// 才承認法術準備完成。不能在「開始休息」時先設旗標，也不能只看前端當幀
+	// 尚未刷新的 roster 投影，否則前者會把中斷算成功、後者會無限重睡。
+	if !keyDrivenBoost() && s.app.state.Mode == game.ModeEvent &&
+		strings.Contains(s.app.state.Message, "名角色的法術記憶") {
+		s.normalSpellDone = s.normalPreparedSpellLoadout()
+		if !s.normalSpellDone {
+			s.normalSpellStage = 0
+		}
+		tap(t, s.app, s.keys, ebiten.KeyEnter)
+		return
+	}
 	if s.app.state.Mode != game.ModeDungeon || s.app.geoGrid == nil {
 		// ⚠ 選單**預設按第一項**。試過依幀數輪流選：走過的格子從 28 掉到 27、
 		// 記到的話從 23 掉到 16——因為輪到「離開」那一項就真的離開了，
@@ -907,6 +1189,15 @@ func (s *keyDrivenSession) step(t *testing.T) {
 		// 所以不會像輪流選那樣自己切斷路線。
 		// ★ 先看**路線**：主線錄下來的下一個決策如果面對的是同一組選項，
 		// 就照它按。路線走完或對不上才退回啟發式。
+		if want, ok := s.normalPreparationChoice(); ok {
+			if s.moveCursorTo(t, want) {
+				s.traceMenu("一般強度準備", want)
+				s.lastMenuPick = menuPick{stuckSignature(s.app.state.Choices), want}
+				s.lastMenuFrame, s.hasLastMenu = s.frames, true
+				tap(t, s.app, s.keys, ebiten.KeyEnter)
+				return
+			}
+		}
 		if want, ok := s.routeChoice(); ok {
 			if s.moveCursorTo(t, want) {
 				s.routeHits++
@@ -930,6 +1221,19 @@ func (s *keyDrivenSession) step(t *testing.T) {
 			// 「返回修改選單」，兩個選單互踢，「離開」永遠輪不到——12,000 幀
 			// 有 11,000 幀在這個環裡。環繞讓每一項（含出口）都週期性被試到。
 			want := ((s.menuSeen[signature] - 1) / keyDrivenMenuPatience) % count
+			// 世界旅行方式的 EXIT 是「取消這一次旅行」，不是通往內容的
+			// 第三條路。只有路線查表已經沒有候選、落到通用探索器時才套
+			// 這個護欄；錄製主線明確選 EXIT 時仍由上面的 routeChoice 處理。
+			// 否則探索器會週期性取消抵達、再選同一目的地，VM continuation
+			// 與畫面就在兩個合法選單間往返，幀數再多也沒有新內容。
+			if want == count-1 && s.app.state.Choices[count-1] == "離開" {
+				for index, choice := range s.app.state.Choices {
+					if choice == "荒野" {
+						want = index
+						break
+					}
+				}
+			}
 			// 上一次按這一項之後整隊全滅過就換下一項。全部都試死過就照原樣按
 			// ——那代表這個選單怎麼選都會死，硬停在這裡也沒有比較好。
 			for probe := 0; probe < count && s.fatalPicks[menuPick{signature, want}]; probe++ {
@@ -957,6 +1261,9 @@ func (s *keyDrivenSession) step(t *testing.T) {
 			}
 			s.traceMenu("卡住換下一項", want)
 			s.lastMenuPick, s.lastMenuFrame, s.hasLastMenu = menuPick{signature, want}, s.frames, true
+			if s.app.state.Prompt == "從這裡可以前往" {
+				s.previousWorldOrigin = s.app.state.LocationName
+			}
 		}
 		tap(t, s.app, s.keys, ebiten.KeyEnter)
 		return
@@ -1068,7 +1375,491 @@ func (s *keyDrivenSession) step(t *testing.T) {
 	}
 }
 
+// normalTempleRecovery follows the original temple controls: the main menu's
+// G/O keys change the current party member and HEAL applies to that member.
+// Each injured, non-dead member receives at most one Cure Critical Wounds per
+// visit. All money and HP changes still pass through the player-visible menus.
+func (s *keyDrivenSession) normalTempleRecovery(t *testing.T) bool {
+	state := s.app.state
+	if state.Mode == game.ModeDungeon {
+		s.normalTempleActive = false
+		return false
+	}
+	if character, index, ok := state.TempleCurrentCharacter(); ok {
+		if !s.normalTempleActive {
+			s.normalTempleActive = true
+			s.normalTempleTreated = map[int]bool{}
+		}
+		s.normalTempleCharacter = index
+		if character.HealthStatus == party.HealthStatusOK && character.HitPoints >= character.MaxHitPoints {
+			s.normalTempleTreated[index] = true
+		}
+		if !s.normalTempleTreated[index] && character.HealthStatus != party.HealthStatusDead {
+			if s.moveCursorTo(t, 0) { // HEAL
+				tap(t, s.app, s.keys, ebiten.KeyEnter)
+				return true
+			}
+		}
+		if index+1 < len(state.PartyRoster()) {
+			tap(t, s.app, s.keys, ebiten.KeyO)
+			return true
+		}
+		if s.moveCursorTo(t, len(state.Choices)-1) { // EXIT
+			tap(t, s.app, s.keys, ebiten.KeyEnter)
+			return true
+		}
+	}
+	if !s.normalTempleActive || state.Mode != game.ModePlace {
+		return false
+	}
+	if strings.HasSuffix(state.Prompt, "需要什麼幫助？") && len(state.Choices) == 11 {
+		// 神殿治療的目的只是在敗戰後把昏迷／瀕死者恢復成正 HP，剩餘缺血再由
+		// 客棧按每天 1 HP 的自然療傷補滿。固定買 600 GP 的治療致命傷會讓只有
+		// 約 320 GP 等值的角色失敗，城市選單又因異常狀態重新進神殿而成死環；
+		// 100 GP 的治療輕傷是同一正式服務中的可負擔選項（spec 1234）。
+		if s.moveCursorTo(t, 2) { // Cure Light Wounds
+			tap(t, s.app, s.keys, ebiten.KeyEnter)
+			return true
+		}
+	}
+	if strings.Contains(state.Prompt, "確定施術？") && len(state.Choices) == 2 {
+		if s.moveCursorTo(t, 0) {
+			s.normalTempleTreated[s.normalTempleCharacter] = true
+			tap(t, s.app, s.keys, ebiten.KeyEnter)
+			return true
+		}
+	}
+	return false
+}
 
+// normalSafeDungeonRecovery uses an explicit player-visible safe-rest message.
+// It enters the same CAMP/REST flow as an inn; no HP or clock value is injected.
+func (s *keyDrivenSession) normalSafeDungeonRecovery(t *testing.T) bool {
+	recoveryRequested := strings.Contains(s.lastNarrative, "可以在這裡安全休息") ||
+		s.normalRecoveryActive
+	if !recoveryRequested || s.app.state.Mode != game.ModeDungeon {
+		return false
+	}
+	for _, character := range s.app.state.PartyRoster() {
+		if character.HealthStatus != party.HealthStatusOK || character.HitPoints < character.MaxHitPoints {
+			s.normalRecoveryActive = true
+			s.normalRecoveryDaysAdded = 0
+			s.normalSpellDone = false
+			s.normalSpellStage = 0
+			tap(t, s.app, s.keys, ebiten.KeyE)
+			return true
+		}
+	}
+	return false
+}
+
+// normalPreparationChoice 用玩家實際按得到的服務選單，讓六名角色各完成一次
+// 合法訓練，再於確認過的裝備店購買各職業可用的防具、盾牌與武器，最後逐人紮營
+// 整備，再讓牧師與法師透過 MAGIC → MEMORIZE → REST 各準備一支一級法術。
+// 這不是 boost：錢、劇情扣款、價格、XP、升級擲骰、裝備限制、AC 投影、法術槽
+// 與休息時間全走正式規則；這裡只取代「錄製主線時沒有理財、換裝與準備法術」
+// 的選單決策。
+func (s *keyDrivenSession) normalPreparationChoice() (int, bool) {
+	if keyDrivenBoost() || len(s.app.state.Choices) == 0 {
+		return 0, false
+	}
+	choices := s.app.state.Choices
+	prompt := s.app.state.Prompt
+	// POSTCOM deliberately lets an unconscious／dying party survive (spec
+	// 1204). When the visible result is defeat, start the same player-visible
+	// CAMP → REST recovery used after ordinary attrition before the generic
+	// ready-party policy chooses JOURNEY ON. Without this ordering, a roster at
+	// 0 HP can travel through several cities until the next ECL DAMAGE command
+	// turns a recoverable defeat into a real party wipe.
+	if strings.Contains(s.app.state.Message, "戰鬥失敗。") {
+		for _, character := range s.app.state.PartyRoster() {
+			if character.HitPoints < character.MaxHitPoints {
+				s.normalRecoveryActive = true
+				s.normalRecoveryDaysAdded = 0
+				break
+			}
+		}
+	}
+	// 一般整備完成後，城市服務已不是目前路線的目標。通用「卡住才換」會把
+	// 客棧／商店／訓練場逐間輪巡，再從城外選紮營回城，形成完全可操作但永遠
+	// 不繼續旅行的循環。依玩家看得到的出口逐層離開；不指定目的地、不注入座標。
+	if s.normalReadyDone && s.normalSpellDone && !s.normalRecoveryActive &&
+		s.app.state.Mode == game.ModeWilderness {
+		// 城市服務數量依城市不同：阿沙本福德有六項，匕首瀑布只有四項。
+		// 用玩家可見的首／末項辨識，不把任一城市的形狀當成全域契約。
+		if len(choices) >= 4 && choices[0] == "客棧" && choices[len(choices)-1] == "離開" {
+			return len(choices) - 1, true
+		}
+	}
+	// 城市客棧是手冊明定的安全休息服務，而且走正式 INN 選單會同步 roster
+	// 與戰鬥投影。長途連戰之間若已受傷，先住店再離城；不能明知殘血仍照
+	// 錄製路線去酒館閒逛，最後把「測試不會理財」誤報成平衡缺陷。
+	if len(choices) >= 1 && choices[0] == "客棧" {
+		for _, character := range s.app.state.PartyRoster() {
+			if character.HealthStatus != party.HealthStatusOK && len(choices) > 3 && choices[3] == "神殿" {
+				return 3, true
+			}
+		}
+		for _, character := range s.app.state.PartyRoster() {
+			if character.HitPoints < character.MaxHitPoints {
+				s.normalRecoveryActive = true
+				s.normalRecoveryDaysAdded = 0
+				if !s.normalPreparedSpellLoadout() {
+					s.normalSpellDone = false
+					s.normalSpellStage = 0
+				}
+				city := s.app.state.Area.CurrentCity
+				if s.normalInnAttempts[city] > 0 {
+					// The previous visible INN transaction returned without
+					// healing or opening CAMP. Leave and recover at the edge.
+					return len(choices) - 1, true
+				}
+				s.normalInnAttempts[city]++
+				return 0, true
+			}
+		}
+	}
+	// ECL 城市客棧以 PROGRAM 9 開啟正式紮營服務；它不會像簡化的場所
+	// INN adapter 一樣瞬間補滿。依自然療傷契約，每 24 小時恢復 1 HP，
+	// 所以用選單加入「全隊最大缺血量」天數，再開始休息。整段仍會經過
+	// AdvanceGameTimeHours、隨機中斷與 roster 投影，沒有直接改角色數值。
+	if s.normalRecoveryActive {
+		if len(choices) == 3 && choices[0] == "進入城市" &&
+			choices[1] == "繼續旅程" && choices[2] == "紮營" {
+			return 2, true
+		}
+		if prompt == "紮營選單" {
+			if !s.normalSpellDone && s.normalSpellStage < 2 {
+				for index, choice := range choices {
+					if choice == "法術" {
+						return index, true
+					}
+				}
+			}
+			maxMissing := 0
+			for _, character := range s.app.state.PartyRoster() {
+				if missing := character.MaxHitPoints - character.HitPoints; missing > maxMissing {
+					maxMissing = missing
+				}
+			}
+			if maxMissing <= 0 {
+				s.normalRecoveryActive = false
+				s.normalRecoveryDaysAdded = 0
+				return len(choices) - 1, true
+			}
+			for index, choice := range choices {
+				if choice == "休息" {
+					return index, true
+				}
+			}
+		}
+		if len(choices) == 4 && strings.HasPrefix(choices[0], "開始休息（") {
+			maxMissing := 0
+			for _, character := range s.app.state.PartyRoster() {
+				if missing := character.MaxHitPoints - character.HitPoints; missing > maxMissing {
+					maxMissing = missing
+				}
+			}
+			// REST 設定會跨客棧保留，不能假設每次進來都從 24 小時開始。
+			// 先前只數「這一輪按了幾次增加」，使舊的 936 小時再加 42 天，
+			// 最後一次睡到 1,944 小時。直接讀玩家看得到的目前時數，往
+			// `最大缺血 × 24 小時` 雙向校正，才不會累積漂移（spec 1234）。
+			currentHours := 0
+			if _, err := fmt.Sscanf(choices[0], "開始休息（%d 小時）", &currentHours); err == nil {
+				targetHours := maxMissing * 24
+				if targetHours < 24 {
+					targetHours = 24
+				}
+				switch {
+				case currentHours < targetHours:
+					return 1, true // 增加 24 小時
+				case currentHours > targetHours:
+					return 2, true // 減少 24 小時
+				default:
+					return 0, true // 開始休息
+				}
+			}
+		}
+	}
+	// 這是下水道天花板的可選支線；實跑選「是」並派盜賊後會進入
+	// 「冒險告一段落」標題頁，而不是世界地圖。正常通關重放在玩家看得到
+	// 完整警告時選「否」，避免把已打贏的戰役誤算成全滅重開。
+	if len(choices) == 2 && choices[0] == "是" && choices[1] == "否" &&
+		strings.Contains(s.app.state.Message, "只有盜賊爬得上") {
+		return 1, true
+	}
+	// 主線錄製檔在兩個火刀關卡都選了投降：第一次被送回盜賊公會，第二次則
+	// 讓首領勝利事件永遠不會發生，隊伍只會在 0x03／0x04 間反覆走。正常通關
+	// 路徑拒絕投降，讓正式戰鬥與戰後 `NEWECL 0x50` 有機會執行。
+	if len(choices) == 2 && choices[0] == "是" && choices[1] == "否" &&
+		strings.Contains(s.app.state.Message, "火刀要求你們立刻投降") {
+		return 1, true
+	}
+	// 下水道天花板事件的上一頁已明說「只有盜賊爬得上」，下一頁卻只留下
+	// 共用的「請選擇角色」提示。照玩家可見前文選盜賊；不能讓通用的卡住輪替
+	// 從第一名戰士開始亂試，因為錯選會直接切斷這條正常主線。
+	if prompt == "請選擇角色" && strings.Contains(s.lastNarrative, "只有盜賊爬得上") {
+		for index, choice := range choices {
+			if choice == "盜賊" {
+				return index, true
+			}
+		}
+	}
+	// 裝備買齊後若先回到荒野入口，應在離城前選 CAMP；只等地城的 E 鍵會讓
+	// 第一場皇家守衛戰先發生，牧師與法師根本還沒有準備法術。
+	if s.normalGearStage >= len(normalPreparationPurchaseItems) && !s.normalReadyDone && len(choices) == 3 &&
+		choices[0] == "進入城市" && choices[1] == "繼續旅程" && choices[2] == "紮營" {
+		return 2, true
+	}
+	// 酒館鬥毆是可選支線；一般強度驗證不應在完成任何整備前，因為
+	// 「永遠選第一項」而主動攻擊十名酒客，製造一場與主線無關的全滅。
+	if len(choices) == 3 && choices[0] == "揍酒保" && choices[1] == "喝一杯" && choices[2] == "離開" {
+		return 2, true
+	}
+	if len(choices) == 3 && choices[0] == "攻擊" && choices[1] == "保持冷靜" && choices[2] == "撤退" {
+		return 1, true
+	}
+	// 火刀據點明示前方是旋轉刀刃；選「闖入刀刃」會讓滿血且已整備的六人
+	// 當場全滅，並非戰鬥平衡或 QUICK 失敗。正常玩家路徑採可見的「等待」，
+	// 保留原事件傷害但不故意選致命選項（spec 1233）。
+	if len(choices) == 3 && choices[0] == "闖入刀刃" && choices[1] == "等待" && choices[2] == "撤退" {
+		return 1, true
+	}
+	// 法師塔地上明示〈避開塔中陷阱〉；正常玩家應讀取而不是讓錄製路線
+	// 拒讀提示後繼續踩樓梯傷害。只選玩家看得到的「是」，不直接設旗標。
+	if len(choices) == 2 && choices[0] == "是" && choices[1] == "否" &&
+		strings.Contains(s.app.state.Message, "避開塔中陷阱") {
+		// 紙條本身就是爆裂符文陷阱；閱讀後會提示「不要閱讀爆裂符文」並
+		// 立刻爆炸。正常強度路線依玩家可見標題避開它，不把全滅當成路線進展。
+		return 1, true
+	}
+	// 艾森布拉往哈普有「小徑／荒野／離開」三條玩家可見選擇。錄製路線選
+	// 小徑會固定撞上三條黑龍；一般隊伍在已知這條路的致命遭遇後合法改走
+	// 荒野，不需要降低黑龍數值或注入角色資源。
+	if len(choices) == 3 && choices[0] == "小徑" && choices[1] == "荒野" && choices[2] == "離開" &&
+		strings.Contains(s.app.state.Message, "前往哈普") {
+		return 1, true
+	}
+	if !s.normalAvoidedFee && len(choices) == 3 && choices[0] == "如實相告" &&
+		choices[1] == "說謊" && choices[2] == "離開" {
+		s.normalAvoidedFee = true
+		return 1, true
+	}
+	if prompt == "訓練哪一位角色？" {
+		if s.app.state.Message == "訓練費用是 1000 GP。" {
+			// 這句是餘額不足後回到名單的拒絕結果；繼續挑同一人只會
+			// 在事件／訓練場兩個畫面間無限往返。
+			s.normalMoneyTaken = true
+			return len(choices) - 1, true
+		}
+		roster := s.app.state.PartyRoster()
+		for index := 0; index < len(roster); index++ {
+			// 已昏迷或垂死的角色依法不能受訓；若仍反覆選他，前端只會
+			// 回覆拒絕訊息，整場重放便永遠停在訓練場。
+			// 正式扣款會把五種硬幣都折成 copper 再換算；買下昂貴防具後的
+			// 找零不一定仍留在 GP／PP。只數這兩欄會把仍有 1,070 GP 價值的
+			// 戰士誤判成付不起訓練費。
+			fundsCopper := uint64(roster[index].Copper) + uint64(roster[index].Silver)*10 +
+				uint64(roster[index].Electrum)*100 + uint64(roster[index].Gold)*200 +
+				uint64(roster[index].Platinum)*1000
+			if s.tracing() {
+				s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+					"幀%04d 訓練候選 %s level=%d health=%d coins=%d/%d/%d/%d/%d worth=%d",
+					s.frames, roster[index].Name, roster[index].Level, roster[index].HealthStatus,
+					roster[index].Copper, roster[index].Silver, roster[index].Electrum,
+					roster[index].Gold, roster[index].Platinum, fundsCopper/200))
+			}
+			if roster[index].HealthStatus == party.HealthStatusOK && roster[index].Level < 5 && fundsCopper/200 >= 1000 {
+				return index, true
+			}
+		}
+		// 每人原始 300 PP 只能支付一次 1,000 GP（200 PP）訓練；六人
+		// 都升到 2 級後離開，剩餘整備不再嘗試從商店取款。
+		s.normalMoneyTaken = true
+		return len(choices) - 1, true
+	}
+	if strings.Contains(prompt, "要支付 1000 GP 訓練嗎？") {
+		return 0, true
+	}
+	if s.normalGearStage >= len(normalPreparationPurchaseItems) {
+		switch {
+		case prompt == "紮營選單":
+			if s.normalReadyStage >= len(normalPreparationReadyItems) {
+				s.normalReadyDone = true
+			}
+			s.normalSpellDone = s.normalPreparedSpellLoadout()
+			want := "查看"
+			if s.normalReadyStage > 0 && !s.normalSpellDone {
+				want = "法術"
+			} else if s.normalSpellDone {
+				want = "離開"
+			}
+			for index, choice := range choices {
+				if choice == want {
+					return index, true
+				}
+			}
+		case prompt == "選擇要查看的角色":
+			if s.normalReadyStage >= len(normalPreparationReadyItems) {
+				s.normalReadyDone = true
+				return len(choices) - 1, true
+			}
+			s.normalReadyNeedsCharacter = false
+			return normalPreparationCharacterIndices[s.normalReadyStage], true
+		case strings.HasPrefix(prompt, "選擇 ") && strings.HasSuffix(prompt, " 要整備或卸下的物品"):
+			if s.normalReadyNeedsCharacter {
+				return len(choices) - 1, true
+			}
+			want := normalPreparationReadyItems[s.normalReadyStage]
+			for index, choice := range choices {
+				if choice == want {
+					s.normalReadyStage++
+					if s.normalReadyStage >= len(normalPreparationReadyItems) ||
+						normalPreparationCharacterIndices[s.normalReadyStage] != normalPreparationCharacterIndices[s.normalReadyStage-1] {
+						s.normalReadyNeedsCharacter = true
+					}
+					return index, true
+				}
+			}
+			// 指定物品不存在時只略過該件，避免誤整備別的背包內容。
+			s.normalReadyStage++
+			if s.normalReadyStage >= len(normalPreparationReadyItems) ||
+				normalPreparationCharacterIndices[s.normalReadyStage] != normalPreparationCharacterIndices[s.normalReadyStage-1] {
+				s.normalReadyNeedsCharacter = true
+			}
+			return len(choices) - 1, true
+		case prompt == "法術選單":
+			if s.normalSpellDone {
+				return len(choices) - 1, true // 返回紮營選單
+			}
+			if s.normalSpellStage < 2 {
+				return 1, true // MEMORIZE
+			}
+			return 4, true // REST
+		case prompt == "選擇要準備法術的角色":
+			switch s.normalSpellStage {
+			case 0:
+				return 1, true // 牧師（建角名單是戰士、牧師、魔法師…）
+			case 1:
+				return 2, true // 法師
+			default:
+				return len(choices) - 1, true
+			}
+		case strings.HasSuffix(prompt, " 的可用法術"):
+			// 五級牧師的完整容量是 5/5/1（本模板智慧含額外格；spec 1211／1241）。
+			// 一環保留既有五支控制組，二環準備五格人類定身術，三環準備一格
+			// 祈禱術。三者都走正式 MEMORIZE → REST 與原版逐環容量，不修改敵人、
+			// 角色數值或法術規則；這一場量的是合法高環資源能否改變正常戰局。
+			// 法師固定法術書仍屬 spec 1217 的待決產品分支，本測試不替它選。
+			targets := []struct{ index, count int }{
+				{0, 1}, {1, 1}, {2, 1}, {3, 1}, {5, 1}, {9, 5}, {20, 1},
+			}
+			if s.normalSpellStage == 1 {
+				// 法師四格都準備目前唯一完成戰鬥規則的燃燒之手；原版
+				// 同法術可重複佔槽，清單顯示為「燃燒之手 (4)」。
+				targets = []struct{ index, count int }{{0, 4}}
+			}
+			for _, target := range targets {
+				if target.index < len(choices) && memorizeChoiceCount(choices[target.index]) < target.count {
+					return target.index, true
+				}
+			}
+			s.normalSpellStage++
+			return len(choices) - 2, true
+		case len(choices) == 4 && strings.HasPrefix(choices[0], "開始休息（"):
+			// 只有回到紮營選單、並從 roster 看到實際 SpellSlots 後，才把
+			// normalSpellDone 設成 true；按下「開始休息」本身不是完成證據。
+			return 0, true // 預設 24 小時後開始休息
+		}
+	}
+	if s.app.state.Mode != game.ModePlace {
+		return 0, false
+	}
+	if len(choices) == 9 && choices[0] == "購買" {
+		switch {
+		case s.normalSkipGearShop:
+			s.normalSkipGearShop = false
+			return len(choices) - 1, true
+		case s.normalGearShopFound && !s.normalMoneyPooled:
+			// 每名角色原有的 300 PP 足以支付自己的皮甲／盾牌與一次訓練。
+			// 先前在這裡集中全部金幣，買裝雖成功，之後六人個別餘額卻全是 0，
+			// 訓練場依法全部拒絕。此路徑不需要 pool，保留個人訓練費。
+			s.normalMoneyPooled = true
+			return 0, true
+		case s.normalGearStage < len(normalPreparationPurchaseItems):
+			return 0, true
+		case s.normalGearStage >= len(normalPreparationPurchaseItems):
+			return len(choices) - 1, true // 指定裝備買完就離店，禁止啟發式繞到販售
+		}
+	}
+	if s.normalGearStage < len(normalPreparationPurchaseItems) && prompt == "選擇要購買的物品" {
+		want := normalPreparationPurchaseItems[s.normalGearStage]
+		for index, choice := range choices {
+			if choice == want {
+				if !s.normalMoneyPooled {
+					s.normalGearShopFound = true
+					return len(choices) - 1, true
+				}
+				s.normalGearStage++
+				return index, true
+			}
+		}
+		// 這不是盔甲店。退出商品清單，讓同一間商店仍可執行集中／
+		// 取出金幣；不可落回啟發式反覆購入清單上的第一件雜物。
+		s.normalSkipGearShop = true
+		return len(choices) - 1, true
+	}
+	if s.normalGearStage < len(normalPreparationPurchaseItems) && prompt == "選擇要購買物品的角色" {
+		return normalPreparationCharacterIndices[s.normalGearStage], true
+	}
+	return 0, false
+}
+
+func memorizeChoiceCount(choice string) int {
+	if !strings.HasPrefix(choice, "*") {
+		return 0
+	}
+	open := strings.LastIndex(choice, "(")
+	if open < 0 || !strings.HasSuffix(choice, ")") {
+		return 1
+	}
+	count, err := strconv.Atoi(choice[open+1 : len(choice)-1])
+	if err != nil || count < 2 {
+		return 1
+	}
+	return count
+}
+
+func (s *keyDrivenSession) normalPreparedSpellLoadout() bool {
+	clericCounts := map[uint8]int{}
+	mageBurningHands := 0
+	for _, character := range s.app.state.PartyRoster() {
+		if character.HasClass(party.ClassCleric) {
+			for _, spellID := range character.SpellSlots {
+				clericCounts[spellID]++
+			}
+		}
+		if character.HasClass(party.ClassMagicUser) {
+			for _, spellID := range character.SpellSlots {
+				if spellID == game.BurningHandsSpellID {
+					mageBurningHands++
+				}
+			}
+		}
+	}
+	for _, spellID := range []uint8{
+		game.BlessSpellID, game.CurseSpellID, game.CureLightWoundsSpellID,
+		game.CauseLightWoundsSpellID, game.ProtectionFromEvilSpellID,
+	} {
+		if clericCounts[spellID] < 1 {
+			return false
+		}
+	}
+	if clericCounts[23] < 5 || clericCounts[42] < 1 {
+		return false
+	}
+	return mageBurningHands >= 4
+}
 
 // keyDrivenBoost 決定要不要把隊伍撐起來（`COAB_KEY_BOOST=0` 關掉）。
 //
@@ -1143,17 +1934,19 @@ func (s *keyDrivenSession) boostParty(t *testing.T) {
 	// 磨了 41 回合全滅（第 715 輪）。roster 沒有裝備，自動換裝就是 no-op，
 	// 撐過的欄位才活得過戰鬥。這也呼應開場劇情：「所有裝備都不見了」。
 	roster := s.app.state.PartyRoster()
-	stripped := false
 	for index := range roster {
 		if len(roster[index].Equipment) > 0 {
 			roster[index].Equipment = nil
-			stripped = true
 		}
+		// roster 與 Fighter 必須一起撐。神殿治療、戰後同步等正式路徑會把
+		// Fighter HP 寫回角色；只撐 Fighter 會產生 999/5 的非法角色記錄。
+		roster[index].HitPoints, roster[index].MaxHitPoints = 999, 999
+		roster[index].BaseMaxHitPoints = 999
+		roster[index].HealthStatus = party.HealthStatusOK
+		roster[index].Bleeding = 0
 	}
-	if stripped {
-		if err := s.app.state.SetPartyRoster(roster); err != nil {
-			t.Fatalf("清裝備失敗：%v", err)
-		}
+	if err := s.app.state.SetPartyRoster(roster); err != nil {
+		t.Fatalf("同步強化 roster 失敗：%v", err)
 	}
 	party := s.app.state.PartyFighters()
 	if len(party) == 0 {
@@ -1179,15 +1972,115 @@ func (s *keyDrivenSession) boostParty(t *testing.T) {
 // ⚠ 順序不能反：`Q` 在移動模式或施法選目標時是別的意思，先收掉才按得對。
 func (s *keyDrivenSession) playCombatTurn(t *testing.T) {
 	t.Helper()
+	// QUICK 住在角色記錄中，上一戰全員委派會帶進下一場。StartCombat 會在
+	// 新遭遇邊界先 yield，這一幀要先按原版的 Space 收回玩家角色；否則下一個
+	// 推進鍵仍可能讓整場由 AI 同步算完，沒有戰術或施法介入機會。
+	hasManualPlayer := false
+	hasPersistentQuick := false
+	for _, fighter := range s.app.state.CombatFighters() {
+		if fighter.Side != combat.SideParty || fighter.ControlMorale >= 0x80 || fighter.HitPoints <= 0 {
+			continue
+		}
+		if fighter.QuickFight {
+			hasPersistentQuick = true
+		} else {
+			hasManualPlayer = true
+		}
+	}
+	if hasPersistentQuick && !hasManualPlayer {
+		tap(t, s.app, s.keys, ebiten.KeySpace)
+		return
+	}
+	// QUICK 的法術 AI 是原版獨立的 ALT+M 開關，而且每場戰鬥重設為關閉。
+	// 正常隊伍已透過 CAMP 準備法術；先以正式組合鍵允許 AI 使用它們，否則
+	// 單按 Q 只會近戰，記憶槽整場原封不動（spec 424）。
+	if !s.app.state.CombatQuickMagicEnabled() {
+		tapWithModifier(t, s.app, s.keys, ebiten.KeyAltLeft, ebiten.KeyM)
+		return
+	}
 	switch {
 	case s.app.combatSpeedMenu, s.app.combatDoneMenu:
 		tap(t, s.app, s.keys, ebiten.KeyEscape)
 	case s.app.state.CombatViewActive():
 		tap(t, s.app, s.keys, ebiten.KeyEscape)
-	case s.app.state.CombatMoveMode(), s.app.state.CombatCastingSpell() != 0:
+	case s.app.state.CombatMoveMode():
 		tap(t, s.app, s.keys, ebiten.KeyEscape)
+	case s.app.state.CombatCastingSpell() != 0:
+		// B/S/... 先進入選法術狀態；真人下一步按 Enter 才確認施法。
+		tap(t, s.app, s.keys, ebiten.KeyEnter)
 	default:
 		s.combatTurns++
+		if s.tracing() && s.combatTurns == 1 {
+			for _, character := range s.app.state.PartyRoster() {
+				s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+					"幀%04d 角色法術 %s class=%d level=%d health=%d HP=%d/%d slots=%v known=%v",
+					s.frames, character.Name, character.Class, character.Level,
+					character.HealthStatus, character.HitPoints, character.MaxHitPoints,
+					character.SpellSlots, character.KnownSpells))
+			}
+			for _, fighter := range s.app.state.CombatFighters() {
+				s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+					"幀%04d 戰鬥開場 %s side=%d HP=%d/%d AC=%d AB=%d damage=%dd%d%+d attacks=%d quick=%t pos=(%d,%d)",
+					s.frames, fighter.Name, fighter.Side, fighter.HitPoints, fighter.MaxHitPoints,
+					fighter.ArmorClass, fighter.AttackBonus, fighter.DamageDiceCount,
+					fighter.DamageDiceSides, fighter.DamageBonus, fighter.AttacksPerTurn,
+					fighter.QuickFight, fighter.CombatX, fighter.CombatY))
+			}
+		}
+		// 原版 C 會先開正式 CAST 清單；祝福是整備時放進牧師第一個槽的
+		// 第一項，因此下一幀以 Enter 選定。這條路同時證明前端沒有再把
+		// C 偷綁成單一「詛咒術」快捷鍵。
+		if s.app.combatSpellMenu {
+			spellID := uint8(0)
+			if s.app.state.CombatCanCastBurningHands() {
+				spellID = game.BurningHandsSpellID
+			} else if s.app.state.CombatCanCastBless() {
+				spellID = game.BlessSpellID
+			}
+			choices := s.app.state.CombatSpellChoices()
+			for index, choice := range choices {
+				if choice.SpellID != spellID {
+					continue
+				}
+				if s.app.combatSpellCursor != index {
+					tap(t, s.app, s.keys, ebiten.KeyDown)
+					return
+				}
+				tap(t, s.app, s.keys, ebiten.KeyEnter)
+				return
+			}
+			// CAST 清單在開啟後若已不再包含預定法術，安全退出並讓本回合
+			// 落到 QUICK；不能任選第 0 項，也不能留在空選單裡。
+			tap(t, s.app, s.keys, ebiten.KeyEscape)
+			return
+		}
+		// 已確認、仍在原版施法延遲中的動作，要等排程重新輪到施法者才用 Enter
+		// 推進。法術等待期間若目前是另一名手動隊員，仍須先完成該隊員的正常
+		// 回合；把「場上有人有待決法術」誤當成「目前就是施法者」會讓重放每幀
+		// 都替另一名角色按 Enter，永遠輪不回施法者（spec 1233）。
+		for _, candidate := range s.app.state.CombatFighters() {
+			if candidate.CombatAction.SpellID != 0 {
+				current, hasCurrent := s.app.state.CombatActiveFighter()
+				if s.tracing() {
+					active := "none"
+					if hasCurrent {
+						active = fmt.Sprintf("%s side=%d hp=%d quick=%t control=%#x", current.Name,
+							current.Side, current.HitPoints, current.QuickFight, current.ControlMorale)
+					}
+					s.moveTrace = append(s.moveTrace, fmt.Sprintf(
+						"幀%04d 待決法術 %s spell=%#02x delay=%d target=%q point=%t(%d,%d)；active=%s",
+						s.frames, candidate.Name, candidate.CombatAction.SpellID,
+						candidate.CombatAction.Delay, candidate.CombatAction.TargetID,
+						candidate.CombatAction.HasTargetPoint, candidate.CombatAction.TargetX,
+						candidate.CombatAction.TargetY, active))
+				}
+				if !hasCurrent || current.ID == candidate.ID {
+					tap(t, s.app, s.keys, ebiten.KeyEnter)
+					return
+				}
+				break
+			}
+		}
 		// ⚠ 不是自己活著的隊員回合就按 Enter（`CombatAct` 那顆鍵），不是 `Q`。
 		// 排程中的快速施法（「開始吟唱…」）會把回合表走到盡頭再把控制交回
 		// 玩家，這時 `Q`（快速戰鬥切換）的第一步就是「要有隊員回合」——
@@ -1196,10 +2089,44 @@ func (s *keyDrivenSession) playCombatTurn(t *testing.T) {
 		// 真人玩家按 Enter 就過得去；重放照做（第 715 輪）。
 		if fighter, ok := s.app.state.CombatActiveFighter(); ok &&
 			fighter.Side == combat.SideParty && fighter.HitPoints > 0 && !fighter.QuickFight {
-			tap(t, s.app, s.keys, ebiten.KeyQ)
+			// 法師確實準備了燃燒之手；只有既有的鄰接敵人／職業／記憶槽
+			// 閘門成立時，才透過正式 C → CAST 清單施放。法師只有這一支
+			// 記憶法術，所以 Enter 會選中它，不需要測試專用直呼。
+			if s.app.state.CombatCanCastBurningHands() && s.combatSpellChoiceAvailable(game.BurningHandsSpellID) {
+				tap(t, s.app, s.keys, ebiten.KeyC)
+				return
+			}
+			// 整備路徑已讓牧師用正式 MEMORIZE → REST 準備祝福；在第一個
+			// 合法牧師回合按原版公開的 C → CAST 施放，不能讓 QUICK 的「不自動施法」
+			// 把玩家實際擁有的法術永遠留在槽裡。
+			if s.app.state.CombatCanCastBless() && s.combatSpellChoiceAvailable(game.BlessSpellID) {
+				for _, character := range s.app.state.PartyRoster() {
+					if character.ID == fighter.ID && character.Class == party.ClassCleric {
+						tap(t, s.app, s.keys, ebiten.KeyC)
+						return
+					}
+				}
+			}
+			// 已委派的前一名角色必須維持 QUICK。若在下一名手動角色接棒時按
+			// Space，會把前一名收回；下一幀 Q 又只委派目前角色，兩個動作互相
+			// 抵消，戰局便永遠停在同一輪。只有戰鬥開場「所有玩家角色都已
+			// QUICK」時，才由函式頂端的閘門收回一次，確保新遭遇仍有玩家輸入。
+			if os.Getenv("COAB_KEY_MANUAL_COMBAT") == "1" {
+				tap(t, s.app, s.keys, ebiten.KeyEnter)
+			} else {
+				tap(t, s.app, s.keys, ebiten.KeyQ)
+			}
 		} else {
 			tap(t, s.app, s.keys, ebiten.KeyEnter)
 		}
+	}
+	// 戰鬥最後一個按鍵可能在同一個 Update 內完成 POSTCOM，下一幀 observe()
+	// 看見的已是後續 ECL 頁面。不能只靠 state.Message 的跨幀取樣記戰敗；在
+	// 正式戰鬥訊息仍可見的提交點同步立起恢復旗標，否則很短的敗戰頁會漏掉，
+	// 0 HP 隊伍便繼續走到下一個 DAMAGE 才真正全滅。
+	if strings.Contains(s.app.state.CombatMessage(), "戰鬥失敗。") {
+		s.normalRecoveryActive = true
+		s.normalRecoveryDaysAdded = 0
 	}
 	if s.tracing() {
 		alive, hp, enemies := 0, 0, 0
@@ -1218,6 +2145,15 @@ func (s *keyDrivenSession) playCombatTurn(t *testing.T) {
 			"幀%04d 戰鬥 我方 %d 人／HP %d，敵方 %d 人 ⇒ %.40q",
 			s.frames, alive, hp, enemies, s.app.state.CombatMessage()))
 	}
+}
+
+func (s *keyDrivenSession) combatSpellChoiceAvailable(spellID uint8) bool {
+	for _, choice := range s.app.state.CombatSpellChoices() {
+		if choice.SpellID == spellID {
+			return true
+		}
+	}
+	return false
 }
 
 // searchForAWayThrough 是「路線說有路、按下去卻是牆」時玩家會做的事：先開搜尋
@@ -1439,6 +2375,9 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	}
 	for index := 0; index < 6; index++ {
 		tap(t, application, keys, ebiten.KeyEnter)
+		if !keyDrivenBoost() && index < 5 {
+			tap(t, application, keys, ebiten.KeyDown)
+		}
 	}
 	if got := len(application.state.CreationRoster); got != 6 {
 		t.Fatalf("按六次 Enter 應該有六名隊員，實際 %d", got)
@@ -1454,9 +2393,29 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	// 不要為了「看起來跑得久」而拖慢整個測試套件。
 	for session.frames = 0; session.frames < keyDrivenFrames(); session.frames++ {
 		session.observe()
+		// 一般強度報表量的是一條連續冒險。全滅後由標題建立新隊伍已是另一場
+		// attempt，不能把多場走過的格子與段數聯集起來冒充單次進度。
+		if !keyDrivenBoost() && application.state.PartyKilled() {
+			break
+		}
 		session.step(t)
+		if application.state.GameWon() {
+			session.wonAt = session.frames
+			break
+		}
 	}
 	session.observe()
+	// 失敗斷言之前先落 trace；否則早停場景會在原本的收尾寫檔前 t.Fatal，
+	// COAB_KEY_TRACE 反而只對通過的 run 有效。
+	if path := os.Getenv("COAB_KEY_TRACE"); path != "" {
+		if !filepath.IsAbs(path) {
+			path = filepath.Join("..", "..", path)
+		}
+		if err := os.WriteFile(path,
+			[]byte(strings.Join(session.moveTrace, "\n")+"\n"), 0o644); err != nil {
+			t.Fatalf("逐格紀錄寫不出來：%v", err)
+		}
+	}
 
 	if !session.modes[game.ModeDungeon] {
 		t.Fatal("整場都沒走進地城：地城那一層按鍵到不了")
@@ -1467,13 +2426,23 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	if len(session.cells) < 2 {
 		t.Fatalf("只站上過 %d 格：走不動", len(session.cells))
 	}
+	if !keyDrivenBoost() && session.frames >= keyDrivenFrames() && len(session.blocks) == 1 && session.blocks[0x01] {
+		spellState := make([]string, 0, len(application.state.PartyRoster()))
+		for _, character := range application.state.PartyRoster() {
+			spellState = append(spellState, fmt.Sprintf("%s slots=%v", character.Name, character.SpellSlots))
+		}
+		t.Fatalf("一般強度路線在 %d 幀上限仍未離開 ECL 0x01；mode=%v event=%q killed=%t message=%q prompt=%q choices=%q spells=%s",
+			session.frames, application.state.Mode, application.state.OriginalEvent,
+			application.state.PartyKilled(), application.state.Message, application.state.Prompt,
+			application.state.Choices, strings.Join(spellState, "；"))
+	}
 	t.Logf("按鍵驅動 %d 幀：走過 %d 格、%d 種畫面、記到 %d 句話、撞到門 %d 次、"+
 		"照路線按 %d 次（路線共 %d 步，查表覆蓋 %d 格／%d 種選單），"+
-		"快速戰鬥 %d 次、全滅重開 %d 次（記住 %d 個致命選項），落回原文 0 句%s",
+		"快速戰鬥 %d 次、全滅重開 %d 次（記住 %d 個致命選項），落回原文 %d 句%s",
 		session.frames, len(session.cells), len(session.modes), len(session.messages),
 		session.doorsFound, session.routeHits, len(session.route),
 		len(session.routeMoves), len(session.routeChoices),
-		session.combatTurns, session.wipes, len(session.fatalPicks),
+		session.combatTurns, session.wipes, len(session.fatalPicks), len(session.fallbacks),
 		boostNote(session.boosted))
 	x, y, facing := application.state.DungeonGeometryView()
 	spent := make([]string, 0, len(session.modeFrames))
@@ -1492,6 +2461,32 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	t.Logf("  停在：%s (%d,%d) 朝 %d；最後一次有新東西在第 %d 幀；"+
 		"各畫面幀數 %s；路線帶不動 %d 次", modeName(application.state.Mode), x, y, facing,
 		session.lastProgress, strings.Join(spent, "、"), session.routeBlocked)
+	if application.state.Mode == game.ModeCombat {
+		t.Logf("  戰鬥停格 frontend spellMenu=%t cursor=%d doneMenu=%t speedMenu=%t casting=%#02x quickMagic=%t message=%q",
+			application.combatSpellMenu, application.combatSpellCursor,
+			application.combatDoneMenu, application.combatSpeedMenu,
+			application.state.CombatCastingSpell(), application.state.CombatQuickMagicEnabled(),
+			application.state.Message)
+		t.Logf("  戰鬥停格 gates bless=%t burningHands=%t spellChoices=%+v",
+			application.state.CombatCanCastBless(), application.state.CombatCanCastBurningHands(),
+			application.state.CombatSpellChoices())
+		if active, ok := application.state.CombatActiveFighter(); ok {
+			t.Logf("  戰鬥停格 active=%s side=%d hp=%d quick=%t control=%#x action=%+v",
+				active.Name, active.Side, active.HitPoints, active.QuickFight,
+				active.ControlMorale, active.CombatAction)
+		} else {
+			t.Logf("  戰鬥停格 active=none")
+		}
+		if event, ok := application.state.CombatVisualEvent(); ok {
+			t.Logf("  戰鬥停格 visual serial=%d elapsed=%s duration=%s event=%+v",
+				event.Serial, application.state.CombatVisualElapsed(), event.Duration(), event)
+		}
+		for _, fighter := range application.state.CombatFighters() {
+			t.Logf("  戰鬥停格 fighter=%s side=%d hp=%d quick=%t control=%#x action=%+v",
+				fighter.Name, fighter.Side, fighter.HitPoints, fighter.QuickFight,
+				fighter.ControlMorale, fighter.CombatAction)
+		}
+	}
 	for pick := range session.fatalPicks {
 		t.Logf("  致命選項：第 %d 項 於 %.60s", pick.index, pick.signature)
 	}
@@ -1539,6 +2534,13 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		}
 		t.Fatalf("按鍵玩到的畫面有 %d 句落回原文", len(session.fallbacks))
 	}
+	// 一般強度的真實全滅是合法玩家結果，不是 remake 缺陷。這場已在上方
+	// PartyKilled 閘門停止並寫出報表；不得為了讓自動測試綠而改隊伍、敵人或
+	// 戰術重跑。強化的輸入可達性樣本仍保留 REQUIRE_WIN 硬閘門。
+	if os.Getenv("COAB_KEY_REQUIRE_WIN") == "1" && session.wonAt < 0 &&
+		(keyDrivenBoost() || !application.state.PartyKilled()) {
+		t.Fatalf("要求正常按鍵通關，但 %d 幀後仍未抵達結局", session.frames)
+	}
 }
 
 // writeReport 把這一場的量測寫成 JSON，給 `cmd/remake-status` 取用。
@@ -1551,23 +2553,59 @@ func (s *keyDrivenSession) writeReport(path string) error {
 		modes = append(modes, modeName(mode))
 	}
 	sort.Strings(modes)
+	type partySummary struct {
+		Name           string `json:"name"`
+		Level          int    `json:"level"`
+		Experience     uint32 `json:"experience"`
+		HitPoints      int    `json:"hit_points"`
+		MaxHP          int    `json:"max_hit_points"`
+		HealthStatus   uint8  `json:"health_status"`
+		Bleeding       int    `json:"bleeding"`
+		Gold           uint16 `json:"gold"`
+		Platinum       uint16 `json:"platinum"`
+		Equipment      int    `json:"equipment"`
+		ProjectedHP    int    `json:"projected_hit_points"`
+		ProjectedMaxHP int    `json:"projected_max_hit_points"`
+	}
+	projected := make(map[string]combat.Fighter)
+	for _, fighter := range s.app.state.PartyFighters() {
+		projected[fighter.ID] = fighter
+	}
+	partyRows := make([]partySummary, 0, len(s.app.state.PartyRoster()))
+	for _, character := range s.app.state.PartyRoster() {
+		fighter := projected[character.ID]
+		partyRows = append(partyRows, partySummary{
+			Name: character.Name, Level: character.Level, Experience: character.Experience,
+			HitPoints: character.HitPoints, MaxHP: character.MaxHitPoints,
+			HealthStatus: uint8(character.HealthStatus), Bleeding: character.Bleeding,
+			Gold: character.Gold, Platinum: character.Platinum, Equipment: len(character.Equipment),
+			ProjectedHP: fighter.HitPoints, ProjectedMaxHP: fighter.MaxHitPoints,
+		})
+	}
 	report := struct {
-		Schema    string   `json:"schema"`
-		Frames    int      `json:"frames"`
-		Cells     int      `json:"cells"`
-		Modes     []string `json:"modes"`
-		Messages  int      `json:"messages"`
-		Fallbacks int      `json:"fallbacks"`
-		Doors     int      `json:"doors_found"`
-		Menus     int      `json:"menus"`
-		Segments  int      `json:"segments"`
-		RouteHits int      `json:"route_hits"`
-		RouteLen  int      `json:"route_steps"`
+		Schema    string         `json:"schema"`
+		Frames    int            `json:"frames"`
+		Cells     int            `json:"cells"`
+		Modes     []string       `json:"modes"`
+		Messages  int            `json:"messages"`
+		Fallbacks int            `json:"fallbacks"`
+		Doors     int            `json:"doors_found"`
+		Menus     int            `json:"menus"`
+		Segments  int            `json:"segments"`
+		RouteHits int            `json:"route_hits"`
+		RouteLen  int            `json:"route_steps"`
+		Won       bool           `json:"won"`
+		WonAt     int            `json:"won_at_frame,omitempty"`
+		Boosted   bool           `json:"boosted"`
+		Wipes     int            `json:"party_wipes"`
+		Party     []partySummary `json:"party"`
 	}{
 		Schema: "coab-key-driven-session/1", Frames: s.frames, Cells: len(s.cells),
 		Modes: modes, Messages: len(s.messages), Fallbacks: len(s.fallbacks),
 		Doors: s.doorsFound, Menus: len(s.menus),
 		Segments: len(s.blocks), RouteHits: s.routeHits, RouteLen: len(s.route),
+		Won: s.wonAt >= 0, WonAt: s.wonAt,
+		Boosted: s.boosted, Wipes: s.wipes, Party: partyRows,
 	}
 	encoded, err := json.MarshalIndent(report, "", " ")
 	if err != nil {

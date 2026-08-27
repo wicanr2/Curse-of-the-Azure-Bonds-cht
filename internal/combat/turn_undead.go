@@ -159,6 +159,9 @@ func (b *Battle) TurnUndead(clericID string) (TurnUndeadResult, error) {
 			remaining++
 		}
 	}
+	// 摧毀會直接把 HP 寫成 0；與一般傷害一樣，整批處理後必須重算勝負。
+	// 否則最後一名目標已消失，Battle 仍會卡在 StatusActive（spec 1230）。
+	b.updateStatus()
 	return result, nil
 }
 

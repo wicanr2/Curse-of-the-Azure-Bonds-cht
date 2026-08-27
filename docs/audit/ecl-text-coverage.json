@@ -107,7 +107,7 @@
    "block": "0x50",
    "offset": "0x07A2",
    "text": "'WELCOME TO THE ASHABENFORD ARMS.'",
-   "rule_id": "essembra.branching-oak",
+   "rule_id": "ashabenford.ashabenford-arms",
    "status": "matched"
   },
   {
@@ -6723,6 +6723,7 @@
    "block": "0x33",
    "offset": "0x147B",
    "text": "THE SPHERE MOVES TOWARD THE OPPOSING MAGE. . IT IS NOW ONLY FEET FROM .",
+   "rule_id": "wizard-tower.sphere-moves-toward-member",
    "gosub_inserts": [
     "0x1490"
    ],
@@ -6731,7 +6732,7 @@
     "0x14DE@7F82h",
     "0x14EE@7C00h"
    ],
-   "status": "variable-insert"
+   "status": "matched"
   },
   {
    "member": "ECL5.DAX",
@@ -7769,7 +7770,7 @@
    "block": "0x42",
    "offset": "0x05CE",
    "text": "THE RAKSHASA REPLIES, ' I AM TIRSHEYA.' HE GOES ON TO TELL HIS TALE, AND YOU RECORD IT IN JOURNAL ENTRY 5. WILL YOU GO WITH HIM?",
-   "rule_id": "myth-drannor.outer.tirsheya.tale",
+   "rule_id": "myth-drannor.outer.rakshasa-release",
    "dynamic_branch": true,
    "status": "matched"
   },
@@ -9166,19 +9167,19 @@
  ],
  "summary": {
   "groups": 1022,
-  "matched": 1002,
+  "matched": 1003,
   "unmatched": 0,
   "gosub_insert_notes": 32,
-  "variable_insert": 16,
+  "variable_insert": 15,
   "branch_insert_notes": 228,
   "branch_tail": 0,
   "subroutine": 4,
   "unmatched_by_block": {},
   "runs": 1375,
-  "runs_matched": 1200,
+  "runs_matched": 1211,
   "runs_orphan": 0,
-  "runs_variable_insert": 72,
-  "runs_subroutine": 34,
+  "runs_variable_insert": 67,
+  "runs_subroutine": 28,
   "runs_gosub_insert": 7,
   "runs_truncated": 62,
   "orphan_runs_by_block": {}

@@ -1,19 +1,69 @@
 {
  "schema": "coab-key-driven-session/1",
- "frames": 12000,
- "cells": 636,
+ "frames": 14380,
+ "cells": 899,
  "modes": [
   "事件",
   "地城",
   "場所",
   "戰鬥",
-  "荒野"
+  "標題",
+  "荒野",
+  "角色建立"
  ],
- "messages": 269,
+ "messages": 393,
  "fallbacks": 0,
- "doors_found": 19,
- "menus": 138,
- "segments": 11,
- "route_hits": 4898,
- "route_steps": 24370
+ "doors_found": 165,
+ "menus": 116,
+ "segments": 16,
+ "route_hits": 2622,
+ "route_steps": 1684,
+ "won": true,
+ "won_at_frame": 14380,
+ "boosted": true,
+ "party_wipes": 1,
+ "party": [
+  {
+   "name": "戰士",
+   "level": 1,
+   "experience": 25000,
+   "hit_points": 999,
+   "max_hit_points": 999
+  },
+  {
+   "name": "戰士",
+   "level": 1,
+   "experience": 25000,
+   "hit_points": 999,
+   "max_hit_points": 999
+  },
+  {
+   "name": "戰士",
+   "level": 1,
+   "experience": 25000,
+   "hit_points": 999,
+   "max_hit_points": 999
+  },
+  {
+   "name": "戰士",
+   "level": 1,
+   "experience": 25000,
+   "hit_points": 999,
+   "max_hit_points": 999
+  },
+  {
+   "name": "戰士",
+   "level": 1,
+   "experience": 25000,
+   "hit_points": 999,
+   "max_hit_points": 999
+  },
+  {
+   "name": "戰士",
+   "level": 1,
+   "experience": 25000,
+   "hit_points": 999,
+   "max_hit_points": 999
+  }
+ ]
 }

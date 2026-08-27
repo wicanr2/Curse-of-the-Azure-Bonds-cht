@@ -74,6 +74,29 @@ func TestRestoreBattleRejectsMalformedSchedulerSelection(t *testing.T) {
 	}
 }
 
+func TestBattleSnapshotKeepsSameEncounterCloudIncapacitation(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10,
+			ArmorClass: 10, CoughingTurns: 1, HelplessTurns: 4},
+		{ID: "enemy", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+	}, 444)
+	if err != nil {
+		t.Fatal(err)
+	}
+	snapshot, err := battle.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreBattle(snapshot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fighter, ok := restored.Fighter("hero")
+	if !ok || fighter.CoughingTurns != 1 || fighter.HelplessTurns != 4 {
+		t.Fatalf("same-encounter cloud state was not restored: fighter=%+v ok=%v", fighter, ok)
+	}
+}
+
 func TestRestoreBattleRejectsUnboundedRandomReplay(t *testing.T) {
 	snapshot := BattleSnapshot{
 		Version:  BattleSnapshotVersion,

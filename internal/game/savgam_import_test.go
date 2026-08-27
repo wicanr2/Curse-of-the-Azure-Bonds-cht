@@ -32,8 +32,8 @@ func writeSAVGAMSlot(t *testing.T, directory string, key byte, name, itemName []
 	base := "CHRDAT" + string(key) + "1"
 	prefix, err := partySave.EncodeSAVGAM(partySave.SAVGAMContainer{
 		GameArea: 3, Area1: area1, Area2: area2,
-		Runtime: make([]byte, partySave.SAVGAMRuntimeStateSize),
-		ECL:     make([]byte, partySave.SAVGAMECLMemorySize),
+		Runtime:    make([]byte, partySave.SAVGAMRuntimeStateSize),
+		ECL:        make([]byte, partySave.SAVGAMECLMemorySize),
 		PartyCount: 1, CharacterRefs: [8][]byte{[]byte(base)},
 	})
 	if err != nil {

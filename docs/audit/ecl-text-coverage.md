@@ -17,9 +17,9 @@
 | 處置 | 數量 | 意思 |
 |---|---:|---|
 | 控制流可達的頁 | 1022 | 分母 |
-| `matched` | 1002 | 有規則命中它所在的 run |
+| `matched` | 1003 | 有規則命中它所在的 run |
 | **`unmatched`** | **0** | **還沒寫規則——這才是待辦** |
-| `variable-insert` | 16 | 頁裡印的是執行期的值（城名、傳聞編號、隊員名），靜態驗不到 |
+| `variable-insert` | 15 | 頁裡印的是執行期的值（城名、傳聞編號、隊員名），靜態驗不到 |
 | `subroutine` | 4 | 共用子程式的片段，實機一定被併進呼叫端那一頁 |
 
 下面兩欄是**註記**不是狀態：它們與上表重疊，不要加總。
@@ -43,10 +43,10 @@
 | 處置 | run 數 | 意思 |
 |---|---:|---|
 | 控制流走得到的 run | 1375 | 分母（文字相同的只算一次）|
-| `matched` | 1200 | 有規則命中這一整條 |
+| `matched` | 1211 | 有規則命中這一整條 |
 | **`orphan`** | **0** | **走得到、文字完整、沒有任何規則命中——這才是待辦** |
-| `variable-insert` | 72 | run 裡有頁印執行期的值，靜態比對不到 |
-| `subroutine` | 34 | 整條就是一頁共用子程式片段，實機會被併進呼叫端 |
+| `variable-insert` | 67 | run 裡有頁印執行期的值，靜態比對不到 |
+| `subroutine` | 28 | 整條就是一頁共用子程式片段，實機會被併進呼叫端 |
 | `gosub-insert` | 7 | run 裡有插入點，手上這份文字不完整，不能當缺陷 |
 | `truncated` | 62 | 停在句子中間或是別條的前綴——走訪器在 `IF` 分岔上切出來的半截 |
 
@@ -133,7 +133,7 @@
 | `ECL1.DAX/0x50` | `0x0586` | `matched` | `world.town.sewer-entrance` | YOU FIND AN ENTRANCE TO THE SEWERS. |
 | `ECL1.DAX/0x50` | `0x05EC` | `matched` | `world.tavern.drank-the-night-away` | YOU ARE IN . WHAT PLACE WILL YOU VISIT? |
 | `ECL1.DAX/0x50` | `0x073B` | `matched` | `ashabenford.barn-for-zhentil` | 'DON'T THINK MUCH OF ZHENTIL KEEPERS. THE BARN'S THE BEST YOU'LL GET.' |
-| `ECL1.DAX/0x50` | `0x07A2` | `matched` | `essembra.branching-oak` | 'WELCOME TO THE ASHABENFORD ARMS.' |
+| `ECL1.DAX/0x50` | `0x07A2` | `matched` | `ashabenford.ashabenford-arms` | 'WELCOME TO THE ASHABENFORD ARMS.' |
 | `ECL1.DAX/0x50` | `0x0892` | `matched` | `journal-trigger.shadowdale-warning-18` | A HOODED, GREY ROBED MAN SITS IN A DARK CORNER. HE MOTIONS YOU OVER, SPEAKS, AND YOU RECORD IT IN JOURNAL ENTRY 18. THEN, HE VANISHES. ⚠ 另有 `GOSUB 0x08D2` 印出的一段 |
 | `ECL1.DAX/0x50` | `0x0963` | `matched` | `ashabenford.tavern-asked-to-leave` | THE PATRONS BECOME SURLY. THE BARTENDER SUGGESTS YOU LEAVE. A FARMER STANDS UP AND TELLS THEM OF YOUR DEFEAT OF THE ETTINS. THEY QUIET DOWN AND BECOME FRIENDLY. |
 | `ECL1.DAX/0x50` | `0x0B34` | `matched` | `world.town.abuzz-about-akabar` | THE TOWN IS ABUZZ ABOUT AKABAR, WHO FREED HAP FROM HORRID MONSTERS. |
@@ -922,7 +922,7 @@
 | `ECL5.DAX/0x33` | `0x11D6` | `matched` | `wizard-tower.sphere-trial.cannot-enter` | THAT ONE CANNOT ENTER. |
 | `ECL5.DAX/0x33` | `0x121B` | `matched` | `wizard-tower.sphere-trial.chamber` | YOU PASS INTO A DIM ROOM OCCUPIED BY A YOUNG MAGE DRESSED IN RED AND HOLDING A SILVERY ROD. BETWEEN THE TWO OF YOU IS A FLOATING DEAD BLACK SPHERE. |
 | `ECL5.DAX/0x33` | `0x1298` | `matched` | `wizard-tower.sphere-trial.rules` | THE WIZARD INTONES, 'THIS IS A SPHERE OF ANNIHILATION. ITS TOUCH MEANS UTTER DESTRUCTION. ONLY A MAGE CAN CONTROL ITS FLIGHT. YOU MAY SURRENDER AT ANY TIME.' |
-| `ECL5.DAX/0x33` | `0x147B` | `variable-insert` | — | THE SPHERE MOVES TOWARD THE OPPOSING MAGE. . IT IS NOW ONLY FEET FROM . ⚠ 另有 `GOSUB 0x1490` 印出的一段 |
+| `ECL5.DAX/0x33` | `0x147B` | `matched` | `wizard-tower.sphere-moves-toward-member` | THE SPHERE MOVES TOWARD THE OPPOSING MAGE. . IT IS NOW ONLY FEET FROM . ⚠ 另有 `GOSUB 0x1490` 印出的一段 |
 | `ECL5.DAX/0x33` | `0x150A` | `matched` | `wizard-tower.dark-elf-party` | THE SPHERE REACHES , WHO IS SUCKED INTO THE SPHERE AND GONE FOREVER. |
 | `ECL5.DAX/0x33` | `0x1565` | `matched` | `wizard-tower.sphere-kills-wizard` | AS THE SPHERE REACHES THE RED WIZARD, HE RAISES HIS ROD IN PANIC. THE TWO MEET IN A TREMENDOUS EXPLOSION THAT ROCKS THE BUILDING, LEAVING NOTHING OF THE SPHERE … |
 | `ECL5.DAX/0x33` | `0x15F4` | `matched` | `wizard-tower.chests-valuables` | THE CHESTS LINING THE WALLS CONTAIN MANY VALUABLES. |
@@ -1045,7 +1045,7 @@
 | `ECL6.DAX/0x42` | `0x0427` | `matched` | `myth-drannor.outer.monsters-move-off` | THE MONSTERS STOP THEIR ATTACK, GROWL AND MOVE OFF. |
 | `ECL6.DAX/0x42` | `0x0513` | `matched` | `myth-drannor.outer.do-not-find-you-again` | 'DO NOT LET US FIND YOU AGAIN.' THEY LEAVE. |
 | `ECL6.DAX/0x42` | `0x053F` | `matched` | `myth-drannor.outer.dislike-your-response` | THE MONSTERS DON'T LIKE YOUR RESPONSE. |
-| `ECL6.DAX/0x42` | `0x05CE` | `matched` | `myth-drannor.outer.tirsheya.tale` | THE RAKSHASA REPLIES, ' I AM TIRSHEYA.' HE GOES ON TO TELL HIS TALE, AND YOU RECORD IT IN JOURNAL ENTRY 5. WILL YOU GO WITH HIM? |
+| `ECL6.DAX/0x42` | `0x05CE` | `matched` | `myth-drannor.outer.rakshasa-release` | THE RAKSHASA REPLIES, ' I AM TIRSHEYA.' HE GOES ON TO TELL HIS TALE, AND YOU RECORD IT IN JOURNAL ENTRY 5. WILL YOU GO WITH HIM? |
 | `ECL6.DAX/0x42` | `0x05FE` | `matched` | `myth-drannor.outer.tirsheya.greeting` | A RAKSHASA WITH MATTED FUR AND A DOUR EXPRESSION COMES AROUND THE CORNER. HE MAKES A GESTURE OF PEACE. WHAT DO YOU DO? |
 | `ECL6.DAX/0x42` | `0x06D1` | `matched` | `myth-drannor.outer.tirsheya.guards` | 'THEN COME WITH ME.' |
 | `ECL6.DAX/0x42` | `0x06FB` | `matched` | `myth-drannor.outer.tirsheya.guards` | THE ENTRANCE IS GUARDED. DO YOU ATTACK? |

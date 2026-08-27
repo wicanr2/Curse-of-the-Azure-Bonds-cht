@@ -30,7 +30,7 @@ type Decision struct {
 	Chosen string `json:"chosen"`
 	// Segment 是當下的 ECL 段。★ 重放跟丟時要靠它**重新對齊**：光有座標不夠，
 	// 不同段的地圖上都有 (7,13)。
-	Segment   int `json:"segment,omitempty"`
+	Segment int `json:"segment,omitempty"`
 	// GeoBlock 是當下那張第一人稱地圖的 GEO 區塊。★ **段號不夠**：巫師塔的五層
 	// 樓共用同一個 ECL 段（`0x33`），只記段號的話不同樓層的 `(5,3)` 會被當成同一格
 	// ⇒ 重放時照著另一層的路線往牆裡走（spec 1197）。

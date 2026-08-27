@@ -1,6 +1,6 @@
 # 第 133 輪：MEMORIZE preparation time
 
-狀態：`READY`（限一級法術的 bounded preparation timing）
+狀態：`READY`（歷史一環實作；一至五環完成狀態以 spec 1241 為準）
 
 ## 證據
 
@@ -8,6 +8,6 @@ RuleBook 明確記載：記憶法術需要每法術等級 15 分鐘，另有最�
 
 若 `REST_START` 的時間不足，pending selection 不會被清除，也不會錯誤寫入 `SpellSlots`；畫面會告知所需時間。
 
-## 邊界
+## 後續訂正
 
-目前只處理一級法術。二至五級、每角色平行準備的完整時間模型、被遭遇打斷後的部分成功與遊戲時鐘仍待接入。
+spec 1241 已接入二至五環與多名角色平行準備；被遭遇打斷後的部分成功仍未宣稱。

@@ -220,10 +220,25 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		magicMissile.MinRange != 0 || magicMissile.CastingTime != 1 {
 		t.Fatalf("Magic Missile quick AI metadata=%+v found=%v", magicMissile, found)
 	}
+	burningHands, found := pack.FindCombatAISpell(0x09)
+	if !found || burningHands.Priority != 2 || burningHands.CastOn != 1 ||
+		burningHands.MinRange != 0 || burningHands.CastingTime != 1 {
+		t.Fatalf("Burning Hands quick AI metadata=%+v found=%v", burningHands, found)
+	}
 	blessAI, found := pack.FindCombatAISpell(0x01)
 	if !found || blessAI.Priority != 1 || blessAI.CastOn != 0 ||
 		blessAI.MinRange != 0 || blessAI.CastingTime != 10 {
 		t.Fatalf("Bless quick AI metadata=%+v found=%v", blessAI, found)
+	}
+	prayerAI, found := pack.FindCombatAISpell(0x2A)
+	if !found || prayerAI.Priority != 5 || prayerAI.CastOn != 0 ||
+		prayerAI.MinRange != 0 || prayerAI.CastingTime != 6 {
+		t.Fatalf("Prayer quick AI metadata=%+v found=%v", prayerAI, found)
+	}
+	holdPersonAI, found := pack.FindCombatAISpell(0x17)
+	if !found || holdPersonAI.Priority != 6 || holdPersonAI.CastOn != 1 ||
+		holdPersonAI.MinRange != 0 || holdPersonAI.CastingTime != 5 {
+		t.Fatalf("Hold Person quick AI metadata=%+v found=%v", holdPersonAI, found)
 	}
 	fireballAI, found := pack.FindCombatAISpell(0x2F)
 	if !found || fireballAI.Priority != 7 || fireballAI.CastOn != 1 ||
@@ -545,9 +560,10 @@ func TestWizardTowerDracandrosStoryAndJournalAreGamePackDriven(t *testing.T) {
 		t.Fatalf("journal result=%+v", journal)
 	}
 	for source, want := range map[string]string{
-		"ATTACK DRAGONS":          "攻擊龍群",
-		"ATTACK WIZARD":           "攻擊法師",
-		"PARLAY WITH THE DRAGONS": "與龍群交涉",
+		"ATTACK DRAGONS":           "攻擊龍群",
+		"ATTACK WIZARD":            "攻擊法師",
+		"PARLAY WITH THE DRAGONS":  "與龍群交涉",
+		"PRETEND TO BE MERCENAIES": "假扮傭兵",
 	} {
 		if got, ok := pack.LocalizeOption(source, "zh-TW"); !ok || got != want {
 			t.Fatalf("option %q=%q,%v want %q", source, got, ok, want)
@@ -1924,7 +1940,6 @@ func TestVariableInsertPagesAreWiredAtRuntime(t *testing.T) {
 	}{
 		{"競技場賭金", "金額是算出來的，無法列舉；要嘛規則支援佔位符，要嘛這一頁維持原文",
 			[]string{"CONGRATULATIONS, YOU HAVE WON", "250", "PLATINUM."}},
-
 	}
 	for _, test := range unhandled {
 		if result := pack.MatchText(test.texts, "zh-TW"); result.Matched {

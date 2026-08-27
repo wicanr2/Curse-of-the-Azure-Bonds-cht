@@ -420,8 +420,54 @@ func (s *State) trainingSpellName(spellID uint8) string {
 }
 
 func recalculateTrainingSpellCounts(character *party.Character) {
+	character.SpellCastCount[0] = [5]uint8{}
 	character.SpellCastCount[1] = [5]uint8{}
 	character.SpellCastCount[2] = [5]uint8{}
+	clericLevel := character.ClassLevel(party.ClassCleric)
+	if clericLevel > 0 {
+		// DOS DS:42BAh／PC-98 DS:734Fh 的累計結果（spec 809/810 exact）。
+		cleric := [...][5]uint8{
+			{}, {1, 0, 0, 0, 0}, {2, 0, 0, 0, 0}, {2, 1, 0, 0, 0},
+			{3, 2, 0, 0, 0}, {3, 3, 1, 0, 0}, {3, 3, 2, 0, 0},
+			{3, 3, 2, 1, 0}, {3, 3, 3, 2, 0}, {4, 4, 3, 2, 1},
+			{4, 4, 3, 3, 2}, {5, 4, 4, 3, 2}, {6, 5, 5, 3, 2},
+		}
+		level := clericLevel
+		if level >= len(cleric) {
+			level = len(cleric) - 1
+		}
+		character.SpellCastCount[0] = cleric[level]
+		wisdom := character.Abilities.Wisdom
+		if wisdom >= 13 && character.SpellCastCount[0][0] > 0 {
+			character.SpellCastCount[0][0]++
+		}
+		if wisdom >= 14 && character.SpellCastCount[0][0] > 0 {
+			character.SpellCastCount[0][0]++
+		}
+		if wisdom >= 15 && character.SpellCastCount[0][1] > 0 {
+			character.SpellCastCount[0][1]++
+		}
+		if wisdom >= 16 && character.SpellCastCount[0][1] > 0 {
+			character.SpellCastCount[0][1]++
+		}
+		if wisdom >= 17 && character.SpellCastCount[0][2] > 0 {
+			character.SpellCastCount[0][2]++
+		}
+		if wisdom >= 18 && character.SpellCastCount[0][3] > 0 {
+			character.SpellCastCount[0][3]++
+		}
+	}
+	paladinLevel := character.ClassLevel(party.ClassPaladin)
+	if paladinLevel >= 9 {
+		paladin := [...][5]uint8{{}, {}, {}, {}, {}, {}, {}, {}, {}, {1}, {2}, {2, 1}, {2, 2}}
+		level := paladinLevel
+		if level >= len(paladin) {
+			level = len(paladin) - 1
+		}
+		for spellLevel := range character.SpellCastCount[0] {
+			character.SpellCastCount[0][spellLevel] += paladin[level][spellLevel]
+		}
+	}
 	magicUserLevel := character.ClassLevel(party.ClassMagicUser)
 	if magicUserLevel > 0 {
 		character.SpellCastCount[2][0] = 1

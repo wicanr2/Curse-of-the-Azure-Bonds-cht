@@ -393,17 +393,18 @@ func enterDungeon(data corpus, seg segment.Segment) (*game.State, error) {
 	if err != nil {
 		return nil, err
 	}
+	// ⚠ 必須在 EnterSegment 之前撐高。古熔岩洞等段一進去就開戰；放在進段之後，
+	// 盤點隊伍會先以一般建角 HP 打入口戰，整段可能在驗證器來得及強化前消失。
+	// 這是內容盤點的測試夾具，不改正常玩家隊伍。
+	if err := gamecorpus.BoostParty(&state); err != nil {
+		return nil, err
+	}
 	if err := state.EnterSegment(seg); err != nil {
 		// 冷進不去就試段內快照。
 		if fromSnapshot, snapErr := enterFromSnapshot(data, seg); snapErr == nil {
 			return fromSnapshot, nil
 		}
 		return nil, tooltext.Errorf("h.8e8a76bdd692", seg.ID, err)
-	}
-	// ⚠ 盤點用的隊伍一律撐起來：有的段一進去就開打（古熔岩洞的伏擊），臨時建的
-	// 一名角色會死在入口，後面一格都盤點不到。**只給盤點用**。
-	if err := gamecorpus.BoostParty(&state); err != nil {
-		return nil, err
 	}
 	trail, err := settleToDungeon(&state, 16)
 	if err != nil {

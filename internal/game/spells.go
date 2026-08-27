@@ -16,6 +16,7 @@ const (
 	CauseLightWoundsSpellID   uint8 = 4
 	ProtectionFromEvilSpellID uint8 = 6
 	ProtectionFromGoodSpellID uint8 = 7
+	BurningHandsSpellID       uint8 = 9
 	MagicMissileSpellID       uint8 = 0x0F
 	SleepSpellID              uint8 = 0x15
 	StinkingCloudSpellID      uint8 = 0x22
@@ -38,6 +39,14 @@ func spellMessageID(spellID uint8) (string, bool) {
 	if !ok || spell.Placeholder || spell.CasterClass == "" {
 		return "", false
 	}
+	// 新增的 locale ID 必須遵守 spec 1105 的點分命名；既有的
+	// spell_<class>_<id> 只能維持相容，不再擴張。
+	if key, found := map[uint8]string{
+		22: "spell.cleric.find-traps",
+		39: "spell.cleric.cure-disease",
+	}[spellID]; found {
+		return key, true
+	}
 	return fmt.Sprintf("spell_%s_%d", strings.ReplaceAll(spell.CasterClass, "-", "_"), spell.SpellID), true
 }
 
@@ -56,35 +65,128 @@ func campSpellLabel(catalog locale.Catalog, spellID uint8) string {
 	return unknown
 }
 
-// firstLevelMemorizedCapacity is the bounded preparation adapter used by the
-// current first-level spell catalog. Imported characters retain the observed
-// number of memorized slots; newly created spellcasters use the documented
-// first-level capacity. Higher-level and multi-level slot tables remain a
-// rules-data task.
+// firstLevelMemorizedCapacity is kept as the narrow level-one query used by
+// existing callers and tests. The CAMP memorization path itself uses the full
+// original 3x5 capacity table through memorizedCapacity.
 func firstLevelMemorizedCapacity(character party.Character) int {
-	if len(character.SpellSlots) > 0 {
-		return len(character.SpellSlots)
+	capacity := 0
+	if character.HasClass(party.ClassCleric) {
+		capacity = int(character.SpellCastCount[0][0])
 	}
-	if character.Level < 1 {
-		return 0
+	if character.HasClass(party.ClassMagicUser) && int(character.SpellCastCount[2][0]) > capacity {
+		capacity = int(character.SpellCastCount[2][0])
 	}
-	if character.HasClass(party.ClassCleric) || character.HasClass(party.ClassMagicUser) {
-		return 1
+	// 舊 JSON 沒有 SpellCastCount；保留先前的一級 fallback，但已記憶格數
+	// 若更大就不能因施放／載入投影而縮小容量。
+	if capacity == 0 && character.Level >= 1 &&
+		(character.HasClass(party.ClassCleric) || character.HasClass(party.ClassMagicUser)) {
+		capacity = 1
 	}
-	return 0
+	if len(character.SpellSlots) > capacity {
+		capacity = len(character.SpellSlots)
+	}
+	return capacity
 }
 
-// firstLevelMemorizationHours follows the RuleBook's bounded first-level
-// timing: four hours of minimum preparation plus fifteen minutes per spell.
-// Rest UI is expressed in whole hours, so the required duration is rounded up
-// and the pending selection remains intact when rest is too short.
-func firstLevelMemorizationHours(pending map[int][]uint8) int {
+func memorizedCapacity(character party.Character) int {
+	capacity := 0
+	for class := range character.SpellCastCount {
+		for level := range character.SpellCastCount[class] {
+			capacity += int(character.SpellCastCount[class][level])
+		}
+	}
+	if capacity == 0 {
+		return firstLevelMemorizedCapacity(character)
+	}
+	if len(character.SpellSlots) > capacity {
+		return len(character.SpellSlots)
+	}
+	return capacity
+}
+
+// memorizationSlot maps a spell to the original class/level capacity cell.
+// Spell IDs are global table IDs; deriving the cell from the table prevents a
+// mixed-class character from spending (for example) a cleric level-two slot on
+// a magic-user level-two spell.
+func memorizationSlot(character party.Character, spellID uint8) (class, level, capacity int, ok bool) {
+	spell, found := gamepack.SpellByID(int(spellID))
+	if !found || spell.Placeholder || spell.CasterClassID < 0 ||
+		spell.CasterClassID >= len(character.SpellCastCount) || spell.Level < 1 || spell.Level > 5 {
+		return 0, 0, 0, false
+	}
+	class, level = spell.CasterClassID, spell.Level-1
+	capacity = int(character.SpellCastCount[class][level])
+	if capacity == 0 && spell.Level == 1 {
+		hasRecordedCapacity := false
+		for capacityClass := range character.SpellCastCount {
+			for capacityLevel := range character.SpellCastCount[capacityClass] {
+				hasRecordedCapacity = hasRecordedCapacity || character.SpellCastCount[capacityClass][capacityLevel] > 0
+			}
+		}
+		if !hasRecordedCapacity {
+			capacity = firstLevelMemorizedCapacity(character)
+		}
+	}
+	return class, level, capacity, capacity > 0
+}
+
+// memorizationCandidates follows the original BuildSpellList grouping rules:
+// clerics may prepare their complete class list, while magic-users and druids
+// are restricted to known-spell flags. Only levels with a non-zero capacity
+// are offered. This preserves the distinction between a cleric prayer list and
+// a magic-user grimoire for multiclass characters as well.
+func memorizationCandidates(character party.Character) []uint8 {
+	known := make(map[uint8]bool, len(character.KnownSpells))
+	for _, spellID := range character.KnownSpells {
+		known[spellID] = true
+	}
+	result := make([]uint8, 0, len(character.KnownSpells)+16)
+	for spellID := 1; ; spellID++ {
+		spell, found := gamepack.SpellByID(spellID)
+		if !found {
+			break
+		}
+		_, _, _, available := memorizationSlot(character, uint8(spellID))
+		if !available {
+			continue
+		}
+		if (spell.CasterClassID == 0 && character.HasClass(party.ClassCleric)) || known[uint8(spellID)] {
+			result = append(result, uint8(spellID))
+		}
+	}
+	return result
+}
+
+// memorizationHours follows the RuleBook preparation contract: levels one and
+// two have a four-hour minimum, levels three and four six hours, and level five
+// eight hours, plus fifteen minutes per spell level. Characters prepare in
+// parallel, so the party requirement is the slowest character rather than the
+// sum of every character's work.
+func memorizationHours(pending map[int][]uint8) int {
 	maxMinutes := 0
 	for _, spells := range pending {
 		if len(spells) == 0 {
 			continue
 		}
-		minutes := 4*60 + len(spells)*15
+		highestLevel := 1
+		spellMinutes := 0
+		for _, spellID := range spells {
+			level := 1
+			if spell, ok := gamepack.SpellByID(int(spellID)); ok && spell.Level >= 1 && spell.Level <= 5 {
+				level = spell.Level
+			}
+			if level > highestLevel {
+				highestLevel = level
+			}
+			spellMinutes += level * 15
+		}
+		minimumHours := 4
+		if highestLevel >= 5 {
+			minimumHours = 8
+		} else if highestLevel >= 3 {
+			minimumHours = 6
+		}
+		minutes := minimumHours*60 + spellMinutes
 		if minutes > maxMinutes {
 			maxMinutes = minutes
 		}

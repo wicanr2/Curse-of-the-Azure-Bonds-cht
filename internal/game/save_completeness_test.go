@@ -33,7 +33,7 @@ var gameFileRoundTripExemptions = map[string]string{
 
 func TestGameFileSurvivesAStateRoundTrip(t *testing.T) {
 	source := partySave.GameFile{
-		Version:    partySave.CurrentGameVersion,
+		Version: partySave.CurrentGameVersion,
 		Characters: party.Roster{{
 			ID: "hero", Name: "英雄", Class: party.ClassFighter, Level: 3,
 			ClassLevels: [8]uint8{2: 3}, HitPoints: 18, MaxHitPoints: 18,

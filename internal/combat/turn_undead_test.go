@@ -140,6 +140,9 @@ func TestTurnUndeadDestroysWhenTheTableValueIsNotPositive(t *testing.T) {
 	if target.HitPoints != 0 || target.DownedCorpse {
 		t.Fatalf("被摧毀的目標 hp=%d corpse=%v", target.HitPoints, target.DownedCorpse)
 	}
+	if battle.Status() != StatusPartyWon {
+		t.Fatalf("摧毀最後一名敵人後 status=%v，want StatusPartyWon", battle.Status())
+	}
 }
 
 // 配額是 1d12，而**摧毀最多可以再多做 6 個**：配額歸零時若這一次是 `v < 0` 的

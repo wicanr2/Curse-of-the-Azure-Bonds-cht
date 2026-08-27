@@ -71,12 +71,12 @@ func Run(root string) (Report, error) {
 		return Report{}, err
 	}
 	assetsPath := filepath.Join(root, "assets", "locale", "zh-TW.json")
-	packPath := filepath.Join(root, "gamepack", "events", "pit-of-moander.json")
+	packPath := filepath.Join(root, "gamepack", "pack")
 	assets, err := loadStrings(assetsPath)
 	if err != nil {
 		return Report{}, fmt.Errorf("load assets locale: %w", err)
 	}
-	pack, err := loadPack(packPath)
+	pack, err := loadPackParts(packPath)
 	if err != nil {
 		return Report{}, fmt.Errorf("load gamepack: %w", err)
 	}
@@ -87,7 +87,7 @@ func Run(root string) (Report, error) {
 
 	report := Report{
 		AssetsLocale:   CatalogReport{Path: filepath.ToSlash(filepath.Join("assets", "locale", "zh-TW.json")), KeyCount: len(assets)},
-		GamepackLocale: CatalogReport{Path: filepath.ToSlash(filepath.Join("gamepack", "events", "pit-of-moander.json"))},
+		GamepackLocale: CatalogReport{Path: filepath.ToSlash(filepath.Join("gamepack", "pack"))},
 		ProductUsage:   usage,
 	}
 	report.ProductUsage.MissingAssetsKeys = missing(usage.ReferencedKeys, assets)
@@ -149,18 +149,45 @@ func loadStrings(path string) (map[string]string, error) {
 	return doc.Strings, nil
 }
 
-func loadPack(path string) (rawPack, error) {
-	data, err := os.ReadFile(path)
+func loadPackParts(dir string) (rawPack, error) {
+	paths, err := filepath.Glob(filepath.Join(dir, "*.json"))
 	if err != nil {
 		return rawPack{}, err
 	}
-	var pack rawPack
-	if err := json.Unmarshal(data, &pack); err != nil {
-		return rawPack{}, err
+	if len(paths) == 0 {
+		return rawPack{}, fmt.Errorf("no JSON pack parts under %s", dir)
 	}
-	if err := json.Unmarshal(data, &pack.Raw); err != nil {
-		return rawPack{}, err
+	sort.Strings(paths)
+	pack := rawPack{Locales: map[string]map[string]string{}, Raw: map[string]any{"parts": []any{}}}
+	parts := pack.Raw["parts"].([]any)
+	for _, path := range paths {
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return rawPack{}, err
+		}
+		var part rawPack
+		if err := json.Unmarshal(data, &part); err != nil {
+			return rawPack{}, fmt.Errorf("%s: %w", path, err)
+		}
+		var raw map[string]any
+		if err := json.Unmarshal(data, &raw); err != nil {
+			return rawPack{}, fmt.Errorf("%s: %w", path, err)
+		}
+		parts = append(parts, raw)
+		pack.OptionRules = append(pack.OptionRules, part.OptionRules...)
+		for language, catalog := range part.Locales {
+			if pack.Locales[language] == nil {
+				pack.Locales[language] = map[string]string{}
+			}
+			for key, value := range catalog {
+				if _, exists := pack.Locales[language][key]; exists {
+					return rawPack{}, fmt.Errorf("duplicate locales.%s key %q in %s", language, key, path)
+				}
+				pack.Locales[language][key] = value
+			}
+		}
 	}
+	pack.Raw["parts"] = parts
 	for _, language := range []string{"en", "zh-TW"} {
 		if len(pack.Locales[language]) == 0 {
 			return rawPack{}, fmt.Errorf("locales.%s is empty or missing", language)
@@ -227,7 +254,16 @@ func isProductGoPath(path string) bool {
 
 func isTextCall(expr ast.Expr) bool {
 	sel, ok := expr.(*ast.SelectorExpr)
-	return ok && sel.Sel.Name == "Text"
+	if !ok || sel.Sel.Name != "Text" {
+		return false
+	}
+	// tooltext is the developer/tool message catalog introduced by the Han
+	// literal migration. Its stable h.* IDs intentionally do not live in the
+	// player-facing assets locale and must not be audited as UI references.
+	if ident, ok := sel.X.(*ast.Ident); ok && ident.Name == "tooltext" {
+		return false
+	}
+	return true
 }
 
 func referencedMessageIDs(pack rawPack) (map[string]bool, []Issue) {
@@ -243,7 +279,7 @@ func referencedMessageIDs(pack rawPack) (map[string]bool, []Issue) {
 					if message, ok := child.(string); ok && message != "" {
 						ids[message] = true
 					} else {
-						issues = append(issues, Issue{"violation", "empty-message-id", "gamepack/events/pit-of-moander.json", childPath})
+						issues = append(issues, Issue{"violation", "empty-message-id", "gamepack/pack", childPath})
 					}
 				}
 				visit(child, childPath)
@@ -258,7 +294,7 @@ func referencedMessageIDs(pack rawPack) (map[string]bool, []Issue) {
 
 	seenIDs, seenSources := map[string]string{}, map[string]string{}
 	for index, rule := range pack.OptionRules {
-		path := fmt.Sprintf("gamepack/events/pit-of-moander.json:option_rules[%d]", index)
+		path := fmt.Sprintf("gamepack/pack:option_rules[%d]", index)
 		if rule.ID == "" || rule.Source == "" || rule.MessageID == "" {
 			issues = append(issues, Issue{"violation", "invalid-option-rule", path, tooltext.Text("h.c7a03000c800")})
 		}
@@ -276,7 +312,7 @@ func referencedMessageIDs(pack rawPack) (map[string]bool, []Issue) {
 	}
 	for id := range ids {
 		if pack.Locales["en"][id] == "" || pack.Locales["zh-TW"][id] == "" {
-			issues = append(issues, Issue{"violation", "missing-gamepack-message", "gamepack/events/pit-of-moander.json", id})
+			issues = append(issues, Issue{"violation", "missing-gamepack-message", "gamepack/pack", id})
 		}
 	}
 	return ids, issues

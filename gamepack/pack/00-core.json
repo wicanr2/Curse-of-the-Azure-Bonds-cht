@@ -1773,7 +1773,377 @@
         252
       ],
       "wrap": true,
-      "scale": 2
+      "scale": 2,
+      "external_exits": [
+        {
+          "id": "myth-drannor.burial-glen.north-0-0",
+          "x": 0,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-1-0",
+          "x": 1,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-2-0",
+          "x": 2,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-3-0",
+          "x": 3,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-4-0",
+          "x": 4,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-5-0",
+          "x": 5,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-6-0",
+          "x": 6,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-7-0",
+          "x": 7,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-8-0",
+          "x": 8,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-9-0",
+          "x": 9,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-10-0",
+          "x": 10,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-11-0",
+          "x": 11,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-12-0",
+          "x": 12,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-13-0",
+          "x": 13,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-14-0",
+          "x": 14,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.north-15-0",
+          "x": 15,
+          "y": 0,
+          "direction": 0,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-0",
+          "x": 15,
+          "y": 0,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-1",
+          "x": 15,
+          "y": 1,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-2",
+          "x": 15,
+          "y": 2,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-3",
+          "x": 15,
+          "y": 3,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-4",
+          "x": 15,
+          "y": 4,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-5",
+          "x": 15,
+          "y": 5,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-6",
+          "x": 15,
+          "y": 6,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-12",
+          "x": 15,
+          "y": 12,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-13",
+          "x": 15,
+          "y": 13,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-14",
+          "x": 15,
+          "y": 14,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.east-15-15",
+          "x": 15,
+          "y": 15,
+          "direction": 2,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.south-0-15",
+          "x": 0,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.south-1-15",
+          "x": 1,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.south-2-15",
+          "x": 2,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.south-3-15",
+          "x": 3,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.south-11-15",
+          "x": 11,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.south-12-15",
+          "x": 12,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.south-13-15",
+          "x": 13,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.south-14-15",
+          "x": 14,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.south-15-15",
+          "x": 15,
+          "y": 15,
+          "direction": 4,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-0",
+          "x": 0,
+          "y": 0,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-1",
+          "x": 0,
+          "y": 1,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-2",
+          "x": 0,
+          "y": 2,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-3",
+          "x": 0,
+          "y": 3,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-4",
+          "x": 0,
+          "y": 4,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-5",
+          "x": 0,
+          "y": 5,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-6",
+          "x": 0,
+          "y": 6,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-13",
+          "x": 0,
+          "y": 13,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-14",
+          "x": 0,
+          "y": 14,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "myth-drannor.burial-glen.west-0-15",
+          "x": 0,
+          "y": 15,
+          "direction": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        }
+      ]
     },
     {
       "id": "myth-drannor.outer-ruins",
@@ -2596,6 +2966,13 @@
       "casting_time": 4
     },
     {
+      "spell_id": 9,
+      "priority": 2,
+      "cast_on": 1,
+      "min_range": 0,
+      "casting_time": 1
+    },
+    {
       "spell_id": 15,
       "priority": 4,
       "cast_on": 1,
@@ -2610,11 +2987,25 @@
       "casting_time": 1
     },
     {
+      "spell_id": 23,
+      "priority": 6,
+      "cast_on": 1,
+      "min_range": 0,
+      "casting_time": 5
+    },
+    {
       "spell_id": 34,
       "priority": 5,
       "cast_on": 1,
       "min_range": 1,
       "casting_time": 2
+    },
+    {
+      "spell_id": 42,
+      "priority": 5,
+      "cast_on": 0,
+      "min_range": 0,
+      "casting_time": 6
     },
     {
       "spell_id": 47,

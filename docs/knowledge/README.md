@@ -19,11 +19,12 @@
 
 | 目的 | 本專案文件 |
 |---|---|
-| 研究問題、證據與勘誤 | `docs/spec/`、`docs/project-status.md` |
-| 目前執行順序 | 根目錄 `WORKLIST.md` |
+| 研究問題、證據與勘誤 | `docs/spec/`、根目錄 `CONTEXT.md`、`docs/context/` |
+| 目前交付 frontier | `remake-completeness-assessment.md` 與當期 `docs/audit/` |
+| 歷史執行台帳 | 根目錄 `WORKLIST.md`（已封存，不可單獨重開待辦） |
 | 全遊戲驗證／RE 完整度 | `coab-re-coverage-matrix.md` |
 | 新研究的固定閉合格式 | `re-closure-record-template.md` |
-| compact／交接入口 | `AGENTS.md`、`CONTEXT.md` |
+| compact／交接入口 | 根目錄 `HANDOFF.md` → `AGENTS.md`；需要深層歷史才讀 `CONTEXT.md` |
 
 ## 主題索引
 
@@ -38,10 +39,11 @@
 | 圖像／字型／UI | [`gold-box-graphics.md`](gold-box-graphics.md) | 素材解碼與畫面 fidelity 是不同完成門檻。 |
 | DOS 存檔 | [`gold-box-save-format.md`](gold-box-save-format.md) | 目前是 raw-preserving 局部格式，不是完整 schema。 |
 | 重製存檔 | [`gold-box-remake-save-session.md`](gold-box-remake-save-session.md) | 不可把 remake continuation 相容冒稱 DOS save parity。 |
-| 音訊 | [`gold-box-audio.md`](gold-box-audio.md) | PC-98 研究深度高，但完整播放生命週期尚未閉合。 |
+| 音訊 | [`gold-box-audio.md`](gold-box-audio.md) | 播放生命週期 4／4 與換曲點 13／13 已閉合；OGG 人耳循環驗收與散布權仍須分開判定。 |
 | 中文長文與攻略 | [`golden-box-remake-for-chinese-readers.md`](golden-box-remake-for-chinese-readers.md) | Journal producer、顯示與翻譯 coverage 分開追蹤。 |
 | 跨 SSI 專案經驗 | [`ssi-rpg-cross-project-lessons.md`](ssi-rpg-cross-project-lessons.md) | 第二款遊戲實證前，不升格為共用 engine 事實。 |
 | engine／作品的實際切線 | [`engine-title-split.md`](engine-title-split.md) | 內容界線守住了、程式碼界線沒有；「按性質屬於共用層」是推論不是證據。 |
+| **Gold Box 系列重用邊界** | [`gold-box-series-reuse.md`](gold-box-series-reuse.md) | 下一作品的短入口；第二 consumer 前不得把候選升格成共通事實。 |
 
 ## 新增或訂正文件的最低要求
 

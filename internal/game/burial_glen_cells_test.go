@@ -6,9 +6,44 @@ import (
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/segment"
 )
+
+// 原作離開墓園時先跨出 GEO 邊界，再由 ECL6/0x40 的 ON GOTO C04D 依面向
+// 分派：東邊進外城，其餘方向回世界。所有 GEO 真正可跨出的周界邊都必須宣告，
+// 否則 wrap=true 會讓正常按鍵靜默環繞回圖內；主線直接呼叫 lifecycle 曾掩蓋此洞。
+func TestBurialGlenDeclaresEveryPassableBoundaryExit(t *testing.T) {
+	image, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocks, records := loadAllECLAndMonsters(t, image)
+	grid := loadGeoCampaignGrid(t, image, 6, "GEO6.DAX", 0x40)
+	glen, ok := segment.Lookup("ECL6/0x40")
+	if !ok {
+		t.Fatal("註冊表沒有 ECL6/0x40")
+	}
+	state := newSegmentDungeonState(t, blocks, records, glen)
+
+	type edge struct{ x, y, direction int }
+	var edges []edge
+	for offset := 0; offset < geo.Width; offset++ {
+		edges = append(edges,
+			edge{offset, 0, 0}, edge{geo.Width - 1, offset, 2},
+			edge{offset, geo.Height - 1, 4}, edge{0, offset, 6})
+	}
+	for _, candidate := range edges {
+		want := grid.CanMoveDungeonWrapped(candidate.x, candidate.y, candidate.direction)
+		_, got := state.dungeonExternalExit(candidate.x, candidate.y, uint8(candidate.direction))
+		if got != want {
+			t.Errorf("boundary (%d,%d,%d) declared=%v, GEO passable=%v",
+				candidate.x, candidate.y, candidate.direction, got, want)
+		}
+	}
+}
 
 // 墓園每一格的事件由地形碼分派（`ON GOTO (C04F & 0x7F)`，見 spec 1142 的同一個
 // 機制）。這一條逐格站上去、跑一次生命週期，驗那一格的敘述是 game pack 的中文。

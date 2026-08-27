@@ -617,7 +617,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		dx, dy, direction int
 	}{
 		// ⚠ 起點是 `(5,5)`：賢者那一場已經把隊伍退回招牌格（見上面）。
-		{0, 1, 4}, // (5,5) -> (5,6)
+		{0, 1, 4},  // (5,5) -> (5,6)
 		{0, 1, 4},  // (5,6) -> (5,7)
 		{0, 1, 4},  // (5,7) -> (5,8)
 		{0, 1, 4},  // (5,8) -> (5,9)
@@ -758,7 +758,8 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		t.Fatalf("Gond temple service mode=%v temple=%v choices=%v",
 			state.Mode, state.templeMenu, state.Choices)
 	}
-	if state.Prompt != facilityCatalog.Text("temple_prompt", "") ||
+	wantTemplePrompt := fmt.Sprintf(facilityCatalog.Text("temple_character_prompt", ""), state.partyRoster[0].Name)
+	if state.Prompt != wantTemplePrompt ||
 		state.Choices[0] != facilityCatalog.Text("temple_heal", "") ||
 		state.Choices[5] != facilityCatalog.Text("temple_exit", "") {
 		t.Fatalf("Gond temple did not resolve stable locale IDs: prompt=%q choices=%v",
@@ -811,7 +812,7 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		dx, dy, direction int
 	}{
 		// ⚠ 起點是 `(1,7)`：神殿那一場已經把隊伍退回門外。
-		{1, 0, 2}, // (1,7) -> (2,7)
+		{1, 0, 2},  // (1,7) -> (2,7)
 		{1, 0, 2},  // (2,7) -> (3,7)
 		{1, 0, 2},  // (3,7) -> (4,7)
 		{0, -1, 0}, // (4,7) -> (4,6)

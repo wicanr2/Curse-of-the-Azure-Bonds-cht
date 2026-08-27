@@ -63,7 +63,7 @@ func twinkleVisual(hit bool) combat.VisualEvent {
 	return combat.VisualEvent{
 		Kind: combat.VisualTwinkle, ActorID: "a", TargetID: "b",
 		From: combat.TilePoint{X: 1, Y: 1}, To: combat.TilePoint{X: 3, Y: 1},
-		Hit: hit,
+		Hit:     hit,
 		Impacts: []combat.VisualImpactTarget{{TargetID: "b", Hit: hit}},
 	}
 }

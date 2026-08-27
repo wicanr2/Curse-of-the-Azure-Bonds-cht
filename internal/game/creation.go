@@ -24,6 +24,18 @@ func starterCharacters(pack *goldenbox.Pack, language string) ([]party.Character
 		return nil, fmt.Errorf("character creation templates are missing from game pack")
 	}
 	result := make([]party.Character, 0, len(pack.CharacterCreation.Templates))
+	tables, err := gamepack.Tables()
+	if err != nil {
+		return nil, err
+	}
+	hitDice, err := gamepack.HitDice()
+	if err != nil {
+		return nil, err
+	}
+	combatBase, err := gamepack.CombatBase()
+	if err != nil {
+		return nil, err
+	}
 	for index, template := range pack.CharacterCreation.Templates {
 		if template.RaceID > uint8(party.RaceHalfOrc) || template.PrimaryClassID > uint8(party.ClassThief) {
 			return nil, fmt.Errorf("character creation template %q has unsupported race/class IDs %d/%d", template.ID, template.RaceID, template.PrimaryClassID)
@@ -35,15 +47,62 @@ func starterCharacters(pack *goldenbox.Pack, language string) ([]party.Character
 		var levels [8]uint8
 		copy(levels[:], template.ClassLevels)
 		abilities := template.BaseAbilities
+		combination, ok := tables.CombinationByID(int(template.RawClassID))
+		if !ok {
+			return nil, fmt.Errorf("character creation template %q class combination %d is missing", template.ID, template.RawClassID)
+		}
 		character := party.Character{
 			ID: "creation." + template.ID, Name: name,
 			Race: party.Race(template.RaceID), Class: party.Class(template.PrimaryClassID),
 			RawClassID: template.RawClassID, Level: int(template.Level), ClassLevels: levels,
+			Experience: uint32(combination.StartingExperience),
+			// NEWCHAR 在角色記錄 +103h 寫入 12Ch；spec 622 已證實 +103h 是
+			// Platinum。這不是被丟棄的職業起始金錢擲骰，而是原版最後實際
+			// 留在角色身上的固定值（spec 1101 §四）。
+			Platinum:     300,
 			SavingThrows: append([]uint8(nil), template.SavingThrows...),
 			Abilities: party.Abilities{
 				Strength: abilities[0], Intelligence: abilities[1], Wisdom: abilities[2],
 				Dexterity: abilities[3], Constitution: abilities[4], Charisma: abilities[5],
 			},
+		}
+		levels = startingClassLevelsForExperience(levels, character.Experience)
+		character.ClassLevels = levels
+		character.Level = 0
+		for _, level := range levels {
+			if int(level) > character.Level {
+				character.Level = int(level)
+			}
+		}
+		// 快捷模板只省略四段互動；原版建角寫入角色記錄的 HP、命中與護甲仍須
+		// 持久保存。舊版把 roster 留成 HP 0/0，再靠 Fighter() fallback 暫時顯示
+		// 成可戰鬥，存檔與 roster 重投影因此拿到不同狀態。
+		points, err := party.RollStartingHitPoints(hitDice, character.ClassLevels,
+			int(character.RawClassID), character.Abilities.Constitution,
+			int64(0xC0AB)+int64(index)*97)
+		if err != nil {
+			return nil, fmt.Errorf("character creation template %q hit points: %w", template.ID, err)
+		}
+		character.MaxHitPoints = points.MaxHitPoints
+		character.BaseMaxHitPoints = points.BaseMaxHitPoints
+		character.HitPoints = points.MaxHitPoints
+		character.HitDice = uint8(character.Level)
+		attack, armor, err := party.CreationCombatBase(combatBase, character.ClassLevels)
+		if err != nil {
+			return nil, fmt.Errorf("character creation template %q combat base: %w", template.ID, err)
+		}
+		character.AttackAbility = attack
+		character.BaseArmorClass = armor
+		character.AbilityAdjustments = 1
+		recalculateTrainingSpellCounts(&character)
+		// NEWCHAR 的法師在最終等級前會逐級選法術。快捷入口沒有訪談畫面，
+		// 但不能因此留下空法術書；每個已跨過的一級確定性地取第一個合法候選。
+		for learned := 1; learned < character.ClassLevel(party.ClassMagicUser); learned++ {
+			candidates := trainingSpellCandidates(character)
+			if len(candidates) == 0 {
+				break
+			}
+			character.KnownSpells = append(character.KnownSpells, candidates[0])
 		}
 		if len(character.SavingThrows) != 5 {
 			return nil, fmt.Errorf("character creation template %q must provide five saving throws", template.ID)
@@ -61,6 +120,20 @@ func starterCharacters(pack *goldenbox.Pack, language string) ([]party.Character
 		result = append(result, character)
 	}
 	return result, nil
+}
+
+func startingClassLevelsForExperience(levels [8]uint8, experience uint32) [8]uint8 {
+	for _, info := range trainingClasses {
+		if levels[info.Slot] == 0 {
+			continue
+		}
+		level := int(levels[info.Slot])
+		for level < len(info.Threshold) && info.Threshold[level] <= experience {
+			level++
+		}
+		levels[info.Slot] = uint8(level)
+	}
+	return levels
 }
 
 func (s *State) OpenCharacterCreation() error {
@@ -308,6 +381,11 @@ func (s *State) SavePartyFile(path string) error {
 	data, err := partySave.EncodeGameWithAdventureState(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot, s.musicSnapshot(), s.oneShotSnapshot(), s.journalMessageIDs, s.DungeonSearchEnabled, s.dungeonSearchEdgeIDs())
 	if err != nil {
 		return err
+	}
+	if directory := filepath.Dir(path); directory != "." {
+		if err := os.MkdirAll(directory, 0o700); err != nil {
+			return fmt.Errorf("create party save directory: %w", err)
+		}
 	}
 	return os.WriteFile(path, data, 0o600)
 }
@@ -1119,6 +1197,10 @@ func (s *State) LoadPartyFile(path string) error {
 	if s.Mode == ModeCombat {
 		return fmt.Errorf("game save mode is combat but no active-combat snapshot is present")
 	}
+	// 讀取非戰鬥存檔也可能發生在同一個活著的 State（玩家於戰鬥後讀回
+	// 較早存檔）。不能只還原 Mode：舊 battle 若仍是 active，下一次存檔會被
+	// activeCombatSnapshot 拒絕，戰鬥 UI 游標也會污染後續畫面（spec 1230）。
+	s.clearCombatStateAfterNonCombatLoad()
 	// ⚠ 世界地圖的 hub 選單只有**回到世界地圖**時才對。
 	//
 	// 這裡原本是無條件設的，於是存在事件畫面上的檔讀回來會顯示
@@ -1139,6 +1221,36 @@ func (s *State) LoadPartyFile(path string) error {
 	s.Choices = []string{s.localizeOption("ENTER CITY"), s.localizeOption("JOURNEY ON"), s.localizeOption("CAMP")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	return nil
+}
+
+func (s *State) clearCombatStateAfterNonCombatLoad() {
+	s.battle = nil
+	s.combatTurns = nil
+	s.combatTurnIndex = 0
+	s.combatDelayedTurns = make(map[int]bool)
+	s.combatTargetIndex = 0
+	s.combatItemIndex = 0
+	s.combatScrollSpellIndex = 0
+	s.combatCastingSpell = 0
+	s.combatCastingClass = 0
+	s.combatCastingClassSet = false
+	s.combatSpellTargetIndex = 0
+	s.combatSpellTargetPoint = combat.TilePoint{}
+	s.combatSpellTargetsPoint = false
+	s.combatMoveMode = false
+	s.combatMoveRemaining = 0
+	s.combatQuickMagic = false
+	s.combatReferenceCoords = false
+	s.combatView = false
+	s.combatViewFighterID = ""
+	s.combatMessage = ""
+	s.combatReturnMode = 0
+	s.combatVisual = nil
+	s.combatVisualElapsed = 0
+	s.combatVisualTravelSent = false
+	s.combatVisualImpactSent = 0
+	s.combatVisualDeathSent = 0
+	s.combatVisualAdvanceTurn = false
 }
 
 func (s *State) restoreJournalMessageIDs(messageIDs []string) error {
@@ -1359,21 +1471,21 @@ func wallPiecesFromParams(params [3]partySave.SAVGAMSetBlock) ([3]uint16, bool) 
 // ⚠ 所以這裡**只推顯示名稱、不碰 `Location`**：hazard 是「覆寫 Location」，
 // 而這一份不寫 `Location`，所以那個 hazard 在結構上不成立。
 var locationDisplayKeys = map[Location][2]string{
-	LocationWilderness:  {"wilderness", "Wilderness"},
-	LocationShadowdale:  {"shadowdale", "SHADOWDALE"},
-	LocationAshabenford: {"ashabenford", "ASHABENFORD"},
-	LocationDaggerFalls: {"dagger_falls", "DAGGER FALLS"},
-	LocationTilverton:   {"tilverton", "tilverton"},
+	LocationWilderness:    {"wilderness", "Wilderness"},
+	LocationShadowdale:    {"shadowdale", "SHADOWDALE"},
+	LocationAshabenford:   {"ashabenford", "ASHABENFORD"},
+	LocationDaggerFalls:   {"dagger_falls", "DAGGER FALLS"},
+	LocationTilverton:     {"tilverton", "tilverton"},
 	LocationStandingStone: {"standing_stone", "standing_stone"},
-	LocationEssembra:    {"essembra", "essembra"},
-	LocationHap:         {"hap", "hap"},
-	LocationVoonlar:     {"voonlar", "VOONLAR"},
-	LocationPhlan:       {"phlan", "PHLAN"},
-	LocationTeshwave:    {"teshwave", "TESHWAVE"},
-	LocationYulash:      {"yulash", "YULASH"},
-	LocationHillsfar:    {"hillsfar", "HILLSFAR"},
-	LocationZhentilKeep: {"zhentil_keep", "ZHENTIL KEEP"},
-	LocationMythDrannor: {"myth_drannor", "MYTH DRANNOR"},
+	LocationEssembra:      {"essembra", "essembra"},
+	LocationHap:           {"hap", "hap"},
+	LocationVoonlar:       {"voonlar", "VOONLAR"},
+	LocationPhlan:         {"phlan", "PHLAN"},
+	LocationTeshwave:      {"teshwave", "TESHWAVE"},
+	LocationYulash:        {"yulash", "YULASH"},
+	LocationHillsfar:      {"hillsfar", "HILLSFAR"},
+	LocationZhentilKeep:   {"zhentil_keep", "ZHENTIL KEEP"},
+	LocationMythDrannor:   {"myth_drannor", "MYTH DRANNOR"},
 }
 
 // restoreLocationName 由已經還原好的 `Location` 推出畫面上的地名。

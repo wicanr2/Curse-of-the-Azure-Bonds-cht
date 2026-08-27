@@ -198,11 +198,26 @@ func main() {
 		Segments  int      `json:"segments"`
 		RouteHits int      `json:"route_hits"`
 		RouteLen  int      `json:"route_steps"`
+		Won       bool     `json:"won"`
+		WonAt     int      `json:"won_at_frame"`
+		Boosted   bool     `json:"boosted"`
+		Wipes     int      `json:"party_wipes"`
 	}
 	if readJSON(*auditDir, "key-driven-session.json", &keySession) {
-		add("key_driven_session", keySession.Frames, keySession.Cells,
-			len(keySession.Modes), keySession.Messages, keySession.Fallbacks,
-			keySession.Segments, keySession.RouteHits, keySession.RouteLen)
+		wonAt := keySession.WonAt
+		if !keySession.Won {
+			wonAt = keySession.Frames
+		}
+		add("key_driven_session", wonAt, keySession.Cells,
+			len(keySession.Modes), keySession.Messages, keySession.Segments,
+			keySession.Fallbacks, keySession.Boosted, keySession.Wipes)
+	}
+	var normalStrength = keySession
+	if readJSON(*auditDir, "key-driven-normal-strength.json", &normalStrength) {
+		add("key_driven_normal_strength", normalStrength.Frames, normalStrength.Cells,
+			len(normalStrength.Modes), normalStrength.Messages, normalStrength.Segments,
+			normalStrength.Fallbacks, normalStrength.Boosted, normalStrength.Wipes,
+			normalStrength.Won)
 	}
 
 	// 原機音訊的**播放生命週期**：原作有幾種動作、remake 發得出幾種、

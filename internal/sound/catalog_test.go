@@ -2,11 +2,12 @@ package sound
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/hajimehoshi/ebiten/v2/audio/wav"
+	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 )
 
 func TestReferenceSoundAssetMapping(t *testing.T) {
@@ -14,9 +15,9 @@ func TestReferenceSoundAssetMapping(t *testing.T) {
 		id   ID
 		want string
 	}{
-		{Missile, "missle.wav"}, {MagicHit, "magic_hit.wav"}, {Death, "death.wav"},
-		{Sound5, "sound_5.wav"}, {Hit, "hit.wav"}, {Miss, "miss.wav"},
-		{Step, "step.wav"}, {Sound10, "sound_10.wav"}, {Start, "start_sound.wav"},
+		{Missile, "missle.ogg"}, {MagicHit, "magic_hit.ogg"}, {Death, "death.ogg"},
+		{Sound5, "sound_5.ogg"}, {Hit, "hit.ogg"}, {Miss, "miss.ogg"},
+		{Step, "step.ogg"}, {Sound10, "sound_10.ogg"}, {Start, "start_sound.ogg"},
 	} {
 		got, ok := AssetName(test.id)
 		if !ok || got != test.want {
@@ -24,7 +25,7 @@ func TestReferenceSoundAssetMapping(t *testing.T) {
 		}
 	}
 	if _, ok := AssetName(Stop); ok {
-		t.Fatal("stop must not resolve to a WAV asset")
+		t.Fatal("stop must not resolve to an OGG asset")
 	}
 }
 
@@ -74,15 +75,32 @@ func TestStereoPCMDuplicatesSignedMonoSamples(t *testing.T) {
 	}
 }
 
-func TestReferenceWAVAssetsDecode(t *testing.T) {
+func TestReferenceOGGAssetsDecode(t *testing.T) {
 	for _, id := range []ID{Missile, MagicHit, Death, Sound5, Hit, Miss, Step, Sound10, Start} {
 		name, _ := AssetName(id)
 		data, err := os.ReadFile(filepath.Join("..", "..", "assets", "audio", name))
 		if err != nil {
 			t.Fatalf("read %s: %v", name, err)
 		}
-		if _, err := wav.DecodeWithSampleRate(sampleRate, bytes.NewReader(data)); err != nil {
+		if _, err := vorbis.DecodeWithSampleRate(sampleRate, bytes.NewReader(data)); err != nil {
 			t.Fatalf("decode %s: %v", name, err)
+		}
+	}
+}
+
+func TestMusicOGGAssetsDecode(t *testing.T) {
+	for selector := 1; selector <= 12; selector++ {
+		name := fmt.Sprintf("pc98-bgm-selector-%02x.ogg", selector)
+		data, err := os.ReadFile(filepath.Join("..", "..", "assets", "audio", name))
+		if err != nil {
+			t.Fatalf("read %s: %v", name, err)
+		}
+		stream, err := vorbis.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
+		if err != nil {
+			t.Fatalf("decode %s: %v", name, err)
+		}
+		if stream.Length() <= 0 {
+			t.Fatalf("%s decoded to an empty stream", name)
 		}
 	}
 }

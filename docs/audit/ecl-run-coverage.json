@@ -1,7 +1,7 @@
 {
  "schema": "coab-ecl-run-coverage/1",
  "reachable_instructions": 14177,
- "executed_instructions": 8448,
+ "executed_instructions": 9607,
  "off_graph_executed": 0,
  "by_block": [
   {
@@ -12,32 +12,32 @@
   {
    "label": "ECL2.DAX/0x02",
    "reachable": 374,
-   "executed": 307
+   "executed": 336
   },
   {
    "label": "ECL2.DAX/0x03",
    "reachable": 703,
-   "executed": 437
+   "executed": 441
   },
   {
    "label": "ECL2.DAX/0x04",
    "reachable": 482,
-   "executed": 282
+   "executed": 300
   },
   {
    "label": "ECL3.DAX/0x10",
    "reachable": 913,
-   "executed": 624
+   "executed": 661
   },
   {
    "label": "ECL3.DAX/0x11",
    "reachable": 788,
-   "executed": 471
+   "executed": 542
   },
   {
    "label": "ECL3.DAX/0x12",
    "reachable": 840,
-   "executed": 470
+   "executed": 478
   },
   {
    "label": "ECL3.DAX/0x15",
@@ -47,27 +47,27 @@
   {
    "label": "ECL4.DAX/0x20",
    "reachable": 722,
-   "executed": 413
+   "executed": 497
   },
   {
    "label": "ECL4.DAX/0x21",
    "reachable": 563,
-   "executed": 261
+   "executed": 275
   },
   {
    "label": "ECL4.DAX/0x22",
    "reachable": 526,
-   "executed": 343
+   "executed": 439
   },
   {
    "label": "ECL4.DAX/0x23",
    "reachable": 303,
-   "executed": 58
+   "executed": 168
   },
   {
    "label": "ECL4.DAX/0x25",
    "reachable": 745,
-   "executed": 73
+   "executed": 481
   },
   {
    "label": "ECL5.DAX/0x30",
@@ -77,17 +77,17 @@
   {
    "label": "ECL5.DAX/0x31",
    "reachable": 388,
-   "executed": 299
+   "executed": 289
   },
   {
    "label": "ECL5.DAX/0x32",
    "reachable": 634,
-   "executed": 460
+   "executed": 468
   },
   {
    "label": "ECL5.DAX/0x33",
    "reachable": 709,
-   "executed": 377
+   "executed": 471
   },
   {
    "label": "ECL5.DAX/0x35",
@@ -97,7 +97,7 @@
   {
    "label": "ECL6.DAX/0x40",
    "reachable": 766,
-   "executed": 661
+   "executed": 671
   },
   {
    "label": "ECL6.DAX/0x42",
@@ -107,7 +107,7 @@
   {
    "label": "ECL6.DAX/0x43",
    "reachable": 525,
-   "executed": 454
+   "executed": 456
   },
   {
    "label": "ECL6.DAX/0x45",
@@ -117,12 +117,12 @@
   {
    "label": "ECL1.DAX/0x50",
    "reachable": 798,
-   "executed": 432
+   "executed": 433
   },
   {
    "label": "ECL1.DAX/0x51",
    "reachable": 726,
-   "executed": 255
+   "executed": 430
   },
   {
    "label": "ECL1.DAX/0x52",
@@ -133,28 +133,8 @@
  "largest_uncovered_clusters": [
   {
    "label": "ECL4.DAX/0x25",
-   "start_address": "0x84C6",
-   "size": 409
-  },
-  {
-   "label": "ECL1.DAX/0x51",
-   "start_address": "0x8DFD",
-   "size": 189
-  },
-  {
-   "label": "ECL4.DAX/0x25",
-   "start_address": "0x920F",
-   "size": 149
-  },
-  {
-   "label": "ECL5.DAX/0x33",
-   "start_address": "0x91AF",
-   "size": 148
-  },
-  {
-   "label": "ECL4.DAX/0x23",
-   "start_address": "0x8054",
-   "size": 122
+   "start_address": "0x8521",
+   "size": 111
   },
   {
    "label": "ECL4.DAX/0x23",
@@ -217,19 +197,39 @@
    "size": 72
   },
   {
-   "label": "ECL4.DAX/0x20",
-   "start_address": "0x979B",
-   "size": 71
-  },
-  {
-   "label": "ECL4.DAX/0x25",
-   "start_address": "0x82CF",
-   "size": 71
-  },
-  {
    "label": "ECL3.DAX/0x10",
    "start_address": "0x916D",
    "size": 64
+  },
+  {
+   "label": "ECL3.DAX/0x12",
+   "start_address": "0x87F9",
+   "size": 64
+  },
+  {
+   "label": "ECL3.DAX/0x11",
+   "start_address": "0x832E",
+   "size": 54
+  },
+  {
+   "label": "ECL4.DAX/0x20",
+   "start_address": "0x8A55",
+   "size": 53
+  },
+  {
+   "label": "ECL6.DAX/0x45",
+   "start_address": "0x86D6",
+   "size": 49
+  },
+  {
+   "label": "ECL1.DAX/0x51",
+   "start_address": "0x86B0",
+   "size": 48
+  },
+  {
+   "label": "ECL2.DAX/0x03",
+   "start_address": "0x99F6",
+   "size": 48
   }
  ]
 }

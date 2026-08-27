@@ -106,6 +106,38 @@ func TestBlockSessionRunInteractiveFollowsNewECL(t *testing.T) {
 	}
 }
 
+func TestBlockSessionKeepsTreasureSourceAcrossNewECL(t *testing.T) {
+	code := []byte{0x27}
+	for value := byte(1); value <= 8; value++ {
+		code = append(code, 0x00, value)
+	}
+	code = append(code, 0x20, 0x00, 0x51) // NEWECL 0x51
+	first := make([]byte, 2+0x14+len(code))
+	copy(first, sessionBlock(0x8014))
+	copy(first[2+0x14:], code)
+	second := sessionBlock(0x8014)
+	second[2+0x14] = 0x00 // EXIT
+
+	session, err := NewBlockSession(map[uint8][]byte{0x50: first, 0x51: second}, 0x50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := session.RunInteractive(20, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x51 || len(result.TreasureRequests) != 1 {
+		t.Fatalf("current=%#x treasure=%+v, want one request followed into 0x51",
+			session.CurrentBlockID(), result.TreasureRequests)
+	}
+	if got := result.TreasureRequests[0].SourceBlockID; got != 0x50 {
+		t.Fatalf("treasure source=%#x, want issuing block 0x50", got)
+	}
+	if !result.TreasureRequests[0].SourceBlockSet {
+		t.Fatal("treasure source ID is present but not marked as set")
+	}
+}
+
 func TestBlockSessionResumesMenuWithCumulativeSelections(t *testing.T) {
 	block := append([]byte{0, 0},
 		0x2B, 0x02, 0x00, 0x90, 0x00, 0x02,

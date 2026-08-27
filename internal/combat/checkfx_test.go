@@ -300,7 +300,7 @@ func TestInertEffectCodesAppearInNoTimingList(t *testing.T) {
 //
 // 傷害屬性旗標的三個位元各有兩個獨立證人：抗性 handler 的守衛遮罩
 // （抗火看 bit 0、抗寒看 bit 1），與傷害法術推進 `sub_F06` 的那個值
-// （火焰打擊 `09h`、冰風暴 `0Ah`、電擊觸手 `0Ch`）。
+// （火焰打擊 `09h`、冰風暴 `0Ah`、電擊之握 `0Ch`）。
 func TestResistColdOnlyHalvesColdDamage(t *testing.T) {
 	const (
 		fire = 0x09

@@ -182,9 +182,9 @@ remake 的 `internal/ecl/runtime.go` 用 `ParseOperands(payload, headNext-1, cou
 ★ **CoAB 的腳本用到四個目標**：沿 `ecl.TraceGraph` 走完 25 個 block，可達的 `2Dh`
 共 **168 條**（`2E10h` 125、`B200h` 19、`C01Eh` 13、`6803h` 11）；另外三路
 （`8000h`／`8001h`／`C018h`）一次都沒出現。
-⚠ 拿 `docs/audit/ecl-event-catalog.json` 數會得到 78 條——**那份 committed 產物是舊的**
-（4,222 條指令、55 個 opcode），現跑 `cmd/ecl-event-catalog` 是 14,177 條、61 個
-opcode，`2Dh` 正好 168。它目前重生不出來，見 `WORKLIST.md` 的 ⚠。
+⚠ 舊產物曾只數到 78 條（4,222 條指令、55 個 opcode）；2026-08-27 已依
+spec 1219 重生 `docs/audit/ecl-event-catalog.json`，現為 14,177 條、61 個
+opcode，`2Dh` 正好 168。
 ★ **不在 switch 內的目標會靜默 no-op**（直接落到收尾 `306Fh`），不會報錯。
 
 `722Ch` 是圖片序列的記錄（`p^[0]` 張數、`p^[1]` 游標、第 i 格的遠指標在

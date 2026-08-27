@@ -1,7 +1,8 @@
 # Curse of the Azure Bonds（青色枷的詛咒）中文化／Remake
 
-> 目前所有 agent／compact 後工作規則以 [`AGENTS.md`](AGENTS.md) 為單一入口。
-> 本檔保留使用者最初需求與資料索引，不重複可能過期的 checkpoint。
+> compact／接手先讀 [`HANDOFF.md`](HANDOFF.md)；所有工作規則仍以
+> [`AGENTS.md`](AGENTS.md) 為單一權威。本檔只保留使用者最初需求與資料索引，
+> 不重複可能過期的 checkpoint。
 
 ## 原始目標
 
@@ -13,6 +14,10 @@
 5. 還原音樂、音效、戰鬥、地圖、存檔與由開場到結局的完整玩家路徑。
 6. 把可重用部分集中在獨立 `golden-box-remake-engine` repo，遊戲內容以 JSON
    game pack 提供，不能 hardcode 在共用引擎。
+
+完成口徑（2026-08-27）：以玩家可見體驗近似原版 **99%** 為目標；驗證採
+風險導向代表性抽樣。已知近似與未驗範圍須明列，但不再要求所有狀態全量逐像素、
+逐分支或逐週期一致。詳細閘門以 `AGENTS.md` §1 為準。
 
 ## 核心工作法
 
@@ -67,7 +72,6 @@ bytes、runtime capture 或另一權威來源交叉驗證。
   `Curse-of-the-Azure-Bonds_Misc_DOS_EN_Adventurers-Journal.pdf`
 - Clue Book：`Curse-of-the-Azure-Bonds_Misc_DOS_EN_Clue-Book.pdf`
 - 工作目錄：`workplace/`（全部 gitignore，含 git 目錄與 IDA 產物）
-- Golden Box 評估：`GOLDEN_BOX_RE.md`
 
 ## 反組譯輸入（兩平台）
 

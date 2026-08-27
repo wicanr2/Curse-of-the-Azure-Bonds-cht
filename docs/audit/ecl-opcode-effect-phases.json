@@ -342,6 +342,19 @@
    "note": "handler 尚未讀。"
   },
   {
+   "opcode": "0x1E",
+   "name": "CHECKPARTY",
+   "dos_handler": "1416h",
+   "advance": "decode_operands",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1087"
+   ],
+   "note": "DOS `overlay-02:1416h` 逐條讀完：掃隊伍後在 handler 內把最小、最大與平均寫回 operand 指定的三個位址；下一條指令可直接讀到。"
+  },
+  {
    "opcode": "0x20",
    "name": "NEWECL",
    "dos_handler": "0BBBh",
@@ -389,6 +402,20 @@
    "remake_boundary": "inline",
    "confidence": "unknown",
    "note": "handler 尚未讀（與 `26h` 同一支）。"
+  },
+  {
+   "opcode": "0x26",
+   "name": "ON GOSUB",
+   "dos_handler": "1A9Bh",
+   "advance": "assign",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "spec_refs": [
+    "560",
+    "564"
+   ],
+   "note": "`25h`／`26h` 共用 DOS `1A9Bh` handler、操作元與目的地已解；`ON GOSUB` 推框架與改 PC 的完整 commit 次序尚未逐條讀。"
   },
   {
    "opcode": "0x27",
@@ -453,6 +480,20 @@
    "note": "先解 2 個固定 operand 取得目的位址與項數，`dec 4FB4h` 退一格後改以項數重解一次；選擇結果在 handler 內寫回目的位址。"
   },
   {
+   "opcode": "0x2C",
+   "name": "PARLAY",
+   "dos_handler": "27A8h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "resumable",
+   "confidence": "unknown",
+   "spec_refs": [
+    "560",
+    "1083"
+   ],
+   "note": "DOS handler 綁定為 `27A8h`，原作助憶碼為 PARLAY；原版互動阻塞與結果寫回的 commit 次序尚未逐條讀。remake 以可續跑選單建模。"
+  },
+  {
    "opcode": "0x2D",
    "name": "CALL",
    "dos_handler": "2F02h",
@@ -484,6 +525,19 @@
    "remake_boundary": "inline",
    "confidence": "unknown",
    "note": "handler 尚未讀（與 `30h` 同一支）。"
+  },
+  {
+   "opcode": "0x30",
+   "name": "OR",
+   "dos_handler": "0DA4h",
+   "advance": "decode_operands",
+   "phase": "immediate",
+   "remake_boundary": "inline",
+   "confidence": "exact",
+   "spec_refs": [
+    "1157"
+   ],
+   "note": "與 `2Fh` 共用 DOS `0DA4h` handler；`0DD8h` 重讀目前 opcode 分流，OR 結果與六個比較旗標都在返回前寫完。"
   },
   {
    "opcode": "0x31",
@@ -520,6 +574,21 @@
     "1104"
    ],
    "note": "兩條分支都寫 `65A0h:=1` 與 `inc 65A1h`，差別只在有沒有清 `8B61h`。"
+  },
+  {
+   "opcode": "0x34",
+   "name": "ECL CLOCK",
+   "dos_handler": "2CB5h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "spec_refs": [
+    "241",
+    "560",
+    "1106"
+   ],
+   "note": "DOS handler 綁定 `2CB5h` 且已證明解兩個 operand；remake 產生 ClockRequest，但原版時間狀態何時提交尚未逐條讀。"
   },
   {
    "opcode": "0x35",
@@ -593,6 +662,20 @@
     "1104"
    ],
    "note": "推進 PC 後呼叫 resident 的延遲常式，沒有 ECL 記憶體副作用。"
+  },
+  {
+   "opcode": "0x3B",
+   "name": "SPELL",
+   "dos_handler": "2E16h",
+   "advance": "decode_operands",
+   "phase": "unknown",
+   "remake_boundary": "inline",
+   "confidence": "unknown",
+   "spec_refs": [
+    "560",
+    "1083"
+   ],
+   "note": "DOS handler 綁定 `2E16h`，原作助憶碼為 SPELL；remake 搜尋角色記憶槽並寫回槽位／角色位址，但原版 handler 的 commit 次序尚未逐條讀。"
   },
   {
    "opcode": "0x3C",

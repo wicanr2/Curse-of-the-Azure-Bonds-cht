@@ -53,9 +53,9 @@ selector `AE11h`」，與本輪一致。
 - **CoAB 的 ECL1–ECL6 用到 4 個**：`2E10h`、`B200h`、`C01Eh`、`6803h`
   （上表，`exact`）。`8000h`／`8001h`／`C018h` 認得但沒有腳本用。
 
-⚠ 用 `docs/audit/ecl-event-catalog.json` 數會少報：**那份 committed 產物是舊的**
-（4,222 條指令、55 個 opcode，`2Dh` 只有 78 條），現跑 `cmd/ecl-event-catalog`
-會得到 14,177 條、61 個 opcode、`2Dh` 168 條。要分母就用 `ecl.TraceGraph`
+⚠ 舊產物曾少報為 4,222 條指令、55 個 opcode、`2Dh` 78 條；2026-08-27 已依
+spec 1219 重生 `docs/audit/ecl-event-catalog.json`，現為 14,177 條、61 個 opcode、
+`2Dh` 168 條。要分母就用 `ecl.TraceGraph`
 （`cmd/ecl-window`、`cmd/ecl-cell-refs`、`cmd/ecl-effect-coverage` 走同一條路）。
 
 ## 方法

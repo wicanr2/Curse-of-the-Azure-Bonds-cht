@@ -31,7 +31,8 @@ func (s *State) enterECLTemple() error {
 	if len(s.partyRoster) == 0 {
 		return fmt.Errorf("temple service requires a party")
 	}
-	s.moneyPool = 0
+	// 與商店共用原版 MONEY overlay 的公用池；進入服務不會清空玩家尚未
+	// SHARE／TAKE 的資金（spec 798／863）。
 	s.templeECLService = true
 	s.templeCharacterIndex = 0
 	s.eclMenuReturnMode = ModeDungeon
@@ -46,7 +47,8 @@ func (s *State) enterTempleMenu() {
 	s.templeConfirmMenu = false
 	s.shopMenu = false
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("temple_prompt", "temple_prompt")
+	character := s.partyRoster[s.templeCharacterIndex]
+	s.Prompt = fmt.Sprintf(s.catalog.Text("temple_character_prompt", "temple_character_prompt"), character.Name)
 	s.Choices = []string{
 		s.catalog.Text("temple_heal", "temple_heal"),
 		s.catalog.Text("temple_view", "temple_view"),
@@ -57,6 +59,39 @@ func (s *State) enterTempleMenu() {
 	}
 	s.currentOriginalChoices = []string{"TEMPLE_HEAL", "TEMPLE_VIEW", "TEMPLE_POOL", "TEMPLE_SHARE", "TEMPLE_APPRAISE", "TEMPLE_EXIT"}
 	s.Message = ""
+}
+
+// TempleCycleCharacter mirrors the original GOTEMPLE G/O character keys
+// (PC-98: 8/2). Previous wraps from the first member to the last; next stops
+// at the last member. The keys are active only on the temple main menu.
+func (s *State) TempleCycleCharacter(previous bool) bool {
+	if s.Mode != ModePlace || !s.templeMenu || s.templeHealMenu ||
+		s.templeConfirmMenu || len(s.partyRoster) == 0 {
+		return false
+	}
+	if previous {
+		if s.templeCharacterIndex == 0 {
+			s.templeCharacterIndex = len(s.partyRoster) - 1
+		} else {
+			s.templeCharacterIndex--
+		}
+	} else if s.templeCharacterIndex+1 < len(s.partyRoster) {
+		s.templeCharacterIndex++
+	}
+	s.enterTempleMenu()
+	return true
+}
+
+// TempleCurrentCharacter reports the character selected by the original
+// temple main-menu G/O controls. It deliberately returns false in submenus so
+// callers cannot mistake a stale selection for an active cycling target.
+func (s *State) TempleCurrentCharacter() (party.Character, int, bool) {
+	if s.Mode != ModePlace || !s.templeMenu || s.templeHealMenu ||
+		s.templeConfirmMenu || s.templeCharacterIndex < 0 ||
+		s.templeCharacterIndex >= len(s.partyRoster) {
+		return party.Character{}, 0, false
+	}
+	return s.partyRoster[s.templeCharacterIndex], s.templeCharacterIndex, true
 }
 
 func (s *State) enterTempleHealMenu() {

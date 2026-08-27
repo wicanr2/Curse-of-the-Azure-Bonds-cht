@@ -2,7 +2,7 @@
 // exactly one Traditional-Chinese rendering across every string the player can
 // see.
 //
-// 譯名散在三份 JSON 裡，沒有任何機制擋住漂移；建表時實測到十三組同名異譯
+// 譯名散在三份 JSON 與玩家攻略裡，沒有任何機制擋住漂移；建表時實測到十三組同名異譯
 // （Bane 貝恩／班恩、Zhentil Keep 散提爾堡／散塔林堡、Flamed One 三種寫法…）。
 // 內容量還會再成長數倍，事後回頭校對比現在建表貴得多。
 //
@@ -95,6 +95,10 @@ var scanTargets = []struct {
 	{path: filepath.Join("gamepack", "pack", "20-locale.zh-TW.json"), nest: []string{"locales", "zh-TW"}},
 	{path: filepath.Join("assets", "locale", "zh-TW.json"), nest: []string{"strings"}},
 	{path: filepath.Join("internal", "tooltext", "messages", "zh-TW.json")},
+}
+
+var markdownScanTargets = []string{
+	filepath.Join("docs", "guide", "main-story-zh-TW.md"),
 }
 
 // Run parses the table, scans every Traditional-Chinese catalog and returns a
@@ -437,6 +441,31 @@ func scan(root string) ([]scanned, []stringCatalog, error) {
 			items = append(items, scanned{path: target.path, key: key, value: value})
 		}
 		catalogs = append(catalogs, stringCatalog{Path: target.path, Count: len(table)})
+	}
+	for _, target := range markdownScanTargets {
+		file, err := os.Open(filepath.Join(root, target))
+		if err != nil {
+			return nil, nil, err
+		}
+		lineNumber := 0
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			lineNumber++
+			items = append(items, scanned{
+				path:  target,
+				key:   fmt.Sprintf("line:%d", lineNumber),
+				value: scanner.Text(),
+			})
+		}
+		scanErr := scanner.Err()
+		closeErr := file.Close()
+		if scanErr != nil {
+			return nil, nil, scanErr
+		}
+		if closeErr != nil {
+			return nil, nil, closeErr
+		}
+		catalogs = append(catalogs, stringCatalog{Path: target, Count: lineNumber})
 	}
 	sort.Slice(items, func(i, j int) bool {
 		if items[i].path != items[j].path {

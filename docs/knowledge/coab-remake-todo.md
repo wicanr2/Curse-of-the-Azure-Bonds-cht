@@ -2,6 +2,13 @@
 
 狀態日期：2026-08-16
 
+> **歷史封存（2026-08-27）**：這是 2026-08-16～24 的詳細缺口拆解，保留作為
+> 決策與證據索引，不再代表目前待辦。其後已完成的項目不應由本檔重新開啟；目前
+> frontier 請讀 [`remake-completeness-assessment.md`](remake-completeness-assessment.md)、
+> [`../audit/remake-status.md`](../audit/remake-status.md) 與
+> [`../audit/png-asset-independence-2026-08-27.md`](../audit/png-asset-independence-2026-08-27.md)。
+> 下文所有「現況」「剩下」與數字均以原標示日期為準。
+
 ## 這份清單的口徑
 
 驗收標準沿用既有文件，不另立一套：

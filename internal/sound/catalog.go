@@ -1,4 +1,4 @@
-// Package sound contains the reference PC sound IDs and the extracted WAV
+// Package sound contains the reference PC sound IDs and the converted OGG
 // asset mapping. Playback stays in the Ebiten adapter so game state remains
 // deterministic and testable without an audio device.
 package sound
@@ -52,20 +52,20 @@ func DOSID(event Event) (ID, bool) {
 	return id, ok
 }
 
-// AssetName returns the extracted WAV corresponding to the reference sound
+// AssetName returns the OGG corresponding to the reference sound
 // selector. Missing reference selectors intentionally return false: the
 // original engine also leaves several sound IDs without a sample.
 func AssetName(id ID) (string, bool) {
 	assets := map[ID]string{
-		Missile:  "missle.wav",
-		MagicHit: "magic_hit.wav",
-		Death:    "death.wav",
-		Sound5:   "sound_5.wav",
-		Hit:      "hit.wav",
-		Miss:     "miss.wav",
-		Step:     "step.wav",
-		Sound10:  "sound_10.wav",
-		Start:    "start_sound.wav",
+		Missile:  "missle.ogg",
+		MagicHit: "magic_hit.ogg",
+		Death:    "death.ogg",
+		Sound5:   "sound_5.ogg",
+		Hit:      "hit.ogg",
+		Miss:     "miss.ogg",
+		Step:     "step.ogg",
+		Sound10:  "sound_10.ogg",
+		Start:    "start_sound.ogg",
 	}
 	name, ok := assets[id]
 	return name, ok

@@ -109,6 +109,7 @@ type app struct {
 	combatVisualStarted    time.Time
 	combatVisualBase       time.Duration
 	combatVisualElapsed    time.Duration
+	combatNow              func() time.Time
 	journalDisplayPage     int
 	journalImages          map[string]*ebiten.Image
 	journalImageOpen       bool
@@ -117,9 +118,12 @@ type app struct {
 	journalImageOffsetY    int
 	combatDoneMenu         bool
 	combatSpeedMenu        bool
+	combatSpellMenu        bool
+	combatSpellCursor      int
 	messageSnapshot        string
 	messageStart           time.Time
 	soundPlayer            *sound.Player
+	soundDir               string
 	pc98MusicDriver        []byte
 	titleMusicRequested    bool
 	currentMusicTrack      string
@@ -346,17 +350,23 @@ func (a *app) syncSoundEvents() {
 		}
 		if event.Action == "play" {
 			a.currentMusicTrack = event.TrackID
-			if len(a.pc98MusicDriver) != 0 && a.soundPlayer != nil {
+			if a.soundPlayer != nil {
 				track, found := a.gamePack.FindMusicTrack(event.TrackID)
 				if !found {
 					log.Printf("music track %q is not in the game pack", event.TrackID)
 					continue
 				}
-				if err := a.soundPlayer.PlayPC98Track(
-					a.pc98MusicDriver,
-					int(track.ReferenceSelector),
-				); err != nil {
-					log.Printf("music track %q disabled: %v", event.TrackID, err)
+				if err := a.soundPlayer.PlayOGGTrack(a.soundDir, event.TrackID); err != nil {
+					if len(a.pc98MusicDriver) == 0 {
+						log.Printf("music track %q disabled: %v", event.TrackID, err)
+						continue
+					}
+					if fallbackErr := a.soundPlayer.PlayPC98Track(
+						a.pc98MusicDriver,
+						int(track.ReferenceSelector),
+					); fallbackErr != nil {
+						log.Printf("music track %q OGG failed (%v), PC-98 fallback failed: %v", event.TrackID, err, fallbackErr)
+					}
 				}
 			}
 		}
@@ -413,12 +423,17 @@ func (a *app) restoreMusicSnapshot() error {
 		return nil
 	}
 	a.currentMusicTrack = trackID
-	if len(a.pc98MusicDriver) == 0 || a.soundPlayer == nil {
+	if a.soundPlayer == nil {
 		return nil
 	}
 	track, found := a.gamePack.FindMusicTrack(trackID)
 	if !found {
 		return fmt.Errorf("music track %q is not in the game pack", trackID)
+	}
+	if err := a.soundPlayer.PlayOGGTrack(a.soundDir, trackID); err == nil {
+		return nil
+	} else if len(a.pc98MusicDriver) == 0 {
+		return fmt.Errorf("restore OGG music track %q: %w", trackID, err)
 	}
 	if snapshot == nil {
 		return a.soundPlayer.PlayPC98Track(a.pc98MusicDriver, int(track.ReferenceSelector))
@@ -484,13 +499,13 @@ func (a *app) Update() error {
 		}
 		if a.combatVisualSerial != event.Serial {
 			a.combatVisualSerial = event.Serial
-			a.combatVisualStarted = time.Now()
+			a.combatVisualStarted = a.nowCombat()
 			a.combatVisualBase = a.state.CombatVisualElapsed()
 		}
 		if a.screenshotPath != "" {
 			return nil
 		}
-		elapsed := combatVisualResumeElapsed(a.combatVisualBase, time.Since(a.combatVisualStarted), a.state.CombatSpeed())
+		elapsed := combatVisualResumeElapsed(a.combatVisualBase, a.nowCombat().Sub(a.combatVisualStarted), a.state.CombatSpeed())
 		if err := a.state.AdvanceCombatVisual(elapsed); err != nil {
 			return err
 		}
@@ -746,6 +761,18 @@ func (a *app) Update() error {
 	if a.justPressed(ebiten.KeyC) && a.state.Mode != game.ModeCombat {
 		return a.state.OpenCharacterCreation()
 	}
+	// DOS GOTEMPLE uses G/O to move to the previous/next party member before
+	// Heal or View. This must run before the debug-only G geometry preview.
+	if a.state.Mode == game.ModePlace {
+		if a.justPressed(ebiten.KeyG) && a.state.TempleCycleCharacter(true) {
+			a.choiceCursor = 0
+			return nil
+		}
+		if a.justPressed(ebiten.KeyO) && a.state.TempleCycleCharacter(false) {
+			a.choiceCursor = 0
+			return nil
+		}
+	}
 	if a.justPressed(ebiten.KeyT) {
 		a.tilePreview = true
 		return nil
@@ -843,6 +870,18 @@ func (a *app) Update() error {
 		case game.ModeEvent:
 			return a.state.Continue()
 		case game.ModeCombat:
+			if a.combatSpellMenu {
+				choices := a.state.CombatSpellChoices()
+				if len(choices) == 0 {
+					a.combatSpellMenu = false
+					a.combatSpellCursor = 0
+					return nil
+				}
+				spellID := choices[a.combatSpellCursor].SpellID
+				a.combatSpellMenu = false
+				a.combatSpellCursor = 0
+				return a.combatAction(func() error { return a.state.BeginCombatCast(spellID) })
+			}
 			if a.combatDoneMenu {
 				return nil
 			}
@@ -857,6 +896,34 @@ func (a *app) Update() error {
 		}
 	}
 	if a.state.Mode == game.ModeCombat {
+		if a.combatSpellMenu {
+			choices := a.state.CombatSpellChoices()
+			if a.justPressed(ebiten.KeyEscape) {
+				a.combatSpellMenu = false
+				a.combatSpellCursor = 0
+				return nil
+			}
+			if len(choices) == 0 {
+				a.combatSpellMenu = false
+				a.combatSpellCursor = 0
+				return nil
+			}
+			if a.justPressed(ebiten.KeyDown) || a.justPressed(ebiten.KeyRight) {
+				a.combatSpellCursor = (a.combatSpellCursor + 1) % len(choices)
+				return nil
+			}
+			if a.justPressed(ebiten.KeyUp) || a.justPressed(ebiten.KeyLeft) {
+				a.combatSpellCursor = (a.combatSpellCursor - 1 + len(choices)) % len(choices)
+				return nil
+			}
+			if a.justPressed(ebiten.KeyEnter) {
+				spellID := choices[a.combatSpellCursor].SpellID
+				a.combatSpellMenu = false
+				a.combatSpellCursor = 0
+				return a.combatAction(func() error { return a.state.BeginCombatCast(spellID) })
+			}
+			return nil
+		}
 		if a.combatSpeedMenu {
 			if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyE) {
 				a.combatSpeedMenu = false
@@ -969,8 +1036,12 @@ func (a *app) Update() error {
 		if a.justPressed(ebiten.KeyB) && a.state.CombatCanCastBless() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.BlessSpellID) })
 		}
-		if a.justPressed(ebiten.KeyC) && a.state.CombatCanCastCurse() {
-			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CurseSpellID) })
+		if a.justPressed(ebiten.KeyC) {
+			if len(a.state.CombatSpellChoices()) > 0 {
+				a.combatSpellMenu = true
+				a.combatSpellCursor = 0
+			}
+			return nil
 		}
 		if a.justPressed(ebiten.KeyW) && a.state.CombatCanCastCauseLightWounds() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CauseLightWoundsSpellID) })
@@ -2728,6 +2799,17 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		combatMenu = a.state.CombatSpeedMenuText()
 	} else if a.combatDoneMenu {
 		combatMenu = a.state.CombatDoneMenuText()
+	} else if a.combatSpellMenu {
+		choices := a.state.CombatSpellChoices()
+		labels := make([]string, 0, len(choices))
+		for index, choice := range choices {
+			prefix := "　"
+			if index == a.combatSpellCursor {
+				prefix = "▶"
+			}
+			labels = append(labels, prefix+choice.Label)
+		}
+		combatMenu = strings.Join(labels, "　")
 	}
 	drawFittedText(screen, combatMenu, a.compactFace, 8, combatMenuY, 624, cyan)
 	if len(spellHints) > 0 {
@@ -3064,6 +3146,13 @@ func combatSpeedElapsed(elapsed time.Duration, speed uint8) time.Duration {
 
 func combatVisualResumeElapsed(base, clockDelta time.Duration, speed uint8) time.Duration {
 	return base + combatSpeedElapsed(clockDelta, speed)
+}
+
+func (a *app) nowCombat() time.Time {
+	if a.combatNow != nil {
+		return a.combatNow()
+	}
+	return time.Now()
 }
 
 func combatVisualPoint(event combat.VisualEvent, frame combat.VisualFrame, camera combat.CombatCamera) (fromX, fromY, toX, toY, x, y float64) {
@@ -3473,7 +3562,7 @@ func loadFace(path string, size float64) font.Face {
 }
 
 func main() {
-	fontPath := flag.String("font", "", "TrueType/OpenType font path; required for Chinese glyphs")
+	fontPath := flag.String("font", "assets/fonts/NotoSansTC-Regular.ttf", "TrueType/OpenType font path; bundled Traditional Chinese font by default")
 	etenFontPath := flag.String("eten-font", "", "ETen STDFONT.15 path; uses bold 16x15 Chinese glyphs")
 	etenSymbolPath := flag.String("eten-symbol-font", "", "optional ETen SPCFONT.15 path for full-width punctuation")
 	etenASCIIFontPath := flag.String("eten-ascii-font", "", "optional ETen ASCFONT.15 path; defaults to ascfont.15 beside -eten-font")
@@ -3522,9 +3611,9 @@ func main() {
 	encounterArea := flag.Int("encounter-area", 1, "original graphics area used by -encounter sprites (1..6)")
 	combatTerrainMode := flag.String("combat-terrain", "", "override combat terrain atlas for visual verification: DUNGCOM, WILDCOM, or RANDCOM")
 	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, fireball, lightning, stinking-cloud, cloudkill, or kill checkpoints")
-	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
-	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
-	pc98MusicDriverPath := flag.String("pc98-music-driver", "", "local extracted MSCDRV.EXE used to synthesize the PC-98 soundtrack")
+	partyPath := flag.String("party-save", defaultPartySavePath(), "versioned remake party save path")
+	soundDir := flag.String("sound-dir", "assets/audio", "OGG music and sound asset directory; missing assets disable audio")
+	pc98MusicDriverPath := flag.String("pc98-music-driver", "", "optional local MSCDRV.EXE fallback and research oracle")
 	pc98SFXGamePath := flag.String("pc98-sfx-game", "", "local exact PC-98 GAME.EXE used to reconstruct software-speaker effects")
 	pc98SFXClock := flag.Uint64("pc98-sfx-clock", 8_000_000, "PC-98 CPU clock for reconstructed software-speaker timing")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
@@ -4237,7 +4326,7 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	*gameApp = app{state: &state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
+	*gameApp = app{state: &state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
 	if *wallTracePath != "" {
 		handle, err := os.Create(*wallTracePath)
 		if err != nil {

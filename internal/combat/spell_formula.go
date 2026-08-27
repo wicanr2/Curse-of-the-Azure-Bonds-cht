@@ -10,7 +10,7 @@ import "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 //
 // ★ 不要用表裡 `computed` 那幾列的殘值。腳本會撿到附近的立即數，
 // 拿它當骰數會得到「看起來合理但錯」的傷害——寒冰錐會變成 0d4、
-// 電擊觸手會少掉整個施法者等級。
+// 電擊之握會少掉整個施法者等級。
 
 // SpellDamageFormula 是一支法術這一次要擲的骰子。
 type SpellDamageFormula struct {
@@ -27,7 +27,7 @@ func (f SpellDamageFormula) Total() int { return f.Count*f.Sides + f.Bonus }
 // | 法術 | handler | 算式 |
 // |---|---|---|
 // | 9 燃燒之手 | `ov22@1E7Ch` | 不擲骰，傷害 ＝ 施法者等級 |
-// | 20 電擊觸手 | `ov22@2260h` | `1d8 ＋ 施法者等級` |
+// | 20 電擊之握 | `ov22@2260h` | `1d8 ＋ 施法者等級` |
 // | 92 寒冰錐 | `ov22@54EBh` | `等級d4 ＋ 施法者等級` |
 //
 // 三支都是「先算出等級，再和骰子相加」，所以只有等級進得了算式，

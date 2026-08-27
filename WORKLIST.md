@@ -1,5 +1,21 @@
 # 《青色枷的詛咒》目前工作清單
 
+> **歷史封存（2026-08-27）**：本檔保留逐輪工作、證據索引與舊斷言的形成脈絡，
+> 不再是目前執行順序，也不可單獨用來重開待辦。現況以 [`CONTEXT.md`](CONTEXT.md)、
+> [`docs/knowledge/remake-completeness-assessment.md`](docs/knowledge/remake-completeness-assessment.md)
+> 與當期 `docs/audit/` 報表為準；圖像資產收尾另見
+> [`docs/audit/png-asset-independence-2026-08-27.md`](docs/audit/png-asset-independence-2026-08-27.md)。
+> 下文的「目前」「下一步」「尚待」均按各段日期解讀。
+
+2026-08-27 當前前沿：50×25 原版戰場邊界、戰鬥終止狀態、贊提爾法庭／
+競技場與完整 ECL 結局鏈已收斂（spec 1230）；實跑覆蓋 67.8%。正常強度路線
+已補神殿逐員治療（spec 1232）、延遲法術失效收尾、武器店西側出口與兩個
+玩家可見安全選項（spec 1233）。最新 3000 幀為 373 格／4 段、全滅 0、原文
+fallback 0；三黑龍是可避開支線，旋轉刀刃也不再故意闖入。下一個玩家層瓶頸
+是下水道／火刀據點交界的探索反覆，應修路線重放，不調高隊伍能力。仍開著的
+完成閘門：一般強度人工／按鍵完整通關、音樂 120 秒循環點人耳驗收、macOS
+真機與簽署／公證。
+
 更新日期：2026-08-26（第 729 輪：**RE-11 第四刀收尾——無判定歸零、RE-11 關閉**——殘餘 38 段／914 B 逐段一手反組譯判定（33 段函式中段碼條紋、1 段近呼叫組語 helper、1 段 96 B 資料表、1 段 SJIS 字串切片；overlay-17 那批＝FINAL 前被打碎的選法術選單常式，0DE5..1213h 整窗讀過），判定進 `docs/audit/re-gap-manual.json`、工具讀入帶「人工已判」欄——兩平台 undefined 36,386 bytes **每一個位元組都有分類或一手判定**。第 728 輪：**RE-11 第三刀——真正待人工收到 38 段／914 B**——`cmd/re-gap-audit` 再加兩個機械判定：(1) **截斷函式尾**（緊接「邊界碎片」函式終點的 undefined 段＝被 IDA 截掉的函式後半；上一輪的「最強候選」`overlay-22 48D4h` 即此類，一手反組譯確認是法術 handler 收尾）；(2) **碼內常數引用**（掃 defined 碼的 `BF xx xx 0E 57` 指進 pending 段＝被引用的 Pascal 字串常數，訊息模板全數屬此類）。函式外無引用只剩 DOS 21 段／148 B（全 ≤34 B 碼碎片）、PC-98 17 段／766 B。spec 1203 三刀章節；報表加「碼內常數」欄。第 727 輪：**WORKLIST 過期斷言清帳（第二批）**——第 726 輪的全量結果回灌舊章節：「三個已量到但還沒排工作的小缺口」關掉兩個（牆磚逐格對照＝1,498 張全等已涵蓋；天空層＝`ecl-sky-colours` 表已收，`1FAh`／`1FCh` 的寫入者是各段進入碼、watchpoint 不必做），只剩 SPRIT 錨點（跑不到的路徑，維持不投資）；spec 1134 節的「還開著的」四條全部標結論保留過程。P1 表現況：**五項全部 ✅ 或明文另開**（MOVEPARTY 跨遊戲、音樂時機實機比對待 PC-98 儀器）。第 726 輪：**第一人稱殘差全量歸零**——重跑整份 `index.tsv`（17 個前綴、1,498 列）：**1,498/1,498 逐格相同、差 0 格**；「29 張／3,552 格」是 engine viewport 邊界修正串（`f2676e9` 夾非模、`e5c2810` 深度 2 出界斷開、`39d1ac4` 內側取中央面）落地前的過期量測（spec 1185 正文已改寫）。附帶判定：(15,4)/(15,5)E 的岩壁＝深度 1 左側牆讀夾後 (0,4) 北面型 4，engine 呼叫序列與 `sub_78B` asm 相符；`sub_6BDh` 出界模式由 CURRENTECL∈{0,0Ah} 決定不環繞，但六個 GEO 集沒有圖掛在那兩段 ⇒ 對本作是死條款（spec 1006 補記＋收邊查詢「走向面」措辭修正）。P1 fidelity 列整列收斂：簽章覆蓋 `fp-screen-plan -covered` 實測 585/585、unresolved 0（「382/585」是過期數字）。第 725 輪：**第一人稱殘差的兩條嫌疑排除、範圍收斂**（spec 1185 增補）——(1) 新拍原版 `AREA` 區域地圖 oracle（站 (13,4)，x=5..15 全入鏡）：x=15 那一欄 11 格全是純地板色、一條牆線都沒有（x=14 欄同圖牆線清楚＝正對照）⇒ **原版自己的地圖層與 GEO 解析一致**，(15,4)/(15,5) 朝東那片岩壁不是來自牆面資料；(2) `OLDWALL` 後備靜態對過：b33 宣告 {14,15,255}、WALLDEF5 只有 {12,8,14}，export 換章寫宣告值＋哨兵、兩邊讀同一份存檔 ⇒ 這一路一致。出界讀取的夾（非模）規則 engine `f2676e9` 已修且在 pin 內。剩餘 29 張／3,552 格的嫌疑收斂到**近列取樣的（格,面）對應**：下一步拿 `sub_78B` 的掃描序列逐筆對 engine 的 drawWallNear/Mid/Far。第 724 輪：**RE-11 待人工段對回函式台帳**——「最強漏碼候選 `overlay-14 0044h`」判定為**已解讀函式 `sub_3E`（清牆面位元）的中段**，不是漏碼：IDA 匯出的 undefined ≠ 沒被讀過。`cmd/re-gap-audit` 加台帳交叉比對（pending 段帶 `ledger_state`），待人工大半收掉：真正函式外只剩 DOS 64 段／2,276 B、PC-98 73 段／4,133 B（大宗＝夾佔位碼的訊息模板；函式外未定義碼最強候選改判 PC-98 `overlay-22 48D4h`）。規則記進 spec 1203：**判 undefined 位元組前先對人工台帳的函式範圍**。第 723 輪：**傷害放倒的狀態階梯接上**（spec 1205）——第 722 輪懸著的 `14Ah:0ACh` 一手判定：不是常駐、是 **overlay-24 的 `SAVEDAMAGE`**（Borland 符號同名；PC98-GAME.EXE 的 MZ header 是 2,464 bytes，拿常見的 128 去換算會錯配到 overlay-13——訊號是呼叫端引數字數對不上）。階梯（溢出 >9 死亡、ANIMATED 倒下死亡、1..9 瀕死＋記出血、歸零昏迷、之外清能行動旗標＋每邊存活數遞減）與 ECL 側的 `ApplyDamageWithHealthStatus` 逐條相同 ⇒ 戰鬥與 ECL 共用同一支。remake 戰鬥路徑接上：`combat.Fighter.DownOverkill`（battle 唯一扣血入口記溢出、追擊不覆寫）＋`syncCombatDownStatuses()`（finishCombat 全滅閘前、包紮入口）——戰鬥擊倒從此有狀態，瀕死者包紮得到、POSTCOM 閘吃到正確輸入。第 722 輪：**全滅的兩個判準對齊原作**（spec 1204）——POSTCOM 的 `PARTYDEAD` 是狀態集合判準（每一位 CHARSTATUS 在 {ANIMATED, TEMPGONE, DEAD, STONED, GONE} 才算；**昏迷／瀕死不算**，打輸但全員只是昏迷 → 隊伍活著回地圖、不放全滅曲），ECL `2Eh DAMAGE` 收尾是能行動旗標判準（**昏迷也算倒**；先前整條沒接，本輪接上 `enterPartyKilled("DAMAGE")`）。一手重讀 PC-98 `overlay-05` POSTCOM 與 DOS `overlay-02` DAMAGE 收尾；解掉 offset 陷阱（DOS `+196h`＝能行動旗標、PC-98 `+196h`＝CHARSTATUS，差在 spec 1166 的 `+14Ch` 位移）；`+58Eh:=80h` 的生產者定位（spec 1156 部分補完）。P1 表過期斷言清帳：PRINT RETURN 七頁空行 2026-08-23 已補完（`f45a31fb`＋版面測試）、全滅／結局畫面早已接上、`ViewMirror.Block` 是文件化邊界非待辦。待辦轉入：戰鬥擊倒的狀態階梯（常駐 `14Ah:0ACh` 未讀）。第 721 輪：**RE-11 未定義區段判定收掉**——`cmd/re-gap-audit` 讀兩平台 `undefined_ranges`＋overlay bytes 做形狀分類（碎屑／`00h` 填充／文字／待人工），DOS 待人工 187 段／5,818 bytes、PC-98 95 段／7,326 bytes，其餘機械收掉（79%／64% bytes）；**判定器要認 Shift-JIS**，只認 ASCII 會把 PC-98 的 306 段訊息誤判成待人工（spec 1203 記成規則）；待人工逐段台帳在 `docs/audit/re-gap-audit.md`，最強漏碼候選＝兩平台同座標 `overlay-14 0044h`。559 殘項五條全部關閉。第 720 輪：**559 殘項清帳**——殘項 2（INTERPET 盤點）與殘項 4（packed text 長度規則、bank 1 計算 routine）都是過期斷言：前者現況 64 opcode 中 62 一致、2 個不一致是已判定的變長選單；後者早由 spec 616／992（FINDSTR 兩平台）與 spec 624／1040（CHECKSPECIALS 兩平台）收掉。本輪對 PC-98 三支獨立重讀一次逐項相符（正對照）；`ecl-bank1-field-map` 的三筆簡化投影（7CACh／7ECFh／7F3Eh）加註記指回 spec。殘項只剩 5（未定義區段判定 RE-11）。第 719 輪：**魔法商店段的走訪儀器修好**——0x25 從 0.1% 到 9.8%；三個坑（首策略失敗 Skip 整段、GEO 在 settle 前查、BFS 邊界檢查擋掉環繞）寫進 spec 1193，走訪 state 掛物品目錄＋寶物區塊讓 SHOP 貨架選單開得起來。第 718 輪：**未蓋段補實跑路線**——`0x52` 判定 demo（spec 278）並在覆蓋報表註記；`0x15`／`0x35`／`0x45`／`0x25` 加進 BFS 走訪清單（43.4%／54.0%／48.8%／3.9%）、酒吧 `0x23` 用新的服務段選單走訪（19.1%）；總實跑覆蓋 55.9% → **60.6%**、整段 0% 歸零。剩魔法商店買賣對話叢集（661 條）待商店互動走訪。第 717 輪：**怪物特殊攻擊五碼接上**（見 CONTEXT）。第 716 輪：**兩個「沒有數字」變成有分母**＋**法術視覺歸屬閉合**。(1) 實跑指令覆蓋（`cmd/ecl-run-coverage`＋`COAB_ECL_COVERAGE` 記錄器）：可達 14,177 條中實跑執行 7,932 條（55.9%）、圖外 0，整段 0% 的段 4 個（序章 0x52、希爾斯法 0x15、洞窟 0x35、0x45）——「全城市／全房間走訪」從沒有數字變成逐段可追蹤（見 `docs/audit/ecl-run-coverage.md` 的未蓋叢集清單）。(2) spec 1126 的七支「未歸屬演出常式」歸屬完畢（spec 1202）：`INITSPELLS` 尾段把它們寫進 CALLEFFECT 效果分派表——就是特殊攻擊（吐酸 723／龍息 847·720／區域吐酸 725／噴火 735／凝視 722／丟電光 981·415），兩平台賦值序列互相印證、`84h→62D7h` 與 spec 415 的 runtime 觀測咬合；**推翻 spec 1005「六碼從未指定」**（正文已改寫，教訓：誰寫一張分派表要掃全程式）。視覺全部共用槽 18／19／23，pack 資產不必新增；`monster-ai-coverage` 因此誠實化：**真的缺口 0 → 5 碼／8 筆**（五個有載體的特殊攻擊 remake 未實作，`84h` 已接）。第 715 輪：**按鍵重放的戰鬥層瓶頸整串修掉**——爬牆事件本身不是死環（環繞會輪到「否」離開）；真正擋路的是：戰場座標跨場殘留（清掉）、佈署牆檢極性轉錄反了（照 asm 修正，spec 1200 §四）、快速施法排程後的回合死鎖（harness 改按 Enter）、大型怪 footprint 掛出圖外讓 SCAN 整包回錯（engine 跳過懸掛格、完全出圖仍回錯）、帶發射武器的怪貼身攻擊撞 `ErrAdjacentMissileTarget`（**怪物側自動換裝接上**，spec 1120／1174：`+12Bh` 遮罩、相鄰收弓用天生攻擊，全遊戲只影響四隻怪且盤點過無遮罩不匹配）。帶路線 12,000 幀 314 → **636 格／11 段**（穿過猶拉什入口 0x10@10,665），無路線 309 → 522 格，全滅 0、落回原文 0，全套測試綠。第 714 輪：**Go 漢字 literal 債歸零**——1,938 次全部移進 `internal/tooltext`（stable ID＋內嵌 catalog），報表輸出逐位元組不變，閘門維持 fail-closed。第 713 輪：**戰鬥佈陣接進 `StartCombat`**＋**ECL `partial` 歸零**（`2Dh CALL` 轉 `done`，可達 14,177 條全部 `done`）——ECL 遭遇的正常開戰改走 spec 1200 的 COMPREP 佈署演算法（地圖朝向＋遭遇距離＋地面檢查＋地城牆面），產原生戰鬥地圖座標並切 reference 模式；帶預置座標的路徑維持原樣。下水道巨魔房實測距離 0、佈出來的形狀與原版擷取定性一致；全套測試綠。第 712 輪：**入口落點偏差修掉**——`ViewMirror.Block` 擋板放寬成「本次執行跑過的 block」，下水道／火刀據點落點改為原版判定的 (0,0)／(8,0)，猶拉什入口收尾朝向（朝東）一併接上；全套測試綠。第 711 輪：**oracle 批次四項全部收掉**——(1) 第一人稱 fidelity 覆蓋收滿：585 種牆面配置全部有原版畫面可比（補拍 24 張全部逐格相同、差 0 格）；(2) 下水道／火刀據點入口落點判掉：原版落腳本寫的第 0 列，remake 的 (0,1)／(8,1) 是偏差（spec 1184，修正待做）；(3) `+1A2h` 大型加值原版實測**不漂**（spec 1175）；(4) SPRIT 錨點判定無原版對應物、corpus 內走不到。第 710 輪：**按鍵重放的世界地圖死環拆掉**（spec 1201）。「卡住換下一項」夾在最後一項會被紮營「修改」×「改名」兩個選單互踢鎖死（12,000 幀有 11,000 幀在環裡）；改成環繞後同路線同幀數 137 → **314 格**、5 → **8 段**（重返巫師塔），無路線預設 94 → **309 格**，落回原文 0。下一個瓶頸換位置：`ECL2/0x03` 爬牆事件是盜賊技能的閘，六個預設戰士永遠失敗。第 709 輪：戰鬥佈陣演算法解讀完並轉錄（spec 1200；第 713 輪接線完成）。第 708 輪：段內支線接進主線，段 subtest 23 → 25。）
 
 ## 目前執行順序（使用者 2026-08-16 指定，優先於下方所有舊清單）
@@ -60,8 +76,9 @@
 | ✅ 收掉（第 714 輪）| Go 漢字 literal 債 | **0**（1,938 → 0：71 檔全部移進 `internal/tooltext` 內嵌 catalog，printf 家族改走 `tooltext.Format`／`Errorf`，報表輸出逐位元組不變；閘門維持 fail-closed）| — |
 | ✅ 收掉（第 717 輪）| 怪物特殊攻擊五碼 | **0**——五碼全部接上（`internal/combat/special_attack.go`＋`gamepack/rules/special-attacks.json`）：吐酸（巨型蛞蝓）、區域吐酸（黑龍）、噴火＋凝視（屍龍）、龍息火（地獄犬）。命中率／次數／豁免類別／傷害（攻擊者 HP 上限或常數 7）照 asm；選目標與範圍形狀近似（模式碼與 `sub_175Bh` 未讀，pack 註記）。`monster-ai-coverage` 真的缺回到 0（會理的 9 → 14）| — |
 | ✅ 收掉（第 718–719 輪）| 實跑覆蓋的未蓋段 | 整段 0% 歸零：`0x52` 判定 **demo**（spec 278，報表已註記）；`0x15`／`0x35`／`0x45` 進 BFS 走訪（43–54%）；酒吧 `0x23` 選單走訪 19.1%；魔法商店 `0x25` 修掉走訪器三個儀器坑（首策略 Skip 整段、GEO 提早查、BFS 擋環繞——spec 1193）＋掛物品目錄與寶物區塊讓 SHOP 貨架開得起來 → 9.8%。總覆蓋 55.9% → **59.6%**（⚠ 走訪是啟發式，批間差過 1 個百分點——引用要說哪一次收集）| 各段剩餘未蓋叢集見 `ecl-run-coverage.md`；再往上要的是逐段的劇情路線（旗標分支），屬持續累積不是單輪工作 |
-| **P2** | 三平台發行 | 沒有數字 | 專案明文決定：遊戲完整可玩之前不做 |
-| ✅ 收掉（第 715 輪）| 按鍵重放 | 帶路線 12,000 幀 **636 格／11 段**（穿過猶拉什入口）、全滅 0、落回原文 0 | 選單死環（710）＋戰鬥層五缺陷（715）整串修掉；量測表在 `keydriven_test.go`，重量測規則見 spec 1201 |
+| **P2 進行中** | 三平台發行 | patch／full-local 各 **4 件**：Linux AppImage、Windows ZIP、macOS x86_64／arm64 ZIP | Linux AppImage 與 Windows EXE（Wine）已啟動與繁中截圖驗收，兩張 PNG 逐位元組相同。Windows／macOS 真機與 macOS 簽署／公證尚待收尾 |
+| ✅ 收掉（第 780 輪）| 按鍵重放 | 單一鍵盤 session 第 **14,380 幀**觸發 `GameWon()`；899 格／16 段／393 句／落回原文 0 | 輸入層可達性硬閘門通過；仍不代表一般強度隊伍的人工完整試玩 |
+| 進行中（spec 1236）| 一般強度鍵盤路徑 | 新遭遇雲霧失能滲漏與燃燒之手 QUICK metadata 漏列已修；無強化 5,000 幀通過：600 格／6 畫面／218 句／5 段／67 次快速戰鬥、全滅 0、fallback 0；出口探針進到 0x51，新增「假扮傭兵」翻譯 | 已走出 0x33 領主與 0x50 鷹馬戰；目前在匕首瀑布城內／城外循環。下一步查明選「繼續旅程」後為何又回城市服務，繼續單次 session（spec 1236） |
 
 **已判定、數字不會再降的**（留著是為了讓報表看得出來，不是待辦）：
 
@@ -89,19 +106,22 @@ ECL 副作用 `consumed` 0、反組譯台帳待解讀 0、角色記錄 `unknown`
 
 - **跑法**：
   ```bash
-  COAB_DECISION_LOG=/src/workplace/campaign-frames/route-clean-716.json \
-    ./tools/go.sh test ./internal/game/ -count=1          # 錄路線（整包，24,370 步）
-  COAB_ROUTE_JSON=workplace/campaign-frames/route-clean-716.json COAB_KEY_FRAMES=12000 \
-    ./tools/go.sh test ./cmd/azure-bonds-game/ \
-      -run '^TestKeysDriveARealSessionFromTheTitle$' -count=1 -v
+  ./tools/rebuild-key-route.sh
   ```
-  ⚠ 路線檔要**跟程式碼同一版**（下水道那條路一改，舊路線的症狀是「走得比較短」
-  不是報錯）。
+  現行唯一入口是 `workplace/campaign-frames/route-current.json`；腳本先以完整
+  `internal/game` 測試寫候選檔，至少 10,000 步才原子替換，並輸出 SHA-256，
+  接著固定 `COAB_KEY_BOOST=0` 重跑一般強度。⚠ 路線檔要**跟程式碼同一版**
+  （下水道那條路一改，舊路線的症狀是「走得比較短」不是報錯）。
 - **目前沒有瓶頸**（第 715 輪）：爬牆事件不是死環（環繞會輪到「否」離開）；
   擋路的其實是一串戰鬥層缺陷，已整串修掉（佈署牆檢極性、跨場座標殘留、
   快速施法回合死鎖、SCAN 圖外 footprint、怪物貼身拿弓）。帶路線 12,000 幀
   **636 格／11 段**、第 10,665 幀進猶拉什，全滅 0、落回原文 0——
   再往前走是加幀數的問題（見 spec 1201）。
+
+- **第 779 輪長跑基線**：延長到 48,000 幀後走過 **1,463 格／17 段**，
+  第 35,690 幀進 `ECL6/0x40`，最後新進展在第 42,369 幀；477 句、玩家選項
+  落回原文 0。24,000 幀首次揭露的 `JOIN`／`REFUSE` 已補 stable 雙語規則；
+  共用問句子程式片段沿用 `ecl-text-coverage` 的量測例外，避免短規則攔截完整頁面。
 
 ### 盤點（2026-08-17）：目前真正還開著的工作
 
@@ -152,34 +172,21 @@ overlay 與某個十六進位值」的檔案，而**它自己的輸出就在 `do
 （同樣輸入兩次輸出相同），只是「跑一次就 commit」可能留下非不動點的版本。
 影響僅止於提示欄的檔名清單，不動任何狀態判定。
 
-⚠ **`docs/audit/ecl-event-catalog.*` 這份 committed 產物比現況落後 3.4 倍，而且
-重生不出來**（2026-08-21 第 619 輪量到，成因在本輪之前）：
+✅ **`docs/audit/ecl-event-catalog.*` 的過期產物已於 2026-08-27 重生**
+（spec 1219）：
 
-| | committed 的那份 | 現跑 `cmd/ecl-event-catalog` |
+| | 過期產物 | 目前可重生產物 |
 |---|---:|---:|
 | 靜態可達 instruction | 4,222 | **14,177** |
 | 跨 effect-kind 候選 | 154 | **701** |
 | corpus 出現的 opcode | 55 | **61** |
 | 其中 `2Dh CALL` | 78 | **168** |
 
-現跑的 14,177 與 `cmd/ecl-effect-coverage` 的分母**完全一致**，所以現跑那份才是對的；
-committed 那份停在走訪修好之前。**任何拿事件目錄數出來的數字都要先確認是不是這個坑**
-——它會系統性少報，而少報的方向剛好是「看起來已經數完了」。
-
-重生被兩道 fail-closed 閘擋著，兩道都是設計上該擋：
-
-- 帶預設的 `-reviews`：`candidate review ECL4.DAX/0x23/0x0130-0x019D does not match
-  the current corpus`。候選 ID 由 `member/block/start-end` 組成，走訪一變 ID 就跟著變；
-  照 `AGENTS.md` §12 必須失敗即關閉，要重新審那個候選，不能模糊比對。
-- 關掉 reviews（`-reviews=`）：`ordered-effect phase ledger is missing corpus opcodes
-  0x1E, 0x26, 0x2C, 0x30, 0x34, 0x3B`。`internal/eclcatalog/phases.go` 的表少這六支，
-  而它們在**現在的** corpus 裡是可達的。
-
-⇒ 連帶影響：phase 台帳（55 列、25 支已分類、30 支 `unknown`）也重生不出來，對 `0Dh`
-（spec 1146 已讀完，表上仍是 `unknown`）與 `2Dh`（spec 1150）是**過期的**。改
-`phases.go` 但重生不了產物只是把不一致換個地方放，所以這一輪沒有動它。要收是一件事：
-補那六支的分類 ＋ 重審那個 candidate ＋ 重生四份產物，順便把所有引用 4,222／154 的
-文件一起改。
+目前 14,177 與 `cmd/ecl-effect-coverage` 的分母一致。兩道失敗即關閉
+（fail-closed）閘門均已依證據處理：審查 ID 因正確的變長 `RecordEnd`
+從 `0x019D` 移至 `0x019A`，副作用序列未變；六個缺列 opcode 亦已補入。
+階段台帳現為 61 支，已讀 27 支、尚未讀 34 支；未讀者仍誠實標為
+`unknown`，不阻擋目錄重生，也不冒稱原版語意已閉合。
 
 ⚠ 三個**已量到但還沒排工作**的小缺口（都不擋主線，理由與代價都寫清楚了）：
 
@@ -431,7 +438,7 @@ spec 1130 收尾時留了一句「牆磚選圖還沒比」。比下去發現不�
 [`docs/knowledge/coab-re-coverage-matrix.md`](docs/knowledge/coab-re-coverage-matrix.md)
 為單一權威矩陣；詳細反組譯歷史仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
-可驗證的歷史與每輪規格見 [`docs/project-status.md`](docs/project-status.md)。
+可驗證的歷史見 [`README-history.md`](README-history.md)、`docs/context/` 與每輪 READY spec。
 本檔只保留目前有效的工作，不把歷史輪次的舊 blocker 當成現況。
 
 ## 目前階段：先封閉知識庫，再擴張 remake
@@ -468,15 +475,10 @@ coverage 代替全系統閉合。
 
 ## 一句話結論
 
-重製尚未完成整作通關。現在已經有多條可重播的正常玩家垂直切片，並完成
-`SEARCH`／`LOOK`、wall=09 候選橋接、E2、火刀 E1、戰後世界地圖與 save/load
-的 engine＋JSON 接線；本輪再完成 25 個 ECL block／125 個 entry 的 parser／控制流
-稽核、16 個原始 GEO block 的 game-pack 宣告、ECL 戰鬥開始／隊伍全滅音效意圖，
-以及 14 個世界點位的 ECL1 到達／JSON 有向路網基線；第 542 輪把同一新遊戲
-session 從火刀首領後接到阿沙本福德城內、立石群與艾森布拉城外；第 543 輪再把
-同一 session 接到 Hap 村落、熔岩洞、巫師塔、回洞穴與熔岩池第二次戰鬥。仍缺
-完整 ECL side effects／外部 routine、全城市／全房間 coverage、完整結局同
-session、完整戰鬥與原機音訊、全量繁中校對、完整存檔相容與三平台發行。
+連續鍵盤輸入已從標題玩到 `GameWon()`，規則層與輸入層的主線可達性硬閘門均已通過。
+三平台開發封包也已可重生，Linux AppImage 與 Windows EXE（Wine）已啟動與繁中截圖驗收。
+專案仍不宣稱正式完成：尚待一般強度隊伍的人工完整試玩、非第一人稱畫面 oracle、
+全量人工繁中校對、Windows／macOS 真機封包驗收，macOS 簽署／公證與對外授權清單。
 
 第 548 輪保留 DOS IDA Pro 已證實的 `C04B..C04F` 虛擬地圖 bridge，並更正 A2
 事件時序：同一新遊戲 session 由 E1 `(5,7,W)` 走到 `(5,9)` 後，先經原始砲擊
@@ -640,9 +642,46 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
 | 全地圖與世界旅行 | 16 個原始 GEO block 已在 game-pack 宣告；14 個世界點位的 ECL1 到達、Tilverton→全點 directed adjacency，以及新遊戲→阿沙本福德→立石群→艾森布拉的正常主線已通過 Docker gate。仍缺所有城市／地城房間 coverage、TRAIL／WILDERNESS／EXIT 全分支、隨機遭遇、所有入口出口、持久 map state 與原版 fidelity。 | 建立每座城市／每個 GEO block 的正常事件 coverage matrix，保存 flag／座標／資源 handoff，並補全世界旅行與重訪回歸；不把攻略座標直接寫成規則。 |
 | 戰鬥規則、AI、法術效果與動畫 | 法術那一半**已收斂**：可宣告的 73 支全部宣告，`handler`／`visual`／`sound` 三欄 observed（spec 1111／1117／1123／1124／1125／1126）。視覺不是七十幾筆待補資產——原作只有一段共用施法投射物（COMSPR 區塊 5）加閃電電弧（6）與魔法命中（10）。回合生命週期的逐項對照也收完了（spec 1135～1138），怪物側的物品鏈已進 `Fighter`。戰鬥的 `使用` 整條走得通：充能 18/18（spec 1169／1170）＋ 卷軸 12 件（spec 1171）。怪物換武器的傷害已由 spec 1174／1175 收斂（記錄的骰是放下武器時的天生攻擊），怪物側的武器投影也接上了。**每回合攻擊次數已改成原作模型**（spec 1180）：半次單位 ＋ `ADJUSTBLOWS` 的回合奇偶換算，先前讀錯欄位讓 68 種怪物全部每回合只打一下。隊伍側的 `BASEATTBLOWS`（戰士／聖武士 7 級、遊俠 8 級 → 一次半）與遠程的彈藥數上限也接上了。仍缺的是 `PREVIOUSLEVEL`（雙職角色靠前職業拿到的一次半）與 spec 771 的 `overlay-13:1CE2h` 加成。 | 回合生命週期每項一條回歸測試 ＋ 正常戰鬥路徑；影片只能證明演出，數值要回 bytes／DOSBox。 |
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
-| 全量繁體中文化與遊戲內手札 | 第 556 輪修正七行裁切：長手札依真實字寬自動分頁，來源 stable ID 與 save 不變；摩安德之坑真實 producer 已接通手札 46。目前 locale 宣告的 64 則**全部**有 en／zh-TW stable ID 與 ECL producer 解鎖。**物品名稱已收斂**：名稱是三個名稱編號查 `DS:1040h` 那張 255 筆詞表組出來的（spec 1178），語系檔的 `item_name_XX` 由 54 筆補成 252 筆並改正第 260 輪填錯的編號，原版 253 件物品用到的 126 個編號**缺譯 0**、115 種相異名稱逐件列在 `docs/audit/item-names.md`。全 ECL 頁文字亦已閉合（1022 頁、unmatched 0）。**戰鬥員名字亦已收斂**：原版六章 `MON*CHA` 共 68 種，pack 先前只宣告 23 種、其餘 45 種在戰鬥畫面是英文；現在 68 種全部有 zh-TW／en，逐種列在 `docs/audit/combatant-names.md`，並由三條閘門守著（spec 1179）。**手札的原版插圖與地圖也接完了**：六張（含手札 59 的眼魔洞穴圖）由 `gamepack/rules/journal-images.json` 對應，檢視器支援縮放與平移，四條閘門守著（含「PNG 解得開」——renderer 那一側刻意吞錯，壞掉的圖不會讓任何東西紅）。法術／地名／UI 校對仍未完成。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit。 |
+| 全量繁體中文化與遊戲內手札 | 第 556 輪修正七行裁切：長手札依真實字寬自動分頁，來源 stable ID 與 save 不變；摩安德之坑真實 producer 已接通手札 46。目前 locale 宣告的 64 則**全部**有 en／zh-TW stable ID 與 ECL producer 解鎖。**物品名稱已收斂**：名稱是三個名稱編號查 `DS:1040h` 那張 255 筆詞表組出來的（spec 1178），語系檔的 `item_name_XX` 由 54 筆補成 252 筆並改正第 260 輪填錯的編號，原版 253 件物品用到的 126 個編號**缺譯 0**、115 種相異名稱逐件列在 `docs/audit/item-names.md`。全 ECL 頁文字亦已閉合（1022 頁、unmatched 0）。**戰鬥員名字亦已收斂**：原版六章 `MON*CHA` 共 68 種，pack 先前只宣告 23 種、其餘 45 種在戰鬥畫面是英文；現在 68 種全部有 zh-TW／en，逐種列在 `docs/audit/combatant-names.md`，並由三條閘門守著（spec 1179）。**手札的原版插圖與地圖也接完了**：六張（含手札 59 的眼魔洞穴圖）由 `gamepack/rules/journal-images.json` 對應，檢視器支援縮放與平移，四條閘門守著（含「PNG 解得開」——renderer 那一側刻意吞錯，壞掉的圖不會讓任何東西紅）。✅ **locale drift gate 已修復**（spec 1220）：UI catalog 1,162 鍵，靜態產品引用缺鍵 0；game-pack 英／中各 1,594 鍵、英中內容完全相同 0、違規 0。法術／地名／UI 的逐句語意校對仍未完成；綠燈只證明鍵、對稱性與靜態引用完整。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；動態組鍵另以物品、法術與手札專用台帳驗證。 |
 | 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；戰鬥開始／隊伍全滅 semantic intent 已接通，但完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥 phase 同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
 | UI、素材與原版 fidelity | **第一人稱已有逐格數字**：提爾佛頓五格 × 四朝向 19／20 與原版完全相同（spec 1134）。冒險／戰鬥／地圖／對話／頭像的其餘狀態仍未逐張比對；palette cycle、sprite timing、完整戰鬥地形與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。逐格比對走 `tools/fp-oracle-compare.py`。 |
+
+法術名校對進度：✅ spec 1221 已修正 5 個有專案內部對照的確定錯誤，
+包含 `Shocking Grasp` 的「觸手」誤譯與 Cure／Cause Serious／Critical Wounds
+跨神殿、法術清單的同名不一致。其餘詞條仍保留逐句語意審定範圍。
+
+地名與專名校對進度：✅ spec 1222 已把繁中主線攻略納入詞彙稽核，修正
+散提爾堡、迷斯卓諾、班恩與龍盔四組漂移；139 詞條違規 0。這只證明已建表
+詞彙的一致性，不宣稱攻略全文潤稿完成。
+
+動態內容進度：✅ spec 1223 已補走奧克薩姆莊園的正常選項序列與門後內容，
+該段實跑 9.8% → 64.6%，全作 59.6% → 64.2%，圖外執行 0；沿路另補向上
+螺旋梯的 stable-ID 譯文。這是強化隊伍的內容盤點，不替代一般強度驗收。
+
+世界旅行進度：✅ spec 1224 已從暗影谷正常選單走通溫拉爾軍隊的躲藏、放行、
+主動攻擊與定罪強制戰四種結果。2026-08-27 勘誤：「軍隊經過」是沒有
+玩家停留點的過渡文字，為它加的寬規則會誤攔後續世界 run，已移除並在
+spec 1224 保留訂正理由。
+`ECL1/0x51` 35.1% → 39.8%，全作實跑 64.2% → 64.4%，圖外執行 0。
+
+特什維夫進度：✅ spec 1225 已從匕首瀑布正常選單走通
+`JOURNEY ON → TESHWAVE → WILDERNESS`，並覆蓋忽略小徑、直接攻擊與
+四種傭兵指令。`ECL1/0x51` 39.8% → 52.5%，全作實跑
+64.4% → 65.1%，圖外執行 0。強化隊伍只用於內容盤點，不取代一般強度驗收。
+
+航運進度：✅ spec 1226 已用三趟正常選單航行驗證同向首次被逼上岸戰鬥、
+反向獨立計數器，以及同向第二次海盜逃跑。`ECL1/0x51` 52.5% → 59.2%，
+全作實跑 65.1% → 65.5%，圖外執行 0。
+
+戰後復仇進度：✅ spec 1227 已在正常戰役的古熔岩洞選擇接受 Crimdrac 放行，
+保留 `4C62=0`；擊敗 Dracandros 後，同一 session 的世界旅行已走到
+`post-wizard.dracolich` 並將 `4C62` 設為 1。全作實跑 65.5% → 65.8%，
+圖外執行 0。
+
+Sphere Trial 進度：✅ spec 1228 已由巫師塔正常地城路徑選擇現有法師進房，
+反覆集中精神至勝利，走過寶物選單，再由 `(8,2)` 向西穿過單向黑門離房。
+`ECL5/0x33` 45.6% → 66.4%，全作實跑 65.8% → 66.8%，圖外執行 0；
+原 148 條最大叢集已消失。
 
 第 551–552 輪新增的工作分派基線：
 
@@ -653,11 +692,11 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
 - 子代理不得自行 commit／push；mentor 覆核 diff、修正整合衝突、跑正式 gate，
   再按重大 milestone 集中提交。
 
-### P2：完成後才做的發行工作
+### P2：發行工程（進行中）
 
 | 工作 | 門檻 |
 |---|---|
-| Windows／Linux／macOS 打包 | P0 主線、P1 規則／資料／音訊與存檔通過後，才做三平台可重現 build、資產授權檢查、存檔位置與首次啟動 smoke。 |
+| Windows／Linux／macOS 打包 | 已有可重生開發版；Linux AppImage 與 Windows EXE（Wine）已實際啟動。待 Windows／macOS 真機、macOS 簽署／公證與對外授權清單。 |
 | README／截圖／40–60 秒推廣片 | 截圖只使用目前版本可重播狀態；推廣片只在可玩整合完成後製作。8 小時錄影不是本專案目標。 |
 | 日後美化 theme 與 donate | 原版忠實 theme 永久保留；美化與 donate 只作後續／local 設定，donate 資訊不得上傳 GitHub。 |
 
@@ -682,7 +721,7 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
   秘密門、detail、年齡、旗標或地圖 owner。
 - 不以 direct-entry、固定座標、注入戰鬥、測試模式或窄測試宣稱完整通關。
 - 不在 JSON 尚未成為真相來源前，把劇情文字、裝備、法術或測試期望值硬編碼回 Go。
-- 不在遊戲完整可玩前花時間做三平台 release 或長篇推廣影片。
+- 三平台開發封包已開始；不在真機與授權 gate 通過前對外宣稱正式 release，也不製作長篇推廣影片。
 
 ## 完成聲明的共同驗收門檻
 

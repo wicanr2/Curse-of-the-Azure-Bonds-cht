@@ -48,6 +48,12 @@ func TestTrainingCatalogCoversEveryDisplayedStableID(t *testing.T) {
 	}
 }
 
+func TestTempleCatalogCoversCharacterPrompt(t *testing.T) {
+	if got := trainingTestCatalog(t).Text("temple_character_prompt", ""); got == "" {
+		t.Fatal("temple character prompt locale ID is absent")
+	}
+}
+
 func TestTrainingHallLevelsFighterAndChargesCharacter(t *testing.T) {
 	state := NewState(trainingTestCatalog(t))
 	state.fixSeed = 7

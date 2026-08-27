@@ -14,8 +14,8 @@
 
 ## 目前成果
 
-截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
- [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 525
+截至 2026-08-09 的逐輪歷史由本檔、`docs/context/` 與各份 READY spec 保存；
+目前 GitHub `main` 為第 525
 輪反組譯盤點 milestone；本輪以 PC-98 Borland `TEMPSEARCH (0C29:BDF1h)` 與
 overlay-02 `3BB8h..3BFDh` 證明 `BDF1` 是 `+594h` 的暫存／還原並進入
 `SHOWLOCATION`，不再把它當成秘密門第三平面 writer；下一個入口改為

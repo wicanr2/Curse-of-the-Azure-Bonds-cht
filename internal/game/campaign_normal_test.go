@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"slices"
+	"sort"
 	"strconv"
 	"strings"
 	"testing"
@@ -51,6 +51,9 @@ type normalCampaignObserver struct {
 	nextWorldDestinations []string
 	stopAtMessageID       string
 	stopAtDataPackEventID string
+	sphereTrialWon        bool
+	courtDetour           bool
+	loseNextCombat        bool
 	// refusedEdges 記下「走過去卻被 ECL 推回來」的邊。原作有一類格子會問
 	// 「你要離開嗎」，回答否就把隊伍送回上一格（spec 1157 的 15 處「退回上
 	// 一格」）。地圖的牆資料允許那一步，所以尋路演算法看不出來；只有實際
@@ -220,6 +223,11 @@ func captureFlagSample(state *State) {
 
 func (o *normalCampaignObserver) observe() {
 	if o.state != nil && o.state.Mode == ModeDungeon && o.state.session != nil {
+		if o.state.session.CurrentBlockID() == 0x33 {
+			if value, ok := o.state.session.MemoryValue(0x4C09); ok && value == 1 {
+				o.sphereTrialWon = true
+			}
+		}
 		campaignVisitedCells[campaignCellKey{
 			block:   o.state.session.CurrentBlockID(),
 			terrain: o.state.DungeonWallRoof,
@@ -288,6 +296,15 @@ func (o *normalCampaignObserver) observe() {
 		"zhentil.fritz-accusation",
 		"zhentil.fritz-killed",
 		"zhentil.fritz-let-go",
+		"zhentil.court.dragged-in",
+		"zhentil.court.cell-until-trial",
+		"zhentil.court.session",
+		"zhentil.court.send-to-arena",
+		"zhentil.arena.dragged-in",
+		"zhentil.arena.fanfare",
+		"zhentil.arena.gladiators-attack",
+		"zhentil.court.bane-smiles",
+		"zhentil.court.dont-screw-up",
 		"zhentil.olive_appears",
 		"zhentil.olive_follow",
 		"zhentil.dark_shrine_entry",
@@ -369,6 +386,11 @@ func (o *normalCampaignObserver) observe() {
 		"wizard-tower.dragons-depart",
 		"wizard-tower.dracandros.calls-troops",
 		"wizard-tower.safe-roof",
+		"wizard-tower.sphere-trial.sign",
+		"wizard-tower.sphere-trial.chamber",
+		"wizard-tower.sphere-trial.rules",
+		"wizard-tower.sphere-kills-wizard",
+		"wizard-tower.chests-valuables",
 		"wizard-tower.dragons-convinced",
 		"wizard-tower.dragons-condemn",
 		"wizard-tower.take-dragon-heart",
@@ -427,7 +449,11 @@ func (o *normalCampaignObserver) selectNextWorldDestination(t *testing.T) bool {
 // encountered instead of silently selecting an unrelated branch.
 func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 	t.Helper()
-	for attempt := 0; attempt < 160; attempt++ {
+	limit := 160
+	if o.courtDetour {
+		limit = 2000
+	}
+	for attempt := 0; attempt < limit; attempt++ {
 		o.observe()
 		if o.stoppedAtDataPackEvent() {
 			return
@@ -442,6 +468,26 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 		}
 		switch o.state.Mode {
 		case ModeDungeon:
+			if o.state.treasureMenu {
+				index, found := o.state.OriginalChoiceIndex("TREASURE_EXIT")
+				if !found {
+					t.Fatalf("normal campaign dungeon treasure menu has no exit: %v", o.state.currentOriginalChoices)
+				}
+				if err := o.state.Select(index); err != nil {
+					t.Fatalf("leave normal campaign dungeon treasure menu: %v", err)
+				}
+				continue
+			}
+			if o.state.session != nil && o.state.session.CurrentBlockID() == 0x33 &&
+				o.state.DungeonX == 8 && o.state.DungeonY == 2 {
+				trialWon, _ := o.state.session.MemoryValue(0x4C09)
+				if trialWon == 1 {
+					if err := o.state.MoveDungeon(o.towerGrid, -1, 0, 6); err != nil {
+						t.Fatalf("leave completed Sphere Trial chamber through west door: %v", err)
+					}
+					continue
+				}
+			}
 			if o.state.session != nil && o.state.session.CurrentBlockID() == 0x33 &&
 				!o.towerReady {
 				o.state.TurnDungeonWithGrid(o.towerGrid, (2-int(o.state.DungeonDirection)+8)%8)
@@ -453,7 +499,14 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 			}
 			return
 		case ModeCombat:
-			if err := o.state.CombatAct(); err != nil {
+			if o.loseNextCombat {
+				if err := o.state.CombatDone(); err != nil {
+					t.Fatalf("normal Zhentil court fixture DONE turn: %v", err)
+				}
+				if o.state.Mode != ModeCombat {
+					o.loseNextCombat = false
+				}
+			} else if err := o.state.CombatAct(); err != nil {
 				t.Fatalf("normal campaign combat turn: %v", err)
 			}
 		case ModeEvent:
@@ -472,6 +525,48 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 			}
 		case ModeWilderness:
 			switch {
+			case o.courtDetour && o.state.campMenu:
+				index, found := o.state.OriginalChoiceIndex("EXIT")
+				if !found {
+					t.Fatalf("Zhentil court detour CAMP has no EXIT: %v", o.state.currentOriginalChoices)
+				}
+				if err := o.state.Select(index); err != nil {
+					t.Fatalf("exit Zhentil court detour CAMP: %v", err)
+				}
+			case o.courtDetour && o.state.session != nil &&
+				o.state.session.CurrentBlockID() == 0x20 && o.hasOption("ecl-option.combat"):
+				if !o.selectOption(t, "ecl-option.combat") {
+					t.Fatalf("Zhentil patrol COMBAT option unavailable: %v", o.state.currentOriginalChoices)
+				}
+				o.loseNextCombat = true
+			case o.courtDetour && o.state.session != nil &&
+				o.state.session.CurrentBlockID() == 0x20 && o.selectOption(t, "option.approach"):
+			case o.courtDetour && o.state.Message == requireGamePackText(t, o.state, "zhentil.court.session"):
+				if o.hasOption("ecl-option.press-button-or-return-to-continue") {
+					if !o.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+						t.Fatalf("Zhentil court continuation unavailable: %v", o.state.currentOriginalChoices)
+					}
+				} else if len(o.state.Choices) >= 2 {
+					if err := o.state.Select(0); err != nil {
+						t.Fatalf("plead not guilty in Zhentil court: %v", err)
+					}
+				} else {
+					t.Fatalf("Zhentil plea menu unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.whoMenu:
+				selected := -1
+				for index, character := range o.state.partyRoster {
+					if character.HasClass(party.ClassMagicUser) {
+						selected = index
+						break
+					}
+				}
+				if selected < 0 {
+					t.Fatal("Sphere Trial WHO menu has no magic-user challenger")
+				}
+				if err := o.state.Select(selected); err != nil {
+					t.Fatalf("select Sphere Trial magic-user: %v", err)
+				}
 			case o.state.treasureMenu:
 				index, found := o.state.OriginalChoiceIndex("TREASURE_EXIT")
 				if !found {
@@ -740,6 +835,37 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 				if !o.selectOption(t, "option.no") {
 					t.Fatalf("lava cask retreat option unavailable: %v", o.state.currentOriginalChoices)
 				}
+			case o.state.Message == requireGamePackText(t, o.state, "lava-tube.crimdrac-introduces"):
+				// Crimdrac 的 YES 是接受牠放行：牠把隊伍帶到斜坡，
+				// 保留 4C62=0。這是原版世界旅行在擊敗 Dracandros 後
+				// 觸發「你奪走我的導師」備援遭遇的必要玩家取捨。
+				if o.hasOption("ecl-option.press-button-or-return-to-continue") {
+					if !o.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+						t.Fatalf("Crimdrac introduction continuation unavailable: %v", o.state.currentOriginalChoices)
+					}
+				} else if !o.selectOption(t, "option.yes") {
+					t.Fatalf("Crimdrac release YES option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "wizard-tower.sphere-trial.sign"):
+				if o.hasOption("ecl-option.press-button-or-return-to-continue") {
+					if !o.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+						t.Fatalf("Sphere Trial sign continuation unavailable: %v", o.state.currentOriginalChoices)
+					}
+				} else if !o.selectOption(t, "option.yes") {
+					t.Fatalf("Sphere Trial enter YES option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "wizard-tower.sphere-trial.rules"):
+				if o.hasOption("ecl-option.press-button-or-return-to-continue") {
+					if !o.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+						t.Fatalf("Sphere Trial rules continuation unavailable: %v", o.state.currentOriginalChoices)
+					}
+				} else {
+					t.Fatalf("Sphere Trial action choices=%v message=%q", o.state.currentOriginalChoices, o.state.Message)
+				}
+			case o.hasOption("wizard-tower.option.concentrate-on-sphere"):
+				if !o.selectOption(t, "wizard-tower.option.concentrate-on-sphere") {
+					t.Fatalf("Sphere Trial CONCENTRATE option unavailable: %v", o.state.currentOriginalChoices)
+				}
 			case o.state.Message == requireGamePackText(t, o.state, "zhentil.enter-prompt"):
 				// 黑暗神殿的正門（`ECL4/0x20:0213h`，地形 5 且朝東）。這條路線
 				// 走的是劇情那條：先在 `(10,11)` 遇上奧莉薇，由她帶進去。
@@ -822,10 +948,11 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 				o.state.Mode, o.state.Message, o.state.currentOriginalChoices)
 		}
 	}
-	t.Fatalf("normal campaign boundary did not settle: mode=%v message=%q choices=%v block=%#x position=(%d,%d,%d)",
+	t.Fatalf("normal campaign boundary did not settle after %d steps: mode=%v message=%q choices=%v block=%#x position=(%d,%d,%d) combat=%v fighters=%v",
+		limit,
 		o.state.Mode, o.state.Message, o.state.currentOriginalChoices,
 		o.state.session.CurrentBlockID(), o.state.DungeonX, o.state.DungeonY,
-		o.state.DungeonDirection)
+		o.state.DungeonDirection, o.state.CombatStatus(), o.state.CombatFighters())
 }
 
 func loadGeoCampaignGrid(t *testing.T, image *zip.ReadCloser, set uint8, filename string, blockID uint8) geo.Grid {
@@ -973,6 +1100,14 @@ func takeWizardTowerStairs(
 				if state.session.CurrentBlockID() != 0x33 {
 					return true
 				}
+				// An optional room on the route may move the party (the Sphere Trial
+				// enters at (8,2) and returns at (7,2)). Do not apply the stale stair
+				// step from the pre-event path; let the outer loop recompute from the
+				// actual post-event position.
+				if state.DungeonX != approach.x || state.DungeonY != approach.y {
+					delete(used, stairs.point)
+					return true
+				}
 			}
 			if err := state.MoveDungeon(observer.towerGrid,
 				deltaX, deltaY, int(stairs.facing)); err != nil {
@@ -1105,8 +1240,10 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 					refused = append(refused, fmt.Sprintf("%+v", edge))
 				}
 				sort.Strings(refused)
-				t.Fatalf("normal dungeon target (%d,%d) is unreachable from (%d,%d) and no locked door leads onward; refused=%v",
-					targetX, targetY, start.x, start.y, refused)
+				t.Fatalf("normal dungeon target (%d,%d) is unreachable from (%d,%d) and no locked door leads onward; mode=%v message=%q choices=%v moves[N,E,S,W]=%v refused=%v",
+					targetX, targetY, start.x, start.y, state.Mode, state.Message, state.currentOriginalChoices,
+					[]bool{grid.CanMoveDungeonWrapped(start.x, start.y, 0), grid.CanMoveDungeonWrapped(start.x, start.y, 2),
+						grid.CanMoveDungeonWrapped(start.x, start.y, 4), grid.CanMoveDungeonWrapped(start.x, start.y, 6)}, refused)
 			}
 			current := nextDoor.source
 			doorPath := make([]struct {
@@ -1507,16 +1644,30 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		if !observer.seen["wizard-tower.courtyard"] ||
 			!observer.seen["wizard-tower.dracandros.arrival"] ||
 			!observer.seen["wizard-tower.safe-roof"] ||
+			!observer.seen["wizard-tower.sphere-trial.sign"] ||
+			!observer.seen["wizard-tower.sphere-trial.chamber"] ||
+			!observer.seen["wizard-tower.sphere-trial.rules"] ||
+			!observer.seen["wizard-tower.sphere-kills-wizard"] ||
+			!observer.seen["wizard-tower.chests-valuables"] ||
 			state.session.CurrentBlockID() != 0x32 || state.GeoMapSet != 5 || state.GeoMapBlock != 0x32 {
 			t.Fatalf("normal Hap-to-tower round trip block=%#x geo=%d/%#x mode=%v position=(%d,%d,%d) coverage=%v",
 				state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock, state.Mode,
 				state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
 		}
+		if !observer.sphereTrialWon {
+			t.Fatalf("normal Sphere Trial never observed ECL5/0x33 local 4C09=1; coverage=%v", observer.seen)
+		}
+		bossDefeated, bossDefeatedOK := state.session.MemoryValue(0x4C60)
+		postWizardSeen, postWizardSeenOK := state.session.MemoryValue(0x4C62)
+		if !bossDefeatedOK || bossDefeated != 1 || postWizardSeen != 0 {
+			t.Fatalf("normal post-wizard prerequisites 4C60=%#x,%v 4C62=%#x,%v",
+				bossDefeated, bossDefeatedOK, postWizardSeen, postWizardSeenOK)
+		}
 
 		// Continue the same player session through the verified WILDERNESS roof
-		// exit, Area5 farewell and world route.  This intentionally stops at the
-		// Essembra world edge; the optional post-wizard encounter is flag-gated and
-		// remains covered by its separate source-oracle regression.
+		// exit, Area5 farewell and world route. Accepting Crimdrac's release above
+		// leaves 4C62 clear, so the next journey must exercise the post-wizard
+		// revenge encounter before reaching Hillsfar.
 		captureSegmentEnd(t, "ECL5/0x32 古熔岩洞與 ECL5/0x33 巫師塔")
 	}) {
 		t.FailNow()
@@ -1556,6 +1707,11 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 			t.Fatalf("normal Essembra-to-Hillsfar route mode=%v location=%v block=%#x message=%q choices=%v coverage=%v",
 				state.Mode, state.Location, state.session.CurrentBlockID(), state.Message,
 				state.currentOriginalChoices, observer.seen)
+		}
+		postWizardSeen, postWizardSeenOK := state.session.MemoryValue(0x4C62)
+		if !observer.seen["post-wizard.dracolich"] || !postWizardSeenOK || postWizardSeen != 1 {
+			t.Fatalf("normal post-wizard encounter coverage=%v 4C62=%#x,%v",
+				observer.seen["post-wizard.dracolich"], postWizardSeen, postWizardSeenOK)
 		}
 		captureSegmentEnd(t, "ECL1/0x50 世界路線：艾森布拉到希爾斯法")
 	}) {
@@ -1855,6 +2011,71 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 				state.currentOriginalChoices, observer.seen)
 		}
 		zhentilGrid := loadGeoCampaignGrid(t, image, 4, "GEO4.DAX", 0x20)
+		// 法庭是巡邏戰「敗戰但未全滅」才會進的互斥支線。主線 fixture 為了
+		// 有界跑完整遊戲，早在火刀據點把角色強化成近萬 HP；先存檔，再只把
+		// 本支線的當前 HP 降成 1，讓正式敵方 AI、傷害階梯與 POSTCOM 得到
+		// 可重現的非全滅敗戰。完成後讀回存檔，不污染主線。這證明 ECL／戰鬥
+		// 垂直鏈，但不把 fixture 強度冒稱為一般玩家隊伍的平衡驗收。
+		courtSave := filepath.Join(t.TempDir(), "zhentil-before-court.json")
+		if err := state.SavePartyFile(courtSave); err != nil {
+			t.Fatalf("save Zhentil court branch point: %v", err)
+		}
+		for index := range state.party {
+			state.party[index].HitPoints = 1
+		}
+		for index := range state.partyRoster {
+			state.partyRoster[index].HitPoints = 1
+			state.partyRoster[index].HealthStatus = party.HealthStatusOK
+		}
+		observer.courtDetour = true
+		walkNormalDungeonTo(t, state, &zhentilGrid, 2, 1, observer)
+		for step := 0; step < 512 && !observer.seen["zhentil.court.session"]; step++ {
+			observer.resolveDungeonBoundary(t)
+			if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x20 {
+				continue
+			}
+			state.SetECLSeed(int64(step + 1))
+			direction, dx := 2, 1
+			if state.DungeonX == 3 && state.DungeonY == 1 {
+				direction, dx = 6, -1
+			} else if state.DungeonX != 2 || state.DungeonY != 1 {
+				walkNormalDungeonTo(t, state, &zhentilGrid, 2, 1, observer)
+				continue
+			}
+			if err := state.MoveDungeon(zhentilGrid, dx, 0, direction); err != nil {
+				t.Fatalf("walk Zhentil street for patrol at step %d: %v", step, err)
+			}
+			if state.Mode == ModeDungeon && state.session.CurrentBlockID() == 0x20 {
+				if err := state.SearchDungeonLocation(); err != nil {
+					t.Fatalf("search Zhentil street for patrol at step %d: %v", step, err)
+				}
+			}
+		}
+		observer.resolveDungeonBoundary(t)
+		for _, messageID := range []string{
+			"zhentil.court.dragged-in", "zhentil.court.cell-until-trial",
+			"zhentil.court.session", "zhentil.court.send-to-arena",
+			"zhentil.arena.dragged-in", "zhentil.arena.fanfare",
+			"zhentil.court.bane-smiles",
+			"zhentil.court.dont-screw-up",
+		} {
+			if !observer.seen[messageID] {
+				result, _ := state.session.MemoryValue(0x7EC7)
+				t.Fatalf("Zhentil court fixture did not cover %s: mode=%v block=%#x result=%#x message=%q choices=%v",
+					messageID, state.Mode, state.session.CurrentBlockID(), result,
+					state.Message, state.currentOriginalChoices)
+			}
+		}
+		if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x20 {
+			t.Fatalf("Zhentil court fixture did not return to city: mode=%v block=%#x message=%q",
+				state.Mode, state.session.CurrentBlockID(), state.Message)
+		}
+		if err := state.LoadPartyFile(courtSave); err != nil {
+			t.Fatalf("restore Zhentil court branch point: %v", err)
+		}
+		observer.courtDetour = false
+		observer.loseNextCombat = false
+		observer.refusedEdges = make(map[normalDungeonEdge]bool)
 		walkNormalDungeonTo(t, state, &zhentilGrid, 10, 11, observer)
 		// ECL 那一格的條件是位置加朝向：奧莉薇在 `(10,11,N)` 才出現。所以從南邊
 		// 那一格走上去，讓一般的移動供給朝北的觸發，而不是直接寫座標或原地重畫。
@@ -2507,9 +2728,13 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		// ★ block 0x40 的邊界處理是 `ON GOTO C04D`（面向／2）：只有朝東跨出邊界
 		// 才會走到「更多遺跡」那個選單，其餘方向都回世界地圖。
 		observer.stopAtMessageID = "myth-drannor.more-ruins"
+		// 必須真的走到 GEO 可通行的東邊界再按前進，不能直接呼叫
+		// RunDungeonExitLifecycle：直接呼叫不會進決策紀錄，曾讓鍵盤重放把
+		// 0x40 的 256 格全走遍後仍永遠環繞在圖內。
+		walkNormalDungeonTo(t, state, &burialGrid, 15, 12, observer)
 		state.TurnDungeonWithGrid(burialGrid, (2-int(state.DungeonDirection)+8)%8)
-		if err := state.RunDungeonExitLifecycle(); err != nil {
-			t.Fatalf("朝東的邊界生命週期：%v", err)
+		if err := state.MoveDungeon(burialGrid, 1, 0, 2); err != nil {
+			t.Fatalf("從 (15,12) 朝東跨出墓園：%v", err)
 		}
 		observer.observe()
 		if state.Message != requireGamePackText(t, state, "myth-drannor.more-ruins") {
@@ -2663,6 +2888,19 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		if state.Mode != ModeDungeon {
 			t.Fatalf("爪牙戰之後模式是 %v", state.Mode)
 		}
+		// 這支測試的目標是把所有 ECL 玩家路徑串成一條可重播的覆蓋鏈；它只用
+		// 一名快速建立角色，不能拿來證明正常隊伍強度。50×25 原版戰場修正後，
+		// 敵人不再因錯誤的 32×16 邊界被迫逃跑，單人 fixture 會在儀式戰倒下。
+		// 在已確認敗戰收尾與 ECL continuation 都完成後恢復這名測試角色，讓後續
+		// 房間仍能各自走正常遭遇；實際平衡另由正常強度按鍵報告驗收（spec 1230）。
+		for index := range state.partyRoster {
+			state.partyRoster[index].HitPoints = state.partyRoster[index].MaxHitPoints
+			state.partyRoster[index].HealthStatus = party.HealthStatusOK
+			state.partyRoster[index].Bleeding = 0
+		}
+		for index := range state.party {
+			state.party[index].HitPoints = state.party[index].MaxHitPoints
+		}
 		captureSegmentEnd(t, "ECL6/0x43 內城遺跡：儀式與爪牙戰")
 	}) {
 		t.FailNow()
@@ -2695,6 +2933,18 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		for _, room := range rooms {
 			walkNormalDungeonTo(t, state, &innerGrid, room.x, room.y, observer)
 			resolveInnerRoom(t, state, observer)
+			if state.combatStillRunning() {
+				fighters := state.CombatFighters()
+				summary := make([]string, 0, len(fighters))
+				for _, fighter := range fighters {
+					summary = append(summary, fmt.Sprintf(
+						"%s(side=%d hp=%d escaped=%v quick=%v pos=%d,%d)",
+						fighter.ID, fighter.Side, fighter.HitPoints, fighter.Escaped,
+						fighter.QuickFight, fighter.CombatX, fighter.CombatY))
+				}
+				t.Fatalf("room %s returned to mode %v with active combat: %v",
+					room.messageID, state.Mode, summary)
+			}
 			fired := observer.messages[requireGamePackText(t, state, room.messageID)]
 			switch {
 			case fired && room.suppressed:
@@ -2704,6 +2954,16 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 				t.Errorf("走到 (%d,%d) 沒有出現 %s（停在 (%d,%d,%d) roof=%#02x）",
 					room.x, room.y, room.messageID, state.DungeonX, state.DungeonY,
 					state.DungeonDirection, state.DungeonWallRoof)
+			}
+			// 各房間是獨立的 ECL 覆蓋樣本；單人 fixture 若在其中一戰倒下，於
+			// 已完成 POSTCOM 後恢復，避免前一個樣本污染下一個樣本。
+			for index := range state.partyRoster {
+				state.partyRoster[index].HitPoints = state.partyRoster[index].MaxHitPoints
+				state.partyRoster[index].HealthStatus = party.HealthStatusOK
+				state.partyRoster[index].Bleeding = 0
+			}
+			for index := range state.party {
+				state.party[index].HitPoints = state.party[index].MaxHitPoints
 			}
 		}
 		// `4C00`..`4C0F` 是每一段自己的暫存（spec 1162），所以走進內城時這一區
@@ -2779,6 +3039,24 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		}
 
 		// 二樓到東北角的路線（spec 408 記下的最短合法路徑）。
+		// 前面的房間抽樣會注入彼此不連通的二樓區塊；把抽樣探針收回樓梯落點。
+		// 玩家本身已由樓梯事件正常抵達過 (2,5)，而以下每一步必須走 MoveDungeon，
+		// 讓按鍵重放真的錄得到通往最終戰的路，不再瞬移到每一個路線點。
+		state.SetDungeonGeometryView(2, 5, 0)
+		state.DungeonWallRoof = innerGrid.CellWrapped(2, 5).Terrain
+		// 最終戰的覆蓋目的包含「勝利後結局」；單人快速角色不是合理的戰役
+		// 隊伍，不能期待它靠正常數值擊敗二十餘名敵人。只在遭遇建立前提高
+		// 這名測試角色的耐久，讓戰鬥仍由真實 AI／傷害流程打完；這不是平衡證據。
+		for index := range state.partyRoster {
+			state.partyRoster[index].HitPoints = 20000
+			state.partyRoster[index].MaxHitPoints = 20000
+			state.partyRoster[index].BaseMaxHitPoints = 20000
+			state.partyRoster[index].HealthStatus = party.HealthStatusOK
+		}
+		for index := range state.party {
+			state.party[index].HitPoints = 20000
+			state.party[index].MaxHitPoints = 20000
+		}
 		route := []struct {
 			x, y      int
 			direction uint8
@@ -2788,10 +3066,13 @@ func TestRealNewGameRunsToTheEnding(t *testing.T) {
 		}
 		seen := map[string]bool{}
 		for index, point := range route {
-			state.SetDungeonGeometryView(point.x, point.y, point.direction)
-			state.DungeonWallRoof = innerGrid.CellWrapped(point.x, point.y).Terrain
-			if err := state.RunDungeonLifecycle(); err != nil {
+			dx, dy := point.x-state.DungeonX, point.y-state.DungeonY
+			if err := state.MoveDungeon(innerGrid, dx, dy, int(point.direction)); err != nil {
 				t.Fatalf("二樓第 %d 步：%v", index, err)
+			}
+			if state.DungeonX != point.x || state.DungeonY != point.y {
+				t.Fatalf("二樓第 %d 步抵達 (%d,%d)，預期 (%d,%d)", index,
+					state.DungeonX, state.DungeonY, point.x, point.y)
 			}
 			for boundary := 0; boundary < 24 && state.Mode != ModeDungeon; boundary++ {
 				seen[state.Message] = true
@@ -3319,9 +3600,9 @@ type campaignSegmentEnd struct {
 	music      string
 	// 下面三個是 `SEG-31` 後半：跨段的**攜帶物**。段與段之間的交接一律走快照，
 	// 所以「存下去讀回來還在不在」就是跨段不變量本身。
-	equipment  map[string]string
-	spells     map[string]string
-	effects    map[string]string
+	equipment map[string]string
+	spells    map[string]string
+	effects   map[string]string
 }
 
 // campaignEquipmentSignature 把一名角色的裝備列成穩定字串。⚠ 要帶上「有沒有

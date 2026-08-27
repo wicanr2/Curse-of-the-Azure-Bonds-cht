@@ -87,6 +87,27 @@ func TestECLTreasureResolvesMoneyAndItemBlock(t *testing.T) {
 	}
 }
 
+func TestTreasureUsesTheSourceBlockChapterAfterNEWECL(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.Area.GameArea = 1 // 結算時已在 ECL1 世界段。
+	state.SetTreasureItemBlocks(map[uint16][]monster.ItemRecord{
+		0x0204: {{Name: "source-area-item", Type: 1}},
+	})
+	// TREASURE 在這一次互動先停住，後續按鍵才會跑到 NEWECL；因此這份
+	// RunResult 本身還沒有 NewECLBlockID，但 session 邊界已證明來源是 0x03。
+	state.applyECLTreasureSignals(ecl.RunResult{
+		SessionEndBlockID: 0x03, SessionBlockRangeSet: true,
+		TreasureRequests: []ecl.TreasureRequest{{ItemBlock: 0x04}},
+	})
+	if err := state.ResolveTreasureRequests(); err != nil {
+		t.Fatal(err)
+	}
+	items := state.PendingTreasureItems()
+	if len(items) != 1 || items[0].Name != "source-area-item" {
+		t.Fatalf("resolved items=%+v, want ITEM2 block 4", items)
+	}
+}
+
 func TestECLTreasureCarriesSubGoldTypedCoinValue(t *testing.T) {
 	state := NewState(testCatalog())
 	for count := 0; count < 2; count++ {

@@ -27,6 +27,7 @@ var skipDirs = map[string]bool{
 	"workplace":                true,
 	"golden-box-remake-engine": true,
 	"pc98":                     true,
+	"dist":                     true,
 	".git":                     true,
 }
 

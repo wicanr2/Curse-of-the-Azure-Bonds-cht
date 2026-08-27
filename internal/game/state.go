@@ -242,6 +242,7 @@ type State struct {
 	ammunitionItemTypes     map[uint8][]uint8
 	combatSeed              int64
 	eclSeed                 int64
+	restSeed                int64
 	mapSeed                 int64
 	geoMapPending           bool
 	loadPiecesPending       bool
@@ -277,6 +278,7 @@ type State struct {
 	treasureGems            uint32
 	treasureJewelry         uint32
 	appraisalOffers         AppraisalOffers
+	shopBuyCharacterMenu    bool
 	shopStockMenu           bool
 	shopViewMenu            bool
 	shopTakeMenu            bool
@@ -305,6 +307,8 @@ type State struct {
 	restEncounterPeriod     uint16
 	restEncounterPercent    uint16
 	campViewMenu            bool
+	campViewItemMenu        bool
+	campViewCharacter       int
 	campMagicMenu           bool
 	campMagicViewMenu       bool
 	campMagicMemorizeMenu   bool
@@ -319,34 +323,34 @@ type State struct {
 	// session 重設回開局狀態；把 session 整個丟掉的話，標題上按「開始」會走進
 	// 一個**沒有 session 的荒野**，接下來每一步移動都回
 	// 「dungeon lifecycle requires an ECL session」（實測按鍵重放就是這樣掛的）。
-	initialECLBlock         uint8
-	hasInitialECLBlock      bool
-	gameWon                 bool
-	partyKilled             bool
-	alterMenu               bool
-	alterOrderMenu          bool
-	alterOrderSelected      int
-	alterDropMenu           bool
-	alterDropConfirm        bool
-	alterDropSelected       int
-	alterRenameMenu         bool
-	alterRenameChar         int
-	renameEditing           bool
-	renameCharacter         int
-	renameName              string
-	alterPicsMenu           bool
-	alterSpeedMenu          bool
-	alterIconMenu           bool
-	alterIconEdit           bool
-	alterIconCharacter      int
-	alterIconHeadIndex      int
-	alterIconBodyIndex      int
-	picturesEnabled         bool
-	animationsEnabled       bool
-	messageSpeed            int
-	fixSeed                 int64
-	dungeonSeed             int64
-	combatMapDirection      uint8
+	initialECLBlock    uint8
+	hasInitialECLBlock bool
+	gameWon            bool
+	partyKilled        bool
+	alterMenu          bool
+	alterOrderMenu     bool
+	alterOrderSelected int
+	alterDropMenu      bool
+	alterDropConfirm   bool
+	alterDropSelected  int
+	alterRenameMenu    bool
+	alterRenameChar    int
+	renameEditing      bool
+	renameCharacter    int
+	renameName         string
+	alterPicsMenu      bool
+	alterSpeedMenu     bool
+	alterIconMenu      bool
+	alterIconEdit      bool
+	alterIconCharacter int
+	alterIconHeadIndex int
+	alterIconBodyIndex int
+	picturesEnabled    bool
+	animationsEnabled  bool
+	messageSpeed       int
+	fixSeed            int64
+	dungeonSeed        int64
+	combatMapDirection uint8
 
 	// endingScene／endingPageIndex 是 `PROGRAM 8` 結局過場的游標（spec 1154）。
 	endingScene     bool
@@ -458,6 +462,7 @@ func NewState(catalog locale.Catalog) State {
 		restHours:         24,
 		combatSeed:        1,
 		eclSeed:           1,
+		restSeed:          1,
 		mapSeed:           1,
 		picturesEnabled:   true,
 		animationsEnabled: true,
@@ -670,7 +675,10 @@ func (s *State) restInterruption(requestedHours int) (completedHours int, interr
 	if requestedHours <= 0 || s.restEncounterPeriod == 0 || s.restEncounterPercent == 0 {
 		return requestedHours, false
 	}
-	rng := rand.New(rand.NewSource(s.eclSeed))
+	// 每次休息嘗試都要消耗新的亂數狀態。若每次都從同一個 eclSeed
+	// 重新開始，第一次被打斷後，玩家之後會永遠在同一時點被打斷。
+	rng := rand.New(rand.NewSource(s.restSeed))
+	s.restSeed++
 	period := int(s.restEncounterPeriod)
 	for completed := period; completed <= requestedHours; completed += period {
 		if rng.Intn(100)+1 <= int(s.restEncounterPercent) {
@@ -862,6 +870,7 @@ func (s *State) CurrentOriginalChoices() []string {
 
 func (s *State) SetECLSeed(seed int64) {
 	s.eclSeed = seed
+	s.restSeed = seed
 	if s.session != nil {
 		s.session.ResetRandomSeed(seed)
 	}
@@ -1302,24 +1311,33 @@ func (s *State) Select(index int) error {
 	originalLocationBeforeSelection := s.OriginalLocation
 	currentCityBeforeSelection := s.Area.CurrentCity
 	messageBeforeSelection := s.Message
+	selectedWorldDestination := false
 	if s.dataPack != nil {
 		if definition, found := s.dataPack.FindMapByKind("overland"); found {
 			if point, ok := s.worldPointForOriginalOption(definition, originalChoice); ok {
 				s.pendingWorldDestination = point.Value
 				s.pendingWorldTravel = true
+				selectedWorldDestination = true
 			}
 		}
 	}
-	if s.session != nil && s.pendingWorldTravel && isWorldTravelRouteChoice(originalChoice) {
-		// AREA publishes the selected destination through this separate
-		// arrival cell. ECL may overwrite 4C9B while dispatching the route.
+	if s.session != nil && selectedWorldDestination {
+		// AREA publishes the selected destination through both current and
+		// arrival cells before ECL dispatches the travel-method branch. 只寫
+		// 4C9C 會讓 4C9B 保留上一個目的地：State 已投影成阿沙本福德，
+		// 原版 ECL 卻仍顯示匕首瀑布的路線與城市服務（spec 1237）。
+		// ECL may overwrite 4C9B while dispatching the route, so Select also
+		// commits it again after the bounded resume below.
+		s.session.SetMemoryValue(0x4C9B, uint16(s.pendingWorldDestination))
+		s.session.SetMemoryValue(0x4C9C, uint16(s.pendingWorldDestination))
+	} else if s.session != nil && s.pendingWorldTravel && isWorldTravelRouteChoice(originalChoice) {
+		// Route-method continuations may reuse the current cell, so restore the
+		// transaction destination before their bounded ECL resume as well.
 		s.session.SetMemoryValue(0x4C9C, uint16(s.pendingWorldDestination))
 	}
 	if originalChoice == "JOURNEY ON" {
-		// This menu can be reached directly from a dungeon departure. Publish
-		// the current JSON route row before ECL1 reads its legacy selectors;
-		// otherwise a previous city's row can leak into the next destination
-		// menu even though Location and CurrentCity already agree.
+		// This menu can be reached directly from a dungeon departure, so publish
+		// the current location's JSON route row before ECL1 reads it.
 		s.pendingWorldTravel = false
 		s.syncWorldDestinationRow()
 	}
@@ -2215,7 +2233,16 @@ func (s *State) applyECLTreasureSignals(result ecl.RunResult) {
 		s.pendingTreasureItems = nil
 		s.treasureGems, s.treasureJewelry = 0, 0
 	}
-	s.pendingTreasure = append(s.pendingTreasure, result.TreasureRequests...)
+	for _, request := range result.TreasureRequests {
+		// 一筆 TREASURE 可以在這次互動先暫停，下一次按鍵才跑到 NEWECL。
+		// 因此不能等「同一份 RunResult 看見 NEWECL」才補來源；每次 VM 邊界
+		// 都已帶 SessionEndBlockID，收到請求當下就釘住發出它的 block。
+		if !request.SourceBlockSet && result.SessionBlockRangeSet {
+			request.SourceBlockID = result.SessionEndBlockID
+			request.SourceBlockSet = true
+		}
+		s.pendingTreasure = append(s.pendingTreasure, request)
+	}
 }
 
 func (s *State) enterECLShop(result ecl.RunResult) error {
@@ -2257,7 +2284,10 @@ func (s *State) enterECLShop(result ecl.RunResult) error {
 	}
 	s.pendingTreasureItems = nil
 	s.SetShopOffers(offers)
-	s.moneyPool = 0
+	// 公用資金池是 MONEY overlay 的全域七幣別 Pool，不是單一商店的暫存。
+	// POOLMONEY 只在玩家選擇 POOL 時把角色金錢搬進來，SHAREPOOL 才負責
+	// 分回角色並清掉已分配部分（spec 798／863）。在每次進商店時清零會把
+	// 玩家上一間商店尚未 SHARE／TAKE 的全部資金無聲銷毀。
 	s.shopECLService = true
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon
@@ -2402,13 +2432,18 @@ func (s *State) ResolveTreasureRequests() error {
 			}
 			continue
 		}
-		key := uint16(s.Area.GameArea)<<8 | request.ItemBlock
+		area := s.Area.GameArea
+		if request.SourceBlockSet || request.SourceBlockID != 0 {
+			area = monsterChapterForBlock(request.SourceBlockID)
+		}
+		key := uint16(area)<<8 | request.ItemBlock
 		items, ok := s.treasureItemBlocks[key]
 		if !ok {
 			items, ok = s.treasureItemBlocks[request.ItemBlock]
 		}
 		if !ok {
-			return fmt.Errorf("TREASURE item block 0x%02X for area %d is not loaded", request.ItemBlock, s.Area.GameArea)
+			return fmt.Errorf("TREASURE item block 0x%02X for area %d (source block 0x%02X) is not loaded",
+				request.ItemBlock, area, request.SourceBlockID)
 		}
 		for _, item := range items {
 			total.items = prependTreasureItem(total.items, item)
@@ -2930,6 +2965,8 @@ func (s *State) enterCampMenu() {
 	s.campMenu = true
 	s.campRestMenu = false
 	s.campViewMenu = false
+	s.campViewItemMenu = false
+	s.campViewCharacter = -1
 	s.campMagicMenu = false
 	s.campMagicViewMenu = false
 	s.campMagicMemorizeMenu = false
@@ -2984,7 +3021,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.enterCampMenu()
 			return nil
 		case "REST_START":
-			requiredHours := firstLevelMemorizationHours(s.pendingMemorizedSpells)
+			requiredHours := memorizationHours(s.pendingMemorizedSpells)
 			if requiredHours > s.restHours {
 				s.campRestMenu = false
 				s.Mode = ModeEvent
@@ -3348,30 +3385,31 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		if strings.HasPrefix(originalChoice, "CAMP_MAGIC_MEM_SPELL_") {
 			spellIndex, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_MAGIC_MEM_SPELL_"))
 			character := s.partyRoster[s.campMagicMemorizeChar]
-			if err != nil || spellIndex < 0 || spellIndex >= len(character.KnownSpells) {
+			candidates := memorizationCandidates(character)
+			if err != nil || spellIndex < 0 || spellIndex >= len(candidates) {
 				return fmt.Errorf("invalid memorize spell %q", originalChoice)
 			}
 			if s.pendingMemorizedSpells == nil {
 				s.pendingMemorizedSpells = make(map[int][]uint8)
 			}
 			selected := s.pendingMemorizedSpells[s.campMagicMemorizeChar]
-			spellID := character.KnownSpells[spellIndex]
-			removed := false
-			for index, selectedID := range selected {
-				if selectedID == spellID {
-					selected = append(selected[:index], selected[index+1:]...)
-					removed = true
-					break
+			spellID := candidates[spellIndex]
+			class, level, capacity, available := memorizationSlot(character, spellID)
+			used := 0
+			for _, selectedID := range selected {
+				selectedClass, selectedLevel, _, ok := memorizationSlot(character, selectedID)
+				if ok && selectedClass == class && selectedLevel == level {
+					used++
 				}
 			}
-			if !removed {
-				capacity := firstLevelMemorizedCapacity(character)
-				if len(selected) >= capacity {
-					s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_memorize_full", "camp_magic_memorize_full"), capacity)
-					return nil
-				}
-				selected = append(selected, spellID)
+			if !available || used >= capacity {
+				s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_memorize_full", "camp_magic_memorize_full"), capacity)
+				return nil
 			}
+			// 原版的 84 格記憶欄允許同一法術佔多格，清單只把相同 ID
+			// 合併顯示成「名稱 (次數)」（spec 859）。每次選取都新增一格；
+			// 選錯時用既有「取消此角色」清空這名角色的 pending loadout。
+			selected = append(selected, spellID)
 			s.pendingMemorizedSpells[s.campMagicMemorizeChar] = selected
 			s.enterCampMagicMemorizeSpellMenu(s.campMagicMemorizeChar)
 			return nil
@@ -3403,6 +3441,49 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			return nil
 		}
 	}
+	if s.campViewItemMenu {
+		if originalChoice == "CAMP_VIEW_ITEM_EXIT" {
+			s.campViewItemMenu = false
+			s.campViewCharacter = -1
+			s.enterCampViewMenu()
+			return nil
+		}
+		if strings.HasPrefix(originalChoice, "CAMP_VIEW_ITEM_") {
+			itemIndex, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_VIEW_ITEM_"))
+			if err != nil || s.campViewCharacter < 0 || s.campViewCharacter >= len(s.partyRoster) || itemIndex < 0 || itemIndex >= len(s.partyRoster[s.campViewCharacter].Equipment) {
+				return fmt.Errorf("invalid camp view item %q", originalChoice)
+			}
+			character := &s.partyRoster[s.campViewCharacter]
+			item := character.Equipment[itemIndex]
+			if item.Readied {
+				err = character.UnequipItem(itemIndex)
+			} else if !s.itemCatalogReady {
+				err = fmt.Errorf("item catalog is unavailable")
+			} else {
+				err = character.EquipItem(itemIndex, s.itemCatalog)
+			}
+			if err != nil {
+				s.enterCampViewItemMenu(s.campViewCharacter)
+				s.Message = s.catalog.Text("camp_view_item_failed", "camp_view_item_failed")
+				return nil
+			}
+			if fighter, projectionErr := s.fighterForCharacter(*character); projectionErr == nil {
+				for fighterIndex := range s.party {
+					if s.party[fighterIndex].ID == character.ID {
+						s.party[fighterIndex] = fighter
+						break
+					}
+				}
+			}
+			s.enterCampViewItemMenu(s.campViewCharacter)
+			actionKey := "camp_view_item_readied"
+			if item.Readied {
+				actionKey = "camp_view_item_unreadied"
+			}
+			s.Message = fmt.Sprintf(s.catalog.Text(actionKey, actionKey), monster.LocalizedItemName(item, s.catalog))
+			return nil
+		}
+	}
 	if s.campViewMenu {
 		if originalChoice == "CAMP_VIEW_EXIT" {
 			s.campViewMenu = false
@@ -3414,15 +3495,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			if err != nil || value < 0 || value >= len(s.partyRoster) {
 				return fmt.Errorf("invalid camp view character %q", originalChoice)
 			}
-			character := s.partyRoster[value]
-			equipment := make([]string, 0, len(character.Equipment))
-			for _, item := range character.Equipment {
-				equipment = append(equipment, monster.LocalizedItemName(item, s.catalog))
-			}
-			s.Mode = ModeEvent
-			s.eventReturnMode = ModeWilderness
-			s.OriginalEvent = "VIEW"
-			s.Message = fmt.Sprintf(s.catalog.Text("camp_view_summary", "camp_view_summary"), character.Name, s.localizedCharacterClassName(character.Class), character.HitPoints, character.MaxHitPoints, character.Gold, character.Gems, character.Jewelry, strings.Join(equipment, "、"))
+			s.enterCampViewItemMenu(value)
 			return nil
 		}
 	}
@@ -4417,6 +4490,8 @@ func (s *State) ConsumeECLCallRequests() []uint16 {
 func (s *State) enterCampViewMenu() {
 	s.campMenu = true
 	s.campViewMenu = true
+	s.campViewItemMenu = false
+	s.campViewCharacter = -1
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("camp_view_prompt", "camp_view_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
@@ -4428,6 +4503,32 @@ func (s *State) enterCampViewMenu() {
 	s.Choices = append(s.Choices, s.catalog.Text("camp_view_exit", "camp_view_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_VIEW_EXIT")
 	s.Message = ""
+}
+
+func (s *State) enterCampViewItemMenu(characterIndex int) {
+	character := s.partyRoster[characterIndex]
+	s.campMenu = true
+	s.campViewMenu = true
+	s.campViewItemMenu = true
+	s.campViewCharacter = characterIndex
+	s.Mode = ModeWilderness
+	s.Prompt = fmt.Sprintf(s.catalog.Text("camp_view_item_prompt", "camp_view_item_prompt"), character.Name)
+	s.Choices = make([]string, 0, len(character.Equipment)+1)
+	s.currentOriginalChoices = make([]string, 0, len(character.Equipment)+1)
+	equipment := make([]string, 0, len(character.Equipment))
+	for index, item := range character.Equipment {
+		name := monster.LocalizedItemName(item, s.catalog)
+		statusKey := "camp_view_item_unreadied_status"
+		if item.Readied {
+			statusKey = "camp_view_item_readied_status"
+		}
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text(statusKey, statusKey), name))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_VIEW_ITEM_"+strconv.Itoa(index))
+		equipment = append(equipment, name)
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("camp_view_item_exit", "camp_view_item_exit"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_VIEW_ITEM_EXIT")
+	s.Message = fmt.Sprintf(s.catalog.Text("camp_view_summary", "camp_view_summary"), character.Name, s.localizedCharacterClassName(character.Class), character.HitPoints, character.MaxHitPoints, character.Gold, character.Gems, character.Jewelry, strings.Join(equipment, "、"))
 }
 
 func (s *State) enterCampMagicMenu() {
@@ -4597,7 +4698,7 @@ func (s *State) enterCampMagicMemorizeCharacterMenu() {
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		capacity := firstLevelMemorizedCapacity(character)
+		capacity := memorizedCapacity(character)
 		selected := len(s.pendingMemorizedSpells[index])
 		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_memorize_character", "camp_magic_memorize_character"), character.Name, selected, capacity))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEM_CHAR_"+strconv.Itoa(index))
@@ -4609,21 +4710,29 @@ func (s *State) enterCampMagicMemorizeCharacterMenu() {
 
 func (s *State) enterCampMagicMemorizeSpellMenu(characterIndex int) {
 	character := s.partyRoster[characterIndex]
+	candidates := memorizationCandidates(character)
 	s.campMagicMemorizeChar = characterIndex
 	s.Mode = ModeWilderness
 	s.Prompt = fmt.Sprintf(s.catalog.Text("camp_magic_memorize_spell_prompt", "camp_magic_memorize_spell_prompt"), character.Name)
-	s.Choices = make([]string, 0, len(character.KnownSpells)+2)
-	s.currentOriginalChoices = make([]string, 0, len(character.KnownSpells)+2)
+	s.Choices = make([]string, 0, len(candidates)+2)
+	s.currentOriginalChoices = make([]string, 0, len(candidates)+2)
 	selected := s.pendingMemorizedSpells[characterIndex]
-	for index, spellID := range character.KnownSpells {
+	for index, spellID := range candidates {
 		mark := " "
+		count := 0
 		for _, selectedID := range selected {
 			if selectedID == spellID {
-				mark = "*"
-				break
+				count++
 			}
 		}
-		s.Choices = append(s.Choices, fmt.Sprintf("%s %s", mark, campSpellLabel(s.catalog, spellID)))
+		if count > 0 {
+			mark = "*"
+		}
+		label := fmt.Sprintf("%s %s", mark, campSpellLabel(s.catalog, spellID))
+		if count > 1 {
+			label += fmt.Sprintf(" (%d)", count)
+		}
+		s.Choices = append(s.Choices, label)
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEM_SPELL_"+strconv.Itoa(index))
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_mem_done", "camp_magic_mem_done"), s.catalog.Text("camp_magic_mem_cancel", "camp_magic_mem_cancel"))
@@ -4895,6 +5004,7 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 func (s *State) enterShopMenu() {
 	s.shopMenu = true
 	s.barMenu = false
+	s.shopBuyCharacterMenu = false
 	s.shopStockMenu = false
 	s.shopViewMenu = false
 	s.shopTakeMenu = false
@@ -4923,6 +5033,20 @@ func (s *State) enterShopMenu() {
 }
 
 func (s *State) selectShop(index int, originalChoice string) error {
+	if strings.HasPrefix(originalChoice, "SHOP_BUY_CHARACTER_") {
+		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_BUY_CHARACTER_"))
+		if err != nil || value < 0 || value >= len(s.partyRoster) {
+			return fmt.Errorf("invalid shop buy character command %q", originalChoice)
+		}
+		s.shopCharacterIndex = value
+		s.shopBuyCharacterMenu = false
+		s.enterShopStockMenu()
+		return nil
+	}
+	if originalChoice == "SHOP_BUY_CHARACTER_EXIT" {
+		s.enterShopMenu()
+		return nil
+	}
 	if originalChoice == "SHOP_APPRAISE_ACCEPT" {
 		offer, err := s.AppraiseTreasure(s.shopAppraiseCharacter, s.shopAppraiseKind)
 		s.shopAppraiseMenu = false
@@ -5156,7 +5280,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		return s.EnterPlacesFromEvent()
 	}
 	message := s.shopActionMessage(originalChoice)
-	if s.shopStockMenu || s.shopViewMenu || s.shopTakeMenu || s.shopSellMenu || s.shopIdentifyMenu || s.shopAppraiseMenu {
+	if s.shopBuyCharacterMenu || s.shopStockMenu || s.shopViewMenu || s.shopTakeMenu || s.shopSellMenu || s.shopIdentifyMenu || s.shopAppraiseMenu {
 		return nil
 	}
 	s.Mode = ModeEvent
@@ -5171,6 +5295,10 @@ func (s *State) shopActionMessage(originalChoice string) string {
 	case "BUY":
 		if len(s.shopOffers) == 0 {
 			return s.catalog.Text("shop_buy_unavailable", "shop_buy_unavailable")
+		}
+		if len(s.partyRoster) > 1 {
+			s.enterShopBuyCharacterMenu()
+			return ""
 		}
 		s.enterShopStockMenu()
 		return ""
@@ -5222,6 +5350,7 @@ func (s *State) shopActionMessage(originalChoice string) string {
 
 func (s *State) enterShopStockMenu() {
 	s.shopMenu = true
+	s.shopBuyCharacterMenu = false
 	s.shopStockMenu = true
 	s.Mode = ModePlace
 	s.Prompt = s.catalog.Text("shop_stock_prompt", "shop_stock_prompt")
@@ -5234,6 +5363,23 @@ func (s *State) enterShopStockMenu() {
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("shop_exit", "shop_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterShopBuyCharacterMenu() {
+	s.shopMenu = true
+	s.shopBuyCharacterMenu = true
+	s.shopStockMenu = false
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("shop_buy_character_prompt", "shop_buy_character_prompt")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_buy_character", "shop_buy_character"), character.Name, characterCoinGoldWorth(character)))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_BUY_CHARACTER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("shop_buy_character_exit", "shop_buy_character_exit"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_BUY_CHARACTER_EXIT")
 	s.Message = ""
 }
 
@@ -5614,6 +5760,12 @@ func (s *State) runDungeonSearch(discovery string) error {
 	return err
 }
 
+// dungeonLifecycleStepLimit 必須容納原版逐回合入口裡的有界隨機遭遇表掃描。
+// ECL6/0x43 在 0x026E..0x033E 會做最多 7 × 4 組候選檢查；實跑可超過舊的
+// 500 步，但控制流本身以 0x7B01 > 6 與 0x7F79 > 3 兩層條件封頂。
+// 2048 仍保留失控迴圈的 fail-closed 護欄，並足以跑完這份已證實的有限掃描。
+const dungeonLifecycleStepLimit = 2048
+
 func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 	if s.Mode != ModeDungeon {
 		return fmt.Errorf("dungeon lifecycle is invalid in mode %d", s.Mode)
@@ -5659,10 +5811,11 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 		}
 		blockBefore := s.session.CurrentBlockID()
 		result, err := s.session.RunEntrySeedWithPartyContext(
-			entry, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
+			entry, dungeonLifecycleStepLimit, nil, nil, s.eclSeed, s.eclPartyContext(),
 		)
 		if err != nil {
-			return err
+			return fmt.Errorf("ECL block 0x%02X dungeon lifecycle entry %d at (%d,%d): %w",
+				s.session.CurrentBlockID(), entry, s.DungeonX, s.DungeonY, err)
 		}
 		if entry == 1 {
 			s.session.SetMemoryValue(0x7ECA, 0)

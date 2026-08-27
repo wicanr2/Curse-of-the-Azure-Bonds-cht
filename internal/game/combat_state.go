@@ -105,6 +105,13 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	}
 	partyIndex := 0
 	for _, fighter := range party {
+		// CoughingTurns／HelplessTurns 是惡臭之雲在**本場戰鬥**內以行動次數
+		// 消耗的暫態（combat.Fighter 的契約）。戰後會把 Fighter 投影回
+		// s.party 以保留 HP 等持久狀態；新遭遇若不在這個邊界清掉，上一場
+		// 尚未消耗完的噁心會直接跳進下一場。戰鬥中存檔由 RestoreBattle
+		// 還原，不走 StartCombat，所以同一場的剩餘回合仍會保留。
+		fighter.CoughingTurns = 0
+		fighter.HelplessTurns = 0
 		if fighter.Side != combat.SideParty {
 			return fmt.Errorf("fighter %q is not marked as party", fighter.ID)
 		}
@@ -134,6 +141,8 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	}
 	enemyIndex := 0
 	for _, fighter := range enemies {
+		fighter.CoughingTurns = 0
+		fighter.HelplessTurns = 0
 		if fighter.Side != combat.SideEnemy {
 			return fmt.Errorf("fighter %q is not marked as enemy", fighter.ID)
 		}
@@ -234,6 +243,16 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.Choices = nil
 	s.currentOriginalChoices = nil
 	s.Mode = ModeCombat
+	// QUICK 是角色記錄上的持久旗標（spec 421），所以新遭遇可以由上一戰帶著
+	// 全員 QUICK 進來。此時不能在第一張戰鬥畫面交給玩家以前就一路同步跑到
+	// 勝敗：原版仍容許玩家按 Space 收回可控制 PC。先在遭遇邊界 yield 一次；
+	// 沒有持久 QUICK 的一般開戰仍照舊推進到第一個玩家回合。
+	for _, fighter := range battle.Fighters() {
+		if fighter.Side == combat.SideParty && fighter.ControlMorale < 0x80 &&
+			fighter.HitPoints > 0 && fighter.QuickFight {
+			return nil
+		}
+	}
 	return s.advanceCombatToParty()
 }
 
@@ -773,7 +792,7 @@ func (s *State) CombatMoveWithTerrain(dx, dy int, terrain combat.MovementTerrain
 	}
 	// 走出戰場邊界就是原作的逃跑（spec 799／1112）：Gold Box 沒有 FLEE 指令，
 	// 邊界那一步本身就是嘗試脫離。
-	if leavesCombatMap(caster, dx, dy) {
+	if s.leavesCombatMap(caster, dx, dy) {
 		return s.attemptCombatEscape(caster)
 	}
 	moveResult, err := s.battle.MoveWithTerrainAndFreeAttacks(caster.ID, dx, dy, s.combatMoveRemaining, terrain)
@@ -851,20 +870,32 @@ func (s *State) approachMonsterTarget(fighter, target combat.Fighter) (bool, boo
 	return approach.InWeaponRange, len(approach.Steps) > 0, nil
 }
 
-// combatMapWidth／combatMapHeight 是原作戰鬥地圖的格數。走出這個範圍就是離場。
+// fallbackCombatMap* 是早期自組／測試戰鬥使用的 32×16 local 座標；
+// referenceCombatMap* 是原作 TACMAP 與 COMPREP 使用的 50×25 座標。
+// StartCombat 不允許兩種座標混用，這裡必須跟著同一個 mode 選邊界。
 const (
-	combatMapWidth  = 32
-	combatMapHeight = 16
+	fallbackCombatMapWidth   = 32
+	fallbackCombatMapHeight  = 16
+	referenceCombatMapWidth  = 50
+	referenceCombatMapHeight = 25
 )
+
+func (s *State) combatMapDimensions() (width, height int) {
+	if s.combatReferenceCoords {
+		return referenceCombatMapWidth, referenceCombatMapHeight
+	}
+	return fallbackCombatMapWidth, fallbackCombatMapHeight
+}
 
 // leavesCombatMap 判斷這一步會不會踏出戰場。腳印大於一格的戰鬥員以左上角
 // 計算——與 `MoveWithTerrainAndFreeAttacks` 的地形檢查同一個約定。
-func leavesCombatMap(fighter combat.Fighter, dx, dy int) bool {
+func (s *State) leavesCombatMap(fighter combat.Fighter, dx, dy int) bool {
 	if !fighter.HasCombatPosition {
 		return false
 	}
+	width, height := s.combatMapDimensions()
 	x, y := fighter.CombatX+dx, fighter.CombatY+dy
-	return x < 0 || x >= combatMapWidth || y < 0 || y >= combatMapHeight
+	return x < 0 || x >= width || y < 0 || y >= height
 }
 
 // attemptCombatEscape 跑原作的逃跑判定並把結果講給玩家。
@@ -1511,6 +1542,46 @@ func (s *State) combatPlayerSpellLabel(spellID uint8) string {
 	return campSpellLabel(s.catalog, spellID)
 }
 
+// CombatSpellChoice is one memorized spell offered by the original CAST
+// command. Spell IDs remain the stable transaction value; Label is localized
+// presentation data from the game pack.
+type CombatSpellChoice struct {
+	SpellID uint8
+	Label   string
+}
+
+// CombatSpellChoices returns the active party member's declared memorized
+// spells in slot order. Duplicate slots are folded into one menu entry; the
+// actual cast still consumes only one matching slot in CombatCast.
+func (s *State) CombatSpellChoices() []CombatSpellChoice {
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return nil
+	}
+	seen := make(map[uint8]bool)
+	choices := make([]CombatSpellChoice, 0)
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if seen[spellID] {
+				continue
+			}
+			if _, declared := s.combatPlayerSpellDefinition(spellID); !declared {
+				continue
+			}
+			seen[spellID] = true
+			choices = append(choices, CombatSpellChoice{
+				SpellID: spellID,
+				Label:   s.combatPlayerSpellLabel(spellID),
+			})
+		}
+		break
+	}
+	return choices
+}
+
 func (s *State) quickSpellPriority(spellID uint8) (uint8, error) {
 	if s.dataPack == nil {
 		return 0, fmt.Errorf("Quick spell game-pack metadata is unavailable")
@@ -1551,7 +1622,43 @@ func (s *State) quickAreaTargetLegal(caster combat.Fighter, spellID, minRange ui
 	if err != nil {
 		return false, fmt.Errorf("build Quick spell 0x%02X SCAN targets: %w", spellID, err)
 	}
-	return len(ordered) != 0, nil
+	if len(ordered) == 0 {
+		return false, nil
+	}
+	// The original overlay-09:02B1h suitability helper performs a second
+	// area scan over the caster's own side before an AI area spell. For each
+	// friendly target it rolls the spell save with the original side-specific
+	// modifier; any failed save makes the center unsuitable (spec 777/1112).
+	// Fireball is the currently closed slice: its formal effect uses save
+	// category 4 and the same SCAN radius carried by MinRange (spec 494).
+	if spellID == FireballSpellID {
+		friendlyIDs, scanErr := s.battle.BuildLegacyAreaScanTargetIDs(
+			tacticalMap, caster.ID,
+			enginescan.Point{X: center.X, Y: center.Y}, caster.Side,
+			int(minRange), 0xff,
+		)
+		if scanErr != nil {
+			return false, fmt.Errorf("build Quick Fireball friendly SCAN targets: %w", scanErr)
+		}
+		modifier := 8
+		if caster.Side == combat.SideParty {
+			modifier = -2
+		}
+		for _, id := range friendlyIDs {
+			friendly, found := s.battle.Fighter(id)
+			if !found {
+				return false, fmt.Errorf("Quick Fireball friendly target %q is unavailable", id)
+			}
+			save, saveErr := s.battle.RollSavingThrow(friendly, 4, modifier)
+			if saveErr != nil {
+				return false, fmt.Errorf("Quick Fireball friendly target %q save: %w", id, saveErr)
+			}
+			if !save.Saved {
+				return false, nil
+			}
+		}
+	}
+	return true, nil
 }
 
 func (s *State) quickAreaSpellHasTarget(caster combat.Fighter, spellID, minRange uint8) (bool, error) {
@@ -1662,7 +1769,22 @@ func (s *State) quickTargetedSpellCandidates(caster combat.Fighter, spellID uint
 	case ProtectionFromGoodSpellID:
 		targets = s.protectionFromGoodTargets(caster)
 	default:
-		return nil, fmt.Errorf("Quick spell 0x%02X is not a targeted cleric spell", spellID)
+		// The original spell table and combat_player_spells already declare
+		// whether a data-driven spell targets an enemy or a party member. Keep
+		// the four spell-specific legality adapters above, then reuse the same
+		// broad target contract as the manual CAST list for every other spell.
+		definition, found := s.combatPlayerSpellDefinition(spellID)
+		if !found {
+			return nil, fmt.Errorf("Quick spell 0x%02X is not declared", spellID)
+		}
+		switch definition.TargetMode {
+		case "enemy":
+			targets = s.livingBySide(combat.SideEnemy)
+		case "party_member":
+			targets = s.livingBySide(combat.SideParty)
+		default:
+			return nil, fmt.Errorf("Quick spell 0x%02X is not a targeted spell", spellID)
+		}
 	}
 	return s.quickTargetCandidatesForFighters(targets)
 }
@@ -1925,8 +2047,8 @@ func (s *State) CombatSelectSpellTarget(delta int) error {
 	return nil
 }
 
-// CombatMoveSpellTarget moves an area-spell center on the original 32x16
-// combat map. It is separate from fighter target cycling because Fireball may
+// CombatMoveSpellTarget moves an area-spell center in the active combat
+// coordinate space. It is separate from fighter target cycling because Fireball may
 // intentionally be centered on an empty tile and can harm either side.
 func (s *State) CombatMoveSpellTarget(dx, dy int) error {
 	definition, found := s.combatPlayerSpellDefinition(s.combatCastingSpell)
@@ -1934,7 +2056,8 @@ func (s *State) CombatMoveSpellTarget(dx, dy int) error {
 		return fmt.Errorf("no area spell target is being selected")
 	}
 	next := combat.TilePoint{X: s.combatSpellTargetPoint.X + dx, Y: s.combatSpellTargetPoint.Y + dy}
-	if next.X < 0 || next.X >= combatMapWidth || next.Y < 0 || next.Y >= combatMapHeight {
+	width, height := s.combatMapDimensions()
+	if next.X < 0 || next.X >= width || next.Y < 0 || next.Y >= height {
 		return fmt.Errorf("spell target (%d,%d) is outside the combat map", next.X, next.Y)
 	}
 	s.combatSpellTargetPoint = next
@@ -2738,12 +2861,12 @@ var combatSpellCasterClasses = map[string]party.Class{
 // 效果碼同樣是 `08h`／`09h`。寫死編號等於宣告了法師版也施不出來——
 // game pack 上看起來已經接好，實際一施就報錯。
 type protectionSpellPlan struct {
-	spellID      uint8
+	spellID       uint8
 	requiredClass party.Class
-	targets      func(combat.Fighter) []combat.Fighter
-	cast         func(casterID, targetID string, casterLevel int) error
-	messageKey   string
-	missingLabel string
+	targets       func(combat.Fighter) []combat.Fighter
+	cast          func(casterID, targetID string, casterLevel int) error
+	messageKey    string
+	missingLabel  string
 }
 
 func (s *State) combatCastProtectionSpell(plan protectionSpellPlan) error {
@@ -3934,8 +4057,10 @@ func (s *State) advanceCombatToParty() error {
 		if !found {
 			return fmt.Errorf("enemy %q has no reachable target", fighter.ID)
 		}
-		if fighter.Side == combat.SideEnemy && !inRange {
+		if !inRange {
 			// 原作的 AI 回合是「先走到打得到，再打」（spec 830／838）。
+			// QUICK 已把玩家角色交給同一個 AI；只讓敵方進這一段會使 QUICK
+			// 隊員站在遠處直接呼叫近戰 Attack，繞過玩家移動與射程規則。
 			// 走不到就這一回合只移動——不是站在原地隔空攻擊。
 			reached, moved, err := s.approachMonsterTarget(fighter, target)
 			if err != nil {
@@ -4093,6 +4218,11 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		if fighter.ControlMorale < 0x80 {
 			s.battle.SetPlayerCharactersManual()
 			s.syncPartyFromBattle()
+			// ALT+M 是這次失敗的 gate。只收回角色控制卻保留開關，玩家下次
+			// 按 Q 會在同一個記憶槽上得到同一個錯誤，形成無法推進的迴圈。
+			// 關掉快速施法後仍保留所有 spell slots；玩家可手動施法，或只用
+			// 一般 QUICK 近戰繼續。
+			s.combatQuickMagic = false
 			s.combatMessage = fmt.Sprintf(s.catalog.Text(
 				"combat_quick_magic_metadata_missing",
 				"combat_quick_magic_metadata_missing",
@@ -4136,6 +4266,29 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			"combat_quick_magic_casting", "combat_quick_magic_casting",
 		), fighter.Name, s.combatPlayerSpellLabel(spellID))
 		return true, nil
+	}
+	if playerDefinition.TargetMode == "none" {
+		if err := s.BeginCombatCast(spellID); err != nil {
+			return false, err
+		}
+		if delay := selected.CastingDelayUnits(); delay > 0 {
+			if err := s.battle.BeginPendingTargetedSpellAction(
+				fighter.ID, spellID, delay, "",
+			); err != nil {
+				return false, err
+			}
+			s.CancelCombatCast()
+			if s.combatDelayedTurns == nil {
+				s.combatDelayedTurns = make(map[int]bool)
+			}
+			s.combatDelayedTurns[s.combatTurnIndex] = true
+			s.combatTurnIndex++
+			s.combatMessage = fmt.Sprintf(s.catalog.Text(
+				"combat_quick_magic_casting", "combat_quick_magic_casting",
+			), fighter.Name, s.combatPlayerSpellLabel(spellID))
+			return true, nil
+		}
+		return true, s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
 	}
 	if playerDefinition.TargetMode == "area_point" {
 		center, ok, err := s.quickAreaSpellTarget(fighter, spellID, aiDefinition.MinRange)
@@ -4293,6 +4446,21 @@ func (s *State) resolvePendingSpell(fighter combat.Fighter) error {
 	if _, found := s.combatPlayerSpellDefinition(spellID); !found {
 		return fmt.Errorf("pending spell 0x%02X is not implemented", spellID)
 	}
+	// A pending action has already passed the initial CAST availability gate.
+	// If its memorized slot disappeared before the delayed scheduler selects it
+	// again (normally because positive damage interrupted and consumed it), it
+	// must finish as an interrupted cast. Re-entering BeginCombatCast would only
+	// return "unavailable" while leaving the same action selected forever.
+	if characterIndex, spellIndex := s.memorizedSpellSlot(fighter.ID, spellID); characterIndex < 0 || spellIndex < 0 {
+		if fighter.CombatAction.HasTargetPoint {
+			if _, _, _, _, err := s.battle.TakePendingPointSpellAction(fighter.ID); err != nil {
+				return err
+			}
+		} else if _, _, err := s.battle.TakePendingTargetedSpellAction(fighter.ID); err != nil {
+			return err
+		}
+		return s.finishInvalidPendingSpell(fighter, spellID)
+	}
 	if err := s.BeginCombatCast(spellID); err != nil {
 		return err
 	}
@@ -4321,6 +4489,15 @@ func (s *State) resolvePendingSpell(fighter combat.Fighter) error {
 		return fmt.Errorf("pending quick spell changed from 0x%02X to 0x%02X", spellID, resolved)
 	}
 	if targetID != "" {
+		// 延遲治療鎖定的隊員可能在施法完成前倒下。原版施法主流程在目標
+		// 失效／取消後仍消耗法術（spec 733）；不能把已消耗的 pending action
+		// 留在選目標 UI，否則每次推進都會重試同一個死人而永久卡住戰鬥。
+		if definition, found := s.combatPlayerSpellDefinition(spellID); found &&
+			definition.Behavior == "cure_light_wounds" {
+			if target, ok := s.fighter(targetID); !ok || (target.HitPoints <= 0 && !target.DownedCorpse) {
+				return s.finishInvalidPendingSpell(fighter, spellID)
+			}
+		}
 		targets := s.CombatSpellTargets()
 		targetIndex := -1
 		for index := range targets {
@@ -4330,7 +4507,10 @@ func (s *State) resolvePendingSpell(fighter combat.Fighter) error {
 			}
 		}
 		if targetIndex < 0 {
-			return fmt.Errorf("pending spell 0x%02X target %q is unavailable", spellID, targetID)
+			// 敵我目標都可能在施法延遲期間死亡、逃跑或離場。pending spell
+			// 已由 Battle 原子取出；此時依原版 CAST abort「仍消耗法術」的
+			// 契約收尾並推進 scheduler，不能把 UI 留在同一次失效施法上。
+			return s.finishInvalidPendingSpell(fighter, spellID)
 		}
 		s.combatSpellTargetIndex = targetIndex
 		if s.CombatSpellTargetsEnemy() {
@@ -4338,6 +4518,26 @@ func (s *State) resolvePendingSpell(fighter combat.Fighter) error {
 		}
 	}
 	return s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
+}
+
+// finishInvalidPendingSpell consumes a delayed spell whose originally legal
+// target became unavailable before resolution, then advances the selected
+// scheduler action. The spell is lost just like an original CAST abort
+// (spec 733); this boundary must never strand combat in a retry loop.
+func (s *State) finishInvalidPendingSpell(caster combat.Fighter, spellID uint8) error {
+	characterIndex, spellIndex := s.memorizedSpellSlot(caster.ID, spellID)
+	if characterIndex >= 0 && spellIndex >= 0 {
+		s.partyRoster[characterIndex].SpellSlots = append(
+			s.partyRoster[characterIndex].SpellSlots[:spellIndex],
+			s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...,
+		)
+	}
+	s.CancelCombatCast()
+	s.combatMessage = fmt.Sprintf(s.catalog.Text(
+		"combat_spell_interrupted", "combat_spell_interrupted",
+	), caster.Name)
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
 }
 
 func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoint, rule enginespell.Rule) error {
@@ -4570,7 +4770,8 @@ func (s *State) finishCombat() error {
 	// 判準（spec 1204）——打輸但還有人只是昏迷／瀕死，不放全滅那一首。
 	// 判之前先把戰鬥擊倒投影成名冊狀態（SAVEDAMAGE 階梯，spec 1205）。
 	s.syncCombatDownStatuses()
-	if s.battle.Status() == combat.StatusEnemyWon && s.postCombatPartyDead() {
+	partyWiped := s.battle.Status() == combat.StatusEnemyWon && s.postCombatPartyDead()
+	if partyWiped {
 		s.requestPartyWipeMusic()
 	} else {
 		s.restoreSceneMusic()
@@ -4591,7 +4792,20 @@ func (s *State) finishCombat() error {
 	// ★ 全滅要停下來，不是印一句話就回地圖：原作的 `2Eh DAMAGE` 收尾在全隊
 	// 都倒下時設 `DS:4FC7h`，兩個主迴圈都以它收尾（spec 1152／1045／1095），
 	// 玩家看到的是全滅畫面然後回主選單——與 `PROGRAM 3` 同一個結局。
-	if s.battle.Status() == combat.StatusEnemyWon && s.postCombatPartyDead() {
+	// POSTCOM 進場先清 7EC7h；一般敗戰寫 80h、隊伍逃跑寫 81h。
+	// 這兩種都「沒有打贏」，但 ECL4/0x20 的兩場守衛戰只在 80h 時押送
+	// 法庭，不能把它們折成同一個值。全滅同樣寫 80h，但隨即終止
+	// （spec 1156／1204／1229）。
+	if s.session != nil {
+		result := uint16(0)
+		if s.battle.Status() == combat.StatusEnemyWon {
+			result = 0x80
+		} else if s.battle.Status() == combat.StatusPartyFled {
+			result = 0x81
+		}
+		s.session.SetMemoryValue(0x7EC7, result)
+	}
+	if partyWiped {
 		s.enterPartyKilled("COMBAT")
 		return nil
 	}
@@ -4606,11 +4820,13 @@ func (s *State) finishCombat() error {
 			s.enterTreasureMenu()
 			return nil
 		}
-		if continued, err := s.continueECLAfterEngineBoundary(); err != nil {
-			return err
-		} else if continued {
-			return nil
-		}
+	}
+	// COMBAT 是 ECL 的引擎邊界，不論勝敗都要回到下一條指令；原作正是在
+	// 那裡比較 7EC7h，決定勝利線、退格、重打或押送法庭。全滅已於上方終止。
+	if continued, err := s.continueECLAfterEngineBoundary(); err != nil {
+		return err
+	} else if continued {
+		return nil
 	}
 	return nil
 }
@@ -4665,7 +4881,7 @@ func (s *State) removeTemporaryCombatAllies() {
 
 // continueECLAfterEngineBoundary resumes the runtime state saved after
 // CMD_Combat dispatched combat, CityShop or Temple. Combat calls it after
-// victory; ECL-backed services call it when their UI closes.
+// every non-terminal result; ECL-backed services call it when their UI closes.
 func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 	return s.continueECLAfterEngineBoundaryDepth(0)
 }

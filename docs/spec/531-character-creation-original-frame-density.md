@@ -59,4 +59,4 @@ go build ./cmd/azure-bonds-game
 
 角色建立的刪除／改名／多職業完整規則、正常 copy-protection 後的完整玩家路徑、
 全畫面逐張原版比對，以及整作的 ECL、地圖、戰鬥、音效、存檔、翻譯與三平台
-發行仍依 `docs/project-status.md` 的 P0／P1／P2 清單進行。
+發行仍依 `WORKLIST.md` 與 `docs/knowledge/coab-re-coverage-matrix.md` 的現行閘門進行。

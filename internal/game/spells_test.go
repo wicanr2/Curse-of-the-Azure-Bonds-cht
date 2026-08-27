@@ -87,3 +87,28 @@ func TestSpellNameKeysFollowTheOriginalTable(t *testing.T) {
 	}
 	t.Logf("檢查了 %d 個法術名鍵", checked)
 }
+
+func TestShippedSpellNamesKeepCanonicalTraditionalChinese(t *testing.T) {
+	catalog, err := loadShippedCatalog()
+	if err != nil {
+		t.Skipf("shipped catalog is unavailable: %v", err)
+	}
+	want := map[string]string{
+		"spell_magic_user_20": "電擊之握",
+		"spell_cleric_58":     "治療重傷",
+		"spell_cleric_66":     "造成重傷",
+		"spell_cleric_71":     "治療致命傷",
+		"spell_cleric_72":     "造成致命傷",
+	}
+	for key, expected := range want {
+		if got := catalog.Strings[key]; got != expected {
+			t.Errorf("%s=%q, want %q", key, got, expected)
+		}
+	}
+	if got := catalog.Strings["spell_cleric_58"]; got != catalog.Strings["temple_cure_serious_wounds"] {
+		t.Errorf("Cure Serious Wounds differs between spell and temple: %q / %q", got, catalog.Strings["temple_cure_serious_wounds"])
+	}
+	if got := catalog.Strings["spell_cleric_71"]; got != catalog.Strings["temple_cure_critical_wounds"] {
+		t.Errorf("Cure Critical Wounds differs between spell and temple: %q / %q", got, catalog.Strings["temple_cure_critical_wounds"])
+	}
+}

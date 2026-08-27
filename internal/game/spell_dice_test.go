@@ -33,7 +33,7 @@ func TestCureFamilyDiffersOnlyInDiceAndBonus(t *testing.T) {
 }
 
 // 骰數由施法者等級算出來的那幾支不在機械表裡，走逐支讀完的算式
-// （spec 1124）。寒冰錐是 `等級d4 ＋ 等級`、電擊觸手是 `1d8 ＋ 等級`、
+// （spec 1124）。寒冰錐是 `等級d4 ＋ 等級`、電擊之握是 `1d8 ＋ 等級`、
 // 燃燒之手根本不擲骰。
 func TestCasterLevelFormulasComeFromHandlers(t *testing.T) {
 	table, err := gamepack.SpellDamage()
@@ -57,6 +57,43 @@ func TestCasterLevelFormulasComeFromHandlers(t *testing.T) {
 		if !ok || got != item.want {
 			t.Fatalf("法術 %d 在 7 級是 %+v（ok=%v），want %+v", item.spell, got, ok, item.want)
 		}
+	}
+}
+
+func TestBurningHandsUsesItsOwnLocalizedName(t *testing.T) {
+	value := NewState(combatVisualCatalog(t))
+	state := &value
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "魔法師", Class: party.ClassMagicUser, Level: 5,
+		ClassLevels: [8]uint8{5: 5}, SpellSlots: []uint8{BurningHandsSpellID},
+	}}
+	if err := state.StartCombat(
+		[]combat.Fighter{{ID: "mage", Name: "魔法師", Side: combat.SideParty,
+			HitPoints: 15, MaxHitPoints: 15, InitiativeBonus: 20,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1},
+			{ID: "ally", Name: "隊友", Side: combat.SideParty,
+				HitPoints: 20, MaxHitPoints: 20, InitiativeBonus: 19,
+				HasCombatPosition: true, CombatX: 0, CombatY: 1}},
+		[]combat.Fighter{{ID: "guard", Name: "衛兵", Side: combat.SideEnemy,
+			HitPoints: 20, MaxHitPoints: 20,
+			HasCombatPosition: true, CombatX: 2, CombatY: 1}},
+		11,
+	); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastBurningHands() {
+		active, _ := state.CombatActiveFighter()
+		t.Fatalf("相鄰敵人前的五級法師應可施放燃燒之手：active=%+v fighters=%+v choices=%+v",
+			active, state.CombatFighters(), state.CombatSpellChoices())
+	}
+	if err := state.BeginCombatCast(BurningHandsSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCast(BurningHandsSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.CombatMessage(); got != "魔法師 對 衛兵 施放燃燒之手，造成 5 點傷害。" {
+		t.Fatalf("燃燒之手訊息=%q", got)
 	}
 }
 
@@ -98,7 +135,7 @@ func diceSpellState(t *testing.T, spellID uint8, hurt bool) *State {
 	return state
 }
 
-// 中度治療術：治 2d8，範圍 2..16。
+// 治療重傷：治 2d8，範圍 2..16。
 func TestCureSeriousWoundsHealsTwoD8(t *testing.T) {
 	state := diceSpellState(t, 58, true)
 	if err := state.BeginCombatCast(58); err != nil {
@@ -121,7 +158,7 @@ func TestCureSeriousWoundsHealsTwoD8(t *testing.T) {
 	}
 }
 
-// 中度致傷術：打 2d8。
+// 造成重傷：打 2d8。
 func TestCauseSeriousWoundsDealsTwoD8(t *testing.T) {
 	state := diceSpellState(t, 66, false)
 	if err := state.BeginCombatCast(66); err != nil {

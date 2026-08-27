@@ -188,7 +188,7 @@
       ],
       "note": "戰前四種寫入（SETUP MONSTER、CLEARMONSTERS、LOAD MONSTER）全部 immediate；CLEARMONSTERS 只釋放怪物鏈與計數，不會撤銷 SETUP MONSTER（四站點有回歸測試）。COMBAT 的續跑見 1095。"
     },
-    "ECL4.DAX/0x23/0x0130-0x019D": {
+    "ECL4.DAX/0x23/0x0130-0x019A": {
       "status": "covered",
       "confidence": "exact",
       "spec_refs": [

@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
-	"github.com/hajimehoshi/ebiten/v2/audio/wav"
+	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
@@ -21,7 +21,7 @@ import (
 const sampleRate = 44100
 const musicBufferBytes = sampleRate * 4 / 4 // 250 ms of stereo s16 PCM.
 
-// Player is an optional renderer-side sound adapter. It loads only the WAV
+// Player is an optional renderer-side sound adapter. It loads only the OGG
 // assets proven by the reference seg044 resource table and ignores unmapped
 // sound IDs just as the reference engine does.
 type Player struct {
@@ -103,7 +103,7 @@ func Load(assetDir string) (*Player, error) {
 			loadErrors = append(loadErrors, err)
 			continue
 		}
-		stream, err := wav.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
+		stream, err := vorbis.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
 		if err != nil {
 			loadErrors = append(loadErrors, fmt.Errorf("%s: %w", name, err))
 			continue
@@ -116,6 +116,40 @@ func Load(assetDir string) (*Player, error) {
 		player.players[id] = p
 	}
 	return player, errors.Join(loadErrors...)
+}
+
+// PlayOGGTrack replaces the current background stream with a pre-rendered
+// OGG asset. Track IDs are stable game-pack IDs and map directly to filenames.
+func (p *Player) PlayOGGTrack(assetDir, trackID string) error {
+	if p == nil || p.context == nil {
+		return fmt.Errorf("sound player is unavailable")
+	}
+	if trackID == "" || filepath.Base(trackID) != trackID {
+		return fmt.Errorf("invalid music track ID %q", trackID)
+	}
+	data, err := os.ReadFile(filepath.Join(assetDir, trackID+".ogg"))
+	if err != nil {
+		return err
+	}
+	stream, err := vorbis.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
+	if err != nil {
+		return fmt.Errorf("%s.ogg: %w", trackID, err)
+	}
+	if stream.Length() <= 0 {
+		return fmt.Errorf("%s.ogg has no decoded audio", trackID)
+	}
+	p.StopMusic()
+	loop := audio.NewInfiniteLoop(stream, stream.Length())
+	player, err := p.context.NewPlayer(loop)
+	if err != nil {
+		return err
+	}
+	player.SetBufferSize(musicBufferBytes)
+	p.musicPlayer = player
+	if p.enabled {
+		player.Play()
+	}
+	return nil
 }
 
 // PlayPC98Track replaces the current background stream with one selector

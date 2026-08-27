@@ -21,6 +21,10 @@ func TestCellSweepHasNoUntranslatedOrUnexplainedCells(t *testing.T) {
 	if _, err := os.Stat(imagePath); err != nil {
 		t.Skip("找不到遊戲 image，跳過")
 	}
+	// Go 套件測試的工作目錄是 cmd/cell-sweep，不是儲存庫根目錄。冷進不去的
+	// 莊園／法師塔要靠段內快照；路徑沒設對會安靜地少掉整個 block。
+	snapshotDir = "../../workplace/campaign-frames/snapshots"
+	snapshotEntered = map[string]bool{}
 	data, err := loadCorpus(imagePath, localeFile, 8)
 	if err != nil {
 		t.Fatal(err)
@@ -31,10 +35,10 @@ func TestCellSweepHasNoUntranslatedOrUnexplainedCells(t *testing.T) {
 	}
 	counts := summarise(sweeps)
 
-	// ⚠ 15 而不是 17：`ECL4/0x25`（莊園）與 `ECL5/0x33`（法師塔）有分派表，但從
-	// 註冊表宣告的入口進去分別是魔法商店與塔前庭院，到不了它們那張地圖。
-	if counts["block"] != 15 {
-		t.Errorf("掃到 %d 個 block，宣告的是 15 個", counts["block"])
+	// ⚠ 16 而不是 17：`ECL4/0x25`（莊園）從註冊表宣告的入口進去是魔法商店，
+	// 到不了它的地圖；`ECL5/0x33`（法師塔）則已由主線段內快照納入。
+	if counts["block"] != 16 {
+		t.Errorf("掃到 %d 個 block，宣告的是 16 個", counts["block"])
 	}
 	if counts["原文"] != 0 {
 		t.Errorf("有 %d 格演出來是原文", counts["原文"])

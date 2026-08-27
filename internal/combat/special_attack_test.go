@@ -118,6 +118,28 @@ func TestSpecialAttackBreathTouchRefrainsSilentlyOrDealsSeven(t *testing.T) {
 	}
 }
 
+// 特殊攻擊擊倒最後一名隊員時，必須立刻投影戰鬥結果；不能留下 HP 已歸零、
+// Battle 卻仍為 active 的矛盾狀態（spec 1230）。直接測共同傷害路徑，避免
+// 單體 handler 的發動亂數讓回歸測試偶發跳過。
+func TestSpecialAttackDamageEndingPartyUpdatesBattleStatus(t *testing.T) {
+	battle := specialAttackBattle(t, 1)
+	hero := battle.fighters["hero"]
+	hero.HitPoints = 1
+	battle.fighters["hero"] = hero
+
+	impact, err := battle.specialAttackDamage(
+		battle.fighters["beast"], "hero", breathTouchRule())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if impact.TargetHP != 0 {
+		t.Fatalf("special attack left target HP=%d, want 0", impact.TargetHP)
+	}
+	if battle.Status() != StatusEnemyWon {
+		t.Fatalf("battle status=%v, want StatusEnemyWon", battle.Status())
+	}
+}
+
 // 區域吐酸：範圍裡混進攻擊者同側就整次取消，而且不扣次數。
 func TestSpecialAttackAcidBreathCancelsOnFriendInArea(t *testing.T) {
 	rule := SpecialAttackRule{ID: "acid-area", EffectKind: 0x5A,

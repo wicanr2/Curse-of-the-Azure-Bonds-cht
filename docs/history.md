@@ -13,10 +13,13 @@
 3. 將原本需要翻閱紙本 Adventurer's Journal 才能理解的背景，整理成遊戲內手札與本文件。
 4. 保留原始 DOS 映像與掃描手冊作為本地研究素材，不在 repository 重新散布未授權副本。
 
-## 目前里程碑
+## 早期里程碑（歷史）
+
+以下是專案初期的 checkpoint，保留用來說明演進，**不是目前狀態或待辦**。
+目前進度請讀 [`../CONTEXT.md`](../CONTEXT.md) 與
+[`knowledge/remake-completeness-assessment.md`](knowledge/remake-completeness-assessment.md)。
 
 - 已建立 DAX 解析、ECL bounded VM、繁中 locale、開場／城市／暗影谷 state。
 - 已解碼實際 `MON*CHA`、`MON*ITM`、`MON*SPC` records，並從 ECL encounter 建立敵人。
 - 已建立基本可操作戰鬥與繁中畫面；`PROGRAM 9` 的 CAMP 目前已被辨識為外部 routine boundary。
 - 完整 party creation／import、地圖 tile、CAMP 休息規則、法術、物品效果、存檔與全劇情流程仍待完成。
-

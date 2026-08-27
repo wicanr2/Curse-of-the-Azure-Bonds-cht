@@ -42,9 +42,9 @@ var walkableRouteSegments = []string{
 	"ECL4/0x20", "ECL4/0x22", // 散提爾堡、眼魔洞穴
 	"ECL4/0x25",              // 魔法商店＋地城（實跑覆蓋原本 0.1%，第 718 輪補走）
 	"ECL5/0x31", "ECL5/0x32", // 哈普村、古熔岩洞
-	"ECL5/0x35",              // 洞窟（同上，原本 0%）
+	"ECL5/0x35",                           // 洞窟（同上，原本 0%）
 	"ECL6/0x40", "ECL6/0x42", "ECL6/0x43", // 密斯卓諾
-	"ECL6/0x45",              // （同上，原本 0%）
+	"ECL6/0x45", // （同上，原本 0%）
 }
 
 func TestTilvertonRouteIsWalkableAndLocalized(t *testing.T) {
@@ -93,8 +93,20 @@ func TestTilvertonRouteIsWalkableAndLocalized(t *testing.T) {
 			// 每一種選單策略各走一遍：格子累積在 `campaignVisitedCells` 裡，
 			// 所以是聯集（spec 1193）。
 			cells := 0
-			for _, pick := range []int{0, 1, 2, -1} {
-				if walked := walkTilvertonSegmentWith(t, pick, blocks, catalog, seg, messages); walked > cells {
+			namedTowerCells := 0
+			picks := []int{0, 1, 2, -1}
+			if id == "ECL4/0x25" {
+				// 奧克薩姆莊園不是固定索引策略走得到的：要先進 SHOP、離開
+				// 貨架，再在下一層選單選 GO TO THE TOWER。-2 依選項名字走
+				// 這條正常玩家路徑，不注入座標或劇情旗標。
+				picks = append(picks, -2)
+			}
+			for _, pick := range picks {
+				walked := walkTilvertonSegmentWith(t, pick, blocks, catalog, seg, messages)
+				if pick == -2 {
+					namedTowerCells = walked
+				}
+				if walked > cells {
 					cells = walked
 				}
 			}
@@ -102,6 +114,9 @@ func TestTilvertonRouteIsWalkableAndLocalized(t *testing.T) {
 			// 因為它一句話都沒收到。先擋住這種假綠。
 			if cells < 8 {
 				t.Fatalf("%s 只走到 %d 格，這一段不可能這麼小", id, cells)
+			}
+			if id == "ECL4/0x25" && namedTowerCells == 0 {
+				t.Fatalf("%s 的具名選項策略沒有走完前往奧克薩姆莊園的正常轉場", id)
 			}
 			totalCells += cells
 			t.Logf("%s 走到 %d 格", id, cells)
@@ -220,7 +235,9 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 			}
 			choice := 0
 			if count := len(state.Choices); count > 0 {
-				if pick < 0 || pick >= count {
+				if pick == -2 {
+					choice = namedTowerRouteChoice(state.Choices)
+				} else if pick < 0 || pick >= count {
 					choice = count - 1
 				} else {
 					choice = pick
@@ -295,7 +312,16 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 			state.SetDungeonGeometryView(current.x, current.y, uint8(direction))
 			state.DungeonWallRoof = grid.CellWrapped(current.x, current.y).Terrain
 			if !state.CanMoveDungeon(grid, deltaX, deltaY, direction) {
-				continue
+				// 門在 CanMoveDungeon 看來就是牆；若不先開，莊園與城市裡的
+				// 單格房間會被盤點成永遠走不到。這裡和 dungeon-walk-probe
+				// 一樣只在 GEO 明確標成門（2／3）時打開，問的是「門開後內容
+				// 能否走到」，不把它冒稱成這支強化走訪隊伍的開鎖成功率。
+				flags, ok := grid.WallDoorFlagsWrapped(current.x, current.y, direction)
+				if !ok || (flags != 2 && flags != 3) ||
+					!grid.UnlockDoorWrapped(current.x, current.y, direction) ||
+					!state.CanMoveDungeon(grid, deltaX, deltaY, direction) {
+					continue
+				}
 			}
 			if err := state.MoveDungeon(grid, deltaX, deltaY, direction); err != nil {
 				continue
@@ -324,6 +350,20 @@ func walkTilvertonSegmentWith(t *testing.T, pick int, blocks map[uint8][]byte, c
 	return visited
 }
 
+// namedTowerRouteChoice 只處理 0x25 那條需要跨兩層選單的正常路徑；其他選單
+// 仍選最後一項，讓既有 settle 行為維持不變。用名字而不是索引，避免插入新選項
+// 時把「前往高塔」安靜地改成「返回匕首瀑布」。
+func namedTowerRouteChoice(choices []string) int {
+	for _, wanted := range []string{"SHOP", "GO TO THE TOWER"} {
+		for index, choice := range choices {
+			if choice == wanted {
+				return index
+			}
+		}
+	}
+	return len(choices) - 1
+}
+
 // routeKnownFragments 是**已知的問句／子程式片段**：實機它們會被併進呼叫端
 // 那一頁，所以沒有自己的 text rule。這一支的走法是廣度優先、逐格推事件，
 // 有機會讓它們單獨出現——那時候看起來就像「落回原文」。
@@ -339,6 +379,12 @@ var routeKnownFragments = map[string]bool{
 	// 共用子程式：`ecl-text-coverage` 明文說**不要**替它寫規則
 	//（只有一兩個字的 `all_contains` 會攔截到別的文字）。
 	"WHAT DO YOU DO ?": true,
+	// 有些共用問句由 PRINT 與下一段標點分開；BFS 在事件邊界收訊息時會只
+	// 看到這一半。完整頁面已由 ecl-text-coverage 的 run 分母另行驗證。
+	"WHAT DO YOU DO": true,
+	// 奧克薩姆莊園的同一支共用子程式保留了原作的 WHAT TO 拼字；
+	// ecl-text-coverage 也把它判成 subroutine，而不是獨立玩家頁。
+	"WHAT TO YOU DO?": true,
 	// 問句片段：兄弟句（`DOES ANYONE WANT TO TRY AGAIN`、`WILL YOU ACCOMPANY
 	// THEM`、`DO YOU WANT TO TRY FOR ANOTHER`）都是**併在前一頁的規則裡**，
 	// 沒有獨立規則。⚠ 這一句是否真的只會併著出現**還沒有實機確認**——

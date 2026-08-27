@@ -84,6 +84,8 @@ func (s *State) combatCastSpellDice(spellID uint8, healing bool) error {
 	messageKey := "combat_cause_light_wounds"
 	if healing {
 		messageKey = "combat_cure_light_wounds"
+	} else if spellID != CauseLightWoundsSpellID {
+		messageKey = "combat_damage_spell"
 	}
 	var result combat.SpellResult
 	switch {
@@ -106,8 +108,13 @@ func (s *State) combatCastSpellDice(spellID uint8, healing bool) error {
 		amount = result.Healing
 	}
 	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(s.catalog.Text(messageKey, messageKey),
-		caster.Name, targetFighter.Name, amount)
+	if messageKey == "combat_damage_spell" {
+		s.combatMessage = fmt.Sprintf(s.catalog.Text(messageKey, messageKey),
+			caster.Name, targetFighter.Name, s.combatPlayerSpellLabel(spellID), amount)
+	} else {
+		s.combatMessage = fmt.Sprintf(s.catalog.Text(messageKey, messageKey),
+			caster.Name, targetFighter.Name, amount)
+	}
 	s.requestSound(SoundCast)
 	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
@@ -192,6 +199,13 @@ func (s *State) combatCanCastSpellDice(spellID uint8, healing bool) bool {
 	}
 	_, err := s.combatSpellDiceTarget(healing)
 	return err == nil
+}
+
+// CombatCanCastBurningHands exposes the same memorized-slot, class and
+// adjacent-target gate used by BeginCombatCast. The frontend and normal-path
+// harness may ask this question, but only the cast transaction may consume it.
+func (s *State) CombatCanCastBurningHands() bool {
+	return s.combatCanCastSpellDice(BurningHandsSpellID, false)
 }
 
 // combatCastAreaDamageDice 是範圍版的傷害法術（spec 1124）：骰子與傷害屬性

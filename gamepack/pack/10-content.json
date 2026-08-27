@@ -3463,6 +3463,13 @@
    "message_id": "dexam.circular-stairway"
   },
   {
+   "id": "dexam.circular-stairway-up",
+   "all_contains": [
+    "YOU SEE A CIRCULAR STAIRWAY GOING UP"
+   ],
+   "message_id": "dexam.circular-stairway-up"
+  },
+  {
    "id": "world.shadowdale.edge",
    "all_contains": [
     "YOU ARE AT THE EDGE OF SHADOWDALE",
@@ -9807,6 +9814,14 @@
    "message_id": "myth-drannor.rakshasa-tithe"
   },
   {
+   "id": "myth-drannor.outer.rakshasa-release",
+   "all_contains": [
+    "AT LEAST YOU STAND UP FOR YOURSELVES",
+    "YOU ARE FREE TO GO FOR NOW"
+   ],
+   "message_id": "myth-drannor.outer.rakshasa-release"
+  },
+  {
    "id": "wizard-tower.sphere-distance-10",
    "all_contains": [
     "IT IS NOW ONLY 10 FEET FROM THE RED WIZARD"
@@ -9957,6 +9972,31 @@
    "id": "option.reject",
    "source": "REJECT",
    "message_id": "option.reject"
+  },
+  {
+   "id": "option.join",
+   "source": "JOIN",
+   "message_id": "option.join"
+  },
+  {
+   "id": "option.refuse",
+   "source": "REFUSE",
+   "message_id": "option.refuse"
+  },
+  {
+   "id": "option.sneak-past",
+   "source": "SNEAK PAST",
+   "message_id": "option.sneak-past"
+  },
+  {
+   "id": "option.approach",
+   "source": "APPROACH",
+   "message_id": "option.approach"
+  },
+  {
+   "id": "option.sneak-up",
+   "source": "SNEAK UP",
+   "message_id": "option.sneak-up"
   },
   {
    "id": "option.kill",
@@ -10147,6 +10187,11 @@
    "id": "ecl-option.attack",
    "source": "ATTACK",
    "message_id": "attack"
+  },
+  {
+   "id": "ecl-option.pretend-mercenaries",
+   "source": "PRETEND TO BE MERCENAIES",
+   "message_id": "ecl-option.pretend-mercenaries"
   },
   {
    "id": "ecl-option.meet-them",

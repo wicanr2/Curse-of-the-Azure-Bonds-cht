@@ -1,29 +1,30 @@
 # 《青色枷的詛咒》繁體中文化／Remake
 
 SSI《Curse of the Azure Bonds》的資料驅動重製專案。目標是讓玩家以繁體中文從
-開場玩到結局。**主線已經從開場走到結局**（同一條 session 的端到端測試，見下表）；
-⚠ 那是規則層走完，**不等於拿鍵盤從頭玩到結局**——輸入層推得動主線的每一個
-檢查點，一條連續的按鍵路線目前走到巫師塔：提爾佛頓 → 盜賊公會 → 下水道 →
-火刀據點 → 世界地圖 → 哈普村 → 古熔岩洞 → 巫師塔（ECL 段 `0x01`、`0x02`、`0x03`、
-`0x04`、`0x50`、`0x31`、`0x32`、`0x33`），314 格、253 句話、0 句落回原文
-（[spec 1197](docs/spec/1197-keyboard-playthrough-door-and-route-replay.md)、
-[spec 1201](docs/spec/1201-key-menu-wraparound.md)）。下一個瓶頸：回訪下水道的
-爬牆事件（盜賊技能的閘，六個預設戰士永遠爬不上去）。
+開場玩到結局。**主線已經從開場走到結局**：除了規則層的同一條
+session，連續鍵盤輸入也已在第 **14,380 幀**觸發 `GameWon()`，全程只走
+`(*app).Update()`（899 格、16 個 ECL 段、393 句話、落回原文 0）。這證明輸入層
+可達通關，但不等於一般強度隊伍的人工完整試玩驗收。
 
 本 repo 負責 CoAB 的 game pack、翻譯、原始素材轉換、攻略與整合測試；可重用的
 ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 [golden-box-remake-engine](https://github.com/wicanr2/golden-box-remake-engine)。
 劇情、座標、物品與翻譯資料不寫死在共用 engine。
 
-## 目前狀態（2026-08-24 實測）
+## 目前狀態（2026-08-27 實測）
+
+目前整體自評 **96／100**，交付目標是玩家可見體驗近似原版 **99%**。後續採
+風險導向代表性抽樣，不再以所有狀態全量逐像素／逐分支閉合作為完成條件；
+阻塞通關、存檔毀損、落回原文與主要規則偏差仍須歸零。詳見
+[完成度自評](docs/knowledge/remake-completeness-assessment.md)。
 
 | | |
 |---|---|
 | 反組譯覆蓋 | 2,874 個函式全部進台帳，**待解讀 0**（已解讀 2,137／不阻塞 162／邊界碎片 575）；未定義位元組 36,386 已逐段形狀分類＋對回函式台帳，**每一個位元組都有分類或一手判定（無判定 0 段）**（spec 1203 四刀）|
-| 規格 | 1,180 份 `docs/spec/*.md`，各自標證據等級與「明確不宣稱」邊界 |
-| 程式 | 471 個 `.go`／133,595 行；`internal/game` 沒有區域或劇情專屬檔 |
+| 規格目錄 | 1,223 份 `docs/spec/*.md`（2026-08-27 現場計數，含索引）；狀態與證據邊界以各文件及 [`docs/spec/README.md`](docs/spec/README.md) 為準，不能由文件數推論完成度 |
+| 程式 | 489 個 `.go`／141,042 行（2026-08-27 現場計數，不含巢狀 engine repo 與 `workplace/`）；`internal/game` 沒有區域或劇情專屬檔 |
 | ECL 文字 | 控制流可達 1,022 頁，**未接上 0** |
-| ECL 副作用 | 可達 14,177 條指令，**只讀掉運算元 0**、部分完成 **168**（opcode：`done` 60／`partial` 1）|
+| ECL 副作用 | 可達 14,177 條指令，`done` **14,177**／`partial` **0**；opcode `done` 61／`partial` 0 |
 | 戰鬥法術 | 可宣告 **73／73** 全部有 handler、視覺與音效 |
 | 命中判定 | 與原作同一式：FIRE KNIFE 自己打自己，原作與 remake 都要 **d20 ≥ 18** |
 | 第一人稱畫面 | 585 種牆面配置**全覆蓋**、共 **1,498 張**與原版逐格比對：**1,498 張全部完全相同、差 0 格**（第三次全量重測）|
@@ -31,14 +32,19 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 | 存檔 | 角色記錄 422 bytes：decoded 299／documented 123／**unknown 0** |
 | UI 詞條 | game pack `zh-TW` 1,588 條、`assets/locale/zh-TW.json` 1,144 條 |
 | **主線** | **開場到結局同一條 session 跑得完**，拆成 25 個段 subtest（23 段主線＋2 段接進主線的段內支線），每段結束的快照都存得下去讀得回來 |
+| **鍵盤通關** | 從標題開始、全程只走真實前端按鍵，第 **14,380 幀**觸發 `GameWon()` |
+| **一般強度基線** | pending Bless 無限重試已修；關閉隊伍強化後跑 2,455 幀：251 格、8 個 ECL 段、199 句、落回原文 0，最後真實全滅重開 1 次。手動戰鬥對照也在同一戰役區段全滅；這是合法停止結果，不再把戰術／loadout 或自動通關列為產品缺口 |
+| **發行工程** | `tools/package-release.sh 0.1.0-dev` 可重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP；Linux AppImage 與 Windows EXE（Wine）已實際啟動與繁中截圖驗收，兩張開場 PNG 逐位元組相同；Windows／macOS 尚待真機啟動 |
 | 主線分段 | 25 段全部可直入（`-segment ECL{成員}/0x{block}`）；47 條 `NEWECL` 邊逐條交接；段入口有中文劇情 22／不出文字 3 |
 | 戰利品 | `1Ch CLEARMONSTERS` 連同**還沒領走的戰利品**一起丟掉（spec 1145）；corpus 唯一走得到那條路的是提爾佛頓火刀首領的重打迴圈，少了它重打一次就多領一次 |
 | 遭遇距離 | `0Ch` 擺距離、`0Dh APPROACH` 走近、`29h` 重設（spec 1146）。⚠ `APPROACH` 的減一是**演出**——`29h` 進門會把它蓋回去 |
 | 遭遇選單 | `29h` 的三句旁白依**距離**挑（spec 1144）：20 處逐句對過譯文，玩家演得到的 20 句**全部接上**（`cmd/ecl-encounter-text`）。⚠ 距離本身還是拿上限近似——原作由地圖座標算 |
 | 段內支線 | 全遊戲對照表 **328 個場景對到格子**（`cmd/ecl-cell-events`，17 個有地形分派的 block）；逐格實測 **288 個分派索引**（`cmd/cell-sweep`），**276 格中文、落回原文 0 格**，12 格沒演出來全部歸得了因（四種盤點限制，還沒歸類 0）|
-| 世界地圖 | 路段編號 `4C9D ＝ 出發地 × 4 ＋ 方向`（spec 1143）；從 13 個地點各掃一次、**762 個分支**，敘述與選項**落回原文 0 條**（`cmd/route-sweep`）|
+| 世界地圖 | 路段編號 `4C9D ＝ 出發地 × 4 ＋ 方向`（spec 1143）；從 13 個地點各掃一次、**698 個分支**，敘述與選項**落回原文 0 條**（`cmd/route-sweep`）|
 | 跨段不變量 | 經驗值不倒退、隊伍變動位置宣告好；**裝備／記憶法術／效果**在 23 個段界存下去讀得回來且沒有變動（`SEG-31`）；選曲逐格對回 PC-98 原作的 selector 表（`SEG-33`，spec 355）|
-| 怪物資料 | `MON*ITM` 的物品鏈已進 `Fighter.MonsterItems`（六章 44 個區塊全部帶物品）；⚠ 怪物換裝的規則側卡在「換武器之後傷害怎麼算」——13 隻的記錄傷害與武器都非 0 卻不一樣（spec 1120）|
+| 怪物資料 | `MON*ITM` 物品鏈與怪物自動換裝已接；特殊效果的已知實作缺口 0，但仍有 28 個效果碼／69 筆記錄是 `unread`，不能宣稱全部對齊 |
+| 音訊格式 | 正式播放以 OGG 為主：12 首 PC-98 音樂與 9 個音效；`MSCDRV.EXE` 即時合成只保留作研究 oracle／缺檔 fallback |
+| 圖像獨立化 | 人物、怪物、戰鬥圖示與場景已有 780 張獨立 PNG 並由 runtime 載入；TILES、戰場地形、AREA／共用符號、SKY、牆片仍直接讀原版 DAX，遷移盤點見 [`docs/audit/png-asset-independence-2026-08-27.md`](docs/audit/png-asset-independence-2026-08-27.md) |
 | 手札 | locale 宣告 **64 則**，全部由 48 條內容規則的 `journal_message_ids` 解鎖；六張手冊地圖／插圖（含手札 59 的眼魔洞穴圖）在手札畫面按 `I` 彈窗顯示（spec 1109）|
 | `24h COMBAT` | 199 處逐處分類：**153 處真的要打、46 處走服務分派**（`cmd/ecl-combat-sites`）|
 | 跨段不變量 | 整條主線 260 句話**落回原文 0 句**；同一角色的經驗不倒退、隊伍變動位置宣告好；22 個段界都有曲子 |
@@ -62,7 +68,8 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 路線，一條 session 只能走一邊，`myth_drannor_test` 的直入測試整條走過）。
 其餘支線由段界快照逐格取樣涵蓋（9 段、123 格、落回原文 0 格）。
 
-路徑之後的區域仍會遇到未完成的功能。
+連續鍵盤路線已通關；仍待的是一般強度隊伍的人工完整試玩、非第一人稱
+畫面 oracle、Windows／macOS 真機封包驗收與全量人工中文校對。
 
 ### 角色建立
 
@@ -162,17 +169,20 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
 
 ## 開發與研究文件
 
+- [`HANDOFF.md`](HANDOFF.md)：compact／接手後先讀的最短現況、下一步與不可重開 gate。
 - [`AGENTS.md`](AGENTS.md)：**工作規則的單一入口**（完成定義、證據標準、Git 紀律、
   驗證門檻、compact 恢復流程）。
-- [剩餘工作盤點](docs/knowledge/coab-remake-todo.md)：逐項可執行的 TODO，
-  含現況實測數字與建議順序。
+- [歷史缺口盤點](docs/knowledge/coab-remake-todo.md)：2026-08-16～24 的工作拆解與
+  證據索引，已封存，**不是目前 TODO**。
 - [完成度自評](docs/knowledge/remake-completeness-assessment.md)：逐層自評與
   「到可交付還差的四步」，數字取自 `docs/audit/remake-status.md`。
 - [共用 engine 抽取盤點](docs/knowledge/engine-extraction-review.md)：`internal/combat`
   逐檔對「作品中立」界線比一次，標出該搬、要參數化、以及不該搬的部分。
 - [完整度矩陣](docs/knowledge/coab-re-coverage-matrix.md)：全遊戲 RE／重建完整度的
   單一權威矩陣（`R1` 原始定位 → `R5` 玩家驗證）。
-- [`WORKLIST.md`](WORKLIST.md)：反組譯盤點階段的執行順序。
+- [Gold Box 系列重用邊界](docs/knowledge/gold-box-series-reuse.md)：下一款作品可直接
+  沿用、只能當候選與永遠留在作品層的最短契約。
+- [`WORKLIST.md`](WORKLIST.md)：逐輪工作與決策證據的歷史封存，**不是目前執行順序**。
 - [`CONTEXT.md`](CONTEXT.md)：現況與已被推翻的斷言；歷史分冊在 [`docs/context/`](docs/context/)。
 - [格式規格索引](docs/spec/README.md)：每份規格標示 `READY`／`DRAFT`、證據與
   `exact`／`strong inference`／`hypothesis`／`unknown` 邊界。
@@ -194,7 +204,11 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
    列成一段驗**。
 6. 每個重大、可展示的里程碑才集中 commit／push；兩個 repository 分開提交。
 
-## 目前明確未完成
+## 歷史收斂細節（非目前待辦）
+
+以下保留部分規則閉合的證據索引，不可依「剩下」「尚未」等舊措辭重開工作。
+目前只有 [HANDOFF](HANDOFF.md) 與
+[完成度自評](docs/knowledge/remake-completeness-assessment.md) 列出的四類 frontier。
 
 - **戰鬥回合生命週期**：回合開始那一段已收完（spec 1135／1136）——先攻算式、
   選誰動、DELAY／GUARD／QUICK、定身與機會攻擊都與原作相符，突襲遮罩判定為死碼。
@@ -208,7 +222,7 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   **剩下的**：原作 `+09h` 的幾何意義刻意留白（兩個寫入端互相矛盾），
   以及 ECL 的 `24h COMBAT` 那 199 處仍只做了分派。
   （法術那一半已經收斂：可宣告 73 支全部有 handler、視覺與音效。）
-- **ECL 剩 1 個部分完成 opcode**，共 168 條指令（`CALL`）。
+- **ECL 可達副作用已全部接線**：14,177 條 `done`、`partial` 0。
   下面這段是逐支收斂的過程紀錄，保留是因為每一支的證據位址還用得到：
   `PRINT RETURN`、`TREASURE`、`DAMAGE` 等。`PROGRAM` 已經收掉（spec 1154）：
   打通關現在看得到原作那段五頁的結局過場，先前直接跳到存檔詢問。其中 `PRINT RETURN`（120 條）已逐條讀完
@@ -224,7 +238,7 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   現在三種目標形式都算得出來。`CLEARMONSTERS`（206 條）已逐條讀完
   並跟上（spec 1145），只剩 `7603h := 8` 的語意未解讀。每一支 handler 的位址與
   條數在 [`docs/audit/ecl-opcode-handlers-dos.md`](docs/audit/ecl-opcode-handlers-dos.md)。
-- **存檔**：角色記錄還有 24 bytes 未解讀；跨遊戲角色轉移未做。
+- **存檔**：角色記錄 422 bytes 已全部 decoded 或 documented、unknown 0；跨遊戲角色轉移未做。
   存讀檔本身已有「讀回來還走得動」的閘（23 份段界快照逐份讀回來真的走一步），
   ⚠ 只比欄位抓不到這一類缺口——存檔沒保存的執行期上下文在讀回來的那一份是零值，
   欄位全對，玩家按下一步才卡住。
@@ -233,18 +247,19 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   比對範圍內：它由該段 ECL 的載入時常數寫入決定（`eclBlockLoadTimeWrites`），
   pack 的宣告值只是沒有存檔時的底值、隨後會被同一組寫入蓋掉。SPRIT 畫布相對於戰場格的錨點仍未量（現在只在沒有
   CPIC 時才會走到那條路）。
-- **戰鬥佈陣**：原作演算法已解讀完（spec 1200，PC-98 COMPREP 逐指令）——佈署
+- **戰鬥佈陣**：原作演算法已解讀並接進 `StartCombat`（spec 1200）——佈署
   模板是「每列欄範圍」表（5 種形狀）、兩隊起點＝(0,0) 與距離×方向 delta、
   找空位是理想格為中心的狀態機掃描，`internal/combat.Deployment` 忠實轉錄並有
-  測試。**剩接線**：`StartEncounter` 還在用自訂 fallback，換成 `Deployment` 要
-  同時接遭遇距離、地圖朝向、地面檢查與地城牆面，並重驗整條主線的戰鬥落點。
-- **按鍵重放**（使用者 2026-08-24 指示先暫緩）：12,000 幀走過 137 格、走到過
-  `0x01 0x02 0x03 0x04 0x50` 五段，但**最後一次有新東西在第 1,437 幀**，
-  之後 11,271 幀停在世界地圖。下一個瓶頸是世界地圖那一層的選單策略，
-  不是幀數也不是走法。跑法與現況記在 [`WORKLIST.md`](WORKLIST.md)。
-- 三平台發行包。因此目前不製作正式 release 或宣傳片。
+  測試；正式遭遇會帶入地圖朝向、遭遇距離、地面與地城牆面。仍須以更多原版
+  同狀態戰鬥畫面驗證所有方向、距離與大型 footprint。
+- **按鍵重放**：單一連續 session 已通關；見 `docs/audit/key-driven-session.json`。
+- **三平台發行包**：執行 `tools/package-release.sh <版本>`，產物在 `dist/<版本>/`。
+  `patch/` 不含原版 ZIP 與未授權 PC-98 音樂；`full-local/` 只供本機驗收。
+  Linux AppImage 與 Windows EXE（Wine）已啟動與繁中截圖驗收；兩張開場 PNG
+  逐位元組相同。Windows／macOS 仍不宣稱已真機驗收。
 
-逐項狀態與建議順序見[剩餘工作盤點](docs/knowledge/coab-remake-todo.md)。
+目前交付狀態與建議順序見[完成度自評](docs/knowledge/remake-completeness-assessment.md)；
+[歷史缺口盤點](docs/knowledge/coab-remake-todo.md)只供追溯。
 
 ---
 

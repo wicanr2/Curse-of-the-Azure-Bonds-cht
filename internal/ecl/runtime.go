@@ -66,15 +66,15 @@ type RunResult struct {
 	// ClearBoxRequested 來自 `3Dh CLEAR BOX`：把文字框清空，且不印新文字。
 	ClearBoxRequested bool
 	// SpriteOffRequested 來自 `31h SPRITE OFF`：關掉畫面上的怪物圖示。
-	SpriteOffRequested     bool
-	SessionStartBlockID    uint8
-	SessionEndBlockID      uint8
-	SessionBlockRangeSet   bool
+	SpriteOffRequested   bool
+	SessionStartBlockID  uint8
+	SessionEndBlockID    uint8
+	SessionBlockRangeSet bool
 	// SessionRanBlockIDs 是這一次頂層執行實際跑過的 block（含 NEWECL 鏈上的
 	// 每一段，依執行順序）。座標投影靠它判斷「這個座標是本次執行的腳本寫的」
 	// ——原作的地圖暫存器是全域，跨 NEWECL 存活，來源段在交接前寫好的落點
 	// 在目的段生效（spec 1183／1184）。
-	SessionRanBlockIDs []uint8
+	SessionRanBlockIDs     []uint8
 	DamageRequests         []DamageRequest
 	PrintReturnCount       int
 	ApproachCount          int
@@ -416,6 +416,12 @@ func partyMetric(members []PartyMemberContext, metric func(PartyMemberContext) i
 type TreasureRequest struct {
 	Coins     [7]uint16
 	ItemBlock uint16
+	// SourceBlockID／SourceBlockSet identify the block that issued the request.
+	// Block zero is valid, so the boolean cannot be inferred from the ID. A raw
+	// one-block runner leaves the pair unset; BlockSession/title adapters attach
+	// it before ITEM data is resolved because that may happen after NEWECL.
+	SourceBlockID  uint8
+	SourceBlockSet bool
 }
 
 // spellNotFound 是 `3Bh SPELL` 在找不到時寫進 slot 位址的值。

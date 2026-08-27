@@ -41,9 +41,9 @@ PC-98 只有三個，DOS 的 entry#1 在 `00CCh` 而 PC-98 的在 `0016h`。這�
 | `C01Eh` | 13 |
 | `6803h` | 11 |
 
-⚠ 拿 `docs/audit/ecl-event-catalog.json` 數會得到 78 條——**那份 committed 產物是舊的**
-（4,222 條指令、55 個 opcode），現跑 `cmd/ecl-event-catalog` 是 14,177 條、61 個
-opcode，`2Dh` 正好 168。它目前重生不出來，見 `WORKLIST.md` 的 ⚠。
+⚠ 舊產物曾只數到 78 條（4,222 條指令、55 個 opcode）；2026-08-27 已依
+spec 1219 重生 `docs/audit/ecl-event-catalog.json`，現為 14,177 條、61 個
+opcode，`2Dh` 正好 168。
 
 ## `6803h`：圖片序列的下一格
 

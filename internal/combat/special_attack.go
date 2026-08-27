@@ -163,6 +163,10 @@ func (b *Battle) specialAttackDamage(attacker Fighter, targetID string,
 	impact.Damage = b.applyPositiveDamage(&target, damage)
 	impact.TargetHP = target.HitPoints
 	b.fighters[targetID] = target
+	// 特殊攻擊與一般近戰／法術一樣可能放倒最後一名隊員。少了這一步會留下
+	// HP=0 但 StatusActive 的不可能狀態，前端已回地城、存檔卻仍被 active battle
+	// 擋住（spec 1230）。
+	b.updateStatus()
 	return impact, nil
 }
 

@@ -4,6 +4,11 @@
 
 本目錄只收錄由原始映像、執行觀察、反組譯或可重現工具支持的規格。
 
+- [1236 戰鬥雲霧暫態生命週期與燃燒之手 QUICK 資料](./1236-combat-cloud-lifecycle-and-burning-hands-quick-metadata.md)（`READY`：新遭遇清除噁心失能、同場快照保留、spell ID 9 原版 QUICK 欄位；一般強度 5,000 幀抵達 `0x50`，600 格／218 句／fallback 0）
+- [1211 提爾佛頓安全紮營與高等級法術容量](./1211-safe-camp-and-spell-capacity.md)（`READY`：GEO 安全營地、原版 `SpellCastCount` 牧師／法師／聖武士容量；一般強度八人火刀連戰仍待閉合）
+- [1212 戰鬥 CAST 選單與一般強度長跑](./1212-combat-cast-menu.md)（`READY`：原版 `C → CAST`、依記憶槽列法術、燃燒之手正式入口；5000 幀抵達 ECL `0x04`，八人火刀後續仍待閉合）
+- [1214 同一法術可重複記憶](./1214-duplicate-memorized-spell-slots.md)（`READY`：ordered duplicate slots、同列 `(N)` 顯示、容量拒絕與 REST 邊界；一般強度八名火刀仍未通過）
+
 本索引是證據目錄，不是全遊戲完成度表。開始新逆向或實作前，先查
 [`CoAB 全遊戲逆向工程完整度矩陣`](../knowledge/coab-re-coverage-matrix.md)；再從本頁
 選取對應 READY spec。舊 spec 即使標為 READY，也只在它明寫的限定範圍內成立。
@@ -22,7 +27,7 @@
 
 目前規格：
 
-- [第五百五十七輪 ECL 全事件靜態清冊與有序副作用稽核](./557-ecl-event-catalog-and-ordered-effects-audit.md)（`READY`：限 6 DAX／25 block／125 entry 的靜態 inventory；⚠ **committed 的產物停在 4,222 條指令／154 個候選**，現跑是 **14,177 條／701 個候選**，而它目前重生不出來——引用數字前先看 `WORKLIST.md` 的 ⚠；ordered runtime semantics 仍未完成）
+- [第五百五十七輪 ECL 全事件靜態清冊與有序副作用稽核](./557-ecl-event-catalog-and-ordered-effects-audit.md)（`READY`：限 6 DAX／25 block／125 entry 的靜態 inventory；產物已依 spec 1219 重生為 **14,177 條指令／701 個候選**；ordered runtime semantics 仍未完成）
 - [第五百五十八輪 PC-98 ECL TREASURE／COMBAT 邊界勘誤](./558-pc98-ecl-treasure-combat-boundary.md)（`READY`：三組候選已由既有 transaction 覆蓋、PC-98 IDA handler dispatch、DOS 真實 pause／resume 與 fail-closed review ledger；全域 ordered log 仍未完成）
 - [第五百五十四輪眼魔洞穴 LOOK 與 Dexam 雙戰正常路徑](./554-normal-beholder-cave-dexam-route.md)（`READY`：同一新遊戲 session 經手札 59、LOOK 秘密通路、Dexam 雙戰與戰後回洞穴；不含 `(6,3)` 出口）
 - [第五百五十三輪中文冒險手札重建與靜態地圖抽樣準則](./553-chinese-journal-reconstruction-and-static-map-sampling.md)（`READY`：手札 1–59 可追溯繁中摘要、手札 59 完整掃描圖證據及 GEO／ECL／必要 runtime 抽樣門檻）
@@ -574,3 +579,34 @@
 - [1152 `2Eh DAMAGE`：三種目標形式、豁免的兩套算法，與那個「連打 N 下」的分支](./1152-ecl-damage-targets-saves-and-repeat-attacks.md)（`READY`：DOS `overlay-02:2942h` 整支 305 條，被呼叫的 `MAKESAVE`／`TRYTOHIT` 也各自讀完——★ **旗標 bit 7 清空時整個 byte 是次數**：連打 N 下、每下隨機挑一名隊員擲 `TRYTOHIT`、每下之間重擲傷害，第五個運算元在這一支是**攻擊值**不是豁免種類；bit 7 設定才是旗標（bit 6 全隊、bit 5 不擲豁免、bit 4 豁免成功仍吃**全額**、bit 0..4 豁免調整值，⚠ bit 4 與調整值欄位重疊而 corpus 24 處低 5 位全 0）；目標三選一，★ **「目前角色」那一路的豁免種類要減一且 `0` 代表不擲**，另外兩路不減一、由 bit 5 決定——兩種讀法在 corpus 上結果相同；★ 「單體但隨機挑一名」是活著的程式碼但 corpus 24 處走不到；收尾走隊伍鏈用 `+196h ≠ 0` 判全滅並印 `The entire party is killed!`，且會**還原** `DS:6506h`；順帶答掉 spec 582 的未定項之一——豁免種類由呼叫端夾成 0..7；不宣稱調整值欄位是 4 還是 5 位元、各豁免種類的名稱、`KILLTHEDUDE`／`CHECKFX` 的內部）
 - [1151 `27h TREASURE`：錢幣池是覆寫、物品鏈是前插、隨機表兩端都夾](./1151-treasure-pool-item-chain-and-random-table.md)（`READY`：DOS `overlay-02:1B53h` 整支 398 條——七個錢幣運算元以 32-bit **覆寫** `DS:6F70h` 的池（`1Ch` 清的就是它）；`ItemBlock` 三選一：`< 80h` 載 `ITEM<片>.DAX` 那個區塊並把**每一筆**掛上鏈、`= 0FFh` 不給物品、`80h..FEh` 隨機產生 `n − 80h` 件；物品鏈 `DS:6F8Ch` 的 next 在 `+2Ah` 且是**前插**，而顯示端從鏈頭走（`overlay-05:0CF5h`）⇒ 清單是反序；★ 隨機表每一段都是**兩端都夾**的區間，`b ∈ {48,49}` 掉到預設值 59——remake 先前寫成 `else if` 會給劍，已修並逐點釘住；⚠ `SHOWLOOT` 只畫錢幣那一格，沒碰物品鏈；隨機那一路已接上 `CREATERNDTREASURE`（spec 1036）；仍 `partial` 是因為 remake 把多筆 TREASURE 相加而原作是覆寫；不宣稱節點其餘欄位、錢幣換算與物品編號的語意）
 - [1196 `+0E6h` `HIGHESTPREVLEVEL`：全部 15 處讀取的普查](./1196-highestprevlevel-census.md)（`READY`：★★ **兩平台逐模組逐數量完全相同**（TEMPLE 1／COMPTACT 1／GEN 1／SPELLS 8／EFFECTS 3／TRAINING 1）——兩份獨立建置給出同一張表；★★ 語意錨在 `EFFECTS overlay-23:1D1Dh` ＝ spec 1079 的累加 HP 門檻，逐指令對得上，也就是 AD&D 的雙職規則「只有超過舊職等級的那幾級才給 HP」；⚠ 第一版掃描漏掉 `es:` 段前綴，得到「PC-98 只有兩處」的假結論，補上之後是 15 處；⚠ **spec 185 從頭到尾沒有提過 `+0E6h`**，`dos_record_fields.go` 先前掛在它名下的出處是錯的；⚠ remake 有一處把 `data[0xE6]` 當顯示等級，而原版 15 處沒有一處拿它去顯示——只有雙職角色走得到那條路，要改得先用原版量一個雙職角色，這一輪沒改）
+- [1209 牧師記憶候選、休息亂數與 QUICK 近戰距離](./1209-cleric-memorization-and-quick-range.md)（`READY`：牧師一級候選、休息 RNG 推進、QUICK 距離與正常按鍵控制組）
+- [1213 QUICK 法術資料失敗的控制交接](./1213-quick-magic-metadata-failure-handoff.md)（`READY`：缺 metadata 時收回手動控制並關閉 `Alt+M`，保留記憶槽；一般強度八名火刀仍未通過）
+- [1215 持久 QUICK 的新遭遇首幀交接](./1215-persistent-quick-new-encounter-yield.md)（`READY`：保留跨戰 QUICK，但新遭遇首幀先 yield，讓玩家可按 Space 收回控制）
+- [1216 ALTER 改名／移除的 remake 存檔往返](./1216-alter-rename-drop-save-round-trip.md)（`READY`：JSON 隊伍存檔已驗證改名／移除往返；`SAVGAM` 改名沿用 spec 254，跨遊戲轉移與 DOS 刪檔語意仍未證實）
+- [1217 一般強度火刀連戰的資源控制組](./1217-normal-fire-knife-resource-controls.md)（`READY`：五格治療與保留燃燒之手兩個合法控制實驗均不足以通過連戰，已還原；下一步取決於五級法師建角方案）
+- [1218 移除「同一 session 沒有數字」的假缺口](./1218-remove-false-unmeasured-session-gap.md)（`READY`：連續按鍵 session 已在第 14,380 幀通關，換段快照與一／六人 ECL 記憶體對照也已完成；保留一般強度未通關限制）
+- [1219 ECL 事件目錄重生與階段台帳補齊](./1219-ecl-event-catalog-regeneration.md)（`READY`：正式產物已重生為 14,177 條指令／701 個候選，61 支可達 opcode 全數有列；34 支未讀 handler 仍誠實標為 `unknown`）
+- [1220 locale drift 稽核跟上分割 pack 與 tooltext 分層](./1220-locale-drift-split-pack-repair.md)（`READY`：修復已移除的單檔 pack 路徑與 `tooltext.Text` 假缺鍵；UI 靜態引用缺鍵 0、pack 英中對稱、違規 0）
+- [1221 法術名稱跨畫面語意校對](./1221-spell-name-semantic-proofreading.md)（`READY`：修正 Shocking Grasp 詞義錯誤，並統一 Serious／Critical Wounds 在法術、紮營與神殿的正式繁中譯名）
+- [1222 玩家攻略納入地名詞彙稽核](./1222-player-guide-glossary-gate.md)（`READY`：攻略逐行納入失敗即關閉閘門；統一散提爾堡、迷斯卓諾、班恩與龍盔，139 詞條違規 0）
+- [1223 奧克薩姆莊園正常選項路徑與實跑覆蓋](./1223-oxam-manor-runtime-route.md)（`READY`：以 SHOP→GO TO THE TOWER 的具名選項與 GEO 門後走訪，把該段 9.8% 提到 64.6%、全作實跑提高到 64.2%，沿路英文落回 0）
+- [1224 暗影谷至溫拉爾的軍隊分支](./1224-voonlar-vanguard-world-route.md)（`READY`：正常世界選單走通躲藏、放行、主動攻擊與定罪強制戰四結果；後續勘誤並移除會污染後續 run 的過渡文字規則，全作實跑提高到 64.4%）
+- [1225 匕首瀑布至特什維夫的傭兵分支](./1225-teshwave-mercenary-world-route.md)（`READY`：正常世界選單走通忽略、直接攻擊與四種傭兵指令；全作實跑提高到 65.1%）
+- [1226 匕首瀑布與特什維夫的航運事件](./1226-dagger-falls-teshwave-boat-encounters.md)（`READY`：以三趟正常選單航行驗證同向首次戰鬥、反向獨立計數器與同向第二次海盜逃跑；全作實跑提高到 65.5%）
+- [1227 Crimdrac 放行與巫師戰後復仇](./1227-crimdrac-release-post-wizard-revenge.md)（`READY`：正常戰役在古熔岩洞接受 Crimdrac 放行，擊敗 Dracandros 後於同 session 的世界旅行觸發復仇；全作實跑提高到 65.8%）
+- [1228 巫師塔 Sphere Trial 正常玩家路徑](./1228-wizard-tower-sphere-trial-normal-route.md)（`READY`：由正常地城移動讓現有法師進房、集中精神、取寶並走出單向黑門；全作實跑提高到 66.8%）
+- [1229 POSTCOM 結果投影與非全滅敗戰續跑](./1229-postcombat-result-projection-and-defeat-continuation.md)（`READY`：`finishCombat` 現在投影勝利 `0`／敗戰 `80h`／逃跑 `81h`，非全滅結果一律回到 `COMBAT` 後方 ECL；法庭正常路徑仍受 DUNGCOM 部署與強化測試角色阻塞，不以改 HP／座標冒充）
+- [1210 最終起始等級、累計 HP 與正常路線訂正](./1210-finalized-starting-levels-and-normal-route.md)（`READY`：原版完成建角為五／六級、累計 HP 與下水道結束支線訂正）
+- [1230 原版戰場邊界與戰鬥終止狀態](./1230-reference-combat-boundary-and-terminal-status.md)（`READY`：原版座標 50×25、fallback 32×16；特殊攻擊／驅散摧毀重算勝負、非戰鬥載入清舊 battle；完整 ECL 結局鏈通過，實跑 9,607／14,177；測試強化不作平衡證據）
+- [1231 `TREASURE` 跨 `NEWECL` 的來源章節](./1231-treasure-source-chapter-across-newecl.md)（`READY`：寶物請求在跨段前保留來源 block，固定物品不再被目的 area 誤導到錯誤的 ITEM 檔；正常強度路線由 4 段推進到 12 段）
+- [1232 神殿目前角色切換與一般強度治療](./1232-temple-current-character-cycle-and-normal-recovery.md)（`READY`：照 DOS 原版以 `G`／`O` 切換目前角色；撤回混合多次重開的 562 格，單次正常路線於第一次全滅停止為 252 格／8 段，下一瓶頸是三黑龍戰術）
+- [1233 一般強度路線：延遲法術失效收尾與可見安全選項](./1233-normal-route-delayed-spell-and-safe-choices.md)（`READY`：失效的延遲治療／攻擊法術依 CAST abort 契約消耗並收尾；重放只在輪到施法者時推進待決法術；補武器店西側出口、改走哈普荒野並等待旋轉刀刃；3000 幀為 373 格／4 段／0 全滅／0 原文 fallback，仍未通關）
+- [1234 一般強度路線：跨段方向、QUICK 交接與塔頂恢復](./1234-normal-route-boundary-quick-and-rooftop-recovery.md)（`READY`：正常鍵盤走通 0x03→0x04；神殿與持久休息時數改依玩家可見值處理；塔頂安全休息恢復 197 HP並避開爆裂符文；成功 run 到 0x33／8 段，但同一開場戰仍有非決定性 QUICK 停格，未通關）
+- [1235 決定性 CAST 重放與塔頂法術恢復](./1235-deterministic-cast-replay-and-tower-spell-recovery.md)（`READY`：修正 renderer wall-clock 與 map 法術順序造成的假隨機停格，正常路線 20/20 完全相同到 0x33；城市與塔頂正式補滿 HP＋既定法術；新瓶頸為 108 HP／AC 0 黑暗精靈領主強制戰）
+- [1236 戰鬥雲霧暫態生命週期與燃燒之手 QUICK 資料](./1236-combat-cloud-lifecycle-and-burning-hands-quick-metadata.md)（`READY`：新遭遇清除跨場臭雲失能，同場快照保留；補原版燃燒之手 QUICK 欄位，一般強度長跑全滅與 metadata 死環解除）
+- [1237 世界目的地與 ECL 記憶體交易同步](./1237-world-destination-ecl-memory-transaction.md)（`READY`：玩家選目的地時同步 `4C9B`／`4C9C`，不再讓 State 已到阿沙本福德、ECL 卻沿用匕首瀑布分派；不宣稱一般強度連續通關）
+- [1238 連續世界路線重放不立即折返](./1238-continuous-world-route-no-immediate-backtrack.md)（`READY`：各段決策聯集不再讓連續 session 立即折返；無強化路徑由 `0x50`／`0x51` 推進至 `ECL3/0x10`，新停止點為首次全滅）
+- [1239 QUICK 火球友軍安全與戰敗後窄化休息](./1239-quick-fireball-friendly-safety-and-defeat-rest.md)（`READY`：依 overlay-09 範圍安全控制流拒絕會讓友軍豁免失敗的 Fireball 中心；撤回整段永久可休息的過寬策略，改由目前安全敘事或戰敗訊息啟動正式 CAMP／REST；歷史 route oracle 尚未統一，不宣稱一般強度連續通關）
+- [1240 現行 route oracle 與短暫敗戰訊息捕捉](./1240-current-route-oracle-and-loss-capture.md)（`READY`：完整重生 39,973 步的唯一 `route-current.json`，加入候選檔原子替換、SHA-256 與 10,000 步下界；戰鬥提交點不再漏掉短暫敗戰頁，一般強度 1,800 幀全滅 0；下一瓶頸是五／六級角色仍只有一級法術）
+- [1241 CAMP 多環法術記憶與準備時間](./1241-multilevel-camp-memorization.md)（`READY`：完整 `3×5` 容量、逐環候選／上限與 4／6／8 小時準備時間；快捷法師 loadout 仍待共同決策）
+- [第一千二百四十二輪 Prayer QUICK 法術資料接線](./1242-prayer-quick-metadata.md)（`READY`：由原版主法術表補齊 Prayer 的 QUICK priority／目標檢查／距離／施法時間，供合法高階記憶槽正常戰鬥驗證）

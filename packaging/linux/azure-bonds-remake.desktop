@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=青色枷的詛咒 Remake
+Comment=Curse of the Azure Bonds Traditional Chinese remake
+Exec=azure-bonds-game
+Icon=azure-bonds-remake
+Categories=Game;RolePlaying;
+Terminal=false
