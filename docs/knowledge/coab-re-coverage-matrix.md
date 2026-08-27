@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》全遊戲逆向工程完整度矩陣
 
-狀態日期：2026-08-21（第 619 輪：external `CALL` registry 的語意層閉合，spec 1150）
+狀態日期：2026-08-27（函式完成度與 Borland helper 重新分類）
 
 ## 兩層完整度
 
@@ -9,15 +9,21 @@
 
 - 全集與狀態：[`../audit/coab-function-index.md`](../audit/coab-function-index.md)
   （由 `cmd/re-ledger` 產生，可重生）
+- 完成／無直接 caller 分類：
+  [`../audit/function-completion-audit.md`](../audit/function-completion-audit.md)
+  （由 `scripts/function_completion_audit.py` 產生）
 - 人工判定唯一來源：`../audit/re-function-ledger.json`
 - 方法與基線：[`../spec/559-full-module-re-sweep.md`](../spec/559-full-module-re-sweep.md)
 
-目前狀態（2026-08-21）：共 2,874 個函式，**已解讀 2,137／不阻塞 162／邊界碎片
+目前狀態（2026-08-27）：共 2,874 個函式，**已解讀 2,137／不阻塞 162／邊界碎片
 575／待解讀 0**（DOS 已解讀 1,016、PC-98 1,121；證據等級 `exact` 1,914、
-`strong inference` 223）。函式層已全部看過一遍。
+`strong inference` 223）。函式層已全部看過一遍。169 支已識別為 Borland／Turbo
+Pascal RTL 或編譯器輔助；923 支 `callers = 0` 經 entry／RTL／空函式／邊界分類後，
+**仍無解釋 0**。
 
-尚未做的是 `WORKLIST.md` 第 559 輪第 5 步：DOS 16,065 bytes／PC-98 20,321 bytes
-不屬於任何已知函式的區段還沒逐段判定為資料表、對齊填充或漏掉的程式碼。
+不屬於已知函式的 DOS 16,065 bytes／PC-98 20,321 bytes 已由 spec 1203 逐段完成形狀
+分類並回查函式台帳；無判定 0 段。575 筆 `邊界碎片` 是 IDA 資料品質分類，不是
+575 支尚待 RE 的函式。
 
 兩層不可互相替代——系統層可以宣稱某條玩家路徑閉合，但那不代表相關模組的
 函式已被盤點；反之函式已盤點也不代表語意已閉合。

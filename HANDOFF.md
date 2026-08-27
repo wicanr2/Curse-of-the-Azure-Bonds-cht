@@ -42,5 +42,7 @@
 ## 驗證入口
 
 - 可重生狀態：`go run ./cmd/remake-status -output docs/audit/remake-status.md`
+- 函式完成／無直接 caller：`python scripts/function_completion_audit.py`；現行待解讀 0、
+  無解釋 caller=0 為 0。
 - 代表性測試：`go test ./gamepack ./internal/game ./cmd/azure-bonds-game -count=1`
 - 所有工作負載一律經專案 Docker 工具鏈；結束時確認沒有殘留容器。
