@@ -295,7 +295,8 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
   測試；正式遭遇會帶入地圖朝向、遭遇距離、地面與地城牆面。仍須以更多原版
   同狀態戰鬥畫面驗證所有方向、距離與大型 footprint。
 - **按鍵重放**：單一連續 session 已通關；見 `docs/audit/key-driven-session.json`。
-- **三平台發行包**：執行 `tools/package-release.sh <版本>`，產物在 `dist/<版本>/`。
+- **三平台發行包與推廣片**：執行 `tools/package-release.sh <版本>` 與
+  `tools/build-promo.sh <版本>`，現行交付物一律集中在 `dist-all/<版本>/`。
   `patch/` 不含原版 ZIP 與未授權 PC-98 音樂；`full-local/` 只供本機驗收。
   Linux AppImage 與 Windows EXE（Wine）已啟動與繁中截圖驗收；兩張開場 PNG
   逐位元組相同。Windows／macOS 仍不宣稱已真機驗收。

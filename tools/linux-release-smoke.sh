@@ -4,9 +4,9 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VERSION="${1:-}"
-RELEASE="$ROOT/dist/$VERSION/full-local"
+RELEASE="$ROOT/dist-all/$VERSION/full-local"
 APPIMAGE="$RELEASE/azure-bonds-remake-$VERSION-x86_64.AppImage"
-OUT="$ROOT/dist/$VERSION/smoke"
+OUT="$ROOT/dist-all/$VERSION/smoke"
 
 if [[ -z "$VERSION" || ! -x "$APPIMAGE" ]]; then
   echo "用法：tools/linux-release-smoke.sh <已建置版本>" >&2

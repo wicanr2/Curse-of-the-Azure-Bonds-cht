@@ -13,7 +13,7 @@ fi
 GO_IMAGE="coab-go-ebiten:1.24"
 MAC_IMAGE="u2cht-osxcross:20260826-r1"
 APPIMAGE_IMAGE="u5cht/appimage:latest"
-OUT="$ROOT/dist/$VERSION"
+OUT="$ROOT/dist-all/$VERSION"
 UID_NOW="$(id -u)"
 GID_NOW="$(id -g)"
 
@@ -25,8 +25,8 @@ test -f "$ROOT/workplace/engine-proxy/github.com/wicanr2/golden-box-remake-engin
 docker run --rm --network none --memory 1g --cpus 1 --pids-limit 128 \
   -u "$UID_NOW:$GID_NOW" -v "$ROOT:/src" -w /src "$GO_IMAGE" sh -c '
     set -eu
-    rm -rf "dist/'"$VERSION"'"
-    mkdir -p "dist/'"$VERSION"'/build" "dist/'"$VERSION"'/patch" "dist/'"$VERSION"'/full-local"
+    rm -rf "dist-all/'"$VERSION"'"
+    mkdir -p "dist-all/'"$VERSION"'/build" "dist-all/'"$VERSION"'/patch" "dist-all/'"$VERSION"'/full-local"
   '
 
 common_go_mounts=(
@@ -43,12 +43,12 @@ common_go_mounts=(
 docker run --rm --network none --memory 3g --cpus 2 --pids-limit 512 \
   -u "$UID_NOW:$GID_NOW" "${common_go_mounts[@]}" \
   -e GOOS=linux -e GOARCH=amd64 -e CGO_ENABLED=1 "$GO_IMAGE" \
-  go build -trimpath -ldflags=-s\ -w -o "dist/$VERSION/build/azure-bonds-game-linux-amd64" ./cmd/azure-bonds-game
+  go build -trimpath -ldflags=-s\ -w -o "dist-all/$VERSION/build/azure-bonds-game-linux-amd64" ./cmd/azure-bonds-game
 
 docker run --rm --network none --memory 3g --cpus 2 --pids-limit 512 \
   -u "$UID_NOW:$GID_NOW" "${common_go_mounts[@]}" \
   -e GOOS=windows -e GOARCH=amd64 -e CGO_ENABLED=0 "$GO_IMAGE" \
-  go build -trimpath -ldflags=-s\ -w -o "dist/$VERSION/build/azure-bonds-game.exe" ./cmd/azure-bonds-game
+  go build -trimpath -ldflags=-s\ -w -o "dist-all/$VERSION/build/azure-bonds-game.exe" ./cmd/azure-bonds-game
 
 for tuple in "amd64:o64-clang:o64-clang++" "arm64:oa64-clang:oa64-clang++"; do
 	arch="${tuple%%:*}"
@@ -58,18 +58,18 @@ for tuple in "amd64:o64-clang:o64-clang++" "arm64:oa64-clang:oa64-clang++"; do
   docker run --rm --network none --memory 3g --cpus 2 --pids-limit 512 \
     -u "$UID_NOW:$GID_NOW" "${common_go_mounts[@]}" \
     -e GOOS=darwin -e GOARCH="$arch" -e CGO_ENABLED=1 -e CC="$compiler" -e CXX="$cxx" "$MAC_IMAGE" \
-    go build -trimpath -ldflags=-s\ -w -o "dist/$VERSION/build/azure-bonds-game-darwin-$arch" ./cmd/azure-bonds-game
+    go build -trimpath -ldflags=-s\ -w -o "dist-all/$VERSION/build/azure-bonds-game-darwin-$arch" ./cmd/azure-bonds-game
 done
 
 # 所有檔案操作也留在一次性容器內。patch 明確排除原版 ZIP 與 PC-98 BGM；
-# full-local 只有本機存在原版 ZIP時才產生，且 dist/ 整體由 .gitignore 排除。
+# full-local 只有本機存在原版 ZIP時才產生，且 dist-all/ 整體由 .gitignore 排除。
 docker run --rm --network none --memory 1g --cpus 1 --pids-limit 128 \
   -u "$UID_NOW:$GID_NOW" -v "$ROOT:/src" -w /src "$GO_IMAGE" sh -c '
     set -eu
     V='"$VERSION"'
-    B="dist/$V/build"
+    B="dist-all/$V/build"
     for flavor in patch full-local; do
-      BASE="dist/$V/$flavor"
+      BASE="dist-all/$V/$flavor"
       mkdir -p "$BASE/linux/AppDir/usr/bin" "$BASE/windows" \
         "$BASE/macos-amd64/Azure Bonds Remake.app/Contents/MacOS" \
         "$BASE/macos-arm64/Azure Bonds Remake.app/Contents/MacOS"
@@ -90,37 +90,37 @@ docker run --rm --network none --memory 1g --cpus 1 --pids-limit 128 \
         cp LICENSE NOTICE.md "$target/"
       done
     done
-    cp "$B/azure-bonds-game-linux-amd64" "dist/$V/patch/linux/AppDir/usr/bin/azure-bonds-game"
-    cp "$B/azure-bonds-game.exe" "dist/$V/patch/windows/azure-bonds-game.exe"
+    cp "$B/azure-bonds-game-linux-amd64" "dist-all/$V/patch/linux/AppDir/usr/bin/azure-bonds-game"
+    cp "$B/azure-bonds-game.exe" "dist-all/$V/patch/windows/azure-bonds-game.exe"
     for arch in amd64 arm64; do
-      APP="dist/$V/patch/macos-$arch/Azure Bonds Remake.app/Contents"
+      APP="dist-all/$V/patch/macos-$arch/Azure Bonds Remake.app/Contents"
       cp packaging/macos/launcher "$APP/MacOS/azure-bonds-game"
       cp "$B/azure-bonds-game-darwin-$arch" "$APP/MacOS/azure-bonds-game-bin"
       sed "s/@VERSION@/$V/g" packaging/macos/Info.plist > "$APP/Info.plist"
       chmod 0755 "$APP/MacOS/azure-bonds-game" "$APP/MacOS/azure-bonds-game-bin"
     done
-    cp packaging/windows/啟動遊戲.bat "dist/$V/patch/windows/"
-    cp packaging/linux/AppRun "dist/$V/patch/linux/AppDir/AppRun"
-    cp packaging/linux/azure-bonds-remake.desktop "dist/$V/patch/linux/AppDir/"
-    cp assets/sprites/bigpic1-block-79-item-00.png "dist/$V/patch/linux/AppDir/azure-bonds-remake.png"
-    chmod 0755 "dist/$V/patch/linux/AppDir/AppRun" "dist/$V/patch/linux/AppDir/usr/bin/azure-bonds-game"
+    cp packaging/windows/啟動遊戲.bat "dist-all/$V/patch/windows/"
+    cp packaging/linux/AppRun "dist-all/$V/patch/linux/AppDir/AppRun"
+    cp packaging/linux/azure-bonds-remake.desktop "dist-all/$V/patch/linux/AppDir/"
+    cp assets/sprites/bigpic1-block-79-item-00.png "dist-all/$V/patch/linux/AppDir/azure-bonds-remake.png"
+    chmod 0755 "dist-all/$V/patch/linux/AppDir/AppRun" "dist-all/$V/patch/linux/AppDir/usr/bin/azure-bonds-game"
 
     # AppImage 自帶非 glibc 的執行期依賴，避免只在建置 image 能啟動。
-    mkdir -p "dist/$V/patch/linux/AppDir/usr/lib"
+    mkdir -p "dist-all/$V/patch/linux/AppDir/usr/lib"
     ldd "$B/azure-bonds-game-linux-amd64" | awk "/=> \/.*\// {print \$3}" | while read -r lib; do
       case "$(basename "$lib")" in
         libc.so.*|libm.so.*|libdl.so.*|libpthread.so.*|librt.so.*|ld-linux-*) continue ;;
       esac
-      cp -L "$lib" "dist/$V/patch/linux/AppDir/usr/lib/"
+      cp -L "$lib" "dist-all/$V/patch/linux/AppDir/usr/lib/"
     done
 
     if [ -f curseoftheazurebonds.zip ]; then
-      cp -R "dist/$V/patch/." "dist/$V/full-local/"
+      cp -R "dist-all/$V/patch/." "dist-all/$V/full-local/"
       for target in \
-        "dist/$V/full-local/linux/AppDir" \
-        "dist/$V/full-local/windows" \
-        "dist/$V/full-local/macos-amd64/Azure Bonds Remake.app/Contents/MacOS" \
-        "dist/$V/full-local/macos-arm64/Azure Bonds Remake.app/Contents/MacOS"; do
+        "dist-all/$V/full-local/linux/AppDir" \
+        "dist-all/$V/full-local/windows" \
+        "dist-all/$V/full-local/macos-amd64/Azure Bonds Remake.app/Contents/MacOS" \
+        "dist-all/$V/full-local/macos-arm64/Azure Bonds Remake.app/Contents/MacOS"; do
         cp curseoftheazurebonds.zip "$target/"
         cp assets/audio/pc98-bgm-selector-*.ogg "$target/assets/audio/"
       done
@@ -131,7 +131,7 @@ for flavor in patch full-local; do
   [[ -f "$OUT/$flavor/linux/AppDir/AppRun" ]] || continue
   docker run --rm --network none --memory 1g --cpus 1 --pids-limit 128 \
     -u "$UID_NOW:$GID_NOW" -v "$ROOT:/src" -w /src "$APPIMAGE_IMAGE" bash -c \
-    "ARCH=x86_64 appimagetool dist/$VERSION/$flavor/linux/AppDir dist/$VERSION/$flavor/azure-bonds-remake-$VERSION-x86_64.AppImage"
+    "ARCH=x86_64 appimagetool dist-all/$VERSION/$flavor/linux/AppDir dist-all/$VERSION/$flavor/azure-bonds-remake-$VERSION-x86_64.AppImage"
   docker run --rm --network none --memory 512m --cpus 1 --pids-limit 128 \
     -u "$UID_NOW:$GID_NOW" -v "$ROOT:/src" -w /src python:3.12-slim python -c '
 import pathlib, sys, zipfile
@@ -145,7 +145,7 @@ for source, name in [
         for path in sorted(source.rglob("*")):
             if path.is_file():
                 archive.write(path, path.relative_to(source))
-' "dist/$VERSION/$flavor" "$VERSION"
+' "dist-all/$VERSION/$flavor" "$VERSION"
 done
 
 docker run --rm --network none --memory 512m --cpus 1 --pids-limit 128 \
@@ -161,6 +161,6 @@ for path in sorted(artifacts):
     data = path.read_bytes()
     rows.append({"file": str(path.relative_to(root)), "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
 (root / "SHA256SUMS.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-' "dist/$VERSION"
+' "dist-all/$VERSION"
 
 echo "完成：$OUT"

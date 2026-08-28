@@ -5,8 +5,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VERSION="${1:-}"
 IMAGE="coab-wine-smoke:ubuntu-noble-20260826"
-RELEASE="$ROOT/dist/$VERSION/full-local/windows"
-OUT="$ROOT/dist/$VERSION/smoke"
+RELEASE="$ROOT/dist-all/$VERSION/full-local/windows"
+OUT="$ROOT/dist-all/$VERSION/smoke"
 
 if [[ -z "$VERSION" || ! -x "$RELEASE/azure-bonds-game.exe" ]]; then
   echo "用法：tools/windows-release-smoke.sh <已建置版本>" >&2

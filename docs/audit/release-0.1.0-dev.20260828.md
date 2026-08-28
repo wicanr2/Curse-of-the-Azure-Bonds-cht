@@ -7,7 +7,7 @@
 
 ## 三平台封包
 
-`dist/0.1.0-dev.20260828/SHA256SUMS.json` 是完整機器可讀清單，共八件：Linux
+`dist-all/0.1.0-dev.20260828/SHA256SUMS.json` 是完整機器可讀清單，共八件：Linux
 x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP，各有 `patch` 與
 `full-local`。
 
@@ -20,7 +20,8 @@ x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP，各有 `patch`
 
 ## 內部展示版推廣片
 
-檔案：`dist/0.1.0-dev.20260828/promo/coab-remake-promo-internal.mp4`  
+檔案：`dist-all/0.1.0-dev.20260828/promo/coab-remake-promo-internal.mp4`
+
 SHA-256：`e2e5ec0f790022649c0fa9b03e5cef506aba5189ded3aca9a6d5f3f24d68ed25`
 
 - 1280×720、H.264、30 fps、1,140 幀；視訊與封裝時長都是 38.000 秒。

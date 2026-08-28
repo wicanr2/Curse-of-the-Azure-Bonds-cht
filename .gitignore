@@ -4,6 +4,7 @@
 *.pdf
 /pc98/
 /dist/
+/dist-all/
 
 # 原版 PC-98 商業配樂的本地 OGG render；可供本機 remake 播放，但未確認公開散布權。
 /assets/audio/pc98-bgm-selector-*.ogg
@@ -47,3 +48,4 @@ __pycache__/
 /golden-box-remake-engine/
 /pc98/
 /dist/
+/dist-all/

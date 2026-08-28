@@ -6,9 +6,9 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VERSION="${1:-}"
 IMAGE="game-video:latest"
-RELEASE="$ROOT/dist/$VERSION/full-local"
+RELEASE="$ROOT/dist-all/$VERSION/full-local"
 APPIMAGE="$RELEASE/azure-bonds-remake-$VERSION-x86_64.AppImage"
-OUT="$ROOT/dist/$VERSION/promo"
+OUT="$ROOT/dist-all/$VERSION/promo"
 
 if [[ -z "$VERSION" || ! -x "$APPIMAGE" ]]; then
   echo "用法：tools/build-promo.sh <已建置版本>" >&2
@@ -16,7 +16,7 @@ if [[ -z "$VERSION" || ! -x "$APPIMAGE" ]]; then
 fi
 docker image inspect "$IMAGE" >/dev/null
 docker run --rm --network none --memory 64m --cpus 1 --pids-limit 32 \
-  -u "$(id -u):$(id -g)" -v "$ROOT/dist/$VERSION:/dist-version" \
+  -u "$(id -u):$(id -g)" -v "$ROOT/dist-all/$VERSION:/dist-version" \
   busybox:1.37 sh -c 'rm -rf /dist-version/promo && mkdir -p /dist-version/promo'
 
 docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
