@@ -44,7 +44,7 @@ PNG 獨立化並以無圖像原版 ZIP fixture 抽樣通過。非第一人稱畫
 | 音訊 | **~90%** | 換曲點 13/13 有落點、曲目 12/12 在表內；音效 54 呼叫點全解出、對照 0 缺；DOS 無 BGM 已結案（含正對照）；播放生命週期 4/4；正式 runtime 為 12 首音樂＋9 個音效 OGG | 逐首人耳三輪聽檢、音樂性 loop point 與對外權利清單；不再以 DAC／PIT／實機週期級時序作為 release gate |
 | 可玩性（端到端） | **代表性主線通關已證實** | 規則層：開場→結局同一 session 25 段跑得完、114 個主線快照按鍵都推得動、前端無路可到的進入點 0。輸入層：強化隊伍第 **14,380 幀**觸發 `GameWon()`（899 格、16 段、393 句、落回原文 0）；一般強度已走正式採買、整備、MEMORIZE、`Alt+M` 與 QUICK | pending Bless 無限重試已修；一般強度 2,455 幀後真實全滅，依使用者決定正常停止並記錄，不強求該 attempt 通關，也不調整原版建角結果來迎合測試 |
 | 中文化 | **抽樣 gate 完成** | 現行 game-pack 中譯 1,598 條、assets locale 1,183 條；未翻／多譯／半形標點 0；139 個詞彙問題 0；spec 1245～1247 已抽樣後期 Journal、全酒館傳聞、物品／法術／服務與結局 | 新增文字依同一風險抽樣維護；不追求 1,598 條出版級逐句閉合 |
-| 發行（三平台打包） | **開發版已可重生** | Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP；patch／full-local 各 4 件並產生 SHA-256 manifest；Linux AppImage 與 Windows EXE（Wine）已實際啟動，兩張繁中開場 PNG 逐位元組相同 | Windows／macOS 真機啟動、macOS 簽署／公證與對外授權清單尚待收尾 |
+| 發行（三平台打包） | **0.1.0-dev.20260828 已可重生** | Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP；patch／full-local 各 4 件並產生 SHA-256 manifest；Linux AppImage 與 Windows EXE（Wine）已實際啟動，兩張繁中開場 PNG 逐位元組相同；38 秒內部推廣片完成技術與畫面抽樣 | Windows／macOS 真機啟動、macOS 簽署／公證；推廣片音樂公開散布權與人耳最終驗收尚待收尾 |
 
 ## 對照最初六個目標（CLAUDE.md）
 
