@@ -105,7 +105,7 @@ func (s *State) BeginGuidedCreation() error {
 	if s.Mode == ModeCombat {
 		return fmt.Errorf("character creation is unavailable during combat")
 	}
-	s.creationReturnMode = s.Mode
+	s.guidedReturnMode = s.Mode
 	s.Mode = ModeCharacterCreation
 	s.GuidedStep = CreationStepRace
 	s.GuidedDraft = party.Character{Level: 1}
@@ -489,6 +489,7 @@ func (s *State) ConfirmGuidedSave(save bool) error {
 		if err := s.CancelGuidedCreation(); err != nil {
 			return err
 		}
+		s.GuidedStep = CreationStepDone
 		s.CreationMessage = message
 		return nil
 	}
@@ -529,10 +530,14 @@ func (s *State) MoveGuidedCursor(delta int) error {
 // CancelGuidedCreation 離開四段流程，回到進入前的模式。
 func (s *State) CancelGuidedCreation() error {
 	s.GuidedActive = false
-	s.GuidedStep = CreationStepRace
-	s.Mode = s.creationReturnMode
-	if s.Mode == ModeCharacterCreation || s.Mode == ModeTitle {
+	s.Mode = s.guidedReturnMode
+	if s.Mode == ModeTitle {
 		s.Mode = ModeWilderness
+	}
+	if s.Mode == ModeCharacterCreation {
+		s.GuidedStep = CreationStepDone
+	} else {
+		s.GuidedStep = CreationStepRace
 	}
 	return nil
 }

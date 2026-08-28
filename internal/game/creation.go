@@ -153,7 +153,9 @@ func (s *State) OpenCharacterCreation() error {
 	// 角色建立有自己的曲子（原作 `GEN`，overlay-17 `0B08h` 寫 `MUSICNO := 2`）。
 	// ⚠ 那一處**不看場景**，所以 pack 那一側是每一段都列（spec 1192）。
 	s.requestMusicForCurrentBlock(creationMusicContext)
-	return nil
+	// 正常玩家入口直接走原版的種族→性別→職業→陣營流程。模板清單仍保留給
+	// 測試 adapter 直接呼叫 AddCreationCharacter，但不再是玩家預設畫面。
+	return s.BeginGuidedCreation()
 }
 
 func (s *State) AddCreationCharacter(index int) error {
@@ -358,6 +360,37 @@ func (s *State) CharacterRaceName(race party.Race) string {
 
 func (s *State) CharacterClassName(class party.Class) string {
 	return s.localizedCharacterClassName(class)
+}
+
+func (s *State) CharacterGenderName(gender party.Gender) string {
+	if gender == party.GenderFemale {
+		return s.LocaleText("gender_female")
+	}
+	return s.LocaleText("gender_male")
+}
+
+func (s *State) CharacterAlignmentName(alignment uint8, known bool) string {
+	if !known || int(alignment) >= len(guidedAlignments) {
+		return s.LocaleText("character_view_unknown")
+	}
+	return s.LocaleText(guidedAlignments[alignment].LocaleKey)
+}
+
+func (s *State) CharacterHealthName(status party.HealthStatus) string {
+	key := "health_status_ok"
+	switch status {
+	case party.HealthStatusAnimated:
+		key = "health_status_animated"
+	case party.HealthStatusUnconscious:
+		key = "health_status_unconscious"
+	case party.HealthStatusDying:
+		key = "health_status_dying"
+	case party.HealthStatusDead:
+		key = "health_status_dead"
+	case party.HealthStatusStoned:
+		key = "health_status_stoned"
+	}
+	return s.LocaleText(key)
 }
 
 func (s *State) SavePartyFile(path string) error {

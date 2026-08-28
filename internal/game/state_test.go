@@ -5225,8 +5225,19 @@ func TestCampMenuViewCharacterAndReturn(t *testing.T) {
 	if state.Mode != ModeWilderness || !state.campViewItemMenu || len(state.Choices) != 1 || !strings.Contains(state.Message, "阿明") || !strings.Contains(state.Message, "寶石 2") {
 		t.Fatalf("camp view summary state=%#v", state)
 	}
+	viewed, viewedIndex, ok := state.CampViewCharacter()
+	if !ok || viewedIndex != 0 || viewed.Name != "阿明" {
+		t.Fatalf("CampViewCharacter() = (%#v, %d, %v)", viewed, viewedIndex, ok)
+	}
+	viewed.Name = "不可回寫"
+	if state.partyRoster[0].Name != "阿明" {
+		t.Fatalf("CampViewCharacter returned mutable roster storage: %#v", state.partyRoster[0])
+	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
+	}
+	if _, _, ok := state.CampViewCharacter(); ok {
+		t.Fatal("CampViewCharacter remained visible after returning to the character list")
 	}
 	if state.Mode != ModeWilderness || !state.campViewMenu || state.campViewItemMenu {
 		t.Fatalf("camp view return state=%#v", state)
@@ -6191,6 +6202,8 @@ func TestCharacterCreationUsesGamePackTemplatesAndFormalLocale(t *testing.T) {
 		"creation_title", "creation_name_input", "creation_name_help",
 		"creation_ability_title", "creation_ability_row", "creation_ability_help",
 		"creation_option_label", "creation_progress", "creation_help",
+		"creation_guided_menu_hint", "creation_party_empty", "creation_party_member",
+		"creation_party_count", "creation_party_help",
 		"ability_strength", "ability_intelligence", "ability_wisdom",
 		"ability_dexterity", "ability_constitution", "ability_charisma",
 		"race_dwarf", "race_elf", "race_gnome", "race_half_elf",

@@ -64,50 +64,67 @@
       "generation_mode": "Docker/Xvfb -segment ECL1/0x52；原作開場 block 的序幕",
       "evidence_level": "material-exact/layout-reconstructed",
       "spec": "docs/plan/seg-04-verification-report.md"
-    }
-  ],
-  "planned": [
-    {
-      "id": "normal-view-character-info",
-      "status": "planned",
-      "description": "正常 VIEW 角色資訊頁，驗證 HEAD／BODY、右側 roster 與下方長文分區",
-      "normal_path": "新遊戲 → CAMP → VIEW",
-      "evidence_level": "unknown",
-      "specs": [
-        "docs/spec/406-dos-gui-draw-contract.md",
-        "docs/spec/391-dos-head-body-character-stage.md"
-      ]
     },
     {
       "id": "normal-area-map",
-      "status": "planned",
-      "description": "正常 AREA 地圖畫面，驗證地圖 panel 與原版石框",
-      "normal_path": "新遊戲 → 地城移動 → AREA",
-      "evidence_level": "unknown",
-      "specs": [
-        "docs/spec/322-original-gui-layout-fidelity.md"
-      ]
+      "file": "docs/screenshots/area-map-remake.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "02b22ca3a659d5e087d24e93d3f985ffc70bb423ee626cad0b0bb015bc919bec",
+      "generation_mode": "Docker/Xvfb -area-map；GEO2/01 原版 11×11 AREA 視窗 checkpoint",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/322-original-gui-layout-fidelity.md"
     },
     {
       "id": "normal-overland-map",
-      "status": "planned",
-      "description": "正常世界旅行 overland map，驗證位置標記、日期與中文選項",
-      "normal_path": "火刀據點戰後 → 世界旅行",
-      "evidence_level": "unknown",
-      "specs": [
-        "docs/spec/322-original-gui-layout-fidelity.md"
-      ]
+      "file": "docs/screenshots/overland-map-remake.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "33e88b4b02ee84c390981afce58bcf94b0bfc06bb647193263ac574de23ed1e5",
+      "generation_mode": "Docker/Xvfb -world-map；原版 BIGPIC 世界地圖 checkpoint",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/322-original-gui-layout-fidelity.md"
     },
     {
       "id": "spell-impact-keyframe",
-      "status": "planned",
-      "description": "正常法術關鍵幀，分開記錄施法、飛行、命中／傷害與後續效果",
-      "normal_path": "正常戰鬥 → CAST → Magic Missile／Fireball／Lightning Bolt",
-      "evidence_level": "unknown",
-      "specs": [
-        "docs/spec/323-dos-combat-screen-measurement.md",
-        "docs/spec/round-75-sprit-playback.md"
-      ]
+      "file": "docs/screenshots/fireball-impact-remake.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "bfff7ffc35672ff2a8d9cd0e59067413ee96dbcff2fe8bfc3820f6b2d0f5cc59",
+      "generation_mode": "Docker/Xvfb -encounter -combat-visual-demo fireball-impact-1；固定法術命中關鍵幀",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/323-dos-combat-screen-measurement.md"
+    },
+    {
+      "id": "guided-party-assembly",
+      "file": "docs/screenshots/guided-party-assembly.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "413f7559035fe04534d5dc76c35f3b393ef218ffbde2b7e8d8042d6fc8c209b5",
+      "generation_mode": "Docker/Xvfb -guided-creation -guided-creation-step party；原版建角流程後的隊伍組裝頁",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/1244-original-character-and-party-creation-guidance.md"
+    },
+    {
+      "id": "normal-view-character-info",
+      "file": "docs/screenshots/character-view-remake.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "f753146d827bace5a4c3594dd01ba8a7f97859ac1a17060456f2d07be3820a1c",
+      "generation_mode": "Docker/Xvfb -character-view；typed fixture 經公開 CAMP→VIEW→first-character 狀態轉移",
+      "evidence_level": "material-exact/layout-reconstructed",
+      "spec": "docs/spec/1246-normal-character-view-polish.md"
+    },
+    {
+      "id": "ending-page-four",
+      "file": "docs/screenshots/ending-page-4-remake.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "78b51fb39f9d6b6b5c540fe9f01471634668117345c3117bf3418317571ad5f7",
+      "generation_mode": "Docker/Xvfb -ending-page 4；結局 transaction 經三次正常 Select 推進至原版八行頁",
+      "evidence_level": "layout-only",
+      "spec": "docs/spec/1247-late-content-and-ending-ui-polish.md"
     }
-  ]
+  ],
+  "planned": []
 }

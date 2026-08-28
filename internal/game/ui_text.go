@@ -310,6 +310,7 @@ func (s *State) PrepareWorldMapPreview() {
 		s.localizeOption("JOURNEY ON"),
 		s.localizeOption("CAMP"),
 	}
+	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	s.Prompt = s.catalog.Text("press_button", "press_button")
 }
 

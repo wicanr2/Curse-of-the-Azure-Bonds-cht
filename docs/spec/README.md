@@ -610,3 +610,8 @@
 - [1240 現行 route oracle 與短暫敗戰訊息捕捉](./1240-current-route-oracle-and-loss-capture.md)（`READY`：完整重生 39,973 步的唯一 `route-current.json`，加入候選檔原子替換、SHA-256 與 10,000 步下界；戰鬥提交點不再漏掉短暫敗戰頁，一般強度 1,800 幀全滅 0；下一瓶頸是五／六級角色仍只有一級法術）
 - [1241 CAMP 多環法術記憶與準備時間](./1241-multilevel-camp-memorization.md)（`READY`：完整 `3×5` 容量、逐環候選／上限與 4／6／8 小時準備時間；快捷法師 loadout 仍待共同決策）
 - [第一千二百四十二輪 Prayer QUICK 法術資料接線](./1242-prayer-quick-metadata.md)（`READY`：由原版主法術表補齊 Prayer 的 QUICK priority／目標檢查／距離／施法時間，供合法高階記憶槽正常戰鬥驗證）
+- [第一千二百四十三輪 runtime 圖像 PNG 獨立化](./1243-runtime-png-asset-independence.md)（`READY`：1,741 張 PNG＋manifest 取代 runtime 圖像 DAX；無圖像 ZIP fixture 移除 51 個 member，五類代表畫面通過）
+- [第一千二百四十四輪原版建角／建隊流程與引導](./1244-original-character-and-party-creation-guidance.md)（`READY`：正常入口遵循原版六階段順序，只增加步驟、按鍵與隊伍組裝提示；標題起始真實按鍵測試通過）
+- [第一千二百四十五輪內容與玩家可見 UI polish 抽樣](./1245-content-and-visible-ui-polish-sampling.md)（`READY`：內容機械全量＋高風險人工抽樣；修正兩條中譯與一個錯誤詞條；AREA／世界地圖／Fireball／建隊頁入 manifest，世界日期截斷修復）
+- [第一千二百四十六輪正常角色 VIEW 版面勘誤與 polish](./1246-normal-character-view-polish.md)（`READY`：正常 DOS oracle 證明 VIEW 是全頁資料表而非 HEAD／BODY；remake 經 CAMP 狀態機顯示角色數值並保留裝備操作）
+- [第一千二百四十七輪後期內容與結局 UI polish](./1247-late-content-and-ending-ui-polish.md)（`READY`：補回 12 則被省略的酒館文風、統一混種劍、訂正護手被震碎的結局語意；最長結局頁改用八行安全矩形並收入 manifest）

@@ -70,3 +70,29 @@ func TestTavernTalesAreDistinct(t *testing.T) {
 		seen[message] = number
 	}
 }
+
+// TestFoodAndDrinkMockeryIsNotDropped preserves a repeated piece of authored
+// tavern voice.  A fluent but shortened translation previously kept every
+// rumour fact while silently deleting this opening from twelve of thirteen
+// affected tales, so ordinary coverage and distinctness tests stayed green.
+func TestFoodAndDrinkMockeryIsNotDropped(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	const englishOpening = "As you consume the local excuse for food and drink"
+	const chineseOpening = "難稱為食物與飲料"
+	matched := 0
+	for key, english := range pack.Locales["en"] {
+		if !strings.HasPrefix(english, englishOpening) {
+			continue
+		}
+		matched++
+		if !strings.Contains(pack.Locales["zh-TW"][key], chineseOpening) {
+			t.Errorf("%s drops the tavern food/drink mockery: %q", key, pack.Locales["zh-TW"][key])
+		}
+	}
+	if matched != 13 {
+		t.Fatalf("food/drink tavern variants=%d, want 13", matched)
+	}
+}

@@ -297,6 +297,26 @@ func TestEndingSceneTextIsDistinctPerPage(t *testing.T) {
 	}
 }
 
+func TestPrepareEndingScenePreviewUsesNormalPageSelections(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	if err := state.PrepareEndingScenePreview(4); err != nil {
+		t.Fatal(err)
+	}
+	page, ok := state.EndingScenePage()
+	if !ok || page != 3 {
+		t.Fatalf("EndingScenePage() = (%d, %v), want zero-based page 3", page, ok)
+	}
+	if state.Message != state.catalog.Text("ending_page_4", "") || len(state.Choices) != 1 {
+		t.Fatalf("page 4 state: message=%q choices=%v", state.Message, state.Choices)
+	}
+	if err := state.PrepareEndingScenePreview(0); err == nil {
+		t.Fatal("page zero unexpectedly accepted")
+	}
+	if err := state.PrepareEndingScenePreview(6); err == nil {
+		t.Fatal("page six unexpectedly accepted")
+	}
+}
+
 // 全滅回標題之後再開新局，章節與地圖狀態要收回開局值（seg001.Init）。
 //
 // ★ 這條釘住的缺陷：`resetSessionForNewGame` 先前只重設 session 與隊伍，

@@ -27,6 +27,8 @@ type keySource interface {
 	JustPressed(key ebiten.Key) bool
 	// Pressed 對應 `ebiten.IsKeyPressed`：現在是按著的（修飾鍵用）。
 	Pressed(key ebiten.Key) bool
+	// InputChars 是這一幀輸入的文字；角色姓名等 Unicode 輸入也必須可重播。
+	InputChars() []rune
 }
 
 // ebitenKeys 是正式執行時的來源，直接轉給 ebiten。
@@ -34,6 +36,7 @@ type ebitenKeys struct{}
 
 func (ebitenKeys) JustPressed(key ebiten.Key) bool { return inpututil.IsKeyJustPressed(key) }
 func (ebitenKeys) Pressed(key ebiten.Key) bool     { return ebiten.IsKeyPressed(key) }
+func (ebitenKeys) InputChars() []rune              { return ebiten.InputChars() }
 
 // justPressed／keyDown 是前端內部唯一該用的兩支。`a.keys` 沒設時退回真的 ebiten，
 // 這樣既有的建構路徑不必每一條都記得填。
@@ -49,6 +52,13 @@ func (a *app) keyDown(key ebiten.Key) bool {
 		return ebitenKeys{}.Pressed(key)
 	}
 	return a.keys.Pressed(key)
+}
+
+func (a *app) inputChars() []rune {
+	if a.keys == nil {
+		return ebitenKeys{}.InputChars()
+	}
+	return a.keys.InputChars()
 }
 
 // ctrlPressed 是全域音訊開關的修飾鍵。

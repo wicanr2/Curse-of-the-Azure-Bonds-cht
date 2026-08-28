@@ -136,6 +136,18 @@ func tap(t *testing.T, application *app, keys *scriptedKeys, key ebiten.Key) {
 	}
 }
 
+func typeText(t *testing.T, application *app, keys *scriptedKeys, value string) {
+	t.Helper()
+	keys.chars = []rune(value)
+	if err := application.Update(); err != nil {
+		t.Fatalf("輸入 %q：%v", value, err)
+	}
+	keys.release()
+	if err := application.Update(); err != nil {
+		t.Fatalf("結束輸入 %q：%v", value, err)
+	}
+}
+
 // tapWithModifier 走與真人相同的「按住修飾鍵並敲命令鍵、全部放開」。
 // ALT+M 的 gate 讀的是 Pressed，而 M 讀 JustPressed；scriptedKeys 的 press
 // 會替換整個當幀集合，所以兩顆必須在同一次 press 送入。
@@ -2368,19 +2380,26 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	if application.state.Mode != game.ModeTitle {
 		t.Fatalf("新遊戲應該停在標題，實際 %v", application.state.Mode)
 	}
-	// 標題 → 角色建立 → 加六個角色 → D 完成建立。
+	// 標題 → 原版種族／性別／職業／陣營 → 擲點 → 姓名 → 儲存 → D 完成隊伍。
 	tap(t, application, keys, ebiten.KeyEnter)
 	if application.state.Mode != game.ModeCharacterCreation {
 		t.Fatalf("按 Enter 應該進角色建立，實際 %s", modeName(application.state.Mode))
 	}
-	for index := 0; index < 6; index++ {
-		tap(t, application, keys, ebiten.KeyEnter)
-		if !keyDrivenBoost() && index < 5 {
-			tap(t, application, keys, ebiten.KeyDown)
-		}
+	if !application.state.GuidedActive || application.state.GuidedStep != game.CreationStepRace {
+		t.Fatalf("正常入口應直接到原版種族選單：active=%v step=%d", application.state.GuidedActive, application.state.GuidedStep)
 	}
-	if got := len(application.state.CreationRoster); got != 6 {
-		t.Fatalf("按六次 Enter 應該有六名隊員，實際 %d", got)
+	for index := 0; index < 4; index++ {
+		tap(t, application, keys, ebiten.KeyEnter)
+	}
+	if application.state.GuidedStep != game.CreationStepAbilities || application.state.GuidedDraft.Abilities == (party.Abilities{}) {
+		t.Fatalf("選完四段應自動擲點：step=%d abilities=%+v", application.state.GuidedStep, application.state.GuidedDraft.Abilities)
+	}
+	tap(t, application, keys, ebiten.KeyEnter)
+	typeText(t, application, keys, "測試者")
+	tap(t, application, keys, ebiten.KeyEnter)
+	tap(t, application, keys, ebiten.KeyY)
+	if got := len(application.state.CreationRoster); got != 1 {
+		t.Fatalf("原版流程儲存後應有一名隊員，實際 %d", got)
 	}
 	tap(t, application, keys, ebiten.KeyD)
 	if application.state.Mode == game.ModeCharacterCreation {

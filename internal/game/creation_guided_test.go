@@ -11,6 +11,22 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
+func TestNormalCreationEntryUsesOriginalFlowAndReturnsToPartyAssembly(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCharacterCreation || !state.GuidedActive || state.GuidedStep != CreationStepRace {
+		t.Fatalf("mode=%v active=%v step=%d", state.Mode, state.GuidedActive, state.GuidedStep)
+	}
+	if err := state.CancelGuidedCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCharacterCreation || state.GuidedActive || state.GuidedStep != CreationStepDone {
+		t.Fatalf("cancel should return to party assembly: mode=%v active=%v step=%d", state.Mode, state.GuidedActive, state.GuidedStep)
+	}
+}
+
 // 原版建角是種族 → 性別 → 職業 → 陣營四段（spec 1093 §一），
 // 而職業那一段的選項由種族決定（spec 1099 §五）。
 func TestGuidedCreationFollowsReferenceFourMenus(t *testing.T) {
@@ -265,6 +281,8 @@ func TestGuidedCreationLocaleKeysExist(t *testing.T) {
 	keys := []string{
 		"creation_pick_race", "creation_pick_gender", "creation_pick_class",
 		"creation_pick_alignment", "creation_ability_prompt", "creation_reroll_prompt",
+		"creation_guided_menu_hint", "creation_party_empty", "creation_party_member",
+		"creation_party_count", "creation_party_help",
 		"gender_male", "gender_female",
 	}
 	for _, race := range guidedRaces {

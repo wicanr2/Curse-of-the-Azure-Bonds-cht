@@ -20,8 +20,9 @@ import (
 // 但下一幀就必須是 false。前端同一幀會對同一顆鍵問好幾次（不同分支各問各的），
 // 讀完就清掉會讓後面的分支看不到那一顆。
 type scriptedKeys struct {
-	just map[ebiten.Key]bool
-	held map[ebiten.Key]bool
+	just  map[ebiten.Key]bool
+	held  map[ebiten.Key]bool
+	chars []rune
 }
 
 func newScriptedKeys() *scriptedKeys {
@@ -30,6 +31,7 @@ func newScriptedKeys() *scriptedKeys {
 
 func (s *scriptedKeys) JustPressed(key ebiten.Key) bool { return s.just[key] }
 func (s *scriptedKeys) Pressed(key ebiten.Key) bool     { return s.held[key] || s.just[key] }
+func (s *scriptedKeys) InputChars() []rune              { return append([]rune(nil), s.chars...) }
 
 // press 安排下一幀按下這些鍵。
 func (s *scriptedKeys) press(keys ...ebiten.Key) {
@@ -40,7 +42,7 @@ func (s *scriptedKeys) press(keys ...ebiten.Key) {
 }
 
 // release 清掉這一幀的按鍵，讓下一幀是空的。
-func (s *scriptedKeys) release() { s.just = map[ebiten.Key]bool{} }
+func (s *scriptedKeys) release() { s.just = map[ebiten.Key]bool{}; s.chars = nil }
 
 // ★ 這個測試是接縫的守門員。前端只要有人再直接呼叫 `inpututil.IsKeyJustPressed`
 // 或 `ebiten.IsKeyPressed`，按鍵驅動的測試就**永遠走不到那一行**——而測試會照樣

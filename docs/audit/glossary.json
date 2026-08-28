@@ -3,15 +3,19 @@
  "sources": [
   {
    "path": "gamepack/pack/20-locale.zh-TW.json",
-   "count": 1580
+   "count": 1598
   },
   {
    "path": "assets/locale/zh-TW.json",
-   "count": 1142
+   "count": 1183
   },
   {
    "path": "internal/tooltext/messages/zh-TW.json",
-   "count": 170
+   "count": 1920
+  },
+  {
+   "path": "docs/guide/main-story-zh-TW.md",
+   "count": 569
   }
  ],
  "terms": [
@@ -23,7 +27,7 @@
     "泰蘭索斯"
    ],
    "note": "稱號見下一列",
-   "uses": 21
+   "uses": 29
   },
   {
    "source": "Flamed One",
@@ -44,7 +48,7 @@
     "德拉坎卓斯"
    ],
    "note": "塞爾紅袍法師",
-   "uses": 20
+   "uses": 28
   },
   {
    "source": "Fzoul Chembryl",
@@ -60,26 +64,26 @@
    "chinese": "摩貢",
    "category": "人物",
    "note": "摩安德大祭司",
-   "uses": 15
+   "uses": 26
   },
   {
    "source": "Dexam",
    "chinese": "德克薩姆",
    "category": "人物",
-   "uses": 11
+   "uses": 25
   },
   {
    "source": "Alias",
    "chinese": "愛麗雅絲",
    "category": "人物",
-   "uses": 41
+   "uses": 49
   },
   {
    "source": "Dragonbait",
    "chinese": "龍餌",
    "category": "人物",
    "note": "蜥蜴人聖武士",
-   "uses": 29
+   "uses": 37
   },
   {
    "source": "Olive Ruskettle",
@@ -88,14 +92,14 @@
    "forbidden": [
     "拉斯凱托"
    ],
-   "uses": 4
+   "uses": 5
   },
   {
    "source": "Dimswart",
    "chinese": "迪姆斯沃特",
    "category": "人物",
    "note": "賢者",
-   "uses": 16
+   "uses": 22
   },
   {
    "source": "Elminster",
@@ -108,7 +112,7 @@
    "chinese": "菲拉妮",
    "category": "人物",
    "note": "提爾佛頓賢者",
-   "uses": 8
+   "uses": 13
   },
   {
    "source": "Nacacia",
@@ -131,7 +135,7 @@
    "source": "Akabar",
    "chinese": "阿卡巴",
    "category": "人物",
-   "uses": 10
+   "uses": 17
   },
   {
    "source": "Azoun",
@@ -158,7 +162,7 @@
    "source": "Nameless One",
    "chinese": "無名者",
    "category": "人物",
-   "uses": 3
+   "uses": 5
   },
   {
    "source": "Silk",
@@ -172,13 +176,6 @@
    "chinese": "米里塞勒特斯",
    "category": "人物",
    "note": "手札 21 那封家書的署名",
-   "uses": 1
-  },
-  {
-   "source": "Sis",
-   "chinese": "西絲",
-   "category": "人物",
-   "note": "米里塞勒特斯家中的人",
    "uses": 1
   },
   {
@@ -203,7 +200,7 @@
    "aliases": [
     "AKABAR BEL AKAS"
    ],
-   "uses": 4
+   "uses": 5
   },
   {
    "source": "Alaterian",
@@ -241,25 +238,25 @@
     "貝恩"
    ],
    "note": "`Banite` 併入本詞條",
-   "uses": 24
+   "uses": 30
   },
   {
    "source": "Moander",
    "chinese": "摩安德",
    "category": "神祇",
-   "uses": 38
+   "uses": 61
   },
   {
    "source": "Lathander",
    "chinese": "洛山達",
    "category": "神祇",
-   "uses": 6
+   "uses": 9
   },
   {
    "source": "Gond",
    "chinese": "剛德",
    "category": "神祇",
-   "uses": 9
+   "uses": 11
   },
   {
    "source": "Fire Knives",
@@ -272,7 +269,7 @@
    "aliases": [
     "FIRE KNIFE"
    ],
-   "uses": 40
+   "uses": 59
   },
   {
    "source": "Zhentarim",
@@ -299,7 +296,7 @@
     "紅羽戰士"
    ],
    "note": "希爾斯法軍隊；尤拉什圍城的一方",
-   "uses": 31
+   "uses": 36
   },
   {
    "source": "Red Wizards of Thay",
@@ -324,7 +321,7 @@
    "source": "Tilverton",
    "chinese": "提爾佛頓",
    "category": "地名",
-   "uses": 23
+   "uses": 36
   },
   {
    "source": "Zhentil Keep",
@@ -334,13 +331,13 @@
     "散塔林堡"
    ],
    "note": "城；與組織「散塔林會」是兩回事",
-   "uses": 46
+   "uses": 54
   },
   {
    "source": "Yulash",
    "chinese": "尤拉什",
    "category": "地名",
-   "uses": 23
+   "uses": 39
   },
   {
    "source": "Voonlar",
@@ -356,44 +353,48 @@
    "source": "Myth Drannor",
    "chinese": "迷斯卓諾",
    "category": "地名",
-   "uses": 18
+   "forbidden": [
+    "神話卓諾",
+    "密斯卓諾"
+   ],
+   "uses": 26
   },
   {
    "source": "Shadowdale",
    "chinese": "暗影谷",
    "category": "地名",
-   "uses": 19
+   "uses": 21
   },
   {
    "source": "Hillsfar",
    "chinese": "希爾斯法",
    "category": "地名",
-   "uses": 10
+   "uses": 17
   },
   {
    "source": "Essembra",
    "chinese": "艾森布拉",
    "category": "地名",
-   "uses": 7
+   "uses": 20
   },
   {
    "source": "Ashabenford",
    "chinese": "阿沙本福德",
    "category": "地名",
-   "uses": 8
+   "uses": 16
   },
   {
    "source": "Mulmaster",
    "chinese": "穆爾馬斯特",
    "category": "地名",
-   "uses": 6
+   "uses": 7
   },
   {
    "source": "Hap",
    "chinese": "哈普",
    "category": "地名",
    "note": "世界地圖的目的地名",
-   "uses": 15
+   "uses": 28
   },
   {
    "source": "Haptooth",
@@ -406,7 +407,7 @@
    "source": "Pit of Moander",
    "chinese": "摩安德之坑",
    "category": "地名",
-   "uses": 5
+   "uses": 16
   },
   {
    "source": "Dark Shrine",
@@ -418,7 +419,7 @@
    "source": "Standing Stones",
    "chinese": "立石群",
    "category": "地名",
-   "uses": 8
+   "uses": 21
   },
   {
    "source": "Great Glacier",
@@ -449,7 +450,7 @@
    "source": "Cormyr",
    "chinese": "科米爾",
    "category": "地名",
-   "uses": 9
+   "uses": 10
   },
   {
    "source": "Helm of Dragons",
@@ -458,19 +459,19 @@
    "forbidden": [
     "龍之頭盔"
    ],
-   "uses": 5
+   "uses": 8
   },
   {
    "source": "Gauntlet of Moander",
    "chinese": "摩安德護手",
    "category": "神器與關鍵物品",
-   "uses": 4
+   "uses": 11
   },
   {
    "source": "Amulet of Lathander",
    "chinese": "洛山達護符",
    "category": "神器與關鍵物品",
-   "uses": 6
+   "uses": 9
   },
   {
    "source": "Pool of Radiance",
@@ -490,14 +491,14 @@
     "青色印記"
    ],
    "note": "平常寫「枷印」；需要完整名稱時寫「青色枷」，沿用原中文版譯名（《青色枷的詛咒》）",
-   "uses": 51
+   "uses": 68
   },
   {
    "source": "Otyugh",
    "chinese": "奧提尤格",
    "category": "敘述中出現的怪物",
    "note": "世界地圖遭遇與手札 21",
-   "uses": 13
+   "uses": 14
   },
   {
    "source": "Thri-Kreen",
@@ -542,63 +543,63 @@
    "chinese": "鷹馬",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 1
+   "uses": 3
   },
   {
    "source": "FIGHTER",
    "chinese": "戰士",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 34
+   "uses": 45
   },
   {
    "source": "BLACK DRAGON",
    "chinese": "黑龍",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 18
+   "uses": 23
   },
   {
    "source": "DK ELF FIGHTER",
    "chinese": "黑暗精靈戰士",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 1
+   "uses": 3
   },
   {
    "source": "DARK ELF MAGE",
    "chinese": "黑暗精靈法師",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 1
+   "uses": 3
   },
   {
    "source": "DARK ELF CLERIC",
    "chinese": "黑暗精靈牧師",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 2
+   "uses": 3
   },
   {
    "source": "EFREETI",
    "chinese": "伊弗利特",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 10
+   "uses": 15
   },
   {
    "source": "SALAMANDER",
    "chinese": "火蜥蜴",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 6
+   "uses": 10
   },
   {
    "source": "DRACOLICH",
    "chinese": "龍巫妖",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 2
+   "uses": 5
   },
   {
    "source": "HOODED MEDUSA",
@@ -612,14 +613,14 @@
    "chinese": "眼魔",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 17
+   "uses": 25
   },
   {
    "source": "MINOTAUR",
    "chinese": "牛頭人",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 5
+   "uses": 7
   },
   {
    "source": "ZHENTIL FIGHTER",
@@ -647,28 +648,28 @@
    "chinese": "大祭司",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 6
+   "uses": 7
   },
   {
    "source": "ZHENTRIM CLERIC",
    "chinese": "散塔林牧師",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 1
+   "uses": 2
   },
   {
    "source": "ZHENTRIM FGHTR",
    "chinese": "散塔林戰士",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 2
+   "uses": 3
   },
   {
    "source": "ZHENTRIM MAGE",
    "chinese": "散塔林法師",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 1
+   "uses": 2
   },
   {
    "source": "CULTIST",
@@ -682,35 +683,35 @@
    "chinese": "摩貢",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 15
+   "uses": 26
   },
   {
    "source": "SHAMBLING MOUND",
    "chinese": "蔓生怪",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 16
+   "uses": 20
   },
   {
    "source": "BIT O' MOANDER",
    "chinese": "摩安德殘軀",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 2
+   "uses": 6
   },
   {
    "source": "AKABAR BEL AKAS",
    "chinese": "阿卡巴・貝爾・阿卡什",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 4
+   "uses": 5
   },
   {
    "source": "ALIAS",
    "chinese": "愛麗雅絲",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 41
+   "uses": 49
   },
   {
    "source": "ANHKHEG",
@@ -773,14 +774,14 @@
    "chinese": "德拉坎德羅斯",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 20
+   "uses": 28
   },
   {
    "source": "DRAGONBAIT",
    "chinese": "龍餌",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 29
+   "uses": 37
   },
   {
    "source": "ETTIN",
@@ -801,7 +802,7 @@
    "chinese": "火刀",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 40
+   "uses": 59
   },
   {
    "source": "GIANT SLUG",
@@ -836,14 +837,14 @@
    "chinese": "地獄犬",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 9
+   "uses": 10
   },
   {
    "source": "KNIGHT",
    "chinese": "騎士",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 8
+   "uses": 12
   },
   {
    "source": "LG VEGEPYGMY",
@@ -857,7 +858,7 @@
    "chinese": "蜥蜴人",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 4
+   "uses": 5
   },
   {
    "source": "LOOTER",
@@ -871,7 +872,7 @@
    "chinese": "法師",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 57
+   "uses": 75
   },
   {
    "source": "MANTICORE",
@@ -913,7 +914,7 @@
    "chinese": "奧提尤格",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 13
+   "uses": 14
   },
   {
    "source": "OWL BEAR",
@@ -941,21 +942,21 @@
    "chinese": "羅剎",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 17
+   "uses": 22
   },
   {
    "source": "RED PLUME",
    "chinese": "紅羽衛",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 31
+   "uses": 36
   },
   {
    "source": "ROYAL GUARD",
    "chinese": "皇家衛兵",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 8
+   "uses": 10
   },
   {
    "source": "RUSTLE",
@@ -976,7 +977,7 @@
    "chinese": "盜賊",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 24
+   "uses": 30
   },
   {
    "source": "THRI-KREEN",
@@ -997,7 +998,7 @@
    "chinese": "提朗瑟克斯",
    "category": "怪物（由 combatant_name_rules 匯入）",
    "imported": true,
-   "uses": 21
+   "uses": 29
   },
   {
    "source": "WORG",

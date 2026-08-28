@@ -11,17 +11,25 @@
 - 第一人稱：585 種牆面配置、1,498 張原版對照全部逐格相同。
 - 音訊：runtime 正式資產為 12 首音樂＋9 個音效 OGG；仍待人耳 loop 與散布權確認。
 - 發行：四個目標平台包可重生；Linux 與 Wine smoke 已做，Windows／macOS 真機尚待。
-- 圖像：780 張 sprite PNG 已由 runtime 使用；TILES、戰場地形、AREA／共用符號、
-  SKY、牆片六類仍從原版 DAX 載入，是目前最大 release 整合項。
+- 圖像：1,741 張 PNG 與 manifest 已涵蓋 sprite、TILES、戰場地形、AREA／共用
+  符號、SKY 與牆片；runtime 不再從原版 DAX 解碼圖像。移除原版 ZIP 中 51 個
+  圖像 member、保留 43 個非圖像 member 的 fixture，已抽樣通過開場 PIC、AREA、
+  第一人稱、戰鬥與 BIGPIC，其中三個可直接比對區域為 0 像素差。
+- 建隊／建角：正常入口已改回原版的種族→性別→職業→陣營→能力值／HP→姓名→
+  存檔順序；畫面提示目前步驟、有效鍵與隊伍人數，完成一人後回到隊伍組裝頁。
+- Polish：已依「機械全量＋風險導向人工抽樣」完成；1,598 條中譯的三項缺口為 0，
+  138 個詞彙問題 0。三批人工樣本涵蓋後期 Journal、全酒館傳聞、物品、商店／神殿／
+  訓練、法術與結局，並修正系統性省句、混種劍跨畫面異名及護手結局指涉。UI manifest
+  現有 12 張、planned 0；AREA／世界地圖／Fireball／建隊／角色 VIEW／最長結局頁均已
+  人工檢視，日期與結局長文截斷已修。這不等於可選的 1,598 條出版級逐句編校。
 
 ## 下一個最小動作
 
 依 [`docs/knowledge/remake-completeness-assessment.md`](docs/knowledge/remake-completeness-assessment.md)：
 
-1. 把六類 runtime 圖像依 [`PNG 獨立化盤點`](docs/audit/png-asset-independence-2026-08-27.md)
-   匯成 PNG＋必要 manifest；先做缺少圖像 DAX member 仍能啟動的測試。
+1. 把無圖像原版資料 fixture 納入發行封包抽樣，確認各平台包只需原版非圖像資料。
 2. 抽樣主線、主要替代入口、前中後期高風險支線與曾出錯分支。
-3. 抽樣選單、戰鬥、PIC、AREA、結局的原版／remake 同狀態畫面。
+3. 抽樣尚未覆蓋的結局畫面，並做人耳 OGG loop 驗收。
 4. 完成 Windows／macOS 真機、macOS 簽署／公證及對外授權清單。
 
 ## 不可重開的舊 gate

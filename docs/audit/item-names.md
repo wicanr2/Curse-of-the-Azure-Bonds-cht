@@ -18,7 +18,7 @@
 | 3 | Banded Mail | 帶甲 |
 | 1 | Banded Mail +1 | 帶甲+1 |
 | 3 | Bardiche | 巴迪什 |
-| 3 | Bastard Sword | 闊刃大劍 |
+| 3 | Bastard Sword | 混種劍 |
 | 3 | Battle Axe | 戰斧 |
 | 3 | Bec De Corbin | 科比爾德斧 |
 | 3 | Bill-Guisarme | 比爾鉤斧 |

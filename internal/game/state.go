@@ -163,6 +163,7 @@ type State struct {
 	eventReturnMode         Mode
 	journalReturnMode       Mode
 	creationReturnMode      Mode
+	guidedReturnMode        Mode
 	session                 *ecl.BlockSession
 	pendingPictureResult    *ecl.RunResult
 	pendingECLMenu          *ecl.Menu
@@ -4168,6 +4169,31 @@ func (s *State) showEndingPage() {
 	s.Choices = []string{s.localizeOption(s.currentOriginalChoices[0])}
 }
 
+// EndingScenePage reports the currently visible zero-based ending page.  The
+// frontend uses this explicit state instead of guessing from localized text.
+func (s *State) EndingScenePage() (int, bool) {
+	if !s.endingScene || s.endingPageIndex < 0 || s.endingPageIndex >= len(endingSceneKeys) {
+		return -1, false
+	}
+	return s.endingPageIndex, true
+}
+
+// PrepareEndingScenePreview enters the real ending transaction and advances
+// it through the same Select path used by the player.  It exists solely for a
+// deterministic renderer checkpoint; page is one-based.
+func (s *State) PrepareEndingScenePreview(page int) error {
+	if page < 1 || page > len(endingSceneKeys) {
+		return fmt.Errorf("ending preview page %d is outside 1..%d", page, len(endingSceneKeys))
+	}
+	s.beginEndingScene()
+	for current := 1; current < page; current++ {
+		if err := s.Select(0); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // selectEndingScene 翻到下一頁；演完最後一頁才進勝利選單。
 func (s *State) selectEndingScene() error {
 	s.endingPageIndex++
@@ -4822,6 +4848,16 @@ func (s *State) SetPartyRoster(roster party.Roster) error {
 
 func (s *State) PartyFighters() []combat.Fighter {
 	return append([]combat.Fighter(nil), s.party...)
+}
+
+// CampViewCharacter exposes the character currently selected through the
+// normal CAMP → VIEW state machine. The renderer receives a copy and cannot
+// mutate persistent party data behind the menu transaction.
+func (s *State) CampViewCharacter() (party.Character, int, bool) {
+	if !s.campViewItemMenu || s.campViewCharacter < 0 || s.campViewCharacter >= len(s.partyRoster) {
+		return party.Character{}, -1, false
+	}
+	return s.partyRoster[s.campViewCharacter], s.campViewCharacter, true
 }
 
 // PickDungeonLock resolves one original pick-lock attempt against the loaded

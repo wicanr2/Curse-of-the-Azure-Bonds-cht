@@ -329,6 +329,18 @@ func TestFitTextToWidthKeepsSingleLineInsideDeclaredRegion(t *testing.T) {
 	}
 }
 
+func TestOverlandDateTextSafeRectangleFitsTraditionalChineseDate(t *testing.T) {
+	const longestExpected = "日期：第12日／第3月／第1362年"
+	// The production compact CJK face uses 16px cells. This test makes the
+	// layout contract explicit without depending on font rasterization.
+	if want := len([]rune(longestExpected)) * 16; overlandDateWidth < want {
+		t.Fatalf("overland date width=%d, want at least %d", overlandDateWidth, want)
+	}
+	if overlandDateX < 8 || overlandDateX+overlandDateWidth > 632 {
+		t.Fatalf("overland date rectangle x=%d width=%d escapes panel", overlandDateX, overlandDateWidth)
+	}
+}
+
 func TestCombatTerrainEntryUsesWildernessCameraCenter(t *testing.T) {
 	floor := mapdata.GenerateWilderness(0, 1)
 	got, ok := combatMovementTerrainEntry("WILDCOM", nil, floor, 25, 12, false, 3, 3)

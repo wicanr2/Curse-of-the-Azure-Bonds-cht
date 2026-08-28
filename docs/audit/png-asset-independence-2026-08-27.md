@@ -1,6 +1,6 @@
 # Release 圖像 PNG 獨立化盤點（2026-08-27）
 
-狀態：盤點完成；轉換可行，runtime 尚未完全切換。
+狀態：runtime 圖像切換與缺圖像 DAX 抽樣完成；平台 release 包裝抽樣仍待完成。
 
 ## 目標與邊界
 
@@ -12,8 +12,9 @@
 
 ## 已獨立為 PNG
 
-`assets/` 目前有 **787 張 PNG**：`assets/sprites/` 780 張、Journal 6 張、原版參考
-截圖 1 張。runtime 已直接從 `assets/sprites/` 載入下列玩家可見素材：
+`assets/` 目前有 **2,528 張 PNG**：`assets/sprites/` 780 張、
+`assets/runtime-images/` 1,741 張、Journal 6 張、原版參考截圖 1 張。runtime 已直接
+從兩個圖像資產目錄載入玩家可見素材：
 
 | 類別 | PNG 數 | runtime 狀態 |
 |---|---:|---|
@@ -29,16 +30,16 @@
 上述數字依檔名前綴計數；合成圖與來源 layer 都保留，因此不是「原版唯一圖塊數」。
 來源與每張 block／item／frame 已記在 `assets/sprites/README.md`。
 
-## 尚在 runtime 從原版 DAX 解碼的圖像
+## 圖像類別的切換狀態
 
 | 類別 | 現行 loader | PNG 化 | 額外資料 |
 |---|---|---|---|
-| `TILES.DAX` 地圖磚 | `loadTileImages` | 直接逐 item 匯出 | block／item → 線性 tile index manifest |
-| `DUNGCOM`／`WILDCOM`／`RANDCOM` | `loadCombatTerrainImages` | 直接逐 24×24 tile 匯出 | source＋tile index manifest |
-| AREA map 符號 | `loadAreaMapSymbols` | 直接逐 8×8 item 匯出 | symbol file／block／item |
-| 第一人稱共用符號 | `loadSymbolBlock` | 直接逐 8×8 item 匯出 | group、first_id、item count |
-| `SKY.DAX` | `loadSkyImages` | 每個使用 block 匯一張 PNG | block ID 對應表 |
-| `WALLDEF*.DAX`＋`8X8D*.DAX` | `loadMapPieceSets` | 8×8 symbol 可匯 PNG | **還需 JSON 保存 WallDef 156-byte cell、selector、record、symbol block 與全域 ID band** |
+| `TILES.DAX` 地圖磚 | `loadTileImages` | **已切換 PNG**（48 張） | manifest 保留 block／item 與線性順序 |
+| `DUNGCOM`／`WILDCOM`／`RANDCOM` | `loadCombatTerrainImages` | **已切換 PNG**（65 張） | manifest 保留 source＋tile index |
+| AREA map 符號 | `loadAreaMapSymbols` | **已切換 PNG** | 共用 1,625 張 symbols 中依 file／block 取用 |
+| 第一人稱共用符號 | `loadSymbolBlock` | **已切換 PNG** | manifest 驗證宣告 item count |
+| `SKY.DAX` | `loadSkyImages` | **已切換 PNG**（3 張） | manifest 依 block ID 對應 |
+| `WALLDEF*.DAX`＋`8X8D*.DAX` | `loadMapPieceSets` | **已切換 PNG＋JSON** | 20 個 WallDef block 保存 156-byte cell、selector、record、symbol block 與全域 ID band |
 
 結論：**全部玩家可見圖像都能轉為 PNG 獨立存放。**唯一不能只靠裸 PNG 的是
 第一人稱牆片：PNG 保存像素，JSON 保存牆型如何以 8×8 symbol 組合；兩者合起來
@@ -62,12 +63,12 @@
 
 建議依風險拆成三刀：
 
-1. 匯出並切換 TILES、三類 combat terrain、AREA/shared symbols、SKY；這些都是
-   PNG＋簡單索引，先建立「刪掉原版圖像 member 仍可開畫面」的測試。
-2. 匯出 wall symbol PNG＋WallDef JSON，讓 `loadMapPieceSets` 改由 manifest 重建
-   `PieceSet`；以既有 1,498 張第一人稱零差異樣本抽查代表地圖。
-3. 打包時禁止把原版 ZIP 當圖像依賴；另以缺少圖像 DAX member 的 fixture 啟動
-   opening、AREA、第一人稱、戰鬥與 BIGPIC 五類代表畫面。
+1. **已完成**：匯出並切換 TILES、三類 combat terrain、AREA/shared symbols、SKY；
+   wall symbols 也已包含在 1,625 張 `8X8D1..6` PNG 內。
+2. **已完成**：WallDef JSON＋symbols PNG 由 manifest 重建 `PieceSet`。
+3. **runtime 抽樣已完成**：`cmd/nonimage-zip-fixture` 移除 51 個圖像 members，並以
+   同一 fixture 啟動 opening PIC、AREA、第一人稱、戰鬥與 BIGPIC。剩下的是把這項
+   gate 納入各平台 release 包裝 smoke，而不是再驗一次 loader。
 
 完成第 3 刀後，才能宣稱「release 圖像只來自獨立 PNG」。非圖像資料是否仍需要
 原版 ZIP，必須在發行說明中另行揭露。

@@ -61,6 +61,7 @@ type app struct {
 	keys                   keySource
 	state                  *game.State
 	imagePath              string
+	runtimeImages          *runtimeImageCatalog
 	face                   font.Face
 	compactFace            font.Face
 	choiceCursor           int
@@ -75,6 +76,7 @@ type app struct {
 	areaMapSymbols         []*ebiten.Image
 	wallSharedSymbols      []*ebiten.Image
 	wallSharedFirstID      uint8
+	wallSymbolFile         string
 	skyImages              [3]*ebiten.Image
 	geoGrid                *geo.Grid
 	geoX                   int
@@ -603,7 +605,7 @@ func (a *app) Update() error {
 		if a.justPressed(ebiten.KeyBackspace) {
 			return a.state.BackspaceECLString()
 		}
-		if chars := ebiten.InputChars(); len(chars) > 0 {
+		if chars := a.inputChars(); len(chars) > 0 {
 			if err := a.state.AppendECLString(chars); err != nil {
 				a.state.Message = err.Error()
 			}
@@ -620,7 +622,7 @@ func (a *app) Update() error {
 		if a.justPressed(ebiten.KeyBackspace) {
 			return a.state.BackspaceRenameName()
 		}
-		if chars := ebiten.InputChars(); len(chars) > 0 {
+		if chars := a.inputChars(); len(chars) > 0 {
 			if err := a.state.AppendRenameName(chars); err != nil {
 				a.state.Message = err.Error()
 			}
@@ -655,7 +657,7 @@ func (a *app) Update() error {
 				}
 				return nil
 			}
-			if chars := ebiten.InputChars(); len(chars) > 0 {
+			if chars := a.inputChars(); len(chars) > 0 {
 				if err := a.state.AppendGuidedName(chars); err != nil {
 					a.state.CreationMessage = err.Error()
 				}
@@ -682,11 +684,30 @@ func (a *app) Update() error {
 			return a.state.MoveGuidedCursor(1)
 		}
 		if a.justPressed(ebiten.KeyEnter) || a.justPressed(ebiten.KeySpace) {
-			return a.state.SelectGuidedOption(a.state.GuidedCursor)
+			if err := a.state.SelectGuidedOption(a.state.GuidedCursor); err != nil {
+				return err
+			}
+			// 原版選完陣營就立刻進入第一次擲點；玩家不必先猜要按 R 才有數值。
+			if a.state.GuidedStep == game.CreationStepAbilities {
+				return a.state.RollGuidedAbilities(time.Now().UnixNano())
+			}
+			return nil
 		}
 		return nil
 	}
 	if a.state.Mode == game.ModeCharacterCreation {
+		if a.state.GuidedStep == game.CreationStepDone {
+			if a.justPressed(ebiten.KeyEscape) {
+				return a.state.CancelCharacterCreation()
+			}
+			if a.justPressed(ebiten.KeyG) {
+				return a.state.BeginGuidedCreation()
+			}
+			if a.justPressed(ebiten.KeyD) {
+				return a.state.FinishCharacterCreation()
+			}
+			return nil
+		}
 		if a.state.CreationEditing {
 			if a.justPressed(ebiten.KeyEscape) {
 				return a.state.CancelCreationName()
@@ -694,7 +715,7 @@ func (a *app) Update() error {
 			if a.justPressed(ebiten.KeyBackspace) {
 				return a.state.BackspaceCreationName()
 			}
-			if chars := ebiten.InputChars(); len(chars) > 0 {
+			if chars := a.inputChars(); len(chars) > 0 {
 				if err := a.state.AppendCreationName(chars); err != nil {
 					a.state.CreationMessage = err.Error()
 				}
@@ -1171,7 +1192,7 @@ func (a *app) syncLoadPiecesRequest() {
 			wallFile, symbolFile = definition.WallFile, definition.SymbolFile
 		}
 	}
-	sets, err := loadMapPieceSets(a.imagePath, a.state.GeoMapSet, wallFile, symbolFile, selectors)
+	sets, err := loadMapPieceSets(a.runtimeImages, a.state.GeoMapSet, wallFile, symbolFile, selectors)
 	if err != nil {
 		// Asset diagnostics belong to the renderer label. ECL event text is
 		// authoritative story state and must survive a missing optional wall
@@ -1180,6 +1201,7 @@ func (a *app) syncLoadPiecesRequest() {
 		return
 	}
 	a.pieceSets = sets
+	a.wallSymbolFile = symbolFile
 	a.prepareWallPreview()
 	a.pieceLabel = a.state.PreviewPiecesLoadedText(selectors[0], selectors[1], selectors[2])
 }
@@ -1465,18 +1487,7 @@ func (a *app) symbolImageForGlobalID(id uint8) (*ebiten.Image, bool) {
 	if block < 0 || block >= len(piece.SymbolBlockIDs) {
 		return nil, false
 	}
-	picture, ok := piece.Symbols[piece.SymbolBlockIDs[block]]
-	if !ok {
-		return nil, false
-	}
-	if item >= int(picture.ItemCount) {
-		return nil, false
-	}
-	rgba, err := picture.RGBA(item, gfx.EGA16)
-	if err != nil {
-		return nil, false
-	}
-	return ebiten.NewImageFromImage(rgba), true
+	return a.runtimeImages.wallSymbol(a.wallSymbolFile, piece.SymbolBlockIDs[block], item)
 }
 
 // wallSymbolSegment 把全域符號編號拆成「第幾段」與「段內第幾項」。
@@ -1664,6 +1675,14 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawAreaMap(screen, white, cyan)
 		return
 	}
+	if _, ok := a.state.EndingScenePage(); ok {
+		a.drawEndingScene(screen, white, cyan)
+		return
+	}
+	if _, _, ok := a.state.CampViewCharacter(); ok {
+		a.drawCharacterView(screen, white, cyan)
+		return
+	}
 	if a.state.Mode == game.ModeWilderness && a.state.Message == "" && a.drawOverlandMap(screen, white, cyan) {
 		return
 	}
@@ -1705,6 +1724,31 @@ func (a *app) Draw(screen *ebiten.Image) {
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelShadowdaleMapTitle), a.face, 56, 220, 520, cyan)
 		drawFittedText(screen, a.state.AreaMapPositionText(), a.face, 56, 260, 520, white)
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelMapControls), a.face, 56, 330, 520, white)
+	}
+}
+
+func (a *app) drawEndingScene(screen *ebiten.Image, white, cyan color.Color) {
+	// DOS page 4 contains eight source lines (spec 1154).  Use a dedicated
+	// CJK-safe rectangle instead of the generic four-line wilderness message
+	// box, which silently dropped the latter half of the translated ending.
+	const (
+		messageX          = 32
+		messageY          = 124
+		messageColumns    = 36
+		messageLineHeight = 28
+		messageLines      = 8
+		choiceY           = 382
+	)
+	drawFittedText(screen, a.state.Title, a.face, 32, 46, 576, cyan)
+	drawFittedText(screen, a.state.Prompt, a.compactFace, 32, 82, 576, white)
+	drawWrappedText(screen, a.revealedMessage(), a.compactFace,
+		messageX, messageY, messageColumns, messageLineHeight, messageLines, cyan)
+	for index, choice := range a.state.Choices {
+		prefix := "  "
+		if index == a.choiceCursor {
+			prefix = "> "
+		}
+		drawFittedText(screen, prefix+choice, a.compactFace, 48, choiceY+index*28, 544, white)
 	}
 }
 
@@ -1754,7 +1798,10 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandTitle), a.face, 24, 296, 584, cyan)
 	drawFittedText(screen, a.state.OverlandCurrentLocationText(currentName), a.face, 24, 328, 584, white)
 	timeLabel := a.state.OverlandDateText()
-	drawFittedText(screen, timeLabel, a.compactFace, 468, 294, 156, cyan)
+	// Traditional Chinese dates are materially wider than the old numeric
+	// label. Keep a dedicated right-hand text-safe rectangle wide enough for
+	// a four-digit year; the former 156px box silently rendered "第0…".
+	drawFittedText(screen, timeLabel, a.compactFace, overlandDateX, 294, overlandDateWidth, cyan)
 	for index, choice := range a.state.Choices {
 		prefix := "  "
 		if index == a.choiceCursor {
@@ -1765,6 +1812,11 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandControls), a.compactFace, 344, 470, 280, cyan)
 	return true
 }
+
+const (
+	overlandDateX     = 336
+	overlandDateWidth = 288
+)
 
 func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, lineRunes, lineHeight, maxLines int, ink color.Color) {
 	lines := wrapTextLinesByWidth(value, face, lineRunes*faceCellWidth(face), maxLines)
@@ -2450,10 +2502,16 @@ func driveGuidedCreation(state *game.State, step, name string) error {
 	if step == "name" {
 		return nil
 	}
-	if step != "save" {
+	if step != "save" && step != "party" {
 		return fmt.Errorf("unknown guided creation step %q", step)
 	}
-	return state.CommitGuidedName()
+	if err := state.CommitGuidedName(); err != nil {
+		return err
+	}
+	if step == "party" {
+		return state.ConfirmGuidedSave(true)
+	}
+	return nil
 }
 
 func dungeonDirectionName(direction uint8) string {
@@ -2521,6 +2579,7 @@ func (a *app) drawGuidedCreation(screen *ebiten.Image, face font.Face, white, cy
 		}
 		drawFittedText(screen, prefix+options[index].Label, face, 64, 140+row*25, 512, white)
 	}
+	drawFittedText(screen, a.state.LocaleText("creation_guided_menu_hint"), face, 48, 390, 544, cyan)
 }
 
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
@@ -2533,6 +2592,21 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	drawFittedText(screen, a.state.CreationMessage, face, 32, 82, 576, white)
 	if a.state.GuidedActive {
 		a.drawGuidedCreation(screen, face, white, cyan)
+		return
+	}
+	if a.state.GuidedStep == game.CreationStepDone {
+		if len(a.state.CreationRoster) == 0 {
+			drawFittedText(screen, a.state.LocaleText("creation_party_empty"), face, 48, 140, 544, white)
+		}
+		for index, character := range a.state.CreationRoster {
+			row := fmt.Sprintf(a.state.LocaleText("creation_party_member"), index+1, character.Name,
+				a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
+			drawFittedText(screen, row, face, 48, 140+index*35, 544, white)
+		}
+		drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_party_count"),
+			len(a.state.CreationRoster), 6), face, 48, 380, 544, cyan)
+		drawFittedText(screen, a.state.LocaleText("creation_party_help"), face, 24,
+			adventureCommandBaseline, 600, white)
 		return
 	}
 	if a.state.CreationEditing {
@@ -2581,6 +2655,68 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_progress"), a.state.CreationCursor+1,
 		len(a.state.CreationOptions), len(a.state.CreationRoster)), face, 48, 402, 544, cyan)
 	drawFittedText(screen, a.state.LocaleText("creation_help"), face, 24, adventureCommandBaseline, 600, white)
+}
+
+func (a *app) drawCharacterView(screen *ebiten.Image, white, cyan color.Color) {
+	character, characterIndex, ok := a.state.CampViewCharacter()
+	if !ok {
+		return
+	}
+	a.drawCharacterCreationFrame(screen)
+	face := a.compactFace
+	fighter := combat.Fighter{}
+	fighters := a.state.PartyFighters()
+	if characterIndex >= 0 && characterIndex < len(fighters) {
+		fighter = fighters[characterIndex]
+	}
+
+	drawFittedText(screen, character.Name, face, 32, 44, 576, cyan)
+	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("character_view_identity"),
+		a.state.CharacterGenderName(character.Gender), a.state.CharacterRaceName(character.Race), character.Age),
+		face, 32, 72, 576, white)
+	drawFittedText(screen, a.state.CharacterClassName(character.Class), face, 32, 98, 280, white)
+	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("character_view_alignment"),
+		a.state.CharacterAlignmentName(character.Alignment, character.AlignmentKnown)), face, 320, 98, 288, white)
+
+	abilityKeys := []string{"ability_strength", "ability_intelligence", "ability_wisdom", "ability_dexterity", "ability_constitution", "ability_charisma"}
+	for index, key := range abilityKeys {
+		value, _ := character.Abilities.Value(index)
+		label := fmt.Sprintf("%s %d", a.state.LocaleText(key), value)
+		drawFittedText(screen, label, face, 32, 136+index*24, 216, cyan)
+	}
+	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("character_view_money"),
+		character.Platinum, character.Gold, character.Gems, character.Jewelry), face, 272, 136, 336, cyan)
+	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("character_view_level_exp"),
+		character.Level, character.Experience), face, 272, 176, 336, white)
+	thac0 := 20 - fighter.AttackBonus
+	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("character_view_combat"),
+		fighter.ArmorClass, thac0, fighter.HitPoints, fighter.MaxHitPoints), face, 272, 216, 336, white)
+	damage := "—"
+	if fighter.DamageDiceCount > 0 && fighter.DamageDiceSides > 0 {
+		damage = fmt.Sprintf("%dd%d", fighter.DamageDiceCount, fighter.DamageDiceSides)
+		if fighter.DamageBonus > 0 {
+			damage += fmt.Sprintf("+%d", fighter.DamageBonus)
+		} else if fighter.DamageBonus < 0 {
+			damage += strconv.Itoa(fighter.DamageBonus)
+		}
+	}
+	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("character_view_damage_move"),
+		damage, fighter.MovementAllowance), face, 272, 256, 336, white)
+	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("character_view_status"),
+		a.state.CharacterHealthName(character.HealthStatus)), face, 272, 296, 336, cyan)
+
+	drawFittedText(screen, a.state.LocaleText("character_view_equipment"), face, 32, 392, 576, cyan)
+	for index, choice := range a.state.Choices {
+		if index >= 2 {
+			break
+		}
+		prefix := "  "
+		if index == a.choiceCursor {
+			prefix = "> "
+		}
+		drawFittedText(screen, prefix+choice, face, 48, 416+index*24, 544, white)
+	}
+	drawFittedText(screen, a.state.Prompt, face, 24, adventureCommandBaseline, 600, cyan)
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
@@ -3568,6 +3704,7 @@ func main() {
 	etenASCIIFontPath := flag.String("eten-ascii-font", "", "optional ETen ASCFONT.15 path; defaults to ascfont.15 beside -eten-font")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
 	imagePath := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
+	imageAssetsPath := flag.String("image-assets", "assets/runtime-images", "independent PNG runtime image directory")
 	geoSet := flag.Int("geo-set", 2, "GEO DAX set/chapter (2..6) used by the map preview")
 	geoBlock := flag.Int("geo-block", 1, "original GEO block ID used by the map preview")
 	dungeonXOverride := flag.Int("dungeon-x", -1, "override dungeon X (0..15) for deterministic visual verification")
@@ -3579,8 +3716,10 @@ func main() {
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	characterCreation := flag.Bool("character-creation", false, "show the opening character-creation command as a deterministic renderer checkpoint")
 	guidedCreation := flag.Bool("guided-creation", false, "show the original four-menu character creation (race/gender/class/alignment)")
-	guidedCreationStep := flag.String("guided-creation-step", "", "drive -guided-creation to a later step for capture: abilities, name or save")
+	guidedCreationStep := flag.String("guided-creation-step", "", "drive -guided-creation to a later step for capture: abilities, name, save or party")
 	guidedCreationName := flag.String("guided-creation-name", "Adventurer", "name typed by -guided-creation-step; pass a CJK name to check glyph rendering")
+	characterView := flag.Bool("character-view", false, "show the normal CAMP → VIEW character sheet after selecting the first party member")
+	endingPage := flag.Int("ending-page", 0, "show ending page 1..5 through the real ending-page Select transaction")
 	tilvertonDungeon := flag.Bool("tilverton-dungeon", false, "enter Tilverton's first-person map through the formal new-game flow")
 	inn := flag.Bool("inn", false, "start at the first Windlord's Inn event through the formal new-game flow")
 	filani := flag.Bool("filani", false, "start at sage Filani through the formal Tilverton ECL flow")
@@ -3833,11 +3972,15 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	tileImages, err := loadTileImages(*imagePath)
+	runtimeImages, err := loadRuntimeImageCatalog(*imageAssetsPath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	combatTerrain, err := loadCombatTerrainImages(*imagePath)
+	tileImages, err := loadTileImages(runtimeImages)
+	if err != nil {
+		log.Fatal(err)
+	}
+	combatTerrain, err := loadCombatTerrainImages(runtimeImages)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -3849,7 +3992,7 @@ func main() {
 	if !ok {
 		log.Fatal("game pack has no AREA map definition")
 	}
-	areaMapSymbols, err := loadAreaMapSymbols(*imagePath, areaMapDefinition.SymbolFile, areaMapDefinition.SymbolBlock)
+	areaMapSymbols, err := loadAreaMapSymbols(runtimeImages, areaMapDefinition.SymbolFile, areaMapDefinition.SymbolBlock)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -3858,7 +4001,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	wallSharedSymbols, err := loadSymbolBlock(*imagePath,
+	wallSharedSymbols, err := loadSymbolBlock(runtimeImages,
 		wallSymbolDeclaration.SharedGroup.File, wallSymbolDeclaration.SharedGroup.Block,
 		wallSymbolDeclaration.SharedGroup.ItemCount)
 	if err != nil {
@@ -3891,7 +4034,7 @@ func main() {
 			state.Area.IndoorSkyColor = uint16(*firstPersonDefinition.IndoorSkyColor)
 		}
 	}
-	skyImages, err := loadSkyImages(*imagePath, firstPersonDefinition.SkyFile, firstPersonDefinition.SkyBlocks)
+	skyImages, err := loadSkyImages(runtimeImages, firstPersonDefinition.SkyFile, firstPersonDefinition.SkyBlocks)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -4198,7 +4341,7 @@ func main() {
 		}
 		// 原版的四段建角（spec 1093 §一）。與 -character-creation 一樣，
 		// 存在的目的是讓 headless 擷取拿得到確定性畫面。
-		if err := state.BeginGuidedCreation(); err != nil {
+		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
 		if *guidedCreationStep != "" {
@@ -4326,7 +4469,33 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	*gameApp = app{state: &state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
+	if *characterView {
+		abilities := party.Abilities{Strength: 18, Intelligence: 16, Wisdom: 15, Dexterity: 15, Constitution: 17, Charisma: 16}
+		if err := state.SetPartyRoster(party.Roster{{
+			ID: "character-view", Name: "羅恩", Race: party.RaceDwarf, Gender: party.GenderMale,
+			Class: party.ClassFighter, Alignment: 0, AlignmentKnown: true,
+			Abilities: abilities, Age: 51, Level: 5, Experience: 25000,
+			AttackAbility: 45, BaseArmorClass: 50, AbilityAdjustments: 1,
+			HitPoints: 51, MaxHitPoints: 51, Platinum: 300, Movement: 12,
+		}}); err != nil {
+			log.Fatal(err)
+		}
+		state.PrepareWorldMapPreview()
+		if err := state.Camp(); err != nil { // The public PROGRAM 9 transition opens CAMP.
+			log.Fatal(err)
+		}
+		for _, selection := range []int{1, 0} { // VIEW → first character.
+			if err := state.Select(selection); err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+	if *endingPage != 0 {
+		if err := state.PrepareEndingScenePreview(*endingPage); err != nil {
+			log.Fatal(err)
+		}
+	}
+	*gameApp = app{state: &state, imagePath: *imagePath, runtimeImages: runtimeImages, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, wallSymbolFile: firstPersonDefinition.SymbolFile, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
 	if *wallTracePath != "" {
 		handle, err := os.Create(*wallTracePath)
 		if err != nil {
@@ -4859,54 +5028,19 @@ func loadDungeonPreview(grid *geo.Grid) *mapdata.DungeonFloor {
 	return &floor
 }
 
-func loadTileImages(imagePath string) ([]*ebiten.Image, error) {
-	data, err := zipMember(imagePath, "TILES.DAX")
-	if err != nil {
-		return nil, err
-	}
-	blocks, err := dax.Parse(data)
-	if err != nil {
-		return nil, fmt.Errorf("parse TILES.DAX: %w", err)
-	}
-	images := make([]*ebiten.Image, 0)
-	for _, block := range blocks {
-		picture, err := gfx.ParsePicture(block.Data, false, 0)
-		if err != nil {
-			return nil, fmt.Errorf("TILES.DAX block 0x%02X: %w", block.Entry.ID, err)
-		}
-		for item := 0; item < int(picture.ItemCount); item++ {
-			rgba, err := picture.RGBA(item, gfx.EGA16)
-			if err != nil {
-				return nil, fmt.Errorf("TILES.DAX block 0x%02X item %d: %w", block.Entry.ID, item, err)
-			}
-			images = append(images, ebiten.NewImageFromImage(rgba))
-		}
-	}
-	return images, nil
+func loadTileImages(catalog *runtimeImageCatalog) ([]*ebiten.Image, error) {
+	return catalog.images(catalog.manifest.Tiles)
 }
 
-func loadCombatTerrainImages(imagePath string) (map[string][]*ebiten.Image, error) {
+func loadCombatTerrainImages(catalog *runtimeImageCatalog) (map[string][]*ebiten.Image, error) {
 	result := make(map[string][]*ebiten.Image)
 	for _, source := range []string{"DUNGCOM", "WILDCOM", "RANDCOM"} {
-		data, err := zipMember(imagePath, source+".DAX")
+		images, err := catalog.images(catalog.manifest.Combat[source])
 		if err != nil {
 			return nil, err
 		}
-		blocks, err := dax.Parse(data)
-		if err != nil || len(blocks) != 1 {
-			return nil, fmt.Errorf("parse %s.DAX: blocks=%d err=%v", source, len(blocks), err)
-		}
-		set, err := gfx.ParseCombatTiles(blocks[0].Data)
-		if err != nil {
-			return nil, fmt.Errorf("parse %s.DAX combat tiles: %w", source, err)
-		}
-		images := make([]*ebiten.Image, 0, len(set.Tiles))
-		for _, tile := range set.Tiles {
-			rgba, err := tile.RGBA(0, gfx.EGA16)
-			if err != nil {
-				return nil, err
-			}
-			images = append(images, ebiten.NewImageFromImage(rgba))
+		if len(images) == 0 {
+			return nil, fmt.Errorf("PNG manifest has no %s combat terrain", source)
 		}
 		result[source] = images
 	}
@@ -4915,114 +5049,30 @@ func loadCombatTerrainImages(imagePath string) (map[string][]*ebiten.Image, erro
 
 // loadSymbolBlock 載入一個 8×8 符號區塊的所有項目。與 loadAreaMapSymbols 分開
 // 是因為那一支綁著 AREA 的下限檢查（至少 20 項），而這裡的項目數由宣告給定。
-func loadSymbolBlock(imagePath, symbolFile string, blockID uint8, wantItems int) ([]*ebiten.Image, error) {
-	data, err := zipMember(imagePath, symbolFile)
-	if err != nil {
-		return nil, err
-	}
-	blocks, err := dax.Parse(data)
-	if err != nil {
-		return nil, fmt.Errorf("parse %s: %w", symbolFile, err)
-	}
-	for _, block := range blocks {
-		if block.Entry.ID != blockID {
-			continue
-		}
-		picture, err := gfx.ParsePicture(block.Data, true, 13)
-		if err != nil {
-			return nil, fmt.Errorf("%s block 0x%02X: %w", symbolFile, blockID, err)
-		}
-		if picture.Width() != 8 || picture.Height() != 8 || int(picture.ItemCount) != wantItems {
-			return nil, fmt.Errorf("%s block 0x%02X is %dx%d items=%d, want 8x8 items=%d",
-				symbolFile, blockID, picture.Width(), picture.Height(), picture.ItemCount, wantItems)
-		}
-		images := make([]*ebiten.Image, 0, wantItems)
-		for item := 0; item < wantItems; item++ {
-			rgba, err := picture.RGBA(item, gfx.EGA16)
-			if err != nil {
-				return nil, err
-			}
-			images = append(images, ebiten.NewImageFromImage(rgba))
-		}
-		return images, nil
-	}
-	return nil, fmt.Errorf("%s has no block 0x%02X", symbolFile, blockID)
+func loadSymbolBlock(catalog *runtimeImageCatalog, symbolFile string, blockID uint8, wantItems int) ([]*ebiten.Image, error) {
+	return catalog.symbolBlock(symbolFile, blockID, wantItems)
 }
 
-func loadAreaMapSymbols(imagePath, symbolFile string, blockID uint8) ([]*ebiten.Image, error) {
+func loadAreaMapSymbols(catalog *runtimeImageCatalog, symbolFile string, blockID uint8) ([]*ebiten.Image, error) {
 	if symbolFile == "" {
 		return nil, fmt.Errorf("AREA symbol file is empty")
 	}
-	data, err := zipMember(imagePath, symbolFile)
-	if err != nil {
-		return nil, err
-	}
-	blocks, err := dax.Parse(data)
-	if err != nil {
-		return nil, fmt.Errorf("parse %s: %w", symbolFile, err)
-	}
-	for _, block := range blocks {
-		if block.Entry.ID != blockID {
-			continue
-		}
-		picture, err := gfx.ParsePicture(block.Data, true, 13)
-		if err != nil {
-			return nil, fmt.Errorf("%s block 0x%02X: %w", symbolFile, blockID, err)
-		}
-		if picture.Width() != 8 || picture.Height() != 8 || picture.ItemCount < 20 {
-			return nil, fmt.Errorf("%s block 0x%02X is %dx%d items=%d, want 8x8 and at least 20 items", symbolFile, blockID, picture.Width(), picture.Height(), picture.ItemCount)
-		}
-		images := make([]*ebiten.Image, 0, picture.ItemCount)
-		for item := 0; item < int(picture.ItemCount); item++ {
-			rgba, err := picture.RGBA(item, gfx.EGA16)
-			if err != nil {
-				return nil, err
-			}
-			images = append(images, ebiten.NewImageFromImage(rgba))
-		}
-		return images, nil
-	}
-	return nil, fmt.Errorf("%s has no AREA symbol block 0x%02X", symbolFile, blockID)
+	return catalog.symbolBlockAtLeast(symbolFile, blockID, 20)
 }
 
-func loadSkyImages(imagePath, skyFile string, blockIDs [3]uint8) ([3]*ebiten.Image, error) {
-	var result [3]*ebiten.Image
+func loadSkyImages(catalog *runtimeImageCatalog, skyFile string, blockIDs [3]uint8) ([3]*ebiten.Image, error) {
 	if skyFile == "" {
-		return result, fmt.Errorf("first-person SKY file is empty")
+		return [3]*ebiten.Image{}, fmt.Errorf("first-person SKY file is empty")
 	}
-	data, err := zipMember(imagePath, skyFile)
-	if err != nil {
-		return result, err
-	}
-	blocks, err := dax.Parse(data)
-	if err != nil {
-		return result, fmt.Errorf("parse %s: %w", skyFile, err)
-	}
-	byID := make(map[uint8]dax.Block, len(blocks))
-	for _, block := range blocks {
-		byID[block.Entry.ID] = block
-	}
-	for index, blockID := range blockIDs {
-		block, ok := byID[blockID]
-		if !ok {
-			return result, fmt.Errorf("%s has no SKY block 0x%02X", skyFile, blockID)
-		}
-		picture, err := gfx.ParsePicture(block.Data, true, 13)
-		if err != nil {
-			return result, fmt.Errorf("%s block 0x%02X: %w", skyFile, blockID, err)
-		}
-		rgba, err := picture.RGBA(0, gfx.EGA16)
-		if err != nil {
-			return result, err
-		}
-		result[index] = ebiten.NewImageFromImage(rgba)
-	}
-	return result, nil
+	return catalog.skyImages(skyFile, blockIDs)
 }
 
 // loadMapPieceSets mirrors the verified reference LoadWalldef mapping while
 // keeping selector interpretation out of the ECL VM and State packages.
-func loadMapPieceSets(imagePath string, areaID uint8, wallFile, symbolFile string, selectors [3]uint16) (map[uint8]gfx.PieceSet, error) {
+func loadMapPieceSets(catalog *runtimeImageCatalog, areaID uint8, wallFile, symbolFile string, selectors [3]uint16) (map[uint8]gfx.PieceSet, error) {
+	if catalog == nil {
+		return nil, fmt.Errorf("runtime image catalog is unavailable")
+	}
 	if areaID < 1 || areaID > 6 {
 		return nil, fmt.Errorf("map piece area %d is outside original range 1..6", areaID)
 	}
@@ -5031,22 +5081,6 @@ func loadMapPieceSets(imagePath string, areaID uint8, wallFile, symbolFile strin
 	}
 	if symbolFile == "" {
 		symbolFile = fmt.Sprintf("8X8D%d.DAX", areaID)
-	}
-	wallData, err := zipMember(imagePath, wallFile)
-	if err != nil {
-		return nil, err
-	}
-	symbolData, err := zipMember(imagePath, symbolFile)
-	if err != nil {
-		return nil, err
-	}
-	wallBlocks, err := dax.Parse(wallData)
-	if err != nil {
-		return nil, fmt.Errorf("parse %s: %w", wallFile, err)
-	}
-	symbolBlocks, err := dax.Parse(symbolData)
-	if err != nil {
-		return nil, fmt.Errorf("parse %s: %w", symbolFile, err)
 	}
 	result := make(map[uint8]gfx.PieceSet, 3)
 	for index, rawSelector := range selectors {
@@ -5057,25 +5091,34 @@ func loadMapPieceSets(imagePath string, areaID uint8, wallFile, symbolFile strin
 			return nil, fmt.Errorf("map piece selector %d overflows byte", rawSelector)
 		}
 		setID := uint8(index + 1)
-		pieceSet, err := gfx.ParsePieceSet(setID, uint8(rawSelector), wallBlocks, symbolBlocks)
-		if err != nil {
-			// ⚠ **一個槽載不到，不能把整組牆都丟掉。** 原作的 handler 有一條
-			// 「兩槽模式」：`bank0^[1CEh]` 與 `bank0^[1D0h]` 都非零時只載槽 1 與
-			// 槽 3，槽 2 完全不動（spec 1087）——所以 `ECL6/0x40` 的 `17,18,16`
-			// 從來不會去要選圖 18，而 **18 在任何一個 `WALLDEF*.DAX` 裡都不存在**
-			// （選圖 15 對 `ECL5/0x33`／`0x35` 同理）。
-			//
-			// 從存檔進來時 remake 不重跑該段的進入碼，拿不到那兩格閘門的執行時值，
-			// 所以會照三個運算元硬載。以前整批 return 的後果是 `pieceSets` 全空：
-			// 天空與地板照畫、**一面牆都不畫**，而且不報錯——第 685 輪就是這樣
-			// 讓四張圖看起來「畫得好好的」卻一面牆都沒有。
-			//
-			// 跳過載不到的那一槽，其餘照載；載不到哪一槽要講出來。
-			log.Printf("wall piece set %d (selector %d) is not in %s: skipping that slot",
-				setID, rawSelector, wallFile)
+		selector := uint8(rawSelector)
+		wallData, ok := catalog.wallData(wallFile, selector)
+		if !ok {
+			log.Printf("wall piece set %d (selector %d) is not in %s: skipping that slot", setID, rawSelector, wallFile)
 			continue
 		}
-		maskWallSymbols(pieceSet)
+		walls, err := gfx.ParseWallDefs(wallData)
+		if err != nil {
+			return nil, fmt.Errorf("%s selector %d: %w", wallFile, selector, err)
+		}
+		pieceSet := gfx.PieceSet{SetID: setID, Selector: selector, WallDefs: walls, SymbolSetIDs: make([]uint8, len(walls)), SymbolBlockIDs: make([]uint8, len(walls))}
+		rebase := int(gfx.SymbolSetBase[setID]) - int(gfx.SymbolSetBase[1])
+		for record := range walls {
+			globalSet := int(setID) + record
+			if globalSet < 1 || globalSet >= len(gfx.SymbolSetBase) {
+				return nil, fmt.Errorf("piece set %d record %d exceeds symbol-set range", setID, record)
+			}
+			pieceSet.WallDefs[record].OffsetSymbols(rebase)
+			blockID := selector
+			if len(walls) > 1 {
+				blockID = uint8(int(selector)*10 + record + 1)
+			}
+			if _, ok := catalog.wallSymbol(symbolFile, blockID, 0); !ok {
+				return nil, fmt.Errorf("PNG manifest %s has no symbol block %d", symbolFile, blockID)
+			}
+			pieceSet.SymbolSetIDs[record] = uint8(globalSet)
+			pieceSet.SymbolBlockIDs[record] = blockID
+		}
 		// ⚠ 一塊 `WALLDEF` 可能**佔連續好幾個槽**：原作的 `LOADWALLSET` 依
 		// `檔案大小 ÷ 780` 把每一段填進 `THEWALLSET^` 的下一個槽（spec 1185）。
 		// 選圖 14／17 各 1,560 bytes ＝ 兩個槽。
