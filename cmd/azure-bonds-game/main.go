@@ -133,6 +133,8 @@ type app struct {
 	wallTrace              io.Writer
 	screenshotDone         bool
 	screenshotFrames       int
+	ui                     uiRuntime
+	guide                  guideCatalog
 }
 
 type combatAnimation struct {
@@ -474,6 +476,10 @@ func (a *app) clampChoiceCursor() {
 
 func (a *app) Update() error {
 	a.clampChoiceCursor()
+	a.rememberCurrentGuideCell()
+	if handled, err := a.updateGlobalUI(); handled || err != nil {
+		return err
+	}
 	// 標題曲：畫面上真的出現標題時才發，而且只發一次。原作是 `DOINTRO`
 	// （overlay-01 `093Ch`）在開場時寫 `MUSICNO := 1`（spec 1192）。
 	if !a.titleMusicRequested && a.state.Mode == game.ModeTitle {
@@ -1573,34 +1579,7 @@ func (a *app) tryDungeonBash() {
 	a.state.Message = a.state.DungeonMessageText(game.DungeonMessageBashFailed)
 }
 
-func (a *app) Draw(screen *ebiten.Image) {
-	if a.screenshotPath != "" && !a.screenshotDone {
-		a.screenshotFrames++
-		if a.screenshotFrames >= 3 {
-			defer func() {
-				a.screenshotDone = true
-				output, err := os.Create(a.screenshotPath)
-				if err != nil {
-					log.Printf("create screenshot: %v", err)
-					return
-				}
-				pixels := make([]byte, logicalWidth*logicalHeight*4)
-				screen.ReadPixels(pixels)
-				captured := &image.RGBA{
-					Pix:    pixels,
-					Stride: logicalWidth * 4,
-					Rect:   image.Rect(0, 0, logicalWidth, logicalHeight),
-				}
-				if err := png.Encode(output, captured); err != nil {
-					log.Printf("encode screenshot: %v", err)
-				}
-				if err := output.Close(); err != nil {
-					log.Printf("close screenshot: %v", err)
-				}
-				os.Exit(0)
-			}()
-		}
-	}
+func (a *app) drawBase(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{12, 18, 42, 255})
 	white := color.RGBA{232, 238, 255, 255}
 	cyan := color.RGBA{92, 220, 255, 255}
@@ -1725,6 +1704,49 @@ func (a *app) Draw(screen *ebiten.Image) {
 		drawFittedText(screen, a.state.AreaMapPositionText(), a.face, 56, 260, 520, white)
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelMapControls), a.face, 56, 330, 520, white)
 	}
+}
+
+func (a *app) Draw(screen *ebiten.Image) {
+	width, height := a.ui.logicalSize()
+	if width == logicalWidth && height == logicalHeight {
+		a.drawBase(screen)
+	} else {
+		base := ebiten.NewImage(logicalWidth, logicalHeight)
+		a.drawBase(base)
+		op := &ebiten.DrawImageOptions{}
+		op.Filter = ebiten.FilterNearest
+		op.GeoM.Scale(float64(width)/logicalWidth, float64(height)/logicalHeight)
+		screen.DrawImage(base, op)
+	}
+	a.drawGlobalUI(screen)
+	a.captureFinalScreenshot(screen)
+}
+
+func (a *app) captureFinalScreenshot(screen *ebiten.Image) {
+	if a.screenshotPath == "" || a.screenshotDone {
+		return
+	}
+	a.screenshotFrames++
+	if a.screenshotFrames < 3 {
+		return
+	}
+	a.screenshotDone = true
+	output, err := os.Create(a.screenshotPath)
+	if err != nil {
+		log.Printf("create screenshot: %v", err)
+		return
+	}
+	width, height := a.ui.logicalSize()
+	pixels := make([]byte, width*height*4)
+	screen.ReadPixels(pixels)
+	captured := &image.RGBA{Pix: pixels, Stride: width * 4, Rect: image.Rect(0, 0, width, height)}
+	if err := png.Encode(output, captured); err != nil {
+		log.Printf("encode screenshot: %v", err)
+	}
+	if err := output.Close(); err != nil {
+		log.Printf("close screenshot: %v", err)
+	}
+	os.Exit(0)
 }
 
 func (a *app) drawEndingScene(screen *ebiten.Image, white, cyan color.Color) {
@@ -2101,7 +2123,7 @@ func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
 		float64(layout.SpriteY*scale),
 	)
 	target.DrawImage(sprite, op)
-	if a.characterStageFrame != nil {
+	if a.characterStageFrame != nil && a.ui.settings.Theme != "modern-a6" {
 		frameOptions := &ebiten.DrawImageOptions{}
 		frameOptions.Filter = ebiten.FilterNearest
 		frameOptions.GeoM.Scale(float64(scale), float64(scale))
@@ -2110,6 +2132,9 @@ func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
 }
 
 func (a *app) drawFirstPersonStageFrame(screen *ebiten.Image) {
+	if a.ui.settings.Theme == "modern-a6" {
+		return
+	}
 	if a.firstPersonStageFrame == nil {
 		return
 	}
@@ -2166,6 +2191,9 @@ func drawPanelFrame(screen *ebiten.Image, x, y, width, height int) {
 }
 
 func (a *app) drawCombatStoneFrame(screen *ebiten.Image) {
+	if a.ui.settings.Theme == "modern-a6" {
+		return
+	}
 	if a.combatFrame == nil {
 		return
 	}
@@ -2176,6 +2204,9 @@ func (a *app) drawCombatStoneFrame(screen *ebiten.Image) {
 }
 
 func (a *app) drawOriginalAdventureFrame(screen *ebiten.Image) {
+	if a.ui.settings.Theme == "modern-a6" {
+		return
+	}
 	if a.adventureFrame == nil {
 		return
 	}
@@ -3662,7 +3693,7 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 	screen.DrawImage(sprite, op)
 }
 
-func (a *app) Layout(_, _ int) (int, int) { return logicalWidth, logicalHeight }
+func (a *app) Layout(_, _ int) (int, int) { return a.ui.logicalSize() }
 
 func loadFace(path string, size float64) font.Face {
 	candidates := []string{path}
@@ -3764,7 +3795,8 @@ func main() {
 	dosCharacterRecord := flag.String("dos-character-record", "", "DOS .SAV/.GUY path to load directly into the remake")
 	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
 	dosCharacterInventory := flag.String("dos-character-inventory", "", "optional DOS .SWG path for direct character import")
-	screenshotPath := flag.String("screenshot", "", "write one deterministic 640x480 frame to PNG and exit")
+	screenshotPath := flag.String("screenshot", "", "write one deterministic frame to PNG and exit")
+	uiPreview := flag.String("ui-preview", "", "capture-only UI overlay: help, guide-explore, or guide-full")
 	journalImageEntry := flag.String("journal-image", "", tooltext.Text("h.a18a181fc4d2"))
 	journalImageZoom := flag.Bool("journal-image-zoom", false, tooltext.Text("h.70cfc7b45f7f"))
 	segmentEntry := flag.String("segment", "",
@@ -3774,6 +3806,10 @@ func main() {
 	segmentHandoff := flag.String("segment-handoff", "",
 		tooltext.Text("h.20ed0dcbbb08"))
 	flag.Parse()
+	*uiPreview = strings.ToLower(strings.TrimSpace(*uiPreview))
+	if *uiPreview != "" && *uiPreview != "help" && *uiPreview != "guide-explore" && *uiPreview != "guide-full" {
+		log.Fatal("-ui-preview must be help, guide-explore, guide-full, or empty")
+	}
 	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
 		log.Fatal("-combat-terrain must be DUNGCOM, WILDCOM, RANDCOM, or empty for automatic selection")
@@ -4432,7 +4468,10 @@ func main() {
 			}
 		}
 	}
-	ebiten.SetWindowSize(logicalWidth, logicalHeight)
+	settingsPath := defaultUISettingsPath()
+	uiSettings := loadUISettings(settingsPath)
+	ebiten.SetWindowSize(uiSettings.Width, uiSettings.Height)
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
 	geoLabel := fmt.Sprintf("GEO%d block 0x%02X", *geoSet, *geoBlock)
 	combatSprites, combatSpriteIDs, combatAnimations, err := loadCombatSprites()
@@ -4495,7 +4534,22 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	*gameApp = app{state: &state, imagePath: *imagePath, runtimeImages: runtimeImages, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, wallSymbolFile: firstPersonDefinition.SymbolFile, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
+	guideData, guideErr := loadGuideCatalog(filepath.Join("assets", "guide", "maps.zh-TW.json"))
+	if guideErr != nil {
+		log.Printf("攻略地圖資料停用：%v", guideErr)
+	}
+	*gameApp = app{state: &state, imagePath: *imagePath, runtimeImages: runtimeImages, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, wallSymbolFile: firstPersonDefinition.SymbolFile, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath, ui: newUIRuntime(uiSettings, settingsPath), guide: guideData}
+	switch *uiPreview {
+	case "help":
+		gameApp.ui.helpOpen = true
+	case "guide-explore":
+		gameApp.ui.guideOpen = true
+	case "guide-full":
+		gameApp.ui.guideOpen = true
+		gameApp.ui.guideFull = true
+		gameApp.ui.settings.SpoilerWarning = true
+	}
+	gameApp.ui.resizeWindow = func(width, height int) { ebiten.SetWindowSize(width, height) }
 	if *wallTracePath != "" {
 		handle, err := os.Create(*wallTracePath)
 		if err != nil {

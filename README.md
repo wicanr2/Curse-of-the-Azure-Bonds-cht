@@ -11,9 +11,9 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 [golden-box-remake-engine](https://github.com/wicanr2/golden-box-remake-engine)。
 劇情、座標、物品與翻譯資料不寫死在共用 engine。
 
-## 目前狀態（2026-08-27 實測）
+## 目前狀態（2026-08-28 實測）
 
-目前整體自評 **96／100**，交付目標是玩家可見體驗近似原版 **99%**。後續採
+目前整體自評 **97／100**，交付目標是玩家可見體驗近似原版 **99%**。後續採
 風險導向代表性抽樣，不再以所有狀態全量逐像素／逐分支閉合作為完成條件；
 阻塞通關、存檔毀損、落回原文與主要規則偏差仍須歸零。詳見
 [完成度自評](docs/knowledge/remake-completeness-assessment.md)。
@@ -21,8 +21,8 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 | | |
 |---|---|
 | 反組譯覆蓋 | 2,874 個函式全部進台帳，**待解讀 0**（已解讀 2,137／不阻塞 162／邊界碎片 575）；未定義位元組 36,386 已逐段形狀分類＋對回函式台帳，**每一個位元組都有分類或一手判定（無判定 0 段）**（spec 1203 四刀）|
-| 規格目錄 | 1,223 份 `docs/spec/*.md`（2026-08-27 現場計數，含索引）；狀態與證據邊界以各文件及 [`docs/spec/README.md`](docs/spec/README.md) 為準，不能由文件數推論完成度 |
-| 程式 | 489 個 `.go`／141,042 行（2026-08-27 現場計數，不含巢狀 engine repo 與 `workplace/`）；`internal/game` 沒有區域或劇情專屬檔 |
+| 規格目錄 | 1,229 份 `docs/spec/*.md`（2026-08-28 現場計數，含索引）；狀態與證據邊界以各文件及 [`docs/spec/README.md`](docs/spec/README.md) 為準，不能由文件數推論完成度 |
+| 程式 | 498 個 `.go`／142,653 行（2026-08-28 現場計數，不含巢狀 engine repo 與 `workplace/`）；`internal/game` 沒有區域或劇情專屬檔 |
 | ECL 文字 | 控制流可達 1,022 頁，**未接上 0** |
 | ECL 副作用 | 可達 14,177 條指令，`done` **14,177**／`partial` **0**；opcode `done` 61／`partial` 0 |
 | 戰鬥法術 | 可宣告 **73／73** 全部有 handler、視覺與音效 |
@@ -30,7 +30,7 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 | 第一人稱畫面 | 585 種牆面配置**全覆蓋**、共 **1,498 張**與原版逐格比對：**1,498 張全部完全相同、差 0 格**（第三次全量重測）|
 | 全滅 | 隊伍全倒會**結束遊戲**、落到全滅畫面再回標題，與原作的 `DS:4FC7h` 同一個結局 |
 | 存檔 | 角色記錄 422 bytes：decoded 299／documented 123／**unknown 0** |
-| UI 詞條 | game pack `zh-TW` 1,588 條、`assets/locale/zh-TW.json` 1,144 條 |
+| UI 詞條 | game pack `zh-TW` 1,598 條、`assets/locale/zh-TW.json` 1,183 條 |
 | **主線** | **開場到結局同一條 session 跑得完**，拆成 25 個段 subtest（23 段主線＋2 段接進主線的段內支線），每段結束的快照都存得下去讀得回來 |
 | **鍵盤通關** | 從標題開始、全程只走真實前端按鍵，第 **14,380 幀**觸發 `GameWon()` |
 | **一般強度基線** | pending Bless 無限重試已修；關閉隊伍強化後跑 2,455 幀：251 格、8 個 ECL 段、199 句、落回原文 0，最後真實全滅重開 1 次。手動戰鬥對照也在同一戰役區段全滅；這是合法停止結果，不再把戰術／loadout 或自動通關列為產品缺口 |
@@ -44,7 +44,8 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 | 跨段不變量 | 經驗值不倒退、隊伍變動位置宣告好；**裝備／記憶法術／效果**在 23 個段界存下去讀得回來且沒有變動（`SEG-31`）；選曲逐格對回 PC-98 原作的 selector 表（`SEG-33`，spec 355）|
 | 怪物資料 | `MON*ITM` 物品鏈與怪物自動換裝已接；特殊效果的已知實作缺口 0，但仍有 28 個效果碼／69 筆記錄是 `unread`，不能宣稱全部對齊 |
 | 音訊格式 | 正式播放以 OGG 為主：12 首 PC-98 音樂與 9 個音效；`MSCDRV.EXE` 即時合成只保留作研究 oracle／缺檔 fallback |
-| 圖像獨立化 | 人物、怪物、戰鬥圖示與場景已有 780 張獨立 PNG 並由 runtime 載入；TILES、戰場地形、AREA／共用符號、SKY、牆片仍直接讀原版 DAX，遷移盤點見 [`docs/audit/png-asset-independence-2026-08-27.md`](docs/audit/png-asset-independence-2026-08-27.md) |
+| 圖像獨立化 | `assets/` 共 2,528 張 PNG：780 張人物／怪物／場景、1,741 張 runtime 圖像、6 張 Journal 插圖與 1 張參考圖；TILES、戰場地形、AREA／共用符號、SKY 與牆片皆已切換 PNG／JSON，無圖像 DAX fixture 的 runtime 代表抽樣已通過，還差各平台封包 smoke |
+| 現代介面 | 預設 A6 細石框＋左上明亮金雕內框；F1 Help、F2 即時 theme、F3 雙層攻略地圖、F4 三種解析度、F10 存檔後離開；視窗可任意拉伸並填滿 |
 | 手札 | locale 宣告 **64 則**，全部由 48 條內容規則的 `journal_message_ids` 解鎖；六張手冊地圖／插圖（含手札 59 的眼魔洞穴圖）在手札畫面按 `I` 彈窗顯示（spec 1109）|
 | `24h COMBAT` | 199 處逐處分類：**153 處真的要打、46 處走服務分派**（`cmd/ecl-combat-sites`）|
 | 跨段不變量 | 整條主線 260 句話**落回原文 0 句**；同一角色的經驗不倒退、隊伍變動位置宣告好；22 個段界都有曲子 |
@@ -68,8 +69,9 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 路線，一條 session 只能走一邊，`myth_drannor_test` 的直入測試整條走過）。
 其餘支線由段界快照逐格取樣涵蓋（9 段、123 格、落回原文 0 格）。
 
-連續鍵盤路線已通關；仍待的是一般強度隊伍的人工完整試玩、非第一人稱
-畫面 oracle、Windows／macOS 真機封包驗收與全量人工中文校對。
+連續鍵盤路線已通關；後續只依風險抽測代表性玩家路徑、非第一人稱
+畫面、中文與音訊，不再追求全量閉合。對外交付的硬関門是無圖像 DAX
+fixture 封包抽測、Windows／macOS 真機啟動、macOS 簽署／公證與授權清單。
 
 ### 角色建立
 
@@ -113,6 +115,10 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 
 ![旅店人物事件：DOS 石框、HEAD／BODY 舞台與繁中敘事](docs/screenshots/gold-box-layout-adventure.png)
 
+![A6 現代 theme：細石外框、左上雙層結構與明亮金雕內框](docs/screenshots/a6-modern-theme-adventure.png)
+
+![A6 現代 theme 的完整攻略疊圖：目前座標、16×16 地圖與事件點說明](docs/screenshots/a6-guide-overlay.png)
+
 ![原版四段建角的名字輸入段](docs/screenshots/guided-creation-name.png)
 
 ![繁中戰鬥：原作佈署演算法放的開場隊形，遠距離遭遇的敵隊要逐回合逼近才入鏡](docs/screenshots/gold-box-layout-combat.png)
@@ -120,6 +126,18 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 ![提爾佛頓第一人稱：木板牆、石牆與逐格收斂的側牆，原版 88×88 場景內框](docs/screenshots/tilverton-first-person-remake.png)
 
 ![Burial Glen 紅網戰鬥：四隻巨蛛的 CPIC 圖示、原版地城素材與戰鬥 footer](docs/screenshots/burial-glen-red-web-spiders.png)
+
+### Remake PNG sprite／tileset 總攬
+
+下圖直接抽樣 `assets/sprites/` 與 `assets/runtime-images/` 的獨立 PNG，涵蓋人物／場景、
+戰鬥 sprite、世界／區域圖塊與戰場 tileset。這些是 release 會載入的 remake 資產，
+來源仍是合法持有的原版資料經轉換後獨立存放；**不是現代重繪素材**。A6 目前只替換
+介面框線與疊圖，日後的現代 sprite／tileset 必須維持相同索引、錨點、方向與碰撞語意。
+
+![Remake 獨立 PNG sprite／tileset 總攬：場景人物、戰鬥小人、世界區域圖塊與戰場地形](docs/reference/remake-png-asset-overview.png)
+
+總攬圖不需原版 ZIP，可由 `go run ./cmd/asset-overview` 在 Docker 內重生；抽樣採排序後
+等距選取，所以同一份資產集合會產生相同畫面。
 
 ### 法術演出的四種通道
 
@@ -144,7 +162,7 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 兩種雲同時是戰術地圖的**障礙格**（地形碼 `1Eh`／`1Ch`）——低階角色繞開毒雲、
 七級以上的老手硬闖。
 
-這五張的產生指令與雜湊在
+目前 14 張代表畫面的產生指令與雜湊在
 [`docs/screenshots/manifest.json`](docs/screenshots/manifest.json)，由
 `cmd/screenshot-audit` 驗；近期修掉的圖層對齊錯誤見
 [spec 1130](docs/spec/1130-screenshot-layer-alignment.md)，第一人稱牆面的
@@ -225,7 +243,7 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
 
 以下保留部分規則閉合的證據索引，不可依「剩下」「尚未」等舊措辭重開工作。
 目前只有 [HANDOFF](HANDOFF.md) 與
-[完成度自評](docs/knowledge/remake-completeness-assessment.md) 列出的四類 frontier。
+[完成度自評](docs/knowledge/remake-completeness-assessment.md) 列出的現行 frontier。
 
 - **戰鬥回合生命週期**：回合開始那一段已收完（spec 1135／1136）——先攻算式、
   選誰動、DELAY／GUARD／QUICK、定身與機會攻擊都與原作相符，突襲遮罩判定為死碼。

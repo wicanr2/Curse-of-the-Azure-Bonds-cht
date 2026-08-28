@@ -1,0 +1,68 @@
+{
+  "schema": "coab-guide-maps/1",
+  "maps": {
+    "2/01": {
+      "title": "提爾佛頓",
+      "points": [
+        {"x": 5, "y": 2, "label": "訓練場", "summary": "符合經驗門檻的角色可付費升級。", "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"},
+        {"x": 6, "y": 5, "label": "賢者菲拉妮", "summary": "說明真相以推進城門與皇家馬車事件。", "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"},
+        {"x": 0, "y": 7, "label": "剛德神殿", "summary": "治療服務。", "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"},
+        {"x": 6, "y": 10, "label": "酒館", "summary": "飲料事件與手札 17。", "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"},
+        {"x": 1, "y": 10, "label": "高階祭司", "summary": "同意協助可解鎖手札 19。", "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"},
+        {"x": 2, "y": 12, "label": "武器店", "summary": "主線觸發條件之一。", "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"}
+      ]
+    },
+    "2/03": {
+      "title": "提爾佛頓下水道",
+      "points": [
+        {"x": 13, "y": 10, "label": "迷斯卓諾騎士", "summary": "回答納卡西亞公主或不效忠任何人可和平取得警告。", "source": "docs/guide/main-story-zh-TW.md#3-下水道"},
+        {"x": 10, "y": 15, "label": "火刀據點出口", "summary": "向南踏出，前往火刀據點 (8,1)。", "source": "docs/spec/1199-tilverton-sewers-map-edge-handoffs.md"}
+      ]
+    },
+    "2/04": {
+      "title": "火刀據點",
+      "points": [
+        {"x": 5, "y": 1, "label": "旋轉刀刃", "summary": "選等待可安全通過。", "source": "docs/reference/maps/README.md#火刀據點"},
+        {"x": 14, "y": 11, "label": "華麗辦公室", "summary": "首次進入後按 S 搜索抽屜，可取得手札與財寶。", "source": "docs/guide/main-story-zh-TW.md#4-火刀據點"},
+        {"x": 4, "y": 12, "label": "檢查哨", "summary": "火刀守衛事件。", "source": "docs/reference/maps/README.md#火刀據點"},
+        {"x": 3, "y": 13, "label": "首領戰", "summary": "長戰；建議先紮營、治療與記憶法術。", "source": "docs/guide/main-story-zh-TW.md#4-火刀據點"},
+        {"x": 7, "y": 13, "label": "醫院", "summary": "據點醫院區。", "source": "docs/reference/maps/README.md#火刀據點"}
+      ]
+    },
+    "5/32": {
+      "title": "熔岩洞",
+      "points": [
+        {"x": 0, "y": 5, "label": "熔岩池房", "summary": "可交涉或與十五隻火蜥蜴戰鬥。", "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"},
+        {"x": 9, "y": 10, "label": "守門巡邏", "summary": "火蜥蜴與黑暗精靈守軍。", "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"},
+        {"x": 6, "y": 15, "label": "法師塔入口", "summary": "面西進入法師塔。", "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"}
+      ]
+    },
+    "5/33": {
+      "title": "法師塔",
+      "points": [
+        {"x": 6, "y": 15, "label": "熔岩洞入口", "summary": "通往熔岩洞。", "source": "docs/guide/main-story-zh-TW.md#10-法師塔與龍群"},
+        {"x": 7, "y": 15, "label": "屋頂出口", "summary": "面東開啟洞穴／荒野／留在此地選單。", "source": "docs/guide/main-story-zh-TW.md#10-法師塔與龍群"}
+      ]
+    },
+    "3/10": {
+      "title": "尤拉什戰區",
+      "points": [
+        {"x": 0, "y": 3, "label": "指揮官等候室", "summary": "向東攔截散塔林間諜。", "source": "docs/guide/main-story-zh-TW.md#13-尤拉什戰區"},
+        {"x": 11, "y": 0, "label": "摩安德之坑入口", "summary": "取得通行後面北跨越邊界。", "source": "docs/guide/main-story-zh-TW.md#14-進入摩安德之坑"}
+      ]
+    },
+    "3/11": {
+      "title": "摩安德之坑第一層",
+      "points": [
+        {"x": 1, "y": 4, "label": "愛麗雅絲與龍餌", "summary": "談判、友善、說明經歷並答應邀請，可招募兩人。", "source": "docs/guide/main-story-zh-TW.md#15-招募愛麗雅絲與龍餌"},
+        {"x": 15, "y": 11, "label": "下層入口", "summary": "踏上樓梯並選是進入第二層。", "source": "docs/guide/main-story-zh-TW.md#16-下層線索與摩貢"}
+      ]
+    },
+    "3/15": {
+      "title": "摩安德之坑第二層",
+      "points": [
+        {"x": 14, "y": 15, "label": "散塔林守衛", "summary": "檢查屍體可取得弗佐爾命令並解鎖手札 46。", "source": "docs/guide/main-story-zh-TW.md#16-下層線索與摩貢"}
+      ]
+    }
+  }
+}
