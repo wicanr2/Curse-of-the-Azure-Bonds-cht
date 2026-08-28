@@ -203,11 +203,16 @@ func (a *app) updateGlobalUI() (bool, error) {
 func (a *app) drawGlobalUI(screen *ebiten.Image) {
 	w, h := a.ui.logicalSize()
 	if a.ui.settings.Theme == "modern-a6" {
+		a.drawModernA6Content(screen, w, h)
 		switch a.state.Mode {
 		case game.ModeCombat:
-			drawA6CombatFrame(screen, w, h)
+			if !a.drawModernA6CombatFrame(screen, w, h) {
+				drawA6CombatFrame(screen, w, h)
+			}
 		case game.ModeWilderness, game.ModeEvent, game.ModeMap, game.ModePlace, game.ModeJournal, game.ModeDungeon:
-			drawA6Frame(screen, w, h)
+			if !a.drawModernA6AdventureFrame(screen, w, h) {
+				drawA6Frame(screen, w, h)
+			}
 		default:
 			drawA6OuterFrame(screen, w, h)
 		}
@@ -234,13 +239,46 @@ func drawA6OuterFrame(screen *ebiten.Image, width, height int) {
 }
 
 func drawA6CombatFrame(screen *ebiten.Image, width, height int) {
-	drawA6OuterFrame(screen, width, height)
 	sx, sy := float64(width)/640, float64(height)/480
-	stone, shadow := color.RGBA{218, 211, 190, 255}, color.RGBA{88, 78, 61, 255}
-	ebitenutil.DrawRect(screen, 360*sx, 8*sy, 6*sx, 352*sy, stone)
-	ebitenutil.DrawRect(screen, 365*sx, 8*sy, sx, 352*sy, shadow)
-	ebitenutil.DrawRect(screen, 2*sx, 360*sy, 636*sx, 6*sy, stone)
-	ebitenutil.DrawRect(screen, 2*sx, 448*sy, 636*sx, 5*sy, stone)
+	stone, light, shadow := color.RGBA{205, 196, 172, 255}, color.RGBA{248, 238, 204, 255}, color.RGBA{66, 57, 45, 255}
+	gold, goldLight, goldShadow := color.RGBA{255, 213, 45, 255}, color.RGBA{255, 249, 171, 255}, color.RGBA{133, 75, 3, 255}
+	blue := color.RGBA{35, 137, 219, 255}
+	line := func(x, y, w, h float64, c color.Color) { ebitenutil.DrawRect(screen, x*sx, y*sy, w*sx, h*sy, c) }
+	// 使用者選定的 18px 精修石框；內緣是較細的雙層亮金雕線。
+	line(0, 0, 640, 18, stone)
+	line(0, 462, 640, 18, shadow)
+	line(0, 0, 18, 480, stone)
+	line(622, 0, 18, 480, shadow)
+	line(2, 2, 636, 2, light)
+	line(14, 14, 612, 2, goldLight)
+	line(14, 16, 612, 1, gold)
+	line(14, 17, 612, 1, goldShadow)
+	line(14, 462, 612, 1, goldLight)
+	line(14, 463, 612, 2, gold)
+	line(14, 465, 612, 1, goldShadow)
+	line(14, 14, 2, 452, goldLight)
+	line(16, 14, 1, 452, gold)
+	line(17, 14, 1, 452, goldShadow)
+	line(622, 14, 1, 452, goldLight)
+	line(623, 14, 2, 452, gold)
+	line(625, 14, 1, 452, goldShadow)
+	// 戰場／狀態與訊息區分隔延續同一金雕語彙，不再退回灰色 DOS 框。
+	for _, divider := range [][4]float64{{358, 16, 8, 344}, {16, 358, 608, 8}, {16, 446, 608, 7}} {
+		x, y, w, h := divider[0], divider[1], divider[2], divider[3]
+		line(x, y, w, h, shadow)
+		if w > h {
+			line(x, y+1, w, 2, goldLight)
+			line(x, y+3, w, 2, gold)
+		} else {
+			line(x+1, y, 2, h, goldLight)
+			line(x+3, y, 2, h, gold)
+		}
+	}
+	for _, point := range [][2]float64{{14, 14}, {622, 14}, {14, 462}, {622, 462}, {358, 358}} {
+		line(point[0], point[1], 5, 5, goldShadow)
+		line(point[0]+1, point[1]+1, 3, 3, blue)
+		line(point[0]+2, point[1]+1, 1, 1, color.RGBA{159, 226, 255, 255})
+	}
 }
 
 func drawA6Frame(screen *ebiten.Image, width, height int) {

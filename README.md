@@ -115,7 +115,9 @@ fixture 封包抽測、Windows／macOS 真機啟動、macOS 簽署／公證與�
 
 ![旅店人物事件：DOS 石框、HEAD／BODY 舞台與繁中敘事](docs/screenshots/gold-box-layout-adventure.png)
 
-![A6 現代 theme：細石外框、左上雙層結構與明亮金雕內框](docs/screenshots/a6-modern-theme-adventure.png)
+![A6 現代 theme 第一個實際垂直切片：高清重繪女侍、細石雕框與明亮金色內框](docs/screenshots/a6-modern-redraw-slice.png)
+
+![A6 現代 theme 正常劇情動畫：inner-ritual 玩家路徑載入高清手繪 PIC 與 18px 雙層框](docs/screenshots/a6-modern-picture-animation.png)
 
 ![A6 現代 theme 的完整攻略疊圖：目前座標、16×16 地圖與事件點說明](docs/screenshots/a6-guide-overlay.png)
 
@@ -131,10 +133,60 @@ fixture 封包抽測、Windows／macOS 真機啟動、macOS 簽署／公證與�
 
 下圖直接抽樣 `assets/sprites/` 與 `assets/runtime-images/` 的獨立 PNG，涵蓋人物／場景、
 戰鬥 sprite、世界／區域圖塊與戰場 tileset。這些是 release 會載入的 remake 資產，
-來源仍是合法持有的原版資料經轉換後獨立存放；**不是現代重繪素材**。A6 目前只替換
-介面框線與疊圖，日後的現代 sprite／tileset 必須維持相同索引、錨點、方向與碰撞語意。
+來源仍是合法持有的原版資料經轉換後獨立存放；**不是現代重繪素材**。忠實 theme
+繼續使用這組資料。現代 A6 的機器清冊現已涵蓋全部 15 個資產族；高清手繪用於
+場景人物與 BIGPIC，其餘圖示、動畫、牆磚及戰場圖塊採保留 Gold Box 輪廓的
+edge-aware 雙解析度現代像素層。這表示資產入口已齊，不表示每張都改成寫實插畫。
 
 ![Remake 獨立 PNG sprite／tileset 總攬：場景人物、戰鬥小人、世界區域圖塊與戰場地形](docs/reference/remake-png-asset-overview.png)
+
+第一組現代重繪採混合式美術：picture 為高清手繪、sprite 為現代像素畫、tileset
+為高清材質，同時保留原版構圖、辨識色、戰術輪廓與圖塊語意：
+
+![A6 現代重繪第一個垂直切片總覽：picture、sprite 與 tileset](docs/reference/modern-a6-vertical-slice-overview.png)
+
+48 張 AREA-map tile 均保留原道路／符號及索引語意，改以 96×96 材質化重繪：
+
+![A6 現代 AREA-map tileset：48 個道路與地圖符號完整總覽](docs/reference/modern-a6-tiles-overview.png)
+
+156 個 CPIC 入口（122 種原始唯一視覺）均完成 2× edge-aware 現代像素重繪：
+
+![A6 現代 CPIC 戰術 sprite：122 種原始唯一視覺完整總覽](docs/reference/modern-a6-cpic-overview.png)
+
+PIC 與 SPRIT 動畫保留原延遲、錨點與逐格構圖，替換為完整雙解析度影格：
+
+![A6 現代 PIC 動畫影格總覽](docs/reference/modern-a6-picture-animation-overview.png)
+
+PIC 的「可載入」與「手繪完成」分開計：28／28 組單格 PIC 與 28／28 組多格
+PIC（124／124 格）均已完成高清手繪。byte-identical 的入口仍共用同一組繪圖；
+權威分母與剩餘序列見 [`modern-a6-art-quality.json`](docs/audit/modern-a6-art-quality.json)，
+不得只用檔案存在數取代畫作品質台帳。release 影格為 512×512；這仍高於
+1280×960 模式的實際 picture viewport，且避免 152 張 1024×1024 影格預載造成
+CPU／GPU 記憶體放大。
+
+![A6 現代 SPRIT 動畫影格總覽](docs/reference/modern-a6-sprite-animation-overview.png)
+
+戰場地形 63 種唯一視覺與第一人稱牆面 1,185 種唯一符號亦已全量獨立化：
+
+![A6 現代戰場地形總覽](docs/reference/modern-a6-combat-terrain-overview.png)
+
+![A6 現代第一人稱牆面符號總覽](docs/reference/modern-a6-first-person-symbol-overview.png)
+
+4 張 BIGPIC 已依原版橫幅構圖完成 1216×480 高清手繪：
+
+![A6 現代 BIGPIC：世界地圖、惡魔骷髏、三女法師與夜間村落](docs/reference/modern-a6-bigpic-overview.png)
+
+新版世界地圖已由正常 `BigPictureRequested` 玩家路徑載入；這張不是素材拼貼，而是
+實際 640×480 遊戲畫面：
+
+![A6 現代主題的新版世界地圖實機畫面](docs/screenshots/a6-modern-world-map.png)
+
+正常玩家路徑亦抽拍第一人稱與戰鬥；戰鬥模式使用同一套 18px 石框、雙層亮金
+內框與藍寶石交點，不再回退到灰色框：
+
+![A6 現代第一人稱實機畫面](docs/screenshots/a6-modern-first-person.png)
+
+![A6 現代戰鬥實機畫面](docs/screenshots/a6-modern-combat.png)
 
 總攬圖不需原版 ZIP，可由 `go run ./cmd/asset-overview` 在 Docker 內重生；抽樣採排序後
 等距選取，所以同一份資產集合會產生相同畫面。
@@ -162,7 +214,7 @@ fixture 封包抽測、Windows／macOS 真機啟動、macOS 簽署／公證與�
 兩種雲同時是戰術地圖的**障礙格**（地形碼 `1Eh`／`1Ch`）——低階角色繞開毒雲、
 七級以上的老手硬闖。
 
-目前 14 張代表畫面的產生指令與雜湊在
+目前 18 張代表畫面的產生指令與雜湊在
 [`docs/screenshots/manifest.json`](docs/screenshots/manifest.json)，由
 `cmd/screenshot-audit` 驗；近期修掉的圖層對齊錯誤見
 [spec 1130](docs/spec/1130-screenshot-layer-alignment.md)，第一人稱牆面的

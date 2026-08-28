@@ -1,0 +1,110 @@
+{
+  "families": {
+    "big_picture": {
+      "modern_files": 4,
+      "modern_unique_visuals": 4,
+      "source_files": 4,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 4
+    },
+    "character_bodies": {
+      "modern_files": 128,
+      "modern_unique_visuals": 128,
+      "source_files": 128,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 128
+    },
+    "character_heads": {
+      "modern_files": 56,
+      "modern_unique_visuals": 25,
+      "source_files": 56,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 25
+    },
+    "combat_cpic": {
+      "modern_files": 156,
+      "modern_unique_visuals": 123,
+      "source_files": 156,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 122
+    },
+    "combat_symbols": {
+      "modern_files": 26,
+      "modern_unique_visuals": 26,
+      "source_files": 26,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 26
+    },
+    "combat_terrain": {
+      "modern_files": 65,
+      "modern_unique_visuals": 63,
+      "source_files": 65,
+      "source_glob": "assets/runtime-images/combat",
+      "unique_source_visuals": 63
+    },
+    "first_person_symbols": {
+      "modern_files": 1625,
+      "modern_unique_visuals": 1185,
+      "source_files": 1625,
+      "source_glob": "assets/runtime-images/symbols",
+      "unique_source_visuals": 1185
+    },
+    "party_composites": {
+      "modern_files": 12,
+      "modern_unique_visuals": 12,
+      "source_files": 18,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 12
+    },
+    "picture_animation": {
+      "modern_files": 152,
+      "modern_unique_visuals": 119,
+      "source_files": 152,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 107
+    },
+    "scene_bodies": {
+      "modern_files": 31,
+      "modern_unique_visuals": 26,
+      "source_files": 31,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 26
+    },
+    "scene_characters": {
+      "modern_files": 27,
+      "modern_unique_visuals": 27,
+      "source_files": 31,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 27
+    },
+    "scene_heads": {
+      "modern_files": 40,
+      "modern_unique_visuals": 34,
+      "source_files": 40,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 34
+    },
+    "sky": {
+      "modern_files": 3,
+      "modern_unique_visuals": 3,
+      "source_files": 3,
+      "source_glob": "assets/runtime-images/sky",
+      "unique_source_visuals": 3
+    },
+    "sprite_animation": {
+      "modern_files": 138,
+      "modern_unique_visuals": 121,
+      "source_files": 138,
+      "source_glob": "assets/sprites",
+      "unique_source_visuals": 121
+    },
+    "tiles": {
+      "modern_files": 48,
+      "modern_unique_visuals": 48,
+      "source_files": 48,
+      "source_glob": "assets/runtime-images/tiles",
+      "unique_source_visuals": 48
+    }
+  },
+  "schema": "coab-modern-a6-inventory/1"
+}

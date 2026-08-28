@@ -26,6 +26,56 @@
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
     },
     {
+      "id": "a6-modern-redraw-slice",
+      "file": "docs/screenshots/a6-modern-redraw-slice.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "b60f689897e927c04650782b7b59f195aa523f8d31ab23672afcee53042ec8ab",
+      "generation_mode": "Docker/Xvfb -inn；正常流程載入現代高清女侍 picture 與使用者選定的 A6 精修石框／明亮金雕內框；外框 18px",
+      "evidence_level": "layout-only",
+      "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
+    },
+    {
+      "id": "a6-modern-picture-animation",
+      "file": "docs/screenshots/a6-modern-picture-animation.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "1b93bf11a935ee892da2fbdfa1b0e5b703621052418039a9c381c80090bcc11d",
+      "generation_mode": "Docker/Xvfb -inner-ritual；正常故事路徑載入 512×512 modern-a6 多格手繪 PIC 與 18px A6 雙層框",
+      "evidence_level": "layout-only",
+      "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
+    },
+    {
+      "id": "a6-modern-world-map",
+      "file": "docs/screenshots/a6-modern-world-map.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "407cbb500ca9b429e47912c052250c1db912895fb94410c9c572a4a0c2ffb120",
+      "generation_mode": "Docker/Xvfb -world-map；normal BigPictureRequested 載入 1216×480 modern-a6 世界地圖並線性縮放至原版 608×240 顯示框",
+      "evidence_level": "layout-only",
+      "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
+    },
+    {
+      "id": "a6-modern-first-person",
+      "file": "docs/screenshots/a6-modern-first-person.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "5f06f15a9e8b333951ec9f67bb8bd47127f13b65e2a833775f305f7848988a3c",
+      "generation_mode": "Docker/Xvfb -tilverton-dungeon；normal dungeon path 載入雙解析度牆面符號與 A6 frame",
+      "evidence_level": "layout-only",
+      "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
+    },
+    {
+      "id": "a6-modern-combat",
+      "file": "docs/screenshots/a6-modern-combat.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "d14218f00458d939ccdfef43c662d583828a7c604ffa960af23850b715afc08d",
+      "generation_mode": "Docker/Xvfb -encounter；normal combat path 載入雙解析度 CPIC／戰場地形與 18px A6 金雕戰鬥框",
+      "evidence_level": "layout-only",
+      "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
+    },
+    {
       "id": "a6-guide-overlay",
       "file": "docs/screenshots/a6-guide-overlay.png",
       "width": 640,

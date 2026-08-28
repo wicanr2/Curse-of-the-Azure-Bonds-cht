@@ -1,0 +1,33 @@
+{
+  "schema": "coab-modern-a6-art-quality/1",
+  "picture": {
+    "scene_character_unique_painted": 27,
+    "scene_character_unique_total": 27,
+    "bigpic_painted": 4,
+    "bigpic_total": 4,
+    "static_pic_painted_sequences": 28,
+    "static_pic_total_sequences": 28,
+    "animated_pic_painted_sequences": 28,
+    "animated_pic_total_sequences": 28,
+    "animated_pic_painted_frames": 124,
+    "animated_pic_total_frames": 124,
+    "animated_pic_remaining_sequences": []
+  },
+  "modern_pixel": {
+    "families": [
+      "CPIC",
+      "SPRIT",
+      "character_layers",
+      "combat_symbols",
+      "party_composites",
+      "combat_terrain",
+      "first_person_symbols",
+      "sky"
+    ],
+    "quality_contract": "material palette + Scale2x edge reconstruction + subpixel texture/light depth"
+  },
+  "material_tiles": {
+    "area_tiles_complete": 48,
+    "area_tiles_total": 48
+  }
+}

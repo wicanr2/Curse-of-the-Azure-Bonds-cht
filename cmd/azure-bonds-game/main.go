@@ -76,8 +76,11 @@ type app struct {
 	areaMapSymbols         []*ebiten.Image
 	wallSharedSymbols      []*ebiten.Image
 	wallSharedFirstID      uint8
+	wallSharedBlock        uint8
+	wallSharedFile         string
 	wallSymbolFile         string
 	skyImages              [3]*ebiten.Image
+	skyBlocks              [3]uint8
 	geoGrid                *geo.Grid
 	geoX                   int
 	geoY                   int
@@ -135,6 +138,7 @@ type app struct {
 	screenshotFrames       int
 	ui                     uiRuntime
 	guide                  guideCatalog
+	modernA6               *modernA6Assets
 }
 
 type combatAnimation struct {
@@ -145,9 +149,10 @@ type combatAnimation struct {
 }
 
 type wallPreviewStamp struct {
-	image  *ebiten.Image
-	row    int
-	column int
+	image       *ebiten.Image
+	modernImage *ebiten.Image
+	row         int
+	column      int
 }
 
 func wallStampNativePosition(row, column int) (x, y int, ok bool) {
@@ -1412,9 +1417,8 @@ func (a *app) prepareWallPreview() {
 			}
 			a.traceWallStamp(tooltext.Text("h.7d6f28597524"), call, piece, stamp)
 			a.wallPreview = append(a.wallPreview, wallPreviewStamp{
-				image:  image,
-				row:    stamp.Row,
-				column: stamp.Column,
+				image: image, modernImage: a.modernSymbolImageForGlobalID(stamp.SymbolID),
+				row: stamp.Row, column: stamp.Column,
 			})
 		}
 	}
@@ -1494,6 +1498,26 @@ func (a *app) symbolImageForGlobalID(id uint8) (*ebiten.Image, bool) {
 		return nil, false
 	}
 	return a.runtimeImages.wallSymbol(a.wallSymbolFile, piece.SymbolBlockIDs[block], item)
+}
+
+func (a *app) modernSymbolImageForGlobalID(id uint8) *ebiten.Image {
+	if id == 0 || a.modernA6 == nil {
+		return nil
+	}
+	segment, item := wallSymbolSegment(id)
+	if segment == 0 {
+		item = int(id) - int(a.wallSharedFirstID)
+		return a.modernA6.symbols[runtimeImageKey(a.wallSharedFile, a.wallSharedBlock, item)]
+	}
+	piece, ok := a.pieceSets[uint8(segment)]
+	if !ok {
+		return nil
+	}
+	block := segment - int(piece.SetID)
+	if block < 0 || block >= len(piece.SymbolBlockIDs) {
+		return nil
+	}
+	return a.modernA6.symbols[runtimeImageKey(a.wallSymbolFile, piece.SymbolBlockIDs[block], item)]
 }
 
 // wallSymbolSegment 把全域符號編號拆成「第幾段」與「段內第幾項」。
@@ -2023,14 +2047,19 @@ func (a *app) revealedMessage() string {
 // 一共四個區塊（79 與 7B 在 1、78 在 2、7A 在 6）且彼此不重複，所以區塊編號本身
 // 就足以定檔。用章節去選檔在第 3～5 章一定落空——那三章根本沒有 BIGPIC 檔，
 // 而世界地圖那張 79 是全遊戲共用的。
-func (a *app) bigPictureSprite(block uint8) *ebiten.Image {
+func (a *app) bigPictureSprite(block uint8) (*ebiten.Image, bool) {
 	for file := 1; file <= 6; file++ {
 		key := fmt.Sprintf("bigpic%d-block-%02X-item-00.png", file, block)
+		if a.modernA6 != nil && a.ui.settings.Theme == "modern-a6" {
+			if sprite := a.modernA6.pictures[key]; sprite != nil {
+				return sprite, true
+			}
+		}
 		if sprite := a.combatSprites[key]; sprite != nil {
-			return sprite
+			return sprite, false
 		}
 	}
-	return nil
+	return nil, false
 }
 
 func (a *app) drawPictureAnimation(screen *ebiten.Image) {
@@ -2049,12 +2078,17 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		return
 	}
 	if a.state.BigPictureRequested {
-		if sprite := a.bigPictureSprite(uint8(a.state.PictureBlock)); sprite != nil {
+		if sprite, modern := a.bigPictureSprite(uint8(a.state.PictureBlock)); sprite != nil {
 			const pixelScale = 2
 			op := &ebiten.DrawImageOptions{}
 			op.Filter = ebiten.FilterNearest
-			op.GeoM.Scale(pixelScale, pixelScale)
-			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx()*pixelScale)/2), 44)
+			scale := float64(pixelScale)
+			if modern {
+				scale = float64(304*pixelScale) / float64(sprite.Bounds().Dx())
+				op.Filter = ebiten.FilterLinear
+			}
+			op.GeoM.Scale(scale, scale)
+			op.GeoM.Translate(float64(logicalWidth-int(float64(sprite.Bounds().Dx())*scale))/2, 44)
 			screen.DrawImage(sprite, op)
 			a.drawPictureMessage(screen)
 			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelBigPictureContinue), a.face, 56, 446, 520, color.RGBA{255, 255, 255, 255})
@@ -2066,6 +2100,11 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	}
 	key := fmt.Sprintf("pic%d-block-%02X", a.state.Area.GameArea, a.state.PictureBlock)
 	frames := a.combatAnimations[key]
+	modernFramesUsed := false
+	if modernFrames, ok := a.modernAnimation(key); ok {
+		frames = modernFrames
+		modernFramesUsed = true
+	}
 	if len(frames) == 0 {
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelPictureMissing), a.face, 56, 220, 520, color.RGBA{255, 220, 100, 255})
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, 520, color.RGBA{255, 255, 255, 255})
@@ -2087,7 +2126,11 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	// (24,24)..(111,111): 88x88 source pixels at a strict 2x scale. The grey
 	// frame includes a separate six-pixel margin, so enlarging this to its full
 	// transparent void would invent fractional scaling and alter source pixels.
-	drawImageCover(screen, frame.image, image.Rect(48, 48, 224, 224))
+	if modernFramesUsed && frame.image.Bounds().Dx() > 176 {
+		drawImageCoverFiltered(screen, frame.image, image.Rect(48, 48, 224, 224), ebiten.FilterLinear)
+	} else {
+		drawImageCover(screen, frame.image, image.Rect(48, 48, 224, 224))
+	}
 	a.drawFirstPersonStageFrame(screen)
 	a.drawOriginalAdventureFrame(screen)
 	a.drawPictureMessage(screen)
@@ -2289,11 +2332,21 @@ func (a *app) drawAreaMap(screen *ebiten.Image, white, cyan color.Color) {
 
 func (a *app) drawTilePreview(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelTileTitle), a.face, 24, 28, cyan)
-	for index, tile := range a.tileImages {
+	for index := range a.tileImages {
+		tile := a.displayTile(index)
+		if tile == nil {
+			continue
+		}
 		column := index % 8
 		row := index / 8
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(2, 2)
+		scale := 2.0
+		op.Filter = ebiten.FilterNearest
+		if a.ui.settings.Theme == "modern-a6" {
+			scale = 48 / float64(tile.Bounds().Dx())
+			op.Filter = ebiten.FilterLinear
+		}
+		op.GeoM.Scale(scale, scale)
 		op.GeoM.Translate(float64(24+column*76), float64(44+row*56))
 		screen.DrawImage(tile, op)
 		text.Draw(screen, strconv.Itoa(index), a.face, 24+column*76, 44+row*56+50, white)
@@ -2373,11 +2426,20 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 			entry, ok := a.dungeonFloor.Entry(x, y)
 			left, top := originX+column*tileSize*pixelScale, originY+row*tileSize*pixelScale
 			if ok && int(entry.TileIndex) < len(a.tileImages) {
+				tile := a.displayTile(int(entry.TileIndex))
+				if tile == nil {
+					continue
+				}
 				op := &ebiten.DrawImageOptions{}
+				scale := float64(pixelScale)
 				op.Filter = ebiten.FilterNearest
-				op.GeoM.Scale(pixelScale, pixelScale)
+				if a.ui.settings.Theme == "modern-a6" {
+					scale = float64(tileSize*pixelScale) / float64(tile.Bounds().Dx())
+					op.Filter = ebiten.FilterLinear
+				}
+				op.GeoM.Scale(scale, scale)
 				op.GeoM.Translate(float64(left), float64(top))
-				screen.DrawImage(a.tileImages[entry.TileIndex], op)
+				screen.DrawImage(tile, op)
 			} else {
 				ebitenutil.DrawRect(screen, float64(left), float64(top), tileSize*pixelScale, tileSize*pixelScale, color.RGBA{24, 30, 48, 255})
 			}
@@ -2404,11 +2466,16 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 	}
 	if len(a.wallPreview) > 0 {
 		for _, stamp := range a.wallPreview {
+			image := stamp.image
+			scale := 2.0
+			if a.ui.settings.Theme == "modern-a6" && stamp.modernImage != nil {
+				image, scale = stamp.modernImage, 1
+			}
 			op := &ebiten.DrawImageOptions{}
 			op.Filter = ebiten.FilterNearest
-			op.GeoM.Scale(2, 2)
+			op.GeoM.Scale(scale, scale)
 			op.GeoM.Translate(float64(360+stamp.column*16), float64(76+stamp.row*16))
-			screen.DrawImage(stamp.image, op)
+			screen.DrawImage(image, op)
 		}
 	}
 	controls := a.state.PreviewLabelText(game.PreviewLabelDungeonControls)
@@ -2440,11 +2507,16 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 			if index < 0 || index >= len(a.skyImages) || a.skyImages[index] == nil {
 				continue
 			}
+			image := a.skyImages[index]
+			scale := 2.0
+			if modern := a.modernRuntimeImage("sky", runtimeImageKey("SKY.DAX", a.skyBlocks[index], 0)); modern != nil {
+				image, scale = modern, 1
+			}
 			options := &ebiten.DrawImageOptions{}
 			options.Filter = ebiten.FilterNearest
-			options.GeoM.Scale(2, 2)
+			options.GeoM.Scale(scale, scale)
 			options.GeoM.Translate(float64((overlay.Column+1)*16), float64((overlay.Row+1)*16))
-			screen.DrawImage(a.skyImages[index], options)
+			screen.DrawImage(image, options)
 		}
 	}
 
@@ -2453,11 +2525,16 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		if !ok {
 			continue
 		}
+		image := stamp.image
+		scale := 2.0
+		if a.ui.settings.Theme == "modern-a6" && stamp.modernImage != nil {
+			image, scale = stamp.modernImage, 1
+		}
 		op := &ebiten.DrawImageOptions{}
 		op.Filter = ebiten.FilterNearest
-		op.GeoM.Scale(2, 2)
+		op.GeoM.Scale(scale, scale)
 		op.GeoM.Translate(float64(nativeX*2), float64(nativeY*2))
-		screen.DrawImage(stamp.image, op)
+		screen.DrawImage(image, op)
 	}
 	a.drawFirstPersonStageFrame(screen)
 	// The extended DOS chrome owns an opaque command strip at y=448..479.
@@ -2845,11 +2922,16 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 					if layer.Index < 0 || layer.Index >= len(tiles) {
 						continue
 					}
+					image := tiles[layer.Index]
+					scale := 2.0
+					if modern := a.modernRuntimeImage("combat", runtimeImageKey(layer.Atlas+".DAX", 1, layer.Index)); modern != nil {
+						image, scale = modern, 1
+					}
 					op := &ebiten.DrawImageOptions{}
 					op.Filter = ebiten.FilterNearest
-					op.GeoM.Scale(2, 2)
+					op.GeoM.Scale(scale, scale)
 					op.GeoM.Translate(float64(column*48), float64(row*48))
-					battlefield.DrawImage(tiles[layer.Index], op)
+					battlefield.DrawImage(image, op)
 				}
 			}
 		}
@@ -3032,7 +3114,12 @@ func (a *app) drawCombatPersistentAreas(screen *ebiten.Image, camera combat.Comb
 		if int(frame.Block) >= len(tiles) || tiles[frame.Block] == nil {
 			continue
 		}
+		image := tiles[frame.Block]
 		scale := definition.Scale
+		if modern := a.modernRuntimeImage("combat", runtimeImageKey(atlas+".DAX", 1, int(frame.Block))); modern != nil {
+			image = modern
+			scale /= 2
+		}
 		if scale < 1 {
 			scale = 1
 		}
@@ -3042,7 +3129,7 @@ func (a *app) drawCombatPersistentAreas(screen *ebiten.Image, camera combat.Comb
 			op.Filter = ebiten.FilterNearest
 			op.GeoM.Scale(float64(scale), float64(scale))
 			op.GeoM.Translate(float64(tile.X*48), float64(tile.Y*48))
-			screen.DrawImage(tiles[frame.Block], op)
+			screen.DrawImage(image, op)
 		}
 	}
 }
@@ -3663,16 +3750,28 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		key = fmt.Sprintf("cpic%d-block-%02X-item-00.png", fighter.SpriteSet, fighter.SpriteBlock)
 		sprite = a.combatSprites[key]
 	}
+	modernSprite := false
+	if replacement := a.modernCombatSprite(key); replacement != nil {
+		sprite = replacement
+		modernSprite = true
+	}
 	// 沒有 CPIC 時才退回 SPRIT，至少讓怪物有東西可畫。
 	if sprite == nil && fighter.HasAnimation {
 		key = fmt.Sprintf("sprit%d-block-%02X", fighter.SpriteSet, fighter.AnimationBlock)
-		if animation := a.combatAnimations[key]; len(animation) > 0 {
+		animation := a.combatAnimations[key]
+		animationIsModern := false
+		if modernFrames, ok := a.modernAnimation(key); ok {
+			animation = modernFrames
+			animationIsModern = true
+		}
+		if len(animation) > 0 {
 			frame := animation[0]
 			if a.state.AnimationsEnabled() {
 				frame = animationFrame(animation, time.Since(a.animationStart))
 			}
 			sprite = frame.image
 			frameX, frameY = frame.x, frame.y
+			modernSprite = animationIsModern
 		}
 	}
 	if sprite == nil {
@@ -3683,11 +3782,16 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		sprite = a.combatSprites[key]
 	}
 	op := &ebiten.DrawImageOptions{}
+	scale := 2.0
+	if modernSprite {
+		scale = 1
+		op.Filter = ebiten.FilterNearest
+	}
 	if fighter.IconDirection > 3 {
-		op.GeoM.Scale(-2, 2)
-		op.GeoM.Translate(float64(x)+float64(frameX*2)+float64(sprite.Bounds().Dx()*2), float64(y)+float64(frameY*2))
+		op.GeoM.Scale(-scale, scale)
+		op.GeoM.Translate(float64(x)+float64(frameX*2)+float64(sprite.Bounds().Dx())*scale, float64(y)+float64(frameY*2))
 	} else {
-		op.GeoM.Scale(2, 2)
+		op.GeoM.Scale(scale, scale)
 		op.GeoM.Translate(float64(x)+float64(frameX*2), float64(y)+float64(frameY*2))
 	}
 	screen.DrawImage(sprite, op)
@@ -4478,6 +4582,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	modernA6, err := loadModernA6Assets(filepath.Join("assets", "modern-a6"))
+	if err != nil {
+		log.Fatal(err)
+	}
 	dungeonX, dungeonY, _ := state.DungeonGeometryView()
 	regularFace := loadFace(*fontPath, 24)
 	compactFace := loadFace(*fontPath, 16)
@@ -4538,7 +4646,7 @@ func main() {
 	if guideErr != nil {
 		log.Printf("攻略地圖資料停用：%v", guideErr)
 	}
-	*gameApp = app{state: &state, imagePath: *imagePath, runtimeImages: runtimeImages, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, wallSymbolFile: firstPersonDefinition.SymbolFile, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath, ui: newUIRuntime(uiSettings, settingsPath), guide: guideData}
+	*gameApp = app{state: &state, imagePath: *imagePath, runtimeImages: runtimeImages, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, wallSharedBlock: wallSymbolDeclaration.SharedGroup.Block, wallSharedFile: wallSymbolDeclaration.SharedGroup.File, wallSymbolFile: firstPersonDefinition.SymbolFile, skyImages: skyImages, skyBlocks: firstPersonDefinition.SkyBlocks, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath, ui: newUIRuntime(uiSettings, settingsPath), guide: guideData, modernA6: modernA6}
 	switch *uiPreview {
 	case "help":
 		gameApp.ui.helpOpen = true
