@@ -35,6 +35,7 @@ __pycache__/
 /*
 !/*/
 !/*.md
+!/LICENSE
 !/.gitignore
 !/go.mod
 !/go.sum

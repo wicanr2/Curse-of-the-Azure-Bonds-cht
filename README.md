@@ -202,6 +202,13 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
 - [給中文玩家的 Gold Box 重製說明](docs/knowledge/golden-box-remake-for-chinese-readers.md)：
   把原本需要查紙本手冊的資訊整合進遊戲與文件。
 
+## 授權
+
+本專案中由權利人擁有的程式碼、繁體中文翻譯、文件與原創內容採
+[PolyForm Noncommercial License 1.0.0](LICENSE)：允許非商業使用、修改與散布；
+商業使用請透過 GitHub Issues 洽談另外授權。SSI 原版素材、Noto Sans TC、獨立 engine
+及第三方依賴不會因此被重新授權，完整邊界見 [`NOTICE.md`](NOTICE.md)。
+
 ## 開發與研究文件
 
 - [`HANDOFF.md`](HANDOFF.md)：compact／接手後先讀的最短現況、下一步與不可重開 gate。

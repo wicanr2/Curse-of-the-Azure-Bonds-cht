@@ -82,6 +82,13 @@ docker run --rm --network none --memory 1g --cpus 1 --pids-limit 128 \
       cp packaging/README-發行包.md "$BASE/windows/README.md"
       cp packaging/README-發行包.md "$BASE/macos-amd64/Azure Bonds Remake.app/Contents/MacOS/README.md"
       cp packaging/README-發行包.md "$BASE/macos-arm64/Azure Bonds Remake.app/Contents/MacOS/README.md"
+      for target in \
+        "$BASE/linux/AppDir" \
+        "$BASE/windows" \
+        "$BASE/macos-amd64/Azure Bonds Remake.app/Contents/MacOS" \
+        "$BASE/macos-arm64/Azure Bonds Remake.app/Contents/MacOS"; do
+        cp LICENSE NOTICE.md "$target/"
+      done
     done
     cp "$B/azure-bonds-game-linux-amd64" "dist/$V/patch/linux/AppDir/usr/bin/azure-bonds-game"
     cp "$B/azure-bonds-game.exe" "dist/$V/patch/windows/azure-bonds-game.exe"

@@ -2,6 +2,10 @@
 
 本程式是繁體中文 remake，不包含原版遊戲的公開散布授權。
 
+由本專案權利人擁有的程式碼、翻譯、文件與原創內容採 PolyForm Noncommercial
+License 1.0.0；允許非商業使用、修改及散布，商業使用須另行取得授權。完整條款
+與第三方素材排除以發行包內的 `LICENSE`／`NOTICE.md` 為準。
+
 ## 補丁包（patch）
 
 把自己合法持有的 DOS 遊戲檔打包成 `curseoftheazurebonds.zip`，放在執行檔或
