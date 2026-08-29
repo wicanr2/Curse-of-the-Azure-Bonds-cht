@@ -22,6 +22,7 @@ docker run --rm --network none --memory 64m --cpus 1 --pids-limit 32 \
 
 docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
   -u "$(id -u):$(id -g)" \
+  --tmpfs /tmp/.X11-unix:rw,mode=1777 \
   -v "$RELEASE:/release:ro" -v "$OUT:/promo" \
   -e VERSION="$VERSION" -e SOURCE_COMMIT="$SOURCE_COMMIT" "$IMAGE" sh -c '
     set -eu
