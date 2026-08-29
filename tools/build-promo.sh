@@ -20,7 +20,9 @@ docker run --rm --network none --memory 64m --cpus 1 --pids-limit 32 \
   -u "$(id -u):$(id -g)" -v "$ROOT/dist-all/$VERSION:/dist-version" \
   busybox:1.37 sh -c 'rm -rf /dist-version/promo && mkdir -p /dist-version/promo'
 
-docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
+# 現代 A6 三種手繪框在同一 session 內依次解碼時，2 GiB 會在第二種樣式處觸發 OOM；
+# 錄影必須保留全部熱切換素材，因此將媒體工作容器上限調為 4 GiB。
+docker run --rm --network none --memory 4g --cpus 2 --pids-limit 384 \
   -u "$(id -u):$(id -g)" \
   --tmpfs /tmp/.X11-unix:rw,mode=1777 \
   -v "$RELEASE:/release:ro" -v "$OUT:/promo" \
@@ -52,7 +54,9 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
       done
       # X11 關閉上一個 Ebiten 視窗後可能保留最後一幀；等新視窗穩定再收片，
       # 避免把上一段的正常畫面誤配到下一段字幕。
-      sleep 3
+      # 開場、戰鬥與結局 preview 的大型素材在視窗出現後仍會繼續解碼；
+      # 以 10 秒有界穩定期避免把初始化黑幕當成遊戲畫面。
+      sleep 10
       ffmpeg -hide_banner -loglevel error -y -f x11grab -framerate 30 \
         -video_size 640x480 -i :99.0+0,0 -t "$duration" -an \
         -vf "scale=960:720:flags=neighbor,pad=1280:720:160:0:black,drawbox=x=0:y=646:w=1280:h=74:color=black@0.74:t=fill,drawtext=fontfile=$font:text=$caption:fontcolor=white:fontsize=34:x=(w-text_w)/2:y=665,tpad=stop_mode=clone:stop_duration=$duration,fps=30,setpts=N/(30*TB)" \
@@ -67,11 +71,11 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
       done
     }
 
-    # 在同一個正常遊戲 session 內錄下移動、F2 theme 雙向切換與 F6 語言循環。
+    # 在同一個正常遊戲 session 內錄下移動、F2 theme 切換、
+    # F7 邊框 A／B／C 切換與 F6 語言循環。
     # 不能以多張靜態 preview 拼接，否則無法證明 runtime hotkey 真的接到玩家路徑。
     record_switches() {
       name=03-live-switches
-      duration=12
       setsid "$app" -sound-dir /tmp/coab-promo-no-audio -tilverton-dungeon >/tmp/coab-$name.log 2>&1 & game=$!
       n=0
       win=""
@@ -79,22 +83,65 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
         n=$((n+1)); test "$n" -lt 300 || { cat /tmp/coab-$name.log; exit 1; }
         sleep 0.1
       done
-      sleep 3
+      # 互動分幕同樣要等現代素材完成首次解碼，否則會錄到約 2 秒黑幕。
+      sleep 10
       xdotool windowfocus --sync "$win"
-      ffmpeg -hide_banner -loglevel error -y -f x11grab -framerate 30 \
-        -video_size 640x480 -i :99.0+0,0 -t "$duration" -an \
-        -vf "scale=960:720:flags=neighbor,pad=1280:720:160:0:black,drawbox=x=0:y=646:w=1280:h=74:color=black@0.74:t=fill,drawtext=fontfile=$font:text=實際遊玩・F2 雙 theme・F6 四語言:fontcolor=white:fontsize=34:x=(w-text_w)/2:y=665,tpad=stop_mode=clone:stop_duration=$duration,fps=30,setpts=N/(30*TB)" \
-        -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p "/promo/clips/$name.mp4" & capture=$!
-      sleep 1
-      xdotool key --clearmodifiers Up; sleep 0.8
-      xdotool key --clearmodifiers Right; sleep 0.8
-      xdotool key --clearmodifiers Up; sleep 0.8
-      xdotool key --clearmodifiers F2; sleep 1.3
-      xdotool key --clearmodifiers F2; sleep 1.3
-      xdotool key --clearmodifiers F6; sleep 1
-      xdotool key --clearmodifiers F6; sleep 1
-      xdotool key --clearmodifiers F6
+      focus_game() {
+        current=""
+        tries=0
+        while test -z "$current" && test "$tries" -lt 300; do
+          current=$(xdotool search --onlyvisible --pid "$game" 2>/dev/null | tail -n 1 || true)
+          if test -z "$current"; then
+            current=$(xdotool search --onlyvisible --name "." 2>/dev/null | tail -n 1 || true)
+          fi
+          test -n "$current" || sleep 0.1
+          tries=$((tries+1))
+        done
+        test -n "$current" || { echo "找不到遊戲視窗" >&2; exit 1; }
+        xdotool windowfocus --sync "$current"
+      }
+      tap() {
+        focus_game
+        xdotool key --clearmodifiers "$1"
+      }
+      : >/tmp/live-concat.txt
+      capture_piece() {
+        piece=$1; seconds=$2
+        ffmpeg -hide_banner -loglevel error -y -f x11grab -framerate 30 \
+          -video_size 640x480 -i :99.0+0,0 -t "$seconds" -an \
+          -vf "scale=960:720:flags=neighbor,pad=1280:720:160:0:black,drawbox=x=0:y=646:w=1280:h=74:color=black@0.74:t=fill,drawtext=fontfile=$font:text=實際遊玩・F2 主題・F7 邊框 A/B/C・F6 四語言:fontcolor=white:fontsize=31:x=(w-text_w)/2:y=665,fps=30,setpts=N/(30*TB)" \
+          -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p "/promo/clips/$name-$piece.mp4"
+        printf "file %s\n" "/promo/clips/$name-$piece.mp4" >>/tmp/live-concat.txt
+      }
+
+      # 每次套用外觀或語言都可能讓 Ebiten 短暫重建視窗。載入空窗不收片，
+      # 但所有操作仍發生在同一個正常遊戲程序與同一個 session。
+      capture_piece 00-movement 3 & capture=$!
+      sleep 0.4
+      tap Up; sleep 0.8
+      tap Right; sleep 0.8
       wait "$capture"
+
+      for style in B C A; do
+        tap F7; sleep 0.4
+        tap Right; sleep 0.4
+        capture_piece "10-style-$style-selection" 1
+        tap Return
+        focus_game
+        capture_piece "11-style-$style-applied" 2
+      done
+      for language in zh-CN ja en; do
+        tap F6
+        focus_game
+        capture_piece "20-language-$language" 2
+      done
+      tap F2
+      focus_game
+      capture_piece 30-original-theme 4
+
+      ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i /tmp/live-concat.txt \
+        -c copy "/promo/clips/$name.mp4"
+      cp /tmp/coab-$name.log /promo/live-switches-runtime.log
       kill -TERM "-$game" 2>/dev/null || true
       wait "$game" 2>/dev/null || true
       game=""
@@ -128,8 +175,8 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
       -vf "fps=30,setpts=N/(30*TB)" -an -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p \
       /tmp/video.mp4
     ffmpeg -hide_banner -loglevel error -y -i /tmp/video.mp4 -stream_loop -1 -i "$audio" \
-      -filter_complex "[1:a]volume=1.5,afade=t=in:st=0:d=1.5,afade=t=out:st=48:d=2[a]" \
-      -map 0:v -map "[a]" -t 50 -c:v copy -c:a aac -b:a 160k -movflags +faststart \
+      -filter_complex "[1:a]volume=1.5,afade=t=in:st=0:d=1.5,afade=t=out:st=58:d=2[a]" \
+      -map 0:v -map "[a]" -t 60 -c:v copy -c:a aac -b:a 160k -movflags +faststart \
       -metadata title="Curse of the Azure Bonds Traditional Chinese Remake - internal promo" \
       -metadata comment="Rights pending: internal review only; not cleared for public distribution" \
       /promo/coab-remake-promo-internal.mp4
@@ -138,7 +185,7 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
     ffmpeg -hide_banner -y -i /promo/coab-remake-promo-internal.mp4 \
       -vf "fps=1/2,scale=256:144:flags=lanczos,tile=5x5" -frames:v 1 /promo/contact-sheet.png \
       >/tmp/contact.log 2>&1
-    for second in 2 8 14 19 20 24 28 33 40 46 49; do
+    for second in 2 8 14 19 22 25 28 31 34 37 43 50 56 59; do
       ffmpeg -hide_banner -loglevel error -y -ss "$second" -i /promo/coab-remake-promo-internal.mp4 \
         -frames:v 1 "/promo/frames/frame-$second.png"
     done
@@ -146,9 +193,12 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
       >/promo/volume-check.txt 2>&1
     ffmpeg -hide_banner -i /promo/coab-remake-promo-internal.mp4 -af silencedetect=n=-50dB:d=3 -f null - \
       >/promo/silence-check.txt 2>&1
-    printf "version=%s\nsource_commit=%s\nvideo_source=packaged Linux full-local AppImage, Docker/Xvfb x11grab\ninteractive_evidence=normal Tilverton session with movement then injected F2,F2,F6,F6,F6\naudio_source=assets/audio/pc98-bgm-selector-01.ogg\nrights_status=internal review only; public distribution not cleared\n" "$VERSION" "$SOURCE_COMMIT" >/promo/metadata.txt
+    ffmpeg -hide_banner -i /promo/coab-remake-promo-internal.mp4 -vf blackdetect=d=1:pix_th=0.02 -an -f null - \
+      >/promo/black-check.txt 2>&1
+    printf "version=%s\nsource_commit=%s\nvideo_source=packaged Linux full-local AppImage, Docker/Xvfb x11grab\ninteractive_evidence=normal Tilverton session with movement; three F7,Right,Enter cycles for frame A/B/C; F6,F6,F6 language cycle; final F2 modern-to-original theme switch\naudio_source=assets/audio/pc98-bgm-selector-01.ogg\nrights_status=internal review only; public distribution not cleared\n" "$VERSION" "$SOURCE_COMMIT" >/promo/metadata.txt
     cd /promo
-    sha256sum coab-remake-promo-internal.mp4 contact-sheet.png ffprobe.json metadata.txt >SHA256SUMS.txt
+    sha256sum coab-remake-promo-internal.mp4 contact-sheet.png ffprobe.json metadata.txt \
+      live-switches-runtime.log volume-check.txt silence-check.txt black-check.txt >SHA256SUMS.txt
   '
 
 echo "完成：$OUT/coab-remake-promo-internal.mp4"

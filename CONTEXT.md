@@ -114,6 +114,13 @@ fallback；特殊攻擊與驅散不死的最後一擊會重算勝負，非戰鬥
 `EnterSegment` 前強化，套件測試明確指向段內快照；硬閘門恢復 15 個 block，
 沒有靠回退真實 HP 或放寬門檻通過（spec 1206）。
 
+最新發行收據（2026-08-29）：`0.1.0-dev.20260829` 已重生 patch／
+full-local 各四件三平台封包；Linux AppImage 與 Windows EXE（Wine）重做
+smoke。內部推廣片改為 60 秒的同 session 實錄，包含地城移動、F7 邊框
+A／B／C、F6 簡中／日文／英文與 F2 現代→原版主題；長黑／長靜音
+檢查均為 0。音樂仍是權利未釐清的 full-local OGG，因此影片仍只供
+內部檢視。收據見 `docs/audit/release-0.1.0-dev.20260829.md`。
+
 第 781 輪：**三平台開發發行包已可重生**——
 `tools/package-release.sh 0.1.0-dev` 產生 patch／full-local 各四件（Linux x86_64
 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP）與 SHA-256 manifest。

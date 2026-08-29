@@ -90,7 +90,7 @@ fallback 0；三黑龍是可避開支線，旋轉刀刃也不再故意闖入。�
 | ✅ 收掉（第 714 輪）| Go 漢字 literal 債 | **0**（1,938 → 0：71 檔全部移進 `internal/tooltext` 內嵌 catalog，printf 家族改走 `tooltext.Format`／`Errorf`，報表輸出逐位元組不變；閘門維持 fail-closed）| — |
 | ✅ 收掉（第 717 輪）| 怪物特殊攻擊五碼 | **0**——五碼全部接上（`internal/combat/special_attack.go`＋`gamepack/rules/special-attacks.json`）：吐酸（巨型蛞蝓）、區域吐酸（黑龍）、噴火＋凝視（屍龍）、龍息火（地獄犬）。命中率／次數／豁免類別／傷害（攻擊者 HP 上限或常數 7）照 asm；選目標與範圍形狀近似（模式碼與 `sub_175Bh` 未讀，pack 註記）。`monster-ai-coverage` 真的缺回到 0（會理的 9 → 14）| — |
 | ✅ 收掉（第 718–719 輪）| 實跑覆蓋的未蓋段 | 整段 0% 歸零：`0x52` 判定 **demo**（spec 278，報表已註記）；`0x15`／`0x35`／`0x45` 進 BFS 走訪（43–54%）；酒吧 `0x23` 選單走訪 19.1%；魔法商店 `0x25` 修掉走訪器三個儀器坑（首策略 Skip 整段、GEO 提早查、BFS 擋環繞——spec 1193）＋掛物品目錄與寶物區塊讓 SHOP 貨架開得起來 → 9.8%。總覆蓋 55.9% → **59.6%**（⚠ 走訪是啟發式，批間差過 1 個百分點——引用要說哪一次收集）| 各段剩餘未蓋叢集見 `ecl-run-coverage.md`；再往上要的是逐段的劇情路線（旗標分支），屬持續累積不是單輪工作 |
-| **P2 進行中** | 三平台發行 | patch／full-local 各 **4 件**：Linux AppImage、Windows ZIP、macOS x86_64／arm64 ZIP | Linux AppImage 與 Windows EXE（Wine）已啟動與繁中截圖驗收，兩張 PNG 逐位元組相同。Windows／macOS 真機與 macOS 簽署／公證尚待收尾 |
+| **P2 進行中** | 三平台發行 | `0.1.0-dev.20260829` 的 patch／full-local 各 **4 件**：Linux AppImage、Windows ZIP、macOS x86_64／arm64 ZIP；60 秒推廣片已驗實際遊玩、F2、F7 A／B／C 與 F6 | Linux AppImage 與 Windows EXE（Wine）已啟動與繁中截圖驗收，兩張 PNG 逐位元組相同。Windows／macOS 真機、macOS 簽署／公證與對外影片音樂權利尚待收尾 |
 | ✅ 收掉（第 780 輪）| 按鍵重放 | 單一鍵盤 session 第 **14,380 幀**觸發 `GameWon()`；899 格／16 段／393 句／落回原文 0 | 輸入層可達性硬閘門通過；仍不代表一般強度隊伍的人工完整試玩 |
 | 進行中（spec 1236）| 一般強度鍵盤路徑 | 新遭遇雲霧失能滲漏與燃燒之手 QUICK metadata 漏列已修；無強化 5,000 幀通過：600 格／6 畫面／218 句／5 段／67 次快速戰鬥、全滅 0、fallback 0；出口探針進到 0x51，新增「假扮傭兵」翻譯 | 已走出 0x33 領主與 0x50 鷹馬戰；目前在匕首瀑布城內／城外循環。下一步查明選「繼續旅程」後為何又回城市服務，繼續單次 session（spec 1236） |
 
