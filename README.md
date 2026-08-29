@@ -361,6 +361,9 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
 - **三平台發行包與推廣片**：執行 `tools/package-release.sh <版本>` 與
   `tools/build-promo.sh <版本>`，現行交付物一律集中在 `dist-all/<版本>/`。
   `patch/` 不含原版 ZIP 與未授權 PC-98 音樂；`full-local/` 只供本機驗收。
+  公開下載為 [v0.1.0-dev.20260829 patch 版](https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/releases/tag/v0.1.0-dev.20260829)：
+  僅含 Linux x86_64、Windows x86_64、macOS x86_64／arm64 四件 patch 與獨立 SHA-256 清單；
+  不含 `full-local`、原版 ZIP、PC-98 OGG 或內部推廣片。
   Linux AppImage 與 Windows EXE（Wine）已啟動與繁中截圖驗收；兩張開場 PNG
   逐位元組相同。Windows／macOS 仍不宣稱已真機驗收。
 

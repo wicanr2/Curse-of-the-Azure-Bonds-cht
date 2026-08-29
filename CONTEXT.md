@@ -120,6 +120,8 @@ smoke。內部推廣片改為 60 秒的同 session 實錄，包含地城移動�
 A／B／C、F6 簡中／日文／英文與 F2 現代→原版主題；長黑／長靜音
 檢查均為 0。音樂仍是權利未釐清的 full-local OGG，因此影片仍只供
 內部檢視。收據見 `docs/audit/release-0.1.0-dev.20260829.md`。
+2026-08-30 已將同版的四平台 `patch` 與 patch-only SHA-256 清單發布到
+GitHub pre-release；明確排除 `full-local`、原版 ZIP、PC-98 OGG 與內部推廣片。
 
 第 781 輪：**三平台開發發行包已可重生**——
 `tools/package-release.sh 0.1.0-dev` 產生 patch／full-local 各四件（Linux x86_64

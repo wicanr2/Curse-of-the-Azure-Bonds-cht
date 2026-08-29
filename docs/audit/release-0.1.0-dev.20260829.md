@@ -23,6 +23,15 @@ AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP，各有 `patch` 與
 - macOS 雙架構已交叉編譯與封包，仍未經 macOS 真機、簽署與公證。
   Wine smoke 也不取代 Windows 真機驗收。
 
+## GitHub 公開發行
+
+2026-08-30 已建立
+[v0.1.0-dev.20260829 patch 版](https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/releases/tag/v0.1.0-dev.20260829)
+pre-release。GitHub 讀回驗證為 `isDraft=false`、`isPrerelease=true`，五個附件的
+狀態全是 `uploaded`：四平台 patch 與 `PATCH-SHA256SUMS.txt`。GitHub 回報的四個
+SHA-256 digest 與本機獨立 patch 清單全數相符。附件不含 `full-local`、
+原版 ZIP、PC-98 OGG 與內部推廣片。
+
 ## 內部推廣片
 
 檔案：`dist-all/0.1.0-dev.20260829/promo/coab-remake-promo-internal.mp4`  
