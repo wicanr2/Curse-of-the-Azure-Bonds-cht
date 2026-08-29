@@ -83,6 +83,17 @@ func TestModernA6VerticalSlicePNGContracts(t *testing.T) {
 	}
 }
 
+func TestModernSceneFillsTheGoldFrameOpening(t *testing.T) {
+	destination := modernSceneDestination(640, 480)
+	want := image.Rect(51, 39, 235, 230)
+	if destination != want {
+		t.Fatalf("scene destination = %v, want full gold-frame opening %v", destination, want)
+	}
+	if destination.Dx() != 184 || destination.Dy() != 191 {
+		t.Fatalf("scene size = %dx%d, want 184x191", destination.Dx(), destination.Dy())
+	}
+}
+
 func TestModernA6FramesKeepJointsClosedAndFooterClear(t *testing.T) {
 	root := filepath.Join("..", "..", "assets", "modern-a6", "ui")
 	decode := func(name string) image.Image {

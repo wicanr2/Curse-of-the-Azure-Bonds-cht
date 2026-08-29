@@ -190,9 +190,16 @@ func (a *app) drawModernA6Content(screen *ebiten.Image, width, height int) {
 	if picture == nil {
 		return
 	}
-	sx, sy := float64(width)/640, float64(height)/480
-	destination := image.Rect(int(51*sx), int(39*sy), int(234*sx), int(230*sy))
+	destination := modernSceneDestination(width, height)
 	drawImageCoverFiltered(screen, picture, destination, ebiten.FilterLinear)
+}
+
+func modernSceneDestination(width, height int) image.Rectangle {
+	sx, sy := float64(width)/640, float64(height)/480
+	// adventure-frame.png 的透明開口為 x=51..234、y=39..229。
+	// image.Rectangle 的 Max 是 exclusive，故右界必須是 235；234 會留下
+	// 一條看似框線、其實是未填滿的 1px 黑縫。
+	return image.Rect(int(51*sx), int(39*sy), int(235*sx), int(230*sy))
 }
 
 func drawImageCoverFiltered(screen, source *ebiten.Image, destination image.Rectangle, filter ebiten.Filter) {
