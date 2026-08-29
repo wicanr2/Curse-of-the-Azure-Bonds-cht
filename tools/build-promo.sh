@@ -35,6 +35,11 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
     xvfb=$!
     game=""
     trap "test -z \"$game\" || kill -TERM -$game 2>/dev/null || true; kill $xvfb 2>/dev/null || true" EXIT
+    n=0
+    until xdpyinfo -display :99 >/dev/null 2>&1; do
+      n=$((n+1)); test "$n" -lt 50 || { cat /tmp/xvfb.log; exit 1; }
+      sleep 0.1
+    done
 
     record() {
       name=$1; caption=$2; duration=$3; shift 3
