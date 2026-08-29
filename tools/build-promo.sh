@@ -47,7 +47,7 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
       setsid "$app" -sound-dir /tmp/coab-promo-no-audio "$@" >/tmp/coab-$name.log 2>&1 & game=$!
       n=0
       until xdotool search --onlyvisible --name "." >/dev/null 2>&1; do
-        n=$((n+1)); test "$n" -lt 50 || { cat /tmp/coab-$name.log; exit 1; }
+        n=$((n+1)); test "$n" -lt 300 || { cat /tmp/coab-$name.log; exit 1; }
         sleep 0.1
       done
       # X11 關閉上一個 Ebiten 視窗後可能保留最後一幀；等新視窗穩定再收片，
@@ -76,7 +76,7 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
       n=0
       win=""
       until win=$(xdotool search --onlyvisible --name "." 2>/dev/null | tail -n 1) && test -n "$win"; do
-        n=$((n+1)); test "$n" -lt 50 || { cat /tmp/coab-$name.log; exit 1; }
+        n=$((n+1)); test "$n" -lt 300 || { cat /tmp/coab-$name.log; exit 1; }
         sleep 0.1
       done
       sleep 1
