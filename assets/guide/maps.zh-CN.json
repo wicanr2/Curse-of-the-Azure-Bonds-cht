@@ -1,0 +1,206 @@
+{
+  "schema": "coab-guide-maps/1",
+  "maps": {
+    "2/01": {
+      "title": "提尔佛顿",
+      "points": [
+        {
+          "x": 5,
+          "y": 2,
+          "label": "训练场",
+          "summary": "符合经验门槛的角色可付费升级。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "label": "贤者菲拉妮",
+          "summary": "说明真相以推进城门与皇家马车事件。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 0,
+          "y": 7,
+          "label": "刚德神殿",
+          "summary": "治疗服务。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 6,
+          "y": 10,
+          "label": "酒馆",
+          "summary": "饮料事件与手札 17。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 1,
+          "y": 10,
+          "label": "高阶祭司",
+          "summary": "同意协助可解锁手札 19。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 2,
+          "y": 12,
+          "label": "武器店",
+          "summary": "主线触发条件之一。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        }
+      ]
+    },
+    "2/03": {
+      "title": "提尔佛顿下水道",
+      "points": [
+        {
+          "x": 13,
+          "y": 10,
+          "label": "迷斯卓诺骑士",
+          "summary": "回答纳卡西亚公主或不效忠任何人可和平取得警告。",
+          "source": "docs/guide/main-story-zh-TW.md#3-下水道"
+        },
+        {
+          "x": 10,
+          "y": 15,
+          "label": "火刀据点出口",
+          "summary": "向南踏出，前往火刀据点 (8,1)。",
+          "source": "docs/spec/1199-tilverton-sewers-map-edge-handoffs.md"
+        }
+      ]
+    },
+    "2/04": {
+      "title": "火刀据点",
+      "points": [
+        {
+          "x": 5,
+          "y": 1,
+          "label": "旋转刀刃",
+          "summary": "选等待可安全通过。",
+          "source": "docs/reference/maps/README.md#火刀據點"
+        },
+        {
+          "x": 14,
+          "y": 11,
+          "label": "华丽办公室",
+          "summary": "首次进入后按 S 搜索抽屉，可取得手札与财宝。",
+          "source": "docs/guide/main-story-zh-TW.md#4-火刀據點"
+        },
+        {
+          "x": 4,
+          "y": 12,
+          "label": "检查哨",
+          "summary": "火刀守卫事件。",
+          "source": "docs/reference/maps/README.md#火刀據點"
+        },
+        {
+          "x": 3,
+          "y": 13,
+          "label": "首领战",
+          "summary": "长战；建议先扎营、治疗与记忆法术。",
+          "source": "docs/guide/main-story-zh-TW.md#4-火刀據點"
+        },
+        {
+          "x": 7,
+          "y": 13,
+          "label": "医院",
+          "summary": "据点医院区。",
+          "source": "docs/reference/maps/README.md#火刀據點"
+        }
+      ]
+    },
+    "5/32": {
+      "title": "熔岩洞",
+      "points": [
+        {
+          "x": 0,
+          "y": 5,
+          "label": "熔岩池房",
+          "summary": "可交涉或与十五只火蜥蜴战斗。",
+          "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"
+        },
+        {
+          "x": 9,
+          "y": 10,
+          "label": "守门巡逻",
+          "summary": "火蜥蜴与黑暗精灵守军。",
+          "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"
+        },
+        {
+          "x": 6,
+          "y": 15,
+          "label": "法师塔入口",
+          "summary": "面西进入法师塔。",
+          "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"
+        }
+      ]
+    },
+    "5/33": {
+      "title": "法师塔",
+      "points": [
+        {
+          "x": 6,
+          "y": 15,
+          "label": "熔岩洞入口",
+          "summary": "通往熔岩洞。",
+          "source": "docs/guide/main-story-zh-TW.md#10-法師塔與龍群"
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "label": "屋顶出口",
+          "summary": "面东开启洞穴／荒野／留在此地选单。",
+          "source": "docs/guide/main-story-zh-TW.md#10-法師塔與龍群"
+        }
+      ]
+    },
+    "3/10": {
+      "title": "尤拉什战区",
+      "points": [
+        {
+          "x": 0,
+          "y": 3,
+          "label": "指挥官等候室",
+          "summary": "向东拦截散塔林间谍。",
+          "source": "docs/guide/main-story-zh-TW.md#13-尤拉什戰區"
+        },
+        {
+          "x": 11,
+          "y": 0,
+          "label": "摩安德之坑入口",
+          "summary": "取得通行后面北跨越边界。",
+          "source": "docs/guide/main-story-zh-TW.md#14-進入摩安德之坑"
+        }
+      ]
+    },
+    "3/11": {
+      "title": "摩安德之坑第一层",
+      "points": [
+        {
+          "x": 1,
+          "y": 4,
+          "label": "爱丽雅丝与龙饵",
+          "summary": "谈判、友善、说明经历并答应邀请，可招募两人。",
+          "source": "docs/guide/main-story-zh-TW.md#15-招募愛麗雅絲與龍餌"
+        },
+        {
+          "x": 15,
+          "y": 11,
+          "label": "下层入口",
+          "summary": "踏上楼梯并选是进入第二层。",
+          "source": "docs/guide/main-story-zh-TW.md#16-下層線索與摩貢"
+        }
+      ]
+    },
+    "3/15": {
+      "title": "摩安德之坑第二层",
+      "points": [
+        {
+          "x": 14,
+          "y": 15,
+          "label": "散塔林守卫",
+          "summary": "检查尸体可取得弗佐尔命令并解锁手札 46。",
+          "source": "docs/guide/main-story-zh-TW.md#16-下層線索與摩貢"
+        }
+      ]
+    }
+  }
+}

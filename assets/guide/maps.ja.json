@@ -1,0 +1,206 @@
+{
+  "schema": "coab-guide-maps/1",
+  "maps": {
+    "2/01": {
+      "title": "ティルフォードン。",
+      "points": [
+        {
+          "x": 5,
+          "y": 2,
+          "label": "トレーニング場",
+          "summary": "経験豊富なキャラクターのロールをコストで調達することができます。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "label": "ノルブルズ、フェルラニ。",
+          "summary": "政府は、街や王立車から真理を浴びようとしています。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 0,
+          "y": 7,
+          "label": "ゴンドラ寺院。",
+          "summary": "治療サービス。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 6,
+          "y": 10,
+          "label": "居酒屋",
+          "summary": "ドリンクインシデントとピンセット17",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 1,
+          "y": 10,
+          "label": "司祭の高まり。",
+          "summary": "ブロガーは、政府はまだザガーを追い払うのを助けるために合意されていないと述べています。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 2,
+          "y": 12,
+          "label": "武器店。",
+          "summary": "主要なラインは条件の1つを誘発します。",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        }
+      ]
+    },
+    "2/03": {
+      "title": "ティオーバートンの下水道。",
+      "points": [
+        {
+          "x": 13,
+          "y": 10,
+          "label": "バラの騎士。",
+          "summary": "王女ナカシアへの答えや、誰も平和に警告することはできません。",
+          "source": "docs/guide/main-story-zh-TW.md#3-下水道"
+        },
+        {
+          "x": 10,
+          "y": 15,
+          "label": "ナイフは、途中で出ています。",
+          "summary": "ブレードサイト(8,1)のステップ南とヘッド。",
+          "source": "docs/spec/1199-tilverton-sewers-map-edge-handoffs.md"
+        }
+      ]
+    },
+    "2/04": {
+      "title": "ナイフの外。",
+      "points": [
+        {
+          "x": 5,
+          "y": 1,
+          "label": "スピンブレード。",
+          "summary": "安全通路を待ち受ける選挙。",
+          "source": "docs/reference/maps/README.md#火刀據點"
+        },
+        {
+          "x": 14,
+          "y": 11,
+          "label": "- ワリーのオフィス。",
+          "summary": "初めての引き出しに入ると、Sを押してターバンと宝探しをしましょう。",
+          "source": "docs/guide/main-story-zh-TW.md#4-火刀據點"
+        },
+        {
+          "x": 4,
+          "y": 12,
+          "label": "チェックポイント",
+          "summary": "ブレードガード事件。",
+          "source": "docs/reference/maps/README.md#火刀據點"
+        },
+        {
+          "x": 3,
+          "y": 13,
+          "label": "リーダーの戦い。",
+          "summary": "戦争は長いです。キャンプ、ヒール、覚えておくのがお勧めです。",
+          "source": "docs/guide/main-story-zh-TW.md#4-火刀據點"
+        },
+        {
+          "x": 7,
+          "y": 13,
+          "label": "病院について",
+          "summary": "病院のエリア。",
+          "source": "docs/reference/maps/README.md#火刀據點"
+        }
+      ]
+    },
+    "5/32": {
+      "title": "ラーヴァ。",
+      "points": [
+        {
+          "x": 0,
+          "y": 5,
+          "label": "ラグーンプールハウス。",
+          "summary": "政府は15の火の危険を交渉するか、または戦うことができました。",
+          "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"
+        },
+        {
+          "x": 9,
+          "y": 10,
+          "label": "扉を眺める",
+          "summary": "蓋とダークウィザードはガードをスタンドします。",
+          "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"
+        },
+        {
+          "x": 6,
+          "y": 15,
+          "label": "マスターズタワー入口",
+          "summary": "マスタータワーへ西へ。",
+          "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"
+        }
+      ]
+    },
+    "5/33": {
+      "title": "マスターズタワー",
+      "points": [
+        {
+          "x": 6,
+          "y": 15,
+          "label": "溶岩洞入口。",
+          "summary": "溶岩洞へ。",
+          "source": "docs/guide/main-story-zh-TW.md#10-法師塔與龍群"
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "label": "屋根の出口。",
+          "summary": "本サイトは東方/サンフィールド/シッティングのサイトです。",
+          "source": "docs/guide/main-story-zh-TW.md#10-法師塔與龍群"
+        }
+      ]
+    },
+    "3/10": {
+      "title": "ユーリスシーズ",
+      "points": [
+        {
+          "x": 0,
+          "y": 3,
+          "label": "コマンド、待合室。",
+          "summary": "警察は、タリバンのスパイを停止しようとしています.",
+          "source": "docs/guide/main-story-zh-TW.md#13-尤拉什戰區"
+        },
+        {
+          "x": 11,
+          "y": 0,
+          "label": "ムーダムピットの入り口。",
+          "summary": "国境を越えて北へ戻る方法を入手してください。",
+          "source": "docs/guide/main-story-zh-TW.md#14-進入摩安德之坑"
+        }
+      ]
+    },
+    "3/11": {
+      "title": "ムーアピットの第一レベル。",
+      "points": [
+        {
+          "x": 1,
+          "y": 4,
+          "label": "アリスとドラゴン。",
+          "summary": "政府は、交渉、友好、そして彼らの物語を与え、それらを招待することを約束した2人の人々をリクルートすることができました。",
+          "source": "docs/guide/main-story-zh-TW.md#15-招募愛麗雅絲與龍餌"
+        },
+        {
+          "x": 15,
+          "y": 11,
+          "label": "エントランスを下ろします。",
+          "summary": "階段を上り、2階へ進むと、階段を上る。",
+          "source": "docs/guide/main-story-zh-TW.md#16-下層線索與摩貢"
+        }
+      ]
+    },
+    "3/15": {
+      "title": "モーランドピット、レベル2。",
+      "points": [
+        {
+          "x": 14,
+          "y": 15,
+          "label": "サンドタリンガード。",
+          "summary": "ボディはFezorの注文のために検査され、ラグは非シールされます。",
+          "source": "docs/guide/main-story-zh-TW.md#16-下層線索與摩貢"
+        }
+      ]
+    }
+  }
+}

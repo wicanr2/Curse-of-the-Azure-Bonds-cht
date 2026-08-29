@@ -103,8 +103,8 @@ func TestDefaultPackMergesAllCommittedParts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(names) != 4 {
-		t.Fatalf("pack parts=%v, want the four parts of spec 1105 §二", names)
+	if len(names) != 6 {
+		t.Fatalf("pack parts=%v, want core, content, and four locale parts", names)
 	}
 	pack, err := Default()
 	if err != nil {

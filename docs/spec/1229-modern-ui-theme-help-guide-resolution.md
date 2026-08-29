@@ -12,6 +12,16 @@
   螢光的黃金雕刻紋飾。其他分隔線保持纖細，內容優先。
 - F1 開關 Help；F3 開關目前 GEO 地圖攻略；Esc 一律關閉最上層 overlay／取消
   當前可取消操作。
+- F6 依 `zh-TW → zh-CN → ja → en` 即時循環語系，並寫入
+  `coab-ui-settings/1` 的 `language`。當前可追溯的訊息、原版 ECL 選項、
+  F1／F3 overlay、攻略說明與地區字型同步切換；玩家輸入姓名不翻譯。
+  英文劇情來自原版 game pack，其他新語系依
+  [`coab-multilingual-translation.md`](../knowledge/coab-multilingual-translation.md)
+  以離線 AI 產生，不宣稱人工校譯。
+- F3 攻略底圖固定使用原版 11×11 AREA-map symbols 與原版隊伍方向標記，不受 F2
+  theme 影響；攻略事件以獨立金色標記疊加。探索模式只畫已探索格／已發現事件，
+  完整模式畫目前 viewport 的全部原版地圖格與所有事件。先前的 remake 16×16
+  灰色格線已排除。
 - 攻略預設只顯示探索資訊。玩家可主動要求完整事件點與說明；第一次必須確認
   劇透警告，確認狀態保存。每個事件點各自記錄本專案攻略、Clue Book 或 GEO／ECL
   證據；目前沒有完整《軟體世界》攻略掃描，不得把未取得的內容冒稱為該攻略原文。

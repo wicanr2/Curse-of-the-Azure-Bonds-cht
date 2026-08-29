@@ -80,8 +80,18 @@
       "file": "docs/screenshots/a6-guide-overlay.png",
       "width": 640,
       "height": 480,
-      "sha256": "2c1b059d818dccf7a855e4ecaa60d842d85220b780cb4d9bf80486dd04e05500",
-      "generation_mode": "Docker/Xvfb -tilverton-dungeon -ui-preview guide-full；A6 完整攻略疊圖 capture-only checkpoint",
+      "sha256": "7ce6392952d31ca022a4e65265b88048f1470277a8ff580265f957aac94f4646",
+      "generation_mode": "Docker/Xvfb -tilverton-dungeon -ui-preview guide-full；F3 原版 11×11 AREA 符號＋金色事件點 capture-only checkpoint",
+      "evidence_level": "layout-only",
+      "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
+    },
+    {
+      "id": "f6-japanese-guide",
+      "file": "docs/screenshots/f6-japanese-guide.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "4f48506b712aa315fb5befac568af152443001ff55ae1c82ef90f18c6fb2143c",
+      "generation_mode": "Docker/Xvfb -tilverton-dungeon -language ja -ui-preview guide-full；F6 日文＋F3 原版 AREA 攻略地圖",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
     },

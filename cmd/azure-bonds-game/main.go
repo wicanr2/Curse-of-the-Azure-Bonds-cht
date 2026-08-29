@@ -64,6 +64,8 @@ type app struct {
 	runtimeImages          *runtimeImageCatalog
 	face                   font.Face
 	compactFace            font.Face
+	localeFaces            map[string]font.Face
+	localeCompactFaces     map[string]font.Face
 	choiceCursor           int
 	partyPath              string
 	savgamDir              string
@@ -138,6 +140,8 @@ type app struct {
 	screenshotFrames       int
 	ui                     uiRuntime
 	guide                  guideCatalog
+	locales                map[string]locale.Catalog
+	guides                 map[string]guideCatalog
 	modernA6               *modernA6Assets
 }
 
@@ -3833,11 +3837,13 @@ func loadFace(path string, size float64) font.Face {
 }
 
 func main() {
-	fontPath := flag.String("font", "assets/fonts/NotoSansTC-Regular.ttf", "TrueType/OpenType font path; bundled Traditional Chinese font by default")
+	const bundledTCFont = "assets/fonts/NotoSansTC-Regular.ttf"
+	fontPath := flag.String("font", bundledTCFont, "TrueType/OpenType font path; bundled Traditional Chinese font by default")
 	etenFontPath := flag.String("eten-font", "", "ETen STDFONT.15 path; uses bold 16x15 Chinese glyphs")
 	etenSymbolPath := flag.String("eten-symbol-font", "", "optional ETen SPCFONT.15 path for full-width punctuation")
 	etenASCIIFontPath := flag.String("eten-ascii-font", "", "optional ETen ASCFONT.15 path; defaults to ascfont.15 beside -eten-font")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
+	languageOverride := flag.String("language", "", "override saved player language for this run: zh-TW, zh-CN, ja, or en")
 	imagePath := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	imageAssetsPath := flag.String("image-assets", "assets/runtime-images", "independent PNG runtime image directory")
 	geoSet := flag.Int("geo-set", 2, "GEO DAX set/chapter (2..6) used by the map preview")
@@ -4574,6 +4580,19 @@ func main() {
 	}
 	settingsPath := defaultUISettingsPath()
 	uiSettings := loadUISettings(settingsPath)
+	if *languageOverride != "" {
+		if !validLanguage(*languageOverride) {
+			log.Fatalf("unsupported -language %q", *languageOverride)
+		}
+		uiSettings.Language = *languageOverride
+	}
+	runtimeLocales, localeErr := loadRuntimeLocales(filepath.Join("assets", "locale"))
+	if localeErr != nil {
+		log.Fatal(localeErr)
+	}
+	if selected, found := runtimeLocales[uiSettings.Language]; found {
+		state.SetLocaleCatalog(selected)
+	}
 	ebiten.SetWindowSize(uiSettings.Width, uiSettings.Height)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
@@ -4589,6 +4608,14 @@ func main() {
 	dungeonX, dungeonY, _ := state.DungeonGeometryView()
 	regularFace := loadFace(*fontPath, 24)
 	compactFace := loadFace(*fontPath, 16)
+	localeFaces := map[string]font.Face{"zh-TW": regularFace, "zh-CN": regularFace, "ja": regularFace, "en": regularFace}
+	localeCompactFaces := map[string]font.Face{"zh-TW": compactFace, "zh-CN": compactFace, "ja": compactFace, "en": compactFace}
+	if *fontPath == bundledTCFont {
+		localeFaces["zh-CN"] = loadFace("assets/fonts/NotoSansCJKsc-Regular.otf", 24)
+		localeCompactFaces["zh-CN"] = loadFace("assets/fonts/NotoSansCJKsc-Regular.otf", 16)
+		localeFaces["ja"] = loadFace("assets/fonts/NotoSansCJKjp-Regular.otf", 24)
+		localeCompactFaces["ja"] = loadFace("assets/fonts/NotoSansCJKjp-Regular.otf", 16)
+	}
 	if *etenFontPath != "" {
 		asciiFontPath := *etenASCIIFontPath
 		if asciiFontPath == "" {
@@ -4603,7 +4630,13 @@ func main() {
 		}
 		regularFace = etenFace
 		compactFace = etenFace
+		for _, language := range languageCycle {
+			localeFaces[language] = etenFace
+			localeCompactFaces[language] = etenFace
+		}
 	}
+	regularFace = localeFaces[uiSettings.Language]
+	compactFace = localeCompactFaces[uiSettings.Language]
 	state.EnableCombatVisualTimeline(true)
 	visualSerial := uint64(0)
 	visualStarted := time.Time{}
@@ -4619,7 +4652,7 @@ func main() {
 	if *characterView {
 		abilities := party.Abilities{Strength: 18, Intelligence: 16, Wisdom: 15, Dexterity: 15, Constitution: 17, Charisma: 16}
 		if err := state.SetPartyRoster(party.Roster{{
-			ID: "character-view", Name: "羅恩", Race: party.RaceDwarf, Gender: party.GenderMale,
+			ID: "character-view", Name: "Rorn", Race: party.RaceDwarf, Gender: party.GenderMale,
 			Class: party.ClassFighter, Alignment: 0, AlignmentKnown: true,
 			Abilities: abilities, Age: 51, Level: 5, Experience: 25000,
 			AttackAbility: 45, BaseArmorClass: 50, AbilityAdjustments: 1,
@@ -4642,11 +4675,12 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	guideData, guideErr := loadGuideCatalog(filepath.Join("assets", "guide", "maps.zh-TW.json"))
+	runtimeGuides, guideErr := loadRuntimeGuides(filepath.Join("assets", "guide"))
 	if guideErr != nil {
-		log.Printf("攻略地圖資料停用：%v", guideErr)
+		log.Printf("guide maps disabled: %v", guideErr)
 	}
-	*gameApp = app{state: &state, imagePath: *imagePath, runtimeImages: runtimeImages, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, wallSharedBlock: wallSymbolDeclaration.SharedGroup.Block, wallSharedFile: wallSymbolDeclaration.SharedGroup.File, wallSymbolFile: firstPersonDefinition.SymbolFile, skyImages: skyImages, skyBlocks: firstPersonDefinition.SkyBlocks, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath, ui: newUIRuntime(uiSettings, settingsPath), guide: guideData, modernA6: modernA6}
+	guideData := runtimeGuides[uiSettings.Language]
+	*gameApp = app{state: &state, imagePath: *imagePath, runtimeImages: runtimeImages, face: regularFace, compactFace: compactFace, localeFaces: localeFaces, localeCompactFaces: localeCompactFaces, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, wallSharedBlock: wallSymbolDeclaration.SharedGroup.Block, wallSharedFile: wallSymbolDeclaration.SharedGroup.File, wallSymbolFile: firstPersonDefinition.SymbolFile, skyImages: skyImages, skyBlocks: firstPersonDefinition.SkyBlocks, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath, ui: newUIRuntime(uiSettings, settingsPath), guide: guideData, locales: runtimeLocales, guides: runtimeGuides, modernA6: modernA6}
 	switch *uiPreview {
 	case "help":
 		gameApp.ui.helpOpen = true

@@ -5,6 +5,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VERSION="${1:-}"
+SOURCE_COMMIT="$(git --git-dir="$ROOT/workplace/azure-bonds-git" --work-tree="$ROOT" rev-parse --short=12 HEAD)"
 IMAGE="game-video:latest"
 RELEASE="$ROOT/dist-all/$VERSION/full-local"
 APPIMAGE="$RELEASE/azure-bonds-remake-$VERSION-x86_64.AppImage"
@@ -22,7 +23,7 @@ docker run --rm --network none --memory 64m --cpus 1 --pids-limit 32 \
 docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
   -u "$(id -u):$(id -g)" \
   -v "$RELEASE:/release:ro" -v "$OUT:/promo" \
-  -e VERSION="$VERSION" "$IMAGE" sh -c '
+  -e VERSION="$VERSION" -e SOURCE_COMMIT="$SOURCE_COMMIT" "$IMAGE" sh -c '
     set -eu
     mkdir -p /promo/clips /promo/frames
     app="/release/azure-bonds-remake-$VERSION-x86_64.AppImage"
@@ -60,9 +61,43 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
       done
     }
 
+    # 在同一個正常遊戲 session 內錄下移動、F2 theme 雙向切換與 F6 語言循環。
+    # 不能以多張靜態 preview 拼接，否則無法證明 runtime hotkey 真的接到玩家路徑。
+    record_switches() {
+      name=03-live-switches
+      duration=12
+      setsid "$app" -sound-dir /tmp/coab-promo-no-audio -tilverton-dungeon >/tmp/coab-$name.log 2>&1 & game=$!
+      n=0
+      win=""
+      until win=$(xdotool search --onlyvisible --name "." 2>/dev/null | tail -n 1) && test -n "$win"; do
+        n=$((n+1)); test "$n" -lt 50 || { cat /tmp/coab-$name.log; exit 1; }
+        sleep 0.1
+      done
+      sleep 1
+      xdotool windowfocus --sync "$win"
+      ffmpeg -hide_banner -loglevel error -y -f x11grab -framerate 30 \
+        -video_size 640x480 -i :99.0+0,0 -t "$duration" -an \
+        -vf "scale=960:720:flags=neighbor,pad=1280:720:160:0:black,drawbox=x=0:y=646:w=1280:h=74:color=black@0.74:t=fill,drawtext=fontfile=$font:text=實際遊玩・F2 雙 theme・F6 四語言:fontcolor=white:fontsize=34:x=(w-text_w)/2:y=665,tpad=stop_mode=clone:stop_duration=$duration,fps=30,setpts=N/(30*TB)" \
+        -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p "/promo/clips/$name.mp4" & capture=$!
+      sleep 1
+      xdotool key --clearmodifiers Up; sleep 0.8
+      xdotool key --clearmodifiers Right; sleep 0.8
+      xdotool key --clearmodifiers Up; sleep 0.8
+      xdotool key --clearmodifiers F2; sleep 1.3
+      xdotool key --clearmodifiers F2; sleep 1.3
+      xdotool key --clearmodifiers F6; sleep 1
+      xdotool key --clearmodifiers F6; sleep 1
+      xdotool key --clearmodifiers F6
+      wait "$capture"
+      kill -TERM "-$game" 2>/dev/null || true
+      wait "$game" 2>/dev/null || true
+      game=""
+    }
+
     record 01-opening "繁體中文・完整主線" 6 -opening
     record 02-party "原版流程建角・新增操作指引" 6 -guided-creation -guided-creation-step party
-    record 03-guide "F3 地圖攻略・探索／完整雙層" 6 -tilverton-dungeon -ui-preview guide-full
+    record_switches
+    record 03-guide "F3 原版 AREA 地圖・事件攻略" 6 -tilverton-dungeon -ui-preview guide-full
     record 04-combat "回合制戰鬥・原作 sprite 與地形" 7 -encounter -combat-visual-demo magic
     record 05-ending "從提爾佛頓到最終決戰" 6 -ending-page 4
 
@@ -75,23 +110,24 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
 
     printf "file %s\n" \
       /promo/clips/00-title.mp4 /promo/clips/01-opening.mp4 /promo/clips/02-party.mp4 \
-      /promo/clips/03-guide.mp4 /promo/clips/04-combat.mp4 /promo/clips/05-ending.mp4 \
+      /promo/clips/03-live-switches.mp4 /promo/clips/03-guide.mp4 \
+      /promo/clips/04-combat.mp4 /promo/clips/05-ending.mp4 \
       /promo/clips/06-end.mp4 >/tmp/concat.txt
     ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i /tmp/concat.txt \
       -vf "fps=30,setpts=N/(30*TB)" -an -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p \
       /tmp/video.mp4
     ffmpeg -hide_banner -loglevel error -y -i /tmp/video.mp4 -stream_loop -1 -i "$audio" \
-      -filter_complex "[1:a]volume=1.5,afade=t=in:st=0:d=1.5,afade=t=out:st=36:d=2[a]" \
-      -map 0:v -map "[a]" -t 38 -c:v copy -c:a aac -b:a 160k -movflags +faststart \
+      -filter_complex "[1:a]volume=1.5,afade=t=in:st=0:d=1.5,afade=t=out:st=48:d=2[a]" \
+      -map 0:v -map "[a]" -t 50 -c:v copy -c:a aac -b:a 160k -movflags +faststart \
       -metadata title="Curse of the Azure Bonds Traditional Chinese Remake - internal promo" \
       -metadata comment="Rights pending: internal review only; not cleared for public distribution" \
       /promo/coab-remake-promo-internal.mp4
 
     ffprobe -v error -show_format -show_streams -of json /promo/coab-remake-promo-internal.mp4 >/promo/ffprobe.json
     ffmpeg -hide_banner -y -i /promo/coab-remake-promo-internal.mp4 \
-      -vf "fps=1/5,scale=320:180:flags=lanczos,tile=4x2" -frames:v 1 /promo/contact-sheet.png \
+      -vf "fps=1/5,scale=256:144:flags=lanczos,tile=5x2" -frames:v 1 /promo/contact-sheet.png \
       >/tmp/contact.log 2>&1
-    for second in 2 8 14 20 27 33 37; do
+    for second in 2 8 14 20 24 28 33 40 46 49; do
       ffmpeg -hide_banner -loglevel error -y -ss "$second" -i /promo/coab-remake-promo-internal.mp4 \
         -frames:v 1 "/promo/frames/frame-$second.png"
     done
@@ -99,7 +135,7 @@ docker run --rm --network none --memory 2g --cpus 2 --pids-limit 384 \
       >/promo/volume-check.txt 2>&1
     ffmpeg -hide_banner -i /promo/coab-remake-promo-internal.mp4 -af silencedetect=n=-50dB:d=3 -f null - \
       >/promo/silence-check.txt 2>&1
-    printf "version=%s\nsource_commit=9e490c86\nvideo_source=packaged Linux full-local AppImage, Docker/Xvfb x11grab\naudio_source=assets/audio/pc98-bgm-selector-01.ogg\nrights_status=internal review only; public distribution not cleared\n" "$VERSION" >/promo/metadata.txt
+    printf "version=%s\nsource_commit=%s\nvideo_source=packaged Linux full-local AppImage, Docker/Xvfb x11grab\ninteractive_evidence=normal Tilverton session with movement then injected F2,F2,F6,F6,F6\naudio_source=assets/audio/pc98-bgm-selector-01.ogg\nrights_status=internal review only; public distribution not cleared\n" "$VERSION" "$SOURCE_COMMIT" >/promo/metadata.txt
     cd /promo
     sha256sum coab-remake-promo-internal.mp4 contact-sheet.png ffprobe.json metadata.txt >SHA256SUMS.txt
   '

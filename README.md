@@ -45,7 +45,8 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 | 怪物資料 | `MON*ITM` 物品鏈與怪物自動換裝已接；特殊效果的已知實作缺口 0，但仍有 28 個效果碼／69 筆記錄是 `unread`，不能宣稱全部對齊 |
 | 音訊格式 | 正式播放以 OGG 為主：12 首 PC-98 音樂與 9 個音效；`MSCDRV.EXE` 即時合成只保留作研究 oracle／缺檔 fallback |
 | 圖像獨立化 | `assets/` 共 2,528 張 PNG：780 張人物／怪物／場景、1,741 張 runtime 圖像、6 張 Journal 插圖與 1 張參考圖；TILES、戰場地形、AREA／共用符號、SKY 與牆片皆已切換 PNG／JSON，無圖像 DAX fixture 的 runtime 代表抽樣已通過，還差各平台封包 smoke |
-| 現代介面 | 預設 A6 細石框＋左上明亮金雕內框；F1 Help、F2 即時 theme、F3 雙層攻略地圖、F4 三種解析度、F10 存檔後離開；視窗可任意拉伸並填滿 |
+| 現代介面 | 預設 A6 細石框＋左上明亮金雕內框；F1 Help、F2 即時 theme、F3 原版 AREA 符號攻略地圖、F4 三種解析度、F6 繁中／簡中／日文／英文即時切換、F10 存檔後離開；視窗可任意拉伸並填滿 |
+| 四語系 | UI 各 **1,197** 條、game-pack 各 **1,598** 條、攻略 8 張地圖；英文劇情沿用原版，簡中／日文與缺少的英文 UI 由離線 AI 生成，無人工校譯宣稱。專名規則見 [四語名詞表](docs/knowledge/coab-multilingual-translation.md) |
 | 手札 | locale 宣告 **64 則**，全部由 48 條內容規則的 `journal_message_ids` 解鎖；六張手冊地圖／插圖（含手札 59 的眼魔洞穴圖）在手札畫面按 `I` 彈窗顯示（spec 1109）|
 | `24h COMBAT` | 199 處逐處分類：**153 處真的要打、46 處走服務分派**（`cmd/ecl-combat-sites`）|
 | 跨段不變量 | 整條主線 260 句話**落回原文 0 句**；同一角色的經驗不倒退、隊伍變動位置宣告好；22 個段界都有曲子 |
@@ -119,7 +120,9 @@ fixture 封包抽測、Windows／macOS 真機啟動、macOS 簽署／公證與�
 
 ![A6 現代 theme 正常劇情動畫：inner-ritual 玩家路徑載入高清手繪 PIC 與 18px 雙層框](docs/screenshots/a6-modern-picture-animation.png)
 
-![A6 現代 theme 的完整攻略疊圖：目前座標、16×16 地圖與事件點說明](docs/screenshots/a6-guide-overlay.png)
+![F3 完整攻略地圖：原版 11×11 AREA 地圖符號、隊伍方向與金色事件點說明](docs/screenshots/a6-guide-overlay.png)
+
+![F6 日文即時切換：地區字型、UI、攻略說明與 F3 原版 AREA 底圖](docs/screenshots/f6-japanese-guide.png)
 
 ![原版四段建角的名字輸入段](docs/screenshots/guided-creation-name.png)
 

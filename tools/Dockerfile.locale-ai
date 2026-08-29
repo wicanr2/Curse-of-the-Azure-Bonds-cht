@@ -1,0 +1,28 @@
+FROM python:3.11-slim-bookworm
+
+ENV ARGOS_PACKAGES_DIR=/opt/argos-packages \
+    ARGOS_DEVICE_TYPE=cpu
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends curl ca-certificates \
+ && curl -L --fail --retry 2 -A Mozilla/5.0 -o /tmp/zt-en.argosmodel https://argos-net.com/v1/translate-zt_en-1_9.argosmodel \
+ && curl -L --fail --retry 2 -A Mozilla/5.0 -o /tmp/en-ja.argosmodel https://argos-net.com/v1/translate-en_ja-1_1.argosmodel \
+ && pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.2.2+cpu \
+ && pip install --no-cache-dir \
+      argostranslate==1.9.6 \
+      numpy==1.26.4 \
+      opencc-python-reimplemented==0.1.7 \
+ && python - <<'PY'
+from pathlib import Path
+from argostranslate import package
+
+for target in ("/tmp/zt-en.argosmodel", "/tmp/en-ja.argosmodel"):
+    package.install_from_path(target)
+    Path(target).unlink()
+PY
+RUN apt-get purge -y --auto-remove curl \
+ && rm -rf /var/lib/apt/lists/*
+
+ENV HOME=/tmp/locale-ai-home
+WORKDIR /src
+ENTRYPOINT ["python", "tools/locale-ai.py"]

@@ -590,6 +590,13 @@ remake 自己的槽使用，光看檔案分不出來源，所以由呼叫端明�
   正常 `-inner-ritual` 路徑會因 eager decode／GPU upload 放大而遭終止；後者仍高於
   1280×960 的實際 picture viewport，且同一路徑已成功顯示與抓圖。原始生成 atlas
   留在 `workplace/` 作再製來源，不能把 runtime 降載誤寫成遺失高清來源。
+- 2026-08-29 使用者確認 F3 攻略底圖改用原版 AREA-map symbols，F2 仍只切換
+  original／modern-a6 theme。F3 保留原版 11×11 viewport、牆線與隊伍方向符號，
+  只把攻略事件另疊成金色標記；排除 remake 自繪 16×16 灰色格線。
+- 2026-08-29 使用者確認 F6 四語內容採 AI 翻譯，不設人工校譯流程。
+  重要專名與 AD&D 用詞集中於 `docs/knowledge/coab-multilingual-translation.md`，
+  由離線容器翻譯並以詞彙規則覆寫；簡中／日文對外標示為 AI 翻譯版，
+  不冒稱經過人工校譯。
 # 2026-08-27：多級記憶槽與高階牧師 QUICK 路徑（spec 1241／1242）
 
 - CAMP 已依原版 `SpellCastCount[3][5]` 分職業、分環級限制記憶容量，五級牧師可用

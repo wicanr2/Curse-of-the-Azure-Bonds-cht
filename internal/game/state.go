@@ -482,6 +482,69 @@ func NewState(catalog locale.Catalog) State {
 	}
 }
 
+// LocalizedText exposes a catalog lookup to the renderer without exposing or
+// copying the mutable catalog itself.
+func (s *State) LocalizedText(key, fallback string) string { return s.catalog.Text(key, fallback) }
+
+// SetLocaleCatalog replaces the player-facing catalog while preserving the
+// current game session. Exact strings that can be traced back to either locale
+// catalog are re-materialized immediately; original ECL choices are localized
+// again from their retained source strings. Free-form names and other player
+// input are deliberately left untouched.
+func (s *State) SetLocaleCatalog(next locale.Catalog) {
+	if next.Language == "" || len(next.Strings) == 0 || next.Language == s.catalog.Language {
+		return
+	}
+	oldLanguage := s.catalog.Language
+	byValue := make(map[string]string, len(s.catalog.Strings))
+	for key, value := range s.catalog.Strings {
+		if value != "" {
+			byValue[value] = key
+		}
+	}
+	if s.dataPack != nil {
+		for key, value := range s.dataPack.Locales[oldLanguage] {
+			if value != "" {
+				byValue[value] = key
+			}
+		}
+	}
+	retranslate := func(value string) string {
+		key, found := byValue[value]
+		if !found {
+			return value
+		}
+		if translated, found := next.Strings[key]; found && translated != "" {
+			return translated
+		}
+		if s.dataPack != nil {
+			if translated, found := s.dataPack.Locales[next.Language][key]; found && translated != "" {
+				return translated
+			}
+		}
+		return value
+	}
+	for _, value := range []*string{&s.Title, &s.Prompt, &s.Message, &s.LocationName,
+		&s.JournalTitle, &s.JournalText, &s.JournalCloseText, &s.CreationMessage,
+		&s.pendingECLMenuMessage} {
+		*value = retranslate(*value)
+	}
+	for i := range s.JournalPages {
+		s.JournalPages[i] = retranslate(s.JournalPages[i])
+	}
+	s.catalog = next
+	if len(s.currentOriginalChoices) > 0 {
+		s.Choices = s.Choices[:0]
+		for _, option := range s.currentOriginalChoices {
+			s.Choices = append(s.Choices, s.localizeOption(option))
+		}
+	}
+	for i := range s.barTales {
+		key := fmt.Sprintf("bar_tale_%d", i+1)
+		s.barTales[i] = next.Text(key, s.barTales[i])
+	}
+}
+
 // SetBarTales installs the location/script-specific Tavern Tale sequence.
 // The default entries come from the supplied Adventure Journal; a later ECL
 // decoder can replace the sequence without changing the BAR UI contract.

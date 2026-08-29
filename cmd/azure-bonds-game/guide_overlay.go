@@ -10,6 +10,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	enginearea "github.com/wicanr2/golden-box-remake-engine/areamap"
 )
 
 type guidePoint struct {
@@ -86,27 +87,48 @@ func (a *app) guideCellExplored(mapKey string, x, y int) bool {
 func (a *app) drawGuideGrid(screen *ebiten.Image, width, height int, definition guideMap) {
 	mapKey := guideMapKey(a.state.GeoMapSet, a.state.GeoMapBlock)
 	originX, originY := float64(width)*0.10, float64(height)*0.27
-	cell := float64(height) * 0.026
-	gridSize := cell * 16
-	for y := 0; y < 16; y++ {
-		for x := 0; x < 16; x++ {
-			visible := a.ui.guideFull || a.guideCellExplored(mapKey, x, y)
-			fill := color.RGBA{12, 18, 30, 255}
-			if visible {
-				fill = color.RGBA{42, 54, 66, 255}
-			}
-			ebitenutil.DrawRect(screen, originX+float64(x)*cell, originY+float64(y)*cell, cell-1, cell-1, fill)
+	cell := float64(height) / 30
+	gridSize := cell * enginearea.OriginalViewSize
+	currentX, currentY, direction := a.state.DungeonGeometryView()
+	if a.geoGrid == nil {
+		drawWrappedText(screen, a.state.LocalizedText("ui_guide_area_unavailable", "The original AREA map is unavailable."), a.compactFace, int(originX), int(originY), 24, 18, 3, color.RGBA{232, 238, 255, 255})
+		return
+	}
+	view, err := enginearea.BuildOriginal(*a.geoGrid, currentX, currentY, int(direction))
+	if err != nil || len(a.areaMapSymbols) < 20 {
+		drawWrappedText(screen, a.state.LocalizedText("ui_guide_area_unavailable", "The original AREA map is unavailable."), a.compactFace, int(originX), int(originY), 24, 18, 3, color.RGBA{232, 238, 255, 255})
+		return
+	}
+	drawSymbol := func(item, screenX, screenY int) {
+		if item < 0 || item >= len(a.areaMapSymbols) {
+			return
+		}
+		options := &ebiten.DrawImageOptions{}
+		options.Filter = ebiten.FilterNearest
+		options.GeoM.Scale(cell/8, cell/8)
+		options.GeoM.Translate(originX+float64(screenX)*cell, originY+float64(screenY)*cell)
+		screen.DrawImage(a.areaMapSymbols[item], options)
+	}
+	for _, tile := range view.Tiles {
+		// 探索模式仍保留迷霧，但已探索格直接畫原版 AREA symbol，
+		// 不再以 remake 自繪灰色方格替代原作地圖語彙。
+		if a.ui.guideFull || a.guideCellExplored(mapKey, tile.MapX, tile.MapY) {
+			drawSymbol(tile.Item, tile.ScreenX, tile.ScreenY)
+		} else {
+			ebitenutil.DrawRect(screen, originX+float64(tile.ScreenX)*cell, originY+float64(tile.ScreenY)*cell, cell, cell, color.RGBA{8, 12, 20, 255})
 		}
 	}
-	currentX, currentY, _ := a.state.DungeonGeometryView()
-	ebitenutil.DrawRect(screen, originX+float64(currentX)*cell, originY+float64(currentY)*cell, cell-1, cell-1, color.RGBA{92, 220, 255, 255})
+	drawSymbol(view.PartyItem, view.PartyScreenX, view.PartyScreenY)
 	visiblePoints := make([]guidePoint, 0, len(definition.Points))
 	for _, point := range definition.Points {
 		if !a.ui.guideFull && !a.guideCellExplored(mapKey, point.X, point.Y) {
 			continue
 		}
 		visiblePoints = append(visiblePoints, point)
-		ebitenutil.DrawRect(screen, originX+float64(point.X)*cell+cell*.25, originY+float64(point.Y)*cell+cell*.25, cell*.5, cell*.5, color.RGBA{255, 210, 64, 255})
+		screenX, screenY := point.X-view.OffsetX, point.Y-view.OffsetY
+		if screenX >= 0 && screenX < enginearea.OriginalViewSize && screenY >= 0 && screenY < enginearea.OriginalViewSize {
+			ebitenutil.DrawRect(screen, originX+float64(screenX)*cell+cell*.28, originY+float64(screenY)*cell+cell*.28, cell*.44, cell*.44, color.RGBA{255, 210, 64, 255})
+		}
 	}
 	textX := int(originX + gridSize + float64(width)*0.04)
 	textWidth := int(float64(width)*0.84) - textX
@@ -122,7 +144,7 @@ func (a *app) drawGuideGrid(screen *ebiten.Image, width, height int, definition 
 		lines += fmt.Sprintf("● (%d,%d) %s\n%s\n", point.X, point.Y, point.Label, point.Summary)
 	}
 	if lines == "" {
-		lines = "尚未探索到已標記事件。\n完整模式會顯示所有攻略點。"
+		lines = a.state.LocalizedText("ui_guide_no_points", "No marked event has been explored.\nFull mode shows every guide point.")
 	}
 	drawWrappedText(screen, lines, a.compactFace, textX, int(originY), maxInt(12, textWidth/faceCellWidth(a.compactFace)), 18, 18, color.RGBA{232, 238, 255, 255})
 }

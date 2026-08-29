@@ -15,7 +15,7 @@ import (
 
 func TestUISettingsRoundTripAndRejectUnsupportedResolution(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "ui-settings.json")
-	want := uiSettings{Schema: "coab-ui-settings/1", Theme: "original", Width: 1024, Height: 768, SpoilerWarning: true, Explored: map[string][]string{}}
+	want := uiSettings{Schema: "coab-ui-settings/1", Theme: "original", Language: "zh-TW", Width: 1024, Height: 768, SpoilerWarning: true, Explored: map[string][]string{}}
 	if err := saveUISettings(path, want); err != nil {
 		t.Fatal(err)
 	}
@@ -32,11 +32,13 @@ func TestUISettingsRoundTripAndRejectUnsupportedResolution(t *testing.T) {
 	}
 }
 
-func TestF1ToF4AreGlobalAndResolutionCycles(t *testing.T) {
+func TestF1ToF6AreGlobalAndResolutionCycles(t *testing.T) {
 	state := game.NewState(locale.Catalog{})
 	keys := newScriptedKeys()
 	path := filepath.Join(t.TempDir(), "ui-settings.json")
-	application := &app{state: &state, keys: keys, ui: newUIRuntime(defaultUISettings(), path)}
+	application := &app{state: &state, keys: keys, ui: newUIRuntime(defaultUISettings(), path), locales: map[string]locale.Catalog{
+		"zh-CN": {Language: "zh-CN", Strings: map[string]string{"title": "青色枷的诅咒"}},
+	}}
 
 	keys.press(ebiten.KeyF1)
 	if err := application.Update(); err != nil || !application.ui.helpOpen {
@@ -63,6 +65,10 @@ func TestF1ToF4AreGlobalAndResolutionCycles(t *testing.T) {
 	_ = application.Update()
 	if width, height := application.Layout(0, 0); width != 640 || height != 480 {
 		t.Fatalf("third F4 = %dx%d, want 640x480", width, height)
+	}
+	keys.press(ebiten.KeyF6)
+	if err := application.Update(); err != nil || state.LocaleLanguage() != "zh-CN" || application.ui.settings.Language != "zh-CN" {
+		t.Fatalf("F6 did not switch and persist locale: state=%q settings=%q err=%v", state.LocaleLanguage(), application.ui.settings.Language, err)
 	}
 }
 

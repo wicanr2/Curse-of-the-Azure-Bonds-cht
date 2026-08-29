@@ -15,6 +15,7 @@ import (
 type uiSettings struct {
 	Schema         string              `json:"schema"`
 	Theme          string              `json:"theme"`
+	Language       string              `json:"language"`
 	Width          int                 `json:"width"`
 	Height         int                 `json:"height"`
 	SpoilerWarning bool                `json:"spoiler_warning_acknowledged"`
@@ -42,7 +43,7 @@ func defaultUISettingsPath() string {
 }
 
 func defaultUISettings() uiSettings {
-	return uiSettings{Schema: "coab-ui-settings/1", Theme: "modern-a6", Width: 640, Height: 480, Explored: map[string][]string{}}
+	return uiSettings{Schema: "coab-ui-settings/1", Theme: "modern-a6", Language: "zh-TW", Width: 640, Height: 480, Explored: map[string][]string{}}
 }
 
 func loadUISettings(path string) uiSettings {
@@ -53,6 +54,9 @@ func loadUISettings(path string) uiSettings {
 	}
 	if settings.Theme != "original" && settings.Theme != "modern-a6" {
 		settings.Theme = "modern-a6"
+	}
+	if !validLanguage(settings.Language) {
+		settings.Language = "zh-TW"
 	}
 	if !validResolution(settings.Width, settings.Height) {
 		settings.Width, settings.Height = 640, 480
@@ -87,6 +91,15 @@ func validResolution(width, height int) bool {
 	return (width == 640 && height == 480) || (width == 1024 && height == 768) || (width == 1280 && height == 960)
 }
 
+func validLanguage(language string) bool {
+	switch language {
+	case "zh-TW", "zh-CN", "ja", "en":
+		return true
+	default:
+		return false
+	}
+}
+
 func (ui *uiRuntime) logicalSize() (int, int) {
 	if !validResolution(ui.settings.Width, ui.settings.Height) {
 		return 640, 480
@@ -99,7 +112,7 @@ func (a *app) persistUISettings() {
 		return
 	}
 	if err := saveUISettings(a.ui.settingsPath, a.ui.settings); err != nil {
-		a.state.Message = "無法保存介面設定：" + err.Error()
+		a.state.Message = "Could not save UI settings: " + err.Error()
 		return
 	}
 	a.ui.settingsDirty = false
@@ -171,6 +184,10 @@ func (a *app) updateGlobalUI() (bool, error) {
 			a.ui.resizeWindow(next[0], next[1])
 		}
 		a.persistUISettings()
+		return true, nil
+	}
+	if a.justPressed(ebiten.KeyF6) {
+		a.cycleLanguage()
 		return true, nil
 	}
 	if a.ui.guideOpen && a.justPressed(ebiten.KeyV) {
@@ -340,20 +357,20 @@ func (a *app) drawOverlayPanel(screen *ebiten.Image, width, height int, title st
 }
 
 func (a *app) drawHelpOverlay(screen *ebiten.Image, width, height int) {
-	a.drawOverlayPanel(screen, width, height, "Help／按鍵說明")
-	text := "F1  關閉 Help\nF2  切換原版／A6 theme\nF3  目前地圖攻略\nF4  切換 640×480／1024×768／1280×960\nF5  存檔　F9  讀檔\nF10 自動存檔後離開\nEsc 取消／返回\nCtrl+S 音效　Ctrl+O 音樂"
+	a.drawOverlayPanel(screen, width, height, a.state.LocalizedText("ui_help_title", "Help / Controls"))
+	text := a.state.LocalizedText("ui_help_body", "F1 Help\nF2 Theme\nF3 Guide Map\nF4 Resolution\nF5 Save  F9 Load\nF6 Language\nF10 Save and quit\nEsc Cancel / Back")
 	drawWrappedText(screen, text, a.compactFace, int(float64(width)*0.10), int(float64(height)*0.24), 42, 24, 10, color.RGBA{232, 238, 255, 255})
 }
 
 func (a *app) drawGuideOverlay(screen *ebiten.Image, width, height int) {
-	mode := "探索資訊"
+	mode := a.state.LocalizedText("ui_guide_explore", "Exploration Information")
 	if a.ui.guideFull {
-		mode = "完整攻略（含劇透）"
+		mode = a.state.LocalizedText("ui_guide_full", "Full Guide (spoilers)")
 	}
-	a.drawOverlayPanel(screen, width, height, "目前地圖攻略｜"+mode)
+	a.drawOverlayPanel(screen, width, height, fmt.Sprintf(a.state.LocalizedText("ui_guide_title", "Current Guide Map | %s"), mode))
 	if a.state.Mode != game.ModeDungeon && a.state.Mode != game.ModeMap {
-		drawWrappedText(screen, "目前畫面沒有可用的地圖攻略。\n進入地城或區域地圖後再按 F3。", a.compactFace, int(float64(width)*0.12), int(float64(height)*0.32), 36, 28, 6, color.RGBA{232, 238, 255, 255})
-		drawFittedText(screen, "F3／Esc：關閉", a.compactFace, int(float64(width)*0.10), int(float64(height)*0.88), int(float64(width)*0.80), color.RGBA{232, 238, 255, 255})
+		drawWrappedText(screen, a.state.LocalizedText("ui_guide_unavailable", "No guide is available on this screen.\nEnter a dungeon or area map, then press F3."), a.compactFace, int(float64(width)*0.12), int(float64(height)*0.32), 36, 28, 6, color.RGBA{232, 238, 255, 255})
+		drawFittedText(screen, a.state.LocalizedText("ui_guide_close", "F3 / Esc: Close"), a.compactFace, int(float64(width)*0.10), int(float64(height)*0.88), int(float64(width)*0.80), color.RGBA{232, 238, 255, 255})
 		return
 	}
 	x, y, direction := a.state.DungeonGeometryView()
@@ -363,12 +380,12 @@ func (a *app) drawGuideOverlay(screen *ebiten.Image, width, height int) {
 	if mapTitle == "" {
 		mapTitle = fmt.Sprintf("GEO%d／0x%02X", a.state.GeoMapSet, a.state.GeoMapBlock)
 	}
-	drawFittedText(screen, fmt.Sprintf("%s　位置 (%d,%d) 朝向 %d", mapTitle, x, y, direction), a.compactFace, int(float64(width)*0.10), int(float64(height)*0.22), int(float64(width)*0.80), color.RGBA{92, 220, 255, 255})
+	drawFittedText(screen, fmt.Sprintf(a.state.LocalizedText("ui_guide_position", "%s Position (%d,%d) Facing %d"), mapTitle, x, y, direction), a.compactFace, int(float64(width)*0.10), int(float64(height)*0.22), int(float64(width)*0.80), color.RGBA{92, 220, 255, 255})
 	a.drawGuideGrid(screen, width, height, definition)
-	drawFittedText(screen, "V：探索／完整　F3／Esc：關閉", a.compactFace, int(float64(width)*0.10), int(float64(height)*0.88), int(float64(width)*0.80), color.RGBA{232, 238, 255, 255})
+	drawFittedText(screen, a.state.LocalizedText("ui_guide_footer", "V: Explore / Full  F3 / Esc: Close"), a.compactFace, int(float64(width)*0.10), int(float64(height)*0.88), int(float64(width)*0.80), color.RGBA{232, 238, 255, 255})
 }
 
 func (a *app) drawSpoilerWarning(screen *ebiten.Image, width, height int) {
-	a.drawOverlayPanel(screen, width, height, "劇透警告")
-	drawWrappedText(screen, "完整攻略會顯示尚未觸發的事件、出口與說明。\n\nEnter／Y：顯示完整攻略\nEsc：維持探索模式", a.compactFace, int(float64(width)*0.12), int(float64(height)*0.30), 38, 28, 8, color.RGBA{255, 220, 92, 255})
+	a.drawOverlayPanel(screen, width, height, a.state.LocalizedText("ui_spoiler_title", "Spoiler Warning"))
+	drawWrappedText(screen, a.state.LocalizedText("ui_spoiler_body", "The full guide reveals unseen events, exits, and notes.\n\nEnter / Y: Show full guide\nEsc: Keep exploration mode"), a.compactFace, int(float64(width)*0.12), int(float64(height)*0.30), 38, 28, 8, color.RGBA{255, 220, 92, 255})
 }

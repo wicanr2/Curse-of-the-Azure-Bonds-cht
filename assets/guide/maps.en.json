@@ -1,0 +1,206 @@
+{
+  "schema": "coab-guide-maps/1",
+  "maps": {
+    "2/01": {
+      "title": "Tyrfordon.",
+      "points": [
+        {
+          "x": 5,
+          "y": 2,
+          "label": "Training grounds",
+          "summary": "The role of a experienced character can be raised at a cost.",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "label": "The nobles, Felani.",
+          "summary": "The government has been trying to get the truth out of the city and the Royal Car.",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 0,
+          "y": 7,
+          "label": "Gondor Temple.",
+          "summary": "The treatment service.",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 6,
+          "y": 10,
+          "label": "The tavern.",
+          "summary": "The drink incident and the tweezer 17",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 1,
+          "y": 10,
+          "label": "High priest.",
+          "summary": "The blogger says that the government has not yet agreed to help untie the Zagar.",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        },
+        {
+          "x": 2,
+          "y": 12,
+          "label": "Weapons store.",
+          "summary": "Main line trigger one of the conditions.",
+          "source": "docs/guide/main-story-zh-TW.md#1-醒來與整裝"
+        }
+      ]
+    },
+    "2/03": {
+      "title": "Tyoverton sewer.",
+      "points": [
+        {
+          "x": 13,
+          "y": 10,
+          "label": "Knight of the roses.",
+          "summary": "The answer to Princess Nakassia or no one can be warned peacefully.",
+          "source": "docs/guide/main-story-zh-TW.md#3-下水道"
+        },
+        {
+          "x": 10,
+          "y": 15,
+          "label": "The knife is out of the way.",
+          "summary": "Step south and head for the Blade site (8,1).",
+          "source": "docs/spec/1199-tilverton-sewers-map-edge-handoffs.md"
+        }
+      ]
+    },
+    "2/04": {
+      "title": "The knife's out.",
+      "points": [
+        {
+          "x": 5,
+          "y": 1,
+          "label": "The spin blade.",
+          "summary": "The election is waiting for safe passage.",
+          "source": "docs/reference/maps/README.md#火刀據點"
+        },
+        {
+          "x": 14,
+          "y": 11,
+          "label": "- Wally's office.",
+          "summary": "When you enter the drawer for the first time, press S to search for the turban and treasure.",
+          "source": "docs/guide/main-story-zh-TW.md#4-火刀據點"
+        },
+        {
+          "x": 4,
+          "y": 12,
+          "label": "Checkpoint.",
+          "summary": "The Blade Guard incident.",
+          "source": "docs/reference/maps/README.md#火刀據點"
+        },
+        {
+          "x": 3,
+          "y": 13,
+          "label": "The battle of the leader.",
+          "summary": "The war is long; it is recommended to camp, heal and remember.",
+          "source": "docs/guide/main-story-zh-TW.md#4-火刀據點"
+        },
+        {
+          "x": 7,
+          "y": 13,
+          "label": "Hospital",
+          "summary": "The hospital area.",
+          "source": "docs/reference/maps/README.md#火刀據點"
+        }
+      ]
+    },
+    "5/32": {
+      "title": "Lava.",
+      "points": [
+        {
+          "x": 0,
+          "y": 5,
+          "label": "The lava pool house.",
+          "summary": "The government has been able to negotiate or fight 15 fire lizards.",
+          "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"
+        },
+        {
+          "x": 9,
+          "y": 10,
+          "label": "Watch the door.",
+          "summary": "The lizards and the Dark Wizards stand guard.",
+          "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"
+        },
+        {
+          "x": 6,
+          "y": 15,
+          "label": "The entrance to the Tower of the Masters.",
+          "summary": "West to the Master Tower.",
+          "source": "docs/guide/main-story-zh-TW.md#9-熔岩洞"
+        }
+      ]
+    },
+    "5/33": {
+      "title": "The Tower of the Masters.",
+      "points": [
+        {
+          "x": 6,
+          "y": 15,
+          "label": "The entrance to the lava cave.",
+          "summary": "To the lava cave.",
+          "source": "docs/guide/main-story-zh-TW.md#10-法師塔與龍群"
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "label": "The roof exit.",
+          "summary": "The site is open eastward/sunfield/sitting here.",
+          "source": "docs/guide/main-story-zh-TW.md#10-法師塔與龍群"
+        }
+      ]
+    },
+    "3/10": {
+      "title": "Ulysses.",
+      "points": [
+        {
+          "x": 0,
+          "y": 3,
+          "label": "Commander, waiting room.",
+          "summary": "The police have been trying to stop the Taliban spy.",
+          "source": "docs/guide/main-story-zh-TW.md#13-尤拉什戰區"
+        },
+        {
+          "x": 11,
+          "y": 0,
+          "label": "The entrance to the Moordham pit.",
+          "summary": "Get the way back north across the border.",
+          "source": "docs/guide/main-story-zh-TW.md#14-進入摩安德之坑"
+        }
+      ]
+    },
+    "3/11": {
+      "title": "The first level of the Moored pit.",
+      "points": [
+        {
+          "x": 1,
+          "y": 4,
+          "label": "Alice and the dragon.",
+          "summary": "The government has been able to recruit two people, who are negotiating, friendly, and who have given their stories and promised to invite them.",
+          "source": "docs/guide/main-story-zh-TW.md#15-招募愛麗雅絲與龍餌"
+        },
+        {
+          "x": 15,
+          "y": 11,
+          "label": "Lower entrance.",
+          "summary": "The first step is to get up the stairs and choose to go to the second floor.",
+          "source": "docs/guide/main-story-zh-TW.md#16-下層線索與摩貢"
+        }
+      ]
+    },
+    "3/15": {
+      "title": "The Morand pit, level two.",
+      "points": [
+        {
+          "x": 14,
+          "y": 15,
+          "label": "The Sandtalin Guard.",
+          "summary": "The body is examined for Fezor's orders and the rags are unsealed.",
+          "source": "docs/guide/main-story-zh-TW.md#16-下層線索與摩貢"
+        }
+      ]
+    }
+  }
+}
