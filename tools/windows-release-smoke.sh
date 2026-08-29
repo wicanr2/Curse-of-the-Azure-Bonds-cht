@@ -16,8 +16,9 @@ fi
 docker image inspect "$IMAGE" >/dev/null
 mkdir -p "$OUT"
 rm -f "$OUT/coab-windows-release-smoke.png"
-docker run --rm --network none --memory 1g --cpus 2 --pids-limit 256 \
+docker run --rm --network none --memory 3g --cpus 2 --pids-limit 512 \
   -u "$(id -u):$(id -g)" \
+  --tmpfs /tmp/.X11-unix:rw,mode=1777 \
   -e HOME=/tmp/wine-home -e WINEPREFIX=/tmp/wine-prefix -e WINEDEBUG=-all \
   -v "$RELEASE:/release:ro" -v "$OUT:/smoke" -w /release "$IMAGE" sh -c '
     set -eu
@@ -25,6 +26,11 @@ docker run --rm --network none --memory 1g --cpus 2 --pids-limit 256 \
     Xvfb :99 -screen 0 800x600x24 >/tmp/xvfb.log 2>&1 &
     xvfb=$!
     trap "kill $xvfb 2>/dev/null || true" EXIT
+    n=0
+    until test -S /tmp/.X11-unix/X99; do
+      n=$((n+1)); test "$n" -lt 50 || { cat /tmp/xvfb.log; exit 1; }
+      sleep 0.1
+    done
     DISPLAY=:99 /usr/lib/wine/wine64 azure-bonds-game.exe \
       -opening -screenshot Z:\\smoke\\coab-windows-release-smoke.png
   '
