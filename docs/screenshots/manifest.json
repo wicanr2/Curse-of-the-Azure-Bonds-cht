@@ -20,7 +20,7 @@
       "file": "docs/screenshots/a6-modern-theme-adventure.png",
       "width": 640,
       "height": 480,
-      "sha256": "f76d9864e6cb68652449ea10edbf3c279fe35f154c08b7de671cc763a0210fa6",
+      "sha256": "c802a7c678b9227ba82a0673889e3f55f8017d6dea963931e717ca8f582483f0",
       "generation_mode": "Docker/Xvfb -inn；預設 modern-a6 theme 的細石框與明亮金雕內框",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
@@ -30,8 +30,8 @@
       "file": "docs/screenshots/a6-modern-redraw-slice.png",
       "width": 640,
       "height": 480,
-      "sha256": "b60f689897e927c04650782b7b59f195aa523f8d31ab23672afcee53042ec8ab",
-      "generation_mode": "Docker/Xvfb -inn；正常流程載入現代高清女侍 picture 與使用者選定的 A6 精修石框／明亮金雕內框；外框 18px",
+      "sha256": "c802a7c678b9227ba82a0673889e3f55f8017d6dea963931e717ca8f582483f0",
+      "generation_mode": "Docker/Xvfb -inn；正常流程載入現代高清女侍 picture、閉合無縫的 10px A6 石框、明亮金雕內框與加粗 UI 文字",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
     },
@@ -40,8 +40,8 @@
       "file": "docs/screenshots/a6-modern-picture-animation.png",
       "width": 640,
       "height": 480,
-      "sha256": "1b93bf11a935ee892da2fbdfa1b0e5b703621052418039a9c381c80090bcc11d",
-      "generation_mode": "Docker/Xvfb -inner-ritual；正常故事路徑載入 512×512 modern-a6 多格手繪 PIC 與 18px A6 雙層框",
+      "sha256": "f09a0bb91fff9ca3a503597487f56854806c899d9aa7642ffd0d7d9b9d3eac1e",
+      "generation_mode": "Docker/Xvfb -inner-ritual；正常故事路徑載入 512×512 modern-a6 多格手繪 PIC 與 10px A6 雙層框",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
     },
@@ -50,8 +50,8 @@
       "file": "docs/screenshots/a6-modern-world-map.png",
       "width": 640,
       "height": 480,
-      "sha256": "407cbb500ca9b429e47912c052250c1db912895fb94410c9c572a4a0c2ffb120",
-      "generation_mode": "Docker/Xvfb -world-map；normal BigPictureRequested 載入 1216×480 modern-a6 世界地圖並線性縮放至原版 608×240 顯示框",
+      "sha256": "c50a2afe322abe4209821201c73d8edb59cad8acdcd7d20df18a647077cf7153",
+      "generation_mode": "Docker/Xvfb -world-map；正常世界地圖入口載入 1216×480 modern-a6 BIGPIC；上半部僅保留世界地圖外框，不疊冒險 scene／區域地圖分隔",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
     },
@@ -60,7 +60,7 @@
       "file": "docs/screenshots/a6-modern-first-person.png",
       "width": 640,
       "height": 480,
-      "sha256": "5f06f15a9e8b333951ec9f67bb8bd47127f13b65e2a833775f305f7848988a3c",
+      "sha256": "01ff528a732fe520de6ded51f33249b8c05fa34976595f8fdddf108839de86ca",
       "generation_mode": "Docker/Xvfb -tilverton-dungeon；normal dungeon path 載入雙解析度牆面符號與 A6 frame",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
@@ -70,8 +70,8 @@
       "file": "docs/screenshots/a6-modern-combat.png",
       "width": 640,
       "height": 480,
-      "sha256": "d14218f00458d939ccdfef43c662d583828a7c604ffa960af23850b715afc08d",
-      "generation_mode": "Docker/Xvfb -encounter；normal combat path 載入雙解析度 CPIC／戰場地形與 18px A6 金雕戰鬥框",
+      "sha256": "12a6ef3afa65cb07313bf5c70fc324993fa16badce8c89cb4ec7020bb7935d9e",
+      "generation_mode": "Docker/Xvfb -encounter；正常遊戲遭遇載入實際 CPIC／戰場地形；10px A6 金雕框的訊息、目標與指令列均位於文字安全區",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
     },
@@ -80,8 +80,8 @@
       "file": "docs/screenshots/a6-guide-overlay.png",
       "width": 640,
       "height": 480,
-      "sha256": "7ce6392952d31ca022a4e65265b88048f1470277a8ff580265f957aac94f4646",
-      "generation_mode": "Docker/Xvfb -tilverton-dungeon -ui-preview guide-full；F3 原版 11×11 AREA 符號＋金色事件點 capture-only checkpoint",
+      "sha256": "b6a88097909763032463bf88cd166dfdb8b8b97dc670ca02ed9c75c83781e9df",
+      "generation_mode": "Docker/Xvfb -tilverton-dungeon -ui-preview guide-full；F3 原版 11×11 AREA 符號＋金色事件點＋獨立 8px guide 邊框 checkpoint",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
     },
@@ -90,8 +90,18 @@
       "file": "docs/screenshots/f6-japanese-guide.png",
       "width": 640,
       "height": 480,
-      "sha256": "4f48506b712aa315fb5befac568af152443001ff55ae1c82ef90f18c6fb2143c",
+      "sha256": "528bc733dd9ac91b0f2497ca9ef50088fe64e37e16d51bbe0a44c8538c87996a",
       "generation_mode": "Docker/Xvfb -tilverton-dungeon -language ja -ui-preview guide-full；F6 日文＋F3 原版 AREA 攻略地圖",
+      "evidence_level": "layout-only",
+      "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
+    },
+    {
+      "id": "f7-appearance-settings",
+      "file": "docs/screenshots/f7-appearance-settings.png",
+      "width": 640,
+      "height": 480,
+      "sha256": "fa727a70f66a4a1c50c300a05b041ed1e9d4ed9a8fc47763c02888261d610681",
+      "generation_mode": "Docker/Xvfb -opening -ui-preview settings；F7 框線、閱讀／介面字級與各自粗體設定 checkpoint",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
     },

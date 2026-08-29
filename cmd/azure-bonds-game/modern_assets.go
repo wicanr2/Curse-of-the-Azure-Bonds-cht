@@ -15,15 +15,17 @@ import (
 // modernA6Assets is a deliberately separate asset group. A theme switch must
 // never mutate or overwrite the original-derived PNG catalog.
 type modernA6Assets struct {
-	pictures       map[string]*ebiten.Image
-	sprites        map[string]*ebiten.Image
-	tiles          map[string]*ebiten.Image
-	animations     map[string][]combatAnimation
-	combat         map[string]*ebiten.Image
-	symbols        map[string]*ebiten.Image
-	sky            map[string]*ebiten.Image
-	adventureFrame *ebiten.Image
-	combatFrame    *ebiten.Image
+	pictures        map[string]*ebiten.Image
+	sprites         map[string]*ebiten.Image
+	tiles           map[string]*ebiten.Image
+	animations      map[string][]combatAnimation
+	combat          map[string]*ebiten.Image
+	symbols         map[string]*ebiten.Image
+	sky             map[string]*ebiten.Image
+	adventureFrame  *ebiten.Image
+	combatFrame     *ebiten.Image
+	adventureFrames map[string]*ebiten.Image
+	combatFrames    map[string]*ebiten.Image
 }
 
 func loadModernA6Assets(root string) (*modernA6Assets, error) {
@@ -111,6 +113,17 @@ func loadModernA6Assets(root string) (*modernA6Assets, error) {
 		return nil, err
 	}
 	result.combatFrame = combatFrame
+	result.adventureFrames = map[string]*ebiten.Image{"A": frame}
+	result.combatFrames = map[string]*ebiten.Image{"A": combatFrame}
+	for _, style := range []string{"B", "C"} {
+		lower := strings.ToLower(style)
+		frame, frameErr := loadModernPNG(filepath.Join(root, "ui", "adventure-frame-"+lower+".png"))
+		combat, combatErr := loadModernPNG(filepath.Join(root, "ui", "combat-frame-"+lower+".png"))
+		if frameErr != nil || combatErr != nil {
+			return nil, fmt.Errorf("load modern A6 frame style %s", style)
+		}
+		result.adventureFrames[style], result.combatFrames[style] = frame, combat
+	}
 	return result, nil
 }
 
@@ -200,10 +213,36 @@ func (a *app) drawModernA6AdventureFrame(screen *ebiten.Image, width, height int
 	if a.modernA6 == nil || a.modernA6.adventureFrame == nil {
 		return false
 	}
+	frame := a.modernA6.adventureFrames[a.ui.settings.FrameStyle]
+	if frame == nil {
+		frame = a.modernA6.adventureFrame
+	}
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterLinear
 	op.GeoM.Scale(float64(width)/640, float64(height)/480)
-	screen.DrawImage(a.modernA6.adventureFrame, op)
+	screen.DrawImage(frame, op)
+	return true
+}
+
+func (a *app) drawModernA6OuterFrame(screen *ebiten.Image, width, height int) bool {
+	if a.modernA6 == nil || a.modernA6.adventureFrame == nil {
+		return false
+	}
+	frame := a.modernA6.adventureFrames[a.ui.settings.FrameStyle]
+	if frame == nil {
+		frame = a.modernA6.adventureFrame
+	}
+	sx, sy := float64(width)/640, float64(height)/480
+	for _, source := range []image.Rectangle{
+		image.Rect(0, 0, 640, 10), image.Rect(0, 470, 640, 480),
+		image.Rect(0, 10, 10, 470), image.Rect(630, 10, 640, 470),
+	} {
+		op := &ebiten.DrawImageOptions{}
+		op.Filter = ebiten.FilterLinear
+		op.GeoM.Scale(sx, sy)
+		op.GeoM.Translate(float64(source.Min.X)*sx, float64(source.Min.Y)*sy)
+		screen.DrawImage(frame.SubImage(source).(*ebiten.Image), op)
+	}
 	return true
 }
 
@@ -211,10 +250,14 @@ func (a *app) drawModernA6CombatFrame(screen *ebiten.Image, width, height int) b
 	if a.modernA6 == nil || a.modernA6.combatFrame == nil {
 		return false
 	}
+	frame := a.modernA6.combatFrames[a.ui.settings.FrameStyle]
+	if frame == nil {
+		frame = a.modernA6.combatFrame
+	}
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterLinear
 	op.GeoM.Scale(float64(width)/640, float64(height)/480)
-	screen.DrawImage(a.modernA6.combatFrame, op)
+	screen.DrawImage(frame, op)
 	return true
 }
 

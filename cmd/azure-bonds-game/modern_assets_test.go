@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -79,6 +80,43 @@ func TestModernA6VerticalSlicePNGContracts(t *testing.T) {
 		if hasTransparency != test.wantTransparency {
 			t.Errorf("%s transparency=%v, want %v", test.path, hasTransparency, test.wantTransparency)
 		}
+	}
+}
+
+func TestModernA6FramesKeepJointsClosedAndFooterClear(t *testing.T) {
+	root := filepath.Join("..", "..", "assets", "modern-a6", "ui")
+	decode := func(name string) image.Image {
+		handle, err := os.Open(filepath.Join(root, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer handle.Close()
+		decoded, err := png.Decode(handle)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return decoded
+	}
+	opaque := func(source image.Image, x, y int) bool {
+		_, _, _, alpha := source.At(x, y).RGBA()
+		return alpha == 0xffff
+	}
+
+	adventure := decode("adventure-frame.png")
+	if !opaque(adventure, 9, 100) || opaque(adventure, 10, 100) {
+		t.Error("adventure outer stone frame must end at 10px")
+	}
+	for _, point := range [][2]int{{264, 17}, {271, 256}, {17, 256}, {622, 454}, {17, 462}} {
+		if !opaque(adventure, point[0], point[1]) {
+			t.Errorf("adventure frame joint (%d,%d) is transparent", point[0], point[1])
+		}
+	}
+	combat := decode("combat-frame.png")
+	if !opaque(combat, 9, 100) || opaque(combat, 14, 100) {
+		t.Error("combat outer stone frame plus inner gold edge exceeds its 10px contract")
+	}
+	if opaque(combat, 120, 446) {
+		t.Error("combat footer y=446 must remain transparent for modern text")
 	}
 }
 

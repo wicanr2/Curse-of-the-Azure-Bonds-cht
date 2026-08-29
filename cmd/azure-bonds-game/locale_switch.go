@@ -59,13 +59,8 @@ func (a *app) cycleLanguage() {
 		return
 	}
 	a.state.SetLocaleCatalog(catalog)
-	if face, found := a.localeFaces[next]; found {
-		a.face = face
-	}
-	if face, found := a.localeCompactFaces[next]; found {
-		a.compactFace = face
-	}
 	a.ui.settings.Language = next
+	a.selectLocaleTypography(next)
 	if guide, found := a.guides[next]; found {
 		a.guide = guide
 	}

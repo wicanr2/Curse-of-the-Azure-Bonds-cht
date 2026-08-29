@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the approved A6 18px carved-stone combat overlay."""
+"""Render the approved A6 10px carved-stone combat overlay."""
 
 from pathlib import Path
 from PIL import Image, ImageDraw
@@ -15,7 +15,7 @@ def main():
     gold, glint, dark = (255, 213, 45, 255), (255, 250, 176, 255), (126, 69, 2, 255)
     blue, blue_glint = (31, 137, 220, 255), (170, 232, 255, 255)
     draw.rectangle((0, 0, 639, 479), fill=stone)
-    draw.rectangle((18, 18, 621, 461), fill=(0, 0, 0, 0))
+    draw.rectangle((10, 10, 629, 469), fill=(0, 0, 0, 0))
     draw.line((2, 2, 637, 2), fill=light, width=2)
     draw.line((2, 477, 637, 477), fill=shadow, width=2)
     # Sparse chisel marks preserve the approved refined-stone rhythm.
@@ -29,12 +29,12 @@ def main():
         draw.line((8, y + 2, 4, y + 8), fill=light)
         draw.line((632, y, 636, y + 6), fill=light)
         draw.line((631, y + 2, 635, y + 8), fill=shadow)
-    for box in ((14, 14, 625, 465),):
+    for box in ((10, 10, 629, 469),):
         draw.rectangle(box, outline=dark, width=1)
         draw.rectangle((box[0]+1, box[1]+1, box[2]-1, box[3]-1), outline=gold, width=2)
         draw.rectangle((box[0]+3, box[1]+3, box[2]-3, box[3]-3), outline=glint, width=1)
     # Internal bands match the native combat partition without covering content.
-    for orientation, pos, start, end in (("v", 358, 18, 359), ("h", 358, 18, 621), ("h", 446, 18, 621)):
+    for orientation, pos, start, end in (("v", 358, 18, 359), ("h", 358, 18, 621)):
         if orientation == "v":
             draw.rectangle((pos, start, pos + 7, end), fill=stone)
             draw.line((pos + 1, start, pos + 1, end), fill=light, width=1)
@@ -47,7 +47,7 @@ def main():
             draw.line((start, pos + 3, end, pos + 3), fill=glint, width=1)
             draw.line((start, pos + 4, end, pos + 4), fill=gold, width=2)
             draw.line((start, pos + 7, end, pos + 7), fill=shadow, width=1)
-    for x, y in ((14, 14), (621, 14), (14, 461), (621, 461), (357, 357), (357, 445)):
+    for x, y in ((10, 10), (621, 10), (10, 461), (621, 461), (357, 357)):
         draw.rectangle((x, y, x + 8, y + 8), fill=dark)
         draw.polygon(((x+4, y+1), (x+7, y+4), (x+4, y+7), (x+1, y+4)), fill=blue)
         draw.point((x+4, y+2), fill=blue_glint)

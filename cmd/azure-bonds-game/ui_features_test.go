@@ -15,7 +15,8 @@ import (
 
 func TestUISettingsRoundTripAndRejectUnsupportedResolution(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "ui-settings.json")
-	want := uiSettings{Schema: "coab-ui-settings/1", Theme: "original", Language: "zh-TW", Width: 1024, Height: 768, SpoilerWarning: true, Explored: map[string][]string{}}
+	want := defaultUISettings()
+	want.Theme, want.Width, want.Height, want.SpoilerWarning = "original", 1024, 768, true
 	if err := saveUISettings(path, want); err != nil {
 		t.Fatal(err)
 	}
@@ -29,6 +30,70 @@ func TestUISettingsRoundTripAndRejectUnsupportedResolution(t *testing.T) {
 	got := loadUISettings(path)
 	if got.Width != 640 || got.Height != 480 {
 		t.Fatalf("unsupported resolution should fail closed to 640x480, got %dx%d", got.Width, got.Height)
+	}
+}
+
+func TestLegacyUISettingsReceiveSafeAppearanceDefaults(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "ui-settings.json")
+	if err := os.WriteFile(path, []byte(`{"schema":"coab-ui-settings/1","theme":"modern-a6","language":"zh-TW","width":640,"height":480}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	got := loadUISettings(path)
+	if got.FrameStyle != "A" || got.OuterBorderPX != 10 || got.InnerBorderPX != 8 || got.ReadingTextPX != 24 || got.InterfaceTextPX != 16 {
+		t.Fatalf("legacy defaults = %#v", got)
+	}
+	if !boolSetting(got.ReadingBold, false) || !boolSetting(got.InterfaceBold, false) {
+		t.Fatal("legacy text weight must preserve current bold rendering")
+	}
+}
+
+func TestF7AppearanceDraftAppliesAndEscapeCancels(t *testing.T) {
+	state := game.NewState(locale.Catalog{})
+	keys := newScriptedKeys()
+	application := &app{state: &state, keys: keys, ui: newUIRuntime(defaultUISettings(), filepath.Join(t.TempDir(), "ui.json"))}
+	keys.press(ebiten.KeyF7)
+	_ = application.Update()
+	if !application.ui.settingsOpen {
+		t.Fatal("F7 did not open settings")
+	}
+	keys.press(ebiten.KeyArrowRight)
+	_ = application.Update()
+	if application.ui.settingsDraft.FrameStyle != "B" || application.ui.settings.FrameStyle != "A" {
+		t.Fatal("draft changed live settings before apply")
+	}
+	keys.press(ebiten.KeyEscape)
+	_ = application.Update()
+	if application.ui.settings.FrameStyle != "A" {
+		t.Fatal("Esc did not cancel draft")
+	}
+	keys.press(ebiten.KeyF7)
+	_ = application.Update()
+	keys.press(ebiten.KeyArrowRight)
+	_ = application.Update()
+	keys.press(ebiten.KeyEnter)
+	_ = application.Update()
+	if application.ui.settings.FrameStyle != "B" || application.ui.settingsOpen {
+		t.Fatal("Enter did not apply and close")
+	}
+}
+
+func TestAppearanceRangesClampAtConfirmedLimits(t *testing.T) {
+	settings := defaultUISettings()
+	settings.OuterBorderPX, settings.InnerBorderPX = 20, 12
+	settings.ReadingTextPX, settings.InterfaceTextPX = 36, 36
+	for _, row := range []int{1, 2, 3, 5} {
+		adjustAppearanceDraft(&settings, row, 1)
+	}
+	if settings.OuterBorderPX != 20 || settings.InnerBorderPX != 12 || settings.ReadingTextPX != 36 || settings.InterfaceTextPX != 36 {
+		t.Fatalf("upper clamp = %#v", settings)
+	}
+	settings.OuterBorderPX, settings.InnerBorderPX = 4, 1
+	settings.ReadingTextPX, settings.InterfaceTextPX = 12, 12
+	for _, row := range []int{1, 2, 3, 5} {
+		adjustAppearanceDraft(&settings, row, -1)
+	}
+	if settings.OuterBorderPX != 4 || settings.InnerBorderPX != 1 || settings.ReadingTextPX != 12 || settings.InterfaceTextPX != 12 {
+		t.Fatalf("lower clamp = %#v", settings)
 	}
 }
 

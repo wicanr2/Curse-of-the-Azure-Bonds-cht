@@ -27,6 +27,7 @@ type section struct {
 	title    string
 	patterns []string
 	limit    int
+	columns  int
 	x, y     int
 	w, h     int
 }
@@ -37,10 +38,10 @@ func main() {
 		output = os.Args[1]
 	}
 	sections := []section{
-		{"SCENE / PORTRAIT PNG", []string{"assets/sprites/character-*.png", "assets/sprites/pic*-block-*-item-00.png", "assets/sprites/party*.png"}, 18, 24, 64, 604, 344},
-		{"COMBAT SPRITE PNG", []string{"assets/sprites/cpic*-block-*-item-00.png", "assets/sprites/comspr-*.png"}, 30, 652, 64, 604, 344},
-		{"WORLD / AREA TILESET PNG", []string{"assets/runtime-images/tiles/*.png", "assets/runtime-images/symbols/8x8d1-*.png"}, 56, 24, 432, 604, 344},
-		{"COMBAT TILESET PNG", []string{"assets/runtime-images/combat/*.png", "assets/runtime-images/sky/*.png"}, 48, 652, 432, 604, 344},
+		{"SCENE / PORTRAIT PNG", []string{"assets/sprites/character-*.png", "assets/sprites/pic*-block-*-item-00.png", "assets/sprites/party*.png"}, 18, 6, 24, 64, 604, 344},
+		{"COMBAT SPRITE PNG", []string{"assets/sprites/cpic*-block-*-item-00.png", "assets/sprites/comspr-*.png"}, 30, 8, 652, 64, 604, 344},
+		{"WORLD / AREA TILESET PNG", []string{"assets/runtime-images/tiles/*.png", "assets/runtime-images/symbols/8x8d1-*.png"}, 56, 8, 24, 432, 604, 344},
+		{"COMBAT TILESET PNG", []string{"assets/runtime-images/combat/*.png", "assets/runtime-images/sky/*.png"}, 48, 8, 652, 432, 604, 344},
 	}
 	canvas := image.NewRGBA(image.Rect(0, 0, canvasWidth, canvasHeight))
 	draw.Draw(canvas, canvas.Bounds(), &image.Uniform{color.RGBA{7, 11, 19, 255}}, image.Point{}, draw.Src)
@@ -97,7 +98,10 @@ func drawSection(dst *image.RGBA, current section, paths []string) {
 	draw.Draw(dst, image.Rect(current.x, current.y, current.x+current.w, current.y+current.h), &image.Uniform{color.RGBA{13, 20, 32, 255}}, image.Point{}, draw.Src)
 	draw.Draw(dst, image.Rect(current.x, current.y, current.x+current.w, current.y+2), &image.Uniform{border}, image.Point{}, draw.Src)
 	label(dst, current.x+12, current.y+24, current.title, color.RGBA{235, 224, 198, 255})
-	const columns = 8
+	columns := current.columns
+	if columns < 1 {
+		columns = 8
+	}
 	rows := (len(paths) + columns - 1) / columns
 	cellW := (current.w - 24) / columns
 	cellH := (current.h - 46) / rows

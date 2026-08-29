@@ -64,8 +64,11 @@ type app struct {
 	runtimeImages          *runtimeImageCatalog
 	face                   font.Face
 	compactFace            font.Face
+	safeCompactFace        font.Face
 	localeFaces            map[string]font.Face
 	localeCompactFaces     map[string]font.Face
+	localeSafeCompactFaces map[string]font.Face
+	localeFontPaths        map[string]string
 	choiceCursor           int
 	partyPath              string
 	savgamDir              string
@@ -1859,7 +1862,11 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 		}
 		drawFittedText(screen, prefix+choice, a.face, 40, 366+index*30, 560, white)
 	}
-	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandControls), a.compactFace, 344, 470, 280, cyan)
+	controlsY := 470
+	if a.ui.settings.Theme == "modern-a6" {
+		controlsY = 444
+	}
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandControls), a.compactFace, 344, controlsY, 280, cyan)
 	return true
 }
 
@@ -1869,9 +1876,22 @@ const (
 )
 
 func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, lineRunes, lineHeight, maxLines int, ink color.Color) {
-	lines := wrapTextLinesByWidth(value, face, lineRunes*faceCellWidth(face), maxLines)
+	maxWidth := lineRunes*faceCellWidth(face) - 1
+	if available := screen.Bounds().Dx() - x - 24; maxWidth > available {
+		maxWidth = available
+	}
+	if minimum := face.Metrics().Height.Ceil() + 4; lineHeight < minimum {
+		lineHeight = minimum
+	}
+	if availableLines := (screen.Bounds().Dy() - y - 20) / lineHeight; maxLines > availableLines {
+		maxLines = availableLines
+	}
+	lines := wrapTextLinesByWidth(value, face, maxWidth, maxLines)
 	for index, line := range lines {
 		text.Draw(screen, line, face, x, y+index*lineHeight, ink)
+		if faceIsBold(face) {
+			text.Draw(screen, line, face, x+1, y+index*lineHeight, ink)
+		}
 	}
 }
 
@@ -1882,7 +1902,66 @@ func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, l
 // status panel. Keep the original baseline and truncate only at a rune
 // boundary when the declared region cannot contain the measured pixels.
 func drawFittedText(screen *ebiten.Image, value string, face font.Face, x, y, maxWidth int, ink color.Color) {
-	text.Draw(screen, fitTextToWidth(value, face, maxWidth), face, x, y, ink)
+	measured := font.MeasureString(face, value).Ceil()
+	if measured <= maxWidth-1 {
+		text.Draw(screen, value, face, x, y, ink)
+		if faceIsBold(face) {
+			text.Draw(screen, value, face, x+1, y, ink)
+		}
+		return
+	}
+	// Preserve the whole label at extreme player-selected sizes. Truncation is
+	// not safe for AC/HP values or menu verbs; scale this one draw instead.
+	metrics := face.Metrics()
+	ascent, height := metrics.Ascent.Ceil(), metrics.Height.Ceil()
+	if measured < 1 || height < 1 || maxWidth < 1 {
+		return
+	}
+	temporary := ebiten.NewImage(measured+2, height+2)
+	text.Draw(temporary, value, face, 0, ascent, ink)
+	if faceIsBold(face) {
+		text.Draw(temporary, value, face, 1, ascent, ink)
+	}
+	scale := float64(maxWidth) / float64(measured+1)
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterLinear
+	op.GeoM.Scale(scale, scale)
+	op.GeoM.Translate(float64(x), float64(y)-float64(ascent)*scale)
+	screen.DrawImage(temporary, op)
+}
+
+func (a *app) safeTopBaseline(preferred int, face font.Face) int {
+	if a.ui.settings.Theme != "modern-a6" {
+		return preferred
+	}
+	minimum := a.ui.settings.OuterBorderPX + face.Metrics().Ascent.Ceil() + 2
+	if preferred < minimum {
+		return minimum
+	}
+	return preferred
+}
+
+func (a *app) safeRightX(preferred, width int) int {
+	if a.ui.settings.Theme != "modern-a6" {
+		return preferred
+	}
+	maximum := 640 - a.ui.settings.OuterBorderPX - 4 - width
+	if preferred > maximum {
+		return maximum
+	}
+	return preferred
+}
+
+func (a *app) safeBottomBaseline(preferred int, face font.Face) int {
+	if a.ui.settings.Theme != "modern-a6" {
+		return preferred
+	}
+	// Adventure frames reserve y=454 onward for their lower carved band.
+	maximum := 454 - face.Metrics().Descent.Ceil() - 3
+	if preferred > maximum {
+		return maximum
+	}
+	return preferred
 }
 
 func faceCellWidth(face font.Face) int {
@@ -2074,7 +2153,7 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 			a.drawSceneCharacter(screen, sprite)
 			a.drawOriginalAdventureFrame(screen)
 			a.drawPictureMessage(screen)
-			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, adventureCommandBaseline, 600, color.RGBA{255, 255, 255, 255})
+			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, a.safeBottomBaseline(adventureCommandBaseline, a.compactFace), 592, color.RGBA{255, 255, 255, 255})
 			return
 		}
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelSceneCharacterMissing), a.face, 56, 220, 520, color.RGBA{255, 220, 100, 255})
@@ -2138,7 +2217,7 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	a.drawFirstPersonStageFrame(screen)
 	a.drawOriginalAdventureFrame(screen)
 	a.drawPictureMessage(screen)
-	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, adventureCommandBaseline, 600, color.RGBA{255, 255, 255, 255})
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, a.safeBottomBaseline(adventureCommandBaseline, a.compactFace), 592, color.RGBA{255, 255, 255, 255})
 }
 
 func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
@@ -2276,17 +2355,22 @@ func (a *app) drawCharacterCreationFrame(screen *ebiten.Image) {
 func (a *app) drawAdventureChrome(screen *ebiten.Image) {
 	ebitenutil.DrawRect(screen, 0, 0, 640, 480, color.RGBA{A: 255})
 	a.drawOriginalAdventureFrame(screen)
-	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), a.compactFace, 280, 38, 240, color.RGBA{232, 238, 255, 255})
-	drawFittedText(screen, "AC", a.compactFace, 528, 38, 64, color.RGBA{232, 238, 255, 255})
-	drawFittedText(screen, "HP", a.compactFace, 600, 38, 32, color.RGBA{232, 238, 255, 255})
+	statusFace := a.safeCompactFace
+	if statusFace == nil {
+		statusFace = a.compactFace
+	}
+	statusHeaderY := a.safeTopBaseline(38, statusFace)
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), statusFace, 280, statusHeaderY, 240, color.RGBA{232, 238, 255, 255})
+	drawFittedText(screen, "AC", statusFace, 528, statusHeaderY, 64, color.RGBA{232, 238, 255, 255})
+	drawFittedText(screen, "HP", statusFace, a.safeRightX(600, 32), statusHeaderY, 32, color.RGBA{232, 238, 255, 255})
 	for index, fighter := range a.state.PartyFighters() {
 		if index >= 8 {
 			break
 		}
 		ink := color.RGBA{R: 92, G: 220, B: 255, A: 255}
-		drawFittedText(screen, fighter.Name, a.compactFace, 280, 68+index*20, 240, ink)
-		drawFittedText(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 532, 68+index*20, 64, ink)
-		drawFittedText(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 604, 68+index*20, 32, ink)
+		drawFittedText(screen, fighter.Name, statusFace, 280, 68+index*20, 240, ink)
+		drawFittedText(screen, strconv.Itoa(fighter.ArmorClass), statusFace, 532, 68+index*20, 64, ink)
+		drawFittedText(screen, strconv.Itoa(fighter.HitPoints), statusFace, a.safeRightX(604, 32), 68+index*20, 32, ink)
 	}
 }
 
@@ -2547,16 +2631,21 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 	// look as though the text had escaped or fallen behind the stone frame.
 	a.drawOriginalAdventureFrame(screen)
 
-	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), a.compactFace, 280, 38, 240, white)
-	drawFittedText(screen, "AC", a.compactFace, 528, 38, 64, white)
-	drawFittedText(screen, "HP", a.compactFace, 600, 38, 32, white)
+	statusFace := a.safeCompactFace
+	if statusFace == nil {
+		statusFace = a.compactFace
+	}
+	statusHeaderY := a.safeTopBaseline(38, statusFace)
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), statusFace, 280, statusHeaderY, 240, white)
+	drawFittedText(screen, "AC", statusFace, 528, statusHeaderY, 64, white)
+	drawFittedText(screen, "HP", statusFace, a.safeRightX(600, 32), statusHeaderY, 32, white)
 	for index, fighter := range a.state.PartyFighters() {
 		if index >= 8 {
 			break
 		}
-		drawFittedText(screen, fighter.Name, a.compactFace, 280, 68+index*20, 240, cyan)
-		drawFittedText(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 532, 68+index*20, 64, cyan)
-		drawFittedText(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 604, 68+index*20, 32, cyan)
+		drawFittedText(screen, fighter.Name, statusFace, 280, 68+index*20, 240, cyan)
+		drawFittedText(screen, strconv.Itoa(fighter.ArmorClass), statusFace, 532, 68+index*20, 64, cyan)
+		drawFittedText(screen, strconv.Itoa(fighter.HitPoints), statusFace, a.safeRightX(604, 32), 68+index*20, 32, cyan)
 	}
 
 	status := fmt.Sprintf("(%d,%d) %s %02d:%02d", a.dungeonX, a.dungeonY,
@@ -2570,7 +2659,7 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 	if a.dungeonDoorMenu {
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonDoorHelp), a.compactFace, 8, 430, 624, color.RGBA{255, 255, 82, 255})
 	}
-	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonExploreHelp), a.compactFace, 8, adventureCommandBaseline, 624, cyan)
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonExploreHelp), a.compactFace, 24, a.safeBottomBaseline(adventureCommandBaseline, a.compactFace), 592, cyan)
 }
 
 func dungeonSkyColor(areaState area.State, wallRoof uint8) color.RGBA {
@@ -2841,9 +2930,15 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		battlefieldSize = 336
 		combatLogY      = 368
 		combatFooterY   = 448
-		combatStatusY   = 456
-		combatMenuY     = 474
 	)
+	combatMessageY, combatMessageLineHeight, combatMessageLines := 392, 20, 3
+	combatStatusY, combatMenuY := 456, 474
+	if a.ui.settings.Theme == "modern-a6" {
+		// 10px 下框從 y=470 起；將 footer 完整收進文字安全區，不能再沿用
+		// 原版 8px 框的 y=474 baseline。
+		combatMessageY, combatMessageLineHeight, combatMessageLines = 386, 18, 2
+		combatStatusY, combatMenuY = 428, 450
+	}
 	battlefield := ebiten.NewImage(battlefieldSize, battlefieldSize)
 	battlefield.Fill(color.RGBA{R: 82, G: 82, B: 82, A: 255})
 	battlefieldOp := &ebiten.DrawImageOptions{}
@@ -2857,7 +2952,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if event, ok := a.state.CombatVisualEvent(); ok {
 		combatMessage = a.state.CombatVisualMessage(event, a.combatVisualFrame(event), combatMessage)
 	}
-	drawWrappedText(screen, combatMessage, a.compactFace, 8, 392, 39, 20, 3, white)
+	drawWrappedText(screen, combatMessage, a.compactFace, 8, combatMessageY, 39, combatMessageLineHeight, combatMessageLines, white)
 	if a.state.CombatViewActive() {
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCombatViewTitle), a.face, 64, 145, 512, cyan)
 		for index, line := range a.state.CombatViewLines() {
@@ -3031,7 +3126,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if activeOK {
 		statusGreen := color.RGBA{R: 92, G: 255, B: 92, A: 255}
 		statusYellow := color.RGBA{R: 255, G: 255, B: 82, A: 255}
-		drawFittedText(screen, active.Name, a.compactFace, 370, 30, 246, cyan)
+		drawFittedText(screen, active.Name, a.compactFace, 370, a.safeTopBaseline(30, a.compactFace), 246, cyan)
 		drawFittedText(screen, a.state.CombatHitPointsLabel(), a.compactFace, 370, 62, 72, statusGreen)
 		drawFittedText(screen, strconv.Itoa(active.HitPoints), a.compactFace, 450, 62, 54, statusYellow)
 		drawFittedText(screen, a.state.CombatArmorClassLabel(), a.compactFace, 370, 94, 72, statusGreen)
@@ -3906,7 +4001,7 @@ func main() {
 	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
 	dosCharacterInventory := flag.String("dos-character-inventory", "", "optional DOS .SWG path for direct character import")
 	screenshotPath := flag.String("screenshot", "", "write one deterministic frame to PNG and exit")
-	uiPreview := flag.String("ui-preview", "", "capture-only UI overlay: help, guide-explore, or guide-full")
+	uiPreview := flag.String("ui-preview", "", "capture-only UI overlay: help, guide-explore, guide-full, or settings")
 	journalImageEntry := flag.String("journal-image", "", tooltext.Text("h.a18a181fc4d2"))
 	journalImageZoom := flag.Bool("journal-image-zoom", false, tooltext.Text("h.70cfc7b45f7f"))
 	segmentEntry := flag.String("segment", "",
@@ -3917,8 +4012,8 @@ func main() {
 		tooltext.Text("h.20ed0dcbbb08"))
 	flag.Parse()
 	*uiPreview = strings.ToLower(strings.TrimSpace(*uiPreview))
-	if *uiPreview != "" && *uiPreview != "help" && *uiPreview != "guide-explore" && *uiPreview != "guide-full" {
-		log.Fatal("-ui-preview must be help, guide-explore, guide-full, or empty")
+	if *uiPreview != "" && *uiPreview != "help" && *uiPreview != "guide-explore" && *uiPreview != "guide-full" && *uiPreview != "settings" {
+		log.Fatal("-ui-preview must be help, guide-explore, guide-full, settings, or empty")
 	}
 	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
@@ -4606,17 +4701,22 @@ func main() {
 		log.Fatal(err)
 	}
 	dungeonX, dungeonY, _ := state.DungeonGeometryView()
-	regularFace := loadFace(*fontPath, 24)
-	compactFace := loadFace(*fontPath, 16)
+	localeFontPaths := map[string]string{"zh-TW": *fontPath, "zh-CN": *fontPath, "ja": *fontPath, "en": *fontPath}
+	if *fontPath == bundledTCFont {
+		localeFontPaths["zh-CN"] = "assets/fonts/NotoSansCJKsc-Regular.otf"
+		localeFontPaths["ja"] = "assets/fonts/NotoSansCJKjp-Regular.otf"
+	}
+	regularFace := loadFace(localeFontPaths["zh-TW"], float64(uiSettings.ReadingTextPX))
+	compactFace := loadFace(localeFontPaths["zh-TW"], float64(uiSettings.InterfaceTextPX))
 	localeFaces := map[string]font.Face{"zh-TW": regularFace, "zh-CN": regularFace, "ja": regularFace, "en": regularFace}
 	localeCompactFaces := map[string]font.Face{"zh-TW": compactFace, "zh-CN": compactFace, "ja": compactFace, "en": compactFace}
 	if *fontPath == bundledTCFont {
-		localeFaces["zh-CN"] = loadFace("assets/fonts/NotoSansCJKsc-Regular.otf", 24)
-		localeCompactFaces["zh-CN"] = loadFace("assets/fonts/NotoSansCJKsc-Regular.otf", 16)
-		localeFaces["ja"] = loadFace("assets/fonts/NotoSansCJKjp-Regular.otf", 24)
-		localeCompactFaces["ja"] = loadFace("assets/fonts/NotoSansCJKjp-Regular.otf", 16)
+		localeFaces["zh-CN"] = loadFace(localeFontPaths["zh-CN"], float64(uiSettings.ReadingTextPX))
+		localeCompactFaces["zh-CN"] = loadFace(localeFontPaths["zh-CN"], float64(uiSettings.InterfaceTextPX))
+		localeFaces["ja"] = loadFace(localeFontPaths["ja"], float64(uiSettings.ReadingTextPX))
+		localeCompactFaces["ja"] = loadFace(localeFontPaths["ja"], float64(uiSettings.InterfaceTextPX))
 	}
-	if *etenFontPath != "" {
+	if *etenFontPath != "" && uiSettings.ReadingTextPX == 24 && uiSettings.InterfaceTextPX == 16 && boolSetting(uiSettings.ReadingBold, true) && boolSetting(uiSettings.InterfaceBold, true) {
 		asciiFontPath := *etenASCIIFontPath
 		if asciiFontPath == "" {
 			candidate := filepath.Join(filepath.Dir(*etenFontPath), "ascfont.15")
@@ -4680,7 +4780,9 @@ func main() {
 		log.Printf("guide maps disabled: %v", guideErr)
 	}
 	guideData := runtimeGuides[uiSettings.Language]
-	*gameApp = app{state: &state, imagePath: *imagePath, runtimeImages: runtimeImages, face: regularFace, compactFace: compactFace, localeFaces: localeFaces, localeCompactFaces: localeCompactFaces, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, wallSharedBlock: wallSymbolDeclaration.SharedGroup.Block, wallSharedFile: wallSymbolDeclaration.SharedGroup.File, wallSymbolFile: firstPersonDefinition.SymbolFile, skyImages: skyImages, skyBlocks: firstPersonDefinition.SkyBlocks, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath, ui: newUIRuntime(uiSettings, settingsPath), guide: guideData, locales: runtimeLocales, guides: runtimeGuides, modernA6: modernA6}
+	wallSymbolFile := firstPersonDefinition.SymbolFile
+	*gameApp = app{state: &state, imagePath: *imagePath, runtimeImages: runtimeImages, face: regularFace, compactFace: compactFace, localeFaces: localeFaces, localeCompactFaces: localeCompactFaces, localeFontPaths: localeFontPaths, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0 && !*savgamImport, soundPlayer: soundPlayer, soundDir: *soundDir, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, wallSharedSymbols: wallSharedSymbols, wallSharedFirstID: wallSymbolDeclaration.SharedGroup.FirstID, wallSharedBlock: wallSymbolDeclaration.SharedGroup.Block, wallSharedFile: wallSymbolDeclaration.SharedGroup.File, wallSymbolFile: wallSymbolFile, skyImages: skyImages, skyBlocks: firstPersonDefinition.SkyBlocks, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath, ui: newUIRuntime(uiSettings, settingsPath), guide: guideData, locales: runtimeLocales, guides: runtimeGuides, modernA6: modernA6}
+	gameApp.applyTypographySettings()
 	switch *uiPreview {
 	case "help":
 		gameApp.ui.helpOpen = true
@@ -4690,6 +4792,9 @@ func main() {
 		gameApp.ui.guideOpen = true
 		gameApp.ui.guideFull = true
 		gameApp.ui.settings.SpoilerWarning = true
+	case "settings":
+		gameApp.ui.settingsDraft = gameApp.ui.settings
+		gameApp.ui.settingsOpen = true
 	}
 	gameApp.ui.resizeWindow = func(width, height int) { ebiten.SetWindowSize(width, height) }
 	if *wallTracePath != "" {
