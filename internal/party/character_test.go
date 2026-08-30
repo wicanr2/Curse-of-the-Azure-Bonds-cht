@@ -255,7 +255,9 @@ func TestRangerMinimums(t *testing.T) {
 
 func TestAbilityRange(t *testing.T) {
 	character := validCharacter()
-	character.Abilities.Charisma = 19
+	// 建角的 verified race adjustment 可把最終屬性推到 19；20 才是結構上
+	// 一律非法的上界外值（spec 1248 的矮人 Constitution 19 正對照）。
+	character.Abilities.Charisma = 20
 	if err := character.Validate(); err == nil {
 		t.Fatal("expected ability range error")
 	}

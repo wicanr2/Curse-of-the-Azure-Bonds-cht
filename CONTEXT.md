@@ -3,7 +3,14 @@
 compact／接手若只需要現況與下一步，先讀 [`HANDOFF.md`](HANDOFF.md)；本檔保留
 較深的訂正理由與歷史 checkpoint，不應整份預讀後再決定工作。
 
-最新進度（2026-08-30，spec 1247／1248）：依 DOS overlay-17 `03EE3h` 與 PC-98
+最新進度（2026-08-30，spec 1249）：第二個「RE 已解但跨規格漏接」已閉合。
+spec 1000 的 DOS `overlay-24:00C28h` 早已 exact 證明物品類別 `49h` Arrow／
+`1Ch` Quarrel 建立角色 `+17Dh`／`+181h` 彈藥指標；spec 1120／1186 卻漏掉它，
+正式程式因此把卷軸槽 11／12 當彈藥。玩家射擊次數上限及 AI／QUICK 遠程換裝
+現在都改讀兩個原版物品類別，不要求 Readied、同類多疊保留鏈上最後一疊；
+party／game 全套與 backlink fail-closed gate 通過。
+
+前一進度（2026-08-30，spec 1247／1248）：依 DOS overlay-17 `03EE3h` 與 PC-98
 overlay-17 `045D0h` 的 `SETACTIVEICON` 證據，正常建角已補回姓名之後的
 READY／ACTION 戰鬥圖示選擇（頭部 14、武器 32、尺寸 2），並保留 F2 即時 theme
 切換；外層建隊選單也補回原版 `L` 讀檔，沿用既有版本化存檔交易。spec 1248 進一步

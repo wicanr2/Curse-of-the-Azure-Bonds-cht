@@ -1152,19 +1152,16 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 			break
 		}
 	}
-	// 彈藥數量是**架著的那一件彈藥**的原始 `+39h`，不是全身彈藥的合計：原作
-	// `overlay-13:0DD9h` 拿的是遠程判斷帶回來的那一個物品節點（spec 808／1180）。
-	// 彈藥在類別表的槽是 11／12（`+17Dh`／`+181h` 兩個彈藥槽，spec 1120）。
+	// 派生值重算掃物品鏈時，不看 Readied，遇到類別 49h（Arrow）／1Ch
+	//（Quarrel）就覆寫 +17Dh／+181h；所以同類型有多疊時保留鏈上最後一疊。
+	// active weapon 的 ITEMS +0Eh 再用 bit 0／bit 7 選其中一個指標
+	//（spec 1000／1120／1249）。槽 11／12 是卷軸，不能拿來辨識彈藥。
+	ammunitionCounts := map[uint8]int{}
 	for _, item := range c.Equipment {
-		if !item.Readied {
+		if item.Type != ammunitionItemTypeA && item.Type != ammunitionItemTypeB {
 			continue
 		}
-		base, found := catalog.Lookup(item.Type)
-		if !found || (base.Slot != ammunitionSlotA && base.Slot != ammunitionSlotB) {
-			continue
-		}
-		fighter.AmmunitionCount = int(item.Count)
-		break
+		ammunitionCounts[item.Type] = int(item.Count)
 	}
 	hasWeapon := false
 	for index, item := range c.Equipment {
@@ -1209,6 +1206,12 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 			fighter.HasSlotZeroWeapon = weaponIndex >= 0
 			fighter.AttacksPerTurn = effect.AttacksPerTurn
 			fighter.AmmunitionType = effect.AmmunitionType
+			switch {
+			case effect.AmmunitionType&ammunitionFlagSlotB != 0:
+				fighter.AmmunitionCount = ammunitionCounts[ammunitionItemTypeB]
+			case effect.AmmunitionType&ammunitionFlagSlotA != 0:
+				fighter.AmmunitionCount = ammunitionCounts[ammunitionItemTypeA]
+			}
 			fighter.WeaponRange = effect.WeaponRange
 			fighter.MissileWeapon = effect.MissileWeapon
 			fighter.ThrownWeapon = effect.ThrownWeapon
@@ -1488,8 +1491,11 @@ func (c Character) BaseAttackBlows() int {
 	return blows
 }
 
-// 彈藥在物品類別表的兩個槽（角色記錄的 `+17Dh`／`+181h`，spec 1120）。
+// 派生值重算以物品類別建立 +17Dh／+181h 兩個指標；武器 descriptor 的
+// AmmunitionType bit 0／bit 7 再選指標（spec 1000／1120／1249）。
 const (
-	ammunitionSlotA uint8 = 11
-	ammunitionSlotB uint8 = 12
+	ammunitionItemTypeA uint8 = 0x49 // Arrow → +17Dh
+	ammunitionItemTypeB uint8 = 0x1C // Quarrel → +181h
+	ammunitionFlagSlotA uint8 = 0x01
+	ammunitionFlagSlotB uint8 = 0x80
 )

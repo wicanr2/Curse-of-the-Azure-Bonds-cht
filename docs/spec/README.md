@@ -618,3 +618,4 @@
 - [第一千二百四十六輪正常角色 VIEW 版面勘誤與 polish](./1246-normal-character-view-polish.md)（`READY`：正常 DOS oracle 證明 VIEW 是全頁資料表而非 HEAD／BODY；remake 經 CAMP 狀態機顯示角色數值並保留裝備操作）
 - [第一千二百四十七輪後期內容與結局 UI polish](./1247-late-content-and-ending-ui-polish.md)（`READY`：補回 12 則被省略的酒館文風、統一混種劍、訂正護手被震碎的結局語意；最長結局頁改用八行安全矩形並收入 manifest）
 - [1248 六部位雙色戰鬥圖示與手繪 theme](./1248-six-part-icon-colors-and-painted-theme.md)（`CONFORMED`：`+145h..+14Ah` round-trip、原版 palette 替換與手繪 CHEAD／CBODY 語意遮罩）
+- [1249 彈藥指標跨規格回填](./1249-ammunition-pointer-backfill.md)（`CONFORMED`：回填 spec 1000 已解出的 `49h` Arrow／`1Ch` Quarrel producer，修正玩家與 AI／QUICK 把卷軸槽 11／12 當彈藥的錯誤）

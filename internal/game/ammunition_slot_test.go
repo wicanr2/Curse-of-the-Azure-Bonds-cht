@@ -20,8 +20,8 @@ import (
 // 挑到的是卷軸；不會噴錯，也不會讓任何測試變紅（`capByAmmunition` 把 0 當
 // 「不設限」），只是箭的數量從此不再限制射擊次數。
 //
-// ⚠ 這**不是**在斷言 `AmmunitionCount` 目前是對的——它目前是錯的，正確的判斷式
-// 還沒解出來（見 spec 1186 末節）。這一條擋的是「再一次從槽 11／12 出發」。
+// spec 1249 已回填 spec 1000 的 exact producer：類別 49h／1Ch 才會建立兩個
+// 彈藥指標。這一條繼續擋住「再一次從槽 11／12 出發」。
 func TestAmmunitionIsNotIdentifiedByBaseItemSlot(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {
@@ -74,7 +74,7 @@ func TestAmmunitionIsNotIdentifiedByBaseItemSlot(t *testing.T) {
 				item.itemType, item.contains, namesByType[item.itemType])
 		}
 	}
-	// 槽 11／12 是卷軸。**這才是 `AmmunitionCount` 現在挑到的東西。**
+	// 槽 11／12 是卷軸；它們不得再進 `AmmunitionCount`。
 	for _, slot := range []uint8{11, 12} {
 		found := false
 		for _, base := range catalog.Items {

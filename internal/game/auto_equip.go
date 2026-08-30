@@ -16,11 +16,11 @@ import (
 // ⚠ 這裡只換**武器槽**（類別表 `+0` ＝ 0）。盾牌那一槽原作另有一段，
 // 而且會動到派生數值重算，還沒接。
 
-// autoEquipAmmunitionSlots 是角色記錄的 `+17Dh`／`+181h`。裝備槽區塊從 `+151h`
-// 起、每格 4 bytes，所以那兩個位移就是第 11 與第 12 格。
+// 派生值重算以物品類別建立角色記錄的 `+17Dh`／`+181h`；這不是 ITEMS 的
+// 裝備槽 11／12（那兩槽是卷軸）。見 spec 1000／1249。
 const (
-	autoEquipAmmunitionSlotA uint8 = 11
-	autoEquipAmmunitionSlotB uint8 = 12
+	autoEquipAmmunitionTypeA uint8 = 0x49 // Arrow
+	autoEquipAmmunitionTypeB uint8 = 0x1C // Quarrel
 )
 
 // classUsabilityBit 是類別表 `+0Dh` 那張遮罩用的職業位元
@@ -59,17 +59,10 @@ func (s *State) autoEquipContext(character party.Character, fighter combat.Fight
 		}
 	}
 	for _, item := range character.Equipment {
-		if !item.Readied {
-			continue
-		}
-		base, ok := s.itemCatalog.Lookup(item.Type)
-		if !ok {
-			continue
-		}
-		switch base.Slot {
-		case autoEquipAmmunitionSlotA:
+		switch item.Type {
+		case autoEquipAmmunitionTypeA:
 			context.AmmunitionSlotA = true
-		case autoEquipAmmunitionSlotB:
+		case autoEquipAmmunitionTypeB:
 			context.AmmunitionSlotB = true
 		}
 	}
@@ -205,16 +198,11 @@ func (s *State) autoEquipMonster(fighter combat.Fighter) (bool, error) {
 		EnemyAdjacent:      s.autoEquipEnemyAdjacent(fighter),
 	}
 	for _, item := range fighter.MonsterItems {
-		if !item.Readied {
-			continue
-		}
-		if base, ok := s.itemCatalog.Lookup(item.Type); ok {
-			switch base.Slot {
-			case autoEquipAmmunitionSlotA:
-				context.AmmunitionSlotA = true
-			case autoEquipAmmunitionSlotB:
-				context.AmmunitionSlotB = true
-			}
+		switch item.Type {
+		case autoEquipAmmunitionTypeA:
+			context.AmmunitionSlotA = true
+		case autoEquipAmmunitionTypeB:
+			context.AmmunitionSlotB = true
 		}
 	}
 	choice := monster.ChooseAutoEquipWeapon(records, s.itemCatalog, context)

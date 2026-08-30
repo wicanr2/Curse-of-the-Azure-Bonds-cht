@@ -1,3 +1,5 @@
 platform	address	semantic	evidence_spec	older_spec	required_correction
 dos-overlay-17	03EE3h	SETACTIVEICON	docs/spec/1037-icon-editor.md	docs/spec/1093-character-creation-dos.md	已閉合為 `SETACTIVEICON`
 pc98-overlay-16	164h	LOADCHARLIST directory scan	docs/spec/1073-character-file-scanner-pc98.md	docs/spec/1043-save-file-scan-and-disk-creation.md	spec 1073 讀完
+dos-overlay-24	00C28h	Arrow/Quarrel ammunition pointer producer	docs/spec/1000-derived-stats-recalc.md	docs/spec/1120-auto-equip-weapon-score.md	2026-08-30 勘誤（spec 1249）
+dos-overlay-24	00C28h	Arrow/Quarrel ammunition pointer producer	docs/spec/1000-derived-stats-recalc.md	docs/spec/1186-sound-trigger-semantics.md	2026-08-30 勘誤（spec 1249）

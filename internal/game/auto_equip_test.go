@@ -9,10 +9,11 @@ import (
 )
 
 // 目錄：類別 0 ＝ 短劍（1d6、單手）、1 ＝ 長劍（1d8、單手）、
-// 2 ＝ 弓（1d6、雙手、射速 4、射程 20、要彈藥槽 A）、11 ＝ 箭（彈藥槽 A）。
+// 2 ＝ 弓（1d6、雙手、射速 4、射程 20、要彈藥指標 A）、
+// 49h ＝ Arrow；11 是用來證明不能冒充彈藥的卷軸槽類別。
 func autoEquipTestCatalog(t *testing.T) monster.BaseItemCatalog {
 	t.Helper()
-	data := make([]byte, monster.BaseItemHeaderSize+12*monster.BaseItemRecordSize)
+	data := make([]byte, monster.BaseItemHeaderSize+0x4A*monster.BaseItemRecordSize)
 	set := func(index int, fields map[int]byte) {
 		offset := monster.BaseItemHeaderSize + index*monster.BaseItemRecordSize
 		for position, value := range fields {
@@ -23,6 +24,7 @@ func autoEquipTestCatalog(t *testing.T) monster.BaseItemCatalog {
 	set(1, map[int]byte{0: 0, 1: 1, 9: 1, 10: 8, 13: 0xFF})
 	set(2, map[int]byte{0: 0, 1: 2, 5: 4, 9: 1, 10: 6, 12: 20, 13: 0xFF, 14: 0x09})
 	set(11, map[int]byte{0: 11, 1: 0, 13: 0xFF})
+	set(0x49, map[int]byte{0: 10, 1: 0, 13: 0xFF})
 	catalog, err := monster.ParseBaseItems(data)
 	if err != nil {
 		t.Fatal(err)
@@ -105,12 +107,12 @@ func TestAutoEquipLeavesACursedWeaponAlone(t *testing.T) {
 }
 
 // 敵人貼身就不會換成弓；離得遠、而且有箭，才會。
-func TestAutoEquipTakesTheBowOnlyWhenNobodyIsAdjacentAndAmmunitionIsReadied(t *testing.T) {
+func TestAutoEquipTakesTheBowOnlyWhenNobodyIsAdjacentAndArrowExists(t *testing.T) {
 	equipment := func() []monster.ItemRecord {
 		return []monster.ItemRecord{
 			{Name: "短劍", Type: 0, Readied: true, Count: 1},
 			{Name: "弓", Type: 2, Count: 1},
-			{Name: "箭", Type: 11, Readied: true, Count: 20},
+			{Name: "箭", Type: 0x49, Count: 20},
 		}
 	}
 	adjacent := autoEquipState(t, equipment(), 2)
@@ -137,6 +139,18 @@ func TestAutoEquipTakesTheBowOnlyWhenNobodyIsAdjacentAndAmmunitionIsReadied(t *t
 	}
 	if got, _ := readiedType(t, noAmmo); got == 2 {
 		t.Fatal("沒有箭卻換成弓")
+	}
+	// ITEMS 槽 11 是卷軸；舊實作會把它當成彈藥。
+	scrollOnly := autoEquipState(t, []monster.ItemRecord{
+		{Name: "短劍", Type: 0, Readied: true, Count: 1},
+		{Name: "弓", Type: 2, Count: 1},
+		{Name: "卷軸", Type: 11, Readied: true, Count: 20},
+	}, 9)
+	if _, err := scrollOnly.autoEquipBeforeAITurn("hero"); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := readiedType(t, scrollOnly); got == 2 {
+		t.Fatal("卷軸冒充箭，AI 錯誤換成弓")
 	}
 }
 
@@ -196,7 +210,7 @@ func monsterFighter(t *testing.T, state *State, id string) combat.Fighter {
 func TestAutoEquipMonsterStowsMissileWeaponWhenAdjacent(t *testing.T) {
 	state := autoEquipMonsterState(t, []combat.MonsterItem{
 		{Name: "弓", Type: 2, Readied: true, Count: 1},
-		{Name: "箭", Type: 11, Readied: true, Count: 20},
+		{Name: "箭", Type: 0x49, Count: 20},
 	}, 0xFF, 2)
 	// StartCombat 的開場推進已經跑過這隻怪的 AI 回合，換裝在那裡生效；
 	// 再叫一次必須是冪等的 no-op。
@@ -226,7 +240,7 @@ func TestAutoEquipMonsterStowsMissileWeaponWhenAdjacent(t *testing.T) {
 func TestAutoEquipMonsterKeepsMissileWeaponAtRange(t *testing.T) {
 	state := autoEquipMonsterState(t, []combat.MonsterItem{
 		{Name: "弓", Type: 2, Readied: true, Count: 1},
-		{Name: "箭", Type: 11, Readied: true, Count: 20},
+		{Name: "箭", Type: 0x49, Count: 20},
 	}, 0xFF, 8)
 	swapped, err := state.autoEquipBeforeAITurn("archer")
 	if err != nil {
@@ -245,7 +259,7 @@ func TestAutoEquipMonsterKeepsMissileWeaponAtRange(t *testing.T) {
 func TestAutoEquipMonsterSwapsToMeleeWhenAdjacent(t *testing.T) {
 	state := autoEquipMonsterState(t, []combat.MonsterItem{
 		{Name: "弓", Type: 2, Readied: true, Count: 1},
-		{Name: "箭", Type: 11, Readied: true, Count: 20},
+		{Name: "箭", Type: 0x49, Count: 20},
 		{Name: "長劍", Type: 1, Count: 1},
 	}, 0xFF, 2)
 	swapped, err := state.autoEquipBeforeAITurn("archer")
