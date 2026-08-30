@@ -122,6 +122,10 @@ A／B／C、F6 簡中／日文／英文與 F2 現代→原版主題；長黑／�
 內部檢視。收據見 `docs/audit/release-0.1.0-dev.20260829.md`。
 2026-08-30 已將同版的四平台 `patch` 與 patch-only SHA-256 清單發布到
 GitHub pre-release；明確排除 `full-local`、原版 ZIP、PC-98 OGG 與內部推廣片。
+2026-08-30 視覺勘誤：PIC4 block `43h` 的原版是橘黑條紋虎首 Rakshasa，
+現代 A6 首版誤把白色口鼻毛解讀成老人鬍鬚。三個煙霧動畫幀已重繪為虎首、
+虎掌、黑條紋與獰牙，保留紫袍、長煙管、姿勢與原版剪影；現代 PIC 總覽已重生，
+`cmd/azure-bonds-game` 前端測試通過。
 
 第 781 輪：**三平台開發發行包已可重生**——
 `tools/package-release.sh 0.1.0-dev` 產生 patch／full-local 各四件（Linux x86_64
