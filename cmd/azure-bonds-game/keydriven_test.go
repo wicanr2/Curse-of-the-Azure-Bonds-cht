@@ -2385,8 +2385,12 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	if application.state.Mode != game.ModeCharacterCreation {
 		t.Fatalf("按 Enter 應該進角色建立，實際 %s", modeName(application.state.Mode))
 	}
+	if application.state.GuidedActive || application.state.CreationOuterStep != game.CreationOuterMenu {
+		t.Fatalf("正常入口應停在原版外層功能選單：active=%v outer=%d", application.state.GuidedActive, application.state.CreationOuterStep)
+	}
+	tap(t, application, keys, ebiten.KeyC)
 	if !application.state.GuidedActive || application.state.GuidedStep != game.CreationStepRace {
-		t.Fatalf("正常入口應直接到原版種族選單：active=%v step=%d", application.state.GuidedActive, application.state.GuidedStep)
+		t.Fatalf("按 C 應到原版種族選單：active=%v step=%d", application.state.GuidedActive, application.state.GuidedStep)
 	}
 	for index := 0; index < 4; index++ {
 		tap(t, application, keys, ebiten.KeyEnter)
@@ -2398,10 +2402,17 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	typeText(t, application, keys, "測試者")
 	tap(t, application, keys, ebiten.KeyEnter)
 	tap(t, application, keys, ebiten.KeyY)
-	if got := len(application.state.CreationRoster); got != 1 {
-		t.Fatalf("原版流程儲存後應有一名隊員，實際 %d", got)
+	if got := len(application.state.CreationRoster); got != 0 {
+		t.Fatalf("原版流程儲存後尚未加入隊伍，實際 %d", got)
 	}
-	tap(t, application, keys, ebiten.KeyD)
+	tap(t, application, keys, ebiten.KeyA)
+	tap(t, application, keys, ebiten.KeyC)
+	tap(t, application, keys, ebiten.KeyEnter)
+	if got := len(application.state.CreationRoster); got != 1 {
+		t.Fatalf("從 Curse 角色清單加入後應有一名隊員，實際 %d", got)
+	}
+	tap(t, application, keys, ebiten.KeyEscape)
+	tap(t, application, keys, ebiten.KeyB)
 	if application.state.Mode == game.ModeCharacterCreation {
 		t.Fatal("按 D 之後還停在角色建立：完成那條路按不出來")
 	}

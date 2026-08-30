@@ -1,6 +1,7 @@
 package game
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -147,15 +148,125 @@ func (s *State) OpenCharacterCreation() error {
 	}
 	s.CreationOptions = options
 	s.CreationRoster = nil
+	if err := s.loadCreationLibrary(); err != nil {
+		return err
+	}
 	s.CreationCursor = 0
-	s.CreationMessage = s.catalog.Text("creation_prompt", "creation_prompt")
+	s.CreationOuterStep = CreationOuterMenu
+	s.GuidedStep = CreationStepDone
+	s.CreationLibraryCursor = 0
+	s.CreationSourceCursor = 0
+	s.CreationMessage = s.catalog.Text("creation_outer_prompt", "creation_outer_prompt")
 	s.Mode = ModeCharacterCreation
 	// 角色建立有自己的曲子（原作 `GEN`，overlay-17 `0B08h` 寫 `MUSICNO := 2`）。
 	// ⚠ 那一處**不看場景**，所以 pack 那一側是每一段都列（spec 1192）。
 	s.requestMusicForCurrentBlock(creationMusicContext)
 	// 正常玩家入口直接走原版的種族→性別→職業→陣營流程。模板清單仍保留給
 	// 測試 adapter 直接呼叫 AddCreationCharacter，但不再是玩家預設畫面。
-	return s.BeginGuidedCreation()
+	return nil
+}
+
+type CreationOuterStep uint8
+
+const (
+	CreationOuterMenu CreationOuterStep = iota
+	CreationSourceMenu
+	CreationCharacterList
+)
+
+func (s *State) SetCharacterLibraryPath(path string) { s.creationLibraryPath = path }
+
+func (s *State) loadCreationLibrary() error {
+	if s.creationLibraryPath == "" {
+		return nil
+	}
+	s.CreationLibrary = nil
+	data, err := os.ReadFile(s.creationLibraryPath)
+	if os.IsNotExist(err) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("read character library: %w", err)
+	}
+	roster, err := partySave.DecodeCharacterLibrary(data)
+	if err != nil {
+		return err
+	}
+	s.CreationLibrary = roster
+	return nil
+}
+
+func (s *State) saveCreationLibrary() error {
+	if s.creationLibraryPath == "" {
+		return nil
+	}
+	data, err := partySave.EncodeCharacterLibrary(s.CreationLibrary)
+	if err != nil {
+		return err
+	}
+	if directory := filepath.Dir(s.creationLibraryPath); directory != "." {
+		if err := os.MkdirAll(directory, 0o700); err != nil {
+			return fmt.Errorf("create character library directory: %w", err)
+		}
+	}
+	temporary := s.creationLibraryPath + ".tmp"
+	if err := os.WriteFile(temporary, data, 0o600); err != nil {
+		return fmt.Errorf("write character library: %w", err)
+	}
+	if err := os.Rename(temporary, s.creationLibraryPath); err != nil {
+		_ = os.Remove(temporary)
+		return fmt.Errorf("install character library: %w", err)
+	}
+	return nil
+}
+
+func (s *State) BeginCreationSourceMenu() {
+	s.CreationOuterStep = CreationSourceMenu
+	s.CreationSourceCursor = 0
+	s.CreationMessage = s.LocaleText("creation_source_prompt")
+}
+
+func (s *State) OpenCreationCharacterList() error {
+	if err := s.loadCreationLibrary(); err != nil {
+		return err
+	}
+	s.CreationOuterStep = CreationCharacterList
+	s.CreationLibraryCursor = 0
+	if len(s.CreationLibrary) == 0 {
+		s.CreationMessage = s.LocaleText("creation_library_empty")
+	} else {
+		s.CreationMessage = s.LocaleText("creation_add_prompt")
+	}
+	return nil
+}
+
+func (s *State) CreationCharacterJoined(index int) bool {
+	if index < 0 || index >= len(s.CreationLibrary) {
+		return false
+	}
+	id := s.CreationLibrary[index].ID
+	for _, character := range s.CreationRoster {
+		if character.ID == id {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *State) AddSavedCreationCharacter(index int) error {
+	if index < 0 || index >= len(s.CreationLibrary) {
+		return fmt.Errorf("saved character %d is out of range", index)
+	}
+	if s.CreationCharacterJoined(index) {
+		return errors.New(s.LocaleText("creation_already_joined"))
+	}
+	if len(s.CreationRoster) >= 6 {
+		return errors.New(s.LocaleText("creation_party_full"))
+	}
+	character := s.CreationLibrary[index]
+	s.CreationRoster = append(s.CreationRoster, character)
+	s.CreationMessage = fmt.Sprintf(s.LocaleText("creation_added"), character.Name, len(s.CreationRoster))
+	return nil
 }
 
 func (s *State) AddCreationCharacter(index int) error {
@@ -303,6 +414,9 @@ func (s *State) CancelCreationName() error {
 func (s *State) FinishCharacterCreation() error {
 	if s.Mode != ModeCharacterCreation {
 		return fmt.Errorf("character creation is not open")
+	}
+	if len(s.CreationRoster) == 0 {
+		return errors.New(s.LocaleText("creation_party_empty"))
 	}
 	if err := s.CreationRoster.Validate(); err != nil {
 		return err

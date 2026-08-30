@@ -201,15 +201,18 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 ✅ **種族選單跳過半獸人**（spec 1102：原作顯示迴圈沒有分支收它，編號仍維持 1..7 不連號）。
 ✅ **名字輸入**（支援中文，退格按字元；空名字被擋下，同原作）、
 ✅ **`Save <名字>?` 收尾**（只比對 `N`，其餘存檔；答 `N` 角色不留）、
-✅ **加進隊伍名冊**、✅ **兩個順序修正**（HP 在重擲迴圈裡、基準值複製在名字之後）。
+✅ **原版外層分離**（spec 1246：先寫獨立角色庫，返回功能選單，再由
+`ADD CHARACTER TO PARTY` → `Curse` 清單加入；已加入以 `*` 標示且禁止重複）、
+✅ **兩個順序修正**（HP 在重擲迴圈裡、基準值複製在名字之後）。
 名字上限維持 remake 自己的 20 字元（原版是 15），remake 有自己的存檔格式，
 只需支援讀取原版。
 ✅ **屬性擲點已定案**（spec 1103：`ROLLDICE` 本體讀完，參數是（骰數, 面數），
 每顆 `Random(面數)+1` ⇒ `ROLLDICE(3,6)` 就是標準 3d6；建角是 `3d6+1`、
 每個屬性擲六次取最大）、✅ **七個種族的屬性調整全部取出**（逐格對上 AD&D 一版，
 含半獸人力量 +1／體質 +1／魅力 −2），資料進 JSON。
-**除了「尚未成為預設入口」之外，建角流程已閉合**（使用者已決定兩者並存，
-範本流程保留給快速開局）|
+**本作新建角色的正常入口與外層組隊已閉合**；Pool 285-byte `.cha`／Hillsfar
+188-byte `.sav` 的 typed 轉換仍是明文獨立缺口，介面 fail closed。範本流程只保留
+給測試 adapter 與段內檢查點）|
 | `ENG-06` | 訓練所升級 | spec 1084 ✅ | 亞人等級上限（比目前值）、經驗門檻、HP 保留受傷差額 |
 | `ENG-07` | 戰鬥回合生命週期 | `RE-06` | initiative、held/delayed、surprise、flee/guard/quick、死亡與戰後 handoff |
 | `ENG-08` | 怪物 AI | `RE-07` ✅（COMPTACT 已解讀）| **移動已接**（spec 1114）：每回合抽行為模式 1..6、模式決定五個候選方向、正向 ×2 斜向 ×3 半格成本、走到射程內才攻擊、20 次上限；方向表逐 byte 對回資料段。剩：目標選擇照原作挑法、AI 用道具（835）、AI 選法術（836）、士氣與恐慌逃走（758／830）、自動換裝（1004）、兩種障礙的豁免效果（837）|
@@ -286,7 +289,7 @@ game pack JSON。**文字這一層已經接完**（spec 1110）：控制流可�
 |---|---|---|
 | 場景直入（`-segment <id>` ＋ 25 個既有旗標） | `-encounter` `-character-creation` `-tilverton-dungeon` `-inn` `-filani` `-weapon-shop` `-temple` `-training` `-tavern` `-high-priest` `-carriage` `-guildmaster` `-sewers` `-lava-tube` `-wizard-tower` `-wizard-tower-battle` `-wizard-tower-parlay` `-wizard-tower-exit` `-burial-red-web` `-burial-red-web-battle` `-burial-grave-battle` `-burial-daemir` `-inner-ritual` `-inner-final-battle` `-world-map` | **各自是一段的進入點**；該段要走到正常結束狀態，不是只驗一個畫面。統一入口是 `-segment <id>`（`-segment list` 列 25 段，註冊表在 `internal/segment`），既有旗標保留但它們做的是**段內**檢查點 |
 | 視覺 oracle（5） | `-dungeon-x` `-dungeon-y` `-area-map` `-combat-terrain` `-combat-visual-demo` | deterministic 截圖比對；不單獨構成一段 |
-| 正常入口 | `-opening` | ⚠ 它跳過建角 ⇒ 建角是**另外一段**，用 `-guided-creation` 驗 |
+| 正常入口 | 標題起始按鍵測試 | `TestKeysDriveARealSessionFromTheTitle` 已驗標題 → 外層功能選單 → 建角 → 獨立儲存 → Curse 清單加入 → 出發；`-guided-creation` 只作建角內頁的確定性截圖 |
 | 資產／設定 | `-font` `-eten-font` `-locale` `-image` `-sound-dir` `-savgam-dir` 等 | 允許 |
 
 ⚠ **接縫本身也是一段。** debug 旗標注入的是合成起始狀態，未必等於上一段真的跑出來的

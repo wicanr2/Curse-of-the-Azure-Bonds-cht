@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
@@ -497,16 +498,20 @@ func (s *State) ConfirmGuidedSave(save bool) error {
 		return fmt.Errorf("party already has six characters")
 	}
 	character := s.GuidedDraft
-	character.ID = fmt.Sprintf("guided-%d", len(s.CreationRoster)+1)
-	s.CreationRoster = append(s.CreationRoster, character)
-	// 原作一次呼叫只建一個角色，存完就回上一層。
-	message := fmt.Sprintf(s.LocaleText("creation_added"),
-		character.Name, len(s.CreationRoster))
+	character.ID = fmt.Sprintf("guided-%d", time.Now().UnixNano())
+	s.CreationLibrary = append(s.CreationLibrary, character)
+	if err := s.saveCreationLibrary(); err != nil {
+		s.CreationLibrary = s.CreationLibrary[:len(s.CreationLibrary)-1]
+		return err
+	}
+	// 原作一次呼叫只建立並儲存一個角色；加入隊伍是外層另一個命令。
+	message := fmt.Sprintf(s.LocaleText("creation_character_saved"), character.Name)
 	if err := s.CancelGuidedCreation(); err != nil {
 		return err
 	}
 	s.GuidedStep = CreationStepDone
 	s.CreationMessage = message
+	s.CreationOuterStep = CreationOuterMenu
 	return nil
 }
 

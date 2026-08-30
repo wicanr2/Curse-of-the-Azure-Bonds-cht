@@ -13,11 +13,15 @@ import (
 
 func TestNormalCreationEntryUsesOriginalFlowAndReturnsToPartyAssembly(t *testing.T) {
 	state := NewState(testCatalog())
+	state.SetCharacterLibraryPath(filepath.Join(t.TempDir(), "characters.json"))
 	if err := state.OpenCharacterCreation(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeCharacterCreation || !state.GuidedActive || state.GuidedStep != CreationStepRace {
-		t.Fatalf("mode=%v active=%v step=%d", state.Mode, state.GuidedActive, state.GuidedStep)
+	if state.Mode != ModeCharacterCreation || state.GuidedActive || state.CreationOuterStep != CreationOuterMenu {
+		t.Fatalf("mode=%v active=%v outer=%d", state.Mode, state.GuidedActive, state.CreationOuterStep)
+	}
+	if err := state.BeginGuidedCreation(); err != nil {
+		t.Fatal(err)
 	}
 	if err := state.CancelGuidedCreation(); err != nil {
 		t.Fatal(err)
@@ -31,6 +35,8 @@ func TestNormalCreationEntryUsesOriginalFlowAndReturnsToPartyAssembly(t *testing
 // 而職業那一段的選項由種族決定（spec 1099 §五）。
 func TestGuidedCreationFollowsReferenceFourMenus(t *testing.T) {
 	state := NewState(testCatalog())
+	libraryPath := filepath.Join(t.TempDir(), "characters.json")
+	state.SetCharacterLibraryPath(libraryPath)
 	if err := state.BeginGuidedCreation(); err != nil {
 		t.Fatal(err)
 	}
@@ -192,11 +198,31 @@ func TestGuidedCreationFollowsReferenceFourMenus(t *testing.T) {
 	if err := state.ConfirmGuidedSave(true); err != nil {
 		t.Fatal(err)
 	}
-	if len(state.CreationRoster) != 1 || state.CreationRoster[0].Name != "凱蘭德" {
-		t.Fatalf("隊伍名冊=%v", state.CreationRoster)
+	if len(state.CreationRoster) != 0 {
+		t.Fatalf("存角色不能自動入隊：%v", state.CreationRoster)
+	}
+	if len(state.CreationLibrary) != 1 || state.CreationLibrary[0].Name != "凱蘭德" {
+		t.Fatalf("角色庫=%v", state.CreationLibrary)
 	}
 	if state.GuidedActive {
 		t.Fatal("存完應該離開四段流程")
+	}
+	reloaded := NewState(testCatalog())
+	reloaded.SetCharacterLibraryPath(libraryPath)
+	if err := reloaded.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if err := reloaded.OpenCreationCharacterList(); err != nil {
+		t.Fatal(err)
+	}
+	if len(reloaded.CreationLibrary) != 1 || reloaded.CreationLibrary[0].Name != "凱蘭德" {
+		t.Fatalf("重載角色庫=%v", reloaded.CreationLibrary)
+	}
+	if err := reloaded.AddSavedCreationCharacter(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := reloaded.AddSavedCreationCharacter(0); err == nil {
+		t.Fatal("同一角色不得重複加入")
 	}
 }
 

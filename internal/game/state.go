@@ -137,6 +137,11 @@ type State struct {
 	CreationEditing          bool
 	CreationAbility          int
 	CreationEditingAbilities bool
+	CreationOuterStep        CreationOuterStep
+	CreationLibrary          party.Roster
+	CreationLibraryCursor    int
+	CreationSourceCursor     int
+	creationLibraryPath      string
 	// 原版四段建角流程（spec 1093 §一）的狀態。GuidedClassCombos 保留這個
 	// 種族的可選職業組合編號，因為職業選單的索引要經過那張表才有意義。
 	GuidedStep        CreationStep

@@ -716,7 +716,57 @@ func (a *app) Update() error {
 	if a.state.Mode == game.ModeCharacterCreation {
 		if a.state.GuidedStep == game.CreationStepDone {
 			if a.justPressed(ebiten.KeyEscape) {
+				if a.state.CreationOuterStep != game.CreationOuterMenu {
+					a.state.CreationOuterStep = game.CreationOuterMenu
+					return nil
+				}
 				return a.state.CancelCharacterCreation()
+			}
+			if a.state.CreationOuterStep == game.CreationOuterMenu {
+				if a.justPressed(ebiten.KeyC) || a.justPressed(ebiten.KeyG) {
+					return a.state.BeginGuidedCreation()
+				}
+				if a.justPressed(ebiten.KeyA) {
+					a.state.BeginCreationSourceMenu()
+					return nil
+				}
+				if a.justPressed(ebiten.KeyB) || a.justPressed(ebiten.KeyD) {
+					return a.state.FinishCharacterCreation()
+				}
+				return nil
+			}
+			if a.state.CreationOuterStep == game.CreationSourceMenu {
+				if a.justPressed(ebiten.KeyUp) {
+					a.state.CreationSourceCursor = (a.state.CreationSourceCursor + 3) % 4
+				}
+				if a.justPressed(ebiten.KeyDown) {
+					a.state.CreationSourceCursor = (a.state.CreationSourceCursor + 1) % 4
+				}
+				if a.justPressed(ebiten.KeyC) || ((a.justPressed(ebiten.KeyEnter) || a.justPressed(ebiten.KeySpace)) && a.state.CreationSourceCursor == 0) {
+					return a.state.OpenCreationCharacterList()
+				}
+				if a.justPressed(ebiten.KeyE) || ((a.justPressed(ebiten.KeyEnter) || a.justPressed(ebiten.KeySpace)) && a.state.CreationSourceCursor == 3) {
+					a.state.CreationOuterStep = game.CreationOuterMenu
+					return nil
+				}
+				if a.justPressed(ebiten.KeyP) || a.justPressed(ebiten.KeyH) || a.justPressed(ebiten.KeyEnter) || a.justPressed(ebiten.KeySpace) {
+					a.state.CreationMessage = a.state.LocaleText("creation_legacy_unavailable")
+				}
+				return nil
+			}
+			if a.state.CreationOuterStep == game.CreationCharacterList {
+				if a.justPressed(ebiten.KeyUp) && a.state.CreationLibraryCursor > 0 {
+					a.state.CreationLibraryCursor--
+				}
+				if a.justPressed(ebiten.KeyDown) && a.state.CreationLibraryCursor+1 < len(a.state.CreationLibrary) {
+					a.state.CreationLibraryCursor++
+				}
+				if (a.justPressed(ebiten.KeyEnter) || a.justPressed(ebiten.KeyA)) && len(a.state.CreationLibrary) > 0 {
+					if err := a.state.AddSavedCreationCharacter(a.state.CreationLibraryCursor); err != nil {
+						a.state.CreationMessage = err.Error()
+					}
+				}
+				return nil
 			}
 			if a.justPressed(ebiten.KeyG) {
 				return a.state.BeginGuidedCreation()
@@ -2789,6 +2839,7 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	// larger display face makes the original option density impossible.
 	a.drawCharacterCreationFrame(screen)
 	face := a.compactFace
+	const creationHelpBaseline = 438
 	drawFittedText(screen, a.state.LocaleText("creation_title"), face, 32, 46, 576, cyan)
 	drawFittedText(screen, a.state.CreationMessage, face, 32, 82, 576, white)
 	if a.state.GuidedActive {
@@ -2796,18 +2847,47 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		return
 	}
 	if a.state.GuidedStep == game.CreationStepDone {
-		if len(a.state.CreationRoster) == 0 {
-			drawFittedText(screen, a.state.LocaleText("creation_party_empty"), face, 48, 140, 544, white)
+		switch a.state.CreationOuterStep {
+		case game.CreationSourceMenu:
+			labels := []string{"Curse of the Azure Bonds", "Pool of Radiance", "Hillsfar", a.state.LocaleText("creation_exit")}
+			for index, label := range labels {
+				prefix := "  "
+				if index == a.state.CreationSourceCursor {
+					prefix = "> "
+				}
+				drawFittedText(screen, prefix+label, face, 64, 140+index*35, 512, white)
+			}
+			drawFittedText(screen, a.state.LocaleText("creation_source_help"), face, 24, creationHelpBaseline, 600, white)
+		case game.CreationCharacterList:
+			if len(a.state.CreationLibrary) == 0 {
+				drawFittedText(screen, a.state.LocaleText("creation_library_empty"), face, 48, 140, 544, white)
+			}
+			for index, character := range a.state.CreationLibrary {
+				prefix := "  "
+				if index == a.state.CreationLibraryCursor {
+					prefix = "> "
+				}
+				if a.state.CreationCharacterJoined(index) {
+					prefix += "* "
+				}
+				row := prefix + fmt.Sprintf(a.state.LocaleText("creation_library_member"), character.Name,
+					a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
+				drawFittedText(screen, row, face, 48, 140+index*35, 544, white)
+			}
+			drawFittedText(screen, a.state.LocaleText("creation_library_help"), face, 24, creationHelpBaseline, 600, white)
+		default:
+			options := []string{a.state.LocaleText("creation_outer_create"), a.state.LocaleText("creation_outer_add"), a.state.LocaleText("creation_outer_begin")}
+			for index, option := range options {
+				drawFittedText(screen, option, face, 64, 140+index*35, 512, white)
+			}
+			for index, character := range a.state.CreationRoster {
+				row := fmt.Sprintf(a.state.LocaleText("creation_party_member"), index+1, character.Name,
+					a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
+				drawFittedText(screen, row, face, 320, 140+index*30, 288, white)
+			}
+			drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_party_count"), len(a.state.CreationRoster), 6), face, 320, 355, 288, cyan)
+			drawFittedText(screen, a.state.LocaleText("creation_outer_help"), face, 24, creationHelpBaseline, 600, white)
 		}
-		for index, character := range a.state.CreationRoster {
-			row := fmt.Sprintf(a.state.LocaleText("creation_party_member"), index+1, character.Name,
-				a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
-			drawFittedText(screen, row, face, 48, 140+index*35, 544, white)
-		}
-		drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_party_count"),
-			len(a.state.CreationRoster), 6), face, 48, 380, 544, cyan)
-		drawFittedText(screen, a.state.LocaleText("creation_party_help"), face, 24,
-			adventureCommandBaseline, 600, white)
 		return
 	}
 	if a.state.CreationEditing {
@@ -3987,6 +4067,7 @@ func main() {
 	combatTerrainMode := flag.String("combat-terrain", "", "override combat terrain atlas for visual verification: DUNGCOM, WILDCOM, or RANDCOM")
 	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, fireball, lightning, stinking-cloud, cloudkill, or kill checkpoints")
 	partyPath := flag.String("party-save", defaultPartySavePath(), "versioned remake party save path")
+	characterLibraryPath := flag.String("character-library", "", "versioned remake character library; defaults beside -party-save")
 	soundDir := flag.String("sound-dir", "assets/audio", "OGG music and sound asset directory; missing assets disable audio")
 	pc98MusicDriverPath := flag.String("pc98-music-driver", "", "optional local MSCDRV.EXE fallback and research oracle")
 	pc98SFXGamePath := flag.String("pc98-sfx-game", "", "local exact PC-98 GAME.EXE used to reconstruct software-speaker effects")
@@ -4073,6 +4154,10 @@ func main() {
 		log.Fatal(err)
 	}
 	state := game.NewStateFromECLBlocks(catalog, eclBlocks, initialECL)
+	if *characterLibraryPath == "" {
+		*characterLibraryPath = filepath.Join(filepath.Dir(*partyPath), "azure-bonds-characters.json")
+	}
+	state.SetCharacterLibraryPath(*characterLibraryPath)
 	if *worldMapPreview {
 		state.PrepareWorldMapPreview()
 	}
@@ -4583,6 +4668,9 @@ func main() {
 		// 原版的四段建角（spec 1093 §一）。與 -character-creation 一樣，
 		// 存在的目的是讓 headless 擷取拿得到確定性畫面。
 		if err := state.OpenCharacterCreation(); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.BeginGuidedCreation(); err != nil {
 			log.Fatal(err)
 		}
 		if *guidedCreationStep != "" {
