@@ -4,6 +4,7 @@
 
 本目錄只收錄由原始映像、執行觀察、反組譯或可重現工具支持的規格。
 
+- [1247 主選單讀檔與建角戰鬥圖示編輯器](./1247-main-menu-load-and-creation-icon-editor.md)（`CONFORMED`：勘誤 spec 1093 的 `sub_3EE3`＝`SETACTIVEICON`；補回外層 `L` 讀檔與 READY／ACTION 雙預覽）
 - [1236 戰鬥雲霧暫態生命週期與燃燒之手 QUICK 資料](./1236-combat-cloud-lifecycle-and-burning-hands-quick-metadata.md)（`READY`：新遭遇清除噁心失能、同場快照保留、spell ID 9 原版 QUICK 欄位；一般強度 5,000 幀抵達 `0x50`，600 格／218 句／fallback 0）
 - [1211 提爾佛頓安全紮營與高等級法術容量](./1211-safe-camp-and-spell-capacity.md)（`READY`：GEO 安全營地、原版 `SpellCastCount` 牧師／法師／聖武士容量；一般強度八人火刀連戰仍待閉合）
 - [1212 戰鬥 CAST 選單與一般強度長跑](./1212-combat-cast-menu.md)（`READY`：原版 `C → CAST`、依記憶槽列法術、燃燒之手正式入口；5000 幀抵達 ECL `0x04`，八人火刀後續仍待閉合）
@@ -616,3 +617,4 @@
 - [第一千二百四十五輪內容與玩家可見 UI polish 抽樣](./1245-content-and-visible-ui-polish-sampling.md)（`READY`：內容機械全量＋高風險人工抽樣；修正兩條中譯與一個錯誤詞條；AREA／世界地圖／Fireball／建隊頁入 manifest，世界日期截斷修復）
 - [第一千二百四十六輪正常角色 VIEW 版面勘誤與 polish](./1246-normal-character-view-polish.md)（`READY`：正常 DOS oracle 證明 VIEW 是全頁資料表而非 HEAD／BODY；remake 經 CAMP 狀態機顯示角色數值並保留裝備操作）
 - [第一千二百四十七輪後期內容與結局 UI polish](./1247-late-content-and-ending-ui-polish.md)（`READY`：補回 12 則被省略的酒館文風、統一混種劍、訂正護手被震碎的結局語意；最長結局頁改用八行安全矩形並收入 manifest）
+- [1248 六部位雙色戰鬥圖示與手繪 theme](./1248-six-part-icon-colors-and-painted-theme.md)（`CONFORMED`：`+145h..+14Ah` round-trip、原版 palette 替換與手繪 CHEAD／CBODY 語意遮罩）

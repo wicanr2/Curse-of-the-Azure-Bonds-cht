@@ -102,6 +102,7 @@ type app struct {
 	pieceLabel             string
 	wallPreview            []wallPreviewStamp
 	combatSprites          map[string]*ebiten.Image
+	partyIconColorCache    map[string]*ebiten.Image
 	combatSpriteIDs        []string
 	combatTerrain          map[string][]*ebiten.Image
 	combatTerrainMode      string
@@ -414,6 +415,18 @@ func (a *app) saveCurrentGame() error {
 	return a.state.SavePartyFile(a.partyPath)
 }
 
+// loadCurrentGame 是 F9 與原版外層 L 共用的唯一讀檔交易。
+func (a *app) loadCurrentGame() error {
+	if err := a.state.LoadPartyFile(a.partyPath); err != nil {
+		return err
+	}
+	if err := a.restoreAudioSnapshot(); err != nil {
+		return err
+	}
+	a.choiceCursor = 0
+	return nil
+}
+
 func (a *app) restoreAudioSnapshot() error {
 	if a.soundPlayer != nil {
 		if snapshot, ok := a.state.OneShotPlaybackSnapshot(); ok {
@@ -682,6 +695,27 @@ func (a *app) Update() error {
 			}
 			return nil
 		}
+		if a.state.GuidedStep == game.CreationStepIcon {
+			if a.justPressed(ebiten.KeyUp) {
+				return a.state.MoveGuidedIconCursor(-1)
+			}
+			if a.justPressed(ebiten.KeyDown) {
+				return a.state.MoveGuidedIconCursor(1)
+			}
+			if a.justPressed(ebiten.KeyLeft) {
+				return a.state.AdjustGuidedIcon(-1)
+			}
+			if a.justPressed(ebiten.KeyRight) {
+				return a.state.AdjustGuidedIcon(1)
+			}
+			if a.justPressed(ebiten.KeyEscape) || a.justPressed(ebiten.KeyE) {
+				return a.state.ConfirmGuidedIcon(false)
+			}
+			if a.justPressed(ebiten.KeyEnter) || a.justPressed(ebiten.KeyK) {
+				return a.state.ConfirmGuidedIcon(true)
+			}
+			return nil
+		}
 		if a.state.GuidedStep == game.CreationStepSave {
 			// 原作只比對 'N'，其餘任何鍵都存檔（spec 1093 §一）。
 			if a.justPressed(ebiten.KeyN) {
@@ -728,6 +762,14 @@ func (a *app) Update() error {
 				}
 				if a.justPressed(ebiten.KeyA) {
 					a.state.BeginCreationSourceMenu()
+					return nil
+				}
+				if a.justPressed(ebiten.KeyL) {
+					if err := a.loadCurrentGame(); err != nil {
+						a.state.CreationMessage = a.state.FileOperationMessage(game.FileOperationLoad, game.FileOperationFailed, err.Error())
+					} else {
+						a.state.Message = a.state.FileOperationMessage(game.FileOperationLoad, game.FileOperationSucceeded, a.partyPath)
+					}
 					return nil
 				}
 				if a.justPressed(ebiten.KeyB) || a.justPressed(ebiten.KeyD) {
@@ -920,13 +962,10 @@ func (a *app) Update() error {
 		return nil
 	}
 	if a.justPressed(ebiten.KeyF9) {
-		if err := a.state.LoadPartyFile(a.partyPath); err != nil {
+		if err := a.loadCurrentGame(); err != nil {
 			a.state.Message = a.state.FileOperationMessage(game.FileOperationLoad, game.FileOperationFailed, err.Error())
-		} else if err := a.restoreAudioSnapshot(); err != nil {
-			a.state.Message = a.state.FileOperationMessage(game.FileOperationAudioRestore, game.FileOperationFailed, err.Error())
 		} else {
 			a.state.Message = a.state.FileOperationMessage(game.FileOperationLoad, game.FileOperationSucceeded, a.partyPath)
-			a.choiceCursor = 0
 		}
 		return nil
 	}
@@ -2753,10 +2792,16 @@ func driveGuidedCreation(state *game.State, step, name string) error {
 	if step == "name" {
 		return nil
 	}
-	if step != "save" && step != "party" {
+	if step != "icon" && step != "save" && step != "party" {
 		return fmt.Errorf("unknown guided creation step %q", step)
 	}
 	if err := state.CommitGuidedName(); err != nil {
+		return err
+	}
+	if step == "icon" {
+		return nil
+	}
+	if err := state.ConfirmGuidedIcon(true); err != nil {
 		return err
 	}
 	if step == "party" {
@@ -2785,6 +2830,60 @@ func (a *app) drawGuidedCreation(screen *ebiten.Image, face font.Face, white, cy
 			drawFittedText(screen, "  "+label, face, 64, 140+index*25, 512, white)
 		}
 		drawFittedText(screen, a.state.LocaleText("creation_reroll_prompt"), face, 48, 320, 544, cyan)
+		return
+	}
+	if a.state.GuidedStep == game.CreationStepIcon {
+		sizeKey := "creation_icon_large"
+		if a.state.GuidedDraft.IconSize == 1 {
+			sizeKey = "creation_icon_small"
+		}
+		labels := []string{
+			fmt.Sprintf(a.state.LocaleText("creation_icon_head"), a.state.GuidedDraft.IconHeadBlock),
+			fmt.Sprintf(a.state.LocaleText("creation_icon_weapon"), a.state.GuidedDraft.IconWeaponBlock),
+			fmt.Sprintf(a.state.LocaleText("creation_icon_size"), a.state.LocaleText(sizeKey)),
+		}
+		for index, label := range labels {
+			prefix := "  "
+			if index == a.state.GuidedIconCursor {
+				prefix = "> "
+			}
+			drawFittedText(screen, prefix+label, face, 32, 108+index*25, 310, white)
+		}
+		partKeys := []string{"creation_icon_part_body", "creation_icon_part_arm", "creation_icon_part_leg",
+			"creation_icon_part_hair_face", "creation_icon_part_shield", "creation_icon_part_weapon"}
+		for part, key := range partKeys {
+			value := a.state.GuidedDraft.IconColors[part]
+			for colorIndex := 0; colorIndex < 2; colorIndex++ {
+				cursor := 3 + part*2 + colorIndex
+				prefix := "  "
+				if cursor == a.state.GuidedIconCursor {
+					prefix = "> "
+				}
+				component := value & 0x0F
+				if colorIndex == 1 {
+					component = value >> 4
+				}
+				label := fmt.Sprintf(a.state.LocaleText("creation_icon_color"),
+					a.state.LocaleText(key), colorIndex+1, component)
+				x := 32 + colorIndex*180
+				drawFittedText(screen, prefix+label, face, x, 196+part*25, 170, white)
+			}
+		}
+		head, body := a.state.GuidedDraft.CombatIconBlocks()
+		ready := combat.Fighter{
+			ID: "creation-icon-preview", Name: a.state.GuidedDraft.Name,
+			Side: combat.SideParty, HasPartyIcon: true,
+			PartyHeadBlock: head, PartyBodyBlock: body, PartyIconSize: a.state.GuidedDraft.IconSize,
+		}
+		action := ready
+		action.IconAttack = true
+		ready.PartyIconColors = a.state.GuidedDraft.EffectiveIconColors()
+		action.PartyIconColors = ready.PartyIconColors
+		drawFittedText(screen, a.state.LocaleText("creation_icon_ready"), face, 410, 130, 100, cyan)
+		drawFittedText(screen, a.state.LocaleText("creation_icon_action"), face, 520, 130, 100, cyan)
+		a.drawFighterSprite(screen, ready, 0, 425, 165)
+		a.drawFighterSprite(screen, action, 0, 535, 165)
+		drawFittedText(screen, a.state.LocaleText("creation_icon_help"), face, 24, 390, 592, cyan)
 		return
 	}
 	if a.state.GuidedStep == game.CreationStepName || a.state.GuidedStep == game.CreationStepSave {
@@ -2876,7 +2975,7 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 			}
 			drawFittedText(screen, a.state.LocaleText("creation_library_help"), face, 24, creationHelpBaseline, 600, white)
 		default:
-			options := []string{a.state.LocaleText("creation_outer_create"), a.state.LocaleText("creation_outer_add"), a.state.LocaleText("creation_outer_begin")}
+			options := []string{a.state.LocaleText("creation_outer_create"), a.state.LocaleText("creation_outer_add"), a.state.LocaleText("creation_outer_load"), a.state.LocaleText("creation_outer_begin")}
 			for index, option := range options {
 				drawFittedText(screen, option, face, 64, 140+index*35, 512, white)
 			}
@@ -3886,6 +3985,8 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 	}
 	key := ""
 	var sprite *ebiten.Image
+	var partyGuide *ebiten.Image
+	var partyHeadKey, partyBodyKey string
 	var frameX, frameY int16
 	if fighter.Side == combat.SideParty {
 		// Party icons are the original CHEAD+CBODY composition. Imported DOS
@@ -3901,6 +4002,7 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		}
 		key = fmt.Sprintf("%s-head-%02X-body-%02X.png", prefix, headBlock, bodyBlock)
 		sprite = a.combatSprites[key]
+		partyGuide = sprite
 	}
 	if sprite == nil && fighter.Side == combat.SideParty && fighter.HasPartyIcon {
 		headBlock, bodyBlock := fighter.PartyHeadBlock, fighter.PartyBodyBlock
@@ -3910,6 +4012,7 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		}
 		headKey := fmt.Sprintf("chead-block-%02X-item-00.png", headBlock)
 		bodyKey := fmt.Sprintf("cbody-block-%02X-item-00.png", bodyBlock)
+		partyHeadKey, partyBodyKey = headKey, bodyKey
 		headImage, headOK := a.combatSprites[headKey]
 		bodyImage, bodyOK := a.combatSprites[bodyKey]
 		if headOK && bodyOK {
@@ -3917,6 +4020,7 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 			composite.DrawImage(bodyImage, nil)
 			composite.DrawImage(headImage, nil)
 			sprite = composite
+			partyGuide = composite
 		}
 	}
 	// ★ 戰場格上的圖示是 **CPIC**，不是 SPRIT。第 75 輪的規格早就寫明分工
@@ -3933,6 +4037,33 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 	if replacement := a.modernCombatSprite(key); replacement != nil {
 		sprite = replacement
 		modernSprite = true
+	} else if a.modernA6 != nil && a.ui.settings.Theme == "modern-a6" && fighter.Side == combat.SideParty && fighter.HasPartyIcon {
+		headBlock, bodyBlock := fighter.PartyHeadBlock, fighter.PartyBodyBlock
+		if fighter.IconAttack {
+			headBlock += 0x80
+			bodyBlock += 0x80
+		}
+		headKey := fmt.Sprintf("chead-block-%02X-item-00.png", headBlock)
+		bodyKey := fmt.Sprintf("cbody-block-%02X-item-00.png", bodyBlock)
+		partyHeadKey, partyBodyKey = headKey, bodyKey
+		if headImage, headOK := a.modernA6.sprites[headKey]; headOK {
+			if bodyImage, bodyOK := a.modernA6.sprites[bodyKey]; bodyOK {
+				composite := ebiten.NewImage(bodyImage.Bounds().Dx(), bodyImage.Bounds().Dy())
+				composite.DrawImage(bodyImage, nil)
+				composite.DrawImage(headImage, nil)
+				sprite = composite
+				modernSprite = true
+			}
+		}
+	}
+	if fighter.Side == combat.SideParty && sprite != nil && partyGuide != nil {
+		colors := fighter.PartyIconColors
+		if colors == ([6]uint8{}) {
+			colors = party.DefaultIconColors
+		}
+		if colored := a.coloredPartySprite(a.ui.settings.Theme, key, partyHeadKey, partyBodyKey, colors); colored != nil {
+			sprite = colored
+		}
 	}
 	// 沒有 CPIC 時才退回 SPRIT，至少讓怪物有東西可畫。
 	if sprite == nil && fighter.HasAnimation {
@@ -4032,7 +4163,7 @@ func main() {
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	characterCreation := flag.Bool("character-creation", false, "show the opening character-creation command as a deterministic renderer checkpoint")
 	guidedCreation := flag.Bool("guided-creation", false, "show the original four-menu character creation (race/gender/class/alignment)")
-	guidedCreationStep := flag.String("guided-creation-step", "", "drive -guided-creation to a later step for capture: abilities, name, save or party")
+	guidedCreationStep := flag.String("guided-creation-step", "", "drive -guided-creation to a later step for capture: abilities, name, icon, save or party")
 	guidedCreationName := flag.String("guided-creation-name", "Adventurer", "name typed by -guided-creation-step; pass a CJK name to check glyph rendering")
 	characterView := flag.Bool("character-view", false, "show the normal CAMP → VIEW character sheet after selecting the first party member")
 	endingPage := flag.Int("ending-page", 0, "show ending page 1..5 through the real ending-page Select transaction")

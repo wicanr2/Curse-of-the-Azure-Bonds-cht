@@ -81,7 +81,7 @@ fixture 封包抽測、Windows／macOS 真機啟動、macOS 簽署／公證與�
 ### 角色建立
 
 正常入口已依原版順序重現「種族 → 性別 → 職業 → 陣營 → 能力值／HP →
-姓名 → 存檔」，資料全部取自原作資料段並轉成 JSON；remake 只增加目前步驟、
+姓名 → READY／ACTION 戰鬥圖示 → 存檔」，資料全部取自原作資料段並轉成 JSON；remake 只增加目前步驟、
 有效按鍵與隊伍人數提示：
 
 - 六個可選種族——原作的顯示迴圈沒有收半獸人的分支，所以建角選不到它，
@@ -91,12 +91,15 @@ fixture 封包抽測、Windows／macOS 真機啟動、macOS 簽署／公證與�
 - 屬性擲點是 `3d6 + 1`、每個屬性擲六次取最大，加上七個種族各自的屬性調整。
 - 多職角色的 HP 是八個職業槽各擲一次生命骰、逐槽體質加值後除以職業數。
 - 名字支援中文（退格按字元不按位元組），`Save <名字>?` 答 `N` 角色不留。
+- READY／ACTION 圖示可調頭部、武器、體型，以及身體、手臂、腿部、頭髮／臉、
+  盾牌、武器六部位各兩色；原版與手繪 theme 共用並保存同一組色值，F2 切換不重置。
 
 正常入口另已補回原版外層流程：完成角色後先獨立寫入版本化角色庫並回到功能選單，
 玩家再選「加入角色到隊伍」→ `Curse of the Azure Bonds` → 角色清單，才能把角色
 編入隊伍並出發；已入隊角色以 `*` 標示且不能重複加入。Pool of Radiance／Hillsfar
 舊格式選項會明確顯示尚未提供相容匯入，不會拿本作 JSON 猜讀。範本 adapter 只留給
 測試與段內檢查點，不是正常玩家入口。
+外層同時補回 `L 讀取遊戲`，與 F9 共用同一個版本化 remake 存檔交易。
 
 ## 畫面預覽
 
@@ -133,7 +136,9 @@ fixture 封包抽測、Windows／macOS 真機啟動、macOS 簽署／公證與�
 
 ![F6 日文即時切換：地區字型、UI、攻略說明與 F3 原版 AREA 底圖](docs/screenshots/f6-japanese-guide.png)
 
-![原版四段建角的名字輸入段](docs/screenshots/guided-creation-name.png)
+![原版四段建角的戰鬥圖示段：READY／ACTION 預覽與六部位各兩色調色](docs/screenshots/guided-creation-icon-colors.png)
+
+![原版外層隊伍組裝流程：角色先存入獨立角色庫，再由玩家加入最多六人的隊伍](docs/screenshots/guided-party-assembly.png)
 
 ![繁中戰鬥：原作佈署演算法放的開場隊形，遠距離遭遇的敵隊要逐回合逼近才入鏡](docs/screenshots/gold-box-layout-combat.png)
 

@@ -332,6 +332,8 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	copy(data[DOSThiefSkillsOffset:DOSThiefSkillsEnd], []byte{12, 34, 56, 78, 90, 11, 22, 33})
 	data[0x10E] = 4
 	data[0x141], data[0x142], data[0x143], data[0x144] = 3, 4, 0x0A, 2
+	copy(data[0x145:0x14B], []byte{0x91, 0xA2, 0xB3, 0xC4, 0xE6, 0xF7})
+	data[0x14B] = 0x5A
 	binary.LittleEndian.PutUint16(data[0x0FB:0x0FD], 11)
 	binary.LittleEndian.PutUint16(data[0x0FD:0x0FF], 22)
 	binary.LittleEndian.PutUint16(data[0x0FF:0x101], 33)
@@ -390,6 +392,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	character.Gold, character.Platinum = 104, 105
 	character.Experience = 4001
 	character.HitDice, character.MulticlassLevel = 5, 8
+	character.IconColors = [6]uint8{0x10, 0x32, 0x54, 0x76, 0x98, 0xBA}
 	character.SpellCastCount[2] = [5]uint8{5, 4, 3, 2, 1}
 	patched, err := PatchDOSPlayerRecord(data, character)
 	if err != nil {
@@ -403,6 +406,9 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	}
 	if patched[0xE5] != 5 || patched[0xE6] != 8 {
 		t.Fatalf("patched DOS hit-dice gate=%d/%d, want 5/8", patched[0xE5], patched[0xE6])
+	}
+	if got := patched[0x145:0x14B]; !sameUint8(got, character.IconColors[:]) || patched[0x14B] != 0x5A {
+		t.Fatalf("patched DOS icon colors=% X byte14B=%02X", got, patched[0x14B])
 	}
 	if got := patched[0x12D+10 : 0x12D+15]; !sameUint8(got, []uint8{5, 4, 3, 2, 1}) {
 		t.Fatalf("patched DOS magic-user spell counts=%v", got)
@@ -849,6 +855,19 @@ func TestRosterFindSpellReturnsFirstCharacterAndSlot(t *testing.T) {
 	}
 }
 
+func TestCharacterValidationAllowsRaceAdjustedAbilityNineteen(t *testing.T) {
+	character := Character{ID: "dwarf-19", Name: "Dwarf", Race: RaceDwarf, Class: ClassFighter,
+		Abilities: Abilities{Strength: 18, Intelligence: 10, Wisdom: 10, Dexterity: 10, Constitution: 19, Charisma: 10},
+		Level:     1, HitPoints: 8, MaxHitPoints: 8}
+	if err := character.Validate(); err != nil {
+		t.Fatalf("合法的種族調整後屬性 19 被拒絕：%v", err)
+	}
+	character.Abilities.Constitution = 20
+	if err := character.Validate(); err == nil {
+		t.Fatal("沒有種族表支持的屬性 20 應被拒絕")
+	}
+}
+
 func TestDefaultIconSizeMatchesReferenceRaceSwitch(t *testing.T) {
 	for _, test := range []struct {
 		race Race
@@ -1093,7 +1112,7 @@ func TestDualClassLevelComesFromPreviousPlusCurrent(t *testing.T) {
 		data := make([]byte, DOSPlayerRecordSize)
 		data[0] = 4
 		copy(data[1:], "TEST")
-		data[0x74] = 7 // 人類
+		data[0x74] = 7    // 人類
 		data[0x75] = 0x08 // 多職／雙職的類別碼區間
 		data[0x78] = 20
 		data[0x1A4] = 20

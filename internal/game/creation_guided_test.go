@@ -176,8 +176,39 @@ func TestGuidedCreationFollowsReferenceFourMenus(t *testing.T) {
 	if err := state.CommitGuidedName(); err != nil {
 		t.Fatal(err)
 	}
-	if state.GuidedStep != CreationStepSave {
-		t.Fatalf("step=%d, want save", state.GuidedStep)
+	if state.GuidedStep != CreationStepIcon {
+		t.Fatalf("step=%d, want icon", state.GuidedStep)
+	}
+	if err := state.AdjustGuidedIcon(-1); err != nil || state.GuidedDraft.IconHeadBlock != 13 {
+		t.Fatalf("頭部向前環繞失敗：head=%d err=%v", state.GuidedDraft.IconHeadBlock, err)
+	}
+	if err := state.MoveGuidedIconCursor(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.AdjustGuidedIcon(-1); err != nil || state.GuidedDraft.IconWeaponBlock != 31 {
+		t.Fatalf("武器向前環繞失敗：weapon=%d err=%v", state.GuidedDraft.IconWeaponBlock, err)
+	}
+	if err := state.MoveGuidedIconCursor(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.AdjustGuidedIcon(-1); err != nil || state.GuidedDraft.IconSize != 1 {
+		t.Fatalf("體型環繞失敗：size=%d err=%v", state.GuidedDraft.IconSize, err)
+	}
+	if state.GuidedDraft.IconColors != party.DefaultIconColors {
+		t.Fatalf("圖示顏色預設值錯誤：% X", state.GuidedDraft.IconColors)
+	}
+	if err := state.MoveGuidedIconCursor(1); err != nil { // size -> body colour 1
+		t.Fatal(err)
+	}
+	if err := state.AdjustGuidedIcon(-2); err != nil || state.GuidedDraft.IconColors[0] != 0x9F {
+		t.Fatalf("身體第一色未依 0..F 環繞：%02X err=%v", state.GuidedDraft.IconColors[0], err)
+	}
+	if err := state.ConfirmGuidedIcon(false); err != nil {
+		t.Fatal(err)
+	}
+	if state.GuidedDraft.IconHeadBlock != 0 || state.GuidedDraft.IconWeaponBlock != 0 || state.GuidedDraft.IconSize != 2 || state.GuidedDraft.IconColors != party.DefaultIconColors {
+		t.Fatalf("Exit 沒有還原圖示：head=%d weapon=%d size=%d",
+			state.GuidedDraft.IconHeadBlock, state.GuidedDraft.IconWeaponBlock, state.GuidedDraft.IconSize)
 	}
 	// 基準值複製在名字之後（spec 1093 §六之二）。
 	for index := 0; index < 5; index++ {
@@ -254,6 +285,9 @@ func TestGuidedCreationDiscardsOnNo(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := state.CommitGuidedName(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.ConfirmGuidedIcon(false); err != nil {
 		t.Fatal(err)
 	}
 	if err := state.ConfirmGuidedSave(false); err != nil {

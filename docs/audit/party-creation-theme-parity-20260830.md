@@ -16,9 +16,9 @@
   建隊步驟、地圖座標或朝向。
 - 現代／原版主題會分派到各自的 sprite 與 tileset；完整資產護欄另確認
   48／48 個區域 tile、512／512 個動畫與隊伍 sprite 索引都有現代素材。
-- 建角頁目前沒有角色 sprite／大頭像，也不顯示地圖 tile；所以本輪只證實該頁
-  的框線與色彩會切換，以及 sprite／tileset 的實際分派契約。若要求建角頁肉眼
-  同時看到角色圖像切換，仍需先依原版證據另寫 READY spec。
+- 本報告初版所稱「建角頁沒有角色 sprite」已由 spec 1247 勘誤：spec 1037 早已
+  證明姓名後呼叫 `SETACTIVEICON`。remake 現已補回 READY／ACTION 雙預覽並於
+  圖示頁實際測過 F2；地圖 tile 仍不屬於建角頁。
 
 ## 原版 oracle
 
@@ -58,8 +58,7 @@ sprite／tileset 正反主題分派測試均通過。
 | 建立後回外層、再從 Curse 加入 | 相符 | `exact` 行為／重建版面 |
 | 來源選單順序 | 相符；兩種舊格式尚未匯入 | `exact` 選項、`partial` 功能 |
 | 已入隊標記與防重複 | 相符 | `exact` 語意 |
-| 外層完整命令集合 | 讀檔／DOS 離開未在同頁；remake 有開始冒險 | `nearby` |
+| 外層完整命令集合 | `L` 讀檔已由 spec 1247 補回；DOS 離開仍未在同頁，remake 另有開始冒險 | `nearby` |
 | 建角途中 F2 | 主題切換且狀態不漂移 | remake 契約已證實 |
 | sprite／tileset 切換 | 正反分派與全索引護欄通過 | remake 契約已證實 |
-| 建角頁可見角色 sprite | 現行頁面沒有該視覺元素 | 待決定／待 spec |
-
+| 建角頁可見角色 sprite | READY／ACTION 同頁顯示，F2 不改選擇 | spec 1247 `CONFORMED` |

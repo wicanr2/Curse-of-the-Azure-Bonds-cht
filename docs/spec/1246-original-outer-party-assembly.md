@@ -73,6 +73,10 @@
 - DOS 8.3 檔名、磁碟代號、實體 `.guy/.swg/.fx` 寫回；remake 不修改原版資料。
 - 刪除、調整、訓練、轉職、移除角色等其他外層命令；它們不屬於本次新隊伍阻塞點。
 
+> 2026-08-30 勘誤：上述範圍排除不代表主選單讀檔可以永久省略。使用者已要求補回
+> `L` 讀檔；姓名後的 `sub_3EE3` 也已閉合為圖示編輯器。後續整合規格見
+> [spec 1247](1247-main-menu-load-and-creation-icon-editor.md)。
+
 ## 實作與驗證結果
 
 - `internal/save/character_library.go`：版本化 JSON 角色庫 codec。

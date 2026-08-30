@@ -92,6 +92,8 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	binary.LittleEndian.PutUint16(out[0x105:0x107], character.Gems)
 	binary.LittleEndian.PutUint16(out[0x107:0x109], character.Jewelry)
 	out[0x141], out[0x142], out[0x143], out[0x144] = character.IconHeadBlock, character.IconWeaponBlock, character.IconID, character.IconSize
+	colors := character.EffectiveIconColors()
+	copy(out[0x145:0x14B], colors[:])
 	for i := DOSMemorizedSpellsOffset; i < DOSMemorizedSpellsEnd; i++ {
 		out[i] = 0
 	}
@@ -157,11 +159,11 @@ type DOSPlayerRecord struct {
 	// BaseMovement／Movement 是 `+0E4h`／`+1A5h`：基準移動力與目前移動力
 	// （spec 683／1000）。重算負重時 `021Dh` 把基準抄進目前，再依負重階梯
 	// 降成 `9`／`6`／`3`；未負重就是角色自己的基準值。
-	BaseMovement int
-	Movement     int
-	Age              int16
-	Experience       uint32
-	ControlMorale    uint8
+	BaseMovement  int
+	Movement      int
+	Age           int16
+	Experience    uint32
+	ControlMorale uint8
 	// ECLFlag192 是記錄位移 0x192，ECL 用投影位址 7CE4h 讀（只取 and 1）。
 	ECLFlag192 uint8
 	// Gender 是記錄位移 0x119（spec 1093）。
@@ -170,6 +172,7 @@ type DOSPlayerRecord struct {
 	IconWeapon       uint8
 	IconID           uint8
 	IconSize         uint8
+	IconColors       [6]uint8
 	Copper           uint16
 	Silver           uint16
 	Electrum         uint16
@@ -405,6 +408,7 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		Experience:       binary.LittleEndian.Uint32(data[0x127:0x12B]),
 		ControlMorale:    data[0xF7], ECLFlag192: data[0x192], Gender: data[0x119],
 		IconHead: data[0x141], IconWeapon: data[0x142], IconID: data[0x143], IconSize: data[0x144],
+		IconColors:       [6]uint8{data[0x145], data[0x146], data[0x147], data[0x148], data[0x149], data[0x14A]},
 		Copper:           binary.LittleEndian.Uint16(data[0x0FB:0x0FD]),
 		Silver:           binary.LittleEndian.Uint16(data[0x0FD:0x0FF]),
 		Electrum:         binary.LittleEndian.Uint16(data[0x0FF:0x101]),
@@ -448,6 +452,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		Copper:             r.Copper, Silver: r.Silver, Electrum: r.Electrum,
 		Gold: r.Gold, Platinum: r.Platinum, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
+		IconColors:       r.IconColors,
 		Equipment:        append([]monster.ItemRecord(nil), r.Inventory...),
 		Effects:          append([]monster.AffectRecord(nil), r.Effects...),
 		SpellSlots:       append([]uint8(nil), r.MemorizedSpells...),

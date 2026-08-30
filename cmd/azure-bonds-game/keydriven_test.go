@@ -2389,6 +2389,12 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	if application.state.GuidedActive || application.state.CreationOuterStep != game.CreationOuterMenu {
 		t.Fatalf("正常入口應停在原版外層功能選單：active=%v outer=%d", application.state.GuidedActive, application.state.CreationOuterStep)
 	}
+	// 外層 L 與 F9 共用 loader；沒有存檔時必須留在本頁並顯示失敗，不可清空狀態。
+	tap(t, application, keys, ebiten.KeyL)
+	if application.state.Mode != game.ModeCharacterCreation || application.state.CreationOuterStep != game.CreationOuterMenu || application.state.CreationMessage == "" {
+		t.Fatalf("外層讀檔失敗沒有 fail closed：mode=%v outer=%d message=%q",
+			application.state.Mode, application.state.CreationOuterStep, application.state.CreationMessage)
+	}
 	creationTheme := application.ui.settings.Theme
 	tap(t, application, keys, ebiten.KeyF2)
 	firstTheme := application.ui.settings.Theme
@@ -2413,6 +2419,26 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	tap(t, application, keys, ebiten.KeyEnter)
 	typeText(t, application, keys, "測試者")
 	tap(t, application, keys, ebiten.KeyEnter)
+	if application.state.GuidedStep != game.CreationStepIcon {
+		t.Fatalf("姓名後應進 READY／ACTION 圖示編輯，實際 step=%d", application.state.GuidedStep)
+	}
+	iconTheme := application.ui.settings.Theme
+	tap(t, application, keys, ebiten.KeyF2)
+	if application.ui.settings.Theme == iconTheme || application.state.GuidedStep != game.CreationStepIcon {
+		t.Fatal("圖示編輯頁 F2 沒有切換 theme 或改變建角步驟")
+	}
+	tap(t, application, keys, ebiten.KeyRight)
+	if application.state.GuidedDraft.IconHeadBlock != 1 {
+		t.Fatalf("圖示編輯頁沒有切換頭部：%d", application.state.GuidedDraft.IconHeadBlock)
+	}
+	for index := 0; index < 3; index++ {
+		tap(t, application, keys, ebiten.KeyDown)
+	}
+	tap(t, application, keys, ebiten.KeyRight)
+	if got := application.state.GuidedDraft.IconColors[0]; got != 0x92 {
+		t.Fatalf("圖示編輯頁沒有切換身體第一色：%02X", got)
+	}
+	tap(t, application, keys, ebiten.KeyEnter)
 	tap(t, application, keys, ebiten.KeyY)
 	if got := len(application.state.CreationRoster); got != 0 {
 		t.Fatalf("原版流程儲存後尚未加入隊伍，實際 %d", got)
@@ -2422,6 +2448,12 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	tap(t, application, keys, ebiten.KeyEnter)
 	if got := len(application.state.CreationRoster); got != 1 {
 		t.Fatalf("從 Curse 角色清單加入後應有一名隊員，實際 %d", got)
+	}
+	if got := application.state.CreationRoster[0].IconHeadBlock; got != 1 {
+		t.Fatalf("圖示選擇沒有經角色庫保存再加入：head=%d", got)
+	}
+	if got := application.state.CreationRoster[0].IconColors[0]; got != 0x92 {
+		t.Fatalf("圖示顏色沒有經角色庫保存再加入：body=%02X", got)
 	}
 	tap(t, application, keys, ebiten.KeyEscape)
 	tap(t, application, keys, ebiten.KeyB)
@@ -2599,6 +2631,32 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	if os.Getenv("COAB_KEY_REQUIRE_WIN") == "1" && session.wonAt < 0 &&
 		(keyDrivenBoost() || !application.state.PartyKilled()) {
 		t.Fatalf("要求正常按鍵通關，但 %d 幀後仍未抵達結局", session.frames)
+	}
+}
+
+func TestCreationOuterLoadUsesTheVersionedSaveTransaction(t *testing.T) {
+	source, sourceKeys := keyDrivenApp(t)
+	tap(t, source, sourceKeys, ebiten.KeyEnter)
+	if err := source.state.AddCreationCharacter(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := source.state.FinishCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	savePath := filepath.Join(t.TempDir(), "party.json")
+	if err := source.state.SavePartyFile(savePath); err != nil {
+		t.Fatal(err)
+	}
+
+	loaded, loadedKeys := keyDrivenApp(t)
+	loaded.partyPath = savePath
+	tap(t, loaded, loadedKeys, ebiten.KeyEnter)
+	if loaded.state.Mode != game.ModeCharacterCreation {
+		t.Fatalf("讀檔前應停在外層，實際 %v", loaded.state.Mode)
+	}
+	tap(t, loaded, loadedKeys, ebiten.KeyL)
+	if loaded.state.Mode == game.ModeCharacterCreation || len(loaded.state.PartyRoster()) != 1 {
+		t.Fatalf("外層 L 沒有載入存檔：mode=%v roster=%d", loaded.state.Mode, len(loaded.state.PartyRoster()))
 	}
 }
 

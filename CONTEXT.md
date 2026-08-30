@@ -3,6 +3,18 @@
 compact／接手若只需要現況與下一步，先讀 [`HANDOFF.md`](HANDOFF.md)；本檔保留
 較深的訂正理由與歷史 checkpoint，不應整份預讀後再決定工作。
 
+最新進度（2026-08-30，spec 1247／1248）：依 DOS overlay-17 `03EE3h` 與 PC-98
+overlay-17 `045D0h` 的 `SETACTIVEICON` 證據，正常建角已補回姓名之後的
+READY／ACTION 戰鬥圖示選擇（頭部 14、武器 32、尺寸 2），並保留 F2 即時 theme
+切換；外層建隊選單也補回原版 `L` 讀檔，沿用既有版本化存檔交易。spec 1248 進一步
+接通六部位雙色的角色 schema、DOS `+145h..+14Ah` round-trip、Keep／Exit、戰鬥投影
+及 renderer；原版採 exact palette slot 替換，手繪 theme 以原版 layer 作語意遮罩，
+並可由手繪 CHEAD／CBODY 組合未預製配對。造成原缺口的文件問題是：較晚的精確 RE 已在 spec 1037 閉合，卻未
+回填較早的玩家流程 spec 1093；現在以
+[`docs/audit/re-resolution-backlinks.tsv`](docs/audit/re-resolution-backlinks.tsv)
+和 `tools/re-resolution-backlinks.sh` 建立失敗即關閉（fail-closed）的回填護欄，
+並完成較早 spec 的反向抽樣稽核。
+
 最新進度（2026-08-27，spec 1245～1247）：內容與玩家可見 UI polish 已依使用者
 指定的風險導向抽樣口徑完成。
 1,598 條中譯的機械閘門維持未翻／同句多譯／半形標點 0，138 個有效詞彙問題 0；
@@ -20,9 +32,11 @@ planned 畫面降為 0。第三批再抽樣商店、神殿、訓練、後期 Jou
 最新進度（2026-08-27，spec 1243／1244）：runtime 圖像獨立化已完成為 1,741 張
 PNG＋manifest；移除原版 ZIP 的 51 個圖像 member 後，開場 PIC、AREA、第一人稱、
 戰鬥與 BIGPIC 五類代表畫面仍可顯示，PIC／第一人稱／戰鬥的可直接比對區域為
-0 像素差。正常建立人物入口同時收斂為原版順序「種族→性別→職業→陣營→
-能力值／HP→姓名→存檔」，只增加目前步驟、有效按鍵與隊伍組裝提示；真實按鍵
-測試已由標題走完一名繁中角色並加入隊伍。下一個 release gate 是把無圖像 fixture
+0 像素差。正常建立人物入口當時收斂為「種族→性別→職業→陣營→能力值／HP→
+姓名→存檔」，只增加目前步驟、有效按鍵與隊伍組裝提示；但此敘述漏掉已由
+spec 1037 證實的 `SETACTIVEICON`，已於 2026-08-30 由 spec 1247 訂正為
+「姓名→戰鬥圖示→存檔」。真實按鍵測試已由標題走完一名繁中角色並加入隊伍。
+下一個 release gate 是把無圖像 fixture
 帶入各平台封包抽樣；不是重新開啟圖像 DAX runtime。
 
 最新文件稽核（2026-08-27）：以最後整合風險反向檢查 Markdown，修掉四類會造成

@@ -470,8 +470,11 @@ type Character struct {
 	IconHeadBlock   uint8 `json:"icon_head,omitempty"`
 	IconWeaponBlock uint8 `json:"icon_weapon,omitempty"`
 	IconID          uint8 `json:"icon_id,omitempty"`
-	HitPoints       int   `json:"hit_points,omitempty"`
-	MaxHitPoints    int   `json:"max_hit_points,omitempty"`
+	// IconColors are Body, Arm, Leg, Hair/Face, Shield and Weapon. Each byte
+	// stores the first colour in the low nibble and the second in the high.
+	IconColors   [6]uint8 `json:"icon_colors,omitempty"`
+	HitPoints    int      `json:"hit_points,omitempty"`
+	MaxHitPoints int      `json:"max_hit_points,omitempty"`
 	// BaseMaxHitPoints 是原作的 +12Ch：**不含**體質加值的最大 HP。
 	// 屬性重算時 +78h 會先回到這一格再重新加上加值（spec 1079）。
 	BaseMaxHitPoints int `json:"base_max_hit_points,omitempty"`
@@ -1063,7 +1066,8 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		ControlMorale: c.ControlMorale,
 		Alignment:     c.Alignment, AlignmentKnown: c.AlignmentKnown,
 		HasPartyIcon: true, PartyHeadBlock: headBlock, PartyBodyBlock: bodyBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
-		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
+		PartyIconColors: c.EffectiveIconColors(),
+		HitPoints:       hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		DamageBonus: damageBonus,
 		// `BASEATTBLOWS[0]`：半次單位，展開成本回合次數是 `combat.AdjustBlows`
 		// 的事（spec 1180）。
@@ -1225,6 +1229,17 @@ func DefaultIconSize(r Race) uint8 {
 	}
 }
 
+// DefaultIconColors is the exact six-byte template found at DOS player
+// offsets 145h..14Ah. Zero-valued legacy JSON records use this default.
+var DefaultIconColors = [6]uint8{0x91, 0xA2, 0xB3, 0xC4, 0xE6, 0xF7}
+
+func (c Character) EffectiveIconColors() [6]uint8 {
+	if c.IconColors == ([6]uint8{}) {
+		return DefaultIconColors
+	}
+	return c.IconColors
+}
+
 // CombatIconBlocks maps raw DOS head_icon/weapon_icon slots to the actual
 // CHEAD/CBODY blocks selected by LoadPlayerCombatIcon. Small icons use the T
 // files, whose namespace is the raw slot plus 0x40.
@@ -1282,8 +1297,10 @@ func (c Character) Validate() error {
 	}
 	values := []int{c.Abilities.Strength, c.Abilities.Intelligence, c.Abilities.Wisdom, c.Abilities.Dexterity, c.Abilities.Constitution, c.Abilities.Charisma}
 	for index, value := range values {
-		if value < 3 || value > 18 {
-			return fmt.Errorf("ability %d=%d is outside 3..18", index, value)
+		// Rolled base scores stop at 18; the verified race adjustments are
+		// applied afterwards and can legally raise one score to 19.
+		if value < 3 || value > 19 {
+			return fmt.Errorf("ability %d=%d is outside 3..19", index, value)
 		}
 	}
 	if !raceAllowsClass(c.Race, c.Class) {

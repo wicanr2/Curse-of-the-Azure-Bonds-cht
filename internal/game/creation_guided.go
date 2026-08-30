@@ -36,6 +36,7 @@ const (
 	CreationStepAlignment
 	CreationStepAbilities
 	CreationStepName
+	CreationStepIcon
 	CreationStepSave
 	CreationStepDone
 )
@@ -460,9 +461,9 @@ func (s *State) BackspaceGuidedName() error {
 	return nil
 }
 
-// CommitGuidedName 收下名字並把目前值抄成基準值（spec 1093 §六之二）。
+// CommitGuidedName 收下名字並進入 SETACTIVEICON（spec 1037／1247）。
 // ⚠ 這個複製在**名字之後**才做，不是擲完屬性就做——原作的順序是
-// 名字輸入 → 基準值複製 → `Save <名字>?`。
+// 名字輸入 → 圖示編輯 → 基準值複製 → `Save <名字>?`。
 func (s *State) CommitGuidedName() error {
 	if s.GuidedStep != CreationStepName {
 		return fmt.Errorf("name input is unavailable at creation step %d", s.GuidedStep)
@@ -472,6 +473,79 @@ func (s *State) CommitGuidedName() error {
 		return fmt.Errorf("character name cannot be empty")
 	}
 	s.GuidedDraft.Name = s.GuidedName
+	if s.GuidedDraft.IconSize == 0 {
+		s.GuidedDraft.IconSize = party.DefaultIconSize(s.GuidedDraft.Race)
+	}
+	if s.GuidedDraft.IconColors == ([6]uint8{}) {
+		s.GuidedDraft.IconColors = party.DefaultIconColors
+	}
+	s.GuidedIconBackupHead = s.GuidedDraft.IconHeadBlock
+	s.GuidedIconBackupWeapon = s.GuidedDraft.IconWeaponBlock
+	s.GuidedIconBackupSize = s.GuidedDraft.IconSize
+	s.GuidedIconBackupColors = s.GuidedDraft.IconColors
+	s.GuidedIconCursor = 0
+	s.GuidedStep = CreationStepIcon
+	s.CreationMessage = s.LocaleText("creation_icon_prompt")
+	return nil
+}
+
+// MoveGuidedIconCursor 在 Head／Weapon／Size 與十二個部位色欄之間環繞。
+func (s *State) MoveGuidedIconCursor(delta int) error {
+	if s.GuidedStep != CreationStepIcon {
+		return fmt.Errorf("icon selection is unavailable at creation step %d", s.GuidedStep)
+	}
+	s.GuidedIconCursor = (s.GuidedIconCursor + delta) % 15
+	if s.GuidedIconCursor < 0 {
+		s.GuidedIconCursor += 15
+	}
+	return nil
+}
+
+// AdjustGuidedIcon 依原版欄位分母環繞：頭 14、武器 32、體型 2。
+func (s *State) AdjustGuidedIcon(delta int) error {
+	if s.GuidedStep != CreationStepIcon {
+		return fmt.Errorf("icon selection is unavailable at creation step %d", s.GuidedStep)
+	}
+	wrap := func(value uint8, count int) uint8 {
+		return uint8((int(value) + delta%count + count) % count)
+	}
+	switch s.GuidedIconCursor {
+	case 0:
+		s.GuidedDraft.IconHeadBlock = wrap(s.GuidedDraft.IconHeadBlock, 14)
+	case 1:
+		s.GuidedDraft.IconWeaponBlock = wrap(s.GuidedDraft.IconWeaponBlock, 32)
+	case 2:
+		value := int(s.GuidedDraft.IconSize) - 1
+		if value < 0 || value > 1 {
+			value = int(party.DefaultIconSize(s.GuidedDraft.Race)) - 1
+		}
+		s.GuidedDraft.IconSize = uint8((value+delta%2+2)%2 + 1)
+	default:
+		field := s.GuidedIconCursor - 3
+		part, second := field/2, field%2 == 1
+		value := s.GuidedDraft.IconColors[part]
+		shift := uint(0)
+		if second {
+			shift = 4
+		}
+		component := uint8((int((value>>shift)&0x0F) + delta%16 + 16) % 16)
+		s.GuidedDraft.IconColors[part] = (value & ^(uint8(0x0F) << shift)) | component<<shift
+	}
+	return nil
+}
+
+// ConfirmGuidedIcon 對應 Keep／Exit。Exit 還原進畫面前的三格，但兩條路都
+// 返回建角 caller，繼續 `Save <名字>?`，不會丟棄整名角色。
+func (s *State) ConfirmGuidedIcon(keep bool) error {
+	if s.GuidedStep != CreationStepIcon {
+		return fmt.Errorf("icon selection is unavailable at creation step %d", s.GuidedStep)
+	}
+	if !keep {
+		s.GuidedDraft.IconHeadBlock = s.GuidedIconBackupHead
+		s.GuidedDraft.IconWeaponBlock = s.GuidedIconBackupWeapon
+		s.GuidedDraft.IconSize = s.GuidedIconBackupSize
+		s.GuidedDraft.IconColors = s.GuidedIconBackupColors
+	}
 	s.GuidedDraft.Abilities.SyncBaseFromCurrent()
 	s.GuidedStep = CreationStepSave
 	s.CreationMessage = fmt.Sprintf(s.LocaleText("creation_save_prompt"), s.GuidedName)

@@ -77,13 +77,14 @@ type Fighter struct {
 	HasAnimation   bool
 	// Party icon fields mirror the original Player combat record. They are
 	// renderer-neutral so save/import decoding can fill the actual values.
-	HasPartyIcon   bool
-	PartyHeadBlock uint8
-	PartyBodyBlock uint8
-	PartyIconID    uint8
-	PartyIconSize  uint8
-	IconDirection  uint8
-	IconAttack     bool
+	HasPartyIcon    bool
+	PartyHeadBlock  uint8
+	PartyBodyBlock  uint8
+	PartyIconID     uint8
+	PartyIconSize   uint8
+	PartyIconColors [6]uint8
+	IconDirection   uint8
+	IconAttack      bool
 	// MonsterAffects preserves raw MON*SPC records. Gameplay projections are
 	// intentionally left to later, verified rules adapters.
 	MonsterAffects []MonsterAffect

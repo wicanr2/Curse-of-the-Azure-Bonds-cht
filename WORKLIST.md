@@ -38,6 +38,10 @@ spec 1246 已 `CONFORMED`；本作新建角色現在依原版外層流程「獨�
 清單加入 → 出發」。Pool／Hillsfar 舊格式 typed 轉換仍是獨立缺口，介面明確採
 失敗即關閉（fail closed），不得誤列為已完成。
 
+spec 1248 已 `CONFORMED`：`SETACTIVEICON` 的六部位雙色、DOS record round-trip、
+建角 Keep／Exit、戰鬥投影與原版／手繪 renderer 已接通。手繪 theme 會由
+CHEAD／CBODY layer 組合未預製的頭×武器配對再套語意遮罩，不再把 recolor 列為待辦。
+
 ## 目前執行順序（使用者 2026-08-16 指定，優先於下方所有舊清單）
 
 ### 第 0 批：把上一輪留下的邊界收乾淨
