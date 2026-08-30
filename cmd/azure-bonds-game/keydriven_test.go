@@ -101,6 +101,7 @@ func keyDrivenApp(t *testing.T) (*app, *scriptedKeys) {
 	combatClock := time.Unix(0, 0)
 	application := &app{
 		state: &state, keys: keys, geoCatalog: geoCatalog,
+		ui: newUIRuntime(defaultUISettings(), filepath.Join(t.TempDir(), "ui-settings.json")),
 		combatNow: func() time.Time {
 			combatClock = combatClock.Add(10 * time.Second)
 			return combatClock
@@ -2388,6 +2389,17 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	if application.state.GuidedActive || application.state.CreationOuterStep != game.CreationOuterMenu {
 		t.Fatalf("正常入口應停在原版外層功能選單：active=%v outer=%d", application.state.GuidedActive, application.state.CreationOuterStep)
 	}
+	creationTheme := application.ui.settings.Theme
+	tap(t, application, keys, ebiten.KeyF2)
+	firstTheme := application.ui.settings.Theme
+	if firstTheme == creationTheme || application.state.CreationOuterStep != game.CreationOuterMenu {
+		t.Fatalf("建隊外層 F2 沒有切換 theme 或改壞流程：before=%q after=%q outer=%d",
+			creationTheme, application.ui.settings.Theme, application.state.CreationOuterStep)
+	}
+	tap(t, application, keys, ebiten.KeyF2)
+	if application.ui.settings.Theme == firstTheme || (application.ui.settings.Theme != "original" && application.ui.settings.Theme != "modern-a6") {
+		t.Fatalf("建隊外層第二次 F2 沒有切到另一個有效 theme：first=%q second=%q", firstTheme, application.ui.settings.Theme)
+	}
 	tap(t, application, keys, ebiten.KeyC)
 	if !application.state.GuidedActive || application.state.GuidedStep != game.CreationStepRace {
 		t.Fatalf("按 C 應到原版種族選單：active=%v step=%d", application.state.GuidedActive, application.state.GuidedStep)
@@ -2421,8 +2433,22 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 	// ⚠ 幀數上限是**量出來的不是猜的**：換掉走法之後要重新量一次到頂的位置，
 	// 用 `COAB_KEY_FRAMES` 掃一遍再把預設值訂在轉折點上（見 spec 1197）。
 	// 不要為了「看起來跑得久」而拖慢整個測試套件。
+	dungeonThemeChecked := false
 	for session.frames = 0; session.frames < keyDrivenFrames(); session.frames++ {
 		session.observe()
+		if !dungeonThemeChecked && application.state.Mode == game.ModeDungeon {
+			before := application.ui.settings.Theme
+			x, y, facing := application.state.DungeonGeometryView()
+			tap(t, application, keys, ebiten.KeyF2)
+			if application.ui.settings.Theme == before {
+				t.Fatal("第一張地圖內 F2 沒有切換 theme")
+			}
+			if gotX, gotY, gotFacing := application.state.DungeonGeometryView(); gotX != x || gotY != y || gotFacing != facing {
+				t.Fatalf("切換 theme 改變地圖狀態：before=(%d,%d,%d) after=(%d,%d,%d)", x, y, facing, gotX, gotY, gotFacing)
+			}
+			tap(t, application, keys, ebiten.KeyF2)
+			dungeonThemeChecked = true
+		}
 		// 一般強度報表量的是一條連續冒險。全滅後由標題建立新隊伍已是另一場
 		// attempt，不能把多場走過的格子與段數聯集起來冒充單次進度。
 		if !keyDrivenBoost() && application.state.PartyKilled() {
@@ -2435,6 +2461,9 @@ func TestKeysDriveARealSessionFromTheTitle(t *testing.T) {
 		}
 	}
 	session.observe()
+	if !dungeonThemeChecked {
+		t.Fatal("按鍵路徑未在第一張地圖實際測到 F2 theme 切換")
+	}
 	// 失敗斷言之前先落 trace；否則早停場景會在原本的收尾寫檔前 t.Fatal，
 	// COAB_KEY_TRACE 反而只對通過的 run 有效。
 	if path := os.Getenv("COAB_KEY_TRACE"); path != "" {

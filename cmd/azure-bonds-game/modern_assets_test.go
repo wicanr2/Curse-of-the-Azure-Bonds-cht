@@ -8,7 +8,37 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
+
+func TestThemeSwitchChangesSpriteAndTileAssetDispatch(t *testing.T) {
+	originalTile := ebiten.NewImage(24, 24)
+	modernTile := ebiten.NewImage(96, 96)
+	modernSprite := ebiten.NewImage(48, 48)
+	application := &app{
+		tileImages: []*ebiten.Image{originalTile},
+		modernA6: &modernA6Assets{
+			tiles:   map[string]*ebiten.Image{"tiles-block-01-item-000.png": modernTile},
+			sprites: map[string]*ebiten.Image{"cpic1-block-01-item-00.png": modernSprite},
+		},
+		ui: newUIRuntime(defaultUISettings(), filepath.Join(t.TempDir(), "ui.json")),
+	}
+	application.ui.settings.Theme = "modern-a6"
+	if got := application.displayTile(0); got != modernTile {
+		t.Fatal("modern-a6 沒有分派到現代 tileset")
+	}
+	if got := application.modernCombatSprite("cpic1-block-01-item-00.png"); got != modernSprite {
+		t.Fatal("modern-a6 沒有分派到現代 sprite")
+	}
+	application.ui.settings.Theme = "original"
+	if got := application.displayTile(0); got != originalTile {
+		t.Fatal("original 沒有還原原版 tileset")
+	}
+	if got := application.modernCombatSprite("cpic1-block-01-item-00.png"); got != nil {
+		t.Fatal("original theme 仍洩漏現代 sprite")
+	}
+}
 
 func TestModernA6VerticalSlicePNGContracts(t *testing.T) {
 	root := filepath.Join("..", "..", "assets", "modern-a6")

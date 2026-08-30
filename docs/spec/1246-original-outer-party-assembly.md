@@ -82,3 +82,9 @@
   提爾佛頓 `(7,13)`，400 幀走過 47 格、英文回退 0、全滅 0。
 - 四語系 640×480 外層頁已由 Docker/Xvfb 抽拍；第一版沿用冒險提示基線而被下框
   裁切，改為建角安全基線 `y=438` 後繁中實拍完整。
+- 2026-08-30 再以正常 DOSBox 路徑抽樣外層、來源與角色清單，並在 remake 的
+  真實按鍵 session 於建隊外層及第一張地圖各切換 F2；流程狀態、座標與朝向均未
+  漂移。sprite／tileset 的 original／modern-a6 正反分派與完整索引護欄亦通過。
+  詳見 [`party-creation-theme-parity-20260830.md`](../audit/party-creation-theme-parity-20260830.md)。
+- 建角頁現行沒有角色 sprite／大頭像，也不顯示地圖 tile；因此不能把資產分派測試
+  說成建角頁已肉眼呈現 sprite／tileset 切換。若新增該視覺，須另依原版證據寫 spec。
