@@ -11,7 +11,8 @@ type Instruction = engineecl.Instruction
 type Edge = engineecl.Edge
 type Graph = engineecl.Graph
 
-const CodeAddressBase = engineecl.CodeAddressBase
+// CodeAddressBase is CoAB title data, not a Gold Box engine constant.
+const CodeAddressBase = 0x8000
 
 var KnownCommands = engineecl.KnownCommands
 var VariableLengthCommands = engineecl.VariableLengthCommands
@@ -23,10 +24,19 @@ var TraceAt = engineecl.TraceAt
 var ScanKnownInstructions = engineecl.ScanKnownInstructions
 var FindSaveDestinationCandidates = engineecl.FindSaveDestinationCandidates
 var RecordEnd = engineecl.RecordEnd
-var BranchTargets = engineecl.BranchTargets
 var MenuEnd = engineecl.MenuEnd
-var CodeTarget = engineecl.CodeTarget
-var TraceGraph = engineecl.TraceGraph
+
+func BranchTargets(block []byte, offset int) ([]int, int, error) {
+	return engineecl.BranchTargetsAtBase(block, offset, CodeAddressBase)
+}
+
+func CodeTarget(operand Operand, payloadLength int) (int, bool) {
+	return engineecl.CodeTargetAtBase(operand, CodeAddressBase, payloadLength)
+}
+
+func TraceGraph(block []byte, starts []int, limit int) (Graph, error) {
+	return engineecl.TraceGraphAtBase(block, starts, CodeAddressBase, limit)
+}
 
 // decodeInstruction preserves the title adapter's internal seam while the
 // generic decoder remains owned and tested by the engine module.

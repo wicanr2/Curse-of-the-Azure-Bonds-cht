@@ -11,7 +11,7 @@ ECL／DAX／GEO／戰鬥／存檔引擎在獨立的
 [golden-box-remake-engine](https://github.com/wicanr2/golden-box-remake-engine)。
 劇情、座標、物品與翻譯資料不寫死在共用 engine。
 
-## 目前狀態（2026-08-30 實測）
+## 目前狀態（2026-08-31 實測）
 
 目前整體自評 **99／100**，已達成玩家可見體驗近似原版 **99%** 的首版發行目標。後續採
 風險導向代表性抽樣，不再以所有狀態全量逐像素／逐分支閉合作為完成條件；
@@ -39,7 +39,7 @@ Windows／macOS 真機、macOS 簽署／公證、音訊人耳與對外素材權�
 | **主線** | **開場到結局同一條 session 跑得完**，拆成 25 個段 subtest（23 段主線＋2 段接進主線的段內支線），每段結束的快照都存得下去讀得回來 |
 | **鍵盤通關** | 從標題開始、全程只走真實前端按鍵，第 **14,380 幀**觸發 `GameWon()` |
 | **一般強度基線** | pending Bless 無限重試已修；關閉隊伍強化後跑 2,455 幀：251 格、8 個 ECL 段、199 句、落回原文 0，最後真實全滅重開 1 次。手動戰鬥對照也在同一戰役區段全滅；這是合法停止結果，不再把戰術／loadout 或自動通關列為產品缺口 |
-| **發行工程** | 首個正式版 `1.0.0-20260830` 已重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP；Linux AppImage 與 Windows EXE（Wine）已實際啟動與繁中截圖驗收，兩張開場 PNG 逐位元組相同，且已確認無內框覆字；Windows／macOS 尚待真機啟動。內部推廣片已重拍，含三組 DOS 原版／remake 建角建隊對照、實際遊玩、F2 主題、F7 邊框 A／B／C 與 F6 語言切換；音樂與原版圖像權利未釐清，維持內部使用（[稽核](docs/audit/release-1.0.0-20260830.md)） |
+| **發行工程** | 本機完整版 `1.0.2-20260831` 已以獨立 engine `025eb46b28a2` 重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP，patch／full-local 各四件且八件雜湊全數重算通過；Linux AppImage 與 Windows EXE（Wine）已實際啟動並取得繁中截圖。patch deny-list 已確認不含原版 ZIP／私有 PC-98 OGG；full-local 四平台目錄均含本機遊戲資料。Windows／macOS 尚待真機啟動，macOS 尚未簽署／公證；內部推廣片的音樂與原版圖像權利仍未釐清（先前公開版稽核見 [1.0.0 收據](docs/audit/release-1.0.0-20260830.md)） |
 | 主線分段 | 25 段全部可直入（`-segment ECL{成員}/0x{block}`）；47 條 `NEWECL` 邊逐條交接；段入口有中文劇情 22／不出文字 3 |
 | 戰利品 | `1Ch CLEARMONSTERS` 連同**還沒領走的戰利品**一起丟掉（spec 1145）；corpus 唯一走得到那條路的是提爾佛頓火刀首領的重打迴圈，少了它重打一次就多領一次 |
 | 遭遇距離 | `0Ch` 擺距離、`0Dh APPROACH` 走近、`29h` 重設（spec 1146）。⚠ `APPROACH` 的減一是**演出**——`29h` 進門會把它蓋回去 |

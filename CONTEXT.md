@@ -135,7 +135,14 @@ fallback；特殊攻擊與驅散不死的最後一擊會重算勝負，非戰鬥
 `EnterSegment` 前強化，套件測試明確指向段內快照；硬閘門恢復 15 個 block，
 沒有靠回退真實 HP 或放寬門檻通過（spec 1206）。
 
-最新發行收據（2026-08-29）：`0.1.0-dev.20260829` 已重生 patch／
+最新本機發行收據（2026-08-31）：`1.0.2-20260831` 已改用獨立 engine
+`025eb46b28a2`，重生 patch／full-local 各四件：Linux x86_64 AppImage、Windows
+x86_64 ZIP、macOS x86_64／arm64 ZIP。八件檔案皆與 `SHA256SUMS.json` 對帳；
+patch deny-list 不含原版 ZIP 與私有 PC-98 OGG，full-local 四個平台目錄均含本機
+遊戲資料。Linux AppImage 與 Windows EXE（Wine）已在 Docker／Xvfb 啟動，兩張
+繁中開場 smoke 截圖目視相同。Windows／macOS 真機與 macOS 簽署／公證仍未驗收。
+
+歷史發行收據（2026-08-29）：`0.1.0-dev.20260829` 已重生 patch／
 full-local 各四件三平台封包；Linux AppImage 與 Windows EXE（Wine）重做
 smoke。內部推廣片改為 60 秒的同 session 實錄，包含地城移動、F7 邊框
 A／B／C、F6 簡中／日文／英文與 F2 現代→原版主題；長黑／長靜音
