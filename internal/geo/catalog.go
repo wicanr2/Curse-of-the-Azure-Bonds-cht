@@ -3,7 +3,7 @@ package geo
 import (
 	"fmt"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 )
 
 // MapRef identifies the original GEO DAX set and block ID. The set is the

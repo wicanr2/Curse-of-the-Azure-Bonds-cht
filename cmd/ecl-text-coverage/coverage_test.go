@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 )
 
 // 分母（walkPages）與比對（walkRuns）走的是同一條控制流，但狀態不同：

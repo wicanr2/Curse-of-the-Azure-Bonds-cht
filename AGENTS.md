@@ -54,11 +54,11 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 
 ## 2. Repository 架構
 
-這個 workspace 包含兩個獨立 Git repository：
+這個主機目錄包含兩個同層、完全獨立的 Git repository：
 
 - `Curse-of-the-Azure-Bonds-cht`（目前根目錄）：CoAB game pack、翻譯、
   原作證據、轉換資產、手冊、攻略、截圖與 integration。
-- `golden-box-remake-engine/`：作品中立的 ECL/DAX/GEO codec、JSON schema、
+- `../golden-box-remake-engine/`：作品中立的 ECL/DAX/GEO codec、JSON schema、
   rules、renderer contracts 與可重用 VM/runtime。
 
 界線：
@@ -68,7 +68,9 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 - Go engine 只放可重用機制、typed adapter 與有證據的格式語意。
 - 若 game pack 無法描述某行為，先擴充 engine schema/runtime，再用 CoAB
   JSON 宣告；不能為趕進度 hardcode 本作情節。
-- 不得把 nested engine 加成 CoAB gitlink，也不得把 engine source 複製進來。
+- 不得在 CoAB 內建立 nested engine、gitlink 或 engine source 副本；工具只認
+  同層固定目錄 `../golden-box-remake-engine/`（可由
+  `GOLDEN_BOX_REMAKE_ENGINE_DIR` 明確覆寫）。
 
 ## 2.5 反組譯的驗收口徑（2026-08-13 使用者決定）
 
@@ -1131,8 +1133,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 兩個 repo 各自 commit／push，歷史保持獨立。
 ### 乾淨 clone 之後的第一步
 
-`golden-box-remake-engine/` 與 `workplace/` 都在 `.gitignore` 裡，所以剛 clone
-完的 CoAB **既沒有 engine 原始碼、也沒有檔案型 proxy**，直接 `tools/go.sh` 會卡在
+engine 是 CoAB 同層的獨立 repository，`workplace/` 在 `.gitignore` 裡；剛 clone
+完的 CoAB **可能沒有同層 engine，也沒有檔案型 proxy**，直接 `tools/go.sh` 會卡在
 取不到私有模組。先跑：
 
 ```sh
@@ -1151,7 +1153,7 @@ GitHub 時它會明講並結束——那時要先去有那份 commit 的機器�
 `could not read Username for 'https://github.com'`。固定流程是：
 
 ```sh
-git -C golden-box-remake-engine push origin main   # 先推，zip 內容才對得上 remote
+git -C ../golden-box-remake-engine push origin main # 先推，zip 內容才對得上 remote
 tools/engine-proxy.sh                              # 印出 pseudo-version
 tools/go.sh get github.com/wicanr2/golden-box-remake-engine@<印出來的版本>
 tools/go.sh test ./...                             # 確認沒有殘留 replace
@@ -1160,8 +1162,8 @@ tools/go.sh test ./...                             # 確認沒有殘留 replace
 `tools/go.sh` 已把該 proxy 排在 `GOPROXY` 最前面並關掉 sumdb（`GOSUMDB=off`；
 go.sum 仍然逐版本鎖雜湊）。
 ⚠ **不要改用 `GOPRIVATE`**：它會強制走 direct，正好繞過這個 proxy。
-⚠ **不要為了讓 CoAB 建得起來而在 `go.mod` 留 `replace`**：nested engine 不在 CoAB
-版控裡，留著會讓乾淨 checkout 建不起來。
+⚠ **不要為了讓 CoAB 建得起來而在 `go.mod` 留 `replace`**：同層 engine 不屬 CoAB
+版控，留著會讓乾淨 checkout 建不起來。
 
 - CoAB 使用：
   `git --git-dir=workplace/azure-bonds-git --work-tree=.`
@@ -1173,7 +1175,7 @@ go.sum 仍然逐版本鎖雜湊）。
   clone 一份接到根目錄——2026-08-24 有一個 session 這樣「修復」過，
   兩個 git 目錄指著同一個工作樹會分裂。）
 - Engine 使用：
-  `git -C golden-box-remake-engine`
+  `git -C ../golden-box-remake-engine`
 - 不丟棄使用者或不相關變更；先檢查 dirty worktree。
 - compact 後若看到 probe、暫存 regression 或未完成 spec，先讀 diff 與
   `CONTEXT.md` 尾端；它們可能是正在累積的 milestone，不可因尚未提交而刪除。

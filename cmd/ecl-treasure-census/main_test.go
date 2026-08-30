@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 )
 
 // 門檻測試：寶物分母不會悄悄掉光。

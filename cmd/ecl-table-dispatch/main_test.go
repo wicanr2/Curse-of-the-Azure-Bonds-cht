@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 )
 
 // 這一支釘住「查表分派的分母不會悄悄變成 0」。

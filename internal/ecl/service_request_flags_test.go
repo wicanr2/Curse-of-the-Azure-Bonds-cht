@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 )
 
 // `24h COMBAT` 的商店與神殿旗標**由腳本自己寫**，慣用法一模一樣：

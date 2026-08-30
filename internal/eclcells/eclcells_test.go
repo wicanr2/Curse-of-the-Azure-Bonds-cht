@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 )
 
 // 分派器的偵測是逐格盤點的地圖：少偵測到一個，那個 block 的內容就整批看起來

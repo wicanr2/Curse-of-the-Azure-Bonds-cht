@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 )
 
 // eclBlock 取原版 image 裡某一段的位元組碼。image 不在就跳過：這幾條測的是

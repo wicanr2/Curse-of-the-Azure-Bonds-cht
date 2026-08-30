@@ -253,8 +253,9 @@ theme 與日後美化 theme 分開維護。
 
 ## 從乾淨 clone 開始建置
 
-可重用的 engine 是**獨立的私有 repo**，而 `golden-box-remake-engine/` 與
-`workplace/` 都不在本 repo 的版控裡，所以剛 clone 完要先把相依準備好：
+可重用的 engine 是放在 CoAB **同層固定目錄的獨立私有 repo**；CoAB 內不保存
+nested clone、gitlink 或 engine source。`workplace/` 不在版控，因此剛 clone
+完要先把相依準備好：
 
 ```sh
 git clone https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht.git

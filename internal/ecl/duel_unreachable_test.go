@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 )
 
 // `24h COMBAT` 的第一支有兩個條件：`DS:8B69h`（有怪要打）**或** `DS:8B56h`。

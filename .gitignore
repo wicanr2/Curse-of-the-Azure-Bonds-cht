@@ -17,9 +17,6 @@ workplace/output/
 __pycache__/
 *.test
 
-# 獨立 Git history；不可誤加為本 repo 的 gitlink
-/golden-box-remake-engine/
-
 # IDA／Go／DOSBox 的本地工作產物；.git 目錄本身也在這裡
 /workplace/
 
@@ -45,7 +42,6 @@ __pycache__/
 # 是後面的規則覆蓋前面的，所以要在這裡再擋一次，否則 `workplace/` 裡的 IDA 產物
 # 與獨立 history 會整包冒出來。
 /workplace/
-/golden-box-remake-engine/
 /pc98/
 /dist/
 /dist-all/

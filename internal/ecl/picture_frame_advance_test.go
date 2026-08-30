@@ -5,7 +5,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 )
 
 // `2Dh CALL 6803h` 是「圖片序列往前推一格」。

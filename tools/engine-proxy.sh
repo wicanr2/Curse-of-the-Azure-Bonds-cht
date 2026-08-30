@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 把本機的 nested engine repo 打包成一個「檔案型 Go module proxy」，讓 CoAB 的
+# 把主機固定共用 engine repo 打包成一個「檔案型 Go module proxy」，讓 CoAB 的
 # go.mod 可以鎖到新的 engine commit。
 #
 # 為什麼需要這一支：`golden-box-remake-engine` 是**私有** repo，proxy.golang.org
@@ -21,11 +21,11 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ENGINE="$ROOT/golden-box-remake-engine"
+ENGINE="${GOLDEN_BOX_REMAKE_ENGINE_DIR:-$ROOT/../golden-box-remake-engine}"
 MODULE="github.com/wicanr2/golden-box-remake-engine"
 OUT="$ROOT/workplace/engine-proxy"
 
-[ -d "$ENGINE/.git" ] || { echo "找不到 nested engine repo：$ENGINE" >&2; exit 2; }
+[ -d "$ENGINE/.git" ] || { echo "找不到固定共用 engine repo：$ENGINE" >&2; exit 2; }
 
 commit="$(git -C "$ENGINE" rev-parse "${1:-HEAD}")"
 short="${commit:0:12}"
@@ -54,7 +54,28 @@ trap 'rm -rf "$tmp"' EXIT
 prefix="$MODULE@$version"
 mkdir -p "$tmp/$prefix"
 git -C "$ENGINE" archive --format=tar "$commit" | tar -x -C "$tmp/$prefix"
-( cd "$tmp" && find "$prefix" -type f | sort | zip -X -q "$dir/$version.zip" -@ )
+if command -v zip >/dev/null 2>&1; then
+  ( cd "$tmp" && find "$prefix" -type f | sort | zip -X -q "$dir/$version.zip" -@ )
+elif command -v python3 >/dev/null 2>&1; then
+  # CoAB 的鎖版 test image 有 Python 標準庫但沒有 zip CLI；使用固定排序與
+  # ZIP_STORED 產出符合 Go module proxy contract 的可重現 archive。
+  python3 - "$tmp" "$prefix" "$dir/$version.zip" <<'PY'
+import pathlib
+import sys
+import zipfile
+
+root = pathlib.Path(sys.argv[1])
+prefix = pathlib.Path(sys.argv[2])
+output = pathlib.Path(sys.argv[3])
+with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as archive:
+    for path in sorted((root / prefix).rglob("*")):
+        if path.is_file():
+            archive.write(path, path.relative_to(root).as_posix())
+PY
+else
+  echo "需要 zip 或 python3 才能建立 Go module archive" >&2
+  exit 3
+fi
 
 # list 讓 `go list -m -versions` 之類的查詢也能運作。
 grep -qxF "$version" "$dir/list" 2>/dev/null || echo "$version" >> "$dir/list"

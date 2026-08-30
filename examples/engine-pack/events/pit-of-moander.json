@@ -1,0 +1,90 @@
+{
+  "$schema": "../../../schema/game-pack.schema.json",
+  "schema_version": 1,
+  "id": "curse-of-the-azure-bonds.pit-of-moander",
+  "default_locale": "en",
+  "locales": {
+    "en": {
+      "pit.departure.alias_alive": "Alias thanks the party and leaves. The scent of honeysuckle fills the air as Dragonbait bows and follows her.",
+      "pit.departure.alias_dead": "Dragonbait carries Alias's body toward Hillsfar.",
+      "zhentil.guards_question": "The guards take the party aside for questioning and record Journal Entry 32.",
+      "journal.32": "Journal Entry 32: Two guards and their commander compile a detailed file on the party and insist that it is strictly routine."
+    },
+    "zh-TW": {
+      "pit.departure.alias_alive": "愛麗雅絲說：「我們必須在此分別了。」她感謝你們一路相助，祝眾人好運後轉身離去。空氣中瀰漫著忍冬花香；龍餌靜靜看過每一位夥伴，鞠躬致意，隨後跟上愛麗雅絲。",
+      "pit.departure.alias_dead": "龍餌抱起愛麗雅絲的遺體，向眾人沉默地鞠躬，隨後朝希爾斯法的方向離去。",
+      "zhentil.guards_question": "衛兵把隊伍帶到一旁盤問；你們將此事記入冒險手札第 32 條。",
+      "journal.32": "手札條目 32：兩名衛兵與指揮官盤問你們。每回答一次「是」，其中一名衛兵便冷笑著記入冊中；每回答一次「否」，另一名衛兵便哼聲記在不同的簿冊。指揮官詳細抄下全隊的姓名、來歷與各項資料。每當有人追問盤查的理由，三人便一同冷笑；指揮官只說：「我們正在建立你們的檔案，這只是例行公事。」"
+    }
+  },
+  "text_rules": [
+    {
+      "id": "zhentil.guards_question_party",
+      "all_contains": [
+        "GUARDS TAKE YOU ASIDE FOR QUESTIONING",
+        "JOURNAL ENTRY 32"
+      ],
+      "message_id": "zhentil.guards_question",
+      "journal_message_ids": ["journal.32"]
+    }
+  ],
+  "events": [
+    {
+      "id": "pit-of-moander.departure",
+      "once": true,
+      "when": {
+        "ecl_block": 81,
+        "memory": {
+          "0x4C5B": 255,
+          "0x7F12": 1
+        }
+      },
+      "variants": [
+        {
+          "when": {
+            "member": {
+              "script_name": "ALIAS",
+              "alive": true
+            }
+          },
+          "actions": [
+            {
+              "type": "remove_members",
+              "script_names": ["ALIAS", "DRAGONBAIT"]
+            },
+            {
+              "type": "show_message",
+              "message_id": "pit.departure.alias_alive"
+            },
+            {
+              "type": "return_to_pending_menu",
+              "mode": "world_menu"
+            }
+          ]
+        },
+        {
+          "when": {
+            "member": {
+              "script_name": "ALIAS",
+              "alive": false
+            }
+          },
+          "actions": [
+            {
+              "type": "remove_members",
+              "script_names": ["ALIAS", "DRAGONBAIT"]
+            },
+            {
+              "type": "show_message",
+              "message_id": "pit.departure.alias_dead"
+            },
+            {
+              "type": "return_to_pending_menu",
+              "mode": "world_menu"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

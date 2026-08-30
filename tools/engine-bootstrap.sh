@@ -2,9 +2,9 @@
 # 讓一份**乾淨 clone** 建得起來：把 go.mod 鎖住的那個 engine commit 準備好，
 # 並重建檔案型 Go module proxy。
 #
-# 為什麼需要這一支：`golden-box-remake-engine/` 與 `workplace/` 都在
-# `.gitignore` 裡（前者是獨立 repo、後者是工作目錄），所以剛 clone 完的 CoAB
-# **既沒有 engine 原始碼、也沒有 proxy**。而 engine 是私有 repo，
+# 為什麼需要這一支：engine 是固定放在 CoAB 同層的獨立 repo，而 `workplace/`
+# 是忽略的工作目錄，所以剛 clone 完的 CoAB **可能沒有 engine clone，也沒有
+# proxy**。engine 是私有 repo，
 # `proxy.golang.org` 取不到，容器裡又不該放 GitHub 憑證。
 #
 # 用法（在 CoAB 根目錄）：
@@ -15,7 +15,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ENGINE="$ROOT/golden-box-remake-engine"
+ENGINE="${GOLDEN_BOX_REMAKE_ENGINE_DIR:-$ROOT/../golden-box-remake-engine}"
 MODULE="github.com/wicanr2/golden-box-remake-engine"
 REMOTE="https://github.com/wicanr2/golden-box-remake-engine.git"
 
@@ -26,7 +26,7 @@ commit="${version##*-}"
 echo "go.mod 鎖的是 $version（commit $commit）"
 
 if [ ! -d "$ENGINE/.git" ]; then
-  echo "找不到 nested engine repo，改用 clone：$REMOTE"
+  echo "找不到固定共用 engine repo，改用 clone：$REMOTE"
   git clone "$REMOTE" "$ENGINE"
 fi
 

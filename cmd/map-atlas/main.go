@@ -38,7 +38,7 @@ import (
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/eclcells"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 )

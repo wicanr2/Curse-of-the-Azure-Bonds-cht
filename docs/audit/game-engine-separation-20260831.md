@@ -2,7 +2,7 @@
 
 ## 結論
 
-現行分離是**依賴方向正確，但尚未完全收旂**。
+現行 game／engine 已完成實體、版本庫與程式邊界分離。
 
 - CoAB 單向依賴獨立 module
   `github.com/wicanr2/golden-box-remake-engine`，鎖定 commit
@@ -14,19 +14,17 @@
 - 兩個 repository 工作樹獨立；engine 不是 CoAB gitlink，CoAB `go.mod`
   也沒有提交本機 `replace`。
 
-但仍有三項邊界債務，不能宣稱已完全作品中立：
+本輪已關閉先前的三項邊界債務：
 
-1. **DAX codec 留在 game repo**：`internal/dax/dax.go` 是通用 SSI Gold Box
-   block container parser，含 DOS RLE 與 PC-98 block decoder，卻仍屬於 CoAB module。
-   engine 現無等價 DAX package。這與「DAX codec 屬共用 engine」的架構契約不符。
-2. **engine 含 CoAB 劇情 example**：
-   `examples/curse-of-the-azure-bonds/events/pit-of-moander.json` 含 Alias、
-   Dragonbait、Zhentil、Journal 32 與作品記憶體位址。它雖不進 Go runtime，
-   仍是放錯 repository 的作品 payload；應移回 CoAB 或改成 synthetic fixture。
-3. **ECL VM 還沒有清楚切開共用核心與作品 adapter**：CoAB `internal/ecl`
-   同時含 opcode／控制流／亂數核心，也含 CoAB 記憶體位址、block 閘門、
-   世界地圖與劇情 consumer。目前無法讓下一款 Gold Box 只提供 game pack
-   就重用完整 ECL runtime。
+1. DAX DOS／PC-98 codec 與 malformed-input 測試已移至 engine `dax` package；
+   CoAB 全部 consumer 直接匯入 engine module。
+2. CoAB 的 Moander 劇情 example 已移回 game repo
+   `examples/engine-pack/events/`；engine 只留 synthetic fixture。
+3. ECL operand、instruction framing、變長 record、branch table 與控制流圖已移至
+   engine `ecl` package；CoAB `internal/ecl` 只保留作品 memory、文字、事件效果與
+   UI adapter。
+4. engine 工作副本固定在 `../golden-box-remake-engine/`；CoAB 不再忽略或容納
+   nested clone，bootstrap／proxy 工具也只使用同層 repo。
 
 ## 不應誤判為邊界漏洞的項目
 
@@ -44,16 +42,16 @@
 Pool of Radiance 不得複製 CoAB `internal/dax`或整包 `internal/ecl`。
 開工順序應為：
 
-1. 用 CoAB 與 Pool 真實 DAX 檔案同時定義 engine codec contract，保留 malformed
-   input 的 fail-closed 測試。
-2. 把 ECL decode／opcode／VM 控制流與作品 memory map／text rule／事件 consumer
-   分成單向 interface；不允許 engine 分支比對遊戲 ID。
-3. 移除或中立化 engine 的 CoAB example，再加入 Pool 作為第二個真實
-   consumer。只有兩作都不需要 title branch 才可宣稱 API 真正可重用。
+1. 直接消費 engine `dax`，再用 Pool 真實 DAX 樣本補第二作品的 count、offset、
+   stride、malformed-input 與 consumer 驗證；不得另寫一份 parser。
+2. 直接消費 engine `ecl` 的 instruction／control-flow API；Pool 自己提供 memory
+   map、text rule 與 event consumer，不允許 engine 分支比對遊戲 ID。
+3. Pool 成為第二個真實 consumer 後，重新審查目前仍標為跨作品候選的 API；只有
+   兩作都不需要 title branch 才可升格為已證明可重用契約。
 
 ## 本次可重現收據
 
-- engine HEAD：`0f569f283f8e`。
+- engine HEAD：`86ac57e498c9`。
 - 容器：`coab-go-test:20260729`，`--network none`，不掛載 CoAB。
 - 命令：`go test ./...`，engine 全套件通過。
 - 靜態搜尋：engine 的 `*.go` 對 CoAB 標題／地名／NPC／`coab` 命中 0；
