@@ -39,7 +39,7 @@ Windows／macOS 真機、macOS 簽署／公證、音訊人耳與對外素材權�
 | **主線** | **開場到結局同一條 session 跑得完**，拆成 25 個段 subtest（23 段主線＋2 段接進主線的段內支線），每段結束的快照都存得下去讀得回來 |
 | **鍵盤通關** | 從標題開始、全程只走真實前端按鍵，第 **14,380 幀**觸發 `GameWon()` |
 | **一般強度基線** | pending Bless 無限重試已修；關閉隊伍強化後跑 2,455 幀：251 格、8 個 ECL 段、199 句、落回原文 0，最後真實全滅重開 1 次。手動戰鬥對照也在同一戰役區段全滅；這是合法停止結果，不再把戰術／loadout 或自動通關列為產品缺口 |
-| **發行工程** | `0.1.0-dev.20260829` 已重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP；Linux AppImage 與 Windows EXE（Wine）已實際啟動與繁中截圖驗收，兩張開場 PNG 逐位元組相同；Windows／macOS 尚待真機啟動；60 秒內部推廣片已實錄遊玩、F2 主題、F7 邊框 A／B／C 與 F6 語言切換，且通過長黑／長靜音檢查；音樂權利仍 pending（[稽核](docs/audit/release-0.1.0-dev.20260829.md)） |
+| **發行工程** | 首個正式版 `1.0.0-20260830` 已重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP；Linux AppImage 與 Windows EXE（Wine）已實際啟動與繁中截圖驗收，兩張開場 PNG 逐位元組相同，且已確認無內框覆字；Windows／macOS 尚待真機啟動。內部推廣片已實錄遊玩、F2 主題、F7 邊框 A／B／C 與 F6 語言切換，但音樂權利仍 pending（[稽核](docs/audit/release-1.0.0-20260830.md)） |
 | 主線分段 | 25 段全部可直入（`-segment ECL{成員}/0x{block}`）；47 條 `NEWECL` 邊逐條交接；段入口有中文劇情 22／不出文字 3 |
 | 戰利品 | `1Ch CLEARMONSTERS` 連同**還沒領走的戰利品**一起丟掉（spec 1145）；corpus 唯一走得到那條路的是提爾佛頓火刀首領的重打迴圈，少了它重打一次就多領一次 |
 | 遭遇距離 | `0Ch` 擺距離、`0Dh APPROACH` 走近、`29h` 重設（spec 1146）。⚠ `APPROACH` 的減一是**演出**——`29h` 進門會把它蓋回去 |
@@ -370,7 +370,7 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
 - **三平台發行包與推廣片**：執行 `tools/package-release.sh <版本>` 與
   `tools/build-promo.sh <版本>`，現行交付物一律集中在 `dist-all/<版本>/`。
   `patch/` 不含原版 ZIP 與未授權 PC-98 音樂；`full-local/` 只供本機驗收。
-  公開下載為 [v0.1.0-dev.20260829 patch 版](https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/releases/tag/v0.1.0-dev.20260829)：
+  公開下載為 [v1.0.0-20260830 首個正式 patch 版](https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/releases/tag/v1.0.0-20260830)：
   僅含 Linux x86_64、Windows x86_64、macOS x86_64／arm64 四件 patch 與獨立 SHA-256 清單；
   不含 `full-local`、原版 ZIP、PC-98 OGG 或內部推廣片。
   Linux AppImage 與 Windows EXE（Wine）已啟動與繁中截圖驗收；兩張開場 PNG
