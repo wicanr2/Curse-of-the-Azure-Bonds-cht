@@ -353,9 +353,12 @@ func (a *app) drawGlobalUI(screen *ebiten.Image) {
 				drawA6CombatFrame(screen, w, h)
 			}
 		case game.ModeWilderness, game.ModeEvent, game.ModeMap, game.ModePlace, game.ModeJournal, game.ModeDungeon:
-			// 世界地圖的上半部是單一 608×240 BIGPIC；不得疊入冒險畫面的
-			// scene 內框與左右分隔。下方選單仍由 drawOverlandMap 自己分區。
-			if a.state.Mode == game.ModeWilderness && a.state.Message == "" {
+			// 只有真正有左側視景的畫面才能疊冒險分割框。純文字事件、
+			// 日誌、地點選單與地圖的文字會橫跨畫面；疊入 scene 內框會直接覆字。
+			// 世界地圖的上半部亦是單一 608×240 BIGPIC，不得留下區域框。
+			adventureSplit := a.state.Mode == game.ModeDungeon ||
+				(a.state.Mode == game.ModeEvent && a.state.PictureRequested)
+			if !adventureSplit {
 				if customFrame {
 					drawConfigurableOuterFrame(screen, w, h, a.ui.settings)
 				} else if !a.drawModernA6OuterFrame(screen, w, h) {
