@@ -39,7 +39,7 @@ Windows／macOS 真機、macOS 簽署／公證、音訊人耳與對外素材權�
 | **主線** | **開場到結局同一條 session 跑得完**，拆成 25 個段 subtest（23 段主線＋2 段接進主線的段內支線），每段結束的快照都存得下去讀得回來 |
 | **鍵盤通關** | 從標題開始、全程只走真實前端按鍵，第 **14,380 幀**觸發 `GameWon()` |
 | **一般強度基線** | pending Bless 無限重試已修；關閉隊伍強化後跑 2,455 幀：251 格、8 個 ECL 段、199 句、落回原文 0，最後真實全滅重開 1 次。手動戰鬥對照也在同一戰役區段全滅；這是合法停止結果，不再把戰術／loadout 或自動通關列為產品缺口 |
-| **發行工程** | 首個正式版 `1.0.0-20260830` 已重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP；Linux AppImage 與 Windows EXE（Wine）已實際啟動與繁中截圖驗收，兩張開場 PNG 逐位元組相同，且已確認無內框覆字；Windows／macOS 尚待真機啟動。內部推廣片已實錄遊玩、F2 主題、F7 邊框 A／B／C 與 F6 語言切換，但音樂權利仍 pending（[稽核](docs/audit/release-1.0.0-20260830.md)） |
+| **發行工程** | 首個正式版 `1.0.0-20260830` 已重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP；Linux AppImage 與 Windows EXE（Wine）已實際啟動與繁中截圖驗收，兩張開場 PNG 逐位元組相同，且已確認無內框覆字；Windows／macOS 尚待真機啟動。內部推廣片已重拍，含三組 DOS 原版／remake 建角建隊對照、實際遊玩、F2 主題、F7 邊框 A／B／C 與 F6 語言切換；音樂與原版圖像權利未釐清，維持內部使用（[稽核](docs/audit/release-1.0.0-20260830.md)） |
 | 主線分段 | 25 段全部可直入（`-segment ECL{成員}/0x{block}`）；47 條 `NEWECL` 邊逐條交接；段入口有中文劇情 22／不出文字 3 |
 | 戰利品 | `1Ch CLEARMONSTERS` 連同**還沒領走的戰利品**一起丟掉（spec 1145）；corpus 唯一走得到那條路的是提爾佛頓火刀首領的重打迴圈，少了它重打一次就多領一次 |
 | 遭遇距離 | `0Ch` 擺距離、`0Dh APPROACH` 走近、`29h` 重設（spec 1146）。⚠ `APPROACH` 的減一是**演出**——`29h` 進門會把它蓋回去 |

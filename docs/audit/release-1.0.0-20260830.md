@@ -49,3 +49,23 @@ PC-98 OGG 或內部推廣片。
 - 內部推廣片的 PC-98 音樂權利仍為 rights pending，不上傳正式版。
 - 真實全滅是原版正常結果；一般強度抽測遇到全滅即停止，
   不用測試專用強化強求通過。
+
+## 2026-08-31 推廣片重拍
+
+正式版已在 Docker／Xvfb 重拍 66 秒內部推廣片：
+`dist-all/1.0.0-20260830/promo/coab-remake-promo-internal.mp4`，SHA-256 為
+`3063f1956bd62388414e13f4642aa2a1b1364bbdaa472bc754c50f035ebf1953`。
+
+- 新增三組明確標示的 DOS 原版／remake 建角建隊對照：外層隊伍功能、
+  種族選擇、能力值／等級／HP。後一組字幕明示標為「相鄰狀態」；
+  metadata 也註明這是流程／版面對照，不是同存檔逐像素 parity。
+- remake 對照圖全部由目前 packaged Linux full-local AppImage 重新擷取；
+  DOS 圖來自已登記的 runtime oracle PNG。
+- 後段保留同一實際遊玩 session 的移動、F7 邊框 A／B／C、F6
+  簡中／日文／英文與 F2 現代／原版主題切換，並含 F3 攻略、戰鬥與結局。
+- `ffprobe`：1280×720、H.264、30 fps、66.000 秒；AAC 44.1 kHz 雙聲道。
+  平均音量 −21.4 dB、峰值 −12.2 dB；沒有連續三秒以上長靜音，
+  `blackdetect=d=1:pix_th=0.02` 無長黑。contact sheet 與15 個指定時點已目視。
+
+音軌與 DOS 圖仍涉原作資產，因此本片維持
+`internal review only／public distribution not cleared`，不追加到 GitHub Release。

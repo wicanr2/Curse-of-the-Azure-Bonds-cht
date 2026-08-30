@@ -6,6 +6,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VERSION="${1:-}"
 SOURCE_COMMIT="$(git --git-dir="$ROOT/workplace/azure-bonds-git" --work-tree="$ROOT" rev-parse --short=12 HEAD)"
+GAME_SOURCE_COMMIT="${GAME_SOURCE_COMMIT:-$SOURCE_COMMIT}"
 IMAGE="game-video:latest"
 RELEASE="$ROOT/dist-all/$VERSION/full-local"
 APPIMAGE="$RELEASE/azure-bonds-remake-$VERSION-x86_64.AppImage"
@@ -26,7 +27,9 @@ docker run --rm --network none --memory 4g --cpus 2 --pids-limit 384 \
   -u "$(id -u):$(id -g)" \
   --tmpfs /tmp/.X11-unix:rw,mode=1777 \
   -v "$RELEASE:/release:ro" -v "$OUT:/promo" \
-  -e VERSION="$VERSION" -e SOURCE_COMMIT="$SOURCE_COMMIT" "$IMAGE" sh -c '
+  -v "$ROOT/workplace/dos-oracle/out:/dos-evidence:ro" \
+  -v "$ROOT/tools/build-promo.sh:/recording/build-promo.sh:ro" \
+  -e VERSION="$VERSION" -e GAME_SOURCE_COMMIT="$GAME_SOURCE_COMMIT" "$IMAGE" sh -c '
     set -eu
     mkdir -p /promo/clips /promo/frames
     app="/release/azure-bonds-remake-$VERSION-x86_64.AppImage"
@@ -69,6 +72,36 @@ docker run --rm --network none --memory 4g --cpus 2 --pids-limit 384 \
         n=$((n+1)); test "$n" -lt 50 || { echo "上一個視窗未關閉：$name" >&2; exit 1; }
         sleep 0.1
       done
+    }
+
+    # 從目前正式 AppImage 擷取建角固定狀態。DOS 側使用已登記的
+    # runtime oracle PNG；對拍字幕明示是流程／版面對照，不宣稱同存檔逐像素。
+    capture_still() {
+      name=$1; shift
+      setsid "$app" -sound-dir /tmp/coab-promo-no-audio "$@" >/tmp/coab-$name.log 2>&1 & game=$!
+      n=0
+      until xdotool search --onlyvisible --name "." >/dev/null 2>&1; do
+        n=$((n+1)); test "$n" -lt 300 || { cat /tmp/coab-$name.log; exit 1; }
+        sleep 0.1
+      done
+      sleep 10
+      ffmpeg -hide_banner -loglevel error -y -f x11grab -video_size 640x480 \
+        -i :99.0+0,0 -frames:v 1 "/promo/frames/source-$name.png"
+      kill -TERM "-$game" 2>/dev/null || true
+      wait "$game" 2>/dev/null || true
+      game=""
+      n=0
+      while xdotool search --onlyvisible --name "." >/dev/null 2>&1; do
+        n=$((n+1)); test "$n" -lt 50 || { echo "上一個視窗未關閉：$name" >&2; exit 1; }
+        sleep 0.1
+      done
+    }
+
+    compare_stills() {
+      name=$1; dos=$2; remake=$3; caption=$4
+      ffmpeg -hide_banner -loglevel error -y -loop 1 -i "$dos" -loop 1 -i "$remake" -t 4 \
+        -filter_complex "[0:v]scale=560:420:force_original_aspect_ratio=decrease,pad=560:420:(ow-iw)/2:(oh-ih)/2:black[left];[1:v]scale=560:420:force_original_aspect_ratio=decrease,pad=560:420:(ow-iw)/2:(oh-ih)/2:black[right];[left][right]hstack=inputs=2[comparison];[comparison]pad=1280:720:80:90:black,drawtext=fontfile=$font:text=DOS 原版:fontcolor=0xffdc5c:fontsize=32:x=280-text_w/2:y=35,drawtext=fontfile=$font:text=Remake:fontcolor=0xffdc5c:fontsize=32:x=920-text_w/2:y=35,drawbox=x=0:y=570:w=1280:h=94:color=black@0.78:t=fill,drawtext=fontfile=$font:text=$caption:fontcolor=white:fontsize=31:x=(w-text_w)/2:y=595,fps=30,setpts=N/(30*TB)" \
+        -an -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p "/promo/clips/$name.mp4"
     }
 
     # 在同一個正常遊戲 session 內錄下移動、F2 theme 切換、
@@ -153,7 +186,16 @@ docker run --rm --network none --memory 4g --cpus 2 --pids-limit 384 \
     }
 
     record 01-opening "繁體中文・完整主線" 6 -opening
-    record 02-party "原版流程建角・新增操作指引" 6 -guided-creation -guided-creation-step party
+    capture_still remake-party -guided-creation -guided-creation-step party -guided-creation-name 測試者
+    capture_still remake-race -guided-creation
+    capture_still remake-abilities -guided-creation -guided-creation-step abilities
+    compare_stills 02-compare-party /dos-evidence/audit-function-20260830.png \
+      /promo/frames/source-remake-party.png "建立／加入／讀檔的外層隊伍流程對照"
+    compare_stills 02-compare-race /dos-evidence/audit-create-race-20260830.png \
+      /promo/frames/source-remake-race.png "種族選擇順序・Remake 另加繁中按鍵指引"
+    compare_stills 02-compare-abilities \
+      /release/linux/AppDir/assets/reference/original-dos/runtime/530-dos-character-creation-age.png \
+      /promo/frames/source-remake-abilities.png "能力值・等級・HP 的建角資訊對照（相鄰狀態）"
     record_switches
     record 03-guide "F3 原版 AREA 地圖・事件攻略" 6 -tilverton-dungeon -ui-preview guide-full
     record 04-combat "回合制戰鬥・原作 sprite 與地形" 7 -encounter -combat-visual-demo magic
@@ -163,11 +205,13 @@ docker run --rm --network none --memory 4g --cpus 2 --pids-limit 384 \
       -vf "drawtext=fontfile=$font:text=青色枷的詛咒:fontcolor=0xffdc5c:fontsize=58:x=(w-text_w)/2:y=250,drawtext=fontfile=$font:text=繁體中文 Remake:fontcolor=white:fontsize=38:x=(w-text_w)/2:y=340" \
       -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p /promo/clips/00-title.mp4
     ffmpeg -hide_banner -loglevel error -y -f lavfi -i color=c=0x07101c:s=1280x720:r=30:d=4 \
-      -vf "drawtext=fontfile=$font:text=非商業版・開發中:fontcolor=0xffdc5c:fontsize=48:x=(w-text_w)/2:y=270,drawtext=fontfile=$font:text=PolyForm Noncommercial 1.0.0:fontcolor=white:fontsize=28:x=(w-text_w)/2:y=350" \
+      -vf "drawtext=fontfile=$font:text=首個正式版・非商業授權:fontcolor=0xffdc5c:fontsize=48:x=(w-text_w)/2:y=270,drawtext=fontfile=$font:text=PolyForm Noncommercial 1.0.0:fontcolor=white:fontsize=28:x=(w-text_w)/2:y=350" \
       -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p /promo/clips/06-end.mp4
 
     printf "file %s\n" \
-      /promo/clips/00-title.mp4 /promo/clips/01-opening.mp4 /promo/clips/02-party.mp4 \
+      /promo/clips/00-title.mp4 /promo/clips/01-opening.mp4 \
+      /promo/clips/02-compare-party.mp4 /promo/clips/02-compare-race.mp4 \
+      /promo/clips/02-compare-abilities.mp4 \
       /promo/clips/03-live-switches.mp4 /promo/clips/03-guide.mp4 \
       /promo/clips/04-combat.mp4 /promo/clips/05-ending.mp4 \
       /promo/clips/06-end.mp4 >/tmp/concat.txt
@@ -175,17 +219,17 @@ docker run --rm --network none --memory 4g --cpus 2 --pids-limit 384 \
       -vf "fps=30,setpts=N/(30*TB)" -an -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p \
       /tmp/video.mp4
     ffmpeg -hide_banner -loglevel error -y -i /tmp/video.mp4 -stream_loop -1 -i "$audio" \
-      -filter_complex "[1:a]volume=1.5,afade=t=in:st=0:d=1.5,afade=t=out:st=58:d=2[a]" \
-      -map 0:v -map "[a]" -t 60 -c:v copy -c:a aac -b:a 160k -movflags +faststart \
-      -metadata title="Curse of the Azure Bonds Traditional Chinese Remake - internal promo" \
+      -filter_complex "[1:a]volume=1.5,afade=t=in:st=0:d=1.5,afade=t=out:st=64:d=2[a]" \
+      -map 0:v -map "[a]" -t 66 -c:v copy -c:a aac -b:a 160k -movflags +faststart \
+      -metadata title="Curse of the Azure Bonds Traditional Chinese Remake v1.0.0 - internal promo" \
       -metadata comment="Rights pending: internal review only; not cleared for public distribution" \
       /promo/coab-remake-promo-internal.mp4
 
     ffprobe -v error -show_format -show_streams -of json /promo/coab-remake-promo-internal.mp4 >/promo/ffprobe.json
     ffmpeg -hide_banner -y -i /promo/coab-remake-promo-internal.mp4 \
-      -vf "fps=1/2,scale=256:144:flags=lanczos,tile=5x5" -frames:v 1 /promo/contact-sheet.png \
+      -vf "fps=1/2,scale=256:144:flags=lanczos,tile=5x7" -frames:v 1 /promo/contact-sheet.png \
       >/tmp/contact.log 2>&1
-    for second in 2 8 14 19 22 25 28 31 34 37 43 50 56 59; do
+    for second in 2 8 11 15 19 23 27 31 35 39 43 49 56 62 65; do
       ffmpeg -hide_banner -loglevel error -y -ss "$second" -i /promo/coab-remake-promo-internal.mp4 \
         -frames:v 1 "/promo/frames/frame-$second.png"
     done
@@ -195,7 +239,8 @@ docker run --rm --network none --memory 4g --cpus 2 --pids-limit 384 \
       >/promo/silence-check.txt 2>&1
     ffmpeg -hide_banner -i /promo/coab-remake-promo-internal.mp4 -vf blackdetect=d=1:pix_th=0.02 -an -f null - \
       >/promo/black-check.txt 2>&1
-    printf "version=%s\nsource_commit=%s\nvideo_source=packaged Linux full-local AppImage, Docker/Xvfb x11grab\ninteractive_evidence=normal Tilverton session with movement; three F7,Right,Enter cycles for frame A/B/C; F6,F6,F6 language cycle; final F2 modern-to-original theme switch\naudio_source=assets/audio/pc98-bgm-selector-01.ogg\nrights_status=internal review only; public distribution not cleared\n" "$VERSION" "$SOURCE_COMMIT" >/promo/metadata.txt
+    script_sha=$(sha256sum /recording/build-promo.sh | cut -d" " -f1)
+    printf "version=%s\ngame_source_commit=%s\nrecording_script_sha256=%s\nvideo_source=packaged Linux full-local AppImage, Docker/Xvfb x11grab\ndos_comparison_source=registered DOS runtime oracle PNGs; flow/layout comparison, not same-save pixel parity\ninteractive_evidence=normal Tilverton session with movement; three F7,Right,Enter cycles for frame A/B/C; F6,F6,F6 language cycle; final F2 modern-to-original theme switch\naudio_source=assets/audio/pc98-bgm-selector-01.ogg\nrights_status=internal review only; public distribution not cleared\n" "$VERSION" "$GAME_SOURCE_COMMIT" "$script_sha" >/promo/metadata.txt
     cd /promo
     sha256sum coab-remake-promo-internal.mp4 contact-sheet.png ffprobe.json metadata.txt \
       live-switches-runtime.log volume-check.txt silence-check.txt black-check.txt >SHA256SUMS.txt
