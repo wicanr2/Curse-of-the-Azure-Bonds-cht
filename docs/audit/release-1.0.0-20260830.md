@@ -37,6 +37,12 @@ GitHub Release 標籤為 `v1.0.0-20260830`，只公開四件 `patch`
 允許非商業使用、修改與散布衍生版本，必須保留署名與同一
 非商業限制，商業使用另洽。
 
+2026-08-30 發布後已從 GitHub 讀回驗證：`isDraft=false`、
+`isPrerelease=false`，四件平台封包與 `PATCH-SHA256SUMS.txt` 共五個
+附件的狀態均為 `uploaded`；GitHub 回報的四個封包 digest 與本機
+patch 清單全數相同。公開附件不含 `full-local`、原版 ZIP、
+PC-98 OGG 或內部推廣片。
+
 ## 仍保留的驗證限制
 
 - Windows 與 macOS 尚待真機啟動；macOS 尚待簽署與公證。
