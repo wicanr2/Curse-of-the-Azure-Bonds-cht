@@ -10,8 +10,8 @@
       "file": "docs/screenshots/gold-box-layout-adventure.png",
       "width": 640,
       "height": 480,
-      "sha256": "285191cddba9e61de6280575daed5a14f6adcf6ad06b3cce67bdda474cf21215",
-      "generation_mode": "Docker/Xvfb -inn；正常角色建立→序幕→旅店事件",
+      "sha256": "466826fbfdd1d60b827d7e5468d2b0d0b937914c814a1e802a8c6c25054ea034",
+      "generation_mode": "Docker/Xvfb -inn；正常角色建立→序幕→旅店事件；2026-08-31 重拍並驗證 scene display hole",
       "evidence_level": "material-exact/layout-reconstructed",
       "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
     },
@@ -60,8 +60,8 @@
       "file": "docs/screenshots/a6-modern-first-person.png",
       "width": 640,
       "height": 480,
-      "sha256": "6f514f3bf776b282c00b881c2af6ba96bd7b91b2d4b543d6e826c42e340cc29b",
-      "generation_mode": "Docker/Xvfb -tilverton-dungeon；normal dungeon path 載入雙解析度牆面符號與 A6 frame",
+      "sha256": "b94fc759519733cd185ae57e13c7d7b508963a656a6c8317fa86650771e05718",
+      "generation_mode": "Docker/Xvfb -tilverton-dungeon；normal dungeon path 載入雙解析度牆面符號與 A6 frame；2026-08-31 重拍",
       "evidence_level": "layout-only",
       "spec": "docs/spec/1229-modern-ui-theme-help-guide-resolution.md"
     },
@@ -130,8 +130,8 @@
       "file": "docs/screenshots/tilverton-first-person-remake.png",
       "width": 640,
       "height": 480,
-      "sha256": "c06a07134cec8c6ab539f52c2eabb1cfb5cd732d60792979d349202f8f7744f7",
-      "generation_mode": "Docker/Xvfb -tilverton-dungeon；正常地城入口→第一人稱畫面",
+      "sha256": "eba3aea12c2c9d7eaef31692a8c51812c17327988c447dd01e0b3b301dc02b7c",
+      "generation_mode": "Docker/Xvfb -tilverton-dungeon；正常地城入口→第一人稱畫面；2026-08-31 重拍並驗證 scene display hole",
       "evidence_level": "material-exact/layout-reconstructed",
       "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
     },
@@ -190,7 +190,7 @@
       "file": "docs/screenshots/guided-party-assembly.png",
       "width": 640,
       "height": 480,
-      "sha256": "413f7559035fe04534d5dc76c35f3b393ef218ffbde2b7e8d8042d6fc8c209b5",
+      "sha256": "5574b45def44681406d5128a8a9d037d9f116579d52acc049bc49ec9aa9ac644",
       "generation_mode": "Docker/Xvfb -guided-creation -guided-creation-step party；原版建角流程後的隊伍組裝頁",
       "evidence_level": "material-exact/layout-reconstructed",
       "spec": "docs/spec/1244-original-character-and-party-creation-guidance.md"

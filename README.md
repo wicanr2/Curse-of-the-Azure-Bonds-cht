@@ -121,7 +121,11 @@ fixture 封包抽測、Windows／macOS 真機啟動、macOS 簽署／公證與�
 
 以下是目前 remake 的代表畫面，皆在 Docker／Xvfb 產生並逐張檢視。石框與 88×88
 場景是原始素材證據；640×480 的中文延伸與完整戰鬥畫面仍是 `layout-reconstructed`，
-不能據此宣稱整作完成。
+不能據此宣稱整作完成。2026-08-31 已重新擷取旅店、提爾佛頓第一人稱與 modern
+第一人稱三張左上場景圖；原版 PIC／第一人稱的 88×88 來源固定以 2× 顯示在
+`(48,48)..(223,223)`，modern 圖也裁入同一 176×176 顯示孔。顯示孔與內框對齊，
+透視畫面自身的黑色／天空色不是場景向左上偏移。重拍收據見
+[`docs/audit/readme-scene-recapture-2026-08-31.md`](docs/audit/readme-scene-recapture-2026-08-31.md)。
 
 ![原作開場序幕：營火伏擊、三名 NPC 入隊與五枚青色符印的緣起](docs/screenshots/opening-prologue-remake.png)
 
