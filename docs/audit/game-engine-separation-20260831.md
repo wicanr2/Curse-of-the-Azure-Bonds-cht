@@ -6,10 +6,11 @@
 
 - CoAB 單向依賴獨立 module
   `github.com/wicanr2/golden-box-remake-engine`，鎖定 commit
-  `0f569f283f8e`；engine 可在不掛載 CoAB 工作樹的 Docker 容器中
+  `025eb46b28a2`；engine 可在不掛載 CoAB 工作樹的 Docker 容器中
   `go test ./...` 全數通過。
-- engine 的非測試 Go 程式碼搜不到 CoAB 標題、地名、NPC 或
-  `coab` 條件分支；共用戰鬥、幾何、圖形、區域地圖、亂數與音訊套件
+- engine 的非測試 Go 程式碼沒有 CoAB 標題、地名、NPC 的執行期字串或
+  `coab` 條件分支；目前三個 `CoAB` 命中都是說明來源／相容邊界的註解，不是
+  runtime 分支。共用戰鬥、幾何、圖形、區域地圖、亂數與音訊套件
   在 engine，CoAB 劇情、事件和翻譯仍由 game repo 消費。
 - 兩個 repository 工作樹獨立；engine 不是 CoAB gitlink，CoAB `go.mod`
   也沒有提交本機 `replace`。
@@ -49,10 +50,19 @@ Pool of Radiance 不得複製 CoAB `internal/dax`或整包 `internal/ecl`。
 3. Pool 成為第二個真實 consumer 後，重新審查目前仍標為跨作品候選的 API；只有
    兩作都不需要 title branch 才可升格為已證明可重用契約。
 
+2026-08-31 複查時 Pool 已直接使用同一 engine commit 的 `dax`、`ecl`、
+`geometry` 與 picture API，並以自身 DOS corpus 通過 DAX 113／113、GEO 29／29
+及真實素材測試；Pool repository 沒有複製 engine source。這證明實體 module 邊界已
+有第二作品 consumer，但不把 Pool 尚未閉合的 ECL／玩法語意升格成共用完成項。
+
 ## 本次可重現收據
 
-- engine HEAD：`86ac57e498c9`。
+- engine HEAD：`025eb46b28a2744e70c8c410a138986cdfffee23`。
 - 容器：`coab-go-test:20260729`，`--network none`，不掛載 CoAB。
 - 命令：`go test ./...`，engine 全套件通過。
-- 靜態搜尋：engine 的 `*.go` 對 CoAB 標題／地名／NPC／`coab` 命中 0；
-  全 repository 命中只在文件、knowledge 與上述 example。
+- 靜態搜尋：engine 非測試 `*.go` 的 CoAB 命中只有三個註解；標題、地名、NPC
+  執行期字串與 `coab` 條件分支為 0。產品專屬 example 留在 CoAB repository。
+- `dist-all/1.0.2-20260831/SHA256SUMS.json` 的八件 patch／full-local 產物已逐件
+  重算 SHA-256 與大小；三個 ZIP 與兩個 AppImage 的抽查再次證明 patch 排除原版
+  ZIP／私有 PC-98 OGG，而 full-local 含本機驗收資料。這是封包分離證據，不取代
+  Windows／macOS 真機啟動與 macOS 簽署／公證。
