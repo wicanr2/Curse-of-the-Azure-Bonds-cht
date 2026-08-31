@@ -31,6 +31,12 @@ PC-98 OGG 或權利尚未釐清的內部推廣片。
 發布後必須從 GitHub 讀回核對：Release 非 draft、非 prerelease，五個附件均為
 `uploaded`，四個平台封包的 GitHub digest 與本機 patch manifest 相同。
 
+2026-08-31 發布後讀回驗證完成：tag 指向
+`9ffb2d1b7c82d83bd29b13a5a5b4de6b5546a167`，Release 為
+`draft=false`、`prerelease=false`；五個附件均為 `uploaded`。GitHub 回報的
+四個平台封包 SHA-256 與本機 `PATCH-SHA256SUMS.txt` 全數一致，公開附件名稱中
+沒有 `full-local`、原版 ZIP、PC-98 OGG 或內部推廣片。
+
 ## Docker 與檔案衛生
 
 本輪建置、封包、內容抽查與 smoke 均使用一次性 `--rm` 容器；產物擁有者為目前
