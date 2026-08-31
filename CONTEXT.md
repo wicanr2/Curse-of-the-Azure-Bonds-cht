@@ -136,7 +136,7 @@ fallback；特殊攻擊與驅散不死的最後一擊會重算勝負，非戰鬥
 沒有靠回退真實 HP 或放寬門檻通過（spec 1206）。
 
 最新本機發行收據（2026-08-31）：`1.0.2-20260831` 已改用獨立 engine
-`025eb46b28a2`，重生 patch／full-local 各四件：Linux x86_64 AppImage、Windows
+`0819c64e451d`，重生 patch／full-local 各四件：Linux x86_64 AppImage、Windows
 x86_64 ZIP、macOS x86_64／arm64 ZIP。八件檔案皆與 `SHA256SUMS.json` 對帳；
 patch deny-list 不含原版 ZIP 與私有 PC-98 OGG，full-local 四個平台目錄均含本機
 遊戲資料。Linux AppImage 與 Windows EXE（Wine）已在 Docker／Xvfb 啟動，兩張
