@@ -35,3 +35,8 @@ macOS 雙架構只完成交叉編譯與封包，尚未經 macOS 真機、簽署�
 GitHub Release 只允許上傳四件 `patch` 與 `PATCH-SHA256SUMS.txt`；不得上傳
 `full-local`、原版 ZIP、PC-98 OGG 或 smoke 截圖。建置、封包、內容稽核與
 smoke 全部使用一次性 Docker 容器；本輪不建立新工具 image。
+
+2026-09-01 發布後由 GitHub API 讀回驗證：Release 為非草稿、非預覽版本，
+五個附件狀態皆為 `uploaded`；四個平台附件的 size 與 SHA-256 digest 均與
+本機 patch manifest 完全相同。公開附件名稱與內容清冊沒有 `full-local`、
+原版 ZIP、PC-98 OGG 或 smoke 截圖。
