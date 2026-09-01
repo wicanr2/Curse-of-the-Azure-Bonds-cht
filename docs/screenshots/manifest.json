@@ -130,10 +130,10 @@
       "file": "docs/screenshots/tilverton-first-person-remake.png",
       "width": 640,
       "height": 480,
-      "sha256": "eba3aea12c2c9d7eaef31692a8c51812c17327988c447dd01e0b3b301dc02b7c",
-      "generation_mode": "Docker/Xvfb -tilverton-dungeon；正常地城入口→第一人稱畫面；2026-08-31 重拍並驗證 scene display hole",
+      "sha256": "289fca9187b64bb734d067e9d646edb295fd846ecb05e6e548e34f1ef2e84faf",
+      "generation_mode": "Docker/Xvfb -tilverton-dungeon；正常地城入口→第一人稱畫面；2026-09-01 依 spec 1250 封滿 stage inset 與左上角",
       "evidence_level": "material-exact/layout-reconstructed",
-      "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
+      "spec": "docs/spec/1250-first-person-inset-fill.md"
     },
     {
       "id": "burial-glen-red-web",

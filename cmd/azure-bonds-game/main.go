@@ -29,7 +29,6 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
-	"github.com/wicanr2/golden-box-remake-engine/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dungeon"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/etenfont"
@@ -45,6 +44,7 @@ import (
 	enginearea "github.com/wicanr2/golden-box-remake-engine/areamap"
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
+	"github.com/wicanr2/golden-box-remake-engine/dax"
 	goldenengine "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
@@ -2672,8 +2672,12 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		int(a.state.GameTimeDisplay().Hour),
 		direction,
 	)
+	stageFill, fillErr := gfx.FillBackgroundToStageInset(background, gfx.StageInset{X: 22, Y: 22, Width: 98, Height: 98, WallTop: 40})
+	if fillErr != nil {
+		backgroundErr = fillErr
+	}
 	if backgroundErr == nil {
-		for _, rectangle := range background.Rects {
+		for _, rectangle := range stageFill.Backdrop {
 			ebitenutil.DrawRect(screen,
 				float64(rectangle.X*2), float64(rectangle.Y*2),
 				float64(rectangle.Width*2), float64(rectangle.Height*2),
@@ -2712,6 +2716,10 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		op.GeoM.Scale(scale, scale)
 		op.GeoM.Translate(float64(nativeX*2), float64(nativeY*2))
 		screen.DrawImage(image, op)
+	}
+	for _, rectangle := range stageFill.PostWall {
+		ebitenutil.DrawRect(screen, float64(rectangle.X*2), float64(rectangle.Y*2),
+			float64(rectangle.Width*2), float64(rectangle.Height*2), gfx.EGA16[rectangle.PaletteIndex])
 	}
 	a.drawFirstPersonStageFrame(screen)
 	// The extended DOS chrome owns an opaque command strip at y=448..479.

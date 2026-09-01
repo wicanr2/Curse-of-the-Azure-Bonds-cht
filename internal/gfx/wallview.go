@@ -8,6 +8,9 @@ import (
 type WallLayoutCall = engineview.WallLayoutCall
 type WallView = engineview.WallView
 type Background = engineview.Background
+type BackgroundRect = engineview.BackgroundRect
+type StageInset = engineview.StageInset
+type StageInsetFill = engineview.StageInsetFill
 type SkyOverlayKind = engineview.SkyOverlayKind
 
 const (
@@ -17,6 +20,7 @@ const (
 )
 
 var BuildBackground = engineview.BuildBackground
+var FillBackgroundToStageInset = engineview.FillBackgroundToStageInset
 
 func TraverseWallView(grid geo.Grid, partyDirection uint8, partyX, partyY int) (WallView, error) {
 	return engineview.TraverseWallView(grid, partyDirection, partyX, partyY)

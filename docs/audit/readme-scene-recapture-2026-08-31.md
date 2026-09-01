@@ -20,7 +20,7 @@ scene 像素越界蓋住 roster／訊息區。
 | README 圖 | checkpoint／theme | 新 SHA-256 | 判定 |
 |---|---|---|---|
 | `gold-box-layout-adventure.png` | `-inn`／original | `466826fbfdd1d60b827d7e5468d2b0d0b937914c814a1e802a8c6c25054ea034` | 已替換；scene 與原版內框對齊，文字不被框線遮住 |
-| `tilverton-first-person-remake.png` | `-tilverton-dungeon`／original | `eba3aea12c2c9d7eaef31692a8c51812c17327988c447dd01e0b3b301dc02b7c` | 已替換；176×176 scene 填滿透明孔，透視圖自身色塊不算偏移 |
+| `tilverton-first-person-remake.png` | `-tilverton-dungeon`／original | `eba3aea12c2c9d7eaef31692a8c51812c17327988c447dd01e0b3b301dc02b7c` | **已由 2026-09-01 的畫面證據推翻**：88×88 scene 只填了 `(24,24)..(111,111)`，沒有填滿 stage frame 延伸到 `(22,22)..(119,119)` 的透明孔；修正契約見 spec 1250 |
 | `a6-modern-first-person.png` | `-tilverton-dungeon`／modern-a6 | `b94fc759519733cd185ae57e13c7d7b508963a656a6c8317fa86650771e05718` | 已替換；金色內框包住相同 scene rectangle，命令列未被遮擋 |
 | `a6-modern-redraw-slice.png` | `-inn`／modern-a6 | `317b168e87f18ef97cfe65b5a4d524bdcb8b23103d76ff0154439fbcf8e56cb6` | 重拍與版控檔 byte-identical，不需替換 |
 | `a6-modern-picture-animation.png` | `-inner-ritual`／modern-a6 | `83d23238dc4298c9eb776d08965d47dadd7a52c0e70889ea1f7e94f77f47d500` | 重拍與版控檔 byte-identical，不需替換 |
@@ -39,3 +39,17 @@ checkpoint」留作獨立驗證工具缺口；在修好前不得宣稱那張已�
 - README 實際引用上述檔案，不另存一份未引用的新圖。
 - 原版與 modern-a6 各至少一張人物 scene 及一張第一人稱 scene 經人工原尺寸檢視。
 - Docker 工作後不得留下本輪容器或映像。
+
+## 2026-09-01 勘誤與重拍
+
+使用者以 README 現圖指出第一人稱 stage 左上仍未填滿。重新以 frame alpha 幾何
+檢查後，確認本文件原先的「176×176 scene 填滿透明孔」是錯誤斷言：透明孔實際
+延伸到 native `(22,22)..(119,119)`，而 DOS 背景只畫到
+`(24,24)..(111,111)`；斜邊牆片又會在最後把左上角蓋成黑色。
+
+依 [spec 1250](../spec/1250-first-person-inset-fill.md) 修正後，以相同
+`-tilverton-dungeon` 正常 checkpoint、original theme、640×480 framebuffer 重拍：
+
+- 新 SHA-256：`289fca9187b64bb734d067e9d646edb295fd846ecb05e6e548e34f1ef2e84faf`
+- 背景填滿 stage inset；頂部使用同一場景的 sky palette 封口至 native row 39。
+- 中央牆、側牆與地板仍使用原本牆片座標，沒有縮放或後製裁切。
