@@ -135,7 +135,28 @@ fallback；特殊攻擊與驅散不死的最後一擊會重算勝負，非戰鬥
 `EnterSegment` 前強化，套件測試明確指向段內快照；硬閘門恢復 15 個 block，
 沒有靠回退真實 HP 或放寬門檻通過（spec 1206）。
 
-最新本機發行收據（2026-08-31）：`1.0.2-20260831` 已改用獨立 engine
+最新發行收據（2026-09-01）：`1.0.3-20260901` 以獨立 engine `8cc96f8650ef`、
+遊戲來源 commit `b1a2bb19d` 重生 patch／full-local 各四件，八件產物皆與
+`dist-all/1.0.3-20260901/SHA256SUMS.json` 對帳。Linux full-local AppImage 與
+Windows full-local EXE 已分別在 Docker／Xvfb 與 Docker／Wine／Xvfb 實際啟動，
+兩張開場截圖同為 49,576 bytes、SHA-256 `d0e5d639…4362`。tag `v1.0.3-20260901`
+發布後再由 GitHub API 讀回：非草稿、非預覽，五個附件狀態皆為 `uploaded`，
+四個平台 patch 的 size 與 digest 與本機 manifest 相同，公開清冊沒有 full-local、
+原版 ZIP、PC-98 OGG 或 smoke 截圖。macOS 雙架構只完成交叉編譯與封包，真機、
+簽署與公證仍未驗收。收據見
+[`docs/audit/release-1.0.3-20260901.md`](docs/audit/release-1.0.3-20260901.md)。
+
+第一人稱內框（2026-09-01，spec 1250）：stage frame 的內側透明孔延伸到 native
+`(22,22)..(119,119)`，DOS 背景只畫到 `(24,24)..(111,111)`，因此場景四周會留下
+2～8 個 native pixels 的黑色空帶。現行契約保留 88×88 牆片座標與 nearest-neighbour
+像素，只把天空、地平線與地面外擴到安全內框，並在牆片合成後以同一 sky palette
+封滿 `(22,22)..(119,39)` 的頂部帶；row 40 起的側牆與中央牆不受影響，洋紅透明鍵
+（spec 1131）不變。演算法已抽到作品中立的 `viewport.FillBackgroundToStageInset`，
+CoAB 只宣告自己的 `StageInset{22,22,98,98,WallTop:40}`。README 的
+`tilverton-first-person-remake.png` 已用 `-tilverton-dungeon` 正式 checkpoint 重拍
+（SHA-256 `289fca91…4faf`）。
+
+前一發行收據（2026-08-31）：`1.0.2-20260831` 已改用獨立 engine
 `0819c64e451d`，重生 patch／full-local 各四件：Linux x86_64 AppImage、Windows
 x86_64 ZIP、macOS x86_64／arm64 ZIP。八件檔案皆與 `SHA256SUMS.json` 對帳；
 patch deny-list 不含原版 ZIP 與私有 PC-98 OGG，full-local 四個平台目錄均含本機

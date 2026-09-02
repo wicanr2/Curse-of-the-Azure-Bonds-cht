@@ -39,7 +39,7 @@ Windows／macOS 真機、macOS 簽署／公證、音訊人耳與對外素材權�
 | **主線** | **開場到結局同一條 session 跑得完**，拆成 25 個段 subtest（23 段主線＋2 段接進主線的段內支線），每段結束的快照都存得下去讀得回來 |
 | **鍵盤通關** | 從標題開始、全程只走真實前端按鍵，第 **14,380 幀**觸發 `GameWon()` |
 | **一般強度基線** | pending Bless 無限重試已修；關閉隊伍強化後跑 2,455 幀：251 格、8 個 ECL 段、199 句、落回原文 0，最後真實全滅重開 1 次。手動戰鬥對照也在同一戰役區段全滅；這是合法停止結果，不再把戰術／loadout 或自動通關列為產品缺口 |
-| **發行工程** | 本機完整版 `1.0.2-20260831` 已以獨立 engine `0819c64e451d` 重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP，patch／full-local 各四件且八件雜湊全數重算通過；Linux AppImage 與 Windows EXE（Wine）已實際啟動並取得繁中截圖。patch deny-list 已確認不含原版 ZIP／私有 PC-98 OGG；full-local 四平台目錄均含本機遊戲資料。Windows／macOS 尚待真機啟動，macOS 尚未簽署／公證；內部推廣片的音樂與原版圖像權利仍未釐清（見 [1.0.2 發行收據](docs/audit/release-1.0.2-20260831.md)） |
+| **發行工程** | `1.0.3-20260901` 已以獨立 engine `8cc96f8650ef` 重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP，patch／full-local 各四件且八件雜湊全數重算通過；Linux 與 Windows（Wine）full-local 已實際啟動，兩張開場截圖逐位元組相同。公開 patch 不含原版 ZIP 與 PC-98 OGG，full-local 四平台目錄均含本機遊戲資料。GitHub Release 已由 API 讀回驗證：非草稿、非預覽，五個附件皆 `uploaded`，size 與 SHA-256 digest 與本機 patch manifest 相同。Windows／macOS 尚待真機啟動，macOS 尚未簽署／公證；內部推廣片的音樂與原版圖像權利仍未釐清（見 [1.0.3 發行收據](docs/audit/release-1.0.3-20260901.md)） |
 | 主線分段 | 25 段全部可直入（`-segment ECL{成員}/0x{block}`）；47 條 `NEWECL` 邊逐條交接；段入口有中文劇情 22／不出文字 3 |
 | 戰利品 | `1Ch CLEARMONSTERS` 連同**還沒領走的戰利品**一起丟掉（spec 1145）；corpus 唯一走得到那條路的是提爾佛頓火刀首領的重打迴圈，少了它重打一次就多領一次 |
 | 遭遇距離 | `0Ch` 擺距離、`0Dh APPROACH` 走近、`29h` 重設（spec 1146）。⚠ `APPROACH` 的減一是**演出**——`29h` 進門會把它蓋回去 |
@@ -375,9 +375,10 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
 - **三平台發行包與推廣片**：執行 `tools/package-release.sh <版本>` 與
   `tools/build-promo.sh <版本>`，現行交付物一律集中在 `dist-all/<版本>/`。
   `patch/` 不含原版 ZIP 與未授權 PC-98 音樂；`full-local/` 只供本機驗收。
-  公開下載為 [v1.0.2-20260831 最新 patch 版](https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/releases/tag/v1.0.2-20260831)：
+  公開下載為 [v1.0.3-20260901 最新 patch 版](https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/releases/tag/v1.0.3-20260901)：
   僅含 Linux x86_64、Windows x86_64、macOS x86_64／arm64 四件 patch 與獨立 SHA-256 清單；
-  不含 `full-local`、原版 ZIP、PC-98 OGG 或內部推廣片。
+  不含 `full-local`、原版 ZIP、PC-98 OGG 或內部推廣片，並已由 GitHub API 讀回
+  比對五個附件的狀態、size 與 digest。
   Linux AppImage 與 Windows EXE（Wine）已啟動與繁中截圖驗收；兩張開場 PNG
   逐位元組相同。Windows／macOS 仍不宣稱已真機驗收。
 

@@ -1,6 +1,6 @@
 # CoAB remake 最短交接
 
-更新：2026-08-30。這是 compact／接手後的第一份狀態摘要；規則仍以
+更新：2026-09-02。這是 compact／接手後的第一份狀態摘要；規則仍以
 [`AGENTS.md`](AGENTS.md) 為準，深層現況才讀 [`CONTEXT.md`](CONTEXT.md)。
 
 ## 現況
@@ -8,9 +8,12 @@
 - 目標：Go／Ebiten 繁中 remake，玩家可見體驗近似原版 99%；採風險導向代表性抽樣。
 - 主線：規則層與連續鍵盤輸入皆可由開場到結局；落回原文 0。
 - 一般強度：pending Bless 死鎖已修；2,455 幀後真實全滅是合法停止，不要求該樣本通關。
-- 第一人稱：585 種牆面配置、1,498 張原版對照全部逐格相同。
+- 第一人稱：585 種牆面配置、1,498 張原版對照全部逐格相同。背景另依 spec 1250
+  外擴填滿 stage frame 內框，牆片座標與透明鍵不變。
 - 音訊：runtime 正式資產為 12 首音樂＋9 個音效 OGG；仍待人耳 loop 與散布權確認。
-- 發行：四個目標平台包可重生；Linux 與 Wine smoke 已做，Windows／macOS 真機尚待。
+- 發行：公開版為 `v1.0.3-20260901`（engine `8cc96f8650ef`），四個平台包可重生，
+  五個 Release 附件已由 GitHub API 讀回對帳；Linux 與 Wine smoke 已做，
+  Windows／macOS 真機、macOS 簽署／公證尚待。
 - 圖像：1,741 張 PNG 與 manifest 已涵蓋 sprite、TILES、戰場地形、AREA／共用
   符號、SKY 與牆片；runtime 不再從原版 DAX 解碼圖像。移除原版 ZIP 中 51 個
   圖像 member、保留 43 個非圖像 member 的 fixture，已抽樣通過開場 PIC、AREA、
