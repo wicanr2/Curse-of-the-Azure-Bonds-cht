@@ -5138,7 +5138,7 @@ func main() {
 				log.Fatal(err)
 			}
 		default:
-			log.Fatalf("-camp-row 只接受 camp、magic 或 rest，收到 %q", *campRow)
+			log.Fatalf("-camp-row accepts camp, magic or rest; got %q", *campRow)
 		}
 	}
 	if *characterView {
