@@ -3,6 +3,26 @@
 compact／接手若只需要現況與下一步，先讀 [`HANDOFF.md`](HANDOFF.md)；本檔保留
 較深的訂正理由與歷史 checkpoint，不應整份預讀後再決定工作。
 
+最新進度（2026-09-04）：三個既有缺口清掉。**存檔欄位台帳**把 `+145h` 的七個
+byte 合成一段標 `documented`，而突變探針量到其中六個有讀——對帳因此永遠紅，
+而且合成一段時只能二選一（標 documented 是低估，標 decoded 又把沒讀的第七個
+byte 算進去）。依 spec 1248 已經釘住的分界拆成 `+145h` 六個 byte `decoded`
+與 `+14Bh` 一個 byte `unknown`。**build 產物掃描**（`internal/sourceaudit`）
+的 `skipDirs` 是手維護清單，有 `dist` 卻漏了 `dist-all`，而它的 `.gitignore`
+解析只認 blanket `/*` 與 `!/` 白名單、不認 `/dist-all/` 這種具名目錄規則——
+這個 repo 的 `.gitignore` 恰好先寫 `/dist-all/`、中間 `!/*/` 取消、最後再寫一次，
+所以要逐行套才得到正確答案。改成解析具名規則並在 walk 跳過被擋的 root 目錄；
+正對照是把假的 ELF 放進 `cmd/azure-bonds/`，它仍然被抓到。順帶訂正兩句過期註解
+（`.git` 已在 repo 根、容器裡有 git 2.47.3），但**不改成依賴 git**——這條測試
+刻意要能在沒有 `.git` 的匯出樹上跑。**en／ja 修了 79 條**：營地與基礎詞 68 條，加上戰鬥與建隊的 11 條。
+壞的程度是語意級不是生硬——「法術」曾被譯成 `The law.`／`法律。`、
+「紮營選單」成 `Ban the menu.`、「離開」在 ja 是 `休息日`、
+戰鬥訊息整句是 `%sYeah.%sGive me some treatment.`、建隊列表是
+`%dI'm not sure.%s# I'm not sure I'm gonna be able to get you #%s`。
+每一條都驗過格式動詞序列與 zh-TW 逐一相同才寫入。
+⚠ 這兩份 locale **整份仍是低品質機翻**：另有 153 條是「短詞被翻成句子」
+（`提爾佛頓`→`Tyrfordon.`、`牧師`→`Reverend.`），這次沒動。
+
 最新進度（2026-09-03，spec 1251）：營地選單改成原版那條底部橫排指令列。
 世界地圖畫面把選單畫成縱排（`y=366` 起、每項 `+30`），而文字框內部只到
 `y=448`——營地選單有七項，第四項落在底框上、第五項落在 `y=486`，畫布只有 480，
