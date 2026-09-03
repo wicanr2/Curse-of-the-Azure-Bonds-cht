@@ -559,6 +559,7 @@
   "camp_rest_insufficient": "休息 %d 小時不足以完成法術記憶（至少需要 %d 小時）；法術選擇仍保留。",
   "camp_continue": "Enter：返回荒野",
   "camp_menu_prompt": "紮營選單",
+  "camp_command_prefix": "紮營：",
   "camp_save": "儲存",
   "camp_view": "查看",
   "camp_magic": "法術",

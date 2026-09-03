@@ -559,6 +559,7 @@
     "camp_rest_insufficient": "休息 %d 小时不足以完成法术记忆（至少需要 %d 小时）；法术选择仍保留。",
     "camp_continue": "Enter：返回荒野",
     "camp_menu_prompt": "扎营选单",
+    "camp_command_prefix": "扎营：",
     "camp_save": "储存",
     "camp_view": "查看",
     "camp_magic": "法术",

@@ -5291,6 +5291,49 @@ func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
 	}
 }
 
+// 營地那幾層要走原版的底部橫排指令列，選角色那幾層不走。
+//
+// 原版擷圖在 `docs/reference/original-dos/camp/`：主選單是
+// `CAMP:SAVE VIEW MAGIC REST ALTER FIX EXIT`，法術與休息子選單同樣是一行但
+// 沒有前綴。縱排在世界地圖畫面只放得下三項，七項裡的後四項會落到畫布外面。
+func TestCampCommandRowMatchesTheOriginalMenus(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.catalog.Strings["camp_command_prefix"] = "紮營："
+	state.Mode = ModeWilderness
+	state.partyRoster = party.Roster{{Name: "戰士", Class: party.ClassFighter}}
+
+	state.enterCampMenu()
+	prefix, ok := state.CampCommandRow()
+	if !ok || prefix != "紮營：" {
+		t.Fatalf("營地主選單 prefix=%q ok=%v，想要帶前綴的指令列", prefix, ok)
+	}
+	if len(state.Choices) != 7 {
+		t.Fatalf("營地選單 %d 項，原版是七項", len(state.Choices))
+	}
+
+	// 法術那一層也是指令列，但原版沒有前綴。`enterCampMagicMenu` 會同時把
+	// campMenu 設成 true，所以判斷必須從最內層往外——只看 campMenu 會替
+	// 法術選單多畫一個「紮營：」。
+	state.enterCampMagicMenu()
+	prefix, ok = state.CampCommandRow()
+	if !ok || prefix != "" {
+		t.Fatalf("法術選單 prefix=%q ok=%v，想要不帶前綴的指令列", prefix, ok)
+	}
+
+	// 休息那一層同樣是一行。
+	state.enterCampRestMenu()
+	if _, ok := state.CampCommandRow(); !ok {
+		t.Fatal("休息選單沒有被當成指令列")
+	}
+
+	// 選角色在原版是清單，逐行列出名字，不是指令列。
+	state.campRestMenu, state.campMagicMenu = false, false
+	state.campViewMenu = true
+	if _, ok := state.CampCommandRow(); ok {
+		t.Fatal("選角色那一層被當成指令列了")
+	}
+}
+
 func TestCampMagicLocalizesVerifiedFirstLevelSpellNames(t *testing.T) {
 	state := NewState(trainingTestCatalog(t))
 	state.catalog.Strings["spell_cleric_1"] = "祝福"

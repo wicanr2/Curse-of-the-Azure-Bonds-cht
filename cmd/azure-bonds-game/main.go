@@ -1803,14 +1803,24 @@ func (a *app) drawBase(screen *ebiten.Image) {
 			drawWrappedText(screen, a.revealedMessage(), a.face, 32, 210, 22, 30, 4, cyan)
 			choiceTop = 350
 		}
-		for index, choice := range a.state.Choices {
-			prefix := "  "
-			if index == a.choiceCursor {
-				prefix = "> "
+		rowPrefix, isRow := a.state.CampCommandRow()
+		switch {
+		case isRow:
+			// 同一條原版契約：營地選單走底部橫排。這條路徑的縱排更擠
+			// （有訊息時自 350 起、每項 40px），第三項就出畫布了。
+			a.drawCommandRow(screen, rowPrefix, a.state.Choices, a.choiceCursor,
+				a.compactFace, 24, a.safeBottomBaseline(adventureCommandBaseline, a.compactFace),
+				592, cyan, white)
+		default:
+			for index, choice := range a.state.Choices {
+				prefix := "  "
+				if index == a.choiceCursor {
+					prefix = "> "
+				}
+				drawFittedText(screen, prefix+choice, a.face, 56, choiceTop+index*40, 520, white)
 			}
-			drawFittedText(screen, prefix+choice, a.face, 56, choiceTop+index*40, 520, white)
 		}
-		if a.state.Message == "" {
+		if a.state.Message == "" && !isRow {
 			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelSelectHelp), a.face, 56, 330, 520, cyan)
 			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelSaveLoadHelp), a.face, 56, 370, 520, white)
 		}
@@ -1944,6 +1954,20 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 	// label. Keep a dedicated right-hand text-safe rectangle wide enough for
 	// a four-digit year; the former 156px box silently rendered "第0…".
 	drawFittedText(screen, timeLabel, a.compactFace, overlandDateX, 294, overlandDateWidth, cyan)
+	if rowPrefix, isRow := a.state.CampCommandRow(); isRow {
+		// 營地那幾層在原版是底部橫排一行（`State.CampCommandRow` 有原版擷圖的
+		// 出處）。這裡的縱排只放得下三項——文字框內部是 y=264..448，選單自 366
+		// 起、每項 30px，第四項就落到框線上，第五項直接畫到畫布外面。
+		// 營地選單有七項，所以後四項在原版路徑上是**看不見**的。
+		// 畫在最底那個框裡（`drawPanelFrame(8, 448, 624, 28)`），那是這個版面
+		// 對應原版「畫面最下面一行」的位置。不要用 adventureCommandBaseline
+		// ——它是 478，屬於地城畫面那個 y=464..479 的框，在這裡會貼上畫布底邊、
+		// 落在框線外面。字級跟著這個框走（compactFace），框高只有 28px。
+		a.drawCommandRow(screen, rowPrefix, a.state.Choices, a.choiceCursor,
+			a.compactFace, 24, a.safeBottomBaseline(overlandCommandBaseline, a.compactFace),
+			592, cyan, white)
+		return true
+	}
 	for index, choice := range a.state.Choices {
 		prefix := "  "
 		if index == a.choiceCursor {
@@ -1962,6 +1986,8 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 const (
 	overlandDateX     = 336
 	overlandDateWidth = 288
+	// overlandCommandBaseline 落在世界地圖版面最底那個框（y=448..476）之內。
+	overlandCommandBaseline = 468
 )
 
 func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, lineRunes, lineHeight, maxLines int, ink color.Color) {
@@ -1990,6 +2016,111 @@ func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, l
 // long translated choice could therefore cross a stone divider or the combat
 // status panel. Keep the original baseline and truncate only at a rune
 // boundary when the declared region cannot contain the measured pixels.
+// commandRowGeometry 是指令列一行的排版結果。`scaled` 為真代表間隔壓到底之後
+// 仍比 maxWidth 寬，畫的時候要整行縮放。
+type commandRowGeometry struct {
+	prefixWidth int
+	gap         int
+	widths      []int
+	total       int
+	scaled      bool
+}
+
+// commandRowLayout 算指令列的排版。抽成純函式是為了測得到「不超出寬度」這條
+// 不變式——Ebiten 的 image 在 game loop 之外不能讀像素，量不了實際畫出來的圖。
+func commandRowLayout(prefix string, choices []string, face font.Face, maxWidth int) commandRowGeometry {
+	widthOf := func(value string) int {
+		measured := font.MeasureString(face, value).Ceil()
+		if measured < 0 {
+			return 0
+		}
+		return measured
+	}
+	geometry := commandRowGeometry{widths: make([]int, len(choices))}
+	if prefix != "" {
+		geometry.prefixWidth = widthOf(prefix)
+	}
+	geometry.gap = widthOf(" ")
+	if geometry.gap < 1 {
+		geometry.gap = 1
+	}
+	content := geometry.prefixWidth
+	for index, choice := range choices {
+		geometry.widths[index] = widthOf(choice)
+		content += geometry.widths[index]
+	}
+	// 間隔先壓到剛好放得下，最少留 1px：擠在一起仍讀得出來，畫到畫布外就完全看不見。
+	gaps := len(choices) - 1
+	for geometry.gap > 1 && gaps > 0 && content+geometry.gap*gaps > maxWidth {
+		geometry.gap--
+	}
+	geometry.total = content + geometry.gap*gaps
+	geometry.scaled = geometry.total > maxWidth
+	return geometry
+}
+
+// drawCommandRow 把選單畫成原版那條底部橫排指令列：前綴、空白分隔的選項，
+// 目前選項整個反白（白底黑字）。原版擷圖在 `docs/reference/original-dos/camp/`，
+// 那一行剛好填滿 40 欄——中文譯名更寬，所以間隔會先被壓縮，仍放不下才整行縮放。
+//
+// ★ 這一整行**保證畫在 maxWidth 之內**。營地選單有七項，縱排時第四項起就落到
+// 畫布外面（沒有任何錯誤，只是看不見），這個函式存在的理由就是不讓它再發生。
+func (a *app) drawCommandRow(screen *ebiten.Image, prefix string, choices []string,
+	cursor int, face font.Face, x, baseline, maxWidth int, prefixInk, ink color.Color) {
+	if len(choices) == 0 || maxWidth < 1 {
+		return
+	}
+	layout := commandRowLayout(prefix, choices, face, maxWidth)
+	prefixWidth, gap, choiceWidths, total := layout.prefixWidth, layout.gap, layout.widths, layout.total
+	target, offsetX, offsetY := screen, x, baseline
+	metrics := face.Metrics()
+	ascent, descent := metrics.Ascent.Ceil(), metrics.Descent.Ceil()
+	rowHeight := ascent + descent
+	if rowHeight < 1 {
+		rowHeight = 1
+	}
+	if layout.scaled {
+		// 間隔壓到底還是太寬（極端字級或很長的譯名）：整行畫到離屏影像再縮放，
+		// 反白色塊跟著一起縮，位置不會跑掉。
+		target = ebiten.NewImage(total+2, rowHeight+2)
+		offsetX, offsetY = 0, ascent
+	}
+	cx := offsetX
+	if prefix != "" {
+		text.Draw(target, prefix, face, cx, offsetY, prefixInk)
+		if faceIsBold(face) {
+			text.Draw(target, prefix, face, cx+1, offsetY, prefixInk)
+		}
+		cx += prefixWidth
+	}
+	for index, choice := range choices {
+		if index > 0 {
+			cx += gap
+		}
+		if index == cursor {
+			// 原版把目前選項整個反白，不是加一個游標符號。
+			ebitenutil.DrawRect(target, float64(cx-1), float64(offsetY-ascent),
+				float64(choiceWidths[index]+2), float64(rowHeight), ink)
+			text.Draw(target, choice, face, cx, offsetY, color.RGBA{0, 0, 0, 255})
+		} else {
+			text.Draw(target, choice, face, cx, offsetY, ink)
+			if faceIsBold(face) {
+				text.Draw(target, choice, face, cx+1, offsetY, ink)
+			}
+		}
+		cx += choiceWidths[index]
+	}
+	if !layout.scaled {
+		return
+	}
+	scale := float64(maxWidth) / float64(total+1)
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterLinear
+	op.GeoM.Scale(scale, scale)
+	op.GeoM.Translate(float64(x), float64(baseline)-float64(ascent)*scale)
+	screen.DrawImage(target, op)
+}
+
 func drawFittedText(screen *ebiten.Image, value string, face font.Face, x, y, maxWidth int, ink color.Color) {
 	measured := font.MeasureString(face, value).Ceil()
 	if measured <= maxWidth-1 {
@@ -4174,6 +4305,7 @@ func main() {
 	guidedCreationStep := flag.String("guided-creation-step", "", "drive -guided-creation to a later step for capture: abilities, name, icon, save or party")
 	guidedCreationName := flag.String("guided-creation-name", "Adventurer", "name typed by -guided-creation-step; pass a CJK name to check glyph rendering")
 	characterView := flag.Bool("character-view", false, "show the normal CAMP → VIEW character sheet after selecting the first party member")
+	campRow := flag.String("camp-row", "", "capture-only: stop at the original CAMP command row (camp, magic or rest)")
 	endingPage := flag.Int("ending-page", 0, "show ending page 1..5 through the real ending-page Select transaction")
 	tilvertonDungeon := flag.Bool("tilverton-dungeon", false, "enter Tilverton's first-person map through the formal new-game flow")
 	inn := flag.Bool("inn", false, "start at the first Windlord's Inn event through the formal new-game flow")
@@ -4975,6 +5107,39 @@ func main() {
 		event, _ := state.CombatVisualEvent()
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
+	}
+	if *campRow != "" {
+		// 停在原版那條營地指令列，用來對照 `docs/reference/original-dos/camp/`。
+		// 走的是公開的 PROGRAM 9 轉換（`state.Camp()`），與 -character-view 同一條路。
+		if err := state.SetPartyRoster(party.Roster{{
+			ID: "camp-row", Name: "Rorn", Race: party.RaceDwarf, Gender: party.GenderMale,
+			Class: party.ClassFighter, Alignment: 0, AlignmentKnown: true,
+			Abilities: party.Abilities{Strength: 18, Intelligence: 16, Wisdom: 15,
+				Dexterity: 15, Constitution: 17, Charisma: 16},
+			Age: 51, Level: 5, Experience: 25000,
+			AttackAbility: 45, BaseArmorClass: 50, AbilityAdjustments: 1,
+			HitPoints: 51, MaxHitPoints: 51, Platinum: 300, Movement: 12,
+		}}); err != nil {
+			log.Fatal(err)
+		}
+		state.PrepareWorldMapPreview()
+		if err := state.Camp(); err != nil {
+			log.Fatal(err)
+		}
+		// 選項順序照原版：SAVE VIEW MAGIC REST ALTER FIX EXIT。
+		switch *campRow {
+		case "camp":
+		case "magic":
+			if err := state.Select(2); err != nil {
+				log.Fatal(err)
+			}
+		case "rest":
+			if err := state.Select(3); err != nil {
+				log.Fatal(err)
+			}
+		default:
+			log.Fatalf("-camp-row 只接受 camp、magic 或 rest，收到 %q", *campRow)
+		}
 	}
 	if *characterView {
 		abilities := party.Abilities{Strength: 18, Intelligence: 16, Wisdom: 15, Dexterity: 15, Constitution: 17, Charisma: 16}

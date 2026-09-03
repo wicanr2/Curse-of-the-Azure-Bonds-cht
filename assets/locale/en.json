@@ -559,6 +559,7 @@
     "camp_rest_insufficient": "The rest of the hour %d is not enough to complete the memory of the magic (at least %d); the choice of the magic remains.",
     "camp_continue": "Enter: Back to the wilderness",
     "camp_menu_prompt": "Ban the menu.",
+    "camp_command_prefix": "CAMP:",
     "camp_save": "Save",
     "camp_view": "View",
     "camp_magic": "Magic.",

@@ -3037,6 +3037,35 @@ func (s *State) Fix() (healed, casts int, err error) {
 	return healed, casts, nil
 }
 
+// CampCommandRow 回報目前的選單是不是原版那條底部橫排指令列，以及它的前綴。
+//
+// 原版把營地的每一層都畫成畫面最下面**一行**（原版擷圖在
+// `docs/reference/original-dos/camp/`）：
+//
+//	CAMP:SAVE VIEW MAGIC REST ALTER FIX EXIT
+//	CAST MEMORIZE SCRIBE DISPLAY REST EXIT
+//	REST DAYS HOURS MINS ADD SUBTRACT EXIT
+//
+// 只有主選單帶 `CAMP:` 前綴，子選單沒有。選角色、選物品、選法術那幾層在原版
+// 是**清單**不是指令列，所以不在這裡回 true——它們照舊逐行畫。
+//
+// ⚠ 判斷要從最內層往外：`enterCampMagicMenu` 會同時把 `campMenu` 也設成 true，
+// 只看 `campMenu` 會把法術選單畫成帶 `CAMP:` 前綴的主選單。
+func (s *State) CampCommandRow() (string, bool) {
+	switch {
+	case s.campViewMenu, s.campViewItemMenu, s.campMagicViewMenu,
+		s.campMagicMemorizeMenu, s.campMagicCastMenu,
+		s.alterMenu, s.alterOrderMenu, s.alterDropMenu, s.alterDropConfirm,
+		s.alterRenameMenu, s.alterPicsMenu, s.alterSpeedMenu, s.alterIconMenu:
+		return "", false
+	case s.campRestMenu, s.campMagicMenu:
+		return "", true
+	case s.campMenu:
+		return s.catalog.Text("camp_command_prefix", "camp_command_prefix"), true
+	}
+	return "", false
+}
+
 func (s *State) enterCampMenu() {
 	s.campMenu = true
 	s.campRestMenu = false
