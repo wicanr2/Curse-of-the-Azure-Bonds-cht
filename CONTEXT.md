@@ -3,6 +3,20 @@
 compact／接手若只需要現況與下一步，先讀 [`HANDOFF.md`](HANDOFF.md)；本檔保留
 較深的訂正理由與歷史 checkpoint，不應整份預讀後再決定工作。
 
+最新進度（2026-09-03，spec 1251）：營地選單改成原版那條底部橫排指令列。
+世界地圖畫面把選單畫成縱排（`y=366` 起、每項 `+30`），而文字框內部只到
+`y=448`——營地選單有七項，第四項落在底框上、第五項落在 `y=486`，畫布只有 480，
+**後四項畫到外面去了**。沒有錯誤也沒有日誌，只有畫面下緣一條被切掉的字。
+原版用 `tools/dos-oracle-session.sh` 走正常路徑擷到（載入存檔 →
+`BEGIN ADVENTURING` → `ENCAMP`）：每一層都是畫面最下面一行，
+`CAMP:SAVE VIEW MAGIC REST ALTER FIX EXIT`、
+`CAST MEMORIZE SCRIBE DISPLAY REST EXIT`、
+`REST DAYS HOURS MINS ADD SUBTRACT EXIT`，前綴洋紅、選項綠色、目前項整個反白，
+只有主選單帶前綴。三張原版擷圖收在 `docs/reference/original-dos/camp/`。
+排版計算抽成純函式才測得到「不超出寬度」——Ebiten 的 image 在 game loop 之外
+讀不了像素。營地的**畫面本身**還是世界地圖，原版紮營會換成夜營圖、隊伍
+NAME／AC／HP 欄與 `CAMPING` 狀態，那部分還沒做。
+
 最新進度（2026-08-30，spec 1249）：第二個「RE 已解但跨規格漏接」已閉合。
 spec 1000 的 DOS `overlay-24:00C28h` 早已 exact 證明物品類別 `49h` Arrow／
 `1Ch` Quarrel 建立角色 `+17Dh`／`+181h` 彈藥指標；spec 1120／1186 卻漏掉它，
