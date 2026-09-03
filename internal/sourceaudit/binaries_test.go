@@ -60,7 +60,10 @@ func TestRepositoryTracksNoBuiltBinaries(t *testing.T) {
 			return relErr
 		}
 		if entry.IsDir() {
-			if relative != "." && skipDirs[relative] {
+			// `ignored` 的鍵是 root 層的名字，所以這一道只會命中 root 目錄。
+			// 靠它自動涵蓋 `.gitignore` 擋掉的發行與工作目錄——`skipDirs` 是
+			// 手維護的清單，而它已經漏過 `dist-all`（有 `dist` 沒有 `dist-all`）。
+			if relative != "." && (skipDirs[relative] || ignored[relative]) {
 				return fs.SkipDir
 			}
 			return nil
@@ -144,23 +147,43 @@ func loadIgnoredRootNames(t *testing.T, root string) map[string]bool {
 	}
 	blanket := false
 	allowed := map[string]bool{}
+	// 具名的目錄規則要逐行套，**後面的覆蓋前面的**——這個 repo 的 `.gitignore`
+	// 先寫 `/dist-all/`，中間的 `!/*/` 把它取消掉，最後又寫一次 `/dist-all/`。
+	// 一次收集完再判斷會得到相反的答案。
+	directories := map[string]bool{}
 	for _, line := range strings.Split(string(payload), "\n") {
 		line = strings.TrimSpace(line)
 		switch {
+		case line == "" || strings.HasPrefix(line, "#"):
 		case line == "/*":
 			blanket = true
+		case line == "!/*/":
+			// root 層的目錄一律放行，先前的具名規則跟著失效。
+			for name := range directories {
+				directories[name] = false
+			}
+		case strings.HasPrefix(line, "!/") && strings.HasSuffix(line, "/"):
+			directories[strings.Trim(strings.TrimPrefix(line, "!"), "/")] = false
+		case strings.HasPrefix(line, "/") && strings.HasSuffix(line, "/") &&
+			!strings.ContainsAny(strings.Trim(line, "/"), "/*?"):
+			directories[strings.Trim(line, "/")] = true
 		case strings.HasPrefix(line, "!/"):
 			allowed[strings.TrimPrefix(line, "!/")] = true
 		}
 	}
+	ignored := map[string]bool{}
+	for name, on := range directories {
+		if on {
+			ignored[name] = true
+		}
+	}
 	if !blanket {
-		return map[string]bool{}
+		return ignored
 	}
 	entries, err := os.ReadDir(root)
 	if err != nil {
-		return map[string]bool{}
+		return ignored
 	}
-	ignored := map[string]bool{}
 	for _, entry := range entries {
 		if entry.IsDir() {
 			continue
