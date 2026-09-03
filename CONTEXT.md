@@ -182,7 +182,16 @@ fallback；特殊攻擊與驅散不死的最後一擊會重算勝負，非戰鬥
 `EnterSegment` 前強化，套件測試明確指向段內快照；硬閘門恢復 15 個 block，
 沒有靠回退真實 HP 或放寬門檻通過（spec 1206）。
 
-最新發行收據（2026-09-01）：`1.0.3-20260901` 以獨立 engine `8cc96f8650ef`、
+最新發行收據（2026-09-04）：`1.0.4-20260904` 以獨立 engine `8cc96f8650ef`、
+遊戲來源 commit `a71feb7a9` 重生 patch／full-local 各四件，八件產物皆與
+`dist-all/1.0.4-20260904/SHA256SUMS.json` 對帳。Linux 與 Wine smoke 的兩張開場
+截圖仍是 49,576 bytes、SHA-256 `d0e5d639…4362`——**與 1.0.3 逐位元組相同**，
+所以這一版的營地選單與 locale 改動沒有動到開場畫面。tag `v1.0.4-20260904`
+發布後由 GitHub API 讀回：非草稿、非預覽，五個附件皆 `uploaded`，四個平台
+patch 的 size 與 digest 與本機 `PATCH-SHA256SUMS.txt` 相同。收據見
+[`docs/audit/release-1.0.4-20260904.md`](docs/audit/release-1.0.4-20260904.md)。
+
+前一次發行收據（2026-09-01）：`1.0.3-20260901` 以獨立 engine `8cc96f8650ef`、
 遊戲來源 commit `b1a2bb19d` 重生 patch／full-local 各四件，八件產物皆與
 `dist-all/1.0.3-20260901/SHA256SUMS.json` 對帳。Linux full-local AppImage 與
 Windows full-local EXE 已分別在 Docker／Xvfb 與 Docker／Wine／Xvfb 實際啟動，
