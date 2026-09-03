@@ -108,7 +108,14 @@ var DOSPlayerRecordFields = []DOSRecordField{
 	{0x142, 1, tooltext.Text("h.83b7b2d5ffa8"), DOSFieldDecoded, "185／1164"},
 	{0x143, 1, tooltext.Text("h.a40b9187f6a5"), DOSFieldDecoded, "185／1164"},
 	{0x144, 1, tooltext.Text("h.f5e0f6f4d0bc"), DOSFieldDecoded, "1093／1164"},
-	{0x145, 7, tooltext.Text("h.5b2075dd4db1"), DOSFieldDocumented, "1164"},
+	// `+145h..+14Ah` 是六個部位色 byte，spec 1037 逐條閉合、spec 1248 接進
+	// remake 並做過非預設值 round-trip，所以是 decoded。**第七個 byte
+	// `+14Bh` 不屬於配色**：spec 1248 的 round-trip 刻意保持它原值不碰，
+	// 至今沒有出處說得出它是什麼。兩者合在一段會讓對帳只能二選一——
+	// 標 documented 是低估（探針量到六個 byte 有讀），標 decoded 又把
+	// 沒讀的第七個 byte 一起算進 decoded 的位元組數。
+	{0x145, 6, tooltext.Text("h.0e3b39c385d1"), DOSFieldDecoded, "1037／1248"},
+	{0x14B, 1, tooltext.Text("h.322a57a51218"), DOSFieldUnknown, ""},
 	{0x14C, 1, tooltext.Text("h.b463ad2a025d"), DOSFieldDocumented, "1000"},
 	{0x14D, 4, tooltext.Text("h.0f12b114d156"), DOSFieldDecoded, "1000"},
 	{0x151, 52, tooltext.Text("h.87640e5aaae6"), DOSFieldDocumented, "1000"},

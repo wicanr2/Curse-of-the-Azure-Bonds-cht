@@ -50,6 +50,11 @@ layer，手繪邊緣以最近的原版實心像素延伸；不宣稱手繪像素
 
 - `Character.IconColors`、`Fighter.PartyIconColors` 與 DOS `+145h..+14Ah` 已接通；
   非預設六 byte round-trip 通過，`+14Bh` 正對照保持不變。
+- 角色記錄台帳（`internal/party/dos_record_fields.go`）依同一個分界拆成兩段：
+  `+145h` 六個 byte 是 `decoded`、`+14Bh` 一個 byte 是 `unknown`。原本七個 byte
+  合成一段標 `documented`，`cmd/save-field-coverage` 的突變探針量到六個 byte 有讀
+  就會報「台帳低估」。合成一段的話對帳只能二選一：標 `documented` 是低估，
+  標 `decoded` 又把沒讀的第七個 byte 一起算進 decoded 的位元組數。
 - 建角頁顯示六部位各兩色；十二 nibble 使用 `0..F` 環繞，Exit 整組還原。
 - original renderer 逐一辨識十二個模板 palette index；modern-a6 以原版 layer 作
   語意 guide，保留手繪 alpha／明暗。像素測試證明改 Body 不污染 Arm 或輪廓。
