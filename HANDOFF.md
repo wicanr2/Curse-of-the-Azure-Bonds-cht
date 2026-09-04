@@ -11,7 +11,7 @@
 - 第一人稱：585 種牆面配置、1,498 張原版對照全部逐格相同。背景另依 spec 1250
   外擴填滿 stage frame 內框，牆片座標與透明鍵不變。
 - 音訊：runtime 正式資產為 12 首音樂＋9 個音效 OGG；仍待人耳 loop 與散布權確認。
-- 發行：公開版為 `v1.0.4-20260904`（engine `8cc96f8650ef`），四個平台包可重生，
+- 發行：公開版為 `v1.0.4-20260904`（engine `1d271d58716c`），四個平台包可重生，
   五個 Release 附件已由 GitHub API 讀回對帳；Linux 與 Wine smoke 已做，兩張開場
   截圖與 1.0.3 逐位元組相同；Windows／macOS 真機、macOS 簽署／公證尚待。
 - 圖像：1,741 張 PNG 與 manifest 已涵蓋 sprite、TILES、戰場地形、AREA／共用

@@ -1,8 +1,9 @@
 # 1.0.4-20260904 完整打包與公開發行稽核
 
 日期：2026-09-04  
-遊戲來源 commit：`a71feb7a9`  
-共用 engine：`8cc96f8650ef`  
+遊戲來源 commit：`a71feb7a9`（附件重出的建置來源：`4ea0c95b`）  
+共用 engine：`1d271d58716c`（原記 `8cc96f8650ef`；engine 歷史於 2026-09-04
+改寫 commit 作者信箱，所有 hash 因此改變，內容與 tree 未動）  
 打包依據：`tools/package-release.sh 1.0.4-20260904` 的逐項 Docker 命令
 
 ## 這一版的玩家可見變更
@@ -14,6 +15,23 @@
 一律走樣（`Alias`→`Alice`、`Phlan`→`Fran`、`Cleric`→`Reverend`，日文把「戰斧」
 寫成 `アクセシビリティ`）。物品與法術名回到原版資料表，地名與 NPC 依譯名表，
 日文依原版英文轉寫成片假名（**由非母語者轉寫，待複核**）。繁中未變動。
+
+## 2026-09-04 授權變更與附件重出
+
+授權條款由 PolyForm Noncommercial 1.0.0 改為 RRSAL-1.0（復古重製
+source-available 授權條款 1.0）：非商業使用、修改與散布免費，遊戲實況、錄影、
+直播與其平台分潤由條款第 4 條明示允許，商業使用保留另談。發行包裡的 `LICENSE`、
+`NOTICE.md` 與說明檔跟著換，AppImage 另在 `usr/share/doc/azure-bonds-remake/`
+放一份（rulebook 85 要求的第四個位置，先前只有 AppDir 根目錄）。
+
+同一個版本號重新打包並替換五個 Release 附件。**程式行為沒有變動**：Linux 與
+Windows（Wine）的開場截圖都是 49,576 bytes、SHA-256
+`d0e5d6399273d59dea3f43f58f245c61c19ed3adf0b3d0e070989cb90d234362`，與重打包前
+逐位元組相同——也就是仍然與 1.0.3 那兩張相同。
+
+tag `v1.0.4-20260904` 沒有移動，仍指向初版程式碼 `a71feb7a9`；實際建置來源是
+`4ea0c95b`，兩者之間只有授權文件與 engine 相依的 hash 修正。下方雜湊表是重出後
+的值，初版附件的雜湊不再有效。
 
 ## 本機完整交付
 
@@ -30,16 +48,18 @@ macOS 雙架構只完成交叉編譯與封包，尚未經 macOS 真機、簽署�
 
 ## 產物雜湊
 
+重出後的值（2026-09-04）：
+
 | 類型 | 平台 | bytes | SHA-256 |
 |---|---|---:|---|
-| patch | Linux x86_64 | 140342464 | `acb467342b4549a91091c26d9f32baaaa3674431bf540b4bbc933a40a9d74f7f` |
-| patch | Windows x86_64 | 151682046 | `39bafa3e75def44dcbf6d8ab19e3921f92c441242a1944e219ea81fd21ff72cb` |
-| patch | macOS x86_64 | 152020861 | `05d39a0fb20e4dd458e9a8934e1932343b381bdf8d853a6416714f6ba9ff1538` |
-| patch | macOS arm64 | 151716728 | `a474fa3e173a839628c117759b6dbdd1f71483793c863118ef107f79bf559ad3` |
-| full-local | Linux x86_64 | 163476672 | `bb0a9ece2116ba7c36550a9ebb38fcf9bf7147ffaa043ba962acdcacfd43b8a9` |
-| full-local | Windows x86_64 | 174795284 | `0596e0662324691bdd7d7a69c8e354ff4d5cd9a04bcd761adb3960080e86f98d` |
-| full-local | macOS x86_64 | 175135087 | `3a5e2705a96460ae9bc79749613a285ab30cb0736c9db54caa7a65b660f6e16f` |
-| full-local | macOS arm64 | 174830954 | `735f423dc4544a7f084ea96cf669e6ac6a8b1e433677816cb1210940701145b3` |
+| patch | Linux x86_64 | 140350656 | `6e2a2c8d4b933e3547852520c968958abcbf95dd30a6616f32de188e4f600bde` |
+| patch | Windows x86_64 | 151689453 | `06d89a79756dbf14e5e78d9d8803564b60a9240eee38f83deb9ca8848a97d59e` |
+| patch | macOS x86_64 | 152028263 | `c3bb8955cf5bbdc44b5d1254122c2c10f3ba23b35046ff0c3d6a310ebf0b332c` |
+| patch | macOS arm64 | 151724140 | `c335ba53c422a28294e5fdc2e53db4df2318af3ba974e3486093ada7faf4f3d6` |
+| full-local | Linux x86_64 | 163484864 | `52a9539a8d715841a629dacb86c750ba798f658ed06a3557304bc15252e6d388` |
+| full-local | Windows x86_64 | 174802691 | `75cc3ec8710e29dee195ccd45f87b6bd125b1277cbfa2279a2beba99ea47f12c` |
+| full-local | macOS x86_64 | 175142489 | `307414c62d9d4e6c836609c1b27a7f9db29f491acd03449aa9353c993c88c148` |
+| full-local | macOS arm64 | 174838366 | `315a33aa9c183b4973213aebdd178da6ac2321c7e897f6824840fc01f06f6769` |
 
 ## 公開邊界與 Docker 衛生
 
@@ -51,6 +71,9 @@ GitHub Release 只上傳四件 `patch` 與 `PATCH-SHA256SUMS.txt`；不上傳
 （`draft=false`、`prerelease=false`、`target_commitish=main`），五個附件狀態皆為
 `uploaded`；四個平台附件的 size 與 SHA-256 digest 均與本機 `PATCH-SHA256SUMS.txt`
 相同。tag `v1.0.4-20260904` 指向 `a71feb7a9`。
+
+授權重出後再讀一次：五個附件仍為 `uploaded`，digest 與上表的重出值逐項相同，
+`PATCH-SHA256SUMS.txt` 下載回來與本機檔案內容一致。
 
 ## 仍未完成
 

@@ -182,7 +182,7 @@ fallback；特殊攻擊與驅散不死的最後一擊會重算勝負，非戰鬥
 `EnterSegment` 前強化，套件測試明確指向段內快照；硬閘門恢復 15 個 block，
 沒有靠回退真實 HP 或放寬門檻通過（spec 1206）。
 
-最新發行收據（2026-09-04）：`1.0.4-20260904` 以獨立 engine `8cc96f8650ef`、
+最新發行收據（2026-09-04）：`1.0.4-20260904` 以獨立 engine `1d271d58716c`、
 遊戲來源 commit `a71feb7a9` 重生 patch／full-local 各四件，八件產物皆與
 `dist-all/1.0.4-20260904/SHA256SUMS.json` 對帳。Linux 與 Wine smoke 的兩張開場
 截圖仍是 49,576 bytes、SHA-256 `d0e5d639…4362`——**與 1.0.3 逐位元組相同**，
@@ -190,6 +190,19 @@ fallback；特殊攻擊與驅散不死的最後一擊會重算勝負，非戰鬥
 發布後由 GitHub API 讀回：非草稿、非預覽，五個附件皆 `uploaded`，四個平台
 patch 的 size 與 digest 與本機 `PATCH-SHA256SUMS.txt` 相同。收據見
 [`docs/audit/release-1.0.4-20260904.md`](docs/audit/release-1.0.4-20260904.md)。
+
+授權（2026-09-04）：條款改為 **RRSAL-1.0**（復古重製 source-available 授權條款
+1.0），CoAB、Pool of Radiance 與共用 engine 三個 repo 一致。非商業使用、修改與
+散布免費，實況、錄影、直播與其平台分潤由第 4 條明示允許，商業使用保留另談。
+`LICENSE`、`NOTICE.md`、README 授權段、發行包與 AppImage 的
+`usr/share/doc/` 四個位置都到齊（rulebook 85）。1.0.4 的五個 Release 附件已用新
+條款重新打包替換，兩張 smoke 開場截圖與重打包前逐位元組相同，程式行為沒有變動。
+
+engine 的 commit hash 全面改變（2026-09-04）：那個 repo 有 93 個 commit 掛
+公司信箱，依 rules/10 的 git 身分硬規則以 `filter-branch --env-filter` 全部改成
+`wicanr2@gmail.com` 再 force push。內容與 tree 沒有動，但 hash 全變，所以
+`go.mod` 鎖的 `8cc96f8650ef` 換成同一份內容的 `1d271d58716c`。舊發行收據裡的
+engine hash 是當時的事實，現在指不到東西。
 
 前一次發行收據（2026-09-01）：`1.0.3-20260901` 以獨立 engine `8cc96f8650ef`、
 遊戲來源 commit `b1a2bb19d` 重生 patch／full-local 各四件，八件產物皆與

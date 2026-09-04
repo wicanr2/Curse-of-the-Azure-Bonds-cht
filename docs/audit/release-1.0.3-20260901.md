@@ -2,7 +2,8 @@
 
 日期：2026-09-01  
 遊戲來源 commit：`b1a2bb19d`  
-共用 engine：`8cc96f8650ef`  
+共用 engine：`8cc96f8650ef`（engine 歷史於 2026-09-04 改寫 commit 作者信箱，
+這個 hash 已不存在；同一份內容改寫後是 `1d271d58716c`）  
 打包依據：`tools/package-release.sh 1.0.3-20260901` 的逐項 Docker 命令
 
 ## 本機完整交付
