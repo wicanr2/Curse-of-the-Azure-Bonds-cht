@@ -28,9 +28,11 @@ SHA-256 為 `f8cb14f024fddf1db36064e1786dc2b975a3a702b5ced33d4b3f13a95a87671a`�
 ## 驗證
 
 - [`character-view-remake.png`](../screenshots/character-view-remake.png)，640×480，
-  SHA-256 `f753146d827bace5a4c3594dd01ba8a7f97859ac1a17060456f2d07be3820a1c`。
-- 人工檢視確認主資料區沒有 HEAD／BODY、所有文字留在石框內，下半頁裝備選項不再
-  壓住分隔框。
+  SHA-256 `570436beab9937e6fa77586e134f4ccd2b428a0f984252b221061b554cd7176f`。
+- 人工檢視確認主資料區沒有 HEAD／BODY，下半頁裝備選項不壓住分隔框。
+- 底部提示的基線由
+  [spec 1252](1252-creation-frame-text-safe-area.md) 對著框本身機械驗證：
+  這一類失效是「字畫得出來但被框的像素蓋住」，逐張人工看會漏。
 - `go test ./cmd/azure-bonds-game ./internal/game ./internal/localeaudit` 通過。
 - `CampViewCharacter` 測試確認狀態進入／離開與回傳複本不可回寫。
 

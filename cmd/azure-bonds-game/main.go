@@ -53,6 +53,13 @@ const (
 	logicalHeight            = 480
 	adventureMessageBaseline = 300 // Leave a clear CJK leading below the DOS divider at y=256..271.
 	adventureCommandBaseline = 478 // Extended DOS command interior is y=464..479.
+	// 用 gfx.ExtendedCharacterCreationFrame() 的畫面（建角與角色 VIEW）版面不同：
+	// 2× 之後框在 y=352..361 有中間分隔帶、y=448..457 有底部框帶，文字只能落在
+	// 上面板（..351）或兩帶之間的下面板（368..447）。adventureCommandBaseline
+	// 的 478 屬於冒險框那條延伸指令列，畫在這個框上會整行沒入底部框帶。
+	// 438 是 spec 1246 已經為建角外層頁定出來的下面板安全基線。
+	creationFrameHelpBaseline = 438
+	creationFramePartyCountY  = 340 // 上面板內，位在隊伍成員清單（最低 y=290）之下。
 )
 
 type app struct {
@@ -3077,7 +3084,6 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	// larger display face makes the original option density impossible.
 	a.drawCharacterCreationFrame(screen)
 	face := a.compactFace
-	const creationHelpBaseline = 438
 	drawFittedText(screen, a.state.LocaleText("creation_title"), face, 32, 46, 576, cyan)
 	drawFittedText(screen, a.state.CreationMessage, face, 32, 82, 576, white)
 	if a.state.GuidedActive {
@@ -3095,7 +3101,7 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 				}
 				drawFittedText(screen, prefix+label, face, 64, 140+index*35, 512, white)
 			}
-			drawFittedText(screen, a.state.LocaleText("creation_source_help"), face, 24, creationHelpBaseline, 600, white)
+			drawFittedText(screen, a.state.LocaleText("creation_source_help"), face, 24, creationFrameHelpBaseline, 600, white)
 		case game.CreationCharacterList:
 			if len(a.state.CreationLibrary) == 0 {
 				drawFittedText(screen, a.state.LocaleText("creation_library_empty"), face, 48, 140, 544, white)
@@ -3112,7 +3118,7 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 					a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
 				drawFittedText(screen, row, face, 48, 140+index*35, 544, white)
 			}
-			drawFittedText(screen, a.state.LocaleText("creation_library_help"), face, 24, creationHelpBaseline, 600, white)
+			drawFittedText(screen, a.state.LocaleText("creation_library_help"), face, 24, creationFrameHelpBaseline, 600, white)
 		default:
 			options := []string{a.state.LocaleText("creation_outer_create"), a.state.LocaleText("creation_outer_add"), a.state.LocaleText("creation_outer_load"), a.state.LocaleText("creation_outer_begin")}
 			for index, option := range options {
@@ -3123,8 +3129,8 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 					a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
 				drawFittedText(screen, row, face, 320, 140+index*30, 288, white)
 			}
-			drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_party_count"), len(a.state.CreationRoster), 6), face, 320, 355, 288, cyan)
-			drawFittedText(screen, a.state.LocaleText("creation_outer_help"), face, 24, creationHelpBaseline, 600, white)
+			drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_party_count"), len(a.state.CreationRoster), 6), face, 320, creationFramePartyCountY, 288, cyan)
+			drawFittedText(screen, a.state.LocaleText("creation_outer_help"), face, 24, creationFrameHelpBaseline, 600, white)
 		}
 		return
 	}
@@ -3173,7 +3179,7 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_progress"), a.state.CreationCursor+1,
 		len(a.state.CreationOptions), len(a.state.CreationRoster)), face, 48, 402, 544, cyan)
-	drawFittedText(screen, a.state.LocaleText("creation_help"), face, 24, adventureCommandBaseline, 600, white)
+	drawFittedText(screen, a.state.LocaleText("creation_help"), face, 24, creationFrameHelpBaseline, 600, white)
 }
 
 func (a *app) drawCharacterView(screen *ebiten.Image, white, cyan color.Color) {
@@ -3235,7 +3241,7 @@ func (a *app) drawCharacterView(screen *ebiten.Image, white, cyan color.Color) {
 		}
 		drawFittedText(screen, prefix+choice, face, 48, 416+index*24, 544, white)
 	}
-	drawFittedText(screen, a.state.Prompt, face, 24, adventureCommandBaseline, 600, cyan)
+	drawFittedText(screen, a.state.Prompt, face, 24, creationFrameHelpBaseline, 600, cyan)
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {

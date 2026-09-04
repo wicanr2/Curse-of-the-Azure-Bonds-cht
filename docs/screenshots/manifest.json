@@ -110,7 +110,7 @@
       "file": "docs/screenshots/character-creation-remake-640.png",
       "width": 640,
       "height": 480,
-      "sha256": "0251c1ff34c8c2cd25042151fdce577dbfb5cb046acc26912be2c8df37018c8e",
+      "sha256": "16cc28ac66c9f198133f2c2668ca007836821f2915fd1c233801eb5e060181aa",
       "generation_mode": "Docker/Xvfb -character-creation；角色建立 renderer checkpoint",
       "evidence_level": "material-exact/layout-reconstructed",
       "spec": "docs/spec/549-dos-character-creation-and-screenshot-polish.md"
@@ -190,8 +190,8 @@
       "file": "docs/screenshots/guided-party-assembly.png",
       "width": 640,
       "height": 480,
-      "sha256": "5574b45def44681406d5128a8a9d037d9f116579d52acc049bc49ec9aa9ac644",
-      "generation_mode": "Docker/Xvfb -guided-creation -guided-creation-step party；原版建角流程後的隊伍組裝頁",
+      "sha256": "994af3e30065dd7a0f4e8f40cf569ef6c21ba46e4ed1ec3cd91bbd0ab68b73be",
+      "generation_mode": "Docker/Xvfb -guided-creation -guided-creation-step party -guided-creation-name 測試者；原版建角流程後的隊伍組裝頁",
       "evidence_level": "material-exact/layout-reconstructed",
       "spec": "docs/spec/1244-original-character-and-party-creation-guidance.md"
     },
@@ -200,7 +200,7 @@
       "file": "docs/screenshots/character-view-remake.png",
       "width": 640,
       "height": 480,
-      "sha256": "f753146d827bace5a4c3594dd01ba8a7f97859ac1a17060456f2d07be3820a1c",
+      "sha256": "570436beab9937e6fa77586e134f4ccd2b428a0f984252b221061b554cd7176f",
       "generation_mode": "Docker/Xvfb -character-view；typed fixture 經公開 CAMP→VIEW→first-character 狀態轉移",
       "evidence_level": "material-exact/layout-reconstructed",
       "spec": "docs/spec/1246-normal-character-view-polish.md"
