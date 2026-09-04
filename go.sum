@@ -70,6 +70,8 @@ github.com/wicanr2/golden-box-remake-engine v0.0.0-20260831165626-7e9305036c43 h
 github.com/wicanr2/golden-box-remake-engine v0.0.0-20260831165626-7e9305036c43/go.mod h1:mZHE7q+UII7/ipMWG8ak9XEFt5nVed+19qWRU396vog=
 github.com/wicanr2/golden-box-remake-engine v0.0.0-20260831181703-4b10d7c5a302 h1:Fj64wjxNea9EGDIPyYyQdrhVfrprpEVzOoC2UqdWOn4=
 github.com/wicanr2/golden-box-remake-engine v0.0.0-20260831181703-4b10d7c5a302/go.mod h1:mZHE7q+UII7/ipMWG8ak9XEFt5nVed+19qWRU396vog=
+github.com/wicanr2/golden-box-remake-engine v0.0.0-20260901042238-1d271d58716c h1:FK4CzNAaQu9rOaoXZY8n5Fgafh9097keoUWq5tfOqU0=
+github.com/wicanr2/golden-box-remake-engine v0.0.0-20260901042238-1d271d58716c/go.mod h1:mZHE7q+UII7/ipMWG8ak9XEFt5nVed+19qWRU396vog=
 github.com/wicanr2/golden-box-remake-engine v0.0.0-20260901042238-8cc96f8650ef h1:oX8AiUDaGv2nU7qD0mo/Bv6l0jNWX/X0HQX0Hab1HG0=
 github.com/wicanr2/golden-box-remake-engine v0.0.0-20260901042238-8cc96f8650ef/go.mod h1:mZHE7q+UII7/ipMWG8ak9XEFt5nVed+19qWRU396vog=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
