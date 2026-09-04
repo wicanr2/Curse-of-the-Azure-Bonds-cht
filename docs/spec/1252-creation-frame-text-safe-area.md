@@ -55,6 +55,8 @@
   與外層選單的 `隊伍人數：0／6` 都完整可讀。
 - 回歸對照：`-guided-creation`、`-inn`、`-camp-row camp` 三張截圖與修正前
   **逐位元組相同**，確認改動沒有波及其他版面。
+- 缺陷怎麼被發現的、before／after 截圖與有效性威脅見
+  [`appimage-verification-20260904.md`](../audit/appimage-verification-20260904.md)。
 
 證據等級：框的橫帶位置為 `exact`（量自素材本身）；基線值為
 `layout-reconstructed`，理由是 CJK 字距與原版 DOS 的英文行距本來就不同。

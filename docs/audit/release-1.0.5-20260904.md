@@ -28,7 +28,8 @@ macOS 雙架構只完成交叉編譯與封包，尚未經 macOS 真機、簽署�
 
 修正本身另以 AppImage 直接驗過：用發行包裡的 AppImage 跑 `-character-view`
 與 `-character-creation`，畫面與修正後的原始碼版**逐位元組相同**，確認修正
-確實進了封包而不只是在工作區。
+確實進了封包而不只是在工作區。完整的驗證方法、before／after 截圖與有效性威脅
+見 [`appimage-verification-20260904.md`](appimage-verification-20260904.md)。
 
 ## 產物雜湊
 
