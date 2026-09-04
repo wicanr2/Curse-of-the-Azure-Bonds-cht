@@ -56,12 +56,20 @@ func TestDuelCallSelectorsAreUnusedWhileTheOthersAreNot(t *testing.T) {
 		}
 	}
 	// 正對照：這四個是 spec 1150 量過的，掃不到就是掃描壞了。
+	//
+	// ⚠ **`2E10h` 是 125 → 124**（2026-09-04）。少的那一處是
+	// `ECL2.DAX` block 2 的 `80D0h`，它坐在 `80BFh NEWECL 3` **後面**：
+	// 換區塊不留返回點（`BlockSession.switchTo` 直接丟掉舊的區塊與 PC），
+	// 而 `80C2h` 也不在那個區塊的五個入口裡（`8014h 8093h 80DBh 8122h 8133h`），
+	// 所以那一段執行不到。共用 engine 的靜態走訪改成在「字面值而且不是
+	// `FFh`」的 NEWECL 停住之後就不再數它——**125 裡有一個是幽靈**。
+	// 另外三個數字沒有變，這一點本身就是「掃描沒壞」的正對照。
 	for _, item := range []struct {
 		selector uint16
 		want     int
 		name     string
 	}{
-		{0x2E10, 125, "重畫"}, {0xB200, 19, "音效"},
+		{0x2E10, 124, "重畫"}, {0xB200, 19, "音效"},
 		{0xC01E, 13, "前進一格"}, {0x6803, 11, "推圖片格"},
 	} {
 		if counts[item.selector] != item.want {
