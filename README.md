@@ -1,5 +1,7 @@
 # 《青色枷的詛咒》繁體中文化／Remake
 
+[English README](README_EN.md)
+
 ## 故事
 
 往提爾佛頓的路上，你們遭到伏擊。還沒弄清楚發生什麼事，隊上已經有人倒下。
@@ -72,7 +74,7 @@ Windows／macOS 真機、macOS 簽署／公證、音訊人耳與對外素材權�
 | 音訊格式 | 正式播放以 OGG 為主：12 首 PC-98 音樂與 9 個音效；`MSCDRV.EXE` 即時合成只保留作研究 oracle／缺檔 fallback |
 | 圖像獨立化 | `assets/` 共 2,528 張 PNG：780 張人物／怪物／場景、1,741 張 runtime 圖像、6 張 Journal 插圖與 1 張參考圖；TILES、戰場地形、AREA／共用符號、SKY 與牆片皆已切換 PNG／JSON，無圖像 DAX fixture 的 runtime 代表抽樣已通過，還差各平台封包 smoke |
 | 現代介面 | 預設 A6 細石框＋左上明亮金雕內框；F1 Help、F2 即時 theme、F3 原版 AREA 符號攻略地圖、F4 三種解析度、F6 語言、F7 外觀設定、F10 存檔後離開；視窗可任意拉伸並填滿 |
-| 四語系 | UI 各 **1,197** 條、game-pack 各 **1,598** 條、攻略 8 張地圖；英文劇情沿用原版，簡中／日文與缺少的英文 UI 由離線 AI 生成，無人工校譯宣稱。專名規則見 [四語名詞表](docs/knowledge/coab-multilingual-translation.md) |
+| 四語系 | UI 各 **1,197** 條、game-pack 各 **1,598** 條、攻略 8 張地圖；英文劇情沿用原版，物品、法術與專名以原版 DOS 用語為準；日文的物品與法術採原版英文的片假名轉寫，不經繁中二次轉譯。其餘簡中／日文與原版沒有的 UI 字串由離線 AI 生成，無人工校譯宣稱。專名規則見 [四語名詞表](docs/knowledge/coab-multilingual-translation.md) |
 | 手札 | locale 宣告 **64 則**，全部由 48 條內容規則的 `journal_message_ids` 解鎖；六張手冊地圖／插圖（含手札 59 的眼魔洞穴圖）在手札畫面按 `I` 彈窗顯示（spec 1109）|
 | `24h COMBAT` | 199 處逐處分類：**153 處真的要打、46 處走服務分派**（`cmd/ecl-combat-sites`）|
 | 跨段不變量 | 整條主線 260 句話**落回原文 0 句**；同一角色的經驗不倒退、隊伍變動位置宣告好；22 個段界都有曲子 |
@@ -303,9 +305,11 @@ tools/go.sh test ./...         # 全套測試，Go 工具鏈跑在 docker 裡
 ## 授權
 
 本專案中由權利人擁有的程式碼、繁體中文翻譯、文件與原創內容採
-[PolyForm Noncommercial License 1.0.0](LICENSE)：允許非商業使用、修改與散布；
-商業使用請透過 GitHub Issues 洽談另外授權。SSI 原版素材、Noto Sans TC、獨立 engine
-及第三方依賴不會因此被重新授權，完整邊界見 [`NOTICE.md`](NOTICE.md)。
+[RRSAL-1.0](LICENSE)（復古重製 source-available 授權條款 1.0）：非商業使用、修改
+與散布免費；遊戲實況、錄影、直播與其平台分潤由條款第 4 條明示允許；商業使用請透過
+GitHub Issues 洽談另外授權。這是 **source-available**，不是開源——非商業限制不符合
+OSI 的開源定義。SSI 原版素材、Noto Sans CJK、獨立 engine 及第三方依賴不會因此被
+重新授權，完整邊界見 [`NOTICE.md`](NOTICE.md)。
 
 ## 開發與研究文件
 

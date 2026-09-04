@@ -89,7 +89,13 @@ docker run --rm --network none --memory 1g --cpus 1 --pids-limit 128 \
         "$BASE/macos-arm64/Azure Bonds Remake.app/Contents/MacOS"; do
         cp LICENSE NOTICE.md "$target/"
       done
+      # rulebook 85：AppImage 解包後的標準文件位置也要有一份，
+      # 不能只放在 AppDir 根目錄。
+      mkdir -p "$BASE/linux/AppDir/usr/share/doc/azure-bonds-remake"
+      cp LICENSE NOTICE.md "$BASE/linux/AppDir/usr/share/doc/azure-bonds-remake/"
     done
+    # 發行根目錄自己也要一份：從 dist-all/ 直接取檔的人看不到儲存庫。
+    cp LICENSE NOTICE.md "dist-all/$V/"
     cp "$B/azure-bonds-game-linux-amd64" "dist-all/$V/patch/linux/AppDir/usr/bin/azure-bonds-game"
     cp "$B/azure-bonds-game.exe" "dist-all/$V/patch/windows/azure-bonds-game.exe"
     for arch in amd64 arm64; do
