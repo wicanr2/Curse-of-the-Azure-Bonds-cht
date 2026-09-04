@@ -182,7 +182,19 @@ fallback；特殊攻擊與驅散不死的最後一擊會重算勝負，非戰鬥
 `EnterSegment` 前強化，套件測試明確指向段內快照；硬閘門恢復 15 個 block，
 沒有靠回退真實 HP 或放寬門檻通過（spec 1206）。
 
-最新發行收據（2026-09-04）：`1.0.4-20260904` 以獨立 engine `1d271d58716c`、
+最新發行收據（2026-09-04）：`1.0.5-20260904` 以獨立 engine `1d271d58716c`、
+遊戲來源 commit `1c51db3c` 重生 patch／full-local 各四件，八件產物皆與
+`dist-all/1.0.5-20260904/SHA256SUMS.json` 對帳。這一版只修一件事：角色 VIEW
+底部的物品提示、建角選項清單的操作提示與外層選單的「隊伍人數」先前畫在原版
+建角框的框帶位置上，字有畫出來但被框的像素蓋住，畫面上只剩上半截；三行改用
+該框自己的安全區（[spec 1252](docs/spec/1252-creation-frame-text-safe-area.md)）。
+修正另以發行包裡的 AppImage 直接驗過，畫面與修正後的原始碼版逐位元組相同。
+開場畫面未動，Linux 與 Wine 的兩張 smoke 截圖仍是 49,576 bytes、
+SHA-256 `d0e5d639…4362`。五個 Release 附件已由 GitHub API 讀回，digest 逐項
+相符。收據見
+[`docs/audit/release-1.0.5-20260904.md`](docs/audit/release-1.0.5-20260904.md)。
+
+前一次發行收據（2026-09-04）：`1.0.4-20260904` 以獨立 engine `1d271d58716c`、
 遊戲來源 commit `a71feb7a9` 重生 patch／full-local 各四件，八件產物皆與
 `dist-all/1.0.4-20260904/SHA256SUMS.json` 對帳。Linux 與 Wine smoke 的兩張開場
 截圖仍是 49,576 bytes、SHA-256 `d0e5d639…4362`——**與 1.0.3 逐位元組相同**，
@@ -204,16 +216,7 @@ engine 的 commit hash 全面改變（2026-09-04）：那個 repo 有 93 個 com
 `go.mod` 鎖的 `8cc96f8650ef` 換成同一份內容的 `1d271d58716c`。舊發行收據裡的
 engine hash 是當時的事實，現在指不到東西。
 
-前一次發行收據（2026-09-01）：`1.0.3-20260901` 以獨立 engine `8cc96f8650ef`、
-遊戲來源 commit `b1a2bb19d` 重生 patch／full-local 各四件，八件產物皆與
-`dist-all/1.0.3-20260901/SHA256SUMS.json` 對帳。Linux full-local AppImage 與
-Windows full-local EXE 已分別在 Docker／Xvfb 與 Docker／Wine／Xvfb 實際啟動，
-兩張開場截圖同為 49,576 bytes、SHA-256 `d0e5d639…4362`。tag `v1.0.3-20260901`
-發布後再由 GitHub API 讀回：非草稿、非預覽，五個附件狀態皆為 `uploaded`，
-四個平台 patch 的 size 與 digest 與本機 manifest 相同，公開清冊沒有 full-local、
-原版 ZIP、PC-98 OGG 或 smoke 截圖。macOS 雙架構只完成交叉編譯與封包，真機、
-簽署與公證仍未驗收。收據見
-[`docs/audit/release-1.0.3-20260901.md`](docs/audit/release-1.0.3-20260901.md)。
+更早的發行收據逐版留在 [`docs/audit/`](docs/audit/)。
 
 第一人稱內框（2026-09-01，spec 1250）：stage frame 的內側透明孔延伸到 native
 `(22,22)..(119,119)`，DOS 背景只畫到 `(24,24)..(111,111)`，因此場景四周會留下
@@ -224,13 +227,6 @@ Windows full-local EXE 已分別在 Docker／Xvfb 與 Docker／Wine／Xvfb 實�
 CoAB 只宣告自己的 `StageInset{22,22,98,98,WallTop:40}`。README 的
 `tilverton-first-person-remake.png` 已用 `-tilverton-dungeon` 正式 checkpoint 重拍
 （SHA-256 `289fca91…4faf`）。
-
-前一發行收據（2026-08-31）：`1.0.2-20260831` 已改用獨立 engine
-`0819c64e451d`，重生 patch／full-local 各四件：Linux x86_64 AppImage、Windows
-x86_64 ZIP、macOS x86_64／arm64 ZIP。八件檔案皆與 `SHA256SUMS.json` 對帳；
-patch deny-list 不含原版 ZIP 與私有 PC-98 OGG，full-local 四個平台目錄均含本機
-遊戲資料。Linux AppImage 與 Windows EXE（Wine）已在 Docker／Xvfb 啟動，兩張
-繁中開場 smoke 截圖目視相同。Windows／macOS 真機與 macOS 簽署／公證仍未驗收。
 
 歷史發行收據（2026-08-29）：`0.1.0-dev.20260829` 已重生 patch／
 full-local 各四件三平台封包；Linux AppImage 與 Windows EXE（Wine）重做

@@ -62,7 +62,7 @@ Windows／macOS 真機、macOS 簽署／公證、音訊人耳與對外素材權�
 | **主線** | **開場到結局同一條 session 跑得完**，拆成 25 個段 subtest（23 段主線＋2 段接進主線的段內支線），每段結束的快照都存得下去讀得回來 |
 | **鍵盤通關** | 從標題開始、全程只走真實前端按鍵，第 **14,380 幀**觸發 `GameWon()` |
 | **一般強度基線** | pending Bless 無限重試已修；關閉隊伍強化後跑 2,455 幀：251 格、8 個 ECL 段、199 句、落回原文 0，最後真實全滅重開 1 次。手動戰鬥對照也在同一戰役區段全滅；這是合法停止結果，不再把戰術／loadout 或自動通關列為產品缺口 |
-| **發行工程** | `1.0.4-20260904` 已以獨立 engine `1d271d58716c` 重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP，patch／full-local 各四件且八件雜湊全數重算通過；Linux 與 Windows（Wine）full-local 已實際啟動，兩張開場截圖逐位元組相同。公開 patch 不含原版 ZIP 與 PC-98 OGG，full-local 四平台目錄均含本機遊戲資料。GitHub Release 已由 API 讀回驗證：非草稿、非預覽，五個附件皆 `uploaded`，size 與 SHA-256 digest 與本機 patch manifest 相同。附件已於 2026-09-04 因授權改為 RRSAL-1.0 重新打包並換掉，兩張開場截圖與重打包前逐位元組相同。Windows／macOS 尚待真機啟動，macOS 尚未簽署／公證；內部推廣片的音樂與原版圖像權利仍未釐清（見 [1.0.4 發行收據](docs/audit/release-1.0.4-20260904.md)） |
+| **發行工程** | `1.0.5-20260904` 已以獨立 engine `1d271d58716c` 重生 Linux x86_64 AppImage、Windows x86_64 ZIP、macOS x86_64／arm64 ZIP，patch／full-local 各四件且八件雜湊全數重算通過；Linux 與 Windows（Wine）full-local 已實際啟動，兩張開場截圖逐位元組相同。公開 patch 不含原版 ZIP 與 PC-98 OGG，full-local 四平台目錄均含本機遊戲資料。GitHub Release 已由 API 讀回驗證：非草稿、非預覽，五個附件皆 `uploaded`，size 與 SHA-256 digest 與本機 patch manifest 相同。1.0.5 修掉角色 VIEW 與建隊選單那三行被建角框蓋住的文字（spec 1252），開場畫面未動，兩張 smoke 截圖與 1.0.4 逐位元組相同。Windows／macOS 尚待真機啟動，macOS 尚未簽署／公證；內部推廣片的音樂與原版圖像權利仍未釐清（見 [1.0.5 發行收據](docs/audit/release-1.0.5-20260904.md)） |
 | 主線分段 | 25 段全部可直入（`-segment ECL{成員}/0x{block}`）；47 條 `NEWECL` 邊逐條交接；段入口有中文劇情 22／不出文字 3 |
 | 戰利品 | `1Ch CLEARMONSTERS` 連同**還沒領走的戰利品**一起丟掉（spec 1145）；corpus 唯一走得到那條路的是提爾佛頓火刀首領的重打迴圈，少了它重打一次就多領一次 |
 | 遭遇距離 | `0Ch` 擺距離、`0Dh APPROACH` 走近、`29h` 重設（spec 1146）。⚠ `APPROACH` 的減一是**演出**——`29h` 進門會把它蓋回去 |
