@@ -1,7 +1,7 @@
 # 1.0.4-20260904 完整打包與公開發行稽核
 
 日期：2026-09-04  
-遊戲來源 commit：`a71feb7a9`（附件重出的建置來源：`4ea0c95b`）  
+遊戲來源 commit：`4ea0c95b`（附件重出的建置來源；初版首發是 `a71feb7a9`）  
 共用 engine：`1d271d58716c`（原記 `8cc96f8650ef`；engine 歷史於 2026-09-04
 改寫 commit 作者信箱，所有 hash 因此改變，內容與 tree 未動）  
 打包依據：`tools/package-release.sh 1.0.4-20260904` 的逐項 Docker 命令
@@ -29,9 +29,9 @@ Windows（Wine）的開場截圖都是 49,576 bytes、SHA-256
 `d0e5d6399273d59dea3f43f58f245c61c19ed3adf0b3d0e070989cb90d234362`，與重打包前
 逐位元組相同——也就是仍然與 1.0.3 那兩張相同。
 
-tag `v1.0.4-20260904` 沒有移動，仍指向初版程式碼 `a71feb7a9`；實際建置來源是
-`4ea0c95b`，兩者之間只有授權文件與 engine 相依的 hash 修正。下方雜湊表是重出後
-的值，初版附件的雜湊不再有效。
+tag `v1.0.4-20260904` 已改指實際建置來源 `4ea0c95b`（原本指向初版首發的
+`a71feb7a9`），這樣從 tag 重建得出現在的附件。兩個 commit 之間只有授權文件與
+engine 相依的 hash 修正。下方雜湊表是重出後的值，初版附件的雜湊不再有效。
 
 ## 本機完整交付
 
@@ -70,10 +70,12 @@ GitHub Release 只上傳四件 `patch` 與 `PATCH-SHA256SUMS.txt`；不上傳
 2026-09-04 發布後由 GitHub API 讀回驗證：Release 為非草稿、非預覽版本
 （`draft=false`、`prerelease=false`、`target_commitish=main`），五個附件狀態皆為
 `uploaded`；四個平台附件的 size 與 SHA-256 digest 均與本機 `PATCH-SHA256SUMS.txt`
-相同。tag `v1.0.4-20260904` 指向 `a71feb7a9`。
+相同。當時 tag `v1.0.4-20260904` 指向 `a71feb7a9`。
 
-授權重出後再讀一次：五個附件仍為 `uploaded`，digest 與上表的重出值逐項相同，
-`PATCH-SHA256SUMS.txt` 下載回來與本機檔案內容一致。
+授權重出後再讀一次：Release 仍是 `draft=false`、`prerelease=false`、
+`target_commitish=main`，五個附件皆 `uploaded`，digest 與上表的重出值逐項相同，
+`PATCH-SHA256SUMS.txt` 下載回來與本機檔案內容一致。tag 已改指 `4ea0c95b`
+（annotated，tag object `3c96bed2`）。
 
 ## 仍未完成
 
